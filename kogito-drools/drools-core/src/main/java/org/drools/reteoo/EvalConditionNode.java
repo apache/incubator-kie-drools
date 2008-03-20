@@ -42,14 +42,14 @@ import org.drools.util.TupleHashTable;
  *
  * @see EvalConditionNode
  * @see Eval
- * @see ReteTuple
+ * @see LeftTuple
  *
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
-public class EvalConditionNode extends TupleSource
+public class EvalConditionNode extends LeftTupleSource
     implements
-    TupleSinkNode,
+    LeftTupleSinkNode,
     NodeMemory {
     // ------------------------------------------------------------
     // Instance members
@@ -64,12 +64,12 @@ public class EvalConditionNode extends TupleSource
     private EvalCondition condition;
 
     /** The source of incoming <code>Tuples</code>. */
-    private TupleSource   tupleSource;
+    private LeftTupleSource   tupleSource;
 
     protected boolean          tupleMemoryEnabled;
 
-    private TupleSinkNode       previousTupleSinkNode;
-    private TupleSinkNode       nextTupleSinkNode;
+    private LeftTupleSinkNode       previousTupleSinkNode;
+    private LeftTupleSinkNode       nextTupleSinkNode;
 
     // ------------------------------------------------------------
     // Constructors
@@ -88,7 +88,7 @@ public class EvalConditionNode extends TupleSource
      * @param eval
      */
     public EvalConditionNode(final int id,
-                             final TupleSource tupleSource,
+                             final LeftTupleSource tupleSource,
                              final EvalCondition eval,
                              final BuildContext context) {
         super( id );
@@ -100,10 +100,10 @@ public class EvalConditionNode extends TupleSource
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         super.readExternal(in);
         condition   = (EvalCondition)in.readObject();
-        tupleSource = (TupleSource)in.readObject();
+        tupleSource = (LeftTupleSource)in.readObject();
         tupleMemoryEnabled  = in.readBoolean();
-        previousTupleSinkNode   = (TupleSinkNode)in.readObject();
-        nextTupleSinkNode       = (TupleSinkNode)in.readObject();
+        previousTupleSinkNode   = (LeftTupleSinkNode)in.readObject();
+        nextTupleSinkNode       = (LeftTupleSinkNode)in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -167,7 +167,7 @@ public class EvalConditionNode extends TupleSource
      * @throws AssertionException
      *             If an error occurs while asserting.
      */
-    public void assertTuple(final ReteTuple tuple,
+    public void assertLeftTuple(final LeftTuple tuple,
                             final PropagationContext context,
                             final InternalWorkingMemory workingMemory) {
         final EvalMemory memory = (EvalMemory) workingMemory.getNodeMemory( this );
@@ -181,21 +181,21 @@ public class EvalConditionNode extends TupleSource
                 memory.tupleMemory.add( tuple );
             }
 
-            this.sink.propagateAssertTuple( tuple,
+            this.sink.propagateAssertLeftTuple( tuple,
                                             context,
                                             workingMemory );
         }
     }
 
-    public void retractTuple(final ReteTuple tuple,
+    public void retractLeftTuple(final LeftTuple tuple,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
         final EvalMemory memory = (EvalMemory) workingMemory.getNodeMemory( this );
 
         // can we improve that?
-        final ReteTuple memTuple = memory.tupleMemory.remove( tuple );
+        final LeftTuple memTuple = memory.tupleMemory.remove( tuple );
         if ( memTuple != null ) {
-            this.sink.propagateRetractTuple( memTuple,
+            this.sink.propagateRetractLeftTuple( memTuple,
                                              context,
                                              workingMemory );
         }
@@ -235,15 +235,15 @@ public class EvalConditionNode extends TupleSource
     /* (non-Javadoc)
      * @see org.drools.reteoo.BaseNode#updateNewNode(org.drools.reteoo.WorkingMemoryImpl, org.drools.spi.PropagationContext)
      */
-    public void updateSink(final TupleSink sink,
+    public void updateSink(final LeftTupleSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
 
         final EvalMemory memory = (EvalMemory) workingMemory.getNodeMemory( this );
 
         final Iterator it = memory.tupleMemory.iterator();
-        for ( ReteTuple tuple = (ReteTuple) it.next(); tuple != null; tuple = (ReteTuple) it.next() ) {
-            sink.assertTuple( tuple,
+        for ( LeftTuple tuple = (LeftTuple) it.next(); tuple != null; tuple = (LeftTuple) it.next() ) {
+            sink.assertLeftTuple( tuple,
                               context,
                               workingMemory );
         }
@@ -255,7 +255,7 @@ public class EvalConditionNode extends TupleSource
                             final InternalWorkingMemory[] workingMemories) {
         context.visitTupleSource( this );
         if ( !node.isInUse() ) {
-            removeTupleSink( (TupleSink) node );
+            removeTupleSink( (LeftTupleSink) node );
         }
         if ( !this.isInUse() ) {
             for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
@@ -270,11 +270,11 @@ public class EvalConditionNode extends TupleSource
         }
     }
 
-    public boolean isTupleMemoryEnabled() {
+    public boolean isLeftTupleMemoryEnabled() {
         return tupleMemoryEnabled;
     }
 
-    public void setTupleMemoryEnabled(boolean tupleMemoryEnabled) {
+    public void setLeftTupleMemoryEnabled(boolean tupleMemoryEnabled) {
         this.tupleMemoryEnabled = tupleMemoryEnabled;
     }
 
@@ -283,7 +283,7 @@ public class EvalConditionNode extends TupleSource
      * @return
      *      The next TupleSinkNode
      */
-    public TupleSinkNode getNextTupleSinkNode() {
+    public LeftTupleSinkNode getNextLeftTupleSinkNode() {
         return this.nextTupleSinkNode;
     }
 
@@ -292,7 +292,7 @@ public class EvalConditionNode extends TupleSource
      * @param next
      *      The next TupleSinkNode
      */
-    public void setNextTupleSinkNode(final TupleSinkNode next) {
+    public void setNextLeftTupleSinkNode(final LeftTupleSinkNode next) {
         this.nextTupleSinkNode = next;
     }
 
@@ -301,7 +301,7 @@ public class EvalConditionNode extends TupleSource
      * @return
      *      The previous TupleSinkNode
      */
-    public TupleSinkNode getPreviousTupleSinkNode() {
+    public LeftTupleSinkNode getPreviousLeftTupleSinkNode() {
         return this.previousTupleSinkNode;
     }
 
@@ -310,7 +310,7 @@ public class EvalConditionNode extends TupleSource
      * @param previous
      *      The previous TupleSinkNode
      */
-    public void setPreviousTupleSinkNode(final TupleSinkNode previous) {
+    public void setPreviousLeftTupleSinkNode(final LeftTupleSinkNode previous) {
         this.previousTupleSinkNode = previous;
     }
 

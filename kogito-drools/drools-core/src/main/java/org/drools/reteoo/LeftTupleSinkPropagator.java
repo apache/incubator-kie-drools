@@ -6,36 +6,36 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.PropagationContext;
 
-public interface TupleSinkPropagator
+public interface LeftTupleSinkPropagator
     extends
     Externalizable {
-    public void propagateAssertTuple(ReteTuple tuple,
+    public void propagateAssertLeftTuple(LeftTuple leftTuple,
                                      InternalFactHandle handle,
                                      PropagationContext context,
                                      InternalWorkingMemory workingMemory);
 
-    public void propagateAssertTuple(ReteTuple tuple,
+    public void propagateAssertLeftTuple(LeftTuple leftTuple,
                                      PropagationContext context,
                                      InternalWorkingMemory workingMemory);
 
-    public void propagateRetractTuple(ReteTuple tuple,
+    public void propagateRetractLeftTuple(LeftTuple leftTuple,
                                       InternalFactHandle handle,
                                       PropagationContext context,
                                       InternalWorkingMemory workingMemory);
 
-    public void propagateRetractTuple(ReteTuple tuple,
+    public void propagateRetractLeftTuple(LeftTuple tuple,
                                       PropagationContext context,
                                       InternalWorkingMemory workingMemory);
 
-    public void createAndPropagateAssertTuple(InternalFactHandle handle,
+    public void createAndPropagateAssertLeftTuple(InternalFactHandle handle,
                                               PropagationContext context,
                                               InternalWorkingMemory workingMemory);
 
-    public void createAndPropagateRetractTuple(InternalFactHandle handle,
+    public void createAndPropagateRetractLeftTuple(InternalFactHandle handle,
                                                PropagationContext context,
                                                InternalWorkingMemory workingMemory);
 
-    public TupleSink[] getSinks();
+    public LeftTupleSink[] getSinks();
 
     //    public void propagateNewTupleSink(TupleMatch tupleMatch,
     //                                      PropagationContext context,

@@ -14,7 +14,7 @@ import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
 import org.drools.base.evaluators.Operator;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
-import org.drools.reteoo.ReteTuple;
+import org.drools.reteoo.LeftTuple;
 import org.drools.rule.Declaration;
 import org.drools.rule.Pattern;
 import org.drools.spi.FieldExtractor;
@@ -52,7 +52,7 @@ public class FieldIndexHashTableTest extends TestCase {
 
         assertEquals( 0,
                       map.size() );
-        assertNull( map.get( new ReteTuple( cheddarHandle1 ) ) );
+        assertNull( map.get( new LeftTuple( cheddarHandle1 ) ) );
 
         final Cheese stilton1 = new Cheese( "stilton",
                                             35 );
@@ -70,7 +70,7 @@ public class FieldIndexHashTableTest extends TestCase {
         final InternalFactHandle stiltonHandle2 = new DefaultFactHandle( 2,
                                                                          stilton2 );
 
-        final FieldIndexEntry stiltonEntry = map.get( new ReteTuple( stiltonHandle2 ) );
+        final FieldIndexEntry stiltonEntry = map.get( new LeftTuple( stiltonHandle2 ) );
         assertSame( stiltonHandle1,
                     stiltonEntry.getFirst().getFactHandle() );
         assertNull( stiltonEntry.getFirst().getNext() );
@@ -118,7 +118,7 @@ public class FieldIndexHashTableTest extends TestCase {
                                             77 );
         final InternalFactHandle stiltonHandle2 = new DefaultFactHandle( 2,
                                                                          stilton2 );
-        final FieldIndexEntry stiltonEntry = map.get( new ReteTuple( stiltonHandle2 ) );
+        final FieldIndexEntry stiltonEntry = map.get( new LeftTuple( stiltonHandle2 ) );
         assertSame( stiltonHandle1,
                     stiltonEntry.getFirst().getFactHandle() );
         assertNull( stiltonEntry.getFirst().getNext() );
@@ -127,7 +127,7 @@ public class FieldIndexHashTableTest extends TestCase {
                                             5 );
         final InternalFactHandle cheddarHandle2 = new DefaultFactHandle( 2,
                                                                          cheddar2 );
-        final FieldIndexEntry cheddarEntry = map.get( new ReteTuple( cheddarHandle2 ) );
+        final FieldIndexEntry cheddarEntry = map.get( new LeftTuple( cheddarHandle2 ) );
         assertSame( cheddarHandle1,
                     cheddarEntry.getFirst().getFactHandle() );
         assertNull( cheddarEntry.getFirst().getNext() );
@@ -183,7 +183,7 @@ public class FieldIndexHashTableTest extends TestCase {
         final InternalFactHandle stiltonHandle3 = new DefaultFactHandle( 4,
                                                                          stilton2 );
 
-        final FieldIndexEntry stiltonEntry = map.get( new ReteTuple( stiltonHandle3 ) );
+        final FieldIndexEntry stiltonEntry = map.get( new LeftTuple( stiltonHandle3 ) );
         assertSame( stiltonHandle2,
                     stiltonEntry.getFirst().getFactHandle() );
         assertSame( stiltonHandle1,
@@ -544,7 +544,7 @@ public class FieldIndexHashTableTest extends TestCase {
         final InternalFactHandle stiltonHandle = new DefaultFactHandle( 2,
                                                                         stilton );
 
-        final Iterator it = map.iterator( new ReteTuple( stiltonHandle ) );
+        final Iterator it = map.iterator( new LeftTuple( stiltonHandle ) );
         for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
             fail( "Map is empty, there should be no iteration" );
         }

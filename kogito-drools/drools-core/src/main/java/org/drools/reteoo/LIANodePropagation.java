@@ -36,7 +36,7 @@ public class LIANodePropagation implements Externalizable {
     }
 
     public void doPropagation(InternalWorkingMemory workingMemory) {
-        node.getSinkPropagator().createAndPropagateAssertTuple( handle, context, workingMemory );
+        node.getSinkPropagator().createAndPropagateAssertLeftTuple( handle, context, workingMemory );
     }
 
 

@@ -23,7 +23,7 @@ import java.io.ObjectInput;
 import org.drools.RuntimeDroolsException;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.reteoo.ReteTuple;
+import org.drools.reteoo.LeftTuple;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.Constraint;
@@ -275,7 +275,7 @@ public abstract class AbstractCompositeConstraint extends MutableTypeConstraint 
         }
 
         public void updateFromTuple(InternalWorkingMemory workingMemory,
-                                    ReteTuple tuple) {
+                                    LeftTuple tuple) {
             this.workingMemory = workingMemory;
             for ( int i = 0; i < alphas.length; i++ ) {
                 if ( alphas[i] != null ) {

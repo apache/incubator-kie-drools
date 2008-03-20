@@ -25,7 +25,7 @@ import java.io.ObjectInput;
 import org.drools.base.ValueType;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.reteoo.ReteTuple;
+import org.drools.reteoo.LeftTuple;
 import org.drools.spi.Evaluator;
 import org.drools.spi.Extractor;
 import org.drools.spi.FieldExtractor;
@@ -105,7 +105,7 @@ public class VariableRestriction
                                                   this.evaluator.prepareObject( handle ) );
     }
 
-    public boolean isAllowedCachedRight(final ReteTuple tuple,
+    public boolean isAllowedCachedRight(final LeftTuple tuple,
                                         final ContextEntry context) {
         return this.evaluator.evaluateCachedRight( ((VariableContextEntry) context).workingMemory,
                                                    (VariableContextEntry) context,
@@ -188,7 +188,7 @@ public class VariableRestriction
         public Evaluator             evaluator;
         public Object                object;
         public Declaration           declaration;
-        public ReteTuple             reteTuple;
+        public LeftTuple             reteTuple;
         public ContextEntry          entry;
         public boolean               leftNull;
         public boolean               rightNull;
@@ -211,7 +211,7 @@ public class VariableRestriction
             evaluator       = (Evaluator)in.readObject();
             object          = in.readObject();
             declaration     = (Declaration)in.readObject();
-            reteTuple       = (ReteTuple)in.readObject();
+            reteTuple       = (LeftTuple)in.readObject();
             entry           = (ContextEntry)in.readObject();
             leftNull        = in.readBoolean();
             rightNull       = in.readBoolean();
@@ -245,7 +245,7 @@ public class VariableRestriction
             return this.object;
         }
 
-        public ReteTuple getTuple() {
+        public LeftTuple getTuple() {
             return this.reteTuple;
         }
 
@@ -300,7 +300,7 @@ public class VariableRestriction
         }
 
         public void updateFromTuple(final InternalWorkingMemory workingMemory,
-                                    final ReteTuple tuple) {
+                                    final LeftTuple tuple) {
             this.reteTuple = tuple;
             this.workingMemory = workingMemory;
             this.leftNull = this.declaration.getExtractor().isNullValue( workingMemory,
@@ -361,7 +361,7 @@ public class VariableRestriction
         }
 
         public void updateFromTuple(final InternalWorkingMemory workingMemory,
-                                    final ReteTuple tuple) {
+                                    final LeftTuple tuple) {
             this.reteTuple = tuple;
             this.workingMemory = workingMemory;
             this.leftNull = this.declaration.getExtractor().isNullValue( workingMemory,
@@ -422,7 +422,7 @@ public class VariableRestriction
         }
 
         public void updateFromTuple(final InternalWorkingMemory workingMemory,
-                                    final ReteTuple tuple) {
+                                    final LeftTuple tuple) {
             this.reteTuple = tuple;
             this.workingMemory = workingMemory;
             this.leftNull = this.declaration.getExtractor().isNullValue( workingMemory,
@@ -483,7 +483,7 @@ public class VariableRestriction
         }
 
         public void updateFromTuple(final InternalWorkingMemory workingMemory,
-                                    final ReteTuple tuple) {
+                                    final LeftTuple tuple) {
             this.reteTuple = tuple;
             this.workingMemory = workingMemory;
             this.leftNull = this.declaration.getExtractor().isNullValue( workingMemory,
@@ -543,7 +543,7 @@ public class VariableRestriction
         }
 
         public void updateFromTuple(final InternalWorkingMemory workingMemory,
-                                    final ReteTuple tuple) {
+                                    final LeftTuple tuple) {
             this.reteTuple = tuple;
             this.workingMemory = workingMemory;
             this.leftNull = this.declaration.getExtractor().isNullValue( workingMemory,

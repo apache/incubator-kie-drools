@@ -87,7 +87,7 @@ public class AgendaTest extends DroolsTestCase {
                                                              rule2.getLhs(),
                                                              buildContext );
 
-        final ReteTuple tuple = new ReteTuple( new DefaultFactHandle( 1,
+        final LeftTuple tuple = new LeftTuple( new DefaultFactHandle( 1,
                                                                       "cheese" ) );
 
         final PropagationContext context1 = new PropagationContextImpl( 0,
@@ -143,11 +143,11 @@ public class AgendaTest extends DroolsTestCase {
         rule1.setNoLoop( false );
         rule2.setDuration( 5000 );
 
-        node1.assertTuple( tuple,
+        node1.assertLeftTuple( tuple,
                            context1,
                            workingMemory );
 
-        node2.assertTuple( tuple,
+        node2.assertLeftTuple( tuple,
                            context1,
                            workingMemory );
 
@@ -202,7 +202,7 @@ public class AgendaTest extends DroolsTestCase {
             }
         } );
 
-        final ReteTuple tuple = new ReteTuple( new DefaultFactHandle( 1,
+        final LeftTuple tuple = new LeftTuple( new DefaultFactHandle( 1,
                                                                       "cheese" ) );
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,
@@ -221,7 +221,7 @@ public class AgendaTest extends DroolsTestCase {
         };
 
         rule.setNoLoop( false );
-        node.assertTuple( tuple,
+        node.assertLeftTuple( tuple,
                           context,
                           workingMemory );
 
@@ -250,7 +250,7 @@ public class AgendaTest extends DroolsTestCase {
         };
 
         rule.setNoLoop( false );
-        node.assertTuple( tuple,
+        node.assertLeftTuple( tuple,
                           context,
                           workingMemory );
 
@@ -287,7 +287,7 @@ public class AgendaTest extends DroolsTestCase {
             }
         };
 
-        final ReteTuple tuple = new ReteTuple( new DefaultFactHandle( 1,
+        final LeftTuple tuple = new LeftTuple( new DefaultFactHandle( 1,
                                                                       "cheese" ) );
 
         // create a rule for each agendaGroup
@@ -358,7 +358,7 @@ public class AgendaTest extends DroolsTestCase {
         assertEquals( 0,
                       agenda.focusStackSize() );
 
-        node0.assertTuple( tuple,
+        node0.assertLeftTuple( tuple,
                            context0,
                            workingMemory );
 
@@ -369,7 +369,7 @@ public class AgendaTest extends DroolsTestCase {
         // check main got the tuple
         assertEquals( 1,
                       agenda.getFocus().size() );
-        node2.assertTuple( tuple,
+        node2.assertLeftTuple( tuple,
                            context2,
                            workingMemory );
 
@@ -386,7 +386,7 @@ public class AgendaTest extends DroolsTestCase {
                       agenda.agendaSize() );
 
         // put another one on agendaGroup 2
-        node2.assertTuple( tuple,
+        node2.assertLeftTuple( tuple,
                            context2,
                            workingMemory );
 
@@ -414,14 +414,14 @@ public class AgendaTest extends DroolsTestCase {
                       agenda.getFocus().size() );
 
         // add to agendaGroup 3
-        node3.assertTuple( tuple,
+        node3.assertLeftTuple( tuple,
                            context3,
                            workingMemory );
 
         assertEquals( 1,
                       agenda.getFocus().size() );
 
-        node3.assertTuple( tuple,
+        node3.assertLeftTuple( tuple,
                            context3,
                            workingMemory );
 
@@ -523,7 +523,7 @@ public class AgendaTest extends DroolsTestCase {
             }
         };
 
-        final ReteTuple tuple = new ReteTuple( new DefaultFactHandle( 1,
+        final LeftTuple tuple = new LeftTuple( new DefaultFactHandle( 1,
                                                                       "cheese" ) );
 
         // create a rule for the agendaGroup
@@ -544,7 +544,7 @@ public class AgendaTest extends DroolsTestCase {
         // as its agendaGroup does not have focus.
         rule.setAutoFocus( false );
 
-        node.assertTuple( tuple,
+        node.assertLeftTuple( tuple,
                           context,
                           workingMemory );
 
@@ -567,7 +567,7 @@ public class AgendaTest extends DroolsTestCase {
         // agendaGroup gets the focus when the activation is created.
         rule.setAutoFocus( true );
 
-        node.assertTuple( tuple,
+        node.assertLeftTuple( tuple,
                           context,
                           workingMemory );
 
@@ -588,7 +588,7 @@ public class AgendaTest extends DroolsTestCase {
         final InternalAgendaGroup agendaGroup = new BinaryHeapQueueAgendaGroup( "agendaGroup", ruleBase );
         agenda.addAgendaGroup( agendaGroup );
 
-        final ReteTuple tuple = new ReteTuple( new DefaultFactHandle( 1,
+        final LeftTuple tuple = new LeftTuple( new DefaultFactHandle( 1,
                                                                       "cheese" ) );
 
         // create a rule for the agendaGroup
@@ -608,7 +608,7 @@ public class AgendaTest extends DroolsTestCase {
         // When both the rule is lock-on-active and the agenda group is active, activations should be ignored
         rule.setLockOnActive( true );
         agendaGroup.setActive( true );
-        node.assertTuple( tuple,
+        node.assertLeftTuple( tuple,
                           context,
                           workingMemory );
         // activation should be ignored
@@ -617,7 +617,7 @@ public class AgendaTest extends DroolsTestCase {
 
         // lock-on-active is now false so activation should propagate
         rule.setLockOnActive( false );
-        node.assertTuple( tuple,
+        node.assertLeftTuple( tuple,
                           context,
                           workingMemory );
         assertEquals( 1,
@@ -626,7 +626,7 @@ public class AgendaTest extends DroolsTestCase {
         // even if lock-on-active is true, unless the agenda group is active the activation will still propagate
         rule.setLockOnActive( true );
         agendaGroup.setActive( false );
-        node.assertTuple( tuple,
+        node.assertLeftTuple( tuple,
                           context,
                           workingMemory );
         assertEquals( 2,
@@ -662,7 +662,7 @@ public class AgendaTest extends DroolsTestCase {
             }
         };
 
-        final ReteTuple tuple = new ReteTuple( new DefaultFactHandle( 1,
+        final LeftTuple tuple = new LeftTuple( new DefaultFactHandle( 1,
                                                                       "cheese" ) );
 
         // create a rule for each agendaGroup
@@ -719,7 +719,7 @@ public class AgendaTest extends DroolsTestCase {
                                                                         null );
 
         // Assert the tuple and check it was added to activation-group-0
-        node0.assertTuple( tuple,
+        node0.assertLeftTuple( tuple,
                            context0,
                            workingMemory );
         final ActivationGroup activationGroup0 = agenda.getActivationGroup( "activation-group-0" );
@@ -727,21 +727,21 @@ public class AgendaTest extends DroolsTestCase {
                       activationGroup0.size() );
 
         // Removing a tuple should remove the activation from the activation-group-0 again
-        node0.retractTuple( tuple,
+        node0.retractLeftTuple( tuple,
                             context0,
                             workingMemory );
         assertEquals( 0,
                       activationGroup0.size() );
 
         // Assert the tuple again and check it was added to activation-group-0
-        node0.assertTuple( tuple,
+        node0.assertLeftTuple( tuple,
                            context0,
                            workingMemory );
         assertEquals( 1,
                       activationGroup0.size() );
 
         // Assert another tuple and check it was added to activation-group-0
-        node1.assertTuple( tuple,
+        node1.assertLeftTuple( tuple,
                            context1,
                            workingMemory );
         assertEquals( 2,
@@ -772,16 +772,16 @@ public class AgendaTest extends DroolsTestCase {
 
         //-------------------
         // Now try a more complex scenario involving  two Xor Groups and one  rule not in a Group
-        node0.assertTuple( tuple,
+        node0.assertLeftTuple( tuple,
                            context0,
                            workingMemory );
-        node1.assertTuple( tuple,
+        node1.assertLeftTuple( tuple,
                            context1,
                            workingMemory );
-        node2.assertTuple( tuple,
+        node2.assertLeftTuple( tuple,
                            context2,
                            workingMemory );
-        node3.assertTuple( tuple,
+        node3.assertLeftTuple( tuple,
                            context3,
                            workingMemory );
 
@@ -900,27 +900,27 @@ public class AgendaTest extends DroolsTestCase {
         final RuleFlowGroup ruleFlowGroup1 = agenda.getRuleFlowGroup( "rule-flow-group-1" );
         final RuleFlowGroup ruleFlowGroup2 = agenda.getRuleFlowGroup( "rule-flow-group-2" );
 
-        final ReteTuple tuple0 = new ReteTuple( new DefaultFactHandle( 1,
+        final LeftTuple tuple0 = new LeftTuple( new DefaultFactHandle( 1,
                                                                        "cheese" ) );
-        node0.assertTuple( tuple0,
+        node0.assertLeftTuple( tuple0,
                            context0,
                            workingMemory );
 
-        final ReteTuple tuple1 = new ReteTuple( new DefaultFactHandle( 1,
+        final LeftTuple tuple1 = new LeftTuple( new DefaultFactHandle( 1,
                                                                        "cheese" ) );
-        node0.assertTuple( tuple1,
+        node0.assertLeftTuple( tuple1,
                            context0,
                            workingMemory );
 
-        final ReteTuple tuple2 = new ReteTuple( new DefaultFactHandle( 1,
+        final LeftTuple tuple2 = new LeftTuple( new DefaultFactHandle( 1,
                                                                        "cheese" ) );
-        node1.assertTuple( tuple2,
+        node1.assertLeftTuple( tuple2,
                            context0,
                            workingMemory );
 
-        final ReteTuple tuple3 = new ReteTuple( new DefaultFactHandle( 1,
+        final LeftTuple tuple3 = new LeftTuple( new DefaultFactHandle( 1,
                                                                        "cheese" ) );
-        node2.assertTuple( tuple3,
+        node2.assertLeftTuple( tuple3,
                            context0,
                            workingMemory );
 
@@ -1039,9 +1039,9 @@ public class AgendaTest extends DroolsTestCase {
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory w) {
                 // activate rule1
-                final ReteTuple tuple1 = new ReteTuple( new DefaultFactHandle( 1,
+                final LeftTuple tuple1 = new LeftTuple( new DefaultFactHandle( 1,
                                                                                "cheese" ) );
-                node1.assertTuple( tuple1,
+                node1.assertLeftTuple( tuple1,
                                    context0,
                                    workingMemory );
             }
@@ -1067,9 +1067,9 @@ public class AgendaTest extends DroolsTestCase {
         final RuleFlowGroup ruleFlowGroup0 = agenda.getRuleFlowGroup( "rule-flow-group-0" );
 
         // Create one activation for rule0 only
-        final ReteTuple tuple0 = new ReteTuple( new DefaultFactHandle( 1,
+        final LeftTuple tuple0 = new LeftTuple( new DefaultFactHandle( 1,
                                                                        "cheese" ) );
-        node0.assertTuple( tuple0,
+        node0.assertLeftTuple( tuple0,
                            context0,
                            workingMemory );
 
@@ -1145,7 +1145,7 @@ public class AgendaTest extends DroolsTestCase {
                                                                         rule1,
                                                                         null );
 
-        final ReteTuple tuple1 = new ReteTuple( new DefaultFactHandle( 1,
+        final LeftTuple tuple1 = new LeftTuple( new DefaultFactHandle( 1,
                                                                        "cheese" ) );
 
         // create rule0
@@ -1155,7 +1155,7 @@ public class AgendaTest extends DroolsTestCase {
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory w) {
                 // deactivate rule1
-                node1.retractTuple( tuple1,
+                node1.retractLeftTuple( tuple1,
                                     context0,
                                     workingMemory );
             }
@@ -1182,13 +1182,13 @@ public class AgendaTest extends DroolsTestCase {
         final RuleFlowGroup ruleFlowGroup0 = agenda.getRuleFlowGroup( "rule-flow-group-0" );
 
         // Create an activation for both rules
-        final ReteTuple tuple0 = new ReteTuple( new DefaultFactHandle( 1,
+        final LeftTuple tuple0 = new LeftTuple( new DefaultFactHandle( 1,
                                                                        "cheese" ) );
-        node0.assertTuple( tuple0,
+        node0.assertLeftTuple( tuple0,
                            context0,
                            workingMemory );
 
-        node1.assertTuple( tuple1,
+        node1.assertLeftTuple( tuple1,
                            context0,
                            workingMemory );
 
@@ -1263,14 +1263,14 @@ public class AgendaTest extends DroolsTestCase {
                                                                         null );
 
         // Create two activation for this rule
-        final ReteTuple tuple0 = new ReteTuple( new DefaultFactHandle( 1,
+        final LeftTuple tuple0 = new LeftTuple( new DefaultFactHandle( 1,
                                                                        "cheese" ) );
-        node0.assertTuple( tuple0,
+        node0.assertLeftTuple( tuple0,
                            context0,
                            workingMemory );
-        final ReteTuple tuple1 = new ReteTuple( new DefaultFactHandle( 1,
+        final LeftTuple tuple1 = new LeftTuple( new DefaultFactHandle( 1,
                                                                        "cheese" ) );
-        node0.assertTuple( tuple1,
+        node0.assertLeftTuple( tuple1,
                            context0,
                            workingMemory );
 
@@ -1362,9 +1362,9 @@ public class AgendaTest extends DroolsTestCase {
                                                                         null );
 
         // Create an activation for this rule
-        final ReteTuple tuple0 = new ReteTuple( new DefaultFactHandle( 1,
+        final LeftTuple tuple0 = new LeftTuple( new DefaultFactHandle( 1,
                                                                        "cheese" ) );
-        node0.assertTuple( tuple0,
+        node0.assertLeftTuple( tuple0,
                            context0,
                            workingMemory );
 
@@ -1396,9 +1396,9 @@ public class AgendaTest extends DroolsTestCase {
         assertFalse( ruleFlowGroup0.isActive() );
 
         // Add another activation and activate RuleFlowGroup again
-        final ReteTuple tuple1 = new ReteTuple( new DefaultFactHandle( 1,
+        final LeftTuple tuple1 = new LeftTuple( new DefaultFactHandle( 1,
                                                                        "cheese" ) );
-        node0.assertTuple( tuple1,
+        node0.assertLeftTuple( tuple1,
                            context0,
                            workingMemory );
         agenda.activateRuleFlowGroup( "rule-flow-group-0" );
@@ -1418,9 +1418,9 @@ public class AgendaTest extends DroolsTestCase {
         assertFalse( ruleFlowGroup0.isActive() );
 
         // A new activation should now be added to the RuleFlowGroup but not to the agenda
-        final ReteTuple tuple2 = new ReteTuple( new DefaultFactHandle( 1,
+        final LeftTuple tuple2 = new LeftTuple( new DefaultFactHandle( 1,
                                                                        "cheese" ) );
-        node0.assertTuple( tuple2,
+        node0.assertLeftTuple( tuple2,
                            context0,
                            workingMemory );
         assertEquals( 1,
@@ -1493,7 +1493,7 @@ public class AgendaTest extends DroolsTestCase {
 
         final RuleFlowGroupImpl ruleFlowGroup = (RuleFlowGroupImpl) agenda.getRuleFlowGroup( "rule-flow-group-0" );
 
-        final ReteTuple tuple = new ReteTuple( new DefaultFactHandle( 1,
+        final LeftTuple tuple = new LeftTuple( new DefaultFactHandle( 1,
                                                                       "cheese" ) );
 
         // create a rule for the agendaGroup
@@ -1514,7 +1514,7 @@ public class AgendaTest extends DroolsTestCase {
         rule.setLockOnActive( true );
         ruleFlowGroup.setAutoDeactivate( false );
         ruleFlowGroup.setActive( true );
-        node.assertTuple( tuple,
+        node.assertLeftTuple( tuple,
                           context,
                           workingMemory );
         // activation should be ignored
@@ -1523,7 +1523,7 @@ public class AgendaTest extends DroolsTestCase {
 
         // lock-on-active is now false so activation should propagate
         rule.setLockOnActive( false );
-        node.assertTuple( tuple,
+        node.assertLeftTuple( tuple,
                           context,
                           workingMemory );
         assertEquals( 1,
@@ -1532,7 +1532,7 @@ public class AgendaTest extends DroolsTestCase {
         // even if lock-on-active is true, unless the agenda group is active the activation will still propagate
         rule.setLockOnActive( true );
         ruleFlowGroup.setActive( false );
-        node.assertTuple( tuple,
+        node.assertLeftTuple( tuple,
                           context,
                           workingMemory );
         assertEquals( 2,
@@ -1565,7 +1565,7 @@ public class AgendaTest extends DroolsTestCase {
             }
         };
 
-        final ReteTuple tuple = new ReteTuple( new DefaultFactHandle( 1,
+        final LeftTuple tuple = new LeftTuple( new DefaultFactHandle( 1,
                                                                       "cheese" ) );
 
         // create a rule for each agendaGroup
@@ -1642,7 +1642,7 @@ public class AgendaTest extends DroolsTestCase {
         assertEquals( 0,
                       agenda.focusStackSize() );
 
-        node0.assertTuple( tuple,
+        node0.assertLeftTuple( tuple,
                            context0,
                            workingMemory );
 
@@ -1653,7 +1653,7 @@ public class AgendaTest extends DroolsTestCase {
         // check main got the tuple
         assertEquals( 1,
                       agenda.getFocus().size() );
-        node2.assertTuple( tuple,
+        node2.assertLeftTuple( tuple,
                            context2,
                            workingMemory );
 
@@ -1670,7 +1670,7 @@ public class AgendaTest extends DroolsTestCase {
                       agenda.agendaSize() );
 
         // put another one on agendaGroup 1
-        node2.assertTuple( tuple,
+        node2.assertLeftTuple( tuple,
                            context2,
                            workingMemory );
 
@@ -1696,14 +1696,14 @@ public class AgendaTest extends DroolsTestCase {
                       agenda.getFocus().size() );
 
         // add to agendaGroup2
-        node3.assertTuple( tuple,
+        node3.assertLeftTuple( tuple,
                            context3,
                            workingMemory );
 
         assertEquals( 1,
                       agenda.getFocus().size() );
 
-        node3.assertTuple( tuple,
+        node3.assertLeftTuple( tuple,
                            context3,
                            workingMemory );
 

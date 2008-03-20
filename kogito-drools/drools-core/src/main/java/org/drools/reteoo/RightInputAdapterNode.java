@@ -44,17 +44,17 @@ import java.io.IOException;
  */
 public class RightInputAdapterNode extends ObjectSource
     implements
-    TupleSinkNode,
+    LeftTupleSinkNode,
     NodeMemory {
 
     private static final long serialVersionUID = 400L;
 
-    private TupleSource tupleSource;
+    private LeftTupleSource tupleSource;
 
     protected boolean          tupleMemoryEnabled;
 
-    private TupleSinkNode       previousTupleSinkNode;
-    private TupleSinkNode       nextTupleSinkNode;
+    private LeftTupleSinkNode       previousTupleSinkNode;
+    private LeftTupleSinkNode       nextTupleSinkNode;
 
     public RightInputAdapterNode() {
     }
@@ -69,7 +69,7 @@ public class RightInputAdapterNode extends ObjectSource
      *      The <code>TupleSource</code> which propagates the received <code>ReteTuple</code>
      */
     public RightInputAdapterNode(final int id,
-                                 final TupleSource source,
+                                 final LeftTupleSource source,
                                  final BuildContext context) {
         super( id );
         this.tupleSource = source;
@@ -78,10 +78,10 @@ public class RightInputAdapterNode extends ObjectSource
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         super.readExternal(in);
-        tupleSource = (TupleSource)in.readObject();
+        tupleSource = (LeftTupleSource)in.readObject();
         tupleMemoryEnabled = in.readBoolean();
-        previousTupleSinkNode = (TupleSinkNode)in.readObject();
-        nextTupleSinkNode = (TupleSinkNode)in.readObject();
+        previousTupleSinkNode = (LeftTupleSinkNode)in.readObject();
+        nextTupleSinkNode = (LeftTupleSinkNode)in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -110,7 +110,7 @@ public class RightInputAdapterNode extends ObjectSource
      * @param workingMemory
      *            the <code>WorkingMemory</code> session.
      */
-    public void assertTuple(final ReteTuple tuple,
+    public void assertLeftTuple(final LeftTuple tuple,
                             final PropagationContext context,
                             final InternalWorkingMemory workingMemory) {
 
@@ -134,7 +134,7 @@ public class RightInputAdapterNode extends ObjectSource
      * Retracts the corresponding tuple by retrieving and retracting
      * the fact created for it
      */
-    public void retractTuple(final ReteTuple tuple,
+    public void retractLeftTuple(final LeftTuple tuple,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
 
@@ -207,11 +207,11 @@ public class RightInputAdapterNode extends ObjectSource
         }
     }
 
-    public boolean isTupleMemoryEnabled() {
+    public boolean isLeftTupleMemoryEnabled() {
         return tupleMemoryEnabled;
     }
 
-    public void setTupleMemoryEnabled(boolean tupleMemoryEnabled) {
+    public void setLeftTupleMemoryEnabled(boolean tupleMemoryEnabled) {
         this.tupleMemoryEnabled = tupleMemoryEnabled;
     }
 
@@ -220,7 +220,7 @@ public class RightInputAdapterNode extends ObjectSource
      * @return
      *      The next TupleSinkNode
      */
-    public TupleSinkNode getNextTupleSinkNode() {
+    public LeftTupleSinkNode getNextLeftTupleSinkNode() {
         return this.nextTupleSinkNode;
     }
 
@@ -229,7 +229,7 @@ public class RightInputAdapterNode extends ObjectSource
      * @param next
      *      The next TupleSinkNode
      */
-    public void setNextTupleSinkNode(final TupleSinkNode next) {
+    public void setNextLeftTupleSinkNode(final LeftTupleSinkNode next) {
         this.nextTupleSinkNode = next;
     }
 
@@ -238,7 +238,7 @@ public class RightInputAdapterNode extends ObjectSource
      * @return
      *      The previous TupleSinkNode
      */
-    public TupleSinkNode getPreviousTupleSinkNode() {
+    public LeftTupleSinkNode getPreviousLeftTupleSinkNode() {
         return this.previousTupleSinkNode;
     }
 
@@ -247,7 +247,7 @@ public class RightInputAdapterNode extends ObjectSource
      * @param previous
      *      The previous TupleSinkNode
      */
-    public void setPreviousTupleSinkNode(final TupleSinkNode previous) {
+    public void setPreviousLeftTupleSinkNode(final LeftTupleSinkNode previous) {
         this.previousTupleSinkNode = previous;
     }
 

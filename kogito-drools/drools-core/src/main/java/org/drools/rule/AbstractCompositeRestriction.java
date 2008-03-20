@@ -9,7 +9,7 @@ import java.io.ObjectOutput;
 
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.reteoo.ReteTuple;
+import org.drools.reteoo.LeftTuple;
 import org.drools.spi.Restriction;
 
 public abstract class AbstractCompositeRestriction
@@ -145,7 +145,7 @@ public abstract class AbstractCompositeRestriction
         }
 
         public void updateFromTuple(final InternalWorkingMemory workingMemory,
-                                    final ReteTuple tuple) {
+                                    final LeftTuple tuple) {
             for ( int i = 0, length = this.contextEntries.length; i < length; i++ ) {
                 this.contextEntries[i].updateFromTuple( workingMemory,
                                                         tuple );

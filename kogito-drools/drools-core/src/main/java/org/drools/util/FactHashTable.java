@@ -5,7 +5,7 @@ package org.drools.util;
 
 import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.FactHandleMemory;
-import org.drools.reteoo.ReteTuple;
+import org.drools.reteoo.LeftTuple;
 
 public class FactHashTable extends AbstractHashTable
     implements
@@ -23,7 +23,7 @@ public class FactHashTable extends AbstractHashTable
                loadFactor );
     }
 
-    public Iterator iterator(final ReteTuple tuple) {
+    public Iterator iterator(final LeftTuple tuple) {
         return iterator();
     }
 

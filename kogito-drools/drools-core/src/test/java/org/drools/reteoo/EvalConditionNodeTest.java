@@ -106,20 +106,20 @@ public class EvalConditionNodeTest extends DroolsTestCase {
         // Create the Tuple
         final DefaultFactHandle f0 = new DefaultFactHandle( 0,
                                                             "stilton" );
-        final ReteTuple tuple0 = new ReteTuple( f0 );
+        final LeftTuple tuple0 = new LeftTuple( f0 );
 
         // Tuple should pass and propagate 
-        node.assertTuple( tuple0,
+        node.assertLeftTuple( tuple0,
                           this.context,
                           this.workingMemory );
 
         // Create the Tuple
         final DefaultFactHandle f1 = new DefaultFactHandle( 1,
                                                             "cheddar" );
-        final ReteTuple tuple1 = new ReteTuple( f1 );
+        final LeftTuple tuple1 = new LeftTuple( f1 );
 
         // Tuple should pass and propagate 
-        node.assertTuple( tuple1,
+        node.assertLeftTuple( tuple1,
                           this.context,
                           this.workingMemory );
 
@@ -152,10 +152,10 @@ public class EvalConditionNodeTest extends DroolsTestCase {
         // Create the Tuple
         final DefaultFactHandle f0 = new DefaultFactHandle( 0,
                                                             "stilton" );
-        final ReteTuple tuple0 = new ReteTuple( f0 );
+        final LeftTuple tuple0 = new LeftTuple( f0 );
 
         // Tuple should pass and propagate 
-        node.assertTuple( tuple0,
+        node.assertLeftTuple( tuple0,
                           this.context,
                           this.workingMemory );
 
@@ -163,10 +163,10 @@ public class EvalConditionNodeTest extends DroolsTestCase {
         // Create the Tuple
         final DefaultFactHandle f1 = new DefaultFactHandle( 1,
                                                             "cheddar" );
-        final ReteTuple tuple1 = new ReteTuple( f1 );
+        final LeftTuple tuple1 = new LeftTuple( f1 );
 
         // Tuple should pass and propagate 
-        node.assertTuple( tuple1,
+        node.assertLeftTuple( tuple1,
                           this.context,
                           this.workingMemory );
 
@@ -183,7 +183,7 @@ public class EvalConditionNodeTest extends DroolsTestCase {
                       sink.getAsserted().size() );
 
         // Now test that the fact is retracted correctly
-        node.retractTuple( tuple0,
+        node.retractLeftTuple( tuple0,
                            this.context,
                            this.workingMemory );
 
@@ -198,7 +198,7 @@ public class EvalConditionNodeTest extends DroolsTestCase {
                       sink.getRetracted().size() );
 
         // Now test that the fact is retracted correctly
-        node.retractTuple( tuple1,
+        node.retractLeftTuple( tuple1,
                            this.context,
                            this.workingMemory );
 
@@ -226,20 +226,20 @@ public class EvalConditionNodeTest extends DroolsTestCase {
         // Create the Tuple
         final DefaultFactHandle f0 = new DefaultFactHandle( 0,
                                                             "stilton" );
-        final ReteTuple tuple0 = new ReteTuple( f0 );
+        final LeftTuple tuple0 = new LeftTuple( f0 );
 
         // Tuple should fail and not propagate
-        node.assertTuple( tuple0,
+        node.assertLeftTuple( tuple0,
                           this.context,
                           this.workingMemory );
 
         // Create the Tuple
         final DefaultFactHandle f1 = new DefaultFactHandle( 1,
                                                             "cheddar" );
-        final ReteTuple tuple1 = new ReteTuple( f1 );
+        final LeftTuple tuple1 = new LeftTuple( f1 );
 
         // Tuple should fail and not propagate 
-        node.assertTuple( tuple1,
+        node.assertLeftTuple( tuple1,
                           this.context,
                           this.workingMemory );
 
@@ -281,9 +281,9 @@ public class EvalConditionNodeTest extends DroolsTestCase {
         final DefaultFactHandle f0 = new DefaultFactHandle( 0,
                                                             "string0" );
 
-        final ReteTuple tuple1 = new ReteTuple( f0 );
+        final LeftTuple tuple1 = new LeftTuple( f0 );
 
-        node.assertTuple( tuple1,
+        node.assertLeftTuple( tuple1,
                           this.context,
                           workingMemory );
 

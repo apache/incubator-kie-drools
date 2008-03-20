@@ -31,7 +31,7 @@ import org.drools.reteoo.LeftInputAdapterNode;
 import org.drools.reteoo.NotNode;
 import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.RightInputAdapterNode;
-import org.drools.reteoo.TupleSource;
+import org.drools.reteoo.LeftTupleSource;
 import org.drools.rule.GroupElement;
 import org.drools.rule.RuleConditionElement;
 
@@ -115,7 +115,7 @@ public class GroupElementBuilder
                 // if a previous object source was bound, but no tuple source
                 if ( context.getObjectSource() != null && context.getTupleSource() == null ) {
                     // adapt it to a Tuple source
-                    context.setTupleSource( (TupleSource) utils.attachNode( context,
+                    context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
                                                                             new LeftInputAdapterNode( context.getNextId(),
                                                                                                       context.getObjectSource(),
                                                                                                       context ) ) );
@@ -130,7 +130,7 @@ public class GroupElementBuilder
                                                                                             context.getBetaconstraints(),
                                                                                             false );
                     
-                    context.setTupleSource( (TupleSource) utils.attachNode( context,
+                    context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
                                                                             new JoinNode( context.getNextId(),
                                                                                           context.getTupleSource(),
                                                                                           context.getObjectSource(),
@@ -198,7 +198,7 @@ public class GroupElementBuilder
 
             // NOT must save some context info to restore it later
             final int currentPatternIndex = context.getCurrentPatternOffset();
-            final TupleSource tupleSource = context.getTupleSource();
+            final LeftTupleSource tupleSource = context.getTupleSource();
 
             // get child
             final RuleConditionElement child = (RuleConditionElement) not.getChildren().get( 0 );
@@ -237,7 +237,7 @@ public class GroupElementBuilder
             // then attach the NOT node. It will work both as a simple not node
             // or as subnetwork join node as the context was set appropriatelly
             // in each case
-            context.setTupleSource( (TupleSource) utils.attachNode( context,
+            context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
                                                                     new NotNode( context.getNextId(),
                                                                                  context.getTupleSource(),
                                                                                  context.getObjectSource(),
@@ -275,7 +275,7 @@ public class GroupElementBuilder
 
             // EXISTS must save some context info to restore it later
             final int currentPatternIndex = context.getCurrentPatternOffset();
-            final TupleSource tupleSource = context.getTupleSource();
+            final LeftTupleSource tupleSource = context.getTupleSource();
 
             // get child
             final RuleConditionElement child = (RuleConditionElement) exists.getChildren().get( 0 );
@@ -315,7 +315,7 @@ public class GroupElementBuilder
             // then attach the EXISTS node. It will work both as a simple exists node
             // or as subnetwork join node as the context was set appropriatelly
             // in each case
-            context.setTupleSource( (TupleSource) utils.attachNode( context,
+            context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
                                                                     new ExistsNode( context.getNextId(),
                                                                                     context.getTupleSource(),
                                                                                     context.getObjectSource(),

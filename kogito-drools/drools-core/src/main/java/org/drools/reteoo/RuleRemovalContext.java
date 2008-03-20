@@ -59,7 +59,7 @@ public class RuleRemovalContext
      *
      * @param node
      */
-    public void visitTupleSource( TupleSource node ) {
+    public void visitTupleSource( LeftTupleSource node ) {
         this.visitedNodes.put( new Integer(node.getId()), node );
     }
 
@@ -70,7 +70,7 @@ public class RuleRemovalContext
      * @param node
      * @return
      */
-    public boolean alreadyVisited( TupleSource node ) {
+    public boolean alreadyVisited( LeftTupleSource node ) {
         return this.visitedNodes.containsKey( new Integer( node.getId() ) );
     }
 

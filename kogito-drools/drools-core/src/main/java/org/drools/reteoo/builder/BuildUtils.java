@@ -35,8 +35,8 @@ import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.ObjectSink;
 import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.ObjectTypeNode;
-import org.drools.reteoo.TupleSink;
-import org.drools.reteoo.TupleSource;
+import org.drools.reteoo.LeftTupleSink;
+import org.drools.reteoo.LeftTupleSource;
 import org.drools.rule.Declaration;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.RuleConditionElement;
@@ -106,8 +106,8 @@ public class BuildUtils {
                 }
             }
         } else if( isSharingEnabledForNode( context, candidate ) ) {
-            if ( (context.getTupleSource() != null) && ( candidate instanceof TupleSink ) ) {
-                TupleSink[] sinks = context.getTupleSource().getSinkPropagator().getSinks(); 
+            if ( (context.getTupleSource() != null) && ( candidate instanceof LeftTupleSink ) ) {
+                LeftTupleSink[] sinks = context.getTupleSource().getSinkPropagator().getSinks(); 
                 for( int i = 0; i < sinks.length; i++ ) {
                     if( candidate.equals( sinks[i] ) ) {
                         node = (BaseNode) sinks[i];
@@ -155,7 +155,7 @@ public class BuildUtils {
      */
     private boolean isSharingEnabledForNode(final BuildContext context,
                                             final BaseNode node) {
-        if ( node instanceof TupleSource ) {
+        if ( node instanceof LeftTupleSource ) {
             return context.getRuleBase().getConfiguration().isShareBetaNodes();
         } else if ( node instanceof ObjectSource ) {
             return context.getRuleBase().getConfiguration().isShareAlphaNodes();

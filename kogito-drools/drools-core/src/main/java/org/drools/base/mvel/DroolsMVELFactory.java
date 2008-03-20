@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.WorkingMemory;
-import org.drools.reteoo.ReteTuple;
+import org.drools.reteoo.LeftTuple;
 import org.drools.rule.Declaration;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.Tuple;
@@ -153,7 +153,7 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
                            final WorkingMemory workingMemory,
                            final Map variables) {
         if ( tuple != null ) {
-            this.tupleObjects = ((ReteTuple) tuple).toObjectArray();
+            this.tupleObjects = ((LeftTuple) tuple).toObjectArray();
         }
         this.knowledgeHelper = knowledgeHelper;
         this.object = object;

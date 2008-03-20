@@ -40,7 +40,7 @@ import org.drools.spi.PropagationContext;
  */
 public final class QueryTerminalNode extends BaseNode
     implements
-    TupleSinkNode,
+    LeftTupleSinkNode,
     NodeMemory,
     TerminalNode {
     // ------------------------------------------------------------
@@ -54,11 +54,11 @@ public final class QueryTerminalNode extends BaseNode
     /** The rule to invoke upon match. */
     private Rule         rule;
     private GroupElement subrule;
-    private TupleSource  tupleSource;
+    private LeftTupleSource  tupleSource;
     private boolean          tupleMemoryEnabled;
 
-    private TupleSinkNode      previousTupleSinkNode;
-    private TupleSinkNode      nextTupleSinkNode;
+    private LeftTupleSinkNode      previousTupleSinkNode;
+    private LeftTupleSinkNode      nextTupleSinkNode;
 
     // ------------------------------------------------------------
     // Constructors
@@ -75,7 +75,7 @@ public final class QueryTerminalNode extends BaseNode
      *            The rule.
      */
     public QueryTerminalNode(final int id,
-                             final TupleSource source,
+                             final LeftTupleSource source,
                              final Rule rule,
                              final GroupElement subrule) {
         super( id );
@@ -92,10 +92,10 @@ public final class QueryTerminalNode extends BaseNode
         super.readExternal(in);
         rule                    = (Rule)in.readObject();
         subrule                 = (GroupElement)in.readObject();
-        tupleSource             = (TupleSource)in.readObject();
+        tupleSource             = (LeftTupleSource)in.readObject();
         tupleMemoryEnabled      = in.readBoolean();
-        previousTupleSinkNode   = (TupleSinkNode)in.readObject();
-        nextTupleSinkNode       = (TupleSinkNode)in.readObject();
+        previousTupleSinkNode   = (LeftTupleSinkNode)in.readObject();
+        nextTupleSinkNode       = (LeftTupleSinkNode)in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -131,7 +131,7 @@ public final class QueryTerminalNode extends BaseNode
      * @throws AssertionException
      *             If an error occurs while asserting.
      */
-    public void assertTuple(final ReteTuple tuple,
+    public void assertLeftTuple(final LeftTuple tuple,
                             final PropagationContext context,
                             final InternalWorkingMemory workingMemory) {
         final LinkedList list = (LinkedList) workingMemory.getNodeMemory( this );
@@ -142,7 +142,7 @@ public final class QueryTerminalNode extends BaseNode
         list.add( tuple );
     }
 
-    public void retractTuple(final ReteTuple tuple,
+    public void retractLeftTuple(final LeftTuple tuple,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
     }
@@ -207,11 +207,11 @@ public final class QueryTerminalNode extends BaseNode
         return new LinkedList();
     }
 
-    public boolean isTupleMemoryEnabled() {
+    public boolean isLeftTupleMemoryEnabled() {
         return tupleMemoryEnabled;
     }
 
-    public void setTupleMemoryEnabled(boolean tupleMemoryEnabled) {
+    public void setLeftTupleMemoryEnabled(boolean tupleMemoryEnabled) {
         this.tupleMemoryEnabled = tupleMemoryEnabled;
     }
 
@@ -227,7 +227,7 @@ public final class QueryTerminalNode extends BaseNode
      * @return
      *      The previous TupleSinkNode
      */
-    public TupleSinkNode getPreviousTupleSinkNode() {
+    public LeftTupleSinkNode getPreviousLeftTupleSinkNode() {
         return this.previousTupleSinkNode;
     }
 
@@ -236,7 +236,7 @@ public final class QueryTerminalNode extends BaseNode
      * @param previous
      *      The previous TupleSinkNode
      */
-    public void setPreviousTupleSinkNode(final TupleSinkNode previous) {
+    public void setPreviousLeftTupleSinkNode(final LeftTupleSinkNode previous) {
         this.previousTupleSinkNode = previous;
     }
 
@@ -245,7 +245,7 @@ public final class QueryTerminalNode extends BaseNode
      * @return
      *      The next TupleSinkNode
      */
-    public TupleSinkNode getNextTupleSinkNode() {
+    public LeftTupleSinkNode getNextLeftTupleSinkNode() {
         return this.nextTupleSinkNode;
     }
 
@@ -254,7 +254,7 @@ public final class QueryTerminalNode extends BaseNode
      * @param next
      *      The next TupleSinkNode
      */
-    public void setNextTupleSinkNode(final TupleSinkNode next) {
+    public void setNextLeftTupleSinkNode(final LeftTupleSinkNode next) {
         this.nextTupleSinkNode = next;
     }
 

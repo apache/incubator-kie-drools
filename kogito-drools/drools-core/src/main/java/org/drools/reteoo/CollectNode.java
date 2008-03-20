@@ -43,7 +43,7 @@ import org.drools.util.ObjectHashMap.ObjectEntry;
  */
 public class CollectNode extends BetaNode
     implements
-    TupleSink,
+    LeftTupleSink,
     ObjectSink {
 
     private static final long                serialVersionUID = 400L;
@@ -75,7 +75,7 @@ public class CollectNode extends BetaNode
      *            The collect conditional element
      */
     public CollectNode(final int id,
-                       final TupleSource leftInput,
+                       final LeftTupleSource leftInput,
                        final ObjectSource rightInput,
                        final AlphaNodeFieldConstraint[] resultConstraints,
                        final BetaConstraints sourceBinder,
@@ -122,7 +122,7 @@ public class CollectNode extends BetaNode
      *  4.2. Propagate the tuple
      *
      */
-    public void assertTuple(final ReteTuple leftTuple,
+    public void assertLeftTuple(final LeftTuple leftTuple,
                             final PropagationContext context,
                             final InternalWorkingMemory workingMemory) {
 
@@ -154,7 +154,7 @@ public class CollectNode extends BetaNode
             if ( this.constraints.isAllowedCachedLeft( memory.betaMemory.getContext(),
                                                        handle ) ) {
                 if ( this.unwrapRightObject ) {
-                    handle = ((ReteTuple) handle.getObject()).getLastHandle();
+                    handle = ((LeftTuple) handle.getObject()).getLastHandle();
                 }
                 result.add( handle.getObject() );
             }
@@ -179,7 +179,7 @@ public class CollectNode extends BetaNode
             if ( this.resultsBinder.isAllowedCachedLeft( memory.resultsContext,
                                                          resultHandle ) ) {
                 colresult.propagated = true;
-                this.sink.propagateAssertTuple( leftTuple,
+                this.sink.propagateAssertLeftTuple( leftTuple,
                                                 resultHandle,
                                                 context,
                                                 workingMemory );
@@ -191,7 +191,7 @@ public class CollectNode extends BetaNode
     /**
      * @inheritDoc
      */
-    public void retractTuple(final ReteTuple leftTuple,
+    public void retractLeftTuple(final LeftTuple leftTuple,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
 
@@ -205,7 +205,7 @@ public class CollectNode extends BetaNode
         // if tuple was propagated
         if ( result.propagated ) {
 
-            this.sink.propagateRetractTuple( leftTuple,
+            this.sink.propagateRetractLeftTuple( leftTuple,
                                              handle,
                                              context,
                                              workingMemory );
@@ -243,7 +243,7 @@ public class CollectNode extends BetaNode
         // need to clone the tuples to avoid concurrent modification exceptions
         Entry[] tuples = memory.betaMemory.getTupleMemory().toArray();
         for ( int i = 0; i < tuples.length; i++ ) {
-            ReteTuple tuple = (ReteTuple) tuples[i];
+            LeftTuple tuple = (LeftTuple) tuples[i];
             if ( this.constraints.isAllowedCachedRight( memory.betaMemory.getContext(),
                                                         tuple ) ) {
                 this.modifyTuple( true,
@@ -279,7 +279,7 @@ public class CollectNode extends BetaNode
         // need to clone the tuples to avoid concurrent modification exceptions
         Entry[] tuples = memory.betaMemory.getTupleMemory().toArray();
         for ( int i = 0; i < tuples.length; i++ ) {
-            ReteTuple tuple = (ReteTuple) tuples[i];
+            LeftTuple tuple = (LeftTuple) tuples[i];
             if ( this.constraints.isAllowedCachedRight( memory.betaMemory.getContext(),
                                                         tuple ) ) {
 
@@ -304,7 +304,7 @@ public class CollectNode extends BetaNode
      * @param workingMemory
      */
     public void modifyTuple(final boolean isAssert,
-                            final ReteTuple leftTuple,
+                            final LeftTuple leftTuple,
                             InternalFactHandle handle,
                             final PropagationContext context,
                             final InternalWorkingMemory workingMemory) {
@@ -315,7 +315,7 @@ public class CollectNode extends BetaNode
 
         // if tuple was propagated
         if ( result.propagated ) {
-            this.sink.propagateRetractTuple( leftTuple,
+            this.sink.propagateRetractLeftTuple( leftTuple,
                                              result.handle,
                                              context,
                                              workingMemory );
@@ -324,7 +324,7 @@ public class CollectNode extends BetaNode
 
         // if there is a subnetwork, we need to unwrapp the object from inside the tuple
         if ( this.unwrapRightObject ) {
-            handle = ((ReteTuple) handle.getObject()).getLastHandle();
+            handle = ((LeftTuple) handle.getObject()).getLastHandle();
         }
 
         if ( context.getType() == PropagationContext.ASSERTION ) {
@@ -356,7 +356,7 @@ public class CollectNode extends BetaNode
             if ( this.resultsBinder.isAllowedCachedLeft( memory.resultsContext,
                                                          result.handle ) ) {
                 result.propagated = true;
-                this.sink.propagateAssertTuple( leftTuple,
+                this.sink.propagateAssertLeftTuple( leftTuple,
                                                 result.handle,
                                                 context,
                                                 workingMemory );
@@ -366,7 +366,7 @@ public class CollectNode extends BetaNode
         }
     }
 
-    public void updateSink(final TupleSink sink,
+    public void updateSink(final LeftTupleSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
         final CollectMemory memory = (CollectMemory) workingMemory.getNodeMemory( this );
@@ -375,7 +375,7 @@ public class CollectNode extends BetaNode
 
         for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
             CollectResult result = (CollectResult) entry.getValue();
-            sink.assertTuple( new ReteTuple( (ReteTuple) entry.getKey(),
+            sink.assertLeftTuple( new LeftTuple( (LeftTuple) entry.getKey(),
                                              result.handle ),
                               context,
                               workingMemory );

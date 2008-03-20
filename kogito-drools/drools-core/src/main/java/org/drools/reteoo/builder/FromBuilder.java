@@ -20,7 +20,7 @@ import java.util.Collections;
 
 import org.drools.common.BetaConstraints;
 import org.drools.reteoo.FromNode;
-import org.drools.reteoo.TupleSource;
+import org.drools.reteoo.LeftTupleSource;
 import org.drools.rule.From;
 import org.drools.rule.RuleConditionElement;
 import org.drools.spi.AlphaNodeFieldConstraint;
@@ -43,7 +43,7 @@ public class FromBuilder
 
         BetaConstraints betaConstraints = utils.createBetaNodeConstraint( context, context.getBetaconstraints(), true );
         
-        context.setTupleSource( (TupleSource) utils.attachNode( context,
+        context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
                                                                 new FromNode( context.getNextId(),
                                                                               from.getDataProvider(),
                                                                               context.getTupleSource(),

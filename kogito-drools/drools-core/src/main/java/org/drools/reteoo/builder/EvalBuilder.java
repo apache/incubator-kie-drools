@@ -17,7 +17,7 @@
 package org.drools.reteoo.builder;
 
 import org.drools.reteoo.EvalConditionNode;
-import org.drools.reteoo.TupleSource;
+import org.drools.reteoo.LeftTupleSource;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.RuleConditionElement;
 
@@ -39,7 +39,7 @@ public class EvalBuilder
         final EvalCondition eval = (EvalCondition) rce;
         utils.checkUnboundDeclarations( context,
                                         eval.getRequiredDeclarations() );
-        context.setTupleSource( (TupleSource) utils.attachNode( context,
+        context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
                                                                 new EvalConditionNode( context.getNextId(),
                                                                                        context.getTupleSource(),
                                                                                        eval,

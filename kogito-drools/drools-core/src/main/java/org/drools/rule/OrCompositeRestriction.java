@@ -2,7 +2,7 @@ package org.drools.rule;
 
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.reteoo.ReteTuple;
+import org.drools.reteoo.LeftTuple;
 import org.drools.spi.Extractor;
 import org.drools.spi.Restriction;
 
@@ -44,7 +44,7 @@ public class OrCompositeRestriction extends AbstractCompositeRestriction {
         return false;
     }
 
-    public boolean isAllowedCachedRight(final ReteTuple tuple,
+    public boolean isAllowedCachedRight(final LeftTuple tuple,
                                         final ContextEntry context) {
         CompositeContextEntry contextEntry = (CompositeContextEntry) context;
         for ( int i = 0, ilength = this.restrictions.length; i < ilength; i++ ) {

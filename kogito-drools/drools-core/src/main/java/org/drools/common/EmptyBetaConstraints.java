@@ -19,7 +19,7 @@ package org.drools.common;
 import org.drools.RuleBaseConfiguration;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.FactHandleMemory;
-import org.drools.reteoo.ReteTuple;
+import org.drools.reteoo.LeftTuple;
 import org.drools.rule.ContextEntry;
 import org.drools.util.FactHashTable;
 import org.drools.util.FactList;
@@ -59,7 +59,7 @@ public class EmptyBetaConstraints
      */
     public void updateFromTuple(final ContextEntry[] context,
                                 final InternalWorkingMemory workingMemory,
-                                final ReteTuple tuple) {
+                                final LeftTuple tuple) {
     }
 
     /* (non-Javadoc)
@@ -88,7 +88,7 @@ public class EmptyBetaConstraints
      * @see org.drools.common.BetaNodeConstraints#isAllowedCachedRight(org.drools.reteoo.ReteTuple)
      */
     public boolean isAllowedCachedRight(final ContextEntry[] context,
-                                        final ReteTuple tuple) {
+                                        final LeftTuple tuple) {
         return true;
     }
 

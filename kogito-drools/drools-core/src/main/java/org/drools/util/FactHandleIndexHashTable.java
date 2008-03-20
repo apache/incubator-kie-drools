@@ -5,7 +5,7 @@ package org.drools.util;
 
 import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.FactHandleMemory;
-import org.drools.reteoo.ReteTuple;
+import org.drools.reteoo.LeftTuple;
 import org.drools.util.TupleIndexHashTable.FieldIndexEntry;
 
 import java.io.ObjectInput;
@@ -89,7 +89,7 @@ public class FactHandleIndexHashTable extends AbstractHashTable
         throw new UnsupportedOperationException( "FieldIndexHashTable does not support  iterator()" );
     }
 
-    public Iterator iterator(final ReteTuple tuple) {
+    public Iterator iterator(final LeftTuple tuple) {
         if ( this.tupleValueIterator == null ) {
             this.tupleValueIterator = new FieldIndexHashTableIterator();
         }
@@ -237,7 +237,7 @@ public class FactHandleIndexHashTable extends AbstractHashTable
         return false;
     }
 
-    public FieldIndexEntry get(final ReteTuple tuple) {
+    public FieldIndexEntry get(final LeftTuple tuple) {
         //this.index.setCachedValue( tuple );
 
         final int hashCode = this.index.hashCodeOf( tuple );
@@ -393,7 +393,7 @@ public class FactHandleIndexHashTable extends AbstractHashTable
                                                                         object );
         }
 
-        public boolean matches(final ReteTuple tuple,
+        public boolean matches(final LeftTuple tuple,
                                final int tupleHashCode) {
             return this.hashCode == tupleHashCode && this.index.equal( this.first.getFactHandle().getObject(),
                                                                        tuple );

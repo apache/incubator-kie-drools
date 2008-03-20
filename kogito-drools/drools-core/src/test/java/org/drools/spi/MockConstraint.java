@@ -19,7 +19,7 @@ package org.drools.spi;
 import org.drools.WorkingMemory;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.reteoo.ReteTuple;
+import org.drools.reteoo.LeftTuple;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.Declaration;
 
@@ -86,7 +86,7 @@ public class MockConstraint
             }
 
             public void updateFromTuple(final InternalWorkingMemory workingMemory,
-                                        final ReteTuple tuple) {
+                                        final LeftTuple tuple) {
             }
 
             public void resetFactHandle() {
@@ -111,7 +111,7 @@ public class MockConstraint
         return this.isAllowed;
     }
 
-    public boolean isAllowedCachedRight(final ReteTuple tuple,
+    public boolean isAllowedCachedRight(final LeftTuple tuple,
                                         final ContextEntry context) {
         return this.isAllowed;
     }

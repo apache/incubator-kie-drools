@@ -28,9 +28,9 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.spi.PropagationContext;
 
-public class MockTupleSink extends TupleSource
+public class MockTupleSink extends LeftTupleSource
     implements
-    TupleSinkNode,
+    LeftTupleSinkNode,
     NodeMemory {
     /**
      * 
@@ -39,8 +39,8 @@ public class MockTupleSink extends TupleSource
     private final List        asserted         = new ArrayList();
     private final List        retracted        = new ArrayList();
 
-    private TupleSinkNode     previousTupleSinkNode;
-    private TupleSinkNode     nextTupleSinkNode;
+    private LeftTupleSinkNode     previousTupleSinkNode;
+    private LeftTupleSinkNode     nextTupleSinkNode;
 
     public MockTupleSink() {
         super( 0 );
@@ -50,14 +50,14 @@ public class MockTupleSink extends TupleSource
         super( id );
     }
 
-    public void assertTuple(final ReteTuple tuple,
+    public void assertLeftTuple(final LeftTuple tuple,
                             final PropagationContext context,
                             final InternalWorkingMemory workingMemory) {
         this.asserted.add( new Object[]{tuple, context, workingMemory} );
 
     }
 
-    public void retractTuple(final ReteTuple tuple,
+    public void retractLeftTuple(final LeftTuple tuple,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
         this.retracted.add( new Object[]{tuple, context, workingMemory} );
@@ -89,7 +89,7 @@ public class MockTupleSink extends TupleSource
 
     }
 
-    public void updateSink(final TupleSink sink,
+    public void updateSink(final LeftTupleSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) throws FactException {
         // TODO Auto-generated method stub
@@ -108,7 +108,7 @@ public class MockTupleSink extends TupleSource
     }
 
     public List getPropagatedTuples(final ReteooWorkingMemory workingMemory,
-                                    final TupleSink sink) {
+                                    final LeftTupleSink sink) {
         // TODO Auto-generated method stub
         return Collections.EMPTY_LIST;
     }
@@ -118,7 +118,7 @@ public class MockTupleSink extends TupleSource
      * @return
      *      The next TupleSinkNode
      */
-    public TupleSinkNode getNextTupleSinkNode() {
+    public LeftTupleSinkNode getNextLeftTupleSinkNode() {
         return this.nextTupleSinkNode;
     }
 
@@ -127,7 +127,7 @@ public class MockTupleSink extends TupleSource
      * @param next
      *      The next TupleSinkNode
      */
-    public void setNextTupleSinkNode(final TupleSinkNode next) {
+    public void setNextLeftTupleSinkNode(final LeftTupleSinkNode next) {
         this.nextTupleSinkNode = next;
     }
 
@@ -136,7 +136,7 @@ public class MockTupleSink extends TupleSource
      * @return
      *      The previous TupleSinkNode
      */
-    public TupleSinkNode getPreviousTupleSinkNode() {
+    public LeftTupleSinkNode getPreviousLeftTupleSinkNode() {
         return this.previousTupleSinkNode;
     }
 
@@ -145,16 +145,16 @@ public class MockTupleSink extends TupleSource
      * @param previous
      *      The previous TupleSinkNode
      */
-    public void setPreviousTupleSinkNode(final TupleSinkNode previous) {
+    public void setPreviousLeftTupleSinkNode(final LeftTupleSinkNode previous) {
         this.previousTupleSinkNode = previous;
     }
 
-    public boolean isTupleMemoryEnabled() {
+    public boolean isLeftTupleMemoryEnabled() {
         // TODO Auto-generated method stub
         return false;
     }
 
-    public void setTupleMemoryEnabled(boolean tupleMemoryEnabled) {
+    public void setLeftTupleMemoryEnabled(boolean tupleMemoryEnabled) {
         // TODO Auto-generated method stub
         
     }

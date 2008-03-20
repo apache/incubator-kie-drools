@@ -20,7 +20,7 @@ import org.drools.common.BaseNode;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.PropagationContext;
 
-public class MockTupleSource extends TupleSource {
+public class MockTupleSource extends LeftTupleSource {
 
     /**
      * 
@@ -47,7 +47,7 @@ public class MockTupleSource extends TupleSource {
         return this.updated;
     }
 
-    public void updateSink(final TupleSink sink,
+    public void updateSink(final LeftTupleSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
         this.updated++;

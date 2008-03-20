@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.FactHandleMemory;
-import org.drools.reteoo.ReteTuple;
+import org.drools.reteoo.LeftTuple;
 
 public class FactList
     implements
@@ -20,7 +20,7 @@ public class FactList
         this.list = new LinkedList();
     }
 
-    public Iterator iterator(final ReteTuple tuple) {
+    public Iterator iterator(final LeftTuple tuple) {
         return iterator();
     }
 

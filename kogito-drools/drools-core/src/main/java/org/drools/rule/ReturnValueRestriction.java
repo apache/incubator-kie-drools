@@ -26,7 +26,7 @@ import org.drools.RuntimeDroolsException;
 import org.drools.WorkingMemory;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.reteoo.ReteTuple;
+import org.drools.reteoo.LeftTuple;
 import org.drools.spi.Evaluator;
 import org.drools.spi.Extractor;
 import org.drools.spi.FieldExtractor;
@@ -214,7 +214,7 @@ public class ReturnValueRestriction
         throw new UnsupportedOperationException( "does not support method call isAllowed(Object object, InternalWorkingMemory workingMemoiry)" );
     }
 
-    public boolean isAllowedCachedRight(final ReteTuple tuple,
+    public boolean isAllowedCachedRight(final LeftTuple tuple,
                                         final ContextEntry context) {
         throw new UnsupportedOperationException( "does not support method call isAllowed(Object object, InternalWorkingMemory workingMemoiry)" );
     }
@@ -317,7 +317,7 @@ public class ReturnValueRestriction
 
         public FieldExtractor        fieldExtractor;
         public InternalFactHandle    handle;
-        public ReteTuple             leftTuple;
+        public LeftTuple             leftTuple;
         public InternalWorkingMemory workingMemory;
         public Declaration[]         previousDeclarations;
         public Declaration[]         localDeclarations;
@@ -340,7 +340,7 @@ public class ReturnValueRestriction
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
             fieldExtractor  = (FieldExtractor)in.readObject();
             handle  = (InternalFactHandle)in.readObject();
-            leftTuple  = (ReteTuple)in.readObject();
+            leftTuple  = (LeftTuple)in.readObject();
             workingMemory  = (InternalWorkingMemory)in.readObject();
             previousDeclarations  = (Declaration[])in.readObject();
             localDeclarations  = (Declaration[])in.readObject();
@@ -374,7 +374,7 @@ public class ReturnValueRestriction
         }
 
         public void updateFromTuple(final InternalWorkingMemory workingMemory,
-                                    final ReteTuple tuple) {
+                                    final LeftTuple tuple) {
             this.workingMemory = workingMemory;
             this.leftTuple = tuple;
         }
@@ -389,7 +389,7 @@ public class ReturnValueRestriction
         /* (non-Javadoc)
          * @see org.drools.rule.ReturnValueContextEntry#getTuple()
          */
-        public ReteTuple getTuple() {
+        public LeftTuple getTuple() {
             return this.leftTuple;
         }
 
