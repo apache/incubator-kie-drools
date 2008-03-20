@@ -16,7 +16,7 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.RuleDescr;
-import org.drools.reteoo.ReteTuple;
+import org.drools.reteoo.LeftTuple;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.Package;
@@ -75,7 +75,7 @@ public class MVELEvalBuilderTest extends TestCase {
         final Cheese cheddar = new Cheese( "cheddar",
                                            10 );
         final InternalFactHandle f0 = (InternalFactHandle) wm.insert( cheddar );
-        final ReteTuple tuple = new ReteTuple( f0 );
+        final LeftTuple tuple = new LeftTuple( f0 );
         
         Object evalContext = eval.createContext();
 
