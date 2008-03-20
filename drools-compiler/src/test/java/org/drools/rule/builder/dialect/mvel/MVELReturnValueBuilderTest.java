@@ -20,7 +20,7 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
-import org.drools.reteoo.ReteTuple;
+import org.drools.reteoo.LeftTuple;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.Declaration;
 import org.drools.rule.Package;
@@ -113,10 +113,10 @@ public class MVELReturnValueBuilderTest extends TestCase {
         final Cheese cheddar = new Cheese( "cheddar",
                                            10 );
         final InternalFactHandle f0 = (InternalFactHandle) wm.insert( cheddar );
-        ReteTuple tuple = new ReteTuple( f0 );
+        LeftTuple tuple = new LeftTuple( f0 );
 
         final InternalFactHandle f1 = (InternalFactHandle) wm.insert( stilton );
-        tuple = new ReteTuple( tuple,
+        tuple = new LeftTuple( tuple,
                                f1 );
 
         final Cheese brie = new Cheese( "brie",

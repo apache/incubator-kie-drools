@@ -14,7 +14,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.RuleDescr;
-import org.drools.reteoo.ReteTuple;
+import org.drools.reteoo.LeftTuple;
 import org.drools.rule.Declaration;
 import org.drools.rule.Package;
 import org.drools.rule.Pattern;
@@ -62,7 +62,7 @@ public class MVELSalienceBuilderTest extends TestCase {
 
         final Person p = new Person("mark", "", 31);
         final InternalFactHandle f0 = (InternalFactHandle) wm.insert( p );
-        final ReteTuple tuple = new ReteTuple( f0 );
+        final LeftTuple tuple = new LeftTuple( f0 );
 
         SalienceBuilder salienceBuilder = new MVELSalienceBuilder();
         salienceBuilder.build( context );
