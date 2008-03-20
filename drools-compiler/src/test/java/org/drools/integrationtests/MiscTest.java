@@ -16,6 +16,7 @@ package org.drools.integrationtests;
  * limitations under the License.
  */
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInput;
@@ -173,29 +174,46 @@ public class MiscTest extends TestCase {
         ruleBase    = SerializationHelper.serializeObject(ruleBase);
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
+        // will test serialisation of int and typesafe enums tests
+        workingMemory   = ruleBase.newStatefulSession( new ByteArrayInputStream( SerializationHelper.serializeOut(  workingMemory  )) );
+        
         List list = new ArrayList();
         workingMemory.setGlobal( "list",
                                  list );
-
+                       
         final Cheesery cheesery1 = new Cheesery();
         cheesery1.setStatus( Cheesery.SELLING_CHEESE );
         cheesery1.setMaturity( Maturity.OLD );
-        workingMemory.insert( cheesery1 );
+        workingMemory.insert( cheesery1 );                        
 
         final Cheesery cheesery2 = new Cheesery();
         cheesery2.setStatus( Cheesery.MAKING_CHEESE );
         cheesery2.setMaturity( Maturity.YOUNG );
-        workingMemory.insert( cheesery2 );
-
-        workingMemory   = SerializationHelper.serializeObject(workingMemory);
-        list = (List) workingMemory.getGlobal( "list" );
-        workingMemory.fireAllRules();
-
+        workingMemory.insert( cheesery2 );        
+        
+        workingMemory.fireAllRules();        
+        
         assertEquals( 2,
                       list.size() );
 
-        assertTrue( cheesery1.equals( list.get( 0 ) ));
-        assertTrue( cheesery2.equals( list.get( 1 ) ));
+        assertSame( cheesery1, list.get( 0 ) );
+        assertEquals( cheesery1,
+                      list.get( 0 ) );
+        assertSame( cheesery2, list.get( 1 ) );
+        assertEquals( cheesery2,
+                      list.get( 1 ) );        
+
+        // test list after serialising
+        workingMemory   = ruleBase.newStatefulSession( new ByteArrayInputStream( SerializationHelper.serializeOut(  workingMemory  )) );
+        list = (List) workingMemory.getGlobal( "list" );
+	    workingMemory.fireAllRules();
+
+		assertEquals(2, list.size());
+		
+		assertNotSame( cheesery1, list.get( 0 ) );
+		assertEquals(cheesery1, list.get(0));
+		assertNotSame( cheesery2, list.get( 1 ) );
+		assertEquals(cheesery2, list.get(1));        
     }
 
     public void testPrimitiveArray() throws Exception {

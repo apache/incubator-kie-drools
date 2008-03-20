@@ -20,6 +20,7 @@ import java.io.Externalizable;
 import java.io.ObjectOutput;
 import java.io.IOException;
 import java.io.ObjectInput;
+import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -41,20 +42,6 @@ public class Cheesery
     private int               status;
     private int               totalAmount;
     private Maturity          maturity;
-
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        else if (obj instanceof Cheesery) {
-            Cheesery    that    = (Cheesery)obj;
-            return cheeses.equals(that.cheeses) &&
-                   status == that.status &&
-                   totalAmount == that.totalAmount &&
-                   maturity == that.maturity || maturity != null && maturity.equals(that.maturity);
-        }
-        return false;
-    }
 
     public List getCheeses() {
         return this.cheeses;
@@ -104,7 +91,7 @@ public class Cheesery
         private String               age;
 
         public Maturity() {
-        }
+        }       
 
         public Maturity(final String age) {
             this.age = age;
@@ -123,10 +110,44 @@ public class Cheesery
 
         public void writeExternal(ObjectOutput out) throws IOException {
             out.writeObject(age);
-
         }
+
+        private Object readResolve() throws ObjectStreamException {
+            if ( "young".equals( this.age) ) {
+                return Maturity.YOUNG;
+            } else {
+                return Maturity.OLD;
+            }
+        }  
+        
         public String toString() {
             return "[Maturity age='" + this.age + "']";
         }
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((cheeses == null) ? 0 : cheeses.hashCode());
+        result = prime * result + ((maturity == null) ? 0 : maturity.hashCode());
+        result = prime * result + status;
+        result = prime * result + totalAmount;
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        else if (obj instanceof Cheesery) {
+            Cheesery    that    = (Cheesery)obj;
+            return cheeses.equals(that.cheeses) &&
+                   status == that.status &&
+                   totalAmount == that.totalAmount &&
+                   maturity == that.maturity || maturity != null && maturity.equals(that.maturity);
+        }
+        return false;
     }
 }
