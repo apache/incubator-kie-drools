@@ -221,49 +221,83 @@ public class DroolsObjectInputStream
             case RT_EMPTY_MAP:
                 return readEmptyMap();
             default:
-                return readObject(type);
-        }
-    }
+                int handle = readHandle();
 
-    private Object readObject(byte type) throws IOException, ClassNotFoundException {
-        int handle = readHandle();
-
-        switch (type) {
-            case RT_EXTERNALIZABLE:
-                return readExternalizable(handle);
-            case RT_STRING:
-                return readString(handle);
-            case RT_MAP:
-                return readMap(handle);
-            case RT_COLLECTION:
-                return readCollection(handle);
-            case RT_ARRAY:
-                return readArray(handle);
-            case RT_CLASS:
-                return readClass(handle);
-            case RT_REFERENCE:
-                return readReference(handle);
-            case RT_ATOMICREFERENCEARRAY:
-                return readAtomicReferenceArray(handle);
-            case RT_SERIALIZABLE:
-                return readSerializable(handle);
-            default:
-                throw new StreamCorruptedException("Unsupported object type: " + type);
+                switch (type) {
+                    case RT_EXTERNALIZABLE: {
+                        Class clazz = (Class) readObject();
+                        Externalizable externalizable;
+                        try {
+                            externalizable = (Externalizable) clazz.newInstance();
+                        } catch (InstantiationException e) {
+                            throw newInvalidClassException(clazz, e);
+                        } catch (IllegalAccessException e) {
+                            throw newInvalidClassException(clazz, e);
+                        }
+                        registerObject(handle, externalizable);
+                        externalizable.readExternal(this);
+                        return externalizable;
+                    }
+                    case RT_STRING:
+                        return readString(handle);
+                    case RT_MAP: {
+                        Class clazz = (Class) readObject();
+                        int size = dataInput.readInt();
+                        Map<Object, Object> map = (Map<Object, Object>) newCollection(handle, clazz, size);
+                        while (size-- > 0) {
+                            Object key = readObject();
+                            Object value = readObject();
+                            map.put(key, value);
+                        }
+                        return map;
+                    }
+                    case RT_COLLECTION: {
+                        Class clazz = (Class) readObject();
+                        int size = dataInput.readInt();
+                        Collection<Object> collection = (Collection<Object>) newCollection(handle, clazz, size);
+                        while (size-- > 0) {
+                            collection.add(readObject());
+                        }
+                        return collection;
+                    }
+                    case RT_ARRAY: {
+                        Class clazz = (Class) readObject();
+                        int length = dataInput.readInt();
+                        Class componentType = clazz.getComponentType();
+                        Object array = Array.newInstance(componentType, length);
+                        registerObject(handle, array);
+                        if (componentType.isPrimitive()) {
+                            readPrimitiveArray(array, length, componentType);
+                        } else {
+                            Object[] objects    = (Object[])array;
+                            for (int i = 0; i < length; ++i) {
+                                objects[i] = readObject();
+                            }
+                        }
+                        return array;
+                    }
+                    case RT_CLASS:
+                        return readClass(handle);
+                    case RT_REFERENCE:
+                        return readReference(handle);
+                    case RT_ATOMICREFERENCEARRAY: {
+                        int length  = dataInput.readInt();
+                        AtomicReferenceArray<Object>    array   = new AtomicReferenceArray<Object>(length);
+                        registerObject(handle, array);
+                        for (int i = 0; i < length; ++i) {
+                            array.set(i, readObject());
+                        }
+                        return array;
+                    }
+                    case RT_SERIALIZABLE: {
+                        Object  object  =  dataInput.readObject();
+                        registerObject(handle, object);
+                        return object;
+                    }
+                    default:
+                        throw new StreamCorruptedException("Unsupported object type: " + type);
+                }
         }
-    }
-
-    private Object readArray(int handle) throws IOException, ClassNotFoundException {
-        Class clazz = (Class) readObject();
-        int length = dataInput.readInt();
-        Class componentType = clazz.getComponentType();
-        Object array = Array.newInstance(componentType, length);
-        registerObject(handle, array);
-        if (componentType.isPrimitive()) {
-            readPrimitiveArray(array, length, componentType);
-        } else {
-            readObjectArray((Object[]) array, length);
-        }
-        return array;
     }
 
     private void readPrimitiveArray(Object array, int length, Class clazz) throws IOException {
@@ -334,12 +368,6 @@ public class DroolsObjectInputStream
         }
     }
 
-    private void readObjectArray(Object[] objects, int length) throws IOException, ClassNotFoundException {
-        for (int i = 0; i < length; ++i) {
-            objects[i] = readObject();
-        }
-    }
-
     private static Object readNull() {
         return null;
     }
@@ -356,64 +384,10 @@ public class DroolsObjectInputStream
         return Collections.EMPTY_MAP;
     }
 
-    private Object readSerializable(int handle) throws ClassNotFoundException, IOException {
-        Object  object  =  dataInput.readObject();
-        registerObject(handle, object);
-        return object;
-    }
-
-    private Object readExternalizable(int handle) throws ClassNotFoundException, IOException {
-        Class clazz = (Class) readObject();
-        Externalizable externalizable;
-        try {
-            externalizable = (Externalizable) clazz.newInstance();
-        } catch (InstantiationException e) {
-            throw newInvalidClassException(clazz, e);
-        } catch (IllegalAccessException e) {
-            throw newInvalidClassException(clazz, e);
-        }
-        registerObject(handle, externalizable);
-        externalizable.readExternal(this);
-        return externalizable;
-    }
-
     private String readString(int handle) throws IOException {
         String string = dataInput.readUTF();
         registerObject(handle, string);
         return string;
-    }
-
-    private AtomicReferenceArray<Object> readAtomicReferenceArray(int handle)
-            throws IOException, ClassNotFoundException {
-        int length  = dataInput.readInt();
-        AtomicReferenceArray<Object>    array   = new AtomicReferenceArray<Object>(length);
-        registerObject(handle, array);
-        for (int i = 0; i < length; ++i) {
-            array.set(i, readObject());
-        }
-        return array;
-    }
-
-    private Map readMap(int handle) throws IOException, ClassNotFoundException {
-        Class clazz = (Class) readObject();
-        int size = dataInput.readInt();
-        Map<Object, Object> map = (Map<Object, Object>) newCollection(handle, clazz, size);
-        for (int i = 0; i < size; ++i) {
-            Object key = readObject();
-            Object value = readObject();
-            map.put(key, value);
-        }
-        return map;
-    }
-
-    private Collection readCollection(int handle) throws IOException, ClassNotFoundException {
-        Class clazz = (Class) readObject();
-        int size = dataInput.readInt();
-        Collection<Object> collection = (Collection<Object>) newCollection(handle, clazz, size);
-        for (int i = 0; i < size; ++i) {
-            collection.add(readObject());
-        }
-        return collection;
     }
 
     private Object newCollection(int handle, Class clazz, int size) throws IOException {

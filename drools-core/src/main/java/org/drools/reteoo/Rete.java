@@ -164,7 +164,7 @@ public class Rete extends ObjectSource
     public void networkUpdated() {
         // nothing to do
     }
-    
+
     protected void doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder,
                             final BaseNode node,
@@ -225,14 +225,14 @@ public class Rete extends ObjectSource
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal(out);
         out.writeObject(entryPoints);
         out.writeObject(ruleBase);
+        super.writeExternal(out);
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        super.readExternal(in);
         entryPoints = (Map<EntryPoint, EntryPointNode>) in.readObject();
         ruleBase    = (InternalRuleBase)in.readObject();
+        super.readExternal(in);
     }
 }

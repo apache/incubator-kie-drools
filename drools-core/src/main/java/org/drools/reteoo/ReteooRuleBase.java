@@ -131,6 +131,10 @@ public class ReteooRuleBase extends AbstractRuleBase {
         super( id,
                config,
                factHandleFactory );
+        setupRete();
+    }
+
+    private void setupRete() {
         this.rete = new Rete( this );
         this.reteooBuilder = new ReteooBuilder( this );
 
@@ -139,7 +143,6 @@ public class ReteooRuleBase extends AbstractRuleBase {
                                                  this.rete,
                                                  EntryPoint.DEFAULT );
         epn.attach();
-
     }
 
     /**
@@ -149,8 +152,8 @@ public class ReteooRuleBase extends AbstractRuleBase {
      */
     public void writeExternal(final ObjectOutput stream) throws IOException {
         super.writeExternal( stream );
-        stream.writeObject(this.rete);
         stream.writeObject(this.reteooBuilder);
+        stream.writeObject(this.rete);
     }
 
     /**
@@ -162,8 +165,8 @@ public class ReteooRuleBase extends AbstractRuleBase {
     public void readExternal(final ObjectInput stream) throws IOException,
                                                       ClassNotFoundException {
         super.readExternal( stream );
-        this.rete = (Rete) stream.readObject();
         this.reteooBuilder = (ReteooBuilder) stream.readObject();
+        this.rete = (Rete) stream.readObject();
     }
 
     // ------------------------------------------------------------

@@ -3,7 +3,6 @@ package org.drools.integrationtests;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.PackageBuilder;
 import org.drools.lang.descr.PackageDescr;
-import org.drools.rule.*;
 import org.drools.rule.Package;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
@@ -17,7 +16,7 @@ import junit.framework.TestCase;
  * Settings | File Templates.
  */
 public class LargeRuleBaseSerializationTest extends TestCase {
-    private static final int    RULE_COUNT  = 200;
+    private static final int    RULE_COUNT  = 1000;
 
     public void testLargeRuleBase() throws Exception{
         System.out.println("Generating "+RULE_COUNT+" rules");
@@ -39,7 +38,6 @@ public class LargeRuleBaseSerializationTest extends TestCase {
         rb.addPackage(pkg);
 
         rb  = SerializationHelper.serializeObject(rb);
-
     }
 
 }
