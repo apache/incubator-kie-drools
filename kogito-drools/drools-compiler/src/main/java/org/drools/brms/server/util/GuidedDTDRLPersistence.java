@@ -29,6 +29,9 @@ import org.drools.brms.client.modeldriven.dt.GuidedDecisionTable;
  */
 public class GuidedDTDRLPersistence {
 
+	public static GuidedDTDRLPersistence getInstance() {
+		return new GuidedDTDRLPersistence();
+	}
 
 	public String marshal(GuidedDecisionTable dt) {
 
@@ -132,6 +135,8 @@ public class GuidedDTDRLPersistence {
 					fp.boundName = c.boundName;
 					patterns.add(fp);
 				}
+
+
 
 				//now add the constraint from this cell
 				switch (c.constraintValueType) {
