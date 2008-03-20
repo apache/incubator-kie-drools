@@ -24,7 +24,7 @@ import org.drools.common.TupleStartEqualsConstraint;
 import org.drools.reteoo.AccumulateNode;
 import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.RightInputAdapterNode;
-import org.drools.reteoo.TupleSource;
+import org.drools.reteoo.LeftTupleSource;
 import org.drools.rule.Accumulate;
 import org.drools.rule.RuleConditionElement;
 import org.drools.spi.AlphaNodeFieldConstraint;
@@ -55,7 +55,7 @@ public class AccumulateBuilder
         final ReteooComponentBuilder builder = utils.getBuilderFor( source );
 
         // save tuple source and current pattern offset for later if needed
-        final TupleSource tupleSource = context.getTupleSource();
+        final LeftTupleSource tupleSource = context.getTupleSource();
         final int currentPatternIndex = context.getCurrentPatternOffset();
         
         // builds the source pattern
@@ -90,7 +90,7 @@ public class AccumulateBuilder
                                                                              context.getBetaconstraints(),
                                                                              false );
 
-        context.setTupleSource( (TupleSource) utils.attachNode( context,
+        context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
                                                                 new AccumulateNode( context.getNextId(),
                                                                                     context.getTupleSource(),
                                                                                     context.getObjectSource(),

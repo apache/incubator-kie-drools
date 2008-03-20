@@ -4,16 +4,16 @@ import org.drools.common.InternalFactHandle;
 import org.drools.util.Entry;
 import org.drools.util.Iterator;
 
-public interface TupleMemory {
+public interface LeftTupleMemory {
     public Iterator iterator();
 
     public Iterator iterator(InternalFactHandle handle);
 
-    public void add(ReteTuple tuple);
+    public void add(LeftTuple tuple);
 
-    public ReteTuple remove(ReteTuple tuple);
+    public LeftTuple remove(LeftTuple leftTuple);
 
-    public boolean contains(ReteTuple tuple);
+    public boolean contains(LeftTuple leftTuple);
 
     public boolean isIndexed();
 

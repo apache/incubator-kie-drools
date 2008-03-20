@@ -26,12 +26,12 @@ import org.drools.spi.PropagationContext;
  * Receiver of propagated <code>ReteTuple</code>s from a
  * <code>TupleSource</code>.
  *
- * @see TupleSource
+ * @see LeftTupleSource
  *
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
-public interface TupleSink
+public interface LeftTupleSink
     extends
     Externalizable,
     Sink {
@@ -39,22 +39,22 @@ public interface TupleSink
     /**
      * Assert a new <code>ReteTuple</code>.
      *
-     * @param tuple
+     * @param leftTuple
      *            The <code>ReteTuple</code> to propagate.
      * @param context
      *             The <code>PropagationContext</code> of the <code>WorkingMemory<code> action
      * @param workingMemory
      *            the <code>WorkingMemory</code> session.
      */
-    void assertTuple(ReteTuple tuple,
+    void assertLeftTuple(LeftTuple leftTuple,
                      PropagationContext context,
                      InternalWorkingMemory workingMemory);
 
-    void retractTuple(ReteTuple tuple,
-                      PropagationContext context,
-                      InternalWorkingMemory workingMemory);
+    void retractLeftTuple(LeftTuple leftTuple,
+                          PropagationContext context,
+                          InternalWorkingMemory workingMemory);
 
-    public boolean isTupleMemoryEnabled();
+    public boolean isLeftTupleMemoryEnabled();
 
-    public void setTupleMemoryEnabled(boolean tupleMemoryEnabled);
+    public void setLeftTupleMemoryEnabled(boolean tupleMemoryEnabled);
 }

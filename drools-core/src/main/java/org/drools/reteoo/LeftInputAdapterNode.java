@@ -42,7 +42,7 @@ import java.io.ObjectInput;
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  *
  */
-public class LeftInputAdapterNode extends TupleSource
+public class LeftInputAdapterNode extends LeftTupleSource
     implements
     ObjectSinkNode,
     NodeMemory {
@@ -140,7 +140,7 @@ public class LeftInputAdapterNode extends TupleSource
                              final InternalWorkingMemory workingMemory) {
 
         if ( !workingMemory.isSequential() ) {
-            this.sink.createAndPropagateAssertTuple( handle,
+            this.sink.createAndPropagateAssertLeftTuple( handle,
                                                      context,
                                                      workingMemory );
 
@@ -175,13 +175,13 @@ public class LeftInputAdapterNode extends TupleSource
         }
 
         if ( propagate ) {
-            this.sink.createAndPropagateRetractTuple( handle,
+            this.sink.createAndPropagateRetractLeftTuple( handle,
                                                       context,
                                                       workingMemory );
         }
     }
 
-    public void updateSink(final TupleSink sink,
+    public void updateSink(final LeftTupleSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
         if ( this.objectMemoryEnabled ) {
@@ -190,7 +190,7 @@ public class LeftInputAdapterNode extends TupleSource
             final Iterator it = memory.iterator();
             for ( FactEntry entry = (FactEntry) it.next(); entry != null; entry = (FactEntry) it.next() ) {
                 final InternalFactHandle handle = entry.getFactHandle();
-                sink.assertTuple( new ReteTuple( handle ),
+                sink.assertLeftTuple( new LeftTuple( handle ),
                                   context,
                                   workingMemory );
             }
@@ -208,7 +208,7 @@ public class LeftInputAdapterNode extends TupleSource
                             final InternalWorkingMemory[] workingMemories) {
         context.visitTupleSource( this );
         if ( !node.isInUse() ) {
-            removeTupleSink( (TupleSink) node );
+            removeTupleSink( (LeftTupleSink) node );
         }
         if ( !this.isInUse() ) {
             for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
@@ -296,17 +296,17 @@ public class LeftInputAdapterNode extends TupleSource
     private static class ObjectSinkAdapter
         implements
         ObjectSink {
-        private TupleSink sink;
+        private LeftTupleSink sink;
 
-        public ObjectSinkAdapter(final TupleSink sink) {
+        public ObjectSinkAdapter(final LeftTupleSink sink) {
             this.sink = sink;
         }
 
         public void assertObject(final InternalFactHandle handle,
                                  final PropagationContext context,
                                  final InternalWorkingMemory workingMemory) {
-            final ReteTuple tuple = new ReteTuple( handle );
-            this.sink.assertTuple( tuple,
+            final LeftTuple tuple = new LeftTuple( handle );
+            this.sink.assertLeftTuple( tuple,
                                    context,
                                    workingMemory );
         }

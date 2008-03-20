@@ -15,7 +15,7 @@ public class BetaMemory
 
     private static final long serialVersionUID = 400L;
 
-    private TupleMemory       tupleMemory;
+    private LeftTupleMemory       tupleMemory;
     private FactHandleMemory  factHandleMemory;
     private ObjectHashMap     createdHandles;
     private ContextEntry[]    context;
@@ -23,7 +23,7 @@ public class BetaMemory
     public BetaMemory() {
     }
 
-    public BetaMemory(final TupleMemory tupleMemory,
+    public BetaMemory(final LeftTupleMemory tupleMemory,
                       final FactHandleMemory objectMemory,
                       final ContextEntry[] context ) {
         this.tupleMemory = tupleMemory;
@@ -32,7 +32,7 @@ public class BetaMemory
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        tupleMemory         = (TupleMemory)in.readObject();
+        tupleMemory         = (LeftTupleMemory)in.readObject();
         factHandleMemory    = (FactHandleMemory)in.readObject();
         createdHandles      = (ObjectHashMap)in.readObject();
         context             = (ContextEntry[])in.readObject();
@@ -49,7 +49,7 @@ public class BetaMemory
         return this.factHandleMemory;
     }
 
-    public TupleMemory getTupleMemory() {
+    public LeftTupleMemory getTupleMemory() {
         return this.tupleMemory;
     }
 

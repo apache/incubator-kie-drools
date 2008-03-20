@@ -77,8 +77,8 @@ public class FromNodeTest extends TestCase {
         final Person person1 = new Person( "xxx1",
                                            30 );
         final FactHandle person1Handle = workingMemory.insert( person1 );
-        final ReteTuple tuple1 = new ReteTuple( (DefaultFactHandle) person1Handle );
-        from.assertTuple( tuple1,
+        final LeftTuple tuple1 = new LeftTuple( (DefaultFactHandle) person1Handle );
+        from.assertLeftTuple( tuple1,
                           context,
                           workingMemory );
 
@@ -91,8 +91,8 @@ public class FromNodeTest extends TestCase {
         final Person person2 = new Person( "xxx2",
                                            30 );
         final FactHandle person2Handle = workingMemory.insert( person2 );
-        final ReteTuple tuple2 = new ReteTuple( (DefaultFactHandle) person2Handle );
-        from.assertTuple( tuple2,
+        final LeftTuple tuple2 = new LeftTuple( (DefaultFactHandle) person2Handle );
+        from.assertLeftTuple( tuple2,
                           context,
                           workingMemory );
 
@@ -109,8 +109,8 @@ public class FromNodeTest extends TestCase {
         final Person person3 = new Person( "xxx2",
                                            30 );
         final FactHandle person3Handle = workingMemory.insert( person3 );
-        final ReteTuple tuple3 = new ReteTuple( (DefaultFactHandle) person3Handle );
-        from.assertTuple( tuple3,
+        final LeftTuple tuple3 = new LeftTuple( (DefaultFactHandle) person3Handle );
+        from.assertLeftTuple( tuple3,
                           context,
                           workingMemory );
 
@@ -184,8 +184,8 @@ public class FromNodeTest extends TestCase {
         final Person person1 = new Person( "xxx1",
                                            30 );
         final FactHandle person1Handle = workingMemory.insert( person1 );
-        final ReteTuple tuple1 = new ReteTuple( (DefaultFactHandle) person1Handle );
-        from.assertTuple( tuple1,
+        final LeftTuple tuple1 = new LeftTuple( (DefaultFactHandle) person1Handle );
+        from.assertLeftTuple( tuple1,
                           context,
                           workingMemory );
 
@@ -198,8 +198,8 @@ public class FromNodeTest extends TestCase {
         final Person person2 = new Person( "xxx2",
                                            30 );
         final FactHandle person2Handle = workingMemory.insert( person2 );
-        final ReteTuple tuple2 = new ReteTuple( (DefaultFactHandle) person2Handle );
-        from.assertTuple( tuple2,
+        final LeftTuple tuple2 = new LeftTuple( (DefaultFactHandle) person2Handle );
+        from.assertLeftTuple( tuple2,
                           context,
                           workingMemory );
 
@@ -216,8 +216,8 @@ public class FromNodeTest extends TestCase {
         final Person person3 = new Person( "xxx2",
                                            30 );
         final FactHandle person3Handle = workingMemory.insert( person3 );
-        final ReteTuple tuple3 = new ReteTuple( (DefaultFactHandle) person3Handle );
-        from.assertTuple( tuple3,
+        final LeftTuple tuple3 = new LeftTuple( (DefaultFactHandle) person3Handle );
+        from.assertLeftTuple( tuple3,
                           context,
                           workingMemory );
 
@@ -276,8 +276,8 @@ public class FromNodeTest extends TestCase {
         final Person person1 = new Person( "xxx2",
                                            30 );
         final FactHandle person1Handle = workingMemory.insert( person1 );
-        final ReteTuple tuple = new ReteTuple( (DefaultFactHandle) person1Handle );
-        from.assertTuple( tuple,
+        final LeftTuple tuple = new LeftTuple( (DefaultFactHandle) person1Handle );
+        from.assertLeftTuple( tuple,
                           context,
                           workingMemory );
 
@@ -298,7 +298,7 @@ public class FromNodeTest extends TestCase {
         assertEquals( handle2.getObject(),
                       cheese2 );
 
-        from.retractTuple( tuple,
+        from.retractLeftTuple( tuple,
                            context,
                            workingMemory );
         assertEquals( 0,

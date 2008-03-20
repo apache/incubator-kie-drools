@@ -10,7 +10,7 @@ import java.io.ObjectInput;
 
 public class EmptyTupleSinkAdapter
     implements
-    TupleSinkPropagator {
+    LeftTupleSinkPropagator {
 
     private static final EmptyTupleSinkAdapter instance = new EmptyTupleSinkAdapter();
 
@@ -27,40 +27,40 @@ public class EmptyTupleSinkAdapter
     public void writeExternal(ObjectOutput out) throws IOException {
     }
     
-    public void propagateAssertTuple(final ReteTuple tuple,
+    public void propagateAssertLeftTuple(final LeftTuple tuple,
                                      final InternalFactHandle handle,
                                      final PropagationContext context,
                                      final InternalWorkingMemory workingMemory) {
     }
 
-    public void propagateAssertTuple(final ReteTuple tuple,
+    public void propagateAssertLeftTuple(final LeftTuple tuple,
                                      final PropagationContext context,
                                      final InternalWorkingMemory workingMemory) {
     }
 
-    public void propagateRetractTuple(final ReteTuple tuple,
+    public void propagateRetractLeftTuple(final LeftTuple tuple,
                                       final InternalFactHandle handle,
                                       final PropagationContext context,
                                       final InternalWorkingMemory workingMemory) {
     }
 
-    public void propagateRetractTuple(final ReteTuple tuple,
+    public void propagateRetractLeftTuple(final LeftTuple tuple,
                                       final PropagationContext context,
                                       final InternalWorkingMemory workingMemory) {
     }
 
-    public void createAndPropagateAssertTuple(final InternalFactHandle handle,
+    public void createAndPropagateAssertLeftTuple(final InternalFactHandle handle,
                                               final PropagationContext context,
                                               final InternalWorkingMemory workingMemory) {
     }
 
-    public void createAndPropagateRetractTuple(final InternalFactHandle handle,
+    public void createAndPropagateRetractLeftTuple(final InternalFactHandle handle,
                                                final PropagationContext context,
                                                final InternalWorkingMemory workingMemory) {
     }
 
-    public TupleSink[] getSinks() {
-        return new TupleSink[]{};
+    public LeftTupleSink[] getSinks() {
+        return new LeftTupleSink[]{};
     }
 
     public int size() {

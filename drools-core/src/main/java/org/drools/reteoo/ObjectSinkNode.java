@@ -19,7 +19,7 @@ package org.drools.reteoo;
 /**
  * Items placed in a <code>LinkedList<code> must implement this interface .
  * 
- * @see TupleSinkNodeList
+ * @see LeftTupleSinkNodeList
  * 
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>

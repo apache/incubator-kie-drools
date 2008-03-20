@@ -66,7 +66,7 @@ public class ExistsNode extends BetaNode {
      *            The constraints to be applied to the right objects
      */
     public ExistsNode(final int id,
-                      final TupleSource leftInput,
+                      final LeftTupleSource leftInput,
                       final ObjectSource rightInput,
                       final BetaConstraints joinNodeBinder,
                       final BuildContext context) {
@@ -89,7 +89,7 @@ public class ExistsNode extends BetaNode {
      * @param workingMemory
      *            The working memory session.
      */
-    public void assertTuple(final ReteTuple leftTuple,
+    public void assertLeftTuple(final LeftTuple leftTuple,
                             final PropagationContext context,
                             final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
@@ -114,7 +114,7 @@ public class ExistsNode extends BetaNode {
         this.constraints.resetTuple( memory.getContext() );
 
         if ( leftTuple.getMatch() != null ) {
-            this.sink.propagateAssertTuple( leftTuple,
+            this.sink.propagateAssertLeftTuple( leftTuple,
                                             context,
                                             workingMemory );
         }
@@ -147,11 +147,11 @@ public class ExistsNode extends BetaNode {
         this.constraints.updateFromFactHandle( memory.getContext(),
                                                workingMemory,
                                                handle );
-        for ( ReteTuple tuple = (ReteTuple) it.next(); tuple != null; tuple = (ReteTuple) it.next() ) {
+        for ( LeftTuple tuple = (LeftTuple) it.next(); tuple != null; tuple = (LeftTuple) it.next() ) {
             if ( this.constraints.isAllowedCachedRight( memory.getContext(),
                                                         tuple ) && tuple.getMatch() == null) {
                     tuple.setMatch( handle );
-                    this.sink.propagateAssertTuple( tuple,
+                    this.sink.propagateAssertLeftTuple( tuple,
                                                      context,
                                                      workingMemory );
             }
@@ -184,7 +184,7 @@ public class ExistsNode extends BetaNode {
         this.constraints.updateFromFactHandle( memory.getContext(),
                                                workingMemory,
                                                handle );
-        for ( ReteTuple tuple = (ReteTuple) it.next(); tuple != null; tuple = (ReteTuple) it.next() ) {
+        for ( LeftTuple tuple = (LeftTuple) it.next(); tuple != null; tuple = (LeftTuple) it.next() ) {
             if ( this.constraints.isAllowedCachedRight( memory.getContext(),
                                                         tuple ) ) {
                 if ( tuple.getMatch() == handle ) {
@@ -209,7 +209,7 @@ public class ExistsNode extends BetaNode {
 
                     // if there is now no new tuple match then propagate assert.
                     if ( tuple.getMatch() == null ) {
-                        this.sink.propagateRetractTuple( tuple,
+                        this.sink.propagateRetractLeftTuple( tuple,
                                                         context,
                                                         workingMemory );
                     }
@@ -232,19 +232,19 @@ public class ExistsNode extends BetaNode {
      * @param workingMemory
      *            The working memory session.
      */
-    public void retractTuple(final ReteTuple leftTuple,
+    public void retractLeftTuple(final LeftTuple leftTuple,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
         // Must use the tuple in memory as it has the tuple matches count
-        final ReteTuple tuple = memory.getTupleMemory().remove( leftTuple );
+        final LeftTuple tuple = memory.getTupleMemory().remove( leftTuple );
         if ( tuple == null ) {
             return;
         }
 
         if ( tuple.getMatch() !=  null) {
-            this.sink.propagateRetractTuple( tuple,
+            this.sink.propagateRetractLeftTuple( tuple,
                                              context,
                                              workingMemory );
         }
@@ -254,15 +254,15 @@ public class ExistsNode extends BetaNode {
      * Updates the given sink propagating all previously propagated tuples to it
      *
      */
-    public void updateSink(final TupleSink sink,
+    public void updateSink(final LeftTupleSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
         final Iterator tupleIter = memory.getTupleMemory().iterator();
-        for ( ReteTuple tuple = (ReteTuple) tupleIter.next(); tuple != null; tuple = (ReteTuple) tupleIter.next() ) {
+        for ( LeftTuple tuple = (LeftTuple) tupleIter.next(); tuple != null; tuple = (LeftTuple) tupleIter.next() ) {
             if ( tuple.getMatch() != null ) {
-                sink.assertTuple( new ReteTuple( tuple ),
+                sink.assertLeftTuple( new LeftTuple( tuple ),
                                   context,
                                   workingMemory );
             }

@@ -32,16 +32,16 @@ public class TupleSourceTest extends DroolsTestCase {
         final MockTupleSource source = new MockTupleSource( 15 );
 
         // We need to re-assign this var each time the sink changes references
-        final Field field = TupleSource.class.getDeclaredField( "sink" );
+        final Field field = LeftTupleSource.class.getDeclaredField( "sink" );
         field.setAccessible( true );
-        TupleSinkPropagator sink = (TupleSinkPropagator) field.get( source );
+        LeftTupleSinkPropagator sink = (LeftTupleSinkPropagator) field.get( source );
 
         assertSame( EmptyTupleSinkAdapter.getInstance(),
                     sink );
 
         final MockTupleSink sink1 = new MockTupleSink();
         source.addTupleSink( sink1 );
-        sink = (TupleSinkPropagator) field.get( source );
+        sink = (LeftTupleSinkPropagator) field.get( source );
         assertSame( SingleTupleSinkAdapter.class,
                     sink.getClass() );
         assertEquals( 1,
@@ -49,7 +49,7 @@ public class TupleSourceTest extends DroolsTestCase {
 
         final MockTupleSink sink2 = new MockTupleSink();
         source.addTupleSink( sink2 );
-        sink = (TupleSinkPropagator) field.get( source );
+        sink = (LeftTupleSinkPropagator) field.get( source );
         assertSame( CompositeTupleSinkAdapter.class,
                     sink.getClass() );
         assertEquals( 2,
@@ -69,14 +69,14 @@ public class TupleSourceTest extends DroolsTestCase {
                       sink.getSinks().length );
 
         source.removeTupleSink( sink1 );
-        sink = (TupleSinkPropagator) field.get( source );
+        sink = (LeftTupleSinkPropagator) field.get( source );
         assertSame( SingleTupleSinkAdapter.class,
                     sink.getClass() );
         assertEquals( 1,
                       sink.getSinks().length );
 
         source.removeTupleSink( sink3 );
-        sink = (TupleSinkPropagator) field.get( source );
+        sink = (LeftTupleSinkPropagator) field.get( source );
         assertSame( EmptyTupleSinkAdapter.getInstance(),
                     sink );
         assertEquals( 0,

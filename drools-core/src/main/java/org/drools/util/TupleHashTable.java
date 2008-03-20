@@ -4,12 +4,12 @@
 package org.drools.util;
 
 import org.drools.common.InternalFactHandle;
-import org.drools.reteoo.ReteTuple;
-import org.drools.reteoo.TupleMemory;
+import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.LeftTupleMemory;
 
 public class TupleHashTable extends AbstractHashTable
     implements
-    TupleMemory {
+    LeftTupleMemory {
     public TupleHashTable() {
         this( 16,
               0.75f );
@@ -25,7 +25,7 @@ public class TupleHashTable extends AbstractHashTable
         return iterator();
     }
 
-    public void add(final ReteTuple tuple) {
+    public void add(final LeftTuple tuple) {
         final int hashCode = tuple.hashCode();
         final int index = indexOf( hashCode,
                                    this.table.length );
@@ -38,30 +38,30 @@ public class TupleHashTable extends AbstractHashTable
         }
     }
 
-    public ReteTuple get(final ReteTuple tuple) {
+    public LeftTuple get(final LeftTuple tuple) {
         final int hashCode = tuple.hashCode();
         final int index = indexOf( hashCode,
                                    this.table.length );
 
-        ReteTuple current = (ReteTuple) this.table[index];
+        LeftTuple current = (LeftTuple) this.table[index];
         while ( current != null ) {
             if ( hashCode == current.hashCode() && tuple.equals( current ) ) {
                 return current;
             }
-            current = (ReteTuple) current.getNext();
+            current = (LeftTuple) current.getNext();
         }
         return null;
     }
 
-    public ReteTuple remove(final ReteTuple tuple) {
+    public LeftTuple remove(final LeftTuple tuple) {
         final int hashCode = tuple.hashCode();
         final int index = indexOf( hashCode,
                                    this.table.length );
 
-        ReteTuple previous = (ReteTuple) this.table[index];
-        ReteTuple current = previous;
+        LeftTuple previous = (LeftTuple) this.table[index];
+        LeftTuple current = previous;
         while ( current != null ) {
-            final ReteTuple next = (ReteTuple) current.getNext();
+            final LeftTuple next = (LeftTuple) current.getNext();
             if ( hashCode == current.hashCode() && tuple.equals( current ) ) {
                 if ( previous == current ) {
                     this.table[index] = next;
@@ -86,7 +86,7 @@ public class TupleHashTable extends AbstractHashTable
         return this.table[index];
     }
 
-    public boolean contains(final ReteTuple tuple) {
+    public boolean contains(final LeftTuple tuple) {
         return (get( tuple ) != null);
     }
 

@@ -101,7 +101,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         rule1.setConsequence( consequence );
 
         final DefaultFactHandle handle1 = (DefaultFactHandle) workingMemory.insert( "o1" );
-        final ReteTuple tuple1 = new ReteTuple( handle1 );
+        final LeftTuple tuple1 = new LeftTuple( handle1 );
 
         final PropagationContext context1 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
@@ -109,7 +109,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                         null );
 
         // Test single activation for a single logical assertions
-        node.assertTuple( tuple1,
+        node.assertLeftTuple( tuple1,
                           context1,
                           workingMemory );
 
@@ -120,7 +120,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                          rule1,
                                                          tuple1.getActivation() );
         // Retract the tuple and test the logically asserted fact was also retracted
-        node.retractTuple( tuple1,
+        node.retractLeftTuple( tuple1,
                            context1,
                            workingMemory );
 
@@ -137,7 +137,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         // Test single activation for a single logical assertions. This also
         // tests that logical assertions live on after the related Activation
         // has fired.
-        node.assertTuple( tuple1,
+        node.assertLeftTuple( tuple1,
                           context1,
                           workingMemory );
         logicalHandle = workingMemory.insert( logicalString,
@@ -148,7 +148,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         agenda.fireNextItem( null );
 
-        node.retractTuple( tuple1,
+        node.retractLeftTuple( tuple1,
                            context1,
                            workingMemory );
 
@@ -211,7 +211,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final DefaultFactHandle handle1 = new DefaultFactHandle( 1,
                                                                  "cheese" );
-        final ReteTuple tuple1 = new ReteTuple( handle1 );
+        final LeftTuple tuple1 = new LeftTuple( handle1 );
 
         final PropagationContext context1 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
@@ -219,7 +219,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                         null );
 
         // Test single activation for a single logical assertions
-        node.assertTuple( tuple1,
+        node.assertLeftTuple( tuple1,
                           context1,
                           workingMemory );
 
@@ -308,7 +308,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final DefaultFactHandle handle1 = new DefaultFactHandle( 1,
                                                                  "cheese" );
-        final ReteTuple tuple1 = new ReteTuple( handle1 );
+        final LeftTuple tuple1 = new LeftTuple( handle1 );
 
         final PropagationContext context1 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
@@ -316,7 +316,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                         null );
 
         // Test that a STATED assertion overrides a logical assertion
-        node.assertTuple( tuple1,
+        node.assertLeftTuple( tuple1,
                           context1,
                           workingMemory );
 
@@ -332,7 +332,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         String logicalString2 = new String( "logical" );
         FactHandle logicalHandle2 = workingMemory.insert( logicalString2 );
 
-        node.retractTuple( tuple1,
+        node.retractLeftTuple( tuple1,
                            context1,
                            workingMemory );
 
@@ -351,7 +351,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                        workingMemory.getObject( logicalHandle2 ) );
 
         // Test that a logical assertion cannot override a STATED assertion
-        node.assertTuple( tuple1,
+        node.assertLeftTuple( tuple1,
                           context1,
                           workingMemory );
 
@@ -380,7 +380,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         assertSame( logicalHandle2,
                     logicalHandle1 );
 
-        node.retractTuple( tuple1,
+        node.retractLeftTuple( tuple1,
                            context1,
                            workingMemory );
 
@@ -462,7 +462,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final DefaultFactHandle handle1 = new DefaultFactHandle( 1,
                                                                  "cheese" );
-        final ReteTuple tuple1 = new ReteTuple( handle1 );
+        final LeftTuple tuple1 = new LeftTuple( handle1 );
 
         final PropagationContext context1 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
@@ -470,7 +470,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                         null );
 
         // Test that a STATED assertion overrides a logical assertion
-        node.assertTuple( tuple1,
+        node.assertLeftTuple( tuple1,
                           context1,
                           workingMemory );
 
@@ -486,7 +486,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         String logicalString2 = new String( "logical" );
         FactHandle logicalHandle2 = workingMemory.insert( logicalString2 );
 
-        node.retractTuple( tuple1,
+        node.retractLeftTuple( tuple1,
                            context1,
                            workingMemory );
 
@@ -505,7 +505,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                        workingMemory.getObject( logicalHandle2 ) );
 
         // Test that a logical assertion cannot override a STATED assertion
-        node.assertTuple( tuple1,
+        node.assertLeftTuple( tuple1,
                           context1,
                           workingMemory );
 
@@ -559,14 +559,14 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final DefaultFactHandle handle1 = new DefaultFactHandle( 1,
                                                                  "cheese" );
-        final ReteTuple tuple1 = new ReteTuple( handle1 );
+        final LeftTuple tuple1 = new LeftTuple( handle1 );
 
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,
                                                                        null,
                                                                        null );
 
-        node.assertTuple( tuple1,
+        node.assertLeftTuple( tuple1,
                           context,
                           workingMemory );
 
@@ -589,13 +589,13 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final DefaultFactHandle handle2 = new DefaultFactHandle( 2,
                                                                  "cheese" );
-        final ReteTuple tuple2 = new ReteTuple( handle2 );
+        final LeftTuple tuple2 = new LeftTuple( handle2 );
 
-        node.assertTuple( tuple2,
+        node.assertLeftTuple( tuple2,
                           context,
                           workingMemory );
 
-        node2.assertTuple( tuple2,
+        node2.assertLeftTuple( tuple2,
                            context,
                            workingMemory );
 
@@ -668,14 +668,14 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final DefaultFactHandle handle1 = new DefaultFactHandle( 1,
                                                                  "cheese" );
-        final ReteTuple tuple1 = new ReteTuple( handle1 );
+        final LeftTuple tuple1 = new LeftTuple( handle1 );
 
         final PropagationContext context1 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
                                                                         null,
                                                                         null );
         // get the activation onto the agenda
-        node.assertTuple( tuple1,
+        node.assertLeftTuple( tuple1,
                           context1,
                           workingMemory );
 
@@ -690,7 +690,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final DefaultFactHandle handle2 = new DefaultFactHandle( 2,
                                                                  "cheese" );
-        final ReteTuple tuple2 = new ReteTuple( handle2 );
+        final LeftTuple tuple2 = new LeftTuple( handle2 );
 
         final PropagationContext context2 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
@@ -698,7 +698,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                         null );
 
         // get the activations onto the agenda
-        node2.assertTuple( tuple2,
+        node2.assertLeftTuple( tuple2,
                            context2,
                            workingMemory );
 
@@ -723,7 +723,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                       workingMemory.getTruthMaintenanceSystem().getJustifiedMap().values() );
 
         // Now lets cancel the first activation
-        node2.retractTuple( tuple2,
+        node2.retractLeftTuple( tuple2,
                             context2,
                             workingMemory );
 
@@ -738,7 +738,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                       workingMemory.getTruthMaintenanceSystem().getJustifiedMap().values() );
 
         // now remove that final justification
-        node.retractTuple( tuple1,
+        node.retractLeftTuple( tuple1,
                            context1,
                            workingMemory );
 
@@ -805,7 +805,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final DefaultFactHandle handle1 = new DefaultFactHandle( 1,
                                                                  "cheese" );
-        final ReteTuple tuple1 = new ReteTuple( handle1 );
+        final LeftTuple tuple1 = new LeftTuple( handle1 );
 
         final PropagationContext context1 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
@@ -813,7 +813,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                         null );
 
         // Assert multiple stated objects
-        node.assertTuple( tuple1,
+        node.assertLeftTuple( tuple1,
                           context1,
                           workingMemory );
 
@@ -913,7 +913,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final DefaultFactHandle handle1 = new DefaultFactHandle( 1,
                                                                  "cheese" );
-        final ReteTuple tuple1 = new ReteTuple( handle1 );
+        final LeftTuple tuple1 = new LeftTuple( handle1 );
 
         final PropagationContext context1 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
@@ -921,7 +921,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                         null );
 
         // Test that a STATED assertion overrides a logical assertion
-        node.assertTuple( tuple1,
+        node.assertLeftTuple( tuple1,
                           context1,
                           workingMemory );
 

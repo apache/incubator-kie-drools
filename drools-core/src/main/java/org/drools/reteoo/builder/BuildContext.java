@@ -28,7 +28,7 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.ReteooBuilder;
 import org.drools.reteoo.ReteooRuleBase;
-import org.drools.reteoo.TupleSource;
+import org.drools.reteoo.LeftTupleSource;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.RuleConditionElement;
 
@@ -40,7 +40,7 @@ import org.drools.rule.RuleConditionElement;
 public class BuildContext {
 
     // tuple source to attach next node to
-    private TupleSource               tupleSource;
+    private LeftTupleSource               tupleSource;
 
     // object source to attach next node to
     private ObjectSource              objectSource;
@@ -165,14 +165,14 @@ public class BuildContext {
     /**
      * @return the tupleSource
      */
-    public TupleSource getTupleSource() {
+    public LeftTupleSource getTupleSource() {
         return this.tupleSource;
     }
 
     /**
      * @param tupleSource the tupleSource to set
      */
-    public void setTupleSource(final TupleSource tupleSource) {
+    public void setTupleSource(final LeftTupleSource tupleSource) {
         this.tupleSource = tupleSource;
     }
 

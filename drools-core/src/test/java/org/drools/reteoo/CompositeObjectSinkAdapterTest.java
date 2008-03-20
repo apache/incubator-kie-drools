@@ -471,7 +471,7 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
     static class MockBetaNode extends BetaNode {
 
         MockBetaNode(final int id,
-                     final TupleSource leftInput,
+                     final LeftTupleSource leftInput,
                      final ObjectSource rightInput) {
             super( id,
                    leftInput,
@@ -480,21 +480,21 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
             //  Auto-generated constructor stub
         }
 
-        public void updateSink(final TupleSink sink,
+        public void updateSink(final LeftTupleSink sink,
                                final PropagationContext context,
                                final InternalWorkingMemory workingMemory) {
             //  Auto-generated method stub
 
         }
 
-        public void assertTuple(final ReteTuple tuple,
+        public void assertLeftTuple(final LeftTuple tuple,
                                 final PropagationContext context,
                                 final InternalWorkingMemory workingMemory) {
             //  Auto-generated method stub
 
         }
 
-        public void retractTuple(final ReteTuple tuple,
+        public void retractLeftTuple(final LeftTuple tuple,
                                  final PropagationContext context,
                                  final InternalWorkingMemory workingMemory) {
             //  Auto-generated method stub

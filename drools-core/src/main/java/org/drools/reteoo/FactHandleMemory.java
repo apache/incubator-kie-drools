@@ -7,7 +7,7 @@ import org.drools.util.Iterator;
 public interface FactHandleMemory {
     public Iterator iterator();
 
-    public Iterator iterator(ReteTuple tuple);
+    public Iterator iterator(LeftTuple tuple);
 
     public boolean add(InternalFactHandle handle,
                        boolean checkExists);

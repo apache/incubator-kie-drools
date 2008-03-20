@@ -19,7 +19,7 @@ package org.drools.rule;
 import org.drools.RuntimeDroolsException;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.reteoo.ReteTuple;
+import org.drools.reteoo.LeftTuple;
 import org.drools.rule.ReturnValueRestriction.ReturnValueContextEntry;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldExtractor;
@@ -140,7 +140,7 @@ public class ReturnValueConstraint extends MutableTypeConstraint implements Exte
         }
     }
 
-    public boolean isAllowedCachedRight(final ReteTuple tuple,
+    public boolean isAllowedCachedRight(final LeftTuple tuple,
                                         final ContextEntry context) {
         try {
             final ReturnValueContextEntry ctx = (ReturnValueContextEntry) context;

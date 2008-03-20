@@ -16,7 +16,7 @@ package org.drools.common;
  * limitations under the License.
  */
 
-import org.drools.reteoo.ReteTuple;
+import org.drools.reteoo.LeftTuple;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.Declaration;
 import org.drools.rule.Pattern;
@@ -81,7 +81,7 @@ public class InstanceNotEqualsConstraint
         return ((InstanceNotEqualsConstraintContextEntry) context).left != handle.getObject();
     }
 
-    public boolean isAllowedCachedRight(final ReteTuple tuple,
+    public boolean isAllowedCachedRight(final LeftTuple tuple,
                                         final ContextEntry context) {
         return tuple.get( this.otherPattern.getOffset() ).getObject() != ((InstanceNotEqualsConstraintContextEntry) context).right;
     }
@@ -156,7 +156,7 @@ public class InstanceNotEqualsConstraint
         }
 
         public void updateFromTuple(final InternalWorkingMemory workingMemory,
-                                    final ReteTuple tuple) {
+                                    final LeftTuple tuple) {
             this.left = tuple.get( this.pattern.getOffset() ).getObject();
         }
 

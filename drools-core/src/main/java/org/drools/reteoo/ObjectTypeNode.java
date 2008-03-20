@@ -348,8 +348,8 @@ public class ObjectTypeNode extends ObjectSource
             }
             if ( !hasConstraints && sinks[i] instanceof ObjectSource ) {
                 hasConstraints = !this.canSkipOnModify( ((ObjectSource) sinks[i]).getSinkPropagator().getSinks() );
-            } else if ( !hasConstraints && sinks[i] instanceof TupleSource ) {
-                hasConstraints = !this.canSkipOnModify( ((TupleSource) sinks[i]).getSinkPropagator().getSinks() );
+            } else if ( !hasConstraints && sinks[i] instanceof LeftTupleSource ) {
+                hasConstraints = !this.canSkipOnModify( ((LeftTupleSource) sinks[i]).getSinkPropagator().getSinks() );
             }
         }
 

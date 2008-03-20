@@ -33,13 +33,13 @@ import org.drools.spi.PropagationContext;
  * Nodes that propagate <code>Tuples</code> extend this class.
  * </p>
  *
- * @see TupleSource
- * @see ReteTuple
+ * @see LeftTupleSource
+ * @see LeftTuple
  *
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
-public abstract class TupleSource extends BaseNode
+public abstract class LeftTupleSource extends BaseNode
     implements
     Externalizable {
     // ------------------------------------------------------------
@@ -47,12 +47,12 @@ public abstract class TupleSource extends BaseNode
     // ------------------------------------------------------------
 
     /** The destination for <code>Tuples</code>. */
-    protected TupleSinkPropagator sink;
+    protected LeftTupleSinkPropagator sink;
 
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
-    public TupleSource() {
+    public LeftTupleSource() {
 
     }
 
@@ -61,7 +61,7 @@ public abstract class TupleSource extends BaseNode
      *
      * @param id
      */
-    TupleSource(final int id) {
+    LeftTupleSource(final int id) {
         super( id );
         this.sink = EmptyTupleSinkAdapter.getInstance();
     }
@@ -71,7 +71,7 @@ public abstract class TupleSource extends BaseNode
     // ------------------------------------------------------------
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         super.readExternal(in);
-        sink    = (TupleSinkPropagator)in.readObject();
+        sink    = (LeftTupleSinkPropagator)in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -87,7 +87,7 @@ public abstract class TupleSource extends BaseNode
      *            The <code>TupleSink</code> to receive propagated
      *            <code>Tuples</code>.
      */
-    protected void addTupleSink(final TupleSink tupleSink) {
+    protected void addTupleSink(final LeftTupleSink tupleSink) {
         if ( this.sink instanceof EmptyTupleSinkAdapter ) {
             this.sink = new SingleTupleSinkAdapter( tupleSink );
         } else if ( this.sink instanceof SingleTupleSinkAdapter ) {
@@ -106,7 +106,7 @@ public abstract class TupleSource extends BaseNode
      * @param tupleSink
      *            The <code>TupleSink</code> to remove
      */
-    protected void removeTupleSink(final TupleSink tupleSink) {
+    protected void removeTupleSink(final LeftTupleSink tupleSink) {
         if ( this.sink instanceof EmptyTupleSinkAdapter ) {
             throw new IllegalArgumentException( "Cannot remove a sink, when the list of sinks is null" );
         }
@@ -122,11 +122,11 @@ public abstract class TupleSource extends BaseNode
         }
     }
 
-    public TupleSinkPropagator getSinkPropagator() {
+    public LeftTupleSinkPropagator getSinkPropagator() {
         return this.sink;
     }
 
-    public abstract void updateSink(TupleSink sink,
+    public abstract void updateSink(LeftTupleSink sink,
                                     PropagationContext context,
                                     InternalWorkingMemory workingMemory);
 

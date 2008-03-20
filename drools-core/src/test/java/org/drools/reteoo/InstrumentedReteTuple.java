@@ -20,13 +20,13 @@ import org.drools.FactHandle;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 
-public class InstrumentedReteTuple extends ReteTuple {
+public class InstrumentedReteTuple extends LeftTuple {
     /**
      * 
      */
     private static final long serialVersionUID = 400L;
 
-    public InstrumentedReteTuple(final ReteTuple left,
+    public InstrumentedReteTuple(final LeftTuple left,
                                  final FactHandle handle) {
         super( left,
                (InternalFactHandle) handle );

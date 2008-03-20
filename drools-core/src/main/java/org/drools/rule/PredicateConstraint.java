@@ -25,7 +25,7 @@ import java.io.IOException;
 import org.drools.RuntimeDroolsException;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.reteoo.ReteTuple;
+import org.drools.reteoo.LeftTuple;
 import org.drools.spi.Extractor;
 import org.drools.spi.PredicateExpression;
 import org.drools.spi.Restriction;
@@ -276,7 +276,7 @@ public class PredicateConstraint extends MutableTypeConstraint
         }
     }
 
-    public boolean isAllowedCachedRight(final ReteTuple tuple,
+    public boolean isAllowedCachedRight(final LeftTuple tuple,
                                         final ContextEntry context) {
         try {
             final PredicateContextEntry ctx = (PredicateContextEntry) context;
@@ -315,7 +315,7 @@ public class PredicateConstraint extends MutableTypeConstraint
 
         private static final long    serialVersionUID = 400L;
 
-        public ReteTuple             leftTuple;
+        public LeftTuple             leftTuple;
         public Object                rightObject;
         public InternalWorkingMemory workingMemory;
 
@@ -327,7 +327,7 @@ public class PredicateConstraint extends MutableTypeConstraint
         }
 
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            leftTuple   = (ReteTuple)in.readObject();
+            leftTuple   = (LeftTuple)in.readObject();
             rightObject   = in.readObject();
             workingMemory   = (InternalWorkingMemory)in.readObject();
             dialectContext   = in.readObject();
@@ -357,7 +357,7 @@ public class PredicateConstraint extends MutableTypeConstraint
         }
 
         public void updateFromTuple(final InternalWorkingMemory workingMemory,
-                                    final ReteTuple tuple) {
+                                    final LeftTuple tuple) {
             this.workingMemory = workingMemory;
             this.leftTuple = tuple;
         }

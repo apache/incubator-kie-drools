@@ -2,7 +2,7 @@ package org.drools.common;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.reteoo.BetaMemory;
-import org.drools.reteoo.ReteTuple;
+import org.drools.reteoo.LeftTuple;
 import org.drools.rule.ContextEntry;
 import org.drools.util.LinkedList;
 
@@ -16,7 +16,7 @@ public interface BetaConstraints
 
     public void updateFromTuple(ContextEntry[] context,
                                 InternalWorkingMemory workingMemory,
-                                ReteTuple tuple);
+                                LeftTuple tuple);
 
     public void updateFromFactHandle(ContextEntry[] context,
                                      InternalWorkingMemory workingMemory,
@@ -26,7 +26,7 @@ public interface BetaConstraints
                                        InternalFactHandle handle);
 
     public boolean isAllowedCachedRight(ContextEntry[] context,
-                                        ReteTuple tuple);
+                                        LeftTuple tuple);
 
     public LinkedList getConstraints();
 

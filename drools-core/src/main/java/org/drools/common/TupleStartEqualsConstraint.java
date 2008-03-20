@@ -16,7 +16,7 @@
 
 package org.drools.common;
 
-import org.drools.reteoo.ReteTuple;
+import org.drools.reteoo.LeftTuple;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.Declaration;
 import org.drools.spi.BetaNodeFieldConstraint;
@@ -88,11 +88,11 @@ public class TupleStartEqualsConstraint
     public boolean isAllowedCachedLeft(final ContextEntry context,
                                        final InternalFactHandle handle) {
         // object MUST be a ReteTuple
-        final ReteTuple tuple = ((ReteTuple) handle.getObject()).getSubTuple( ((TupleStartEqualsConstraintContextEntry) context).compareSize );
+        final LeftTuple tuple = ((LeftTuple) handle.getObject()).getSubTuple( ((TupleStartEqualsConstraintContextEntry) context).compareSize );
         return ((TupleStartEqualsConstraintContextEntry) context).left.equals( tuple );
     }
 
-    public boolean isAllowedCachedRight(final ReteTuple tuple,
+    public boolean isAllowedCachedRight(final LeftTuple tuple,
                                         final ContextEntry context) {
         return tuple.equals( ((TupleStartEqualsConstraintContextEntry) context).right.getSubTuple( tuple.size() ) );
     }
@@ -122,8 +122,8 @@ public class TupleStartEqualsConstraint
 
         private static final long serialVersionUID = 400L;
 
-        public ReteTuple          left;
-        public ReteTuple          right;
+        public LeftTuple          left;
+        public LeftTuple          right;
 
         // the size of the tuple to compare
         public int                compareSize;
@@ -134,8 +134,8 @@ public class TupleStartEqualsConstraint
         }
 
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            left        = (ReteTuple)in.readObject();
-            right       = (ReteTuple)in.readObject();
+            left        = (LeftTuple)in.readObject();
+            right       = (LeftTuple)in.readObject();
             compareSize = in.readInt();
             entry       = (ContextEntry)in.readObject();
         }
@@ -156,7 +156,7 @@ public class TupleStartEqualsConstraint
         }
 
         public void updateFromTuple(final InternalWorkingMemory workingMemory,
-                                    final ReteTuple tuple) {
+                                    final LeftTuple tuple) {
             this.left = tuple;
             this.compareSize = tuple.size();
         }
@@ -165,7 +165,7 @@ public class TupleStartEqualsConstraint
                                          final InternalFactHandle handle) {
             // if it is not a rete tuple, then there is a bug in the engine...
             // it MUST be a rete tuple
-            this.right = (ReteTuple) handle.getObject();
+            this.right = (LeftTuple) handle.getObject();
         }
 
         public void resetTuple() {

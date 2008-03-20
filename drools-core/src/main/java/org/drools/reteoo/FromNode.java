@@ -22,9 +22,9 @@ import org.drools.util.LinkedList;
 import org.drools.util.LinkedListEntry;
 import org.drools.util.TupleHashTable;
 
-public class FromNode extends TupleSource
+public class FromNode extends LeftTupleSource
     implements
-    TupleSinkNode,
+    LeftTupleSinkNode,
     NodeMemory {
     /**
      *
@@ -32,12 +32,12 @@ public class FromNode extends TupleSource
     private static final long          serialVersionUID = 400L;
 
     private DataProvider               dataProvider;
-    private TupleSource                tupleSource;
+    private LeftTupleSource                tupleSource;
     private AlphaNodeFieldConstraint[] alphaConstraints;
     private BetaConstraints            betaConstraints;
 
-    private TupleSinkNode              previousTupleSinkNode;
-    private TupleSinkNode              nextTupleSinkNode;
+    private LeftTupleSinkNode              previousTupleSinkNode;
+    private LeftTupleSinkNode              nextTupleSinkNode;
 
     protected boolean                  tupleMemoryEnabled;
 
@@ -46,7 +46,7 @@ public class FromNode extends TupleSource
 
     public FromNode(final int id,
                     final DataProvider dataProvider,
-                    final TupleSource tupleSource,
+                    final LeftTupleSource tupleSource,
                     final AlphaNodeFieldConstraint[] constraints,
                     final BetaConstraints binder) {
         super( id );
@@ -60,11 +60,11 @@ public class FromNode extends TupleSource
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         super.readExternal(in);
         dataProvider            = (DataProvider)in.readObject();
-        tupleSource             = (TupleSource)in.readObject();
+        tupleSource             = (LeftTupleSource)in.readObject();
         alphaConstraints        = (AlphaNodeFieldConstraint[])in.readObject();
         betaConstraints         = (BetaConstraints)in.readObject();
-        previousTupleSinkNode   = (TupleSinkNode)in.readObject();
-        nextTupleSinkNode       = (TupleSinkNode)in.readObject();
+        previousTupleSinkNode   = (LeftTupleSinkNode)in.readObject();
+        nextTupleSinkNode       = (LeftTupleSinkNode)in.readObject();
         tupleMemoryEnabled      = in.readBoolean();
     }
 
@@ -81,7 +81,7 @@ public class FromNode extends TupleSource
     /**
      * @inheritDoc
      */
-    public void assertTuple(final ReteTuple leftTuple,
+    public void assertLeftTuple(final LeftTuple leftTuple,
                             final PropagationContext context,
                             final InternalWorkingMemory workingMemory) {
         final FromMemory memory = (FromMemory) workingMemory.getNodeMemory( this );
@@ -120,7 +120,7 @@ public class FromNode extends TupleSource
                                                                         handle ) ) {
                 list.add( new LinkedListEntry( handle ) );
 
-                this.sink.propagateAssertTuple( leftTuple,
+                this.sink.propagateAssertLeftTuple( leftTuple,
                                                 handle,
                                                 context,
                                                 workingMemory );
@@ -138,12 +138,12 @@ public class FromNode extends TupleSource
 
     }
 
-    public void retractTuple(final ReteTuple leftTuple,
+    public void retractLeftTuple(final LeftTuple leftTuple,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
 
         final FromMemory memory = (FromMemory) workingMemory.getNodeMemory( this );
-        final ReteTuple tuple = memory.betaMemory.getTupleMemory().remove( leftTuple );
+        final LeftTuple tuple = memory.betaMemory.getTupleMemory().remove( leftTuple );
 
         if ( tuple == null ) {
             return;
@@ -154,7 +154,7 @@ public class FromNode extends TupleSource
         if ( list != null ) {
             for ( LinkedListEntry entry = (LinkedListEntry) list.getFirst(); entry != null; entry = (LinkedListEntry) entry.getNext() ) {
                 final InternalFactHandle handle = (InternalFactHandle) entry.getObject();
-                this.sink.propagateRetractTuple( leftTuple,
+                this.sink.propagateRetractLeftTuple( leftTuple,
                                                  handle,
                                                  context,
                                                  workingMemory );
@@ -194,7 +194,7 @@ public class FromNode extends TupleSource
         context.visitTupleSource( this );
 
         if ( !node.isInUse() ) {
-            removeTupleSink( (TupleSink) node );
+            removeTupleSink( (LeftTupleSink) node );
         }
         if ( !this.isInUse() ) {
             for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
@@ -209,21 +209,21 @@ public class FromNode extends TupleSource
         }
     }
 
-    public void updateSink(final TupleSink sink,
+    public void updateSink(final LeftTupleSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
 
         final FromMemory memory = (FromMemory) workingMemory.getNodeMemory( this );
 
         final Iterator tupleIter = memory.betaMemory.getTupleMemory().iterator();
-        for ( ReteTuple tuple = (ReteTuple) tupleIter.next(); tuple != null; tuple = (ReteTuple) tupleIter.next() ) {
+        for ( LeftTuple tuple = (LeftTuple) tupleIter.next(); tuple != null; tuple = (LeftTuple) tupleIter.next() ) {
             final LinkedList list = (LinkedList) memory.betaMemory.getCreatedHandles().remove( tuple );
             if ( list == null ) {
                 continue;
             }
             for ( LinkedListEntry entry = (LinkedListEntry) list.getFirst(); entry != null; entry = (LinkedListEntry) entry.getNext() ) {
                 final InternalFactHandle handle = (InternalFactHandle) entry.getObject();
-                this.sink.propagateAssertTuple( tuple,
+                this.sink.propagateAssertLeftTuple( tuple,
                                                 handle,
                                                 context,
                                                 workingMemory );
@@ -240,11 +240,11 @@ public class FromNode extends TupleSource
                                this.alphaConstraints );
     }
 
-    public boolean isTupleMemoryEnabled() {
+    public boolean isLeftTupleMemoryEnabled() {
         return tupleMemoryEnabled;
     }
 
-    public void setTupleMemoryEnabled(boolean tupleMemoryEnabled) {
+    public void setLeftTupleMemoryEnabled(boolean tupleMemoryEnabled) {
         this.tupleMemoryEnabled = tupleMemoryEnabled;
     }
 
@@ -253,7 +253,7 @@ public class FromNode extends TupleSource
      * @return
      *      The next TupleSinkNode
      */
-    public TupleSinkNode getNextTupleSinkNode() {
+    public LeftTupleSinkNode getNextLeftTupleSinkNode() {
         return this.nextTupleSinkNode;
     }
 
@@ -262,7 +262,7 @@ public class FromNode extends TupleSource
      * @param next
      *      The next TupleSinkNode
      */
-    public void setNextTupleSinkNode(final TupleSinkNode next) {
+    public void setNextLeftTupleSinkNode(final LeftTupleSinkNode next) {
         this.nextTupleSinkNode = next;
     }
 
@@ -271,7 +271,7 @@ public class FromNode extends TupleSource
      * @return
      *      The previous TupleSinkNode
      */
-    public TupleSinkNode getPreviousTupleSinkNode() {
+    public LeftTupleSinkNode getPreviousLeftTupleSinkNode() {
         return this.previousTupleSinkNode;
     }
 
@@ -280,7 +280,7 @@ public class FromNode extends TupleSource
      * @param previous
      *      The previous TupleSinkNode
      */
-    public void setPreviousTupleSinkNode(final TupleSinkNode previous) {
+    public void setPreviousLeftTupleSinkNode(final LeftTupleSinkNode previous) {
         this.previousTupleSinkNode = previous;
     }
 

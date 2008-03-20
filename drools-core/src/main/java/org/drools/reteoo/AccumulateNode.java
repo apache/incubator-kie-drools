@@ -60,7 +60,7 @@ public class AccumulateNode extends BetaNode {
     }
 
     public AccumulateNode(final int id,
-                          final TupleSource leftInput,
+                          final LeftTupleSource leftInput,
                           final ObjectSource rightInput,
                           final AlphaNodeFieldConstraint[] resultConstraints,
                           final BetaConstraints sourceBinder,
@@ -114,7 +114,7 @@ public class AccumulateNode extends BetaNode {
      *   Object result = this.accumulator.accumulate( ... );
      *
      */
-    public void assertTuple(final ReteTuple leftTuple,
+    public void assertLeftTuple(final LeftTuple leftTuple,
                             final PropagationContext context,
                             final InternalWorkingMemory workingMemory) {
 
@@ -148,7 +148,7 @@ public class AccumulateNode extends BetaNode {
                                                        handle ) ) {
                 if ( this.unwrapRightObject ) {
                     // if there is a subnetwork, handle must be unwrapped
-                    ReteTuple tuple = (ReteTuple) handle.getObject();
+                    LeftTuple tuple = (LeftTuple) handle.getObject();
                     handle = tuple.getLastHandle();
                     this.accumulate.accumulate( memory.workingMemoryContext,
                                                 accContext,
@@ -196,7 +196,7 @@ public class AccumulateNode extends BetaNode {
                                                         handle ) ) {
                 accresult.handle = handle;
 
-                this.sink.propagateAssertTuple( leftTuple,
+                this.sink.propagateAssertLeftTuple( leftTuple,
                                                 handle,
                                                 context,
                                                 workingMemory );
@@ -216,7 +216,7 @@ public class AccumulateNode extends BetaNode {
      * it must always also retreat it.
      *
      */
-    public void retractTuple(final ReteTuple leftTuple,
+    public void retractLeftTuple(final LeftTuple leftTuple,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
         final AccumulateMemory memory = (AccumulateMemory) workingMemory.getNodeMemory( this );
@@ -227,7 +227,7 @@ public class AccumulateNode extends BetaNode {
 
         // if tuple was propagated
         if ( accresult.handle != null ) {
-            this.sink.propagateRetractTuple( leftTuple,
+            this.sink.propagateRetractLeftTuple( leftTuple,
                                              accresult.handle,
                                              context,
                                              workingMemory );
@@ -266,7 +266,7 @@ public class AccumulateNode extends BetaNode {
         // need to clone the tuples to avoid concurrent modification exceptions
         Entry[] tuples = memory.betaMemory.getTupleMemory().toArray();
         for ( int i = 0; i < tuples.length; i++ ) {
-            ReteTuple tuple = (ReteTuple) tuples[i];
+            LeftTuple tuple = (LeftTuple) tuples[i];
             if ( this.constraints.isAllowedCachedRight( memory.betaMemory.getContext(),
                                                         tuple ) ) {
                 if ( this.accumulate.supportsReverse() || context.getType() == PropagationContext.ASSERTION ) {
@@ -277,10 +277,10 @@ public class AccumulateNode extends BetaNode {
                                  workingMemory );
                 } else {
                     // context is MODIFICATION and does not supports reverse
-                    this.retractTuple( tuple,
+                    this.retractLeftTuple( tuple,
                                        context,
                                        workingMemory );
-                    this.assertTuple( tuple,
+                    this.assertLeftTuple( tuple,
                                       context,
                                       workingMemory );
                 }
@@ -310,7 +310,7 @@ public class AccumulateNode extends BetaNode {
         // need to clone the tuples to avoid concurrent modification exceptions
         Entry[] tuples = memory.betaMemory.getTupleMemory().toArray();
         for ( int i = 0; i < tuples.length; i++ ) {
-            ReteTuple tuple = (ReteTuple) tuples[i];
+            LeftTuple tuple = (LeftTuple) tuples[i];
             if ( this.constraints.isAllowedCachedRight( memory.betaMemory.getContext(),
                                                         tuple ) ) {
                 if ( this.accumulate.supportsReverse() ) {
@@ -320,10 +320,10 @@ public class AccumulateNode extends BetaNode {
                                       context,
                                       workingMemory );
                 } else {
-                    this.retractTuple( tuple,
+                    this.retractLeftTuple( tuple,
                                        context,
                                        workingMemory );
-                    this.assertTuple( tuple,
+                    this.assertLeftTuple( tuple,
                                       context,
                                       workingMemory );
                 }
@@ -334,7 +334,7 @@ public class AccumulateNode extends BetaNode {
     }
 
     public void modifyTuple(final boolean isAssert,
-                            final ReteTuple leftTuple,
+                            final LeftTuple leftTuple,
                             InternalFactHandle handle,
                             final PropagationContext context,
                             final InternalWorkingMemory workingMemory) {
@@ -344,7 +344,7 @@ public class AccumulateNode extends BetaNode {
 
         // if tuple was propagated
         if ( accresult.handle != null ) {
-            this.sink.propagateRetractTuple( leftTuple,
+            this.sink.propagateRetractLeftTuple( leftTuple,
                                              accresult.handle,
                                              context,
                                              workingMemory );
@@ -354,10 +354,10 @@ public class AccumulateNode extends BetaNode {
             accresult.handle = null;
         }
 
-        ReteTuple tuple = leftTuple;
+        LeftTuple tuple = leftTuple;
         if ( this.unwrapRightObject ) {
             // if there is a subnetwork, handle must be unwrapped
-            tuple = (ReteTuple) handle.getObject();
+            tuple = (LeftTuple) handle.getObject();
             handle = tuple.getLastHandle();
         }
 
@@ -433,7 +433,7 @@ public class AccumulateNode extends BetaNode {
                                                         createdHandle ) ) {
                 accresult.handle = createdHandle;
 
-                this.sink.propagateAssertTuple( leftTuple,
+                this.sink.propagateAssertLeftTuple( leftTuple,
                                                 createdHandle,
                                                 context,
                                                 workingMemory );
@@ -447,7 +447,7 @@ public class AccumulateNode extends BetaNode {
         }
     }
 
-    public void updateSink(final TupleSink sink,
+    public void updateSink(final LeftTupleSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
         final AccumulateMemory memory = (AccumulateMemory) workingMemory.getNodeMemory( this );
@@ -456,7 +456,7 @@ public class AccumulateNode extends BetaNode {
 
         for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
             AccumulateResult accresult = (AccumulateResult) entry.getValue();
-            sink.assertTuple( new ReteTuple( (ReteTuple) entry.getKey(),
+            sink.assertLeftTuple( new LeftTuple( (LeftTuple) entry.getKey(),
                                              accresult.handle ),
                               context,
                               workingMemory );

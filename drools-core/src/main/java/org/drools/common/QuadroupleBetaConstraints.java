@@ -20,8 +20,8 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.base.evaluators.Operator;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.FactHandleMemory;
-import org.drools.reteoo.ReteTuple;
-import org.drools.reteoo.TupleMemory;
+import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.LeftTupleMemory;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.VariableConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
@@ -191,7 +191,7 @@ public class QuadroupleBetaConstraints
      */
     public void updateFromTuple(final ContextEntry[] context,
                                 final InternalWorkingMemory workingMemory,
-                                final ReteTuple tuple) {
+                                final LeftTuple tuple) {
         context[0].updateFromTuple( workingMemory,
                                     tuple );
         context[1].updateFromTuple( workingMemory,
@@ -254,7 +254,7 @@ public class QuadroupleBetaConstraints
      * @see org.drools.common.BetaNodeConstraints#isAllowedCachedRight(org.drools.reteoo.ReteTuple)
      */
     public boolean isAllowedCachedRight(final ContextEntry[] context,
-                                        final ReteTuple tuple) {
+                                        final LeftTuple tuple) {
         return this.constraint0.isAllowedCachedRight( tuple,
                                                       context[0] ) && this.constraint1.isAllowedCachedRight( tuple,
                                                                                                              context[1] ) && this.constraint2.isAllowedCachedRight( tuple,
@@ -328,7 +328,7 @@ public class QuadroupleBetaConstraints
 
         if ( !list.isEmpty() ) {
             final FieldIndex[] indexes = (FieldIndex[]) list.toArray( new FieldIndex[list.size()] );
-            TupleMemory tupleMemory;
+            LeftTupleMemory tupleMemory;
             if ( conf.isIndexLeftBetaMemory() ) {
                 tupleMemory = new TupleIndexHashTable( indexes );
             } else {

@@ -104,10 +104,10 @@ public class MemoryVisitor extends ReflectiveVisitor implements Externalizable {
 
         this.indent++;
         try {
-            final Field field = TupleSource.class.getDeclaredField( "sink" );
+            final Field field = LeftTupleSource.class.getDeclaredField( "sink" );
             field.setAccessible( true );
-            final TupleSinkPropagator sink = (TupleSinkPropagator) field.get( node );
-            final TupleSink[] sinks = sink.getSinks();
+            final LeftTupleSinkPropagator sink = (LeftTupleSinkPropagator) field.get( node );
+            final LeftTupleSink[] sinks = sink.getSinks();
             for ( int i = 0, length = sinks.length; i < length; i++ ) {
                 visit( sinks[i] );
             }
@@ -130,10 +130,10 @@ public class MemoryVisitor extends ReflectiveVisitor implements Externalizable {
 
         this.indent++;
         try {
-            final Field field = TupleSource.class.getDeclaredField( "sink" );
+            final Field field = LeftTupleSource.class.getDeclaredField( "sink" );
             field.setAccessible( true );
-            final TupleSinkPropagator sink = (TupleSinkPropagator) field.get( node );
-            final TupleSink[] sinks = sink.getSinks();
+            final LeftTupleSinkPropagator sink = (LeftTupleSinkPropagator) field.get( node );
+            final LeftTupleSink[] sinks = sink.getSinks();
             for ( int i = 0, length = sinks.length; i < length; i++ ) {
                 visit( sinks[i] );
             }
@@ -155,10 +155,10 @@ public class MemoryVisitor extends ReflectiveVisitor implements Externalizable {
 
         this.indent++;
         try {
-            final Field field = TupleSource.class.getDeclaredField( "sink" );
+            final Field field = LeftTupleSource.class.getDeclaredField( "sink" );
             field.setAccessible( true );
-            final TupleSinkPropagator sink = (TupleSinkPropagator) field.get( node );
-            final TupleSink[] sinks = sink.getSinks();
+            final LeftTupleSinkPropagator sink = (LeftTupleSinkPropagator) field.get( node );
+            final LeftTupleSink[] sinks = sink.getSinks();
             for ( int i = 0, length = sinks.length; i < length; i++ ) {
                 visit( sinks[i] );
             }
@@ -258,7 +258,7 @@ public class MemoryVisitor extends ReflectiveVisitor implements Externalizable {
         }
     }
 
-    private void checkTupleMemory(final TupleMemory memory) {
+    private void checkTupleMemory(final LeftTupleMemory memory) {
         final Entry[] entries = memory.getTable();
         int count = 0;
         for ( int i = 0, length = entries.length; i < length; i++ ) {

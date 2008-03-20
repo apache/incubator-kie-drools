@@ -103,13 +103,13 @@ public class SchedulerTest extends DroolsTestCase {
                                                                        null,
                                                                        null );
 
-        final ReteTuple tuple = new ReteTuple( new DefaultFactHandle( 1,
+        final LeftTuple tuple = new LeftTuple( new DefaultFactHandle( 1,
                                                                       "cheese" ) );
 
         assertEquals( 0,
                       data.size() );
 
-        node.assertTuple( tuple,
+        node.assertLeftTuple( tuple,
                           context,
                           workingMemory );
 
@@ -165,9 +165,9 @@ public class SchedulerTest extends DroolsTestCase {
                                                                                     0,
                                                                                     rule,
                                                                                     knowledgeHelper.getActivation() );
-                    final ReteTuple tuple2 = new ReteTuple( new DefaultFactHandle( 2,
+                    final LeftTuple tuple2 = new LeftTuple( new DefaultFactHandle( 2,
                                                                                    "cheese" ) );
-                    node.assertTuple( tuple2,
+                    node.assertLeftTuple( tuple2,
                                       context2,
                                       (ReteooWorkingMemory) workingMemory );
                 }
@@ -187,10 +187,10 @@ public class SchedulerTest extends DroolsTestCase {
                                                                         null,
                                                                         null );
 
-        final ReteTuple tuple1 = new ReteTuple( new DefaultFactHandle( 1,
+        final LeftTuple tuple1 = new LeftTuple( new DefaultFactHandle( 1,
                                                                        "cheese" ) );
 
-        node.assertTuple( tuple1,
+        node.assertLeftTuple( tuple1,
                           context1,
                           workingMemory );
 
@@ -253,9 +253,9 @@ public class SchedulerTest extends DroolsTestCase {
                                                                                     0,
                                                                                     rule,
                                                                                     knowledgeHelper.getActivation() );
-                    final ReteTuple tuple2 = new ReteTuple( new DefaultFactHandle( 2,
+                    final LeftTuple tuple2 = new LeftTuple( new DefaultFactHandle( 2,
                                                                                    "cheese" ) );
-                    node.assertTuple( tuple2,
+                    node.assertLeftTuple( tuple2,
                                       context2,
                                       (ReteooWorkingMemory) workingMemory );
                 }
@@ -275,9 +275,9 @@ public class SchedulerTest extends DroolsTestCase {
                                                                         null,
                                                                         null );
 
-        final ReteTuple tuple1 = new ReteTuple( new DefaultFactHandle( 1,
+        final LeftTuple tuple1 = new LeftTuple( new DefaultFactHandle( 1,
                                                                        "cheese" ) );
-        node.assertTuple( tuple1,
+        node.assertLeftTuple( tuple1,
                           context1,
                           workingMemory );
         assertEquals( 0,
