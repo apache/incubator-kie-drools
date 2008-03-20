@@ -44,13 +44,11 @@ public class AndConstraint extends AbstractCompositeConstraint {
     public boolean isAllowed(InternalFactHandle handle,
                              InternalWorkingMemory workingMemory,
                              final ContextEntry ctx) {
-        if ( this.alphaConstraints.length > 0 ) {
-            for ( int i = 0; i < this.alphaConstraints.length; i++ ) {
-                if ( !this.alphaConstraints[i].isAllowed( handle,
-                                                          workingMemory,
-                                                          ctx ) ) {
-                    return false;
-                }
+        for ( int i = 0; i < this.alphaConstraints.length; i++ ) {
+            if ( !this.alphaConstraints[i].isAllowed( handle,
+                                                      workingMemory,
+                                                      ((MultiFieldConstraintContextEntry) ctx).alphas[i] ) ) {
+                return false;
             }
         }
         return true;
