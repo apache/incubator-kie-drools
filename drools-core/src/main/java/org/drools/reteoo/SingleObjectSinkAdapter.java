@@ -9,43 +9,43 @@ import java.io.ObjectOutput;
 import java.io.IOException;
 import java.io.ObjectInput;
 
-public class SingleRightTupleSinkAdapter
+public class SingleObjectSinkAdapter
     implements
-    RightTupleSinkPropagator,
+    ObjectSinkPropagator,
     Externalizable {
 
     private static final long serialVersionUID = 873985743021L;
 
-    private RightTupleSink    sink;
+    private ObjectSink        sink;
 
-    public SingleRightTupleSinkAdapter() {
+    public SingleObjectSinkAdapter() {
 
     }
 
-    public SingleRightTupleSinkAdapter(final RightTupleSink sink) {
+    public SingleObjectSinkAdapter(final ObjectSink sink) {
         this.sink = sink;
     }
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
-        sink = (RightTupleSink) in.readObject();
+        sink = (ObjectSink) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( sink );
     }
 
-    public void propagateAssertFact(final InternalFactHandle factHandle,
-                                          final PropagationContext context,
-                                          final InternalWorkingMemory workingMemory) {
+    public void propagateAssertObject(final InternalFactHandle factHandle,
+                                      final PropagationContext context,
+                                      final InternalWorkingMemory workingMemory) {
         this.sink.assertObject( factHandle,
-                                    context,
-                                    workingMemory );
+                                context,
+                                workingMemory );
 
     }
 
-    public RightTupleSink[] getSinks() {
-        return new RightTupleSink[]{this.sink};
+    public ObjectSink[] getSinks() {
+        return new ObjectSink[]{this.sink};
     }
 
     public int size() {

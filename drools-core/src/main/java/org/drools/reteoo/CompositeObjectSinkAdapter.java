@@ -24,9 +24,9 @@ import org.drools.util.LinkedListNode;
 import org.drools.util.ObjectHashMap;
 import org.drools.util.ObjectHashMap.ObjectEntry;
 
-public class CompositeRightTupleSinkAdapter
+public class CompositeObjectSinkAdapter
     implements
-    RightTupleSinkPropagator {
+    ObjectSinkPropagator {
 
     //    /** You can override this property via a system property (eg -Ddrools.hashThreshold=4) */
     //    public static final String HASH_THRESHOLD_SYSTEM_PROPERTY = "drools.hashThreshold";
@@ -36,40 +36,41 @@ public class CompositeRightTupleSinkAdapter
     //                                                                                                      "3" ) );
 
     private static final long serialVersionUID = 400L;
-    RightTupleSinkNodeList        otherSinks;
-    RightTupleSinkNodeList        hashableSinks;
+    ObjectSinkNodeList        otherSinks;
+    ObjectSinkNodeList        hashableSinks;
 
     LinkedList                hashedFieldIndexes;
 
     ObjectHashMap             hashedSinkMap;
 
-    private int         alphaNodeHashingThreshold;
+    private int               alphaNodeHashingThreshold;
 
-    public CompositeRightTupleSinkAdapter() {
+    public CompositeObjectSinkAdapter() {
         this( 3 );
     }
 
-    public CompositeRightTupleSinkAdapter(final int alphaNodeHashingThreshold) {
+    public CompositeObjectSinkAdapter(final int alphaNodeHashingThreshold) {
         this.alphaNodeHashingThreshold = alphaNodeHashingThreshold;
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        otherSinks      = (RightTupleSinkNodeList)in.readObject();
-        hashableSinks   = (RightTupleSinkNodeList)in.readObject();
-        hashedFieldIndexes  = (LinkedList)in.readObject();
-        hashedSinkMap       = (ObjectHashMap)in.readObject();
-        alphaNodeHashingThreshold   = in.readInt();
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        otherSinks = (ObjectSinkNodeList) in.readObject();
+        hashableSinks = (ObjectSinkNodeList) in.readObject();
+        hashedFieldIndexes = (LinkedList) in.readObject();
+        hashedSinkMap = (ObjectHashMap) in.readObject();
+        alphaNodeHashingThreshold = in.readInt();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(otherSinks);
-        out.writeObject(hashableSinks);
-        out.writeObject(hashedFieldIndexes);
-        out.writeObject(hashedSinkMap);
-        out.writeInt(alphaNodeHashingThreshold);
+        out.writeObject( otherSinks );
+        out.writeObject( hashableSinks );
+        out.writeObject( hashedFieldIndexes );
+        out.writeObject( hashedSinkMap );
+        out.writeInt( alphaNodeHashingThreshold );
     }
 
-    public void addObjectSink(final RightTupleSink sink) {
+    public void addObjectSink(final ObjectSink sink) {
         if ( sink instanceof AlphaNode ) {
             final AlphaNode alphaNode = (AlphaNode) sink;
             final AlphaNodeFieldConstraint fieldConstraint = alphaNode.getConstraint();
@@ -96,9 +97,9 @@ public class CompositeRightTupleSinkAdapter
                                                 false );
                     } else {
                         if ( this.hashableSinks == null ) {
-                            this.hashableSinks = new RightTupleSinkNodeList();
+                            this.hashableSinks = new ObjectSinkNodeList();
                         }
-                        this.hashableSinks.add( (RightTupleSinkNode) sink );
+                        this.hashableSinks.add( (ObjectTupleSinkNode) sink );
                     }
                     return;
                 }
@@ -107,13 +108,13 @@ public class CompositeRightTupleSinkAdapter
         }
 
         if ( this.otherSinks == null ) {
-            this.otherSinks = new RightTupleSinkNodeList();
+            this.otherSinks = new ObjectSinkNodeList();
         }
 
-        this.otherSinks.add( (RightTupleSinkNode) sink );
+        this.otherSinks.add( (ObjectTupleSinkNode) sink );
     }
 
-    public void removeObjectSink(final RightTupleSink sink) {
+    public void removeObjectSink(final ObjectSink sink) {
         if ( sink instanceof AlphaNode ) {
             final AlphaNode alphaNode = (AlphaNode) sink;
             final AlphaNodeFieldConstraint fieldConstraint = alphaNode.getConstraint();
@@ -137,7 +138,7 @@ public class CompositeRightTupleSinkAdapter
                             unHashSinks( fieldIndex );
                         }
                     } else {
-                        this.hashableSinks.remove( (RightTupleSinkNode) sink );
+                        this.hashableSinks.remove( (ObjectTupleSinkNode) sink );
                     }
 
                     if ( this.hashableSinks != null && this.hashableSinks.isEmpty() ) {
@@ -149,7 +150,7 @@ public class CompositeRightTupleSinkAdapter
             }
         }
 
-        this.otherSinks.remove( (RightTupleSinkNode) sink );
+        this.otherSinks.remove( (ObjectTupleSinkNode) sink );
 
         if ( this.otherSinks.isEmpty() ) {
             this.otherSinks = null;
@@ -165,7 +166,7 @@ public class CompositeRightTupleSinkAdapter
             this.hashedSinkMap = new ObjectHashMap();
         }
 
-        for ( RightTupleSinkNode sink = this.hashableSinks.getFirst(); sink != null; sink = sink.getNextRightTupleSinkNode() ) {
+        for ( ObjectTupleSinkNode sink = this.hashableSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
             final AlphaNode alphaNode = (AlphaNode) sink;
             final AlphaNodeFieldConstraint fieldConstraint = alphaNode.getConstraint();
             final LiteralConstraint literalConstraint = (LiteralConstraint) fieldConstraint;
@@ -181,7 +182,7 @@ public class CompositeRightTupleSinkAdapter
         }
 
         for ( final java.util.Iterator it = list.iterator(); it.hasNext(); ) {
-            final RightTupleSinkNode sink = (RightTupleSinkNode) it.next();
+            final ObjectTupleSinkNode sink = (ObjectTupleSinkNode) it.next();
             this.hashableSinks.remove( sink );
         }
 
@@ -214,7 +215,7 @@ public class CompositeRightTupleSinkAdapter
             if ( evaluator.getOperator() == Operator.EQUAL && index == literalConstraint.getFieldExtractor().getIndex() ) {
                 final FieldValue value = literalConstraint.getField();
                 if ( this.hashableSinks == null ) {
-                    this.hashableSinks = new RightTupleSinkNodeList();
+                    this.hashableSinks = new ObjectSinkNodeList();
                 }
                 this.hashableSinks.add( sink );
                 this.hashedSinkMap.remove( new HashKey( index,
@@ -292,7 +293,7 @@ public class CompositeRightTupleSinkAdapter
         return null;
     }
 
-    public void propagateAssertFact(final InternalFactHandle factHandle,
+    public void propagateAssertObject(final InternalFactHandle factHandle,
                                       final PropagationContext context,
                                       final InternalWorkingMemory workingMemory) {
         final Object object = factHandle.getObject();
@@ -312,7 +313,7 @@ public class CompositeRightTupleSinkAdapter
                 HashKey hashKey = new HashKey( index,
                                                object,
                                                fieldIndex.getFieldExtractor() );
-                final RightTupleSink sink = (RightTupleSink) this.hashedSinkMap.get( hashKey );
+                final ObjectSink sink = (ObjectSink) this.hashedSinkMap.get( hashKey );
                 if ( sink != null ) {
                     // The sink exists so propagate
                     sink.assertObject( factHandle,
@@ -324,7 +325,7 @@ public class CompositeRightTupleSinkAdapter
 
         // propagate unhashed
         if ( this.hashableSinks != null ) {
-            for ( RightTupleSinkNode sink = this.hashableSinks.getFirst(); sink != null; sink = sink.getNextRightTupleSinkNode() ) {
+            for ( ObjectTupleSinkNode sink = this.hashableSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
                 sink.assertObject( factHandle,
                                    context,
                                    workingMemory );
@@ -333,7 +334,7 @@ public class CompositeRightTupleSinkAdapter
 
         if ( this.otherSinks != null ) {
             // propagate others
-            for ( RightTupleSinkNode sink = this.otherSinks.getFirst(); sink != null; sink = sink.getNextRightTupleSinkNode() ) {
+            for ( ObjectTupleSinkNode sink = this.otherSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
                 sink.assertObject( factHandle,
                                    context,
                                    workingMemory );
@@ -342,17 +343,17 @@ public class CompositeRightTupleSinkAdapter
 
     }
 
-    public RightTupleSink[] getSinks() {
+    public ObjectSink[] getSinks() {
         final List list = new ArrayList();
 
         if ( this.otherSinks != null ) {
-            for ( RightTupleSinkNode sink = this.otherSinks.getFirst(); sink != null; sink = sink.getNextRightTupleSinkNode() ) {
+            for ( ObjectTupleSinkNode sink = this.otherSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
                 list.add( sink );
             }
         }
 
         if ( this.hashableSinks != null ) {
-            for ( RightTupleSinkNode sink = this.hashableSinks.getFirst(); sink != null; sink = sink.getNextRightTupleSinkNode() ) {
+            for ( ObjectTupleSinkNode sink = this.hashableSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
                 list.add( sink );
             }
         }
@@ -360,12 +361,12 @@ public class CompositeRightTupleSinkAdapter
         if ( this.hashedSinkMap != null ) {
             final Iterator it = this.hashedSinkMap.newIterator();
             for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
-                final RightTupleSink sink = (RightTupleSink) entry.getValue();
+                final ObjectSink sink = (ObjectSink) entry.getValue();
                 list.add( sink );
             }
         }
 
-        return (RightTupleSink[]) list.toArray( new RightTupleSink[list.size()] );
+        return (ObjectSink[]) list.toArray( new ObjectSink[list.size()] );
     }
 
     public int size() {
@@ -417,26 +418,27 @@ public class CompositeRightTupleSinkAdapter
                            extractor );
         }
 
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            index   = in.readInt();
-            type    = in.readByte();
-            ovalue  = in.readObject();
-            lvalue  = in.readLong();
-            bvalue  = in.readBoolean();
-            dvalue  = in.readDouble();
-            isNull  = in.readBoolean();
-            hashCode   = in.readInt();
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
+            index = in.readInt();
+            type = in.readByte();
+            ovalue = in.readObject();
+            lvalue = in.readLong();
+            bvalue = in.readBoolean();
+            dvalue = in.readDouble();
+            isNull = in.readBoolean();
+            hashCode = in.readInt();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeInt(index);
-            out.writeByte(type);
-            out.writeObject(ovalue);
-            out.writeLong(lvalue);
-            out.writeBoolean(bvalue);
-            out.writeDouble(dvalue);
-            out.writeBoolean(isNull);
-            out.writeInt(hashCode);
+            out.writeInt( index );
+            out.writeByte( type );
+            out.writeObject( ovalue );
+            out.writeLong( lvalue );
+            out.writeBoolean( bvalue );
+            out.writeDouble( dvalue );
+            out.writeBoolean( isNull );
+            out.writeInt( hashCode );
         }
 
         public int getIndex() {
@@ -660,7 +662,7 @@ public class CompositeRightTupleSinkAdapter
         implements
         LinkedListNode {
         private static final long serialVersionUID = 400L;
-        private int         index;
+        private int               index;
         private FieldExtractor    fieldExtactor;
 
         private int               count;
@@ -680,22 +682,23 @@ public class CompositeRightTupleSinkAdapter
             this.fieldExtactor = fieldExtractor;
         }
 
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            index   = in.readInt();
-            fieldExtactor  = (FieldExtractor)in.readObject();
-            count   = in.readInt();
-            hashed  = in.readBoolean();
-            previous    = (LinkedListNode)in.readObject();
-            next        = (LinkedListNode)in.readObject();
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
+            index = in.readInt();
+            fieldExtactor = (FieldExtractor) in.readObject();
+            count = in.readInt();
+            hashed = in.readBoolean();
+            previous = (LinkedListNode) in.readObject();
+            next = (LinkedListNode) in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeInt(index);
-            out.writeObject(fieldExtactor);
-            out.writeInt(count);
-            out.writeBoolean(hashed);
-            out.writeObject(previous);
-            out.writeObject(next);
+            out.writeInt( index );
+            out.writeObject( fieldExtactor );
+            out.writeInt( count );
+            out.writeBoolean( hashed );
+            out.writeObject( previous );
+            out.writeObject( next );
         }
 
         public FieldExtractor getFieldExtractor() {

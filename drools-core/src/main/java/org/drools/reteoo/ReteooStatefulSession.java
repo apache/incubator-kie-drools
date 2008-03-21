@@ -8,8 +8,7 @@ import java.util.List;
 import org.drools.WorkingMemoryEntryPoint;
 import org.drools.FactHandle;
 import org.drools.StatefulSession;
-import org.drools.common.InternalRuleBase;
-//import org.drools.common.AbstractWorkingMemory.EntryPointInterfaceImpl;
+import org.drools.common.InternalRuleBase; //import org.drools.common.AbstractWorkingMemory.EntryPointInterfaceImpl;
 import org.drools.concurrent.AssertObject;
 import org.drools.concurrent.AssertObjects;
 import org.drools.concurrent.ExecutorService;
@@ -27,10 +26,10 @@ public class ReteooStatefulSession extends ReteooWorkingMemory
     implements
     StatefulSession {
 
-    private static final long serialVersionUID = -5360554247241558374L;
+    private static final long         serialVersionUID = -5360554247241558374L;
     private transient ExecutorService executor;
 
-    private transient List                          ruleBaseListeners;
+    private transient List            ruleBaseListeners;
 
     public ReteooStatefulSession() {
 
@@ -55,7 +54,7 @@ public class ReteooStatefulSession extends ReteooWorkingMemory
     }
 
     public Future asyncUpdate(final FactHandle factHandle,
-                                    final Object object) {
+                              final Object object) {
         return this.executor.submit( new UpdateObject( factHandle,
                                                        object ) );
     }
@@ -89,7 +88,7 @@ public class ReteooStatefulSession extends ReteooWorkingMemory
         this.workingMemoryEventSupport.reset();
         this.agendaEventSupport.reset();
         this.workflowEventSupport.reset();
-        for( Iterator it = this.__ruleBaseEventListeners.iterator(); it.hasNext(); ) {
+        for ( Iterator it = this.__ruleBaseEventListeners.iterator(); it.hasNext(); ) {
             this.ruleBase.removeEventListener( (RuleBaseEventListener) it.next() );
         }
         this.executor.shutDown();
@@ -108,12 +107,12 @@ public class ReteooStatefulSession extends ReteooWorkingMemory
         }
         return this.ruleBaseListeners;
     }
-    
-//    public StatefulSession getEntryPoint(String id) {        
-//        EntryPoint ep = new EntryPoint( id );
-//        return new EntryPointInterfaceImpl( ep,
-//                                            this );
-//    }    
+
+    //    public StatefulSession getEntryPoint(String id) {        
+    //        EntryPoint ep = new EntryPoint( id );
+    //        return new EntryPointInterfaceImpl( ep,
+    //                                            this );
+    //    }    
 
     public ExecutorService getExecutorService() {
         return executor;

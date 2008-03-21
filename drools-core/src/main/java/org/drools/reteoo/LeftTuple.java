@@ -74,14 +74,14 @@ public class LeftTuple
         this.hashCode = h;
 
         this.sink = sink;
-        
+
         LeftTuple currentFirst = handle.getLeftTuple();
         if ( currentFirst != null ) {
-            currentFirst.leftParentPrevious =  this;
+            currentFirst.leftParentPrevious = this;
             this.leftParentNext = currentFirst;
         }
-        
-        handle.setLeftTuple( this );         
+
+        handle.setLeftTuple( this );
     }
 
     public LeftTuple(final LeftTuple leftTuple,
@@ -125,7 +125,7 @@ public class LeftTuple
         this.leftParent.children = this;
         this.sink = sink;
     }
-    
+
     public void unlinkFromLeftParent() {
         LeftTuple previous = (LeftTuple) this.leftParentPrevious;
         LeftTuple next = (LeftTuple) this.leftParentNext;
@@ -150,9 +150,9 @@ public class LeftTuple
         this.leftParent = null;
         this.leftParentPrevious = null;
         this.leftParentNext = null;
-//
+        //
         this.blocker = null;
-//
+        //
         this.rightParent = null;
         this.rightParentPrevious = null;
         this.rightParentNext = null;
@@ -257,14 +257,14 @@ public class LeftTuple
         }
         return entry.handle;
     }
-    
+
     public TupleHashTable getMemory() {
         return this.memory;
     }
 
     public void setMemory(TupleHashTable memory) {
         this.memory = memory;
-    }    
+    }
 
     public Entry getPrevious() {
         return previous;

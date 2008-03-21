@@ -29,7 +29,7 @@ import org.drools.reteoo.ExistsNode;
 import org.drools.reteoo.JoinNode;
 import org.drools.reteoo.LeftInputAdapterNode;
 import org.drools.reteoo.NotNode;
-import org.drools.reteoo.RightTupleSource;
+import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.RightInputAdapterNode;
 import org.drools.reteoo.LeftTupleSource;
 import org.drools.rule.GroupElement;
@@ -215,7 +215,7 @@ public class GroupElementBuilder
             if ( context.getObjectSource() == null && context.getTupleSource() != null ) {
 
                 // attach right input adapter node to convert tuple source into an object source
-                context.setObjectSource( (RightTupleSource) utils.attachNode( context,
+                context.setObjectSource( (ObjectSource) utils.attachNode( context,
                                                                           new RightInputAdapterNode( context.getNextId(),
                                                                                                      context.getTupleSource(),
                                                                                                      context ) ) );
@@ -292,7 +292,7 @@ public class GroupElementBuilder
             if ( context.getObjectSource() == null && context.getTupleSource() != null ) {
 
                 // attach right input adapter node to convert tuple source into an object source
-                context.setObjectSource( (RightTupleSource) utils.attachNode( context,
+                context.setObjectSource( (ObjectSource) utils.attachNode( context,
                                                                           new RightInputAdapterNode( context.getNextId(),
                                                                                                      context.getTupleSource(),
                                                                                                      context ) ) );

@@ -44,17 +44,17 @@ import java.io.ObjectInput;
  */
 public class LeftInputAdapterNode extends LeftTupleSource
     implements
-    RightTupleSinkNode,
+    ObjectTupleSinkNode,
     NodeMemory {
 
     /**
      *
      */
-    private static final long  serialVersionUID = 400L;
-    private RightTupleSource   objectSource;
+    private static final long   serialVersionUID = 400L;
+    private ObjectSource        objectSource;
 
-    private RightTupleSinkNode previousRightTupleSinkNode;
-    private RightTupleSinkNode nextRightTupleSinkNode;
+    private ObjectTupleSinkNode previousRightTupleSinkNode;
+    private ObjectTupleSinkNode nextRightTupleSinkNode;
 
     public LeftInputAdapterNode() {
 
@@ -73,7 +73,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
      *      a predicate is used in the first pattern, for instance
      */
     public LeftInputAdapterNode(final int id,
-                                final RightTupleSource source,
+                                final ObjectSource source,
                                 final BuildContext context) {
         super( id );
         this.objectSource = source;
@@ -82,9 +82,9 @@ public class LeftInputAdapterNode extends LeftTupleSource
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         super.readExternal( in );
-        objectSource = (RightTupleSource) in.readObject();
-        previousRightTupleSinkNode = (RightTupleSinkNode) in.readObject();
-        nextRightTupleSinkNode = (RightTupleSinkNode) in.readObject();
+        objectSource = (ObjectSource) in.readObject();
+        previousRightTupleSinkNode = (ObjectTupleSinkNode) in.readObject();
+        nextRightTupleSinkNode = (ObjectTupleSinkNode) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -132,8 +132,8 @@ public class LeftInputAdapterNode extends LeftTupleSource
      *            the <code>WorkingMemory</code> session.
      */
     public void assertObject(final InternalFactHandle factHandle,
-                           final PropagationContext context,
-                           final InternalWorkingMemory workingMemory) {
+                             final PropagationContext context,
+                             final InternalWorkingMemory workingMemory) {
         if ( !workingMemory.isSequential() ) {
             this.sink.createAndPropagateAssertLeftTuple( factHandle,
                                                          context,
@@ -142,23 +142,6 @@ public class LeftInputAdapterNode extends LeftTupleSource
             // @todo
             //workingMemory.addLIANodePropagation( new LIANodePropagation(this, rightTuple, context) );
         }
-    }
-
-    /**
-     * Retract an existing <code>FactHandleImpl</code> by placing it in a new <code>ReteTuple</code> before
-     * proagating to the <code>TupleSinks</code>
-     *
-     * @param handle
-     *            The <code>FactHandle/code> to retract.
-     * @param context
-     *             The <code>PropagationContext</code> of the <code>WorkingMemory<code> action.
-     * @param workingMemory
-     *            the <code>WorkingMemory</code> session.
-     */
-    public void retractRightTuple(final RightTuple rightTuple,
-                            final PropagationContext context,
-                            final InternalWorkingMemory workingMemory) {
-        throw new UnsupportedOperationException( "LeftInputAdapterNode.retractRightTuple is not supported." );
     }
 
     public void updateSink(final LeftTupleSink sink,
@@ -194,7 +177,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
      * @return
      *      The next ObjectSinkNode
      */
-    public RightTupleSinkNode getNextRightTupleSinkNode() {
+    public ObjectTupleSinkNode getNextObjectSinkNode() {
         return this.nextRightTupleSinkNode;
     }
 
@@ -203,7 +186,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
      * @param next
      *      The next ObjectSinkNode
      */
-    public void setNextRightTupleSinkNode(final RightTupleSinkNode next) {
+    public void setNextObjectSinkNode(final ObjectTupleSinkNode next) {
         this.nextRightTupleSinkNode = next;
     }
 
@@ -212,7 +195,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
      * @return
      *      The previous ObjectSinkNode
      */
-    public RightTupleSinkNode getPreviousRightTupleSinkNode() {
+    public ObjectTupleSinkNode getPreviousObjectSinkNode() {
         return this.previousRightTupleSinkNode;
     }
 
@@ -221,7 +204,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
      * @param previous
      *      The previous ObjectSinkNode
      */
-    public void setPreviousRightTupleSinkNode(final RightTupleSinkNode previous) {
+    public void setPreviousObjectSinkNode(final ObjectTupleSinkNode previous) {
         this.previousRightTupleSinkNode = previous;
     }
 
@@ -255,7 +238,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
      */
     private static class RightTupleSinkAdapter
         implements
-        RightTupleSink {
+        ObjectSink {
         private LeftTupleSink sink;
 
         public RightTupleSinkAdapter(final LeftTupleSink sink) {
@@ -263,8 +246,8 @@ public class LeftInputAdapterNode extends LeftTupleSource
         }
 
         public void assertObject(final InternalFactHandle factHandle,
-                               final PropagationContext context,
-                               final InternalWorkingMemory workingMemory) {
+                                 final PropagationContext context,
+                                 final InternalWorkingMemory workingMemory) {
             final LeftTuple tuple = new LeftTuple( factHandle,
                                                    this.sink );
             this.sink.assertLeftTuple( tuple,
@@ -273,8 +256,8 @@ public class LeftInputAdapterNode extends LeftTupleSource
         }
 
         public void retractRightTuple(final RightTuple rightTuple,
-                                final PropagationContext context,
-                                final InternalWorkingMemory workingMemory) {
+                                      final PropagationContext context,
+                                      final InternalWorkingMemory workingMemory) {
             throw new UnsupportedOperationException( "ObjectSinkAdapter onlys supports assertObject method calls" );
         }
     }

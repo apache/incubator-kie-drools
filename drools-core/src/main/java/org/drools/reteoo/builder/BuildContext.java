@@ -25,7 +25,7 @@ import java.util.Map;
 import org.drools.common.BetaConstraints;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.reteoo.RightTupleSource;
+import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.ReteooBuilder;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.LeftTupleSource;
@@ -43,7 +43,7 @@ public class BuildContext {
     private LeftTupleSource               tupleSource;
 
     // object source to attach next node to
-    private RightTupleSource              objectSource;
+    private ObjectSource              objectSource;
 
     // object type cache to check for cross products
     private LinkedList                objectType;
@@ -131,14 +131,14 @@ public class BuildContext {
     /**
      * @return the objectSource
      */
-    public RightTupleSource getObjectSource() {
+    public ObjectSource getObjectSource() {
         return this.objectSource;
     }
 
     /**
      * @param objectSource the objectSource to set
      */
-    public void setObjectSource(final RightTupleSource objectSource) {
+    public void setObjectSource(final ObjectSource objectSource) {
         this.objectSource = objectSource;
     }
 

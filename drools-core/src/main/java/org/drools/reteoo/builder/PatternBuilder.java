@@ -27,7 +27,7 @@ import org.drools.common.InstanceNotEqualsConstraint;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.AlphaNode;
 import org.drools.reteoo.EntryPointNode;
-import org.drools.reteoo.RightTupleSource;
+import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.PropagationQueuingNode;
 import org.drools.rule.Declaration;
@@ -108,7 +108,7 @@ public class PatternBuilder
                               alphaConstraints );
 
             if ( context.getCurrentEntryPoint() != EntryPoint.DEFAULT ) {
-                context.setObjectSource( (RightTupleSource) utils.attachNode( context,
+                context.setObjectSource( (ObjectSource) utils.attachNode( context,
                                                                           new PropagationQueuingNode( context.getNextId(),
                                                                                                       context.getObjectSource(),
                                                                                                       context ) ) );
@@ -209,12 +209,12 @@ public class PatternBuilder
             }
         }
 
-        context.setObjectSource( (RightTupleSource) utils.attachNode( context,
+        context.setObjectSource( (ObjectSource) utils.attachNode( context,
                                                                   new EntryPointNode( context.getNextId(),
                                                                                       context.getRuleBase().getRete(),
                                                                                       context ) ) );
 
-        context.setObjectSource( (RightTupleSource) utils.attachNode( context,
+        context.setObjectSource( (ObjectSource) utils.attachNode( context,
                                                                   new ObjectTypeNode( context.getNextId(),
                                                                                       (EntryPointNode) context.getObjectSource(),
                                                                                       pattern.getObjectType(),
@@ -223,7 +223,7 @@ public class PatternBuilder
         for ( final Iterator it = alphaConstraints.iterator(); it.hasNext(); ) {
             final AlphaNodeFieldConstraint constraint = (AlphaNodeFieldConstraint) it.next();
 
-            context.setObjectSource( (RightTupleSource) utils.attachNode( context,
+            context.setObjectSource( (ObjectSource) utils.attachNode( context,
                                                                       new AlphaNode( context.getNextId(),
                                                                                      (AlphaNodeFieldConstraint) constraint,
                                                                                      context.getObjectSource(),

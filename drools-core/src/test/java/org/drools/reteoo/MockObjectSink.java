@@ -25,12 +25,12 @@ import org.drools.spi.PropagationContext;
 
 public class MockObjectSink
     implements
-    RightTupleSinkNode {
+    ObjectTupleSinkNode {
     private final List     asserted  = new ArrayList();
     private final List     retracted = new ArrayList();
 
-    private RightTupleSinkNode previousObjectSinkNode;
-    private RightTupleSinkNode nextObjectSinkNode;
+    private ObjectTupleSinkNode previousObjectSinkNode;
+    private ObjectTupleSinkNode nextObjectSinkNode;
 
     public void assertObject(final InternalFactHandle factHandle,
                              final PropagationContext context,
@@ -57,7 +57,7 @@ public class MockObjectSink
      * @return
      *      The next ObjectSinkNode
      */
-    public RightTupleSinkNode getNextRightTupleSinkNode() {
+    public ObjectTupleSinkNode getNextObjectSinkNode() {
         return this.nextObjectSinkNode;
     }
 
@@ -66,7 +66,7 @@ public class MockObjectSink
      * @param next
      *      The next ObjectSinkNode
      */
-    public void setNextRightTupleSinkNode(final RightTupleSinkNode next) {
+    public void setNextObjectSinkNode(final ObjectTupleSinkNode next) {
         this.nextObjectSinkNode = next;
     }
 
@@ -75,7 +75,7 @@ public class MockObjectSink
      * @return
      *      The previous ObjectSinkNode
      */
-    public RightTupleSinkNode getPreviousRightTupleSinkNode() {
+    public ObjectTupleSinkNode getPreviousObjectSinkNode() {
         return this.previousObjectSinkNode;
     }
 
@@ -84,7 +84,7 @@ public class MockObjectSink
      * @param previous
      *      The previous ObjectSinkNode
      */
-    public void setPreviousRightTupleSinkNode(final RightTupleSinkNode previous) {
+    public void setPreviousObjectSinkNode(final ObjectTupleSinkNode previous) {
         this.previousObjectSinkNode = previous;
     }
 

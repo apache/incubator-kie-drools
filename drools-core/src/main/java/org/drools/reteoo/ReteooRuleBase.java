@@ -152,8 +152,8 @@ public class ReteooRuleBase extends AbstractRuleBase {
      */
     public void writeExternal(final ObjectOutput stream) throws IOException {
         super.writeExternal( stream );
-        stream.writeObject(this.reteooBuilder);
-        stream.writeObject(this.rete);
+        stream.writeObject( this.reteooBuilder );
+        stream.writeObject( this.rete );
     }
 
     /**
@@ -312,7 +312,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
 
     public int getNodeCount() {
         // may start in 0
-        return this.reteooBuilder.getIdGenerator().getLastId()+1;
+        return this.reteooBuilder.getIdGenerator().getLastId() + 1;
     }
 
     public static class InitialFactHandleDummyObject
@@ -320,7 +320,8 @@ public class ReteooRuleBase extends AbstractRuleBase {
         Externalizable {
         private static final long serialVersionUID = 400L;
 
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {

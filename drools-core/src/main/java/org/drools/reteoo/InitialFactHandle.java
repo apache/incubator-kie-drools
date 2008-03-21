@@ -27,15 +27,16 @@ public class InitialFactHandle extends DefaultFactHandle {
     /**
      *
      */
-    private static final long        serialVersionUID = 400L;
+    private static final long  serialVersionUID = 400L;
 
     private InternalFactHandle delegate;
 
-    private Object                   object;
+    private Object             object;
 
     public InitialFactHandle() {
 
     }
+
     public InitialFactHandle(final InternalFactHandle delegate) {
         super();
         this.delegate = delegate;
@@ -45,16 +46,17 @@ public class InitialFactHandle extends DefaultFactHandle {
     // ----------------------------------------------------------------------
     // Instance members
     // ----------------------------------------------------------------------
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        super.readExternal(in);
-        delegate    = (InternalFactHandle)in.readObject();
-        object      = in.readObject();
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        super.readExternal( in );
+        delegate = (InternalFactHandle) in.readObject();
+        object = in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal(out);
-        out.writeObject(delegate);
-        out.writeObject(object);
+        super.writeExternal( out );
+        out.writeObject( delegate );
+        out.writeObject( object );
     }
 
     /**

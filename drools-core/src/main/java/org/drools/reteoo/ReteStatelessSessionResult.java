@@ -16,37 +16,44 @@ import org.drools.util.JavaIteratorAdapter;
 import org.drools.util.ObjectHashMap;
 import org.drools.util.AbstractHashTable.HashTableIterator;
 
-public class ReteStatelessSessionResult implements StatelessSessionResult, Externalizable {
+public class ReteStatelessSessionResult
+    implements
+    StatelessSessionResult,
+    Externalizable {
     private transient InternalWorkingMemory workingMemory;
     // @TODO ObjectStore is currently too heavy for serialisation, but done to fix for now
-    private ObjectStore objectStore;
-    private GlobalResolver globalResolver;
+    private ObjectStore                     objectStore;
+    private GlobalResolver                  globalResolver;
 
     public ReteStatelessSessionResult() {
     }
 
-    public ReteStatelessSessionResult(InternalWorkingMemory workingMemory, GlobalResolver globalResolver) {
+    public ReteStatelessSessionResult(InternalWorkingMemory workingMemory,
+                                      GlobalResolver globalResolver) {
         this.workingMemory = workingMemory;
         this.objectStore = workingMemory.getObjectStore();
         this.globalResolver = globalResolver;
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        workingMemory = (InternalWorkingMemory)in.readObject();
-        objectStore = (ObjectStore)in.readObject();
-        globalResolver  = (GlobalResolver)in.readObject();
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        workingMemory = (InternalWorkingMemory) in.readObject();
+        objectStore = (ObjectStore) in.readObject();
+        globalResolver = (GlobalResolver) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(workingMemory);
-        out.writeObject(objectStore);
-        out.writeObject(globalResolver);
+        out.writeObject( workingMemory );
+        out.writeObject( objectStore );
+        out.writeObject( globalResolver );
     }
+
     public QueryResults getQueryResults(String query) {
         return this.workingMemory.getQueryResults( query );
     }
 
-    public QueryResults getQueryResults(final String query, final Object[] arguments) {
+    public QueryResults getQueryResults(final String query,
+                                        final Object[] arguments) {
         return this.workingMemory.getQueryResults( query,
                                                    arguments );
     }

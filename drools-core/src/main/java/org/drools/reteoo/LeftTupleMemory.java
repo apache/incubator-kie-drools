@@ -19,8 +19,8 @@ public interface LeftTupleMemory {
 
     public int size();
 
-//    public Entry[] getTable();
-    
+    //    public Entry[] getTable();
+
     public Entry[] toArray();
 
 }

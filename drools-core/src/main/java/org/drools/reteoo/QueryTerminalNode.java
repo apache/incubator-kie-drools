@@ -50,15 +50,15 @@ public final class QueryTerminalNode extends BaseNode
     /**
      *
      */
-    private static final long  serialVersionUID = 400L;
+    private static final long serialVersionUID = 400L;
     /** The rule to invoke upon match. */
-    private Rule         rule;
-    private GroupElement subrule;
-    private LeftTupleSource  tupleSource;
-    private boolean          tupleMemoryEnabled;
+    private Rule              rule;
+    private GroupElement      subrule;
+    private LeftTupleSource   tupleSource;
+    private boolean           tupleMemoryEnabled;
 
-    private LeftTupleSinkNode      previousTupleSinkNode;
-    private LeftTupleSinkNode      nextTupleSinkNode;
+    private LeftTupleSinkNode previousTupleSinkNode;
+    private LeftTupleSinkNode nextTupleSinkNode;
 
     // ------------------------------------------------------------
     // Constructors
@@ -88,24 +88,25 @@ public final class QueryTerminalNode extends BaseNode
     // ------------------------------------------------------------
     // Instance methods
     // ------------------------------------------------------------
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        super.readExternal(in);
-        rule                    = (Rule)in.readObject();
-        subrule                 = (GroupElement)in.readObject();
-        tupleSource             = (LeftTupleSource)in.readObject();
-        tupleMemoryEnabled      = in.readBoolean();
-        previousTupleSinkNode   = (LeftTupleSinkNode)in.readObject();
-        nextTupleSinkNode       = (LeftTupleSinkNode)in.readObject();
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        super.readExternal( in );
+        rule = (Rule) in.readObject();
+        subrule = (GroupElement) in.readObject();
+        tupleSource = (LeftTupleSource) in.readObject();
+        tupleMemoryEnabled = in.readBoolean();
+        previousTupleSinkNode = (LeftTupleSinkNode) in.readObject();
+        nextTupleSinkNode = (LeftTupleSinkNode) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal(out);
-        out.writeObject(rule);
-        out.writeObject(subrule);
-        out.writeObject(tupleSource);
-        out.writeBoolean(tupleMemoryEnabled);
-        out.writeObject(previousTupleSinkNode);
-        out.writeObject(nextTupleSinkNode);
+        super.writeExternal( out );
+        out.writeObject( rule );
+        out.writeObject( subrule );
+        out.writeObject( tupleSource );
+        out.writeBoolean( tupleMemoryEnabled );
+        out.writeObject( previousTupleSinkNode );
+        out.writeObject( nextTupleSinkNode );
     }
 
     /**
@@ -132,8 +133,8 @@ public final class QueryTerminalNode extends BaseNode
      *             If an error occurs while asserting.
      */
     public void assertLeftTuple(final LeftTuple tuple,
-                            final PropagationContext context,
-                            final InternalWorkingMemory workingMemory) {
+                                final PropagationContext context,
+                                final InternalWorkingMemory workingMemory) {
         final LinkedList list = (LinkedList) workingMemory.getNodeMemory( this );
         if ( list.isEmpty() ) {
             ((ReteooWorkingMemory) workingMemory).setQueryResults( this.rule.getName(),
@@ -143,8 +144,8 @@ public final class QueryTerminalNode extends BaseNode
     }
 
     public void retractLeftTuple(final LeftTuple tuple,
-                             final PropagationContext context,
-                             final InternalWorkingMemory workingMemory) {
+                                 final PropagationContext context,
+                                 final InternalWorkingMemory workingMemory) {
     }
 
     public String toString() {
@@ -177,7 +178,7 @@ public final class QueryTerminalNode extends BaseNode
     public void networkUpdated() {
         this.tupleSource.networkUpdated();
     }
-    
+
     protected void doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder,
                             final BaseNode node,
@@ -186,7 +187,7 @@ public final class QueryTerminalNode extends BaseNode
             workingMemories[i].clearNodeMemory( this );
         }
 
-        if( ! context.alreadyVisited( this.tupleSource ) ) {
+        if ( !context.alreadyVisited( this.tupleSource ) ) {
             this.tupleSource.remove( context,
                                      builder,
                                      this,

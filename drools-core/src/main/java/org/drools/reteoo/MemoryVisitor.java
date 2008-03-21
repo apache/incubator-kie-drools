@@ -17,7 +17,9 @@ import org.drools.util.FactHashTable;
 import org.drools.util.ReflectiveVisitor;
 import org.drools.util.FactHandleIndexHashTable.FieldIndexEntry;
 
-public class MemoryVisitor extends ReflectiveVisitor implements Externalizable {
+public class MemoryVisitor extends ReflectiveVisitor
+    implements
+    Externalizable {
     private InternalWorkingMemory workingMemory;
     private int                   indent = 0;
 
@@ -31,14 +33,15 @@ public class MemoryVisitor extends ReflectiveVisitor implements Externalizable {
         this.workingMemory = workingMemory;
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        workingMemory   = (InternalWorkingMemory)in.readObject();
-        indent          = in.readInt();
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        workingMemory = (InternalWorkingMemory) in.readObject();
+        indent = in.readInt();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(workingMemory);
-        out.writeInt(indent);
+        out.writeObject( workingMemory );
+        out.writeInt( indent );
     }
 
     /**
@@ -52,7 +55,7 @@ public class MemoryVisitor extends ReflectiveVisitor implements Externalizable {
      * Rete visits each of its ObjectTypeNodes.
      */
     public void visitRete(final Rete rete) {
-        for( ObjectTypeNode node : rete.getObjectTypeNodes() ) {
+        for ( ObjectTypeNode node : rete.getObjectTypeNodes() ) {
             visit( node );
         }
     }
@@ -65,10 +68,10 @@ public class MemoryVisitor extends ReflectiveVisitor implements Externalizable {
 
         this.indent++;
         try {
-            final Field field = RightTupleSource.class.getDeclaredField( "sink" );
+            final Field field = ObjectSource.class.getDeclaredField( "sink" );
             field.setAccessible( true );
-            final RightTupleSinkPropagator sink = (RightTupleSinkPropagator) field.get( node );
-            final RightTupleSink[] sinks = sink.getSinks();
+            final ObjectSinkPropagator sink = (ObjectSinkPropagator) field.get( node );
+            final ObjectSink[] sinks = sink.getSinks();
             for ( int i = 0, length = sinks.length; i < length; i++ ) {
                 visit( sinks[i] );
             }
@@ -86,10 +89,10 @@ public class MemoryVisitor extends ReflectiveVisitor implements Externalizable {
 
         this.indent++;
         try {
-            final Field field = RightTupleSource.class.getDeclaredField( "sink" );
+            final Field field = ObjectSource.class.getDeclaredField( "sink" );
             field.setAccessible( true );
-            final RightTupleSinkPropagator sink = (RightTupleSinkPropagator) field.get( node );
-            final RightTupleSink[] sinks = sink.getSinks();
+            final ObjectSinkPropagator sink = (ObjectSinkPropagator) field.get( node );
+            final ObjectSink[] sinks = sink.getSinks();
             for ( int i = 0, length = sinks.length; i < length; i++ ) {
                 visit( sinks[i] );
             }

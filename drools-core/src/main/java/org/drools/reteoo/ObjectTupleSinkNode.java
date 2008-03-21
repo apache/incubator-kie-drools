@@ -24,37 +24,37 @@ package org.drools.reteoo;
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
-public interface RightTupleSinkNode
+public interface ObjectTupleSinkNode
     extends
-    RightTupleSink {
+    ObjectSink {
 
     /**
      * Returns the next node
      * @return
      *      The next LinkedListNode
-     */     
-                              
-    public RightTupleSinkNode getNextRightTupleSinkNode();
+     */
+
+    public ObjectTupleSinkNode getNextObjectSinkNode();
 
     /**
      * Sets the next node 
      * @param next
      *      The next LinkedListNode
      */
-    public void setNextRightTupleSinkNode(RightTupleSinkNode next);
+    public void setNextObjectSinkNode(ObjectTupleSinkNode next);
 
     /**
      * Returns the previous node
      * @return
      *      The previous LinkedListNode
      */
-    public RightTupleSinkNode getPreviousRightTupleSinkNode();
+    public ObjectTupleSinkNode getPreviousObjectSinkNode();
 
     /**
      * Sets the previous node 
      * @param previous
      *      The previous LinkedListNode
      */
-    public void setPreviousRightTupleSinkNode(RightTupleSinkNode previous);
+    public void setPreviousObjectSinkNode(ObjectTupleSinkNode previous);
 
 }

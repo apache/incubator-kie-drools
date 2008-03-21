@@ -45,12 +45,13 @@ public class RuleRemovalContext
         this.visitedNodes = new HashMap();
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        visitedNodes    = (Map)in.readObject();
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        visitedNodes = (Map) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(visitedNodes);
+        out.writeObject( visitedNodes );
     }
 
     /**
@@ -59,8 +60,9 @@ public class RuleRemovalContext
      *
      * @param node
      */
-    public void visitTupleSource( LeftTupleSource node ) {
-        this.visitedNodes.put( new Integer(node.getId()), node );
+    public void visitTupleSource(LeftTupleSource node) {
+        this.visitedNodes.put( new Integer( node.getId() ),
+                               node );
     }
 
     /**
@@ -70,7 +72,7 @@ public class RuleRemovalContext
      * @param node
      * @return
      */
-    public boolean alreadyVisited( LeftTupleSource node ) {
+    public boolean alreadyVisited(LeftTupleSource node) {
         return this.visitedNodes.containsKey( new Integer( node.getId() ) );
     }
 

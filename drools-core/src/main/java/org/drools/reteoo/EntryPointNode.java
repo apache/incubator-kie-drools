@@ -54,20 +54,20 @@ import org.drools.util.Iterator;
  *
  * @author <a href="mailto:tirelli@post.com">Edson Tirelli</a>
  */
-public class EntryPointNode extends RightTupleSource
+public class EntryPointNode extends ObjectSource
     implements
     Externalizable,
-    RightTupleSink {
+    ObjectSink {
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
 
-    private static final long   serialVersionUID = 420L;
+    private static final long               serialVersionUID = 420L;
 
     /**
      * The entry point ID for this node
      */
-    private EntryPoint    entryPoint;
+    private EntryPoint                      entryPoint;
 
     /**
      * The object type nodes under this node
@@ -82,7 +82,7 @@ public class EntryPointNode extends RightTupleSource
     }
 
     public EntryPointNode(final int id,
-                          final RightTupleSource objectSource,
+                          final ObjectSource objectSource,
                           final BuildContext context) {
         this( id,
               objectSource,
@@ -90,7 +90,7 @@ public class EntryPointNode extends RightTupleSource
     }
 
     public EntryPointNode(final int id,
-                          final RightTupleSource objectSource,
+                          final ObjectSource objectSource,
                           final EntryPoint entryPoint) {
         super( id,
                objectSource,
@@ -103,24 +103,26 @@ public class EntryPointNode extends RightTupleSource
     // Instance methods
     // ------------------------------------------------------------
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        super.readExternal(in);
-        entryPoint  = (EntryPoint)in.readObject();
-        objectTypeNodes = (Map<ObjectType, ObjectTypeNode>)in.readObject();
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        super.readExternal( in );
+        entryPoint = (EntryPoint) in.readObject();
+        objectTypeNodes = (Map<ObjectType, ObjectTypeNode>) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal(out);
-        out.writeObject(entryPoint);
-        out.writeObject(objectTypeNodes);
+        super.writeExternal( out );
+        out.writeObject( entryPoint );
+        out.writeObject( objectTypeNodes );
     }
+
     /**
      * @return the entryPoint
      */
     public EntryPoint getEntryPoint() {
         return entryPoint;
     }
-    
+
     public void assertObject(final InternalFactHandle handle,
                              final PropagationContext context,
                              final ObjectTypeConf objectTypeConf,
@@ -144,7 +146,7 @@ public class EntryPointNode extends RightTupleSource
                                          context,
                                          workingMemory );
         }
-    }    
+    }
 
     /**
      * This is the entry point into the network for all asserted Facts. Iterates a cache
@@ -175,10 +177,10 @@ public class EntryPointNode extends RightTupleSource
      */
     public void retractObject(final InternalFactHandle handle,
                               final PropagationContext context,
-                              final ObjectTypeConf objectTypeConf,                              
+                              final ObjectTypeConf objectTypeConf,
                               final InternalWorkingMemory workingMemory) {
         final Object object = handle.getObject();
-        
+
         ObjectTypeNode[] cachedNodes = objectTypeConf.getObjectTypeNodes();
 
         if ( cachedNodes == null ) {
@@ -192,9 +194,9 @@ public class EntryPointNode extends RightTupleSource
                                           workingMemory );
         }
     }
-    
+
     public void retractObject(final InternalFactHandle handle,
-                              final PropagationContext context,        
+                              final PropagationContext context,
                               final InternalWorkingMemory workingMemory) {
         // do nothing, dummy method to impl the interface                
     }
@@ -208,13 +210,13 @@ public class EntryPointNode extends RightTupleSource
      *            <code>Objects</code>. Rete only accepts <code>ObjectTypeNode</code>s
      *            as parameters to this method, though.
      */
-    protected void addObjectSink(final RightTupleSink objectSink) {
+    protected void addObjectSink(final ObjectSink objectSink) {
         final ObjectTypeNode node = (ObjectTypeNode) objectSink;
         this.objectTypeNodes.put( node.getObjectType(),
                                   node );
     }
 
-    protected void removeObjectSink(final RightTupleSink objectSink) {
+    protected void removeObjectSink(final ObjectSink objectSink) {
         final ObjectTypeNode node = (ObjectTypeNode) objectSink;
         this.objectTypeNodes.remove( node.getObjectType() );
     }
@@ -233,8 +235,8 @@ public class EntryPointNode extends RightTupleSource
                                                                                       null,
                                                                                       null );
             this.source.updateSink( this,
-                                          propagationContext,
-                                          workingMemory );
+                                    propagationContext,
+                                    workingMemory );
         }
     }
 
@@ -271,17 +273,17 @@ public class EntryPointNode extends RightTupleSource
         return this.entryPoint.equals( other.entryPoint );
     }
 
-    public void updateSink(final RightTupleSink sink,
+    public void updateSink(final ObjectSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
         // JBRULES-612: the cache MUST be invalidated when a new node type is added to the network, so iterate and reset all caches.
         final ObjectTypeNode node = (ObjectTypeNode) sink;
-                
+
         final ObjectType newObjectType = node.getObjectType();
 
-        InternalWorkingMemoryEntryPoint wmEntryPoint = ( InternalWorkingMemoryEntryPoint ) workingMemory.getWorkingMemoryEntryPoint( this.entryPoint.getEntryPointId() );
-        
-        for ( ObjectTypeConf objectTypeConf : wmEntryPoint.getObjectTypeConfigurationRegistry().values() ) {            
+        InternalWorkingMemoryEntryPoint wmEntryPoint = (InternalWorkingMemoryEntryPoint) workingMemory.getWorkingMemoryEntryPoint( this.entryPoint.getEntryPointId() );
+
+        for ( ObjectTypeConf objectTypeConf : wmEntryPoint.getObjectTypeConfigurationRegistry().values() ) {
             if ( newObjectType.isAssignableFrom( objectTypeConf.getConcreteObjectTypeNode().getObjectType() ) ) {
                 objectTypeConf.resetCache();
                 ObjectTypeNode sourceNode = objectTypeConf.getConcreteObjectTypeNode();
@@ -305,7 +307,14 @@ public class EntryPointNode extends RightTupleSource
     }
 
     public String toString() {
-        return "[EntryPointNode("+this.id+") "+this.entryPoint+" ]";
+        return "[EntryPointNode(" + this.id + ") " + this.entryPoint + " ]";
+    }
+
+    public void retractRightTuple(RightTuple rightTuple,
+                                  PropagationContext context,
+                                  InternalWorkingMemory workingMemory) {
+        // TODO Auto-generated method stub
+
     }
 
 }

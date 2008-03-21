@@ -65,7 +65,7 @@ public class JoinNode extends BetaNode {
 
     public JoinNode(final int id,
                     final LeftTupleSource leftInput,
-                    final RightTupleSource rightInput,
+                    final ObjectSource rightInput,
                     final BetaConstraints binder,
                     final BuildContext context) {
         super( id,
@@ -138,12 +138,12 @@ public class JoinNode extends BetaNode {
      *            The working memory seesion.
      */
     public void assertObject(final InternalFactHandle factHandle,
-                           final PropagationContext context,
-                           final InternalWorkingMemory workingMemory) {
+                             final PropagationContext context,
+                             final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        
+
         RightTuple rightTuple = new RightTuple( factHandle,
-                                                this );        
+                                                this );
 
         memory.getRightTupleMemory().add( rightTuple );
         if ( !this.tupleMemoryEnabled ) {
@@ -178,11 +178,11 @@ public class JoinNode extends BetaNode {
      *            The working memory seesion.
      */
     public void retractRightTuple(final RightTuple rightTuple,
-                            final PropagationContext context,
-                            final InternalWorkingMemory workingMemory) {
+                                  final PropagationContext context,
+                                  final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         memory.getRightTupleMemory().remove( rightTuple );
-        
+
         if ( rightTuple.getBetaChildren() != null ) {
             this.sink.propagateRetractRightTuple( rightTuple,
                                                   context,
@@ -244,7 +244,7 @@ public class JoinNode extends BetaNode {
     }
 
     public String toString() {
-        RightTupleSource source = this.rightInput;
+        ObjectSource source = this.rightInput;
         while ( !(source instanceof ObjectTypeNode) ) {
             source = source.source;
         }

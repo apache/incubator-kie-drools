@@ -46,9 +46,9 @@ public class ClassObjectTypeConf
     ObjectTypeConf,
     Externalizable {
 
-    private static final long serialVersionUID = 8218802585428841926L;
-    
-    private Class<?>                       cls;
+    private static final long              serialVersionUID = 8218802585428841926L;
+
+    private Class< ? >                     cls;
     private transient InternalRuleBase     ruleBase;
     private ObjectTypeNode[]               objectTypeNodes;
 
@@ -64,13 +64,13 @@ public class ClassObjectTypeConf
     }
 
     public ClassObjectTypeConf(final EntryPoint entryPoint,
-                               final Class<?> clazz,
+                               final Class< ? > clazz,
                                final InternalRuleBase ruleBase) {
         this.cls = clazz;
         this.ruleBase = ruleBase;
         this.entryPoint = entryPoint;
         TypeDeclaration type = ruleBase.getTypeDeclaration( clazz );
-        final boolean isEvent = type != null && type.getRole() == TypeDeclaration.Role.EVENT; 
+        final boolean isEvent = type != null && type.getRole() == TypeDeclaration.Role.EVENT;
 
         ObjectType objectType = new ClassObjectType( clazz,
                                                      isEvent );
@@ -102,25 +102,25 @@ public class ClassObjectTypeConf
     }
 
     public void readExternal(ObjectInput stream) throws IOException,
-                                                     ClassNotFoundException {
-        ruleBase = (InternalRuleBase)stream.readObject();
-        cls = (Class)stream.readObject();
-        objectTypeNodes = (ObjectTypeNode[])stream.readObject();
+                                                ClassNotFoundException {
+        ruleBase = (InternalRuleBase) stream.readObject();
+        cls = (Class) stream.readObject();
+        objectTypeNodes = (ObjectTypeNode[]) stream.readObject();
         shadowEnabled = stream.readBoolean();
-        shadowClass = (Class)stream.readObject();
-        concreteObjectTypeNode = (ObjectTypeNode)stream.readObject();
-        entryPoint = (EntryPoint)stream.readObject();
-        defineShadowProxyData(cls);
+        shadowClass = (Class) stream.readObject();
+        concreteObjectTypeNode = (ObjectTypeNode) stream.readObject();
+        entryPoint = (EntryPoint) stream.readObject();
+        defineShadowProxyData( cls );
     }
 
     public void writeExternal(ObjectOutput stream) throws IOException {
-        stream.writeObject(ruleBase);
-        stream.writeObject(cls);
-        stream.writeObject(objectTypeNodes);
-        stream.writeBoolean(shadowEnabled);
-        stream.writeObject(shadowClass);
-        stream.writeObject(concreteObjectTypeNode);
-        stream.writeObject(entryPoint);
+        stream.writeObject( ruleBase );
+        stream.writeObject( cls );
+        stream.writeObject( objectTypeNodes );
+        stream.writeBoolean( shadowEnabled );
+        stream.writeObject( shadowClass );
+        stream.writeObject( concreteObjectTypeNode );
+        stream.writeObject( entryPoint );
     }
 
     public boolean isAssignableFrom(Object object) {
@@ -178,7 +178,7 @@ public class ClassObjectTypeConf
      * This will return the package name - if the package is null, it will
      * work it out from the class name (this is in cases where funky classloading is used).
      */
-    public static String getPackageName(Class<?> clazz,
+    public static String getPackageName(Class< ? > clazz,
                                         Package pkg) {
         String pkgName = "";
         if ( pkg == null ) {
@@ -278,7 +278,7 @@ public class ClassObjectTypeConf
 
                 proxy.setShadowedObject( fact );
             } catch ( final Exception e ) {
-            	System.out.println( "shadow: " +proxy.getClass() + ":" + fact.getClass() );
+                System.out.println( "shadow: " + proxy.getClass() + ":" + fact.getClass() );
                 throw new RuntimeDroolsException( "Error creating shadow fact for object: " + fact,
                                                   e );
             }
@@ -305,7 +305,7 @@ public class ClassObjectTypeConf
     private ObjectTypeNode[] getMatchingObjectTypes(final Class clazz) throws FactException {
         final List<ObjectTypeNode> cache = new ArrayList<ObjectTypeNode>();
 
-        for( ObjectTypeNode node : ruleBase.getRete().getObjectTypeNodes( this.entryPoint ).values() ) {
+        for ( ObjectTypeNode node : ruleBase.getRete().getObjectTypeNodes( this.entryPoint ).values() ) {
             if ( node.isAssignableFrom( clazz ) ) {
                 cache.add( node );
             }

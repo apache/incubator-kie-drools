@@ -46,9 +46,9 @@ import org.drools.util.Iterator;
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  *
  */
-public class AlphaNode extends RightTupleSource
+public class AlphaNode extends ObjectSource
     implements
-    RightTupleSinkNode,
+    ObjectTupleSinkNode,
     NodeMemory {
 
     /**
@@ -59,8 +59,8 @@ public class AlphaNode extends RightTupleSource
     /** The <code>FieldConstraint</code> */
     private AlphaNodeFieldConstraint constraint;
 
-    private RightTupleSinkNode       previousRightTupleSinkNode;
-    private RightTupleSinkNode       nextRightTupleSinkNode;
+    private ObjectTupleSinkNode      previousRightTupleSinkNode;
+    private ObjectTupleSinkNode      nextRightTupleSinkNode;
 
     public AlphaNode() {
 
@@ -80,7 +80,7 @@ public class AlphaNode extends RightTupleSource
      */
     public AlphaNode(final int id,
                      final AlphaNodeFieldConstraint constraint,
-                     final RightTupleSource objectSource,
+                     final ObjectSource objectSource,
                      final BuildContext context) {
         super( id,
                objectSource,
@@ -92,8 +92,8 @@ public class AlphaNode extends RightTupleSource
                                             ClassNotFoundException {
         super.readExternal( in );
         constraint = (AlphaNodeFieldConstraint) in.readObject();
-        previousRightTupleSinkNode = (RightTupleSinkNode) in.readObject();
-        nextRightTupleSinkNode = (RightTupleSinkNode) in.readObject();
+        previousRightTupleSinkNode = (ObjectTupleSinkNode) in.readObject();
+        nextRightTupleSinkNode = (ObjectTupleSinkNode) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -144,25 +144,19 @@ public class AlphaNode extends RightTupleSource
                                         workingMemory,
                                         memory.context ) ) {
 
-            this.sink.propagateAssertFact( factHandle,
-                                           context,
-                                           workingMemory );
+            this.sink.propagateAssertObject( factHandle,
+                                             context,
+                                             workingMemory );
         }
     }
 
-    public void retractRightTuple(RightTuple rightTuple,
-                                  PropagationContext context,
-                                  InternalWorkingMemory workingMemory) {
-        throw new UnsupportedOperationException( "AlphaNode.retractRightTuple is not supported." );
-    }
-
-    public void updateSink(final RightTupleSink sink,
+    public void updateSink(final ObjectSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
         AlphaMemory memory = (AlphaMemory) workingMemory.getNodeMemory( this );
         // get the objects from the parent
-        RightTupleSinkUpdateAdapter adapter = new RightTupleSinkUpdateAdapter( sink,
-                                                                               this.constraint );
+        ObjectSinkUpdateAdapter adapter = new ObjectSinkUpdateAdapter( sink,
+                                                                       this.constraint );
         this.source.updateSink( adapter,
                                 context,
                                 workingMemory );
@@ -173,7 +167,7 @@ public class AlphaNode extends RightTupleSource
                             final BaseNode node,
                             final InternalWorkingMemory[] workingMemories) {
         if ( !node.isInUse() ) {
-            removeObjectSink( (RightTupleSink) node );
+            removeObjectSink( (ObjectSink) node );
         }
         if ( !this.isInUse() ) {
             for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
@@ -198,7 +192,7 @@ public class AlphaNode extends RightTupleSource
     /**
      * @inheritDoc
      */
-    protected void addObjectSink(final RightTupleSink objectSink) {
+    protected void addObjectSink(final ObjectSink objectSink) {
         super.addObjectSink( objectSink );
     }
 
@@ -234,7 +228,7 @@ public class AlphaNode extends RightTupleSource
      * @return
      *      The next ObjectSinkNode
      */
-    public RightTupleSinkNode getNextRightTupleSinkNode() {
+    public ObjectTupleSinkNode getNextObjectSinkNode() {
         return this.nextRightTupleSinkNode;
     }
 
@@ -243,7 +237,7 @@ public class AlphaNode extends RightTupleSource
      * @param next
      *      The next ObjectSinkNode
      */
-    public void setNextRightTupleSinkNode(final RightTupleSinkNode next) {
+    public void setNextObjectSinkNode(final ObjectTupleSinkNode next) {
         this.nextRightTupleSinkNode = next;
     }
 
@@ -252,7 +246,7 @@ public class AlphaNode extends RightTupleSource
      * @return
      *      The previous ObjectSinkNode
      */
-    public RightTupleSinkNode getPreviousRightTupleSinkNode() {
+    public ObjectTupleSinkNode getPreviousObjectSinkNode() {
         return this.previousRightTupleSinkNode;
     }
 
@@ -261,7 +255,7 @@ public class AlphaNode extends RightTupleSource
      * @param previous
      *      The previous ObjectSinkNode
      */
-    public void setPreviousRightTupleSinkNode(final RightTupleSinkNode previous) {
+    public void setPreviousObjectSinkNode(final ObjectTupleSinkNode previous) {
         this.previousRightTupleSinkNode = previous;
     }
 
@@ -288,14 +282,14 @@ public class AlphaNode extends RightTupleSource
      * @author mproctor
      *
      */
-    private static class RightTupleSinkUpdateAdapter
+    private static class ObjectSinkUpdateAdapter
         implements
-        RightTupleSink {
-        private final RightTupleSink           sink;
+        ObjectSink {
+        private final ObjectSink               sink;
         private final AlphaNodeFieldConstraint constraint;
 
-        public RightTupleSinkUpdateAdapter(final RightTupleSink sink,
-                                           final AlphaNodeFieldConstraint constraint) {
+        public ObjectSinkUpdateAdapter(final ObjectSink sink,
+                                       final AlphaNodeFieldConstraint constraint) {
             this.sink = sink;
             this.constraint = constraint;
         }

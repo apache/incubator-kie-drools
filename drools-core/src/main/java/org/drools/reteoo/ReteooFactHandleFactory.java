@@ -32,17 +32,18 @@ import org.drools.temporal.SessionClock;
 public class ReteooFactHandleFactory extends AbstractFactHandleFactory {
 
     private static final long serialVersionUID = 400L;
-    
+
     public ReteooFactHandleFactory() {
         super();
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        super.readExternal(in);
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        super.readExternal( in );
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal(out);
+        super.writeExternal( out );
     }
 
     /* (non-Javadoc)
@@ -52,14 +53,14 @@ public class ReteooFactHandleFactory extends AbstractFactHandleFactory {
                                                      final Object object,
                                                      final long recency,
                                                      final boolean isEvent,
-                                                     final WorkingMemory workingMemory ) {
+                                                     final WorkingMemory workingMemory) {
         if ( isEvent ) {
             SessionClock clock = ((TemporalSession) workingMemory).getSessionClock();
             return new EventFactHandle( id,
                                         object,
                                         recency,
                                         clock.getCurrentTime(),
-                                        0 );  // primitive events have 0 duration
+                                        0 ); // primitive events have 0 duration
         } else {
             return new DefaultFactHandle( id,
                                           object,

@@ -47,7 +47,7 @@ public class BetaNodeTest extends TestCase {
      */
     public void testEqualsObject() {
         final LeftTupleSource ts = new MockTupleSource( 1 );
-        final RightTupleSource os = new MockObjectSource( 2 );
+        final ObjectSource os = new MockObjectSource( 2 );
 
         ReteooRuleBase ruleBase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase();
         BuildContext buildContext = new BuildContext( ruleBase, ruleBase.getReteooBuilder().getIdGenerator() );        

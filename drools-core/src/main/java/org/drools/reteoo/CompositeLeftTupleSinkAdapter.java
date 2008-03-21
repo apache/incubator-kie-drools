@@ -8,12 +8,12 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-public class CompositeTupleSinkAdapter
+public class CompositeLeftTupleSinkAdapter
     implements
     LeftTupleSinkPropagator {
     private LeftTupleSinkNodeList sinks;
 
-    public CompositeTupleSinkAdapter() {
+    public CompositeLeftTupleSinkAdapter() {
         this.sinks = new LeftTupleSinkNodeList();
     }
 

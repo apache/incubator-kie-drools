@@ -59,9 +59,9 @@ import org.drools.util.ObjectHashSet;
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
-public class ObjectTypeNode extends RightTupleSource
+public class ObjectTypeNode extends ObjectSource
     implements
-    RightTupleSink,
+    ObjectSink,
     Externalizable,
     NodeMemory
 
@@ -173,9 +173,9 @@ public class ObjectTypeNode extends RightTupleSource
                         false );
         }
 
-        this.sink.propagateAssertFact( factHandle,
-                                       context,
-                                       workingMemory );
+        this.sink.propagateAssertObject( factHandle,
+                                         context,
+                                         workingMemory );
     }
 
     public void retractRightTuple(final RightTuple rightTuple,
@@ -195,9 +195,9 @@ public class ObjectTypeNode extends RightTupleSource
      * @param workingMemory
      *            The working memory session.
      */
-    public void retractRightTuple(final InternalFactHandle factHandle,
-                                  final PropagationContext context,
-                                  final InternalWorkingMemory workingMemory) {
+    public void retractObject(final InternalFactHandle factHandle,
+                              final PropagationContext context,
+                              final InternalWorkingMemory workingMemory) {
 
         if ( context.getType() == PropagationContext.MODIFICATION && this.skipOnModify && context.getDormantActivations() == 0 ) {
             return;
@@ -223,7 +223,7 @@ public class ObjectTypeNode extends RightTupleSource
         factHandle.setLeftTuple( null );
     }
 
-    public void updateSink(final RightTupleSink sink,
+    public void updateSink(final ObjectSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
         final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( this );
@@ -288,7 +288,7 @@ public class ObjectTypeNode extends RightTupleSource
                             final BaseNode node,
                             final InternalWorkingMemory[] workingMemories) {
         if ( !node.isInUse() ) {
-            removeObjectSink( (RightTupleSink) node );
+            removeObjectSink( (ObjectSink) node );
         }
     }
 
@@ -337,14 +337,14 @@ public class ObjectTypeNode extends RightTupleSource
     /**
      * @inheritDoc
      */
-    protected void addObjectSink(final RightTupleSink objectSink) {
+    protected void addObjectSink(final ObjectSink objectSink) {
         super.addObjectSink( objectSink );
     }
 
     /**
      * @inheritDoc
      */
-    protected void removeObjectSink(final RightTupleSink objectSink) {
+    protected void removeObjectSink(final ObjectSink objectSink) {
         super.removeObjectSink( objectSink );
     }
 
@@ -366,8 +366,8 @@ public class ObjectTypeNode extends RightTupleSource
             } else if ( sinks[i] instanceof EvalConditionNode ) {
                 hasConstraints = this.usesDeclaration( ((EvalConditionNode) sinks[i]).getCondition() );
             }
-            if ( !hasConstraints && sinks[i] instanceof RightTupleSource ) {
-                hasConstraints = !this.canSkipOnModify( ((RightTupleSource) sinks[i]).getSinkPropagator().getSinks() );
+            if ( !hasConstraints && sinks[i] instanceof ObjectSource ) {
+                hasConstraints = !this.canSkipOnModify( ((ObjectSource) sinks[i]).getSinkPropagator().getSinks() );
             } else if ( !hasConstraints && sinks[i] instanceof LeftTupleSource ) {
                 hasConstraints = !this.canSkipOnModify( ((LeftTupleSource) sinks[i]).getSinkPropagator().getSinks() );
             }

@@ -42,19 +42,19 @@ import java.io.IOException;
  * @author <a href="mailto:etirelli@redhat.com">Edson Tirelli</a>
  *
  */
-public class RightInputAdapterNode extends RightTupleSource
+public class RightInputAdapterNode extends ObjectSource
     implements
     LeftTupleSinkNode,
     NodeMemory {
 
     private static final long serialVersionUID = 400L;
 
-    private LeftTupleSource tupleSource;
+    private LeftTupleSource   tupleSource;
 
-    protected boolean          tupleMemoryEnabled;
+    protected boolean         tupleMemoryEnabled;
 
-    private LeftTupleSinkNode       previousTupleSinkNode;
-    private LeftTupleSinkNode       nextTupleSinkNode;
+    private LeftTupleSinkNode previousTupleSinkNode;
+    private LeftTupleSinkNode nextTupleSinkNode;
 
     public RightInputAdapterNode() {
     }
@@ -76,22 +76,24 @@ public class RightInputAdapterNode extends RightTupleSource
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        super.readExternal(in);
-        tupleSource = (LeftTupleSource)in.readObject();
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        super.readExternal( in );
+        tupleSource = (LeftTupleSource) in.readObject();
         tupleMemoryEnabled = in.readBoolean();
-        previousTupleSinkNode = (LeftTupleSinkNode)in.readObject();
-        nextTupleSinkNode = (LeftTupleSinkNode)in.readObject();
+        previousTupleSinkNode = (LeftTupleSinkNode) in.readObject();
+        nextTupleSinkNode = (LeftTupleSinkNode) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal(out);
-        out.writeObject(tupleSource);
-        out.writeBoolean(tupleMemoryEnabled);
-        out.writeObject(previousTupleSinkNode);
-        out.writeObject(nextTupleSinkNode);
+        super.writeExternal( out );
+        out.writeObject( tupleSource );
+        out.writeBoolean( tupleMemoryEnabled );
+        out.writeObject( previousTupleSinkNode );
+        out.writeObject( nextTupleSinkNode );
 
     }
+
     /**
      * Creates and return the node memory
      */
@@ -111,11 +113,13 @@ public class RightInputAdapterNode extends RightTupleSource
      *            the <code>WorkingMemory</code> session.
      */
     public void assertLeftTuple(final LeftTuple tuple,
-                            final PropagationContext context,
-                            final InternalWorkingMemory workingMemory) {
+                                final PropagationContext context,
+                                final InternalWorkingMemory workingMemory) {
 
         // creating a dummy fact handle to wrap the tuple
-        final InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( tuple, false, workingMemory );
+        final InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( tuple,
+                                                                                              false,
+                                                                                              workingMemory );
 
         if ( this.tupleMemoryEnabled ) {
             final ObjectHashMap memory = (ObjectHashMap) workingMemory.getNodeMemory( this );
@@ -125,7 +129,7 @@ public class RightInputAdapterNode extends RightTupleSource
         }
 
         // propagate it
-        this.sink.propagateAssertFact( handle,
+        this.sink.propagateAssertObject( handle,
                                          context,
                                          workingMemory );
     }
@@ -135,8 +139,8 @@ public class RightInputAdapterNode extends RightTupleSource
      * the fact created for it
      */
     public void retractLeftTuple(final LeftTuple tuple,
-                             final PropagationContext context,
-                             final InternalWorkingMemory workingMemory) {
+                                 final PropagationContext context,
+                                 final InternalWorkingMemory workingMemory) {
 
         final ObjectHashMap memory = (ObjectHashMap) workingMemory.getNodeMemory( this );
 
@@ -171,12 +175,12 @@ public class RightInputAdapterNode extends RightTupleSource
                                          workingMemory );
         }
     }
-    
+
     public void networkUpdated() {
         this.tupleSource.networkUpdated();
     }
 
-    public void updateSink(final RightTupleSink sink,
+    public void updateSink(final ObjectSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
 
@@ -197,9 +201,9 @@ public class RightInputAdapterNode extends RightTupleSource
                             final BaseNode node,
                             final InternalWorkingMemory[] workingMemories) {
         if ( !node.isInUse() ) {
-            removeObjectSink( (RightTupleSink) node );
+            removeObjectSink( (ObjectSink) node );
         }
-        if( ! context.alreadyVisited( this.tupleSource ) ) {
+        if ( !context.alreadyVisited( this.tupleSource ) ) {
             this.tupleSource.remove( context,
                                      builder,
                                      this,
@@ -252,7 +256,7 @@ public class RightInputAdapterNode extends RightTupleSource
     }
 
     public int hashCode() {
-        return this.tupleSource.hashCode() * 17 + ((this.tupleMemoryEnabled) ? 1234 : 4321 );
+        return this.tupleSource.hashCode() * 17 + ((this.tupleMemoryEnabled) ? 1234 : 4321);
     }
 
     /*

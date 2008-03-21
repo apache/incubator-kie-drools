@@ -44,9 +44,9 @@ import org.drools.util.ObjectHashMap.ObjectEntry;
 public class CollectNode extends BetaNode
     implements
     LeftTupleSink,
-    RightTupleSink {
+    ObjectSink {
 
-    private static final long                serialVersionUID = 400L;
+    private static final long          serialVersionUID = 400L;
 
     private Collect                    collect;
     private AlphaNodeFieldConstraint[] resultConstraints;
@@ -76,7 +76,7 @@ public class CollectNode extends BetaNode
      */
     public CollectNode(final int id,
                        final LeftTupleSource leftInput,
-                       final RightTupleSource rightInput,
+                       final ObjectSource rightInput,
                        final AlphaNodeFieldConstraint[] resultConstraints,
                        final BetaConstraints sourceBinder,
                        final BetaConstraints resultsBinder,
@@ -94,21 +94,23 @@ public class CollectNode extends BetaNode
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        super.readExternal(in);
-        collect = (Collect)in.readObject();
-        resultConstraints = (AlphaNodeFieldConstraint[])in.readObject();
-        resultsBinder = (BetaConstraints)in.readObject();
-        unwrapRightObject   = in.readBoolean();
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        super.readExternal( in );
+        collect = (Collect) in.readObject();
+        resultConstraints = (AlphaNodeFieldConstraint[]) in.readObject();
+        resultsBinder = (BetaConstraints) in.readObject();
+        unwrapRightObject = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal(out);
-        out.writeObject(collect);
-        out.writeObject(resultConstraints);
-        out.writeObject(resultsBinder);
-        out.writeBoolean(unwrapRightObject);
+        super.writeExternal( out );
+        out.writeObject( collect );
+        out.writeObject( resultConstraints );
+        out.writeObject( resultsBinder );
+        out.writeBoolean( unwrapRightObject );
     }
+
     /**
      * @inheritDoc
      *
@@ -123,8 +125,8 @@ public class CollectNode extends BetaNode
      *
      */
     public void assertLeftTuple(final LeftTuple leftTuple,
-                            final PropagationContext context,
-                            final InternalWorkingMemory workingMemory) {
+                                final PropagationContext context,
+                                final InternalWorkingMemory workingMemory) {
 
         final CollectMemory memory = (CollectMemory) workingMemory.getNodeMemory( this );
 
@@ -167,7 +169,7 @@ public class CollectNode extends BetaNode
         for ( int i = 0, length = this.resultConstraints.length; i < length; i++ ) {
             if ( !this.resultConstraints[i].isAllowed( resultHandle,
                                                        workingMemory,
-                                                       memory.alphaContexts[i]) ) {
+                                                       memory.alphaContexts[i] ) ) {
                 isAllowed = false;
                 break;
             }
@@ -180,9 +182,9 @@ public class CollectNode extends BetaNode
                                                          resultHandle ) ) {
                 colresult.propagated = true;
                 this.sink.propagateAssertLeftTuple( leftTuple,
-                                                resultHandle,
-                                                context,
-                                                workingMemory );
+                                                    resultHandle,
+                                                    context,
+                                                    workingMemory );
             }
             this.resultsBinder.resetTuple( memory.resultsContext );
         }
@@ -192,11 +194,11 @@ public class CollectNode extends BetaNode
      * @inheritDoc
      */
     public void retractLeftTuple(final LeftTuple leftTuple,
-                             final PropagationContext context,
-                             final InternalWorkingMemory workingMemory) {
+                                 final PropagationContext context,
+                                 final InternalWorkingMemory workingMemory) {
 
         final CollectMemory memory = (CollectMemory) workingMemory.getNodeMemory( this );
-        if( memory.betaMemory.getLeftTupleMemory().remove( leftTuple ) == null ) {
+        if ( memory.betaMemory.getLeftTupleMemory().remove( leftTuple ) == null ) {
             return;
         }
         CollectResult result = (CollectResult) memory.betaMemory.getCreatedHandles().remove( leftTuple );
@@ -206,9 +208,9 @@ public class CollectNode extends BetaNode
         if ( result.propagated ) {
 
             this.sink.propagateRetractLeftTuple( leftTuple,
-                                             handle,
-                                             context,
-                                             workingMemory );
+                                                 handle,
+                                                 context,
+                                                 workingMemory );
 
             // Destroying the acumulate result object
             workingMemory.getFactHandleFactory().destroyFactHandle( handle );
@@ -316,9 +318,9 @@ public class CollectNode extends BetaNode
         // if tuple was propagated
         if ( result.propagated ) {
             this.sink.propagateRetractLeftTuple( leftTuple,
-                                             result.handle,
-                                             context,
-                                             workingMemory );
+                                                 result.handle,
+                                                 context,
+                                                 workingMemory );
             result.propagated = false;
         }
 
@@ -357,9 +359,9 @@ public class CollectNode extends BetaNode
                                                          result.handle ) ) {
                 result.propagated = true;
                 this.sink.propagateAssertLeftTuple( leftTuple,
-                                                result.handle,
-                                                context,
-                                                workingMemory );
+                                                    result.handle,
+                                                    context,
+                                                    workingMemory );
             }
 
             this.resultsBinder.resetTuple( memory.resultsContext );
@@ -376,9 +378,9 @@ public class CollectNode extends BetaNode
         for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
             CollectResult result = (CollectResult) entry.getValue();
             sink.assertLeftTuple( new LeftTuple( (LeftTuple) entry.getKey(),
-                                             result.handle ),
-                              context,
-                              workingMemory );
+                                                 result.handle ),
+                                  context,
+                                  workingMemory );
         }
     }
 

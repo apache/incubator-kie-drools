@@ -58,18 +58,18 @@ public class EvalConditionNode extends LeftTupleSource
     /**
      *
      */
-    private static final long   serialVersionUID = 400L;
+    private static final long serialVersionUID = 400L;
 
     /** The semantic <code>Test</code>. */
-    private EvalCondition condition;
+    private EvalCondition     condition;
 
     /** The source of incoming <code>Tuples</code>. */
     private LeftTupleSource   tupleSource;
 
-    protected boolean          tupleMemoryEnabled;
+    protected boolean         tupleMemoryEnabled;
 
-    private LeftTupleSinkNode       previousTupleSinkNode;
-    private LeftTupleSinkNode       nextTupleSinkNode;
+    private LeftTupleSinkNode previousTupleSinkNode;
+    private LeftTupleSinkNode nextTupleSinkNode;
 
     // ------------------------------------------------------------
     // Constructors
@@ -97,23 +97,25 @@ public class EvalConditionNode extends LeftTupleSource
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        super.readExternal(in);
-        condition   = (EvalCondition)in.readObject();
-        tupleSource = (LeftTupleSource)in.readObject();
-        tupleMemoryEnabled  = in.readBoolean();
-        previousTupleSinkNode   = (LeftTupleSinkNode)in.readObject();
-        nextTupleSinkNode       = (LeftTupleSinkNode)in.readObject();
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        super.readExternal( in );
+        condition = (EvalCondition) in.readObject();
+        tupleSource = (LeftTupleSource) in.readObject();
+        tupleMemoryEnabled = in.readBoolean();
+        previousTupleSinkNode = (LeftTupleSinkNode) in.readObject();
+        nextTupleSinkNode = (LeftTupleSinkNode) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal(out);
-        out.writeObject(condition);
-        out.writeObject(tupleSource);
-        out.writeBoolean(tupleMemoryEnabled);
-        out.writeObject(previousTupleSinkNode);
-        out.writeObject(nextTupleSinkNode);
+        super.writeExternal( out );
+        out.writeObject( condition );
+        out.writeObject( tupleSource );
+        out.writeBoolean( tupleMemoryEnabled );
+        out.writeObject( previousTupleSinkNode );
+        out.writeObject( nextTupleSinkNode );
     }
+
     /**
      * Attaches this node into the network.
      */
@@ -168,8 +170,8 @@ public class EvalConditionNode extends LeftTupleSource
      *             If an error occurs while asserting.
      */
     public void assertLeftTuple(final LeftTuple tuple,
-                            final PropagationContext context,
-                            final InternalWorkingMemory workingMemory) {
+                                final PropagationContext context,
+                                final InternalWorkingMemory workingMemory) {
         final EvalMemory memory = (EvalMemory) workingMemory.getNodeMemory( this );
 
         final boolean allowed = this.condition.isAllowed( tuple,
@@ -182,22 +184,22 @@ public class EvalConditionNode extends LeftTupleSource
             }
 
             this.sink.propagateAssertLeftTuple( tuple,
-                                            context,
-                                            workingMemory );
+                                                context,
+                                                workingMemory );
         }
     }
 
     public void retractLeftTuple(final LeftTuple tuple,
-                             final PropagationContext context,
-                             final InternalWorkingMemory workingMemory) {
+                                 final PropagationContext context,
+                                 final InternalWorkingMemory workingMemory) {
         final EvalMemory memory = (EvalMemory) workingMemory.getNodeMemory( this );
 
         // can we improve that?
         final LeftTuple memTuple = memory.tupleMemory.remove( tuple );
         if ( memTuple != null ) {
             this.sink.propagateRetractLeftTuple( memTuple,
-                                             context,
-                                             workingMemory );
+                                                 context,
+                                                 workingMemory );
         }
     }
 
@@ -229,7 +231,8 @@ public class EvalConditionNode extends LeftTupleSource
     }
 
     public Object createMemory(final RuleBaseConfiguration config) {
-        return new EvalMemory( this.tupleMemoryEnabled, this.condition.createContext() );
+        return new EvalMemory( this.tupleMemoryEnabled,
+                               this.condition.createContext() );
     }
 
     /* (non-Javadoc)
@@ -244,8 +247,8 @@ public class EvalConditionNode extends LeftTupleSource
         final Iterator it = memory.tupleMemory.iterator();
         for ( LeftTuple tuple = (LeftTuple) it.next(); tuple != null; tuple = (LeftTuple) it.next() ) {
             sink.assertLeftTuple( tuple,
-                              context,
-                              workingMemory );
+                                  context,
+                                  workingMemory );
         }
     }
 
@@ -262,7 +265,7 @@ public class EvalConditionNode extends LeftTupleSource
                 workingMemories[i].clearNodeMemory( this );
             }
         }
-        if( ! context.alreadyVisited( this.tupleSource ) ) {
+        if ( !context.alreadyVisited( this.tupleSource ) ) {
             this.tupleSource.remove( context,
                                      builder,
                                      this,
@@ -314,31 +317,36 @@ public class EvalConditionNode extends LeftTupleSource
         this.previousTupleSinkNode = previous;
     }
 
-    public static class EvalMemory implements Externalizable {
+    public static class EvalMemory
+        implements
+        Externalizable {
 
         private static final long serialVersionUID = -2754669682742843929L;
 
-        public TupleHashTable tupleMemory;
-        public Object context;
+        public TupleHashTable     tupleMemory;
+        public Object             context;
 
         public EvalMemory() {
 
         }
-        public EvalMemory( final boolean tupleMemoryEnabled, final Object context ) {
+
+        public EvalMemory(final boolean tupleMemoryEnabled,
+                          final Object context) {
             this.context = context;
-            if( tupleMemoryEnabled ) {
+            if ( tupleMemoryEnabled ) {
                 this.tupleMemory = new TupleHashTable();
             }
         }
 
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            tupleMemory = (TupleHashTable)in.readObject();
-            context     = in.readObject();
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
+            tupleMemory = (TupleHashTable) in.readObject();
+            context = in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject(tupleMemory);
-            out.writeObject(context);
+            out.writeObject( tupleMemory );
+            out.writeObject( context );
         }
     }
 

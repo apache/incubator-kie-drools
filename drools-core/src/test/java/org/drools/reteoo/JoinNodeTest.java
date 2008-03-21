@@ -89,9 +89,9 @@ public class JoinNodeTest extends DroolsTestCase {
     }
 
     public void testAttach() throws Exception {
-        final Field objectFfield = RightTupleSource.class.getDeclaredField( "sink" );
+        final Field objectFfield = ObjectSource.class.getDeclaredField( "sink" );
         objectFfield.setAccessible( true );
-        RightTupleSinkPropagator objectSink = (RightTupleSinkPropagator) objectFfield.get( this.objectSource );
+        ObjectSinkPropagator objectSink = (ObjectSinkPropagator) objectFfield.get( this.objectSource );
 
         final Field tupleField = LeftTupleSource.class.getDeclaredField( "sink" );
         tupleField.setAccessible( true );
@@ -105,7 +105,7 @@ public class JoinNodeTest extends DroolsTestCase {
 
         this.node.attach();
 
-        objectSink = (RightTupleSinkPropagator) objectFfield.get( this.objectSource );
+        objectSink = (ObjectSinkPropagator) objectFfield.get( this.objectSource );
         tupleSink = (LeftTupleSinkPropagator) tupleField.get( this.tupleSource );
 
         assertEquals( 1,
