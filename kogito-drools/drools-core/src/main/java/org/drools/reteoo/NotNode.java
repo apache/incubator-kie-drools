@@ -91,11 +91,7 @@ public class NotNode extends BetaNode {
                                 final PropagationContext context,
                                 final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-
-        if ( this.tupleMemoryEnabled ) {
-            memory.getLeftTupleMemory().add( leftTuple );
-        }
-
+        
         this.constraints.updateFromTuple( memory.getContext(),
                                           workingMemory,
                                           leftTuple );
