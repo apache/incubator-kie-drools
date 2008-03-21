@@ -30,7 +30,7 @@ import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.EvalCondition;
 import org.drools.spi.PropagationContext;
 import org.drools.util.Iterator;
-import org.drools.util.TupleHashTable;
+import org.drools.util.LeftTupleList;
 
 /**
  * Node which filters <code>ReteTuple</code>s.
@@ -323,7 +323,7 @@ public class EvalConditionNode extends LeftTupleSource
 
         private static final long serialVersionUID = -2754669682742843929L;
 
-        public TupleHashTable     tupleMemory;
+        public LeftTupleList     tupleMemory;
         public Object             context;
 
         public EvalMemory() {
@@ -334,13 +334,13 @@ public class EvalConditionNode extends LeftTupleSource
                           final Object context) {
             this.context = context;
             if ( tupleMemoryEnabled ) {
-                this.tupleMemory = new TupleHashTable();
+                this.tupleMemory = new LeftTupleList();
             }
         }
 
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
-            tupleMemory = (TupleHashTable) in.readObject();
+            tupleMemory = (LeftTupleList) in.readObject();
             context = in.readObject();
         }
 

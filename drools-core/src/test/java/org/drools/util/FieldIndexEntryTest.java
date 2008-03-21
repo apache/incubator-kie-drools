@@ -13,7 +13,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.util.AbstractHashTable.FactEntryImpl;
 import org.drools.util.AbstractHashTable.FieldIndex;
 import org.drools.util.AbstractHashTable.SingleIndex;
-import org.drools.util.FactHandleIndexHashTable.FieldIndexEntry;
+import org.drools.util.RightTupleIndexHashTable.FieldIndexEntry;
 
 public class FieldIndexEntryTest extends TestCase {
     ClassFieldExtractorCache cache = ClassFieldExtractorCache.getInstance();

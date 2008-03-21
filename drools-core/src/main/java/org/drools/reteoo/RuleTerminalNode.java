@@ -46,7 +46,7 @@ import org.drools.spi.PropagationContext;
 import org.drools.spi.RuleFlowGroup;
 import org.drools.util.Iterator;
 import org.drools.util.LinkedList;
-import org.drools.util.TupleHashTable;
+import org.drools.util.LeftTupleList;
 
 /**
  * Leaf Rete-OO node responsible for enacting <code>Action</code> s on a
@@ -198,7 +198,8 @@ public final class RuleTerminalNode extends BaseNode
         }
 
         //we only have to clone the head fact to make sure the graph is not affected during consequence reads after a modify
-        final LeftTuple cloned = new LeftTuple( tuple );
+        // @FIXME
+        final LeftTuple cloned = tuple;//new LeftTuple( tuple );
 
         final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
 
@@ -386,14 +387,9 @@ public final class RuleTerminalNode extends BaseNode
                                  final PropagationContext context,
                                  final InternalWorkingMemory workingMemory) {
         final TerminalNodeMemory memory = (TerminalNodeMemory) workingMemory.getNodeMemory( this );
-        final LeftTuple tuple = memory.getTupleMemory().remove( leftTuple );
-        if ( tuple == null ) {
-            // tuple should only be null if it was asserted and reached a no-loop causing it to exit early
-            // before being added to the node memory and an activation created and attached
-            return;
-        }
+        memory.getTupleMemory().remove( leftTuple );
 
-        final Activation activation = tuple.getActivation();
+        final Activation activation = leftTuple.getActivation();
         if ( activation.getLogicalDependencies() != null && !activation.getLogicalDependencies().isEmpty() ) {
             context.addRetractedTuple( this.rule,
                                        activation );
@@ -583,10 +579,10 @@ public final class RuleTerminalNode extends BaseNode
 
         private RuleFlowGroup       ruleFlowGroup;
 
-        private TupleHashTable      tupleMemory;
+        private LeftTupleList      tupleMemory;
 
         public TerminalNodeMemory() {
-            this.tupleMemory = new TupleHashTable();
+            this.tupleMemory = new LeftTupleList();
         }
 
         public void readExternal(ObjectInput in) throws IOException,
@@ -594,7 +590,7 @@ public final class RuleTerminalNode extends BaseNode
             agendaGroup = (InternalAgendaGroup) in.readObject();
             activationGroup = (ActivationGroup) in.readObject();
             ruleFlowGroup = (RuleFlowGroup) in.readObject();
-            tupleMemory = (TupleHashTable) in.readObject();
+            tupleMemory = (LeftTupleList) in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
@@ -620,7 +616,7 @@ public final class RuleTerminalNode extends BaseNode
             this.activationGroup = activationGroup;
         }
 
-        public TupleHashTable getTupleMemory() {
+        public LeftTupleList getTupleMemory() {
             return this.tupleMemory;
         }
 

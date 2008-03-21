@@ -39,7 +39,7 @@ import org.drools.spi.Evaluator;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.FieldValue;
 import org.drools.spi.PropagationContext;
-import org.drools.util.FactHashTable;
+import org.drools.util.RightTupleList;
 
 public class AlphaNodeTest extends DroolsTestCase {
 

@@ -24,7 +24,7 @@ import org.drools.common.PropagationContextImpl;
 import org.drools.reteoo.EvalConditionNode.EvalMemory;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.PropagationContext;
-import org.drools.util.TupleHashTable;
+import org.drools.util.LeftTupleList;
 
 public class EvalConditionNodeTest extends DroolsTestCase {
     private PropagationContext  context;

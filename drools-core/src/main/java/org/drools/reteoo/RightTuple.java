@@ -6,7 +6,7 @@ import java.io.ObjectOutput;
 
 import org.drools.common.InternalFactHandle;
 import org.drools.util.Entry;
-import org.drools.util.FactHashTable;
+import org.drools.util.RightTupleList;
 
 public class RightTuple
     implements
@@ -16,7 +16,7 @@ public class RightTuple
     private RightTuple               handlePrevious;
     private RightTuple               handleNext;
 
-    private FactHashTable            memory;
+    private RightTupleList            memory;
 
     private Entry                    previous;
     private Entry                    next;
@@ -99,11 +99,11 @@ public class RightTuple
         this.blocked = blocked;
     }
 
-    public FactHashTable getMemory() {
+    public RightTupleList getMemory() {
         return memory;
     }
 
-    public void setMemory(FactHashTable memory) {
+    public void setMemory(RightTupleList memory) {
         this.memory = memory;
     }
 

@@ -29,7 +29,7 @@ import org.drools.reteoo.ReteooBuilder.IdGenerator;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
-import org.drools.util.FactHashTable;
+import org.drools.util.RightTupleList;
 
 public class LeftInputAdapterNodeTest extends DroolsTestCase {
     private ReteooRuleBase ruleBase;
@@ -161,7 +161,7 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
                     workingMemory.getObject( tuple0.get( 0 ) ) );
 
         // check node memory
-        final FactHashTable table = (FactHashTable) workingMemory.getNodeMemory( liaNode );
+        final RightTupleList table = (RightTupleList) workingMemory.getNodeMemory( liaNode );
         assertEquals( 1,
                       table.size() );
         assertTrue( table.contains( f0 ) );
@@ -256,7 +256,7 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
 
         final Tuple tuple = (Tuple) ((Object[]) sink.getAsserted().get( 0 ))[0];
 
-        final FactHashTable map = (FactHashTable) workingMemory.getNodeMemory( liaNode );
+        final RightTupleList map = (RightTupleList) workingMemory.getNodeMemory( liaNode );
         assertTrue( map.contains( f0 ) );
 
         liaNode.retractObject( f0,
