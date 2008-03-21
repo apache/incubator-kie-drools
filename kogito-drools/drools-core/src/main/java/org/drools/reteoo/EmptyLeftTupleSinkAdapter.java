@@ -8,56 +8,52 @@ import java.io.ObjectOutput;
 import java.io.IOException;
 import java.io.ObjectInput;
 
-public class EmptyTupleSinkAdapter
+public class EmptyLeftTupleSinkAdapter
     implements
     LeftTupleSinkPropagator {
 
-    private static final EmptyTupleSinkAdapter instance = new EmptyTupleSinkAdapter();
+    private static final EmptyLeftTupleSinkAdapter instance = new EmptyLeftTupleSinkAdapter();
 
-    public static final EmptyTupleSinkAdapter getInstance() {
+    public static final EmptyLeftTupleSinkAdapter getInstance() {
         return instance;
     }
 
-    public EmptyTupleSinkAdapter() {
+    private EmptyLeftTupleSinkAdapter() {
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+    public void propagateAssertLeftTuple(final LeftTuple leftTuple,
+                                     final RightTuple rightTuple,
+                                     final PropagationContext context,
+                                     final InternalWorkingMemory workingMemory) {
+    }
+
+    public void propagateAssertLeftTuple(final LeftTuple tuple,
+                                     final PropagationContext context,
+                                     final InternalWorkingMemory workingMemory) {
+    }
+
+    public void propagateRetractLeftTuple(final LeftTuple tuple,
+                                      final PropagationContext context,
+                                      final InternalWorkingMemory workingMemory) {
+    }
+
+    public void createAndPropagateAssertLeftTuple(final InternalFactHandle factHandle,
+                                              final PropagationContext context,
+                                              final InternalWorkingMemory workingMemory) {
+    }
+    
+    public void propagateRetractRightTuple(RightTuple tuple,
+                                           PropagationContext context,
+                                           InternalWorkingMemory workingMemory) {
+    }
+
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
     }
     
-    public void propagateAssertLeftTuple(final LeftTuple tuple,
-                                     final InternalFactHandle handle,
-                                     final PropagationContext context,
-                                     final InternalWorkingMemory workingMemory) {
-    }
-
-    public void propagateAssertLeftTuple(final LeftTuple tuple,
-                                     final PropagationContext context,
-                                     final InternalWorkingMemory workingMemory) {
-    }
-
-    public void propagateRetractLeftTuple(final LeftTuple tuple,
-                                      final InternalFactHandle handle,
-                                      final PropagationContext context,
-                                      final InternalWorkingMemory workingMemory) {
-    }
-
-    public void propagateRetractLeftTuple(final LeftTuple tuple,
-                                      final PropagationContext context,
-                                      final InternalWorkingMemory workingMemory) {
-    }
-
-    public void createAndPropagateAssertLeftTuple(final InternalFactHandle handle,
-                                              final PropagationContext context,
-                                              final InternalWorkingMemory workingMemory) {
-    }
-
-    public void createAndPropagateRetractLeftTuple(final InternalFactHandle handle,
-                                               final PropagationContext context,
-                                               final InternalWorkingMemory workingMemory) {
-    }
 
     public LeftTupleSink[] getSinks() {
         return new LeftTupleSink[]{};
@@ -66,4 +62,6 @@ public class EmptyTupleSinkAdapter
     public int size() {
         return 0;
     }
+    
+
 }

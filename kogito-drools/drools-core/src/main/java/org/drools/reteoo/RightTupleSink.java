@@ -30,39 +30,35 @@ import org.drools.spi.PropagationContext;
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  *
  */
-public interface ObjectSink
+public interface RightTupleSink
     extends
     Sink {
 
     /**
      * Assert a new <code>FactHandleImpl</code>.
      * 
-     * @param handle
+     * @param factHandle
      *            The asserted <code>FactHandle/code>.
      * @param context
      *             The <code>PropagationContext</code> of the <code>WorkingMemory<code> action.           
      * @param workingMemory
      *            the <code>WorkingMemory</code> session.
      */
-    void assertObject(InternalFactHandle handle,
+    void assertObject(InternalFactHandle factHandle,
                       PropagationContext context,
                       InternalWorkingMemory workingMemory);
 
     /**
      * Retract an existing <code>FactHandleImpl</code>.
      * 
-     * @param handle
+     * @param factHandle
      *            The <code>FactHandle/code> to retract.
      * @param context
      *             The <code>PropagationContext</code> of the <code>WorkingMemory<code> action.           
      * @param workingMemory
      *            the <code>WorkingMemory</code> session.
      */
-    void retractObject(InternalFactHandle handle,
-                       PropagationContext context,
-                       InternalWorkingMemory workingMemory);
-
-    public boolean isObjectMemoryEnabled();
-
-    public void setObjectMemoryEnabled(boolean objectMemoryOn);
+    void retractRightTuple(RightTuple rightTuple,
+                           PropagationContext context,
+                           InternalWorkingMemory workingMemory);
 }

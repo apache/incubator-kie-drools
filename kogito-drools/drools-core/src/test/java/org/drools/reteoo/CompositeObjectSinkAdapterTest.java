@@ -41,7 +41,7 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
     public String wah;
 
     public void testBeta() {
-        final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
+        final CompositeRightTupleSinkAdapter ad = new CompositeRightTupleSinkAdapter();
         final MockBetaNode beta = new MockBetaNode( buildContext.getNextId(),
                                                     null,
                                                     null );
@@ -67,7 +67,7 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
     }
 
     public void testAlphaWithPredicate() {
-        final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
+        final CompositeRightTupleSinkAdapter ad = new CompositeRightTupleSinkAdapter();
         final AlphaNode al = new AlphaNode( buildContext.getNextId(),
                                             new PredicateConstraint( null,
                                                                      null ),
@@ -91,7 +91,7 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
 
     public void testSingleAlpha() {
 
-        final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
+        final CompositeRightTupleSinkAdapter ad = new CompositeRightTupleSinkAdapter();
         final LiteralConstraint lit = new LiteralConstraint( new MockExtractor(),
                                                              equals.getEvaluator( ValueType.STRING_TYPE, Operator.EQUAL ),
                                                              new ObjectFieldImpl( "stilton" ) );
@@ -117,7 +117,7 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
 
     public void testDoubleAlphaWithBeta() {
 
-        final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
+        final CompositeRightTupleSinkAdapter ad = new CompositeRightTupleSinkAdapter();
         final LiteralConstraint lit = new LiteralConstraint( new MockExtractor(),
                                                              equals.getEvaluator( ValueType.STRING_TYPE, Operator.EQUAL ),
                                                              new ObjectFieldImpl( "stilton" ) );
@@ -175,7 +175,7 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
     }
 
     public void testTripleAlpha() {
-        final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
+        final CompositeRightTupleSinkAdapter ad = new CompositeRightTupleSinkAdapter();
         FieldExtractor extractor = ClassFieldExtractorCache.getInstance().getExtractor( Cheese.class,
                                                                                         "type",
                                                                                         this.getClass().getClassLoader() );
@@ -234,7 +234,7 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
     }
 
     public void testTripleAlphaCharacterConstraint() {
-        final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
+        final CompositeRightTupleSinkAdapter ad = new CompositeRightTupleSinkAdapter();
         FieldExtractor extractor = ClassFieldExtractorCache.getInstance().getExtractor( Cheese.class,
                                                                                         "charType",
                                                                                         this.getClass().getClassLoader() );
@@ -286,13 +286,13 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
         // test propagation
         Cheese cheese = new Cheese();
         cheese.setCharType( 'B' );
-        CompositeObjectSinkAdapter.HashKey hashKey = new CompositeObjectSinkAdapter.HashKey();
+        CompositeRightTupleSinkAdapter.HashKey hashKey = new CompositeRightTupleSinkAdapter.HashKey();
 
         // should find this
         hashKey.setValue( extractor.getIndex(),
                           cheese,
                           extractor );
-        ObjectSink sink = (ObjectSink) ad.hashedSinkMap.get( hashKey );
+        RightTupleSink sink = (RightTupleSink) ad.hashedSinkMap.get( hashKey );
         assertSame( al2, sink );
 
         // should not find this one
@@ -300,7 +300,7 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
         hashKey.setValue( extractor.getIndex(),
                           cheese,
                           extractor );
-        sink = (ObjectSink) ad.hashedSinkMap.get( hashKey );
+        sink = (RightTupleSink) ad.hashedSinkMap.get( hashKey );
         assertNull( sink );
 
         //now remove one, check the hashing is undone
@@ -314,7 +314,7 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
 
     public void testPropagationWithNullValue() {
 
-        final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
+        final CompositeRightTupleSinkAdapter ad = new CompositeRightTupleSinkAdapter();
         FieldExtractor extractor = ClassFieldExtractorCache.getInstance().getExtractor( Cheese.class,
                                                                                         "type",
                                                                                         this.getClass().getClassLoader() );
@@ -348,7 +348,7 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
 
         InternalFactHandle handle = new ReteooFactHandleFactory().newFactHandle( new Cheese(), false, null );
         try {
-            ad.propagateAssertObject( handle,
+            ad.propagateAssertFact( handle,
                                       null,
                                       null );
         } catch ( RuntimeException e ) {
@@ -472,7 +472,7 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
 
         MockBetaNode(final int id,
                      final LeftTupleSource leftInput,
-                     final ObjectSource rightInput) {
+                     final RightTupleSource rightInput) {
             super( id,
                    leftInput,
                    rightInput,
@@ -501,7 +501,7 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
 
         }
 
-        public void assertObject(final InternalFactHandle handle,
+        public void assertObject(final InternalFactHandle factHandle,
                                  final PropagationContext context,
                                  final InternalWorkingMemory workingMemory) {
             //  Auto-generated method stub

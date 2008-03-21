@@ -38,52 +38,52 @@ public class ObjectSourceTest extends DroolsTestCase {
         final MockObjectSource source = new MockObjectSource( 15 );
 
         // We need to re-assign this var each time the sink changes references
-        final Field field = ObjectSource.class.getDeclaredField( "sink" );
+        final Field field = RightTupleSource.class.getDeclaredField( "sink" );
         field.setAccessible( true );
-        ObjectSinkPropagator sink = (ObjectSinkPropagator) field.get( source );
+        RightTupleSinkPropagator sink = (RightTupleSinkPropagator) field.get( source );
 
-        assertSame( EmptyObjectSinkAdapter.getInstance(),
+        assertSame( EmptyRightTupleSinkAdapter.getInstance(),
                     sink );
 
         final MockObjectSink sink1 = new MockObjectSink();
         source.addObjectSink( sink1 );
-        sink = (ObjectSinkPropagator) field.get( source );
-        assertSame( SingleObjectSinkAdapter.class,
+        sink = (RightTupleSinkPropagator) field.get( source );
+        assertSame( SingleRightTupleSinkAdapter.class,
                     sink.getClass() );
         assertEquals( 1,
                       sink.getSinks().length );
 
         final MockObjectSink sink2 = new MockObjectSink();
         source.addObjectSink( sink2 );
-        sink = (ObjectSinkPropagator) field.get( source );
-        assertSame( CompositeObjectSinkAdapter.class,
+        sink = (RightTupleSinkPropagator) field.get( source );
+        assertSame( CompositeRightTupleSinkAdapter.class,
                     sink.getClass() );
         assertEquals( 2,
                       sink.getSinks().length );
 
         final MockObjectSink sink3 = new MockObjectSink();
         source.addObjectSink( sink3 );
-        assertSame( CompositeObjectSinkAdapter.class,
+        assertSame( CompositeRightTupleSinkAdapter.class,
                     sink.getClass() );
         assertEquals( 3,
                       sink.getSinks().length );
 
         source.removeObjectSink( sink2 );
-        assertSame( CompositeObjectSinkAdapter.class,
+        assertSame( CompositeRightTupleSinkAdapter.class,
                     sink.getClass() );
         assertEquals( 2,
                       sink.getSinks().length );
 
         source.removeObjectSink( sink1 );
-        sink = (ObjectSinkPropagator) field.get( source );
-        assertSame( SingleObjectSinkAdapter.class,
+        sink = (RightTupleSinkPropagator) field.get( source );
+        assertSame( SingleRightTupleSinkAdapter.class,
                     sink.getClass() );
         assertEquals( 1,
                       sink.getSinks().length );
 
         source.removeObjectSink( sink3 );
-        sink = (ObjectSinkPropagator) field.get( source );
-        assertSame( EmptyObjectSinkAdapter.getInstance(),
+        sink = (RightTupleSinkPropagator) field.get( source );
+        assertSame( EmptyRightTupleSinkAdapter.getInstance(),
                     sink );
         assertEquals( 0,
                       sink.getSinks().length );

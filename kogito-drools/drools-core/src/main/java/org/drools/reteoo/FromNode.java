@@ -86,7 +86,7 @@ public class FromNode extends LeftTupleSource
                             final InternalWorkingMemory workingMemory) {
         final FromMemory memory = (FromMemory) workingMemory.getNodeMemory( this );
 
-        memory.betaMemory.getTupleMemory().add( leftTuple );
+        memory.betaMemory.getLeftTupleMemory().add( leftTuple );
         final LinkedList list = new LinkedList();
         this.betaConstraints.updateFromTuple( memory.betaMemory.getContext(),
                                               workingMemory,
@@ -143,7 +143,7 @@ public class FromNode extends LeftTupleSource
                              final InternalWorkingMemory workingMemory) {
 
         final FromMemory memory = (FromMemory) workingMemory.getNodeMemory( this );
-        final LeftTuple tuple = memory.betaMemory.getTupleMemory().remove( leftTuple );
+        final LeftTuple tuple = memory.betaMemory.getLeftTupleMemory().remove( leftTuple );
 
         if ( tuple == null ) {
             return;
@@ -215,7 +215,7 @@ public class FromNode extends LeftTupleSource
 
         final FromMemory memory = (FromMemory) workingMemory.getNodeMemory( this );
 
-        final Iterator tupleIter = memory.betaMemory.getTupleMemory().iterator();
+        final Iterator tupleIter = memory.betaMemory.getLeftTupleMemory().iterator();
         for ( LeftTuple tuple = (LeftTuple) tupleIter.next(); tuple != null; tuple = (LeftTuple) tupleIter.next() ) {
             final LinkedList list = (LinkedList) memory.betaMemory.getCreatedHandles().remove( tuple );
             if ( list == null ) {

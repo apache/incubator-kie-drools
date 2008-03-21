@@ -67,7 +67,7 @@ public class ExistsNode extends BetaNode {
      */
     public ExistsNode(final int id,
                       final LeftTupleSource leftInput,
-                      final ObjectSource rightInput,
+                      final RightTupleSource rightInput,
                       final BetaConstraints joinNodeBinder,
                       final BuildContext context) {
         super( id,
@@ -95,10 +95,10 @@ public class ExistsNode extends BetaNode {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
         if ( this.tupleMemoryEnabled ) {
-            memory.getTupleMemory().add( leftTuple );
+            memory.getLeftTupleMemory().add( leftTuple );
         }
 
-        final Iterator it = memory.getFactHandleMemory().iterator( leftTuple );
+        final Iterator it = memory.getRightTupleMemory().iterator( leftTuple );
         this.constraints.updateFromTuple( memory.getContext(),
                                           workingMemory,
                                           leftTuple );
@@ -125,32 +125,32 @@ public class ExistsNode extends BetaNode {
      * matches any left ReteTuple's that had no matches before, propagate
      * tuple as an assertion.
      *
-     * @param handle
+     * @param factHandle
      *            The <code>FactHandleImpl</code> being asserted.
      * @param context
      *            The <code>PropagationContext</code>
      * @param workingMemory
      *            The working memory session.
      */
-    public void assertObject(final InternalFactHandle handle,
+    public void assertObject(final InternalFactHandle factHandle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        memory.getFactHandleMemory().add( handle );
+        memory.getRightTupleMemory().add( factHandle );
 
         if ( !this.tupleMemoryEnabled ) {
             // do nothing here, as we know there are no left tuples at this stage in sequential mode.
             return;
         }
 
-        final Iterator it = memory.getTupleMemory().iterator( handle );
+        final Iterator it = memory.getLeftTupleMemory().iterator( factHandle );
         this.constraints.updateFromFactHandle( memory.getContext(),
                                                workingMemory,
-                                               handle );
+                                               factHandle );
         for ( LeftTuple tuple = (LeftTuple) it.next(); tuple != null; tuple = (LeftTuple) it.next() ) {
             if ( this.constraints.isAllowedCachedRight( memory.getContext(),
                                                         tuple ) && tuple.getMatch() == null) {
-                    tuple.setMatch( handle );
+                    tuple.setMatch( factHandle );
                     this.sink.propagateAssertLeftTuple( tuple,
                                                      context,
                                                      workingMemory );
@@ -176,11 +176,11 @@ public class ExistsNode extends BetaNode {
                               final PropagationContext context,
                               final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        if ( !memory.getFactHandleMemory().remove( handle ) ) {
+        if ( !memory.getRightTupleMemory().remove( handle ) ) {
             return;
         }
 
-        final Iterator it = memory.getTupleMemory().iterator( handle );
+        final Iterator it = memory.getLeftTupleMemory().iterator( handle );
         this.constraints.updateFromFactHandle( memory.getContext(),
                                                workingMemory,
                                                handle );
@@ -192,7 +192,7 @@ public class ExistsNode extends BetaNode {
                     tuple.setMatch( null );
 
                     // find next match, remember it and break.
-                    final Iterator tupleIt = memory.getFactHandleMemory().iterator( tuple );
+                    final Iterator tupleIt = memory.getRightTupleMemory().iterator( tuple );
                     this.constraints.updateFromTuple( memory.getContext(),
                                                       workingMemory, tuple );
 
@@ -238,7 +238,7 @@ public class ExistsNode extends BetaNode {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
         // Must use the tuple in memory as it has the tuple matches count
-        final LeftTuple tuple = memory.getTupleMemory().remove( leftTuple );
+        final LeftTuple tuple = memory.getLeftTupleMemory().remove( leftTuple );
         if ( tuple == null ) {
             return;
         }
@@ -259,7 +259,7 @@ public class ExistsNode extends BetaNode {
                            final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
-        final Iterator tupleIter = memory.getTupleMemory().iterator();
+        final Iterator tupleIter = memory.getLeftTupleMemory().iterator();
         for ( LeftTuple tuple = (LeftTuple) tupleIter.next(); tuple != null; tuple = (LeftTuple) tupleIter.next() ) {
             if ( tuple.getMatch() != null ) {
                 sink.assertLeftTuple( new LeftTuple( tuple ),
@@ -270,9 +270,9 @@ public class ExistsNode extends BetaNode {
     }
 
     public String toString() {
-        ObjectSource source = this.rightInput;
+        RightTupleSource source = this.rightInput;
         while ( source.getClass() != ObjectTypeNode.class ) {
-            source = source.objectSource;
+            source = source.source;
         }
 
         return "[ExistsNode - " + ((ObjectTypeNode) source).getObjectType() + "]";

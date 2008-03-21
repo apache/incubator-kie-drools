@@ -65,10 +65,10 @@ public class MemoryVisitor extends ReflectiveVisitor implements Externalizable {
 
         this.indent++;
         try {
-            final Field field = ObjectSource.class.getDeclaredField( "sink" );
+            final Field field = RightTupleSource.class.getDeclaredField( "sink" );
             field.setAccessible( true );
-            final ObjectSinkPropagator sink = (ObjectSinkPropagator) field.get( node );
-            final ObjectSink[] sinks = sink.getSinks();
+            final RightTupleSinkPropagator sink = (RightTupleSinkPropagator) field.get( node );
+            final RightTupleSink[] sinks = sink.getSinks();
             for ( int i = 0, length = sinks.length; i < length; i++ ) {
                 visit( sinks[i] );
             }
@@ -86,10 +86,10 @@ public class MemoryVisitor extends ReflectiveVisitor implements Externalizable {
 
         this.indent++;
         try {
-            final Field field = ObjectSource.class.getDeclaredField( "sink" );
+            final Field field = RightTupleSource.class.getDeclaredField( "sink" );
             field.setAccessible( true );
-            final ObjectSinkPropagator sink = (ObjectSinkPropagator) field.get( node );
-            final ObjectSink[] sinks = sink.getSinks();
+            final RightTupleSinkPropagator sink = (RightTupleSinkPropagator) field.get( node );
+            final RightTupleSink[] sinks = sink.getSinks();
             for ( int i = 0, length = sinks.length; i < length; i++ ) {
                 visit( sinks[i] );
             }
@@ -122,8 +122,8 @@ public class MemoryVisitor extends ReflectiveVisitor implements Externalizable {
 
         try {
             final BetaMemory memory = (BetaMemory) this.workingMemory.getNodeMemory( node );
-            checkObjectHashTable( memory.getFactHandleMemory() );
-            checkTupleMemory( memory.getTupleMemory() );
+            checkObjectHashTable( memory.getRightTupleMemory() );
+            checkTupleMemory( memory.getLeftTupleMemory() );
         } catch ( final Exception e ) {
             e.printStackTrace();
         }
@@ -147,8 +147,8 @@ public class MemoryVisitor extends ReflectiveVisitor implements Externalizable {
         System.out.println( indent() + node );
         try {
             final BetaMemory memory = (BetaMemory) this.workingMemory.getNodeMemory( node );
-            checkObjectHashTable( memory.getFactHandleMemory() );
-            checkTupleMemory( memory.getTupleMemory() );
+            checkObjectHashTable( memory.getRightTupleMemory() );
+            checkTupleMemory( memory.getLeftTupleMemory() );
         } catch ( final Exception e ) {
             e.printStackTrace();
         }
@@ -189,7 +189,7 @@ public class MemoryVisitor extends ReflectiveVisitor implements Externalizable {
     //        }
     //    }
 
-    private void checkObjectHashTable(final FactHandleMemory memory) {
+    private void checkObjectHashTable(final RightTupleMemory memory) {
         if ( memory instanceof FactHashTable ) {
             checkFactHashTable( (FactHashTable) memory );
         } else if ( memory instanceof FactHandleIndexHashTable ) {

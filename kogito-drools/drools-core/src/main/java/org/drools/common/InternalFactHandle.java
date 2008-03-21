@@ -17,6 +17,8 @@ package org.drools.common;
  */
 
 import org.drools.FactHandle;
+import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.RightTuple;
 
 public interface InternalFactHandle
     extends
@@ -51,4 +53,12 @@ public interface InternalFactHandle
      * @return
      */
     public boolean isEvent();
+    
+    public RightTuple getRightTuple();
+
+    public void setRightTuple(RightTuple rightTuple);
+    
+    public void setLeftTuple(LeftTuple leftTuple);
+    
+    public LeftTuple getLeftTuple();
 }

@@ -54,10 +54,10 @@ import org.drools.util.Iterator;
  *
  * @author <a href="mailto:tirelli@post.com">Edson Tirelli</a>
  */
-public class EntryPointNode extends ObjectSource
+public class EntryPointNode extends RightTupleSource
     implements
     Externalizable,
-    ObjectSink {
+    RightTupleSink {
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
@@ -82,7 +82,7 @@ public class EntryPointNode extends ObjectSource
     }
 
     public EntryPointNode(final int id,
-                          final ObjectSource objectSource,
+                          final RightTupleSource objectSource,
                           final BuildContext context) {
         this( id,
               objectSource,
@@ -90,7 +90,7 @@ public class EntryPointNode extends ObjectSource
     }
 
     public EntryPointNode(final int id,
-                          final ObjectSource objectSource,
+                          final RightTupleSource objectSource,
                           final EntryPoint entryPoint) {
         super( id,
                objectSource,
@@ -151,14 +151,14 @@ public class EntryPointNode extends ObjectSource
      * of matching <code>ObjectTypdeNode</code>s asserting the Fact. If the cache does not
      * exist it first iterates and builds the cache.
      *
-     * @param handle
+     * @param factHandle
      *            The FactHandle of the fact to assert
      * @param context
      *            The <code>PropagationContext</code> of the <code>WorkingMemory</code> action
      * @param workingMemory
      *            The working memory session.
      */
-    public void assertObject(final InternalFactHandle handle,
+    public void assertObject(final InternalFactHandle factHandle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
         // do nothing, dummy method to impl the interface
@@ -208,19 +208,19 @@ public class EntryPointNode extends ObjectSource
      *            <code>Objects</code>. Rete only accepts <code>ObjectTypeNode</code>s
      *            as parameters to this method, though.
      */
-    protected void addObjectSink(final ObjectSink objectSink) {
+    protected void addObjectSink(final RightTupleSink objectSink) {
         final ObjectTypeNode node = (ObjectTypeNode) objectSink;
         this.objectTypeNodes.put( node.getObjectType(),
                                   node );
     }
 
-    protected void removeObjectSink(final ObjectSink objectSink) {
+    protected void removeObjectSink(final RightTupleSink objectSink) {
         final ObjectTypeNode node = (ObjectTypeNode) objectSink;
         this.objectTypeNodes.remove( node.getObjectType() );
     }
 
     public void attach() {
-        this.objectSource.addObjectSink( this );
+        this.source.addObjectSink( this );
     }
 
     public void attach(final InternalWorkingMemory[] workingMemories) {
@@ -232,7 +232,7 @@ public class EntryPointNode extends ObjectSource
                                                                                       PropagationContext.RULE_ADDITION,
                                                                                       null,
                                                                                       null );
-            this.objectSource.updateSink( this,
+            this.source.updateSink( this,
                                           propagationContext,
                                           workingMemory );
         }
@@ -271,7 +271,7 @@ public class EntryPointNode extends ObjectSource
         return this.entryPoint.equals( other.entryPoint );
     }
 
-    public void updateSink(final ObjectSink sink,
+    public void updateSink(final RightTupleSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
         // JBRULES-612: the cache MUST be invalidated when a new node type is added to the network, so iterate and reset all caches.

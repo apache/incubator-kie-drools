@@ -152,9 +152,9 @@ public class NotNodeTest extends DroolsTestCase {
 
         // check memory sizes
         assertEquals( 2,
-                      this.memory.getTupleMemory().size() );
+                      this.memory.getLeftTupleMemory().size() );
         assertEquals( 1,
-                      this.memory.getFactHandleMemory().size() );
+                      this.memory.getRightTupleMemory().size() );
 
         // When this is retracter both tuples should assert
         this.node.retractObject( f1,
@@ -254,14 +254,14 @@ public class NotNodeTest extends DroolsTestCase {
 
             // Initially, no objects in right memory
             assertEquals( 0,
-                          this.memory.getFactHandleMemory().size() );
+                          this.memory.getRightTupleMemory().size() );
             this.node.assertObject( f1,
                                     this.context,
                                     this.workingMemory );
 
             // Now, needs to have 1 object in right memory
             assertEquals( 1,
-                          this.memory.getFactHandleMemory().size() );
+                          this.memory.getRightTupleMemory().size() );
 
             // simulate modify
             this.node.retractObject( f1,
@@ -272,18 +272,18 @@ public class NotNodeTest extends DroolsTestCase {
                                     this.workingMemory );
             // Memory should not change
             assertEquals( 1,
-                          this.memory.getFactHandleMemory().size() );
+                          this.memory.getRightTupleMemory().size() );
 
             // When this is retracter both tuples should assert
             this.node.retractObject( f1,
                                      this.context,
                                      this.workingMemory );
             assertEquals( 0,
-                          this.memory.getFactHandleMemory().size() );
+                          this.memory.getRightTupleMemory().size() );
 
             // check memory sizes
             assertEquals( 1,
-                          this.memory.getTupleMemory().size() );
+                          this.memory.getLeftTupleMemory().size() );
 
             // simulate modify
             this.node.retractLeftTuple( tuple1,
@@ -293,12 +293,12 @@ public class NotNodeTest extends DroolsTestCase {
                                    this.context,
                                    this.workingMemory );
             assertEquals( 1,
-                          this.memory.getTupleMemory().size() );
+                          this.memory.getLeftTupleMemory().size() );
             this.node.retractLeftTuple( tuple1,
                                     this.context,
                                     this.workingMemory );
             assertEquals( 0,
-                          this.memory.getTupleMemory().size() );
+                          this.memory.getLeftTupleMemory().size() );
         } catch ( final Exception e ) {
             Assert.fail( "No exception should be raised in this procedure, but got: " + e.toString() );
         }
@@ -369,10 +369,10 @@ public class NotNodeTest extends DroolsTestCase {
         assertEquals( 0,
                       this.sink.getAsserted().size() );
 
-        assertNull( this.memory.getTupleMemory() );
+        assertNull( this.memory.getLeftTupleMemory() );
 
         assertEquals( 1,
-                      this.memory.getFactHandleMemory().size() );
+                      this.memory.getRightTupleMemory().size() );
 
     }
 

@@ -42,7 +42,7 @@ import java.io.IOException;
  * @author <a href="mailto:etirelli@redhat.com">Edson Tirelli</a>
  *
  */
-public class RightInputAdapterNode extends ObjectSource
+public class RightInputAdapterNode extends RightTupleSource
     implements
     LeftTupleSinkNode,
     NodeMemory {
@@ -125,7 +125,7 @@ public class RightInputAdapterNode extends ObjectSource
         }
 
         // propagate it
-        this.sink.propagateAssertObject( handle,
+        this.sink.propagateAssertFact( handle,
                                          context,
                                          workingMemory );
     }
@@ -176,7 +176,7 @@ public class RightInputAdapterNode extends ObjectSource
         this.tupleSource.networkUpdated();
     }
 
-    public void updateSink(final ObjectSink sink,
+    public void updateSink(final RightTupleSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
 
@@ -197,7 +197,7 @@ public class RightInputAdapterNode extends ObjectSource
                             final BaseNode node,
                             final InternalWorkingMemory[] workingMemories) {
         if ( !node.isInUse() ) {
-            removeObjectSink( (ObjectSink) node );
+            removeObjectSink( (RightTupleSink) node );
         }
         if( ! context.alreadyVisited( this.tupleSource ) ) {
             this.tupleSource.remove( context,

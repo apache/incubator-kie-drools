@@ -7,7 +7,7 @@ import org.drools.util.Iterator;
 public interface LeftTupleMemory {
     public Iterator iterator();
 
-    public Iterator iterator(InternalFactHandle handle);
+    public LeftTuple getFirst(RightTuple rightTuple);
 
     public void add(LeftTuple tuple);
 
@@ -19,7 +19,7 @@ public interface LeftTupleMemory {
 
     public int size();
 
-    public Entry[] getTable();
+//    public Entry[] getTable();
     
     public Entry[] toArray();
 

@@ -1,10 +1,10 @@
 package org.drools.reteoo;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.io.ObjectOutput;
 import java.io.IOException;
 import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.drools.base.ShadowProxy;
 import org.drools.common.InternalFactHandle;
@@ -12,6 +12,8 @@ import org.drools.rule.Declaration;
 import org.drools.spi.Activation;
 import org.drools.spi.Tuple;
 import org.drools.util.Entry;
+import org.drools.util.FactHashTable;
+import org.drools.util.TupleHashTable;
 
 public class LeftTuple
     implements
@@ -21,7 +23,7 @@ public class LeftTuple
 
     private int                      index;
 
-    private InternalFactHandle handle;
+    private final InternalFactHandle handle;
 
     private LeftTuple                parent;
 
@@ -31,65 +33,221 @@ public class LeftTuple
 
     private int                      hashCode;
 
-    private InternalFactHandle       match;
+    private RightTuple               blocker;
 
+    private LeftTuple                blockedPrevious;
+
+    private LeftTuple                blockedNext;
+
+    // left and right tuples in parent
+    private LeftTuple                leftParent;
+    private LeftTuple                leftParentPrevious;
+    private LeftTuple                leftParentNext;
+
+    private RightTuple               rightParent;
+    private LeftTuple                rightParentPrevious;
+    private LeftTuple                rightParentNext;
+
+    // node memory
+    private TupleHashTable           memory;
     private Entry                    next;
+    private Entry                    previous;
+
+    // children
+    private LeftTuple                children;
+
+    private final LeftTupleSink      sink;
 
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
-    public LeftTuple() {
-        
-    }
-    public LeftTuple(final InternalFactHandle handle) {
-        this.recency = handle.getRecency();
-        this.handle = handle;
+    public LeftTuple(final InternalFactHandle factHandle,
+                     LeftTupleSink sink) {
+        this.handle = factHandle;
+        this.recency = factHandle.getRecency();
+
         int h = handle.hashCode();
         h += ~(h << 9);
         h ^= (h >>> 14);
         h += (h << 4);
         h ^= (h >>> 10);
         this.hashCode = h;
+
+        this.sink = sink;
+        
+        LeftTuple currentFirst = handle.getLeftTuple();
+        if ( currentFirst != null ) {
+            currentFirst.leftParentPrevious =  this;
+            this.leftParentNext = currentFirst;
+        }
+        
+        handle.setLeftTuple( this );         
     }
 
-    public LeftTuple(final LeftTuple tuple) {
-        this.index = tuple.index;
-        this.parent = tuple.parent;
-        this.recency = tuple.recency;
-        this.handle = tuple.handle;
-        this.hashCode = tuple.hashCode();
+    public LeftTuple(final LeftTuple leftTuple,
+                     LeftTupleSink sink) {
+        this.index = leftTuple.index;
+        this.parent = leftTuple.parent;
+        this.recency = leftTuple.recency;
+        this.handle = leftTuple.handle;
+        this.hashCode = leftTuple.hashCode();
+
+        this.leftParent = leftTuple;
+        this.leftParentNext = leftTuple.children;
+        if ( this.leftParentNext != null ) {
+            this.leftParentNext.leftParentPrevious = this;
+        }
+        this.leftParent.children = this;
+        this.sink = sink;
     }
 
-    public LeftTuple(final LeftTuple parentTuple,
-                     final InternalFactHandle handle) {
-        this.index = parentTuple.index + 1;
-        this.parent = parentTuple;
-        this.recency = parentTuple.recency + handle.getRecency();
-        this.handle = handle;
-        this.hashCode = parentTuple.hashCode ^ (handle.hashCode() * 31);
+    public LeftTuple(final LeftTuple leftTuple,
+                     final RightTuple rightTuple,
+                     LeftTupleSink sink) {
+        this.handle = rightTuple.getFactHandle();
+        this.index = leftTuple.index + 1;
+        this.parent = leftTuple;
+        this.recency = leftTuple.recency + this.handle.getRecency();
+        this.hashCode = leftTuple.hashCode ^ (handle.hashCode() * 31);
+
+        this.rightParent = rightTuple;
+        this.rightParentNext = this.rightParent.getBetaChildren();
+        if ( this.rightParentNext != null ) {
+            this.rightParentNext.rightParentPrevious = this;
+        }
+        this.rightParent.setBetaChildren( this );
+
+        this.leftParent = leftTuple;
+        this.leftParentNext = leftTuple.children;
+        if ( this.leftParentNext != null ) {
+            this.leftParentNext.leftParentPrevious = this;
+        }
+        this.leftParent.children = this;
+        this.sink = sink;
+    }
+    
+    public void unlinkFromLeftParent() {
+        LeftTuple previous = (LeftTuple) this.leftParentPrevious;
+        LeftTuple next = (LeftTuple) this.leftParentNext;
+
+        if ( previous != null && next != null ) {
+            //remove  from middle
+            this.leftParentPrevious.leftParentNext = this.leftParentNext;
+            this.leftParentNext.leftParentPrevious = this.leftParentPrevious;
+        } else if ( next != null ) {
+            //remove from first
+            this.leftParent.children = this.leftParentNext;
+            this.leftParentNext.leftParentPrevious = null;
+        } else if ( previous != null ) {
+            //remove from end
+            this.leftParentPrevious.leftParentNext = null;
+        } else {
+            this.leftParent.children = null;
+        }
+
+        //this.parent  = null;
+
+        this.leftParent = null;
+        this.leftParentPrevious = null;
+        this.leftParentNext = null;
+//
+        this.blocker = null;
+//
+        this.rightParent = null;
+        this.rightParentPrevious = null;
+        this.rightParentNext = null;
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        index   = in.readInt();
-        handle  = (InternalFactHandle)in.readObject();
-        parent  = (LeftTuple)in.readObject();
-        activation  = (Activation)in.readObject();
-        recency = in.readLong();
-        hashCode    = in.readInt();
-        match   = (InternalFactHandle)in.readObject();
-        next    = (Entry)in.readObject();
+    public void unlinkFromRightParent() {
+        LeftTuple previous = (LeftTuple) this.rightParentPrevious;
+        LeftTuple next = (LeftTuple) this.rightParentNext;
 
+        if ( previous != null && next != null ) {
+            //remove  from middle
+            this.rightParentPrevious.rightParentNext = this.rightParentNext;
+            this.rightParentNext.rightParentPrevious = this.rightParentPrevious;
+        } else if ( next != null ) {
+            //remove from first
+            this.rightParent.setBetaChildren( this.rightParentNext );
+            this.rightParentNext.rightParentPrevious = null;
+        } else if ( previous != null ) {
+            //remove from end
+            this.rightParentPrevious.rightParentNext = null;
+        } else if ( this.rightParent != null ) {
+            this.rightParent.setBetaChildren( null );
+        }
+
+        //this.parent  = null;
+
+        this.leftParent = null;
+        this.leftParentPrevious = null;
+        this.leftParentNext = null;
+
+        this.blocker = null;
+
+        this.rightParent = null;
+        this.rightParentPrevious = null;
+        this.rightParentNext = null;
     }
 
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeInt(index);
-        out.writeObject(handle);
-        out.writeObject(parent);
-        out.writeObject(activation);
-        out.writeLong(recency);
-        out.writeInt(hashCode);
-        out.writeObject(match);
-        out.writeObject(next);
+    public LeftTupleSink getSink() {
+        return sink;
+    }
+
+    public LeftTuple getLeftParent() {
+        return leftParent;
+    }
+
+    public void setLeftParent(LeftTuple leftParent) {
+        this.leftParent = leftParent;
+    }
+
+    public LeftTuple getLeftParentPrevious() {
+        return leftParentPrevious;
+    }
+
+    public void setLeftParentPrevious(LeftTuple leftParentLeft) {
+        this.leftParentPrevious = leftParentLeft;
+    }
+
+    public LeftTuple getLeftParentNext() {
+        return leftParentNext;
+    }
+
+    public void setLeftParentNext(LeftTuple leftParentright) {
+        this.leftParentNext = leftParentright;
+    }
+
+    public RightTuple getRightParent() {
+        return rightParent;
+    }
+
+    public void setRightParent(RightTuple rightParent) {
+        this.rightParent = rightParent;
+    }
+
+    public LeftTuple getRightParentPrevious() {
+        return rightParentPrevious;
+    }
+
+    public void setRightParentPrevious(LeftTuple rightParentLeft) {
+        this.rightParentPrevious = rightParentLeft;
+    }
+
+    public LeftTuple getRightParentNext() {
+        return rightParentNext;
+    }
+
+    public void setRightParentNext(LeftTuple rightParentRight) {
+        this.rightParentNext = rightParentRight;
+    }
+
+    public void setBetaChildren(LeftTuple leftTuple) {
+        this.children = leftTuple;
+    }
+
+    public LeftTuple getBetaChildren() {
+        return this.children;
     }
 
     public InternalFactHandle get(final int index) {
@@ -98,6 +256,22 @@ public class LeftTuple
             entry = entry.parent;
         }
         return entry.handle;
+    }
+    
+    public TupleHashTable getMemory() {
+        return this.memory;
+    }
+
+    public void setMemory(TupleHashTable memory) {
+        this.memory = memory;
+    }    
+
+    public Entry getPrevious() {
+        return previous;
+    }
+
+    public void setPrevious(Entry previous) {
+        this.previous = previous;
     }
 
     public void setNext(final Entry next) {
@@ -138,13 +312,28 @@ public class LeftTuple
         return this.recency;
     }
 
-
-    public InternalFactHandle getMatch() {
-        return match;
+    public void setBlocker(RightTuple blocker) {
+        this.blocker = blocker;
     }
 
-    public void setMatch(InternalFactHandle match) {
-        this.match = match;
+    public RightTuple getBlocker() {
+        return this.blocker;
+    }
+
+    public LeftTuple getBlockedPrevious() {
+        return this.blockedPrevious;
+    }
+
+    public void setBlockedPrevious(LeftTuple blockerPrevious) {
+        this.blockedPrevious = blockerPrevious;
+    }
+
+    public LeftTuple getBlockedNext() {
+        return this.blockedNext;
+    }
+
+    public void setBlockedNext(LeftTuple blockerNext) {
+        this.blockedNext = blockerNext;
     }
 
     public void setActivation(final Activation activation) {
@@ -195,7 +384,7 @@ public class LeftTuple
     }
 
     public boolean equals(final Object object) {
-        // we know the object is never null and always of the  type ReteTuple
+        // we know the object is never null and always of the  type ReteTuple    
         return equals( (LeftTuple) object );
     }
 
@@ -206,17 +395,17 @@ public class LeftTuple
     /**
      * Returns the ReteTuple that contains the "elements"
      * first elements in this tuple.
-     *
+     * 
      * Use carefully as no cloning is made during this process.
-     *
+     * 
      * This method is used by TupleStartEqualsConstraint when
      * joining a subnetwork tuple into the main network tuple;
-     *
+     * 
      * @param elements the number of elements to return, starting from
      * the begining of the tuple
-     *
+     * 
      * @return a ReteTuple containing the "elements" first elements
-     * of this tuple or null if "elements" is greater than size;
+     * of this tuple or null if "elements" is greater than size; 
      */
     public LeftTuple getSubTuple(final int elements) {
         LeftTuple entry = this;
@@ -231,16 +420,25 @@ public class LeftTuple
     }
 
     public Object[] toObjectArray() {
-        Object[] objects = new Object[ this.index + 1 ];
+        Object[] objects = new Object[this.index + 1];
         LeftTuple entry = this;
         while ( entry != null ) {
             Object object = entry.getLastHandle().getObject();
             if ( object instanceof ShadowProxy ) {
-                object = ((ShadowProxy)object).getShadowedObject();
+                object = ((ShadowProxy) object).getShadowedObject();
             }
             objects[entry.index] = object;
             entry = entry.parent;
         }
         return objects;
+    }
+
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        // @todo        
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        // @todo        
     }
 }

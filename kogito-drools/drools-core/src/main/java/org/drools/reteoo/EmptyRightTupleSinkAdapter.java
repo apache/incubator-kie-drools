@@ -4,39 +4,36 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.PropagationContext;
 
-import java.io.Externalizable;
 import java.io.ObjectOutput;
 import java.io.IOException;
 import java.io.ObjectInput;
 
-public class SingleObjectSinkAdapter
+public class EmptyRightTupleSinkAdapter
     implements
-    ObjectSinkPropagator, Externalizable {
+    RightTupleSinkPropagator {
 
-    private static final long serialVersionUID = 873985743021L;
+    private static final long serialVersionUID = -631743913176779720L;
 
-    private ObjectSink sink;
+    private static final EmptyRightTupleSinkAdapter instance = new EmptyRightTupleSinkAdapter();
 
-    public SingleObjectSinkAdapter() {
+    private static final RightTupleSink[] SINK_LIST = new RightTupleSink[0];
 
+    public static EmptyRightTupleSinkAdapter getInstance() {
+        return instance;
     }
-    public SingleObjectSinkAdapter(final ObjectSink sink) {
-        this.sink = sink;
+
+    public EmptyRightTupleSinkAdapter() {
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        sink    = (ObjectSink)in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(sink);
     }
-    public void propagateAssertObject(final InternalFactHandle handle,
+
+    public void propagateAssertFact(final InternalFactHandle factHandle,
                                       final PropagationContext context,
                                       final InternalWorkingMemory workingMemory) {
-        this.sink.assertObject( handle,
-                                context,
-                                workingMemory );
 
     }
 
@@ -44,18 +41,18 @@ public class SingleObjectSinkAdapter
                                        final PropagationContext context,
                                        final InternalWorkingMemory workingMemory,
                                        final boolean useHash) {
-        this.sink.retractObject( handle,
-                                 context,
-                                 workingMemory );
-
     }
 
-    public ObjectSink[] getSinks() {
-        return new ObjectSink[]{this.sink};
+    public RightTupleSink[] getSinks() {
+        return SINK_LIST;
     }
 
     public int size() {
-        return 1;
+        return 0;
+    }
+
+    public boolean equals(Object obj) {
+        return obj instanceof EmptyRightTupleSinkAdapter;
     }
 
 }

@@ -53,10 +53,10 @@ import org.drools.spi.PropagationContext;
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
-public class Rete extends ObjectSource
+public class Rete extends RightTupleSource
     implements
     Externalizable,
-    ObjectSink {
+    RightTupleSink {
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
@@ -93,20 +93,20 @@ public class Rete extends ObjectSource
      * of matching <code>ObjectTypdeNode</code>s asserting the Fact. If the cache does not
      * exist it first iteraes and builds the cache.
      *
-     * @param handle
+     * @param factHandle
      *            The FactHandle of the fact to assert
      * @param context
      *            The <code>PropagationContext</code> of the <code>WorkingMemory</code> action
      * @param workingMemory
      *            The working memory session.
      */
-    public void assertObject(final InternalFactHandle handle,
+    public void assertObject(final InternalFactHandle factHandle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
         EntryPoint entryPoint = context.getEntryPoint();
         EntryPointNode node = this.entryPoints.get( entryPoint );
-        ObjectTypeConf typeConf = ((InternalWorkingMemoryEntryPoint) workingMemory.getWorkingMemoryEntryPoint(  entryPoint.getEntryPointId() )).getObjectTypeConfigurationRegistry().getObjectTypeConf( entryPoint, handle.getObject() );
-        node.assertObject( handle,
+        ObjectTypeConf typeConf = ((InternalWorkingMemoryEntryPoint) workingMemory.getWorkingMemoryEntryPoint(  entryPoint.getEntryPointId() )).getObjectTypeConfigurationRegistry().getObjectTypeConf( entryPoint, factHandle.getObject() );
+        node.assertObject( factHandle,
                            context,
                            typeConf,
                            workingMemory );
@@ -142,13 +142,13 @@ public class Rete extends ObjectSource
      *            <code>Objects</code>. Rete only accepts <code>ObjectTypeNode</code>s
      *            as parameters to this method, though.
      */
-    protected void addObjectSink(final ObjectSink objectSink) {
+    protected void addObjectSink(final RightTupleSink objectSink) {
         final EntryPointNode node = (EntryPointNode) objectSink;
         this.entryPoints.put( node.getEntryPoint(),
                               node );
     }
 
-    protected void removeObjectSink(final ObjectSink objectSink) {
+    protected void removeObjectSink(final RightTupleSink objectSink) {
         final EntryPointNode node = (EntryPointNode) objectSink;
         this.entryPoints.remove( node.getEntryPoint() );
     }
@@ -210,7 +210,7 @@ public class Rete extends ObjectSource
         return this.entryPoints.equals( other.entryPoints );
     }
 
-    public void updateSink(final ObjectSink sink,
+    public void updateSink(final RightTupleSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
         // nothing to do, since Rete object itself holds no facts to propagate.

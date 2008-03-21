@@ -17,6 +17,8 @@ package org.drools.common;
  */
 
 import org.drools.FactHandle;
+import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.RightTuple;
 
 import java.io.ObjectOutput;
 import java.io.IOException;
@@ -45,6 +47,8 @@ public class DefaultFactHandle
     private EqualityKey       key;
     private int               objectHashCode;
     private boolean           shadowFact;
+    private RightTuple        rightTuple;
+    private LeftTuple         leftTuple;    
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeInt(id);
@@ -190,4 +194,20 @@ public class DefaultFactHandle
     public boolean isEvent() {
         return false;
     }
+    
+    public RightTuple getRightTuple() {
+        return rightTuple;
+    }
+
+    public void setRightTuple(RightTuple rightTuple) {
+        this.rightTuple = rightTuple;
+    }
+    
+    public void setLeftTuple(LeftTuple leftTuple) {
+        this.leftTuple = leftTuple;
+    }
+    
+    public LeftTuple getLeftTuple(){
+        return this.leftTuple;
+    }    
 }

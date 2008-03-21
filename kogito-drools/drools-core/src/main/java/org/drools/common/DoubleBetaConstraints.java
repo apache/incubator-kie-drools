@@ -19,7 +19,7 @@ package org.drools.common;
 import org.drools.RuleBaseConfiguration;
 import org.drools.base.evaluators.Operator;
 import org.drools.reteoo.BetaMemory;
-import org.drools.reteoo.FactHandleMemory;
+import org.drools.reteoo.RightTupleMemory;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTupleMemory;
 import org.drools.rule.ContextEntry;
@@ -234,18 +234,18 @@ public class DoubleBetaConstraints
                 tupleMemory = new TupleHashTable();
             }
 
-            FactHandleMemory factHandleMemory;
+            RightTupleMemory factHandleMemory;
             if ( config.isIndexRightBetaMemory() ) {
                 factHandleMemory = new FactHandleIndexHashTable( indexes );
             } else {
-                factHandleMemory = config.isSequential() ? (FactHandleMemory) new FactList() : (FactHandleMemory) new FactHashTable();
+                factHandleMemory = config.isSequential() ? (RightTupleMemory) new FactList() : (RightTupleMemory) new FactHashTable();
             }
             memory = new BetaMemory( config.isSequential() ? null : tupleMemory,
                                      factHandleMemory,
                                      this.createContext() );
         } else {
             memory = new BetaMemory( config.isSequential() ? null : new TupleHashTable(),
-                                     config.isSequential() ? (FactHandleMemory) new FactList() : (FactHandleMemory) new FactHashTable(),
+                                     config.isSequential() ? (RightTupleMemory) new FactList() : (RightTupleMemory) new FactHashTable(),
                                      this.createContext() );
         }
 

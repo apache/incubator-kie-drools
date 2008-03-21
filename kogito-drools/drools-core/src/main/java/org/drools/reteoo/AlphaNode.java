@@ -46,25 +46,21 @@ import org.drools.util.Iterator;
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  *
  */
-public class AlphaNode extends ObjectSource
+public class AlphaNode extends RightTupleSource
     implements
-    ObjectSinkNode,
+    RightTupleSinkNode,
     NodeMemory {
 
     /**
      *
      */
-    private static final long              serialVersionUID = 400L;
+    private static final long        serialVersionUID = 400L;
 
     /** The <code>FieldConstraint</code> */
     private AlphaNodeFieldConstraint constraint;
 
-    private ObjectSinkNode                 previousObjectSinkNode;
-    private ObjectSinkNode                 nextObjectSinkNode;
-
-    private boolean                        objectMemoryEnabled;
-
-    private boolean                        objectMemoryAllowed;
+    private RightTupleSinkNode       previousRightTupleSinkNode;
+    private RightTupleSinkNode       nextRightTupleSinkNode;
 
     public AlphaNode() {
 
@@ -84,37 +80,29 @@ public class AlphaNode extends ObjectSource
      */
     public AlphaNode(final int id,
                      final AlphaNodeFieldConstraint constraint,
-                     final ObjectSource objectSource,
+                     final RightTupleSource objectSource,
                      final BuildContext context) {
         super( id,
                objectSource,
                context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold() );
         this.constraint = constraint;
-        this.objectMemoryAllowed = context.isAlphaMemoryAllowed();
-        if ( this.objectMemoryAllowed ) {
-            this.objectMemoryEnabled = context.getRuleBase().getConfiguration().isAlphaMemory();
-        } else {
-            this.objectMemoryEnabled = false;
-        }
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        super.readExternal(in);
-        constraint  = (AlphaNodeFieldConstraint)in.readObject();
-        previousObjectSinkNode  = (ObjectSinkNode)in.readObject();
-        nextObjectSinkNode  = (ObjectSinkNode)in.readObject();
-        objectMemoryEnabled = in.readBoolean();
-        objectMemoryAllowed = in.readBoolean();
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        super.readExternal( in );
+        constraint = (AlphaNodeFieldConstraint) in.readObject();
+        previousRightTupleSinkNode = (RightTupleSinkNode) in.readObject();
+        nextRightTupleSinkNode = (RightTupleSinkNode) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal(out);
-        out.writeObject(constraint);
-        out.writeObject(previousObjectSinkNode);
-        out.writeObject(nextObjectSinkNode);
-        out.writeBoolean(objectMemoryEnabled);
-        out.writeBoolean(objectMemoryAllowed);
+        super.writeExternal( out );
+        out.writeObject( constraint );
+        out.writeObject( previousRightTupleSinkNode );
+        out.writeObject( nextRightTupleSinkNode );
     }
+
     /**
      * Retruns the <code>FieldConstraint</code>
      *
@@ -130,89 +118,54 @@ public class AlphaNode extends ObjectSource
      * @see org.drools.reteoo.BaseNode#attach()
      */
     public void attach() {
-        this.objectSource.addObjectSink( this );
+        this.source.addObjectSink( this );
     }
 
     public void attach(final InternalWorkingMemory[] workingMemories) {
         attach();
 
-        // we are attaching this node with existing working memories
-        // indicating that we are in a dynamic environment, that might benefit from alpha node memory, if allowed
-        if ( this.objectMemoryAllowed ) {
-            setObjectMemoryEnabled( true );
-        }
         for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
             final InternalWorkingMemory workingMemory = workingMemories[i];
             final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
                                                                                       PropagationContext.RULE_ADDITION,
                                                                                       null,
                                                                                       null );
-            this.objectSource.updateSink( this,
-                                          propagationContext,
-                                          workingMemory );
+            this.source.updateSink( this,
+                                    propagationContext,
+                                    workingMemory );
         }
     }
 
-    public void assertObject(final InternalFactHandle handle,
+    public void assertObject(final InternalFactHandle factHandle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) throws FactException {
         final AlphaMemory memory = (AlphaMemory) workingMemory.getNodeMemory( this );
-        if ( this.constraint.isAllowed( handle,
+        if ( this.constraint.isAllowed( factHandle,
                                         workingMemory,
                                         memory.context ) ) {
-            if ( isObjectMemoryEnabled() ) {
-                memory.facts.add( handle,
-                                  false );
-            }
 
-            this.sink.propagateAssertObject( handle,
-                                             context,
-                                             workingMemory );
+            this.sink.propagateAssertFact( factHandle,
+                                           context,
+                                           workingMemory );
         }
     }
 
-    public void retractObject(final InternalFactHandle handle,
-                              final PropagationContext context,
-                              final InternalWorkingMemory workingMemory) {
-        boolean propagate = true;
-        final AlphaMemory memory = (AlphaMemory) workingMemory.getNodeMemory( this );
-        if ( isObjectMemoryEnabled() ) {
-            propagate = memory.facts.remove( handle );
-        } else {
-            propagate = this.constraint.isAllowed( handle,
-                                                   workingMemory,
-                                                   memory.context );
-        }
-        if ( propagate ) {
-            this.sink.propagateRetractObject( handle,
-                                              context,
-                                              workingMemory,
-                                              true );
-        }
+    public void retractRightTuple(RightTuple rightTuple,
+                                  PropagationContext context,
+                                  InternalWorkingMemory workingMemory) {
+        throw new UnsupportedOperationException( "AlphaNode.retractRightTuple is not supported." );
     }
 
-    public void updateSink(final ObjectSink sink,
+    public void updateSink(final RightTupleSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
         AlphaMemory memory = (AlphaMemory) workingMemory.getNodeMemory( this );
-
-        if ( !isObjectMemoryEnabled() ) {
-            // get the objects from the parent
-            ObjectSinkUpdateAdapter adapter = new ObjectSinkUpdateAdapter( sink,
-                                                                           this.constraint,
-                                                                           memory.context );
-            this.objectSource.updateSink( adapter,
-                                          context,
-                                          workingMemory );
-        } else {
-            // if already has memory, just iterate and propagate
-            final Iterator it = memory.facts.iterator();
-            for ( FactEntry entry = (FactEntry) it.next(); entry != null; entry = (FactEntry) it.next() ) {
-                sink.assertObject( entry.getFactHandle(),
-                                   context,
-                                   workingMemory );
-            }
-        }
+        // get the objects from the parent
+        RightTupleSinkUpdateAdapter adapter = new RightTupleSinkUpdateAdapter( sink,
+                                                                               this.constraint );
+        this.source.updateSink( adapter,
+                                context,
+                                workingMemory );
     }
 
     protected void doRemove(final RuleRemovalContext context,
@@ -220,29 +173,17 @@ public class AlphaNode extends ObjectSource
                             final BaseNode node,
                             final InternalWorkingMemory[] workingMemories) {
         if ( !node.isInUse() ) {
-            removeObjectSink( (ObjectSink) node );
+            removeObjectSink( (RightTupleSink) node );
         }
         if ( !this.isInUse() ) {
             for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
                 workingMemories[i].clearNodeMemory( this );
             }
         }
-        this.objectSource.remove( context,
-                                  builder,
-                                  this,
-                                  workingMemories );
-    }
-
-    public void setObjectMemoryAllowed(boolean objectMemoryAllowed) {
-        this.objectMemoryAllowed = objectMemoryAllowed;
-    }
-
-    public boolean isObjectMemoryEnabled() {
-        return this.objectMemoryEnabled;
-    }
-
-    public void setObjectMemoryEnabled(boolean objectMemoryEnabled) {
-        this.objectMemoryEnabled = objectMemoryEnabled;
+        this.source.remove( context,
+                            builder,
+                            this,
+                            workingMemories );
     }
 
     /**
@@ -251,16 +192,13 @@ public class AlphaNode extends ObjectSource
     public Object createMemory(final RuleBaseConfiguration config) {
         AlphaMemory memory = new AlphaMemory();
         memory.context = this.constraint.createContextEntry();
-        if ( this.objectMemoryEnabled ) {
-            memory.facts = new FactHashTable();
-        }
         return memory;
     }
 
     /**
      * @inheritDoc
      */
-    protected void addObjectSink(final ObjectSink objectSink) {
+    protected void addObjectSink(final RightTupleSink objectSink) {
         super.addObjectSink( objectSink );
     }
 
@@ -269,7 +207,7 @@ public class AlphaNode extends ObjectSource
     }
 
     public int hashCode() {
-        return this.objectSource.hashCode() * 17 + ((this.constraint != null) ? this.constraint.hashCode() : 0);
+        return this.source.hashCode() * 17 + ((this.constraint != null) ? this.constraint.hashCode() : 0);
     }
 
     /*
@@ -288,7 +226,7 @@ public class AlphaNode extends ObjectSource
 
         final AlphaNode other = (AlphaNode) object;
 
-        return this.objectSource.equals( other.objectSource ) && this.constraint.equals( other.constraint );
+        return this.source.equals( other.source ) && this.constraint.equals( other.constraint );
     }
 
     /**
@@ -296,8 +234,8 @@ public class AlphaNode extends ObjectSource
      * @return
      *      The next ObjectSinkNode
      */
-    public ObjectSinkNode getNextObjectSinkNode() {
-        return this.nextObjectSinkNode;
+    public RightTupleSinkNode getNextRightTupleSinkNode() {
+        return this.nextRightTupleSinkNode;
     }
 
     /**
@@ -305,8 +243,8 @@ public class AlphaNode extends ObjectSource
      * @param next
      *      The next ObjectSinkNode
      */
-    public void setNextObjectSinkNode(final ObjectSinkNode next) {
-        this.nextObjectSinkNode = next;
+    public void setNextRightTupleSinkNode(final RightTupleSinkNode next) {
+        this.nextRightTupleSinkNode = next;
     }
 
     /**
@@ -314,8 +252,8 @@ public class AlphaNode extends ObjectSource
      * @return
      *      The previous ObjectSinkNode
      */
-    public ObjectSinkNode getPreviousObjectSinkNode() {
-        return this.previousObjectSinkNode;
+    public RightTupleSinkNode getPreviousRightTupleSinkNode() {
+        return this.previousRightTupleSinkNode;
     }
 
     /**
@@ -323,8 +261,8 @@ public class AlphaNode extends ObjectSource
      * @param previous
      *      The previous ObjectSinkNode
      */
-    public void setPreviousObjectSinkNode(final ObjectSinkNode previous) {
-        this.previousObjectSinkNode = previous;
+    public void setPreviousRightTupleSinkNode(final RightTupleSinkNode previous) {
+        this.previousRightTupleSinkNode = previous;
     }
 
     public static class AlphaMemory
@@ -332,17 +270,15 @@ public class AlphaNode extends ObjectSource
         Externalizable {
         private static final long serialVersionUID = -5852576405010023458L;
 
-        public FactHashTable      facts;
         public ContextEntry       context;
 
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            facts   = (FactHashTable)in.readObject();
-            context = (ContextEntry)in.readObject();
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
+            context = (ContextEntry) in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject(facts);
-            out.writeObject(context);
+            out.writeObject( context );
         }
     }
 
@@ -352,51 +288,46 @@ public class AlphaNode extends ObjectSource
      * @author mproctor
      *
      */
-    private static class ObjectSinkUpdateAdapter
+    private static class RightTupleSinkUpdateAdapter
         implements
-        ObjectSink {
-        private final ObjectSink               sink;
+        RightTupleSink {
+        private final RightTupleSink           sink;
         private final AlphaNodeFieldConstraint constraint;
-        private final ContextEntry             alphaContext;
 
-        public ObjectSinkUpdateAdapter(final ObjectSink sink,
-                                       final AlphaNodeFieldConstraint constraint,
-                                       final ContextEntry context ) {
+        public RightTupleSinkUpdateAdapter(final RightTupleSink sink,
+                                           final AlphaNodeFieldConstraint constraint) {
             this.sink = sink;
             this.constraint = constraint;
-            this.alphaContext = context;
         }
 
-        public void assertObject(final InternalFactHandle handle,
-                                 final PropagationContext context,
-                                 final InternalWorkingMemory workingMemory) {
+        public void assertFact(final InternalFactHandle handle,
+                               final PropagationContext propagationContext,
+                               final InternalWorkingMemory workingMemory,
+                               final ContextEntry contextEntry) {
+
             if ( this.constraint.isAllowed( handle,
                                             workingMemory,
-                                            this.alphaContext ) ) {
+                                            contextEntry ) ) {
                 this.sink.assertObject( handle,
-                                        context,
+                                        propagationContext,
                                         workingMemory );
             }
         }
 
-        public void modifyObject(final InternalFactHandle handle,
-                                 final PropagationContext context,
-                                 final InternalWorkingMemory workingMemory) {
-            throw new UnsupportedOperationException( "ObjectSinkUpdateAdapter onlys supports assertObject method calls" );
+        public void retractRightTuple(final RightTuple rightTuple,
+                                      final PropagationContext context,
+                                      final InternalWorkingMemory workingMemory) {
+            throw new UnsupportedOperationException( "RightTupleSinkUpdateAdapter.retractFact is not supported." );
         }
 
-        public void retractObject(final InternalFactHandle handle,
-                                  final PropagationContext context,
-                                  final InternalWorkingMemory workingMemory) {
-            throw new UnsupportedOperationException( "ObjectSinkUpdateAdapter onlys supports assertObject method calls" );
+        public int getId() {
+            return 0;
         }
 
-        public boolean isObjectMemoryEnabled() {
-            throw new UnsupportedOperationException( "ObjectSinkUpdateAdapter have no Object memory" );
-        }
-
-        public void setObjectMemoryEnabled(boolean objectMemoryEnabled) {
-            throw new UnsupportedOperationException( "ObjectSinkUpdateAdapter have no Object memory" );
+        public void assertObject(InternalFactHandle factHandle,
+                                 PropagationContext context,
+                                 InternalWorkingMemory workingMemory) {
+            throw new UnsupportedOperationException( "RightTupleSinkUpdateAdapter.assertFact is not supported." );
         }
     }
 }
