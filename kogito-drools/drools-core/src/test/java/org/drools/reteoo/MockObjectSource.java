@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class MockObjectSource extends RightTupleSource {
+public class MockObjectSource extends ObjectSource {
     /**
      * 
      */
@@ -79,7 +79,7 @@ public class MockObjectSource extends RightTupleSource {
         this.facts.add( handle );
     }
 
-    public void updateSink(final RightTupleSink sink,
+    public void updateSink(final ObjectSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
         this.updated++;

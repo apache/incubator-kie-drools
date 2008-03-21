@@ -39,9 +39,9 @@ public class FactTemplateTypeConf
 
     private static final long serialVersionUID = 4493660262148247467L;
 
-    private FactTemplate     factTemplate;
-    private ObjectTypeNode   concreteObjectTypeNode;
-    private ObjectTypeNode[] cache;
+    private FactTemplate      factTemplate;
+    private ObjectTypeNode    concreteObjectTypeNode;
+    private ObjectTypeNode[]  cache;
 
     public FactTemplateTypeConf() {
     }
@@ -73,18 +73,19 @@ public class FactTemplateTypeConf
         this.cache = new ObjectTypeNode[]{this.concreteObjectTypeNode};
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        factTemplate            = (FactTemplate)in.readObject();
-        concreteObjectTypeNode  = (ObjectTypeNode)in.readObject();
-        cache                   = (ObjectTypeNode[])in.readObject();
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        factTemplate = (FactTemplate) in.readObject();
+        concreteObjectTypeNode = (ObjectTypeNode) in.readObject();
+        cache = (ObjectTypeNode[]) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(factTemplate);
-        out.writeObject(concreteObjectTypeNode);
-        out.writeObject(cache);
+        out.writeObject( factTemplate );
+        out.writeObject( concreteObjectTypeNode );
+        out.writeObject( cache );
     }
-    
+
     public ObjectTypeNode getConcreteObjectTypeNode() {
         return this.concreteObjectTypeNode;
     }

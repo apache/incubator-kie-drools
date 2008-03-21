@@ -60,30 +60,31 @@ public final class RuleTerminalNode extends BaseNode
     implements
     LeftTupleSinkNode,
     NodeMemory,
-    TerminalNode, Externalizable {
+    TerminalNode,
+    Externalizable {
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
 
-    private int sequence;
+    private int               sequence;
 
     /**
      *
      */
-    private static final long  serialVersionUID = 400L;
+    private static final long serialVersionUID = 400L;
     /** The rule to invoke upon match. */
-    private Rule         rule;
+    private Rule              rule;
     /**
      * the subrule reference is needed to resolve declarations
      * because declarations may have different offsets in each subrule
      */
-    private GroupElement subrule;
-    private LeftTupleSource  tupleSource;
+    private GroupElement      subrule;
+    private LeftTupleSource   tupleSource;
 
-    private LeftTupleSinkNode      previousTupleSinkNode;
-    private LeftTupleSinkNode      nextTupleSinkNode;
+    private LeftTupleSinkNode previousTupleSinkNode;
+    private LeftTupleSinkNode nextTupleSinkNode;
 
-    protected boolean          tupleMemoryEnabled;
+    protected boolean         tupleMemoryEnabled;
 
     // ------------------------------------------------------------
     // Constructors
@@ -115,24 +116,25 @@ public final class RuleTerminalNode extends BaseNode
     // ------------------------------------------------------------
     // Instance methods
     // ------------------------------------------------------------
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        super.readExternal(in);
-        sequence    = in.readInt();
-        rule        = (Rule)in.readObject();
-        subrule        = (GroupElement)in.readObject();
-        tupleSource        = (LeftTupleSource)in.readObject();
-        previousTupleSinkNode   = (LeftTupleSinkNode)in.readObject();
-        nextTupleSinkNode       = (LeftTupleSinkNode)in.readObject();
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        super.readExternal( in );
+        sequence = in.readInt();
+        rule = (Rule) in.readObject();
+        subrule = (GroupElement) in.readObject();
+        tupleSource = (LeftTupleSource) in.readObject();
+        previousTupleSinkNode = (LeftTupleSinkNode) in.readObject();
+        nextTupleSinkNode = (LeftTupleSinkNode) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal(out);
-        out.writeInt(sequence);
-        out.writeObject(rule);
-        out.writeObject(subrule);
-        out.writeObject(tupleSource);
-        out.writeObject(previousTupleSinkNode);
-        out.writeObject(nextTupleSinkNode);
+        super.writeExternal( out );
+        out.writeInt( sequence );
+        out.writeObject( rule );
+        out.writeObject( subrule );
+        out.writeObject( tupleSource );
+        out.writeObject( previousTupleSinkNode );
+        out.writeObject( nextTupleSinkNode );
     }
 
     /**
@@ -157,8 +159,8 @@ public final class RuleTerminalNode extends BaseNode
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     public void assertLeftTuple(final LeftTuple tuple,
-                            final PropagationContext context,
-                            final InternalWorkingMemory workingMemory) {
+                                final PropagationContext context,
+                                final InternalWorkingMemory workingMemory) {
         assertTuple( tuple,
                      context,
                      workingMemory,
@@ -182,7 +184,7 @@ public final class RuleTerminalNode extends BaseNode
                             final boolean fireActivationCreated) {
 
         //check if the rule is effective
-        if ( !this.rule.isEffective(workingMemory.getTimeMachine()) ) {
+        if ( !this.rule.isEffective( workingMemory.getTimeMachine() ) ) {
             return;
         }
 
@@ -227,7 +229,7 @@ public final class RuleTerminalNode extends BaseNode
 
             item.setActivated( true );
             ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCreated( item,
-                                                                         workingMemory );
+                                                                                          workingMemory );
         } else {
             // -----------------
             // Lazy instantiation and addition to the Agenda of AgendGroup
@@ -257,7 +259,8 @@ public final class RuleTerminalNode extends BaseNode
 
             final AgendaItem item = new AgendaItem( context.getPropagationNumber(),
                                                     cloned,
-                                                    rule.getSalience().getValue( tuple, workingMemory ),
+                                                    rule.getSalience().getValue( tuple,
+                                                                                 workingMemory ),
                                                     context,
                                                     this.rule,
                                                     this.subrule );
@@ -353,8 +356,8 @@ public final class RuleTerminalNode extends BaseNode
 
             // We only want to fire an event on a truly new Activation and not on an Activation as a result of a modify
             if ( fireActivationCreated ) {
-            	((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCreated( item,
-                                                                             workingMemory );
+                ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCreated( item,
+                                                                                              workingMemory );
             }
         }
 
@@ -380,8 +383,8 @@ public final class RuleTerminalNode extends BaseNode
     }
 
     public void retractLeftTuple(final LeftTuple leftTuple,
-                             final PropagationContext context,
-                             final InternalWorkingMemory workingMemory) {
+                                 final PropagationContext context,
+                                 final InternalWorkingMemory workingMemory) {
         final TerminalNodeMemory memory = (TerminalNodeMemory) workingMemory.getNodeMemory( this );
         final LeftTuple tuple = memory.getTupleMemory().remove( leftTuple );
         if ( tuple == null ) {
@@ -418,7 +421,7 @@ public final class RuleTerminalNode extends BaseNode
             }
 
             ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCancelled( activation,
-                                                                           workingMemory );
+                                                                                            workingMemory );
             ((InternalAgenda) workingMemory.getAgenda()).decreaseActiveActivations();
         } else {
             ((InternalAgenda) workingMemory.getAgenda()).decreaseDormantActivations();
@@ -460,7 +463,7 @@ public final class RuleTerminalNode extends BaseNode
     public void networkUpdated() {
         this.tupleSource.networkUpdated();
     }
-    
+
     protected void doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder,
                             final BaseNode node,
@@ -476,7 +479,7 @@ public final class RuleTerminalNode extends BaseNode
                 if ( activation.isActivated() ) {
                     activation.remove();
                     ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCancelled( activation,
-                                                                                   workingMemory );
+                                                                                                    workingMemory );
                 }
 
                 final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
@@ -492,7 +495,7 @@ public final class RuleTerminalNode extends BaseNode
             workingMemory.clearNodeMemory( this );
         }
 
-        if( !context.alreadyVisited( this.tupleSource ) ) {
+        if ( !context.alreadyVisited( this.tupleSource ) ) {
             this.tupleSource.remove( context,
                                      builder,
                                      this,
@@ -572,33 +575,35 @@ public final class RuleTerminalNode extends BaseNode
     public static class TerminalNodeMemory
         implements
         Externalizable {
-        private static final long serialVersionUID = 400L;
+        private static final long   serialVersionUID = 400L;
 
-        private InternalAgendaGroup   agendaGroup;
+        private InternalAgendaGroup agendaGroup;
 
-        private ActivationGroup   activationGroup;
+        private ActivationGroup     activationGroup;
 
-        private RuleFlowGroup     ruleFlowGroup;
+        private RuleFlowGroup       ruleFlowGroup;
 
-        private TupleHashTable    tupleMemory;
+        private TupleHashTable      tupleMemory;
 
         public TerminalNodeMemory() {
             this.tupleMemory = new TupleHashTable();
         }
 
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            agendaGroup = (InternalAgendaGroup)in.readObject();
-            activationGroup = (ActivationGroup)in.readObject();
-            ruleFlowGroup = (RuleFlowGroup)in.readObject();
-            tupleMemory = (TupleHashTable)in.readObject();
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
+            agendaGroup = (InternalAgendaGroup) in.readObject();
+            activationGroup = (ActivationGroup) in.readObject();
+            ruleFlowGroup = (RuleFlowGroup) in.readObject();
+            tupleMemory = (TupleHashTable) in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject(agendaGroup);
-            out.writeObject(activationGroup);
-            out.writeObject(ruleFlowGroup);
-            out.writeObject(tupleMemory);
+            out.writeObject( agendaGroup );
+            out.writeObject( activationGroup );
+            out.writeObject( ruleFlowGroup );
+            out.writeObject( tupleMemory );
         }
+
         public InternalAgendaGroup getAgendaGroup() {
             return this.agendaGroup;
         }

@@ -48,28 +48,29 @@ import org.drools.util.LinkedListEntry;
 abstract class BetaNode extends LeftTupleSource
     implements
     LeftTupleSinkNode,
-    RightTupleSinkNode,
+    ObjectTupleSinkNode,
+    RightTupleSink,
     NodeMemory {
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
 
     /** The left input <code>TupleSource</code>. */
-    protected LeftTupleSource     leftInput;
+    protected LeftTupleSource   leftInput;
 
     /** The right input <code>TupleSource</code>. */
-    protected RightTupleSource    rightInput;
+    protected ObjectSource      rightInput;
 
-    protected BetaConstraints constraints;
+    protected BetaConstraints   constraints;
 
-    private LeftTupleSinkNode           previousTupleSinkNode;
-    private LeftTupleSinkNode           nextTupleSinkNode;
+    private LeftTupleSinkNode   previousTupleSinkNode;
+    private LeftTupleSinkNode   nextTupleSinkNode;
 
-    private RightTupleSinkNode          previousObjectSinkNode;
-    private RightTupleSinkNode          nextObjectSinkNode;
+    private ObjectTupleSinkNode previousObjectSinkNode;
+    private ObjectTupleSinkNode nextObjectSinkNode;
 
-    protected boolean               objectMemory = true; // hard coded to true
-    protected boolean               tupleMemoryEnabled;
+    protected boolean           objectMemory = true;   // hard coded to true
+    protected boolean           tupleMemoryEnabled;
 
     // ------------------------------------------------------------
     // Constructors
@@ -88,7 +89,7 @@ abstract class BetaNode extends LeftTupleSource
      */
     BetaNode(final int id,
              final LeftTupleSource leftInput,
-             final RightTupleSource rightInput,
+             final ObjectSource rightInput,
              final BetaConstraints constraints) {
         super( id );
         this.leftInput = leftInput;
@@ -100,30 +101,31 @@ abstract class BetaNode extends LeftTupleSource
         }
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        constraints   = (BetaConstraints)in.readObject();
-        leftInput   = (LeftTupleSource)in.readObject();
-        rightInput   = (RightTupleSource)in.readObject();
-        previousTupleSinkNode   = (LeftTupleSinkNode)in.readObject();
-        nextTupleSinkNode   = (LeftTupleSinkNode)in.readObject();
-        previousObjectSinkNode   = (RightTupleSinkNode)in.readObject();
-        nextObjectSinkNode   = (RightTupleSinkNode)in.readObject();
-        objectMemory    = in.readBoolean();
-        tupleMemoryEnabled  = in.readBoolean();
-        super.readExternal(in);
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        constraints = (BetaConstraints) in.readObject();
+        leftInput = (LeftTupleSource) in.readObject();
+        rightInput = (ObjectSource) in.readObject();
+        previousTupleSinkNode = (LeftTupleSinkNode) in.readObject();
+        nextTupleSinkNode = (LeftTupleSinkNode) in.readObject();
+        previousObjectSinkNode = (ObjectTupleSinkNode) in.readObject();
+        nextObjectSinkNode = (ObjectTupleSinkNode) in.readObject();
+        objectMemory = in.readBoolean();
+        tupleMemoryEnabled = in.readBoolean();
+        super.readExternal( in );
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(constraints);
-        out.writeObject(leftInput);
-        out.writeObject(rightInput);
-        out.writeObject(previousTupleSinkNode);
-        out.writeObject(nextTupleSinkNode);
-        out.writeObject(previousObjectSinkNode);
-        out.writeObject(nextObjectSinkNode);
-        out.writeBoolean(objectMemory);
-        out.writeBoolean(tupleMemoryEnabled);
-        super.writeExternal(out);
+        out.writeObject( constraints );
+        out.writeObject( leftInput );
+        out.writeObject( rightInput );
+        out.writeObject( previousTupleSinkNode );
+        out.writeObject( nextTupleSinkNode );
+        out.writeObject( previousObjectSinkNode );
+        out.writeObject( nextObjectSinkNode );
+        out.writeBoolean( objectMemory );
+        out.writeBoolean( tupleMemoryEnabled );
+        super.writeExternal( out );
     }
 
     public BetaNodeFieldConstraint[] getConstraints() {
@@ -166,7 +168,7 @@ abstract class BetaNode extends LeftTupleSource
     }
 
     public ObjectTypeNode getObjectTypeNode() {
-        RightTupleSource source = this.rightInput;
+        ObjectSource source = this.rightInput;
         while ( !(source instanceof ObjectTypeNode) ) {
             source = source.source;
         }
@@ -209,7 +211,7 @@ abstract class BetaNode extends LeftTupleSource
                                 builder,
                                 this,
                                 workingMemories );
-        if( !context.alreadyVisited( this.leftInput )) {
+        if ( !context.alreadyVisited( this.leftInput ) ) {
             this.leftInput.remove( context,
                                    builder,
                                    this,
@@ -271,7 +273,7 @@ abstract class BetaNode extends LeftTupleSource
      * Creates a BetaMemory for the BetaNode's memory.
      */
     public Object createMemory(final RuleBaseConfiguration config) {
-        return this.constraints.createBetaMemory(config);
+        return this.constraints.createBetaMemory( config );
     }
 
     /**
@@ -315,7 +317,7 @@ abstract class BetaNode extends LeftTupleSource
      * @return
      *      The next ObjectSinkNode
      */
-    public RightTupleSinkNode getNextRightTupleSinkNode() {
+    public ObjectTupleSinkNode getNextObjectSinkNode() {
         return this.nextObjectSinkNode;
     }
 
@@ -324,7 +326,7 @@ abstract class BetaNode extends LeftTupleSource
      * @param next
      *      The next ObjectSinkNode
      */
-    public void setNextRightTupleSinkNode(final RightTupleSinkNode next) {
+    public void setNextObjectSinkNode(final ObjectTupleSinkNode next) {
         this.nextObjectSinkNode = next;
     }
 
@@ -333,7 +335,7 @@ abstract class BetaNode extends LeftTupleSource
      * @return
      *      The previous ObjectSinkNode
      */
-    public RightTupleSinkNode getPreviousRightTupleSinkNode() {
+    public ObjectTupleSinkNode getPreviousObjectSinkNode() {
         return this.previousObjectSinkNode;
     }
 
@@ -342,7 +344,7 @@ abstract class BetaNode extends LeftTupleSource
      * @param previous
      *      The previous ObjectSinkNode
      */
-    public void setPreviousRightTupleSinkNode(final RightTupleSinkNode previous) {
+    public void setPreviousObjectSinkNode(final ObjectTupleSinkNode previous) {
         this.previousObjectSinkNode = previous;
     }
 

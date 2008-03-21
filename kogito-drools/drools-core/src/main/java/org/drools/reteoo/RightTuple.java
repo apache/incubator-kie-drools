@@ -12,12 +12,12 @@ public class RightTuple
     implements
     Entry {
     private final InternalFactHandle handle;
-    
+
     private RightTuple               handlePrevious;
     private RightTuple               handleNext;
 
     private FactHashTable            memory;
-    
+
     private Entry                    previous;
     private Entry                    next;
 
@@ -39,14 +39,14 @@ public class RightTuple
         this.handle = handle;
         this.hashCode = this.handle.hashCode();
         this.sink = sink;
-        
-//        RightTuple currentFirst = handle.getRightTuple();
-//        if ( currentFirst != null ) {
-//            currentFirst.handlePrevious =  this;
-//            this.handleNext = currentFirst;
-//        }
-//        
-//        handle.setRightTuple( this );                
+
+        //        RightTuple currentFirst = handle.getRightTuple();
+        //        if ( currentFirst != null ) {
+        //            currentFirst.handlePrevious =  this;
+        //            this.handleNext = currentFirst;
+        //        }
+        //        
+        //        handle.setRightTuple( this );                
     }
 
     public RightTuple(RightTuple parent) {
@@ -67,25 +67,25 @@ public class RightTuple
         return this.sink;
     }
 
-//    public void unlinkFromRightParent() {
-//        if ( this.parent != null ) {
-//            if ( this.parentPrevious != null ) {
-//                this.parentPrevious.parentNext = this.parentNext;
-//            } else {
-//                // first one in the chain, so treat differently                
-//                this.parent.setAlphaChildren( this.parentNext );
-//            }
-//
-//            if ( this.parentNext != null ) {
-//                this.parentNext.parentPrevious = this.parentPrevious;
-//            }
-//        }
-//
-//        this.parent = null;
-//        this.parentPrevious = null;
-//        this.parentNext = null;
-//        this.blocked = null;
-//    }
+    //    public void unlinkFromRightParent() {
+    //        if ( this.parent != null ) {
+    //            if ( this.parentPrevious != null ) {
+    //                this.parentPrevious.parentNext = this.parentNext;
+    //            } else {
+    //                // first one in the chain, so treat differently                
+    //                this.parent.setAlphaChildren( this.parentNext );
+    //            }
+    //
+    //            if ( this.parentNext != null ) {
+    //                this.parentNext.parentPrevious = this.parentPrevious;
+    //            }
+    //        }
+    //
+    //        this.parent = null;
+    //        this.parentPrevious = null;
+    //        this.parentNext = null;
+    //        this.blocked = null;
+    //    }
 
     public InternalFactHandle getFactHandle() {
         return this.handle;
@@ -97,7 +97,7 @@ public class RightTuple
 
     public void setBlocked(LeftTuple blocked) {
         this.blocked = blocked;
-    }        
+    }
 
     public FactHashTable getMemory() {
         return memory;
@@ -113,7 +113,7 @@ public class RightTuple
 
     public void setPrevious(Entry previous) {
         this.previous = previous;
-    }        
+    }
 
     public RightTuple getHandlePrevious() {
         return handlePrevious;
@@ -184,12 +184,12 @@ public class RightTuple
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         // TODO Auto-generated method stub
-        
+
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         // TODO Auto-generated method stub
-        
+
     }
 
 }

@@ -31,8 +31,8 @@ public interface ObjectTypeConf {
     public void resetCache();
 
     public boolean isAssignableFrom(Object object);
-    
+
     public boolean isActive();
-    
+
     public boolean isEvent();
 }

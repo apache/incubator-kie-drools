@@ -40,19 +40,19 @@ import org.drools.spi.PropagationContext;
  * @author etirelli
  *
  */
-public class PropagationQueuingNode extends RightTupleSource
+public class PropagationQueuingNode extends ObjectSource
     implements
-    RightTupleSinkNode,
+    ObjectTupleSinkNode,
     NodeMemory {
 
-    private static final long serialVersionUID = -615639068150958767L;
+    private static final long   serialVersionUID        = -615639068150958767L;
 
     // should we make this one configurable?
-    private static final int PROPAGATION_SLICE_LIMIT = 1000;
+    private static final int    PROPAGATION_SLICE_LIMIT = 1000;
 
-    private RightTupleSinkNode    previousObjectSinkNode;
-    private RightTupleSinkNode    nextObjectSinkNode;
-    private PropagateAction   action;
+    private ObjectTupleSinkNode previousObjectSinkNode;
+    private ObjectTupleSinkNode nextObjectSinkNode;
+    private PropagateAction     action;
 
     public PropagationQueuingNode() {
     }
@@ -68,7 +68,7 @@ public class PropagationQueuingNode extends RightTupleSource
      * @param hasMemory true if node shall be configured with local memory. False otherwise.
      */
     public PropagationQueuingNode(final int id,
-                                  final RightTupleSource objectSource,
+                                  final ObjectSource objectSource,
                                   final BuildContext context) {
         super( id,
                objectSource,
@@ -76,25 +76,26 @@ public class PropagationQueuingNode extends RightTupleSource
         this.action = new PropagateAction( this );
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        super.readExternal(in);
-        previousObjectSinkNode  = (RightTupleSinkNode)in.readObject();
-        nextObjectSinkNode      = (RightTupleSinkNode)in.readObject();
-        action                  = (PropagateAction)in.readObject();
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        super.readExternal( in );
+        previousObjectSinkNode = (ObjectTupleSinkNode) in.readObject();
+        nextObjectSinkNode = (ObjectTupleSinkNode) in.readObject();
+        action = (PropagateAction) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal(out);
-        out.writeObject(previousObjectSinkNode);
-        out.writeObject(nextObjectSinkNode);
-        out.writeObject(action);
+        super.writeExternal( out );
+        out.writeObject( previousObjectSinkNode );
+        out.writeObject( nextObjectSinkNode );
+        out.writeObject( action );
     }
 
     /**
-     * @see org.drools.reteoo.RightTupleSource#updateSink(org.drools.reteoo.RightTupleSink, org.drools.spi.PropagationContext, org.drools.common.InternalWorkingMemory)
+     * @see org.drools.reteoo.ObjectSource#updateSink(org.drools.reteoo.ObjectSink, org.drools.spi.PropagationContext, org.drools.common.InternalWorkingMemory)
      */
     @Override
-    public void updateSink(RightTupleSink sink,
+    public void updateSink(ObjectSink sink,
                            PropagationContext context,
                            InternalWorkingMemory workingMemory) {
 
@@ -107,8 +108,8 @@ public class PropagationQueuingNode extends RightTupleSource
 
         // as this node is simply a queue, ask object source to update the child sink directly
         this.source.updateSink( sink,
-                                      context,
-                                      workingMemory );
+                                context,
+                                workingMemory );
     }
 
     /**
@@ -137,7 +138,7 @@ public class PropagationQueuingNode extends RightTupleSource
                             final BaseNode node,
                             final InternalWorkingMemory[] workingMemories) {
         if ( !node.isInUse() ) {
-            removeObjectSink( (RightTupleSink) node );
+            removeObjectSink( (ObjectSink) node );
         }
         if ( !this.isInUse() ) {
             for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
@@ -145,41 +146,41 @@ public class PropagationQueuingNode extends RightTupleSource
             }
         }
         this.source.remove( context,
-                                  builder,
-                                  this,
-                                  workingMemories );
+                            builder,
+                            this,
+                            workingMemories );
     }
 
     /**
-     * @see org.drools.reteoo.RightTupleSinkNode#getNextRightTupleSinkNode()
+     * @see org.drools.reteoo.ObjectTupleSinkNode#getNextObjectSinkNode()
      */
-    public RightTupleSinkNode getNextRightTupleSinkNode() {
+    public ObjectTupleSinkNode getNextObjectSinkNode() {
         return this.nextObjectSinkNode;
     }
 
     /**
-     * @see org.drools.reteoo.RightTupleSinkNode#getPreviousRightTupleSinkNode()
+     * @see org.drools.reteoo.ObjectTupleSinkNode#getPreviousObjectSinkNode()
      */
-    public RightTupleSinkNode getPreviousRightTupleSinkNode() {
+    public ObjectTupleSinkNode getPreviousObjectSinkNode() {
         return this.previousObjectSinkNode;
     }
 
     /**
-     * @see org.drools.reteoo.RightTupleSinkNode#setNextRightTupleSinkNode(org.drools.reteoo.RightTupleSinkNode)
+     * @see org.drools.reteoo.ObjectTupleSinkNode#setNextObjectSinkNode(org.drools.reteoo.ObjectTupleSinkNode)
      */
-    public void setNextRightTupleSinkNode(RightTupleSinkNode next) {
+    public void setNextObjectSinkNode(ObjectTupleSinkNode next) {
         this.nextObjectSinkNode = next;
     }
 
     /**
-     * @see org.drools.reteoo.RightTupleSinkNode#setPreviousRightTupleSinkNode(org.drools.reteoo.RightTupleSinkNode)
+     * @see org.drools.reteoo.ObjectTupleSinkNode#setPreviousObjectSinkNode(org.drools.reteoo.ObjectTupleSinkNode)
      */
-    public void setPreviousRightTupleSinkNode(RightTupleSinkNode previous) {
+    public void setPreviousObjectSinkNode(ObjectTupleSinkNode previous) {
         this.previousObjectSinkNode = previous;
     }
 
     /**
-     * @see org.drools.reteoo.RightTupleSink#assertObject(InternalFactHandle, org.drools.spi.PropagationContext, org.drools.common.InternalWorkingMemory)
+     * @see org.drools.reteoo.ObjectSink#assertObject(InternalFactHandle, org.drools.spi.PropagationContext, org.drools.common.InternalWorkingMemory)
      */
     public void assertObject(InternalFactHandle factHandle,
                              PropagationContext context,
@@ -196,14 +197,14 @@ public class PropagationQueuingNode extends RightTupleSource
     }
 
     /**
-     * @see org.drools.reteoo.RightTupleSink#isObjectMemoryEnabled()
+     * @see org.drools.reteoo.ObjectSink#isObjectMemoryEnabled()
      */
     public boolean isObjectMemoryEnabled() {
         return true;
     }
 
     /**
-     * @see org.drools.reteoo.RightTupleSink#retractObject(org.drools.common.InternalFactHandle, org.drools.spi.PropagationContext, org.drools.common.InternalWorkingMemory)
+     * @see org.drools.reteoo.ObjectSink#retractObject(org.drools.common.InternalFactHandle, org.drools.spi.PropagationContext, org.drools.common.InternalWorkingMemory)
      */
     public void retractObject(InternalFactHandle handle,
                               PropagationContext context,
@@ -236,11 +237,12 @@ public class PropagationQueuingNode extends RightTupleSource
 
         // we limit the propagation to avoid a hang when this queue is never empty
         Action next = memory.getNext();
-        for( int counter = 0; next != null && counter < PROPAGATION_SLICE_LIMIT; next = memory.getNext(), counter++ ) {
-            next.execute( this.sink, workingMemory );
+        for ( int counter = 0; next != null && counter < PROPAGATION_SLICE_LIMIT; next = memory.getNext(), counter++ ) {
+            next.execute( this.sink,
+                          workingMemory );
         }
 
-        if( memory.hasNext() ) {
+        if ( memory.hasNext() ) {
             // add action to the queue again.
             memory.isQueued().set( true );
             workingMemory.queueWorkingMemoryAction( this.action );
@@ -248,7 +250,7 @@ public class PropagationQueuingNode extends RightTupleSource
     }
 
     /**
-     * @see org.drools.reteoo.RightTupleSink#setObjectMemoryEnabled(boolean)
+     * @see org.drools.reteoo.ObjectSink#setObjectMemoryEnabled(boolean)
      */
     public void setObjectMemoryEnabled(boolean objectMemoryOn) {
         throw new UnsupportedOperationException( "PropagationQueueingNode must have its node memory enabled." );
@@ -280,14 +282,15 @@ public class PropagationQueuingNode extends RightTupleSource
             this.isQueued = new AtomicBoolean( false );
         }
 
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            queue   = (ConcurrentLinkedQueue<Action>)in.readObject();
-            isQueued    = (AtomicBoolean)in.readObject();
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
+            queue = (ConcurrentLinkedQueue<Action>) in.readObject();
+            isQueued = (AtomicBoolean) in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject(queue);
-            out.writeObject(isQueued);
+            out.writeObject( queue );
+            out.writeObject( isQueued );
         }
 
         public boolean isEmpty() {
@@ -329,17 +332,18 @@ public class PropagationQueuingNode extends RightTupleSource
             this.context = context;
         }
 
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            handle  = (InternalFactHandle)in.readObject();
-            context  = (PropagationContext)in.readObject();
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
+            handle = (InternalFactHandle) in.readObject();
+            context = (PropagationContext) in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject(handle);
-            out.writeObject(context);
+            out.writeObject( handle );
+            out.writeObject( context );
         }
 
-        public abstract void execute(final RightTupleSinkPropagator sink,
+        public abstract void execute(final ObjectSinkPropagator sink,
                                      final InternalWorkingMemory workingMemory);
     }
 
@@ -352,9 +356,9 @@ public class PropagationQueuingNode extends RightTupleSource
                    context );
         }
 
-        public void execute(final RightTupleSinkPropagator sink,
+        public void execute(final ObjectSinkPropagator sink,
                             final InternalWorkingMemory workingMemory) {
-            sink.propagateAssertFact( this.handle,
+            sink.propagateAssertObject( this.handle,
                                         this.context,
                                         workingMemory );
         }
@@ -366,13 +370,14 @@ public class PropagationQueuingNode extends RightTupleSource
         public RetractAction() {
 
         }
+
         public RetractAction(final InternalFactHandle handle,
                              final PropagationContext context) {
             super( handle,
                    context );
         }
 
-        public void execute(final RightTupleSinkPropagator sink,
+        public void execute(final ObjectSinkPropagator sink,
                             final InternalWorkingMemory workingMemory) {
             sink.propagateRetractObject( this.handle,
                                          this.context,
@@ -404,12 +409,13 @@ public class PropagationQueuingNode extends RightTupleSource
             this.node = node;
         }
 
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            node    = (PropagationQueuingNode)in.readObject();
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
+            node = (PropagationQueuingNode) in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject(node);
+            out.writeObject( node );
         }
 
         public void execute(InternalWorkingMemory workingMemory) {

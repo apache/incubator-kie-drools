@@ -23,6 +23,8 @@ import org.drools.common.NetworkNode;
  * 
  * @author etirelli
  */
-public interface TerminalNode extends NetworkNode {
+public interface TerminalNode
+    extends
+    NetworkNode {
 
 }

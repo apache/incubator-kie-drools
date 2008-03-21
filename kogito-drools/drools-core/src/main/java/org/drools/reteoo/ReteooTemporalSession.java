@@ -52,14 +52,15 @@ public class ReteooTemporalSession<T extends SessionClock> extends ReteooStatefu
         this.sessionClock = clock;
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        super.readExternal(in);
-        sessionClock    = (T)in.readObject();
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        super.readExternal( in );
+        sessionClock = (T) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal(out);
-        out.writeObject(sessionClock);
+        super.writeExternal( out );
+        out.writeObject( sessionClock );
     }
 
     public T getSessionClock() {

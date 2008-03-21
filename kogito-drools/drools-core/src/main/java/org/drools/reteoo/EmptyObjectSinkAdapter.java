@@ -8,30 +8,31 @@ import java.io.ObjectOutput;
 import java.io.IOException;
 import java.io.ObjectInput;
 
-public class EmptyRightTupleSinkAdapter
+public class EmptyObjectSinkAdapter
     implements
-    RightTupleSinkPropagator {
+    ObjectSinkPropagator {
 
-    private static final long serialVersionUID = -631743913176779720L;
+    private static final long                   serialVersionUID = -631743913176779720L;
 
-    private static final EmptyRightTupleSinkAdapter instance = new EmptyRightTupleSinkAdapter();
+    private static final EmptyObjectSinkAdapter instance         = new EmptyObjectSinkAdapter();
 
-    private static final RightTupleSink[] SINK_LIST = new RightTupleSink[0];
+    private static final ObjectSink[]           SINK_LIST        = new ObjectSink[0];
 
-    public static EmptyRightTupleSinkAdapter getInstance() {
+    public static EmptyObjectSinkAdapter getInstance() {
         return instance;
     }
 
-    public EmptyRightTupleSinkAdapter() {
+    public EmptyObjectSinkAdapter() {
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
     }
 
-    public void propagateAssertFact(final InternalFactHandle factHandle,
+    public void propagateAssertObject(final InternalFactHandle factHandle,
                                       final PropagationContext context,
                                       final InternalWorkingMemory workingMemory) {
 
@@ -43,7 +44,7 @@ public class EmptyRightTupleSinkAdapter
                                        final boolean useHash) {
     }
 
-    public RightTupleSink[] getSinks() {
+    public ObjectSink[] getSinks() {
         return SINK_LIST;
     }
 
@@ -52,7 +53,7 @@ public class EmptyRightTupleSinkAdapter
     }
 
     public boolean equals(Object obj) {
-        return obj instanceof EmptyRightTupleSinkAdapter;
+        return obj instanceof EmptyObjectSinkAdapter;
     }
 
 }

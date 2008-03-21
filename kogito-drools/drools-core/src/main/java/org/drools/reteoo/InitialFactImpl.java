@@ -33,10 +33,11 @@ import java.io.ObjectOutput;
  */
 public final class InitialFactImpl
     implements
-    InitialFact, Externalizable {
+    InitialFact,
+    Externalizable {
     private static final InitialFact INSTANCE = new InitialFactImpl();
 
-    private final int   hashCode = "InitialFactImpl".hashCode();
+    private final int                hashCode = "InitialFactImpl".hashCode();
 
     public static InitialFact getInstance() {
         return InitialFactImpl.INSTANCE;
@@ -45,12 +46,14 @@ public final class InitialFactImpl
     public InitialFactImpl() {
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
 
     }
+
     public int hashCode() {
         return this.hashCode;
     }

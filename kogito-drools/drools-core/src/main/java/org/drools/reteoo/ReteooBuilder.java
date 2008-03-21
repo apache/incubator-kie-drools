@@ -91,6 +91,7 @@ public class ReteooBuilder
     public ReteooBuilder() {
 
     }
+
     /**
      * Construct a <code>Builder</code> against an existing <code>Rete</code>
      * network.
@@ -262,77 +263,79 @@ public class ReteooBuilder
             this.recycledIds = new LinkedList<Integer>();
         }
 
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            recycledIds = (Queue<Integer>)in.readObject();
-            nextId      = in.readInt();
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
+            recycledIds = (Queue<Integer>) in.readObject();
+            nextId = in.readInt();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject(recycledIds);
-            out.writeInt(nextId);
+            out.writeObject( recycledIds );
+            out.writeInt( nextId );
         }
 
         public int getNextId() {
             Integer id = this.recycledIds.poll();
-            if( id == null ) {
+            if ( id == null ) {
                 return this.nextId++;
             }
             return id.intValue();
         }
 
-        public void releaseId( int id ) {
-            this.recycledIds.add( new Integer(id) );
+        public void releaseId(int id) {
+            this.recycledIds.add( new Integer( id ) );
         }
 
         public int getLastId() {
-            return this.nextId-1;
+            return this.nextId - 1;
         }
 
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        boolean isDrools    = out instanceof DroolsObjectOutputStream;
-        DroolsObjectOutputStream    droolsStream;
-        ByteArrayOutputStream       bytes;
+        boolean isDrools = out instanceof DroolsObjectOutputStream;
+        DroolsObjectOutputStream droolsStream;
+        ByteArrayOutputStream bytes;
 
-        if (isDrools) {
-            bytes   = null;
-            droolsStream    = (DroolsObjectOutputStream)out;
+        if ( isDrools ) {
+            bytes = null;
+            droolsStream = (DroolsObjectOutputStream) out;
         } else {
-             bytes = new ByteArrayOutputStream();
-             droolsStream   = new DroolsObjectOutputStream(bytes);
+            bytes = new ByteArrayOutputStream();
+            droolsStream = new DroolsObjectOutputStream( bytes );
         }
-        droolsStream.writeObject(rules);
-        droolsStream.writeObject(idGenerator);
-        droolsStream.writeBoolean(ordered);
-        droolsStream.writeObject(ruleBase);
-        if (!isDrools) {
+        droolsStream.writeObject( rules );
+        droolsStream.writeObject( idGenerator );
+        droolsStream.writeBoolean( ordered );
+        droolsStream.writeObject( ruleBase );
+        if ( !isDrools ) {
             bytes.close();
-            out.writeObject(bytes.toByteArray());
+            out.writeObject( bytes.toByteArray() );
         }
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        boolean isDrools    = in instanceof DroolsObjectInputStream;
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        boolean isDrools = in instanceof DroolsObjectInputStream;
         DroolsObjectInputStream droolsStream;
-        ByteArrayInputStream    bytes;
+        ByteArrayInputStream bytes;
 
-        if (isDrools) {
-            bytes           = null;
-            droolsStream    = (DroolsObjectInputStream)in;
+        if ( isDrools ) {
+            bytes = null;
+            droolsStream = (DroolsObjectInputStream) in;
         } else {
-            bytes   = new ByteArrayInputStream((byte[])in.readObject());
-            droolsStream    = new DroolsObjectInputStream(bytes);
+            bytes = new ByteArrayInputStream( (byte[]) in.readObject() );
+            droolsStream = new DroolsObjectInputStream( bytes );
         }
-        this.rules          = (Map)in.readObject();
-        this.idGenerator    = (IdGenerator)in.readObject();
-        this.ordered        = in.readBoolean();
-        this.ruleBase       = (InternalRuleBase)droolsStream.readObject();
-        if (!isDrools) {
+        this.rules = (Map) in.readObject();
+        this.idGenerator = (IdGenerator) in.readObject();
+        this.ordered = in.readBoolean();
+        this.ruleBase = (InternalRuleBase) droolsStream.readObject();
+        if ( !isDrools ) {
             bytes.close();
         }
 
-        this.ruleBuilder    = new ReteooRuleBuilder();
+        this.ruleBuilder = new ReteooRuleBuilder();
     }
 
 }

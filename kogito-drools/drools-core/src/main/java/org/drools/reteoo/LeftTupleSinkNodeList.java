@@ -52,8 +52,8 @@ public class LeftTupleSinkNodeList
     Externalizable {
     private static final long serialVersionUID = 400L;
 
-    private LeftTupleSinkNode     firstNode;
-    private LeftTupleSinkNode     lastNode;
+    private LeftTupleSinkNode firstNode;
+    private LeftTupleSinkNode lastNode;
 
     private int               size;
 
@@ -63,17 +63,19 @@ public class LeftTupleSinkNodeList
     public LeftTupleSinkNodeList() {
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        firstNode   = (LeftTupleSinkNode)in.readObject();
-        lastNode   = (LeftTupleSinkNode)in.readObject();
-        size        = in.readInt();
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        firstNode = (LeftTupleSinkNode) in.readObject();
+        lastNode = (LeftTupleSinkNode) in.readObject();
+        size = in.readInt();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(firstNode);
-        out.writeObject(lastNode);
-        out.writeInt(size);
+        out.writeObject( firstNode );
+        out.writeObject( lastNode );
+        out.writeInt( size );
     }
+
     /**
      * Add a <code>TupleSinkNode</code> to the list. If the <code>LinkedList</code> is empty then the first and
      * last nodes are set to the added node.

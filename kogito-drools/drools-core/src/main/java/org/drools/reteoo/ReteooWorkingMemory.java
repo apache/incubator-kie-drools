@@ -50,7 +50,9 @@ import org.drools.spi.PropagationContext;
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris</a>
  */
-public class ReteooWorkingMemory extends AbstractWorkingMemory implements Externalizable {
+public class ReteooWorkingMemory extends AbstractWorkingMemory
+    implements
+    Externalizable {
 
     /**
      *
@@ -68,27 +70,33 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Extern
      *            The backing rule-base.
      */
     public ReteooWorkingMemory(final int id,
-                               final InternalRuleBase ruleBase ) {
+                               final InternalRuleBase ruleBase) {
         super( id,
                ruleBase,
                ruleBase.newFactHandleFactory() );
         this.agenda = new DefaultAgenda( this );
-    }    
-    
-    public QueryResults getQueryResults(final String query) {
-        return getQueryResults( query, null );
     }
 
-    public QueryResults getQueryResults(final String query, final Object[] arguments) {
+    public QueryResults getQueryResults(final String query) {
+        return getQueryResults( query,
+                                null );
+    }
 
-        Object object = new DroolsQuery( query, arguments );
-        InternalFactHandle handle = this.handleFactory.newFactHandle( object, false, this );
+    public QueryResults getQueryResults(final String query,
+                                        final Object[] arguments) {
+
+        Object object = new DroolsQuery( query,
+                                         arguments );
+        InternalFactHandle handle = this.handleFactory.newFactHandle( object,
+                                                                      false,
+                                                                      this );
 
         insert( handle,
                 object,
                 null,
                 null,
-                this.typeConfReg.getObjectTypeConf( this.entryPoint, object ));
+                this.typeConfReg.getObjectTypeConf( this.entryPoint,
+                                                    object ) );
 
         final QueryTerminalNode node = (QueryTerminalNode) this.queryResults.remove( query );
         Query queryObj = null;
@@ -123,9 +131,6 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Extern
 
             this.handleFactory.destroyFactHandle( handle );
         }
-
-
-
 
         return new QueryResults( list,
                                  queryObj,
@@ -171,20 +176,21 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Extern
             this.activationOrigin = activationOrigin;
         }
 
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            factHandle  = (InternalFactHandle)in.readObject();
-            removeLogical   = in.readBoolean();
-            updateEqualsMap   = in.readBoolean();
-            ruleOrigin  = (Rule)in.readObject();
-            activationOrigin  = (Activation)in.readObject();
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
+            factHandle = (InternalFactHandle) in.readObject();
+            removeLogical = in.readBoolean();
+            updateEqualsMap = in.readBoolean();
+            ruleOrigin = (Rule) in.readObject();
+            activationOrigin = (Activation) in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject(factHandle);
-            out.writeBoolean(removeLogical);
-            out.writeBoolean(updateEqualsMap);
-            out.writeObject(ruleOrigin);
-            out.writeObject(activationOrigin);
+            out.writeObject( factHandle );
+            out.writeBoolean( removeLogical );
+            out.writeBoolean( updateEqualsMap );
+            out.writeObject( ruleOrigin );
+            out.writeObject( activationOrigin );
         }
 
         public void execute(InternalWorkingMemory workingMemory) {
@@ -193,11 +199,11 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Extern
                                                                            PropagationContext.ASSERTION,
                                                                            this.ruleOrigin,
                                                                            this.activationOrigin );
-            ReteooRuleBase ruleBase = ( ReteooRuleBase ) workingMemory.getRuleBase();
+            ReteooRuleBase ruleBase = (ReteooRuleBase) workingMemory.getRuleBase();
             ruleBase.assertObject( this.factHandle,
-                                                            this.factHandle.getObject(),
-                                                            context,
-                                                            workingMemory );
+                                   this.factHandle.getObject(),
+                                   context,
+                                   workingMemory );
         }
     }
 

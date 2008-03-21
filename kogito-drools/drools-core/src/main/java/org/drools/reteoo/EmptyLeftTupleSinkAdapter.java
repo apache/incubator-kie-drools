@@ -22,26 +22,26 @@ public class EmptyLeftTupleSinkAdapter
     }
 
     public void propagateAssertLeftTuple(final LeftTuple leftTuple,
-                                     final RightTuple rightTuple,
-                                     final PropagationContext context,
-                                     final InternalWorkingMemory workingMemory) {
+                                         final RightTuple rightTuple,
+                                         final PropagationContext context,
+                                         final InternalWorkingMemory workingMemory) {
     }
 
     public void propagateAssertLeftTuple(final LeftTuple tuple,
-                                     final PropagationContext context,
-                                     final InternalWorkingMemory workingMemory) {
+                                         final PropagationContext context,
+                                         final InternalWorkingMemory workingMemory) {
     }
 
     public void propagateRetractLeftTuple(final LeftTuple tuple,
-                                      final PropagationContext context,
-                                      final InternalWorkingMemory workingMemory) {
+                                          final PropagationContext context,
+                                          final InternalWorkingMemory workingMemory) {
     }
 
     public void createAndPropagateAssertLeftTuple(final InternalFactHandle factHandle,
-                                              final PropagationContext context,
-                                              final InternalWorkingMemory workingMemory) {
+                                                  final PropagationContext context,
+                                                  final InternalWorkingMemory workingMemory) {
     }
-    
+
     public void propagateRetractRightTuple(RightTuple tuple,
                                            PropagationContext context,
                                            InternalWorkingMemory workingMemory) {
@@ -53,7 +53,6 @@ public class EmptyLeftTupleSinkAdapter
 
     public void writeExternal(ObjectOutput out) throws IOException {
     }
-    
 
     public LeftTupleSink[] getSinks() {
         return new LeftTupleSink[]{};
@@ -62,6 +61,5 @@ public class EmptyLeftTupleSinkAdapter
     public int size() {
         return 0;
     }
-    
 
 }

@@ -65,9 +65,9 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
         final LeftInputAdapterNode liaNode = new LeftInputAdapterNode( 1,
                                                                        source,
                                                                        buildContext );
-        final Field field = RightTupleSource.class.getDeclaredField( "sink" );
+        final Field field = ObjectSource.class.getDeclaredField( "sink" );
         field.setAccessible( true );
-        RightTupleSinkPropagator sink = (RightTupleSinkPropagator) field.get( source );
+        ObjectSinkPropagator sink = (ObjectSinkPropagator) field.get( source );
 
         assertEquals( 1,
                       liaNode.getId() );
@@ -75,7 +75,7 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
 
         liaNode.attach();
 
-        sink = (RightTupleSinkPropagator) field.get( source );
+        sink = (ObjectSinkPropagator) field.get( source );
 
         assertEquals( 1,
                       sink.getSinks().length );

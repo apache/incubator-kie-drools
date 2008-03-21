@@ -35,7 +35,8 @@ import org.drools.spi.GlobalResolver;
 
 public class ReteooStatelessSession
     implements
-    StatelessSession, Externalizable {
+    StatelessSession,
+    Externalizable {
     //private WorkingMemory workingMemory;
 
     private InternalRuleBase            ruleBase;
@@ -58,19 +59,21 @@ public class ReteooStatelessSession
         this.ruleBase = ruleBase;
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        ruleBase        = (InternalRuleBase)in.readObject();
-        agendaFilter    = (AgendaFilter)in.readObject();
-        globalResolver  = (GlobalResolver)in.readObject();
-        globalExporter  = (GlobalExporter)in.readObject();
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        ruleBase = (InternalRuleBase) in.readObject();
+        agendaFilter = (AgendaFilter) in.readObject();
+        globalResolver = (GlobalResolver) in.readObject();
+        globalExporter = (GlobalExporter) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(ruleBase);
-        out.writeObject(agendaFilter);
-        out.writeObject(globalResolver);
-        out.writeObject(globalExporter);
+        out.writeObject( ruleBase );
+        out.writeObject( agendaFilter );
+        out.writeObject( globalResolver );
+        out.writeObject( globalExporter );
     }
+
     public InternalWorkingMemory newWorkingMemory() {
         synchronized ( this.ruleBase.getPackagesMap() ) {
             InternalWorkingMemory wm = new ReteooWorkingMemory( this.ruleBase.nextWorkingMemoryCounter(),
@@ -81,7 +84,9 @@ public class ReteooStatelessSession
             wm.setAgendaEventSupport( this.agendaEventSupport );
             wm.setRuleFlowEventSupport( ruleFlowEventSupport );
 
-            final InitialFactHandle handle = new InitialFactHandle( wm.getFactHandleFactory().newFactHandle( new InitialFactHandleDummyObject(), false, wm ) );
+            final InitialFactHandle handle = new InitialFactHandle( wm.getFactHandleFactory().newFactHandle( new InitialFactHandleDummyObject(),
+                                                                                                             false,
+                                                                                                             wm ) );
 
             wm.queueWorkingMemoryAction( new WorkingMemoryReteAssertAction( handle,
                                                                             false,
@@ -187,7 +192,7 @@ public class ReteooStatelessSession
         InternalWorkingMemory wm = newWorkingMemory();
 
         final AssertObject assertObject = new AssertObject( object );
-        ExecutorService executor = ExecutorServiceFactory.createExecutorService(  this.ruleBase.getConfiguration().getExecutorService() );
+        ExecutorService executor = ExecutorServiceFactory.createExecutorService( this.ruleBase.getConfiguration().getExecutorService() );
         executor.setCommandExecutor( new CommandExecutor( wm ) );
         executor.submit( assertObject );
         executor.submit( new FireAllRules( this.agendaFilter ) );
@@ -197,7 +202,7 @@ public class ReteooStatelessSession
         InternalWorkingMemory wm = newWorkingMemory();
 
         final AssertObjects assertObjects = new AssertObjects( array );
-        ExecutorService executor = ExecutorServiceFactory.createExecutorService(  this.ruleBase.getConfiguration().getExecutorService() );
+        ExecutorService executor = ExecutorServiceFactory.createExecutorService( this.ruleBase.getConfiguration().getExecutorService() );
         executor.setCommandExecutor( new CommandExecutor( wm ) );
         executor.submit( assertObjects );
         executor.submit( new FireAllRules( this.agendaFilter ) );
@@ -207,7 +212,7 @@ public class ReteooStatelessSession
         InternalWorkingMemory wm = newWorkingMemory();
 
         final AssertObjects assertObjects = new AssertObjects( collection );
-        ExecutorService executor = ExecutorServiceFactory.createExecutorService(  this.ruleBase.getConfiguration().getExecutorService() );
+        ExecutorService executor = ExecutorServiceFactory.createExecutorService( this.ruleBase.getConfiguration().getExecutorService() );
         executor.setCommandExecutor( new CommandExecutor( wm ) );
         executor.submit( assertObjects );
         executor.submit( new FireAllRules( this.agendaFilter ) );

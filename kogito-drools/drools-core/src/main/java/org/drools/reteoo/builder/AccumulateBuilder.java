@@ -22,7 +22,7 @@ import java.util.List;
 import org.drools.common.BetaConstraints;
 import org.drools.common.TupleStartEqualsConstraint;
 import org.drools.reteoo.AccumulateNode;
-import org.drools.reteoo.RightTupleSource;
+import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.RightInputAdapterNode;
 import org.drools.reteoo.LeftTupleSource;
 import org.drools.rule.Accumulate;
@@ -67,7 +67,7 @@ public class AccumulateBuilder
         if ( context.getObjectSource() == null ) {
 
             // attach right input adapter node to convert tuple source into an object source
-            context.setObjectSource( (RightTupleSource) utils.attachNode( context,
+            context.setObjectSource( (ObjectSource) utils.attachNode( context,
                                                                       new RightInputAdapterNode( context.getNextId(),
                                                                                                  context.getTupleSource(),
                                                                                                  context ) ) );

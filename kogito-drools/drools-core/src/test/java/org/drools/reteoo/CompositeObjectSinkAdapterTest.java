@@ -41,7 +41,7 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
     public String wah;
 
     public void testBeta() {
-        final CompositeRightTupleSinkAdapter ad = new CompositeRightTupleSinkAdapter();
+        final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
         final MockBetaNode beta = new MockBetaNode( buildContext.getNextId(),
                                                     null,
                                                     null );
@@ -67,7 +67,7 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
     }
 
     public void testAlphaWithPredicate() {
-        final CompositeRightTupleSinkAdapter ad = new CompositeRightTupleSinkAdapter();
+        final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
         final AlphaNode al = new AlphaNode( buildContext.getNextId(),
                                             new PredicateConstraint( null,
                                                                      null ),
@@ -91,7 +91,7 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
 
     public void testSingleAlpha() {
 
-        final CompositeRightTupleSinkAdapter ad = new CompositeRightTupleSinkAdapter();
+        final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
         final LiteralConstraint lit = new LiteralConstraint( new MockExtractor(),
                                                              equals.getEvaluator( ValueType.STRING_TYPE, Operator.EQUAL ),
                                                              new ObjectFieldImpl( "stilton" ) );
@@ -117,7 +117,7 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
 
     public void testDoubleAlphaWithBeta() {
 
-        final CompositeRightTupleSinkAdapter ad = new CompositeRightTupleSinkAdapter();
+        final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
         final LiteralConstraint lit = new LiteralConstraint( new MockExtractor(),
                                                              equals.getEvaluator( ValueType.STRING_TYPE, Operator.EQUAL ),
                                                              new ObjectFieldImpl( "stilton" ) );
@@ -175,7 +175,7 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
     }
 
     public void testTripleAlpha() {
-        final CompositeRightTupleSinkAdapter ad = new CompositeRightTupleSinkAdapter();
+        final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
         FieldExtractor extractor = ClassFieldExtractorCache.getInstance().getExtractor( Cheese.class,
                                                                                         "type",
                                                                                         this.getClass().getClassLoader() );
@@ -234,7 +234,7 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
     }
 
     public void testTripleAlphaCharacterConstraint() {
-        final CompositeRightTupleSinkAdapter ad = new CompositeRightTupleSinkAdapter();
+        final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
         FieldExtractor extractor = ClassFieldExtractorCache.getInstance().getExtractor( Cheese.class,
                                                                                         "charType",
                                                                                         this.getClass().getClassLoader() );
@@ -286,13 +286,13 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
         // test propagation
         Cheese cheese = new Cheese();
         cheese.setCharType( 'B' );
-        CompositeRightTupleSinkAdapter.HashKey hashKey = new CompositeRightTupleSinkAdapter.HashKey();
+        CompositeObjectSinkAdapter.HashKey hashKey = new CompositeObjectSinkAdapter.HashKey();
 
         // should find this
         hashKey.setValue( extractor.getIndex(),
                           cheese,
                           extractor );
-        RightTupleSink sink = (RightTupleSink) ad.hashedSinkMap.get( hashKey );
+        ObjectSink sink = (ObjectSink) ad.hashedSinkMap.get( hashKey );
         assertSame( al2, sink );
 
         // should not find this one
@@ -300,7 +300,7 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
         hashKey.setValue( extractor.getIndex(),
                           cheese,
                           extractor );
-        sink = (RightTupleSink) ad.hashedSinkMap.get( hashKey );
+        sink = (ObjectSink) ad.hashedSinkMap.get( hashKey );
         assertNull( sink );
 
         //now remove one, check the hashing is undone
@@ -314,7 +314,7 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
 
     public void testPropagationWithNullValue() {
 
-        final CompositeRightTupleSinkAdapter ad = new CompositeRightTupleSinkAdapter();
+        final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
         FieldExtractor extractor = ClassFieldExtractorCache.getInstance().getExtractor( Cheese.class,
                                                                                         "type",
                                                                                         this.getClass().getClassLoader() );
@@ -348,7 +348,7 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
 
         InternalFactHandle handle = new ReteooFactHandleFactory().newFactHandle( new Cheese(), false, null );
         try {
-            ad.propagateAssertFact( handle,
+            ad.propagateAssertObject( handle,
                                       null,
                                       null );
         } catch ( RuntimeException e ) {
@@ -472,7 +472,7 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
 
         MockBetaNode(final int id,
                      final LeftTupleSource leftInput,
-                     final RightTupleSource rightInput) {
+                     final ObjectSource rightInput) {
             super( id,
                    leftInput,
                    rightInput,

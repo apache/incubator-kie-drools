@@ -91,12 +91,12 @@ public abstract class LeftTupleSource extends BaseNode
         if ( this.sink instanceof EmptyLeftTupleSinkAdapter ) {
             this.sink = new SingleLeftTupleSinkAdapter( tupleSink );
         } else if ( this.sink instanceof SingleLeftTupleSinkAdapter ) {
-            final CompositeTupleSinkAdapter sinkAdapter = new CompositeTupleSinkAdapter();
+            final CompositeLeftTupleSinkAdapter sinkAdapter = new CompositeLeftTupleSinkAdapter();
             sinkAdapter.addTupleSink( this.sink.getSinks()[0] );
             sinkAdapter.addTupleSink( tupleSink );
             this.sink = sinkAdapter;
         } else {
-            ((CompositeTupleSinkAdapter) this.sink).addTupleSink( tupleSink );
+            ((CompositeLeftTupleSinkAdapter) this.sink).addTupleSink( tupleSink );
         }
     }
 
@@ -114,7 +114,7 @@ public abstract class LeftTupleSource extends BaseNode
         if ( this.sink instanceof SingleLeftTupleSinkAdapter ) {
             this.sink = EmptyLeftTupleSinkAdapter.getInstance();
         } else {
-            final CompositeTupleSinkAdapter sinkAdapter = (CompositeTupleSinkAdapter) this.sink;
+            final CompositeLeftTupleSinkAdapter sinkAdapter = (CompositeLeftTupleSinkAdapter) this.sink;
             sinkAdapter.removeTupleSink( tupleSink );
             if ( sinkAdapter.size() == 1 ) {
                 this.sink = new SingleLeftTupleSinkAdapter( sinkAdapter.getSinks()[0] );

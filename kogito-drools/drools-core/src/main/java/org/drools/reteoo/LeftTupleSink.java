@@ -47,8 +47,8 @@ public interface LeftTupleSink
      *            the <code>WorkingMemory</code> session.
      */
     void assertLeftTuple(LeftTuple leftTuple,
-                     PropagationContext context,
-                     InternalWorkingMemory workingMemory);
+                         PropagationContext context,
+                         InternalWorkingMemory workingMemory);
 
     void retractLeftTuple(LeftTuple leftTuple,
                           PropagationContext context,

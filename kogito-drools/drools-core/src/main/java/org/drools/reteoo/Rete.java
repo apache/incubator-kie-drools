@@ -53,10 +53,10 @@ import org.drools.spi.PropagationContext;
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
-public class Rete extends RightTupleSource
+public class Rete extends ObjectSource
     implements
     Externalizable,
-    RightTupleSink {
+    ObjectSink {
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
@@ -64,14 +64,14 @@ public class Rete extends RightTupleSource
     /**
      *
      */
-    private static final long                     serialVersionUID = 400L;
+    private static final long               serialVersionUID = 400L;
 
     private Map<EntryPoint, EntryPointNode> entryPoints;
 
-    private transient InternalRuleBase            ruleBase;
+    private transient InternalRuleBase      ruleBase;
 
     public Rete() {
-        this(null);
+        this( null );
     }
 
     // ------------------------------------------------------------
@@ -105,7 +105,8 @@ public class Rete extends RightTupleSource
                              final InternalWorkingMemory workingMemory) {
         EntryPoint entryPoint = context.getEntryPoint();
         EntryPointNode node = this.entryPoints.get( entryPoint );
-        ObjectTypeConf typeConf = ((InternalWorkingMemoryEntryPoint) workingMemory.getWorkingMemoryEntryPoint(  entryPoint.getEntryPointId() )).getObjectTypeConfigurationRegistry().getObjectTypeConf( entryPoint, factHandle.getObject() );
+        ObjectTypeConf typeConf = ((InternalWorkingMemoryEntryPoint) workingMemory.getWorkingMemoryEntryPoint( entryPoint.getEntryPointId() )).getObjectTypeConfigurationRegistry().getObjectTypeConf( entryPoint,
+                                                                                                                                                                                                       factHandle.getObject() );
         node.assertObject( factHandle,
                            context,
                            typeConf,
@@ -126,7 +127,8 @@ public class Rete extends RightTupleSource
                               final InternalWorkingMemory workingMemory) {
         EntryPoint entryPoint = context.getEntryPoint();
         EntryPointNode node = this.entryPoints.get( entryPoint );
-        ObjectTypeConf typeConf = ((InternalWorkingMemoryEntryPoint) workingMemory.getWorkingMemoryEntryPoint(  entryPoint.getEntryPointId() )).getObjectTypeConfigurationRegistry().getObjectTypeConf( entryPoint, handle.getObject() );
+        ObjectTypeConf typeConf = ((InternalWorkingMemoryEntryPoint) workingMemory.getWorkingMemoryEntryPoint( entryPoint.getEntryPointId() )).getObjectTypeConfigurationRegistry().getObjectTypeConf( entryPoint,
+                                                                                                                                                                                                       handle.getObject() );
         node.retractObject( handle,
                             context,
                             typeConf,
@@ -142,13 +144,13 @@ public class Rete extends RightTupleSource
      *            <code>Objects</code>. Rete only accepts <code>ObjectTypeNode</code>s
      *            as parameters to this method, though.
      */
-    protected void addObjectSink(final RightTupleSink objectSink) {
+    protected void addObjectSink(final ObjectSink objectSink) {
         final EntryPointNode node = (EntryPointNode) objectSink;
         this.entryPoints.put( node.getEntryPoint(),
                               node );
     }
 
-    protected void removeObjectSink(final RightTupleSink objectSink) {
+    protected void removeObjectSink(final ObjectSink objectSink) {
         final EntryPointNode node = (EntryPointNode) objectSink;
         this.entryPoints.remove( node.getEntryPoint() );
     }
@@ -173,14 +175,14 @@ public class Rete extends RightTupleSource
         removeObjectSink( entryPointNode );
     }
 
-    public EntryPointNode getEntryPointNode( final EntryPoint entryPoint ) {
+    public EntryPointNode getEntryPointNode(final EntryPoint entryPoint) {
         return this.entryPoints.get( entryPoint );
     }
 
     public List<ObjectTypeNode> getObjectTypeNodes() {
         List<ObjectTypeNode> allNodes = new LinkedList<ObjectTypeNode>();
-        for( EntryPointNode node : this.entryPoints.values() ) {
-            allNodes.addAll(node.getObjectTypeNodes().values());
+        for ( EntryPointNode node : this.entryPoints.values() ) {
+            allNodes.addAll( node.getObjectTypeNodes().values() );
         }
         return allNodes;
     }
@@ -210,7 +212,7 @@ public class Rete extends RightTupleSource
         return this.entryPoints.equals( other.entryPoints );
     }
 
-    public void updateSink(final RightTupleSink sink,
+    public void updateSink(final ObjectSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
         // nothing to do, since Rete object itself holds no facts to propagate.
@@ -225,14 +227,15 @@ public class Rete extends RightTupleSource
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(entryPoints);
-        out.writeObject(ruleBase);
-        super.writeExternal(out);
+        out.writeObject( entryPoints );
+        out.writeObject( ruleBase );
+        super.writeExternal( out );
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
         entryPoints = (Map<EntryPoint, EntryPointNode>) in.readObject();
-        ruleBase    = (InternalRuleBase)in.readObject();
-        super.readExternal(in);
+        ruleBase = (InternalRuleBase) in.readObject();
+        super.readExternal( in );
     }
 }
