@@ -23,7 +23,7 @@ import java.io.ObjectOutput;
 import org.drools.RuleBaseConfiguration;
 import org.drools.base.evaluators.Operator;
 import org.drools.reteoo.BetaMemory;
-import org.drools.reteoo.FactHandleMemory;
+import org.drools.reteoo.RightTupleMemory;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTupleMemory;
 import org.drools.rule.ContextEntry;
@@ -176,7 +176,7 @@ public class SingleBetaConstraints
                 tupleMemory = new TupleHashTable();
             }
 
-            FactHandleMemory factHandleMemory;
+            RightTupleMemory factHandleMemory;
             if ( this.conf.isIndexRightBetaMemory() ) {
                 factHandleMemory = new FactHandleIndexHashTable( new FieldIndex[]{index} );
             } else {

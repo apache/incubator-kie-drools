@@ -40,9 +40,9 @@ import org.drools.spi.PropagationContext;
  * @author etirelli
  *
  */
-public class PropagationQueuingNode extends ObjectSource
+public class PropagationQueuingNode extends RightTupleSource
     implements
-    ObjectSinkNode,
+    RightTupleSinkNode,
     NodeMemory {
 
     private static final long serialVersionUID = -615639068150958767L;
@@ -50,8 +50,8 @@ public class PropagationQueuingNode extends ObjectSource
     // should we make this one configurable?
     private static final int PROPAGATION_SLICE_LIMIT = 1000;
 
-    private ObjectSinkNode    previousObjectSinkNode;
-    private ObjectSinkNode    nextObjectSinkNode;
+    private RightTupleSinkNode    previousObjectSinkNode;
+    private RightTupleSinkNode    nextObjectSinkNode;
     private PropagateAction   action;
 
     public PropagationQueuingNode() {
@@ -68,7 +68,7 @@ public class PropagationQueuingNode extends ObjectSource
      * @param hasMemory true if node shall be configured with local memory. False otherwise.
      */
     public PropagationQueuingNode(final int id,
-                                  final ObjectSource objectSource,
+                                  final RightTupleSource objectSource,
                                   final BuildContext context) {
         super( id,
                objectSource,
@@ -78,8 +78,8 @@ public class PropagationQueuingNode extends ObjectSource
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         super.readExternal(in);
-        previousObjectSinkNode  = (ObjectSinkNode)in.readObject();
-        nextObjectSinkNode      = (ObjectSinkNode)in.readObject();
+        previousObjectSinkNode  = (RightTupleSinkNode)in.readObject();
+        nextObjectSinkNode      = (RightTupleSinkNode)in.readObject();
         action                  = (PropagateAction)in.readObject();
     }
 
@@ -91,10 +91,10 @@ public class PropagationQueuingNode extends ObjectSource
     }
 
     /**
-     * @see org.drools.reteoo.ObjectSource#updateSink(org.drools.reteoo.ObjectSink, org.drools.spi.PropagationContext, org.drools.common.InternalWorkingMemory)
+     * @see org.drools.reteoo.RightTupleSource#updateSink(org.drools.reteoo.RightTupleSink, org.drools.spi.PropagationContext, org.drools.common.InternalWorkingMemory)
      */
     @Override
-    public void updateSink(ObjectSink sink,
+    public void updateSink(RightTupleSink sink,
                            PropagationContext context,
                            InternalWorkingMemory workingMemory) {
 
@@ -106,7 +106,7 @@ public class PropagationQueuingNode extends ObjectSource
         }
 
         // as this node is simply a queue, ask object source to update the child sink directly
-        this.objectSource.updateSink( sink,
+        this.source.updateSink( sink,
                                       context,
                                       workingMemory );
     }
@@ -116,7 +116,7 @@ public class PropagationQueuingNode extends ObjectSource
      */
     @Override
     public void attach() {
-        this.objectSource.addObjectSink( this );
+        this.source.addObjectSink( this );
     }
 
     /**
@@ -137,55 +137,55 @@ public class PropagationQueuingNode extends ObjectSource
                             final BaseNode node,
                             final InternalWorkingMemory[] workingMemories) {
         if ( !node.isInUse() ) {
-            removeObjectSink( (ObjectSink) node );
+            removeObjectSink( (RightTupleSink) node );
         }
         if ( !this.isInUse() ) {
             for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
                 workingMemories[i].clearNodeMemory( this );
             }
         }
-        this.objectSource.remove( context,
+        this.source.remove( context,
                                   builder,
                                   this,
                                   workingMemories );
     }
 
     /**
-     * @see org.drools.reteoo.ObjectSinkNode#getNextObjectSinkNode()
+     * @see org.drools.reteoo.RightTupleSinkNode#getNextRightTupleSinkNode()
      */
-    public ObjectSinkNode getNextObjectSinkNode() {
+    public RightTupleSinkNode getNextRightTupleSinkNode() {
         return this.nextObjectSinkNode;
     }
 
     /**
-     * @see org.drools.reteoo.ObjectSinkNode#getPreviousObjectSinkNode()
+     * @see org.drools.reteoo.RightTupleSinkNode#getPreviousRightTupleSinkNode()
      */
-    public ObjectSinkNode getPreviousObjectSinkNode() {
+    public RightTupleSinkNode getPreviousRightTupleSinkNode() {
         return this.previousObjectSinkNode;
     }
 
     /**
-     * @see org.drools.reteoo.ObjectSinkNode#setNextObjectSinkNode(org.drools.reteoo.ObjectSinkNode)
+     * @see org.drools.reteoo.RightTupleSinkNode#setNextRightTupleSinkNode(org.drools.reteoo.RightTupleSinkNode)
      */
-    public void setNextObjectSinkNode(ObjectSinkNode next) {
+    public void setNextRightTupleSinkNode(RightTupleSinkNode next) {
         this.nextObjectSinkNode = next;
     }
 
     /**
-     * @see org.drools.reteoo.ObjectSinkNode#setPreviousObjectSinkNode(org.drools.reteoo.ObjectSinkNode)
+     * @see org.drools.reteoo.RightTupleSinkNode#setPreviousRightTupleSinkNode(org.drools.reteoo.RightTupleSinkNode)
      */
-    public void setPreviousObjectSinkNode(ObjectSinkNode previous) {
+    public void setPreviousRightTupleSinkNode(RightTupleSinkNode previous) {
         this.previousObjectSinkNode = previous;
     }
 
     /**
-     * @see org.drools.reteoo.ObjectSink#assertObject(org.drools.common.InternalFactHandle, org.drools.spi.PropagationContext, org.drools.common.InternalWorkingMemory)
+     * @see org.drools.reteoo.RightTupleSink#assertObject(InternalFactHandle, org.drools.spi.PropagationContext, org.drools.common.InternalWorkingMemory)
      */
-    public void assertObject(InternalFactHandle handle,
+    public void assertObject(InternalFactHandle factHandle,
                              PropagationContext context,
                              InternalWorkingMemory workingMemory) {
         final PropagationQueueingNodeMemory memory = (PropagationQueueingNodeMemory) workingMemory.getNodeMemory( this );
-        memory.addAction( new AssertAction( handle,
+        memory.addAction( new AssertAction( factHandle,
                                             context ) );
 
         // if not queued yet, we need to queue it up
@@ -196,14 +196,14 @@ public class PropagationQueuingNode extends ObjectSource
     }
 
     /**
-     * @see org.drools.reteoo.ObjectSink#isObjectMemoryEnabled()
+     * @see org.drools.reteoo.RightTupleSink#isObjectMemoryEnabled()
      */
     public boolean isObjectMemoryEnabled() {
         return true;
     }
 
     /**
-     * @see org.drools.reteoo.ObjectSink#retractObject(org.drools.common.InternalFactHandle, org.drools.spi.PropagationContext, org.drools.common.InternalWorkingMemory)
+     * @see org.drools.reteoo.RightTupleSink#retractObject(org.drools.common.InternalFactHandle, org.drools.spi.PropagationContext, org.drools.common.InternalWorkingMemory)
      */
     public void retractObject(InternalFactHandle handle,
                               PropagationContext context,
@@ -248,7 +248,7 @@ public class PropagationQueuingNode extends ObjectSource
     }
 
     /**
-     * @see org.drools.reteoo.ObjectSink#setObjectMemoryEnabled(boolean)
+     * @see org.drools.reteoo.RightTupleSink#setObjectMemoryEnabled(boolean)
      */
     public void setObjectMemoryEnabled(boolean objectMemoryOn) {
         throw new UnsupportedOperationException( "PropagationQueueingNode must have its node memory enabled." );
@@ -339,7 +339,7 @@ public class PropagationQueuingNode extends ObjectSource
             out.writeObject(context);
         }
 
-        public abstract void execute(final ObjectSinkPropagator sink,
+        public abstract void execute(final RightTupleSinkPropagator sink,
                                      final InternalWorkingMemory workingMemory);
     }
 
@@ -352,9 +352,9 @@ public class PropagationQueuingNode extends ObjectSource
                    context );
         }
 
-        public void execute(final ObjectSinkPropagator sink,
+        public void execute(final RightTupleSinkPropagator sink,
                             final InternalWorkingMemory workingMemory) {
-            sink.propagateAssertObject( this.handle,
+            sink.propagateAssertFact( this.handle,
                                         this.context,
                                         workingMemory );
         }
@@ -372,7 +372,7 @@ public class PropagationQueuingNode extends ObjectSource
                    context );
         }
 
-        public void execute(final ObjectSinkPropagator sink,
+        public void execute(final RightTupleSinkPropagator sink,
                             final InternalWorkingMemory workingMemory) {
             sink.propagateRetractObject( this.handle,
                                          this.context,

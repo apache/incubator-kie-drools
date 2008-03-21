@@ -4,12 +4,12 @@
 package org.drools.util;
 
 import org.drools.common.InternalFactHandle;
-import org.drools.reteoo.FactHandleMemory;
+import org.drools.reteoo.RightTupleMemory;
 import org.drools.reteoo.LeftTuple;
 
 public class FactHashTable extends AbstractHashTable
     implements
-    FactHandleMemory {
+    RightTupleMemory {
     private static final long serialVersionUID = 400L;
 
     public FactHashTable() {

@@ -15,8 +15,8 @@ public class BetaMemory
 
     private static final long serialVersionUID = 400L;
 
-    private LeftTupleMemory       tupleMemory;
-    private FactHandleMemory  factHandleMemory;
+    private LeftTupleMemory   leftTupleMemory;
+    private RightTupleMemory  rightTupleMemory;
     private ObjectHashMap     createdHandles;
     private ContextEntry[]    context;
 
@@ -24,33 +24,34 @@ public class BetaMemory
     }
 
     public BetaMemory(final LeftTupleMemory tupleMemory,
-                      final FactHandleMemory objectMemory,
-                      final ContextEntry[] context ) {
-        this.tupleMemory = tupleMemory;
-        this.factHandleMemory = objectMemory;
+                      final RightTupleMemory objectMemory,
+                      final ContextEntry[] context) {
+        this.leftTupleMemory = tupleMemory;
+        this.rightTupleMemory = objectMemory;
         this.context = context;
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        tupleMemory         = (LeftTupleMemory)in.readObject();
-        factHandleMemory    = (FactHandleMemory)in.readObject();
-        createdHandles      = (ObjectHashMap)in.readObject();
-        context             = (ContextEntry[])in.readObject();
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        leftTupleMemory = (LeftTupleMemory) in.readObject();
+        rightTupleMemory = (RightTupleMemory) in.readObject();
+        createdHandles = (ObjectHashMap) in.readObject();
+        context = (ContextEntry[]) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(tupleMemory);
-        out.writeObject(factHandleMemory);
-        out.writeObject(createdHandles);
-        out.writeObject(context);
+        out.writeObject( leftTupleMemory );
+        out.writeObject( rightTupleMemory );
+        out.writeObject( createdHandles );
+        out.writeObject( context );
     }
 
-    public FactHandleMemory getFactHandleMemory() {
-        return this.factHandleMemory;
+    public RightTupleMemory getRightTupleMemory() {
+        return this.rightTupleMemory;
     }
 
-    public LeftTupleMemory getTupleMemory() {
-        return this.tupleMemory;
+    public LeftTupleMemory getLeftTupleMemory() {
+        return this.leftTupleMemory;
     }
 
     public ObjectHashMap getCreatedHandles() {

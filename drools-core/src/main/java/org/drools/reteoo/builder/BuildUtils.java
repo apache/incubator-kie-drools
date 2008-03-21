@@ -32,8 +32,8 @@ import org.drools.common.QuadroupleBetaConstraints;
 import org.drools.common.SingleBetaConstraints;
 import org.drools.common.TripleBetaConstraints;
 import org.drools.reteoo.EntryPointNode;
-import org.drools.reteoo.ObjectSink;
-import org.drools.reteoo.ObjectSource;
+import org.drools.reteoo.RightTupleSink;
+import org.drools.reteoo.RightTupleSource;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.LeftTupleSink;
 import org.drools.reteoo.LeftTupleSource;
@@ -114,8 +114,8 @@ public class BuildUtils {
                         break;
                     }
                 }
-            } else if ( (context.getObjectSource() != null) && (candidate instanceof ObjectSink) ) {
-                ObjectSink[] sinks = context.getObjectSource().getSinkPropagator().getSinks();
+            } else if ( (context.getObjectSource() != null) && (candidate instanceof RightTupleSink) ) {
+                RightTupleSink[] sinks = context.getObjectSource().getSinkPropagator().getSinks();
                 for( int i = 0; i < sinks.length; i++ ) {
                     if( candidate.equals( sinks[i] ) ) {
                         node = (BaseNode) sinks[i];
@@ -157,7 +157,7 @@ public class BuildUtils {
                                             final BaseNode node) {
         if ( node instanceof LeftTupleSource ) {
             return context.getRuleBase().getConfiguration().isShareBetaNodes();
-        } else if ( node instanceof ObjectSource ) {
+        } else if ( node instanceof RightTupleSource ) {
             return context.getRuleBase().getConfiguration().isShareAlphaNodes();
         }
         return false;

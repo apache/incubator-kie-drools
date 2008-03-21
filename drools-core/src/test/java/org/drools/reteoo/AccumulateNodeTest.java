@@ -105,9 +105,9 @@ public class AccumulateNodeTest extends DroolsTestCase {
 
         // check memories are empty
         assertEquals( 0,
-                      this.memory.getTupleMemory().size() );
+                      this.memory.getLeftTupleMemory().size() );
         assertEquals( 0,
-                      this.memory.getFactHandleMemory().size() );
+                      this.memory.getRightTupleMemory().size() );
     }
 
     /* (non-Javadoc)
@@ -164,9 +164,9 @@ public class AccumulateNodeTest extends DroolsTestCase {
                                this.workingMemory );
         // check memories 
         assertEquals( 1,
-                      this.memory.getTupleMemory().size() );
+                      this.memory.getLeftTupleMemory().size() );
         assertEquals( 0,
-                      this.memory.getFactHandleMemory().size() );
+                      this.memory.getRightTupleMemory().size() );
         Assert.assertTrue( "An empty matching objects list should be propagated",
                            this.accumulator.getMatchingObjects().isEmpty() );
 
@@ -178,11 +178,11 @@ public class AccumulateNodeTest extends DroolsTestCase {
                                this.context,
                                this.workingMemory );
         assertEquals( 2,
-                      this.memory.getTupleMemory().size() );
+                      this.memory.getLeftTupleMemory().size() );
         Assert.assertTrue( "An empty matching objects list should be propagated",
                            this.accumulator.getMatchingObjects().isEmpty() );
 
-        final LeftTupleMemory memory = this.memory.getTupleMemory();
+        final LeftTupleMemory memory = this.memory.getLeftTupleMemory();
         assertTrue( memory.contains( tuple0 ) );
         assertTrue( memory.contains( tuple1 ) );
 
@@ -213,9 +213,9 @@ public class AccumulateNodeTest extends DroolsTestCase {
                                this.workingMemory );
         // check memories 
         assertEquals( 1,
-                      this.memory.getTupleMemory().size() );
+                      this.memory.getLeftTupleMemory().size() );
         assertEquals( 2,
-                      this.memory.getFactHandleMemory().size() );
+                      this.memory.getRightTupleMemory().size() );
         Assert.assertEquals( "Wrong number of elements in matching objects list ",
                              2,
                              this.accumulator.getMatchingObjects().size() );
@@ -226,12 +226,12 @@ public class AccumulateNodeTest extends DroolsTestCase {
                                this.context,
                                this.workingMemory );
         assertEquals( 2,
-                      this.memory.getTupleMemory().size() );
+                      this.memory.getLeftTupleMemory().size() );
         Assert.assertEquals( "Wrong number of elements in matching objects list ",
                              2,
                              this.accumulator.getMatchingObjects().size() );
 
-        final LeftTupleMemory memory = this.memory.getTupleMemory();
+        final LeftTupleMemory memory = this.memory.getLeftTupleMemory();
         assertTrue( memory.contains( tuple0 ) );
         assertTrue( memory.contains( tuple1 ) );
 
@@ -254,9 +254,9 @@ public class AccumulateNodeTest extends DroolsTestCase {
                                this.workingMemory );
         // check memories 
         assertEquals( 1,
-                      this.memory.getTupleMemory().size() );
+                      this.memory.getLeftTupleMemory().size() );
         assertEquals( 0,
-                      this.memory.getFactHandleMemory().size() );
+                      this.memory.getRightTupleMemory().size() );
         Assert.assertTrue( "An empty matching objects list should be propagated",
                            this.accumulator.getMatchingObjects().isEmpty() );
 
@@ -264,7 +264,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
                                 this.context,
                                 this.workingMemory );
         assertEquals( 0,
-                      this.memory.getTupleMemory().size() );
+                      this.memory.getLeftTupleMemory().size() );
         assertEquals( 1,
                       this.sink.getRetracted().size() );
         assertEquals( 1,
@@ -287,7 +287,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
 
         // check memory 
         assertEquals( 1,
-                      this.memory.getTupleMemory().size() );
+                      this.memory.getLeftTupleMemory().size() );
         assertEquals( 1,
                       this.sink.getAsserted().size() );
         assertEquals( 0,
@@ -297,7 +297,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
                                 this.context,
                                 this.workingMemory );
         assertEquals( 1,
-                      this.memory.getFactHandleMemory().size() );
+                      this.memory.getRightTupleMemory().size() );
         assertEquals( 2,
                       this.sink.getAsserted().size() );
         assertEquals( 1,
@@ -308,7 +308,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
                                 this.workingMemory );
 
         assertEquals( 2,
-                      this.memory.getFactHandleMemory().size() );
+                      this.memory.getRightTupleMemory().size() );
         assertEquals( 3,
                       this.sink.getAsserted().size() );
         assertEquals( 2,
@@ -332,7 +332,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
                                 this.context,
                                 this.workingMemory );
         assertEquals( 2,
-                      this.memory.getFactHandleMemory().size() );
+                      this.memory.getRightTupleMemory().size() );
 
         // assert tuple, should add one to left memory
         this.node.assertLeftTuple( tuple0,
@@ -341,7 +341,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
 
         // check memory 
         assertEquals( 1,
-                      this.memory.getTupleMemory().size() );
+                      this.memory.getLeftTupleMemory().size() );
         assertEquals( 0,
                       this.sink.getRetracted().size() );
         assertEquals( 1,
@@ -353,7 +353,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
                                  this.context,
                                  this.workingMemory );
         assertEquals( 1,
-                      this.memory.getFactHandleMemory().size() );
+                      this.memory.getRightTupleMemory().size() );
         assertEquals( 1,
                       this.sink.getRetracted().size() );
         assertEquals( 2,
@@ -365,7 +365,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
                                  this.context,
                                  this.workingMemory );
         assertEquals( 0,
-                      this.memory.getFactHandleMemory().size() );
+                      this.memory.getRightTupleMemory().size() );
         assertEquals( 2,
                       this.sink.getRetracted().size() );
         assertEquals( 3,
@@ -448,9 +448,9 @@ public class AccumulateNodeTest extends DroolsTestCase {
                                this.context,
                                this.workingMemory );
         // check memories 
-        assertNull( this.memory.getTupleMemory() );
+        assertNull( this.memory.getLeftTupleMemory() );
         assertEquals( 2,
-                      this.memory.getFactHandleMemory().size() );
+                      this.memory.getRightTupleMemory().size() );
         Assert.assertEquals( "Wrong number of elements in matching objects list ",
                              2,
                              this.accumulator.getMatchingObjects().size() );
@@ -460,7 +460,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
         this.node.assertLeftTuple( tuple1,
                                this.context,
                                this.workingMemory );
-        assertNull( this.memory.getTupleMemory() );
+        assertNull( this.memory.getLeftTupleMemory() );
         Assert.assertEquals( "Wrong number of elements in matching objects list ",
                              2,
                              this.accumulator.getMatchingObjects().size() );

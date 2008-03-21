@@ -4,7 +4,7 @@
 package org.drools.util;
 
 import org.drools.common.InternalFactHandle;
-import org.drools.reteoo.FactHandleMemory;
+import org.drools.reteoo.RightTupleMemory;
 import org.drools.reteoo.LeftTuple;
 import org.drools.util.TupleIndexHashTable.FieldIndexEntry;
 
@@ -15,7 +15,7 @@ import java.io.Externalizable;
 
 public class FactHandleIndexHashTable extends AbstractHashTable
     implements
-    FactHandleMemory, Externalizable {
+    RightTupleMemory, Externalizable {
 
     private static final long           serialVersionUID = 400L;
 

@@ -17,12 +17,13 @@ public class CompositeTupleSinkAdapter
         this.sinks = new LeftTupleSinkNodeList();
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        sinks   = (LeftTupleSinkNodeList)in.readObject();
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        sinks = (LeftTupleSinkNodeList) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(sinks);
+        out.writeObject( sinks );
     }
 
     public void addTupleSink(final LeftTupleSink sink) {
@@ -34,67 +35,79 @@ public class CompositeTupleSinkAdapter
     }
 
     public void propagateAssertLeftTuple(final LeftTuple tuple,
-                                     final InternalFactHandle handle,
-                                     final PropagationContext context,
-                                     final InternalWorkingMemory workingMemory) {
+                                         final RightTuple rightTuple,
+                                         final PropagationContext context,
+                                         final InternalWorkingMemory workingMemory) {
 
         for ( LeftTupleSinkNode sink = this.sinks.getFirst(); sink != null; sink = sink.getNextLeftTupleSinkNode() ) {
             sink.assertLeftTuple( new LeftTuple( tuple,
-                                             handle ),
-                              context,
-                              workingMemory );
+                                                 rightTuple,
+                                                 sink ),
+                                  context,
+                                  workingMemory );
         }
     }
 
     public void propagateAssertLeftTuple(final LeftTuple tuple,
-                                     final PropagationContext context,
-                                     final InternalWorkingMemory workingMemory) {
+                                         final PropagationContext context,
+                                         final InternalWorkingMemory workingMemory) {
         for ( LeftTupleSinkNode sink = this.sinks.getFirst(); sink != null; sink = sink.getNextLeftTupleSinkNode() ) {
-            sink.assertLeftTuple( new LeftTuple( tuple ),
-                              context,
-                              workingMemory );
+            sink.assertLeftTuple( new LeftTuple( tuple,
+                                                 sink ),
+                                  context,
+                                  workingMemory );
         }
     }
 
     public void propagateRetractLeftTuple(final LeftTuple tuple,
-                                      final InternalFactHandle handle,
-                                      final PropagationContext context,
-                                      final InternalWorkingMemory workingMemory) {
+                                          final RightTuple rightTuple,
+                                          final PropagationContext context,
+                                          final InternalWorkingMemory workingMemory) {
         for ( LeftTupleSinkNode sink = this.sinks.getFirst(); sink != null; sink = sink.getNextLeftTupleSinkNode() ) {
             sink.retractLeftTuple( new LeftTuple( tuple,
-                                              handle ),
-                               context,
-                               workingMemory );
+                                                  rightTuple,
+                                                  sink ),
+                                   context,
+                                   workingMemory );
         }
     }
 
     public void propagateRetractLeftTuple(final LeftTuple tuple,
-                                      final PropagationContext context,
-                                      final InternalWorkingMemory workingMemory) {
+                                          final PropagationContext context,
+                                          final InternalWorkingMemory workingMemory) {
         for ( LeftTupleSinkNode sink = this.sinks.getFirst(); sink != null; sink = sink.getNextLeftTupleSinkNode() ) {
-            sink.retractLeftTuple( new LeftTuple( tuple ),
-                               context,
-                               workingMemory );
+            sink.retractLeftTuple( new LeftTuple( tuple,
+                                                  sink ),
+                                   context,
+                                   workingMemory );
         }
     }
 
-    public void createAndPropagateAssertLeftTuple(final InternalFactHandle handle,
-                                              final PropagationContext context,
-                                              final InternalWorkingMemory workingMemory) {
-        for ( LeftTupleSinkNode sink = this.sinks.getFirst(); sink != null; sink = sink.getNextLeftTupleSinkNode() ) {
-            sink.assertLeftTuple( new LeftTuple( handle ),
-                              context,
-                              workingMemory );
+    public void propagateRetractRightTuple(final RightTuple rightTuple,
+                                           final PropagationContext context,
+                                           final InternalWorkingMemory workingMemory) {
+        LeftTuple child = rightTuple.getBetaChildren();
+        while ( child != null ) {
+            LeftTuple temp = child.getRightParentNext();
+            //child.unlinkFromParents();
+            child.getSink().retractLeftTuple( child,
+                                              context,
+                                              workingMemory );
+            child.unlinkFromLeftParent();
+            //child = child.getRightParentNext();
+            child = temp;
         }
+        rightTuple.setBetaChildren( null );
     }
 
-    public void createAndPropagateRetractLeftTuple(final InternalFactHandle handle,
-                                               final PropagationContext context,
-                                               final InternalWorkingMemory workingMemory) {
+    public void createAndPropagateAssertLeftTuple(final InternalFactHandle factHandle,
+                                                  final PropagationContext context,
+                                                  final InternalWorkingMemory workingMemory) {
         for ( LeftTupleSinkNode sink = this.sinks.getFirst(); sink != null; sink = sink.getNextLeftTupleSinkNode() ) {
-            sink.retractLeftTuple( new LeftTuple( handle ),
-                               context,
-                               workingMemory );
+            sink.assertLeftTuple( new LeftTuple( factHandle,
+                                                 sink ),
+                                  context,
+                                  workingMemory );
         }
     }
 

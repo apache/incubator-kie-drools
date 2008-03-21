@@ -6,12 +6,12 @@ package org.drools.util;
 import java.io.Serializable;
 
 import org.drools.common.InternalFactHandle;
-import org.drools.reteoo.FactHandleMemory;
+import org.drools.reteoo.RightTupleMemory;
 import org.drools.reteoo.LeftTuple;
 
 public class FactList
     implements
-    FactHandleMemory {
+    RightTupleMemory {
     private static final long serialVersionUID = 400L;
 
     private final LinkedList list;

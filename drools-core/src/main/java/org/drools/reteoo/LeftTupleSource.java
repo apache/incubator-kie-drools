@@ -63,7 +63,7 @@ public abstract class LeftTupleSource extends BaseNode
      */
     LeftTupleSource(final int id) {
         super( id );
-        this.sink = EmptyTupleSinkAdapter.getInstance();
+        this.sink = EmptyLeftTupleSinkAdapter.getInstance();
     }
 
     // ------------------------------------------------------------
@@ -88,9 +88,9 @@ public abstract class LeftTupleSource extends BaseNode
      *            <code>Tuples</code>.
      */
     protected void addTupleSink(final LeftTupleSink tupleSink) {
-        if ( this.sink instanceof EmptyTupleSinkAdapter ) {
-            this.sink = new SingleTupleSinkAdapter( tupleSink );
-        } else if ( this.sink instanceof SingleTupleSinkAdapter ) {
+        if ( this.sink instanceof EmptyLeftTupleSinkAdapter ) {
+            this.sink = new SingleLeftTupleSinkAdapter( tupleSink );
+        } else if ( this.sink instanceof SingleLeftTupleSinkAdapter ) {
             final CompositeTupleSinkAdapter sinkAdapter = new CompositeTupleSinkAdapter();
             sinkAdapter.addTupleSink( this.sink.getSinks()[0] );
             sinkAdapter.addTupleSink( tupleSink );
@@ -107,17 +107,17 @@ public abstract class LeftTupleSource extends BaseNode
      *            The <code>TupleSink</code> to remove
      */
     protected void removeTupleSink(final LeftTupleSink tupleSink) {
-        if ( this.sink instanceof EmptyTupleSinkAdapter ) {
+        if ( this.sink instanceof EmptyLeftTupleSinkAdapter ) {
             throw new IllegalArgumentException( "Cannot remove a sink, when the list of sinks is null" );
         }
 
-        if ( this.sink instanceof SingleTupleSinkAdapter ) {
-            this.sink = EmptyTupleSinkAdapter.getInstance();
+        if ( this.sink instanceof SingleLeftTupleSinkAdapter ) {
+            this.sink = EmptyLeftTupleSinkAdapter.getInstance();
         } else {
             final CompositeTupleSinkAdapter sinkAdapter = (CompositeTupleSinkAdapter) this.sink;
             sinkAdapter.removeTupleSink( tupleSink );
             if ( sinkAdapter.size() == 1 ) {
-                this.sink = new SingleTupleSinkAdapter( sinkAdapter.getSinks()[0] );
+                this.sink = new SingleLeftTupleSinkAdapter( sinkAdapter.getSinks()[0] );
             }
         }
     }

@@ -48,7 +48,7 @@ import org.drools.util.LinkedListEntry;
 abstract class BetaNode extends LeftTupleSource
     implements
     LeftTupleSinkNode,
-    ObjectSinkNode,
+    RightTupleSinkNode,
     NodeMemory {
     // ------------------------------------------------------------
     // Instance members
@@ -58,15 +58,15 @@ abstract class BetaNode extends LeftTupleSource
     protected LeftTupleSource     leftInput;
 
     /** The right input <code>TupleSource</code>. */
-    protected ObjectSource    rightInput;
+    protected RightTupleSource    rightInput;
 
     protected BetaConstraints constraints;
 
     private LeftTupleSinkNode           previousTupleSinkNode;
     private LeftTupleSinkNode           nextTupleSinkNode;
 
-    private ObjectSinkNode          previousObjectSinkNode;
-    private ObjectSinkNode          nextObjectSinkNode;
+    private RightTupleSinkNode          previousObjectSinkNode;
+    private RightTupleSinkNode          nextObjectSinkNode;
 
     protected boolean               objectMemory = true; // hard coded to true
     protected boolean               tupleMemoryEnabled;
@@ -88,7 +88,7 @@ abstract class BetaNode extends LeftTupleSource
      */
     BetaNode(final int id,
              final LeftTupleSource leftInput,
-             final ObjectSource rightInput,
+             final RightTupleSource rightInput,
              final BetaConstraints constraints) {
         super( id );
         this.leftInput = leftInput;
@@ -103,11 +103,11 @@ abstract class BetaNode extends LeftTupleSource
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         constraints   = (BetaConstraints)in.readObject();
         leftInput   = (LeftTupleSource)in.readObject();
-        rightInput   = (ObjectSource)in.readObject();
+        rightInput   = (RightTupleSource)in.readObject();
         previousTupleSinkNode   = (LeftTupleSinkNode)in.readObject();
         nextTupleSinkNode   = (LeftTupleSinkNode)in.readObject();
-        previousObjectSinkNode   = (ObjectSinkNode)in.readObject();
-        nextObjectSinkNode   = (ObjectSinkNode)in.readObject();
+        previousObjectSinkNode   = (RightTupleSinkNode)in.readObject();
+        nextObjectSinkNode   = (RightTupleSinkNode)in.readObject();
         objectMemory    = in.readBoolean();
         tupleMemoryEnabled  = in.readBoolean();
         super.readExternal(in);
@@ -166,9 +166,9 @@ abstract class BetaNode extends LeftTupleSource
     }
 
     public ObjectTypeNode getObjectTypeNode() {
-        ObjectSource source = this.rightInput;
+        RightTupleSource source = this.rightInput;
         while ( !(source instanceof ObjectTypeNode) ) {
-            source = source.objectSource;
+            source = source.source;
         }
         return ((ObjectTypeNode) source);
     }
@@ -315,7 +315,7 @@ abstract class BetaNode extends LeftTupleSource
      * @return
      *      The next ObjectSinkNode
      */
-    public ObjectSinkNode getNextObjectSinkNode() {
+    public RightTupleSinkNode getNextRightTupleSinkNode() {
         return this.nextObjectSinkNode;
     }
 
@@ -324,7 +324,7 @@ abstract class BetaNode extends LeftTupleSource
      * @param next
      *      The next ObjectSinkNode
      */
-    public void setNextObjectSinkNode(final ObjectSinkNode next) {
+    public void setNextRightTupleSinkNode(final RightTupleSinkNode next) {
         this.nextObjectSinkNode = next;
     }
 
@@ -333,7 +333,7 @@ abstract class BetaNode extends LeftTupleSource
      * @return
      *      The previous ObjectSinkNode
      */
-    public ObjectSinkNode getPreviousObjectSinkNode() {
+    public RightTupleSinkNode getPreviousRightTupleSinkNode() {
         return this.previousObjectSinkNode;
     }
 
@@ -342,7 +342,7 @@ abstract class BetaNode extends LeftTupleSource
      * @param previous
      *      The previous ObjectSinkNode
      */
-    public void setPreviousObjectSinkNode(final ObjectSinkNode previous) {
+    public void setPreviousRightTupleSinkNode(final RightTupleSinkNode previous) {
         this.previousObjectSinkNode = previous;
     }
 

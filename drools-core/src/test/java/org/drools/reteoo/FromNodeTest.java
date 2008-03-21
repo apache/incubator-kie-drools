@@ -286,8 +286,8 @@ public class FromNodeTest extends TestCase {
 
         final FromMemory memory = (FromMemory) workingMemory.getNodeMemory( from );
         assertEquals( 1,
-                      memory.betaMemory.getTupleMemory().size() );
-        assertNull( memory.betaMemory.getFactHandleMemory() );
+                      memory.betaMemory.getLeftTupleMemory().size() );
+        assertNull( memory.betaMemory.getRightTupleMemory() );
         assertEquals( 2,
                       ((LinkedList) memory.betaMemory.getCreatedHandles().get( tuple )).size() );
 
@@ -302,8 +302,8 @@ public class FromNodeTest extends TestCase {
                            context,
                            workingMemory );
         assertEquals( 0,
-                      memory.betaMemory.getTupleMemory().size() );
-        assertNull( memory.betaMemory.getFactHandleMemory() );
+                      memory.betaMemory.getLeftTupleMemory().size() );
+        assertNull( memory.betaMemory.getRightTupleMemory() );
     }
 
     public static class MockDataProvider

@@ -34,13 +34,13 @@ import org.drools.spi.PropagationContext;
  * Nodes that propagate <code>FactHandleImpl</code> extend this class.
  * </p>
  *
- * @see ObjectSource
+ * @see RightTupleSource
  * @see DefaultFactHandle
  *
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
-public abstract class ObjectSource extends BaseNode
+public abstract class RightTupleSource extends BaseNode
     implements
     Externalizable {
     // ------------------------------------------------------------
@@ -48,16 +48,16 @@ public abstract class ObjectSource extends BaseNode
     // ------------------------------------------------------------
 
     /** The destination for <code>FactHandleImpl</code>. */
-    protected ObjectSinkPropagator sink;
+    protected RightTupleSinkPropagator sink;
 
-    protected ObjectSource         objectSource;
+    protected RightTupleSource         source;
 
     private int                    alphaNodeHashingThreshold;
 
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
-    public ObjectSource() {
+    public RightTupleSource() {
 
     }
 
@@ -66,7 +66,7 @@ public abstract class ObjectSource extends BaseNode
      *
      * @param id
      */
-    ObjectSource(final int id) {
+    RightTupleSource(final int id) {
         this( id,
               null,
               3 );
@@ -77,13 +77,13 @@ public abstract class ObjectSource extends BaseNode
      *
      * @param id
      */
-    ObjectSource(final int id,
-                 final ObjectSource objectSource,
+    RightTupleSource(final int id,
+                 final RightTupleSource objectSource,
                  final int alphaNodeHashingThreshold) {
         super( id );
-        this.objectSource = objectSource;
+        this.source = objectSource;
         this.alphaNodeHashingThreshold = alphaNodeHashingThreshold;
-        this.sink = EmptyObjectSinkAdapter.getInstance();
+        this.sink = EmptyRightTupleSinkAdapter.getInstance();
     }
 
     // ------------------------------------------------------------
@@ -91,15 +91,15 @@ public abstract class ObjectSource extends BaseNode
     // ------------------------------------------------------------
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         super.readExternal(in);
-        sink    = (ObjectSinkPropagator)in.readObject();
-        objectSource    = (ObjectSource)in.readObject();
+        sink    = (RightTupleSinkPropagator)in.readObject();
+        source    = (RightTupleSource)in.readObject();
         alphaNodeHashingThreshold   = in.readInt();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal(out);
         out.writeObject(sink);
-        out.writeObject(objectSource);
+        out.writeObject(source);
         out.writeInt(alphaNodeHashingThreshold);
     }
 
@@ -112,16 +112,16 @@ public abstract class ObjectSource extends BaseNode
      *            The <code>ObjectSink</code> to receive propagated
      *            <code>FactHandleImpl</code>.
      */
-    protected void addObjectSink(final ObjectSink objectSink) {
-        if ( this.sink instanceof EmptyObjectSinkAdapter ) {
-            this.sink = new SingleObjectSinkAdapter( objectSink );
-        } else if ( this.sink instanceof SingleObjectSinkAdapter ) {
-            final CompositeObjectSinkAdapter sinkAdapter = new CompositeObjectSinkAdapter( this.alphaNodeHashingThreshold );
+    protected void addObjectSink(final RightTupleSink objectSink) {
+        if ( this.sink instanceof EmptyRightTupleSinkAdapter ) {
+            this.sink = new SingleRightTupleSinkAdapter( objectSink );
+        } else if ( this.sink instanceof SingleRightTupleSinkAdapter ) {
+            final CompositeRightTupleSinkAdapter sinkAdapter = new CompositeRightTupleSinkAdapter( this.alphaNodeHashingThreshold );
             sinkAdapter.addObjectSink( this.sink.getSinks()[0] );
             sinkAdapter.addObjectSink( objectSink );
             this.sink = sinkAdapter;
         } else {
-            ((CompositeObjectSinkAdapter) this.sink).addObjectSink( objectSink );
+            ((CompositeRightTupleSinkAdapter) this.sink).addObjectSink( objectSink );
         }
     }
 
@@ -131,31 +131,31 @@ public abstract class ObjectSource extends BaseNode
      * @param objectSink
      *            The <code>ObjectSink</code> to remove
      */
-    protected void removeObjectSink(final ObjectSink objectSink) {
-        if ( this.sink instanceof EmptyObjectSinkAdapter ) {
+    protected void removeObjectSink(final RightTupleSink objectSink) {
+        if ( this.sink instanceof EmptyRightTupleSinkAdapter ) {
             throw new IllegalArgumentException( "Cannot remove a sink, when the list of sinks is null" );
         }
 
-        if ( this.sink instanceof SingleObjectSinkAdapter ) {
-            this.sink = EmptyObjectSinkAdapter.getInstance();
+        if ( this.sink instanceof SingleRightTupleSinkAdapter ) {
+            this.sink = EmptyRightTupleSinkAdapter.getInstance();
         } else {
-            final CompositeObjectSinkAdapter sinkAdapter = (CompositeObjectSinkAdapter) this.sink;
+            final CompositeRightTupleSinkAdapter sinkAdapter = (CompositeRightTupleSinkAdapter) this.sink;
             sinkAdapter.removeObjectSink( objectSink );
             if ( sinkAdapter.size() == 1 ) {
-                this.sink = new SingleObjectSinkAdapter( sinkAdapter.getSinks()[0] );
+                this.sink = new SingleRightTupleSinkAdapter( sinkAdapter.getSinks()[0] );
             }
         }
     }
 
-    public abstract void updateSink(ObjectSink sink,
+    public abstract void updateSink(RightTupleSink sink,
                                     PropagationContext context,
                                     InternalWorkingMemory workingMemory);
     
     public void networkUpdated() {
-        this.objectSource.networkUpdated();
+        this.source.networkUpdated();
     }
 
-    public ObjectSinkPropagator getSinkPropagator() {
+    public RightTupleSinkPropagator getSinkPropagator() {
         return this.sink;
     }
 

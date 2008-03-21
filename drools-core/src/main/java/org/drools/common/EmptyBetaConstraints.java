@@ -18,7 +18,7 @@ package org.drools.common;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.reteoo.BetaMemory;
-import org.drools.reteoo.FactHandleMemory;
+import org.drools.reteoo.RightTupleMemory;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.ContextEntry;
 import org.drools.util.FactHashTable;
@@ -106,7 +106,7 @@ public class EmptyBetaConstraints
 
     public BetaMemory createBetaMemory(final RuleBaseConfiguration config) {
         final BetaMemory memory = new BetaMemory( config.isSequential() ? null : new TupleHashTable(),
-                                                  config.isSequential() ? (FactHandleMemory) new FactList() : (FactHandleMemory) new FactHashTable(),
+                                                  config.isSequential() ? (RightTupleMemory) new FactList() : (RightTupleMemory) new FactHashTable(),
                                                   this.createContext() );
 
         return memory;

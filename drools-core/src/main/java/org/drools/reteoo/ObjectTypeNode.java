@@ -38,6 +38,7 @@ import org.drools.spi.PropagationContext;
 import org.drools.util.FactEntry;
 import org.drools.util.FactHashTable;
 import org.drools.util.Iterator;
+import org.drools.util.ObjectHashSet;
 
 /**
  * <code>ObjectTypeNodes<code> are responsible for filtering and propagating the matching
@@ -58,9 +59,9 @@ import org.drools.util.Iterator;
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
-public class ObjectTypeNode extends ObjectSource
+public class ObjectTypeNode extends RightTupleSource
     implements
-    ObjectSink,
+    RightTupleSink,
     Externalizable,
     NodeMemory
 
@@ -75,7 +76,7 @@ public class ObjectTypeNode extends ObjectSource
     private static final long serialVersionUID = 400L;
 
     /** The <code>ObjectType</code> semantic module. */
-    private ObjectType  objectType;
+    private ObjectType        objectType;
 
     private boolean           skipOnModify     = false;
 
@@ -105,19 +106,21 @@ public class ObjectTypeNode extends ObjectSource
         setObjectMemoryEnabled( context.isObjectTypeNodeMemoryEnabled() );
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        super.readExternal(in);
-        objectType  = (ObjectType)in.readObject();
-        skipOnModify    = in.readBoolean();
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        super.readExternal( in );
+        objectType = (ObjectType) in.readObject();
+        skipOnModify = in.readBoolean();
         objectMemoryEnabled = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal(out);
-        out.writeObject(objectType);
-        out.writeBoolean(skipOnModify);
-        out.writeBoolean(objectMemoryEnabled);
+        super.writeExternal( out );
+        out.writeObject( objectType );
+        out.writeBoolean( skipOnModify );
+        out.writeBoolean( objectMemoryEnabled );
     }
+
     /**
      * Retrieve the semantic <code>ObjectType</code> differentiator.
      *
@@ -149,14 +152,14 @@ public class ObjectTypeNode extends ObjectSource
      * <code>FactHandleImpl</code> should be remembered in the node memory, so that later runtime rule attachmnents
      * can have the matched facts propagated to them.
      *
-     * @param handle
+     * @param factHandle
      *            The fact handle.
      * @param object
      *            The object to assert.
      * @param workingMemory
      *            The working memory session.
      */
-    public void assertObject(final InternalFactHandle handle,
+    public void assertObject(final InternalFactHandle factHandle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
         if ( context.getType() == PropagationContext.MODIFICATION && this.skipOnModify && context.getDormantActivations() == 0 ) {
@@ -166,44 +169,61 @@ public class ObjectTypeNode extends ObjectSource
 
         if ( this.objectMemoryEnabled ) {
             final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( this );
-            memory.add( handle,
+            memory.add( factHandle,
                         false );
         }
 
-        this.sink.propagateAssertObject( handle,
-                                         context,
-                                         workingMemory );
+        this.sink.propagateAssertFact( factHandle,
+                                       context,
+                                       workingMemory );
+    }
+
+    public void retractRightTuple(final RightTuple rightTuple,
+                                  final PropagationContext context,
+                                  final InternalWorkingMemory workingMemory) {
+        throw new UnsupportedOperationException( "ObjectTypeNode.retractRightTuple is not supported." );
     }
 
     /**
-     * Retract the <code>FactHandleimpl</code> from the <code>Rete</code> network. Also remove the
+     * Retract the <code>FactHandleimpl</code> from the <code>Rete</code> network. Also remove the 
      * <code>FactHandleImpl</code> from the node memory.
-     *
-     * @param handle
+     * 
+     * @param rightTuple
      *            The fact handle.
      * @param object
      *            The object to assert.
      * @param workingMemory
      *            The working memory session.
      */
-    public void retractObject(final InternalFactHandle handle,
-                              final PropagationContext context,
-                              final InternalWorkingMemory workingMemory) {
+    public void retractRightTuple(final InternalFactHandle factHandle,
+                                  final PropagationContext context,
+                                  final InternalWorkingMemory workingMemory) {
 
         if ( context.getType() == PropagationContext.MODIFICATION && this.skipOnModify && context.getDormantActivations() == 0 ) {
             return;
         }
 
-        final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( this );
-        memory.remove( handle );
+        if ( this.objectMemoryEnabled ) {
+            final ObjectHashSet memory = (ObjectHashSet) workingMemory.getNodeMemory( this );
+            memory.remove( factHandle );
+        }
 
-        this.sink.propagateRetractObject( handle,
-                                          context,
-                                          workingMemory,
-                                          true );
+        for ( RightTuple rightTuple = factHandle.getRightTuple(); rightTuple != null; rightTuple = (RightTuple) rightTuple.getHandleNext() ) {
+            rightTuple.getRightTupleSink().retractRightTuple( rightTuple,
+                                                              context,
+                                                              workingMemory );
+        }
+        factHandle.setRightTuple( null );
+
+        for ( LeftTuple leftTuple = factHandle.getLeftTuple(); leftTuple != null; leftTuple = (LeftTuple) leftTuple.getLeftParentNext() ) {
+            leftTuple.getSink().retractLeftTuple( leftTuple,
+                                                  context,
+                                                  workingMemory );
+        }
+        factHandle.setLeftTuple( null );
     }
 
-    public void updateSink(final ObjectSink sink,
+    public void updateSink(final RightTupleSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
         final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( this );
@@ -219,7 +239,7 @@ public class ObjectTypeNode extends ObjectSource
      * Rete needs to know that this ObjectTypeNode has been added
      */
     public void attach() {
-        this.objectSource.addObjectSink( this );
+        this.source.addObjectSink( this );
     }
 
     public void attach(final InternalWorkingMemory[] workingMemories) {
@@ -234,17 +254,17 @@ public class ObjectTypeNode extends ObjectSource
                                                                                           PropagationContext.RULE_ADDITION,
                                                                                           null,
                                                                                           null );
-            propagationContext.setEntryPoint( ((EntryPointNode) this.objectSource).getEntryPoint() );
-            this.objectSource.updateSink( this,
-                                          propagationContext,
-                                          workingMemory );
+            propagationContext.setEntryPoint( ((EntryPointNode) this.source).getEntryPoint() );
+            this.source.updateSink( this,
+                                    propagationContext,
+                                    workingMemory );
         }
     }
 
     public void networkUpdated() {
         this.skipOnModify = canSkipOnModify( this.sink.getSinks() );
     }
-    
+
     /**
      * OTN needs to override remove to avoid releasing the node ID, since OTN are
      * never removed from the rulebase in the current implementation
@@ -268,7 +288,7 @@ public class ObjectTypeNode extends ObjectSource
                             final BaseNode node,
                             final InternalWorkingMemory[] workingMemories) {
         if ( !node.isInUse() ) {
-            removeObjectSink( (ObjectSink) node );
+            removeObjectSink( (RightTupleSink) node );
         }
     }
 
@@ -290,14 +310,14 @@ public class ObjectTypeNode extends ObjectSource
     }
 
     public String toString() {
-        return "[ObjectTypeNode(" + this.id + ")::" + ((EntryPointNode) this.objectSource).getEntryPoint() + " objectType=" + this.objectType + "]";
+        return "[ObjectTypeNode(" + this.id + ")::" + ((EntryPointNode) this.source).getEntryPoint() + " objectType=" + this.objectType + "]";
     }
 
     /**
      * Uses he hashCode() of the underlying ObjectType implementation.
      */
     public int hashCode() {
-        return this.objectType.hashCode() ^ this.objectSource.hashCode();
+        return this.objectType.hashCode() ^ this.source.hashCode();
     }
 
     public boolean equals(final Object object) {
@@ -311,20 +331,20 @@ public class ObjectTypeNode extends ObjectSource
 
         final ObjectTypeNode other = (ObjectTypeNode) object;
 
-        return this.objectType.equals( other.objectType ) && this.objectSource.equals( other.objectSource );
+        return this.objectType.equals( other.objectType ) && this.source.equals( other.source );
     }
 
     /**
      * @inheritDoc
      */
-    protected void addObjectSink(final ObjectSink objectSink) {
+    protected void addObjectSink(final RightTupleSink objectSink) {
         super.addObjectSink( objectSink );
     }
 
     /**
      * @inheritDoc
      */
-    protected void removeObjectSink(final ObjectSink objectSink) {
+    protected void removeObjectSink(final RightTupleSink objectSink) {
         super.removeObjectSink( objectSink );
     }
 
@@ -344,10 +364,10 @@ public class ObjectTypeNode extends ObjectSource
             } else if ( sinks[i] instanceof BetaNode && ((BetaNode) sinks[i]).getConstraints().length > 0 ) {
                 hasConstraints = this.usesDeclaration( ((BetaNode) sinks[i]).getConstraints() );
             } else if ( sinks[i] instanceof EvalConditionNode ) {
-                hasConstraints = this.usesDeclaration( ((EvalConditionNode)sinks[i]).getCondition() );
+                hasConstraints = this.usesDeclaration( ((EvalConditionNode) sinks[i]).getCondition() );
             }
-            if ( !hasConstraints && sinks[i] instanceof ObjectSource ) {
-                hasConstraints = !this.canSkipOnModify( ((ObjectSource) sinks[i]).getSinkPropagator().getSinks() );
+            if ( !hasConstraints && sinks[i] instanceof RightTupleSource ) {
+                hasConstraints = !this.canSkipOnModify( ((RightTupleSource) sinks[i]).getSinkPropagator().getSinks() );
             } else if ( !hasConstraints && sinks[i] instanceof LeftTupleSource ) {
                 hasConstraints = !this.canSkipOnModify( ((LeftTupleSource) sinks[i]).getSinkPropagator().getSinks() );
             }
@@ -356,7 +376,6 @@ public class ObjectTypeNode extends ObjectSource
         // Can only skip if we have no constraints
         return !hasConstraints;
     }
-
 
     private boolean usesDeclaration(final Constraint[] constraints) {
         boolean usesDecl = false;
@@ -388,6 +407,6 @@ public class ObjectTypeNode extends ObjectSource
      * @return the entryPoint
      */
     public EntryPoint getEntryPoint() {
-        return ((EntryPointNode) this.objectSource).getEntryPoint();
+        return ((EntryPointNode) this.source).getEntryPoint();
     }
 }

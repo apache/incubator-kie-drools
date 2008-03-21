@@ -44,7 +44,7 @@ import org.drools.util.ObjectHashMap.ObjectEntry;
 public class CollectNode extends BetaNode
     implements
     LeftTupleSink,
-    ObjectSink {
+    RightTupleSink {
 
     private static final long                serialVersionUID = 400L;
 
@@ -76,7 +76,7 @@ public class CollectNode extends BetaNode
      */
     public CollectNode(final int id,
                        final LeftTupleSource leftInput,
-                       final ObjectSource rightInput,
+                       final RightTupleSource rightInput,
                        final AlphaNodeFieldConstraint[] resultConstraints,
                        final BetaConstraints sourceBinder,
                        final BetaConstraints resultsBinder,
@@ -138,13 +138,13 @@ public class CollectNode extends BetaNode
 
         // do not add tuple and result to the memory in sequential mode
         if ( this.tupleMemoryEnabled ) {
-            memory.betaMemory.getTupleMemory().add( leftTuple );
+            memory.betaMemory.getLeftTupleMemory().add( leftTuple );
             memory.betaMemory.getCreatedHandles().put( leftTuple,
                                                        colresult,
                                                        false );
         }
 
-        final Iterator it = memory.betaMemory.getFactHandleMemory().iterator( leftTuple );
+        final Iterator it = memory.betaMemory.getRightTupleMemory().iterator( leftTuple );
         this.constraints.updateFromTuple( memory.betaMemory.getContext(),
                                           workingMemory,
                                           leftTuple );
@@ -196,7 +196,7 @@ public class CollectNode extends BetaNode
                              final InternalWorkingMemory workingMemory) {
 
         final CollectMemory memory = (CollectMemory) workingMemory.getNodeMemory( this );
-        if( memory.betaMemory.getTupleMemory().remove( leftTuple ) == null ) {
+        if( memory.betaMemory.getLeftTupleMemory().remove( leftTuple ) == null ) {
             return;
         }
         CollectResult result = (CollectResult) memory.betaMemory.getCreatedHandles().remove( leftTuple );
@@ -224,12 +224,12 @@ public class CollectNode extends BetaNode
      *  2. For each matching tuple, call a modify tuple
      *
      */
-    public void assertObject(final InternalFactHandle handle,
+    public void assertObject(final InternalFactHandle factHandle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
 
         final CollectMemory memory = (CollectMemory) workingMemory.getNodeMemory( this );
-        memory.betaMemory.getFactHandleMemory().add( handle );
+        memory.betaMemory.getRightTupleMemory().add( factHandle );
 
         if ( !this.tupleMemoryEnabled ) {
             // do nothing here, as we know there are no left tuples at this stage in sequential mode.
@@ -238,17 +238,17 @@ public class CollectNode extends BetaNode
 
         this.constraints.updateFromFactHandle( memory.betaMemory.getContext(),
                                                workingMemory,
-                                               handle );
+                                               factHandle );
 
         // need to clone the tuples to avoid concurrent modification exceptions
-        Entry[] tuples = memory.betaMemory.getTupleMemory().toArray();
+        Entry[] tuples = memory.betaMemory.getLeftTupleMemory().toArray();
         for ( int i = 0; i < tuples.length; i++ ) {
             LeftTuple tuple = (LeftTuple) tuples[i];
             if ( this.constraints.isAllowedCachedRight( memory.betaMemory.getContext(),
                                                         tuple ) ) {
                 this.modifyTuple( true,
                                   tuple,
-                                  handle,
+                                  factHandle,
                                   context,
                                   workingMemory );
             }
@@ -268,7 +268,7 @@ public class CollectNode extends BetaNode
                               final InternalWorkingMemory workingMemory) {
 
         final CollectMemory memory = (CollectMemory) workingMemory.getNodeMemory( this );
-        if ( !memory.betaMemory.getFactHandleMemory().remove( handle ) ) {
+        if ( !memory.betaMemory.getRightTupleMemory().remove( handle ) ) {
             return;
         }
 
@@ -277,7 +277,7 @@ public class CollectNode extends BetaNode
                                                handle );
 
         // need to clone the tuples to avoid concurrent modification exceptions
-        Entry[] tuples = memory.betaMemory.getTupleMemory().toArray();
+        Entry[] tuples = memory.betaMemory.getLeftTupleMemory().toArray();
         for ( int i = 0; i < tuples.length; i++ ) {
             LeftTuple tuple = (LeftTuple) tuples[i];
             if ( this.constraints.isAllowedCachedRight( memory.betaMemory.getContext(),

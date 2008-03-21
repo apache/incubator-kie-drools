@@ -101,7 +101,7 @@ public abstract class BaseBetaConstraintsTest extends TestCase {
         BetaMemory betaMemory = betaConstraints.createBetaMemory( config );
 
         if ( indexedPositions.length > 0 ) {
-            TupleIndexHashTable tupleHashTable = (TupleIndexHashTable) betaMemory.getTupleMemory();
+            TupleIndexHashTable tupleHashTable = (TupleIndexHashTable) betaMemory.getLeftTupleMemory();
             assertTrue( tupleHashTable.isIndexed() );
             Index index = tupleHashTable.getIndex();
 
@@ -110,7 +110,7 @@ public abstract class BaseBetaConstraintsTest extends TestCase {
                                              index.getFieldIndex( i ) );
             }
 
-            FactHandleIndexHashTable factHashTable = (FactHandleIndexHashTable) betaMemory.getFactHandleMemory();
+            FactHandleIndexHashTable factHashTable = (FactHandleIndexHashTable) betaMemory.getRightTupleMemory();
             assertTrue( factHashTable.isIndexed() );
             index = factHashTable.getIndex();
 
@@ -119,10 +119,10 @@ public abstract class BaseBetaConstraintsTest extends TestCase {
                                              index.getFieldIndex( i ) );
             }
         } else {
-            TupleHashTable tupleHashTable = (TupleHashTable) betaMemory.getTupleMemory();
+            TupleHashTable tupleHashTable = (TupleHashTable) betaMemory.getLeftTupleMemory();
             assertFalse( tupleHashTable.isIndexed() );
 
-            FactHashTable factHashTable = (FactHashTable) betaMemory.getFactHandleMemory();
+            FactHashTable factHashTable = (FactHashTable) betaMemory.getRightTupleMemory();
             assertFalse( factHashTable.isIndexed() );
         }
     }

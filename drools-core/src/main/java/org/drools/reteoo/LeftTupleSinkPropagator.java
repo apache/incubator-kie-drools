@@ -10,30 +10,25 @@ public interface LeftTupleSinkPropagator
     extends
     Externalizable {
     public void propagateAssertLeftTuple(LeftTuple leftTuple,
-                                     InternalFactHandle handle,
-                                     PropagationContext context,
-                                     InternalWorkingMemory workingMemory);
+                                         RightTuple rightTuple,
+                                         PropagationContext context,
+                                         InternalWorkingMemory workingMemory);
 
-    public void propagateAssertLeftTuple(LeftTuple leftTuple,
-                                     PropagationContext context,
-                                     InternalWorkingMemory workingMemory);
-
-    public void propagateRetractLeftTuple(LeftTuple leftTuple,
-                                      InternalFactHandle handle,
-                                      PropagationContext context,
-                                      InternalWorkingMemory workingMemory);
+    public void propagateAssertLeftTuple(LeftTuple tuple,
+                                         PropagationContext context,
+                                         InternalWorkingMemory workingMemory);
 
     public void propagateRetractLeftTuple(LeftTuple tuple,
-                                      PropagationContext context,
-                                      InternalWorkingMemory workingMemory);
+                                          PropagationContext context,
+                                          InternalWorkingMemory workingMemory);
 
-    public void createAndPropagateAssertLeftTuple(InternalFactHandle handle,
-                                              PropagationContext context,
-                                              InternalWorkingMemory workingMemory);
+    public void propagateRetractRightTuple(RightTuple tuple,
+                                           PropagationContext context,
+                                           InternalWorkingMemory workingMemory);
 
-    public void createAndPropagateRetractLeftTuple(InternalFactHandle handle,
-                                               PropagationContext context,
-                                               InternalWorkingMemory workingMemory);
+    public void createAndPropagateAssertLeftTuple(InternalFactHandle factHandle,
+                                                  PropagationContext context,
+                                                  InternalWorkingMemory workingMemory);
 
     public LeftTupleSink[] getSinks();
 
