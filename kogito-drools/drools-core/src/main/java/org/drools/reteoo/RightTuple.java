@@ -16,7 +16,7 @@ public class RightTuple
     private RightTuple               handlePrevious;
     private RightTuple               handleNext;
 
-    private RightTupleList            memory;
+    private RightTupleList           memory;
 
     private Entry                    previous;
     private Entry                    next;
@@ -40,13 +40,13 @@ public class RightTuple
         this.hashCode = this.handle.hashCode();
         this.sink = sink;
 
-        //        RightTuple currentFirst = handle.getRightTuple();
-        //        if ( currentFirst != null ) {
-        //            currentFirst.handlePrevious =  this;
-        //            this.handleNext = currentFirst;
-        //        }
-        //        
-        //        handle.setRightTuple( this );                
+        RightTuple currentFirst = handle.getRightTuple();
+        if ( currentFirst != null ) {
+            currentFirst.handlePrevious = this;
+            this.handleNext = currentFirst;
+        }
+
+        handle.setRightTuple( this );
     }
 
     public RightTuple(RightTuple parent) {
