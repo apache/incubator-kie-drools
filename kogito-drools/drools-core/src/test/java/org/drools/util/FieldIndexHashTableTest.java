@@ -20,7 +20,7 @@ import org.drools.rule.Pattern;
 import org.drools.spi.FieldExtractor;
 import org.drools.util.AbstractHashTable.FactEntryImpl;
 import org.drools.util.AbstractHashTable.FieldIndex;
-import org.drools.util.FactHandleIndexHashTable.FieldIndexEntry;
+import org.drools.util.RightTupleIndexHashTable.FieldIndexEntry;
 import org.drools.util.ObjectHashMap.ObjectEntry;
 
 public class FieldIndexHashTableTest extends TestCase {
@@ -43,7 +43,7 @@ public class FieldIndexHashTableTest extends TestCase {
                                                       declaration,
                                                       equals.getEvaluator( ValueType.STRING_TYPE, Operator.EQUAL ) );
 
-        final FactHandleIndexHashTable map = new FactHandleIndexHashTable( new FieldIndex[]{fieldIndex} );
+        final RightTupleIndexHashTable map = new RightTupleIndexHashTable( new FieldIndex[]{fieldIndex} );
 
         final Cheese cheddar = new Cheese( "cheddar",
                                            10 );
@@ -92,7 +92,7 @@ public class FieldIndexHashTableTest extends TestCase {
                                                       declaration,
                                                       equals.getEvaluator( ValueType.STRING_TYPE, Operator.EQUAL ) );
 
-        final FactHandleIndexHashTable map = new FactHandleIndexHashTable( new FieldIndex[]{fieldIndex} );
+        final RightTupleIndexHashTable map = new RightTupleIndexHashTable( new FieldIndex[]{fieldIndex} );
 
         assertEquals( 0,
                       map.size() );
@@ -149,7 +149,7 @@ public class FieldIndexHashTableTest extends TestCase {
                                                       declaration,
                                                       equals.getEvaluator( ValueType.STRING_TYPE, Operator.EQUAL ) );
 
-        final FactHandleIndexHashTable map = new FactHandleIndexHashTable( new FieldIndex[]{fieldIndex} );
+        final RightTupleIndexHashTable map = new RightTupleIndexHashTable( new FieldIndex[]{fieldIndex} );
 
         assertEquals( 0,
                       map.size() );
@@ -206,7 +206,7 @@ public class FieldIndexHashTableTest extends TestCase {
                                                       declaration,
                                                       equals.getEvaluator( ValueType.OBJECT_TYPE, Operator.EQUAL ) );
 
-        final FactHandleIndexHashTable map = new FactHandleIndexHashTable( new FieldIndex[]{fieldIndex} );
+        final RightTupleIndexHashTable map = new RightTupleIndexHashTable( new FieldIndex[]{fieldIndex} );
 
         final TestClass c1 = new TestClass( 0,
                                             new TestClass( 20,
@@ -253,7 +253,7 @@ public class FieldIndexHashTableTest extends TestCase {
                                                       declaration,
                                                       equals.getEvaluator( ValueType.STRING_TYPE, Operator.EQUAL ) );
 
-        final FactHandleIndexHashTable map = new FactHandleIndexHashTable( new FieldIndex[]{fieldIndex} );
+        final RightTupleIndexHashTable map = new RightTupleIndexHashTable( new FieldIndex[]{fieldIndex} );
 
         assertEquals( 0,
                       map.size() );
@@ -320,7 +320,7 @@ public class FieldIndexHashTableTest extends TestCase {
                                                       declaration,
                                                       equals.getEvaluator( ValueType.STRING_TYPE, Operator.EQUAL ) );
 
-        final FactHandleIndexHashTable map = new FactHandleIndexHashTable( new FieldIndex[]{fieldIndex} );
+        final RightTupleIndexHashTable map = new RightTupleIndexHashTable( new FieldIndex[]{fieldIndex} );
 
         assertEquals( 0,
                       map.size() );
@@ -537,7 +537,7 @@ public class FieldIndexHashTableTest extends TestCase {
                                                       declaration,
                                                       equals.getEvaluator( ValueType.STRING_TYPE, Operator.EQUAL ) );
 
-        final FactHandleIndexHashTable map = new FactHandleIndexHashTable( new FieldIndex[]{fieldIndex} );
+        final RightTupleIndexHashTable map = new RightTupleIndexHashTable( new FieldIndex[]{fieldIndex} );
 
         final Cheese stilton = new Cheese( "stilton",
                                            55 );

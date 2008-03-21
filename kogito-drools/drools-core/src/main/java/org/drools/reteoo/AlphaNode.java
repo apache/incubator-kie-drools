@@ -32,7 +32,7 @@ import org.drools.rule.ContextEntry;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
 import org.drools.util.FactEntry;
-import org.drools.util.FactHashTable;
+import org.drools.util.RightTupleList;
 import org.drools.util.Iterator;
 
 /**

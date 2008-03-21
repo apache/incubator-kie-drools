@@ -11,7 +11,7 @@ public interface LeftTupleMemory {
 
     public void add(LeftTuple tuple);
 
-    public LeftTuple remove(LeftTuple leftTuple);
+    public void remove(LeftTuple leftTuple);
 
     public boolean contains(LeftTuple leftTuple);
 

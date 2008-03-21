@@ -38,7 +38,7 @@ import org.drools.rule.EntryPoint;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
 import org.drools.util.FactEntry;
-import org.drools.util.FactHashTable;
+import org.drools.util.RightTupleList;
 import org.drools.util.Iterator;
 
 /**
@@ -195,12 +195,6 @@ public class EntryPointNode extends ObjectSource
         }
     }
 
-    public void retractObject(final InternalFactHandle handle,
-                              final PropagationContext context,
-                              final InternalWorkingMemory workingMemory) {
-        // do nothing, dummy method to impl the interface                
-    }
-
     /**
      * Adds the <code>ObjectSink</code> so that it may receive
      * <code>Objects</code> propagated from this <code>ObjectSource</code>.
@@ -276,26 +270,27 @@ public class EntryPointNode extends ObjectSource
     public void updateSink(final ObjectSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
-        // JBRULES-612: the cache MUST be invalidated when a new node type is added to the network, so iterate and reset all caches.
-        final ObjectTypeNode node = (ObjectTypeNode) sink;
-
-        final ObjectType newObjectType = node.getObjectType();
-
-        InternalWorkingMemoryEntryPoint wmEntryPoint = (InternalWorkingMemoryEntryPoint) workingMemory.getWorkingMemoryEntryPoint( this.entryPoint.getEntryPointId() );
-
-        for ( ObjectTypeConf objectTypeConf : wmEntryPoint.getObjectTypeConfigurationRegistry().values() ) {
-            if ( newObjectType.isAssignableFrom( objectTypeConf.getConcreteObjectTypeNode().getObjectType() ) ) {
-                objectTypeConf.resetCache();
-                ObjectTypeNode sourceNode = objectTypeConf.getConcreteObjectTypeNode();
-                FactHashTable table = (FactHashTable) workingMemory.getNodeMemory( sourceNode );
-                Iterator factIter = table.iterator();
-                for ( FactEntry factEntry = (FactEntry) factIter.next(); factEntry != null; factEntry = (FactEntry) factIter.next() ) {
-                    sink.assertObject( factEntry.getFactHandle(),
-                                       context,
-                                       workingMemory );
-                }
-            }
-        }
+        // @todo
+//        // JBRULES-612: the cache MUST be invalidated when a new node type is added to the network, so iterate and reset all caches.
+//        final ObjectTypeNode node = (ObjectTypeNode) sink;
+//
+//        final ObjectType newObjectType = node.getObjectType();
+//
+//        InternalWorkingMemoryEntryPoint wmEntryPoint = (InternalWorkingMemoryEntryPoint) workingMemory.getWorkingMemoryEntryPoint( this.entryPoint.getEntryPointId() );
+//
+//        for ( ObjectTypeConf objectTypeConf : wmEntryPoint.getObjectTypeConfigurationRegistry().values() ) {
+//            if ( newObjectType.isAssignableFrom( objectTypeConf.getConcreteObjectTypeNode().getObjectType() ) ) {
+//                objectTypeConf.resetCache();
+//                ObjectTypeNode sourceNode = objectTypeConf.getConcreteObjectTypeNode();
+//                RightTupleList table = (RightTupleList) workingMemory.getNodeMemory( sourceNode );
+//                Iterator factIter = table.iterator();
+//                for ( FactEntry factEntry = (FactEntry) factIter.next(); factEntry != null; factEntry = (FactEntry) factIter.next() ) {
+//                    sink.assertObject( factEntry.getFactHandle(),
+//                                       context,
+//                                       workingMemory );
+//                }
+//            }
+//        }
     }
 
     public boolean isObjectMemoryEnabled() {

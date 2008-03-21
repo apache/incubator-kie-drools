@@ -271,9 +271,13 @@ public class NamedEntryPoint
                                                                                       -1,
                                                                                       -1,
                                                                                       this.entryPoint );
+            
+            ObjectTypeConf typeConf = this.typeConfReg.getObjectTypeConf( this.entryPoint,
+                                                                          handle.getObject() );            
 
             this.entryPointNode.retractObject( handle,
                                                propagationContext,
+                                               typeConf,
                                                this.wm );
 
             final Object object = handle.getObject();
@@ -329,9 +333,13 @@ public class NamedEntryPoint
                                                                                       -1,
                                                                                       -1,
                                                                                       entryPoint );
+            
+            ObjectTypeConf typeConf = this.typeConfReg.getObjectTypeConf( this.entryPoint,
+                                                                          handle.getObject() );            
 
             this.entryPointNode.retractObject( handle,
                                                propagationContext,
+                                               typeConf,
                                                this.wm );
 
         } finally {

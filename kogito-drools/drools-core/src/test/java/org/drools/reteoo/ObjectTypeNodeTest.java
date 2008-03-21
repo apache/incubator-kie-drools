@@ -39,7 +39,7 @@ import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.EntryPoint;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
-import org.drools.util.FactHashTable;
+import org.drools.util.RightTupleList;
 import org.drools.util.ObjectHashMap;
 
 public class ObjectTypeNodeTest extends DroolsTestCase {
@@ -129,7 +129,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                     workingMemory.getObject( (DefaultFactHandle) ((Object[]) asserted.get( 0 ))[0] ) );
 
         // check asserted object was added to memory
-        final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( objectTypeNode );
+        final RightTupleList memory = (RightTupleList) workingMemory.getNodeMemory( objectTypeNode );
         assertEquals( 1,
                       memory.size() );
         assertTrue( memory.contains( handle1 ) );
@@ -182,7 +182,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                     workingMemory.getObject( (DefaultFactHandle) ((Object[]) asserted.get( 0 ))[0] ) );
 
         // it's sequential, so check the asserted object was not added to the node memory
-        final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( objectTypeNode );
+        final RightTupleList memory = (RightTupleList) workingMemory.getNodeMemory( objectTypeNode );
         assertEquals( 0,
                       memory.size() );
     }
@@ -198,7 +198,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                                                                   new ClassObjectType( String.class ),
                                                                   buildContext );
 
-        final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( objectTypeNode );
+        final RightTupleList memory = (RightTupleList) workingMemory.getNodeMemory( objectTypeNode );
 
         assertNotNull( memory );
     }
@@ -258,7 +258,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                                      context,
                                      workingMemory );
         /* check asserted object was added to memory */
-        final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( objectTypeNode );
+        final RightTupleList memory = (RightTupleList) workingMemory.getNodeMemory( objectTypeNode );
         assertEquals( 1,
                       memory.size() );
 
@@ -386,7 +386,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                       ((InternalFactHandle) ((Object[]) asserted.get( 0 ))[0]).getObject() );
 
         // check asserted object was added to memory
-        final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( objectTypeNode );
+        final RightTupleList memory = (RightTupleList) workingMemory.getNodeMemory( objectTypeNode );
         assertEquals( 1,
                       memory.size() );
         assertTrue( memory.contains( handle1 ) );
@@ -437,7 +437,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                       person );
 
         // check asserted object was added to memory
-        final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( objectTypeNode );
+        final RightTupleList memory = (RightTupleList) workingMemory.getNodeMemory( objectTypeNode );
         assertEquals( 1,
                       memory.size() );
         assertTrue( memory.contains( handle1 ) );

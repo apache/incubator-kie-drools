@@ -25,7 +25,7 @@ import org.drools.common.PropagationContextImpl;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.PropagationContext;
 import org.drools.util.FactEntry;
-import org.drools.util.FactHashTable;
+import org.drools.util.RightTupleList;
 import org.drools.util.Iterator;
 
 import java.io.ObjectOutput;
@@ -227,7 +227,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
     }
 
     public Object createMemory(final RuleBaseConfiguration config) {
-        return new FactHashTable();
+        return new RightTupleList();
     }
 
     /**

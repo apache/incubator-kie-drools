@@ -629,13 +629,13 @@ public abstract class AbstractHashTable
 
         public int hashCodeOf(final Object object) {
             int hashCode = this.startResult;
-            hashCode = TupleIndexHashTable.PRIME * hashCode + this.extractor.getHashCode( null, object );
+            hashCode = LeftTupleIndexHashTable.PRIME * hashCode + this.extractor.getHashCode( null, object );
             return rehash( hashCode );
         }
 
         public int hashCodeOf(final LeftTuple tuple) {
             int hashCode = this.startResult;
-            hashCode = TupleIndexHashTable.PRIME * hashCode + this.declaration.getHashCode( null, tuple.get( this.declaration ).getObject() );
+            hashCode = LeftTupleIndexHashTable.PRIME * hashCode + this.declaration.getHashCode( null, tuple.get( this.declaration ).getObject() );
             return rehash( hashCode );
         }
 
@@ -726,8 +726,8 @@ public abstract class AbstractHashTable
         public int hashCodeOf(final Object object) {
             int hashCode = this.startResult;
 
-            hashCode = TupleIndexHashTable.PRIME * hashCode + this.index0.extractor.getHashCode( null, object );
-            hashCode = TupleIndexHashTable.PRIME * hashCode + this.index1.extractor.getHashCode( null, object );
+            hashCode = LeftTupleIndexHashTable.PRIME * hashCode + this.index0.extractor.getHashCode( null, object );
+            hashCode = LeftTupleIndexHashTable.PRIME * hashCode + this.index1.extractor.getHashCode( null, object );
 
             return rehash( hashCode );
         }
@@ -735,8 +735,8 @@ public abstract class AbstractHashTable
         public int hashCodeOf(final LeftTuple tuple) {
             int hashCode = this.startResult;
 
-            hashCode = TupleIndexHashTable.PRIME * hashCode + this.index0.declaration.getHashCode( null, tuple.get( this.index0.declaration ).getObject() );
-            hashCode = TupleIndexHashTable.PRIME * hashCode + this.index1.declaration.getHashCode( null, tuple.get( this.index1.declaration ).getObject() );
+            hashCode = LeftTupleIndexHashTable.PRIME * hashCode + this.index0.declaration.getHashCode( null, tuple.get( this.index0.declaration ).getObject() );
+            hashCode = LeftTupleIndexHashTable.PRIME * hashCode + this.index1.declaration.getHashCode( null, tuple.get( this.index1.declaration ).getObject() );
 
             return rehash( hashCode );
         }
@@ -847,9 +847,9 @@ public abstract class AbstractHashTable
         public int hashCodeOf(final Object object) {
             int hashCode = this.startResult;
 
-            hashCode = TupleIndexHashTable.PRIME * hashCode + this.index0.extractor.getHashCode( null, object );;
-            hashCode = TupleIndexHashTable.PRIME * hashCode + this.index1.extractor.getHashCode( null, object );;
-            hashCode = TupleIndexHashTable.PRIME * hashCode + this.index2.extractor.getHashCode( null, object );;
+            hashCode = LeftTupleIndexHashTable.PRIME * hashCode + this.index0.extractor.getHashCode( null, object );;
+            hashCode = LeftTupleIndexHashTable.PRIME * hashCode + this.index1.extractor.getHashCode( null, object );;
+            hashCode = LeftTupleIndexHashTable.PRIME * hashCode + this.index2.extractor.getHashCode( null, object );;
 
             return rehash( hashCode );
         }
@@ -857,9 +857,9 @@ public abstract class AbstractHashTable
         public int hashCodeOf(final LeftTuple tuple) {
             int hashCode = this.startResult;
 
-            hashCode = TupleIndexHashTable.PRIME * hashCode + this.index0.declaration.getHashCode( null, tuple.get( this.index0.declaration ).getObject() );
-            hashCode = TupleIndexHashTable.PRIME * hashCode + this.index1.declaration.getHashCode( null, tuple.get( this.index1.declaration ).getObject() );
-            hashCode = TupleIndexHashTable.PRIME * hashCode + this.index2.declaration.getHashCode( null, tuple.get( this.index2.declaration ).getObject() );
+            hashCode = LeftTupleIndexHashTable.PRIME * hashCode + this.index0.declaration.getHashCode( null, tuple.get( this.index0.declaration ).getObject() );
+            hashCode = LeftTupleIndexHashTable.PRIME * hashCode + this.index1.declaration.getHashCode( null, tuple.get( this.index1.declaration ).getObject() );
+            hashCode = LeftTupleIndexHashTable.PRIME * hashCode + this.index2.declaration.getHashCode( null, tuple.get( this.index2.declaration ).getObject() );
 
             return rehash( hashCode );
         }

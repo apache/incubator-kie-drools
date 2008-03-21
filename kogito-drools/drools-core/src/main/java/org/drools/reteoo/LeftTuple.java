@@ -12,8 +12,8 @@ import org.drools.rule.Declaration;
 import org.drools.spi.Activation;
 import org.drools.spi.Tuple;
 import org.drools.util.Entry;
-import org.drools.util.FactHashTable;
-import org.drools.util.TupleHashTable;
+import org.drools.util.RightTupleList;
+import org.drools.util.LeftTupleList;
 
 public class LeftTuple
     implements
@@ -49,7 +49,7 @@ public class LeftTuple
     private LeftTuple                rightParentNext;
 
     // node memory
-    private TupleHashTable           memory;
+    private LeftTupleList           memory;
     private Entry                    next;
     private Entry                    previous;
 
@@ -258,11 +258,11 @@ public class LeftTuple
         return entry.handle;
     }
 
-    public TupleHashTable getMemory() {
+    public LeftTupleList getMemory() {
         return this.memory;
     }
 
-    public void setMemory(TupleHashTable memory) {
+    public void setMemory(LeftTupleList memory) {
         this.memory = memory;
     }
 

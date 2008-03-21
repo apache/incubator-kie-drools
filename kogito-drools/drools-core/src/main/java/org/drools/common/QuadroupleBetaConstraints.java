@@ -26,13 +26,12 @@ import org.drools.rule.ContextEntry;
 import org.drools.rule.VariableConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.util.AbstractHashTable.FieldIndex;
-import org.drools.util.FactHandleIndexHashTable;
-import org.drools.util.FactHashTable;
-import org.drools.util.FactList;
+import org.drools.util.RightTupleIndexHashTable;
+import org.drools.util.RightTupleList;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListEntry;
-import org.drools.util.TupleHashTable;
-import org.drools.util.TupleIndexHashTable;
+import org.drools.util.LeftTupleList;
+import org.drools.util.LeftTupleIndexHashTable;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -330,23 +329,23 @@ public class QuadroupleBetaConstraints
             final FieldIndex[] indexes = (FieldIndex[]) list.toArray( new FieldIndex[list.size()] );
             LeftTupleMemory tupleMemory;
             if ( conf.isIndexLeftBetaMemory() ) {
-                tupleMemory = new TupleIndexHashTable( indexes );
+                tupleMemory = new LeftTupleIndexHashTable( indexes );
             } else {
-                tupleMemory = new TupleHashTable();
+                tupleMemory = new LeftTupleList();
             }
 
             RightTupleMemory factHandleMemory;
             if ( conf.isIndexRightBetaMemory() ) {
-                factHandleMemory = new FactHandleIndexHashTable( indexes );
+                factHandleMemory = new RightTupleIndexHashTable( indexes );
             } else {
-                factHandleMemory = conf.isSequential() ? (RightTupleMemory) new FactList() : (RightTupleMemory) new FactHashTable();
+                factHandleMemory = new RightTupleList();
             }
             memory = new BetaMemory( conf.isSequential() ? null : tupleMemory,
                                      factHandleMemory,
                                      this.createContext() );
         } else {
-            memory = new BetaMemory( conf.isSequential() ? null : new TupleHashTable(),
-                                     conf.isSequential() ? (RightTupleMemory) new FactList() : (RightTupleMemory) new FactHashTable(),
+            memory = new BetaMemory( conf.isSequential() ? null : new LeftTupleList(),
+                                     new RightTupleList(),
                                      this.createContext() );
         }
 

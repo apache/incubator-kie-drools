@@ -20,7 +20,7 @@ import org.drools.spi.PropagationContext;
 import org.drools.util.Iterator;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListEntry;
-import org.drools.util.TupleHashTable;
+import org.drools.util.LeftTupleList;
 
 public class FromNode extends LeftTupleSource
     implements
@@ -234,7 +234,7 @@ public class FromNode extends LeftTupleSource
     }
 
     public Object createMemory(final RuleBaseConfiguration config) {
-        BetaMemory beta = new BetaMemory( new TupleHashTable(),
+        BetaMemory beta = new BetaMemory( new LeftTupleList(),
                                           null,
                                           this.betaConstraints.createContext() );
         return new FromMemory( beta,

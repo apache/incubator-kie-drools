@@ -30,12 +30,12 @@ import org.drools.rule.ContextEntry;
 import org.drools.rule.VariableConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.util.AbstractHashTable;
-import org.drools.util.FactHashTable;
-import org.drools.util.FactHandleIndexHashTable;
+import org.drools.util.RightTupleList;
+import org.drools.util.RightTupleIndexHashTable;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListEntry;
-import org.drools.util.TupleHashTable;
-import org.drools.util.TupleIndexHashTable;
+import org.drools.util.LeftTupleList;
+import org.drools.util.LeftTupleIndexHashTable;
 import org.drools.util.AbstractHashTable.FieldIndex;
 
 public class SingleBetaConstraints
@@ -171,23 +171,23 @@ public class SingleBetaConstraints
                                                      variableConstraint.getEvaluator() );
             LeftTupleMemory tupleMemory;
             if ( this.conf.isIndexLeftBetaMemory() ) {
-                tupleMemory = new TupleIndexHashTable( new FieldIndex[]{index} );
+                tupleMemory = new LeftTupleIndexHashTable( new FieldIndex[]{index} );
             } else {
-                tupleMemory = new TupleHashTable();
+                tupleMemory = new LeftTupleList();
             }
 
             RightTupleMemory factHandleMemory;
             if ( this.conf.isIndexRightBetaMemory() ) {
-                factHandleMemory = new FactHandleIndexHashTable( new FieldIndex[]{index} );
+                factHandleMemory = new RightTupleIndexHashTable( new FieldIndex[]{index} );
             } else {
-                factHandleMemory = new FactHashTable();
+                factHandleMemory = new RightTupleList();
             }
             memory = new BetaMemory( config.isSequential() ? null : tupleMemory,
                                      factHandleMemory,
                                      this.createContext() );
         } else {
-            memory = new BetaMemory( config.isSequential() ? null : new TupleHashTable(),
-                                     new FactHashTable(),
+            memory = new BetaMemory( config.isSequential() ? null : new LeftTupleList(),
+                                     new RightTupleList(),
                                      this.createContext() );
         }
 
