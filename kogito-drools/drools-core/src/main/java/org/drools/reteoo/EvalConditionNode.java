@@ -162,45 +162,42 @@ public class EvalConditionNode extends LeftTupleSource
     /**
      * Assert a new <code>Tuple</code>.
      *
-     * @param tuple
+     * @param leftTuple
      *            The <code>Tuple</code> being asserted.
      * @param workingMemory
      *            The working memory seesion.
      * @throws AssertionException
      *             If an error occurs while asserting.
      */
-    public void assertLeftTuple(final LeftTuple tuple,
+    public void assertLeftTuple(final LeftTuple leftTuple,
                                 final PropagationContext context,
                                 final InternalWorkingMemory workingMemory) {
         final EvalMemory memory = (EvalMemory) workingMemory.getNodeMemory( this );
 
-        final boolean allowed = this.condition.isAllowed( tuple,
+        final boolean allowed = this.condition.isAllowed( leftTuple,
                                                           workingMemory,
                                                           memory.context );
 
         if ( allowed ) {
             if ( this.tupleMemoryEnabled ) {
-                memory.tupleMemory.add( tuple );
+                memory.tupleMemory.add( leftTuple );
             }
 
-            this.sink.propagateAssertLeftTuple( tuple,
+            this.sink.propagateAssertLeftTuple( leftTuple,
                                                 context,
                                                 workingMemory );
         }
     }
 
-    public void retractLeftTuple(final LeftTuple tuple,
+    public void retractLeftTuple(final LeftTuple leftTuple,
                                  final PropagationContext context,
                                  final InternalWorkingMemory workingMemory) {
         final EvalMemory memory = (EvalMemory) workingMemory.getNodeMemory( this );
 
-        // can we improve that?
-        final LeftTuple memTuple = memory.tupleMemory.remove( tuple );
-        if ( memTuple != null ) {
-            this.sink.propagateRetractLeftTuple( memTuple,
-                                                 context,
-                                                 workingMemory );
-        }
+        memory.tupleMemory.remove( leftTuple );
+        this.sink.propagateRetractLeftTuple( leftTuple,
+                                             context,
+                                             workingMemory );
     }
 
     /**
@@ -323,7 +320,7 @@ public class EvalConditionNode extends LeftTupleSource
 
         private static final long serialVersionUID = -2754669682742843929L;
 
-        public LeftTupleList     tupleMemory;
+        public LeftTupleList      tupleMemory;
         public Object             context;
 
         public EvalMemory() {
