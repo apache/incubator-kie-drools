@@ -16,11 +16,12 @@
 
 package org.drools.reteoo;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
-import java.io.IOException;
-import java.io.ObjectOutput;
-import java.io.ObjectInput;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.common.BetaConstraints;
@@ -33,9 +34,6 @@ import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
 import org.drools.util.ArrayUtils;
 import org.drools.util.Entry;
-import org.drools.util.FactEntry;
-import org.drools.util.Iterator;
-import org.drools.util.ObjectHashMap.ObjectEntry;
 
 /**
  * @author etirelli
@@ -134,31 +132,33 @@ public class CollectNode extends BetaNode
         final InternalFactHandle resultHandle = workingMemory.getFactHandleFactory().newFactHandle( result,
                                                                                                     false,
                                                                                                     workingMemory );
-        CollectResult colresult = new CollectResult();
-        colresult.handle = resultHandle;
-        colresult.propagated = false;
+        final RightTuple resultTuple = new RightTuple( resultHandle,
+                                                       this );
 
         // do not add tuple and result to the memory in sequential mode
         if ( this.tupleMemoryEnabled ) {
             memory.betaMemory.getLeftTupleMemory().add( leftTuple );
             memory.betaMemory.getCreatedHandles().put( leftTuple,
-                                                       colresult,
+                                                       resultTuple,
                                                        false );
         }
 
-        final Iterator it = memory.betaMemory.getRightTupleMemory().iterator( leftTuple );
         this.constraints.updateFromTuple( memory.betaMemory.getContext(),
                                           workingMemory,
                                           leftTuple );
 
-        for ( FactEntry entry = (FactEntry) it.next(); entry != null; entry = (FactEntry) it.next() ) {
-            InternalFactHandle handle = entry.getFactHandle();
+        for ( RightTuple rightTuple = memory.betaMemory.getRightTupleMemory().getFirst( leftTuple ); rightTuple != null; rightTuple = (RightTuple) rightTuple.getNext() ) {
+            InternalFactHandle handle = rightTuple.getFactHandle();
             if ( this.constraints.isAllowedCachedLeft( memory.betaMemory.getContext(),
                                                        handle ) ) {
                 if ( this.unwrapRightObject ) {
                     handle = ((LeftTuple) handle.getObject()).getLastHandle();
                 }
                 result.add( handle.getObject() );
+                
+                // linking left tuple to the right tuple children list
+                leftTuple.setRightParentNext( rightTuple.getBetaChildren() );
+                rightTuple.setBetaChildren( leftTuple );
             }
         }
 
@@ -180,9 +180,8 @@ public class CollectNode extends BetaNode
                                                 leftTuple );
             if ( this.resultsBinder.isAllowedCachedLeft( memory.resultsContext,
                                                          resultHandle ) ) {
-                colresult.propagated = true;
                 this.sink.propagateAssertLeftTuple( leftTuple,
-                                                    resultHandle,
+                                                    resultTuple,
                                                     context,
                                                     workingMemory );
             }
@@ -198,23 +197,16 @@ public class CollectNode extends BetaNode
                                  final InternalWorkingMemory workingMemory) {
 
         final CollectMemory memory = (CollectMemory) workingMemory.getNodeMemory( this );
-        if ( memory.betaMemory.getLeftTupleMemory().remove( leftTuple ) == null ) {
-            return;
-        }
-        CollectResult result = (CollectResult) memory.betaMemory.getCreatedHandles().remove( leftTuple );
-        final InternalFactHandle handle = result.handle;
+        memory.betaMemory.getLeftTupleMemory().remove( leftTuple );
 
-        // if tuple was propagated
-        if ( result.propagated ) {
+        final RightTuple resultTuple = (RightTuple) memory.betaMemory.getCreatedHandles().remove( leftTuple );
 
+        if ( leftTuple.getBetaChildren() != null ) {
             this.sink.propagateRetractLeftTuple( leftTuple,
-                                                 handle,
                                                  context,
                                                  workingMemory );
-
-            // Destroying the acumulate result object
-            workingMemory.getFactHandleFactory().destroyFactHandle( handle );
         }
+        workingMemory.getFactHandleFactory().destroyFactHandle( resultTuple.getFactHandle() );
     }
 
     /**
@@ -231,7 +223,10 @@ public class CollectNode extends BetaNode
                              final InternalWorkingMemory workingMemory) {
 
         final CollectMemory memory = (CollectMemory) workingMemory.getNodeMemory( this );
-        memory.betaMemory.getRightTupleMemory().add( factHandle );
+        final RightTuple rightTuple = new RightTuple( factHandle,
+                                                      this );
+
+        memory.betaMemory.getRightTupleMemory().add( rightTuple );
 
         if ( !this.tupleMemoryEnabled ) {
             // do nothing here, as we know there are no left tuples at this stage in sequential mode.
@@ -250,7 +245,7 @@ public class CollectNode extends BetaNode
                                                         tuple ) ) {
                 this.modifyTuple( true,
                                   tuple,
-                                  factHandle,
+                                  rightTuple,
                                   context,
                                   workingMemory );
             }
@@ -265,35 +260,23 @@ public class CollectNode extends BetaNode
      *  If an object is retract, call modify tuple for each
      *  tuple match.
      */
-    public void retractObject(final InternalFactHandle handle,
-                              final PropagationContext context,
-                              final InternalWorkingMemory workingMemory) {
-
+    public void retractRightTuple(final RightTuple rightTuple,
+                                  final PropagationContext context,
+                                  final InternalWorkingMemory workingMemory) {
         final CollectMemory memory = (CollectMemory) workingMemory.getNodeMemory( this );
-        if ( !memory.betaMemory.getRightTupleMemory().remove( handle ) ) {
-            return;
-        }
+        memory.betaMemory.getRightTupleMemory().remove( rightTuple );
 
         this.constraints.updateFromFactHandle( memory.betaMemory.getContext(),
                                                workingMemory,
-                                               handle );
+                                               rightTuple.getFactHandle() );
 
-        // need to clone the tuples to avoid concurrent modification exceptions
-        Entry[] tuples = memory.betaMemory.getLeftTupleMemory().toArray();
-        for ( int i = 0; i < tuples.length; i++ ) {
-            LeftTuple tuple = (LeftTuple) tuples[i];
-            if ( this.constraints.isAllowedCachedRight( memory.betaMemory.getContext(),
-                                                        tuple ) ) {
-
-                this.modifyTuple( false,
-                                  tuple,
-                                  handle,
-                                  context,
-                                  workingMemory );
-            }
+        for( LeftTuple leftTuple = rightTuple.getBetaChildren(); leftTuple != null; leftTuple = rightTuple.getBetaChildren() ) {
+            this.modifyTuple( false,
+                              leftTuple,
+                              rightTuple,
+                              context,
+                              workingMemory );
         }
-
-        this.constraints.resetFactHandle( memory.betaMemory.getContext() );
     }
 
     /**
@@ -307,44 +290,44 @@ public class CollectNode extends BetaNode
      */
     public void modifyTuple(final boolean isAssert,
                             final LeftTuple leftTuple,
-                            InternalFactHandle handle,
+                            final RightTuple rightTuple,
                             final PropagationContext context,
                             final InternalWorkingMemory workingMemory) {
 
         final CollectMemory memory = (CollectMemory) workingMemory.getNodeMemory( this );
 
-        CollectResult result = (CollectResult) memory.betaMemory.getCreatedHandles().get( leftTuple );
+        RightTuple result = (RightTuple) memory.betaMemory.getCreatedHandles().get( leftTuple );
 
         // if tuple was propagated
-        if ( result.propagated ) {
+        if ( leftTuple.getBetaChildren() != null ) {
             this.sink.propagateRetractLeftTuple( leftTuple,
-                                                 result.handle,
                                                  context,
                                                  workingMemory );
-            result.propagated = false;
         }
 
         // if there is a subnetwork, we need to unwrapp the object from inside the tuple
+        InternalFactHandle handle = rightTuple.getFactHandle(); 
         if ( this.unwrapRightObject ) {
             handle = ((LeftTuple) handle.getObject()).getLastHandle();
         }
 
         if ( context.getType() == PropagationContext.ASSERTION ) {
-            ((Collection) result.handle.getObject()).add( handle.getObject() );
+            ((Collection) result.getFactHandle().getObject()).add( handle.getObject() );
         } else if ( context.getType() == PropagationContext.RETRACTION ) {
-            ((Collection) result.handle.getObject()).remove( handle.getObject() );
+            ((Collection) result.getFactHandle().getObject()).remove( handle.getObject() );
+            rightTuple.setBetaChildren( leftTuple.getRightParentNext() );
         } else if ( context.getType() == PropagationContext.MODIFICATION || context.getType() == PropagationContext.RULE_ADDITION || context.getType() == PropagationContext.RULE_REMOVAL ) {
             if ( isAssert ) {
-                ((Collection) result.handle.getObject()).add( handle.getObject() );
+                ((Collection) result.getFactHandle().getObject()).add( handle.getObject() );
             } else {
-                ((Collection) result.handle.getObject()).remove( handle.getObject() );
+                ((Collection) result.getFactHandle().getObject()).remove( handle.getObject() );
             }
         }
 
         // First alpha node filters
         boolean isAllowed = true;
         for ( int i = 0, length = this.resultConstraints.length; i < length; i++ ) {
-            if ( !this.resultConstraints[i].isAllowed( result.handle,
+            if ( !this.resultConstraints[i].isAllowed( result.getFactHandle(),
                                                        workingMemory,
                                                        memory.alphaContexts[i] ) ) {
                 isAllowed = false;
@@ -356,10 +339,9 @@ public class CollectNode extends BetaNode
                                                 workingMemory,
                                                 leftTuple );
             if ( this.resultsBinder.isAllowedCachedLeft( memory.resultsContext,
-                                                         result.handle ) ) {
-                result.propagated = true;
+                                                         result.getFactHandle() ) ) {
                 this.sink.propagateAssertLeftTuple( leftTuple,
-                                                    result.handle,
+                                                    result,
                                                     context,
                                                     workingMemory );
             }
@@ -371,17 +353,17 @@ public class CollectNode extends BetaNode
     public void updateSink(final LeftTupleSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
-        final CollectMemory memory = (CollectMemory) workingMemory.getNodeMemory( this );
-
-        final Iterator it = memory.betaMemory.getCreatedHandles().iterator();
-
-        for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
-            CollectResult result = (CollectResult) entry.getValue();
-            sink.assertLeftTuple( new LeftTuple( (LeftTuple) entry.getKey(),
-                                                 result.handle ),
-                                  context,
-                                  workingMemory );
-        }
+//        final CollectMemory memory = (CollectMemory) workingMemory.getNodeMemory( this );
+//
+//        final Iterator it = memory.betaMemory.getCreatedHandles().iterator();
+//
+//        for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
+//            CollectResult result = (CollectResult) entry.getValue();
+//            sink.assertLeftTuple( new LeftTuple( (LeftTuple) entry.getKey(),
+//                                                 result.handle ),
+//                                  context,
+//                                  workingMemory );
+//        }
     }
 
     /* (non-Javadoc)
@@ -431,16 +413,12 @@ public class CollectNode extends BetaNode
         return memory;
     }
 
-    public static class CollectMemory {
+    public static class CollectMemory
+        implements
+        Serializable {
         private static final long serialVersionUID = 400L;
         public BetaMemory         betaMemory;
         public ContextEntry[]     resultsContext;
         public ContextEntry[]     alphaContexts;
-    }
-
-    private static class CollectResult {
-        // keeping attributes public just for performance
-        public InternalFactHandle handle;
-        public boolean            propagated;
     }
 }
