@@ -29,11 +29,6 @@ public class RightTuple
 
     private int                      hashCode;
 
-    public RightTuple(InternalFactHandle handle) {
-        this.handle = handle;
-        this.hashCode = this.handle.hashCode();
-    }
-
     public RightTuple(InternalFactHandle handle,
                       RightTupleSink sink) {
         this.handle = handle;
