@@ -74,6 +74,22 @@ public class SingleLeftTupleSinkAdapter
         }
         leftTuple.setBetaChildren( null );
     }
+    
+    public void propagateRetractLeftTupleDestroyRightTuple(final LeftTuple leftTuple,
+                                          final PropagationContext context,
+                                          final InternalWorkingMemory workingMemory) {
+        LeftTuple child = leftTuple.getBetaChildren();
+        while ( child != null ) {
+            LeftTuple temp = child.getLeftParentNext();
+            child.getSink().retractLeftTuple( child,
+                                              context,
+                                              workingMemory );
+            workingMemory.getFactHandleFactory().destroyFactHandle( child.getRightParent().getFactHandle() );
+            child.unlinkFromRightParent();
+            child = temp;
+        }
+        leftTuple.setBetaChildren( null );
+    }    
 
     public void propagateRetractRightTuple(final RightTuple rightTuple,
                                            final PropagationContext context,
