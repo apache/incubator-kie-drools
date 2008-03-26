@@ -1,6 +1,7 @@
 package org.drools.audit;
 
 import org.drools.WorkingMemory;
+import org.drools.WorkingMemoryEventManager;
 import org.drools.audit.event.LogEvent;
 
 public class ThreadedWorkingMemoryFileLogger extends WorkingMemoryFileLogger {
@@ -8,7 +9,7 @@ public class ThreadedWorkingMemoryFileLogger extends WorkingMemoryFileLogger {
     private int interval = 1000;
     private Writer writer;
     
-    public ThreadedWorkingMemoryFileLogger(WorkingMemory workingMemory) {
+    public ThreadedWorkingMemoryFileLogger(WorkingMemoryEventManager workingMemory) {
         super(workingMemory);
         setSplit(false);
     }

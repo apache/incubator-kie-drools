@@ -18,6 +18,7 @@ package org.drools.audit;
 
 import com.thoughtworks.xstream.XStream;
 import org.drools.WorkingMemory;
+import org.drools.WorkingMemoryEventManager;
 import org.drools.audit.event.LogEvent;
 
 import java.io.IOException;
@@ -45,7 +46,7 @@ public class WorkingMemoryInMemoryLogger extends WorkingMemoryLogger {
      * Creates a new WorkingMemoryInMemoryLogger for the given working memory.
      * @param workingMemory
      */
-    public WorkingMemoryInMemoryLogger(final WorkingMemory workingMemory) {
+    public WorkingMemoryInMemoryLogger(final WorkingMemoryEventManager workingMemory) {
         super( workingMemory );
     }
 
