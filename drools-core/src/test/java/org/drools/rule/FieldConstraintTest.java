@@ -38,8 +38,9 @@ import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
 import org.drools.base.evaluators.Operator;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.reteoo.InstrumentedReteTuple;
+import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ReteooRuleBase;
+import org.drools.reteoo.RightTuple;
 import org.drools.rule.PredicateConstraint.PredicateContextEntry;
 import org.drools.rule.ReturnValueRestriction.ReturnValueContextEntry;
 import org.drools.spi.Evaluator;
@@ -51,8 +52,8 @@ import org.drools.spi.Tuple;
 
 public class FieldConstraintTest extends TestCase {
 
-    ClassFieldExtractorCache cache = ClassFieldExtractorCache.getInstance();
-    EqualityEvaluatorsDefinition equals = new EqualityEvaluatorsDefinition();
+    ClassFieldExtractorCache       cache       = ClassFieldExtractorCache.getInstance();
+    EqualityEvaluatorsDefinition   equals      = new EqualityEvaluatorsDefinition();
     ComparableEvaluatorsDefinition comparables = new ComparableEvaluatorsDefinition();
 
     public FieldConstraintTest() {
@@ -83,7 +84,8 @@ public class FieldConstraintTest extends TestCase {
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
-        final Evaluator evaluator = equals.getEvaluator( ValueType.STRING_TYPE, Operator.EQUAL );
+        final Evaluator evaluator = equals.getEvaluator( ValueType.STRING_TYPE,
+                                                         Operator.EQUAL );
 
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
                                                                     evaluator,
@@ -132,7 +134,8 @@ public class FieldConstraintTest extends TestCase {
 
         final FieldValue field = FieldFactory.getFieldValue( 5 );
 
-        final Evaluator evaluator = equals.getEvaluator( ValueType.PINTEGER_TYPE, Operator.EQUAL );
+        final Evaluator evaluator = equals.getEvaluator( ValueType.PINTEGER_TYPE,
+                                                         Operator.EQUAL );
 
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
                                                                     evaluator,
@@ -210,7 +213,7 @@ public class FieldConstraintTest extends TestCase {
                                     Declaration[] previousDeclarations,
                                     Declaration[] localDeclarations,
                                     WorkingMemory workingMemory,
-                                    Object context ) {
+                                    Object context) {
                 int price1 = previousDeclarations[0].getIntValue( (InternalWorkingMemory) workingMemory,
                                                                   workingMemory.getObject( tuple.get( previousDeclarations[0] ) ) );
                 int price2 = localDeclarations[0].getIntValue( (InternalWorkingMemory) workingMemory,
@@ -224,7 +227,8 @@ public class FieldConstraintTest extends TestCase {
                 return null;
             }
 
-            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            public void readExternal(ObjectInput in) throws IOException,
+                                                    ClassNotFoundException {
             }
 
             public void writeExternal(ObjectOutput out) throws IOException {
@@ -238,15 +242,18 @@ public class FieldConstraintTest extends TestCase {
 
         final Cheese cheddar0 = new Cheese( "cheddar",
                                             5 );
-        final FactHandle f0 = workingMemory.insert( cheddar0 );
-        InstrumentedReteTuple tuple = new InstrumentedReteTuple( f0 );
+        final InternalFactHandle f0 = (InternalFactHandle) workingMemory.insert( cheddar0 );
+        LeftTuple tuple = new LeftTuple( f0,
+                                         null );
 
         final Cheese cheddar1 = new Cheese( "cheddar",
                                             10 );
         final InternalFactHandle f1 = (InternalFactHandle) workingMemory.insert( cheddar1 );
 
-        tuple = new InstrumentedReteTuple( tuple,
-                                           f1 );
+        tuple = new LeftTuple( tuple,
+                               new RightTuple( f1,
+                                               null ),
+                               null );
 
         final PredicateContextEntry context = (PredicateContextEntry) constraint1.createContextEntry();
         context.updateFromTuple( workingMemory,
@@ -296,7 +303,7 @@ public class FieldConstraintTest extends TestCase {
                                        Declaration[] previousDeclarations,
                                        Declaration[] localDeclarations,
                                        WorkingMemory workingMemory,
-                                       Object context ) {
+                                       Object context) {
                 int price = ((Number) previousDeclarations[0].getValue( (InternalWorkingMemory) workingMemory,
                                                                         workingMemory.getObject( tuple.get( previousDeclarations[0] ) ) )).intValue();
                 return FieldFactory.getFieldValue( 2 * price );
@@ -306,7 +313,9 @@ public class FieldConstraintTest extends TestCase {
             public Object createContext() {
                 return null;
             }
-            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            public void readExternal(ObjectInput in) throws IOException,
+                                                    ClassNotFoundException {
 
             }
 
@@ -320,7 +329,8 @@ public class FieldConstraintTest extends TestCase {
                                                                                 new Declaration[]{priceDeclaration},
                                                                                 new Declaration[0],
                                                                                 new String[0],
-                                                                                equals.getEvaluator( ValueType.INTEGER_TYPE, Operator.EQUAL ) );
+                                                                                equals.getEvaluator( ValueType.INTEGER_TYPE,
+                                                                                                     Operator.EQUAL ) );
 
         final ReturnValueConstraint constraint1 = new ReturnValueConstraint( priceExtractor,
                                                                              restriction1 );
@@ -330,22 +340,26 @@ public class FieldConstraintTest extends TestCase {
                                                                                 new Declaration[]{priceDeclaration},
                                                                                 new Declaration[0],
                                                                                 new String[0],
-                                                                                comparables.getEvaluator( ValueType.INTEGER_TYPE, Operator.GREATER ) );
+                                                                                comparables.getEvaluator( ValueType.INTEGER_TYPE,
+                                                                                                          Operator.GREATER ) );
 
         final ReturnValueConstraint constraint2 = new ReturnValueConstraint( priceExtractor,
                                                                              restriction2 );
 
         final Cheese cheddar0 = new Cheese( "cheddar",
                                             5 );
-        final FactHandle f0 = workingMemory.insert( cheddar0 );
+        final InternalFactHandle f0 = (InternalFactHandle) workingMemory.insert( cheddar0 );
 
-        InstrumentedReteTuple tuple = new InstrumentedReteTuple( f0 );
+        LeftTuple tuple = new LeftTuple( f0,
+                                         null );
 
         final Cheese cheddar1 = new Cheese( "cheddar",
                                             10 );
         final InternalFactHandle f1 = (InternalFactHandle) workingMemory.insert( cheddar1 );
-        tuple = new InstrumentedReteTuple( tuple,
-                                           f1 );
+        tuple = new LeftTuple( tuple,
+                               new RightTuple( f1,
+                                               null ),
+                               null );
 
         final ReturnValueContextEntry context1 = (ReturnValueContextEntry) constraint1.createContextEntry();
         context1.updateFromTuple( workingMemory,
@@ -392,7 +406,8 @@ public class FieldConstraintTest extends TestCase {
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
-        final Evaluator evaluator = equals.getEvaluator( ValueType.STRING_TYPE, Operator.EQUAL );
+        final Evaluator evaluator = equals.getEvaluator( ValueType.STRING_TYPE,
+                                                         Operator.EQUAL );
 
         final LiteralConstraint constraint1 = new LiteralConstraint( extractor,
                                                                      evaluator,
@@ -404,7 +419,8 @@ public class FieldConstraintTest extends TestCase {
 
         final FieldValue priceField = FieldFactory.getFieldValue( 10 );
 
-        final Evaluator priceEvaluator = comparables.getEvaluator( ValueType.INTEGER_TYPE, Operator.GREATER );
+        final Evaluator priceEvaluator = comparables.getEvaluator( ValueType.INTEGER_TYPE,
+                                                                   Operator.GREATER );
 
         final LiteralConstraint constraint2 = new LiteralConstraint( priceExtractor,
                                                                      priceEvaluator,
@@ -468,7 +484,8 @@ public class FieldConstraintTest extends TestCase {
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
-        final Evaluator evaluator = equals.getEvaluator( ValueType.STRING_TYPE, Operator.EQUAL );
+        final Evaluator evaluator = equals.getEvaluator( ValueType.STRING_TYPE,
+                                                         Operator.EQUAL );
 
         final LiteralConstraint constraint1 = new LiteralConstraint( extractor,
                                                                      evaluator,
@@ -480,7 +497,8 @@ public class FieldConstraintTest extends TestCase {
 
         final FieldValue priceField = FieldFactory.getFieldValue( 10 );
 
-        final Evaluator priceEvaluator = comparables.getEvaluator( ValueType.INTEGER_TYPE, Operator.GREATER );
+        final Evaluator priceEvaluator = comparables.getEvaluator( ValueType.INTEGER_TYPE,
+                                                                   Operator.GREATER );
 
         final LiteralConstraint constraint2 = new LiteralConstraint( priceExtractor,
                                                                      priceEvaluator,
@@ -543,7 +561,8 @@ public class FieldConstraintTest extends TestCase {
 
         final FieldValue cheddarField = FieldFactory.getFieldValue( "cheddar" );
 
-        final Evaluator stringEqual = equals.getEvaluator( ValueType.STRING_TYPE, Operator.EQUAL );
+        final Evaluator stringEqual = equals.getEvaluator( ValueType.STRING_TYPE,
+                                                           Operator.EQUAL );
 
         // type == 'cheddar'
         final LiteralConstraint constraint1 = new LiteralConstraint( typeExtractor,
@@ -556,7 +575,8 @@ public class FieldConstraintTest extends TestCase {
 
         final FieldValue field10 = FieldFactory.getFieldValue( 10 );
 
-        final Evaluator integerGreater =  comparables.getEvaluator( ValueType.INTEGER_TYPE, Operator.GREATER );
+        final Evaluator integerGreater = comparables.getEvaluator( ValueType.INTEGER_TYPE,
+                                                                   Operator.GREATER );
 
         // price > 10
         final LiteralConstraint constraint2 = new LiteralConstraint( priceExtractor,
@@ -574,7 +594,8 @@ public class FieldConstraintTest extends TestCase {
                                                                      stringEqual,
                                                                      stiltonField );
 
-        final Evaluator integerLess =  comparables.getEvaluator( ValueType.INTEGER_TYPE, Operator.LESS );
+        final Evaluator integerLess = comparables.getEvaluator( ValueType.INTEGER_TYPE,
+                                                                Operator.LESS );
 
         // price < 10
         final LiteralConstraint constraint4 = new LiteralConstraint( priceExtractor,
