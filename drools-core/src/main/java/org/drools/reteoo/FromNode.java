@@ -105,7 +105,7 @@ public class FromNode extends LeftTupleSource
                                                                                                   false,
                                                                                                   workingMemory );
             
-            RightTuple rightTuple = new RightTuple( handle );
+            RightTuple rightTuple = new RightTuple( handle, null );
 
             boolean isAllowed = true;
             if ( this.alphaConstraints != null ) {
