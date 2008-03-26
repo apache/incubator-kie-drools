@@ -96,7 +96,6 @@ public class RuleBaseConfiguration
     private boolean                        removeIdentities;
     private boolean                        shareAlphaNodes;
     private boolean                        shareBetaNodes;
-    private boolean                        alphaMemory;
     private int                            alphaNodeHashingThreshold;
     private int                            compositeKeyDepth;
     private boolean                        indexLeftBetaMemory;
@@ -129,7 +128,6 @@ public class RuleBaseConfiguration
         out.writeBoolean( removeIdentities );
         out.writeBoolean( shareAlphaNodes );
         out.writeBoolean( shareBetaNodes );
-        out.writeBoolean( alphaMemory );
         out.writeInt( alphaNodeHashingThreshold );
         out.writeInt( compositeKeyDepth );
         out.writeBoolean( indexLeftBetaMemory );
@@ -156,7 +154,6 @@ public class RuleBaseConfiguration
         removeIdentities = in.readBoolean();
         shareAlphaNodes = in.readBoolean();
         shareBetaNodes = in.readBoolean();
-        alphaMemory = in.readBoolean();
         alphaNodeHashingThreshold = in.readInt();
         compositeKeyDepth = in.readInt();
         indexLeftBetaMemory = in.readBoolean();
@@ -256,10 +253,7 @@ public class RuleBaseConfiguration
 
         setRemoveIdentities( Boolean.valueOf( this.chainedProperties.getProperty( "drools.removeIdentities",
                                                                                   "false" ) ).booleanValue() );
-
-        setAlphaMemory( Boolean.valueOf( this.chainedProperties.getProperty( "drools.alphaMemory",
-                                                                             "false" ) ).booleanValue() );
-
+        
         setShareAlphaNodes( Boolean.valueOf( this.chainedProperties.getProperty( "drools.shareAlphaNodes",
                                                                                  "true" ) ).booleanValue() );
 
@@ -355,15 +349,6 @@ public class RuleBaseConfiguration
     public void setRemoveIdentities(final boolean removeIdentities) {
         checkCanChange(); // throws an exception if a change isn't possible;
         this.removeIdentities = removeIdentities;
-    }
-
-    public boolean isAlphaMemory() {
-        return this.alphaMemory;
-    }
-
-    public void setAlphaMemory(final boolean alphaMemory) {
-        checkCanChange(); // throws an exception if a change isn't possible;
-        this.alphaMemory = alphaMemory;
     }
 
     public boolean isShareAlphaNodes() {
