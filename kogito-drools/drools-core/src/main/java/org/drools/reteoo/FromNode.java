@@ -89,7 +89,8 @@ public class FromNode extends LeftTupleSource
         final FromMemory memory = (FromMemory) workingMemory.getNodeMemory( this );
 
         memory.betaMemory.getLeftTupleMemory().add( leftTuple );
-        final LinkedList list = new LinkedList();
+        //final LinkedList list = new LinkedList();
+        
         this.betaConstraints.updateFromTuple( memory.betaMemory.getContext(),
                                               workingMemory,
                                               leftTuple );
@@ -103,6 +104,8 @@ public class FromNode extends LeftTupleSource
             final InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( object,
                                                                                                   false,
                                                                                                   workingMemory );
+            
+            RightTuple rightTuple = new RightTuple( handle );
 
             boolean isAllowed = true;
             if ( this.alphaConstraints != null ) {
@@ -120,10 +123,10 @@ public class FromNode extends LeftTupleSource
 
             if ( isAllowed && this.betaConstraints.isAllowedCachedLeft( memory.betaMemory.getContext(),
                                                                         handle ) ) {
-                list.add( new LinkedListEntry( handle ) );
+                //list.add( new LinkedListEntry( handle ) );
 
                 this.sink.propagateAssertLeftTuple( leftTuple,
-                                                    handle,
+                                                    rightTuple,
                                                     context,
                                                     workingMemory );
             } else {
@@ -132,12 +135,6 @@ public class FromNode extends LeftTupleSource
         }
 
         this.betaConstraints.resetTuple( memory.betaMemory.getContext() );
-
-        if ( !list.isEmpty() ) {
-            memory.betaMemory.getCreatedHandles().put( leftTuple,
-                                                       list );
-        }
-
     }
 
     public void retractLeftTuple(final LeftTuple leftTuple,
@@ -145,24 +142,9 @@ public class FromNode extends LeftTupleSource
                                  final InternalWorkingMemory workingMemory) {
 
         final FromMemory memory = (FromMemory) workingMemory.getNodeMemory( this );
-        final LeftTuple tuple = memory.betaMemory.getLeftTupleMemory().remove( leftTuple );
-
-        if ( tuple == null ) {
-            return;
-        }
-
-        final LinkedList list = (LinkedList) memory.betaMemory.getCreatedHandles().remove( tuple );
-        // if tuple was propagated
-        if ( list != null ) {
-            for ( LinkedListEntry entry = (LinkedListEntry) list.getFirst(); entry != null; entry = (LinkedListEntry) entry.getNext() ) {
-                final InternalFactHandle handle = (InternalFactHandle) entry.getObject();
-                this.sink.propagateRetractLeftTuple( leftTuple,
-                                                     handle,
-                                                     context,
-                                                     workingMemory );
-                workingMemory.getFactHandleFactory().destroyFactHandle( handle );
-            }
-        }
+        memory.betaMemory.getLeftTupleMemory().remove( leftTuple );
+        
+        this.sink.propagateRetractLeftTupleDestroyRightTuple( leftTuple, context, workingMemory );
     }
 
     public void attach() {
@@ -216,21 +198,22 @@ public class FromNode extends LeftTupleSource
                            final InternalWorkingMemory workingMemory) {
 
         final FromMemory memory = (FromMemory) workingMemory.getNodeMemory( this );
-
-        final Iterator tupleIter = memory.betaMemory.getLeftTupleMemory().iterator();
-        for ( LeftTuple tuple = (LeftTuple) tupleIter.next(); tuple != null; tuple = (LeftTuple) tupleIter.next() ) {
-            final LinkedList list = (LinkedList) memory.betaMemory.getCreatedHandles().remove( tuple );
-            if ( list == null ) {
-                continue;
-            }
-            for ( LinkedListEntry entry = (LinkedListEntry) list.getFirst(); entry != null; entry = (LinkedListEntry) entry.getNext() ) {
-                final InternalFactHandle handle = (InternalFactHandle) entry.getObject();
-                this.sink.propagateAssertLeftTuple( tuple,
-                                                    handle,
-                                                    context,
-                                                    workingMemory );
-            }
-        }
+        // @TODO
+//
+//        final Iterator tupleIter = memory.betaMemory.getLeftTupleMemory().iterator();
+//        for ( LeftTuple tuple = (LeftTuple) tupleIter.next(); tuple != null; tuple = (LeftTuple) tupleIter.next() ) {
+//            final LinkedList list = (LinkedList) memory.betaMemory.getCreatedHandles().remove( tuple );
+//            if ( list == null ) {
+//                continue;
+//            }
+//            for ( LinkedListEntry entry = (LinkedListEntry) list.getFirst(); entry != null; entry = (LinkedListEntry) entry.getNext() ) {
+//                final InternalFactHandle handle = (InternalFactHandle) entry.getObject();
+//                this.sink.propagateAssertLeftTuple( tuple,
+//                                                    handle,
+//                                                    context,
+//                                                    workingMemory );
+//            }
+//        }
     }
 
     public Object createMemory(final RuleBaseConfiguration config) {

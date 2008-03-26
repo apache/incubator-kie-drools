@@ -21,6 +21,10 @@ public interface LeftTupleSinkPropagator
     public void propagateRetractLeftTuple(LeftTuple tuple,
                                           PropagationContext context,
                                           InternalWorkingMemory workingMemory);
+    
+    public void propagateRetractLeftTupleDestroyRightTuple(LeftTuple tuple,
+                                                           PropagationContext context,
+                                                           InternalWorkingMemory workingMemory);
 
     public void propagateRetractRightTuple(RightTuple tuple,
                                            PropagationContext context,

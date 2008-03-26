@@ -69,14 +69,15 @@ public abstract class LeftTupleSource extends BaseNode
     // ------------------------------------------------------------
     // Instance methods
     // ------------------------------------------------------------
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        super.readExternal(in);
-        sink    = (LeftTupleSinkPropagator)in.readObject();
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        super.readExternal( in );
+        sink = (LeftTupleSinkPropagator) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal(out);
-        out.writeObject(sink);
+        super.writeExternal( out );
+        out.writeObject( sink );
     }
 
     /**
