@@ -264,6 +264,7 @@ public class URLScannerTest extends TestCase {
         Package[] changes = scan.loadPackageChanges();
         assertEquals(0, changes.length);
         assertEquals(true, fetchCalled[0]);
+        assertEquals(2, ((MockListener)scan.listener).exceptions.size());
 
     }
 

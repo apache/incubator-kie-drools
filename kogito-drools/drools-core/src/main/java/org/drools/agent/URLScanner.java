@@ -90,11 +90,11 @@ public class URLScanner extends PackageProvider {
             changes = getChangeSet();
             return changes;
         } catch ( IOException e ) {
+        	listener.exception( e );
             if (this.localCacheFileScanner != null) {
                 listener.warning( "Falling back to local cache." );
                 return localCacheFileScanner.loadPackageChanges();
             }
-            listener.exception( e );
         } catch ( ClassNotFoundException e ) {
             this.listener.exception( e );
             this.listener.warning( "Was unable to load a class when loading a package. Perhaps it is missing from this application." );
