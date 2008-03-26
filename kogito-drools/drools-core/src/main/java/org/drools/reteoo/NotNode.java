@@ -91,7 +91,7 @@ public class NotNode extends BetaNode {
                                 final PropagationContext context,
                                 final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        
+
         this.constraints.updateFromTuple( memory.getContext(),
                                           workingMemory,
                                           leftTuple );
@@ -116,7 +116,7 @@ public class NotNode extends BetaNode {
         this.constraints.resetTuple( memory.getContext() );
 
         if ( leftTuple.getBlocker() == null ) {
-            // only add it to node memory if still need Objects to attempt to match
+            // tuple is not blocked, so add to memory so other fact handles can attempt to match
             if ( this.tupleMemoryEnabled ) {
                 memory.getLeftTupleMemory().add( leftTuple );
             }
@@ -175,11 +175,9 @@ public class NotNode extends BetaNode {
                 // this is now blocked so remove from memory
                 memory.getLeftTupleMemory().remove( leftTuple );
 
-                if ( leftTuple.getBetaChildren() != null ) {
-                    this.sink.propagateRetractLeftTuple( leftTuple,
-                                                         context,
-                                                         workingMemory );
-                }
+                this.sink.propagateRetractLeftTuple( leftTuple,
+                                                     context,
+                                                     workingMemory );
             }
 
             leftTuple = temp;
