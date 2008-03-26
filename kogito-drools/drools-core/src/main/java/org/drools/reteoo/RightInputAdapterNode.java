@@ -145,16 +145,24 @@ public class RightInputAdapterNode extends ObjectSource
         final ObjectHashMap memory = (ObjectHashMap) workingMemory.getNodeMemory( this );
 
         // retrieve handle from memory
-        final InternalFactHandle handle = (InternalFactHandle) memory.remove( tuple );
+        final InternalFactHandle factHandle = (InternalFactHandle) memory.remove( tuple );
 
-        // propagate a retract for it
-        this.sink.propagateRetractObject( handle,
-                                          context,
-                                          workingMemory,
-                                          true );
+        for ( RightTuple rightTuple = factHandle.getRightTuple(); rightTuple != null; rightTuple = (RightTuple) rightTuple.getHandleNext() ) {
+            rightTuple.getRightTupleSink().retractRightTuple( rightTuple,
+                                                              context,
+                                                              workingMemory );
+        }
+        factHandle.setRightTuple( null );
+
+        for ( LeftTuple leftTuple = factHandle.getLeftTuple(); leftTuple != null; leftTuple = (LeftTuple) leftTuple.getLeftParentNext() ) {
+            leftTuple.getSink().retractLeftTuple( leftTuple,
+                                                  context,
+                                                  workingMemory );
+        }
+        factHandle.setLeftTuple( null );
 
         // destroy dummy handle
-        workingMemory.getFactHandleFactory().destroyFactHandle( handle );
+        workingMemory.getFactHandleFactory().destroyFactHandle( factHandle );
     }
 
     public void attach() {
