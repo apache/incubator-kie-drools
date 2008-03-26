@@ -1,6 +1,7 @@
 package org.drools.audit;
 
 import org.drools.WorkingMemory;
+import org.drools.WorkingMemoryEventManager;
 import org.drools.audit.event.LogEvent;
 
 import java.io.ObjectOutput;
@@ -17,7 +18,7 @@ public class WorkingMemoryConsoleLogger extends WorkingMemoryLogger {
         super.writeExternal(out);
     }
 
-    public WorkingMemoryConsoleLogger(WorkingMemory workingMemory) {
+    public WorkingMemoryConsoleLogger(WorkingMemoryEventManager workingMemory) {
         super(workingMemory);
     }
 
