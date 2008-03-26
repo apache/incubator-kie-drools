@@ -80,7 +80,9 @@ public class RuleFlowGroupTest extends DroolsTestCase {
                                  WorkingMemory workingMemory) {
                 list.add( knowledgeHelper.getRule() );
             }
-            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            public void readExternal(ObjectInput in) throws IOException,
+                                                    ClassNotFoundException {
 
             }
 
@@ -155,35 +157,35 @@ public class RuleFlowGroupTest extends DroolsTestCase {
         new ConnectionImpl( start,
                             Node.CONNECTION_DEFAULT_TYPE,
                             ruleSet0,
-                            Node.CONNECTION_DEFAULT_TYPE);
+                            Node.CONNECTION_DEFAULT_TYPE );
         new ConnectionImpl( ruleSet0,
                             Node.CONNECTION_DEFAULT_TYPE,
                             split,
-                            Node.CONNECTION_DEFAULT_TYPE);
+                            Node.CONNECTION_DEFAULT_TYPE );
         new ConnectionImpl( split,
                             Node.CONNECTION_DEFAULT_TYPE,
                             ruleSet1,
-                            Node.CONNECTION_DEFAULT_TYPE);
+                            Node.CONNECTION_DEFAULT_TYPE );
         new ConnectionImpl( split,
                             Node.CONNECTION_DEFAULT_TYPE,
                             ruleSet2,
-                            Node.CONNECTION_DEFAULT_TYPE);
+                            Node.CONNECTION_DEFAULT_TYPE );
         new ConnectionImpl( ruleSet1,
                             Node.CONNECTION_DEFAULT_TYPE,
                             join,
-                            Node.CONNECTION_DEFAULT_TYPE);
+                            Node.CONNECTION_DEFAULT_TYPE );
         new ConnectionImpl( ruleSet2,
                             Node.CONNECTION_DEFAULT_TYPE,
                             join,
-                            Node.CONNECTION_DEFAULT_TYPE);
+                            Node.CONNECTION_DEFAULT_TYPE );
         new ConnectionImpl( join,
                             Node.CONNECTION_DEFAULT_TYPE,
                             ruleSet3,
-                            Node.CONNECTION_DEFAULT_TYPE);
+                            Node.CONNECTION_DEFAULT_TYPE );
         new ConnectionImpl( ruleSet3,
                             Node.CONNECTION_DEFAULT_TYPE,
                             end,
-                            Node.CONNECTION_DEFAULT_TYPE);
+                            Node.CONNECTION_DEFAULT_TYPE );
 
         // process
         final RuleFlowProcess process = new RuleFlowProcess();
@@ -209,34 +211,39 @@ public class RuleFlowGroupTest extends DroolsTestCase {
         final RuleFlowGroupImpl ruleFlowGroup3 = (RuleFlowGroupImpl) agenda.getRuleFlowGroup( "rule-flow-group-3" );
 
         final LeftTuple tuple0 = new LeftTuple( new DefaultFactHandle( 1,
-                                                                       "cheese" ) );
+                                                                       "cheese" ),
+                                                null );
         node0.assertLeftTuple( tuple0,
-                           context0,
-                           workingMemory );
+                               context0,
+                               workingMemory );
 
         final LeftTuple tuple1 = new LeftTuple( new DefaultFactHandle( 1,
-                                                                       "cheese" ) );
+                                                                       "cheese" ),
+                                                null );
         node0.assertLeftTuple( tuple1,
-                           context0,
-                           workingMemory );
+                               context0,
+                               workingMemory );
 
         final LeftTuple tuple2 = new LeftTuple( new DefaultFactHandle( 1,
-                                                                       "cheese" ) );
+                                                                       "cheese" ),
+                                                null );
         node1.assertLeftTuple( tuple2,
-                           context0,
-                           workingMemory );
+                               context0,
+                               workingMemory );
 
         final LeftTuple tuple3 = new LeftTuple( new DefaultFactHandle( 1,
-                                                                       "cheese" ) );
+                                                                       "cheese" ),
+                                                null );
         node2.assertLeftTuple( tuple3,
-                           context0,
-                           workingMemory );
+                               context0,
+                               workingMemory );
 
         final LeftTuple tuple4 = new LeftTuple( new DefaultFactHandle( 1,
-                                                                       "cheese" ) );
+                                                                       "cheese" ),
+                                                null );
         node3.assertLeftTuple( tuple4,
-                           context0,
-                           workingMemory );
+                               context0,
+                               workingMemory );
 
         // RuleFlowGroups should be populated, but the agenda shouldn't
         assertEquals( 2,
@@ -339,7 +346,9 @@ public class RuleFlowGroupTest extends DroolsTestCase {
                                  WorkingMemory workingMemory) {
                 list.add( knowledgeHelper.getRule() );
             }
-            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            public void readExternal(ObjectInput in) throws IOException,
+                                                    ClassNotFoundException {
 
             }
 
@@ -414,35 +423,35 @@ public class RuleFlowGroupTest extends DroolsTestCase {
         new ConnectionImpl( start,
                             Node.CONNECTION_DEFAULT_TYPE,
                             ruleSet0,
-                            Node.CONNECTION_DEFAULT_TYPE);
+                            Node.CONNECTION_DEFAULT_TYPE );
         new ConnectionImpl( ruleSet0,
                             Node.CONNECTION_DEFAULT_TYPE,
                             split,
-                            Node.CONNECTION_DEFAULT_TYPE);
+                            Node.CONNECTION_DEFAULT_TYPE );
         Connection out1 = new ConnectionImpl( split,
                                               Node.CONNECTION_DEFAULT_TYPE,
                                               ruleSet1,
-                                              Node.CONNECTION_DEFAULT_TYPE);
+                                              Node.CONNECTION_DEFAULT_TYPE );
         Connection out2 = new ConnectionImpl( split,
                                               Node.CONNECTION_DEFAULT_TYPE,
                                               ruleSet2,
-                                              Node.CONNECTION_DEFAULT_TYPE);
+                                              Node.CONNECTION_DEFAULT_TYPE );
         new ConnectionImpl( ruleSet1,
                             Node.CONNECTION_DEFAULT_TYPE,
                             join,
-                            Node.CONNECTION_DEFAULT_TYPE);
+                            Node.CONNECTION_DEFAULT_TYPE );
         new ConnectionImpl( ruleSet2,
                             Node.CONNECTION_DEFAULT_TYPE,
                             join,
-                            Node.CONNECTION_DEFAULT_TYPE);
+                            Node.CONNECTION_DEFAULT_TYPE );
         new ConnectionImpl( join,
                             Node.CONNECTION_DEFAULT_TYPE,
                             ruleSet3,
-                            Node.CONNECTION_DEFAULT_TYPE);
+                            Node.CONNECTION_DEFAULT_TYPE );
         new ConnectionImpl( ruleSet3,
                             Node.CONNECTION_DEFAULT_TYPE,
                             end,
-                            Node.CONNECTION_DEFAULT_TYPE);
+                            Node.CONNECTION_DEFAULT_TYPE );
         ConstraintEvaluator constraint1 = new org.drools.workflow.instance.impl.RuleConstraintEvaluator();
         constraint1.setPriority( 1 );
         split.setConstraint( out1,
@@ -498,46 +507,53 @@ public class RuleFlowGroupTest extends DroolsTestCase {
         final RuleFlowGroupImpl ruleFlowGroup3 = (RuleFlowGroupImpl) agenda.getRuleFlowGroup( "rule-flow-group-3" );
 
         final LeftTuple tuple0 = new LeftTuple( new DefaultFactHandle( 1,
-                                                                       "cheese" ) );
+                                                                       "cheese" ),
+                                                null );
         node0.assertLeftTuple( tuple0,
-                           context0,
-                           workingMemory );
+                               context0,
+                               workingMemory );
 
         final LeftTuple tuple1 = new LeftTuple( new DefaultFactHandle( 1,
-                                                                       "cheese" ) );
+                                                                       "cheese" ),
+                                                null );
         node0.assertLeftTuple( tuple1,
-                           context0,
-                           workingMemory );
+                               context0,
+                               workingMemory );
 
         final LeftTuple tuple2 = new LeftTuple( new DefaultFactHandle( 1,
-                                                                       "cheese" ) );
+                                                                       "cheese" ),
+                                                null );
         node1.assertLeftTuple( tuple2,
-                           context0,
-                           workingMemory );
+                               context0,
+                               workingMemory );
 
         final LeftTuple tuple3 = new LeftTuple( new DefaultFactHandle( 1,
-                                                                       "cheese" ) );
+                                                                       "cheese" ),
+                                                null );
         node2.assertLeftTuple( tuple3,
-                           context0,
-                           workingMemory );
+                               context0,
+                               workingMemory );
 
         final LeftTuple tuple4 = new LeftTuple( new DefaultFactHandle( 1,
-                                                                       "cheese" ) );
+                                                                       "cheese" ),
+                                                null );
         node3.assertLeftTuple( tuple4,
-                           context0,
-                           workingMemory );
+                               context0,
+                               workingMemory );
 
         final LeftTuple splitTuple1 = new LeftTuple( new DefaultFactHandle( 1,
-                                                                            "cheese" ) );
+                                                                            "cheese" ),
+                                                     null );
         splitNode1.assertLeftTuple( splitTuple1,
-                                context0,
-                                workingMemory );
+                                    context0,
+                                    workingMemory );
 
         final LeftTuple splitTuple2 = new LeftTuple( new DefaultFactHandle( 1,
-                                                                            "cheese" ) );
+                                                                            "cheese" ),
+                                                     null );
         splitNode2.assertLeftTuple( splitTuple2,
-                                context0,
-                                workingMemory );
+                                    context0,
+                                    workingMemory );
 
         final RuleFlowGroupImpl systemRuleFlowGroup = (RuleFlowGroupImpl) agenda.getRuleFlowGroup( "DROOLS_SYSTEM" );
 
