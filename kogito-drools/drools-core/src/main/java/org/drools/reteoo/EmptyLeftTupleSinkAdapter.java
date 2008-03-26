@@ -62,4 +62,9 @@ public class EmptyLeftTupleSinkAdapter
         return 0;
     }
 
+    public void propagateRetractLeftTupleDestroyRightTuple(LeftTuple tuple,
+                                                           PropagationContext context,
+                                                           InternalWorkingMemory workingMemory) {
+    }
+
 }
