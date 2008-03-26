@@ -77,7 +77,7 @@ public class FromNodeTest extends TestCase {
         final Person person1 = new Person( "xxx1",
                                            30 );
         final FactHandle person1Handle = workingMemory.insert( person1 );
-        final LeftTuple tuple1 = new LeftTuple( (DefaultFactHandle) person1Handle );
+        final LeftTuple tuple1 = new LeftTuple( (DefaultFactHandle) person1Handle, from );
         from.assertLeftTuple( tuple1,
                           context,
                           workingMemory );
@@ -91,7 +91,7 @@ public class FromNodeTest extends TestCase {
         final Person person2 = new Person( "xxx2",
                                            30 );
         final FactHandle person2Handle = workingMemory.insert( person2 );
-        final LeftTuple tuple2 = new LeftTuple( (DefaultFactHandle) person2Handle );
+        final LeftTuple tuple2 = new LeftTuple( (DefaultFactHandle) person2Handle, from );
         from.assertLeftTuple( tuple2,
                           context,
                           workingMemory );
@@ -109,7 +109,7 @@ public class FromNodeTest extends TestCase {
         final Person person3 = new Person( "xxx2",
                                            30 );
         final FactHandle person3Handle = workingMemory.insert( person3 );
-        final LeftTuple tuple3 = new LeftTuple( (DefaultFactHandle) person3Handle );
+        final LeftTuple tuple3 = new LeftTuple( (DefaultFactHandle) person3Handle, from );
         from.assertLeftTuple( tuple3,
                           context,
                           workingMemory );
@@ -184,7 +184,7 @@ public class FromNodeTest extends TestCase {
         final Person person1 = new Person( "xxx1",
                                            30 );
         final FactHandle person1Handle = workingMemory.insert( person1 );
-        final LeftTuple tuple1 = new LeftTuple( (DefaultFactHandle) person1Handle );
+        final LeftTuple tuple1 = new LeftTuple( (DefaultFactHandle) person1Handle, from );
         from.assertLeftTuple( tuple1,
                           context,
                           workingMemory );
@@ -198,7 +198,7 @@ public class FromNodeTest extends TestCase {
         final Person person2 = new Person( "xxx2",
                                            30 );
         final FactHandle person2Handle = workingMemory.insert( person2 );
-        final LeftTuple tuple2 = new LeftTuple( (DefaultFactHandle) person2Handle );
+        final LeftTuple tuple2 = new LeftTuple( (DefaultFactHandle) person2Handle, from );
         from.assertLeftTuple( tuple2,
                           context,
                           workingMemory );
@@ -216,7 +216,7 @@ public class FromNodeTest extends TestCase {
         final Person person3 = new Person( "xxx2",
                                            30 );
         final FactHandle person3Handle = workingMemory.insert( person3 );
-        final LeftTuple tuple3 = new LeftTuple( (DefaultFactHandle) person3Handle );
+        final LeftTuple tuple3 = new LeftTuple( (DefaultFactHandle) person3Handle, from );
         from.assertLeftTuple( tuple3,
                           context,
                           workingMemory );
@@ -276,7 +276,7 @@ public class FromNodeTest extends TestCase {
         final Person person1 = new Person( "xxx2",
                                            30 );
         final FactHandle person1Handle = workingMemory.insert( person1 );
-        final LeftTuple tuple = new LeftTuple( (DefaultFactHandle) person1Handle );
+        final LeftTuple tuple = new LeftTuple( (DefaultFactHandle) person1Handle, from );
         from.assertLeftTuple( tuple,
                           context,
                           workingMemory );
@@ -288,11 +288,14 @@ public class FromNodeTest extends TestCase {
         assertEquals( 1,
                       memory.betaMemory.getLeftTupleMemory().size() );
         assertNull( memory.betaMemory.getRightTupleMemory() );
-        assertEquals( 2,
-                      ((LinkedList) memory.betaMemory.getCreatedHandles().get( tuple )).size() );
+        RightTuple rightTuple2 = tuple.getBetaChildren().getRightParent();
+        RightTuple rightTuple1= tuple.getBetaChildren().getLeftParentNext().getRightParent();
+        assertFalse( rightTuple1.equals( rightTuple2 ) );
+        assertNull( tuple.getBetaChildren().getLeftParentNext().getLeftParentNext() );
 
-        final InternalFactHandle handle1 = (InternalFactHandle) ((LinkedListEntry) ((LinkedList) memory.betaMemory.getCreatedHandles().get( tuple )).getFirst()).getObject();
-        final InternalFactHandle handle2 = (InternalFactHandle) ((LinkedListEntry) ((LinkedList) memory.betaMemory.getCreatedHandles().get( tuple )).getLast()).getObject();
+
+        final InternalFactHandle handle2 = rightTuple2.getFactHandle();
+        final InternalFactHandle handle1 = rightTuple1.getFactHandle();
         assertEquals( handle1.getObject(),
                       cheese1 );
         assertEquals( handle2.getObject(),
