@@ -29,6 +29,7 @@ import org.drools.base.ClassObjectType;
 import org.drools.base.ShadowProxy;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalAgenda;
+import org.drools.common.InternalFactHandle;
 import org.drools.common.PropagationContextImpl;
 import org.drools.reteoo.ReteooBuilder.IdGenerator;
 import org.drools.reteoo.builder.BuildContext;
@@ -43,12 +44,13 @@ import java.io.IOException;
 
 public class LogicalAssertionTest extends DroolsTestCase {
     private ReteooRuleBase ruleBase;
-    private BuildContext buildContext;
+    private BuildContext   buildContext;
     private EntryPointNode entryPoint;
 
     protected void setUp() throws Exception {
-        ruleBase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase();
-        buildContext = new BuildContext( ruleBase, ((ReteooRuleBase)ruleBase).getReteooBuilder().getIdGenerator() );
+        ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
+        buildContext = new BuildContext( ruleBase,
+                                         ((ReteooRuleBase) ruleBase).getReteooBuilder().getIdGenerator() );
         this.entryPoint = new EntryPointNode( 0,
                                               this.ruleBase.getRete(),
                                               buildContext );
@@ -65,9 +67,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                   this.entryPoint,
                                                                   new ClassObjectType( String.class ),
                                                                   buildContext );
-        objectTypeNode.attach();
-        final MockObjectSink sink = new MockObjectSink();
-        objectTypeNode.addObjectSink( sink );
+
+        MockRightTupleSink sink = new MockRightTupleSink();
 
         final Rule rule1 = new Rule( "test-rule1" );
         final RuleTerminalNode node = new RuleTerminalNode( idGenerator.getNextId(),
@@ -89,7 +90,9 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                  WorkingMemory workingMemory) {
                 // do nothing
             }
-            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            public void readExternal(ObjectInput in) throws IOException,
+                                                    ClassNotFoundException {
 
             }
 
@@ -101,7 +104,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
         rule1.setConsequence( consequence );
 
         final DefaultFactHandle handle1 = (DefaultFactHandle) workingMemory.insert( "o1" );
-        final LeftTuple tuple1 = new LeftTuple( handle1 );
+        final LeftTuple tuple1 = new LeftTuple( handle1,
+                                                null );
 
         final PropagationContext context1 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
@@ -110,19 +114,21 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         // Test single activation for a single logical assertions
         node.assertLeftTuple( tuple1,
-                          context1,
-                          workingMemory );
+                              context1,
+                              workingMemory );
 
         final String logicalString = new String( "logical" );
-        FactHandle logicalHandle = workingMemory.insert( logicalString,
-                                                         false,
-                                                         true,
-                                                         rule1,
-                                                         tuple1.getActivation() );
+        InternalFactHandle logicalHandle = (InternalFactHandle) workingMemory.insert( logicalString,
+                                                                                      false,
+                                                                                      true,
+                                                                                      rule1,
+                                                                                      tuple1.getActivation() );
+        new RightTuple( logicalHandle,
+                        sink );
         // Retract the tuple and test the logically asserted fact was also retracted
         node.retractLeftTuple( tuple1,
-                           context1,
-                           workingMemory );
+                               context1,
+                               workingMemory );
 
         workingMemory.executeQueuedActions();
 
@@ -132,25 +138,28 @@ public class LogicalAssertionTest extends DroolsTestCase {
         Object[] values = (Object[]) sink.getRetracted().get( 0 );
 
         assertSame( logicalHandle,
-                    values[0] );
+                    ((RightTuple) values[0]).getFactHandle() );
 
         // Test single activation for a single logical assertions. This also
         // tests that logical assertions live on after the related Activation
         // has fired.
         node.assertLeftTuple( tuple1,
-                          context1,
-                          workingMemory );
-        logicalHandle = workingMemory.insert( logicalString,
-                                              false,
-                                              true,
-                                              rule1,
-                                              tuple1.getActivation() );
+                              context1,
+                              workingMemory );
+        logicalHandle = (InternalFactHandle) workingMemory.insert( logicalString,
+                                                                   false,
+                                                                   true,
+                                                                   rule1,
+                                                                   tuple1.getActivation() );
+
+        new RightTuple( logicalHandle,
+                        sink );
 
         agenda.fireNextItem( null );
 
         node.retractLeftTuple( tuple1,
-                           context1,
-                           workingMemory );
+                               context1,
+                               workingMemory );
 
         workingMemory.executeQueuedActions();
 
@@ -160,7 +169,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         values = (Object[]) sink.getRetracted().get( 1 );
 
         assertSame( logicalHandle,
-                    values[0] );
+                    ((RightTuple) values[0]).getFactHandle() );
     }
 
     public void testEqualsMap() throws Exception {
@@ -199,7 +208,9 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                  WorkingMemory workingMemory) {
                 // do nothing
             }
-            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            public void readExternal(ObjectInput in) throws IOException,
+                                                    ClassNotFoundException {
 
             }
 
@@ -211,7 +222,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final DefaultFactHandle handle1 = new DefaultFactHandle( 1,
                                                                  "cheese" );
-        final LeftTuple tuple1 = new LeftTuple( handle1 );
+        final LeftTuple tuple1 = new LeftTuple( handle1,
+                                                null );
 
         final PropagationContext context1 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
@@ -220,8 +232,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         // Test single activation for a single logical assertions
         node.assertLeftTuple( tuple1,
-                          context1,
-                          workingMemory );
+                              context1,
+                              workingMemory );
 
         final String logicalString1 = new String( "logical" );
         FactHandle logicalHandle1 = workingMemory.insert( logicalString1,
@@ -246,7 +258,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         // If assert behavior in working memory is IDENTITY,
         // returned handles must not be the same
-        if ( RuleBaseConfiguration.AssertBehaviour.IDENTITY.equals(((ReteooRuleBase) ruleBase).getConfiguration().getAssertBehaviour() )) {
+        if ( RuleBaseConfiguration.AssertBehaviour.IDENTITY.equals( ((ReteooRuleBase) ruleBase).getConfiguration().getAssertBehaviour() ) ) {
 
             assertNotSame( logicalHandle1,
                            logicalHandle2 );
@@ -280,7 +292,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                             new MockTupleSource( idGenerator.getNextId() ),
                                                             rule1,
                                                             rule1.getLhs(),
-                                                            buildContext  );
+                                                            buildContext );
 
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
@@ -296,7 +308,9 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                  WorkingMemory workingMemory) {
                 // do nothing
             }
-            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            public void readExternal(ObjectInput in) throws IOException,
+                                                    ClassNotFoundException {
 
             }
 
@@ -308,7 +322,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final DefaultFactHandle handle1 = new DefaultFactHandle( 1,
                                                                  "cheese" );
-        final LeftTuple tuple1 = new LeftTuple( handle1 );
+        final LeftTuple tuple1 = new LeftTuple( handle1,
+                                                null );
 
         final PropagationContext context1 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
@@ -317,8 +332,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         // Test that a STATED assertion overrides a logical assertion
         node.assertLeftTuple( tuple1,
-                          context1,
-                          workingMemory );
+                              context1,
+                              workingMemory );
 
         String logicalString1 = new String( "logical" );
         FactHandle logicalHandle1 = workingMemory.insert( logicalString1,
@@ -333,8 +348,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
         FactHandle logicalHandle2 = workingMemory.insert( logicalString2 );
 
         node.retractLeftTuple( tuple1,
-                           context1,
-                           workingMemory );
+                               context1,
+                               workingMemory );
 
         assertLength( 0,
                       sink.getRetracted() );
@@ -352,8 +367,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         // Test that a logical assertion cannot override a STATED assertion
         node.assertLeftTuple( tuple1,
-                          context1,
-                          workingMemory );
+                              context1,
+                              workingMemory );
 
         logicalString2 = new String( "logical" );
         logicalHandle2 = workingMemory.insert( logicalString2 );
@@ -381,8 +396,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
                     logicalHandle1 );
 
         node.retractLeftTuple( tuple1,
-                           context1,
-                           workingMemory );
+                               context1,
+                               workingMemory );
 
         assertLength( 0,
                       sink.getRetracted() );
@@ -412,9 +427,10 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final Rule rule1 = new Rule( "test-rule1" );
         RuleBaseConfiguration conf = new RuleBaseConfiguration();
         conf.setLogicalOverride( LogicalOverride.PRESERVE );
-        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase(conf);
+        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase( conf );
 
-        BuildContext buildContext = new BuildContext( ruleBase, ruleBase.getReteooBuilder().getIdGenerator() );
+        BuildContext buildContext = new BuildContext( ruleBase,
+                                                      ruleBase.getReteooBuilder().getIdGenerator() );
 
         IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
 
@@ -435,7 +451,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                             new MockTupleSource( idGenerator.getNextId() ),
                                                             rule1,
                                                             rule1.getLhs(),
-                                                            buildContext  );
+                                                            buildContext );
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
         final Agenda agenda = workingMemory.getAgenda();
@@ -450,7 +466,9 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                  WorkingMemory workingMemory) {
                 // do nothing
             }
-            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            public void readExternal(ObjectInput in) throws IOException,
+                                                    ClassNotFoundException {
 
             }
 
@@ -462,7 +480,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final DefaultFactHandle handle1 = new DefaultFactHandle( 1,
                                                                  "cheese" );
-        final LeftTuple tuple1 = new LeftTuple( handle1 );
+        final LeftTuple tuple1 = new LeftTuple( handle1,
+                                                null );
 
         final PropagationContext context1 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
@@ -471,8 +490,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         // Test that a STATED assertion overrides a logical assertion
         node.assertLeftTuple( tuple1,
-                          context1,
-                          workingMemory );
+                              context1,
+                              workingMemory );
 
         final String logicalString1 = new String( "logical" );
         final FactHandle logicalHandle1 = workingMemory.insert( logicalString1,
@@ -487,8 +506,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
         FactHandle logicalHandle2 = workingMemory.insert( logicalString2 );
 
         node.retractLeftTuple( tuple1,
-                           context1,
-                           workingMemory );
+                               context1,
+                               workingMemory );
 
         assertLength( 0,
                       sink.getRetracted() );
@@ -506,8 +525,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         // Test that a logical assertion cannot override a STATED assertion
         node.assertLeftTuple( tuple1,
-                          context1,
-                          workingMemory );
+                              context1,
+                              workingMemory );
 
         logicalString2 = new String( "logical" );
         logicalHandle2 = workingMemory.insert( logicalString2 );
@@ -531,7 +550,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                             new MockTupleSource( idGenerator.getNextId() ),
                                                             rule1,
                                                             rule1.getLhs(),
-                                                            buildContext  );
+                                                            buildContext );
 
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
@@ -545,7 +564,9 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                  WorkingMemory workingMemory) {
                 // do nothing
             }
-            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            public void readExternal(ObjectInput in) throws IOException,
+                                                    ClassNotFoundException {
 
             }
 
@@ -559,7 +580,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final DefaultFactHandle handle1 = new DefaultFactHandle( 1,
                                                                  "cheese" );
-        final LeftTuple tuple1 = new LeftTuple( handle1 );
+        final LeftTuple tuple1 = new LeftTuple( handle1,
+                                                null );
 
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,
@@ -567,8 +589,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                        null );
 
         node.assertLeftTuple( tuple1,
-                          context,
-                          workingMemory );
+                              context,
+                              workingMemory );
 
         // Assert the logical "logical" fact
         final String logicalString1 = new String( "logical" );
@@ -584,20 +606,21 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                              new MockTupleSource( 3 ),
                                                              rule2,
                                                              rule2.getLhs(),
-                                                             buildContext  );
+                                                             buildContext );
         rule2.setConsequence( consequence );
 
         final DefaultFactHandle handle2 = new DefaultFactHandle( 2,
                                                                  "cheese" );
-        final LeftTuple tuple2 = new LeftTuple( handle2 );
+        final LeftTuple tuple2 = new LeftTuple( handle2,
+                                                null );
 
         node.assertLeftTuple( tuple2,
-                          context,
-                          workingMemory );
+                              context,
+                              workingMemory );
 
         node2.assertLeftTuple( tuple2,
-                           context,
-                           workingMemory );
+                               context,
+                               workingMemory );
 
         // Assert the logical "logical" fact
         final String logicalString2 = new String( "logical" );
@@ -633,13 +656,14 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                   new ClassObjectType( String.class ),
                                                                   buildContext );
         objectTypeNode.attach();
-        final MockObjectSink sink = new MockObjectSink();
-        objectTypeNode.addObjectSink( sink );
+
+        MockRightTupleSink sink = new MockRightTupleSink();
+
         final RuleTerminalNode node = new RuleTerminalNode( idGenerator.getNextId(),
-                                                            new MockTupleSource(  idGenerator.getNextId() ),
+                                                            new MockTupleSource( idGenerator.getNextId() ),
                                                             rule1,
                                                             rule1.getLhs(),
-                                                            buildContext  );
+                                                            buildContext );
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
         final Agenda agenda = workingMemory.getAgenda();
@@ -654,7 +678,9 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                  WorkingMemory workingMemory) {
                 // do nothing
             }
-            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            public void readExternal(ObjectInput in) throws IOException,
+                                                    ClassNotFoundException {
 
             }
 
@@ -668,7 +694,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final DefaultFactHandle handle1 = new DefaultFactHandle( 1,
                                                                  "cheese" );
-        final LeftTuple tuple1 = new LeftTuple( handle1 );
+        final LeftTuple tuple1 = new LeftTuple( handle1,
+                                                null );
 
         final PropagationContext context1 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
@@ -676,21 +703,22 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                         null );
         // get the activation onto the agenda
         node.assertLeftTuple( tuple1,
-                          context1,
-                          workingMemory );
+                              context1,
+                              workingMemory );
 
-        // Create the second justifer
+        // Create the second justifier
         final Rule rule2 = new Rule( "test-rule2" );
-        final RuleTerminalNode node2 = new RuleTerminalNode(  idGenerator.getNextId(),
-                                                              new MockTupleSource(  idGenerator.getNextId() ),
-                                                              rule2,
-                                                              rule2.getLhs(),
-                                                              buildContext  );
+        final RuleTerminalNode node2 = new RuleTerminalNode( idGenerator.getNextId(),
+                                                             new MockTupleSource( idGenerator.getNextId() ),
+                                                             rule2,
+                                                             rule2.getLhs(),
+                                                             buildContext );
         rule2.setConsequence( consequence );
 
         final DefaultFactHandle handle2 = new DefaultFactHandle( 2,
                                                                  "cheese" );
-        final LeftTuple tuple2 = new LeftTuple( handle2 );
+        final LeftTuple tuple2 = new LeftTuple( handle2,
+                                                null );
 
         final PropagationContext context2 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
@@ -699,24 +727,28 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         // get the activations onto the agenda
         node2.assertLeftTuple( tuple2,
-                           context2,
-                           workingMemory );
+                               context2,
+                               workingMemory );
 
         // Create the first justifieable relationship
         final String logicalString1 = new String( "logical" );
-        final FactHandle logicalHandle1 = workingMemory.insert( logicalString1,
+        final InternalFactHandle logicalHandle1 = ( InternalFactHandle ) workingMemory.insert( logicalString1,
                                                                 false,
                                                                 true,
                                                                 rule1,
                                                                 tuple1.getActivation() );
+        new RightTuple( logicalHandle1,
+                        sink );
 
         // Create the second justifieable relationship
         final String logicalString2 = new String( "logical" );
-        final FactHandle logicalHandle2 = workingMemory.insert( logicalString2,
+        final InternalFactHandle logicalHandle2 = ( InternalFactHandle ) workingMemory.insert( logicalString2,
                                                                 false,
                                                                 true,
                                                                 rule2,
                                                                 tuple2.getActivation() );
+        
+        assertSame( logicalHandle1, logicalHandle2 );
 
         // "logical" should only appear once
         assertLength( 1,
@@ -724,8 +756,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         // Now lets cancel the first activation
         node2.retractLeftTuple( tuple2,
-                            context2,
-                            workingMemory );
+                                context2,
+                                workingMemory );
 
         workingMemory.executeQueuedActions();
 
@@ -739,8 +771,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         // now remove that final justification
         node.retractLeftTuple( tuple1,
-                           context1,
-                           workingMemory );
+                               context1,
+                               workingMemory );
 
         workingMemory.executeQueuedActions();
 
@@ -777,7 +809,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                             new MockTupleSource( idGenerator.getNextId() ),
                                                             rule1,
                                                             rule1.getLhs(),
-                                                            buildContext  );
+                                                            buildContext );
 
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
@@ -793,7 +825,9 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                  WorkingMemory workingMemory) {
                 // do nothing
             }
-            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            public void readExternal(ObjectInput in) throws IOException,
+                                                    ClassNotFoundException {
 
             }
 
@@ -805,7 +839,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final DefaultFactHandle handle1 = new DefaultFactHandle( 1,
                                                                  "cheese" );
-        final LeftTuple tuple1 = new LeftTuple( handle1 );
+        final LeftTuple tuple1 = new LeftTuple( handle1,
+                                                null );
 
         final PropagationContext context1 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
@@ -814,8 +849,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         // Assert multiple stated objects
         node.assertLeftTuple( tuple1,
-                          context1,
-                          workingMemory );
+                              context1,
+                              workingMemory );
 
         final String statedString1 = new String( "logical" );
         final FactHandle statedHandle1 = workingMemory.insert( statedString1 );
@@ -837,7 +872,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         // If assert behavior in working memory is IDENTITY,
         // we need to retract object 2 times before being able to
         // succesfully logically assert a new fact
-        if ( RuleBaseConfiguration.AssertBehaviour.IDENTITY.equals(((ReteooRuleBase) ruleBase).getConfiguration().getAssertBehaviour()) ) {
+        if ( RuleBaseConfiguration.AssertBehaviour.IDENTITY.equals( ((ReteooRuleBase) ruleBase).getConfiguration().getAssertBehaviour() ) ) {
 
             workingMemory.retract( statedHandle2 );
 
@@ -886,7 +921,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                             new MockTupleSource( idGenerator.getNextId() ),
                                                             rule1,
                                                             rule1.getLhs(),
-                                                            buildContext  );
+                                                            buildContext );
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
         final Agenda agenda = workingMemory.getAgenda();
@@ -901,7 +936,9 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                  WorkingMemory workingMemory) {
                 // do nothing
             }
-            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            public void readExternal(ObjectInput in) throws IOException,
+                                                    ClassNotFoundException {
 
             }
 
@@ -913,7 +950,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final DefaultFactHandle handle1 = new DefaultFactHandle( 1,
                                                                  "cheese" );
-        final LeftTuple tuple1 = new LeftTuple( handle1 );
+        final LeftTuple tuple1 = new LeftTuple( handle1,
+                                                null );
 
         final PropagationContext context1 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
@@ -922,8 +960,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         // Test that a STATED assertion overrides a logical assertion
         node.assertLeftTuple( tuple1,
-                          context1,
-                          workingMemory );
+                              context1,
+                              workingMemory );
 
         final Cheese cheese = new Cheese( "brie",
                                           10 );
