@@ -43,7 +43,7 @@ public class JoinNodeTest extends DroolsTestCase {
     ReteooWorkingMemory workingMemory;
     MockObjectSource    objectSource;
     MockTupleSource     tupleSource;
-    MockTupleSink       sink;
+    MockLeftTupleSink       sink;
     BetaNode            node;
     BetaMemory          memory;
     MockConstraint      constraint = new MockConstraint();
@@ -62,7 +62,7 @@ public class JoinNodeTest extends DroolsTestCase {
 
         this.tupleSource = new MockTupleSource( 4 );
         this.objectSource = new MockObjectSource( 4 );
-        this.sink = new MockTupleSink();
+        this.sink = new MockLeftTupleSink();
 
         final RuleBaseConfiguration configuration = new RuleBaseConfiguration();
 
@@ -468,7 +468,7 @@ public class JoinNodeTest extends DroolsTestCase {
 
         // Add the first tuple sink and assert a tuple and object
         // The sink has no memory
-        final MockTupleSink sink1 = new MockTupleSink( 2 );
+        final MockLeftTupleSink sink1 = new MockLeftTupleSink( 2 );
         joinNode.addTupleSink( sink1 );
 
         final DefaultFactHandle f0 = new DefaultFactHandle( 0,
@@ -493,7 +493,7 @@ public class JoinNodeTest extends DroolsTestCase {
 
         // Add the new sink, this should be updated from the re-processed
         // joinnode memory
-        final MockTupleSink sink2 = new MockTupleSink( 3 );
+        final MockLeftTupleSink sink2 = new MockLeftTupleSink( 3 );
         assertLength( 0,
                       sink2.getAsserted() );
 

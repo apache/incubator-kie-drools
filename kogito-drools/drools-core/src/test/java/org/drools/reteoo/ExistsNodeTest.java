@@ -44,7 +44,7 @@ public class ExistsNodeTest extends DroolsTestCase {
     ReteooWorkingMemory   workingMemory;
     MockObjectSource      objectSource;
     MockTupleSource       tupleSource;
-    MockTupleSink         sink;
+    MockLeftTupleSink         sink;
     ExistsNode            node;
     RightInputAdapterNode ria;
     BetaMemory            memory;
@@ -77,7 +77,7 @@ public class ExistsNodeTest extends DroolsTestCase {
                                                                 configuration ),
                                     buildContext );
 
-        this.sink = new MockTupleSink();
+        this.sink = new MockLeftTupleSink();
         this.node.addTupleSink( this.sink );
 
         this.memory = (BetaMemory) this.workingMemory.getNodeMemory( this.node );

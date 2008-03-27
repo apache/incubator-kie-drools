@@ -155,7 +155,7 @@ public class CollectNode extends BetaNode
                     handle = ((LeftTuple) handle.getObject()).getLastHandle();
                 }
                 result.add( handle.getObject() );
-                
+
                 // linking left tuple to the right tuple children list
                 leftTuple.setRightParentNext( rightTuple.getBetaChildren() );
                 rightTuple.setBetaChildren( leftTuple );
@@ -243,11 +243,11 @@ public class CollectNode extends BetaNode
             LeftTuple tuple = (LeftTuple) tuples[i];
             if ( this.constraints.isAllowedCachedRight( memory.betaMemory.getContext(),
                                                         tuple ) ) {
-                this.modifyTuple( true,
-                                  tuple,
-                                  rightTuple,
-                                  context,
-                                  workingMemory );
+                modifyTuple( true,
+                             tuple,
+                             rightTuple,
+                             context,
+                             workingMemory );
             }
         }
 
@@ -270,7 +270,7 @@ public class CollectNode extends BetaNode
                                                workingMemory,
                                                rightTuple.getFactHandle() );
 
-        for( LeftTuple leftTuple = rightTuple.getBetaChildren(); leftTuple != null; leftTuple = rightTuple.getBetaChildren() ) {
+        for ( LeftTuple leftTuple = rightTuple.getBetaChildren(); leftTuple != null; leftTuple = rightTuple.getBetaChildren() ) {
             this.modifyTuple( false,
                               leftTuple,
                               rightTuple,
@@ -306,7 +306,7 @@ public class CollectNode extends BetaNode
         }
 
         // if there is a subnetwork, we need to unwrapp the object from inside the tuple
-        InternalFactHandle handle = rightTuple.getFactHandle(); 
+        InternalFactHandle handle = rightTuple.getFactHandle();
         if ( this.unwrapRightObject ) {
             handle = ((LeftTuple) handle.getObject()).getLastHandle();
         }
@@ -353,17 +353,17 @@ public class CollectNode extends BetaNode
     public void updateSink(final LeftTupleSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
-//        final CollectMemory memory = (CollectMemory) workingMemory.getNodeMemory( this );
-//
-//        final Iterator it = memory.betaMemory.getCreatedHandles().iterator();
-//
-//        for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
-//            CollectResult result = (CollectResult) entry.getValue();
-//            sink.assertLeftTuple( new LeftTuple( (LeftTuple) entry.getKey(),
-//                                                 result.handle ),
-//                                  context,
-//                                  workingMemory );
-//        }
+        //        final CollectMemory memory = (CollectMemory) workingMemory.getNodeMemory( this );
+        //
+        //        final Iterator it = memory.betaMemory.getCreatedHandles().iterator();
+        //
+        //        for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
+        //            CollectResult result = (CollectResult) entry.getValue();
+        //            sink.assertLeftTuple( new LeftTuple( (LeftTuple) entry.getKey(),
+        //                                                 result.handle ),
+        //                                  context,
+        //                                  workingMemory );
+        //        }
     }
 
     /* (non-Javadoc)

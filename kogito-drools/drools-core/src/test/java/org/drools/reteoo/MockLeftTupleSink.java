@@ -28,7 +28,7 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.spi.PropagationContext;
 
-public class MockTupleSink extends LeftTupleSource
+public class MockLeftTupleSink extends LeftTupleSource
     implements
     LeftTupleSinkNode,
     NodeMemory {
@@ -42,11 +42,11 @@ public class MockTupleSink extends LeftTupleSource
     private LeftTupleSinkNode     previousTupleSinkNode;
     private LeftTupleSinkNode     nextTupleSinkNode;
 
-    public MockTupleSink() {
+    public MockLeftTupleSink() {
         super( 0 );
     }
 
-    public MockTupleSink(final int id) {
+    public MockLeftTupleSink(final int id) {
         super( id );
     }
 

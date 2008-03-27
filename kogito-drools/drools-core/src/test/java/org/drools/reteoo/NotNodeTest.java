@@ -42,7 +42,7 @@ public class NotNodeTest extends DroolsTestCase {
     ReteooWorkingMemory   workingMemory;
     MockObjectSource      objectSource;
     MockTupleSource       tupleSource;
-    MockTupleSink         sink;
+    MockLeftTupleSink         sink;
     NotNode               node;
     RightInputAdapterNode ria;
     BetaMemory            memory;
@@ -75,7 +75,7 @@ public class NotNodeTest extends DroolsTestCase {
                                                              configuration ),
                                  buildContext );
 
-        this.sink = new MockTupleSink();
+        this.sink = new MockLeftTupleSink();
         this.node.addTupleSink( this.sink );
 
         //        this.ria = new RightInputAdapterNode( 2,

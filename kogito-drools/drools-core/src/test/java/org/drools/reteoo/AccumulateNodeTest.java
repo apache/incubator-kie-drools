@@ -49,7 +49,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
     ReteooWorkingMemory workingMemory;
     MockObjectSource    objectSource;
     MockTupleSource     tupleSource;
-    MockTupleSink       sink;
+    MockLeftTupleSink       sink;
     BetaNode            node;
     BetaMemory          memory;
     MockConstraint      constraint = new MockConstraint();
@@ -75,7 +75,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
 
         this.tupleSource = new MockTupleSource( 4 );
         this.objectSource = new MockObjectSource( 4 );
-        this.sink = new MockTupleSink();
+        this.sink = new MockLeftTupleSink();
 
         this.accumulator = new MockAccumulator();
 
@@ -139,7 +139,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
                              2,
                              this.sink.getAsserted().size() );
 
-        final MockTupleSink otherSink = new MockTupleSink();
+        final MockLeftTupleSink otherSink = new MockLeftTupleSink();
 
         this.node.addTupleSink( otherSink );
         this.node.updateSink( otherSink,
