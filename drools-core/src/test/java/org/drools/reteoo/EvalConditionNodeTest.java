@@ -100,7 +100,7 @@ public class EvalConditionNodeTest extends DroolsTestCase {
                                                               eval,
                                                               buildContext );
 
-        final MockTupleSink sink = new MockTupleSink();
+        final MockLeftTupleSink sink = new MockLeftTupleSink();
         node.addTupleSink( sink );
 
         // Create the Tuple
@@ -146,7 +146,7 @@ public class EvalConditionNodeTest extends DroolsTestCase {
                                                               eval,
                                                               buildContext );
 
-        final MockTupleSink sink = new MockTupleSink();
+        final MockLeftTupleSink sink = new MockLeftTupleSink();
         node.addTupleSink( sink );
 
         // Create the Tuple
@@ -220,7 +220,7 @@ public class EvalConditionNodeTest extends DroolsTestCase {
                                                               eval,
                                                               buildContext );
 
-        final MockTupleSink sink = new MockTupleSink();
+        final MockLeftTupleSink sink = new MockLeftTupleSink();
         node.addTupleSink( sink );
 
         // Create the Tuple
@@ -275,7 +275,7 @@ public class EvalConditionNodeTest extends DroolsTestCase {
 
         // Add the first tuple sink and assert a tuple and object
         // The sink has no memory
-        final MockTupleSink sink1 = new MockTupleSink( 2 );
+        final MockLeftTupleSink sink1 = new MockLeftTupleSink( 2 );
         node.addTupleSink( sink1 );
 
         final DefaultFactHandle f0 = new DefaultFactHandle( 0,
@@ -292,7 +292,7 @@ public class EvalConditionNodeTest extends DroolsTestCase {
 
         // Add the new sink, this should be updated from the re-processed
         // joinnode memory
-        final MockTupleSink sink2 = new MockTupleSink( 3 );
+        final MockLeftTupleSink sink2 = new MockLeftTupleSink( 3 );
         node.addTupleSink( sink2 );
         assertLength( 0,
                       sink2.getAsserted() );

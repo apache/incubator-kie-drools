@@ -39,7 +39,7 @@ public class TupleSourceTest extends DroolsTestCase {
         assertSame( EmptyLeftTupleSinkAdapter.getInstance(),
                     sink );
 
-        final MockTupleSink sink1 = new MockTupleSink();
+        final MockLeftTupleSink sink1 = new MockLeftTupleSink();
         source.addTupleSink( sink1 );
         sink = (LeftTupleSinkPropagator) field.get( source );
         assertSame( SingleLeftTupleSinkAdapter.class,
@@ -47,7 +47,7 @@ public class TupleSourceTest extends DroolsTestCase {
         assertEquals( 1,
                       sink.getSinks().length );
 
-        final MockTupleSink sink2 = new MockTupleSink();
+        final MockLeftTupleSink sink2 = new MockLeftTupleSink();
         source.addTupleSink( sink2 );
         sink = (LeftTupleSinkPropagator) field.get( source );
         assertSame( CompositeLeftTupleSinkAdapter.class,
@@ -55,7 +55,7 @@ public class TupleSourceTest extends DroolsTestCase {
         assertEquals( 2,
                       sink.getSinks().length );
 
-        final MockTupleSink sink3 = new MockTupleSink();
+        final MockLeftTupleSink sink3 = new MockLeftTupleSink();
         source.addTupleSink( sink3 );
         assertSame( CompositeLeftTupleSinkAdapter.class,
                     sink.getClass() );

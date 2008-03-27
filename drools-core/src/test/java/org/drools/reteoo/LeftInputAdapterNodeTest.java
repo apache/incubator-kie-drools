@@ -101,7 +101,7 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
         final LeftInputAdapterNode liaNode = new LeftInputAdapterNode( 1,
                                                                        new MockObjectSource( 15 ),
                                                                        buildContext );
-        final MockTupleSink sink = new MockTupleSink();
+        final MockLeftTupleSink sink = new MockLeftTupleSink();
         liaNode.addTupleSink( sink );
 
         final Object string1 = "cheese";

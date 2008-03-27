@@ -71,7 +71,7 @@ public class FromNodeTest extends TestCase {
                                             null,
                                             new AlphaNodeFieldConstraint[]{constraint},
                                             null );
-        final MockTupleSink sink = new MockTupleSink( 5 );
+        final MockLeftTupleSink sink = new MockLeftTupleSink( 5 );
         from.addTupleSink( sink );
 
         final Person person1 = new Person( "xxx1",
@@ -178,7 +178,7 @@ public class FromNodeTest extends TestCase {
                                             null,
                                             new AlphaNodeFieldConstraint[0],
                                             betaConstraints );
-        final MockTupleSink sink = new MockTupleSink( 5 );
+        final MockLeftTupleSink sink = new MockLeftTupleSink( 5 );
         from.addTupleSink( sink );
 
         final Person person1 = new Person( "xxx1",
@@ -268,7 +268,7 @@ public class FromNodeTest extends TestCase {
                                             null,
                                             new AlphaNodeFieldConstraint[]{constraint},
                                             null );
-        final MockTupleSink sink = new MockTupleSink( 5 );
+        final MockLeftTupleSink sink = new MockLeftTupleSink( 5 );
         from.addTupleSink( sink );
 
         final List asserted = sink.getAsserted();

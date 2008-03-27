@@ -50,7 +50,7 @@ public class CollectNodeTest extends DroolsTestCase {
     ReteooWorkingMemory workingMemory;
     MockObjectSource    objectSource;
     MockTupleSource     tupleSource;
-    MockTupleSink       sink;
+    MockLeftTupleSink       sink;
     BetaNode            node;
     CollectMemory       memory;
     MockConstraint      constraint = new MockConstraint();
@@ -79,7 +79,7 @@ public class CollectNodeTest extends DroolsTestCase {
 
         this.tupleSource = new MockTupleSource( 4 );
         this.objectSource = new MockObjectSource( 4 );
-        this.sink = new MockTupleSink();
+        this.sink = new MockLeftTupleSink();
 
         final ObjectType srcObjType = new ClassObjectType( String.class );
         final Pattern sourcePattern = new Pattern( 0,
@@ -143,7 +143,7 @@ public class CollectNodeTest extends DroolsTestCase {
                              2,
                              this.sink.getAsserted().size() );
 
-        final MockTupleSink otherSink = new MockTupleSink();
+        final MockLeftTupleSink otherSink = new MockLeftTupleSink();
 
         this.node.addTupleSink( otherSink );
         this.node.updateSink( otherSink,
