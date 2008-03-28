@@ -197,7 +197,9 @@ public class CollectNode extends BetaNode
         final CollectMemory memory = (CollectMemory) workingMemory.getNodeMemory( this );
         memory.betaMemory.getLeftTupleMemory().remove( leftTuple );
 
-        this.sink.propagateRetractLeftTupleDestroyRightTuple( leftTuple, context, workingMemory );
+        this.sink.propagateRetractLeftTupleDestroyRightTuple( leftTuple,
+                                                              context,
+                                                              workingMemory );
     }
 
     /**
@@ -344,13 +346,17 @@ public class CollectNode extends BetaNode
     public void updateSink(final LeftTupleSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
-                final CollectMemory memory = (CollectMemory) workingMemory.getNodeMemory( this );
-                
-                final Iterator tupleIter = memory.betaMemory.getLeftTupleMemory().iterator();
-                for ( LeftTuple leftTuple = (LeftTuple) tupleIter.next(); leftTuple != null; leftTuple = (LeftTuple) tupleIter.next() ) {
-                    RightTuple rightTuple = leftTuple.getBetaChildren().getRightParent();
-                    sink.assertLeftTuple( new LeftTuple( leftTuple, rightTuple, sink), context, workingMemory );
-                }
+        final CollectMemory memory = (CollectMemory) workingMemory.getNodeMemory( this );
+
+        final Iterator tupleIter = memory.betaMemory.getLeftTupleMemory().iterator();
+        for ( LeftTuple leftTuple = (LeftTuple) tupleIter.next(); leftTuple != null; leftTuple = (LeftTuple) tupleIter.next() ) {
+            RightTuple rightTuple = leftTuple.getBetaChildren().getRightParent();
+            sink.assertLeftTuple( new LeftTuple( leftTuple,
+                                                 rightTuple,
+                                                 sink ),
+                                  context,
+                                  workingMemory );
+        }
     }
 
     /* (non-Javadoc)
