@@ -178,6 +178,7 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
         if ( leftTuple.getMemory() != null ) {
             LeftTupleList memory = leftTuple.getMemory();
             memory.remove( leftTuple );
+            this.factSize--;
             if ( memory.first == null ) {
                 final int index = indexOf( memory.hashCode(),
                                            this.table.length );
