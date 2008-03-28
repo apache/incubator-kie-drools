@@ -19,9 +19,7 @@ import org.drools.reteoo.RightTuple;
 import org.drools.rule.Declaration;
 import org.drools.rule.Pattern;
 import org.drools.spi.FieldExtractor;
-import org.drools.util.AbstractHashTable.FactEntryImpl;
 import org.drools.util.AbstractHashTable.FieldIndex;
-import org.drools.util.ObjectHashMap.ObjectEntry;
 
 public class RightTupleIndexHashTableTest extends TestCase {
     ClassFieldExtractorCache     cache  = ClassFieldExtractorCache.getInstance();
