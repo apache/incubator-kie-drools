@@ -39,6 +39,7 @@ import org.drools.util.FactEntry;
 import org.drools.util.RightTupleList;
 import org.drools.util.Iterator;
 import org.drools.util.ObjectHashSet;
+import org.drools.util.ObjectHashSet.ObjectEntry;
 
 /**
  * <code>ObjectTypeNodes<code> are responsible for filtering and propagating the matching
@@ -220,13 +221,11 @@ public class ObjectTypeNode extends ObjectSource
     public void updateSink(final ObjectSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
-//        final ObjectHashSet memory = (ObjectHashSet) workingMemory.getNodeMemory( this );
-        //for ( RightTuple rightTuple = (RightTuple) memory.getFirst( null ); rightTuple != null; rightTuple = (RightTuple) rightTuple.getNext() ) {
-            //@ TODO
-            //            sink.assertRightTuple( rightTuple,
-            //                                   context,
-            //                                   workingMemory );
-//        }
+        final ObjectHashSet memory = (ObjectHashSet) workingMemory.getNodeMemory( this );
+        Iterator it = memory.iterator();
+        for ( ObjectEntry entry = ( ObjectEntry ) it.next(); entry != null; entry = ( ObjectEntry ) it.next() ) {
+            sink.assertObject( (InternalFactHandle) entry.getValue(), context, workingMemory );
+        }
     }
 
     /**

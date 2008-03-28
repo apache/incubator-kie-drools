@@ -39,6 +39,7 @@ import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.EntryPoint;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
+import org.drools.util.ObjectHashSet;
 import org.drools.util.RightTupleList;
 import org.drools.util.ObjectHashMap;
 
@@ -129,7 +130,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                     workingMemory.getObject( (DefaultFactHandle) ((Object[]) asserted.get( 0 ))[0] ) );
 
         // check asserted object was added to memory
-        final RightTupleList memory = (RightTupleList) workingMemory.getNodeMemory( objectTypeNode );
+        final ObjectHashSet memory = (ObjectHashSet) workingMemory.getNodeMemory( objectTypeNode );
         assertEquals( 1,
                       memory.size() );
         assertTrue( memory.contains( handle1 ) );
@@ -182,7 +183,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                     workingMemory.getObject( (DefaultFactHandle) ((Object[]) asserted.get( 0 ))[0] ) );
 
         // it's sequential, so check the asserted object was not added to the node memory
-        final RightTupleList memory = (RightTupleList) workingMemory.getNodeMemory( objectTypeNode );
+        final ObjectHashSet memory = (ObjectHashSet) workingMemory.getNodeMemory( objectTypeNode );
         assertEquals( 0,
                       memory.size() );
     }
@@ -198,7 +199,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                                                                   new ClassObjectType( String.class ),
                                                                   buildContext );
 
-        final RightTupleList memory = (RightTupleList) workingMemory.getNodeMemory( objectTypeNode );
+        final ObjectHashSet memory = (ObjectHashSet) workingMemory.getNodeMemory( objectTypeNode );
 
         assertNotNull( memory );
     }
@@ -253,24 +254,24 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         final DefaultFactHandle handle1 = new DefaultFactHandle( 1,
                                                                  string1 );
 
-        /* should assert as ObjectType matches */
+        // should assert as ObjectType matches
         objectTypeNode.assertObject( handle1,
                                      context,
                                      workingMemory );
-        /* check asserted object was added to memory */
-        final RightTupleList memory = (RightTupleList) workingMemory.getNodeMemory( objectTypeNode );
+        // check asserted object was added to memory
+        final ObjectHashSet memory = (ObjectHashSet) workingMemory.getNodeMemory( objectTypeNode );
         assertEquals( 1,
                       memory.size() );
 
-        /* should retract as ObjectType matches */
+        // should retract as ObjectType matches
         objectTypeNode.retractObject( handle1,
                                       context,
                                       workingMemory );
-        /* check asserted object was removed from memory */
+        // check asserted object was removed from memory
         assertEquals( 0,
                       memory.size() );
 
-        /* make sure its just the handle1 for string1 that was propagated */
+        // make sure its just the handle1 for string1 that was propagated
         final List retracted = sink.getRetracted();
         assertLength( 1,
                       retracted );
@@ -386,7 +387,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                       ((InternalFactHandle) ((Object[]) asserted.get( 0 ))[0]).getObject() );
 
         // check asserted object was added to memory
-        final RightTupleList memory = (RightTupleList) workingMemory.getNodeMemory( objectTypeNode );
+        final ObjectHashSet memory = (ObjectHashSet) workingMemory.getNodeMemory( objectTypeNode );
         assertEquals( 1,
                       memory.size() );
         assertTrue( memory.contains( handle1 ) );
@@ -437,7 +438,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                       person );
 
         // check asserted object was added to memory
-        final RightTupleList memory = (RightTupleList) workingMemory.getNodeMemory( objectTypeNode );
+        final ObjectHashSet memory = (ObjectHashSet) workingMemory.getNodeMemory( objectTypeNode );
         assertEquals( 1,
                       memory.size() );
         assertTrue( memory.contains( handle1 ) );
