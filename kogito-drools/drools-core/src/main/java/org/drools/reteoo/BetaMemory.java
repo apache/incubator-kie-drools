@@ -54,13 +54,6 @@ public class BetaMemory
         return this.leftTupleMemory;
     }
 
-    public ObjectHashMap getCreatedHandles() {
-        if ( this.createdHandles == null ) {
-            this.createdHandles = new ObjectHashMap();
-        }
-        return this.createdHandles;
-    }
-
     /**
      * @return the context
      */

@@ -50,7 +50,7 @@ public class CollectNodeTest extends DroolsTestCase {
     ReteooWorkingMemory workingMemory;
     MockObjectSource    objectSource;
     MockTupleSource     tupleSource;
-    MockLeftTupleSink       sink;
+    MockLeftTupleSink   sink;
     BetaNode            node;
     CollectMemory       memory;
     MockConstraint      constraint = new MockConstraint();

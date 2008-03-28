@@ -34,6 +34,7 @@ import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
 import org.drools.util.ArrayUtils;
 import org.drools.util.Entry;
+import org.drools.util.Iterator;
 
 /**
  * @author etirelli
@@ -138,9 +139,6 @@ public class CollectNode extends BetaNode
         // do not add tuple and result to the memory in sequential mode
         if ( this.tupleMemoryEnabled ) {
             memory.betaMemory.getLeftTupleMemory().add( leftTuple );
-            memory.betaMemory.getCreatedHandles().put( leftTuple,
-                                                       resultTuple,
-                                                       false );
         }
 
         this.constraints.updateFromTuple( memory.betaMemory.getContext(),
@@ -199,14 +197,7 @@ public class CollectNode extends BetaNode
         final CollectMemory memory = (CollectMemory) workingMemory.getNodeMemory( this );
         memory.betaMemory.getLeftTupleMemory().remove( leftTuple );
 
-        final RightTuple resultTuple = (RightTuple) memory.betaMemory.getCreatedHandles().remove( leftTuple );
-
-        if ( leftTuple.getBetaChildren() != null ) {
-            this.sink.propagateRetractLeftTuple( leftTuple,
-                                                 context,
-                                                 workingMemory );
-        }
-        workingMemory.getFactHandleFactory().destroyFactHandle( resultTuple.getFactHandle() );
+        this.sink.propagateRetractLeftTupleDestroyRightTuple( leftTuple, context, workingMemory );
     }
 
     /**
@@ -296,7 +287,7 @@ public class CollectNode extends BetaNode
 
         final CollectMemory memory = (CollectMemory) workingMemory.getNodeMemory( this );
 
-        RightTuple result = (RightTuple) memory.betaMemory.getCreatedHandles().get( leftTuple );
+        RightTuple result = leftTuple.getBetaChildren().getRightParent();
 
         // if tuple was propagated
         if ( leftTuple.getBetaChildren() != null ) {
@@ -353,17 +344,13 @@ public class CollectNode extends BetaNode
     public void updateSink(final LeftTupleSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
-        //        final CollectMemory memory = (CollectMemory) workingMemory.getNodeMemory( this );
-        //
-        //        final Iterator it = memory.betaMemory.getCreatedHandles().iterator();
-        //
-        //        for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
-        //            CollectResult result = (CollectResult) entry.getValue();
-        //            sink.assertLeftTuple( new LeftTuple( (LeftTuple) entry.getKey(),
-        //                                                 result.handle ),
-        //                                  context,
-        //                                  workingMemory );
-        //        }
+                final CollectMemory memory = (CollectMemory) workingMemory.getNodeMemory( this );
+                
+                final Iterator tupleIter = memory.betaMemory.getLeftTupleMemory().iterator();
+                for ( LeftTuple leftTuple = (LeftTuple) tupleIter.next(); leftTuple != null; leftTuple = (LeftTuple) tupleIter.next() ) {
+                    RightTuple rightTuple = leftTuple.getBetaChildren().getRightParent();
+                    sink.assertLeftTuple( new LeftTuple( leftTuple, rightTuple, sink), context, workingMemory );
+                }
     }
 
     /* (non-Javadoc)
