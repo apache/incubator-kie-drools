@@ -26,27 +26,27 @@ public class CompositeLeftTupleSinkAdapter
     }
 
     public void propagateAssertLeftTuple(final LeftTuple leftTuple,
-                                     final RightTuple rightTuple,
-                                     final PropagationContext context,
-                                     final InternalWorkingMemory workingMemory) {
+                                         final RightTuple rightTuple,
+                                         final PropagationContext context,
+                                         final InternalWorkingMemory workingMemory) {
 
         for ( LeftTupleSinkNode sink = this.sinks.getFirst(); sink != null; sink = sink.getNextLeftTupleSinkNode() ) {
             sink.assertLeftTuple( new LeftTuple( leftTuple,
-                                             rightTuple,
-                                             sink ),
-                              context,
-                              workingMemory );
+                                                 rightTuple,
+                                                 sink ),
+                                  context,
+                                  workingMemory );
         }
     }
 
     public void propagateAssertLeftTuple(final LeftTuple tuple,
-                                     final PropagationContext context,
-                                     final InternalWorkingMemory workingMemory) {
+                                         final PropagationContext context,
+                                         final InternalWorkingMemory workingMemory) {
         for ( LeftTupleSinkNode sink = this.sinks.getFirst(); sink != null; sink = sink.getNextLeftTupleSinkNode() ) {
             sink.assertLeftTuple( new LeftTuple( tuple,
-                                             sink ),
-                              context,
-                              workingMemory );
+                                                 sink ),
+                                  context,
+                                  workingMemory );
         }
     }
 
@@ -58,30 +58,30 @@ public class CompositeLeftTupleSinkAdapter
             LeftTuple temp = child.getLeftParentNext();
             //child.unlinkFromParents();
             child.getSink().retractLeftTuple( child,
-                                          context,
-                                          workingMemory );
-            child.unlinkFromRightParent();            
+                                              context,
+                                              workingMemory );
+            child.unlinkFromRightParent();
             //child = child.getLeftParentNext();
             child = temp;
         }
         leftTuple.setBetaChildren( null );
     }
-    
+
     public void propagateRetractLeftTupleDestroyRightTuple(final LeftTuple leftTuple,
-                                          final PropagationContext context,
-                                          final InternalWorkingMemory workingMemory) {
+                                                           final PropagationContext context,
+                                                           final InternalWorkingMemory workingMemory) {
         LeftTuple child = leftTuple.getBetaChildren();
         while ( child != null ) {
             LeftTuple temp = child.getLeftParentNext();
             child.getSink().retractLeftTuple( child,
-                                          context,
-                                          workingMemory );
+                                              context,
+                                              workingMemory );
             workingMemory.getFactHandleFactory().destroyFactHandle( child.getRightParent().getFactHandle() );
-            child.unlinkFromRightParent();            
+            child.unlinkFromRightParent();
             child = temp;
         }
         leftTuple.setBetaChildren( null );
-    }    
+    }
 
     public void propagateRetractRightTuple(final RightTuple rightTuple,
                                            final PropagationContext context,
@@ -91,9 +91,9 @@ public class CompositeLeftTupleSinkAdapter
             LeftTuple temp = child.getRightParentNext();
             //child.unlinkFromParents();
             child.getSink().retractLeftTuple( child,
-                                          context,
-                                          workingMemory );
-            child.unlinkFromLeftParent();            
+                                              context,
+                                              workingMemory );
+            child.unlinkFromLeftParent();
             //child = child.getRightParentNext();
             child = temp;
         }
@@ -101,13 +101,13 @@ public class CompositeLeftTupleSinkAdapter
     }
 
     public void createAndPropagateAssertLeftTuple(final InternalFactHandle factHandle,
-                                              final PropagationContext context,
-                                              final InternalWorkingMemory workingMemory) {
+                                                  final PropagationContext context,
+                                                  final InternalWorkingMemory workingMemory) {
         for ( LeftTupleSinkNode sink = this.sinks.getFirst(); sink != null; sink = sink.getNextLeftTupleSinkNode() ) {
             sink.assertLeftTuple( new LeftTuple( factHandle,
-                                             sink ),
-                              context,
-                              workingMemory );
+                                                 sink ),
+                                  context,
+                                  workingMemory );
         }
     }
 
@@ -122,83 +122,16 @@ public class CompositeLeftTupleSinkAdapter
         return sinkArray;
     }
 
-    //    public void propagateNewTupleSink(TupleMatch tupleMatch,
-    //                                      PropagationContext context,
-    //                                      InternalWorkingMemory workingMemory) {
-    //
-    //        final TupleSink sink = sinks.getLast();
-    //        final ReteTuple tuple = new ReteTuple( tupleMatch.getTuple(),
-    //                                               tupleMatch.getObjectMatches().getFactHandle(),
-    //                                               sink );
-    //        tupleMatch.addJoinedTuple( tuple );
-    //        tuple.assertTuple( context,
-    //                           workingMemory );
-    //    }
-    //
-    //    public void propagateNewTupleSink(ReteTuple tuple,
-    //                                      PropagationContext context,
-    //                                      InternalWorkingMemory workingMemory) {
-    //
-    //        final TupleSink sink = sinks.getLast();
-    //        ReteTuple child = new ReteTuple( tuple,
-    //                                         sink );
-    //        tuple.addChildEntry( child );
-    //        child.assertTuple( context,
-    //                           workingMemory );
-    //    }
-    //
-    //    public void propagateNewTupleSink(InternalFactHandle handle,
-    //                                      LinkedList list,
-    //                                      PropagationContext context,
-    //                                      InternalWorkingMemory workingMemory) {
-    //        TupleSink sink = this.sinks.getLast();
-    //        ReteTuple tuple = new ReteTuple( handle,
-    //                                         sink );
-    //        list.add( new LinkedListEntry( tuple ) );
-    //        tuple.assertTuple( context,
-    //                           workingMemory );
-    //    }
-    //
-    //    /**
-    //     * @inheritDoc
-    //     */
-    //    public List getPropagatedTuples(final Map memory,
-    //                                    final InternalWorkingMemory workingMemory,
-    //                                    final TupleSink sink) {
-    //        int index = 0;
-    //        for ( TupleSinkNode node = this.sinks.getFirst(); node != null; node = node.getNextTupleSinkNode() ) {
-    //            if ( node.equals( sink ) ) {
-    //                break;
-    //            }
-    //            index++;
-    //        }
-    //
-    //        final List propagatedTuples = new ArrayList( memory.size() );
-    //
-    //        for ( final Iterator it = memory.values().iterator(); it.hasNext(); ) {
-    //            final LinkedList tuples = (LinkedList) it.next();
-    //            LinkedListEntry wrapper = (LinkedListEntry) tuples.getFirst();
-    //            for ( int i = 0; i < index; i++ ) {
-    //                wrapper = (LinkedListEntry) wrapper.getNext();
-    //            }
-    //            propagatedTuples.add( wrapper.getObject() );
-    //        }
-    //
-    //        return propagatedTuples;
-    //    }
-
     public int size() {
         return this.sinks.size();
     }
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
-        // TODO Auto-generated method stub
-        
+        this.sinks = (LeftTupleSinkNodeList) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        // TODO Auto-generated method stub
-        
+        out.writeObject( this.sinks );
     }
 }
