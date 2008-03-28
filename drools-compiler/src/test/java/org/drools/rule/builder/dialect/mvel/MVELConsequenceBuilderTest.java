@@ -86,7 +86,7 @@ public class MVELConsequenceBuilderTest extends TestCase {
         final Cheese cheddar = new Cheese( "cheddar",
                                            10 );
         final InternalFactHandle f0 = (InternalFactHandle) wm.insert( cheddar );
-        final LeftTuple tuple = new LeftTuple( f0 );
+        final LeftTuple tuple = new LeftTuple( f0, null );
 
         final AgendaItem item = new AgendaItem( 0,
                                                 tuple,
@@ -154,7 +154,7 @@ public class MVELConsequenceBuilderTest extends TestCase {
         final Cheese cheddar = new Cheese( "cheddar",
                                            10 );
         final InternalFactHandle f0 = (InternalFactHandle) wm.insert( cheddar );
-        final LeftTuple tuple = new LeftTuple( f0 );
+        final LeftTuple tuple = new LeftTuple( f0, null );
 
         final AgendaItem item = new AgendaItem( 0,
                                                 tuple,

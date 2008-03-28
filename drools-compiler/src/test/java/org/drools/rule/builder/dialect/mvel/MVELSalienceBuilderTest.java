@@ -62,7 +62,7 @@ public class MVELSalienceBuilderTest extends TestCase {
 
         final Person p = new Person("mark", "", 31);
         final InternalFactHandle f0 = (InternalFactHandle) wm.insert( p );
-        final LeftTuple tuple = new LeftTuple( f0 );
+        final LeftTuple tuple = new LeftTuple( f0, null );
 
         SalienceBuilder salienceBuilder = new MVELSalienceBuilder();
         salienceBuilder.build( context );
