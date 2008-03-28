@@ -23,7 +23,7 @@ import org.drools.util.AbstractHashTable.FactEntryImpl;
 import org.drools.util.AbstractHashTable.FieldIndex;
 import org.drools.util.ObjectHashMap.ObjectEntry;
 
-public class FieldIndexHashTableTest extends TestCase {
+public class RightTupleIndexHashTableTest extends TestCase {
     ClassFieldExtractorCache     cache  = ClassFieldExtractorCache.getInstance();
     EqualityEvaluatorsDefinition equals = new EqualityEvaluatorsDefinition();
 
