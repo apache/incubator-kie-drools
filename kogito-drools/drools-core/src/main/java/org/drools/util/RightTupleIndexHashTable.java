@@ -25,7 +25,7 @@ public class RightTupleIndexHashTable  extends AbstractHashTable
 
     private int               factSize;
 
-    private Index             index;
+    private Index             index;      
 
     public RightTupleIndexHashTable(final FieldIndex[] index) {
         this( 128,
@@ -98,40 +98,6 @@ public class RightTupleIndexHashTable  extends AbstractHashTable
         return this.table[index];
     }
 
-    /**
-     * Fast re-usable iterator
-     *
-     */
-    public static class FieldIndexHashTableIterator
-        implements
-        Iterator {
-        private Entry entry;
-
-        public FieldIndexHashTableIterator() {
-
-        }
-
-        /* (non-Javadoc)
-         * @see org.drools.util.Iterator#next()
-         */
-        public Object next() {
-            final Entry current = this.entry;
-            this.entry = (this.entry != null) ? this.entry.getNext() : null;
-            return current;
-        }
-
-        public void remove() {
-
-        }
-
-        /* (non-Javadoc)
-         * @see org.drools.util.Iterator#reset()
-         */
-        public void reset(final Entry entry) {
-            this.entry = entry;
-        }
-    }
-
     public Entry[] toArray() {
         Entry[] result = new Entry[this.factSize];
         int index = 0;
@@ -163,6 +129,7 @@ public class RightTupleIndexHashTable  extends AbstractHashTable
         if ( rightTuple.getMemory() != null ) {
             RightTupleList memory = rightTuple.getMemory();
             memory.remove( rightTuple );
+            this.factSize--;
             if ( memory.first == null ) {
                 final int index = indexOf( memory.hashCode(),
                                            this.table.length );
