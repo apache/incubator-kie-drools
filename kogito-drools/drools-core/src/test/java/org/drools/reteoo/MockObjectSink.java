@@ -25,7 +25,8 @@ import org.drools.spi.PropagationContext;
 
 public class MockObjectSink
     implements
-    ObjectTupleSinkNode {
+    ObjectTupleSinkNode,
+    RightTupleSink {
     private final List     asserted  = new ArrayList();
     private final List     retracted = new ArrayList();
 
@@ -35,13 +36,14 @@ public class MockObjectSink
     public void assertObject(final InternalFactHandle factHandle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
+        new RightTuple( factHandle, this );
         this.asserted.add( new Object[]{factHandle, context, workingMemory} );
     }
 
-    public void retractObject(final InternalFactHandle handle,
+    public void retractRightTuple(final RightTuple rightTuple,
                               final PropagationContext context,
                               final InternalWorkingMemory workingMemory) {
-        this.retracted.add( new Object[]{handle, context, workingMemory} );
+        this.retracted.add( new Object[]{rightTuple.getFactHandle(), context, workingMemory} );
     }
 
     public List getAsserted() {
