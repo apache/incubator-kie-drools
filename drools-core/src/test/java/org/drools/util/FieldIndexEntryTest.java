@@ -10,10 +10,9 @@ import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
 import org.drools.base.evaluators.Operator;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
-import org.drools.util.AbstractHashTable.FactEntryImpl;
+import org.drools.reteoo.RightTuple;
 import org.drools.util.AbstractHashTable.FieldIndex;
 import org.drools.util.AbstractHashTable.SingleIndex;
-import org.drools.util.RightTupleIndexHashTable.FieldIndexEntry;
 
 public class FieldIndexEntryTest extends TestCase {
     ClassFieldExtractorCache cache = ClassFieldExtractorCache.getInstance();
@@ -30,11 +29,11 @@ public class FieldIndexEntryTest extends TestCase {
         final SingleIndex singleIndex = new SingleIndex( new FieldIndex[]{fieldIndex},
                                                          1 );
 
-        final FieldIndexEntry index = new FieldIndexEntry( singleIndex,
+        final RightTupleList index = new RightTupleList( singleIndex,
                                                            "stilton".hashCode() );
 
         // Test initial construction
-        assertNull( index.getFirst() );
+        assertNull( index.first );
         assertEquals( "stilton".hashCode(),
                       index.hashCode() );
 
@@ -44,9 +43,10 @@ public class FieldIndexEntryTest extends TestCase {
                                                              stilton1 );
 
         // test add
-        index.add( h1 );
+        RightTuple h1RightTuple = new RightTuple( h1, null );
+        index.add( h1RightTuple );
 
-        final FactEntryImpl entry1 = index.getFirst();
+        final RightTuple entry1 = index.first;
         assertSame( h1,
                     entry1.getFactHandle() );
         assertNull( entry1.getNext() );
@@ -54,13 +54,13 @@ public class FieldIndexEntryTest extends TestCase {
                     index.get( h1 ) );
 
         // test get
-        final FactEntryImpl entry2 = index.get( h1 );
+        final RightTuple entry2 = index.get( new RightTuple( h1, null ) );
         assertSame( entry1,
                     entry2 );
 
         // test remove
-        index.remove( h1 );
-        assertNull( index.getFirst() );
+        index.remove( h1RightTuple );
+        assertNull( index.first );
     }
 
     public void testTwoEntries() {
@@ -73,7 +73,7 @@ public class FieldIndexEntryTest extends TestCase {
         final SingleIndex singleIndex = new SingleIndex( new FieldIndex[]{fieldIndex},
                                                          1 );
 
-        final FieldIndexEntry index = new FieldIndexEntry( singleIndex,
+        final RightTupleList index = new RightTupleList( singleIndex,
                                                            "stilton".hashCode() );
 
         final Cheese stilton1 = new Cheese( "stilton",
@@ -84,14 +84,17 @@ public class FieldIndexEntryTest extends TestCase {
                                             59 );
         final InternalFactHandle h2 = new DefaultFactHandle( 2,
                                                              stilton2 );
+        
+        RightTuple h1RightTuple = new RightTuple( h1, null );
+        RightTuple h2RightTuple = new RightTuple( h2, null );
 
         // test add
-        index.add( h1 );
-        index.add( h2 );
+        index.add( h1RightTuple );
+        index.add( h2RightTuple );
         assertEquals( h2,
-                      index.getFirst().getFactHandle() );
+                      index.first.getFactHandle() );
         assertEquals( h1,
-                      ((FactEntryImpl) index.getFirst().getNext()).getFactHandle() );
+                      ((RightTuple) index.first.getNext()).getFactHandle() );
 
         // test get
         assertEquals( h1,
@@ -101,15 +104,15 @@ public class FieldIndexEntryTest extends TestCase {
 
         // test removal for combinations
         // remove first
-        index.remove( h2 );
-        assertEquals( h1,
-                      index.getFirst().getFactHandle() );
+        index.remove( h2RightTuple );
+        assertEquals( h1RightTuple.getFactHandle(),
+                      index.first.getFactHandle() );
 
         // remove second
-        index.add( h2 );
-        index.remove( h1 );
-        assertEquals( h2,
-                      index.getFirst().getFactHandle() );
+        index.add( h2RightTuple );
+        index.remove( h1RightTuple );
+        assertEquals( h2RightTuple.getFactHandle(),
+                      index.first.getFactHandle() );
 
         // check index type does not change, as this fact is removed
         stilton1.setType( "cheddar" );
@@ -125,7 +128,7 @@ public class FieldIndexEntryTest extends TestCase {
         final SingleIndex singleIndex = new SingleIndex( new FieldIndex[]{fieldIndex},
                                                          1 );
 
-        final FieldIndexEntry index = new FieldIndexEntry( singleIndex,
+        final RightTupleList index = new RightTupleList( singleIndex,
                                                            "stilton".hashCode() );
 
         final Cheese stilton1 = new Cheese( "stilton",
@@ -141,16 +144,20 @@ public class FieldIndexEntryTest extends TestCase {
         final InternalFactHandle h3 = new DefaultFactHandle( 3,
                                                              stilton3 );
 
+        RightTuple h1RightTuple = new RightTuple( h1, null );
+        RightTuple h2RightTuple = new RightTuple( h2, null );
+        RightTuple h3RightTuple = new RightTuple( h3, null );
+        
         // test add
-        index.add( h1 );
-        index.add( h2 );
-        index.add( h3 );
+        index.add( h1RightTuple );
+        index.add( h2RightTuple );
+        index.add( h3RightTuple );
         assertEquals( h3,
-                      index.getFirst().getFactHandle() );
+                      index.first.getFactHandle() );
         assertEquals( h2,
-                      ((FactEntryImpl) index.getFirst().getNext()).getFactHandle() );
+                      ((RightTuple) index.first.getNext()).getFactHandle() );
         assertEquals( h1,
-                      ((FactEntryImpl) index.getFirst().getNext().getNext()).getFactHandle() );
+                      ((RightTuple) index.first.getNext().getNext()).getFactHandle() );
 
         // test get
         assertEquals( h1,
@@ -162,27 +169,27 @@ public class FieldIndexEntryTest extends TestCase {
 
         // test removal for combinations
         //remove first
-        index.remove( h3 );
+        index.remove( h3RightTuple );
         assertEquals( h2,
-                      index.getFirst().getFactHandle() );
+                      index.first.getFactHandle() );
         assertEquals( h1,
-                      ((FactEntryImpl) index.getFirst().getNext()).getFactHandle() );
+                      ((RightTuple) index.first.getNext()).getFactHandle() );
 
-        index.add( h3 );
-        index.remove( h2 );
+        index.add( h3RightTuple );
+        index.remove( h2RightTuple );
         assertEquals( h3,
-                      index.getFirst().getFactHandle() );
+                      index.first.getFactHandle() );
         assertEquals( h1,
-                      ((FactEntryImpl) index.getFirst().getNext()).getFactHandle() );
+                      ((RightTuple) index.first.getNext()).getFactHandle() );
 
-        index.add( h2 );
-        index.remove( h1 );
+        index.add( h2RightTuple );
+        index.remove( h1RightTuple );
         assertEquals( h2,
-                      index.getFirst().getFactHandle() );
+                      index.first.getFactHandle() );
         assertEquals( h3,
-                      ((FactEntryImpl) index.getFirst().getNext()).getFactHandle() );
+                      ((RightTuple) index.first.getNext()).getFactHandle() );
 
-        index.remove( index.getFirst().getFactHandle() );
+        index.remove( index.first );
         // check index type does not change, as this fact is removed
         stilton2.setType( "cheddar" );
     }
