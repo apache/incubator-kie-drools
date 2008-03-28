@@ -49,7 +49,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
     ReteooWorkingMemory workingMemory;
     MockObjectSource    objectSource;
     MockTupleSource     tupleSource;
-    MockLeftTupleSink       sink;
+    MockLeftTupleSink   sink;
     BetaNode            node;
     BetaMemory          memory;
     MockConstraint      constraint = new MockConstraint();
@@ -66,11 +66,11 @@ public class AccumulateNodeTest extends DroolsTestCase {
                                                    PropagationContext.ASSERTION,
                                                    null,
                                                    null );
-        
+
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         BuildContext buildContext = new BuildContext( ruleBase,
                                                       ruleBase.getReteooBuilder().getIdGenerator() );
-        
+
         this.workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
         this.tupleSource = new MockTupleSource( 4 );
@@ -81,13 +81,11 @@ public class AccumulateNodeTest extends DroolsTestCase {
 
         final ObjectType srcObjType = new ClassObjectType( String.class );
         final Pattern sourcePattern = new Pattern( 0,
-                                                srcObjType );
+                                                   srcObjType );
         this.accumulate = new Accumulate( sourcePattern,
                                           new Declaration[0],
                                           new Declaration[0],
                                           this.accumulator );
-        
-        
 
         this.node = new AccumulateNode( 15,
                                         this.tupleSource,
@@ -128,12 +126,18 @@ public class AccumulateNodeTest extends DroolsTestCase {
                              0,
                              this.sink.getAsserted().size() );
 
-        this.node.assertLeftTuple( new LeftTuple( this.workingMemory.getFactHandleFactory().newFactHandle( "cheese", false, null ) ),
-                               this.context,
-                               this.workingMemory );
-        this.node.assertLeftTuple( new LeftTuple( this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese", false, null ) ),
-                               this.context,
-                               this.workingMemory );
+        this.node.assertLeftTuple( new LeftTuple( this.workingMemory.getFactHandleFactory().newFactHandle( "cheese",
+                                                                                                           false,
+                                                                                                           null ),
+                                                  null ),
+                                   this.context,
+                                   this.workingMemory );
+        this.node.assertLeftTuple( new LeftTuple( this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese",
+                                                                                                           false,
+                                                                                                           null ),
+                                                  null ),
+                                   this.context,
+                                   this.workingMemory );
 
         Assert.assertEquals( "Two tuples should have been propagated",
                              2,
@@ -155,13 +159,16 @@ public class AccumulateNodeTest extends DroolsTestCase {
      * Test method for {@link org.drools.reteoo.AccumulateNode#assertLeftTuple(org.drools.reteoo.LeftTuple, org.drools.spi.PropagationContext, org.drools.reteoo.ReteooWorkingMemory)}.
      */
     public void testAssertTuple() {
-        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese", false, null );
-        final LeftTuple tuple0 = new LeftTuple( f0 );
+        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese",
+                                                                                                                  false,
+                                                                                                                  null );
+        final LeftTuple tuple0 = new LeftTuple( f0,
+                                                null );
 
         // assert tuple, should add one to left memory
         this.node.assertLeftTuple( tuple0,
-                               this.context,
-                               this.workingMemory );
+                                   this.context,
+                                   this.workingMemory );
         // check memories 
         assertEquals( 1,
                       this.memory.getLeftTupleMemory().size() );
@@ -171,12 +178,15 @@ public class AccumulateNodeTest extends DroolsTestCase {
                            this.accumulator.getMatchingObjects().isEmpty() );
 
         // assert tuple, should add left memory 
-        final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese", false, null );
+        final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese",
+                                                                                                                  false,
+                                                                                                                  null );
 
-        final LeftTuple tuple1 = new LeftTuple( f1 );
+        final LeftTuple tuple1 = new LeftTuple( f1,
+                                                null );
         this.node.assertLeftTuple( tuple1,
-                               this.context,
-                               this.workingMemory );
+                                   this.context,
+                                   this.workingMemory );
         assertEquals( 2,
                       this.memory.getLeftTupleMemory().size() );
         Assert.assertTrue( "An empty matching objects list should be propagated",
@@ -195,10 +205,15 @@ public class AccumulateNodeTest extends DroolsTestCase {
      * Test method for {@link org.drools.reteoo.AccumulateNode#assertLeftTuple(org.drools.reteoo.LeftTuple, org.drools.spi.PropagationContext, org.drools.reteoo.ReteooWorkingMemory)}.
      */
     public void testAssertTupleWithObjects() {
-        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese", false, null );
-        final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese", false, null );
+        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese",
+                                                                                                                  false,
+                                                                                                                  null );
+        final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese",
+                                                                                                                  false,
+                                                                                                                  null );
 
-        final LeftTuple tuple0 = new LeftTuple( f0 );
+        final LeftTuple tuple0 = new LeftTuple( f0,
+                                                null );
 
         this.node.assertObject( f0,
                                 this.context,
@@ -209,8 +224,8 @@ public class AccumulateNodeTest extends DroolsTestCase {
 
         // assert tuple, should add one to left memory
         this.node.assertLeftTuple( tuple0,
-                               this.context,
-                               this.workingMemory );
+                                   this.context,
+                                   this.workingMemory );
         // check memories 
         assertEquals( 1,
                       this.memory.getLeftTupleMemory().size() );
@@ -221,10 +236,11 @@ public class AccumulateNodeTest extends DroolsTestCase {
                              this.accumulator.getMatchingObjects().size() );
 
         // assert tuple, should add left memory 
-        final LeftTuple tuple1 = new LeftTuple( f1 );
+        final LeftTuple tuple1 = new LeftTuple( f1,
+                                                null );
         this.node.assertLeftTuple( tuple1,
-                               this.context,
-                               this.workingMemory );
+                                   this.context,
+                                   this.workingMemory );
         assertEquals( 2,
                       this.memory.getLeftTupleMemory().size() );
         Assert.assertEquals( "Wrong number of elements in matching objects list ",
@@ -244,14 +260,17 @@ public class AccumulateNodeTest extends DroolsTestCase {
      * Test method for {@link org.drools.reteoo.AccumulateNode#retractLeftTuple(org.drools.reteoo.LeftTuple, org.drools.spi.PropagationContext, org.drools.reteoo.ReteooWorkingMemory)}.
      */
     public void testRetractTuple() {
-        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese", false, null );
+        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese",
+                                                                                                                  false,
+                                                                                                                  null );
 
-        final LeftTuple tuple0 = new LeftTuple( f0 );
+        final LeftTuple tuple0 = new LeftTuple( f0,
+                                                null );
 
         // assert tuple, should add one to left memory
         this.node.assertLeftTuple( tuple0,
-                               this.context,
-                               this.workingMemory );
+                                   this.context,
+                                   this.workingMemory );
         // check memories 
         assertEquals( 1,
                       this.memory.getLeftTupleMemory().size() );
@@ -261,8 +280,8 @@ public class AccumulateNodeTest extends DroolsTestCase {
                            this.accumulator.getMatchingObjects().isEmpty() );
 
         this.node.retractLeftTuple( tuple0,
-                                this.context,
-                                this.workingMemory );
+                                    this.context,
+                                    this.workingMemory );
         assertEquals( 0,
                       this.memory.getLeftTupleMemory().size() );
         assertEquals( 1,
@@ -275,15 +294,20 @@ public class AccumulateNodeTest extends DroolsTestCase {
      * Test method for {@link org.drools.reteoo.AccumulateNode#assertObject(InternalFactHandle, org.drools.spi.PropagationContext, InternalWorkingMemory)}.
      */
     public void testAssertObject() {
-        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese", false, null );
-        final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese", false, null );
+        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese",
+                                                                                                                  false,
+                                                                                                                  null );
+        final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese",
+                                                                                                                  false,
+                                                                                                                  null );
 
-        final LeftTuple tuple0 = new LeftTuple( f0 );
+        final LeftTuple tuple0 = new LeftTuple( f0,
+                                                null );
 
         // assert tuple, should add one to left memory
         this.node.assertLeftTuple( tuple0,
-                               this.context,
-                               this.workingMemory );
+                                   this.context,
+                                   this.workingMemory );
 
         // check memory 
         assertEquals( 1,
@@ -320,10 +344,15 @@ public class AccumulateNodeTest extends DroolsTestCase {
      * Test method for {@link org.drools.reteoo.AccumulateNode#retractObject(InternalFactHandle, org.drools.spi.PropagationContext, InternalWorkingMemory)}.
      */
     public void testRetractObject() {
-        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese", false, null );
-        final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese", false, null );
+        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese",
+                                                                                                                  false,
+                                                                                                                  null );
+        final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese",
+                                                                                                                  false,
+                                                                                                                  null );
 
-        final LeftTuple tuple0 = new LeftTuple( f0 );
+        final LeftTuple tuple0 = new LeftTuple( f0,
+                                                null );
 
         this.node.assertObject( f0,
                                 this.context,
@@ -336,8 +365,8 @@ public class AccumulateNodeTest extends DroolsTestCase {
 
         // assert tuple, should add one to left memory
         this.node.assertLeftTuple( tuple0,
-                               this.context,
-                               this.workingMemory );
+                                   this.context,
+                                   this.workingMemory );
 
         // check memory 
         assertEquals( 1,
@@ -349,9 +378,9 @@ public class AccumulateNodeTest extends DroolsTestCase {
         assertEquals( 2,
                       this.accumulator.getMatchingObjects().size() );
 
-        this.node.retractObject( f1,
-                                 this.context,
-                                 this.workingMemory );
+        this.node.retractRightTuple( f1.getRightTuple(),
+                                     this.context,
+                                     this.workingMemory );
         assertEquals( 1,
                       this.memory.getRightTupleMemory().size() );
         assertEquals( 1,
@@ -361,9 +390,9 @@ public class AccumulateNodeTest extends DroolsTestCase {
         assertEquals( 1,
                       this.accumulator.getMatchingObjects().size() );
 
-        this.node.retractObject( f0,
-                                 this.context,
-                                 this.workingMemory );
+        this.node.retractRightTuple( f0.getRightTuple(),
+                                     this.context,
+                                     this.workingMemory );
         assertEquals( 0,
                       this.memory.getRightTupleMemory().size() );
         assertEquals( 2,
@@ -379,7 +408,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         BuildContext buildContext = new BuildContext( ruleBase,
                                                       ruleBase.getReteooBuilder().getIdGenerator() );
-        
+
         this.workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
         final MockObjectSource objectSource = new MockObjectSource( 1 );
@@ -393,7 +422,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
                                                                   EmptyBetaConstraints.getInstance(),
                                                                   this.accumulate,
                                                                   false,
-                                                                  buildContext  );
+                                                                  buildContext );
 
         final BetaMemory memory = ((AccumulateMemory) this.workingMemory.getNodeMemory( accumulateNode )).betaMemory;
 
@@ -424,17 +453,21 @@ public class AccumulateNodeTest extends DroolsTestCase {
                                         false,
                                         buildContext );
 
-        this.node.addTupleSink( this.sink );        
-        
+        this.node.addTupleSink( this.sink );
+
         this.workingMemory = new ReteooWorkingMemory( 1,
                                                       (ReteooRuleBase) RuleBaseFactory.newRuleBase( conf ) );
-        
+
         this.memory = ((AccumulateMemory) this.workingMemory.getNodeMemory( this.node )).betaMemory;
 
-        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese", false, null );
-        final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese", false, null );
+        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese",
+                                                                                                                  false,
+                                                                                                                  null );
+        final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese",
+                                                                                                                  false,
+                                                                                                                  null );
 
-        final LeftTuple tuple0 = new LeftTuple( f0 );
+        final LeftTuple tuple0 = new LeftTuple( f0, null );
 
         this.node.assertObject( f0,
                                 this.context,
@@ -445,8 +478,8 @@ public class AccumulateNodeTest extends DroolsTestCase {
 
         // assert tuple, should not add to left memory, since we are in sequential mode
         this.node.assertLeftTuple( tuple0,
-                               this.context,
-                               this.workingMemory );
+                                   this.context,
+                                   this.workingMemory );
         // check memories 
         assertNull( this.memory.getLeftTupleMemory() );
         assertEquals( 2,
@@ -456,10 +489,10 @@ public class AccumulateNodeTest extends DroolsTestCase {
                              this.accumulator.getMatchingObjects().size() );
 
         // assert tuple, should not add left memory 
-        final LeftTuple tuple1 = new LeftTuple( f1 );
+        final LeftTuple tuple1 = new LeftTuple( f1, null );
         this.node.assertLeftTuple( tuple1,
-                               this.context,
-                               this.workingMemory );
+                                   this.context,
+                                   this.workingMemory );
         assertNull( this.memory.getLeftTupleMemory() );
         Assert.assertEquals( "Wrong number of elements in matching objects list ",
                              2,
