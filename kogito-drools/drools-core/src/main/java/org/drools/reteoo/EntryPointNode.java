@@ -306,11 +306,4 @@ public class EntryPointNode extends ObjectSource
         return "[EntryPointNode(" + this.id + ") " + this.entryPoint + " ]";
     }
 
-    public void retractRightTuple(RightTuple rightTuple,
-                                  PropagationContext context,
-                                  InternalWorkingMemory workingMemory) {
-        // TODO Auto-generated method stub
-
-    }
-
 }
