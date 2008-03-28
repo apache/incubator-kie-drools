@@ -41,23 +41,6 @@ public class SingleLeftTupleSinkAdapter
                                    workingMemory );
     }
 
-    //    public void propagateNotRetractLeftTuple(final LeftTuple leftTuple,
-    //                                          final PropagationContext context,
-    //                                          final InternalWorkingMemory workingMemory) {
-    //            LeftTuple child = leftTuple.getBetaChildren();
-    //            while ( child != null ) {
-    //                //LeftTuple temp = leftTuple.getRightParentNext();
-    //                //child.unlinkFromParents();
-    //                //child.unlinkFromLeftParent();
-    //                child.getSink().retractTuple( child,
-    //                                              context,
-    //                                              workingMemory );
-    //                child = child.getLeftParentNext();
-    //                //child = temp;
-    //            }
-    //            leftTuple.setBetaChildren( null );
-    //        }    
-
     public void propagateRetractLeftTuple(final LeftTuple leftTuple,
                                           final PropagationContext context,
                                           final InternalWorkingMemory workingMemory) {
@@ -127,11 +110,10 @@ public class SingleLeftTupleSinkAdapter
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
-        // @todo
-
+        this.sink = ( LeftTupleSink) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        // @todo        
+        out.writeObject( this.sink );     
     }
 }
