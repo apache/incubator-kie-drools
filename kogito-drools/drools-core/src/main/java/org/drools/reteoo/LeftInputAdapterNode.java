@@ -139,8 +139,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
                                                          context,
                                                          workingMemory );
         } else {
-            // @todo
-            //workingMemory.addLIANodePropagation( new LIANodePropagation(this, rightTuple, context) );
+            workingMemory.addLIANodePropagation( new LIANodePropagation(this, factHandle, context) );
         }
     }
 

@@ -24,8 +24,8 @@ public class LeftTupleList
 
     public LeftTuple               first;
 
-    private final int              hashCode;
-    private final Index            index;
+    private int                    hashCode;
+    private Index                  index;
 
     private TupleHashTableIterator iterator;
 
@@ -38,7 +38,7 @@ public class LeftTupleList
     }
 
     public LeftTupleList(final Index index,
-                          final int hashCode) {
+                         final int hashCode) {
         this.index = index;
         this.hashCode = hashCode;
     }
@@ -203,11 +203,16 @@ public class LeftTupleList
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
-        // @todo
-        
+        next = (LeftTuple) in.readObject();
+        first = (LeftTuple) in.readObject();
+        hashCode = in.readInt();
+        index = (Index) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        // @todo        
+        out.writeObject( next );
+        out.writeObject( first );
+        out.writeInt( hashCode );
+        out.writeObject( index );
     }
 }

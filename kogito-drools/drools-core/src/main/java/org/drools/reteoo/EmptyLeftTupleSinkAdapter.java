@@ -18,7 +18,8 @@ public class EmptyLeftTupleSinkAdapter
         return instance;
     }
 
-    private EmptyLeftTupleSinkAdapter() {
+    public EmptyLeftTupleSinkAdapter() {
+        // constructor needed for serialisation
     }
 
     public void propagateAssertLeftTuple(final LeftTuple leftTuple,

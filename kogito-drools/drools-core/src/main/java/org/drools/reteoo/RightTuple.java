@@ -11,7 +11,7 @@ import org.drools.util.RightTupleList;
 public class RightTuple
     implements
     Entry {
-    private final InternalFactHandle handle;
+    private InternalFactHandle handle;
 
     private RightTuple               handlePrevious;
     private RightTuple               handleNext;
@@ -28,6 +28,10 @@ public class RightTuple
     private RightTupleSink           sink;
 
     private int                      hashCode;
+    
+    public RightTuple() {
+        
+    }
 
     public RightTuple(InternalFactHandle handle,
                       RightTupleSink sink) {
@@ -178,13 +182,29 @@ public class RightTuple
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
-        // TODO Auto-generated method stub
-
+        this.handle = ( InternalFactHandle ) in.readObject();
+        this.handlePrevious = ( RightTuple ) in.readObject();
+        this.handleNext = ( RightTuple ) in.readObject();
+        this.memory = ( RightTupleList ) in.readObject();
+        this.previous = ( RightTuple ) in.readObject();
+        this.next = ( RightTuple ) in.readObject();
+        this.betaChildren = ( LeftTuple) in.readObject();
+        this.blocked = ( LeftTuple) in.readObject();
+        this.sink = ( RightTupleSink ) in.readObject();
+        this.hashCode = in.readInt();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        // TODO Auto-generated method stub
-
+        out.writeObject( this.handle );
+        out.writeObject( this.handlePrevious );
+        out.writeObject( this.handleNext );
+        out.writeObject( this.memory );
+        out.writeObject( this.previous );
+        out.writeObject( this.next );
+        out.writeObject( this.betaChildren );
+        out.writeObject( this.blocked );
+        out.writeObject( this.sink );
+        out.writeInt( this.hashCode );        
     }
 
 }

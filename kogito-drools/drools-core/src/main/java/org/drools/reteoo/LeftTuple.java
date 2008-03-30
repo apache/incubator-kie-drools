@@ -19,44 +19,48 @@ public class LeftTuple
     implements
     Tuple,
     Entry {
-    private static final long        serialVersionUID = 400L;
+    private static final long  serialVersionUID = 400L;
 
-    private int                      index;
+    private int                index;
 
-    private final InternalFactHandle handle;
+    private InternalFactHandle handle;
 
-    private LeftTuple                parent;
+    private LeftTuple          parent;
 
-    private Activation               activation;
+    private Activation         activation;
 
-    private long                     recency;
+    private long               recency;
 
-    private int                      hashCode;
+    private int                hashCode;
 
-    private RightTuple               blocker;
+    private RightTuple         blocker;
 
-    private LeftTuple                blockedPrevious;
+    private LeftTuple          blockedPrevious;
 
-    private LeftTuple                blockedNext;
+    private LeftTuple          blockedNext;
 
     // left and right tuples in parent
-    private LeftTuple                leftParent;
-    private LeftTuple                leftParentPrevious;
-    private LeftTuple                leftParentNext;
+    private LeftTuple          leftParent;
+    private LeftTuple          leftParentPrevious;
+    private LeftTuple          leftParentNext;
 
-    private RightTuple               rightParent;
-    private LeftTuple                rightParentPrevious;
-    private LeftTuple                rightParentNext;
+    private RightTuple         rightParent;
+    private LeftTuple          rightParentPrevious;
+    private LeftTuple          rightParentNext;
 
     // node memory
-    private LeftTupleList           memory;
-    private Entry                    next;
-    private Entry                    previous;
+    private LeftTupleList      memory;
+    private Entry              next;
+    private Entry              previous;
 
     // children
-    private LeftTuple                children;
+    private LeftTuple          children;
 
-    private final LeftTupleSink      sink;
+    private LeftTupleSink      sink;
+
+    public LeftTuple() {
+        // constructor needed for serialisation
+    }
 
     // ------------------------------------------------------------
     // Constructors
@@ -435,10 +439,52 @@ public class LeftTuple
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
-        // @todo        
+        index = in.readInt();
+        handle = (InternalFactHandle) in.readObject();
+        parent = (LeftTuple) in.readObject();
+        activation = (Activation) in.readObject();
+        recency = in.readLong();
+        hashCode = in.readInt();
+        blocker = (RightTuple) in.readObject();
+        blockedPrevious = (LeftTuple) in.readObject();
+        blockedNext = (LeftTuple) in.readObject();
+        leftParent = (LeftTuple) in.readObject();
+        leftParentPrevious = (LeftTuple) in.readObject();
+        leftParentNext = (LeftTuple) in.readObject();
+        rightParent = (RightTuple) in.readObject();
+        rightParentPrevious = (LeftTuple) in.readObject();
+        rightParentNext = (LeftTuple) in.readObject();
+        memory = (LeftTupleList) in.readObject();
+        next = (Entry) in.readObject();
+        previous = (Entry) in.readObject();
+        children = (LeftTuple) in.readObject();
+
+        // @todo should not serialise out part of the rete network
+        sink = (LeftTupleSink) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        // @todo        
+        out.writeInt( index );
+        out.writeObject( handle );
+        out.writeObject( parent );
+        out.writeObject( activation );
+        out.writeLong( recency );
+        out.writeInt( hashCode );
+        out.writeObject( blocker );
+        out.writeObject( blockedPrevious );
+        out.writeObject( blockedNext );
+        out.writeObject( leftParent );
+        out.writeObject( leftParentPrevious );
+        out.writeObject( leftParentNext );
+        out.writeObject( rightParent );
+        out.writeObject( rightParentPrevious );
+        out.writeObject( rightParentNext );
+        out.writeObject( memory );
+        out.writeObject( next );
+        out.writeObject( previous );
+        out.writeObject( children );
+
+        // @todo should not serialise in part of the rete network
+        out.writeObject( sink );
     }
 }
