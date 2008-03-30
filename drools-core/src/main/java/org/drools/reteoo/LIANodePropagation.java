@@ -15,6 +15,10 @@ public class LIANodePropagation
     private LeftInputAdapterNode node;
     private InternalFactHandle   handle;
     private PropagationContext   context;
+    
+    public LIANodePropagation() {
+        // constructor needed for serialisation
+    }
 
     public LIANodePropagation(final LeftInputAdapterNode node,
                               final InternalFactHandle handle,

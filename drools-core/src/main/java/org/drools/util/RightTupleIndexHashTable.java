@@ -7,6 +7,9 @@ import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.RightTuple;
 import org.drools.reteoo.RightTupleMemory;
 import org.drools.reteoo.LeftTuple;
+import org.drools.util.AbstractHashTable.HashTableIterator;
+import org.drools.util.AbstractHashTable.Index;
+import org.drools.util.AbstractHashTable.ObjectComparator;
 
 import java.io.ObjectInput;
 import java.io.IOException;
@@ -26,6 +29,10 @@ public class RightTupleIndexHashTable  extends AbstractHashTable
     private int               factSize;
 
     private Index             index;      
+    
+    public RightTupleIndexHashTable() {
+        
+    }
 
     public RightTupleIndexHashTable(final FieldIndex[] index) {
         this( 128,
@@ -63,6 +70,20 @@ public class RightTupleIndexHashTable  extends AbstractHashTable
                 throw new IllegalArgumentException( "FieldIndexHashTable cannot use an index[] of length  great than 3" );
         }
     }
+    
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal( in );
+        startResult = in.readInt();
+        factSize = in.readInt();
+        index = ( Index ) in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal( out );
+        out.writeInt( startResult );
+        out.writeInt( factSize );
+        out.writeObject( index );
+    }    
 
     public RightTuple getFirst(LeftTuple leftTuple) {
         RightTupleList bucket = get( leftTuple );

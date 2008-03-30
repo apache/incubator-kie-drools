@@ -124,7 +124,7 @@ public final class RuleTerminalNode extends BaseNode
         subrule = (GroupElement) in.readObject();
         tupleSource = (LeftTupleSource) in.readObject();
         previousTupleSinkNode = (LeftTupleSinkNode) in.readObject();
-        nextTupleSinkNode = (LeftTupleSinkNode) in.readObject();
+        nextTupleSinkNode = (LeftTupleSinkNode) in.readObject();       
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -390,6 +390,12 @@ public final class RuleTerminalNode extends BaseNode
         memory.getTupleMemory().remove( leftTuple );
 
         final Activation activation = leftTuple.getActivation();
+        
+        // activation can be null if the LeftTuple previous propagated into a no-loop
+        if ( activation == null ) {
+            return;
+        }
+        
         if ( activation.getLogicalDependencies() != null && !activation.getLogicalDependencies().isEmpty() ) {
             context.addRetractedTuple( this.rule,
                                        activation );

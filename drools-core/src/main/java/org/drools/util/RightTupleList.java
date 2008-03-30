@@ -24,8 +24,8 @@ public class RightTupleList
         public RightTuple        first;
         public RightTuple        last;
         
-        private final int         hashCode;
-        private final Index       index;
+        private int         hashCode;
+        private Index       index;
         
         public RightTupleList() {
             // this is not an index bucket
@@ -179,12 +179,20 @@ public class RightTupleList
 
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
-            // TODO Auto-generated method stub
-            
+            previous = ( RightTuple ) in.readObject();
+            next =  ( RightTuple ) in.readObject();            
+            first =  ( RightTuple ) in.readObject();
+            last =  ( RightTuple ) in.readObject();            
+            hashCode = in.readInt();
+            index = ( Index ) in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            // TODO Auto-generated method stub
-            
+            out.writeObject( previous );
+            out.writeObject( next );            
+            out.writeObject( first );
+            out.writeObject( last );            
+            out.writeInt( hashCode );
+            out.writeObject( index );
         }    
 }

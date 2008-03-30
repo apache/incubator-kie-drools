@@ -7,6 +7,8 @@ import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTupleMemory;
 import org.drools.reteoo.RightTuple;
+import org.drools.util.AbstractHashTable.HashTableIterator;
+import org.drools.util.AbstractHashTable.ObjectComparator;
 
 import java.io.ObjectOutput;
 import java.io.ObjectInput;
@@ -23,11 +25,15 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
 
     private int                             startResult;
 
-    private FieldIndexHashTableFullIterator tupleValueFullIterator;
+    private transient FieldIndexHashTableFullIterator tupleValueFullIterator;
 
     private int                             factSize;
 
     private Index                           index;
+    
+    public LeftTupleIndexHashTable() {
+        // constructor for serialisation
+    }
 
     public LeftTupleIndexHashTable(final FieldIndex[] index) {
         this( 128,
@@ -65,6 +71,20 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
                 throw new IllegalArgumentException( "FieldIndexHashTable cannot use an index[] of length  great than 3" );
         }
     }
+    
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal( in );
+        startResult = in.readInt();
+        factSize = in.readInt();
+        index = ( Index ) in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal( out );
+        out.writeInt( startResult );
+        out.writeInt( factSize );
+        out.writeObject( index );
+    }    
 
     public Iterator iterator() {
         if ( this.tupleValueFullIterator == null ) {
