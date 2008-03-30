@@ -28,6 +28,7 @@ import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.MockLeftTupleSink;
 import org.drools.rule.Declaration;
 import org.drools.rule.Package;
 import org.drools.rule.Pattern;
@@ -83,10 +84,11 @@ public class MVELConsequenceBuilderTest extends TestCase {
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         final WorkingMemory wm = ruleBase.newStatefulSession();
 
+        MockLeftTupleSink sink = new MockLeftTupleSink();
         final Cheese cheddar = new Cheese( "cheddar",
                                            10 );
         final InternalFactHandle f0 = (InternalFactHandle) wm.insert( cheddar );
-        final LeftTuple tuple = new LeftTuple( f0, null );
+        final LeftTuple tuple = new LeftTuple( f0, sink );
 
         final AgendaItem item = new AgendaItem( 0,
                                                 tuple,

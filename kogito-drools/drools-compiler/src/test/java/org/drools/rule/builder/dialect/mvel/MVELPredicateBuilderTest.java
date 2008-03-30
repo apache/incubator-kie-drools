@@ -19,6 +19,8 @@ import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.MockLeftTupleSink;
+import org.drools.reteoo.MockRightTupleSink;
 import org.drools.rule.Declaration;
 import org.drools.rule.Package;
 import org.drools.rule.Pattern;
@@ -103,9 +105,12 @@ public class MVELPredicateBuilderTest extends TestCase {
 
         final Cheese cheddar = new Cheese( "cheddar",
                                            10 );
+        
+        MockLeftTupleSink sink = new MockLeftTupleSink();
+        
         final InternalFactHandle f0 = (InternalFactHandle) wm.insert( cheddar );
         final InternalFactHandle f1 = (InternalFactHandle) wm.insert( stilton );
-        final LeftTuple tuple = new LeftTuple( f0, null );
+        final LeftTuple tuple = new LeftTuple( f0, sink );
 
         final PredicateContextEntry predicateContext = (PredicateContextEntry) predicate.createContextEntry();
         predicateContext.leftTuple = tuple;
