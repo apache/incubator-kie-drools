@@ -77,7 +77,7 @@ public class MVELEvalBuilderTest extends TestCase {
         final Cheese cheddar = new Cheese( "cheddar",
                                            10 );
         final InternalFactHandle f0 = (InternalFactHandle) wm.insert( cheddar );
-        final LeftTuple tuple = new LeftTuple( f0, sink );
+        final LeftTuple tuple = new LeftTuple( f0, sink, true );
         
         Object evalContext = eval.createContext();
 
