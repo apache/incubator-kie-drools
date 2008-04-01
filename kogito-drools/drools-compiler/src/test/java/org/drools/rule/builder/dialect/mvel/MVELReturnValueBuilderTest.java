@@ -114,11 +114,11 @@ public class MVELReturnValueBuilderTest extends TestCase {
         final Cheese cheddar = new Cheese( "cheddar",
                                            10 );
         final InternalFactHandle f0 = (InternalFactHandle) wm.insert( cheddar );
-        LeftTuple tuple = new LeftTuple( f0, null );
+        LeftTuple tuple = new LeftTuple( f0, null, true );
 
         final InternalFactHandle f1 = (InternalFactHandle) wm.insert( stilton );
         tuple = new LeftTuple( tuple,
-                               new RightTuple( f1, null ), null );
+                               new RightTuple( f1, null ), null, true );
 
         final Cheese brie = new Cheese( "brie",
                                         20 );
