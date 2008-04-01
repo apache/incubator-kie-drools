@@ -32,7 +32,7 @@ import org.drools.Cheese;
 import org.drools.DroolsTestCase;
 import org.drools.FactHandle;
 import org.drools.Primitives;
-import org.drools.QueryResults;
+import org.drools.QueryResults; 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
