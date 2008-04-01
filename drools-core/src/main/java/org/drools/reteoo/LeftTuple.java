@@ -66,7 +66,8 @@ public class LeftTuple
     // Constructors
     // ------------------------------------------------------------
     public LeftTuple(final InternalFactHandle factHandle,
-                     LeftTupleSink sink) {
+                     LeftTupleSink sink,
+                     boolean leftTupleMemoryEnabled) {
         this.handle = factHandle;
         this.recency = factHandle.getRecency();
 
@@ -89,7 +90,8 @@ public class LeftTuple
     }
 
     public LeftTuple(final LeftTuple leftTuple,
-                     LeftTupleSink sink) {
+                     LeftTupleSink sink,
+                     boolean leftTupleMemoryEnabled) {
         this.index = leftTuple.index;
         this.parent = leftTuple.parent;
         this.recency = leftTuple.recency;
@@ -107,7 +109,8 @@ public class LeftTuple
 
     public LeftTuple(final LeftTuple leftTuple,
                      final RightTuple rightTuple,
-                     LeftTupleSink sink) {
+                     LeftTupleSink sink,
+                     boolean leftTupleMemoryEnabled) {
         this.handle = rightTuple.getFactHandle();
         this.index = leftTuple.index + 1;
         this.parent = leftTuple;

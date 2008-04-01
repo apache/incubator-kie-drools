@@ -204,7 +204,8 @@ public class AccumulateNode extends BetaNode {
                 this.sink.propagateAssertLeftTuple( leftTuple,
                                                     resultTuple,
                                                     context,
-                                                    workingMemory );
+                                                    workingMemory,
+                                                    this.tupleMemoryEnabled );
             } else {
                 workingMemory.getFactHandleFactory().destroyFactHandle( handle );
             }
@@ -429,7 +430,8 @@ public class AccumulateNode extends BetaNode {
                 this.sink.propagateAssertLeftTuple( leftTuple,
                                                     resultTuple,
                                                     context,
-                                                    workingMemory );
+                                                    workingMemory,
+                                                    this.tupleMemoryEnabled );
             } else {
                 workingMemory.getFactHandleFactory().destroyFactHandle( createdHandle );
             }
@@ -452,7 +454,8 @@ public class AccumulateNode extends BetaNode {
                 RightTuple rightTuple = childLeftTuple.getRightParent();
                 sink.assertLeftTuple( new LeftTuple( leftTuple,
                                                      rightTuple,
-                                                     sink ),
+                                                     sink,
+                                                     this.tupleMemoryEnabled ),
                                       context,
                                       workingMemory );
             }

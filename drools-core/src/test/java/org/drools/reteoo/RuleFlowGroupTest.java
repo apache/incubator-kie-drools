@@ -212,35 +212,40 @@ public class RuleFlowGroupTest extends DroolsTestCase {
 
         final LeftTuple tuple0 = new LeftTuple( new DefaultFactHandle( 1,
                                                                        "cheese" ),
-                                                null );
+                                                null,
+                                                true  );
         node0.assertLeftTuple( tuple0,
                                context0,
                                workingMemory );
 
         final LeftTuple tuple1 = new LeftTuple( new DefaultFactHandle( 1,
                                                                        "cheese" ),
-                                                null );
+                                                null,
+                                                true  );
         node0.assertLeftTuple( tuple1,
                                context0,
                                workingMemory );
 
         final LeftTuple tuple2 = new LeftTuple( new DefaultFactHandle( 1,
                                                                        "cheese" ),
-                                                null );
+                                                null,
+                                                true  );
         node1.assertLeftTuple( tuple2,
                                context0,
                                workingMemory );
 
         final LeftTuple tuple3 = new LeftTuple( new DefaultFactHandle( 1,
                                                                        "cheese" ),
-                                                null );
+                                                null,
+                                                true  );
         node2.assertLeftTuple( tuple3,
                                context0,
                                workingMemory );
 
         final LeftTuple tuple4 = new LeftTuple( new DefaultFactHandle( 1,
                                                                        "cheese" ),
-                                                null );
+                                                null,
+                                                true  );
         node3.assertLeftTuple( tuple4,
                                context0,
                                workingMemory );
@@ -508,49 +513,56 @@ public class RuleFlowGroupTest extends DroolsTestCase {
 
         final LeftTuple tuple0 = new LeftTuple( new DefaultFactHandle( 1,
                                                                        "cheese" ),
-                                                null );
+                                                null,
+                                                true  );
         node0.assertLeftTuple( tuple0,
                                context0,
                                workingMemory );
 
         final LeftTuple tuple1 = new LeftTuple( new DefaultFactHandle( 1,
                                                                        "cheese" ),
-                                                null );
+                                                null,
+                                                true  );
         node0.assertLeftTuple( tuple1,
                                context0,
                                workingMemory );
 
         final LeftTuple tuple2 = new LeftTuple( new DefaultFactHandle( 1,
                                                                        "cheese" ),
-                                                null );
+                                                null,
+                                                true  );
         node1.assertLeftTuple( tuple2,
                                context0,
                                workingMemory );
 
         final LeftTuple tuple3 = new LeftTuple( new DefaultFactHandle( 1,
                                                                        "cheese" ),
-                                                null );
+                                                null,
+                                                true  );
         node2.assertLeftTuple( tuple3,
                                context0,
                                workingMemory );
 
         final LeftTuple tuple4 = new LeftTuple( new DefaultFactHandle( 1,
                                                                        "cheese" ),
-                                                null );
+                                                null,
+                                                true  );
         node3.assertLeftTuple( tuple4,
                                context0,
                                workingMemory );
 
         final LeftTuple splitTuple1 = new LeftTuple( new DefaultFactHandle( 1,
                                                                             "cheese" ),
-                                                     null );
+                                                     null,
+                                                     true  );
         splitNode1.assertLeftTuple( splitTuple1,
                                     context0,
                                     workingMemory );
 
         final LeftTuple splitTuple2 = new LeftTuple( new DefaultFactHandle( 1,
                                                                             "cheese" ),
-                                                     null );
+                                                     null,
+                                                     true  );
         splitNode2.assertLeftTuple( splitTuple2,
                                     context0,
                                     workingMemory );

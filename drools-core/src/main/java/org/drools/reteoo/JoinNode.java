@@ -112,7 +112,8 @@ public class JoinNode extends BetaNode {
                 this.sink.propagateAssertLeftTuple( leftTuple,
                                                     rightTuple,
                                                     context,
-                                                    workingMemory );
+                                                    workingMemory,
+                                                    this.tupleMemoryEnabled );
             }
         }
 
@@ -160,7 +161,8 @@ public class JoinNode extends BetaNode {
                 this.sink.propagateAssertLeftTuple( leftTuple,
                                                     rightTuple,
                                                     context,
-                                                    workingMemory );
+                                                    workingMemory,
+                                                    this.tupleMemoryEnabled  );
             }
         }
         this.constraints.resetFactHandle( memory.getContext() );
@@ -233,7 +235,8 @@ public class JoinNode extends BetaNode {
                                                            rightTuple.getFactHandle() ) ) {
                     sink.assertLeftTuple( new LeftTuple( leftTuple,
                                                          rightTuple,
-                                                         this ),
+                                                         this,
+                                                         this.tupleMemoryEnabled  ),
                                           context,
                                           workingMemory );
                 }

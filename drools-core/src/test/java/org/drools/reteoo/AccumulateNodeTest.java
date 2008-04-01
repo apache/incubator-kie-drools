@@ -129,13 +129,15 @@ public class AccumulateNodeTest extends DroolsTestCase {
         this.node.assertLeftTuple( new LeftTuple( this.workingMemory.getFactHandleFactory().newFactHandle( "cheese",
                                                                                                            false,
                                                                                                            null ),
-                                                  null ),
+                                                  null,
+                                                  true ),
                                    this.context,
                                    this.workingMemory );
         this.node.assertLeftTuple( new LeftTuple( this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese",
                                                                                                            false,
                                                                                                            null ),
-                                                  null ),
+                                                  null,
+                                                  true ),
                                    this.context,
                                    this.workingMemory );
 
@@ -163,7 +165,8 @@ public class AccumulateNodeTest extends DroolsTestCase {
                                                                                                                   false,
                                                                                                                   null );
         final LeftTuple tuple0 = new LeftTuple( f0,
-                                                null );
+                                                null,
+                                                true );
 
         // assert tuple, should add one to left memory
         this.node.assertLeftTuple( tuple0,
@@ -183,7 +186,8 @@ public class AccumulateNodeTest extends DroolsTestCase {
                                                                                                                   null );
 
         final LeftTuple tuple1 = new LeftTuple( f1,
-                                                null );
+                                                null,
+                                                true );
         this.node.assertLeftTuple( tuple1,
                                    this.context,
                                    this.workingMemory );
@@ -213,7 +217,8 @@ public class AccumulateNodeTest extends DroolsTestCase {
                                                                                                                   null );
 
         final LeftTuple tuple0 = new LeftTuple( f0,
-                                                null );
+                                                null,
+                                                true );
 
         this.node.assertObject( f0,
                                 this.context,
@@ -237,7 +242,8 @@ public class AccumulateNodeTest extends DroolsTestCase {
 
         // assert tuple, should add left memory 
         final LeftTuple tuple1 = new LeftTuple( f1,
-                                                null );
+                                                null,
+                                                true );
         this.node.assertLeftTuple( tuple1,
                                    this.context,
                                    this.workingMemory );
@@ -265,7 +271,8 @@ public class AccumulateNodeTest extends DroolsTestCase {
                                                                                                                   null );
 
         final LeftTuple tuple0 = new LeftTuple( f0,
-                                                null );
+                                                null,
+                                                true );
 
         // assert tuple, should add one to left memory
         this.node.assertLeftTuple( tuple0,
@@ -302,7 +309,8 @@ public class AccumulateNodeTest extends DroolsTestCase {
                                                                                                                   null );
 
         final LeftTuple tuple0 = new LeftTuple( f0,
-                                                null );
+                                                null,
+                                                true );
 
         // assert tuple, should add one to left memory
         this.node.assertLeftTuple( tuple0,
@@ -352,7 +360,8 @@ public class AccumulateNodeTest extends DroolsTestCase {
                                                                                                                   null );
 
         final LeftTuple tuple0 = new LeftTuple( f0,
-                                                null );
+                                                null,
+                                                true );
 
         this.node.assertObject( f0,
                                 this.context,
@@ -467,7 +476,8 @@ public class AccumulateNodeTest extends DroolsTestCase {
                                                                                                                   false,
                                                                                                                   null );
 
-        final LeftTuple tuple0 = new LeftTuple( f0, null );
+        final LeftTuple tuple0 = new LeftTuple( f0, null,
+                                                true );
 
         this.node.assertObject( f0,
                                 this.context,
@@ -489,7 +499,8 @@ public class AccumulateNodeTest extends DroolsTestCase {
                              this.accumulator.getMatchingObjects().size() );
 
         // assert tuple, should not add left memory 
-        final LeftTuple tuple1 = new LeftTuple( f1, null );
+        final LeftTuple tuple1 = new LeftTuple( f1, null,
+                                                true );
         this.node.assertLeftTuple( tuple1,
                                    this.context,
                                    this.workingMemory );

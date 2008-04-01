@@ -95,7 +95,8 @@ public class ExistsNodeTest extends DroolsTestCase {
         final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.insert( cheddar );
 
         final LeftTuple tuple1 = new LeftTuple( f0,
-                                                this.node );
+                                                this.node,
+                                                true );
 
         this.node.assertLeftTuple( tuple1,
                                    this.context,
@@ -133,14 +134,16 @@ public class ExistsNodeTest extends DroolsTestCase {
                       this.sink.getRetracted() );
 
         assertEquals( new LeftTuple( f0,
-                                     this.node ),
+                                     this.node,
+                                     true ),
                       ((Object[]) this.sink.getAsserted().get( 0 ))[0] );
 
         // assert tuple, will have matches, so propagate
         final DefaultFactHandle f2 = (DefaultFactHandle) this.workingMemory.insert( new Cheese( "gouda",
                                                                                                 10 ) );
         final LeftTuple tuple2 = new LeftTuple( f2,
-                                                this.node );
+                                                this.node,
+                                                true );
         this.node.assertLeftTuple( tuple2,
                                    this.context,
                                    this.workingMemory );
@@ -189,7 +192,8 @@ public class ExistsNodeTest extends DroolsTestCase {
         final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.insert( cheddar );
 
         final LeftTuple tuple1 = new LeftTuple( f0,
-                                                this.node );
+                                                this.node,
+                                                true );
 
         this.node.assertLeftTuple( tuple1,
                                    this.context,
@@ -222,7 +226,8 @@ public class ExistsNodeTest extends DroolsTestCase {
         final DefaultFactHandle f2 = (DefaultFactHandle) this.workingMemory.insert( new Cheese( "gouda",
                                                                                                 10 ) );
         final LeftTuple tuple2 = new LeftTuple( f2,
-                                                this.node );
+                                                this.node,
+                                                true );
         this.node.assertLeftTuple( tuple2,
                                    this.context,
                                    this.workingMemory );
@@ -245,7 +250,8 @@ public class ExistsNodeTest extends DroolsTestCase {
                                            10 );
         final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.insert( cheddar );
         final LeftTuple tuple1 = new LeftTuple( f0,
-                                                this.node );
+                                                this.node,
+                                                true );
 
         this.node.assertLeftTuple( tuple1,
                                    this.context,

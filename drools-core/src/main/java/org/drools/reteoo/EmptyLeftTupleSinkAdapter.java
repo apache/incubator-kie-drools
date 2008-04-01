@@ -25,28 +25,36 @@ public class EmptyLeftTupleSinkAdapter
     public void propagateAssertLeftTuple(final LeftTuple leftTuple,
                                          final RightTuple rightTuple,
                                          final PropagationContext context,
-                                         final InternalWorkingMemory workingMemory) {
+                                         final InternalWorkingMemory workingMemory,
+                                         final boolean leftTupleMemoryEnabled) {
     }
 
     public void propagateAssertLeftTuple(final LeftTuple tuple,
                                          final PropagationContext context,
-                                         final InternalWorkingMemory workingMemory) {
-    }
-
-    public void propagateRetractLeftTuple(final LeftTuple tuple,
-                                          final PropagationContext context,
-                                          final InternalWorkingMemory workingMemory) {
+                                         final InternalWorkingMemory workingMemory,
+                                         final boolean leftTupleMemoryEnabled) {
     }
 
     public void createAndPropagateAssertLeftTuple(final InternalFactHandle factHandle,
                                                   final PropagationContext context,
-                                                  final InternalWorkingMemory workingMemory) {
+                                                  final InternalWorkingMemory workingMemory,
+                                                  final boolean leftTupleMemoryEnabled) {
+    }    
+    
+    public void propagateRetractLeftTuple(final LeftTuple tuple,
+                                          final PropagationContext context,
+                                          final InternalWorkingMemory workingMemory) {
     }
 
     public void propagateRetractRightTuple(RightTuple tuple,
                                            PropagationContext context,
                                            InternalWorkingMemory workingMemory) {
     }
+    
+    public void propagateRetractLeftTupleDestroyRightTuple(LeftTuple tuple,
+                                                           PropagationContext context,
+                                                           InternalWorkingMemory workingMemory) {
+    }    
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
@@ -61,11 +69,6 @@ public class EmptyLeftTupleSinkAdapter
 
     public int size() {
         return 0;
-    }
-
-    public void propagateRetractLeftTupleDestroyRightTuple(LeftTuple tuple,
-                                                           PropagationContext context,
-                                                           InternalWorkingMemory workingMemory) {
     }
 
 }

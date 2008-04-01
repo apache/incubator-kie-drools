@@ -24,19 +24,23 @@ public class SingleLeftTupleSinkAdapter
     public void propagateAssertLeftTuple(final LeftTuple leftTuple,
                                          final RightTuple rightTuple,
                                          final PropagationContext context,
-                                         final InternalWorkingMemory workingMemory) {
+                                         final InternalWorkingMemory workingMemory,
+                                         boolean leftTupleMemoryEnabled) {
         this.sink.assertLeftTuple( new LeftTuple( leftTuple,
                                                   rightTuple,
-                                                  this.sink ),
+                                                  this.sink,
+                                                  leftTupleMemoryEnabled ),
                                    context,
                                    workingMemory );
     }
 
     public void propagateAssertLeftTuple(final LeftTuple tuple,
                                          final PropagationContext context,
-                                         final InternalWorkingMemory workingMemory) {
+                                         final InternalWorkingMemory workingMemory,
+                                         boolean leftTupleMemoryEnabled) {
         this.sink.assertLeftTuple( new LeftTuple( tuple,
-                                                  this.sink ),
+                                                  this.sink,
+                                                  leftTupleMemoryEnabled ),
                                    context,
                                    workingMemory );
     }
@@ -93,9 +97,11 @@ public class SingleLeftTupleSinkAdapter
 
     public void createAndPropagateAssertLeftTuple(final InternalFactHandle factHandle,
                                                   final PropagationContext context,
-                                                  final InternalWorkingMemory workingMemory) {
+                                                  final InternalWorkingMemory workingMemory,
+                                                  boolean leftTupleMemoryEnabled) {
         this.sink.assertLeftTuple( new LeftTuple( factHandle,
-                                                  this.sink ),
+                                                  this.sink,
+                                                  leftTupleMemoryEnabled ),
                                    context,
                                    workingMemory );
     }

@@ -55,6 +55,8 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
     private ObjectTupleSinkNode previousRightTupleSinkNode;
     private ObjectTupleSinkNode nextRightTupleSinkNode;
+    
+    private boolean leftTupleMemoryEnabled;
 
     public LeftInputAdapterNode() {
 
@@ -77,6 +79,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
                                 final BuildContext context) {
         super( id );
         this.objectSource = source;
+        this.leftTupleMemoryEnabled = context.isTupleMemoryEnabled();
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -137,7 +140,8 @@ public class LeftInputAdapterNode extends LeftTupleSource
         if ( !workingMemory.isSequential() ) {
             this.sink.createAndPropagateAssertLeftTuple( factHandle,
                                                          context,
-                                                         workingMemory );
+                                                         workingMemory,
+                                                         this.leftTupleMemoryEnabled );
         } else {
             workingMemory.addLIANodePropagation( new LIANodePropagation(this, factHandle, context) );
         }
@@ -146,7 +150,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
     public void updateSink(final LeftTupleSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
-        final RightTupleSinkAdapter adapter = new RightTupleSinkAdapter( sink );
+        final RightTupleSinkAdapter adapter = new RightTupleSinkAdapter( sink, this.leftTupleMemoryEnabled );
         this.objectSource.updateSink( adapter,
                                       context,
                                       workingMemory );
@@ -239,16 +243,19 @@ public class LeftInputAdapterNode extends LeftTupleSource
         implements
         ObjectSink {
         private LeftTupleSink sink;
+        private boolean leftTupleMemoryEnabled;
 
-        public RightTupleSinkAdapter(final LeftTupleSink sink) {
+        public RightTupleSinkAdapter(final LeftTupleSink sink, boolean leftTupleMemoryEnabled) {
             this.sink = sink;
+            this.leftTupleMemoryEnabled = leftTupleMemoryEnabled;
         }
 
         public void assertObject(final InternalFactHandle factHandle,
                                  final PropagationContext context,
                                  final InternalWorkingMemory workingMemory) {
             final LeftTuple tuple = new LeftTuple( factHandle,
-                                                   this.sink );
+                                                   this.sink,
+                                                   this.leftTupleMemoryEnabled );
             this.sink.assertLeftTuple( tuple,
                                        context,
                                        workingMemory );

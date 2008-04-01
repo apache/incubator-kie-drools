@@ -90,7 +90,8 @@ public class AgendaTest extends DroolsTestCase {
 
         final LeftTuple tuple = new LeftTuple( new DefaultFactHandle( 1,
                                                                       "cheese" ),
-                                               null );
+                                               null,
+                                               true );
 
         final PropagationContext context1 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
@@ -211,7 +212,8 @@ public class AgendaTest extends DroolsTestCase {
 
         final LeftTuple tuple = new LeftTuple( new DefaultFactHandle( 1,
                                                                       "cheese" ),
-                                               node );
+                                               node,
+                                               true );
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,
                                                                        rule,
@@ -299,7 +301,8 @@ public class AgendaTest extends DroolsTestCase {
 
         final LeftTuple tuple = new LeftTuple( new DefaultFactHandle( 1,
                                                                       "cheese" ),
-                                               null );
+                                               null,
+                                               true );
 
         // create a rule for each agendaGroup
         final Rule rule0 = new Rule( "test-rule0" );
@@ -542,7 +545,8 @@ public class AgendaTest extends DroolsTestCase {
 
         final LeftTuple tuple = new LeftTuple( new DefaultFactHandle( 1,
                                                                       "cheese" ),
-                                               null );
+                                               null,
+                                               true );
 
         // create a rule for the agendaGroup
         final Rule rule = new Rule( "test-rule",
@@ -609,7 +613,8 @@ public class AgendaTest extends DroolsTestCase {
 
         final LeftTuple tuple = new LeftTuple( new DefaultFactHandle( 1,
                                                                       "cheese" ),
-                                               null );
+                                               null,
+                                               true );
 
         // create a rule for the agendaGroup
         final Rule rule = new Rule( "test-rule",
@@ -686,7 +691,8 @@ public class AgendaTest extends DroolsTestCase {
 
         final LeftTuple tuple = new LeftTuple( new DefaultFactHandle( 1,
                                                                       "cheese" ),
-                                               null );
+                                               null,
+                                               true );
 
         // create a rule for each agendaGroup
         final Rule rule0 = new Rule( "test-rule0" );
@@ -927,28 +933,32 @@ public class AgendaTest extends DroolsTestCase {
 
         final LeftTuple tuple0 = new LeftTuple( new DefaultFactHandle( 1,
                                                                        "cheese" ),
-                                                null );
+                                                null,
+                                                true );
         node0.assertLeftTuple( tuple0,
                                context0,
                                workingMemory );
 
         final LeftTuple tuple1 = new LeftTuple( new DefaultFactHandle( 1,
                                                                        "cheese" ),
-                                                null );
+                                                null,
+                                                true );
         node0.assertLeftTuple( tuple1,
                                context0,
                                workingMemory );
 
         final LeftTuple tuple2 = new LeftTuple( new DefaultFactHandle( 1,
                                                                        "cheese" ),
-                                                null );
+                                                null,
+                                                true );
         node1.assertLeftTuple( tuple2,
                                context0,
                                workingMemory );
 
         final LeftTuple tuple3 = new LeftTuple( new DefaultFactHandle( 1,
                                                                        "cheese" ),
-                                                null );
+                                                null,
+                                                true );
         node2.assertLeftTuple( tuple3,
                                context0,
                                workingMemory );
@@ -1072,7 +1082,8 @@ public class AgendaTest extends DroolsTestCase {
                 // activate rule1
                 final LeftTuple tuple1 = new LeftTuple( new DefaultFactHandle( 1,
                                                                                "cheese" ),
-                                                        null );
+                                                        null,
+                                                        true );
                 node1.assertLeftTuple( tuple1,
                                        context0,
                                        workingMemory );
@@ -1103,7 +1114,8 @@ public class AgendaTest extends DroolsTestCase {
         // Create one activation for rule0 only
         final LeftTuple tuple0 = new LeftTuple( new DefaultFactHandle( 1,
                                                                        "cheese" ),
-                                                null );
+                                                null,
+                                                true );
         node0.assertLeftTuple( tuple0,
                                context0,
                                workingMemory );
@@ -1184,7 +1196,8 @@ public class AgendaTest extends DroolsTestCase {
 
         final LeftTuple tuple1 = new LeftTuple( new DefaultFactHandle( 1,
                                                                        "cheese" ),
-                                                null );
+                                                null,
+                                                true );
 
         // create rule0
         final Consequence consequence0 = new Consequence() {
@@ -1224,7 +1237,8 @@ public class AgendaTest extends DroolsTestCase {
         // Create an activation for both rules
         final LeftTuple tuple0 = new LeftTuple( new DefaultFactHandle( 1,
                                                                        "cheese" ),
-                                                null );
+                                                null,
+                                                true );
         node0.assertLeftTuple( tuple0,
                                context0,
                                workingMemory );
@@ -1308,13 +1322,15 @@ public class AgendaTest extends DroolsTestCase {
         // Create two activation for this rule
         final LeftTuple tuple0 = new LeftTuple( new DefaultFactHandle( 1,
                                                                        "cheese" ),
-                                                null );
+                                                null,
+                                                true );
         node0.assertLeftTuple( tuple0,
                                context0,
                                workingMemory );
         final LeftTuple tuple1 = new LeftTuple( new DefaultFactHandle( 1,
                                                                        "cheese" ),
-                                                null );
+                                                null,
+                                                true );
         node0.assertLeftTuple( tuple1,
                                context0,
                                workingMemory );
@@ -1411,7 +1427,8 @@ public class AgendaTest extends DroolsTestCase {
         // Create an activation for this rule
         final LeftTuple tuple0 = new LeftTuple( new DefaultFactHandle( 1,
                                                                        "cheese" ),
-                                                null );
+                                                null,
+                                                true );
         node0.assertLeftTuple( tuple0,
                                context0,
                                workingMemory );
@@ -1446,7 +1463,8 @@ public class AgendaTest extends DroolsTestCase {
         // Add another activation and activate RuleFlowGroup again
         final LeftTuple tuple1 = new LeftTuple( new DefaultFactHandle( 1,
                                                                        "cheese" ),
-                                                null );
+                                                null,
+                                                true );
         node0.assertLeftTuple( tuple1,
                                context0,
                                workingMemory );
@@ -1469,7 +1487,8 @@ public class AgendaTest extends DroolsTestCase {
         // A new activation should now be added to the RuleFlowGroup but not to the agenda
         final LeftTuple tuple2 = new LeftTuple( new DefaultFactHandle( 1,
                                                                        "cheese" ),
-                                                null );
+                                                null,
+                                                true );
         node0.assertLeftTuple( tuple2,
                                context0,
                                workingMemory );
@@ -1547,7 +1566,8 @@ public class AgendaTest extends DroolsTestCase {
 
         final LeftTuple tuple = new LeftTuple( new DefaultFactHandle( 1,
                                                                       "cheese" ),
-                                               null );
+                                               null,
+                                               true );
 
         // create a rule for the agendaGroup
         final Rule rule = new Rule( "test-rule" );
@@ -1621,7 +1641,8 @@ public class AgendaTest extends DroolsTestCase {
 
         final LeftTuple tuple = new LeftTuple( new DefaultFactHandle( 1,
                                                                       "cheese" ),
-                                               null );
+                                               null,
+                                               true );
 
         // create a rule for each agendaGroup
         final Rule rule0 = new Rule( "test-rule0" );
