@@ -70,7 +70,8 @@ public class FromNodeTest extends TestCase {
                                             dataProvider,
                                             null,
                                             new AlphaNodeFieldConstraint[]{constraint},
-                                            null );
+                                            null,
+                                            true );
         final MockLeftTupleSink sink = new MockLeftTupleSink( 5 );
         from.addTupleSink( sink );
 
@@ -180,7 +181,8 @@ public class FromNodeTest extends TestCase {
                                             dataProvider,
                                             null,
                                             new AlphaNodeFieldConstraint[0],
-                                            betaConstraints );
+                                            betaConstraints,
+                                            true );
         final MockLeftTupleSink sink = new MockLeftTupleSink( 5 );
         from.addTupleSink( sink );
 
@@ -273,7 +275,8 @@ public class FromNodeTest extends TestCase {
                                             dataProvider,
                                             null,
                                             new AlphaNodeFieldConstraint[]{constraint},
-                                            null );
+                                            null,
+                                            true );
         final MockLeftTupleSink sink = new MockLeftTupleSink( 5 );
         from.addTupleSink( sink );
 

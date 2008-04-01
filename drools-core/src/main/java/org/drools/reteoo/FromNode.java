@@ -48,13 +48,14 @@ public class FromNode extends LeftTupleSource
                     final DataProvider dataProvider,
                     final LeftTupleSource tupleSource,
                     final AlphaNodeFieldConstraint[] constraints,
-                    final BetaConstraints binder) {
+                    final BetaConstraints binder,
+                    final boolean tupleMemoryEnabled) {
         super( id );
         this.dataProvider = dataProvider;
         this.tupleSource = tupleSource;
         this.alphaConstraints = constraints;
         this.betaConstraints = (binder == null) ? EmptyBetaConstraints.getInstance() : binder;
-        this.tupleMemoryEnabled = false;
+        this.tupleMemoryEnabled = tupleMemoryEnabled;
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -88,8 +89,9 @@ public class FromNode extends LeftTupleSource
                                 final InternalWorkingMemory workingMemory) {
         final FromMemory memory = (FromMemory) workingMemory.getNodeMemory( this );
 
-        memory.betaMemory.getLeftTupleMemory().add( leftTuple );
-        //final LinkedList list = new LinkedList();
+        if ( this.tupleMemoryEnabled ) {
+            memory.betaMemory.getLeftTupleMemory().add( leftTuple );
+        }
         
         this.betaConstraints.updateFromTuple( memory.betaMemory.getContext(),
                                               workingMemory,
