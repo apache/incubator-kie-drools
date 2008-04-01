@@ -15,6 +15,7 @@ public class LIANodePropagation
     private LeftInputAdapterNode node;
     private InternalFactHandle   handle;
     private PropagationContext   context;
+    private boolean leftTupleMemoryEnabled;
     
     public LIANodePropagation() {
         // constructor needed for serialisation
@@ -45,7 +46,8 @@ public class LIANodePropagation
     public void doPropagation(InternalWorkingMemory workingMemory) {
         node.getSinkPropagator().createAndPropagateAssertLeftTuple( handle,
                                                                     context,
-                                                                    workingMemory );
+                                                                    workingMemory,
+                                                                    false  );
     }
 
 }

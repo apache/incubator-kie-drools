@@ -77,7 +77,8 @@ public class FromNodeTest extends TestCase {
         final Person person1 = new Person( "xxx1",
                                            30 );
         final FactHandle person1Handle = workingMemory.insert( person1 );
-        final LeftTuple tuple1 = new LeftTuple( (DefaultFactHandle) person1Handle, from );
+        final LeftTuple tuple1 = new LeftTuple( (DefaultFactHandle) person1Handle, from,
+                                                true );
         from.assertLeftTuple( tuple1,
                           context,
                           workingMemory );
@@ -91,7 +92,8 @@ public class FromNodeTest extends TestCase {
         final Person person2 = new Person( "xxx2",
                                            30 );
         final FactHandle person2Handle = workingMemory.insert( person2 );
-        final LeftTuple tuple2 = new LeftTuple( (DefaultFactHandle) person2Handle, from );
+        final LeftTuple tuple2 = new LeftTuple( (DefaultFactHandle) person2Handle, from,
+                                                true );
         from.assertLeftTuple( tuple2,
                           context,
                           workingMemory );
@@ -109,7 +111,8 @@ public class FromNodeTest extends TestCase {
         final Person person3 = new Person( "xxx2",
                                            30 );
         final FactHandle person3Handle = workingMemory.insert( person3 );
-        final LeftTuple tuple3 = new LeftTuple( (DefaultFactHandle) person3Handle, from );
+        final LeftTuple tuple3 = new LeftTuple( (DefaultFactHandle) person3Handle, from,
+                                                true );
         from.assertLeftTuple( tuple3,
                           context,
                           workingMemory );
@@ -184,7 +187,8 @@ public class FromNodeTest extends TestCase {
         final Person person1 = new Person( "xxx1",
                                            30 );
         final FactHandle person1Handle = workingMemory.insert( person1 );
-        final LeftTuple tuple1 = new LeftTuple( (DefaultFactHandle) person1Handle, from );
+        final LeftTuple tuple1 = new LeftTuple( (DefaultFactHandle) person1Handle, from,
+                                                true );
         from.assertLeftTuple( tuple1,
                           context,
                           workingMemory );
@@ -198,7 +202,8 @@ public class FromNodeTest extends TestCase {
         final Person person2 = new Person( "xxx2",
                                            30 );
         final FactHandle person2Handle = workingMemory.insert( person2 );
-        final LeftTuple tuple2 = new LeftTuple( (DefaultFactHandle) person2Handle, from );
+        final LeftTuple tuple2 = new LeftTuple( (DefaultFactHandle) person2Handle, from,
+                                                true );
         from.assertLeftTuple( tuple2,
                           context,
                           workingMemory );
@@ -216,7 +221,8 @@ public class FromNodeTest extends TestCase {
         final Person person3 = new Person( "xxx2",
                                            30 );
         final FactHandle person3Handle = workingMemory.insert( person3 );
-        final LeftTuple tuple3 = new LeftTuple( (DefaultFactHandle) person3Handle, from );
+        final LeftTuple tuple3 = new LeftTuple( (DefaultFactHandle) person3Handle, from,
+                                                true );
         from.assertLeftTuple( tuple3,
                           context,
                           workingMemory );
@@ -276,7 +282,8 @@ public class FromNodeTest extends TestCase {
         final Person person1 = new Person( "xxx2",
                                            30 );
         final FactHandle person1Handle = workingMemory.insert( person1 );
-        final LeftTuple tuple = new LeftTuple( (DefaultFactHandle) person1Handle, from );
+        final LeftTuple tuple = new LeftTuple( (DefaultFactHandle) person1Handle, from,
+                                               true );
         from.assertLeftTuple( tuple,
                           context,
                           workingMemory );

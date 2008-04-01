@@ -99,15 +99,16 @@ public class NotNode extends BetaNode {
         for ( RightTuple rightTuple = memory.getRightTupleMemory().getLast( leftTuple ); rightTuple != null; rightTuple = (RightTuple) rightTuple.getPrevious() ) {
             if ( this.constraints.isAllowedCachedLeft( memory.getContext(),
                                                        rightTuple.getFactHandle() ) ) {
-
                 leftTuple.setBlocker( rightTuple );
 
-                LeftTuple blockedPrevious = rightTuple.getBlocked();
-                if ( blockedPrevious != null ) {
-                    leftTuple.setBlockedNext( blockedPrevious );
-                    blockedPrevious.setBlockedPrevious( leftTuple );
+                if ( this.tupleMemoryEnabled ) {
+                    LeftTuple blockedPrevious = rightTuple.getBlocked();
+                    if ( blockedPrevious != null ) {
+                        leftTuple.setBlockedNext( blockedPrevious );
+                        blockedPrevious.setBlockedPrevious( leftTuple );
+                    }
+                    rightTuple.setBlocked( leftTuple );
                 }
-                rightTuple.setBlocked( leftTuple );
 
                 break;
             }
@@ -123,7 +124,8 @@ public class NotNode extends BetaNode {
 
             this.sink.propagateAssertLeftTuple( leftTuple,
                                                 context,
-                                                workingMemory );
+                                                workingMemory,
+                                                this.tupleMemoryEnabled );
         }
     }
 
@@ -171,9 +173,9 @@ public class NotNode extends BetaNode {
                     blockedPrevious.setBlockedPrevious( leftTuple );
                 }
                 rightTuple.setBlocked( leftTuple );
-
+                
                 // this is now blocked so remove from memory
-                memory.getLeftTupleMemory().remove( leftTuple );
+                memory.getLeftTupleMemory().remove( leftTuple );                
 
                 this.sink.propagateRetractLeftTuple( leftTuple,
                                                      context,
@@ -246,7 +248,8 @@ public class NotNode extends BetaNode {
 
                 this.sink.propagateAssertLeftTuple( leftTuple,
                                                     context,
-                                                    workingMemory );
+                                                    workingMemory,
+                                                    this.tupleMemoryEnabled  );
             }
 
             leftTuple = temp;

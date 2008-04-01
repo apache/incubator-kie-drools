@@ -244,7 +244,8 @@ public class FieldConstraintTest extends TestCase {
                                             5 );
         final InternalFactHandle f0 = (InternalFactHandle) workingMemory.insert( cheddar0 );
         LeftTuple tuple = new LeftTuple( f0,
-                                         null );
+                                         null,
+                                         true );
 
         final Cheese cheddar1 = new Cheese( "cheddar",
                                             10 );
@@ -253,7 +254,8 @@ public class FieldConstraintTest extends TestCase {
         tuple = new LeftTuple( tuple,
                                new RightTuple( f1,
                                                null ),
-                               null );
+                               null,
+                               true );
 
         final PredicateContextEntry context = (PredicateContextEntry) constraint1.createContextEntry();
         context.updateFromTuple( workingMemory,
@@ -351,7 +353,8 @@ public class FieldConstraintTest extends TestCase {
         final InternalFactHandle f0 = (InternalFactHandle) workingMemory.insert( cheddar0 );
 
         LeftTuple tuple = new LeftTuple( f0,
-                                         null );
+                                         null,
+                                         true );
 
         final Cheese cheddar1 = new Cheese( "cheddar",
                                             10 );
@@ -359,7 +362,8 @@ public class FieldConstraintTest extends TestCase {
         tuple = new LeftTuple( tuple,
                                new RightTuple( f1,
                                                null ),
-                               null );
+                               null,
+                               true );
 
         final ReturnValueContextEntry context1 = (ReturnValueContextEntry) constraint1.createContextEntry();
         context1.updateFromTuple( workingMemory,

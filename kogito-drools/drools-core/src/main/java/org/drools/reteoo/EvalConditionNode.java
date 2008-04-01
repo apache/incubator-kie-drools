@@ -185,7 +185,8 @@ public class EvalConditionNode extends LeftTupleSource
 
             this.sink.propagateAssertLeftTuple( leftTuple,
                                                 context,
-                                                workingMemory );
+                                                workingMemory,
+                                                this.tupleMemoryEnabled );
         }
     }
 

@@ -121,7 +121,8 @@ public class ExistsNode extends BetaNode {
             // tuple is not blocked to propagate
             this.sink.propagateAssertLeftTuple( leftTuple,
                                                 context,
-                                                workingMemory );
+                                                workingMemory,
+                                                this.tupleMemoryEnabled);
         } else if ( this.tupleMemoryEnabled ) {
             // LeftTuple is not blocked, so add to memory so other RightTuples can match
             memory.getLeftTupleMemory().add( leftTuple );
@@ -197,12 +198,14 @@ public class ExistsNode extends BetaNode {
                 }
                 rightTuple.setBlocked( leftTuple );
 
-                // this is now blocked so add it from memory
-                memory.getLeftTupleMemory().remove( leftTuple );
-
+                if ( this.tupleMemoryEnabled ) {
+                    // this is now blocked so remove it from memory
+                    memory.getLeftTupleMemory().remove( leftTuple );
+                }
                 this.sink.propagateAssertLeftTuple( leftTuple,
                                                     context,
-                                                    workingMemory );
+                                                    workingMemory,
+                                                    this.tupleMemoryEnabled );
             }
 
             leftTuple = temp;
@@ -310,8 +313,8 @@ public class ExistsNode extends BetaNode {
             }
 
             if ( leftTuple.getBlocker() == null ) {
-                // was previous blocked and not in memory, so add
-                memory.getLeftTupleMemory().add( leftTuple );
+                    // was previous blocked and not in memory, so add
+                    memory.getLeftTupleMemory().add( leftTuple );
 
                 this.sink.propagateRetractLeftTuple( leftTuple,
                                                      context,

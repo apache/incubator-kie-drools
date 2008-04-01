@@ -17,6 +17,7 @@ public class RightTupleListTest extends TestCase {
         final InternalFactHandle h1 = new DefaultFactHandle( 1,
                                                              stilton1 );                        
         
-        assertNull( map.getFirst( new LeftTuple( h1, null ) ) );
+        assertNull( map.getFirst( new LeftTuple( h1, null,
+                                                 true ) ) );
     }
 }

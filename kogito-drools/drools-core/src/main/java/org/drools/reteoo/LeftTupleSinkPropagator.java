@@ -12,11 +12,18 @@ public interface LeftTupleSinkPropagator
     public void propagateAssertLeftTuple(LeftTuple leftTuple,
                                          RightTuple rightTuple,
                                          PropagationContext context,
-                                         InternalWorkingMemory workingMemory);
+                                         InternalWorkingMemory workingMemory,
+                                         boolean leftTupleMemoryEnabled);
 
     public void propagateAssertLeftTuple(LeftTuple tuple,
                                          PropagationContext context,
-                                         InternalWorkingMemory workingMemory);
+                                         InternalWorkingMemory workingMemory,
+                                         boolean leftTupleMemoryEnabled);
+    
+    public void createAndPropagateAssertLeftTuple(InternalFactHandle factHandle,
+                                                  PropagationContext context,
+                                                  InternalWorkingMemory workingMemory,
+                                                  boolean leftTupleWorkingMemoryEnabled );    
 
     public void propagateRetractLeftTuple(LeftTuple tuple,
                                           PropagationContext context,
@@ -29,10 +36,6 @@ public interface LeftTupleSinkPropagator
     public void propagateRetractRightTuple(RightTuple tuple,
                                            PropagationContext context,
                                            InternalWorkingMemory workingMemory);
-
-    public void createAndPropagateAssertLeftTuple(InternalFactHandle factHandle,
-                                                  PropagationContext context,
-                                                  InternalWorkingMemory workingMemory);
 
     public LeftTupleSink[] getSinks();
 

@@ -128,7 +128,8 @@ public class FromNode extends LeftTupleSource
                 this.sink.propagateAssertLeftTuple( leftTuple,
                                                     rightTuple,
                                                     context,
-                                                    workingMemory );
+                                                    workingMemory,
+                                                    this.tupleMemoryEnabled);
             } else {
                 workingMemory.getFactHandleFactory().destroyFactHandle( handle );
             }

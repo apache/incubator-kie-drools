@@ -181,7 +181,8 @@ public class CollectNode extends BetaNode
                 this.sink.propagateAssertLeftTuple( leftTuple,
                                                     resultTuple,
                                                     context,
-                                                    workingMemory );
+                                                    workingMemory,
+                                                    this.tupleMemoryEnabled );
             }
             this.resultsBinder.resetTuple( memory.resultsContext );
         }
@@ -336,7 +337,8 @@ public class CollectNode extends BetaNode
                 this.sink.propagateAssertLeftTuple( leftTuple,
                                                     result,
                                                     context,
-                                                    workingMemory );
+                                                    workingMemory,
+                                                    this.tupleMemoryEnabled );
             }
 
             this.resultsBinder.resetTuple( memory.resultsContext );
@@ -355,7 +357,8 @@ public class CollectNode extends BetaNode
                 RightTuple rightTuple = childLeftTuple.getRightParent();
                 sink.assertLeftTuple( new LeftTuple( leftTuple,
                                                      rightTuple,
-                                                     sink ),
+                                                     sink,
+                                                     this.tupleMemoryEnabled ),
                                       context,
                                       workingMemory );
             }
