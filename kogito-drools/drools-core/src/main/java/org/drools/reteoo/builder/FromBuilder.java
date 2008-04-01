@@ -48,7 +48,8 @@ public class FromBuilder
                                                                               from.getDataProvider(),
                                                                               context.getTupleSource(),
                                                                               (AlphaNodeFieldConstraint[]) context.getAlphaConstraints().toArray( new AlphaNodeFieldConstraint[context.getAlphaConstraints().size()] ),
-                                                                              betaConstraints ) ) );
+                                                                              betaConstraints,
+                                                                              context.isTupleMemoryEnabled() ) ) );
         context.setAlphaConstraints( null );
         context.setBetaconstraints( null );
     }
