@@ -261,7 +261,7 @@ public class NotNodeTest extends DroolsTestCase {
      * 
      * @throws AssertionException
      */
-    public void xxxTestNotMemoryManagement() throws FactException {
+    public void TestNotMemoryManagement() throws FactException {
         try {
             // assert tuple
             final Cheese cheddar = new Cheese( "cheddar",
