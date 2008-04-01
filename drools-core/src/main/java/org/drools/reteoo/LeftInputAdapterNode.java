@@ -88,6 +88,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         objectSource = (ObjectSource) in.readObject();
         previousRightTupleSinkNode = (ObjectTupleSinkNode) in.readObject();
         nextRightTupleSinkNode = (ObjectTupleSinkNode) in.readObject();
+        leftTupleMemoryEnabled = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -95,6 +96,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         out.writeObject( objectSource );
         out.writeObject( previousRightTupleSinkNode );
         out.writeObject( nextRightTupleSinkNode );
+        out.writeBoolean( leftTupleMemoryEnabled );
     }
 
     /* (non-Javadoc)
