@@ -2113,31 +2113,33 @@ public class MiscTest extends TestCase {
         ruleBase.addPackage( pkg1 );
         ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( workingMemory );
+        logger.setFileName( "log_20080401" );
 
-        final List orderedFacts = new ArrayList();
-        final List errors = new ArrayList();
-
-        workingMemory.setGlobal( "orderedNumbers",
-                                 orderedFacts );
-        workingMemory.setGlobal( "errors",
-                                 errors );
-
-        final int MAX = 5;
-        for ( int i = 1; i <= MAX; i++ ) {
-            final IndexedNumber n = new IndexedNumber( i,
-                                                       MAX - i + 1 );
-            workingMemory.insert( n );
-        }
-        workingMemory.fireAllRules();
-
-        Assert.assertTrue( "Processing generated errors: " + errors.toString(),
-                           errors.isEmpty() );
-
-        for ( int i = 1; i <= MAX; i++ ) {
-            final IndexedNumber n = (IndexedNumber) orderedFacts.get( i - 1 );
-            Assert.assertEquals( "Fact is out of order",
-                                 i,
-                                 n.getIndex() );
+        try {
+            final List orderedFacts = new ArrayList();
+            final List errors = new ArrayList();
+            workingMemory.setGlobal( "orderedNumbers",
+                                     orderedFacts );
+            workingMemory.setGlobal( "errors",
+                                     errors );
+            final int MAX = 2;
+            for ( int i = 1; i <= MAX; i++ ) {
+                final IndexedNumber n = new IndexedNumber( i,
+                                                           MAX - i + 1 );
+                workingMemory.insert( n );
+            }
+            workingMemory.fireAllRules();
+            Assert.assertTrue( "Processing generated errors: " + errors.toString(),
+                               errors.isEmpty() );
+            for ( int i = 1; i <= MAX; i++ ) {
+                final IndexedNumber n = (IndexedNumber) orderedFacts.get( i - 1 );
+                Assert.assertEquals( "Fact is out of order",
+                                     i,
+                                     n.getIndex() );
+            }
+        } finally {
+            logger.writeToDisk();
         }
     }
 
