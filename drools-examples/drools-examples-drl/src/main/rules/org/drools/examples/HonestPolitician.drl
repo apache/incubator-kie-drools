@@ -32,6 +32,8 @@ rule "Corrupt the Honest"
         exists( Hope() )
     then
         System.out.println( "I'm an evil corporation and I have corrupted " + politician.getName() );
-        modify( politician ) {setHonest( false )}
+        modify( politician ) { 
+            setHonest( false ) 
+        }
 end
 

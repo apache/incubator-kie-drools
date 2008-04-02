@@ -33,6 +33,7 @@ import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.dialect.java.parser.JavaModifyBlockDescr;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.spi.PatternExtractor;
+import org.drools.util.ClassUtils;
 import org.mvel.compiler.ExecutableStatement;
 
 /**
@@ -178,12 +179,13 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
                 
                 return null;
             }
-
+            String retString = ClassUtils.canonicalName( ret );
+            
             // adding modify expression
             consequence.append( "{\n" );
-            consequence.append( ret.getName() );
+            consequence.append( retString );
             consequence.append( " __obj__ = (" );
-            consequence.append( ret.getName() );
+            consequence.append( retString );
             consequence.append( ") " );
             consequence.append( d.getModifyExpression() );
             consequence.append( ";\n" );

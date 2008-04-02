@@ -56,6 +56,7 @@ import org.drools.InsertedObject;
 import org.drools.Message;
 import org.drools.Order;
 import org.drools.OrderItem;
+import org.drools.OuterClass;
 import org.drools.Person;
 import org.drools.PersonFinal;
 import org.drools.PersonInterface;
@@ -4915,16 +4916,18 @@ public class MiscTest extends TestCase {
         workingMemory.insert( bob );
         workingMemory.insert( new Cheese() );
         workingMemory.insert( new Cheese() );
+        workingMemory.insert( new OuterClass.InnerClass( 1 ) );
 
-        workingMemory.fireAllRules( 2 );
+        workingMemory.fireAllRules( );
 
-        assertEquals( "should have fired only once",
-                      1,
+        assertEquals( 2,
                       list.size() );
         assertEquals( "full",
                       bob.getStatus() );
         assertEquals( 31,
                       bob.getAge() );
+        assertEquals( 2,
+                      ((OuterClass.InnerClass)list.get( 1 )).getIntAttr() );
     }
 
     public void testOrCE() throws Exception {

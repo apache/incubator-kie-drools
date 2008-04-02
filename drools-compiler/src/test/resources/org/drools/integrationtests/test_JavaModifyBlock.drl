@@ -1,8 +1,11 @@
 package org.drools;
 
+import org.drools.OuterClass.InnerClass;
+
 global java.util.List results;
 
 rule "test modify block"
+    salience 10
 when
     $p: Person( status == "hungry" )
     $c: Cheese( )
@@ -13,4 +16,14 @@ then
         setAge( $p.getAge() + 1 ) 
     }
     results.add( $p );
+end
+
+rule "uses inner class"
+when
+    $ic : InnerClass( intAttr == 1 )
+then
+    modify( $ic ) {
+        setIntAttr( 2 )
+    }
+    results.add( $ic );
 end
