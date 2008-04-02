@@ -3065,34 +3065,6 @@ public class MiscTest extends TestCase {
                       list.get( 1 ) );
     }
 
-    public void testCollectNodeSharing() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_collectNodeSharing.drl" ) ) );
-        final Package pkg = builder.getPackage();
-
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase    = SerializationHelper.serializeObject(ruleBase);
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
-
-        final List list = new ArrayList();
-        workingMemory.setGlobal( "results",
-                                 list );
-
-        workingMemory.insert( new Cheese( "stilton",
-                                          10 ) );
-        workingMemory.insert( new Cheese( "brie",
-                                          15 ) );
-
-        workingMemory.fireAllRules();
-
-        assertEquals( 1,
-                      list.size() );
-
-        assertEquals( 2,
-                      ((List) list.get( 0 )).size() );
-    }
-
     public void testNodeSharingNotExists() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_nodeSharingNotExists.drl" ) ) );
