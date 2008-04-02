@@ -4135,26 +4135,26 @@ public class MiscTest extends TestCase {
                       list1.get( 0 ) );
         assertEquals( first42,
                       list1.get( 1 ) );
-        assertEquals( world,
-                      list1.get( 2 ) );
         assertEquals( second43,
-                      list1.get( 3 ) );
-        assertEquals( first42,
-                      list1.get( 4 ) );
+                      list1.get( 2 ) );
         assertEquals( world,
+                      list1.get( 3 ) );
+        assertEquals( world,
+                      list1.get( 4 ) );
+        assertEquals( first42,
                       list1.get( 5 ) );
 
         assertEquals( first42,
                       list2.get( 0 ) );
         assertEquals( second43,
                       list2.get( 1 ) );
-        assertEquals( second43,
+        assertEquals( world,
                       list2.get( 2 ) );
-        assertEquals( world,
+        assertEquals( second43,
                       list2.get( 3 ) );
-        assertEquals( world,
-                      list2.get( 4 ) );
         assertEquals( first42,
+                      list2.get( 4 ) );
+        assertEquals( world,
                       list2.get( 5 ) );
     }
 
