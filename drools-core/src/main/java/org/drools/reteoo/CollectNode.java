@@ -441,11 +441,10 @@ public class CollectNode extends BetaNode
 
         final Iterator tupleIter = memory.betaMemory.getLeftTupleMemory().iterator();
         for ( LeftTuple leftTuple = (LeftTuple) tupleIter.next(); leftTuple != null; leftTuple = (LeftTuple) tupleIter.next() ) {
-            LeftTuple childLeftTuple = leftTuple.getBetaChildren();
-            if ( childLeftTuple != null ) {
-                RightTuple rightTuple = childLeftTuple.getRightParent();
+            CollectContext colctx = (CollectContext) memory.betaMemory.getCreatedHandles().get( leftTuple );
+            if( colctx.propagated ) {
                 sink.assertLeftTuple( new LeftTuple( leftTuple,
-                                                     rightTuple,
+                                                     colctx.resultTuple,
                                                      sink,
                                                      this.tupleMemoryEnabled ),
                                       context,
