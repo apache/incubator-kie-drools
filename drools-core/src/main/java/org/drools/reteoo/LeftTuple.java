@@ -12,7 +12,6 @@ import org.drools.rule.Declaration;
 import org.drools.spi.Activation;
 import org.drools.spi.Tuple;
 import org.drools.util.Entry;
-import org.drools.util.RightTupleList;
 import org.drools.util.LeftTupleList;
 
 public class LeftTuple
@@ -494,5 +493,9 @@ public class LeftTuple
 
         // @todo should not serialise in part of the rete network
         out.writeObject( sink );
+    }
+
+    public LeftTuple getParent() {
+        return parent;
     }
 }

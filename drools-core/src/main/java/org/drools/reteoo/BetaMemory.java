@@ -1,6 +1,5 @@
 package org.drools.reteoo;
 
-import java.io.Serializable;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -52,6 +51,13 @@ public class BetaMemory
 
     public LeftTupleMemory getLeftTupleMemory() {
         return this.leftTupleMemory;
+    }
+    
+    public ObjectHashMap getCreatedHandles() {
+        if( this.createdHandles == null ) {
+            this.createdHandles = new ObjectHashMap();
+        }
+        return this.createdHandles;
     }
 
     /**

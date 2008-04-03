@@ -126,6 +126,7 @@ public class CollectNode extends BetaNode
     public void assertLeftTuple(final LeftTuple leftTuple,
                                 final PropagationContext context,
                                 final InternalWorkingMemory workingMemory) {
+        if ( this.getId() == 7 ) System.out.println( "AssertLeft  : " + leftTuple );
 
         final CollectMemory memory = (CollectMemory) workingMemory.getNodeMemory( this );
 
@@ -133,12 +134,16 @@ public class CollectNode extends BetaNode
         final InternalFactHandle resultHandle = workingMemory.getFactHandleFactory().newFactHandle( result,
                                                                                                     false,
                                                                                                     workingMemory );
-        final RightTuple resultTuple = new RightTuple( resultHandle,
-                                                       this );
+
+        final CollectContext colctx = new CollectContext();
+        colctx.resultTuple = new RightTuple( resultHandle,
+                                             this );
 
         // do not add tuple and result to the memory in sequential mode
         if ( this.tupleMemoryEnabled ) {
             memory.betaMemory.getLeftTupleMemory().add( leftTuple );
+            memory.betaMemory.getCreatedHandles().put( leftTuple,
+                                                       colctx );
         }
 
         this.constraints.updateFromTuple( memory.betaMemory.getContext(),
@@ -154,38 +159,24 @@ public class CollectNode extends BetaNode
                 }
                 result.add( handle.getObject() );
 
-                // linking left tuple to the right tuple children list
-                leftTuple.setRightParentNext( rightTuple.getBetaChildren() );
-                rightTuple.setBetaChildren( leftTuple );
+                // in sequential mode, we don't need to keep record of matched tuples
+                if ( this.tupleMemoryEnabled ) {
+                    // linking left and right by creating a new left tuple
+                    new LeftTuple( leftTuple,
+                                   rightTuple,
+                                   this,
+                                   this.tupleMemoryEnabled );
+                }
             }
         }
 
         this.constraints.resetTuple( memory.betaMemory.getContext() );
 
-        // First alpha node filters
-        boolean isAllowed = true;
-        for ( int i = 0, length = this.resultConstraints.length; i < length; i++ ) {
-            if ( !this.resultConstraints[i].isAllowed( resultHandle,
-                                                       workingMemory,
-                                                       memory.alphaContexts[i] ) ) {
-                isAllowed = false;
-                break;
-            }
-        }
-        if ( isAllowed ) {
-            this.resultsBinder.updateFromTuple( memory.resultsContext,
-                                                workingMemory,
-                                                leftTuple );
-            if ( this.resultsBinder.isAllowedCachedLeft( memory.resultsContext,
-                                                         resultHandle ) ) {
-                this.sink.propagateAssertLeftTuple( leftTuple,
-                                                    resultTuple,
-                                                    context,
-                                                    workingMemory,
-                                                    this.tupleMemoryEnabled );
-            }
-            this.resultsBinder.resetTuple( memory.resultsContext );
-        }
+        evaluateResultConstraints( leftTuple,
+                                   context,
+                                   workingMemory,
+                                   memory,
+                                   colctx );
     }
 
     /**
@@ -195,12 +186,49 @@ public class CollectNode extends BetaNode
                                  final PropagationContext context,
                                  final InternalWorkingMemory workingMemory) {
 
+        if ( this.getId() == 7 ) System.out.println( "RetractLeft : " + leftTuple );
+
         final CollectMemory memory = (CollectMemory) workingMemory.getNodeMemory( this );
         memory.betaMemory.getLeftTupleMemory().remove( leftTuple );
+        final CollectContext colctx = (CollectContext) memory.betaMemory.getCreatedHandles().remove( leftTuple );
 
-        this.sink.propagateRetractLeftTupleDestroyRightTuple( leftTuple,
-                                                              context,
-                                                              workingMemory );
+        LeftTuple child = getFirstMatch( leftTuple,
+                                         colctx );
+
+        // Now, unlink the matches 
+        while ( child != null ) {
+            LeftTuple tmp = child.getLeftParentNext();
+            child.unlinkFromLeftParent();
+            child.unlinkFromRightParent();
+            child = tmp;
+        }
+
+        if ( colctx.propagated ) {
+            // if tuple was previously propagated, retract it
+            this.sink.propagateRetractLeftTupleDestroyRightTuple( leftTuple,
+                                                                  context,
+                                                                  workingMemory );
+        }
+    }
+
+    /**
+     * @param leftTuple
+     * @param colctx
+     * @return
+     */
+    private LeftTuple getFirstMatch(final LeftTuple leftTuple,
+                                    final CollectContext colctx) {
+        // unlink all right matches 
+        LeftTuple child = leftTuple.getBetaChildren();
+
+        if ( colctx.propagated ) {
+            // To do that, we need to skip the first N children that are in fact
+            // the propagated tuples
+            for ( int i = 0; i < this.sink.size(); i++ ) {
+                child = child.getLeftParentNext();
+            }
+        }
+        return child;
     }
 
     /**
@@ -215,6 +243,8 @@ public class CollectNode extends BetaNode
     public void assertObject(final InternalFactHandle factHandle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
+
+        if ( this.getId() == 7 ) System.out.println( "AssertRight : " + factHandle );
 
         final CollectMemory memory = (CollectMemory) workingMemory.getNodeMemory( this );
         final RightTuple rightTuple = new RightTuple( factHandle,
@@ -232,6 +262,7 @@ public class CollectNode extends BetaNode
                                                factHandle );
 
         // need to clone the tuples to avoid concurrent modification exceptions
+        // @TODO: now that we use linked lists, can we avoid the cloning?
         Entry[] tuples = memory.betaMemory.getLeftTupleMemory().toArray();
         for ( int i = 0; i < tuples.length; i++ ) {
             LeftTuple tuple = (LeftTuple) tuples[i];
@@ -241,7 +272,8 @@ public class CollectNode extends BetaNode
                              tuple,
                              rightTuple,
                              context,
-                             workingMemory );
+                             workingMemory,
+                             memory );
             }
         }
 
@@ -257,20 +289,29 @@ public class CollectNode extends BetaNode
     public void retractRightTuple(final RightTuple rightTuple,
                                   final PropagationContext context,
                                   final InternalWorkingMemory workingMemory) {
+        if ( this.getId() == 7 ) System.out.println( "retractRight: " + rightTuple );
+
         final CollectMemory memory = (CollectMemory) workingMemory.getNodeMemory( this );
         memory.betaMemory.getRightTupleMemory().remove( rightTuple );
 
-        this.constraints.updateFromFactHandle( memory.betaMemory.getContext(),
-                                               workingMemory,
-                                               rightTuple.getFactHandle() );
-
-        for ( LeftTuple leftTuple = rightTuple.getBetaChildren(); leftTuple != null; leftTuple = rightTuple.getBetaChildren() ) {
+        for ( LeftTuple leftTuple = getFirstMatchFromRight( rightTuple ); leftTuple != null; ) {
+            LeftTuple tmp = leftTuple.getRightParentNext();
             this.modifyTuple( false,
-                              leftTuple,
+                              leftTuple.getParent(),
                               rightTuple,
                               context,
-                              workingMemory );
+                              workingMemory,
+                              memory );
+            leftTuple = tmp;
         }
+    }
+
+    private LeftTuple getFirstMatchFromRight(RightTuple rightTuple) {
+        LeftTuple match = rightTuple.getBetaChildren();
+        while( match.getRightParent() != rightTuple ) {
+            match = match.getRightParentNext();
+        }
+        return match;
     }
 
     /**
@@ -286,19 +327,46 @@ public class CollectNode extends BetaNode
                             final LeftTuple leftTuple,
                             final RightTuple rightTuple,
                             final PropagationContext context,
-                            final InternalWorkingMemory workingMemory) {
+                            final InternalWorkingMemory workingMemory,
+                            final CollectMemory memory) {
 
-        final CollectMemory memory = (CollectMemory) workingMemory.getNodeMemory( this );
-
-        RightTuple result = leftTuple.getBetaChildren().getRightParent();
+        final CollectContext colctx = (CollectContext) memory.betaMemory.getCreatedHandles().get( leftTuple );
 
         // if tuple was propagated
-        if ( leftTuple.getBetaChildren() != null ) {
+        if ( colctx.propagated ) {
+            LeftTuple firstMatch = getFirstMatch( leftTuple, colctx );
+            
+            // we may have no matches yet
+            if( firstMatch != null ) { 
+                // temporarily break the linked list to avoid wrong retracts
+                firstMatch.getLeftParentPrevious().setLeftParentNext( null );
+            }
             this.sink.propagateRetractLeftTuple( leftTuple,
                                                  context,
                                                  workingMemory );
+            // now set the beta children to the first match
+            leftTuple.setBetaChildren( firstMatch );
+            colctx.propagated = false;
         }
 
+        if( isAssert ) {
+            // linking left and right by creating a new left tuple
+            new LeftTuple( leftTuple,
+                           rightTuple,
+                           this,
+                           this.tupleMemoryEnabled );
+        } else {
+            if( leftTuple.getBetaChildren() != null ) {
+                // removing link between left and right
+                LeftTuple match = leftTuple.getBetaChildren();
+                while( match.getRightParent() != rightTuple ) {
+                    match = match.getLeftParentNext();
+                }
+                match.unlinkFromLeftParent();
+                match.unlinkFromRightParent();
+            }
+        }
+        
         // if there is a subnetwork, we need to unwrapp the object from inside the tuple
         InternalFactHandle handle = rightTuple.getFactHandle();
         if ( this.unwrapRightObject ) {
@@ -306,22 +374,42 @@ public class CollectNode extends BetaNode
         }
 
         if ( context.getType() == PropagationContext.ASSERTION ) {
-            ((Collection) result.getFactHandle().getObject()).add( handle.getObject() );
+            ((Collection) colctx.resultTuple.getFactHandle().getObject()).add( handle.getObject() );
         } else if ( context.getType() == PropagationContext.RETRACTION ) {
-            ((Collection) result.getFactHandle().getObject()).remove( handle.getObject() );
-            rightTuple.setBetaChildren( leftTuple.getRightParentNext() );
+            ((Collection) colctx.resultTuple.getFactHandle().getObject()).remove( handle.getObject() );
         } else if ( context.getType() == PropagationContext.MODIFICATION || context.getType() == PropagationContext.RULE_ADDITION || context.getType() == PropagationContext.RULE_REMOVAL ) {
             if ( isAssert ) {
-                ((Collection) result.getFactHandle().getObject()).add( handle.getObject() );
+                ((Collection) colctx.resultTuple.getFactHandle().getObject()).add( handle.getObject() );
             } else {
-                ((Collection) result.getFactHandle().getObject()).remove( handle.getObject() );
+                ((Collection) colctx.resultTuple.getFactHandle().getObject()).remove( handle.getObject() );
             }
         }
+        
+        evaluateResultConstraints( leftTuple,
+                                   context,
+                                   workingMemory,
+                                   memory,
+                                   colctx );
+    }
 
+    /**
+     * Evaluate result constraints and propagate tuple if it evaluates to true
+     * 
+     * @param leftTuple
+     * @param context
+     * @param workingMemory
+     * @param memory
+     * @param colctx
+     */
+    private void evaluateResultConstraints(final LeftTuple leftTuple,
+                                           final PropagationContext context,
+                                           final InternalWorkingMemory workingMemory,
+                                           final CollectMemory memory,
+                                           final CollectContext colctx) {
         // First alpha node filters
         boolean isAllowed = true;
         for ( int i = 0, length = this.resultConstraints.length; i < length; i++ ) {
-            if ( !this.resultConstraints[i].isAllowed( result.getFactHandle(),
+            if ( !this.resultConstraints[i].isAllowed( colctx.resultTuple.getFactHandle(),
                                                        workingMemory,
                                                        memory.alphaContexts[i] ) ) {
                 isAllowed = false;
@@ -333,9 +421,10 @@ public class CollectNode extends BetaNode
                                                 workingMemory,
                                                 leftTuple );
             if ( this.resultsBinder.isAllowedCachedLeft( memory.resultsContext,
-                                                         result.getFactHandle() ) ) {
+                                                         colctx.resultTuple.getFactHandle() ) ) {
+                colctx.propagated = true;
                 this.sink.propagateAssertLeftTuple( leftTuple,
-                                                    result,
+                                                    colctx.resultTuple,
                                                     context,
                                                     workingMemory,
                                                     this.tupleMemoryEnabled );
@@ -420,4 +509,14 @@ public class CollectNode extends BetaNode
         public ContextEntry[]     resultsContext;
         public ContextEntry[]     alphaContexts;
     }
+
+    private static class CollectContext
+        implements
+        Serializable {
+        private static final long serialVersionUID = -3076306175989410574L;
+        public RightTuple         resultTuple;
+        public boolean            propagated;
+
+    }
+
 }
