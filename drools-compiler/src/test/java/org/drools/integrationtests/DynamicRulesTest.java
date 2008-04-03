@@ -762,6 +762,7 @@ public class DynamicRulesTest extends TestCase {
         builder1.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicRulesWithSubnetwork.drl" ) ) );
         ruleBaseWM.addPackage( SerializationHelper.serializeObject( builder1.getPackage() ) );
         workingMemory.fireAllRules();
+        results = (List) workingMemory.getGlobal( "results" );
         assertEquals( 1, results.size() );
         assertEquals( 3, ((List) results.get(0)).size() );
         results.clear();
