@@ -235,7 +235,7 @@ public class JoinNode extends BetaNode {
                                                            rightTuple.getFactHandle() ) ) {
                     sink.assertLeftTuple( new LeftTuple( leftTuple,
                                                          rightTuple,
-                                                         this,
+                                                         sink,
                                                          this.tupleMemoryEnabled  ),
                                           context,
                                           workingMemory );

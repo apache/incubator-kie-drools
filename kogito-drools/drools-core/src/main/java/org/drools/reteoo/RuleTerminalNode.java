@@ -182,7 +182,6 @@ public final class RuleTerminalNode extends BaseNode
                             final PropagationContext context,
                             final InternalWorkingMemory workingMemory,
                             final boolean fireActivationCreated) {
-
         //check if the rule is effective
         if ( !this.rule.isEffective( workingMemory.getTimeMachine() ) ) {
             return;
