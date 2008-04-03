@@ -163,10 +163,6 @@ public class LeftTuple
         this.leftParentNext = null;
         //
         this.blocker = null;
-        //
-        this.rightParent = null;
-        this.rightParentPrevious = null;
-        this.rightParentNext = null;
     }
 
     public void unlinkFromRightParent() {
@@ -189,10 +185,6 @@ public class LeftTuple
         }
 
         //this.parent  = null;
-
-        this.leftParent = null;
-        this.leftParentPrevious = null;
-        this.leftParentNext = null;
 
         this.blocker = null;
 
