@@ -1,9 +1,9 @@
 package org.drools.reteoo;
 
-import java.io.Serializable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.io.Serializable;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.common.BaseNode;
@@ -18,8 +18,6 @@ import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.DataProvider;
 import org.drools.spi.PropagationContext;
 import org.drools.util.Iterator;
-import org.drools.util.LinkedList;
-import org.drools.util.LinkedListEntry;
 import org.drools.util.LeftTupleList;
 
 public class FromNode extends LeftTupleSource
@@ -201,22 +199,25 @@ public class FromNode extends LeftTupleSource
                            final InternalWorkingMemory workingMemory) {
 
         final FromMemory memory = (FromMemory) workingMemory.getNodeMemory( this );
-        // @TODO
-//
-//        final Iterator tupleIter = memory.betaMemory.getLeftTupleMemory().iterator();
-//        for ( LeftTuple tuple = (LeftTuple) tupleIter.next(); tuple != null; tuple = (LeftTuple) tupleIter.next() ) {
-//            final LinkedList list = (LinkedList) memory.betaMemory.getCreatedHandles().remove( tuple );
-//            if ( list == null ) {
-//                continue;
-//            }
-//            for ( LinkedListEntry entry = (LinkedListEntry) list.getFirst(); entry != null; entry = (LinkedListEntry) entry.getNext() ) {
-//                final InternalFactHandle handle = (InternalFactHandle) entry.getObject();
-//                this.sink.propagateAssertLeftTuple( tuple,
-//                                                    handle,
-//                                                    context,
-//                                                    workingMemory );
-//            }
-//        }
+
+        final Iterator tupleIter = memory.betaMemory.getLeftTupleMemory().iterator();
+        for ( LeftTuple leftTuple = (LeftTuple) tupleIter.next(); leftTuple != null; leftTuple = (LeftTuple) tupleIter.next() ) {
+            LeftTuple child = leftTuple.getBetaChildren();
+            RightTuple match = null;
+            while( child != null ) {
+                if( match != child.getRightParent() ) {
+                    match = child.getRightParent();
+                    sink.assertLeftTuple( new LeftTuple( leftTuple,
+                                                         match,
+                                                         sink,
+                                                         this.tupleMemoryEnabled ),
+                                          context,
+                                          workingMemory );
+                    
+                }
+                child = child.getLeftParentNext();
+            }
+        }
     }
 
     public Object createMemory(final RuleBaseConfiguration config) {
