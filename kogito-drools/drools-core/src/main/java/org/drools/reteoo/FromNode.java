@@ -91,6 +91,11 @@ public class FromNode extends LeftTupleSource
             memory.betaMemory.getLeftTupleMemory().add( leftTuple );
         }
         
+        if ( this.sink.size() == 0 ) {
+            // nothing to do
+            return;
+        }
+        
         this.betaConstraints.updateFromTuple( memory.betaMemory.getContext(),
                                               workingMemory,
                                               leftTuple );
@@ -202,20 +207,26 @@ public class FromNode extends LeftTupleSource
 
         final Iterator tupleIter = memory.betaMemory.getLeftTupleMemory().iterator();
         for ( LeftTuple leftTuple = (LeftTuple) tupleIter.next(); leftTuple != null; leftTuple = (LeftTuple) tupleIter.next() ) {
-            LeftTuple child = leftTuple.getBetaChildren();
-            RightTuple match = null;
-            while( child != null ) {
-                if( match != child.getRightParent() ) {
-                    match = child.getRightParent();
-                    sink.assertLeftTuple( new LeftTuple( leftTuple,
-                                                         match,
-                                                         sink,
-                                                         this.tupleMemoryEnabled ),
-                                          context,
-                                          workingMemory );
-                    
+            if( this.sink.size() == 1 ) { 
+                // means we had no sink before, so no calculated matches
+                assertLeftTuple( leftTuple, context, workingMemory );
+            } else {
+                // we previously calculated matches, so, just re-use them
+                LeftTuple child = leftTuple.getBetaChildren();
+                RightTuple match = null;
+                while( child != null ) {
+                    if( match != child.getRightParent() ) {
+                        match = child.getRightParent();
+                        sink.assertLeftTuple( new LeftTuple( leftTuple,
+                                                             match,
+                                                             sink,
+                                                             this.tupleMemoryEnabled ),
+                                              context,
+                                              workingMemory );
+                        
+                    }
+                    child = child.getLeftParentNext();
                 }
-                child = child.getLeftParentNext();
             }
         }
     }
