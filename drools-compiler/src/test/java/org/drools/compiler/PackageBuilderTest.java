@@ -16,12 +16,8 @@ package org.drools.compiler;
  * limitations under the License.
  */
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.io.StringReader;
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -32,7 +28,7 @@ import org.drools.Cheese;
 import org.drools.DroolsTestCase;
 import org.drools.FactHandle;
 import org.drools.Primitives;
-import org.drools.QueryResults; 
+import org.drools.QueryResults;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
@@ -40,8 +36,6 @@ import org.drools.StockTick;
 import org.drools.WorkingMemory;
 import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.common.ActivationGroupNode;
-import org.drools.common.DroolsObjectInputStream;
-import org.drools.common.DroolsObjectOutputStream;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.LogicalDependency;
 import org.drools.common.RuleFlowGroupNode;
@@ -93,6 +87,7 @@ import org.drools.spi.CompiledInvoker;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
 import org.drools.util.LinkedList;
+import org.drools.util.DroolsStreamUtils;
 import org.drools.workflow.core.impl.WorkflowProcessImpl;
 
 public class PackageBuilderTest extends DroolsTestCase {
@@ -1213,12 +1208,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         assertTrue( p instanceof WorkflowProcessImpl );
 
         //now serialization
-        ByteArrayOutputStream data = new ByteArrayOutputStream();
-        ObjectOutput out = new DroolsObjectOutputStream( data );
-        out.writeObject( pkg );
-
-        ObjectInput objIn = new DroolsObjectInputStream( new ByteArrayInputStream( data.toByteArray() ) );
-        Package pkg2 = (Package) objIn.readObject();
+        Package pkg2 = (Package) DroolsStreamUtils.streamIn(DroolsStreamUtils.streamOut(pkg));
         assertNotNull( pkg2 );
 
         flows = pkg2.getRuleFlows();

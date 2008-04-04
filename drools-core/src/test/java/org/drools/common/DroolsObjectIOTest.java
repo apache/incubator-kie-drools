@@ -7,7 +7,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.ObjectInput;
 import java.io.FileOutputStream;
-import java.io.FileInputStream;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectOutput;
@@ -15,10 +14,10 @@ import java.io.ByteArrayInputStream;
 import java.io.Serializable;
 import java.io.ObjectOutputStream;
 import java.io.ObjectInputStream;
-import java.net.URL;
 
 import org.drools.rule.GroupElement;
 import org.drools.rule.Package;
+import org.drools.util.DroolsStreamUtils;
 
 /**
  * Created by IntelliJ IDEA. User: SG0521861 Date: Mar 3, 2008 Time: 11:19:44 AM To change this template use File |
@@ -40,17 +39,12 @@ public class DroolsObjectIOTest  extends TestCase {
         String  str = TEST_FILE;
         file    = new File(file.getParent().replaceAll("%20", " "), str);
 
-        DroolsObjectOutputStream    out = new DroolsObjectOutputStream(new FileOutputStream(file));
-
-        out.writeObject(testGroupElement);
-        out.flush();
-        out.close();
+        DroolsStreamUtils.streamOut(new FileOutputStream(file), testGroupElement);
 
         InputStream         fis = getClass().getResourceAsStream(TEST_FILE);
         System.out.println(fis.available());
-        ObjectInput   ois = new DroolsObjectInputStream(fis);
 
-        GroupElement    that    = (GroupElement)ois.readObject();
+        GroupElement    that    = (GroupElement)DroolsStreamUtils.streamIn(fis);
         assertEquals(that, testGroupElement);
     }
 

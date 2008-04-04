@@ -21,12 +21,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.Arrays;
-import java.net.URL;
 
 import org.drools.DroolsTestCase;
-import org.drools.common.DroolsObjectOutputStream;
-import org.drools.common.DroolsObjectInputStream;
+import org.drools.util.DroolsStreamUtils;
 import org.drools.base.ClassObjectType;
 import org.drools.spi.ObjectType;
 
@@ -527,9 +524,9 @@ public class LogicTransformerTest extends DroolsTestCase {
         // result
         writeTree( result,
                    "correct_processTree1.dat" );
-        final ObjectInput ois = new DroolsObjectInputStream( this.getClass().getResourceAsStream( "correct_processTree1.dat" ));
-
-        final GroupElement[] correctResultRoot = (GroupElement[]) ois.readObject();
+        final GroupElement[] correctResultRoot =
+                (GroupElement[]) DroolsStreamUtils.streamIn(
+                        this.getClass().getResourceAsStream( "correct_processTree1.dat" ));
 
         // Make sure they are equal
         for ( int j = 0; j < correctResultRoot.length; j++ ) {
@@ -709,8 +706,9 @@ public class LogicTransformerTest extends DroolsTestCase {
 
         // Get known correct tree
         // The binary stream was created from a handchecked correct output
-        final ObjectInput ois = new DroolsObjectInputStream( this.getClass().getResourceAsStream( "correct_transform1.dat" ) );
-        final GroupElement[] correctResultAnds = (GroupElement[]) ois.readObject();
+        final GroupElement[] correctResultAnds =
+                (GroupElement[]) DroolsStreamUtils.streamIn(
+                        this.getClass().getResourceAsStream( "correct_transform1.dat" ));
 
         for ( int j = 0; j < ands.length; j++ ) {
             assertEquals( correctResultAnds[j],
@@ -726,11 +724,7 @@ public class LogicTransformerTest extends DroolsTestCase {
 
         file = new File( file.getParent().replaceAll("%20", " "), fileName );
 
-        ObjectOutput    out = new DroolsObjectOutputStream(new FileOutputStream( file ) );
-
-        out.writeObject( object );
-        out.flush();
-        out.close();
+        DroolsStreamUtils.streamOut(new FileOutputStream( file ), object);
     }
 
 }

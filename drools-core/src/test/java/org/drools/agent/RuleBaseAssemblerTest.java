@@ -10,8 +10,7 @@ import java.io.ObjectOutput;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
-import org.drools.common.DroolsObjectInputStream;
-import org.drools.common.DroolsObjectOutputStream;
+import org.drools.util.DroolsStreamUtils;
 import org.drools.rule.Package;
 
 import junit.framework.TestCase;
@@ -44,17 +43,12 @@ public class RuleBaseAssemblerTest extends TestCase {
     public static Package readPackage(File p1file) throws IOException,
                                                           FileNotFoundException,
                                                           ClassNotFoundException {
-        ObjectInput in = new DroolsObjectInputStream(new FileInputStream(p1file));
-        Package p1_ = (Package) in.readObject();
-        in.close();
-        return p1_;
+        return (Package) DroolsStreamUtils.streamIn(new FileInputStream(p1file));
     }
 
     public static void writePackage(Package pkg, File p1file) throws IOException,
                                                                      FileNotFoundException {
-        ObjectOutput out = new DroolsObjectOutputStream(new FileOutputStream(p1file));
-        out.writeObject( pkg );
-        out.flush(); out.close();
+        DroolsStreamUtils.streamOut(new FileOutputStream(p1file), pkg);
     }
 
     public static File getTempDirectory() {
