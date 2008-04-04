@@ -5,7 +5,9 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.drools.WorkingMemory;
 import org.drools.event.ActivationCancelledEvent;
@@ -151,6 +153,21 @@ public class TestingEventListener implements AgendaEventListener {
 	 */
 	public Map<String, Integer> getFiringCounts() {
 		return this.firingCounts;
+	}
+
+	/**
+	 * Return a list of the rules fired, for display purposes.
+	 */
+	public String[] getRulesFiredSummary() {
+		String[] r = new String[firingCounts.size()];
+		int i = 0;
+		for (Iterator iterator = firingCounts.entrySet().iterator(); iterator.hasNext();) {
+			Entry<String, Integer> e = (Entry<String, Integer>) iterator.next();
+			r[i] = e.getKey() + " [" + e.getValue() + "]";
+			i++;
+		}
+
+		return r;
 	}
 
 

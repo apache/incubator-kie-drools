@@ -53,6 +53,8 @@ public class GuidedDecisionTable implements PortableObject {
 	 */
 	public int descriptionWidth = -1;
 
+	public String groupField;
+
 	//TODO: add in precondition(s)
 
 

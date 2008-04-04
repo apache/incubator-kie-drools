@@ -41,6 +41,8 @@ public class SuggestionCompletionLoaderTest extends TestCase {
         assertEquals(1, eng.getGlobalVariables().length);
         assertEquals("p", eng.getGlobalVariables()[0]);
         assertEquals("Person", eng.globalTypes.get("p"));
+        String[] flds = (String[]) eng.fieldsForType.get("Person");
+        assertNotNull(flds);
 
     }
 

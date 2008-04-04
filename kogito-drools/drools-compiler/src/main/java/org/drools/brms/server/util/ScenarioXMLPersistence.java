@@ -36,6 +36,7 @@ public class ScenarioXMLPersistence {
     	xt.alias("expect-fact", VerifyFact.class);
     	xt.alias("expect-field", VerifyField.class);
     	xt.alias("expect-rule", VerifyRuleFired.class);
+    	xt.omitField(ExecutionTrace.class, "rulesFired");
     }
 
     public static ScenarioXMLPersistence getInstance() {
@@ -46,7 +47,12 @@ public class ScenarioXMLPersistence {
 
     public String marshal(Scenario sc) {
     	if (sc.fixtures.size() > 1  && sc.fixtures.get(sc.fixtures.size() - 1) instanceof ExecutionTrace) {
-    		sc.fixtures.remove(sc.fixtures.size() - 1);
+    		Object f = sc.fixtures.get(sc.fixtures.size() - 2);
+
+    		if (f instanceof Expectation) {
+    			sc.fixtures.remove(sc.fixtures.size() - 1);
+    		}
+
     	}
     	return xt.toXML(sc);
     }

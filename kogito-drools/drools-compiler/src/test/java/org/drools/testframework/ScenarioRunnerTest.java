@@ -232,6 +232,43 @@ public class ScenarioRunnerTest extends RuleUnit {
 
     }
 
+    public void testVerifyAnonymousFacts() throws Exception {
+    	MockWorkingMemory wm = new MockWorkingMemory();
+        ScenarioRunner runner = new ScenarioRunner( new Scenario(),
+                null,
+                wm );
+
+        Cheese c = new Cheese();
+        c.setPrice(42);
+        c.setType("stilton");
+
+        wm.facts.add(c);
+
+        VerifyFact vf = new VerifyFact("Cheese", new ArrayList(), true);
+        vf.fieldValues.add(new VerifyField("price", "42", "=="));
+        vf.fieldValues.add(new VerifyField("type", "stilton", "=="));
+
+        runner.verify(vf);
+
+        assertTrue(vf.wasSuccessful());
+
+        vf = new VerifyFact("Person", new ArrayList(), true);
+        vf.fieldValues.add(new VerifyField("age", "42", "=="));
+
+        runner.verify(vf);
+
+        assertFalse(vf.wasSuccessful());
+
+        vf = new VerifyFact("Cheese", new ArrayList(), true);
+        vf.fieldValues.add(new VerifyField("price", "43", "=="));
+        vf.fieldValues.add(new VerifyField("type", "stilton", "=="));
+
+        runner.verify(vf);
+
+        assertFalse(vf.wasSuccessful());
+
+    }
+
     public void testVerifyFactsWithOperator() throws Exception {
         ScenarioRunner runner = new ScenarioRunner( new Scenario(),
                                                     null,
@@ -671,8 +708,12 @@ public class ScenarioRunnerTest extends RuleUnit {
 
         Thread.sleep( 50 );
 
+
+
         assertTrue( (new Date()).after( sc.lastRunResult ) );
         assertTrue( executionTrace.executionTimeResult != null );
+
+        assertTrue(executionTrace.rulesFired.length > 0);
 
     }
 

@@ -116,6 +116,8 @@ public class ScenarioRunner {
 					wm.fireAllRules(listener.getAgendaFilter(ruleList, scenario.inclusive),scenario.maxRuleFirings);
 					executionTrace.executionTimeResult = System.currentTimeMillis() - time;
 					executionTrace.numberOfRulesFired = listener.totalFires;
+					executionTrace.rulesFired = listener.getRulesFiredSummary();
+
 
 				} else if (fx instanceof Expectation) {
 						Expectation assertion = (Expectation) fx;
@@ -193,8 +195,29 @@ public class ScenarioRunner {
 
 	void verify(VerifyFact value) {
 
-		Object fact = this.populatedData.get(value.name);
-		if (fact == null) fact = this.globalData.get(value.name);
+
+		if (!value.anonymous) {
+			Object fact = this.populatedData.get(value.name);
+			if (fact == null) fact = this.globalData.get(value.name);
+			checkFact(value, fact);
+		} else {
+			Iterator obs = this.workingMemory.iterateObjects();
+			while(obs.hasNext()) {
+				Object fact = obs.next();
+				if (fact.getClass().getSimpleName().equals(value.name)) {
+					checkFact(value, fact);
+					if (value.wasSuccessful()) return;
+				}
+			}
+			for (Iterator iterator = value.fieldValues.iterator(); iterator.hasNext();) {
+				VerifyField vfl = (VerifyField) iterator.next();
+				vfl.successResult = Boolean.FALSE;
+				vfl.actualResult = "Not found";
+			}
+ 		}
+	}
+
+	private void checkFact(VerifyFact value, Object fact) {
 		for (int i = 0; i < value.fieldValues.size(); i++) {
 			VerifyField fld = (VerifyField) value.fieldValues.get(i);
 			Map<String, Object> st = new HashMap<String, Object>();
@@ -232,6 +255,8 @@ public class ScenarioRunner {
 
 		}
 	}
+
+
 
 	Object populateFields(FactData fact, Map<String, Object> factData, Object factObject) {
 		for (int i = 0; i < fact.fieldData.size(); i++) {

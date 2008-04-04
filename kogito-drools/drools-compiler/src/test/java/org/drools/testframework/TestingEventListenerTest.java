@@ -86,6 +86,12 @@ public class TestingEventListenerTest extends RuleUnit {
         assertEquals(new Integer(1), (Integer) ls.firingCounts.get("rule1"));
         assertEquals(new Integer(1), (Integer) ls.firingCounts.get("rule2"));
         assertEquals(new Integer(1), (Integer) ls.firingCounts.get("rule3"));
+
+        String[] summary = ls.getRulesFiredSummary();
+        assertEquals(3, summary.length);
+        assertNotNull(summary[0]);
+        assertFalse(summary[1].equals(""));
+
         assertEquals(1, list.size());
 	}
 

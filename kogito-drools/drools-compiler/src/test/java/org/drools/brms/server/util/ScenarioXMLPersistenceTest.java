@@ -41,18 +41,40 @@ public class ScenarioXMLPersistenceTest extends TestCase {
 		Scenario orig = getDemo();
 		sc.fixtures.add(new ExecutionTrace());
 
+		int origSize = orig.fixtures.size();
 
-		assertEquals(orig.fixtures.size() + 1, sc.fixtures.size());
+		assertEquals(origSize + 1, sc.fixtures.size());
 		String xml = ScenarioXMLPersistence.getInstance().marshal(sc);
 		Scenario sc_ = ScenarioXMLPersistence.getInstance().unmarshal(xml);
 
-		assertEquals(orig.fixtures.size(), sc_.fixtures.size());
+		assertEquals(origSize, sc_.fixtures.size());
 
 
 
 
 
 
+	}
+
+
+	public void testNewScenario() {
+        FactData d1 = new FactData("Driver", "d1", ls(new FieldData[] {new FieldData("age", "42"), new FieldData("name", "david")}), false);
+        Scenario sc = new Scenario();
+        sc.fixtures.add(d1);
+        sc.fixtures.add(new ExecutionTrace());
+
+        int size = sc.fixtures.size();
+
+		String xml = ScenarioXMLPersistence.getInstance().marshal(sc);
+		Scenario sc_ = ScenarioXMLPersistence.getInstance().unmarshal(xml);
+
+		assertEquals(size, sc_.fixtures.size());
+
+		sc = new Scenario();
+		sc.fixtures.add(new ExecutionTrace());
+		xml = ScenarioXMLPersistence.getInstance().marshal(sc);
+		sc_ = ScenarioXMLPersistence.getInstance().unmarshal(xml);
+		assertEquals(1, sc_.fixtures.size());
 	}
 
 	private Scenario getDemo() {
