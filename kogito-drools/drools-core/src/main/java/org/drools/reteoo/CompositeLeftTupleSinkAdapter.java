@@ -6,6 +6,7 @@ import java.io.ObjectOutput;
 
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.BaseNode;
 import org.drools.spi.PropagationContext;
 
 public class CompositeLeftTupleSinkAdapter
@@ -53,7 +54,7 @@ public class CompositeLeftTupleSinkAdapter
                                   workingMemory );
         }
     }
-    
+
     public void createAndPropagateAssertLeftTuple(final InternalFactHandle factHandle,
                                                   final PropagationContext context,
                                                   final InternalWorkingMemory workingMemory,
@@ -66,7 +67,7 @@ public class CompositeLeftTupleSinkAdapter
                                   workingMemory );
         }
     }
-    
+
 
     public void propagateRetractLeftTuple(final LeftTuple leftTuple,
                                           final PropagationContext context,
@@ -112,6 +113,15 @@ public class CompositeLeftTupleSinkAdapter
             child.unlinkFromRightParent();
             child = temp;
         }
+    }
+
+    public BaseNode getMatchingNode(BaseNode candidate) {
+        for ( LeftTupleSinkNode sink = this.sinks.getFirst(); sink != null; sink = sink.getNextLeftTupleSinkNode() ) {
+            if (candidate.equals(sink)) {
+                return (BaseNode)sink;
+            }
+        }
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public LeftTupleSink[] getSinks() {

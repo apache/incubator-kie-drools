@@ -2,6 +2,7 @@ package org.drools.reteoo;
 
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.BaseNode;
 import org.drools.spi.PropagationContext;
 
 import java.io.ObjectInput;
@@ -59,7 +60,7 @@ public class SingleLeftTupleSinkAdapter
             child = temp;
         }
     }
-    
+
     public void propagateRetractLeftTupleDestroyRightTuple(final LeftTuple leftTuple,
                                           final PropagationContext context,
                                           final InternalWorkingMemory workingMemory) {
@@ -74,7 +75,7 @@ public class SingleLeftTupleSinkAdapter
             child.unlinkFromLeftParent();
             child = temp;
         }
-    }    
+    }
 
     public void propagateRetractRightTuple(final RightTuple rightTuple,
                                            final PropagationContext context,
@@ -102,6 +103,13 @@ public class SingleLeftTupleSinkAdapter
                                    workingMemory );
     }
 
+    public BaseNode getMatchingNode(BaseNode candidate) {
+        if (candidate.equals(sink)) {
+            return (BaseNode)sink;
+        }
+        return null;
+    }
+
     public LeftTupleSink[] getSinks() {
         return new LeftTupleSink[]{this.sink};
     }
@@ -116,6 +124,6 @@ public class SingleLeftTupleSinkAdapter
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject( this.sink );     
+        out.writeObject( this.sink );
     }
 }

@@ -2,6 +2,7 @@ package org.drools.reteoo;
 
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.BaseNode;
 import org.drools.spi.PropagationContext;
 
 import java.io.ObjectOutput;
@@ -39,8 +40,8 @@ public class EmptyLeftTupleSinkAdapter
                                                   final PropagationContext context,
                                                   final InternalWorkingMemory workingMemory,
                                                   final boolean leftTupleMemoryEnabled) {
-    }    
-    
+    }
+
     public void propagateRetractLeftTuple(final LeftTuple tuple,
                                           final PropagationContext context,
                                           final InternalWorkingMemory workingMemory) {
@@ -50,11 +51,15 @@ public class EmptyLeftTupleSinkAdapter
                                            PropagationContext context,
                                            InternalWorkingMemory workingMemory) {
     }
-    
+
+    public BaseNode getMatchingNode(BaseNode candidate) {
+        return null;
+    }
+
     public void propagateRetractLeftTupleDestroyRightTuple(LeftTuple tuple,
                                                            PropagationContext context,
                                                            InternalWorkingMemory workingMemory) {
-    }    
+    }
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {

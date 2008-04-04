@@ -11,6 +11,7 @@ import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.BaseNode;
 import org.drools.rule.LiteralConstraint;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.Evaluator;
@@ -343,18 +344,20 @@ public class CompositeObjectSinkAdapter
 
     }
 
-    public ObjectSink[] getSinks() {
-        final List list = new ArrayList();
-
+    public BaseNode getMatchingNode(BaseNode candidate) {
         if ( this.otherSinks != null ) {
             for ( ObjectTupleSinkNode sink = this.otherSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
-                list.add( sink );
+                if (candidate.equals( sink )) {
+                    return (BaseNode)sink;
+                }
             }
         }
 
         if ( this.hashableSinks != null ) {
             for ( ObjectTupleSinkNode sink = this.hashableSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
-                list.add( sink );
+                if (candidate.equals( sink )) {
+                    return (BaseNode)sink;
+                }
             }
         }
 
@@ -362,19 +365,43 @@ public class CompositeObjectSinkAdapter
             final Iterator it = this.hashedSinkMap.newIterator();
             for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
                 final ObjectSink sink = (ObjectSink) entry.getValue();
-                list.add( sink );
+                if (candidate.equals( sink )) {
+                    return (BaseNode)sink;
+                }
+            }
+        }
+        return null;
+    }
+
+    public ObjectSink[] getSinks() {
+        ObjectSink[]    sinks   = new ObjectSink[size()];
+        int             at      = 0;
+
+        if ( this.otherSinks != null ) {
+            for ( ObjectTupleSinkNode sink = this.otherSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
+                sinks[at++] = sink;
             }
         }
 
-        return (ObjectSink[]) list.toArray( new ObjectSink[list.size()] );
+        if ( this.hashableSinks != null ) {
+            for ( ObjectTupleSinkNode sink = this.hashableSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
+                sinks[at++] = sink;
+            }
+        }
+
+        if ( this.hashedSinkMap != null ) {
+            final Iterator it = this.hashedSinkMap.newIterator();
+            for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
+                sinks[at++] = (ObjectSink) entry.getValue();
+            }
+        }
+        return sinks;
     }
 
     public int size() {
-        int size = 0;
-        size += ((this.otherSinks != null) ? this.otherSinks.size() : 0);
-        size += ((this.hashableSinks != null) ? this.hashableSinks.size() : 0);
-        size += ((this.hashedSinkMap != null) ? this.hashedSinkMap.size() : 0);
-        return size;
+        return (this.otherSinks != null ? this.otherSinks.size() : 0) +
+               (this.hashableSinks != null ? this.hashableSinks.size() : 0)+
+               (this.hashedSinkMap != null ? this.hashedSinkMap.size() : 0);
     }
 
     public static class HashKey
