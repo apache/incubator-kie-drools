@@ -49,7 +49,7 @@ public abstract class Waltz extends TestCase {
 
             //load up the rulebase
             final RuleBase ruleBase = readRule();
-            for ( int i = 0; i < 5; i++ ) {
+            for ( int i = 0; i < 1; i++ ) {
                 final StatefulSession session = ruleBase.newStatefulSession();
     
     //            workingMemory.setGlobal( "sysout",
