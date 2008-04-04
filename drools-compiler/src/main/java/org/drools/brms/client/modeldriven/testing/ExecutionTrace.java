@@ -28,6 +28,11 @@ public class ExecutionTrace implements Fixture {
 	 */
 	public Long numberOfRulesFired;
 
+	/**
+	 * A summary of the rules fired.
+	 */
+	public String[] rulesFired;
+
 	public ExecutionTrace() {}
 
 

@@ -295,8 +295,7 @@ public class MockWorkingMemory implements InternalWorkingMemory {
 	}
 
 	public Iterator iterateObjects() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.facts.iterator();
 	}
 
 	public Iterator iterateObjects(ObjectFilter filter) {

@@ -120,8 +120,8 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 
 	public void testName() {
 		GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
-		assertEquals("42_hey", p.getName("XXX", "42", "hey"));
-		assertEquals("42_XXX", p.getName("XXX", "42", ""));
+		assertEquals("Row 42 XXX", p.getName("XXX", "42"));
+		assertEquals("Row 42 YYY", p.getName("YYY", "42"));
 	}
 
 	public void testAttribs() {

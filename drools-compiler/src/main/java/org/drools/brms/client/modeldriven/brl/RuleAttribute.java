@@ -11,6 +11,7 @@ public class RuleAttribute
 
     private static final String NOLOOP   = "no-loop";
     private static final String SALIENCE = "salience";
+    private static final String ENABLED  = "enabled";
 
     public RuleAttribute(final String name,
                          final String value) {
@@ -32,7 +33,7 @@ public class RuleAttribute
         if ( NOLOOP.equals( attributeName ) ) {
             ret.append( " " );
             ret.append( this.value == null ? "true" : this.value );
-        } else if ( SALIENCE.equals( this.attributeName ) ) {
+        } else if ( SALIENCE.equals( this.attributeName ) || ENABLED.equals(this.attributeName) ) {
             ret.append( " " );
             ret.append( this.value );
         } else if ( this.value != null ) {

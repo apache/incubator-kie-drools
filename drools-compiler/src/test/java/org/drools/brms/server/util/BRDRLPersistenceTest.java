@@ -54,6 +54,16 @@ public class BRDRLPersistenceTest extends TestCase {
                       drl );
     }
 
+    public void testAttr() {
+    	RuleModel m = new RuleModel();
+    	m.attributes = new RuleAttribute[1];
+    	m.attributes[0] = new RuleAttribute("enabled", "true");
+        final String drl = p.marshal( m );
+
+        assertTrue(drl.indexOf("enabled true") > 0);
+
+    }
+
     public void testMoreComplexRendering() {
         final RuleModel m = getComplexModel();
         String expected = "rule \"Complex Rule\"\n" +

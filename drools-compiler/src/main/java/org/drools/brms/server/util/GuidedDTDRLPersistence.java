@@ -43,7 +43,7 @@ public class GuidedDTDRLPersistence {
 			String desc = row[1];
 
 			RuleModel rm = new RuleModel();
-			rm.name = getName(dt.tableName, num, desc);
+			rm.name = getName(dt.tableName, num);
 
 			doAttribs(dt.attributeCols, row, rm);
 			doConditions(dt.attributeCols.size(), dt.conditionCols, row, rm);
@@ -185,8 +185,8 @@ public class GuidedDTDRLPersistence {
 		}
 	}
 
-	String getName(String tableName, String num, String desc) {
-		return (validCell(desc)) ? num + "_" + desc : num + "_" + tableName;
+	String getName(String tableName, String num) {
+		return "Row " + num + " " + tableName;
 	}
 
 	boolean validCell(String c) {
