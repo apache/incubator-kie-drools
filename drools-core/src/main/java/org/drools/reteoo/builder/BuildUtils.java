@@ -1,12 +1,12 @@
 /*
  * Copyright 2006 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -45,7 +45,7 @@ import org.drools.spi.ObjectType;
 
 /**
  * Utility functions for reteoo build
- * 
+ *
  * @author etirelli
  */
 public class BuildUtils {
@@ -54,7 +54,7 @@ public class BuildUtils {
 
     /**
      * Adds the given builder for the given target to the builders map
-     * 
+     *
      * @param target
      * @param builder
      */
@@ -66,7 +66,7 @@ public class BuildUtils {
 
     /**
      * Returns a builder for the given target from the builders map
-     * 
+     *
      * @param target
      * @return returns null if not found
      */
@@ -82,7 +82,7 @@ public class BuildUtils {
      *            The current build context
      * @param candidate
      *            The node to attach.
-     *            
+     *
      * @return the actual attached node that may be the one given as parameter
      *         or eventually one that was already in the cache if sharing is enabled
      */
@@ -107,21 +107,9 @@ public class BuildUtils {
             }
         } else if( isSharingEnabledForNode( context, candidate ) ) {
             if ( (context.getTupleSource() != null) && ( candidate instanceof LeftTupleSink ) ) {
-                LeftTupleSink[] sinks = context.getTupleSource().getSinkPropagator().getSinks(); 
-                for( int i = 0; i < sinks.length; i++ ) {
-                    if( candidate.equals( sinks[i] ) ) {
-                        node = (BaseNode) sinks[i];
-                        break;
-                    }
-                }
+                node    = context.getTupleSource().getSinkPropagator().getMatchingNode(candidate);
             } else if ( (context.getObjectSource() != null) && (candidate instanceof ObjectSink) ) {
-                ObjectSink[] sinks = context.getObjectSource().getSinkPropagator().getSinks();
-                for( int i = 0; i < sinks.length; i++ ) {
-                    if( candidate.equals( sinks[i] ) ) {
-                        node = (BaseNode) sinks[i];
-                        break;
-                    }
-                }
+                node    = context.getObjectSource().getSinkPropagator().getMatchingNode(candidate);
             } else {
                 throw new RuntimeDroolsException( "This is a bug on node sharing verification. Please report to development team." );
             }
@@ -131,7 +119,7 @@ public class BuildUtils {
                 context.releaseId( candidate.getId() );
             }
         }
-        
+
 
         if ( node == null ) {
             // only attach() if it is a new node
@@ -143,12 +131,12 @@ public class BuildUtils {
             }
         }
         return node;
-        
+
     }
 
     /**
      * Utility function to check if sharing is enabled for nodes of the given class
-     * 
+     *
      * @param context
      * @param node
      * @return
@@ -165,10 +153,10 @@ public class BuildUtils {
 
     /**
      * Creates and returns a BetaConstraints object for the given list of constraints
-     * 
+     *
      * @param context the current build context
      * @param list the list of constraints
-     * 
+     *
      * @return
      */
     public BetaConstraints createBetaNodeConstraint(final BuildContext context,
@@ -209,7 +197,7 @@ public class BuildUtils {
 
     /**
      * Make sure the required declarations are previously bound
-     * 
+     *
      * @param declarations
      * @throws InvalidPatternException
      */
@@ -226,7 +214,7 @@ public class BuildUtils {
             }
         }
 
-        // Make sure the required declarations        
+        // Make sure the required declarations
         if ( list.size() != 0 ) {
             final StringBuffer buffer = new StringBuffer();
             buffer.append( list.get( 0 ) );

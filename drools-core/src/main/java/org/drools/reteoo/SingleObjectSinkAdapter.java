@@ -2,6 +2,7 @@ package org.drools.reteoo;
 
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.BaseNode;
 import org.drools.spi.PropagationContext;
 
 import java.io.Externalizable;
@@ -42,6 +43,13 @@ public class SingleObjectSinkAdapter
                                 context,
                                 workingMemory );
 
+    }
+
+    public BaseNode getMatchingNode(BaseNode candidate) {
+        if (candidate.equals(sink)) {
+            return (BaseNode)sink;
+        }
+        return null;
     }
 
     public ObjectSink[] getSinks() {

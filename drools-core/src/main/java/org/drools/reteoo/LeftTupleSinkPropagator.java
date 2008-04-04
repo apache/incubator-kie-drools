@@ -4,6 +4,7 @@ import java.io.Externalizable;
 
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.BaseNode;
 import org.drools.spi.PropagationContext;
 
 public interface LeftTupleSinkPropagator
@@ -19,16 +20,16 @@ public interface LeftTupleSinkPropagator
                                          PropagationContext context,
                                          InternalWorkingMemory workingMemory,
                                          boolean leftTupleMemoryEnabled);
-    
+
     public void createAndPropagateAssertLeftTuple(InternalFactHandle factHandle,
                                                   PropagationContext context,
                                                   InternalWorkingMemory workingMemory,
-                                                  boolean leftTupleWorkingMemoryEnabled );    
+                                                  boolean leftTupleWorkingMemoryEnabled );
 
     public void propagateRetractLeftTuple(LeftTuple tuple,
                                           PropagationContext context,
                                           InternalWorkingMemory workingMemory);
-    
+
     public void propagateRetractLeftTupleDestroyRightTuple(LeftTuple tuple,
                                                            PropagationContext context,
                                                            InternalWorkingMemory workingMemory);
@@ -36,6 +37,8 @@ public interface LeftTupleSinkPropagator
     public void propagateRetractRightTuple(RightTuple tuple,
                                            PropagationContext context,
                                            InternalWorkingMemory workingMemory);
+
+    public BaseNode getMatchingNode(BaseNode candidate);
 
     public LeftTupleSink[] getSinks();
 
