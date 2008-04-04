@@ -438,8 +438,6 @@ public final class RuleTerminalNode extends BaseNode
     }
 
     public void ruleAttached() {
-        // TODO Auto-generated method stub
-
     }
 
     public void attach() {

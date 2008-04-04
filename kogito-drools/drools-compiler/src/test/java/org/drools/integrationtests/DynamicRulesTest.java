@@ -13,6 +13,7 @@ import junit.framework.TestCase;
 import org.drools.Cheese;
 import org.drools.FactA;
 import org.drools.FactB;
+import org.drools.FactHandle;
 import org.drools.Order;
 import org.drools.OrderItem;
 import org.drools.Person;
@@ -50,7 +51,7 @@ public class DynamicRulesTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg1 );
-        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
         workingMemory.setGlobal( "total",
                                  new Integer( 0 ) );
@@ -88,7 +89,7 @@ public class DynamicRulesTest extends TestCase {
         final Package pkg2 = SerializationHelper.serializeObject( builder.getPackage() );
         ruleBase.addPackage( pkg2 );
 
-//        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        //        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         assertEquals( 3,
                       list.size() );
 
@@ -106,7 +107,7 @@ public class DynamicRulesTest extends TestCase {
         builder.addPackageFromDrl( reader );
         final Package pkg3 = SerializationHelper.serializeObject( builder.getPackage() );
         ruleBase.addPackage( pkg3 );
-//        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        //        ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
         // Package 3 has a rule working on Person instances.
         // As we added person instance in advance, rule should fire now
@@ -126,7 +127,7 @@ public class DynamicRulesTest extends TestCase {
         builder.addPackageFromDrl( reader );
         final Package pkg4 = SerializationHelper.serializeObject( builder.getPackage() );
         ruleBase.addPackage( pkg4 );
-        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
 
         Assert.assertEquals( "Rule from package 4 should have been fired",
                              "Who likes Stilton ok",
@@ -153,11 +154,11 @@ public class DynamicRulesTest extends TestCase {
         RuleBase ruleBase = getRuleBase();
         reteooRuleBase = (org.drools.reteoo.ReteooRuleBase) ruleBase;
         ruleBase.addPackage( pkg );
-//        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        //        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final PackageBuilder builder2 = new PackageBuilder();
         builder2.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic2.drl" ) ) );
         ruleBase.addPackage( SerializationHelper.serializeObject( builder2.getPackage() ) );
-//        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        //        ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
@@ -211,7 +212,7 @@ public class DynamicRulesTest extends TestCase {
                       workingMemory.getAgenda().getActivations().length );
 
         reteooRuleBase.removePackage( "org.drools.test" );
-        reteooRuleBase    = SerializationHelper.serializeObject(reteooRuleBase);
+        reteooRuleBase = SerializationHelper.serializeObject( reteooRuleBase );
 
         assertEquals( 0,
                       workingMemory.getAgenda().getActivations().length );
@@ -232,7 +233,7 @@ public class DynamicRulesTest extends TestCase {
         reteooRuleBase = (org.drools.reteoo.ReteooRuleBase) ruleBase;
 
         ruleBase.addPackage( pkg );
-        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
 
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
@@ -268,7 +269,7 @@ public class DynamicRulesTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -336,7 +337,7 @@ public class DynamicRulesTest extends TestCase {
         RuleBase ruleBase = getRuleBase();
         final String packageName = builder.getPackage().getName();
         ruleBase.addPackage( SerializationHelper.serializeObject( builder.getPackage() ) );
-        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
 
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
@@ -349,8 +350,8 @@ public class DynamicRulesTest extends TestCase {
         final PackageBuilder builder1 = new PackageBuilder();
         builder1.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_RemovePackage.drl" ) ) );
         ruleBaseWM.addPackage( SerializationHelper.serializeObject( builder1.getPackage() ) );
-        ruleBaseWM    = SerializationHelper.serializeObject(ruleBaseWM);
-        workingMemory = SerializationHelper.serializeObject(workingMemory);
+        ruleBaseWM = SerializationHelper.serializeObject( ruleBaseWM );
+        workingMemory = SerializationHelper.serializeObject( workingMemory );
         workingMemory.fireAllRules();
 
         ruleBaseWM.removePackage( packageName );
@@ -377,8 +378,8 @@ public class DynamicRulesTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicRules.drl" ) ) );
         final Package pkg = builder.getPackage();
         ruleBase.addPackage( SerializationHelper.serializeObject( pkg ) );
-        ruleBase    = SerializationHelper.serializeObject(ruleBase);
-        workingMemory    = SerializationHelper.serializeObject(workingMemory);
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        workingMemory = SerializationHelper.serializeObject( workingMemory );
 
         workingMemory.fireAllRules();
     }
@@ -401,8 +402,8 @@ public class DynamicRulesTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicRules2.drl" ) ) );
         final Package pkg = SerializationHelper.serializeObject( builder.getPackage() );
         ruleBase.addPackage( pkg );
-        ruleBase    = SerializationHelper.serializeObject(ruleBase);
-        workingMemory    = SerializationHelper.serializeObject(workingMemory);
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        workingMemory = SerializationHelper.serializeObject( workingMemory );
 
         workingMemory.fireAllRules();
     }
@@ -416,14 +417,14 @@ public class DynamicRulesTest extends TestCase {
         Package pkg = SerializationHelper.serializeObject( builder.getPackage() );
         ruleBase.addPackage( pkg );
         ruleBase.removePackage( pkg.getName() );
-        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
 
         //add and remove again
         builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1.drl" ) ) );
         pkg = SerializationHelper.serializeObject( builder.getPackage() );
         ruleBase.addPackage( pkg );
-        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
         ruleBase.removePackage( pkg.getName() );
     }
 
@@ -443,7 +444,7 @@ public class DynamicRulesTest extends TestCase {
             RuleBase ruleBase = RuleBaseFactory.newRuleBase( rbconf );
             Package pkg = SerializationHelper.serializeObject( builder.getPackage() );
             ruleBase.addPackage( pkg );
-//            ruleBase    = SerializationHelper.serializeObject(ruleBase);
+            //            ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
             StatefulSession wm = ruleBase.newStatefulSession();
             wm.insert( cheeseClass.newInstance() );
@@ -462,7 +463,7 @@ public class DynamicRulesTest extends TestCase {
             ruleBase = RuleBaseFactory.newRuleBase( rbconf );
             pkg = SerializationHelper.serializeObject( builder.getPackage() );
             ruleBase.addPackage( pkg );
-//            ruleBase    = SerializationHelper.serializeObject(ruleBase);
+            //            ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
             wm = ruleBase.newStatefulSession();
             wm.insert( cheeseClass.newInstance() );
@@ -543,7 +544,7 @@ public class DynamicRulesTest extends TestCase {
         builder2.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_CollectDynamicRules2.drl" ) ) );
         final Package pkg2 = builder2.getPackage();
         ruleBase.addPackage( pkg2 );
-        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
 
         // fire all rules is automatic
         assertEquals( 1,
@@ -551,6 +552,59 @@ public class DynamicRulesTest extends TestCase {
         assertEquals( 2,
                       ((List) list.get( 0 )).size() );
 
+    }
+
+    public void testDynamicNotNode() throws Exception {
+        final PackageBuilder builderInit = new PackageBuilder();
+        builderInit.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_CollectDynamicRules1.drl" ) ) );
+        final Package pkgInit = builderInit.getPackage();
+
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkgInit );
+
+        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        List results = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 results );
+
+        final Cheese a = new Cheese( "stilton",
+                                     10 );
+        final Cheese b = new Cheese( "stilton",
+                                     15 );
+        final Cheese c = new Cheese( "stilton",
+                                     20 );
+        workingMemory.insert( a );
+        FactHandle handle = workingMemory.insert( b );
+        workingMemory.insert( c );
+
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicNotNode.drl" ) ) );
+        final Package pkg = builder.getPackage();
+        ruleBase.addPackage( SerializationHelper.serializeObject( pkg ) );
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        workingMemory = SerializationHelper.serializeObject( workingMemory );
+        results = (List) workingMemory.getGlobal( "results" );
+
+        workingMemory.fireAllRules();
+
+        assertEquals( 0,
+                      results.size() );
+
+        ruleBase.removePackage( "org.drools" );
+
+        workingMemory.retract( handle );
+
+        final PackageBuilder builder1 = new PackageBuilder();
+        builder1.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicNotNode.drl" ) ) );
+        final Package pkg1 = builder.getPackage();
+        ruleBase.addPackage( SerializationHelper.serializeObject( pkg1 ) );
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        workingMemory = SerializationHelper.serializeObject( workingMemory );
+        results = (List) workingMemory.getGlobal( "results" );
+        workingMemory.fireAllRules();
+
+        assertEquals( 1,
+                      results.size() );
     }
 
     public void testDynamicRulesAddRemove() {
@@ -563,22 +617,34 @@ public class DynamicRulesTest extends TestCase {
 
             StatefulSession session = ruleBase.newStatefulSession();
             List results = new ArrayList();
-            session.setGlobal( "results", results );
+            session.setGlobal( "results",
+                               results );
 
-            InternalFactHandle h1 = (InternalFactHandle) session.insert( new Person( "tom", 1 ) );
-            InternalFactHandle h2 = (InternalFactHandle) session.insert( new Person( "fred", 2 ) );
-            InternalFactHandle h3 = (InternalFactHandle) session.insert( new Person( "harry", 3 ) );
-            InternalFactHandle h4 = (InternalFactHandle) session.insert( new Person( "fred", 4 ) );
-            InternalFactHandle h5 = (InternalFactHandle) session.insert( new Person( "ed", 5 ) );
-            InternalFactHandle h6 = (InternalFactHandle) session.insert( new Person( "tom", 6 ) );
-            InternalFactHandle h7 = (InternalFactHandle) session.insert( new Person( "sreeni", 7 ) );
-            InternalFactHandle h8 = (InternalFactHandle) session.insert( new Person( "jill", 8 ) );
-            InternalFactHandle h9 = (InternalFactHandle) session.insert( new Person( "ed", 9 ) );
-            InternalFactHandle h10 = (InternalFactHandle) session.insert( new Person( "tom", 10 ) );
+            InternalFactHandle h1 = (InternalFactHandle) session.insert( new Person( "tom",
+                                                                                     1 ) );
+            InternalFactHandle h2 = (InternalFactHandle) session.insert( new Person( "fred",
+                                                                                     2 ) );
+            InternalFactHandle h3 = (InternalFactHandle) session.insert( new Person( "harry",
+                                                                                     3 ) );
+            InternalFactHandle h4 = (InternalFactHandle) session.insert( new Person( "fred",
+                                                                                     4 ) );
+            InternalFactHandle h5 = (InternalFactHandle) session.insert( new Person( "ed",
+                                                                                     5 ) );
+            InternalFactHandle h6 = (InternalFactHandle) session.insert( new Person( "tom",
+                                                                                     6 ) );
+            InternalFactHandle h7 = (InternalFactHandle) session.insert( new Person( "sreeni",
+                                                                                     7 ) );
+            InternalFactHandle h8 = (InternalFactHandle) session.insert( new Person( "jill",
+                                                                                     8 ) );
+            InternalFactHandle h9 = (InternalFactHandle) session.insert( new Person( "ed",
+                                                                                     9 ) );
+            InternalFactHandle h10 = (InternalFactHandle) session.insert( new Person( "tom",
+                                                                                      10 ) );
 
             session.fireAllRules();
 
-            assertEquals( 3, results.size() );
+            assertEquals( 3,
+                          results.size() );
             assertTrue( results.contains( h1.getObject() ) );
             assertTrue( results.contains( h6.getObject() ) );
             assertTrue( results.contains( h10.getObject() ) );
@@ -588,7 +654,8 @@ public class DynamicRulesTest extends TestCase {
             fredBuilder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicRulesFred.drl" ) ) );
             ruleBase.addPackage( fredBuilder.getPackage() );
 
-            assertEquals( 2, results.size() );
+            assertEquals( 2,
+                          results.size() );
             assertTrue( results.contains( h2.getObject() ) );
             assertTrue( results.contains( h4.getObject() ) );
             results.clear();
@@ -599,20 +666,23 @@ public class DynamicRulesTest extends TestCase {
             edBuilder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicRulesEd.drl" ) ) );
             ruleBase.addPackage( edBuilder.getPackage() );
 
-            assertEquals( 2, results.size() );
+            assertEquals( 2,
+                          results.size() );
             assertTrue( results.contains( h5.getObject() ) );
             assertTrue( results.contains( h9.getObject() ) );
             results.clear();
 
             ((Person) h3.getObject()).setName( "ed" );
-            session.update( h3, h3.getObject() );
+            session.update( h3,
+                            h3.getObject() );
             session.fireAllRules();
 
-            assertEquals( 1, results.size() );
+            assertEquals( 1,
+                          results.size() );
             assertTrue( results.contains( h3.getObject() ) );
-        } catch( Exception e ) {
+        } catch ( Exception e ) {
             e.printStackTrace();
-            fail( "Should not raise any exception: "+e.getMessage() );
+            fail( "Should not raise any exception: " + e.getMessage() );
         }
     }
 
@@ -639,23 +709,39 @@ public class DynamicRulesTest extends TestCase {
 
         Order order = new Order();
 
-        OrderItem item1 = new OrderItem(order, 1, "Adventure Guide Brazil", OrderItem.TYPE_BOOK, 24);
-        order.addItem(item1);
-        workingMemory.insert(item1);
+        OrderItem item1 = new OrderItem( order,
+                                         1,
+                                         "Adventure Guide Brazil",
+                                         OrderItem.TYPE_BOOK,
+                                         24 );
+        order.addItem( item1 );
+        workingMemory.insert( item1 );
 
-        OrderItem item2 = new OrderItem(order, 2, "Prehistoric Britain", OrderItem.TYPE_BOOK, 15);
-        order.addItem(item2);
-        workingMemory.insert(item2);
+        OrderItem item2 = new OrderItem( order,
+                                         2,
+                                         "Prehistoric Britain",
+                                         OrderItem.TYPE_BOOK,
+                                         15 );
+        order.addItem( item2 );
+        workingMemory.insert( item2 );
 
-        OrderItem item3 = new OrderItem(order, 3, "Holiday Music", OrderItem.TYPE_CD, 9);
-        order.addItem(item3);
-        workingMemory.insert(item3);
+        OrderItem item3 = new OrderItem( order,
+                                         3,
+                                         "Holiday Music",
+                                         OrderItem.TYPE_CD,
+                                         9 );
+        order.addItem( item3 );
+        workingMemory.insert( item3 );
 
-        OrderItem item4 = new OrderItem(order, 4, "Very Best of Mick Jagger", OrderItem.TYPE_CD, 11);
-        order.addItem(item4);
-        workingMemory.insert(item4);
+        OrderItem item4 = new OrderItem( order,
+                                         4,
+                                         "Very Best of Mick Jagger",
+                                         OrderItem.TYPE_CD,
+                                         11 );
+        order.addItem( item4 );
+        workingMemory.insert( item4 );
 
-        workingMemory.insert(order);
+        workingMemory.insert( order );
 
         assertEquals( 11,
                       workingMemory.getAgenda().getActivations().length );
@@ -668,8 +754,11 @@ public class DynamicRulesTest extends TestCase {
         reteooRuleBase.removeRule( "org.drools",
                                    "like book" );
 
-        final OrderItem item5 = new OrderItem(order, 5, "Sinatra : Vegas", OrderItem.TYPE_CD,
-                                             5 );
+        final OrderItem item5 = new OrderItem( order,
+                                               5,
+                                               "Sinatra : Vegas",
+                                               OrderItem.TYPE_CD,
+                                               5 );
         assertEquals( 8,
                       workingMemory.getAgenda().getActivations().length );
 
@@ -723,7 +812,6 @@ public class DynamicRulesTest extends TestCase {
         }
     }
 
-
     public void testRemovePackageSubNetwork() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicRulesWithSubnetwork.drl" ) ) );
@@ -734,15 +822,36 @@ public class DynamicRulesTest extends TestCase {
 
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
         List results = new ArrayList();
-        workingMemory.setGlobal( "results", results );
+        workingMemory.setGlobal( "results",
+                                 results );
 
         Order order = new Order();
 
-        OrderItem item1 = new OrderItem(order, 1, "Adventure Guide Brazil", OrderItem.TYPE_BOOK, 24);
-        OrderItem item2 = new OrderItem(order, 2, "Prehistoric Britain", OrderItem.TYPE_BOOK, 15);
-        OrderItem item3 = new OrderItem(order, 3, "Holiday Music", OrderItem.TYPE_CD, 9);
-        OrderItem item4 = new OrderItem(order, 4, "Very Best of Mick Jagger", OrderItem.TYPE_CD, 11);
-        OrderItem item5 = new OrderItem(order, 5, "The Master and Margarita", OrderItem.TYPE_BOOK, 29);
+        OrderItem item1 = new OrderItem( order,
+                                         1,
+                                         "Adventure Guide Brazil",
+                                         OrderItem.TYPE_BOOK,
+                                         24 );
+        OrderItem item2 = new OrderItem( order,
+                                         2,
+                                         "Prehistoric Britain",
+                                         OrderItem.TYPE_BOOK,
+                                         15 );
+        OrderItem item3 = new OrderItem( order,
+                                         3,
+                                         "Holiday Music",
+                                         OrderItem.TYPE_CD,
+                                         9 );
+        OrderItem item4 = new OrderItem( order,
+                                         4,
+                                         "Very Best of Mick Jagger",
+                                         OrderItem.TYPE_CD,
+                                         11 );
+        OrderItem item5 = new OrderItem( order,
+                                         5,
+                                         "The Master and Margarita",
+                                         OrderItem.TYPE_BOOK,
+                                         29 );
 
         order.addItem( item1 );
         order.addItem( item2 );
@@ -752,8 +861,10 @@ public class DynamicRulesTest extends TestCase {
 
         workingMemory.insert( order );
         workingMemory.fireAllRules();
-        assertEquals( 1, results.size() );
-        assertEquals( 3, ((List) results.get(0)).size() );
+        assertEquals( 1,
+                      results.size() );
+        assertEquals( 3,
+                      ((List) results.get( 0 )).size() );
         results.clear();
 
         final RuleBase ruleBaseWM = workingMemory.getRuleBase();
@@ -763,23 +874,28 @@ public class DynamicRulesTest extends TestCase {
         ruleBaseWM.addPackage( SerializationHelper.serializeObject( builder1.getPackage() ) );
         workingMemory.fireAllRules();
         results = (List) workingMemory.getGlobal( "results" );
-        assertEquals( 1, results.size() );
-        assertEquals( 3, ((List) results.get(0)).size() );
+        assertEquals( 1,
+                      results.size() );
+        assertEquals( 3,
+                      ((List) results.get( 0 )).size() );
         results.clear();
 
         ruleBaseWM.removePackage( packageName );
         ruleBaseWM.addPackage( SerializationHelper.serializeObject( builder1.getPackage() ) );
-        assertEquals( 1, results.size() );
-        assertEquals( 3, ((List) results.get(0)).size() );
+        assertEquals( 1,
+                      results.size() );
+        assertEquals( 3,
+                      ((List) results.get( 0 )).size() );
         results.clear();
 
         ruleBaseWM.removePackage( packageName );
         ruleBaseWM.addPackage( SerializationHelper.serializeObject( builder1.getPackage() ) );
-        assertEquals( 1, results.size() );
-        assertEquals( 3, ((List) results.get(0)).size() );
+        assertEquals( 1,
+                      results.size() );
+        assertEquals( 3,
+                      ((List) results.get( 0 )).size() );
         results.clear();
     }
-
 
     public void testRuleBaseAddRemoveSubNetworks() throws Exception {
         try {
@@ -800,10 +916,9 @@ public class DynamicRulesTest extends TestCase {
             ruleBase.removePackage( pkg.getName() );
         } catch ( Exception e ) {
             e.printStackTrace();
-            fail("Should not raise any exception");
+            fail( "Should not raise any exception" );
         }
     }
-
 
     public class SubvertedClassLoader extends URLClassLoader {
 

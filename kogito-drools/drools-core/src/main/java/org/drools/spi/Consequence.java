@@ -31,9 +31,7 @@ public interface Consequence
     /**
      * Execute the consequence for the supplied matching <code>Tuple</code>.
      * 
-     * @param activation
-     *            TODO
-     * @param workingMemory TODO
+     * @param knowledgeHelper
      * @param workingMemory
      *            The working memory session.
      * @throws ConsequenceException
