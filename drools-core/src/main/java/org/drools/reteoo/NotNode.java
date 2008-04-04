@@ -173,9 +173,9 @@ public class NotNode extends BetaNode {
                     blockedPrevious.setBlockedPrevious( leftTuple );
                 }
                 rightTuple.setBlocked( leftTuple );
-                
+
                 // this is now blocked so remove from memory
-                memory.getLeftTupleMemory().remove( leftTuple );                
+                memory.getLeftTupleMemory().remove( leftTuple );
 
                 this.sink.propagateRetractLeftTuple( leftTuple,
                                                      context,
@@ -249,7 +249,7 @@ public class NotNode extends BetaNode {
                 this.sink.propagateAssertLeftTuple( leftTuple,
                                                     context,
                                                     workingMemory,
-                                                    this.tupleMemoryEnabled  );
+                                                    this.tupleMemoryEnabled );
             }
 
             leftTuple = temp;
@@ -308,14 +308,13 @@ public class NotNode extends BetaNode {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
         final Iterator tupleIter = memory.getLeftTupleMemory().iterator();
-        // @todo
-        //        for ( LeftTuple leftTuple = (LeftTuple) tupleIter.next(); leftTuple != null; leftTuple = (LeftTuple) tupleIter.next() ) {
-        //            if ( leftTuple.getMatch() == null ) {
-        //                sink.assertLeftTuple( new LeftTuple( leftTuple ),
-        //                                      context,
-        //                                      workingMemory );
-        //            }
-        //        }
+        for ( LeftTuple leftTuple = (LeftTuple) tupleIter.next(); leftTuple != null; leftTuple = (LeftTuple) tupleIter.next() ) {
+            sink.assertLeftTuple( new LeftTuple( leftTuple,
+                                                 sink,
+                                                 this.tupleMemoryEnabled ),
+                                  context,
+                                  workingMemory );
+        }
     }
 
     public String toString() {

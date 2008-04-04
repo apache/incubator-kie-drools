@@ -95,7 +95,7 @@ public abstract class BaseNode
 
     /**
      * Removes the node from teh network. Usually from the parent <code>ObjectSource</code> or <code>TupleSource</code>
-     * @param builder TODO
+     * @param builder 
      *
      */
     protected abstract void doRemove(RuleRemovalContext context,

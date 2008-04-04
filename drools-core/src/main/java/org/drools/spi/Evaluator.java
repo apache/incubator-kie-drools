@@ -72,7 +72,7 @@ public interface Evaluator
     /**
      * This method will extract the value from the object1 using the 
      * extractor and compare it with the object2.
-     * @param workingMemory TODO
+     * @param workingMemory 
      * @param extractor 
      *        The extractor used to get the source value from the object
      * @param object1
