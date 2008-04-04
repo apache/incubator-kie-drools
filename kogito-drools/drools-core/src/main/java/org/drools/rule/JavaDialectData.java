@@ -25,17 +25,13 @@ import java.io.ObjectOutput;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.ProtectionDomain;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.base.accumulators.JavaAccumulatorFunctionExecutor;
-import org.drools.common.DroolsObjectInputStream;
-import org.drools.common.DroolsObjectOutputStream;
 import org.drools.common.DroolsObjectInput;
 import org.drools.spi.Accumulator;
 import org.drools.spi.Consequence;
@@ -95,6 +91,17 @@ public class JavaDialectData
         this.dirty = false;
     }
 
+    public DialectData clone() {
+        DialectData cloneOne = new JavaDialectData();
+
+        cloneOne.merge(this);
+        return cloneOne;
+    }
+
+    public void setDialectDatas(DialectDatas datas) {
+        this.datas  = datas;
+    }
+
     public boolean isDirty() {
         return this.dirty;
     }
@@ -131,6 +138,13 @@ public class JavaDialectData
         this.dirty  = droolsStream.readBoolean();
     }
 
+    protected Map getStore() {
+        if (store == null) {
+            store = new HashMap();
+        }
+        return store;
+    }
+
     public ClassLoader getClassLoader() {
         return this.classLoader;
     }
@@ -157,12 +171,21 @@ public class JavaDialectData
     public void merge(DialectData newData) {
         JavaDialectData newJavaData = (JavaDialectData) newData;
 
+        this.dirty = newData.isDirty();
+        if (this.classLoader == null) {
+            this.classLoader    = new PackageClassLoader(newJavaData.getClassLoader().getParent(), this);
+            this.dirty = true;
+        }
+
         // First update the binary files
         // @todo: this probably has issues if you add classes in the incorrect order - functions, rules, invokers.
-        final String[] files = newJavaData.list();
-        for ( int i = 0, length = files.length; i < length; i++ ) {
-            write( files[i],
-                   newJavaData.read( files[i] ) );
+        for ( String file : newJavaData.list()) {
+            // no need to wire, as we already know this is done in a merge
+            if (getStore().put( file,
+                                newJavaData.read( file ) ) != null ) {
+                // we are updating an existing class so reload();
+                this.dirty = true;
+            }
         }
 
         // Add invokers
@@ -199,15 +222,15 @@ public class JavaDialectData
     public byte[] read(final String resourceName) {
         byte[] bytes = null;
 
-        if ( this.store != null && !this.store.isEmpty()) {
-            bytes = (byte[]) this.store.get( resourceName );
+        if ( !getStore().isEmpty()) {
+            bytes = (byte[])getStore().get( resourceName );
         }
         return bytes;
     }
 
     public void write(final String resourceName,
                       final byte[] clazzData) throws RuntimeDroolsException {
-        if ( this.store.put( resourceName,
+        if ( getStore().put( resourceName,
                              clazzData ) != null ) {
             // we are updating an existing class so reload();
             //reload();
@@ -224,8 +247,8 @@ public class JavaDialectData
     }
 
     public boolean remove(final String resourceName) throws RuntimeDroolsException {
-        this.invokerLookups.remove( resourceName );
-        if ( this.store.remove( convertClassToResourcePath( resourceName ) ) != null ) {
+        getInvokers().remove( resourceName );
+        if (getStore().remove( convertClassToResourcePath( resourceName ) ) != null ) {
             // we need to make sure the class is removed from the classLoader
             // reload();
             this.dirty = true;
@@ -235,17 +258,13 @@ public class JavaDialectData
     }
 
     public String[] list() {
-        if ( this.store == null ) {
-            return new String[0];
-        }
-        final List names = new ArrayList();
+        String[] names = new String[getStore().size()];
+        int i = 0;
 
-        for ( final Iterator it = this.store.keySet().iterator(); it.hasNext(); ) {
-            final String name = (String) it.next();
-            names.add( name );
+        for ( Object object : getStore().keySet()) {
+            names[i++] = (String)object;
         }
-
-        return (String[]) names.toArray( new String[this.store.size()] );
+        return names;
     }
 
     /**
@@ -254,13 +273,14 @@ public class JavaDialectData
      */
     public void reload() throws RuntimeDroolsException {
         // drops the classLoader and adds a new one
+        this.datas.removeClassLoader( this.classLoader );
         this.classLoader = new PackageClassLoader( this.datas.getParentClassLoader(), this );
         this.datas.addClassLoader( this.classLoader );
 
         // Wire up invokers
         try {
-            for ( final Iterator it = this.invokerLookups.entrySet().iterator(); it.hasNext(); ) {
-                Entry entry = (Entry) it.next();
+            for ( final Object object : getInvokers().entrySet() ) {
+                Entry entry = (Entry) object;
                 wire( (String) entry.getKey(),
                       entry.getValue() );
             }
@@ -278,8 +298,8 @@ public class JavaDialectData
     }
 
     public void clear() {
-        this.store.clear();
-        this.invokerLookups.clear();
+        getStore().clear();
+        getInvokers().clear();
         this.AST = null;
         reload();
     }
@@ -287,7 +307,7 @@ public class JavaDialectData
     public void wire(final String className) throws ClassNotFoundException,
                                             InstantiationException,
                                             IllegalAccessException {
-        final Object invoker = this.invokerLookups.get( className );
+        final Object invoker = getInvokers().get( className );
         wire( className,
               invoker );
     }
@@ -323,26 +343,29 @@ public class JavaDialectData
     }
 
     public String toString() {
-        return this.getClass().getName() + this.store.toString();
+        return this.getClass().getName() +getStore().toString();
     }
 
     public void putInvoker(final String className,
                            final Object invoker) {
-        this.invokerLookups.put( className,
+        getInvokers().put( className,
                                  invoker );
     }
 
     public void putAllInvokers(final Map invokers) {
-        this.invokerLookups.putAll( invokers );
+        getInvokers().putAll( invokers );
 
     }
 
     public Map getInvokers() {
+        if (this.invokerLookups == null) {
+            this.invokerLookups = new HashMap();
+        }
         return this.invokerLookups;
     }
 
     public void removeInvoker(final String className) {
-        this.invokerLookups.remove( className );
+        getInvokers().remove( className );
     }
 
     public Object getAST() {

@@ -27,6 +27,15 @@ public class MVELDialectData implements DialectData, Externalizable {
 		this.functionFactory = new MapFunctionResolverFactory();
 	}
 
+    public DialectData clone() {
+        DialectData clone = new MVELDialectData();
+        clone.merge(this);
+        return clone;
+    }
+
+    public void setDialectDatas(DialectDatas datas) {
+    }
+
 	public MapFunctionResolverFactory getFunctionFactory() {
 		return this.functionFactory;
 	}
