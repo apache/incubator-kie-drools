@@ -1,25 +1,14 @@
 package org.drools.agent;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 
-import org.drools.common.DroolsObjectInputStream;
 import org.drools.rule.Package;
+import org.drools.util.DroolsStreamUtils;
 
 public class HttpClientImpl implements IHttpClient {
-
-
-
-
-
-
-
-
-
-
 
     public LastUpdatedPing checkLastUpdated(URL url) throws IOException {
         URLConnection con = url.openConnection();
@@ -54,10 +43,8 @@ public class HttpClientImpl implements IHttpClient {
         HttpURLConnection httpCon = (HttpURLConnection) con;
         try {
             httpCon.setRequestMethod( "GET" );
-            InputStream in = httpCon.getInputStream();
 
-            DroolsObjectInputStream oin = new DroolsObjectInputStream(in);
-                return (Package) oin.readObject();
+            return (Package) DroolsStreamUtils.streamIn(httpCon.getInputStream());
 
         } finally {
             httpCon.disconnect();

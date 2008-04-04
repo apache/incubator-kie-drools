@@ -2,12 +2,10 @@ package org.drools.util;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.RuntimeDroolsException;
-import org.drools.common.DroolsObjectInputStream;
 import org.drools.rule.Package;
 
 /**
@@ -78,8 +76,7 @@ public class BinaryRuleBaseLoader {
         }
 
         try {
-            DroolsObjectInputStream oin = new DroolsObjectInputStream( in, classLoader);
-            Object opkg = oin.readObject();
+            Object opkg = DroolsStreamUtils.streamIn(in, classLoader);
             if ( !(opkg instanceof Package) ) {
                 throw new IllegalArgumentException( "Can only add instances of org.drools.rule.Package to a rulebase instance." );
             }

@@ -77,6 +77,7 @@ import org.drools.StatefulSession;
 import org.drools.StatelessSession;
 import org.drools.TestParam;
 import org.drools.WorkingMemory;
+import org.drools.util.DroolsStreamUtils;
 import org.drools.Cheesery.Maturity;
 import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.audit.WorkingMemoryInMemoryLogger;
@@ -176,24 +177,24 @@ public class MiscTest extends TestCase {
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         // will test serialisation of int and typesafe enums tests
-        workingMemory   = ruleBase.newStatefulSession( new ByteArrayInputStream( SerializationHelper.serializeOut(  workingMemory  )) );
-        
+        workingMemory   = ruleBase.newStatefulSession( new ByteArrayInputStream( DroolsStreamUtils.streamOut(  workingMemory  )) );
+
         List list = new ArrayList();
         workingMemory.setGlobal( "list",
                                  list );
-                       
+
         final Cheesery cheesery1 = new Cheesery();
         cheesery1.setStatus( Cheesery.SELLING_CHEESE );
         cheesery1.setMaturity( Maturity.OLD );
-        workingMemory.insert( cheesery1 );                        
+        workingMemory.insert( cheesery1 );
 
         final Cheesery cheesery2 = new Cheesery();
         cheesery2.setStatus( Cheesery.MAKING_CHEESE );
         cheesery2.setMaturity( Maturity.YOUNG );
-        workingMemory.insert( cheesery2 );        
-        
-        workingMemory.fireAllRules();        
-        
+        workingMemory.insert( cheesery2 );
+
+        workingMemory.fireAllRules();
+
         assertEquals( 2,
                       list.size() );
 
@@ -202,19 +203,19 @@ public class MiscTest extends TestCase {
                       list.get( 0 ) );
         assertSame( cheesery2, list.get( 1 ) );
         assertEquals( cheesery2,
-                      list.get( 1 ) );        
+                      list.get( 1 ) );
 
         // test list after serialising
-        workingMemory   = ruleBase.newStatefulSession( new ByteArrayInputStream( SerializationHelper.serializeOut(  workingMemory  )) );
+        workingMemory   = ruleBase.newStatefulSession( new ByteArrayInputStream( DroolsStreamUtils.streamOut(  workingMemory  )) );
         list = (List) workingMemory.getGlobal( "list" );
 	    workingMemory.fireAllRules();
 
 		assertEquals(2, list.size());
-		
+
 		assertNotSame( cheesery1, list.get( 0 ) );
 		assertEquals(cheesery1, list.get(0));
 		assertNotSame( cheesery2, list.get( 1 ) );
-		assertEquals(cheesery2, list.get(1));        
+		assertEquals(cheesery2, list.get(1));
     }
 
     public void testPrimitiveArray() throws Exception {
@@ -1420,7 +1421,7 @@ public class MiscTest extends TestCase {
         pkg.checkValidity();
         pkg = SerializationHelper.serializeObject(pkg);
     }
-    
+
     /**
      * @see JBRULES-1415 Certain uses of from causes NullPointerException in WorkingMemoryLogger
      */
@@ -1444,23 +1445,23 @@ public class MiscTest extends TestCase {
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage(pkg);
         StatefulSession session = ruleBase.newStatefulSession();
-        
+
         WorkingMemoryInMemoryLogger logger = new WorkingMemoryInMemoryLogger( session );
         List list = new ArrayList();
         session.setGlobal( "list", list );
-        
+
         Cheesery cheesery = new Cheesery();
         cheesery.addCheese(  new Cheese("stilton", 22) );
-        
+
         session.insert( cheesery );
 
         // TODO java.io.EOFException
 //        session = SerializationHelper.serializeObject(session);
-        session.fireAllRules();                 
-        
+        session.fireAllRules();
+
         assertEquals( 1, ((List)session.getGlobal("list")).size());
         assertEquals( "stilton", ((List)session.getGlobal("list")).get(0));
-}    
+}
 
     public void testWithInvalidRule() throws Exception {
         final PackageBuilder builder = new PackageBuilder();

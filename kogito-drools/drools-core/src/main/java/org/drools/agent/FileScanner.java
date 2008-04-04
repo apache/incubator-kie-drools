@@ -4,16 +4,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectInput;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.drools.common.DroolsObjectInputStream;
 import org.drools.rule.Package;
+import org.drools.util.DroolsStreamUtils;
 
 /**
  * This will monitor a file to a binary package.
@@ -104,12 +102,8 @@ public class FileScanner extends PackageProvider {
     	} else {
 
 	        Package p1_ = null;
-	        ObjectInput in;
 	        try {
-	            in = new DroolsObjectInputStream( new FileInputStream( pkgFile ) );
-	            p1_ = (Package) in.readObject();
-	            in.close();
-
+	            p1_ = (Package) DroolsStreamUtils.streamIn( new FileInputStream( pkgFile ) );
 	        } catch ( FileNotFoundException e ) {
 	            this.listener.exception( e );
 	            this.listener.warning( "Was unable to find the file " + pkgFile.getPath() );

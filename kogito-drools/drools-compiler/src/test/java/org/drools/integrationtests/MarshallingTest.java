@@ -2,12 +2,7 @@ package org.drools.integrationtests;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.ObjectInput;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -28,7 +23,7 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
-import org.drools.common.DroolsObjectInputStream;
+import org.drools.util.DroolsStreamUtils;
 import org.drools.common.InternalFactHandle;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
@@ -77,7 +72,7 @@ public class MarshallingTest extends TestCase {
         final Person bob = new Person( "bob" );
         workingMemory.insert( bob );
 
-        final byte[] wm = SerializationHelper.serializeOut( workingMemory );
+        final byte[] wm = DroolsStreamUtils.streamOut( workingMemory );
 
         workingMemory = ruleBase.newStatefulSession( new ByteArrayInputStream( wm ) );
 
@@ -127,7 +122,7 @@ public class MarshallingTest extends TestCase {
         map = SerializationHelper.serializeObject(map);
         ruleBase = (RuleBase) map.get( "x" );
 
-        final byte[] wm = SerializationHelper.serializeOut( workingMemory );
+        final byte[] wm = DroolsStreamUtils.streamOut( workingMemory );
 
         workingMemory = ruleBase.newStatefulSession( new ByteArrayInputStream( wm ) );
 
@@ -162,6 +157,7 @@ public class MarshallingTest extends TestCase {
         assertEquals( 2,
                       workingMemory.getAgenda().agendaSize() );
 
+        workingMemory = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
 
         final List list = (List) workingMemory.getGlobal( "list" );
@@ -202,7 +198,7 @@ public class MarshallingTest extends TestCase {
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         // serialise the working memory before population
-        final byte[] wm = SerializationHelper.serializeOut( workingMemory );
+        final byte[] wm = DroolsStreamUtils.streamOut( workingMemory );
         workingMemory = ruleBase.newStatefulSession( new ByteArrayInputStream( wm ) );
 
         ruleBase.addPackage( pkg );
@@ -235,6 +231,7 @@ public class MarshallingTest extends TestCase {
         assertEquals( 2,
                       workingMemory.getAgenda().agendaSize() );
 
+        workingMemory = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
 
         final List list = (List) workingMemory.getGlobal( "list" );
@@ -251,7 +248,7 @@ public class MarshallingTest extends TestCase {
         assertTrue( IteratorToList.convert( workingMemory.iterateObjects() ).contains( new Person( "help" ) ) );
     }
 
-    public void FIXME_testSerializeWorkingMemoryAndRuleBase3() throws Exception {
+    public void testSerializeWorkingMemoryAndRuleBase3() throws Exception {
         // has the first newStatefulSession after the ruleBase is serialised
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Serializable.drl" ) );
 
@@ -281,7 +278,7 @@ public class MarshallingTest extends TestCase {
         ruleBase = (RuleBase) map.get( "x" );
 
         // now try serialising with a fully populated wm from a serialised rulebase
-        final byte[] wm = SerializationHelper.serializeOut( workingMemory );
+        final byte[] wm = DroolsStreamUtils.streamOut( workingMemory );
         workingMemory = ruleBase.newStatefulSession( new ByteArrayInputStream( wm ) );
 
         final Rule[] rules = ruleBase.getPackages()[0].getRules();
@@ -306,6 +303,7 @@ public class MarshallingTest extends TestCase {
         assertEquals( 2,
                       workingMemory.getAgenda().agendaSize() );
 
+        workingMemory = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
 
         final List list = (List) workingMemory.getGlobal( "list" );
@@ -343,7 +341,7 @@ public class MarshallingTest extends TestCase {
         assertEquals( list.size(), 1 );
         assertEquals( "stilton", list.get( 0 ));
 
-        byte[] serializedSession = SerializationHelper.serializeOut( session );
+        byte[] serializedSession = DroolsStreamUtils.streamOut( session );
         session.dispose();
 
         // now recreate the rulebase, deserialize the session and test it
@@ -405,7 +403,7 @@ public class MarshallingTest extends TestCase {
         p.setIntPrimitive( (int) 3 );
         workingMemory.insert( p );
 
-        final byte[] wm = SerializationHelper.serializeOut( workingMemory );
+        final byte[] wm = DroolsStreamUtils.streamOut( workingMemory );
 
         workingMemory = ruleBase.newStatefulSession( new ByteArrayInputStream( wm ) );
 
@@ -417,6 +415,7 @@ public class MarshallingTest extends TestCase {
         assertEquals( 3,
                       workingMemory.getAgenda().agendaSize() );
 
+        workingMemory = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
 
         final List list = (List) workingMemory.getGlobal( "list" );
@@ -469,12 +468,12 @@ public class MarshallingTest extends TestCase {
                       results.get( 0 ) );
 
         // serialize session and rulebase out
-        byte[] serializedSession = SerializationHelper.serializeOut( session );
-        byte[] serializedRulebase = SerializationHelper.serializeOut( ruleBase );
+        byte[] serializedSession = DroolsStreamUtils.streamOut( session );
+        byte[] serializedRulebase = DroolsStreamUtils.streamOut( ruleBase );
         session.dispose();
 
         // now deserialize the rulebase, deserialize the session and test it
-        ruleBase = (RuleBase) SerializationHelper.serializeIn( serializedRulebase );
+        ruleBase = (RuleBase) DroolsStreamUtils.streamIn( serializedRulebase );
         session = ruleBase.newStatefulSession( new ByteArrayInputStream( serializedSession ) );
 
         // dynamically add a new package
@@ -504,8 +503,8 @@ public class MarshallingTest extends TestCase {
         serializedSession = null;
         serializedRulebase = null;
 
-        serializedSession = SerializationHelper.serializeOut( session );
-        serializedRulebase = SerializationHelper.serializeOut( ruleBase );
+        serializedSession = DroolsStreamUtils.streamOut( session );
+        serializedRulebase = DroolsStreamUtils.streamOut( ruleBase );
 
         // dispose session
         session.dispose();
@@ -540,8 +539,8 @@ public class MarshallingTest extends TestCase {
                                                                                     10 ) );
         session.fireAllRules();
 
-        byte[] serializedSession = SerializationHelper.serializeOut( session );
-        byte[] serializedRulebase = SerializationHelper.serializeOut( ruleBase );
+        byte[] serializedSession = DroolsStreamUtils.streamOut( session );
+        byte[] serializedRulebase = DroolsStreamUtils.streamOut( ruleBase );
 
         session.dispose();
 
@@ -551,7 +550,7 @@ public class MarshallingTest extends TestCase {
                       results.get( 0 ) );
 
         // now recreate the rulebase, deserialize the session and test it
-        ruleBase = (RuleBase) SerializationHelper.serializeIn( serializedRulebase );
+        ruleBase = (RuleBase) DroolsStreamUtils.streamIn( serializedRulebase );
         session = ruleBase.newStatefulSession( new ByteArrayInputStream( serializedSession ) );
         results = (List) session.getGlobal( "results" );
 
@@ -581,8 +580,8 @@ public class MarshallingTest extends TestCase {
         serializedSession = null;
         serializedRulebase = null;
 
-        serializedSession = SerializationHelper.serializeOut( session );
-        serializedRulebase = SerializationHelper.serializeOut( ruleBase );
+        serializedSession = DroolsStreamUtils.streamOut( session );
+        serializedRulebase = DroolsStreamUtils.streamOut( ruleBase );
 
         session.dispose();
     }
@@ -609,8 +608,8 @@ public class MarshallingTest extends TestCase {
                                                                                     10 ) );
         session.fireAllRules();
 
-        byte[] serializedSession = SerializationHelper.serializeOut( session );
-        byte[] serializedRulebase = SerializationHelper.serializeOut( ruleBase );
+        byte[] serializedSession = DroolsStreamUtils.streamOut( session );
+        byte[] serializedRulebase = DroolsStreamUtils.streamOut( ruleBase );
 
         session.dispose();
 
@@ -620,7 +619,7 @@ public class MarshallingTest extends TestCase {
                       results.get( 0 ) );
 
         // now recreate the rulebase, deserialize the session and test it
-        ruleBase = (RuleBase) SerializationHelper.serializeIn( serializedRulebase );
+        ruleBase = (RuleBase) DroolsStreamUtils.streamIn( serializedRulebase );
         session = ruleBase.newStatefulSession( new ByteArrayInputStream( serializedSession ) );
         results = (List) session.getGlobal( "results" );
 
@@ -648,13 +647,13 @@ public class MarshallingTest extends TestCase {
         serializedSession = null;
         serializedRulebase = null;
 
-        serializedSession = SerializationHelper.serializeOut( session );
-        serializedRulebase = SerializationHelper.serializeOut( ruleBase );
+        serializedSession = DroolsStreamUtils.streamOut( session );
+        serializedRulebase = DroolsStreamUtils.streamOut( ruleBase );
 
         session.dispose();
 
         // now recreate the rulebase, deserialize the session and test it
-        ruleBase = (RuleBase) SerializationHelper.serializeIn( serializedRulebase );
+        ruleBase = (RuleBase) DroolsStreamUtils.streamIn( serializedRulebase );
         session = ruleBase.newStatefulSession( new ByteArrayInputStream( serializedSession ) );
         results = (List) session.getGlobal( "results" );
 
@@ -688,13 +687,13 @@ public class MarshallingTest extends TestCase {
         serializedSession = null;
         serializedRulebase = null;
 
-        serializedSession = SerializationHelper.serializeOut( session );
-        serializedRulebase = SerializationHelper.serializeOut( ruleBase );
+        serializedSession = DroolsStreamUtils.streamOut( session );
+        serializedRulebase = DroolsStreamUtils.streamOut( ruleBase );
 
         session.dispose();
 
         // now recreate the rulebase, deserialize the session and test it
-        ruleBase = (RuleBase) SerializationHelper.serializeIn( serializedRulebase );
+        ruleBase = (RuleBase) DroolsStreamUtils.streamIn( serializedRulebase );
         session = ruleBase.newStatefulSession( new ByteArrayInputStream( serializedSession ) );
         results = (List) session.getGlobal( "results" );
 
@@ -723,8 +722,8 @@ public class MarshallingTest extends TestCase {
         serializedSession = null;
         serializedRulebase = null;
 
-        serializedSession = SerializationHelper.serializeOut( session );
-        serializedRulebase = SerializationHelper.serializeOut( ruleBase );
+        serializedSession = DroolsStreamUtils.streamOut( session );
+        serializedRulebase = DroolsStreamUtils.streamOut( ruleBase );
 
         session.dispose();
 
@@ -759,8 +758,8 @@ public class MarshallingTest extends TestCase {
                                                                                     10 ) );
         session.fireAllRules();
 
-        byte[] serializedSession = SerializationHelper.serializeOut( session );
-        byte[] serializedRulebase = SerializationHelper.serializeOut( ruleBase );
+        byte[] serializedSession = DroolsStreamUtils.streamOut( session );
+        byte[] serializedRulebase = DroolsStreamUtils.streamOut( ruleBase );
 
         session.dispose();
 
@@ -770,7 +769,7 @@ public class MarshallingTest extends TestCase {
                       results.get( 0 ) );
 
         // now recreate the rulebase, deserialize the session and test it
-        ruleBase = (RuleBase) SerializationHelper.serializeIn( serializedRulebase );
+        ruleBase = (RuleBase) DroolsStreamUtils.streamIn( serializedRulebase );
         session = ruleBase.newStatefulSession( new ByteArrayInputStream( serializedSession ) );
         results = (List) session.getGlobal( "results" );
 
@@ -798,13 +797,13 @@ public class MarshallingTest extends TestCase {
         serializedSession = null;
         serializedRulebase = null;
 
-        serializedSession = SerializationHelper.serializeOut( session );
-        serializedRulebase = SerializationHelper.serializeOut( ruleBase );
+        serializedSession = DroolsStreamUtils.streamOut( session );
+        serializedRulebase = DroolsStreamUtils.streamOut( ruleBase );
 
         session.dispose();
 
         // now recreate the rulebase, deserialize the session and test it
-        ruleBase = (RuleBase) SerializationHelper.serializeIn( serializedRulebase );
+        ruleBase = (RuleBase) DroolsStreamUtils.streamIn( serializedRulebase );
         session = ruleBase.newStatefulSession( new ByteArrayInputStream( serializedSession ) );
         results = (List) session.getGlobal( "results" );
 
@@ -826,7 +825,7 @@ public class MarshallingTest extends TestCase {
 
 
         // now recreate the rulebase, deserialize the session and test it
-        ruleBase = (RuleBase) SerializationHelper.serializeIn( serializedRulebase );
+        ruleBase = (RuleBase) DroolsStreamUtils.streamIn( serializedRulebase );
         session = ruleBase.newStatefulSession( new ByteArrayInputStream( serializedSession ) );
         results = (List) session.getGlobal( "results" );
 
@@ -849,8 +848,8 @@ public class MarshallingTest extends TestCase {
         serializedSession = null;
         serializedRulebase = null;
 
-        serializedSession = SerializationHelper.serializeOut( session );
-        serializedRulebase = SerializationHelper.serializeOut( ruleBase );
+        serializedSession = DroolsStreamUtils.streamOut( session );
+        serializedRulebase = DroolsStreamUtils.streamOut( ruleBase );
 
         session.dispose();
 
@@ -887,11 +886,10 @@ public class MarshallingTest extends TestCase {
         assertFalse(builder.hasErrors());
 
         Package p = builder.getPackage();
-        byte[] ser = SerializationHelper.serializeOut(p);
+        byte[] ser = DroolsStreamUtils.streamOut(p);
 
         //now read it back
-        DroolsObjectInputStream in = new DroolsObjectInputStream(new ByteArrayInputStream(ser), loader);
-        Package p_ = (Package) in.readObject();
+        Package p_ = (Package) DroolsStreamUtils.streamIn(ser, loader);
         assertNotNull(p_);
 
     }
