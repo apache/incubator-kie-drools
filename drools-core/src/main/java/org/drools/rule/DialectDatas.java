@@ -89,18 +89,18 @@ public class DialectDatas implements Externalizable {
     }
 
     public void merge(DialectDatas newDatas) {
-        for(Iterator it = newDatas.dialects.entrySet().iterator(); it.hasNext(); ) {
-            Entry entry = ( Entry ) it.next();
-            DialectData data = ( DialectData ) this.dialects.get( entry.getKey() );
-            data.merge( ( DialectData ) entry.getValue() );
-        }
-
-        if ( this.lineMappings != null ) {
-            // merge line mappings
-            this.lineMappings.putAll( newDatas.getLineMappings() );
+        for (Entry<String, DialectData> entry : newDatas.dialects.entrySet()) {
+            DialectData data = this.dialects.get( entry.getKey() );
+            if (data == null) {
+                DialectData dialectData = entry.getValue().clone();
+                dialectData.setDialectDatas(this);
+                this.dialects.put(entry.getKey(), dialectData);
         } else {
-            this.lineMappings = newDatas.getLineMappings();
+                data.merge( entry.getValue() );
         }
+    }
+
+       getLineMappings().putAll(newDatas.getLineMappings());
     }
 
     public boolean isDirty() {
@@ -146,10 +146,13 @@ public class DialectDatas implements Externalizable {
     }
 
     public void addClassLoader(ClassLoader classLoader) {
-        if (this.classLoader == null) {
-
-        }
         this.classLoader.addClassLoader( classLoader );
+    }
+
+    public void removeClassLoader(ClassLoader classLoader) {
+        if (classLoader != null) {
+            this.classLoader.removeClassLoader(classLoader);
+        }
     }
 
     public void clear() {

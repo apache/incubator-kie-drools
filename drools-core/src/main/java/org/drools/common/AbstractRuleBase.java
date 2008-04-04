@@ -43,14 +43,8 @@ import org.drools.event.RuleBaseEventListener;
 import org.drools.event.RuleBaseEventSupport;
 import org.drools.objenesis.Objenesis;
 import org.drools.process.core.Process;
-import org.drools.rule.CompositePackageClassLoader;
-import org.drools.rule.DialectDatas;
-import org.drools.rule.ImportDeclaration;
-import org.drools.rule.InvalidPatternException;
-import org.drools.rule.MapBackedClassLoader;
+import org.drools.rule.*;
 import org.drools.rule.Package;
-import org.drools.rule.Rule;
-import org.drools.rule.TypeDeclaration;
 import org.drools.spi.ExecutorServiceFactory;
 import org.drools.spi.FactHandleFactory;
 import org.drools.util.ObjectHashSet;
@@ -88,7 +82,7 @@ abstract public class AbstractRuleBase
     protected transient MapBackedClassLoader           classLoader;
 
     private transient Objenesis                        objenesis;
-	
+
     /** The fact handle factory. */
     protected FactHandleFactory                        factHandleFactory;
 
@@ -223,7 +217,7 @@ abstract public class AbstractRuleBase
                                                   ClassNotFoundException {
         // PackageCompilationData must be restored before Rules as it has the ClassLoader needed to resolve the generated code references in Rules
         DroolsObjectInput droolsStream = null;
-        boolean isDrools = in instanceof DroolsObjectInputStream;
+        boolean isDrools = in instanceof DroolsObjectInput;
 
         if ( isDrools ) {
             droolsStream = (DroolsObjectInput) in;
@@ -276,7 +270,7 @@ abstract public class AbstractRuleBase
     }
 
 	/**
-	 * Creates Objenesis instance for the RuleBase. 
+	 * Creates Objenesis instance for the RuleBase.
 	 * @return a standart Objenesis instanse with caching turned on.
 	 */
 	protected Objenesis createObjenesis() {
@@ -413,7 +407,7 @@ abstract public class AbstractRuleBase
     public synchronized void addPackage(final Package newPkg) {
         newPkg.checkValidity();
         synchronized ( this.pkgs ) {
-            final Package pkg = (Package) this.pkgs.get( newPkg.getName() );
+            Package pkg = this.pkgs.get( newPkg.getName() );
 
             // only acquire the lock if it hasn't been done explicitely
             boolean doUnlock = false;
@@ -425,37 +419,46 @@ abstract public class AbstractRuleBase
 
             this.eventSupport.fireBeforePackageAdded( newPkg );
 
-            if ( pkg != null ) {
-                mergePackage( pkg,
-                              newPkg );
-            } else {
-                this.pkgs.put( newPkg.getName(),
-                               newPkg );
+            if ( pkg == null ) {
+                pkg = new Package(newPkg.getName(),
+                                  newPkg.getDialectDatas().getParentClassLoader());
+                pkgs.put(pkg.getName(), pkg);
+                this.packageClassLoader.addClassLoader( pkg.getDialectDatas().getClassLoader());
             }
+            else {
+                this.packageClassLoader.addClassLoader( newPkg.getDialectDatas().getClassLoader() );
+            }
+
+            mergePackage( pkg,
+                          newPkg );
 
             final Map newGlobals = newPkg.getGlobals();
 
-            // Check that the global data is valid, we cannot change the type
-            // of an already declared global variable
-            for ( final Iterator it = newGlobals.keySet().iterator(); it.hasNext(); ) {
-                final String identifier = (String) it.next();
-                final Class type = (Class) newGlobals.get( identifier );
-                final boolean f = this.globals.containsKey( identifier );
-                if ( f ) {
-                    final boolean y = !this.globals.get( identifier ).equals( type );
-                    if ( f && y ) {
-                        throw new PackageIntegrationException( pkg );
+            if (newGlobals != null) {
+                // Check that the global data is valid, we cannot change the type
+                // of an already declared global variable
+                for ( final Iterator it = newGlobals.keySet().iterator(); it.hasNext(); ) {
+                    final String identifier = (String) it.next();
+                    final Class type = (Class) newGlobals.get( identifier );
+                    final boolean f = this.globals.containsKey( identifier );
+                    if ( f ) {
+                        final boolean y = !this.globals.get( identifier ).equals( type );
+                        if ( f && y ) {
+                            throw new PackageIntegrationException( pkg );
+                        }
                     }
                 }
+                this.globals.putAll( newGlobals );
             }
-            this.globals.putAll( newGlobals );
 
-            // Add type declarations
-            for ( TypeDeclaration type : newPkg.getTypeDeclarations().values() ) {
-                // should we allow overrides?
-                if ( !this.classTypeDeclaration.containsKey( type.getTypeClass() ) ) {
-                    this.classTypeDeclaration.put( type.getTypeClass(),
-                                                   type );
+            if (newPkg.getTypeDeclarations() != null) {
+                // Add type declarations
+                for ( TypeDeclaration type : newPkg.getTypeDeclarations().values() ) {
+                    // should we allow overrides?
+                    if ( !this.classTypeDeclaration.containsKey( type.getTypeClass() ) ) {
+                        this.classTypeDeclaration.put( type.getTypeClass(),
+                                                       type );
+                    }
                 }
             }
 
@@ -467,7 +470,7 @@ abstract public class AbstractRuleBase
             }
 
             //and now the rule flows
-            if ( newPkg.getRuleFlows() != Collections.EMPTY_MAP ) {
+            if ( newPkg.getRuleFlows() != null ) {
                 final Map flows = newPkg.getRuleFlows();
                 for ( final Iterator iter = flows.entrySet().iterator(); iter.hasNext(); ) {
                     final Entry flow = (Entry) iter.next();
@@ -475,8 +478,6 @@ abstract public class AbstractRuleBase
                                         flow.getValue() );
                 }
             }
-
-            this.packageClassLoader.addClassLoader( newPkg.getDialectDatas().getClassLoader() );
 
             this.eventSupport.fireAfterPackageAdded( newPkg );
 
@@ -502,26 +503,37 @@ abstract public class AbstractRuleBase
         // Merge imports
         imports.putAll( newPkg.getImports() );
 
-        // Add globals
-        for ( final Iterator it = newPkg.getGlobals().keySet().iterator(); it.hasNext(); ) {
-            final String identifier = (String) it.next();
-            final Class type = (Class) globals.get( identifier );
-            if ( globals.containsKey( identifier ) && !globals.get( identifier ).equals( type ) ) {
-                throw new PackageIntegrationException( "Unable to merge new Package",
-                                                       newPkg );
+        if (newPkg.getGlobals() != null) {
+            // Add globals
+            for ( final Iterator it = newPkg.getGlobals().keySet().iterator(); it.hasNext(); ) {
+                final String identifier = (String) it.next();
+                final Class type = (Class) globals.get( identifier );
+                if ( globals.containsKey( identifier ) && !globals.get( identifier ).equals( type ) ) {
+                    throw new PackageIntegrationException( "Unable to merge new Package",
+                                                           newPkg );
+                }
+            }
+            if (globals == Collections.EMPTY_MAP) {
+                for (Object object : newPkg.getGlobals().entrySet()) {
+                    Map.Entry   entry   = (Map.Entry)object;
+                    pkg.addGlobal((String)entry.getKey(), (Class)entry.getValue());
+                }
+            } else {
+                globals.putAll( newPkg.getGlobals() );
             }
         }
-        globals.putAll( newPkg.getGlobals() );
 
-        // add type declarations
-        for ( TypeDeclaration type : newPkg.getTypeDeclarations().values() ) {
-            // should we allow overrides?
-            if ( !this.classTypeDeclaration.containsKey( type.getTypeClass() ) ) {
-                this.classTypeDeclaration.put( type.getTypeClass(),
-                                               type );
-            }
-            if ( !pkg.getTypeDeclarations().containsKey( type.getTypeName() ) ) {
-                pkg.addTypeDeclaration( type );
+        if (newPkg.getTypeDeclarations() != null) {
+            // add type declarations
+            for ( TypeDeclaration type : newPkg.getTypeDeclarations().values() ) {
+                // should we allow overrides?
+                if ( !this.classTypeDeclaration.containsKey( type.getTypeClass() ) ) {
+                    this.classTypeDeclaration.put( type.getTypeClass(),
+                                                   type );
+                }
+                if ( !pkg.getTypeDeclarations().containsKey( type.getTypeName() ) ) {
+                    pkg.addTypeDeclaration( type );
+                }
             }
         }
 
@@ -541,7 +553,7 @@ abstract public class AbstractRuleBase
         }
 
         //and now the rule flows
-        if ( newPkg.getRuleFlows() != Collections.EMPTY_MAP ) {
+        if ( newPkg.getRuleFlows() != null ) {
             final Map flows = newPkg.getRuleFlows();
             for ( final Iterator iter = flows.values().iterator(); iter.hasNext(); ) {
                 final Process flow = (Process) iter.next();
@@ -550,6 +562,13 @@ abstract public class AbstractRuleBase
         }
 
         pkg.getDialectDatas().merge( newPkg.getDialectDatas() );
+
+        if ( newPkg.getFunctions() != null) {
+            for (Object object : newPkg.getFunctions().entrySet()) {
+                Map.Entry entry = (Map.Entry)object;
+                pkg.addFunction((Function)entry.getValue());
+            }
+        }
 
         if ( this.reloadPackageCompilationData == null ) {
             this.reloadPackageCompilationData = new ReloadPackageCompilationData();
@@ -777,16 +796,16 @@ abstract public class AbstractRuleBase
                                                                                       this.packageClassLoader );
         streamWithLoader.setRuleBase( this );
 
-        final StatefulSession session = (StatefulSession) streamWithLoader.readObject();                
+        final StatefulSession session = (StatefulSession) streamWithLoader.readObject();
 
         synchronized ( this.pkgs ) {
             ((InternalWorkingMemory) session).setRuleBase( this );
             ((InternalWorkingMemory) session).setId( (nextWorkingMemoryCounter()) );
-                        
+
 
             ExecutorService executor = ExecutorServiceFactory.createExecutorService( this.config.getExecutorService() );
-            executor.setCommandExecutor( new CommandExecutor( session ) );            
-            ((InternalWorkingMemory) session).setExecutorService( executor );            
+            executor.setCommandExecutor( new CommandExecutor( session ) );
+            ((InternalWorkingMemory) session).setExecutorService( executor );
 
             if ( keepReference ) {
                 addStatefulSession( session );
@@ -795,7 +814,7 @@ abstract public class AbstractRuleBase
                 }
             }
 
-            return (StatefulSession) session;
+            return session;
         }
     }
 
@@ -851,11 +870,11 @@ abstract public class AbstractRuleBase
         implements
         RuleBaseAction {
         private static final long serialVersionUID = 1L;
-        private Set               set;
+        private Set<DialectDatas> set;
 
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
-            set = (Set) in.readObject();
+            set = (Set<DialectDatas>) in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
@@ -864,15 +883,14 @@ abstract public class AbstractRuleBase
 
         public void addDialectDatas(final DialectDatas dialectDatas) {
             if ( this.set == null ) {
-                this.set = new HashSet();
+                this.set = new HashSet<DialectDatas>();
             }
-
-            this.set.add( dialectDatas );
+            if (!this.set.contains(dialectDatas))
+                this.set.add( dialectDatas );
         }
 
         public void execute(final InternalRuleBase ruleBase) {
-            for ( final Iterator it = this.set.iterator(); it.hasNext(); ) {
-                final DialectDatas dialectDatas = (DialectDatas) it.next();
+            for ( final DialectDatas dialectDatas : this.set ) {
                 dialectDatas.reloadDirty();
             }
         }
