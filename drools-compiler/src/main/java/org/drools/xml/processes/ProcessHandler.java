@@ -11,9 +11,8 @@ import org.drools.xml.ProcessBuildData;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-public class ProcessHandler extends BaseAbstractHandler
-    implements
-    Handler {
+public class ProcessHandler extends BaseAbstractHandler implements Handler {
+    
     public ProcessHandler() {
         if ( (this.validParents == null) && (this.validPeers == null) ) {
             this.validParents = new HashSet();
@@ -25,8 +24,6 @@ public class ProcessHandler extends BaseAbstractHandler
             this.allowNesting = false;
         }
     }
-    
-
     
     public Object start(final String uri,
                         final String localName,
@@ -40,19 +37,17 @@ public class ProcessHandler extends BaseAbstractHandler
         final String version = attrs.getValue( "version" );
         final String type = attrs.getValue( "type" );
         final String packageName = attrs.getValue( "package-name" );
+        final String routerLayout = attrs.getValue( "routerLayout" );
         
-        emptyAttributeCheck( localName, "id", name, parser );
-        emptyAttributeCheck( localName, "name", name, parser );
-        //emptyAttributeCheck( localName, "version", version, parser );
-        emptyAttributeCheck( localName, "package-name", packageName, parser );
-        
-
         RuleFlowProcess process = new RuleFlowProcess();
         process.setId( id );
         process.setName( name );
         process.setVersion( version );
         process.setType( type );
         process.setPackageName( packageName );
+        if (routerLayout != null) {
+            process.setMetaData("routerLayout", new Integer(routerLayout));
+        }
 
         ((ProcessBuildData)parser.getData()).setProcess( process );
         

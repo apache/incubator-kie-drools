@@ -23,6 +23,7 @@ import java.util.Set;
 
 import org.drools.compiler.Dialect;
 import org.drools.lang.descr.ActionDescr;
+import org.drools.process.core.context.variable.VariableScope;
 import org.drools.rule.builder.ActionBuilder;
 import org.drools.rule.builder.PackageBuildContext;
 import org.drools.rule.builder.ProcessBuildContext;
@@ -42,6 +43,15 @@ public class JavaActionBuilder extends AbstractJavaProcessBuilder
     public void build(final PackageBuildContext context,
                       final ActionNode actionNode,
                       final ActionDescr actionDescr) {
+        build( context,
+               actionNode,
+               actionDescr,
+               null );
+    }
+    public void build(final PackageBuildContext context,
+                      final ActionNode actionNode,
+                      final ActionDescr actionDescr,
+                      final VariableScope variableScope) {
 
         final String className = "action" + context.getNextId();               
 

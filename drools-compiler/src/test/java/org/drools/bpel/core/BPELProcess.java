@@ -1,5 +1,9 @@
 package org.drools.bpel.core;
 
+import java.util.List;
+
+import org.drools.process.core.context.exception.ExceptionScope;
+import org.drools.process.core.context.variable.VariableScope;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.impl.ConnectionImpl;
 import org.drools.workflow.core.impl.WorkflowProcessImpl;
@@ -16,8 +20,17 @@ public class BPELProcess extends WorkflowProcessImpl implements BPELFaultHandler
     
     public static final String BPEL_TYPE = "BPEL";
     
+    private BPELActivity activity;
+    
     public BPELProcess() {
         setType(BPEL_TYPE);
+        VariableScope variableScope = new VariableScope();
+        addContext(variableScope);
+        setDefaultContext(variableScope);
+    }
+    
+    public VariableScope getVariableScope() {
+        return (VariableScope) getDefaultContext(VariableScope.VARIABLE_SCOPE);
     }
     
     public void setActivity(BPELActivity activity) {
@@ -25,10 +38,11 @@ public class BPELProcess extends WorkflowProcessImpl implements BPELFaultHandler
             throw new IllegalArgumentException(
                 "The activity of a BPEL process may not be null!");
         }
-        if (getActivity() != null) {
+        if (this.activity != null) {
             throw new IllegalArgumentException(
                 "The activity of this BPEL process has already been set!");
         }
+        this.activity = activity;
         addNode(activity);
         EndNode end = new EndNode();
         addNode(end);
@@ -38,11 +52,18 @@ public class BPELProcess extends WorkflowProcessImpl implements BPELFaultHandler
     }
     
     public BPELActivity getActivity() {
-        Node[] nodes = getNodes();
-        if (nodes == null || nodes.length == 0) {
-            return null;
+        return activity;
+    }
+    
+    public void setFaultHandlers(List<BPELFaultHandler> faultHandlers) {
+        ExceptionScope exceptionScope = new ExceptionScope();
+        addContext(exceptionScope);
+        setDefaultContext(exceptionScope);
+        for (BPELFaultHandler faultHandler: faultHandlers) {
+            addNode(faultHandler.getActivity());
+            exceptionScope.setExceptionHandler(faultHandler.getFaultName(), faultHandler);
         }
-        return (BPELActivity) nodes[0];
+        // TODO: process should end once fault handler has been executed
     }
     
 }

@@ -13,19 +13,13 @@
     </header>      
     
     <nodes>              
-	    <start name="start node">
-	    </start>
-	    
-	    <action name="action node" dialect="java">
-	    	list.add( "action node was here" );
-	    </action>
-	    
-	    <end name="end node">
-	    </end>
+	    <start id="1" name="start node" />
+	    <action id="2" name="action node" dialect="java">list.add( "action node was here" );</action>
+	    <end id="3" name="end node" />
     </nodes>
     
     <connections>
-        <connection from="start node" to="action node" />
-        <connection from="action node" to="end node" />
+        <connection from="1" to="2" />
+        <connection from="2" to="3" />
     </connections>    
 </process>

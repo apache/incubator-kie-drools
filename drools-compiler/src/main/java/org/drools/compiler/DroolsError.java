@@ -29,4 +29,8 @@ public abstract class DroolsError {
      * @return
      */
     public abstract int[] getErrorLines();
+    
+    public String toString() {
+        return getClass().getName() + ": " + getMessage();
+    }
 }

@@ -212,7 +212,7 @@ public class PackageBuilder {
     }
 
     /**
-     * Add a ruleflow (.rt) asset to this package.
+     * Add a ruleflow (.rfm) asset to this package.
      */
     public void addRuleFlow(Reader processSource) {
         ProcessBuilder processBuilder = new ProcessBuilder( this );

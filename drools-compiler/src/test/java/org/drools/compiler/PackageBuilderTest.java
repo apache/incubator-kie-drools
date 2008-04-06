@@ -65,8 +65,9 @@ import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.VariableRestrictionDescr;
+import org.drools.process.core.Context;
 import org.drools.process.core.Process;
-import org.drools.process.core.Variable;
+import org.drools.process.core.context.variable.Variable;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
@@ -1312,6 +1313,38 @@ public class PackageBuilderTest extends DroolsTestCase {
         }
 
         public void setVariables(List<Variable> variables) {
+        }
+
+        public Variable findVariable(String variableName) {
+            return null;
+        }
+
+        public void addContext(Context context) {
+         }
+
+        public List<Context> getContexts(String contextId) {
+            return null;
+        }
+
+        public Context getDefaultContext(String contextId) {
+            return null;
+        }
+
+        public void setDefaultContext(Context context) {
+        }
+
+        public Context getContext(String contextType, long id) {
+            return null;
+        }
+
+        public Object getMetaData(String name) {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        public void setMetaData(String name, Object value) {
+            // TODO Auto-generated method stub
+            
         }
 
     }

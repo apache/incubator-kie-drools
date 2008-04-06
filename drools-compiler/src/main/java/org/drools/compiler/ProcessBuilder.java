@@ -43,8 +43,7 @@ import org.drools.workflow.core.WorkflowProcess;
 import org.drools.workflow.core.impl.WorkflowProcessImpl;
 import org.drools.workflow.core.node.MilestoneNode;
 import org.drools.workflow.core.node.Split;
-
-import com.thoughtworks.xstream.XStream;
+import org.drools.xml.XmlProcessReader;
 
 /**
  * A ProcessBuilder can be used to build processes based on XML files
@@ -162,13 +161,14 @@ public class ProcessBuilder {
     }
 
     public void addProcessFromFile(final Reader reader) throws Exception {
-        final XStream stream = new XStream();
-        stream.setMode( XStream.ID_REFERENCES );
+        PackageBuilderConfiguration configuration = new PackageBuilderConfiguration();
+        XmlProcessReader xmlReader = new XmlProcessReader( configuration.getSemanticModules() );
+        
         final ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
         final ClassLoader newLoader = this.getClass().getClassLoader();
         try {
             Thread.currentThread().setContextClassLoader( newLoader );
-            final WorkflowProcess process = (WorkflowProcess) stream.fromXML( reader );
+            Process process = xmlReader.read(reader);
             buildProcess( process );
         } finally {
             Thread.currentThread().setContextClassLoader( oldLoader );

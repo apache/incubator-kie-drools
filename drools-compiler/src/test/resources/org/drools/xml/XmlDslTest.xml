@@ -15,19 +15,19 @@
     </header>      
     
     <nodes>              
-	    <start name="start node" />
+	    <start id="1" name="start node" />
 	    
-	    <action name="action node" dialect="java">list.add( "action node was here" );</action>	    
+	    <action id="2" name="action node" dialect="java">list.add( "action node was here" );</action>	    
 	    
-	    <mydsl:store name="store node">dsl was here</mydsl:store>
+	    <mydsl:store id="3" name="store node">dsl was here</mydsl:store>
 	    
-	    <end name="end node" />
+	    <end id="4" name="end node" />
     </nodes>
     
     <connections>
-        <connection from="start node" to="action node" />
-        <connection from="action node" to="store node" />
-        <connection from="store node" to="end node" />
+        <connection from="1" to="2" />
+        <connection from="2" to="3" />
+        <connection from="3" to="4" />
     </connections>
     
 </process>
