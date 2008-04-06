@@ -1,21 +1,25 @@
-package org.drools.process.instance.impl;
+package org.drools.process.instance.context.variable;
 
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.process.instance.VariableScopeInstance;
+import org.drools.process.core.context.variable.VariableScope;
+import org.drools.process.instance.context.AbstractContextInstance;
 
 /**
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class VariableScopeInstanceImpl implements VariableScopeInstance, Serializable {
+public class VariableScopeInstance extends AbstractContextInstance {
 
     private static final long serialVersionUID = 400L;
     
     private Map<String, Object> variables = new HashMap<String, Object>();
+
+    public String getContextType() {
+        return VariableScope.VARIABLE_SCOPE;
+    }
 
     public Object getVariable(String name) {
         return variables.get(name);
@@ -32,5 +36,5 @@ public class VariableScopeInstanceImpl implements VariableScopeInstance, Seriali
         }
         variables.put(name, value);
     }
-    
+
 }

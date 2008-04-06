@@ -49,4 +49,8 @@ public interface Connection {
      */
     String getToType();
 
+    void setMetaData(String name, Object value);
+    
+    Object getMetaData(String name);
+    
 }

@@ -109,7 +109,7 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
         }
         FileWriter fileWriter = null;
         try {
-            fileWriter = new FileWriter(this.fileName + (this.nbOfFile == 0 ? ".log" : this.nbOfFile + ".log"), !split );
+            fileWriter = new FileWriter(this.fileName + (this.nbOfFile == 0 ? ".log" : this.nbOfFile + ".log"), true );
             final XStream xstream = new XStream();
             for (LogEvent event : this.events) {
                 fileWriter.write(xstream.toXML(event) + "\n");

@@ -1,4 +1,4 @@
-package org.drools.process.core;
+package org.drools.process.core.datatype.impl.type;
 
 /*
  * Copyright 2005 JBoss Inc
@@ -16,29 +16,32 @@ package org.drools.process.core;
  * limitations under the License.
  */
 
-import java.io.Serializable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Date;
 
 import org.drools.process.core.datatype.DataType;
 
 /**
- * Represents a global variable used in a RuleFlow.
- * A variable has a name (should be unique for this process), a datatype
- * and possibly an initial value.  
+ * Representation of a date datatype.
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public interface Variable {
+public final class DateDataType implements DataType {
 
-    String getName();
+    private static final long serialVersionUID = 400L;
 
-    void setName(String name);
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+    }
 
-    DataType getType();
+    public void writeExternal(ObjectOutput out) throws IOException {
+    }
 
-    void setType(DataType type);
-
-    Serializable getValue();
-
-    void setValue(Serializable value);
-
+    public boolean verifyDataType(final Object value) {
+        if ( value instanceof Date ) {
+            return true;
+        }
+        return false;
+    }
 }

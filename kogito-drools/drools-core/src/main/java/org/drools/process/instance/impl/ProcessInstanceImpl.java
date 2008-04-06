@@ -17,11 +17,20 @@ package org.drools.process.instance.impl;
  */
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.drools.WorkingMemory;
+import org.drools.common.InternalRuleBase;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.process.core.Context;
+import org.drools.process.core.ContextContainer;
 import org.drools.process.core.Process;
+import org.drools.process.core.timer.Timer;
+import org.drools.process.instance.ContextInstance;
 import org.drools.process.instance.ProcessInstance;
-import org.drools.process.instance.VariableScopeInstance;
 import org.drools.process.instance.WorkItem;
 
 /**
@@ -32,9 +41,12 @@ import org.drools.process.instance.WorkItem;
 public abstract class ProcessInstanceImpl implements ProcessInstance, Serializable {
 
     private long id;
-    private Process process;
+    private String processId;
+    private transient Process process;
     private int state = STATE_PENDING;
-    private VariableScopeInstance variableScopeInstance = new VariableScopeInstanceImpl();
+    private Map<String, ContextInstance> contextInstances = new HashMap<String, ContextInstance>();
+    private Map<String, List<ContextInstance>> subContextInstances = new HashMap<String, List<ContextInstance>>();
+    private InternalWorkingMemory workingMemory;
 
     public void setId(final long id) {
         this.id = id;
@@ -45,11 +57,20 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
     }
 
     public void setProcess(final Process process) {
+        this.processId = process.getId();
         this.process = process;
     }
 
     public Process getProcess() {
+        if (this.process == null) {
+            this.process = ((InternalRuleBase) workingMemory.getRuleBase())
+                .getProcess(processId);
+        }
         return this.process;
+    }
+    
+    public String getProcessId() {
+        return processId;
     }
 
     public void setState(final int state) {
@@ -60,24 +81,88 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
         return this.state;
     }
     
+    public void setWorkingMemory(final InternalWorkingMemory workingMemory) {
+        if ( this.workingMemory != null ) {
+            throw new IllegalArgumentException( "A working memory can only be set once." );
+        }
+        this.workingMemory = workingMemory;
+    }
+
+    public WorkingMemory getWorkingMemory() {
+        return this.workingMemory;
+    }
+    
+    public ContextContainer getContextContainer() {
+        return getProcess();
+    }
+    
+    public void setContextInstance(String contextId, ContextInstance contextInstance) {
+        this.contextInstances.put(contextId, contextInstance);
+    }
+    
+    public ContextInstance getContextInstance(String contextId) {
+        ContextInstance contextInstance = this.contextInstances.get(contextId);
+        if (contextInstance != null) {
+            return contextInstance;
+        }
+        Context context = getProcess().getDefaultContext(contextId);
+        if (context != null) {
+            contextInstance = getContextInstance(context);
+            addContextInstance(contextId, contextInstance);
+            return contextInstance;
+        }
+        return null;
+    }
+    
+    public List<ContextInstance> getContextInstances(String contextId) {
+        return this.subContextInstances.get(contextId);
+    }
+    
+    public void addContextInstance(String contextId, ContextInstance contextInstance) {
+        List<ContextInstance> list = this.subContextInstances.get(contextId);
+        if (list == null) {
+            list = new ArrayList<ContextInstance>();
+            this.subContextInstances.put(contextId, list);
+        }
+        list.add(contextInstance);
+    }
+
+    public ContextInstance getContextInstance(String contextId, long id) {
+        List<ContextInstance> contextInstances = subContextInstances.get(contextId);
+        if (contextInstances != null) {
+            for (ContextInstance contextInstance: contextInstances) {
+                if (contextInstance.getContextId() == id) {
+                    return contextInstance;
+                }
+            }
+        }
+        return null;
+    }
+
+    public ContextInstance getContextInstance(final Context context) {
+        ContextInstanceFactoryRegistry contextRegistry =
+            ((InternalRuleBase) getWorkingMemory().getRuleBase())
+                .getConfiguration().getProcessContextInstanceFactoryRegistry();
+        ContextInstanceFactory conf = contextRegistry.getContextInstanceFactory(context);
+        if (conf == null) {
+            throw new IllegalArgumentException("Illegal context type (registry not found): " + context.getClass());
+        }
+        ContextInstance contextInstance = (ContextInstance) conf.getContextInstance(context, this);
+        if (contextInstance == null) {
+            throw new IllegalArgumentException("Illegal context type (instance not found): " + context.getClass());
+        }
+        return contextInstance;
+    }
+
     public void workItemCompleted(WorkItem taskInstance) {
     }
 
     public void workItemAborted(WorkItem taskInstance) {
     }
 
-    public Object getVariable(String name) {
-        return variableScopeInstance.getVariable(name);
+    public void timerTriggered(Timer timer) {
     }
 
-    public Map<String, Object> getVariables() {
-        return variableScopeInstance.getVariables();
-    }
-
-    public void setVariable(String name, Object value) {
-        variableScopeInstance.setVariable(name, value);
-    }
-    
     public void start() {
         if ( getState() != ProcessInstanceImpl.STATE_PENDING ) {
             throw new IllegalArgumentException( "A process instance can only be started once" );
@@ -87,6 +172,16 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
     }
     
     protected abstract void internalStart();
+    
+    public void disconnect() {
+        workingMemory.removeProcessInstance(this);
+        process = null;
+        workingMemory = null;
+    }
+    
+    public void reconnect() {
+        workingMemory.addProcessInstance(this);
+    }
 
     public String toString() {
         final StringBuffer b = new StringBuffer( "ProcessInstance " );

@@ -21,51 +21,58 @@ import org.drools.common.RuleFlowGroupListener;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.RuleSetNode;
 import org.drools.workflow.instance.NodeInstance;
-import org.drools.workflow.instance.impl.NodeInstanceImpl;
 
 /**
  * Runtime counterpart of a ruleset node.
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class RuleSetNodeInstance extends NodeInstanceImpl implements RuleFlowGroupListener {
+public class RuleSetNodeInstance extends EventNodeInstance implements RuleFlowGroupListener {
 
     private static final long serialVersionUID = 400L;
     
-    private InternalRuleFlowGroup ruleFlowGroup;
-
-    public RuleSetNodeInstance() {
-    }
+    private transient InternalRuleFlowGroup ruleFlowGroup;
     
     protected RuleSetNode getRuleSetNode() {
         return (RuleSetNode) getNode();
     }
 
     public void internalTrigger(final NodeInstance from, String type) {
-        ruleFlowGroup = (InternalRuleFlowGroup)
-        getProcessInstance().getWorkingMemory().getAgenda()
-            .getRuleFlowGroup(getRuleSetNode().getRuleFlowGroup());
-        ruleFlowGroup.addRuleFlowGroupListener(this);
         if (!Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
             throw new IllegalArgumentException(
                 "A RuleSetNode only accepts default incoming connections!");
         }
+        addEventListeners();
         getProcessInstance().getAgenda().activateRuleFlowGroup( getRuleSetNode().getRuleFlowGroup() );
     }
 
-    public void triggerCompleted() {
-        getNodeInstanceContainer().removeNodeInstance(this);
-        getNodeInstanceContainer().getNodeInstance( getRuleSetNode().getTo().getTo() ).trigger( this, getRuleSetNode().getTo().getToType() );
+    public void addEventListeners() {
+        super.addEventListeners();
+        getRuleFlowGroup().addRuleFlowGroupListener(this);
     }
-    
+
+    public void removeEventListeners() {
+        super.removeEventListeners();
+        getRuleFlowGroup().removeRuleFlowGroupListener(this);
+    }
+
     public void cancel() {
+        super.cancel();
     	getProcessInstance().getAgenda().deactivateRuleFlowGroup( getRuleSetNode().getRuleFlowGroup() );
-    	super.cancel();
     }
 
     public void ruleFlowGroupDeactivated() {
-        ruleFlowGroup.removeRuleFlowGroupListener(this);
+        removeEventListeners();
         triggerCompleted();
+    }
+    
+    private InternalRuleFlowGroup getRuleFlowGroup() {
+        if (this.ruleFlowGroup == null) {
+            this.ruleFlowGroup = (InternalRuleFlowGroup) getProcessInstance()
+                .getWorkingMemory().getAgenda()
+                    .getRuleFlowGroup(getRuleSetNode().getRuleFlowGroup());
+        }
+        return this.ruleFlowGroup;
     }
 
 }

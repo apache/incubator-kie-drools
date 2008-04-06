@@ -27,14 +27,13 @@ import org.drools.process.instance.ProcessInstance;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.SubProcessNode;
 import org.drools.workflow.instance.NodeInstance;
-import org.drools.workflow.instance.impl.NodeInstanceImpl;
 
 /**
  * Runtime counterpart of a SubFlow node.
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class SubProcessNodeInstance extends NodeInstanceImpl implements RuleFlowEventListener {
+public class SubProcessNodeInstance extends EventNodeInstance implements RuleFlowEventListener {
 
     private static final long serialVersionUID = 400L;
     
@@ -55,7 +54,7 @@ public class SubProcessNodeInstance extends NodeInstanceImpl implements RuleFlow
     	        || processInstance.getState() == ProcessInstance.STATE_COMPLETED) {
     		triggerCompleted();
     	} else {
-    	    getProcessInstance().getWorkingMemory().addEventListener(this);
+    	    addEventListeners();
     		this.processInstanceId = processInstance.getId();
     	}
     }
@@ -64,16 +63,20 @@ public class SubProcessNodeInstance extends NodeInstanceImpl implements RuleFlow
     	return processInstanceId;
     }
 
-    public void triggerCompleted() {
-        getNodeInstanceContainer().removeNodeInstance(this);
-        getNodeInstanceContainer().getNodeInstance(getSubFlowNode().getTo().getTo())
-            .trigger(this, getSubFlowNode().getTo().getToType());
+    public void addEventListeners() {
+        super.addEventListeners();
+        getProcessInstance().getWorkingMemory().addEventListener(this);
+    }
+
+    public void removeEventListeners() {
+        super.removeEventListeners();
+        getProcessInstance().getWorkingMemory().removeEventListener(this);
     }
 
     public void afterRuleFlowCompleted(RuleFlowCompletedEvent event,
             WorkingMemory workingMemory) {
         if ( event.getRuleFlowProcessInstance().getId() == processInstanceId ) {
-            getProcessInstance().getWorkingMemory().removeEventListener(this);
+            removeEventListeners();
             triggerCompleted();
         }
     }

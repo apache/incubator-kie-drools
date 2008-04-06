@@ -1,5 +1,6 @@
 package org.drools.ruleflow.core;
 
+import org.drools.process.core.context.variable.VariableScope;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.NodeContainer;
 import org.drools.workflow.core.impl.NodeContainerImpl;
@@ -14,6 +15,13 @@ public class RuleFlowProcess extends WorkflowProcessImpl {
     
     public RuleFlowProcess() {
         setType(RULEFLOW_TYPE);
+        VariableScope variableScope = new VariableScope();
+        addContext(variableScope);
+        setDefaultContext(variableScope);
+    }
+    
+    public VariableScope getVariableScope() {
+        return (VariableScope) getDefaultContext(VariableScope.VARIABLE_SCOPE);
     }
 
     protected NodeContainer createNodeContainer() {

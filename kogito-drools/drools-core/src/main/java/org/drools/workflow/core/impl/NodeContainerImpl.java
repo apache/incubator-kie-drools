@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.process.core.Context;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.NodeContainer;
 
@@ -17,8 +18,6 @@ public class NodeContainerImpl implements Serializable, NodeContainer {
 
     private Map<Long, Node> nodes;
 
-    private long lastNodeId;
-
     public NodeContainerImpl() {
         this.nodes = new HashMap<Long, Node>();
     }
@@ -26,7 +25,6 @@ public class NodeContainerImpl implements Serializable, NodeContainer {
     public void addNode(final Node node) {
         validateAddNode(node);
         if (!this.nodes.containsValue(node)) {
-            node.setId(++this.lastNodeId);
             this.nodes.put(new Long(node.getId()), node);
         }
     }
@@ -62,6 +60,10 @@ public class NodeContainerImpl implements Serializable, NodeContainer {
         if (this.nodes.get(node.getId()) == null) {
             throw new IllegalArgumentException("Unknown node: " + node);
         }
+    }
+
+    public Context resolveContext(String contextId, Object param) {
+        return null;
     }
 
 }

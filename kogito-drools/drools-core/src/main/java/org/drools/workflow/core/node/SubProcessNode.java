@@ -22,12 +22,14 @@ package org.drools.workflow.core.node;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class SubProcessNode extends SequenceNode {
+public class SubProcessNode extends EventNode {
 
 	private static final long serialVersionUID = 400L;
 	
 	private String            processId;
 	private boolean           waitForCompletion = true;
+	// TODO boolean independent (cancel process if node gets cancelled?)
+	// TODO parameter passing
 
     public void setProcessId(final String processId) {
         this.processId = processId;

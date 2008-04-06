@@ -1,6 +1,8 @@
 package org.drools.process.core;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 
@@ -15,5 +17,11 @@ public interface Work {
     void setParameters(Map<String, Object> parameters);
     Object getParameter(String name);
     Map<String, Object> getParameters();
-
+    
+    void addParameterDefinition(ParameterDefinition parameterDefinition);
+    void setParameterDefinitions(Set<ParameterDefinition> parameterDefinitions);
+    Set<ParameterDefinition> getParameterDefinitions();
+    String[] getParameterNames();
+    ParameterDefinition getParameterDefinition(String name);
+    
 }

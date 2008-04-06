@@ -1,5 +1,8 @@
 package org.drools.workflow.core;
 
+import org.drools.process.core.Context;
+
+
 /**
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
@@ -40,5 +43,7 @@ public interface NodeContainer {
      * @throws IllegalArgumentException if <code>node</code> is null or unknown
      */
     void removeNode(Node node);
+    
+    Context resolveContext(String contextId, Object param);
     
 }

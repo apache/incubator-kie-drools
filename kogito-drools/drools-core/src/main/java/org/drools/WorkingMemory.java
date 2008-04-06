@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.WorkItemManager;
+import org.drools.process.instance.timer.TimerManager;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.AsyncExceptionHandler;
@@ -281,7 +282,7 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      * This list is unmodifiable.
      * @return the list of process instances
      */
-    public Collection getProcessInstances();
+    public Collection<ProcessInstance> getProcessInstances();
 
     /**
      * Returns the process instance with the given id.
@@ -291,6 +292,8 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
 
     public WorkItemManager getWorkItemManager();
 
+    public TimerManager getTimerManager();
+    
     /**
      * Stops rule firing after the currect rule finishes executing
      *

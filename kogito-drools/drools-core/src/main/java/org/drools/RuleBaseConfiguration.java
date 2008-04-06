@@ -22,14 +22,24 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.Map.Entry;
 
 import org.drools.common.AgendaGroupFactory;
 import org.drools.common.ArrayAgendaGroupFactory;
 import org.drools.common.PriorityQueueAgendaGroupFactory;
+import org.drools.process.core.Context;
+import org.drools.process.core.ParameterDefinition;
+import org.drools.process.core.WorkDefinition;
+import org.drools.process.core.datatype.DataType;
+import org.drools.process.core.impl.ParameterDefinitionImpl;
+import org.drools.process.core.impl.WorkDefinitionExtensionImpl;
+import org.drools.process.instance.impl.ContextInstanceFactory;
+import org.drools.process.instance.impl.ContextInstanceFactoryRegistry;
 import org.drools.spi.ConflictResolver;
 import org.drools.spi.ConsequenceExceptionHandler;
 import org.drools.temporal.SessionClock;
@@ -114,6 +124,8 @@ public class RuleBaseConfiguration
     private boolean                        useStaticObjenesis;
 
     private static final String            STAR             = "*";
+    private ContextInstanceFactoryRegistry processContextInstanceFactoryRegistry;
+    private Map<String, WorkDefinition> workDefinitions;
 
     private NodeInstanceFactoryRegistry    processNodeInstanceFactoryRegistry;
 
@@ -567,6 +579,117 @@ public class RuleBaseConfiguration
             for ( Entry<Class< ? extends Node>, NodeInstanceFactory> entry : map.entrySet() ) {
                 this.processNodeInstanceFactoryRegistry.register( entry.getKey(),
                                                                   entry.getValue() );
+            }
+        }
+    }
+
+    public Map<String, WorkDefinition> getProcessWorkDefinitions() {
+        if ( this.workDefinitions == null ) {
+            initWorkDefinitions();
+        }
+        return this.workDefinitions;
+
+    }
+
+    private void initWorkDefinitions() {
+        this.workDefinitions = new HashMap<String, WorkDefinition>();
+
+        // split on each space
+        String locations[] = this.chainedProperties.getProperty( "drools.workDefinitions",
+                                                                 "" ).split( "\\s" );
+
+        // load each SemanticModule
+        for ( String factoryLocation : locations ) {
+            // trim leading/trailing spaces and quotes
+            factoryLocation = factoryLocation.trim();
+            if ( factoryLocation.startsWith( "\"" ) ) {
+                factoryLocation = factoryLocation.substring( 1 );
+            }
+            if ( factoryLocation.endsWith( "\"" ) ) {
+                factoryLocation = factoryLocation.substring( 0,
+                                                             factoryLocation.length() - 1 );
+            }
+            if ( !factoryLocation.equals( "" ) ) {
+                loadWorkItems( factoryLocation );
+            }
+        }
+    }
+
+    private void loadWorkItems(String location) {
+        String content = ConfFileUtils.URLContentsToString( ConfFileUtils.getURL( location,
+                                                                                  null,
+                                                                                  RuleBaseConfiguration.class ) );
+        List<Map<String, Object>> workDefinitionsMap = (List<Map<String, Object>>) MVEL.eval(content, new HashMap());
+        for (Map<String, Object> workDefinitionMap: workDefinitionsMap) {
+            WorkDefinitionExtensionImpl workDefinition = new WorkDefinitionExtensionImpl();
+            workDefinition.setName((String) workDefinitionMap.get("name"));
+            workDefinition.setDisplayName((String) workDefinitionMap.get("displayName"));
+            workDefinition.setIcon((String) workDefinitionMap.get("icon"));
+            workDefinition.setCustomEditor((String) workDefinitionMap.get("customEditor"));
+            Set<ParameterDefinition> parameters = new HashSet<ParameterDefinition>();
+            Map<String, DataType> parameterMap = (Map<String, DataType>) workDefinitionMap.get("parameters");
+            if (parameterMap != null) {
+                for (Map.Entry<String, DataType> entry: parameterMap.entrySet()) {
+                    parameters.add(new ParameterDefinitionImpl(entry.getKey(), entry.getValue()));
+                }
+            }
+            workDefinition.setParameters(parameters);
+            Set<ParameterDefinition> results = new HashSet<ParameterDefinition>();
+            Map<String, DataType> resultMap = (Map<String, DataType>) workDefinitionMap.get("results");
+            if (resultMap != null) {
+                for (Map.Entry<String, DataType> entry: resultMap.entrySet()) {
+                    results.add(new ParameterDefinitionImpl(entry.getKey(), entry.getValue()));
+                }
+            }
+            workDefinition.setResults(results);
+            this.workDefinitions.put(workDefinition.getName(), workDefinition);
+        }
+    }
+
+    public ContextInstanceFactoryRegistry getProcessContextInstanceFactoryRegistry() {
+        if ( this.processContextInstanceFactoryRegistry == null ) {
+            initProcessContextInstanceFactoryRegistry();
+        }
+        return this.processContextInstanceFactoryRegistry;
+
+    }
+
+    private void initProcessContextInstanceFactoryRegistry() {
+        this.processContextInstanceFactoryRegistry = new ContextInstanceFactoryRegistry();
+
+        // split on each space
+        String locations[] = this.chainedProperties.getProperty( "processContextInstanceFactoryRegistry",
+                                                                 "" ).split( "\\s" );
+
+        int i = 0;
+        // load each SemanticModule
+        for ( String factoryLocation : locations ) {
+            // trim leading/trailing spaces and quotes
+            factoryLocation = factoryLocation.trim();
+            if ( factoryLocation.startsWith( "\"" ) ) {
+                factoryLocation = factoryLocation.substring( 1 );
+            }
+            if ( factoryLocation.endsWith( "\"" ) ) {
+                factoryLocation = factoryLocation.substring( 0,
+                                                             factoryLocation.length() - 1 );
+            }
+            if ( !factoryLocation.equals( "" ) ) {
+                loadProcessContextInstanceFactoryRegistry( factoryLocation );
+            }
+        }
+    }
+
+    private void loadProcessContextInstanceFactoryRegistry(String factoryLocation) {
+        String content = ConfFileUtils.URLContentsToString( ConfFileUtils.getURL( factoryLocation,
+                                                                                  null,
+                                                                                  RuleBaseConfiguration.class ) );
+        
+        Map<Class< ? extends Context>, ContextInstanceFactory> map = (Map<Class< ? extends Context>, ContextInstanceFactory>) MVEL.eval( content, new HashMap() );
+
+        if ( map != null ) {
+            for ( Entry<Class< ? extends Context>, ContextInstanceFactory> entry : map.entrySet() ) {
+                this.processContextInstanceFactoryRegistry.register( entry.getKey(),
+                                                                     entry.getValue() );
             }
         }
     }

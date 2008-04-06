@@ -20,19 +20,20 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.drools.process.core.Work;
+import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemListener;
+import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.process.instance.impl.WorkItemImpl;
 import org.drools.workflow.core.node.WorkItemNode;
 import org.drools.workflow.instance.NodeInstance;
-import org.drools.workflow.instance.impl.NodeInstanceImpl;
 
 /**
  * Runtime counterpart of a task node.
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class WorkItemNodeInstance extends NodeInstanceImpl implements WorkItemListener {
+public class WorkItemNodeInstance extends EventNodeInstance implements WorkItemListener {
 
     private static final long serialVersionUID = 400L;
     
@@ -60,31 +61,66 @@ public class WorkItemNodeInstance extends NodeInstanceImpl implements WorkItemLi
 		workItem.setParameters(work.getParameters());
 		for (Iterator<Map.Entry<String, String>> iterator = workItemNode.getInMappings().entrySet().iterator(); iterator.hasNext(); ) {
             Map.Entry<String, String> mapping = iterator.next();
-            workItem.setParameter(mapping.getKey(), getProcessInstance().getVariable(mapping.getValue()));
+            VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
+                resolveContextInstance(VariableScope.VARIABLE_SCOPE, mapping.getValue());
+            if (variableScopeInstance != null) {
+                workItem.setParameter(mapping.getKey(), variableScopeInstance.getVariable(mapping.getValue()));
+            } else {
+                System.err.println("Could not find variable scope for variable " + mapping.getValue());
+                System.err.println("when trying to execute Work Item " + work.getName());
+                System.err.println("Continuing without setting parameter.");
+            }
         }
-		getProcessInstance().addWorkItemListener(this);
-		getProcessInstance().getWorkingMemory().getWorkItemManager().executeWorkItem(workItem);
+		if (workItemNode.isWaitForCompletion()) {
+		    addEventListeners();
+        }
+        getProcessInstance().getWorkingMemory().getWorkItemManager().internalExecuteWorkItem(workItem);
+        if (!workItemNode.isWaitForCompletion()) {
+            triggerCompleted();
+        }
     }
 
     public void triggerCompleted(WorkItem workItem) {
-        getNodeInstanceContainer().removeNodeInstance(this);
         for (Iterator<Map.Entry<String, String>> iterator = getWorkItemNode().getOutMappings().entrySet().iterator(); iterator.hasNext(); ) {
             Map.Entry<String, String> mapping = iterator.next();
-            getProcessInstance().setVariable(mapping.getValue(), workItem.getResult(mapping.getKey()));
+            VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
+                resolveContextInstance(VariableScope.VARIABLE_SCOPE, mapping.getValue());
+            if (variableScopeInstance != null) {
+                variableScopeInstance.setVariable(mapping.getValue(), workItem.getResult(mapping.getKey()));
+            } else {
+                System.err.println("Could not find variable scope for variable " + mapping.getValue());
+                System.err.println("when trying to complete Work Item " + workItem.getName());
+                System.err.println("Continuing without setting variable.");
+            }
         }
-        getNodeInstanceContainer().getNodeInstance( getWorkItemNode().getTo().getTo() ).trigger( this, getWorkItemNode().getTo().getToType() );
+        triggerCompleted();
+    }
+    
+    public void cancel() {
+        super.cancel();
+        getProcessInstance().getWorkingMemory().getWorkItemManager().internalAbortWorkItem(workItem.getId());
+    }
+    
+    public void addEventListeners() {
+        super.addEventListeners();
+        getProcessInstance().addWorkItemListener(this);
+    }
+    
+    public void removeEventListeners() {
+        super.removeEventListeners();
+        getProcessInstance().removeWorkItemListener(this);
     }
 
     public void workItemAborted(WorkItem workItem) {
         if ( this.workItem.getId() == workItem.getId() ) {
-            getProcessInstance().removeWorkItemListener(this);
+            removeEventListeners();
             triggerCompleted(workItem);
         }
     }
 
     public void workItemCompleted(WorkItem workItem) {
         if ( this.workItem.getId() == workItem.getId() ) {
-            getProcessInstance().removeWorkItemListener(this);
+            removeEventListeners();
             triggerCompleted(workItem);
         }
     }

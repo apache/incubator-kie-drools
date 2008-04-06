@@ -16,8 +16,11 @@ package org.drools.process.instance;
  * limitations under the License.
  */
 
+import org.drools.Agenda;
+import org.drools.WorkingMemory;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.process.core.Process;
+import org.drools.process.instance.timer.TimerListener;
 
 /**
  * A process instance is the representation of a process during its execution.
@@ -26,7 +29,7 @@ import org.drools.process.core.Process;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public interface ProcessInstance extends VariableScopeInstance, WorkItemListener {
+public interface ProcessInstance extends ContextInstanceContainer, ContextableInstance, WorkItemListener, TimerListener {
 
     int STATE_PENDING   = 0;
     int STATE_ACTIVE    = 1;
@@ -41,12 +44,18 @@ public interface ProcessInstance extends VariableScopeInstance, WorkItemListener
     void setProcess(Process process);
 
     Process getProcess();
+    
+    String getProcessId();
 
     void setState(int state);
 
     int getState();
     
     void setWorkingMemory(InternalWorkingMemory workingMemory);
+    
+    WorkingMemory getWorkingMemory();
+
+    Agenda getAgenda();
     
     void start();
 

@@ -18,10 +18,8 @@ package org.drools.workflow.core.node;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.drools.workflow.core.Connection;
 import org.drools.workflow.core.Constraint;
@@ -63,7 +61,7 @@ public class Split extends NodeImpl {
     private static final long serialVersionUID = 400L;
 
     private int type;
-    private Map<Connection, Constraint> constraints = new HashMap<Connection, Constraint>();
+    private Map<ConnectionRef, Constraint> constraints = new HashMap<ConnectionRef, Constraint>();
 
     public Split() {
         this.type = TYPE_UNDEFINED;
@@ -86,18 +84,9 @@ public class Split extends NodeImpl {
             throw new IllegalArgumentException( "connection is null" );
         }
 
-        // dirty hack because keys were entered wrong
-        // probably caused by xstreams
-        // TODO xstream 1.3.0 should fix this by default; in 1.2.2 it's fixable: http://jira.codehaus.org/browse/XSTR-363
-        final HashMap<Connection, Constraint> newMap = new HashMap<Connection, Constraint>();
-        for (final Iterator<Map.Entry<Connection, Constraint>> it = this.constraints.entrySet().iterator(); it.hasNext(); ) {
-            final Entry<Connection, Constraint> entry = it.next();
-            newMap.put(entry.getKey(), entry.getValue());
-        }
-        this.constraints = newMap;
-
         if ( this.type == TYPE_OR || this.type == TYPE_XOR ) {
-            return this.constraints.get(connection);
+            ConnectionRef ref = new ConnectionRef(connection.getTo().getId(), connection.getToType());
+            return this.constraints.get(ref);
         }
         throw new UnsupportedOperationException( "Constraints are " + "only supported with XOR or OR split types, not with: " + getType() );
     }
@@ -112,18 +101,20 @@ public class Split extends NodeImpl {
                     && !getOutgoingConnections(Node.CONNECTION_DEFAULT_TYPE).contains(connection)) {
                 throw new IllegalArgumentException("connection is unknown:" + connection);
             }
-            this.constraints.put( connection,
-                                  constraint );
+            internalSetConstraint(
+                new ConnectionRef(connection.getTo().getId(), connection.getToType()),
+                constraint);
         } else {
             throw new UnsupportedOperationException( "Constraints are " + "only supported with XOR or OR split types, not with type:" + getType() );
         }
     }
 
-    public Map<Connection, Constraint> getConstraints() {
-        if ( this.type == TYPE_OR || this.type == TYPE_XOR ) {
-            return Collections.unmodifiableMap( this.constraints );
-        }
-        throw new UnsupportedOperationException( "Constraints are " + "only supported with XOR or OR split types, not with: " + getType() );
+    public void internalSetConstraint(ConnectionRef connectionRef, Constraint constraint) {
+        this.constraints.put(connectionRef, constraint);
+    }
+
+    public Map<ConnectionRef, Constraint> getConstraints() {
+        return Collections.unmodifiableMap( this.constraints );
     }
 
     public Connection getFrom() {
@@ -162,7 +153,39 @@ public class Split extends NodeImpl {
 
     public void removeOutgoingConnection(final String type, final Connection connection) {
         super.removeOutgoingConnection(type, connection);
-        this.constraints.remove(connection);
+        ConnectionRef ref = new ConnectionRef(connection.getTo().getId(), connection.getToType());
+        this.constraints.remove(ref);
+    }
+    
+    public static class ConnectionRef {
+        
+        private String toType;
+        private long nodeId;
+        
+        public ConnectionRef(long nodeId, String toType) {
+            this.nodeId = nodeId;
+            this.toType = toType;
+        }
+        
+        public String getToType() {
+            return toType;
+        }
+        
+        public long getNodeId() {
+            return nodeId;
+        }
+        
+        public boolean equals(Object o) {
+            if (o instanceof ConnectionRef) {
+                ConnectionRef c = (ConnectionRef) o;
+                return toType.equals(c.toType) && nodeId == c.nodeId;
+            }
+            return false;
+        }
+        
+        public int hashCode() {
+            return 7*toType.hashCode() + (int) nodeId;
+        }
     }
 
 }
