@@ -316,7 +316,7 @@ public class @{invokerClassName} implements org.drools.spi.Accumulator, org.droo
 
     @includeNamed{"hashCode"}
 
-    @includeNamed("equals"}
+    @includeNamed{"equals"}
 
     public java.util.List getMethodBytecode() {
         java.io.InputStream is = @{ruleClassName}.class.getClassLoader().getResourceAsStream( "@{package}.@{ruleClassName}".replace( '.', '/' ) + "$@{className}" + ".class" );
