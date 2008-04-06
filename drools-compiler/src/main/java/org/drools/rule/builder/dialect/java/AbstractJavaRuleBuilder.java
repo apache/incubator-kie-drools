@@ -131,14 +131,9 @@ public class AbstractJavaRuleBuilder {
         final String invokerClassName = context.getPkg().getName() + "." + context.getRuleDescr().getClassName() + StringUtils.ucFirst(className) + "Invoker";
 
 
-        Object debug;
         context.getInvokers().put(invokerClassName,
-              debug = TemplateRuntime.execute(registry.getNamedTemplate(invokerTemplate), null, new MapVariableResolverFactory(vars), registry)
+             TemplateRuntime.execute(registry.getNamedTemplate(invokerTemplate), null, new MapVariableResolverFactory(vars), registry)
         );
-
-        System.out.println("----");
-        System.out.println(String.valueOf(debug));
-        System.out.println("----");
 
         context.getInvokerLookups().put(invokerClassName,
                 invokerLookup);
