@@ -10,8 +10,9 @@ import org.drools.process.core.Process;
 import org.drools.workflow.core.Node;
 
 public class ProcessBuildData {
+    
     private Process process;
-    private Map<String, Node> nodes = new HashMap<String, Node>();               
+    private Map<Long, Node> nodes = new HashMap<Long, Node>();               
     
     public Process getProcess() {
         return process;
@@ -21,15 +22,14 @@ public class ProcessBuildData {
         this.process = process;
     }
     
-    public Map<String, Node> getNodes() {
+    public Map<Long, Node> getNodes() {
         return nodes;
     }
     public boolean addNode(Node node) {
-        return( this.nodes.put( node.getName(),
-                               node ) != null );
+        return( this.nodes.put( node.getId(), node ) != null );
     }               
     
-    public Node getNode(String name) {
-        return this.nodes.get( name );
+    public Node getNode(Long id) {
+        return this.nodes.get( id );
     }
 }

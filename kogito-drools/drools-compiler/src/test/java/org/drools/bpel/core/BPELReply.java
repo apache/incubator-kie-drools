@@ -16,6 +16,7 @@ public class BPELReply extends WorkItemNode implements BPELBasicActivity {
     private static final String PORT_TYPE = "Porttype";
     private static final String OPERATION = "Operation";
     private static final String INPUT = "Message";
+    private static final String FAULT_NAME = "FaultName";
     
     private String[] sourceLinks;
     private String[] targetLinks;
@@ -53,6 +54,14 @@ public class BPELReply extends WorkItemNode implements BPELBasicActivity {
 
     public String getVariable() {
         return getInMapping(INPUT);
+    }
+    
+    public void setFaultName(String faultName) {
+        getWork().setParameter(FAULT_NAME, faultName);
+    }
+    
+    public String getFaultName() {
+        return (String) getWork().getParameter(FAULT_NAME);
     }
 
     public void setVariable(String variable) {

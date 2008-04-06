@@ -31,7 +31,7 @@ public class XmlProcessReader {
     }
 
     /**
-     * Read a <code>RuleSet</code> from a <code>Reader</code>.
+     * Read a <code>Process</code> from a <code>Reader</code>.
      *
      * @param reader
      *            The reader containing the rule-set.
@@ -45,7 +45,7 @@ public class XmlProcessReader {
     }
 
     /**
-     * Read a <code>RuleSet</code> from an <code>InputStream</code>.
+     * Read a <code>Process</code> from an <code>InputStream</code>.
      *
      * @param inputStream
      *            The input-stream containing the rule-set.
@@ -59,7 +59,7 @@ public class XmlProcessReader {
     }
 
     /**
-     * Read a <code>RuleSet</code> from an <code>InputSource</code>.
+     * Read a <code>Process</code> from an <code>InputSource</code>.
      *
      * @param in
      *            The rule-set input-source.

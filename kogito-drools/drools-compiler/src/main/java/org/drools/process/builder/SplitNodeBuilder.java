@@ -11,20 +11,19 @@ import org.drools.lang.descr.ProcessDescr;
 import org.drools.process.core.Process;
 import org.drools.rule.builder.ProcessBuildContext;
 import org.drools.workflow.core.Connection;
+import org.drools.workflow.core.Constraint;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.impl.ConstraintImpl;
 import org.drools.workflow.core.node.Split;
 import org.drools.workflow.instance.impl.ReturnValueConstraintEvaluator;
 import org.drools.workflow.instance.impl.RuleConstraintEvaluator;
 
-public class SplitNodeBuilder
-    implements
-    ProcessNodeBuilder {
+public class SplitNodeBuilder implements ProcessNodeBuilder {
 
     public void build(Process process,
-                           ProcessDescr processDescr,
-                           ProcessBuildContext context,
-                           Node node) {
+                      ProcessDescr processDescr,
+                      ProcessBuildContext context,
+                      Node node) {
         Split splitNode = ( Split ) node;
         
         if ( splitNode.getType() == Split.TYPE_AND ) {
@@ -32,26 +31,35 @@ public class SplitNodeBuilder
             return;
         }
         // we need to clone the map, so we can update the original while iterating.
-        Map map = new HashMap( splitNode.getConstraints() );
-        for ( Iterator it = map.entrySet().iterator(); it.hasNext(); ) {
-            Entry entry = (Entry) it.next();
-            Connection connection = (Connection) entry.getKey();
+        Map<Split.ConnectionRef, Constraint> map = new HashMap<Split.ConnectionRef, Constraint>( splitNode.getConstraints() );
+        for ( Iterator<Map.Entry<Split.ConnectionRef, Constraint>> it = map.entrySet().iterator(); it.hasNext(); ) {
+            Map.Entry<Split.ConnectionRef, Constraint> entry = it.next();
+            Split.ConnectionRef connection = entry.getKey();
             ConstraintImpl constraint = (ConstraintImpl) entry.getValue();
-            
+            Connection outgoingConnection = null; 
+            for (Connection out: splitNode.getDefaultOutgoingConnections()) {
+                if (out.getToType().equals(connection.getToType())
+                    && out.getTo().getId() == connection.getNodeId()) {
+                    outgoingConnection = out;
+                }
+            }
+            if (outgoingConnection == null) {
+                throw new IllegalArgumentException("Could not find outgoing connection");
+            }
             if ( "rule".equals( constraint.getType() )) {
                 RuleConstraintEvaluator ruleConstraint = new RuleConstraintEvaluator();
                 ruleConstraint.setDialect( constraint.getDialect() );
                 ruleConstraint.setName( constraint.getName() );
                 ruleConstraint.setPriority( constraint.getPriority() );
                 ruleConstraint.setPriority( constraint.getPriority() );
-                splitNode.setConstraint( connection, ruleConstraint );
+                splitNode.setConstraint( outgoingConnection, ruleConstraint );
             } else if ( "code".equals( constraint.getType() ) ) {
                 ReturnValueConstraintEvaluator returnValueConstraint = new ReturnValueConstraintEvaluator();
                 returnValueConstraint.setDialect( constraint.getDialect() );
                 returnValueConstraint.setName( constraint.getName() );
                 returnValueConstraint.setPriority( constraint.getPriority() );
                 returnValueConstraint.setPriority( constraint.getPriority() );
-                splitNode.setConstraint( connection, returnValueConstraint );            
+                splitNode.setConstraint( outgoingConnection, returnValueConstraint );            
                 
                 ReturnValueDescr returnValueDescr = new ReturnValueDescr();
                 returnValueDescr.setText( constraint.getConstraint() );

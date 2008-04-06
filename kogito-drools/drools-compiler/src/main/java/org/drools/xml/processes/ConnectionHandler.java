@@ -40,25 +40,27 @@ public class ConnectionHandler extends BaseAbstractHandler
         parser.startConfiguration( localName,
                                                   attrs );     
         
-        String fromName = attrs.getValue( "from" );
-        String toName = attrs.getValue( "to" );
-        emptyAttributeCheck( localName, "from", fromName, parser );
-        emptyAttributeCheck( localName, "to", toName, parser );
+        String fromId = attrs.getValue( "from" );
+        emptyAttributeCheck( localName, "from", fromId, parser );
+        String toId = attrs.getValue( "to" );
+        emptyAttributeCheck( localName, "to", toId, parser );
+        String bendpoints = attrs.getValue( "bendpoints" );
         
-        ProcessBuildData buildData = (ProcessBuildData)parser.getData();
-        Node fromNode = buildData.getNode( fromName );
-        Node toNode = buildData.getNode( toName );
+        ProcessBuildData buildData = (ProcessBuildData) parser.getData();
+        Node fromNode = buildData.getNode( new Long(fromId) );
+        Node toNode = buildData.getNode( new Long(toId) );
         
         if ( fromNode == null ) {
-                throw new SAXParseException( "from Node connection name '" + fromName + "' cannot be found",
+                throw new SAXParseException( "Node '" + fromId + "' cannot be found",
                                              parser.getLocator() );
         }
         if ( toNode == null ) {
-            throw new SAXParseException( "from Node connection name '" + toName + "' cannot be found",
+            throw new SAXParseException( "Node '" + toId + "' cannot be found",
                                          parser.getLocator() );
-    }        
+        }        
         
         ConnectionImpl connection = new ConnectionImpl(fromNode, Node.CONNECTION_DEFAULT_TYPE, toNode, Node.CONNECTION_DEFAULT_TYPE);
+        connection.setMetaData("bendpoints", bendpoints);
         
         return connection;
     }    

@@ -43,6 +43,10 @@ public class StoreHandler extends BaseAbstractHandler
         emptyAttributeCheck( localName, "name", name, xmlPackageReader );        
         actionNode.setName( name );
         
+        final String id = attrs.getValue( "id" );        
+        emptyAttributeCheck( localName, "id", name, xmlPackageReader );        
+        actionNode.setId( new Long(id) );
+        
         process.addNode( actionNode );
         ((ProcessBuildData)xmlPackageReader.getData()).addNode( actionNode );
         

@@ -35,6 +35,7 @@ import org.drools.event.WorkingMemoryEventSupport;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.ProcessInstanceFactory;
 import org.drools.process.instance.WorkItemManager;
+import org.drools.process.instance.timer.TimerManager;
 import org.drools.reteoo.LIANodePropagation;
 import org.drools.reteoo.ObjectTypeConf;
 import org.drools.rule.EntryPoint;
@@ -433,6 +434,11 @@ public class MockWorkingMemory implements InternalWorkingMemory {
 
     }
 
+    public void addProcessInstance(ProcessInstance processInstance) {
+        // TODO Auto-generated method stub
+        
+    }
+    
     public void removeProcessInstance(ProcessInstance processInstance) {
         // TODO Auto-generated method stub
 
@@ -503,6 +509,11 @@ public class MockWorkingMemory implements InternalWorkingMemory {
     public void setExecutorService(ExecutorService executor) {
         // TODO Auto-generated method stub
 
+    }
+
+    public TimerManager getTimerManager() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

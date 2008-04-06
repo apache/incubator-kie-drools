@@ -14,6 +14,7 @@ import org.drools.WorkingMemory;
 import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.bpel.core.BPELActivity;
 import org.drools.bpel.core.BPELAssign;
+import org.drools.bpel.core.BPELFaultHandler;
 import org.drools.bpel.core.BPELFlow;
 import org.drools.bpel.core.BPELInvoke;
 import org.drools.bpel.core.BPELProcess;
@@ -23,11 +24,13 @@ import org.drools.bpel.core.BPELSequence;
 import org.drools.bpel.instance.BPELProcessInstance;
 import org.drools.bpel.instance.BPELProcessInstanceFactory;
 import org.drools.common.AbstractRuleBase;
-import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.ProcessBuilder;
+import org.drools.process.core.context.variable.Variable;
+import org.drools.process.core.context.variable.VariableScope;
+import org.drools.process.core.datatype.impl.type.StringDataType;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemHandler;
 import org.drools.process.instance.WorkItemManager;
@@ -35,78 +38,56 @@ import org.drools.reteoo.ReteooWorkingMemory;
 
 public class BPELTest {
 
-    public static void main1(String[] args) {
-        BPELProcess process = new BPELProcess();
-        process.setName("TestProcess");
-        process.setId("1");
-        
-        // flow
-        BPELFlow flow = new BPELFlow();
-        flow.setName("flow");
-        process.setActivity(flow);
-        List<BPELActivity> flowActivities = new ArrayList<BPELActivity>();
-        
-        // invoke1
-        BPELInvoke invoke1 = new BPELInvoke();
-        invoke1.setName("invoke1");
-        flowActivities.add(invoke1);
-        
-        // invoke2
-        BPELInvoke invoke2 = new BPELInvoke();
-        invoke2.setName("invoke2");
-        flowActivities.add(invoke2);
-        
-        flow.setActivities(flowActivities);
-        
-        // execute
-        InternalWorkingMemory workingMemory = new ReteooWorkingMemory(1, (InternalRuleBase) RuleBaseFactory.newRuleBase());
-        WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger(workingMemory);
-        BPELProcessInstance processInstance = new BPELProcessInstance();
-        processInstance.setProcess(process);
-        processInstance.setWorkingMemory(workingMemory);
-        processInstance.start();
-        logger.writeToDisk();
-    }
-     
-    public static void main2(String[] args) {
-        BPELProcess process = new BPELProcess();
-        process.setName("TestProcess");
-        process.setId("1");
-        
-        // sequence
-        BPELSequence sequence = new BPELSequence();
-        sequence.setName("sequence");
-        List<BPELActivity> sequenceActivities = new ArrayList<BPELActivity>();
-        
-        // invoke1
-        BPELInvoke invoke1 = new BPELInvoke();
-        invoke1.setName("invoke1");
-        sequenceActivities.add(invoke1);
-        
-        // invoke2
-        BPELInvoke invoke2 = new BPELInvoke();
-        invoke2.setName("invoke2");
-        sequenceActivities.add(invoke2);
-        
-        sequence.setActivities(sequenceActivities);
-        process.setActivity(sequence);
-        
-        // execute
-        InternalWorkingMemory workingMemory = new ReteooWorkingMemory(1, (InternalRuleBase) RuleBaseFactory.newRuleBase());
-        WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger(workingMemory);
-        BPELProcessInstance processInstance = new BPELProcessInstance();
-        processInstance.setProcess(process);
-        processInstance.setWorkingMemory(workingMemory);
-        processInstance.start();
-        logger.writeToDisk();
-    }
-    
-    public static void main(String[] args) {
+    public static BPELProcess getProcess() {
         BPELProcess process = new BPELProcess();
         process.setName("Purchase Order Process");
         process.setId("1");
         process.setVersion("1");
         process.setPackageName("org.drools.bpel.test");
+        
+        // variables
+        VariableScope variableScope = process.getVariableScope();
+        List<Variable> variables = new ArrayList<Variable>();
+        Variable variable = new Variable();
+        variable.setName("PO");
+        variable.setType(new StringDataType());
+        variables.add(variable);
+        variable = new Variable();
+        variable.setName("Invoice");
+        variable.setType(new StringDataType());
+        variables.add(variable);
+        variable = new Variable();
+        variable.setName("POFault");
+        variable.setType(new StringDataType());
+        variables.add(variable);
+        variable = new Variable();
+        variable.setName("shippingRequest");
+        variable.setType(new StringDataType());
+        variables.add(variable);
+        variable = new Variable();
+        variable.setName("shippingInfo");
+        variable.setType(new StringDataType());
+        variables.add(variable);
+        variable = new Variable();
+        variable.setName("shippingSchedule");
+        variable.setType(new StringDataType());
+        variables.add(variable);
+        variableScope.setVariables(variables);
+        
+        // faultHandler
+        List<BPELFaultHandler> faultHandlers = new ArrayList<BPELFaultHandler>();
+        BPELFaultHandler faultHandler = new BPELFaultHandler();
+        faultHandler.setFaultName("cannotCompleteOrder");
+        faultHandler.setFaultVariable("POFault");
+        BPELReply reply = new BPELReply();
+        reply.setPartnerLink("purchasing");
+        reply.setPortType("lns:purchaseOrderPT");
+        reply.setOperation("sendPurchaseOrder");
+        reply.setVariable("POFault");
+        reply.setFaultName("cannotCompleteOrder");
+        faultHandler.setActivity(reply);
+        faultHandlers.add(faultHandler);
+        process.setFaultHandlers(faultHandlers);
         
         // sequence
         BPELSequence sequence = new BPELSequence();
@@ -233,7 +214,7 @@ public class BPELTest {
         sequenceActivities.add(flow);
         
         // reply
-        BPELReply reply = new BPELReply();
+        reply = new BPELReply();
         reply.setName("Invoice Processing");
         reply.setPartnerLink("purchasing");
         reply.setPortType("lns:purchaseOrderPT");
@@ -250,10 +231,16 @@ public class BPELTest {
         PackageBuilder packageBuilder = new PackageBuilder(packageConf);
         ProcessBuilder processBuilder = new ProcessBuilder(packageBuilder);
         processBuilder.buildProcess(process);
-        
+        return process;
+    }
+    
+    // normal execution
+    public static void main1(String[] args) {
+        BPELProcess process = getProcess();
         // execute
-        properties = new Properties(); 
+        Properties properties = new Properties(); 
         properties.put( "processNodeInstanceFactoryRegistry", "bpelProcessNodeInstanceFactory.conf" );        
+        properties.put( "processContextInstanceFactoryRegistry", "bpelProcessContextInstanceFactory.conf" );        
         RuleBaseConfiguration ruleBaseConf = new RuleBaseConfiguration( properties );
         AbstractRuleBase ruleBase = (AbstractRuleBase) RuleBaseFactory.newRuleBase(ruleBaseConf);
         ruleBase.addProcess(process);
@@ -292,6 +279,40 @@ public class BPELTest {
         logger.writeToDisk();
     }
     
+    // shipping returns fault
+    public static void main(String[] args) {
+        BPELProcess process = getProcess();
+        // execute
+        Properties properties = new Properties(); 
+        properties.put( "processNodeInstanceFactoryRegistry", "bpelProcessNodeInstanceFactory.conf" );        
+        properties.put( "processContextInstanceFactoryRegistry", "bpelProcessContextInstanceFactory.conf" );        
+        RuleBaseConfiguration ruleBaseConf = new RuleBaseConfiguration( properties );
+        AbstractRuleBase ruleBase = (AbstractRuleBase) RuleBaseFactory.newRuleBase(ruleBaseConf);
+        ruleBase.addProcess(process);
+        InternalWorkingMemory workingMemory = new ReteooWorkingMemory(1, ruleBase);
+        workingMemory.registerProcessInstanceFactory(
+            BPELProcess.BPEL_TYPE, new BPELProcessInstanceFactory());
+        WorkItemHandler handler = new WebServiceInvocationHandler();
+        workingMemory.getWorkItemManager().registerWorkItemHandler("WebServiceInvocation", handler);
+        WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger(workingMemory);
+        BPELProcessInstance processInstance = (BPELProcessInstance) workingMemory.startProcess("1");
+        
+        // start process
+        webServiceInvocation(processInstance, "purchasing", "lns:purchaseOrderPT", "sendPurchaseOrder", "PURCHASE ORDER");
+
+        // reply to web service invocations
+        WorkItem workItem = findWebServiceInvocation(workingMemory, "scheduling", "lns:schedulingPT", "requestProductionScheduling");
+        replyWebServiceInvocation(workingMemory, workItem, null);
+
+        workItem = findWebServiceInvocation(workingMemory, "invoicing", "lns:computePricePT", "initiatePriceCalculation");
+        replyWebServiceInvocation(workingMemory, workItem, null);
+        
+        workItem = findWebServiceInvocation(workingMemory, "shipping", "lns:shippingPT", "requestShipping");
+        replyWebServiceInvocationFault(workingMemory, workItem, "cannotCompleteOrder", "SHIPPING FAULT");
+
+        logger.writeToDisk();
+    }
+    
     private static WorkItem findWebServiceInvocation(WorkingMemory workingMemory, String partnerLink, String portType, String operation) {
         Set<WorkItem> workItems = workingMemory.getWorkItemManager().getWorkItems();
         for (Iterator<WorkItem> iterator = workItems.iterator(); iterator.hasNext(); ) {
@@ -315,6 +336,20 @@ public class BPELTest {
                 + result);
         Map<String, Object> results = new HashMap<String, Object>();
         results.put("Result", result);
+        workingMemory.getWorkItemManager().completeWorkItem(workItem.getId(), results);
+    }
+    
+    private static void replyWebServiceInvocationFault(WorkingMemory workingMemory, WorkItem workItem, String faultName, String result) {
+        System.out.println("Replying to web service invocation "
+                + workItem.getParameter("PartnerLink") + " "
+                + workItem.getParameter("PortType") + " "
+                + workItem.getParameter("Operation") + ", faultName = "
+                + workItem.getParameter("FaultName") + ", message = "
+                + workItem.getParameter("Message") + ": "
+                + result);
+        Map<String, Object> results = new HashMap<String, Object>();
+        results.put("Result", result);
+        results.put("FaultName", faultName);
         workingMemory.getWorkItemManager().completeWorkItem(workItem.getId(), results);
     }
     

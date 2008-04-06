@@ -1,6 +1,8 @@
 package org.drools.bpel.instance;
 
 import org.drools.bpel.core.BPELReceive;
+import org.drools.process.core.context.variable.VariableScope;
+import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.workflow.core.Connection;
 import org.drools.workflow.instance.NodeInstance;
 import org.drools.workflow.instance.impl.NodeInstanceImpl;
@@ -26,7 +28,12 @@ public class BPELReceiveInstance extends NodeInstanceImpl {
     public void triggerCompleted(String message) {
         String variable = getBPELReceive().getVariable();
         if (variable != null) {
-            getProcessInstance().setVariable(variable, message);
+            VariableScopeInstance variableScope = (VariableScopeInstance) resolveContextInstance(VariableScope.VARIABLE_SCOPE, variable);
+            if (variableScope == null) {
+                throw new IllegalArgumentException(
+                    "Variable " + variable + " not found!");
+            }
+            variableScope.setVariable(variable, message);
         }
         Connection to = getBPELReceive().getTo();
         getNodeInstanceContainer().removeNodeInstance(this);
