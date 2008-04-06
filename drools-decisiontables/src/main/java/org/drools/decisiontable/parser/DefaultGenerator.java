@@ -68,14 +68,17 @@ public class DefaultGenerator implements Generator {
 	}
 
 	private CompiledTemplate getTemplate(String templateName) throws IOException {
-        CompiledTemplate contents = registry.getNamedTemplate( templateName );
-		if (contents == null) {
+        CompiledTemplate contents;
+		if (!registry.contains(templateName)) {
 			RuleTemplate template = (RuleTemplate) ruleTemplates
 					.get(templateName);
 			contents = TemplateCompiler.compileTemplate(template.getContents());
             registry.addNamedTemplate( templateName, contents);
 		}
-		return contents;
+        else {
+            contents = registry.getNamedTemplate(templateName);
+        }
+        return contents;
 	}
 
 	/*
