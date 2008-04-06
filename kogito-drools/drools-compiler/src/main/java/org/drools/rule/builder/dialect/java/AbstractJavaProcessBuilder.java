@@ -29,6 +29,7 @@ public class AbstractJavaProcessBuilder {
         TemplateRuntime.execute(RULE_REGISTRY.getNamedTemplate("rules"), null, null, RULE_REGISTRY);
         TemplateRuntime.execute(INVOKER_REGISTRY.getNamedTemplate("invokers"), null, null, INVOKER_REGISTRY);
 
+        System.out.println();
     }
 
     public TemplateRegistry getRuleTemplateRegistry() {
