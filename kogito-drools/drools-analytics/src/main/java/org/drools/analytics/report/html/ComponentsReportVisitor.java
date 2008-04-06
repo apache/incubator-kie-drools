@@ -12,7 +12,7 @@ import org.drools.analytics.components.RulePackage;
 import org.drools.analytics.dao.AnalyticsData;
 import org.drools.analytics.dao.AnalyticsResult;
 import org.drools.analytics.report.components.RangeCheckCause;
-import org.mvel.TemplateInterpreter;
+import org.mvel.templates.TemplateRuntime;
 
 class ComponentsReportVisitor extends ReportVisitor {
 
@@ -30,7 +30,7 @@ class ComponentsReportVisitor extends ReportVisitor {
 
 		String myTemplate = readFile("packages.htm");
 
-		String result = TemplateInterpreter.evalToString(myTemplate, map);
+		String result = String.valueOf(TemplateRuntime.eval(myTemplate, map));
 
 		return result;
 	}
@@ -46,7 +46,7 @@ class ComponentsReportVisitor extends ReportVisitor {
 
 		String myTemplate = readFile("objectTypes.htm");
 
-		return TemplateInterpreter.evalToString(myTemplate, map);
+		return String.valueOf(TemplateRuntime.eval(myTemplate, map));
 	}
 
 	public static String visitRule(String sourceFolder, AnalyticsRule rule,
@@ -63,7 +63,7 @@ class ComponentsReportVisitor extends ReportVisitor {
 
 		String myTemplate = readFile("rule.htm");
 
-		return TemplateInterpreter.evalToString(myTemplate, map);
+		return String.valueOf(TemplateRuntime.eval(myTemplate, map));
 	}
 
 	public static String visitObjectType(String sourceFolder,
@@ -81,7 +81,7 @@ class ComponentsReportVisitor extends ReportVisitor {
 
 		String myTemplate = readFile("objectType.htm");
 
-		return TemplateInterpreter.evalToString(myTemplate, map);
+		return String.valueOf(TemplateRuntime.eval(myTemplate, map));
 	}
 
 	public static String visitField(String sourceFolder, Field field,
@@ -116,6 +116,6 @@ class ComponentsReportVisitor extends ReportVisitor {
 
 		String myTemplate = readFile("field.htm");
 
-		return TemplateInterpreter.evalToString(myTemplate, map);
+		return String.valueOf(TemplateRuntime.eval(myTemplate, map));
 	}
 }

@@ -18,7 +18,9 @@ import org.drools.rule.LineMappings;
 import org.drools.rule.Package;
 import org.drools.rule.builder.FunctionBuilder;
 import org.drools.util.StringUtils;
-import org.mvel.TemplateInterpreter;
+import org.mvel.templates.TemplateRuntime;
+import org.mvel.integration.impl.MapVariableResolverFactory;
+
 
 public class JavaFunctionBuilder
     implements
@@ -93,8 +95,7 @@ public class JavaFunctionBuilder
         vars.put( "text",
                   functionDescr.getText() );
 
-        final String text = TemplateInterpreter.evalToString( template,
-                                                              vars );
+        final String text = String.valueOf(TemplateRuntime.eval( template, null, new MapVariableResolverFactory(vars)));
 
         //System.out.println( text );
 

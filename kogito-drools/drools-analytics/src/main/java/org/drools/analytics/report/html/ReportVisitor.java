@@ -1,12 +1,13 @@
 package org.drools.analytics.report.html;
 
+import org.mvel.templates.TemplateRuntime;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.mvel.TemplateInterpreter;
 
 abstract class ReportVisitor {
 
@@ -20,7 +21,7 @@ abstract class ReportVisitor {
 
 		String myTemplate = readFile("header.htm");
 
-		return TemplateInterpreter.evalToString(myTemplate, map);
+		return String.valueOf(TemplateRuntime.eval(myTemplate, map));
 	}
 
 	protected static String readFile(String fileName) {

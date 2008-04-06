@@ -44,6 +44,7 @@ public class MVELAnalysisResult implements AnalysisResult {
     }
     public void setBoundIdentifiers(List[] boundIdentifiers) {
         this.boundIdentifiers = boundIdentifiers;
+        
     }
     public List getIdentifiers() {
         return identifiers;
@@ -71,6 +72,4 @@ public class MVELAnalysisResult implements AnalysisResult {
     public void setMvelVariables(Map mvelVariables) {
         this.mvelVariables = mvelVariables;
     }
-    
-    
 }

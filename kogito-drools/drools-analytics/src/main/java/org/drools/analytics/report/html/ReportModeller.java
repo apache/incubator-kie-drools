@@ -1,5 +1,7 @@
 package org.drools.analytics.report.html;
 
+import org.mvel.templates.TemplateRuntime;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,8 +12,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.mvel.TemplateInterpreter;
 
 abstract class ReportModeller {
 
@@ -25,7 +25,7 @@ abstract class ReportModeller {
 		map.put("header", ReportVisitor.processHeader(sourceFolder));
 		map.put("content", content);
 
-		return TemplateInterpreter.evalToString(myTemplate, map);
+		return String.valueOf(TemplateRuntime.eval(myTemplate, map));
 	}
 
 	public static void copyFile(String destination, String filename)

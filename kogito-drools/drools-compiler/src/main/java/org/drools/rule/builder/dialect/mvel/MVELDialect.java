@@ -76,9 +76,7 @@ import org.mvel.optimizers.OptimizerFactory;
 import org.mvel.util.CompilerTools;
 import org.mvel.util.ParseTools;
 
-public class MVELDialect
-    implements
-    Dialect, Externalizable {
+public class MVELDialect implements Dialect, Externalizable {
 
     public final static String                           ID                          = "mvel";
 
@@ -156,6 +154,7 @@ public class MVELDialect
         out.writeObject(imports);
         out.writeBoolean(strictMode);
     }
+
     public static void setLanguageLevel(int level) {
         synchronized ( languageSet ) {
             // this synchronisation is needed as setLanguageLevel is now thread safe

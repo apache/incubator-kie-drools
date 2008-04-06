@@ -1,17 +1,17 @@
 package @{package};
 
-@foreach{imports as importEntry}
+@foreach{importEntry : imports}
 import @{importEntry};
 @end{}
 
-@foreach{staticImports as importEntry}
+@foreach{importEntry : staticImports}
 import static @{importEntry};
 @end{}
 
 public class @{className} implements java.io.Externalizable {
     private static final long serialVersionUID  = 400L;
         
-    public static @{returnType} @{methodName}(@foreach{parameterTypes as type, parameterNames as name}@{type} @{name}@end{","}) throws Exception {
+    public static @{returnType} @{methodName}(@foreach{type : parameterTypes, name : parameterNames}@{type} @{name}@end{","}) throws Exception {
         @{text}
     }      
 
