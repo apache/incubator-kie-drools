@@ -15,6 +15,8 @@ package org.drools.decisiontable.parser;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import org.mvel.templates.*;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,9 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.mvel.MVELTemplateRegistry;
-import org.mvel.TemplateInterpreter;
-import org.mvel.TemplateRegistry;
+
 /**
  * @author <a href="mailto:stevearoonie@gmail.com">Steven Williams</a>
  * 
@@ -34,7 +34,7 @@ public class DefaultGenerator implements Generator {
 
 	private Map ruleTemplates;
 
-	private TemplateRegistry registry = new MVELTemplateRegistry();
+	private TemplateRegistry registry = new SimpleTemplateRegistry();
 
 	private List rules = new ArrayList();
 
@@ -50,7 +50,7 @@ public class DefaultGenerator implements Generator {
 	 */
 	public void generate(String templateName, Row row) {
 		try {
-			String content = getTemplate(templateName);
+			CompiledTemplate template = getTemplate(templateName);
             Map vars = new HashMap();
 			vars.put("row", row);
 
@@ -58,20 +58,22 @@ public class DefaultGenerator implements Generator {
 				Cell cell = (Cell) it.next();
 				cell.addValue(vars);
 			}
-			String drl = (String) TemplateInterpreter.parse( content, null, vars, this.registry ); 
+
+            String drl = String.valueOf(TemplateRuntime.execute(template, vars, registry));
+
 			rules.add(drl);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	private String getTemplate(String templateName) throws IOException {
-		String contents = (String) registry.getTemplate( templateName );
+	private CompiledTemplate getTemplate(String templateName) throws IOException {
+        CompiledTemplate contents = registry.getNamedTemplate( templateName );
 		if (contents == null) {
 			RuleTemplate template = (RuleTemplate) ruleTemplates
 					.get(templateName);
-			contents = template.getContents();
-            registry.registerTemplate( templateName, contents);
+			contents = TemplateCompiler.compileTemplate(template.getContents());
+            registry.addNamedTemplate( templateName, contents);
 		}
 		return contents;
 	}
