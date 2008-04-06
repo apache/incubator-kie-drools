@@ -14,7 +14,7 @@ import org.drools.analytics.dao.DataTree;
 import org.drools.analytics.report.components.AnalyticsRangeCheckMessage;
 import org.drools.analytics.report.components.RangeCheckCause;
 import org.drools.base.evaluators.Operator;
-import org.mvel.TemplateInterpreter;
+import org.mvel.templates.TemplateRuntime;
 
 class MissingRangesReportVisitor extends ReportVisitor {
 
@@ -103,9 +103,9 @@ class MissingRangesReportVisitor extends ReportVisitor {
 
 		String myTemplate = readFile("ranges.htm");
 
-		String result = TemplateInterpreter.evalToString(myTemplate, map);
+        String result = String.valueOf(TemplateRuntime.eval(myTemplate, map));
 
-		return result;
+        return result;
 	}
 
 	private static void processRangeOutput(DataRow dataRow,
@@ -145,9 +145,9 @@ class MissingRangesReportVisitor extends ReportVisitor {
 
 		String myTemplate = readFile("missingRange.htm");
 
-		String result = TemplateInterpreter.evalToString(myTemplate, map);
+        String result = String.valueOf(TemplateRuntime.eval(myTemplate, map));
 
-		return result;
+        return result;
 	}
 }
 

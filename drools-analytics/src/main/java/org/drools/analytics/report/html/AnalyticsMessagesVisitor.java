@@ -10,7 +10,7 @@ import org.drools.analytics.report.components.AnalyticsMessage;
 import org.drools.analytics.report.components.AnalyticsMessageBase;
 import org.drools.analytics.report.components.AnalyticsRangeCheckMessage;
 import org.drools.analytics.report.components.Cause;
-import org.mvel.TemplateInterpreter;
+import org.mvel.templates.TemplateRuntime;
 
 /**
  * 
@@ -38,7 +38,7 @@ class AnalyticsMessagesVisitor extends ReportVisitor {
 		map.put("title", title);
 		map.put("messages", messageTemplates);
 
-		return TemplateInterpreter.evalToString(myTemplate, map);
+		return String.valueOf(TemplateRuntime.eval(myTemplate, map));
 	}
 
 	public static String visitAnalyticsMessage(AnalyticsMessageBase message,
@@ -76,6 +76,6 @@ class AnalyticsMessagesVisitor extends ReportVisitor {
 		map.put("message", message.getMessage());
 		map.put("causes", causeUrls);
 
-		return TemplateInterpreter.evalToString(myTemplate, map);
+		return String.valueOf(TemplateRuntime.eval(myTemplate, map));
 	}
 }

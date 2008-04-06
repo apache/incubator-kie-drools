@@ -15,9 +15,8 @@ import org.drools.base.ClassObjectType;
 import org.drools.rule.Declaration;
 import org.drools.spi.PatternExtractor;
 import org.drools.util.StringUtils;
-import org.mvel.MVELTemplateRegistry;
-import org.mvel.TemplateInterpreter;
-import org.mvel.TemplateRegistry;
+import org.mvel.templates.*;
+import org.mvel.integration.impl.MapVariableResolverFactory;
 
 public class AccumulateTemplateTest extends TestCase {
 
@@ -105,10 +104,9 @@ public class AccumulateTemplateTest extends TestCase {
                  new Integer( 10 ) );
 
         TemplateRegistry registry = getRuleTemplateRegistry();
-        Object method = TemplateInterpreter.parse( registry.getTemplate( "accumulateInnerClass" ),
-                                                   null,
-                                                   map,
-                                                   registry );
+
+        Object method = TemplateRuntime.execute(registry.getNamedTemplate("accumulateInnerClass"),
+                null, new MapVariableResolverFactory(map), registry);
 
         //System.out.println( method );
     }
@@ -192,11 +190,8 @@ public class AccumulateTemplateTest extends TestCase {
                  Boolean.FALSE );
 
         TemplateRegistry registry = getInvokerTemplateRegistry();
-        Object method = TemplateInterpreter.parse( registry.getTemplate( "accumulateInvoker" ),
-                                                   null,
-                                                   map,
-                                                   registry );
-
+        Object method = TemplateRuntime.execute(registry.getNamedTemplate("accumulateInvoker"), null, new MapVariableResolverFactory(map), registry);
+        
         //System.out.println( method );
     }
 
@@ -277,25 +272,24 @@ public class AccumulateTemplateTest extends TestCase {
                  Boolean.TRUE );
 
         TemplateRegistry registry = getInvokerTemplateRegistry();
-        Object method = TemplateInterpreter.parse( registry.getTemplate( "accumulateInvoker" ),
-                                                   null,
-                                                   map,
-                                                   registry );
+        Object method = TemplateRuntime.execute(registry.getNamedTemplate("accumulateInvoker"), null, new MapVariableResolverFactory(map), registry);
 
         //System.out.println( method );
     }
 
     private TemplateRegistry getRuleTemplateRegistry() {
-        TemplateRegistry ruleRegistry = new MVELTemplateRegistry();
-        ruleRegistry.registerTemplate( new InputStreamReader( AbstractJavaRuleBuilder.class.getResourceAsStream( "javaRule.mvel" ) ) );
+        TemplateRegistry ruleRegistry = new SimpleTemplateRegistry();
+        CompiledTemplate compiled = TemplateCompiler.compileTemplate(AbstractJavaRuleBuilder.class.getResourceAsStream( "javaRule.mvel" ), null);
+        TemplateRuntime.execute(compiled, null, null, ruleRegistry);
 
         return ruleRegistry;
     }
 
     private TemplateRegistry getInvokerTemplateRegistry() {
-        TemplateRegistry invokerRegistry = new MVELTemplateRegistry();
-        invokerRegistry.registerTemplate( new InputStreamReader( AbstractJavaRuleBuilder.class.getResourceAsStream( "javaInvokers.mvel" ) ) );
-
+        TemplateRegistry invokerRegistry = new SimpleTemplateRegistry();
+        CompiledTemplate compiled = TemplateCompiler.compileTemplate(AbstractJavaRuleBuilder.class.getResourceAsStream( "javaInvokers.mvel" ), null);
+        TemplateRuntime.execute(compiled, null, null, invokerRegistry);
+        
         return invokerRegistry;
     }
 
