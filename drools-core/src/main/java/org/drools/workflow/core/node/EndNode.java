@@ -26,6 +26,8 @@ import org.drools.workflow.core.Connection;
 public class EndNode extends SequenceNode {
 
     private static final long serialVersionUID = 400L;
+    
+    // TODO: boolean terminate (should all other node instances be cancelled?)
 
     public void validateAddOutgoingConnection(final String type, final Connection connection) {
         throw new UnsupportedOperationException(

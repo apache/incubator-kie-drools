@@ -20,12 +20,14 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.process.core.Contextable;
+
 /**
  * Represents a node in a RuleFlow. 
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public interface Node extends Serializable {
+public interface Node extends Contextable, Serializable {
 
     static final String CONNECTION_DEFAULT_TYPE = "DROOLS_DEFAULT";
     
@@ -86,4 +88,9 @@ public interface Node extends Serializable {
     NodeContainer getNodeContainer();
     
     void setNodeContainer(NodeContainer nodeContainer);
+    
+    void setMetaData(String name, Object value);
+    
+    Object getMetaData(String name);
+    
 }

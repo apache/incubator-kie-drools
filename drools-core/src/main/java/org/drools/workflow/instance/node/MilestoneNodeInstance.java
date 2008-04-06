@@ -32,14 +32,13 @@ import org.drools.spi.RuleFlowGroup;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.MilestoneNode;
 import org.drools.workflow.instance.NodeInstance;
-import org.drools.workflow.instance.impl.NodeInstanceImpl;
 
 /**
  * Runtime counterpart of a milestone node.
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class MilestoneNodeInstance extends NodeInstanceImpl implements AgendaEventListener {
+public class MilestoneNodeInstance extends EventNodeInstance implements AgendaEventListener {
 
     private static final long serialVersionUID = 400L;
 
@@ -55,20 +54,24 @@ public class MilestoneNodeInstance extends NodeInstanceImpl implements AgendaEve
     	RuleFlowGroup systemRuleFlowGroup = getProcessInstance().getAgenda().getRuleFlowGroup("DROOLS_SYSTEM");
     	String rule = "RuleFlow-Milestone-" + getProcessInstance().getProcess().getId()
     		+ "-" + getNode().getId();
-    	for (Iterator activations = systemRuleFlowGroup.iterator(); activations.hasNext(); ) {
-    		Activation activation = ((RuleFlowGroupNode) activations.next()).getActivation();
+    	for (Iterator<RuleFlowGroupNode> activations = systemRuleFlowGroup.iterator(); activations.hasNext(); ) {
+    		Activation activation = activations.next().getActivation();
     		if (rule.equals(activation.getRule().getName())) {
     			triggerCompleted();
         		return;
     		}
     	}
-    	getProcessInstance().getWorkingMemory().addEventListener(this);
+    	addEventListeners();
+    }
+    
+    public void addEventListeners() {
+        super.addEventListeners();
+        getProcessInstance().getWorkingMemory().addEventListener(this);
     }
 
-    public void triggerCompleted() {
-        getNodeInstanceContainer().removeNodeInstance(this);
-        getNodeInstanceContainer().getNodeInstance(getMilestoneNode().getTo().getTo())
-            .trigger(this, getMilestoneNode().getTo().getToType());
+    public void removeEventListeners() {
+        super.removeEventListeners();
+        getProcessInstance().getWorkingMemory().removeEventListener(this);
     }
 
     public void activationCancelled(ActivationCancelledEvent event,
@@ -86,7 +89,7 @@ public class MilestoneNodeInstance extends NodeInstanceImpl implements AgendaEve
             String ruleName = event.getActivation().getRule().getName();
             String milestoneName = "RuleFlow-Milestone-" + getProcessInstance().getProcess().getId() + "-" + getNodeId();
             if (milestoneName.equals(ruleName)) {
-                getProcessInstance().getWorkingMemory().removeEventListener(this);
+                removeEventListeners();
                 triggerCompleted();
             }
         }

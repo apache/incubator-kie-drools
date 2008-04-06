@@ -27,24 +27,30 @@ import org.drools.process.core.Work;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class WorkItemNode extends SequenceNode {
+public class WorkItemNode extends EventNode {
 
 	private static final long serialVersionUID = 400L;
 	
 	private Work work;
     private Map<String, String> inMapping = new HashMap<String, String>();
     private Map<String, String> outMapping = new HashMap<String, String>();
+    private boolean waitForCompletion = true;
+    // TODO boolean independent (cancel work item if node gets cancelled?)
 
 	public Work getWork() {
 		return work;
 	}
 
-	public void setWork(Work task) {
-		this.work = task;
+	public void setWork(Work work) {
+		this.work = work;
 	}
 	
     public void addInMapping(String parameterName, String variableName) {
         inMapping.put(parameterName, variableName);
+    }
+    
+    public void setInMappings(Map<String, String> inMapping) {
+        this.inMapping = inMapping;
     }
     
     public String getInMapping(String parameterName) {
@@ -59,12 +65,24 @@ public class WorkItemNode extends SequenceNode {
         outMapping.put(parameterName, variableName);
     }
     
+    public void setOutMappings(Map<String, String> outMapping) {
+        this.outMapping = outMapping;
+    }
+    
     public String getOutMapping(String parameterName) {
         return outMapping.get(parameterName);
     }
 
     public Map<String, String> getOutMappings() {
         return Collections.unmodifiableMap(outMapping);
+    }
+
+    public boolean isWaitForCompletion() {
+        return waitForCompletion;
+    }
+
+    public void setWaitForCompletion(boolean waitForCompletion) {
+        this.waitForCompletion = waitForCompletion;
     }
 
 }

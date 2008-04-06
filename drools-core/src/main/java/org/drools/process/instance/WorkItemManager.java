@@ -47,7 +47,7 @@ public class WorkItemManager implements Externalizable {
         out.writeObject(workItemHandlers);
     }
 
-	public void executeWorkItem(WorkItem workItem) {
+	public void internalExecuteWorkItem(WorkItem workItem) {
 	    ((WorkItemImpl) workItem).setId(++workItemCounter);
 	    workItems.put(new Long(workItem.getId()), workItem);
 	    WorkItemHandler handler = (WorkItemHandler) this.workItemHandlers.get(workItem.getName());
@@ -58,6 +58,19 @@ public class WorkItemManager implements Externalizable {
 	    }
 	}
 
+    public void internalAbortWorkItem(long id) {
+        WorkItemImpl workItem = (WorkItemImpl) workItems.get(new Long(id));
+        // work item may have been aborted
+        if (workItem != null) {
+            WorkItemHandler handler = (WorkItemHandler) this.workItemHandlers.get(workItem.getName());
+            if (handler != null) {
+                handler.abortWorkItem(workItem, this);
+            } else {
+                System.err.println("Could not find work item handler for " + workItem.getName());
+            }
+        }
+    }
+    
 	public Set<WorkItem> getWorkItems() {
 	    return new HashSet<WorkItem>(workItems.values());
 
@@ -65,35 +78,31 @@ public class WorkItemManager implements Externalizable {
 
     public void completeWorkItem(long id, Map<String, Object> results) {
         WorkItemImpl workItem = (WorkItemImpl) workItems.get(new Long(id));
-        if (workItem == null) {
-            throw new IllegalArgumentException(
-                "Could not find work item with id " + id);
+        // work item may have been aborted
+        if (workItem != null) {
+            workItem.setResults(results);
+            ProcessInstance processInstance = workingMemory.getProcessInstance(workItem.getProcessInstanceId());
+            workItem.setState(WorkItem.COMPLETED);
+            // process instance may have finished already
+            if (processInstance != null) {
+                processInstance.workItemCompleted(workItem);
+            }
+            workItems.remove(new Long(id));
         }
-        workItem.setResults(results);
-        ProcessInstance processInstance = workingMemory.getProcessInstance(workItem.getProcessInstanceId());
-        if (processInstance == null) {
-            throw new IllegalArgumentException(
-                "Could not find processInstance with id " + workItem.getProcessInstanceId());
-        }
-        workItem.setState(WorkItem.COMPLETED);
-        processInstance.workItemCompleted(workItem);
-        workItems.remove(new Long(id));
     }
 
     public void abortWorkItem(long id) {
         WorkItemImpl workItem = (WorkItemImpl) workItems.get(new Long(id));
-        if (workItem == null) {
-            throw new IllegalArgumentException(
-                "Could not find work item with id " + id);
+        // work item may have been aborted
+        if (workItem != null) {
+            ProcessInstance processInstance = workingMemory.getProcessInstance(workItem.getProcessInstanceId());
+            workItem.setState(WorkItem.ABORTED);
+            // process instance may have finished already
+            if (processInstance != null) {
+                processInstance.workItemAborted(workItem);
+            }
+            workItems.remove(new Long(id));
         }
-        ProcessInstance processInstance = workingMemory.getProcessInstance(workItem.getProcessInstanceId());
-        if (processInstance == null) {
-            throw new IllegalArgumentException(
-                "Could not find processInstance with id " + workItem.getProcessInstanceId());
-        }
-        workItem.setState(WorkItem.ABORTED);
-        processInstance.workItemAborted(workItem);
-        workItems.remove(new Long(id));
     }
 
     public void registerWorkItemHandler(String workItemName, WorkItemHandler handler) {

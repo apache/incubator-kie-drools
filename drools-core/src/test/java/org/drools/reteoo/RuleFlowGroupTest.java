@@ -140,19 +140,27 @@ public class RuleFlowGroupTest extends DroolsTestCase {
 
         // nodes
         final StartNode start = new StartNode();
+        start.setId(1);
         final RuleSetNode ruleSet0 = new RuleSetNode();
         ruleSet0.setRuleFlowGroup( "rule-flow-group-0" );
+        ruleSet0.setId(2);
         final RuleSetNode ruleSet1 = new RuleSetNode();
         ruleSet1.setRuleFlowGroup( "rule-flow-group-1" );
+        ruleSet1.setId(3);
         final RuleSetNode ruleSet2 = new RuleSetNode();
         ruleSet2.setRuleFlowGroup( "rule-flow-group-2" );
+        ruleSet2.setId(4);
         final RuleSetNode ruleSet3 = new RuleSetNode();
         ruleSet3.setRuleFlowGroup( "rule-flow-group-3" );
+        ruleSet3.setId(5);
         final Split split = new Split();
         split.setType( Split.TYPE_AND );
+        split.setId(6);
         final Join join = new Join();
         join.setType( Join.TYPE_AND );
+        join.setId(7);
         final EndNode end = new EndNode();
+        end.setId(8);
         // connections
         new ConnectionImpl( start,
                             Node.CONNECTION_DEFAULT_TYPE,
@@ -411,19 +419,27 @@ public class RuleFlowGroupTest extends DroolsTestCase {
 
         // nodes
         final StartNode start = new StartNode();
+        start.setId(1);
         final RuleSetNode ruleSet0 = new RuleSetNode();
         ruleSet0.setRuleFlowGroup( "rule-flow-group-0" );
+        ruleSet0.setId(2);
         final RuleSetNode ruleSet1 = new RuleSetNode();
         ruleSet1.setRuleFlowGroup( "rule-flow-group-1" );
+        ruleSet1.setId(3);
         final RuleSetNode ruleSet2 = new RuleSetNode();
         ruleSet2.setRuleFlowGroup( "rule-flow-group-2" );
+        ruleSet2.setId(4);
         final RuleSetNode ruleSet3 = new RuleSetNode();
         ruleSet3.setRuleFlowGroup( "rule-flow-group-3" );
+        ruleSet3.setId(5);
         final Split split = new Split();
         split.setType( Split.TYPE_XOR );
+        split.setId(6);
         final Join join = new Join();
         join.setType( Join.TYPE_XOR );
+        join.setId(7);
         final EndNode end = new EndNode();
+        end.setId(8);
         // connections
         new ConnectionImpl( start,
                             Node.CONNECTION_DEFAULT_TYPE,

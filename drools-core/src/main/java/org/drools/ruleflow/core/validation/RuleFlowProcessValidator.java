@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.process.core.Process;
-import org.drools.process.core.Variable;
 import org.drools.process.core.Work;
+import org.drools.process.core.context.variable.Variable;
 import org.drools.process.core.validation.ProcessValidationError;
 import org.drools.process.core.validation.ProcessValidator;
 import org.drools.process.core.validation.impl.ProcessValidationErrorImpl;
@@ -263,7 +263,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
             errors.add(new ProcessValidationErrorImpl(process,
                 "Process has no end node."));
         }
-        for (final Iterator<Variable> it = process.getVariables().iterator(); it.hasNext(); ) {
+        for (final Iterator<Variable> it = process.getVariableScope().getVariables().iterator(); it.hasNext(); ) {
             final Variable variable = it.next();
             if (variable.getType() == null) {
                 errors.add(new ProcessValidationErrorImpl(process,

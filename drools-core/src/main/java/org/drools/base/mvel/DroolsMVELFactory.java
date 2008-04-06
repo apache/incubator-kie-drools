@@ -188,6 +188,9 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
 
     public void setLocalValue(final String identifier,
                               final Object value) {
+        if (this.localVariables == null) {
+            this.localVariables = new HashMap();
+        }
         this.localVariables.put( identifier,
                                  value );
     }

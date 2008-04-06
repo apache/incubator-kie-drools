@@ -52,7 +52,7 @@ public class CompositeNodeInstance extends NodeInstanceImpl implements NodeInsta
     public NodeContainer getNodeContainer() {
         return getCompositeNode();
     }
-
+    
     public void internalTrigger(final NodeInstance from, String type) {
         CompositeNode.NodeAndType nodeAndType = getCompositeNode().getLinkedIncomingNode(type);
         List<Connection> connections = nodeAndType.getNode().getIncomingConnections(nodeAndType.getType());
@@ -74,6 +74,14 @@ public class CompositeNodeInstance extends NodeInstanceImpl implements NodeInsta
         getNodeInstanceContainer().getNodeInstance( connection.getTo() ).trigger( this, connection.getToType() );
     }
 
+    public void cancel() {
+        while (!nodeInstances.isEmpty()) {
+            NodeInstance nodeInstance = (NodeInstance) nodeInstances.get(0);
+            nodeInstance.cancel();
+        }
+        super.cancel();
+    }
+    
     public void addNodeInstance(final NodeInstance nodeInstance) {
         ((NodeInstanceImpl) nodeInstance).setId(nodeInstanceCounter++);
         this.nodeInstances.add(nodeInstance);

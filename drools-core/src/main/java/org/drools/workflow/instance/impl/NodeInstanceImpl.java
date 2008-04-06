@@ -20,7 +20,11 @@ import java.io.Serializable;
 
 import org.drools.common.EventSupport;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.process.core.Context;
+import org.drools.process.instance.ContextInstance;
+import org.drools.process.instance.ContextInstanceContainer;
 import org.drools.workflow.core.Node;
+import org.drools.workflow.core.impl.NodeImpl;
 import org.drools.workflow.instance.NodeInstance;
 import org.drools.workflow.instance.NodeInstanceContainer;
 import org.drools.workflow.instance.WorkflowProcessInstance;
@@ -87,4 +91,20 @@ public abstract class NodeInstanceImpl implements NodeInstance, Serializable {
     }
     
     public abstract void internalTrigger(NodeInstance from, String type);
+    
+    public Context resolveContext(String contextId, Object param) {
+        return ((NodeImpl) getNode()).resolveContext(contextId, param);
+    }
+    
+    public ContextInstance resolveContextInstance(String contextId, Object param) {
+        Context context = resolveContext(contextId, param);
+        if (context == null) {
+            return null;
+        }
+        // TODO: find right context instance container and get context instance
+        // TODO: currently, only the process instance acts as a context instance container
+        ContextInstanceContainer contextInstanceContainer = getProcessInstance();
+        return contextInstanceContainer.getContextInstance(context);
+    }
+    
 }

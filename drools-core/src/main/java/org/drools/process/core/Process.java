@@ -1,6 +1,7 @@
 package org.drools.process.core;
 
 
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -26,7 +27,7 @@ package org.drools.process.core;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public interface Process extends VariableScope {
+public interface Process extends ContextContainer {
 
     /**
      * Sets the id of this process.
@@ -92,5 +93,9 @@ public interface Process extends VariableScope {
      * @return	the package name of this RuleFlow process
      */
     String getPackageName();
+    
+    void setMetaData(String name, Object value);
+    
+    Object getMetaData(String name);
 
 }

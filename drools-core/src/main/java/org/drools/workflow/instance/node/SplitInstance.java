@@ -69,7 +69,6 @@ public class SplitInstance extends NodeInstanceImpl {
                                                   constraint ) ) {
                             selected = connection;
                             priority = constraint.getPriority();
-                            break;
                         }
                     }
                 }

@@ -16,10 +16,9 @@ package org.drools.workflow.instance;
  * limitations under the License.
  */
 
-import org.drools.Agenda;
-import org.drools.WorkingMemory;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.WorkItemListener;
+import org.drools.process.instance.timer.TimerListener;
 import org.drools.workflow.core.WorkflowProcess;
 
 /**
@@ -33,12 +32,12 @@ public interface WorkflowProcessInstance extends ProcessInstance, NodeInstanceCo
 
     WorkflowProcess getWorkflowProcess();
 
-    WorkingMemory getWorkingMemory();
-
-    Agenda getAgenda();
-    
     void addWorkItemListener(WorkItemListener listener);
 
     void removeWorkItemListener(WorkItemListener listener);
+
+    void addTimerListener(TimerListener listener);
+
+    void removeTimerListener(TimerListener listener);
 
 }

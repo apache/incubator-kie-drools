@@ -24,19 +24,21 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.drools.Agenda;
-import org.drools.WorkingMemory;
 import org.drools.common.EventSupport;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.process.core.timer.Timer;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemListener;
 import org.drools.process.instance.impl.ProcessInstanceImpl;
+import org.drools.process.instance.timer.TimerListener;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.NodeContainer;
 import org.drools.workflow.core.WorkflowProcess;
 import org.drools.workflow.instance.NodeInstance;
 import org.drools.workflow.instance.NodeInstanceContainer;
 import org.drools.workflow.instance.WorkflowProcessInstance;
+import org.drools.workflow.instance.node.EventNodeInstance;
 
 /**
  * Default implementation of a RuleFlow process instance.
@@ -48,14 +50,10 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 
     private static final long serialVersionUID = 400L;
 
-    private InternalWorkingMemory workingMemory;
     private final List<NodeInstance> nodeInstances = new ArrayList<NodeInstance>();;
     private long nodeInstanceCounter = 0;
     private List<WorkItemListener> workItemListeners = new CopyOnWriteArrayList<WorkItemListener>();
-
-    public WorkflowProcess getWorkflowProcess() {
-        return (WorkflowProcess) getProcess();
-    }
+    private List<TimerListener> timerListeners = new CopyOnWriteArrayList<TimerListener>();
 
     public NodeContainer getNodeContainer() {
         return getWorkflowProcess();
@@ -100,16 +98,13 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 
     public NodeInstance getNodeInstance(final Node node) {
         NodeInstanceFactoryRegistry nodeRegistry =
-            ((InternalRuleBase) this.workingMemory.getRuleBase())
+            ((InternalRuleBase) getWorkingMemory().getRuleBase())
                 .getConfiguration().getProcessNodeInstanceFactoryRegistry();
         NodeInstanceFactory conf = nodeRegistry.getProcessNodeInstanceFactory(node);
         if (conf == null) {
             throw new IllegalArgumentException("Illegal node type: " + node.getClass());
         }
         NodeInstanceImpl nodeInstance = (NodeInstanceImpl) conf.getNodeInstance(node, this, this);
-        nodeInstance.setNodeId(node.getId());
-        nodeInstance.setNodeInstanceContainer(this);
-        nodeInstance.setProcessInstance(this);
         if (nodeInstance == null) {
             throw new IllegalArgumentException("Illegal node type: " + node.getClass());
         }
@@ -117,39 +112,52 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
     }
 
     public Agenda getAgenda() {
-        if ( this.workingMemory == null ) {
+        if ( getWorkingMemory() == null ) {
             return null;
         }
-        return this.workingMemory.getAgenda();
+        return getWorkingMemory().getAgenda();
     }
 
-    public void setWorkingMemory(final InternalWorkingMemory workingMemory) {
-        if ( this.workingMemory != null ) {
-            throw new IllegalArgumentException( "A working memory can only be set once." );
-        }
-        this.workingMemory = workingMemory;
+    public WorkflowProcess getWorkflowProcess() {
+        return (WorkflowProcess) getProcess();
     }
 
-    public WorkingMemory getWorkingMemory() {
-        return this.workingMemory;
-    }
-    
     public void setState(final int state) {
         super.setState( state );
+        // TODO move most of this to ProcessInstanceImpl
         if ( state == ProcessInstanceImpl.STATE_COMPLETED ) {
-            ((EventSupport) this.workingMemory).getRuleFlowEventSupport().fireBeforeRuleFlowProcessCompleted( this,
-                                                                                                              this.workingMemory );
+            InternalWorkingMemory workingMemory = (InternalWorkingMemory) getWorkingMemory();
+            ((EventSupport) getWorkingMemory()).getRuleFlowEventSupport()
+                .fireBeforeRuleFlowProcessCompleted( this, workingMemory );
             // deactivate all node instances of this process instance
             while ( !nodeInstances.isEmpty() ) {
                 NodeInstance nodeInstance = (NodeInstance) nodeInstances.get( 0 );
                 nodeInstance.cancel();
             }
             workingMemory.removeProcessInstance( this );
-            ((EventSupport) this.workingMemory).getRuleFlowEventSupport().fireAfterRuleFlowProcessCompleted( this,
-                                                                                                             this.workingMemory );
+            ((EventSupport) workingMemory).getRuleFlowEventSupport()
+                .fireAfterRuleFlowProcessCompleted( this, workingMemory );
         }
     }
 
+    public void disconnect() {
+        for (NodeInstance nodeInstance: nodeInstances) {
+            if (nodeInstance instanceof EventNodeInstance) {
+                ((EventNodeInstance) nodeInstance).removeEventListeners();
+            }
+        }
+        super.disconnect();
+    }
+    
+    public void reconnect() {
+        super.reconnect();
+        for (NodeInstance nodeInstance: nodeInstances) {
+            if (nodeInstance instanceof EventNodeInstance) {
+                ((EventNodeInstance) nodeInstance).addEventListeners();
+            }
+        }
+    }
+    
     public String toString() {
         final StringBuffer sb = new StringBuffer( "WorkflowProcessInstance" );
         sb.append( getId() );
@@ -179,6 +187,20 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
     
     public void removeWorkItemListener(WorkItemListener listener) {
         workItemListeners.remove(listener);
+    }
+    
+    public void timerTriggered(Timer timer) {
+        for (TimerListener listener: timerListeners) {
+            listener.timerTriggered(timer);
+        }
+    }
+
+    public void addTimerListener(TimerListener listener) {
+        timerListeners.add(listener);
+    }
+    
+    public void removeTimerListener(TimerListener listener) {
+        timerListeners.remove(listener);
     }
     
 }

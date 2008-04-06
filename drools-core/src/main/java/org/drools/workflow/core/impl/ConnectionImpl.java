@@ -17,6 +17,8 @@ package org.drools.workflow.core.impl;
  */
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.drools.workflow.core.Connection;
 import org.drools.workflow.core.Node;
@@ -34,6 +36,7 @@ public class ConnectionImpl implements Connection, Serializable {
     private Node to;
     private String fromType;
     private String toType;
+    private Map<String, Object> metaData = new HashMap<String, Object>();
     
     ConnectionImpl() {
     }
@@ -97,6 +100,14 @@ public class ConnectionImpl implements Connection, Serializable {
         return this.toType;
     }
 
+    public void setMetaData(String name, Object value) {
+        this.metaData.put(name, value);
+    }
+    
+    public Object getMetaData(String name) {
+        return this.metaData.get(name);
+    }
+    
     public String toString() {
         final StringBuffer sb = new StringBuffer("Connection ");
         sb.append(getFrom());

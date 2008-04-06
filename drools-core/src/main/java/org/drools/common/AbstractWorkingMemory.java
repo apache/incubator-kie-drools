@@ -63,9 +63,14 @@ import org.drools.event.RuleFlowEventSupport;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.event.WorkingMemoryEventSupport;
 import org.drools.process.core.Process;
+import org.drools.process.core.context.variable.Variable;
+import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.ProcessInstanceFactory;
 import org.drools.process.instance.WorkItemManager;
+import org.drools.process.instance.context.variable.VariableScopeInstance;
+import org.drools.process.instance.timer.TimerManager;
+import org.drools.reteoo.ClassObjectTypeConf;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.LIANodePropagation;
 import org.drools.reteoo.ObjectTypeConf;
@@ -167,7 +172,9 @@ public abstract class AbstractWorkingMemory
 
     private WorkItemManager                             workItemManager;
 
-    private Map<String, ProcessInstanceFactory>         processInstanceFactories                      = new HashMap();
+    private TimerManager                                 timerManager;
+
+    private Map<String, ProcessInstanceFactory>          processInstanceFactories                      = new HashMap();
 
     private TimeMachine                                 timeMachine                                   = new TimeMachine();
 
@@ -222,7 +229,6 @@ public abstract class AbstractWorkingMemory
             this.discardOnLogicalOverride = false;
         }
 
-        this.workItemManager = new WorkItemManager( this );
         this.processInstanceFactories.put( RuleFlowProcess.RULEFLOW_TYPE,
                                            new RuleFlowProcessInstanceFactory() );        
         this.entryPoints = new ConcurrentHashMap();
@@ -1452,6 +1458,9 @@ public abstract class AbstractWorkingMemory
 
     public ProcessInstance startProcess(String processId,
                                         Map<String, Object> parameters) {
+        if ( !this.actionQueue.isEmpty() ) {
+            executeQueuedActions();
+        }
         final Process process = ((InternalRuleBase) getRuleBase()).getProcess( processId );
         if ( process == null ) {
             throw new IllegalArgumentException( "Unknown process ID: " + processId );
@@ -1466,12 +1475,29 @@ public abstract class AbstractWorkingMemory
         processInstance.setId( ++processCounter );
         processInstances.put( new Long( processInstance.getId() ),
                               processInstance );
-        if ( parameters != null ) {
-            for ( Map.Entry<String, Object> entry : parameters.entrySet() ) {
-                processInstance.setVariable( entry.getKey(),
-                                             entry.getValue() );
+        // set variable default values
+        // TODO: should be part of processInstanceImpl?
+        VariableScope variableScope = (VariableScope)
+            process.getDefaultContext(VariableScope.VARIABLE_SCOPE);
+        VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
+            processInstance.getContextInstance(VariableScope.VARIABLE_SCOPE);
+        if (variableScope != null) {
+            for (Variable variable: variableScope.getVariables()) {
+                variableScopeInstance.setVariable(variable.getName(), variable.getValue());
             }
         }
+        // set input parameters
+        if (parameters != null) {
+            if (variableScope != null) {
+                for (Map.Entry<String, Object> entry: parameters.entrySet()) {
+                    variableScopeInstance.setVariable(entry.getKey(), entry.getValue());
+                }
+            } else {
+                throw new IllegalArgumentException(
+                    "This process does not support parameters!");
+            }
+        }
+        // start
         getRuleFlowEventSupport().fireBeforeRuleFlowProcessStarted( processInstance,
                                                                     this );
         processInstance.start();
@@ -1489,8 +1515,12 @@ public abstract class AbstractWorkingMemory
         return (ProcessInstance) processInstances.get( new Long( id ) );
     }
 
+    public void addProcessInstance(ProcessInstance processInstance) {
+        processInstances.put( processInstance.getId(), processInstance );
+    }
+    
     public void removeProcessInstance(ProcessInstance processInstance) {
-        processInstances.remove( processInstance );
+        processInstances.remove( processInstance.getId() );
     }
 
     public void registerProcessInstanceFactory(String type,
@@ -1500,7 +1530,17 @@ public abstract class AbstractWorkingMemory
     }
 
     public WorkItemManager getWorkItemManager() {
+        if (workItemManager == null) {
+            workItemManager = new WorkItemManager( this );
+        }
         return workItemManager;
+    }
+
+    public TimerManager getTimerManager() {
+        if (timerManager == null) {
+            timerManager = new TimerManager(this);
+        }
+        return timerManager;
     }
 
     public List iterateObjectsToList() {

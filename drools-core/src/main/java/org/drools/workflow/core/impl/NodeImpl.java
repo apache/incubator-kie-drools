@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.process.core.Context;
 import org.drools.workflow.core.Connection;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.NodeContainer;
@@ -42,6 +43,8 @@ public abstract class NodeImpl implements Node, Serializable {
     private Map<String, List<Connection>> incomingConnections;
     private Map<String, List<Connection>> outgoingConnections;
     private NodeContainer nodeContainer;
+    private Map<String, Context> contexts = new HashMap<String, Context>();
+    private Map<String, Object> metaData = new HashMap<String, Object>();
 
     public NodeImpl() {
         this.id = -1;
@@ -172,5 +175,32 @@ public abstract class NodeImpl implements Node, Serializable {
     public void setNodeContainer(NodeContainer nodeContainer) {
         this.nodeContainer = nodeContainer;
     }
-
+    
+    public void setContext(String contextId, Context context) {
+        this.contexts.put(contextId, context);
+    }
+    
+    public Context getContext(String contextId) {
+        return this.contexts.get(contextId);
+    }
+    
+    public Context resolveContext(String contextId, Object param) {
+        Context context = getContext(contextId);
+        if (context != null) {
+            context = context.resolveContext(param);
+            if (context != null) {
+                return context;
+            }
+        }
+        return nodeContainer.resolveContext(contextId, param);
+    }
+    
+    public void setMetaData(String name, Object value) {
+        this.metaData.put(name, value);
+    }
+    
+    public Object getMetaData(String name) {
+        return this.metaData.get(name);
+    }
+    
 }
