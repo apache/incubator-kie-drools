@@ -16,6 +16,7 @@ package org.drools.workflow.core.node;
  * limitations under the License.
  */
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -157,7 +158,7 @@ public class Split extends NodeImpl {
         this.constraints.remove(ref);
     }
     
-    public static class ConnectionRef {
+    public static class ConnectionRef implements Serializable {
         
         private String toType;
         private long nodeId;
