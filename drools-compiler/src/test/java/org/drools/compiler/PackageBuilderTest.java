@@ -1221,25 +1221,6 @@ public class PackageBuilderTest extends DroolsTestCase {
         assertTrue( p instanceof WorkflowProcessImpl );
     }
 
-    public void testRuleFlowMoreComplex() throws Exception {
-        PackageBuilder builder = new PackageBuilder();
-
-        InputStream in = this.getClass().getResourceAsStream( "/org/drools/integrationtests/ruleflow2.rfm" );
-        assertNotNull( in );
-
-        builder.addPackage( new PackageDescr( "com.sample" ) );
-
-        builder.addRuleFlow( new InputStreamReader( in ) );
-        Package pkg = builder.getPackage();
-        assertNotNull( pkg );
-
-        Map flows = pkg.getRuleFlows();
-        assertNotNull( flows );
-        assertEquals( 1,
-                      flows.size() );
-
-    }
-
     public void testPackageRuleFlows() throws Exception {
         Package pkg = new Package( "boo" );
         Process rf = new MockRuleFlow( "1" );
