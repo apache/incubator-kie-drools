@@ -44,7 +44,7 @@ import java.io.ObjectInput;
  */
 public class LeftInputAdapterNode extends LeftTupleSource
     implements
-    ObjectTupleSinkNode,
+    ObjectSinkNode,
     NodeMemory {
 
     /**
@@ -53,8 +53,8 @@ public class LeftInputAdapterNode extends LeftTupleSource
     private static final long   serialVersionUID = 400L;
     private ObjectSource        objectSource;
 
-    private ObjectTupleSinkNode previousRightTupleSinkNode;
-    private ObjectTupleSinkNode nextRightTupleSinkNode;
+    private ObjectSinkNode previousRightTupleSinkNode;
+    private ObjectSinkNode nextRightTupleSinkNode;
     
     private boolean leftTupleMemoryEnabled;
 
@@ -86,8 +86,8 @@ public class LeftInputAdapterNode extends LeftTupleSource
                                             ClassNotFoundException {
         super.readExternal( in );
         objectSource = (ObjectSource) in.readObject();
-        previousRightTupleSinkNode = (ObjectTupleSinkNode) in.readObject();
-        nextRightTupleSinkNode = (ObjectTupleSinkNode) in.readObject();
+        previousRightTupleSinkNode = (ObjectSinkNode) in.readObject();
+        nextRightTupleSinkNode = (ObjectSinkNode) in.readObject();
         leftTupleMemoryEnabled = in.readBoolean();
     }
 
@@ -182,7 +182,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
      * @return
      *      The next ObjectSinkNode
      */
-    public ObjectTupleSinkNode getNextObjectSinkNode() {
+    public ObjectSinkNode getNextObjectSinkNode() {
         return this.nextRightTupleSinkNode;
     }
 
@@ -191,7 +191,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
      * @param next
      *      The next ObjectSinkNode
      */
-    public void setNextObjectSinkNode(final ObjectTupleSinkNode next) {
+    public void setNextObjectSinkNode(final ObjectSinkNode next) {
         this.nextRightTupleSinkNode = next;
     }
 
@@ -200,7 +200,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
      * @return
      *      The previous ObjectSinkNode
      */
-    public ObjectTupleSinkNode getPreviousObjectSinkNode() {
+    public ObjectSinkNode getPreviousObjectSinkNode() {
         return this.previousRightTupleSinkNode;
     }
 
@@ -209,7 +209,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
      * @param previous
      *      The previous ObjectSinkNode
      */
-    public void setPreviousObjectSinkNode(final ObjectTupleSinkNode previous) {
+    public void setPreviousObjectSinkNode(final ObjectSinkNode previous) {
         this.previousRightTupleSinkNode = previous;
     }
 
@@ -267,6 +267,10 @@ public class LeftInputAdapterNode extends LeftTupleSource
                                       final PropagationContext context,
                                       final InternalWorkingMemory workingMemory) {
             throw new UnsupportedOperationException( "ObjectSinkAdapter onlys supports assertObject method calls" );
+        }
+
+        public int getId() {
+            return 0;
         }
     }
 

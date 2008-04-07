@@ -51,8 +51,8 @@ public class ObjectSinkNodeList
     Externalizable {
     private static final long   serialVersionUID = 400L;
 
-    private ObjectTupleSinkNode firstNode;
-    private ObjectTupleSinkNode lastNode;
+    private ObjectSinkNode firstNode;
+    private ObjectSinkNode lastNode;
 
     private int                 size;
 
@@ -65,8 +65,8 @@ public class ObjectSinkNodeList
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
-        firstNode = (ObjectTupleSinkNode) in.readObject();
-        lastNode = (ObjectTupleSinkNode) in.readObject();
+        firstNode = (ObjectSinkNode) in.readObject();
+        lastNode = (ObjectSinkNode) in.readObject();
         size = in.readInt();
     }
 
@@ -83,7 +83,7 @@ public class ObjectSinkNodeList
      * @param node
      *      The <code>ObjectSinkNode</code> to be added
      */
-    public void add(final ObjectTupleSinkNode node) {
+    public void add(final ObjectSinkNode node) {
         if ( this.firstNode == null ) {
             this.firstNode = node;
             this.lastNode = node;;
@@ -103,7 +103,7 @@ public class ObjectSinkNodeList
      * @param node
      *      The <code>ObjectSinkNode</code> to be removed.
      */
-    public void remove(final ObjectTupleSinkNode node) {
+    public void remove(final ObjectSinkNode node) {
         if ( (this.firstNode != node) && (this.lastNode != node) ) {
             node.getPreviousObjectSinkNode().setNextObjectSinkNode( node.getNextObjectSinkNode() );
             node.getNextObjectSinkNode().setPreviousObjectSinkNode( node.getPreviousObjectSinkNode() );
@@ -125,7 +125,7 @@ public class ObjectSinkNodeList
      * @return
      *      The first <code>ObjectSinkNode</code>.
      */
-    public final ObjectTupleSinkNode getFirst() {
+    public final ObjectSinkNode getFirst() {
         return this.firstNode;
     }
 
@@ -134,7 +134,7 @@ public class ObjectSinkNodeList
      * @return
      *      The last <code>ObjectSinkNode</code>.
      */
-    public final ObjectTupleSinkNode getLast() {
+    public final ObjectSinkNode getLast() {
         return this.lastNode;
     }
 
@@ -145,11 +145,11 @@ public class ObjectSinkNodeList
      * @return
      *      The first <code>ObjectSinkNode</code>.
      */
-    public ObjectTupleSinkNode removeFirst() {
+    public ObjectSinkNode removeFirst() {
         if ( this.firstNode == null ) {
             return null;
         }
-        final ObjectTupleSinkNode node = this.firstNode;
+        final ObjectSinkNode node = this.firstNode;
         this.firstNode = node.getNextObjectSinkNode();
         node.setNextObjectSinkNode( null );
         if ( this.firstNode != null ) {
@@ -168,11 +168,11 @@ public class ObjectSinkNodeList
      * @return
      *      The first <code>ObjectSinkNode</code>.
      */
-    public ObjectTupleSinkNode removeLast() {
+    public ObjectSinkNode removeLast() {
         if ( this.lastNode == null ) {
             return null;
         }
-        final ObjectTupleSinkNode node = this.lastNode;
+        final ObjectSinkNode node = this.lastNode;
         this.lastNode = node.getPreviousObjectSinkNode();
         node.setPreviousObjectSinkNode( null );
         if ( this.lastNode != null ) {
@@ -214,8 +214,8 @@ public class ObjectSinkNodeList
      */
     public Iterator iterator() {
         return new Iterator() {
-            private ObjectTupleSinkNode currentNode = null;
-            private ObjectTupleSinkNode nextNode    = getFirst();
+            private ObjectSinkNode currentNode = null;
+            private ObjectSinkNode nextNode    = getFirst();
 
             public boolean hasNext() {
                 return (this.nextNode != null);

@@ -42,7 +42,7 @@ import org.drools.spi.PropagationContext;
  */
 public class PropagationQueuingNode extends ObjectSource
     implements
-    ObjectTupleSinkNode,
+    ObjectSinkNode,
     NodeMemory {
 
     private static final long   serialVersionUID        = -615639068150958767L;
@@ -50,8 +50,8 @@ public class PropagationQueuingNode extends ObjectSource
     // should we make this one configurable?
     private static final int    PROPAGATION_SLICE_LIMIT = 1000;
 
-    private ObjectTupleSinkNode previousObjectSinkNode;
-    private ObjectTupleSinkNode nextObjectSinkNode;
+    private ObjectSinkNode previousObjectSinkNode;
+    private ObjectSinkNode nextObjectSinkNode;
     private PropagateAction     action;
 
     public PropagationQueuingNode() {
@@ -79,8 +79,8 @@ public class PropagationQueuingNode extends ObjectSource
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         super.readExternal( in );
-        previousObjectSinkNode = (ObjectTupleSinkNode) in.readObject();
-        nextObjectSinkNode = (ObjectTupleSinkNode) in.readObject();
+        previousObjectSinkNode = (ObjectSinkNode) in.readObject();
+        nextObjectSinkNode = (ObjectSinkNode) in.readObject();
         action = (PropagateAction) in.readObject();
     }
 
@@ -152,30 +152,30 @@ public class PropagationQueuingNode extends ObjectSource
     }
 
     /**
-     * @see org.drools.reteoo.ObjectTupleSinkNode#getNextObjectSinkNode()
+     * @see org.drools.reteoo.ObjectSinkNode#getNextObjectSinkNode()
      */
-    public ObjectTupleSinkNode getNextObjectSinkNode() {
+    public ObjectSinkNode getNextObjectSinkNode() {
         return this.nextObjectSinkNode;
     }
 
     /**
-     * @see org.drools.reteoo.ObjectTupleSinkNode#getPreviousObjectSinkNode()
+     * @see org.drools.reteoo.ObjectSinkNode#getPreviousObjectSinkNode()
      */
-    public ObjectTupleSinkNode getPreviousObjectSinkNode() {
+    public ObjectSinkNode getPreviousObjectSinkNode() {
         return this.previousObjectSinkNode;
     }
 
     /**
-     * @see org.drools.reteoo.ObjectTupleSinkNode#setNextObjectSinkNode(org.drools.reteoo.ObjectTupleSinkNode)
+     * @see org.drools.reteoo.ObjectSinkNode#setNextObjectSinkNode(org.drools.reteoo.ObjectSinkNode)
      */
-    public void setNextObjectSinkNode(ObjectTupleSinkNode next) {
+    public void setNextObjectSinkNode(ObjectSinkNode next) {
         this.nextObjectSinkNode = next;
     }
 
     /**
-     * @see org.drools.reteoo.ObjectTupleSinkNode#setPreviousObjectSinkNode(org.drools.reteoo.ObjectTupleSinkNode)
+     * @see org.drools.reteoo.ObjectSinkNode#setPreviousObjectSinkNode(org.drools.reteoo.ObjectSinkNode)
      */
-    public void setPreviousObjectSinkNode(ObjectTupleSinkNode previous) {
+    public void setPreviousObjectSinkNode(ObjectSinkNode previous) {
         this.previousObjectSinkNode = previous;
     }
 

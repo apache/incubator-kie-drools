@@ -25,13 +25,13 @@ import org.drools.spi.PropagationContext;
 
 public class MockObjectSink
     implements
-    ObjectTupleSinkNode,
+    ObjectSinkNode,
     RightTupleSink {
     private final List     asserted  = new ArrayList();
     private final List     retracted = new ArrayList();
 
-    private ObjectTupleSinkNode previousObjectSinkNode;
-    private ObjectTupleSinkNode nextObjectSinkNode;
+    private ObjectSinkNode previousObjectSinkNode;
+    private ObjectSinkNode nextObjectSinkNode;
 
     public void assertObject(final InternalFactHandle factHandle,
                              final PropagationContext context,
@@ -59,7 +59,7 @@ public class MockObjectSink
      * @return
      *      The next ObjectSinkNode
      */
-    public ObjectTupleSinkNode getNextObjectSinkNode() {
+    public ObjectSinkNode getNextObjectSinkNode() {
         return this.nextObjectSinkNode;
     }
 
@@ -68,7 +68,7 @@ public class MockObjectSink
      * @param next
      *      The next ObjectSinkNode
      */
-    public void setNextObjectSinkNode(final ObjectTupleSinkNode next) {
+    public void setNextObjectSinkNode(final ObjectSinkNode next) {
         this.nextObjectSinkNode = next;
     }
 
@@ -77,7 +77,7 @@ public class MockObjectSink
      * @return
      *      The previous ObjectSinkNode
      */
-    public ObjectTupleSinkNode getPreviousObjectSinkNode() {
+    public ObjectSinkNode getPreviousObjectSinkNode() {
         return this.previousObjectSinkNode;
     }
 
@@ -86,7 +86,7 @@ public class MockObjectSink
      * @param previous
      *      The previous ObjectSinkNode
      */
-    public void setPreviousObjectSinkNode(final ObjectTupleSinkNode previous) {
+    public void setPreviousObjectSinkNode(final ObjectSinkNode previous) {
         this.previousObjectSinkNode = previous;
     }
 
@@ -98,5 +98,10 @@ public class MockObjectSink
     public void setObjectMemoryEnabled(boolean objectMemoryOn) {
         // TODO Auto-generated method stub
         
+    }
+
+    public int getId() {
+        // TODO Auto-generated method stub
+        return 0;
     }
 }

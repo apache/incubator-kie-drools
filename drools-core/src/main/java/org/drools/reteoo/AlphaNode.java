@@ -48,7 +48,7 @@ import org.drools.util.Iterator;
  */
 public class AlphaNode extends ObjectSource
     implements
-    ObjectTupleSinkNode,
+    ObjectSinkNode,
     NodeMemory {
 
     /**
@@ -59,8 +59,8 @@ public class AlphaNode extends ObjectSource
     /** The <code>FieldConstraint</code> */
     private AlphaNodeFieldConstraint constraint;
 
-    private ObjectTupleSinkNode      previousRightTupleSinkNode;
-    private ObjectTupleSinkNode      nextRightTupleSinkNode;
+    private ObjectSinkNode      previousRightTupleSinkNode;
+    private ObjectSinkNode      nextRightTupleSinkNode;
 
     public AlphaNode() {
 
@@ -92,8 +92,8 @@ public class AlphaNode extends ObjectSource
                                             ClassNotFoundException {
         super.readExternal( in );
         constraint = (AlphaNodeFieldConstraint) in.readObject();
-        previousRightTupleSinkNode = (ObjectTupleSinkNode) in.readObject();
-        nextRightTupleSinkNode = (ObjectTupleSinkNode) in.readObject();
+        previousRightTupleSinkNode = (ObjectSinkNode) in.readObject();
+        nextRightTupleSinkNode = (ObjectSinkNode) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -230,7 +230,7 @@ public class AlphaNode extends ObjectSource
      * @return
      *      The next ObjectSinkNode
      */
-    public ObjectTupleSinkNode getNextObjectSinkNode() {
+    public ObjectSinkNode getNextObjectSinkNode() {
         return this.nextRightTupleSinkNode;
     }
 
@@ -239,7 +239,7 @@ public class AlphaNode extends ObjectSource
      * @param next
      *      The next ObjectSinkNode
      */
-    public void setNextObjectSinkNode(final ObjectTupleSinkNode next) {
+    public void setNextObjectSinkNode(final ObjectSinkNode next) {
         this.nextRightTupleSinkNode = next;
     }
 
@@ -248,7 +248,7 @@ public class AlphaNode extends ObjectSource
      * @return
      *      The previous ObjectSinkNode
      */
-    public ObjectTupleSinkNode getPreviousObjectSinkNode() {
+    public ObjectSinkNode getPreviousObjectSinkNode() {
         return this.previousRightTupleSinkNode;
     }
 
@@ -257,7 +257,7 @@ public class AlphaNode extends ObjectSource
      * @param previous
      *      The previous ObjectSinkNode
      */
-    public void setPreviousObjectSinkNode(final ObjectTupleSinkNode previous) {
+    public void setPreviousObjectSinkNode(final ObjectSinkNode previous) {
         this.previousRightTupleSinkNode = previous;
     }
 
