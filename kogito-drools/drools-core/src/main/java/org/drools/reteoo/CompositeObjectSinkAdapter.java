@@ -70,6 +70,18 @@ public class CompositeObjectSinkAdapter
         out.writeObject( hashedSinkMap );
         out.writeInt( alphaNodeHashingThreshold );
     }
+    
+    public ObjectSinkNodeList getOthers() {
+        return this.otherSinks;        
+    }
+    
+    public ObjectSinkNodeList getHashableSinks() {
+        return this.hashableSinks;
+    }
+    
+    public ObjectHashMap getHashedSinkMap() {
+        return this.hashedSinkMap;
+    }    
 
     public void addObjectSink(final ObjectSink sink) {
         if ( sink instanceof AlphaNode ) {
@@ -100,7 +112,7 @@ public class CompositeObjectSinkAdapter
                         if ( this.hashableSinks == null ) {
                             this.hashableSinks = new ObjectSinkNodeList();
                         }
-                        this.hashableSinks.add( (ObjectTupleSinkNode) sink );
+                        this.hashableSinks.add( (ObjectSinkNode) sink );
                     }
                     return;
                 }
@@ -112,7 +124,7 @@ public class CompositeObjectSinkAdapter
             this.otherSinks = new ObjectSinkNodeList();
         }
 
-        this.otherSinks.add( (ObjectTupleSinkNode) sink );
+        this.otherSinks.add( (ObjectSinkNode) sink );
     }
 
     public void removeObjectSink(final ObjectSink sink) {
@@ -139,7 +151,7 @@ public class CompositeObjectSinkAdapter
                             unHashSinks( fieldIndex );
                         }
                     } else {
-                        this.hashableSinks.remove( (ObjectTupleSinkNode) sink );
+                        this.hashableSinks.remove( (ObjectSinkNode) sink );
                     }
 
                     if ( this.hashableSinks != null && this.hashableSinks.isEmpty() ) {
@@ -151,7 +163,7 @@ public class CompositeObjectSinkAdapter
             }
         }
 
-        this.otherSinks.remove( (ObjectTupleSinkNode) sink );
+        this.otherSinks.remove( (ObjectSinkNode) sink );
 
         if ( this.otherSinks.isEmpty() ) {
             this.otherSinks = null;
@@ -167,7 +179,7 @@ public class CompositeObjectSinkAdapter
             this.hashedSinkMap = new ObjectHashMap();
         }
 
-        for ( ObjectTupleSinkNode sink = this.hashableSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
+        for ( ObjectSinkNode sink = this.hashableSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
             final AlphaNode alphaNode = (AlphaNode) sink;
             final AlphaNodeFieldConstraint fieldConstraint = alphaNode.getConstraint();
             final LiteralConstraint literalConstraint = (LiteralConstraint) fieldConstraint;
@@ -183,7 +195,7 @@ public class CompositeObjectSinkAdapter
         }
 
         for ( final java.util.Iterator it = list.iterator(); it.hasNext(); ) {
-            final ObjectTupleSinkNode sink = (ObjectTupleSinkNode) it.next();
+            final ObjectSinkNode sink = (ObjectSinkNode) it.next();
             this.hashableSinks.remove( sink );
         }
 
@@ -326,7 +338,7 @@ public class CompositeObjectSinkAdapter
 
         // propagate unhashed
         if ( this.hashableSinks != null ) {
-            for ( ObjectTupleSinkNode sink = this.hashableSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
+            for ( ObjectSinkNode sink = this.hashableSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
                 sink.assertObject( factHandle,
                                    context,
                                    workingMemory );
@@ -335,7 +347,7 @@ public class CompositeObjectSinkAdapter
 
         if ( this.otherSinks != null ) {
             // propagate others
-            for ( ObjectTupleSinkNode sink = this.otherSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
+            for ( ObjectSinkNode sink = this.otherSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
                 sink.assertObject( factHandle,
                                    context,
                                    workingMemory );
@@ -346,7 +358,7 @@ public class CompositeObjectSinkAdapter
 
     public BaseNode getMatchingNode(BaseNode candidate) {
         if ( this.otherSinks != null ) {
-            for ( ObjectTupleSinkNode sink = this.otherSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
+            for ( ObjectSinkNode sink = this.otherSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
                 if (candidate.equals( sink )) {
                     return (BaseNode)sink;
                 }
@@ -354,7 +366,7 @@ public class CompositeObjectSinkAdapter
         }
 
         if ( this.hashableSinks != null ) {
-            for ( ObjectTupleSinkNode sink = this.hashableSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
+            for ( ObjectSinkNode sink = this.hashableSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
                 if (candidate.equals( sink )) {
                     return (BaseNode)sink;
                 }
@@ -378,13 +390,13 @@ public class CompositeObjectSinkAdapter
         int             at      = 0;
 
         if ( this.otherSinks != null ) {
-            for ( ObjectTupleSinkNode sink = this.otherSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
+            for ( ObjectSinkNode sink = this.otherSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
                 sinks[at++] = sink;
             }
         }
 
         if ( this.hashableSinks != null ) {
-            for ( ObjectTupleSinkNode sink = this.hashableSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
+            for ( ObjectSinkNode sink = this.hashableSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
                 sinks[at++] = sink;
             }
         }
