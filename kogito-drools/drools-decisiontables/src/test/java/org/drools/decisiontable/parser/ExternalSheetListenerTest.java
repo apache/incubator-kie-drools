@@ -16,6 +16,7 @@ import org.drools.event.RuleFlowEventListener;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.WorkItemManager;
+import org.drools.process.instance.timer.TimerManager;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
@@ -247,7 +248,7 @@ public class ExternalSheetListenerTest extends TestCase {
 				public ProcessInstance startProcess(String processId) {
 					return null;
 				}
-				
+
                 public Iterator iterateFactHandles() {
                     return null;
                 }
@@ -375,7 +376,7 @@ public class ExternalSheetListenerTest extends TestCase {
 
                 public void addEventListener(RuleBaseEventListener listener) {
                     // TODO Auto-generated method stub
-                    
+
                 }
 
                 public List getRuleBaseEventListeners() {
@@ -385,7 +386,7 @@ public class ExternalSheetListenerTest extends TestCase {
 
                 public void removeEventListener(RuleBaseEventListener listener) {
                     // TODO Auto-generated method stub
-                    
+
                 }
 
                 public List getRuleBaseUpdateListeners() {
@@ -446,6 +447,11 @@ public class ExternalSheetListenerTest extends TestCase {
 
                 public void writeExternal(ObjectOutput out) throws IOException {
                 }
+
+				public TimerManager getTimerManager() {
+					// TODO Auto-generated method stub
+					return null;
+				}
 			};
 		}
 	}
