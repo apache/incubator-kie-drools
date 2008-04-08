@@ -444,15 +444,15 @@ public class DroolsObjectInputStream
         try {
             Class clazz = primClasses.get( className );
             if ( clazz == null ) {
-                clazz = getClassLoader().loadClass( className );
+                clazz = Class.forName(className, true, getClassLoader());
                 if (clazz == null) {
-                  clazz = getClass().getClassLoader().loadClass(className);
+                  clazz = Class.forName(className, true, getClass().getClassLoader());
                 }
             }
             return clazz;
         }
         catch (ClassNotFoundException e) {
-            return getClass().getClassLoader().loadClass(className);
+            return Class.forName(className, true, getClass().getClassLoader());
         }
     }
 

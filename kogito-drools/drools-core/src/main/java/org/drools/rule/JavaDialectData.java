@@ -426,7 +426,9 @@ public class JavaDialectData
             if ( clazz == null ) {
                 final ClassLoader parent = getParent();
                 if ( parent != null ) {
-                    clazz = parent.loadClass( name );
+                    clazz = Class.forName( name,
+                                           true,
+                                           parent );
                 }
             }
 
