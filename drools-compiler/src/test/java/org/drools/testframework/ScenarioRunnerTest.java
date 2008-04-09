@@ -9,10 +9,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.Cheese;
+import org.drools.OuterFact;
 import org.drools.Person;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassTypeResolver;
 import org.drools.base.TypeResolver;
+import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.brms.client.modeldriven.testing.ExecutionTrace;
 import org.drools.brms.client.modeldriven.testing.Expectation;
 import org.drools.brms.client.modeldriven.testing.FactData;
@@ -26,6 +28,11 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.TimeMachine;
 
 public class ScenarioRunnerTest extends RuleUnit {
+
+	public void setUp() {
+		//needed when running stand alone to make sure the converters get loaded.
+		DroolsMVELFactory d = new DroolsMVELFactory();
+	}
 
     public void testPopulateFacts() throws Exception {
         Scenario sc = new Scenario();
@@ -67,6 +74,91 @@ public class ScenarioRunnerTest extends RuleUnit {
                       p.getName() );
         assertEquals( 33,
                       p.getAge() );
+
+    }
+
+    public void testPopulateNested() throws Exception {
+        Scenario sc = new Scenario();
+        List facts = ls( new FactData( "Cheese",
+                                       "c1",
+                                       ls( new FieldData( "type",
+                                                          "cheddar" ),
+                                           new FieldData( "price",
+                                                          "42" ) ),
+                                       false ),
+                         new FactData( "OuterFact",
+                                       "p1",
+                                       ls( new FieldData( "name",
+                                                          "mic" ),
+                                           new FieldData( "innerFact",
+                                                          "=c1" ) ),
+                                       false ) );
+
+        sc.fixtures.addAll( facts );
+        TypeResolver resolver = new ClassTypeResolver( new HashSet<String>(),
+                                                       Thread.currentThread().getContextClassLoader() );
+        resolver.addImport( "org.drools.Cheese" );
+        resolver.addImport( "org.drools.OuterFact" );
+        ScenarioRunner runner = new ScenarioRunner( sc,
+                                                    resolver,
+                                                    new MockWorkingMemory() );
+
+        assertTrue( runner.populatedData.containsKey( "c1" ) );
+        assertTrue( runner.populatedData.containsKey( "p1" ) );
+
+        OuterFact o = (OuterFact) runner.populatedData.get("p1");
+        assertNotNull(o.getInnerFact());
+
+    }
+
+    public void testPopulateEmpty() throws Exception {
+        Scenario sc = new Scenario();
+        List facts = ls( new FactData( "Cheese",
+                                       "c1", new ArrayList(), false));
+        sc.fixtures.addAll( facts );
+        TypeResolver resolver = new ClassTypeResolver( new HashSet<String>(),
+                                                       Thread.currentThread().getContextClassLoader() );
+        sc.fixtures.addAll( facts );
+        resolver.addImport( "org.drools.Cheese" );
+        ScenarioRunner runner = new ScenarioRunner( sc,
+                                                    resolver,
+                                                    new MockWorkingMemory() );
+
+        assertTrue( runner.populatedData.containsKey( "c1" ) );
+        assertTrue(runner.populatedData.get("c1") instanceof Cheese);
+    }
+
+    public void testDateField() throws Exception {
+        Scenario sc = new Scenario();
+        List facts = ls( new FactData( "Cheese",
+                                       "c1",
+                                       ls( new FieldData( "type",
+                                                          "cheddar" ),
+                                           new FieldData( "usedBy",
+                                                          "10-Jul-2008" ) ),
+                                       false ),
+                         new FactData( "OuterFact",
+                                       "p1",
+                                       ls( new FieldData( "name",
+                                                          "mic" ),
+                                           new FieldData( "innerFact",
+                                                          "=c1" ) ),
+                                       false ) );
+
+        sc.fixtures.addAll( facts );
+        TypeResolver resolver = new ClassTypeResolver( new HashSet<String>(),
+                                                       Thread.currentThread().getContextClassLoader() );
+        resolver.addImport( "org.drools.Cheese" );
+        resolver.addImport( "org.drools.OuterFact" );
+        ScenarioRunner runner = new ScenarioRunner( sc,
+                                                    resolver,
+                                                    new MockWorkingMemory() );
+
+        assertTrue( runner.populatedData.containsKey( "c1" ) );
+        assertTrue( runner.populatedData.containsKey( "p1" ) );
+
+        Cheese c = (Cheese) runner.populatedData.get("c1");
+        assertNotNull(c.getUsedBy());
 
     }
 
