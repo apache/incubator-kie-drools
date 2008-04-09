@@ -20,6 +20,7 @@ tokens {
        VT_VAR_DEF;
        VT_VAR_REF;
        VT_LITERAL;
+       VT_PATTERN;
 }
 
 @parser::header {
@@ -126,9 +127,18 @@ literal
 	;	
 	
 variable_definition
-	: LEFT_CURLY name=LITERAL ( COLLOM pattern=LITERAL )? RIGHT_CURLY
-	-> ^(VT_VAR_DEF $name $pattern? )
+@init {
+        String text = "";
+}	
+	: LEFT_CURLY name=LITERAL ( COLLOM pat=pattern {text = $pat.text;} )? RIGHT_CURLY
+	-> ^(VT_VAR_DEF $name VT_PATTERN[$pat.start, text] )
 	;
+	
+pattern 
+        : ( LITERAL
+          | LEFT_CURLY LITERAL RIGHT_CURLY
+          )+
+	;	
 	
 variable_reference 
 	: LEFT_CURLY name=LITERAL RIGHT_CURLY
