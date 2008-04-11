@@ -1,0 +1,79 @@
+#created on: 12.10.2007
+package org.drools.verifier.redundancy
+
+#list any import classes here.
+global AnalyticsResult result;
+
+
+
+#declare any global variables here
+import java.util.Collection;
+import java.util.ArrayList;
+
+import org.drools.verifier.components.PatternPossibility;
+import org.drools.verifier.components.RulePossibility;
+import org.drools.verifier.dao.AnalyticsResult;
+import org.drools.verifier.report.components.Redundancy;
+import org.drools.verifier.report.components.AnalyticsMessage;
+import org.drools.verifier.report.components.Cause;
+import org.drools.verifier.report.components.CauseType;
+import org.drools.verifier.report.components.Severity;
+import org.drools.verifier.report.components.MessageType;
+
+
+#
+# Dependencies:
+#
+#	Needs at least one rule from following rules:
+#		package org.drools.verifier.redundancy.restrictions
+#			rule "Find redundant VariableRestriction"
+#			rule "Find redundant LiteralRestriction"
+#
+rule "Find redundant restrictions from pattern possibilities"
+	salience -100
+	when
+		$r :Redundancy(
+			left.causeType == CauseType.RESTRICTION
+		)
+
+		$pp :PatternPossibility(
+			items contains $r.left,
+			items contains $r.right
+		)
+	then
+		Collection causes = new ArrayList();
+		causes.add( $r.getLeft() );
+		causes.add( $r.getRight() );
+
+		result.add(new AnalyticsMessage(
+						Severity.NOTE, MessageType.REDUNDANCY,
+						$r, "Same restriction exists twice.", causes ) );
+end
+
+#
+# Dependencies:
+#
+#		package org.drools.verifier.redundancy.possibilities
+#			rule "Find pattern possibility redundancy"
+#
+rule "Find redundant pattern possibilities from rule possibilities"
+	salience -100
+	when
+		$r :Redundancy(
+			left.causeType == CauseType.PATTERN_POSSIBILITY
+		)
+
+		RulePossibility(
+			items contains $r.left,
+			items contains $r.right
+		)
+	then
+		Collection causes = new ArrayList();
+		causes.add( $r.getLeft() );
+		causes.add( $r.getRight() );
+
+		result.add(new AnalyticsMessage(
+						Severity.NOTE, MessageType.REDUNDANCY,
+						$r, "Two pattern possibilities with redundant restrictions exists twice in the same rule.", causes ) );
+end
+
