@@ -1,0 +1,31 @@
+#created on: 18.10.2007
+package org.drools.verifier.consequence
+
+#list any import classes here.
+import org.drools.verifier.components.AnalyticsRule;
+import org.drools.verifier.components.TextConsequence;
+import org.drools.verifier.report.components.AnalyticsMessage;
+import org.drools.verifier.dao.AnalyticsResult;
+import org.drools.verifier.report.components.Severity;
+import org.drools.verifier.report.components.MessageType;
+
+#declare any global variables here
+global AnalyticsResult result;
+
+
+rule "No action - possibly commented out"
+	when
+		$c :TextConsequence(
+			( text == null || text matches "" )
+		)
+
+		$r :AnalyticsRule(
+			id == $c.ruleId
+		)
+	then
+		result.add( new AnalyticsMessage(
+								Severity.WARNING,
+								MessageType.MISSING_COMPONENT,
+								$r,
+								$r + " has no RHS." ) );
+end
