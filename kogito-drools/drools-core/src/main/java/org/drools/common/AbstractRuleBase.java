@@ -502,15 +502,20 @@ abstract public class AbstractRuleBase
         imports.putAll( newPkg.getImports() );
 
         if (newPkg.getGlobals() != null) {
-            final Map globals = pkg.getGlobals();
+            final Map<String, Class> globals = pkg.getGlobals();
             // Add globals
-            if (globals == Collections.EMPTY_MAP) {
-                for (Object object : newPkg.getGlobals().entrySet()) {
-                    Map.Entry   entry   = (Map.Entry)object;
-                    pkg.addGlobal((String)entry.getKey(), (Class)entry.getValue());
+            for ( final Map.Entry<String, Class> entry : newPkg.getGlobals().entrySet() ) {
+                final String identifier = entry.getKey();
+                final Class type    = entry.getValue();
+                if ( globals.containsKey( identifier ) &&
+                     !globals.get( identifier ).equals( type )) {
+                        throw new PackageIntegrationException( pkg );
+                } else if (globals == Collections.EMPTY_MAP) {
+                    pkg.addGlobal(identifier, type);
+                } else {
+                    globals.put(identifier,
+                                type);
                 }
-            } else {
-                globals.putAll( newPkg.getGlobals() );
             }
         }
 
