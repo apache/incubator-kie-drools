@@ -72,7 +72,7 @@ public class Package
 
     private Set                            staticImports;
 
-    private Map                            globals;
+    private Map<String, Class>             globals;
 
     private Map                            factTemplates;
 
@@ -201,7 +201,7 @@ public class Package
         this.functions = (Map<String, Function>) in.readObject();
         this.factTemplates = (Map) in.readObject();
         this.ruleFlows = (Map) in.readObject();
-        this.globals = (Map) in.readObject();
+        this.globals = (Map<String, Class>) in.readObject();
         this.valid = in.readBoolean();
         this.rules = (Map) in.readObject();
 
@@ -270,6 +270,7 @@ public class Package
 
         this.functions.put( function.getName(),
                             function );
+        dialectDatas.getDialectData(function.getDialect()).setDirty(true);
     }
 
     public Map<String, Function> getFunctions() {
@@ -287,7 +288,7 @@ public class Package
     public void addGlobal(final String identifier,
                           final Class clazz) {
         if ( this.globals == Collections.EMPTY_MAP ) {
-            this.globals = new HashMap( 1 );
+            this.globals = new HashMap<String, Class>( 1 );
         }
         this.globals.put( identifier,
                           clazz );
@@ -297,7 +298,7 @@ public class Package
         this.globals.remove( identifier );
     }
 
-    public Map getGlobals() {
+    public Map<String, Class> getGlobals() {
         return this.globals;
     }
 

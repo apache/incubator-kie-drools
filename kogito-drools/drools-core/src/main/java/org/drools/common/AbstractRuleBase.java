@@ -86,7 +86,7 @@ abstract public class AbstractRuleBase
     /** The fact handle factory. */
     protected FactHandleFactory                        factHandleFactory;
 
-    protected Map                                      globals;
+    protected Map<String, Class>                       globals;
 
     private ReloadPackageCompilationData               reloadPackageCompilationData = null;
 
@@ -429,27 +429,26 @@ abstract public class AbstractRuleBase
                 this.packageClassLoader.addClassLoader( newPkg.getDialectDatas().getClassLoader() );
             }
 
-            mergePackage( pkg,
-                          newPkg );
-
-            final Map newGlobals = newPkg.getGlobals();
+            final Map<String, Class> newGlobals = newPkg.getGlobals();
 
             if (newGlobals != null) {
                 // Check that the global data is valid, we cannot change the type
                 // of an already declared global variable
-                for ( final Iterator it = newGlobals.keySet().iterator(); it.hasNext(); ) {
-                    final String identifier = (String) it.next();
-                    final Class type = (Class) newGlobals.get( identifier );
-                    final boolean f = this.globals.containsKey( identifier );
-                    if ( f ) {
-                        final boolean y = !this.globals.get( identifier ).equals( type );
-                        if ( f && y ) {
+                for ( final Map.Entry<String, Class> entry : newGlobals.entrySet() ) {
+                    final String identifier = entry.getKey();
+                    final Class type    = entry.getValue();
+                    if ( this.globals.containsKey( identifier ) &&
+                         !this.globals.get( identifier ).equals( type )) {
                             throw new PackageIntegrationException( pkg );
-                        }
+                    } else {
+                        this.globals.put(identifier,
+                                         type);
                     }
                 }
-                this.globals.putAll( newGlobals );
             }
+
+            mergePackage( pkg,
+                          newPkg );
 
             if (newPkg.getTypeDeclarations() != null) {
                 // Add type declarations
@@ -472,8 +471,8 @@ abstract public class AbstractRuleBase
             //and now the rule flows
             if ( newPkg.getRuleFlows() != null ) {
                 final Map flows = newPkg.getRuleFlows();
-                for ( final Iterator iter = flows.entrySet().iterator(); iter.hasNext(); ) {
-                    final Entry flow = (Entry) iter.next();
+                for ( final Object object : newPkg.getRuleFlows().entrySet() ) {
+                    final Entry flow = (Entry) object;
                     this.processes.put( flow.getKey(),
                                         flow.getValue() );
                 }
@@ -497,22 +496,14 @@ abstract public class AbstractRuleBase
      */
     private void mergePackage(final Package pkg,
                               final Package newPkg) {
-        final Map globals = pkg.getGlobals();
         final Map<String, ImportDeclaration> imports = pkg.getImports();
 
         // Merge imports
         imports.putAll( newPkg.getImports() );
 
         if (newPkg.getGlobals() != null) {
+            final Map globals = pkg.getGlobals();
             // Add globals
-            for ( final Iterator it = newPkg.getGlobals().keySet().iterator(); it.hasNext(); ) {
-                final String identifier = (String) it.next();
-                final Class type = (Class) globals.get( identifier );
-                if ( globals.containsKey( identifier ) && !globals.get( identifier ).equals( type ) ) {
-                    throw new PackageIntegrationException( "Unable to merge new Package",
-                                                           newPkg );
-                }
-            }
             if (globals == Collections.EMPTY_MAP) {
                 for (Object object : newPkg.getGlobals().entrySet()) {
                     Map.Entry   entry   = (Map.Entry)object;
@@ -564,9 +555,8 @@ abstract public class AbstractRuleBase
         pkg.getDialectDatas().merge( newPkg.getDialectDatas() );
 
         if ( newPkg.getFunctions() != null) {
-            for (Object object : newPkg.getFunctions().entrySet()) {
-                Map.Entry entry = (Map.Entry)object;
-                pkg.addFunction((Function)entry.getValue());
+            for (Map.Entry<String, Function> entry : newPkg.getFunctions().entrySet()) {
+                pkg.addFunction(entry.getValue());
             }
         }
 
