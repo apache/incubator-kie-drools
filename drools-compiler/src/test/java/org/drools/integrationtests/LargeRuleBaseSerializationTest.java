@@ -18,7 +18,7 @@ import junit.framework.TestCase;
  * Settings | File Templates.
  */
 public class LargeRuleBaseSerializationTest extends TestCase {
-    private static final int    RULE_COUNT = Integer.parseInt(System.getProperty("test.count", "1000"));
+    private static final int    RULE_COUNT = Integer.parseInt(System.getProperty("test.count", "525"));
     private static final int    ITERATIONS = Integer.parseInt(System.getProperty("test.iterations", "5"));
 
     private static RuleBase ruleBase;

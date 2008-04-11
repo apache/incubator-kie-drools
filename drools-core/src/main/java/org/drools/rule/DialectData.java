@@ -9,6 +9,8 @@ public interface DialectData extends Cloneable {
 
     public boolean isDirty();
 
+    public void setDirty(boolean dirty);
+
     public void reload();
 
     public DialectData clone();

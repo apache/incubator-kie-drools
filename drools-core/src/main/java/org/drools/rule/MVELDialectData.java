@@ -56,7 +56,10 @@ public class MVELDialectData implements DialectData, Externalizable {
 		return false;
 	}
 
-	public void merge(DialectData newData) {
+    public void setDirty(boolean dirty) {
+    }
+
+    public void merge(DialectData newData) {
 	}
 
 	public void reload() {
