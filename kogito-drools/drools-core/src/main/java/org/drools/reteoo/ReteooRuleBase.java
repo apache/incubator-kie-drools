@@ -274,9 +274,11 @@ public class ReteooRuleBase extends AbstractRuleBase {
                     addEventListener( (RuleBaseEventListener) it.next() );
                 }
             }
+            
+            final InitialFactHandleDummyObject initialFact = new InitialFactHandleDummyObject();
 
-            final InitialFactHandle handle = new InitialFactHandle( session.getFactHandleFactory().newFactHandle( new InitialFactHandleDummyObject(),
-                                                                                                                  false,
+            final InitialFactHandle handle = new InitialFactHandle( session.getFactHandleFactory().newFactHandle( initialFact,
+                                                                                                                  null,
                                                                                                                   session ) );
 
             session.queueWorkingMemoryAction( new WorkingMemoryReteAssertAction( handle,

@@ -23,6 +23,7 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.reteoo.builder.BuildContext;
+import org.drools.rule.EntryPoint;
 import org.drools.spi.PropagationContext;
 import org.drools.util.Iterator;
 import org.drools.util.ObjectHashMap;
@@ -118,7 +119,8 @@ public class RightInputAdapterNode extends ObjectSource
 
         // creating a dummy fact handle to wrap the tuple
         final InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( tuple,
-                                                                                              false,
+                                                                                              workingMemory.getObjectTypeConfigurationRegistry().getObjectTypeConf( context.getEntryPoint(),
+                                                                                                                                                           tuple ),
                                                                                               workingMemory );
 
         if ( this.tupleMemoryEnabled ) {

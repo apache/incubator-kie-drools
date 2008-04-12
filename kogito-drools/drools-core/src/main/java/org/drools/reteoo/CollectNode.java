@@ -131,7 +131,8 @@ public class CollectNode extends BetaNode
 
         final Collection result = this.collect.instantiateResultObject();
         final InternalFactHandle resultHandle = workingMemory.getFactHandleFactory().newFactHandle( result,
-                                                                                                    false,
+                                                                                                    workingMemory.getObjectTypeConfigurationRegistry().getObjectTypeConf( context.getEntryPoint(),
+                                                                                                                                                                          result ),
                                                                                                     workingMemory );
 
         final CollectContext colctx = new CollectContext();

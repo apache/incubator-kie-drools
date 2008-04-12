@@ -360,7 +360,7 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
         ad.addObjectSink( al3 );
 
         InternalFactHandle handle = new ReteooFactHandleFactory().newFactHandle( new Cheese(),
-                                                                                 false,
+                                                                                 null,
                                                                                  null );
         try {
             ad.propagateAssertObject( handle,

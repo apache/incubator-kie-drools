@@ -58,6 +58,8 @@ public class ClassObjectTypeConf
 
     private ObjectTypeNode                 concreteObjectTypeNode;
     private EntryPoint                     entryPoint;
+    
+    private TypeDeclaration                typeDecl;
 
     public ClassObjectTypeConf() {
 
@@ -69,8 +71,8 @@ public class ClassObjectTypeConf
         this.cls = clazz;
         this.ruleBase = ruleBase;
         this.entryPoint = entryPoint;
-        TypeDeclaration type = ruleBase.getTypeDeclaration( clazz );
-        final boolean isEvent = type != null && type.getRole() == TypeDeclaration.Role.EVENT;
+        this.typeDecl = ruleBase.getTypeDeclaration( clazz );
+        final boolean isEvent = typeDecl != null && typeDecl.getRole() == TypeDeclaration.Role.EVENT;
 
         ObjectType objectType = new ClassObjectType( clazz,
                                                      isEvent );
@@ -319,5 +321,9 @@ public class ClassObjectTypeConf
 
     public boolean isEvent() {
         return this.concreteObjectTypeNode.getObjectType().isEvent();
+    }
+
+    public TypeDeclaration getTypeDeclaration() {
+        return typeDecl;
     }
 }

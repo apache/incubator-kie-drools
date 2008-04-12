@@ -179,7 +179,8 @@ public class AccumulateNode extends BetaNode {
         }
 
         final InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( result,
-                                                                                              false,
+                                                                                              workingMemory.getObjectTypeConfigurationRegistry().getObjectTypeConf( context.getEntryPoint(),
+                                                                                                                                                                    result ),
                                                                                               workingMemory ); // so far, result is not an event
 
         accresult.result = new RightTuple( handle,
@@ -305,11 +306,11 @@ public class AccumulateNode extends BetaNode {
             } else {
                 // does not support reverse, so needs to be fully retracted and reasserted
                 LeftTuple match = childTuple.getParent();
-                
+
                 // but first, needs to remove the matching child
                 childTuple.unlinkFromLeftParent();
                 childTuple.unlinkFromRightParent();
-                
+
                 this.retractLeftTuple( match,
                                        context,
                                        workingMemory );
@@ -327,7 +328,7 @@ public class AccumulateNode extends BetaNode {
      * @param leftTuple
      */
     private void removeMatchingChild(final LeftTuple leftTuple,
-                                     final RightTuple rightTuple ) {
+                                     final RightTuple rightTuple) {
         if ( leftTuple.getBetaChildren() != null ) {
             // removing link between left and right
             LeftTuple match = leftTuple.getBetaChildren();
@@ -451,7 +452,7 @@ public class AccumulateNode extends BetaNode {
                                            final PropagationContext context,
                                            final InternalWorkingMemory workingMemory,
                                            final AccumulateMemory memory,
-                                           final AccumulateContext accctx ) {
+                                           final AccumulateContext accctx) {
         // First alpha node filters
         boolean isAllowed = true;
         for ( int i = 0, length = this.resultConstraints.length; i < length; i++ ) {
@@ -510,7 +511,7 @@ public class AccumulateNode extends BetaNode {
         final Iterator tupleIter = memory.betaMemory.getLeftTupleMemory().iterator();
         for ( LeftTuple leftTuple = (LeftTuple) tupleIter.next(); leftTuple != null; leftTuple = (LeftTuple) tupleIter.next() ) {
             AccumulateContext accctx = (AccumulateContext) memory.betaMemory.getCreatedHandles().get( leftTuple );
-            if( accctx.propagated ) {
+            if ( accctx.propagated ) {
                 sink.assertLeftTuple( new LeftTuple( leftTuple,
                                                      accctx.result,
                                                      sink,
