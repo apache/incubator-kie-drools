@@ -112,7 +112,7 @@ public class CepEspTest extends TestCase {
 
     }
 
-    public void FIXME_testEventAssertionWithDuration() throws Exception {
+    public void testEventAssertionWithDuration() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_SimpleEventAssertionWithDuration.drl" ) );
         final RuleBase ruleBase = loadRuleBase( reader );

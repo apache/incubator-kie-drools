@@ -17,11 +17,12 @@ package org.drools.jsr94.rules;
  */
 
 import org.drools.TemporalSession;
-import org.drools.WorkingMemory;
 import org.drools.common.AbstractFactHandleFactory;
 import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.reteoo.ObjectTypeConf;
+import org.drools.rule.TypeDeclaration;
 import org.drools.spi.FactHandleFactory;
-import org.drools.temporal.SessionClock;
 
 /**
  * A factory for creating <code>Handle</code>s.
@@ -33,28 +34,27 @@ public final class Jsr94FactHandleFactory extends AbstractFactHandleFactory {
 	private static final long serialVersionUID = 4964273923122006124L;
 
 	protected final InternalFactHandle newFactHandle(final int id,
-			final Object object, final long recency, final boolean isEvent,
-			final WorkingMemory workingMemory) {
-		return this.newFactHandle(id, object, recency, isEvent, 0,
-				workingMemory);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.drools.reteoo.FactHandleFactory#newFactHandle(long)
-	 */
-	protected final InternalFactHandle newFactHandle(final int id,
-			final Object object, final long recency, final boolean isEvent,
-			final long duration, final WorkingMemory workingMemory) {
-		if (isEvent) {
-			SessionClock clock = ((TemporalSession) workingMemory)
-					.getSessionClock();
-			return new Jsr94EventFactHandle(id, object, recency, clock
-					.getCurrentTime(), duration);
-		} else {
-			return new Jsr94FactHandle(id, object, recency);
-		}
+			final Object object, final long recency, final ObjectTypeConf conf,
+			final InternalWorkingMemory workingMemory) {
+        if ( conf != null && conf.isEvent() ) {
+            // later we need to centralize the following code snippet in a common method
+            // shared by all fact handle factory implementations
+            TypeDeclaration type = conf.getTypeDeclaration();
+            long timestamp = ((TemporalSession) workingMemory).getSessionClock().getCurrentTime();
+            long duration = 0;
+            if( type.getDurationExtractor() != null ) {
+                duration = type.getDurationExtractor().getLongValue( workingMemory, object );
+            }
+            return new Jsr94EventFactHandle( id,
+                                        object,
+                                        recency,
+                                        timestamp,
+                                        duration ); 
+        } else {
+            return new Jsr94FactHandle( id,
+                                          object,
+                                          recency );
+        }
 	}
 
 	/*

@@ -93,4 +93,7 @@ public interface InternalWorkingMemory
     public ExecutorService getExecutorService();
 
     public void setExecutorService(ExecutorService executor);    
+    
+    public ObjectTypeConfigurationRegistry getObjectTypeConfigurationRegistry();
+    
 }

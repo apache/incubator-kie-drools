@@ -16,17 +16,16 @@ package org.drools.common;
  * limitations under the License.
  */
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.drools.WorkingMemory;
+import org.drools.reteoo.ObjectTypeConf;
 import org.drools.spi.FactHandleFactory;
-import org.drools.util.PrimitiveLongStack;
-
-import java.io.Externalizable;
-import java.io.ObjectInput;
-import java.io.IOException;
-import java.io.ObjectOutput;
 
 public abstract class AbstractFactHandleFactory
     implements
@@ -65,8 +64,8 @@ public abstract class AbstractFactHandleFactory
     * @see org.drools.reteoo.FactHandleFactory#newFactHandle()
     */
     public final InternalFactHandle newFactHandle(final Object object,
-                                                  final boolean isEvent,
-                                                  final WorkingMemory workingMemory) {
+                                                  final ObjectTypeConf conf,
+                                                  final InternalWorkingMemory workingMemory) {
 // @FIXME make id re-cycling thread safe        
 //        if ( !this.factHandlePool.isEmpty() ) {
 //            return newFactHandle( this.factHandlePool.pop(),
@@ -77,7 +76,7 @@ public abstract class AbstractFactHandleFactory
 //        }
         return newFactHandle( this.id.incrementAndGet(),
                               object,
-                              isEvent,
+                              conf,
                               workingMemory );
     }
 
@@ -86,12 +85,12 @@ public abstract class AbstractFactHandleFactory
      */
     protected final InternalFactHandle newFactHandle(final int id,
                                                      final Object object,
-                                                     final boolean isEvent,
-                                                     final WorkingMemory workingMemory) {
+                                                     final ObjectTypeConf conf,
+                                                     final InternalWorkingMemory workingMemory) {
         return newFactHandle( id,
                               object,
                               this.counter.incrementAndGet(),
-                              isEvent,
+                              conf,
                               workingMemory );
     }
 
@@ -101,8 +100,8 @@ public abstract class AbstractFactHandleFactory
     protected abstract InternalFactHandle newFactHandle(final int id,
                                                         final Object object,
                                                         final long recency,
-                                                        final boolean isEvent,
-                                                        final WorkingMemory workingMemory);
+                                                        final ObjectTypeConf conf,
+                                                        final InternalWorkingMemory workingMemory);
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.FactHandleFactory#increaseFactHandleRecency(org.drools.FactHandle)

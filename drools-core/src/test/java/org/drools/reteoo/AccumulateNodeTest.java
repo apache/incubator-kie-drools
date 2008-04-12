@@ -127,14 +127,14 @@ public class AccumulateNodeTest extends DroolsTestCase {
                              this.sink.getAsserted().size() );
 
         this.node.assertLeftTuple( new LeftTuple( this.workingMemory.getFactHandleFactory().newFactHandle( "cheese",
-                                                                                                           false,
+                                                                                                           null,
                                                                                                            null ),
                                                   null,
                                                   true ),
                                    this.context,
                                    this.workingMemory );
         this.node.assertLeftTuple( new LeftTuple( this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese",
-                                                                                                           false,
+                                                                                                           null,
                                                                                                            null ),
                                                   null,
                                                   true ),
@@ -162,7 +162,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
      */
     public void testAssertTuple() {
         final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese",
-                                                                                                                  false,
+                                                                                                                  null,
                                                                                                                   null );
         final LeftTuple tuple0 = new LeftTuple( f0,
                                                 null,
@@ -182,7 +182,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
 
         // assert tuple, should add left memory 
         final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese",
-                                                                                                                  false,
+                                                                                                                  null,
                                                                                                                   null );
 
         final LeftTuple tuple1 = new LeftTuple( f1,
@@ -210,10 +210,10 @@ public class AccumulateNodeTest extends DroolsTestCase {
      */
     public void testAssertTupleWithObjects() {
         final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese",
-                                                                                                                  false,
+                                                                                                                  null,
                                                                                                                   null );
         final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese",
-                                                                                                                  false,
+                                                                                                                  null,
                                                                                                                   null );
 
         final LeftTuple tuple0 = new LeftTuple( f0,
@@ -267,7 +267,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
      */
     public void testRetractTuple() {
         final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese",
-                                                                                                                  false,
+                                                                                                                  null,
                                                                                                                   null );
 
         final LeftTuple tuple0 = new LeftTuple( f0,
@@ -302,10 +302,10 @@ public class AccumulateNodeTest extends DroolsTestCase {
      */
     public void testAssertObject() {
         final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese",
-                                                                                                                  false,
+                                                                                                                  null,
                                                                                                                   null );
         final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese",
-                                                                                                                  false,
+                                                                                                                  null,
                                                                                                                   null );
 
         final LeftTuple tuple0 = new LeftTuple( f0,
@@ -353,10 +353,10 @@ public class AccumulateNodeTest extends DroolsTestCase {
      */
     public void testRetractObject() {
         final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese",
-                                                                                                                  false,
+                                                                                                                  null,
                                                                                                                   null );
         final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese",
-                                                                                                                  false,
+                                                                                                                  null,
                                                                                                                   null );
 
         final LeftTuple tuple0 = new LeftTuple( f0,
@@ -470,10 +470,10 @@ public class AccumulateNodeTest extends DroolsTestCase {
         this.memory = ((AccumulateMemory) this.workingMemory.getNodeMemory( this.node )).betaMemory;
 
         final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese",
-                                                                                                                  false,
+                                                                                                                  null,
                                                                                                                   null );
         final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese",
-                                                                                                                  false,
+                                                                                                                  null,
                                                                                                                   null );
 
         final LeftTuple tuple0 = new LeftTuple( f0, null,

@@ -105,7 +105,7 @@ public class NamedEntryPoint
                                                                       object );
 
         InternalFactHandle handle = this.handleFactory.newFactHandle( object,
-                                                                      typeConf.isEvent(),
+                                                                      typeConf,
                                                                       wm );
         this.objectStore.addHandle( handle,
                                     object );

@@ -22,6 +22,7 @@ import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.ObjectStore;
+import org.drools.common.ObjectTypeConfigurationRegistry;
 import org.drools.common.TruthMaintenanceSystem;
 import org.drools.common.WorkingMemoryAction;
 import org.drools.concurrent.ExecutorService;
@@ -512,6 +513,11 @@ public class MockWorkingMemory implements InternalWorkingMemory {
     }
 
     public TimerManager getTimerManager() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public ObjectTypeConfigurationRegistry getObjectTypeConfigurationRegistry() {
         // TODO Auto-generated method stub
         return null;
     }

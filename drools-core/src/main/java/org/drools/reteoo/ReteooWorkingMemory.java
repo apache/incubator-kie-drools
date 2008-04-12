@@ -88,7 +88,8 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory
         Object object = new DroolsQuery( query,
                                          arguments );
         InternalFactHandle handle = this.handleFactory.newFactHandle( object,
-                                                                      false,
+                                                                      this.getObjectTypeConfigurationRegistry().getObjectTypeConf( EntryPoint.DEFAULT,
+                                                                                                                                   object ),
                                                                       this );
 
         insert( handle,

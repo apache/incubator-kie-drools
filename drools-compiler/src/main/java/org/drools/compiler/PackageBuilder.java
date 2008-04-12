@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.ClassTypeResolver;
 import org.drools.base.TypeResolver;
@@ -51,6 +52,7 @@ import org.drools.rule.Rule;
 import org.drools.rule.TypeDeclaration;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleBuilder;
+import org.drools.spi.FieldExtractor;
 import org.drools.xml.XmlPackageReader;
 import org.drools.xml.XmlProcessReader;
 import org.xml.sax.SAXException;
@@ -262,7 +264,7 @@ public class PackageBuilder {
         validateUniqueRuleNames( packageDescr );
 
         String dialectName = null;
-       
+
         for ( Iterator it = packageDescr.getAttributes().iterator(); it.hasNext(); ) {
             AttributeDescr value = (AttributeDescr) it.next();
             if ( "dialect".equals( value.getName() ) ) {
@@ -294,12 +296,12 @@ public class PackageBuilder {
             }
 
             if ( !packageDescr.getFunctions().isEmpty() ) {
-            	
+
                 for ( final Iterator it = packageDescr.getFunctions().iterator(); it.hasNext(); ) {
-                	FunctionDescr functionDescr = (FunctionDescr) it.next();
+                    FunctionDescr functionDescr = (FunctionDescr) it.next();
                     preCompileAddFunction( functionDescr );
-                }    
-                
+                }
+
                 // iterate and compile
                 for ( final Iterator it = packageDescr.getFunctions().iterator(); it.hasNext(); ) {
                     // inherit the dialect from the package
@@ -310,11 +312,11 @@ public class PackageBuilder {
 
                 // We need to compile all the functions now, so scripting languages like mvel can find them
                 this.dialectRegistry.compileAll();
-                
+
                 for ( final Iterator it = packageDescr.getFunctions().iterator(); it.hasNext(); ) {
-                	FunctionDescr functionDescr = (FunctionDescr) it.next();
+                    FunctionDescr functionDescr = (FunctionDescr) it.next();
                     postCompileAddFunction( functionDescr );
-                }                
+                }
             }
 
             // iterate and compile
@@ -417,14 +419,15 @@ public class PackageBuilder {
 
             // is it a POJO or a template?
             String templateName = typeDescr.getAttribute( TypeDeclarationDescr.ATTR_TEMPLATE );
-            if( templateName != null ) {
+            if ( templateName != null ) {
                 type.setFormat( TypeDeclaration.Format.TEMPLATE );
                 FactTemplate template = this.pkg.getFactTemplate( templateName );
-                if( template != null ) {
+                if ( template != null ) {
                     type.setTypeTemplate( template );
                 } else {
                     this.results.add( new TypeDeclarationError( "Template not found '" + template + "' for type '" + type.getTypeName() + "'",
                                                                 typeDescr.getLine() ) );
+                    continue;
                 }
             } else {
                 String className = typeDescr.getAttribute( TypeDeclarationDescr.ATTR_CLASS );
@@ -439,6 +442,7 @@ public class PackageBuilder {
                 } catch ( final ClassNotFoundException e ) {
                     this.results.add( new TypeDeclarationError( "Class not found '" + className + "' for type '" + type.getTypeName() + "'",
                                                                 typeDescr.getLine() ) );
+                    continue;
                 }
             }
 
@@ -453,8 +457,12 @@ public class PackageBuilder {
             String duration = typeDescr.getAttribute( TypeDeclarationDescr.ATTR_DURATION );
             if ( duration != null ) {
                 type.setDurationAttribute( duration );
+                FieldExtractor extractor = ClassFieldExtractorCache.getInstance().getExtractor( type.getTypeClass(),
+                                                                                                duration,
+                                                                                                this.configuration.getClassLoader() );
+                type.setDurationExtractor( extractor );
             }
-            
+
             this.pkg.addTypeDeclaration( type );
         }
     }
@@ -463,13 +471,15 @@ public class PackageBuilder {
         this.dialect.addFunction( functionDescr,
                                   getTypeResolver() );
     }
-    
+
     private void preCompileAddFunction(final FunctionDescr functionDescr) {
-        this.dialect.preCompileAddFunction( functionDescr, getTypeResolver() );
+        this.dialect.preCompileAddFunction( functionDescr,
+                                            getTypeResolver() );
     }
-    
+
     private void postCompileAddFunction(final FunctionDescr functionDescr) {
-        this.dialect.postCompileAddFunction( functionDescr, getTypeResolver() );
+        this.dialect.postCompileAddFunction( functionDescr,
+                                             getTypeResolver() );
     }
 
     private void addFactTemplate(final FactTemplateDescr factTemplateDescr) {

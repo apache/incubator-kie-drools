@@ -18,6 +18,7 @@
 package org.drools.reteoo;
 
 import org.drools.RuntimeDroolsException;
+import org.drools.rule.TypeDeclaration;
 
 public interface ObjectTypeConf {
     public ObjectTypeNode[] getObjectTypeNodes();
@@ -35,4 +36,6 @@ public interface ObjectTypeConf {
     public boolean isActive();
 
     public boolean isEvent();
+    
+    public TypeDeclaration getTypeDeclaration();    
 }

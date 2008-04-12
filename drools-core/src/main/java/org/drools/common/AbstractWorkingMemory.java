@@ -70,7 +70,6 @@ import org.drools.process.instance.ProcessInstanceFactory;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.process.instance.timer.TimerManager;
-import org.drools.reteoo.ClassObjectTypeConf;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.LIANodePropagation;
 import org.drools.reteoo.ObjectTypeConf;
@@ -755,7 +754,7 @@ public abstract class AbstractWorkingMemory
 
         if ( isSequential() ) {
             handle = this.handleFactory.newFactHandle( object,
-                                                       typeConf.isEvent(),
+                                                       typeConf,
                                                        this );
             this.objectStore.addHandle( handle,
                                         object );
@@ -813,7 +812,7 @@ public abstract class AbstractWorkingMemory
                     // stated/logical
                     // assert
                     handle = this.handleFactory.newFactHandle( object,
-                                                               typeConf.isEvent(),
+                                                               typeConf,
                                                                this );
                     this.objectStore.addHandle( handle,
                                                 object );
@@ -867,7 +866,7 @@ public abstract class AbstractWorkingMemory
                             // assertion
                             key.setStatus( EqualityKey.STATED );
                             handle = this.handleFactory.newFactHandle( object,
-                                                                       typeConf.isEvent(),
+                                                                       typeConf,
                                                                        this );
                             handle.setEqualityKey( key );
                             key.addFactHandle( handle );
@@ -878,7 +877,7 @@ public abstract class AbstractWorkingMemory
 
                     } else {
                         handle = this.handleFactory.newFactHandle( object,
-                                                                   typeConf.isEvent(),
+                                                                   typeConf,
                                                                    this );
                         this.objectStore.addHandle( handle,
                                                     object );
@@ -909,7 +908,7 @@ public abstract class AbstractWorkingMemory
                     return handle;
                 }
                 handle = this.handleFactory.newFactHandle( object,
-                                                           typeConf.isEvent(),
+                                                           typeConf,
                                                            this );
                 this.objectStore.addHandle( handle,
                                             object );

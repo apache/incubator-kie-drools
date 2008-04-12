@@ -21,13 +21,13 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.TemporalSession;
-import org.drools.WorkingMemory;
 import org.drools.common.AbstractFactHandleFactory;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.EventFactHandle;
 import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.rule.TypeDeclaration;
 import org.drools.spi.FactHandleFactory;
-import org.drools.temporal.SessionClock;
 
 public class ReteooFactHandleFactory extends AbstractFactHandleFactory {
 
@@ -52,15 +52,20 @@ public class ReteooFactHandleFactory extends AbstractFactHandleFactory {
     protected final InternalFactHandle newFactHandle(final int id,
                                                      final Object object,
                                                      final long recency,
-                                                     final boolean isEvent,
-                                                     final WorkingMemory workingMemory) {
-        if ( isEvent ) {
-            SessionClock clock = ((TemporalSession) workingMemory).getSessionClock();
+                                                     final ObjectTypeConf conf,
+                                                     final InternalWorkingMemory workingMemory) {
+        if ( conf != null && conf.isEvent() ) {
+            TypeDeclaration type = conf.getTypeDeclaration();
+            long timestamp = ((TemporalSession) workingMemory).getSessionClock().getCurrentTime();
+            long duration = 0;
+            if( type.getDurationExtractor() != null ) {
+                duration = type.getDurationExtractor().getLongValue( workingMemory, object );
+            }
             return new EventFactHandle( id,
                                         object,
                                         recency,
-                                        clock.getCurrentTime(),
-                                        0 ); // primitive events have 0 duration
+                                        timestamp,
+                                        duration ); 
         } else {
             return new DefaultFactHandle( id,
                                           object,
