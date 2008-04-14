@@ -176,7 +176,7 @@ public class CepEspTest extends TestCase {
 
     }
 
-    public void FIXME_testTimeRelationalOperators() throws Exception {
+    public void testTimeRelationalOperators() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_TimeRelationalOperators.drl" ) );
         final RuleBase ruleBase = loadRuleBase( reader );
