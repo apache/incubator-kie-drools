@@ -75,7 +75,7 @@ public static void @{methodName}(org.drools.spi.KnowledgeHelper drools@if{declar
 @end{}
 
 @declare{"actionMethod"}
-public static void @{methodName}(@foreach{type :globalTypes, identifier : globals}  @{type} @{identifier} @end{","} ) throws Exception {
+public static void @{methodName}(org.drools.spi.KnowledgeHelper drools@if{globals != empty},@end{} @foreach{type :globalTypes, identifier : globals}  @{type} @{identifier} @end{","} ) throws Exception {
     @{text}
 }
 @end{}

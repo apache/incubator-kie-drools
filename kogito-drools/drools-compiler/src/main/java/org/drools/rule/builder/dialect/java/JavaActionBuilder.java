@@ -75,7 +75,7 @@ public class JavaActionBuilder extends AbstractJavaProcessBuilder
                                                (ProcessBuildContext) context,
                                                (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ) );
         map.put( "text",
-                 actionDescr.getText() );
+                 dialect.getKnowledgeHelperFixer().fix( actionDescr.getText() ));
 
         generatTemplates( "actionMethod",
                           "actionInvoker",

@@ -392,12 +392,14 @@ public class @{invokerClassName} implements org.drools.spi.Action, java.io.Exter
 {
     private static final long serialVersionUID  = 400L;
 
-    public void execute(org.drools.WorkingMemory workingMemory) throws Exception {
+    public void execute(org.drools.spi.KnowledgeHelper knowledgeHelper,
+                        org.drools.WorkingMemory workingMemory) throws Exception {
 
         @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
         @end{}
 
         @{processClassName}.@{methodName} (
+	        knowledgeHelper@if{globals != empty},@end{}
 	        @foreach{identifier : globals} @{identifier}
 	        @end{","} );
     }
