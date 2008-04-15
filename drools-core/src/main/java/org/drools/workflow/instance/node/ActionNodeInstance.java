@@ -16,7 +16,12 @@ package org.drools.workflow.instance.node;
  * limitations under the License.
  */
 
+import org.drools.WorkingMemory;
+import org.drools.base.DefaultKnowledgeHelper;
+import org.drools.base.SequentialKnowledgeHelper;
+import org.drools.common.InternalRuleBase;
 import org.drools.spi.Action;
+import org.drools.spi.KnowledgeHelper;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.ActionNode;
 import org.drools.workflow.instance.NodeInstance;
@@ -42,7 +47,9 @@ public class ActionNodeInstance extends NodeInstanceImpl {
         }
 		Action action = (Action) getActionNode().getAction();
 		try {
-	        action.execute( getProcessInstance().getWorkingMemory() );		    
+		    KnowledgeHelper knowledgeHelper = createKnowledgeHelper();
+		    
+	        action.execute( knowledgeHelper, getProcessInstance().getWorkingMemory() );		    
 		} catch (Exception e) {
 		    throw new RuntimeException("unable to execute Action", e);
 		}
@@ -52,6 +59,15 @@ public class ActionNodeInstance extends NodeInstanceImpl {
     public void triggerCompleted() {
         getNodeInstanceContainer().removeNodeInstance(this);
         getNodeInstanceContainer().getNodeInstance(getActionNode().getTo().getTo()).trigger(this, getActionNode().getTo().getToType());
+    }
+    
+    private KnowledgeHelper createKnowledgeHelper() {
+        WorkingMemory workingMemory = getProcessInstance().getWorkingMemory();
+        if ( ((InternalRuleBase) workingMemory.getRuleBase()).getConfiguration().isSequential() ) {
+            return new SequentialKnowledgeHelper( workingMemory );
+        } else {
+            return new DefaultKnowledgeHelper( workingMemory );
+        }
     }
 
 }
