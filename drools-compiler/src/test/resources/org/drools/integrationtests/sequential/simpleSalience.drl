@@ -1,0 +1,29 @@
+package salience_test;
+
+import org.drools.Person
+
+global java.util.List list;
+
+rule "rule 2"
+    salience 2
+    when
+        Person()
+    then
+        list.add("rule 2");
+end
+ 
+rule "rule 1"
+    salience 1
+    when
+        Person()
+    then
+        list.add("rule 1");
+end
+ 
+rule "rule 3"
+    salience 3
+    when
+        Person()
+    then
+        list.add("rule 3");
+end
