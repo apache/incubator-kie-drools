@@ -1,5 +1,10 @@
 package org.drools.decisiontable.model;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -35,7 +40,11 @@ public class SnippetBuilder {
 
     private static final String PARAM        = SnippetBuilder.PARAM_PREFIX + "param";
 
-    private String              _template;
+    private final String        _template;
+    
+    private final boolean       single;
+    
+    private final Pattern       delimiter;
 
     /**
      * @param snippetTemplate
@@ -43,7 +52,12 @@ public class SnippetBuilder {
      *            no "place holder" is present,
      */
     public SnippetBuilder(final String snippetTemplate) {
+        if ( snippetTemplate == null ) {
+            throw new RuntimeException( "Script template is null - check for missing script definition." );
+        }
         this._template = snippetTemplate;
+        this.single = this._template.indexOf( SnippetBuilder.PARAM_PREFIX + "1" ) < 0;
+        this.delimiter = Pattern.compile( "(.*?[^\\\\])(,|\\z)" );
     }
 
     /**
@@ -53,19 +67,15 @@ public class SnippetBuilder {
      * @return The final snippet.
      */
     public String build(final String cellValue) {
-        if ( this._template == null ) {
-            throw new RuntimeException( "Script template is null - check for missing script definition." );
-        }
-
-        if ( this._template.indexOf( SnippetBuilder.PARAM_PREFIX + "1" ) >= 0 ) {
-            return buildMulti( cellValue );
-        } else {
+        if ( single ) {
             return buildSingle( cellValue );
+        } else {
+            return buildMulti( cellValue );
         }
     }
 
     private String buildMulti(final String cellValue) {
-        final String[] cellVals = cellValue.split( "," );
+        final String[] cellVals = split( cellValue );
         String result = this._template;
 
         for ( int paramNumber = 0; paramNumber < cellVals.length; paramNumber++ ) {
@@ -77,6 +87,16 @@ public class SnippetBuilder {
 
         }
         return result;
+    }
+    
+    private String[] split( String input ) {
+        Matcher m = delimiter.matcher( input );
+        List result = new ArrayList();
+        while( m.find() ) {
+            result.add( m.group( 1 ).replaceAll( "\\\\,", "," ) );
+        }
+        return (String[]) result.toArray( new String[result.size()] );
+        
     }
 
     /**
