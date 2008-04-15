@@ -21,9 +21,7 @@ public class ActionNodeBuilder
         DroolsConsequenceAction action = (DroolsConsequenceAction) actionNode.getAction();
         ActionDescr actionDescr = new ActionDescr();
         actionDescr.setText( action.getConsequence() );   
-        
         Dialect dialect = context.getDialectRegistry().getDialect( action.getDialect() );            
-        
         dialect.getActionBuilder().build( context, actionNode, actionDescr );
     }
 

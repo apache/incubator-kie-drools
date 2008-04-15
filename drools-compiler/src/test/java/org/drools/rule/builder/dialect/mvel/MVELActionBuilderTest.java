@@ -9,12 +9,14 @@ import junit.framework.TestCase;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
+import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.ActionDescr;
 import org.drools.rule.Package;
 import org.drools.rule.builder.PackageBuildContext;
 import org.drools.spi.Action;
+import org.drools.spi.KnowledgeHelper;
 import org.drools.workflow.core.node.ActionNode;
 
 public class MVELActionBuilderTest extends TestCase {
@@ -49,9 +51,10 @@ public class MVELActionBuilderTest extends TestCase {
         final WorkingMemory wm = ruleBase.newStatefulSession();
 
         List list = new  ArrayList();
-        wm.setGlobal( "list", list );        
+        wm.setGlobal( "list", list );     
         
-        ((Action)actionNode.getAction()).execute( wm );
+        KnowledgeHelper knowledgeHelper = new DefaultKnowledgeHelper();
+        ((Action)actionNode.getAction()).execute( knowledgeHelper, wm );
         
         assertEquals("hello world", list.get(0) );
     }    

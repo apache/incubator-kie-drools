@@ -2,6 +2,8 @@ package org.drools.rule.builder.dialect.mvel;
 
 import java.io.Serializable;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import org.drools.base.mvel.DroolsMVELFactory;
@@ -13,11 +15,51 @@ import org.drools.rule.MVELDialectData;
 import org.drools.rule.builder.ActionBuilder;
 import org.drools.rule.builder.PackageBuildContext;
 import org.drools.workflow.core.node.ActionNode;
+import org.mvel.Macro;
+import org.mvel.MacroProcessor;
 
 public class MVELActionBuilder
     implements
     ActionBuilder {
 
+    private static final Map macros = new HashMap( 5 );
+    static {
+        macros.put( "insert",
+                    new Macro() {
+                        public String doMacro() {
+                            return "drools.insert";
+                        }
+                    } );
+
+        macros.put( "insertLogical",
+                    new Macro() {
+                        public String doMacro() {
+                            return "drools.insertLogical";
+                        }
+                    } );
+
+        macros.put( "modify",
+                    new Macro() {
+                        public String doMacro() {
+                            return "@Modify with";
+                        }
+                    } );
+
+        macros.put( "update",
+                    new Macro() {
+                        public String doMacro() {
+                            return "drools.update";
+                        }
+                    } );
+
+        macros.put( "retract",
+                    new Macro() {
+                        public String doMacro() {
+                            return "drools.retract";
+                        }
+                    } );;
+    }
+    
     public MVELActionBuilder() {
 
     }
@@ -26,7 +68,7 @@ public class MVELActionBuilder
                       final ActionNode actionNode,
                       final ActionDescr actionDescr) {
 
-        String text = actionDescr.getText();
+        String text = processMacros( actionDescr.getText() );
 
         try {
             MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
@@ -60,6 +102,12 @@ public class MVELActionBuilder
                                                           null,
                                                           "Unable to build expression for 'action' '" + actionDescr.getText() + "'" ) );
         }
+    }
+
+    public static String processMacros(String consequence) {
+        MacroProcessor macroProcessor = new MacroProcessor();
+        macroProcessor.setMacros( macros );
+        return macroProcessor.parse( delimitExpressions( consequence ) );
     }
 
     /**
