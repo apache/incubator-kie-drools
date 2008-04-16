@@ -16,11 +16,6 @@
  */
 package org.drools.facttemplates;
 
-/**
- * @author Peter Lin
- * 
- * Base interface for Facts
- */
 public interface Fact {
 
     /**
