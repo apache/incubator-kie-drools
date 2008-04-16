@@ -342,6 +342,31 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 
 	}
 
+	public void testNoOperator() {
+		GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
+		String[] row = new String[] {"1", "desc", "a", "> 42", "33 + 1", "age > 6", "stilton"};
+
+		List<ConditionCol> cols = new ArrayList<ConditionCol>();
+
+		ConditionCol col2 = new ConditionCol();
+		col2.boundName = "p1";
+		col2.factType = "Person";
+		col2.factField = "age";
+		col2.constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
+		col2.operator = "";
+		cols.add(col2);
+
+
+		RuleModel rm = new RuleModel();
+
+		p.doConditions(1, cols, row, rm);
+
+
+		String drl = BRDRLPersistence.getInstance().marshal(rm);
+		assertTrue(drl.indexOf("age > \"42\"") > 0);
+
+	}
+
 
 
 }
