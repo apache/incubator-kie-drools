@@ -143,9 +143,20 @@ public class GuidedDTDRLPersistence {
 					case ISingleFieldConstraint.TYPE_LITERAL:
 					case ISingleFieldConstraint.TYPE_RET_VALUE:
 						SingleFieldConstraint sfc = new SingleFieldConstraint(c.factField);
-						sfc.operator = c.operator;
+						if (no(c.operator)) {
+
+							String[] a = cell.split("\\s");
+							if (a.length > 1) {
+								sfc.operator = a[0];
+								sfc.value = a[1];
+							} else {
+								sfc.value = cell;
+							}
+						} else {
+							sfc.operator = c.operator;
+							sfc.value = cell;
+						}
 						sfc.constraintValueType = c.constraintValueType;
-						sfc.value = cell;
 						fp.addConstraint(sfc);
 						break;
 					case ISingleFieldConstraint.TYPE_PREDICATE:
@@ -160,6 +171,12 @@ public class GuidedDTDRLPersistence {
 			}
 		}
 		rm.lhs = patterns.toArray(new IPattern[patterns.size()]);
+	}
+
+
+
+	private boolean no(String operator) {
+		return operator == null || "".equals(operator);
 	}
 
 	private FactPattern find(List<FactPattern> patterns, String boundName) {

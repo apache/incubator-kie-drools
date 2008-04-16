@@ -139,6 +139,9 @@ public class GuidedDecisionTable implements PortableObject {
 		} else if (col instanceof ConditionCol) {
 			ConditionCol c = (ConditionCol) col;
 			if (c.constraintValueType == ISingleFieldConstraint.TYPE_LITERAL) {
+				if (c.operator == null || "".equals(c.operator)) {
+					return false;
+				}
 				String ft = sce.getFieldType(c.factType, c.factField);
 				if (ft != null && ft.equals(SuggestionCompletionEngine.TYPE_NUMERIC)) {
 					return true;

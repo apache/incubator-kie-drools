@@ -222,6 +222,7 @@ public class GuidedDecisionTableTest extends TestCase {
 		c1.boundName = "c1";
 		c1.factType = "Driver";
 		c1.factField = "name";
+		c1.operator = "==";
 		c1.constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
 		dt.conditionCols.add(c1);
 
@@ -229,8 +230,16 @@ public class GuidedDecisionTableTest extends TestCase {
 		c1_.boundName = "c1";
 		c1_.factType = "Driver";
 		c1_.factField = "age";
+		c1_.operator = "==";
 		c1_.constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
 		dt.conditionCols.add(c1_);
+
+		ConditionCol c2 = new ConditionCol();
+		c2.boundName = "c1";
+		c2.factType = "Driver";
+		c2.factField = "age";
+		c2.constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
+		dt.conditionCols.add(c2);
 
 		ActionSetFieldCol a = new ActionSetFieldCol();
 		a.boundName = "c1";
@@ -262,7 +271,7 @@ public class GuidedDecisionTableTest extends TestCase {
 		assertTrue(dt.isNumeric(a2, sce));
 		assertFalse(dt.isNumeric(ins, sce));
 		assertTrue(dt.isNumeric(ins_, sce));
-
+		assertFalse(dt.isNumeric(c2, sce));
 
 
 
