@@ -23,13 +23,6 @@ import java.io.ObjectOutput;
 import java.io.IOException;
 import java.io.ObjectInput;
 
-/**
- * Java class semantics <code>ObjectType</code>.
- *
- * @author <a href="mailto:bob@werken.com">bob@werken.com </a>
- *
- * @version $Id: ClassObjectType.java,v 1.5 2005/02/04 02:13:36 mproctor Exp $
- */
 public class FactTemplateObjectType
     implements
     ObjectType {

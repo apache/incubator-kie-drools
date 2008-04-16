@@ -23,23 +23,6 @@ import java.io.IOException;
 
 import org.drools.rule.Package;
 
-/**
- * @author Peter Lin
- * Deftemplate is equivalent to CLIPS deftemplate<br/>
- *
- * Some general design notes about the current implementation. In the
- * case where a class is declared to create the deftemplate, the order
- * of the slots are based on java Introspection. In the case where an
- * user declares the deftemplate from console or directly, the order
- * is the same as the string equivalent.
- * The current implementation does not address redeclaring a deftemplate
- * for a couple of reasons. The primary one is how does it affect the
- * existing RETE nodes. One possible approach is to always add new slots
- * to the end of the deftemplate and ignore the explicit order. Another
- * is to recompute the deftemplate, binds and all nodes. The second
- * approach is very costly and would make redeclaring a deftemplate
- * undesirable.
- */
 public class FactTemplateImpl
     implements
     FactTemplate {

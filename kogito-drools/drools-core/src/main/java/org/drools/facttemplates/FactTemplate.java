@@ -20,13 +20,6 @@ import java.io.Externalizable;
 
 import org.drools.rule.Package;
 
-/**
- * @author Peter Lin
- *
- * Template defines the methods to access an object, which is the
- * equivalent of un-ordered facts. It defines all the necessary
- * methods for Deftemplate.
- */
 public interface FactTemplate
     extends
     Externalizable {

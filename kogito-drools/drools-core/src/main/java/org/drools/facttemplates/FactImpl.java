@@ -25,12 +25,6 @@ import java.util.Arrays;
 
 //import woolfel.engine.rule.Rule;
 
-/**
- * @author Peter Lin
- * 
- * Deffact is a concrete implementation of Fact interface. It is
- * equivalent to deffact in CLIPS.
- */
 public class FactImpl
     implements
     Fact,
