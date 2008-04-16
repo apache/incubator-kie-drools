@@ -18,7 +18,9 @@ rule assignFirstSeat
 
 		System.out.println( "assign first seat :  " + seating + " : " + path );
 
-        modify( context ) { setState( Context.ASSIGN_SEATS ) } 
+        modify( context ) {
+            setState( Context.ASSIGN_SEATS )
+        } 
 end
 
 rule findSeating
