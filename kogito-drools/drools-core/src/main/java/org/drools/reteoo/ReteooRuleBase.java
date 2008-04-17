@@ -319,7 +319,9 @@ public class ReteooRuleBase extends AbstractRuleBase {
 
     public synchronized void addPackage(final Package newPkg) {
         super.addPackage(newPkg);
-        this.reteooBuilder.setOrdered(false);
+        if ( this.config.isSequential() ) {
+            this.reteooBuilder.setOrdered(false);
+        }
     }
     
     public static class InitialFactHandleDummyObject
