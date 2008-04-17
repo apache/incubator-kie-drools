@@ -72,14 +72,24 @@ public class Scenario implements PortableObject {
 	}
 
 	/**
-	 * Will slip in a fixture after the specified one.
+	 * Will slip in a fixture after the specified one, but before the next execution trace.
 	 */
-	public void insertAfter(Fixture fix, Fixture toAdd) {
-		if (fix == null) {
-			this.fixtures.add(0, toAdd);
-		} else {
-			fixtures.add( fixtures.indexOf(fix) + 1, toAdd);
-		}
+	public void insertBetween(Fixture fix, Fixture toAdd) {
+
+			boolean inserted = false;
+			int start = (fix == null) ? 0 : fixtures.indexOf(fix) + 1;
+			for (int j = start; j < fixtures.size(); j++) {
+				Fixture f = (Fixture) fixtures.get(j);
+				if (f instanceof ExecutionTrace) {
+					fixtures.add(j, toAdd);
+					return;
+				}
+			}
+
+			if (!inserted) {
+			  //fixtures.add( fixtures.indexOf(fix) + 1, toAdd);
+				fixtures.add(toAdd);
+			}
 	}
 
 	/**
