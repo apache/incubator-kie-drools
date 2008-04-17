@@ -74,8 +74,6 @@ public class ReteooBuilder
     /** The RuleBase */
     private transient InternalRuleBase        ruleBase;
 
-    private transient InternalWorkingMemory[] workingMemories;
-
     private Map                               rules;
 
     private transient ReteooRuleBuilder       ruleBuilder;
@@ -131,6 +129,10 @@ public class ReteooBuilder
 
     public IdGenerator getIdGenerator() {
         return this.idGenerator;
+    }
+
+    protected void setOrdered(boolean ordered) {
+        this.ordered = ordered;
     }
 
     public void order() {
@@ -229,7 +231,7 @@ public class ReteooBuilder
 
     public void removeRule(final Rule rule) {
         // reset working memories for potential propagation
-        this.workingMemories = (InternalWorkingMemory[]) this.ruleBase.getWorkingMemories();
+        InternalWorkingMemory[] workingMemories = this.ruleBase.getWorkingMemories();
 
         final Object object = this.rules.remove( rule );
 
@@ -240,7 +242,7 @@ public class ReteooBuilder
             node.remove( context,
                          this,
                          null,
-                         this.workingMemories );
+                         workingMemories );
             context.clear();
         }
     }

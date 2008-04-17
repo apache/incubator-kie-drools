@@ -317,6 +317,11 @@ public class ReteooRuleBase extends AbstractRuleBase {
         return this.reteooBuilder.getIdGenerator().getLastId() + 1;
     }
 
+    public synchronized void addPackage(final Package newPkg) {
+        super.addPackage(newPkg);
+        this.reteooBuilder.setOrdered(false);
+    }
+    
     public static class InitialFactHandleDummyObject
         implements
         Externalizable {
