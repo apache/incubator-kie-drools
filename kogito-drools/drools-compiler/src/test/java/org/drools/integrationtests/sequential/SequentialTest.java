@@ -8,6 +8,7 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.StatelessSession;
 import org.drools.integrationtests.SerializationHelper;
+import org.drools.integrationtests.DynamicRulesTest;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
@@ -80,7 +81,48 @@ public class SequentialTest extends TestCase {
         assertEquals( "rule 3", list.get( 0 ));
         assertEquals( "rule 2", list.get( 1 ));
         assertEquals( "rule 1", list.get( 2 ));
-    }      
+    }
+
+    // JBRULES-1567 - ArrayIndexOutOfBoundsException in sequential execution after calling RuleBase.addPackage(..)
+    public void testSequentialWithRulebaseUpdate() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "simpleSalience.drl" ) ) );
+
+        RuleBaseConfiguration conf = new RuleBaseConfiguration();
+        conf.setSequential( true );
+        RuleBase ruleBase = getRuleBase( conf );
+
+        ruleBase.addPackage(builder.getPackage());
+        StatelessSession    session = ruleBase.newStatelessSession();
+
+        final List list = new ArrayList();
+        session.setGlobal( "list",
+                           list );
+
+        session.execute(new Person("pob"));
+
+        builder = new PackageBuilder();
+        builder.addPackageFromDrl(
+                new InputStreamReader( DynamicRulesTest.class.getResourceAsStream( "test_Dynamic3.drl" ) ) );
+
+        ruleBase.addPackage(builder.getPackage());
+        session = ruleBase.newStatelessSession();
+        session.setGlobal( "list",
+                           list );
+        Person  person  = new Person("bop");
+        session.execute(person);
+
+        assertEquals( 7,
+                      list.size() );
+
+        assertEquals( "rule 3", list.get( 0 ));
+        assertEquals( "rule 2", list.get( 1 ));
+        assertEquals( "rule 1", list.get( 2 ));
+        assertEquals( "rule 3", list.get( 3 ));
+        assertEquals( "rule 2", list.get( 4 ));
+        assertEquals( "rule 1", list.get( 5 ));
+        assertEquals( person, list.get( 6 ));
+    }
     
     
 
