@@ -11,39 +11,6 @@
   <artifactId>drools-docs</artifactId>
   <packaging>pom</packaging>
   <name>Drools :: Documentation</name>
-
-      <repositories>
-        <repository>          
-          <id>snapshots.jboss.org</id>
-          <url>http://snapshots.jboss.org/maven2</url>
-          <snapshots>
-            <enabled>true</enabled>
-          </snapshots>
-        </repository>
-        <repository>
-          <id>repository.jboss.org</id>
-          <url>http://repository.jboss.org/maven2</url>
-          <snapshots>
-            <enabled>false</enabled>
-          </snapshots>
-        </repository>
-      </repositories>
-      <pluginRepositories>
-        <pluginRepository>
-          <id>repository.jboss.org</id>
-          <url>http://repository.jboss.org/maven2</url>
-          <snapshots>
-            <enabled>false</enabled>
-          </snapshots>
-        </pluginRepository>
-        <pluginRepository>
-          <id>snapshots.jboss.org</id>
-          <url>http://snapshots.jboss.org/maven2</url>
-          <snapshots>
-            <enabled>true</enabled>
-          </snapshots>
-        </pluginRepository>
-      </pluginRepositories>
   
   <modules>
       <module>drools-docs-userguide</module>
