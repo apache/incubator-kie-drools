@@ -216,24 +216,29 @@
 <!--</plugin>-->
 		</plugins>
 	</reporting>
-	<repositories>
-		
-		<repository>
-	      <id>Maven Snapshots</id>
-	      <url>http://snapshots.jboss.org/maven2</url>
-	      <snapshots>
-	        <enabled>true</enabled>
-	      </snapshots>
-	      <releases>
-	        <enabled>false</enabled>
-	      </releases>
-	    </repository>
-	    
-		<repository>
-			<id>jbossRepository</id>
-			<name>JBoss repository</name>
-			<url>http://repository.jboss.com/maven2</url>
-		</repository>
+	<repositories><!-- TODO once this pom extends the drools parent pom remove this section -->
+
+        <repository>
+            <id>repository.jboss.org</id>
+            <url>http://repository.jboss.org/maven2/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+               <enabled>true</enabled>
+            </releases>
+        </repository>
+        <repository>
+            <id>snapshots.jboss.org</id>
+            <url>http://snapshots.jboss.org/maven2/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+               <enabled>false</enabled>
+            </releases>
+        </repository>
+
 	</repositories>
 	<pluginRepositories/>
 	<dependencies>
