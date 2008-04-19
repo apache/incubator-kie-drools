@@ -1,0 +1,10 @@
+package com.sample
+
+import java.util.List
+
+rule test
+  when
+    List()
+  then
+    System.out.println("Test");
+end

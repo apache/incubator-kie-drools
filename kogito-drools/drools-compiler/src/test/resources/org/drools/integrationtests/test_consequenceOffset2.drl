@@ -1,0 +1,10 @@
+package com.sample
+
+import java.util.ArrayList
+
+rule test
+  when
+    ArrayList()
+  then
+    System.out.println("Test");
+end
