@@ -1,7 +1,6 @@
 package com.sample
 
 // really long list of imports
-import java.util.ArrayDeque
 import java.util.AbstractCollection
 import java.util.AbstractQueue
 import java.util.AbstractMap
@@ -18,7 +17,6 @@ import java.util.Collections
 import java.util.Comparator
 import java.util.Currency
 import java.util.Date
-import java.util.Deque
 import java.util.DuplicateFormatFlagsException
 import java.util.Dictionary
 import java.util.EmptyStackException
@@ -59,8 +57,6 @@ import java.util.MissingFormatWidthException
 import java.util.Map
 import java.util.MissingFormatArgumentException
 import java.util.NoSuchElementException
-import java.util.NavigableMap
-import java.util.NavigableSet
 import java.util.Observable
 import java.util.Observer
 import java.util.PriorityQueue
@@ -74,8 +70,6 @@ import java.util.RandomAccess
 import java.util.SimpleTimeZone
 import java.util.Stack
 import java.util.SortedMap
-import java.util.ServiceLoader
-import java.util.ServiceConfigurationError
 import java.util.Set
 import java.util.SortedSet
 import java.util.Scanner
