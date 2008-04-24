@@ -2,11 +2,6 @@ package org.drools;
 
 import org.drools.StockTick;
 
-declare StockTick {
-    role event,
-    duration_attribute duration
-}
-
 global java.util.List results_coincides;
 global java.util.List results_after;
 global java.util.List results_before;
@@ -20,6 +15,11 @@ global java.util.List results_starts;
 global java.util.List results_started_by;
 global java.util.List results_finishes;
 global java.util.List results_finished_by;
+
+declare StockTick 
+    @role( event )
+    @duration( duration )
+end
 
 rule "coincides operator"
 when

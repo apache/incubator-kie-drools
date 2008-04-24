@@ -412,13 +412,13 @@ public class PackageBuilder {
             TypeDeclaration type = new TypeDeclaration( typeDescr.getTypeName() );
 
             // is it a regular fact or an event?
-            String role = typeDescr.getAttribute( TypeDeclarationDescr.ATTR_ROLE );
+            String role = typeDescr.getMetaAttribute( TypeDeclaration.Role.ID );
             if ( role != null ) {
                 type.setRole( TypeDeclaration.Role.parseRole( role ) );
             }
 
             // is it a POJO or a template?
-            String templateName = typeDescr.getAttribute( TypeDeclarationDescr.ATTR_TEMPLATE );
+            String templateName = typeDescr.getMetaAttribute( TypeDeclaration.ATTR_TEMPLATE );
             if ( templateName != null ) {
                 type.setFormat( TypeDeclaration.Format.TEMPLATE );
                 FactTemplate template = this.pkg.getFactTemplate( templateName );
@@ -430,7 +430,7 @@ public class PackageBuilder {
                     continue;
                 }
             } else {
-                String className = typeDescr.getAttribute( TypeDeclarationDescr.ATTR_CLASS );
+                String className = typeDescr.getMetaAttribute( TypeDeclaration.ATTR_CLASS );
                 if ( className == null ) {
                     className = type.getTypeName();
                 }
@@ -446,15 +446,11 @@ public class PackageBuilder {
                 }
             }
 
-            String clockStrategy = typeDescr.getAttribute( TypeDeclarationDescr.ATTR_CLOCK_STRATEGY );
-            if ( clockStrategy != null ) {
-                type.setClockStrategy( TypeDeclaration.ClockStrategy.parseClockStrategy( clockStrategy ) );
-            }
-            String timestamp = typeDescr.getAttribute( TypeDeclarationDescr.ATTR_TIMESTAMP );
+            String timestamp = typeDescr.getMetaAttribute( TypeDeclaration.ATTR_TIMESTAMP );
             if ( timestamp != null ) {
                 type.setTimestampAttribute( timestamp );
             }
-            String duration = typeDescr.getAttribute( TypeDeclarationDescr.ATTR_DURATION );
+            String duration = typeDescr.getMetaAttribute( TypeDeclaration.ATTR_DURATION );
             if ( duration != null ) {
                 type.setDurationAttribute( duration );
                 FieldExtractor extractor = ClassFieldExtractorCache.getInstance().getExtractor( type.getTypeClass(),
