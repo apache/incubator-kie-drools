@@ -3036,11 +3036,11 @@ public class RuleParserTest extends TestCase {
         //        /---------------+-------------------\
         //       AND             AND                 AND
         //    /---+---\       /---+---\           /---+---\
-        //   FC       FC     FC       FC         FC       OR
+        //   FC   FC  FC     FC       FC         FC       OR
         //                                             /---+---\
         //                                            FC       FC
         //
-        final String text = "Person( ( age ( > 60 && < 70 ) || ( > 50 && < 55 ) && hair == \"black\" ) || ( age == 40 && hair == \"pink\" ) || ( age == 12 && ( hair == \"yellow\" || hair == \"blue\" ) ))";
+        final String text = "Person( teste == 3 && ( age ( > 60 && < 70 ) || ( > 50 && < 55 ) && hair == \"black\" ) || ( age == 40 && hair == \"pink\" ) || ( age == 12 && ( hair == \"yellow\" || hair == \"blue\" ) ))";
         final CharStream charStream = new ANTLRStringStream( text );
         final DRLLexer lexer = new DRLLexer( charStream );
         final TokenStream tokenStream = new CommonTokenStream( lexer );
@@ -3059,8 +3059,20 @@ public class RuleParserTest extends TestCase {
                       orConstr.getDescrs().size() );
 
         AndDescr andConstr1 = (AndDescr) orConstr.getDescrs().get( 0 );
-
+        
+        assertEquals( 3, andConstr1.getDescrs().size() );
+        
         FieldConstraintDescr fcd = (FieldConstraintDescr) andConstr1.getDescrs().get( 0 );
+        assertEquals( "teste",
+                      fcd.getFieldName() );
+
+        assertEquals( "==",
+                      ((LiteralRestrictionDescr) fcd.getRestrictions().get( 0 )).getEvaluator() );
+        assertEquals( "3",
+                      ((LiteralRestrictionDescr) fcd.getRestrictions().get( 0 )).getText() );
+        
+
+        fcd = (FieldConstraintDescr) andConstr1.getDescrs().get( 1 );
         assertEquals( "age",
                       fcd.getFieldName() );
         RestrictionConnectiveDescr or = (RestrictionConnectiveDescr) fcd.getRestriction().getRestrictions().get( 0 );
@@ -3087,7 +3099,7 @@ public class RuleParserTest extends TestCase {
         assertEquals( "55",
                       ((LiteralRestrictionDescr) and2.getRestrictions().get( 1 )).getText() );
 
-        fcd = (FieldConstraintDescr) andConstr1.getDescrs().get( 1 );
+        fcd = (FieldConstraintDescr) andConstr1.getDescrs().get( 2 );
         assertEquals( "hair",
                       fcd.getFieldName() );
 
@@ -3790,13 +3802,13 @@ public class RuleParserTest extends TestCase {
 
         final TypeDeclarationDescr descr = declarations.get( 0 );
         assertEquals( "event",
-                      descr.getAttribute( "type" ) );
+                      descr.getMetaAttribute( "role" ) );
         assertEquals( "org.drools.events.Call",
-                      descr.getAttribute( "class" ) );
+                      descr.getMetaAttribute( "class" ) );
         assertEquals( "duration",
-                      descr.getAttribute( "duration_attribute" ) );
-        assertEquals( "pseudo",
-                      descr.getAttribute( "clock_strategy" ) );
+                      descr.getMetaAttribute( "duration" ) );
+        assertEquals( "timestamp",
+                      descr.getMetaAttribute( "timestamp" ) );
     }
 
     public void testEntryPoint() throws Exception {

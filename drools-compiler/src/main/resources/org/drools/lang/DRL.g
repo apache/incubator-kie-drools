@@ -379,23 +379,42 @@ type_declaration returns [TypeDeclarationDescr declaration]
                         {
                             $declaration.setTypeName( $id.text );
                         }
-                LEFT_CURLY
-                        type_decl_attribute[$declaration] ( COMMA type_decl_attribute[$declaration] )*
-                RIGHT_CURLY
+                        decl_metadata[$declaration]*
+                        decl_field[$declaration]*
+                END
         ;
         
-type_decl_attribute[TypeDeclarationDescr declaration]
-        :	att=identifier 
-                ( val=STRING 
+decl_metadata[BaseDescr declaration]
+        :	AT att=identifier val=paren_chunk
                 {
-                    $declaration.addAttribute( $att.text, getString( $val.text ) );
+                    if( $declaration instanceof TypeDeclarationDescr )
+                        ((TypeDeclarationDescr)$declaration).addMetaAttribute( $att.text, getString( $val.text ).trim() );
+                    else
+                        ((TypeFieldDescr)$declaration).addMetaAttribute( $att.text, getString( $val.text ).trim() );
                 }
-                | cl=dotted_name
-                {
-                    $declaration.addAttribute( $att.text, $cl.text );
-                }
-                )
-        ;       
+        ;    
+        
+decl_field[TypeDeclarationDescr declaration]
+@init {
+        TypeFieldDescr field = null;
+}
+	:      id=identifier init=initialization? COLON type=fact[null] 
+		{
+		    field = new TypeFieldDescr( $id.text );
+		    if( init != null )
+		        field.setInitExpr( $init.expr );
+		    field.setPattern( (PatternDescr) $type.d );
+		    $declaration.addField( field );
+		}
+		decl_metadata[field]* 
+	;   
+	
+initialization returns [String expr]
+	:      EQUALS val=paren_chunk
+	       {
+	           $expr = getString( $val.text ).trim();
+	       }
+	;	
 
 query returns [QueryDescr query]
 	@init {
@@ -501,7 +520,7 @@ rule returns [RuleDescr rule]
 		}
 		rule_attributes[$rule]?
 		(	
-			WHEN ':'?
+			WHEN COLON?
 			{ 
 				this.location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
 				lhs.setLocation( offset($WHEN.line), $WHEN.pos );
@@ -516,7 +535,7 @@ rule returns [RuleDescr rule]
 
 rule_attributes[RuleDescr rule]
 	: 
-	( ATTRIBUTES ':' )?
+	( ATTRIBUTES COLON )?
 	attr=rule_attribute { $rule.addAttribute( $attr.attr ); }
 	( ','? attr=rule_attribute { $rule.addAttribute( $attr.attr ); } )*
 	;
@@ -1191,7 +1210,7 @@ fact_binding returns [BaseDescr d]
 		OrDescr or = null;
 	}
  	:
- 		ID ':' 
+ 		ID COLON 
  		{
  		        // handling incomplete parsing
  		        $d = new PatternDescr( );
@@ -1273,9 +1292,9 @@ fact[String ident] returns [BaseDescr d]
 	
 	
 constraints[PatternDescr pattern]
-	:	constraint[$pattern]
+	:	(constraint[$pattern]|behaviors)
 		( COMMA { location.setType( Location.LOCATION_LHS_INSIDE_CONDITION_START ); } 
-		  constraint[$pattern] 
+		  (constraint[$pattern]|behaviors) 
 		)* 
 	;
 	
@@ -1291,6 +1310,14 @@ constraint[PatternDescr pattern]
 		}
 		or_constr[top]
 	;	
+	
+behaviors 
+	:	LEFT_SQUARE behavior ( COMMA behavior )* RIGHT_SQUARE
+	;	
+	
+behavior 
+	:	ID (COLON ID)? paren_chunk?
+	;
 	
 or_constr[ConditionalElementDescr base]
 	@init {
@@ -1350,7 +1377,7 @@ field_constraint[ConditionalElementDescr base]
 	}
 	:
 	        (
-		ID ':' 
+		ID COLON 
 		    { 
 			fbd = new FieldBindingDescr();
 			fbd.setIdentifier( $ID.text );
@@ -1939,6 +1966,12 @@ DOUBLE_PIPE
 	;				
 	
 TILDE	:	'~';	
+
+AT	:       '@';
+
+EQUALS  :	'=';
+
+COLON   :	':';
 	
 SH_STYLE_SINGLE_LINE_COMMENT	
 	:	'#' ( options{greedy=false;} : .)* EOL /* ('\r')? '\n'  */
@@ -1957,7 +1990,7 @@ MULTI_LINE_COMMENT
 	;
 
 MISC 	:
-		'!' | '@' | '$' | '%' | '^' | '*' | '_' | '-' | '+'  | '?' | '=' | '/' | '\'' | '\\' | '|' | '&'
+		'!' | '$' | '%' | '^' | '*' | '_' | '-' | '+'  | '?' | '/' | '\'' | '\\' | '|' | '&'
 	;
 
 

@@ -21,6 +21,8 @@ tokens {
        VT_VAR_REF;
        VT_LITERAL;
        VT_PATTERN;
+       
+       VT_SPACE;
 }
 
 @parser::header {
@@ -32,6 +34,8 @@ tokens {
 }
 
 @parser::members {
+//we may not need the check on [], as the LITERAL token being examined 
+//should not have them.
 	private boolean validateLT(int LTNumber, String text){
 		if (null == input) return false;
 		if (null == input.LT(LTNumber)) return false;
@@ -48,6 +52,7 @@ tokens {
 	private boolean validateIdentifierKey(String text){
 		return validateLT(1, text);
 	}
+	
 }
 
 // PARSER RULES
@@ -60,26 +65,31 @@ statement
 	: entry
 	| comment
 	| EOL!	
-	;
+	;//bang at end of EOL means to not put it into the AST
 
-comment	: LINE_COMMENT
+comment	: LINE_COMMENT 
 	-> ^(VT_COMMENT[$LINE_COMMENT, "COMMENT"] LINE_COMMENT )
 	;	
 
+//we need to make entry so the meta section is optional
 entry 	: scope_section meta_section key_section EQUALS value_section (EOL|EOF)
 	-> ^(VT_ENTRY scope_section meta_section key_section value_section)
 	;
 
+
+
 scope_section 
-	: LEFT_SQUARE
-	    ( value1=condition_key
-	    | value2=consequence_key
-	    | value3=keyword_key
-	    | value4=any_key         
-	    )
-	  RIGHT_SQUARE
-	-> ^(VT_SCOPE[$LEFT_SQUARE, "SCOPE SECTION"] $value1? $value2? $value3? $value4? )
+	: LEFT_SQUARE 
+		(value1=condition_key 
+		| value2=consequence_key
+		| value3=keyword_key
+		| value4=any_key
+		) 
+	RIGHT_SQUARE
+	-> ^(VT_SCOPE[$LEFT_SQUARE, "SCOPE SECTION"] $value1? $value2? $value3? $value4?)
 	;
+
+
 	
 meta_section
 	: LEFT_SQUARE LITERAL? RIGHT_SQUARE
@@ -91,13 +101,15 @@ key_section
 	-> ^(VT_ENTRY_KEY key_sentence+ )
 	;
  
-key_sentence
+key_sentence //problem: if you have foo is {foo:\d{3}}, because the WS is hidden, it rebuilds back to 
+//		foo is\d{3}  when the key pattern is created.  Somehow we need to capture the 
+//trailing WS in the key_chunk
 @init {
         String text = "";
 }	
-	: variable_definition
+	: variable_definition 
 	| cb=key_chunk { text = $cb.text; }
-	-> ^(VT_LITERAL[$cb.start, text] )
+	-> VT_LITERAL[$cb.start, text]
 	;		
 
 key_chunk
@@ -115,7 +127,7 @@ value_sentence
 }	
 	: variable_reference
 	| vc=value_chunk { text = $vc.text; }
-	-> ^(VT_LITERAL[$vc.start, text] )
+	-> VT_LITERAL[$vc.start, text]
 	;	
 	
 value_chunk
@@ -123,27 +135,39 @@ value_chunk
 	;	
 	
 literal 
-	: ( LITERAL | LEFT_SQUARE | RIGHT_SQUARE | COLLOM )
+	: ( LITERAL | LEFT_SQUARE | RIGHT_SQUARE | COLON)
 	;	
 	
 variable_definition
 @init {
         String text = "";
+        boolean hasSpace = false;
 }	
-	: LEFT_CURLY name=LITERAL ( COLLOM pat=pattern {text = $pat.text;} )? RIGHT_CURLY
-	-> ^(VT_VAR_DEF $name VT_PATTERN[$pat.start, text] )
+	: lc=LEFT_CURLY { if( ((CommonToken)input.LT(-2)).getStopIndex() < ((CommonToken)lc).getStartIndex() -1 ) hasSpace = true; } 
+	name=LITERAL ( COLON pat=pattern {text = $pat.text;} )? RIGHT_CURLY
+	-> {hasSpace && !"".equals(text)}? VT_SPACE ^(VT_VAR_DEF $name VT_PATTERN[$pat.start, text] ) //pat can be null if there's no pattern here
+	-> {!hasSpace && !"".equals(text)}? ^(VT_VAR_DEF $name VT_PATTERN[$pat.start, text] ) //pat can be null if there's no pattern here
+	-> {hasSpace}?	VT_SPACE ^(VT_VAR_DEF $name ) //do we need to build a VT_LITERAL token for $name?
+	-> ^(VT_VAR_DEF $name ) //do we need to build a VT_LITERAL token for $name?
 	;
-	
+
+
 pattern 
-        : ( LITERAL
-          | LEFT_CURLY LITERAL RIGHT_CURLY
+        : ( literal
+          | LEFT_CURLY literal RIGHT_CURLY
+          | LEFT_SQUARE pattern RIGHT_SQUARE
           )+
 	;	
+	
+
+	
+
 	
 variable_reference 
 	: LEFT_CURLY name=LITERAL RIGHT_CURLY
 	-> ^(VT_VAR_REF $name )
 	;	
+
 
 condition_key
 	:	{validateIdentifierKey("condition")||validateIdentifierKey("when")}?  value=LITERAL
@@ -172,7 +196,7 @@ WS      :       (	' '
                 |	'\t'
                 |	'\f'
                 )+
-                { $channel=HIDDEN; }
+                { $channel=HIDDEN;}
         ;
 
 EOL 	:	     
@@ -208,19 +232,27 @@ RIGHT_CURLY
         
 EQUALS	:	'='
 	;
+
+DOT	:	'.'
+	;
 	
 POUND   :	'#'
 	;
 
-COLLOM	:	':'
+COLON	:	':'
 	;
-	
+
+
+//the problem here with LINE COMMENT is that the lexer is not identifying 
+//#comment without a EOL character.  For example, what if it's the last line in a file?
+//should still be a comment.  Changing to (EOL|EOF) causes it to only match the POUND	
 LINE_COMMENT	
 	:	POUND ( options{greedy=false;} : .)* EOL /* ('\r')? '\n'  */
 	;
+	
 
 LITERAL	
-	:	('a'..'z'|'A'..'Z'|'_'|'0'..'9'|'\u00c0'..'\u00ff'|MISC|EscapeSequence)+
+	:	('a'..'z'|'A'..'Z'|'_'|'0'..'9'|'\u00c0'..'\u00ff'|MISC|EscapeSequence|DOT)+
 	;
 
 fragment		

@@ -1,8 +1,8 @@
 package org.drools;
 
-declare CallEvent {
-    type event,
-    class org.drools.events.Call,
-    duration_attribute duration,
-    clock_strategy pseudo
-}
+declare CallEvent 
+    @role( event )
+    @class( org.drools.events.Call )
+    @duration( duration )
+    @timestamp( timestamp )
+end

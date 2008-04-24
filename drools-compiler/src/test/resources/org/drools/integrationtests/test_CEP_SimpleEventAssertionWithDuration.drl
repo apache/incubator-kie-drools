@@ -2,12 +2,12 @@ package org.drools;
 
 import org.drools.StockTick;
 
-declare StockTick {
-    role event,
-    duration_attribute duration
-}
-
 global java.util.List results;
+
+declare StockTick 
+    @role( event )
+    @duration( duration )
+end
 
 rule "Check event"
 when

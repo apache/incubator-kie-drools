@@ -2,10 +2,9 @@ package org.drools;
 
 import org.drools.StockTick;
 
-declare StockTick {
-    role event,
-    clock_strategy pseudo
-}
+declare StockTick 
+    @role( event )
+end
 
 global java.util.List results;
 

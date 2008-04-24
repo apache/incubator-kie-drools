@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.base.ClassFieldExtractorCache;
 import org.drools.common.DroolsObjectInputStream;
 import org.drools.facttemplates.FactTemplate;
 import org.drools.spi.FieldExtractor;
@@ -37,10 +36,17 @@ import org.drools.spi.FieldExtractor;
 public class TypeDeclaration
     implements
     Externalizable {
-
+    
+    public static final String ATTR_CLASS = "class";
+    public static final String ATTR_TEMPLATE = "template";
+    public static final String ATTR_DURATION = "duration";
+    public static final String ATTR_TIMESTAMP = "timestamp";
+    
     public static enum Role {
         FACT, EVENT;
 
+        public static final String ID = "role";
+        
         public static Role parseRole(String role) {
             if ( "event".equalsIgnoreCase( role ) ) {
                 return EVENT;
@@ -54,6 +60,8 @@ public class TypeDeclaration
     public static enum Format {
         POJO, TEMPLATE;
 
+        public static final String ID = "format";
+        
         public static Format parseFormat(String format) {
             if ( "pojo".equalsIgnoreCase( format ) ) {
                 return POJO;
@@ -64,29 +72,9 @@ public class TypeDeclaration
         }
     }
 
-    public static enum ClockStrategy {
-        NONE, PSEUDO, SYSTEM, HEARTBEAT, ATTRIBUTE;
-
-        public static ClockStrategy parseClockStrategy(String clockStrategy) {
-            if ( "none".equalsIgnoreCase( clockStrategy ) ) {
-                return NONE;
-            } else if ( "pseudo".equalsIgnoreCase( clockStrategy ) ) {
-                return PSEUDO;
-            } else if ( "system".equalsIgnoreCase( clockStrategy ) ) {
-                return SYSTEM;
-            } else if ( "heartbeat".equalsIgnoreCase( clockStrategy ) ) {
-                return HEARTBEAT;
-            } else if ( "attribute".equalsIgnoreCase( clockStrategy ) ) {
-                return ATTRIBUTE;
-            }
-            return null;
-        }
-    }
-
     private String                   typeName;
     private Role                     role;
     private Format                   format;
-    private ClockStrategy            clockStrategy;
     private String                   timestampAttribute;
     private String                   durationAttribute;
     private transient FieldExtractor durationExtractor;
@@ -100,7 +88,6 @@ public class TypeDeclaration
         this.typeName = typeName;
         this.role = Role.FACT;
         this.format = Format.POJO;
-        this.clockStrategy = ClockStrategy.NONE;
         this.durationAttribute = null;
         this.timestampAttribute = null;
         this.typeClass = null;
@@ -112,13 +99,12 @@ public class TypeDeclaration
         this.typeName = (String) in.readObject();
         this.role = (Role) in.readObject();
         this.format = (Format) in.readObject();
-        this.clockStrategy = (ClockStrategy) in.readObject();
         this.durationAttribute = (String) in.readObject();
         this.timestampAttribute = (String) in.readObject();
         this.typeClass = (Class< ? >) in.readObject();
         this.typeTemplate = (FactTemplate) in.readObject();
 
-        if( this.durationAttribute != null ) {
+        if ( this.durationAttribute != null ) {
             // generate the extractor
             DroolsObjectInputStream dois = (DroolsObjectInputStream) in;
             this.durationExtractor = dois.getExtractorFactory().getExtractor( this.typeClass,
@@ -131,7 +117,6 @@ public class TypeDeclaration
         out.writeObject( typeName );
         out.writeObject( role );
         out.writeObject( format );
-        out.writeObject( clockStrategy );
         out.writeObject( durationAttribute );
         out.writeObject( timestampAttribute );
         out.writeObject( typeClass );
@@ -171,20 +156,6 @@ public class TypeDeclaration
      */
     public void setFormat(Format format) {
         this.format = format;
-    }
-
-    /**
-     * @return the clockStrategy
-     */
-    public ClockStrategy getClockStrategy() {
-        return clockStrategy;
-    }
-
-    /**
-     * @param clockStrategy the clockStrategy to set
-     */
-    public void setClockStrategy(ClockStrategy clockStrategy) {
-        this.clockStrategy = clockStrategy;
     }
 
     /**
@@ -265,11 +236,11 @@ public class TypeDeclaration
         } else if ( obj instanceof TypeDeclaration ) {
             TypeDeclaration that = (TypeDeclaration) obj;
             return isObjectEqual( typeName,
-                                  that.typeName ) && role == that.role && format == that.format && clockStrategy == that.clockStrategy && isObjectEqual( timestampAttribute,
-                                                                                                                                                         that.timestampAttribute ) && isObjectEqual( durationAttribute,
-                                                                                                                                                                                                     that.durationAttribute )
-                   && typeClass == that.typeClass && isObjectEqual( typeTemplate,
-                                                                    that.typeTemplate );
+                                  that.typeName ) && role == that.role && format == that.format && isObjectEqual( timestampAttribute,
+                                                                                                                  that.timestampAttribute ) && isObjectEqual( durationAttribute,
+                                                                                                                                                              that.durationAttribute ) && typeClass == that.typeClass
+                   && isObjectEqual( typeTemplate,
+                                     that.typeTemplate );
         }
         return false;
     }

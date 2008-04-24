@@ -16,40 +16,16 @@ package org.drools.lang.descr;
  * limitations under the License.
  */
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 public class TypeDeclarationDescr extends BaseDescr {
     
-    /**
-     * The attribute key used to define what role the type assumes (fact, event)
-     */
-    public static final String ATTR_ROLE = "role";
-    /**
-     * The attribute key used to define what is the clock strategy used for that type
-     */
-    public static final String ATTR_CLOCK_STRATEGY = "clock_strategy";
-    /**
-     * The attribute key used to define what is the attribute to read the timestamp from
-     */
-    public static final String ATTR_TIMESTAMP = "timestamp_attribute";
-    /**
-     * The attribute key used to define what is the attribute to read the duration from
-     */
-    public static final String ATTR_DURATION = "duration_attribute";
-    /**
-     * The attribute key used to define what is the class name that implements the type
-     */
-    public static final String ATTR_CLASS = "class";
-    /**
-     * The attribute key used to define what is the template name that implements the type
-     */
-    public static final String ATTR_TEMPLATE = "template";
-    
-
     private static final long   serialVersionUID = 400L;
     private String              typeName;
-    private Map<String, String> attributes;
+    private Map<String, String> metaAttributes;
+    private Map<String, TypeFieldDescr> fields;
 
     public TypeDeclarationDescr() {
         this(null);
@@ -57,7 +33,7 @@ public class TypeDeclarationDescr extends BaseDescr {
     
     public TypeDeclarationDescr(final String typeName) {
         this.typeName = typeName;
-        this.attributes = new HashMap<String, String>();
+        this.metaAttributes = new HashMap<String, String>();
     }
 
     /**
@@ -79,8 +55,11 @@ public class TypeDeclarationDescr extends BaseDescr {
      * @param attr
      * @param value
      */
-    public void addAttribute( String attr, String value ) {
-        this.attributes.put( attr, value );
+    public void addMetaAttribute( String attr, String value ) {
+        if( this.metaAttributes == null ) {
+            this.metaAttributes = new HashMap<String, String>();
+        }
+        this.metaAttributes.put( attr, value );
     }
     
     /**
@@ -88,19 +67,41 @@ public class TypeDeclarationDescr extends BaseDescr {
      * @param attr
      * @return
      */
-    public String getAttribute( String attr ) {
-        return this.attributes.get( attr );
+    public String getMetaAttribute( String attr ) {
+        return this.metaAttributes != null ? this.metaAttributes.get( attr ) : null;
     }
 
     /**
      * Returns the attribute map
      * @return
      */
-    public Map<String, String> getAttributes() {
-        return this.attributes;
+    public Map<String, String> getMetaAttributes() {
+        return this.metaAttributes != null ? this.metaAttributes : Collections.EMPTY_MAP;
+    }
+
+     /**
+     * @return the fields
+     */
+    public Map<String, TypeFieldDescr> getFields() {
+        return this.fields != null ? this.fields : Collections.EMPTY_MAP;
+    }
+
+    /**
+     * @param fields the fields to set
+     */
+    public void setFields(Map<String, TypeFieldDescr> fields) {
+        this.fields = fields;
+    }
+    
+    public void addField( TypeFieldDescr field ) {
+        if( this.fields == null ) {
+            this.fields = new HashMap<String, TypeFieldDescr>();
+        }
+        this.fields.put( field.getFieldName(), field );
     }
 
     public String toString() {
         return "TypeDeclaration[ "+this.getTypeName()+" ]";
     }
+
 }

@@ -4,9 +4,9 @@ import org.drools.StockTick;
 
 global java.util.List results;
 
-declare StockTick {
-    role event
-}
+declare StockTick
+    @role( event )
+end
 
 rule "Test entry point"
 when

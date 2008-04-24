@@ -1017,9 +1017,9 @@ public class PackageBuilderTest extends DroolsTestCase {
     public void testTypeDeclaration() throws Exception {
         PackageDescr pkgDescr = new PackageDescr( "org.test" );
         TypeDeclarationDescr typeDescr = new TypeDeclarationDescr( "StockTick" );
-        typeDescr.addAttribute( TypeDeclarationDescr.ATTR_ROLE,
+        typeDescr.addMetaAttribute( TypeDeclaration.Role.ID,
                                 "event" );
-        typeDescr.addAttribute( TypeDeclarationDescr.ATTR_CLASS,
+        typeDescr.addMetaAttribute( TypeDeclaration.ATTR_CLASS,
                                 "org.drools.StockTick" );
         pkgDescr.addTypeDeclaration( typeDescr );
 
