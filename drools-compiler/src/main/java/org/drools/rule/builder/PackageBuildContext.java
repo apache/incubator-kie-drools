@@ -21,9 +21,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.Dialect;
 import org.drools.compiler.DialectRegistry;
+import org.drools.compiler.DroolsError;
 import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.compiler.RuleBuildError;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.rule.Dialectable;
 import org.drools.rule.Package;
@@ -91,7 +94,12 @@ public class PackageBuildContext {
         this.errors = new ArrayList();
 
         this.dialectRegistry = dialectRegistry;
+        
         this.dialect = (component != null && component.getDialect() != null) ? this.dialectRegistry.getDialect( component.getDialect() ) : defaultDialect;
+        
+        if ( dialect == null && (component != null && component.getDialect() != null) ) {
+            this.errors.add( new DescrBuildError(null,parentDescr, component, "Unable to load Dialect '" + component.getDialect() + "'") );
+        }
     }
     
     public BaseDescr getParentDescr() {
