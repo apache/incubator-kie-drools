@@ -628,9 +628,9 @@ INFO  New score (-3.0) is better then last best score (-6.0). Updating best solu
         stuck by bouncing of the walls. Use the benchmarker to fine tweak your
         configuration.</para>
 
-        <para>A tabu search accepter should be used with a
-        <literal>MaxScoreOfAllForager</literal> (recommended) or a
-        <literal>FirstImprovingScoreForager</literal>.</para>
+        <para>A tabu search accepter should be combined with a
+        <emphasis>maximum score of all</emphasis> or <emphasis>first best
+        score improving</emphasis> forager.</para>
       </section>
 
       <section>
@@ -644,8 +644,8 @@ INFO  New score (-3.0) is better then last best score (-6.0). Updating best solu
         how long it has been solving. In the end, it gradually turns into a
         simple local search, only accepting improving moves.</para>
 
-        <para>A simulated annealing accepter should be used with a
-        <literal>FirstRandomlyAcceptedForager</literal>.</para>
+        <para>A simulated annealing accepter should be combined with a
+        <emphasis>first randomly accepted</emphasis> forager.</para>
       </section>
     </section>
 
@@ -674,17 +674,35 @@ INFO  New score (-3.0) is better then last best score (-6.0). Updating best solu
       </section>
 
       <section>
-        <title>First improving score forager</title>
+        <title>First best score improving forager</title>
 
-        <para>Picks the first accepted move that improves the score of the
-        current solution. It ignores accept chance.</para>
+        <para>Picks the first accepted move that improves the best score. If
+        none improve the best score, it behaves exactly like the maximum score
+        of all forager.</para>
+
+        <programlisting>    &lt;forager&gt;
+        &lt;foragerType&gt;FIRST_BEST_SCORE_IMPROVING&lt;/foragerType&gt;
+    &lt;/forager&gt;</programlisting>
+      </section>
+
+      <section>
+        <title>First last step score improving forager</title>
+
+        <para>Picks the first accepted move that improves the last step score.
+        If none improve the last step score, it behaves exactly like the
+        maximum score of all forager.</para>
+
+        <programlisting>    &lt;forager&gt;
+        &lt;foragerType&gt;FIRST_BEST_SCORE_IMPROVING&lt;/foragerType&gt;
+    &lt;/forager&gt;</programlisting>
       </section>
 
       <section>
         <title>First randomly accepted forager</title>
 
-        <para>Generates a random number for each accepted move and if it's
-        below the move's accept chance, it picks it as the next move.</para>
+        <para>Generates a random number for each accepted move and if the
+        move's accept chance is higher, it picks that move as the next
+        move.</para>
 
         <programlisting>    &lt;forager&gt;
         &lt;foragerType&gt;FIRST_RANDOMLY_ACCEPTED&lt;/foragerType&gt;
