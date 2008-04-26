@@ -13,6 +13,8 @@ public interface InternalAgenda
     public void fireActivation(final Activation activation) throws ConsequenceException;
 
     public void removeScheduleItem(final ScheduledAgendaItem item);
+    
+    public org.drools.util.LinkedList getScheduledActivationsLinkedList();
 
     public boolean fireNextItem(AgendaFilter filter) throws ConsequenceException;
 

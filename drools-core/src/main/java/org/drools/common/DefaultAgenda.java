@@ -201,7 +201,7 @@ public class DefaultAgenda
     public void removeScheduleItem(final ScheduledAgendaItem item) {
         this.scheduledActivations.remove( item );
         item.cancel();
-    }
+    }    
 
     public void addAgendaGroup(final AgendaGroup agendaGroup) {
         this.agendaGroups.put( agendaGroup.getName(),
@@ -389,6 +389,10 @@ public class DefaultAgenda
             list.add( node );
         }
         return (Activation[]) list.toArray( new Activation[list.size()] );
+    }
+    
+    public org.drools.util.LinkedList getScheduledActivationsLinkedList() {
+        return this.scheduledActivations;
     }
 
     /* (non-Javadoc)
