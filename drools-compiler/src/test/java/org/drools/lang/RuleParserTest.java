@@ -67,6 +67,7 @@ import org.drools.lang.descr.RestrictionConnectiveDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
+import org.drools.lang.descr.TypeFieldDescr;
 import org.drools.lang.descr.VariableRestrictionDescr;
 import org.drools.lang.dsl.DefaultExpander;
 
@@ -3059,9 +3060,9 @@ public class RuleParserTest extends TestCase {
                       orConstr.getDescrs().size() );
 
         AndDescr andConstr1 = (AndDescr) orConstr.getDescrs().get( 0 );
-        
+
         assertEquals( 3, andConstr1.getDescrs().size() );
-        
+
         FieldConstraintDescr fcd = (FieldConstraintDescr) andConstr1.getDescrs().get( 0 );
         assertEquals( "teste",
                       fcd.getFieldName() );
@@ -3070,7 +3071,7 @@ public class RuleParserTest extends TestCase {
                       ((LiteralRestrictionDescr) fcd.getRestrictions().get( 0 )).getEvaluator() );
         assertEquals( "3",
                       ((LiteralRestrictionDescr) fcd.getRestrictions().get( 0 )).getText() );
-        
+
 
         fcd = (FieldConstraintDescr) andConstr1.getDescrs().get( 1 );
         assertEquals( "age",
@@ -3809,6 +3810,34 @@ public class RuleParserTest extends TestCase {
                       descr.getMetaAttribute( "duration" ) );
         assertEquals( "timestamp",
                       descr.getMetaAttribute( "timestamp" ) );
+    }
+
+    public void testTypeDeclarationWithFields() throws Exception {
+        final DRLParser parser = parseResource( "declare_type_with_fields.drl" );
+        parser.compilation_unit();
+        assertFalse( "Parser should not raise errors: " + parser.getErrorMessages().toString(),
+                parser.hasErrors() );
+
+        PackageDescr pkg = parser.getPackageDescr();
+        List<TypeDeclarationDescr> td = pkg.getTypeDeclarations();
+        assertEquals(2, td.size());
+
+        TypeDeclarationDescr d = td.get(0);
+        assertEquals("SomeFact", d.getTypeName());
+        assertEquals(2, d.getFields().size());
+        assertTrue(d.getFields().containsKey("name"));
+        assertTrue(d.getFields().containsKey("age"));
+
+        TypeFieldDescr f = d.getFields().get("name");
+        assertEquals("String", f.getPattern().getObjectType());
+
+        f = d.getFields().get("age");
+        assertEquals("Integer", f.getPattern().getObjectType());
+
+
+        d = td.get(1);
+        assertEquals("AnotherFact", d.getTypeName());
+
     }
 
     public void testEntryPoint() throws Exception {
