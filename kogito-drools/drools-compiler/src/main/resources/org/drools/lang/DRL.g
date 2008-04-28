@@ -398,12 +398,12 @@ decl_field[TypeDeclarationDescr declaration]
 @init {
         TypeFieldDescr field = null;
 }
-	:      id=identifier init=initialization? COLON type=fact[null] 
+	:      id=identifier init=initialization? COLON type=qualified_id 
 		{
 		    field = new TypeFieldDescr( $id.text );
 		    if( init != null )
 		        field.setInitExpr( $init.expr );
-		    field.setPattern( (PatternDescr) $type.d );
+		    field.setPattern( new PatternDescr($type.text) );
 		    $declaration.addField( field );
 		}
 		decl_metadata[field]* 
