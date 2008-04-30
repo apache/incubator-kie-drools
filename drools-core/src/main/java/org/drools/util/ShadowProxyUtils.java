@@ -53,6 +53,7 @@ public class ShadowProxyUtils {
             } catch ( Exception e ) {
                 /* Failed to clone.  Don't worry about it, and just return
                  * the original object. */
+                clone = null;
             }
         }
 
@@ -82,6 +83,7 @@ public class ShadowProxyUtils {
             } catch ( Exception e ) {
                 /* Failed to clone.  Don't worry about it, and just return
                  * the original object. */
+                clone = null;
             }
         }
 
