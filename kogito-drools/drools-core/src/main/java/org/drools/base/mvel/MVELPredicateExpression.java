@@ -13,9 +13,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
 
-public class MVELPredicateExpression
-    implements
-    PredicateExpression {
+public class MVELPredicateExpression implements PredicateExpression {
     private static final long       serialVersionUID = 400L;
 
     private Serializable      expr;

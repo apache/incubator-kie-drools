@@ -78,67 +78,67 @@ import org.mvel.util.ParseTools;
 
 public class MVELDialect implements Dialect, Externalizable {
 
-    public final static String                           ID                          = "mvel";
+    public final static String ID = "mvel";
 
-    private final static String                          EXPRESSION_DIALECT_NAME     = "MVEL";
+    private final static String EXPRESSION_DIALECT_NAME = "MVEL";
 
-    private static final PatternBuilder                  pattern                     = new PatternBuilder();
-    private static final QueryBuilder                    query                       = new QueryBuilder();
-    private static final MVELAccumulateBuilder           accumulate                  = new MVELAccumulateBuilder();
-    private static final SalienceBuilder                 salience                    = new MVELSalienceBuilder();
-    private static final MVELEvalBuilder                 eval                        = new MVELEvalBuilder();
-    private static final MVELPredicateBuilder            predicate                   = new MVELPredicateBuilder();
-    private static final MVELReturnValueBuilder          returnValue                 = new MVELReturnValueBuilder();
-    private static final MVELConsequenceBuilder          consequence                 = new MVELConsequenceBuilder();
-    private static final MVELActionBuilder               actionBuilder               = new MVELActionBuilder();
+    private static final PatternBuilder pattern = new PatternBuilder();
+    private static final QueryBuilder query = new QueryBuilder();
+    private static final MVELAccumulateBuilder accumulate = new MVELAccumulateBuilder();
+    private static final SalienceBuilder salience = new MVELSalienceBuilder();
+    private static final MVELEvalBuilder eval = new MVELEvalBuilder();
+    private static final MVELPredicateBuilder predicate = new MVELPredicateBuilder();
+    private static final MVELReturnValueBuilder returnValue = new MVELReturnValueBuilder();
+    private static final MVELConsequenceBuilder consequence = new MVELConsequenceBuilder();
+    private static final MVELActionBuilder actionBuilder = new MVELActionBuilder();
     private static final MVELReturnValueEvaluatorBuilder returnValueEvaluatorBuilder = new MVELReturnValueEvaluatorBuilder();
     //private final JavaRuleClassBuilder            rule        = new JavaRuleClassBuilder();
-    private static final MVELFromBuilder                 from                        = new MVELFromBuilder();
-    private static final JavaFunctionBuilder             function                    = new JavaFunctionBuilder();
-    private static final CollectBuilder                  collect                     = new CollectBuilder();
-    private static final ForallBuilder                   forall                      = new ForallBuilder();
-    private static final EntryPointBuilder               entrypoint                  = new EntryPointBuilder();
+    private static final MVELFromBuilder from = new MVELFromBuilder();
+    private static final JavaFunctionBuilder function = new JavaFunctionBuilder();
+    private static final CollectBuilder collect = new CollectBuilder();
+    private static final ForallBuilder forall = new ForallBuilder();
+    private static final EntryPointBuilder entrypoint = new EntryPointBuilder();
 
-    private Map                                          interceptors;
+    private Map interceptors;
 
-    protected List                                       results;
+    protected List results;
     //private final JavaFunctionBuilder             function    = new JavaFunctionBuilder();
 
-    protected MemoryResourceReader                       src;
+    protected MemoryResourceReader src;
 
-    protected Package                                    pkg;
-    protected MVELDialectData                            data;
-    private MVELDialectConfiguration                     configuration;
-    private TypeResolver                                 typeResolver;
-    private ClassFieldExtractorCache                     classFieldExtractorCache;
-    private MVELExprAnalyzer                             analyzer;
+    protected Package pkg;
+    protected MVELDialectData data;
+    private MVELDialectConfiguration configuration;
+    private TypeResolver typeResolver;
+    private ClassFieldExtractorCache classFieldExtractorCache;
+    private MVELExprAnalyzer analyzer;
 
-    private Map                                          imports;
-    private Map                                          packageImports;
+    private Map imports;
+    private Map packageImports;
 
-    private boolean                                      strictMode;
+    private boolean strictMode;
 
-    private static Boolean                               languageSet                 = new Boolean( false );
+    private static Boolean languageSet = new Boolean(false);
 
     // a map of registered builders
-    private static Map                                   builders;
+    private static Map builders;
 
     public MVELDialect() {
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        interceptors    = (Map)in.readObject();
-        results         = (List)in.readObject();
-        src             = (MemoryResourceReader)in.readObject();
-        pkg             = (Package)in.readObject();
-        data            = (MVELDialectData)in.readObject();
-        configuration   = (MVELDialectConfiguration)in.readObject();
-        typeResolver             = (TypeResolver)in.readObject();
-        classFieldExtractorCache             = (ClassFieldExtractorCache)in.readObject();
-        analyzer             = (MVELExprAnalyzer)in.readObject();
-        imports             = (Map)in.readObject();
-        packageImports             = (Map)in.readObject();
-        strictMode             = in.readBoolean();
+        interceptors = (Map) in.readObject();
+        results = (List) in.readObject();
+        src = (MemoryResourceReader) in.readObject();
+        pkg = (Package) in.readObject();
+        data = (MVELDialectData) in.readObject();
+        configuration = (MVELDialectConfiguration) in.readObject();
+        typeResolver = (TypeResolver) in.readObject();
+        classFieldExtractorCache = (ClassFieldExtractorCache) in.readObject();
+        analyzer = (MVELExprAnalyzer) in.readObject();
+        imports = (Map) in.readObject();
+        packageImports = (Map) in.readObject();
+        strictMode = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -156,45 +156,47 @@ public class MVELDialect implements Dialect, Externalizable {
     }
 
     public static void setLanguageLevel(int level) {
-        synchronized ( languageSet ) {
+        synchronized (languageSet) {
             // this synchronisation is needed as setLanguageLevel is now thread safe
             // and we do not want to be calling this while something else is being parsed.
             // the flag ensures it is just called once and no more.
-            if ( languageSet.booleanValue() == false ) {
-                languageSet = new Boolean( true );
-                AbstractParser.setLanguageLevel( level );
+            if (languageSet.booleanValue() == false) {
+                languageSet = new Boolean(true);
+                AbstractParser.setLanguageLevel(level);
             }
         }
     }
 
     public void init(PackageBuilder builder) {
         this.pkg = builder.getPackage();
-        this.configuration = (MVELDialectConfiguration) builder.getPackageBuilderConfiguration().getDialectConfiguration( "mvel" );
-        setLanguageLevel( this.configuration.getLangLevel() );
+        this.configuration = (MVELDialectConfiguration) builder.getPackageBuilderConfiguration().getDialectConfiguration("mvel");
+        setLanguageLevel(this.configuration.getLangLevel());
         this.typeResolver = builder.getTypeResolver();
         this.classFieldExtractorCache = builder.getClassFieldExtractorCache();
         this.strictMode = this.configuration.isStrict();
 
         // we currently default to reflective optimisation
-        OptimizerFactory.setDefaultOptimizer( "reflective" );
 
-        MVEL.setThreadSafe( true );
+        // Commented out by Mike.
+        //   OptimizerFactory.setDefaultOptimizer( "reflective" );
+
+        MVEL.setThreadSafe(true);
 
         this.analyzer = new MVELExprAnalyzer();
         this.imports = new HashMap();
         this.packageImports = new HashMap();
 
-        this.interceptors = new HashMap( 1 );
-        this.interceptors.put( "Modify",
-                               new ModifyInterceptor() );
+        this.interceptors = new HashMap(1);
+        this.interceptors.put("Modify",
+                new ModifyInterceptor());
 
         this.results = new ArrayList();
 
-        if ( pkg != null ) {
-            init( pkg );
+        if (pkg != null) {
+            init(pkg);
         }
 
-        if ( this.builders == null ) {
+        if (this.builders == null) {
             initBuilder();
         }
     }
@@ -207,55 +209,55 @@ public class MVELDialect implements Dialect, Externalizable {
 
         final GroupElementBuilder gebuilder = new GroupElementBuilder();
 
-        this.builders.put( AndDescr.class,
-                           gebuilder );
+        this.builders.put(AndDescr.class,
+                gebuilder);
 
-        this.builders.put( OrDescr.class,
-                           gebuilder );
+        this.builders.put(OrDescr.class,
+                gebuilder);
 
-        this.builders.put( NotDescr.class,
-                           gebuilder );
+        this.builders.put(NotDescr.class,
+                gebuilder);
 
-        this.builders.put( ExistsDescr.class,
-                           gebuilder );
+        this.builders.put(ExistsDescr.class,
+                gebuilder);
 
-        this.builders.put( PatternDescr.class,
-                           getPatternBuilder() );
+        this.builders.put(PatternDescr.class,
+                getPatternBuilder());
 
-        this.builders.put( FromDescr.class,
-                           getFromBuilder() );
+        this.builders.put(FromDescr.class,
+                getFromBuilder());
 
-        this.builders.put( QueryDescr.class,
-                           getQueryBuilder() );
+        this.builders.put(QueryDescr.class,
+                getQueryBuilder());
 
-        this.builders.put( AccumulateDescr.class,
-                           getAccumulateBuilder() );
+        this.builders.put(AccumulateDescr.class,
+                getAccumulateBuilder());
 
-        this.builders.put( EvalDescr.class,
-                           getEvalBuilder() );
+        this.builders.put(EvalDescr.class,
+                getEvalBuilder());
 
-        this.builders.put( CollectDescr.class,
-                           this.collect );
+        this.builders.put(CollectDescr.class,
+                this.collect);
 
-        this.builders.put( ForallDescr.class,
-                           this.forall );
+        this.builders.put(ForallDescr.class,
+                this.forall);
 
-        this.builders.put( FunctionDescr.class,
-                           this.function );
+        this.builders.put(FunctionDescr.class,
+                this.function);
 
-        this.builders.put( EntryPointDescr.class,
-                           this.entrypoint );
+        this.builders.put(EntryPointDescr.class,
+                this.entrypoint);
     }
 
     public void init(Package pkg) {
         this.pkg = pkg;
-        this.data = new MVELDialectData( this.pkg.getDialectDatas() );
-        this.pkg.getDialectDatas().setDialectData( ID,
-                                                   this.data );
+        this.data = new MVELDialectData(this.pkg.getDialectDatas());
+        this.pkg.getDialectDatas().setDialectData(ID,
+                this.data);
         this.results = new ArrayList();
         this.src = new MemoryResourceReader();
-        if ( this.pkg != null ) {
-            this.addImport( this.pkg.getName() + ".*" );
+        if (this.pkg != null) {
+            this.addImport(this.pkg.getName() + ".*");
         }
     }
 
@@ -264,21 +266,21 @@ public class MVELDialect implements Dialect, Externalizable {
 
         // @todo: why is this here, MVEL doesn't compile anything? mdp
         String pkgName = this.pkg == null ? "" : this.pkg.getName();
-        final String ruleClassName = JavaDialect.getUniqueLegalName( pkgName,
-                                                                     ruleDescr.getName(),
-                                                                     "mvel",
-                                                                     "Rule",
-                                                                     this.src );
-        ruleDescr.setClassName( StringUtils.ucFirst( ruleClassName ) );
+        final String ruleClassName = JavaDialect.getUniqueLegalName(pkgName,
+                ruleDescr.getName(),
+                "mvel",
+                "Rule",
+                this.src);
+        ruleDescr.setClassName(StringUtils.ucFirst(ruleClassName));
     }
 
     public void init(final ProcessDescr processDescr) {
-        final String processDescrClassName = JavaDialect.getUniqueLegalName( this.pkg.getName(),
-                                                                             processDescr.getName(),
-                                                                             "mvel",
-                                                                             "Process",
-                                                                             this.src );
-        processDescr.setClassName( StringUtils.ucFirst( processDescrClassName ) );
+        final String processDescrClassName = JavaDialect.getUniqueLegalName(this.pkg.getName(),
+                processDescr.getName(),
+                "mvel",
+                "Process",
+                this.src);
+        processDescr.setClassName(StringUtils.ucFirst(processDescrClassName));
     }
 
     public String getExpressionDialectName() {
@@ -290,13 +292,13 @@ public class MVELDialect implements Dialect, Externalizable {
         final RuleDescr ruleDescr = context.getRuleDescr();
 
         // setup the line mappins for this rule
-        final String name = this.pkg.getName() + "." + StringUtils.ucFirst( ruleDescr.getClassName() );
-        final LineMappings mapping = new LineMappings( name );
-        mapping.setStartLine( ruleDescr.getConsequenceLine() );
-        mapping.setOffset( ruleDescr.getConsequenceOffset() );
+        final String name = this.pkg.getName() + "." + StringUtils.ucFirst(ruleDescr.getClassName());
+        final LineMappings mapping = new LineMappings(name);
+        mapping.setStartLine(ruleDescr.getConsequenceLine());
+        mapping.setOffset(ruleDescr.getConsequenceOffset());
 
-        context.getPkg().getDialectDatas().getLineMappings().put( name,
-                                                                  mapping );
+        context.getPkg().getDialectDatas().getLineMappings().put(name,
+                mapping);
 
     }
 
@@ -306,11 +308,11 @@ public class MVELDialect implements Dialect, Externalizable {
 
     public void addFunction(FunctionDescr functionDescr,
                             TypeResolver typeResolver) {
-        ExpressionCompiler compiler = new ExpressionCompiler( (String) functionDescr.getContent() );
+        ExpressionCompiler compiler = new ExpressionCompiler((String) functionDescr.getContent());
         Serializable s1 = compiler.compile();
-        Map<String, org.mvel.ast.Function> map = CompilerTools.extractAllDeclaredFunctions( (CompiledExpression) s1 );
-        for ( org.mvel.ast.Function function : map.values() ) {
-            this.data.addFunction( function );
+        Map<String, org.mvel.ast.Function> map = CompilerTools.extractAllDeclaredFunctions((CompiledExpression) s1);
+        for (org.mvel.ast.Function function : map.values()) {
+            this.data.addFunction(function);
         }
     }
 
@@ -325,19 +327,21 @@ public class MVELDialect implements Dialect, Externalizable {
     }
 
     public void addImport(String importEntry) {
-        if ( importEntry.endsWith( ".*" ) ) {
-            importEntry = importEntry.substring( 0,
-                                                 importEntry.length() - 2 );
-            this.packageImports.put( importEntry,
-                                     importEntry );
-        } else {
+        if (importEntry.endsWith(".*")) {
+            importEntry = importEntry.substring(0,
+                    importEntry.length() - 2);
+            this.packageImports.put(importEntry,
+                    importEntry);
+        }
+        else {
             try {
-                Class cls = this.typeResolver.resolveType( importEntry );
-                this.imports.put( ParseTools.getSimpleClassName( cls ),
-                                  cls );
-            } catch ( ClassNotFoundException e ) {
-                this.results.add( new ImportError( importEntry,
-                                                   1 ) );
+                Class cls = this.typeResolver.resolveType(importEntry);
+                this.imports.put(ParseTools.getSimpleClassName(cls),
+                        cls);
+            }
+            catch (ClassNotFoundException e) {
+                this.results.add(new ImportError(importEntry,
+                        1));
             }
         }
     }
@@ -351,28 +355,29 @@ public class MVELDialect implements Dialect, Externalizable {
     }
 
     public void addStaticImport(String staticImportEntry) {
-        if ( staticImportEntry.endsWith( "*" ) ) {
+        if (staticImportEntry.endsWith("*")) {
             return;
         }
 
-        int index = staticImportEntry.lastIndexOf( '.' );
-        String className = staticImportEntry.substring( 0,
-                                                        index );
-        String methodName = staticImportEntry.substring( index + 1 );
+        int index = staticImportEntry.lastIndexOf('.');
+        String className = staticImportEntry.substring(0,
+                index);
+        String methodName = staticImportEntry.substring(index + 1);
 
         try {
-            Class cls = this.pkg.getDialectDatas().getClassLoader().loadClass( className );
+            Class cls = this.pkg.getDialectDatas().getClassLoader().loadClass(className);
             Method[] methods = cls.getDeclaredMethods();
-            for ( int i = 0; i < methods.length; i++ ) {
-                if ( methods[i].getName().equals( methodName ) ) {
-                    this.imports.put( methodName,
-                                      methods[i] );
+            for (int i = 0; i < methods.length; i++) {
+                if (methods[i].getName().equals(methodName)) {
+                    this.imports.put(methodName,
+                            methods[i]);
                     break;
                 }
             }
-        } catch ( ClassNotFoundException e ) {
-            this.results.add( new ImportError( staticImportEntry,
-                                               -1 ) );
+        }
+        catch (ClassNotFoundException e) {
+            this.results.add(new ImportError(staticImportEntry,
+                    -1));
         }
     }
 
@@ -391,11 +396,11 @@ public class MVELDialect implements Dialect, Externalizable {
                                                     BaseDescr descr,
                                                     Object content,
                                                     final Set[] availableIdentifiers) {
-        return analyzeExpression( context,
-                                  descr,
-                                  content,
-                                  availableIdentifiers,
-                                  null );
+        return analyzeExpression(context,
+                descr,
+                content,
+                availableIdentifiers,
+                null);
     }
 
     public Dialect.AnalysisResult analyzeExpression(PackageBuildContext context,
@@ -407,15 +412,16 @@ public class MVELDialect implements Dialect, Externalizable {
 
         Dialect.AnalysisResult result = null;
         try {
-            result = this.analyzer.analyzeExpression( context,
-                                                      (String) content,
-                                                      availableIdentifiers,
-                                                      localTypes );
-        } catch ( final Exception e ) {
-            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                          descr,
-                                                          null,
-                                                          "Unable to determine the used declarations.\n" + e.getMessage() ) );
+            result = this.analyzer.analyzeExpression(context,
+                    (String) content,
+                    availableIdentifiers,
+                    localTypes);
+        }
+        catch (final Exception e) {
+            context.getErrors().add(new DescrBuildError(context.getParentDescr(),
+                    descr,
+                    null,
+                    "Unable to determine the used declarations.\n" + e.getMessage()));
         }
         return result;
     }
@@ -424,12 +430,12 @@ public class MVELDialect implements Dialect, Externalizable {
                                                BaseDescr descr,
                                                String text,
                                                final Set[] availableIdentifiers) {
-        return analyzeBlock( context,
-                             descr,
-                             null,
-                             text,
-                             availableIdentifiers,
-                             null );
+        return analyzeBlock(context,
+                descr,
+                null,
+                text,
+                availableIdentifiers,
+                null);
     }
 
     public Dialect.AnalysisResult analyzeBlock(PackageBuildContext context,
@@ -442,15 +448,16 @@ public class MVELDialect implements Dialect, Externalizable {
 
         Dialect.AnalysisResult result = null;
         try {
-            result = this.analyzer.analyzeExpression( context,
-                                                      text,
-                                                      availableIdentifiers,
-                                                      localTypes );
-        } catch ( final Exception e ) {
-            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                          descr,
-                                                          e,
-                                                          "Unable to determine the used declarations.\n" + e.getMessage() ) );
+            result = this.analyzer.analyzeExpression(context,
+                    text,
+                    availableIdentifiers,
+                    localTypes);
+        }
+        catch (final Exception e) {
+            context.getErrors().add(new DescrBuildError(context.getParentDescr(),
+                    descr,
+                    e,
+                    "Unable to determine the used declarations.\n" + e.getMessage()));
         }
         return result;
     }
@@ -461,18 +468,18 @@ public class MVELDialect implements Dialect, Externalizable {
                                 final Map outerDeclarations,
                                 final Map otherInputVariables,
                                 final PackageBuildContext context) {
-        final ParserContext parserContext = getParserContext( analysis,
-                                                              outerDeclarations,
-                                                              otherInputVariables,
-                                                              context );
+        final ParserContext parserContext = getParserContext(analysis,
+                outerDeclarations,
+                otherInputVariables,
+                context);
 
-        ExpressionCompiler compiler = new ExpressionCompiler( text.trim() );
+        ExpressionCompiler compiler = new ExpressionCompiler(text.trim());
 
-        if ( MVELDebugHandler.isDebugMode() ) {
-            compiler.setDebugSymbols( true );
+        if (MVELDebugHandler.isDebugMode()) {
+            compiler.setDebugSymbols(true);
         }
 
-        Serializable expr = compiler.compile( parserContext );
+        Serializable expr = compiler.compile(parserContext);
         return expr;
     }
 
@@ -481,66 +488,66 @@ public class MVELDialect implements Dialect, Externalizable {
                                           final Map otherInputVariables,
                                           final PackageBuildContext context) {
         // @todo proper source file name
-        final ParserContext parserContext = new ParserContext( this.imports,
-                                                               null,
-                                                               "xxx" );//context.getPkg().getName()+"."+context.getRuleDescr().getClassName() );
+        final ParserContext parserContext = new ParserContext(this.imports,
+                null,
+                "xxx");//context.getPkg().getName()+"."+context.getRuleDescr().getClassName() );
 
-        for ( Iterator it = this.packageImports.values().iterator(); it.hasNext(); ) {
+        for (Iterator it = this.packageImports.values().iterator(); it.hasNext();) {
             String packageImport = (String) it.next();
-            parserContext.addPackageImport( packageImport );
+            parserContext.addPackageImport(packageImport);
         }
 
-        parserContext.setStrictTypeEnforcement( strictMode );
+        parserContext.setStrictTypeEnforcement(strictMode);
 
-        if ( interceptors != null ) {
-            parserContext.setInterceptors( interceptors );
+        if (interceptors != null) {
+            parserContext.setInterceptors(interceptors);
         }
 
         List list[] = analysis.getBoundIdentifiers();
 
         // @TODO yuck, we don't want conditions for configuration :(
-        if ( context instanceof RuleBuildContext ) {
+        if (context instanceof RuleBuildContext) {
             //FIXME: analysis can be null, throws an NPE
             DeclarationScopeResolver resolver = ((RuleBuildContext) context).getDeclarationResolver();
-            for ( Iterator it = list[0].iterator(); it.hasNext(); ) {
+            for (Iterator it = list[0].iterator(); it.hasNext();) {
                 String identifier = (String) it.next();
-                Class cls = resolver.getDeclaration( identifier ).getExtractor().getExtractToClass();
-                parserContext.addInput( identifier,
-                                        cls );
+                Class cls = resolver.getDeclaration(identifier).getExtractor().getExtractToClass();
+                parserContext.addInput(identifier,
+                        cls);
             }
         }
 
         Map globalTypes = context.getPkg().getGlobals();
-        for ( Iterator it = list[1].iterator(); it.hasNext(); ) {
+        for (Iterator it = list[1].iterator(); it.hasNext();) {
             String identifier = (String) it.next();
-            parserContext.addInput( identifier,
-                                    (Class) globalTypes.get( identifier ) );
+            parserContext.addInput(identifier,
+                    (Class) globalTypes.get(identifier));
         }
 
-        if ( otherInputVariables != null ) {
-            for ( Iterator it = otherInputVariables.entrySet().iterator(); it.hasNext(); ) {
+        if (otherInputVariables != null) {
+            for (Iterator it = otherInputVariables.entrySet().iterator(); it.hasNext();) {
                 Entry entry = (Entry) it.next();
-                parserContext.addInput( (String) entry.getKey(),
-                                        (Class) entry.getValue() );
+                parserContext.addInput((String) entry.getKey(),
+                        (Class) entry.getValue());
             }
         }
 
-        if ( outerDeclarations != null ) {
-            for ( Iterator it = outerDeclarations.entrySet().iterator(); it.hasNext(); ) {
+        if (outerDeclarations != null) {
+            for (Iterator it = outerDeclarations.entrySet().iterator(); it.hasNext();) {
                 Entry entry = (Entry) it.next();
-                parserContext.addInput( (String) entry.getKey(),
-                                        ((Declaration) entry.getValue()).getExtractor().getExtractToClass() );
+                parserContext.addInput((String) entry.getKey(),
+                        ((Declaration) entry.getValue()).getExtractor().getExtractToClass());
             }
         }
 
-        parserContext.addInput( "drools",
-                                KnowledgeHelper.class );
+        parserContext.addInput("drools",
+                KnowledgeHelper.class);
 
         return parserContext;
     }
 
     public RuleConditionBuilder getBuilder(final Class clazz) {
-        return (RuleConditionBuilder) this.builders.get( clazz );
+        return (RuleConditionBuilder) this.builders.get(clazz);
     }
 
     public Map getBuilders() {
@@ -608,11 +615,11 @@ public class MVELDialect implements Dialect, Externalizable {
     }
 
     public RuleClassBuilder getRuleClassBuilder() {
-        throw new UnsupportedOperationException( "MVELDialect.getRuleClassBuilder is not supported" );
+        throw new UnsupportedOperationException("MVELDialect.getRuleClassBuilder is not supported");
     }
 
     public ProcessClassBuilder getProcessClassBuilder() {
-        throw new UnsupportedOperationException( "MVELDialect.getProcessClassBuilder is not supported" );
+        throw new UnsupportedOperationException("MVELDialect.getProcessClassBuilder is not supported");
     }
 
     public TypeResolver getTypeResolver() {
