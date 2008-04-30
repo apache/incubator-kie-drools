@@ -1,0 +1,14 @@
+package org.drools;
+
+import java.util.ArrayList;
+
+global java.util.List results;
+
+rule "shadow proxy on collections2"
+	when
+		obj:ObjectWithSet( set != null && set.empty == false )
+	then
+		obj.setMessage("show");
+		results.add( "OK" );
+end
+
