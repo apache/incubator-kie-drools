@@ -118,7 +118,7 @@ public class MVELDialect implements Dialect, Externalizable {
 
     private boolean strictMode;
 
-    private static Boolean languageSet = new Boolean(false);
+    private static Boolean languageSet = Boolean.FALSE;
 
     // a map of registered builders
     private static Map builders;
