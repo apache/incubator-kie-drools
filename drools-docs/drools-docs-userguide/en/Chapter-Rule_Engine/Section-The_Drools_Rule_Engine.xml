@@ -476,43 +476,128 @@ session.setGlobal("list", list);           </programlisting>
       notify the rule engine.</para>
 
       <para>Drools 4.0 has full support for Shadow Facts implemented as
-      transparent lazy proxies. Shadow facts are enabled by default and are not
+      transparent lazy proxies. Shadow facts are enable by default and are not
       visible from external code, not even inside code blocks on rules.</para>
+
+      <remark>I<emphasis role="bold">MPORTANT: </emphasis>since Drools
+      implements Shadow Facts as Proxies, the fact classes must <emphasis
+      role="bold">either be immutable</emphasis> or <emphasis
+      role="bold">should not be final</emphasis>, nor have final methods. If a
+      fact class is final or have final methods and is still a mutable class,
+      the engine is not able to create a proper shadow fact for it and results
+      in unpredictable behavior. </remark>
 
       <para>Although shadow facts are a great way of ensuring the engine
       integrity, they add some overhead to the the reasoning process. As so,
       Drools 4.0 supports fine grained control over them with the ability to
-      enable/disable them for each individual class. To disable shadow fact
-      for all classes set the following property in a configuration file or
-      system property:</para>
+      enable/disable them for each individual class. </para>
 
-      <programlisting>drools.shadowProxy = false</programlisting>
+       <section>
+        <title>When is it possible to disable Shadow Facts?</title>
 
-      <para>Alternatively, it is possible to disable through an API
-      call:</para>
+        <para>It is possible to disable shadow facts for your classes if you
+        meet the following requirements:</para>
 
-      <programlisting>RuleBaseConfiguration conf = new RuleBaseConfiguration();
+        <para><emphasis role="bold">1. Immutable classes are safe:</emphasis>
+        if a class is immutable it does not require shadow facts. Just to
+        clarify, a class is immutable from the engine perspective if once an
+        instance is asserted into the working memory, no attribute will change
+        until it is retracted.</para>
+
+        <para><emphasis role="bold">2. Inside your rules, attributes are only
+        changed using modify() blocks:</emphasis> both Drools dialects (MVEL
+        and Java) have the modify block construct. If all attribute value
+        changes for a given class happen inside modify() blocks, you can
+        disable shadow facts for that class.</para>
+
+        <example>
+          <title>Example: modify() block using Java dialect</title>
+
+          <programlisting>rule "Eat Cheese"
+when
+  $p: Person( status == "hungry" )
+  $c: Cheese( )
+then
+  retract( $c );
+  modify( $p ) {
+      setStatus( "full" ),
+      setAge( $p.getAge() + 1 )
+  }
+end</programlisting>
+        </example>
+
+        <example>
+          <title>Example: modify() block using MVEL dialect</title>
+
+          <programlisting>rule "Eat Cheese"
+  dialect "mvel"
+when
+  $p: Person( status == "hungry" )
+  $c: Cheese( )
+then
+  retract( $c );
+  modify( $p ) {
+      status = "full",
+      age = $p.age + 1
+  }
+end</programlisting>
+        </example>
+        <para><emphasis role="bold">3. In your application, attributes are
+        only changed between calls to modifyRetract() and
+        modifyInsert():</emphasis> this way, the engine becomes aware that
+        attributes will be changed and can prepare itself for them.</para>
+
+        <example>
+          <title>Example: safely modifying attributes in the application
+          code</title>
+
+          <programlisting>         // create session
+         StatefulSession session = ruleBase.newStatefulSession();
+
+         // get facts
+         Person person = new Person( "Bob", 30 );
+         person.setLikes( "cheese" );
+
+         // insert facts
+         FactHandle handle = session.insert( person );
+
+         // do application stuff and/or fire rules
+         session.fireAllRules();
+
+         // wants to change attributes?
+         session.modifyRetract( handle ); // call modifyRetract() before doing changes
+         person.setAge( 31 );
+         person.setLikes( "chocolate" );
+         session.modifyInsert( handle, person ); // call modifyInsert() after the changes
+</programlisting>
+        </example>
+      </section>
+
+      <section>
+        <title>How to disable Shadow Facts?</title>
+
+        <para>To disable shadow fact for all classes set the following
+        property in a configuration file of system property:</para>
+
+        <programlisting>drools.shadowProxy = false</programlisting>
+
+        <para>Alternatively, it is possible to disable through an API
+        call:</para>
+
+        <programlisting>RuleBaseConfiguration conf = new RuleBaseConfiguration();
 conf.setShadowProxy( false );
 ...
 RuleBase ruleBase = RuleBaseFactory.newRuleBase( conf );
 </programlisting>
 
-      <para>To disable the shadow proxy for a list of classes only, use the
-      following property instead:</para>
+        <para>To disable the shadow proxy for a list of classes only, use the
+        following property instead, or the equivalent API:</para>
 
-      <programlisting>drools.shadowproxy.exclude = org.domainy.* org.domainx.ClassZ</programlisting>
+        <programlisting>drools.shadowproxy.exclude = org.domainy.* org.domainx.ClassZ</programlisting>
 
-      <para>As shown above, a space separated list is used to specify more
-      than one class, and '*' is used as a wild card.</para>
-
-      <remark>IMPORTANT: disabling shadow facts for a class inhibits the
-      ability of the engine keep track of changes to that class attributes. It
-      means, once asserted, a fact of that class MUST NOT change any of its
-      attributes or the engine may start to present unpredictable behavior. It
-      does not help to use update(). The only way to safely change an
-      attribute of a fact whose shadow fact is disabled is to call
-      modifyRetract() before changing the attribute, change the attribute and
-      call modifyInsert().</remark>
+        <para>As shown above, a space separated list is used to specify more
+        than one class, and '*' is used as a wild card.</para>
+      </section>
     </section>
 
     <section>
