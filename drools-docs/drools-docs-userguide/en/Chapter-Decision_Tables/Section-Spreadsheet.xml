@@ -3,12 +3,12 @@
   <title>Decision tables in spreadsheets</title>
 
   <para>Decision tables are a "precise yet compact" (ref. Wikipedia) way of
-  representing conditional logic, and are well suited to "business" level
+  representing conditional logic, and are well suited to <emphasis>business</emphasis> level
   rules.</para>
 
   <para>Drools supports managing rules in a Spreadsheet format. Formats
-  supported are Excel, and CSV. Thus you can use a variety of spreadsheet
-  programs (such as Microsoft Excel, OpenOffice.org Calc amongst others). It
+  supported are Excel, and CSV. Meaning that a variety of spreadsheet
+  programs (such as Microsoft Excel, OpenOffice.org Calc amongst others) can be utalized. It
   is expected that web based decision table editors will be included in a near
   future release.</para>
 
@@ -21,7 +21,7 @@
   <section>
     <title>When to use Decision tables</title>
 
-    <para>You may want to consider decision tables if you have rules that can
+    <para>Decision tables my want to be considered as a course of action if  rules exist that can
     be expressed as rule templates + data. In each row of a decision table,
     data is collected that is combined with the templates to generate a
     rule.</para>
@@ -31,9 +31,7 @@
     manage your business rules this way. This also assumes you are happy to
     manage packages of rules in .xls or .csv files. Decision tables are not
     recommenced for rules that do not follow a set of templates, or where
-    there are a small number of rules (or if you don't want to use software
-    like excel or open office). They are ideal in the sense that you can
-    control what "parameters" of rules can be edited, without exposing the
+    there are a small number of rules (or if there is a dislike towards software like excel or open office). They are ideal in the sense that there can be control over what <emphasis>parameters</emphasis> of rules can be edited, without exposing the
     rules directly.</para>
 
     <para>Decision tables also provide a degree of insulation from the
@@ -80,24 +78,26 @@
     have been collapsed away (standard spreadsheet feature).</para>
 
     <para>The rules start from row 17 (each row results in a rule). The
-    conditions are in column C, D, E etc.. (off screen are the actions). You
-    can see that the value in the cells are quite simple, and have meaning
-    when you look at the headers in Row 16. Column B is just a description. It
+    conditions are in column C, D, E etc.. (off screen are the actions). The value in the cells are quite simple, and have meaning
+    when looking at the headers in Row 16. Column B is just a description. It
     is conventional to use color to make it obvious what the different areas
     of the table mean.</para>
 
+<note>
     <para>Note that although the decision tables look like they process top
-    down, this is not necessarily the case. It is ideal if you can author
-    rules in such a way as order does not matter (simply as it makes
-    maintenance easier, you are not trying to shift rows around all the time).
+    down, this is not necessarily the case. Idealy, if the rules are able to be authored in such a way as order does not matter (simply as it makes
+    maintenance easier, as rows will not need to be shifted around all the time).</para>
+</note>
+    <para>
     As each row is a rule, the same principles apply. As the rule engine
     processes the facts, any rules that match may fire (some people are
-    confused by this - it is possible to clear the agenda when a rule fires
+    confused by this. It is possible to clear the agenda when a rule fires
     and simulate a very simple decision table where the first match exists).
     Also note that you can have multiple tables on the one spreadsheet (so
-    rules can be grouped where they share common templates - yet at the end of
+    rules can be grouped where they share common templates, yet at the end of
     the day they are all combined into a one rule package). Decision tables
     are essentially a tool to generate DRL rules automatically.</para>
+
 
     <screenshot>
       <screeninfo>A real world example using multiple tables for grouping like
@@ -128,7 +128,7 @@
       </mediaobject>
     </screenshot>
 
-    <para>The spreadsheet looks for the "RuleTable" keyword to indicate the
+    <para>The spreadsheet looks for the <firstterm>RuleTable</firstterm> keyword to indicate the
     start of a rule table (both the starting row and column). Other keywords
     are also used to define other package level attributes (covered later). It
     is important to keep the keywords in the one column. By convention the
@@ -138,7 +138,7 @@
     ignored.</para>
 
     <para>If we expand the hidden sections, it starts to make more sense how
-    it works. Note the keywords in column C.</para>
+    it works; note the keywords in column C.</para>
 
     <screenshot>
       <screeninfo>Expanded for rule templates</screeninfo>
@@ -150,54 +150,62 @@
       </mediaobject>
     </screenshot>
 
-    <para>Now you can see the hidden magic that makes it work. The RuleSet
-    keyword indicates the name to be used in the "rule package" that all the
+    <para>Now the hidden magic which makes it work can be seen. The RuleSet
+    keyword indicates the name to be used in the <emphasis>rule package</emphasis> that all the
     rules will come under (the name is optional, it will have a default but
-    you MUST have the "RuleSet" keyword) in the cell immediately to the right.
+    it MUST have the <emphasis>RuleSet</emphasis> keyword) in the cell immediately to the right.</para>
+<para>
     The other keywords visible in Column C are: Import, Sequential which will
-    be covered later - just note that in general the keywords make up
-    name/value pairs. The RuleTable keyword is important as it indicates that
+    be covered later. The RuleTable keyword is important as it indicates that
     a chunk of rules will follow, based on some rule templates. After the
     RuleTable keyword there is a name - this name is used to prefix the
     generated rules names (the row numbers are appended to create unique rule
     names). The column of RuleTable indicates the column in which the rules
     start (columns to the left are ignored).</para>
+<note>
+	<para>
+		In general the keywords make up name/value pairs.
+	</para>
+</note>
 
     <para>Referring to row 14 (the row immediately after RuleTable): the
     keywords CONDITION and ACTION indicate that the data in the columns below
     are for either the LHS or the RHS parts of a rule. There are other
     attributes on the rule which can also be optionally set this way.</para>
 
-    <para>Row 15 contains declarations of "ObjectTypes" - the content in this
-    row is optional (if you are not using it, you must leave a blank row - but
-    you *will* want to use it !). When you use this row, the values in the
+<para>Row 15 contains declarations of <firstterm>ObjectTypes</firstterm>; the content in this
+    row is optional (if this option is not in use, a blank row must be left, however this option is usually found to be quite useful). When using this row, the values in the
     cells below (row 16) become constraints on that object type. In the above
     case, it will generate: Person(age=="42") etc (where 42 comes from row
-    18). In the above example, the "==" is implicit (if you just put a field
-    name, it will assume that you are looking for exact matches). Also note
-    that you can have an ObjectType declaration span columns (via merged cells)
-    - and that means that all columns below the merged range will be combined
+    18). In the above example, the "==" is implicit (if just a field
+    name is given it will assume that it is to look for exact matches). 
+</para>
+<note>
+	<para>
+     An ObjectType declaration can span columns (via merged cells), meaning that all columns below the merged range will be combined
     into the one set of constraints.</para>
+</note>
 
-    <para>Row 16 contains the rule templates themselves: note that they can
+    <para>Row 16 contains the rule templates themselves. They can
     use the "$para" place holder to indicate where data from the cells below
-    will be populated (you can use $param, or $1, $2 etc to indicate
+    will be populated ($param can be sued or $1, $2 etc to indicate
     parameters from a comma separated list in a cell below). Row 17 is ignored
-    - it is textual descriptions of the rule template.</para>
+    as it is textual descriptions of the rule template.</para>
 
     <para>Row 18 to 19 shows data, which will be combined (interpolated) with
     the templates in row 15, to generate rules. If a cell contains no data,
     then its template is ignored (eg it means that condition, or action, does
     not apply for that rule-row). Rule rows are read until there is a BLANK
-    row. You can have multiple RuleTables in a sheet. Row 20 contains another
-    keyword, and a value - the row positions of keywords like this do not
+    row. Multiple RuleTables can exsist in a sheet. Row 20 contains another
+    keyword, and a value. The row positions of keywords like this do not
     matter (most people put them at the top) but their column should be the
     same one where the RuleTable or RuleSet keywords should appear (in this
-    case column C has been chosen to be significant, but you can use column A
-    if you like).</para>
+    case column C has been chosen to be significant, but column A
+    could be used instead).</para>
 
     <para>In the above example, rules would be rendered like the following (as
-    it uses the "ObjectType" row): <programlisting>//row 18
+    it uses the "ObjectType" row):</para> 
+<screen>//row 18
 rule "Cheese_fans_18"
   when
     Person(age=="42")
@@ -205,11 +213,14 @@ rule "Cheese_fans_18"
   then
     list.add("Old man stilton");
 end
-
-</programlisting> Note that the [age=="42"] and [type=="stilton"] are
+</screen> 
+<note>
+	<para>
+    The [age=="42"] and [type=="stilton"] are
     interpreted as single constraints to be added to the respective ObjectType
     in the cell above (if the cells above were spanned, then there could be
     multiple constraints on one "column".</para>
+</note>
   </section>
 
   <section>
@@ -220,27 +231,31 @@ end
 
       <para>The syntax of what goes in the templates is dependent on if it is
       a CONDITION column or ACTION column. In most cases, it is identical to
-      "vanilla" DRL for the LHS or RHS respectively. This means in the LHS,
+      <emphasis>vanilla</emphasis> DRL for the LHS or RHS respectively. This means in the LHS,
       the constraint language must be used, and in the RHS it is a snippet of
       code to be executed.</para>
 
-      <para>The "$param" place holder is used in templates to indicate where
-      data form the cell will be interpolated. You can also use "$1" to the
+<para>The <code>$param</code> place holder is used in templates to indicate where
+      data form the cell will be interpolated. You can also use <code>$1</cdoe> to the
       same effect. If the cell contains a comma separated list of values, $1
       and $2 etc. may be used to indicate which positional parameter from the
-      list of values in the cell will be used. <programlisting>For example: If the templates is [Foo(bar == $param)] and the cell is [ 42 ] then the result will be [Foo(bar == 42)]
+      list of values in the cell will be used.</para> 
+<example>
+<para>
+If the templates is [Foo(bar == $param)] and the cell is [ 42 ] then the result will be [Foo(bar == 42)]
 If the template is [Foo(bar &lt; $1, baz == $2)] and the cell is [42,42] then the result will be [Foo(bar &gt; 42, baz ==42)]
-</programlisting></para>
+</para>
+</example>
 
       <para>For conditions: How snippets are rendered depends on if there is
       anything in the row above (where ObjectType declarations may appear). If
       there is, then the snippets are rendered as individual constraints on
       that ObjectType. If there isn't, then they are just rendered as is (with
-      values substituted). If you put just a plain field (as in the example
-      above) then it will assume you mean equality. If you put another
-      operator at the end of the snippet, then the values will put
+      values substituted). If just a plain field is entered (as in the example
+      above) then it will assume this means equality. If another
+      operator is placed at the end of the snippet, then the values will put
       interpolated at the end of the constraint, otherwise it will look for
-      "$param" as outlined previously.</para>
+      <code>$param</code> as outlined previously.</para>
 
       <para>For consequences: How snippets are rendered also depends on if
       there is anything in the row immediately above it. If there is nothing
@@ -281,9 +296,8 @@ If the template is [Foo(bar &lt; $1, baz == $2)] and the cell is [42,42] then th
               <imagedata fileref="with_binding.png" />
             </imageobject>
           </mediaobject>
-        </screenshot> You can of course put a binding in before the column
-      (the constraints will be added from the cells below). You can put
-      anything in the ObjectType row (eg it could be a pre condition for the
+        </screenshot> A binding can be put in before the column
+      (the constraints will be added from the cells below). Anything can be placed in the ObjectType row (eg it could be a pre condition for the
       columns in the spreadsheet columns that follow).<screenshot>
           <mediaobject>
             <imageobject>
@@ -292,7 +306,7 @@ If the template is [Foo(bar &lt; $1, baz == $2)] and the cell is [42,42] then th
           </mediaobject>
         </screenshot> This shows how the consequence could be done the by
       simple interpolation (just leave the cell above blank, the same applies
-      to condition columns) - with this style you can put whatever you want in
+      to condition columns). With this style anything can be placed in
       the consequence (not just one method call).</para>
     </section>
 
@@ -487,16 +501,13 @@ If the template is [Foo(bar &lt; $1, baz == $2)] and the cell is [42,42] then th
     <para>The API to use spreadsheet based decision tables is in the
     drools-decisiontables module. There is really only one class to look at:
     SpreadsheetCompiler. This class will take spreadsheets in various formats,
-    and generate rules in DRL (which you can then use in the normal way). Also
-    note that if you like you can just use the SpreadsheetComiler to generate
-    partial rule files, and assemble it into a complete rule package after the
-    fact (this allows to you seperate technical and non technical aspects of
+    and generate rules in DRL (which you can then use in the normal way). The SpreadsheetComiler can just be used to generate
+    partial rule files if it is wished, and assemble it into a complete rule package after the
+    fact (this allows the seperation of technical and non-technical aspects of
     the rules if needed).</para>
 
-    <para>To get started, you can find a sample spreadsheet and base it on
-    that. Alternatively, if you are using the plug-in (Rule Workbench IDE) the
-    wizard can generate a spreadsheet for you from a template (to edit it you
-    will need to use an xls compatible spreadsheet editor). <screenshot>
+    <para>To get started, a sample spreadsheet can be used as base. Alternatively, if the plug-in is being used (Rule Workbench IDE), the
+    wizard can generate a spreadsheet from a template (to edit it an xls compatible spreadsheet editor will need to be used). <screenshot>
         <screeninfo>Wizard in the IDE</screeninfo>
 
         <mediaobject>
@@ -540,7 +551,7 @@ If the template is [Foo(bar &lt; $1, baz == $2)] and the cell is [42,42] then th
           <para>Decision table is handed to a technical resource, who maps the
           business language (descriptions) to scripts (this may involve
           software development of course, if it is a new application or data
-          model !)</para>
+          model)</para>
         </listitem>
 
         <listitem>
@@ -565,9 +576,9 @@ If the template is [Foo(bar &lt; $1, baz == $2)] and the cell is [42,42] then th
     <section>
       <title>Using spreadsheet features</title>
 
-      <para>You can use the features of applications like Excel to provide
+      <para>Features of applications like Excel can be used to provide
       assistance in entering data into spreadsheets, such as validating
-      fields. You can use lists that are stored in other worksheets to provide
+      fields. Lists that are stored in other worksheets can bse used to provide
       valid lists of values for cells, like in the following diagram.
       <screenshot>
           <screeninfo>Wizard in the IDE</screeninfo>
@@ -581,7 +592,7 @@ If the template is [Foo(bar &lt; $1, baz == $2)] and the cell is [42,42] then th
 
       <para>Some applications provide a limited ability to keep a history of
       changes, but it is recommended that an alternative means of revision
-      control is also used. So when you are making changes to rules over time,
+      control is also used. When changes are being made to rules over time,
       older versions are archived (many solutions exist for this which are
       also open source, such as Subversion).
       http://www.drools.org/Business+rules+in+decision+tables+explained</para>
