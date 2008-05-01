@@ -22,7 +22,9 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
+import org.drools.util.DroolsStreamUtils;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -41,6 +43,15 @@ public class FirstOrderLogicTest extends TestCase {
 
         return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
                                             config );
+    }
+
+    private StatefulSession serializeWorkingMemory(RuleBase ruleBase,
+                                                   StatefulSession wm) throws IOException,
+                                                                      ClassNotFoundException {
+        byte[] serializedSession = DroolsStreamUtils.streamOut( wm );
+        wm.dispose();
+        wm = ruleBase.newStatefulSession( new ByteArrayInputStream( serializedSession ) );
+        return wm;
     }
 
     public void testCollect() throws Exception {
@@ -977,7 +988,7 @@ public class FirstOrderLogicTest extends TestCase {
         wm.insert( new Double( 10 ) );
         wm.insert( new Integer( 2 ) );
 
-        ruleBase = serializeRuleBase( ruleBase );
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
         wm = serializeWorkingMemory( ruleBase,
                                      wm );
         results = (List) wm.getGlobal( "results" );
