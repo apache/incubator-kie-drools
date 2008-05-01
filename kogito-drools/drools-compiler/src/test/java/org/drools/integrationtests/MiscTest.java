@@ -825,8 +825,46 @@ public class MiscTest extends TestCase {
                     fact );
         assertEquals( new Integer( 200 ),
                       fact.getFieldValue( "price" ) );
-
     }
+    
+    public void testFactTemplateFieldBinding() throws Exception {
+        // from JBRULES-1512
+        String rule1 = "package org.drools.entity\n" +
+        " global java.util.List list\n" +
+        "template Settlement\n" +
+        "    String InstrumentType\n" +
+        "    String InstrumentName\n" +
+        "end\n"  +
+        "rule TestEntity\n" +
+
+        "    when\n" +
+        "        Settlement(InstrumentType == \"guitar\", name : InstrumentName)\n" +        
+        "    then \n" +
+        "        list.add( name ) ;\n" +
+        "end\n";
+              
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new StringReader( rule1 ));
+        Package pkg = builder.getPackage();
+        
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        ruleBase.addPackage(pkg);
+
+        WorkingMemory wm = ruleBase.newStatefulSession();
+        List list = new ArrayList();
+        wm.setGlobal(  "list", list );
+        
+        final FactTemplate cheese = pkg.getFactTemplate( "Settlement" );
+        final Fact guitar = cheese.createFact( 0 );
+        guitar.setFieldValue( "InstrumentType",
+                               "guitar" );
+        guitar.setFieldValue( "InstrumentName",
+                               "gibson" );
+        wm.insert( guitar );
+
+        wm.fireAllRules();
+        assertEquals( "gibson", list.get(  0 ) );
+    }     
 
     public void testPropertyChangeSupport() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
