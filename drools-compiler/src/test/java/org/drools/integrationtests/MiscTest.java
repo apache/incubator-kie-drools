@@ -347,6 +347,47 @@ public class MiscTest extends TestCase {
                       ((List)workingMemory.getGlobal("results")).get( 1 ) );
     }
 
+    public void testGlobalMerge() throws Exception {
+        // from JBRULES-1512
+        String rule1 = "package com.sample\n" +
+        "rule \"rule 1\"\n" +
+        "    salience 10\n"+        
+        "    when\n" +       
+        "    l : java.util.List()\n" +
+        "    then\n" +
+        "        l.add( \"rule 1 executed\" );\n" + 
+        "end\n";
+        
+        String rule2 = "package com.sample\n" +
+        "global String str;\n" +
+        "rule \"rule 2\"\n" +
+        "    when\n" +
+        "    l : java.util.List()\n" +        
+        "    then\n" +
+        "        l.add( \"rule 2 executed \" + str);\n" + 
+        "end\n";        
+        
+        PackageBuilder builder1 = new PackageBuilder();
+        builder1.addPackageFromDrl( new StringReader( rule1 ));
+        Package pkg1 = builder1.getPackage();
+        // build second package
+        PackageBuilder builder2 = new PackageBuilder();
+        builder2.addPackageFromDrl( new StringReader( rule2 ) );
+        Package pkg2 = builder2.getPackage();       
+        // create rule base and add both packages
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        ruleBase.addPackage(pkg1);
+        ruleBase.addPackage(pkg2);
+
+        WorkingMemory wm = ruleBase.newStatefulSession();
+        wm.setGlobal(  "str", "boo" );
+        List list = new ArrayList();
+        wm.insert(  list );
+        wm.fireAllRules();
+        assertEquals( "rule 1 executed", list.get(  0 ) );
+        assertEquals( "rule 2 executed boo", list.get(  1 ));
+    }
+    
     public void testCustomGlobalResolver() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_globalCustomResolver.drl" ) ) );
