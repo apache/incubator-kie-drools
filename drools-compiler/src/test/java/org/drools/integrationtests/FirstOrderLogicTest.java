@@ -962,4 +962,41 @@ public class FirstOrderLogicTest extends TestCase {
         
     }
 
+    public void testCollectResultBetaConstraint() throws Exception {
+
+        // read in the source
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CollectResultsBetaConstraint.drl" ) );
+        RuleBase ruleBase = loadRuleBase( reader );
+
+        StatefulSession wm = ruleBase.newStatefulSession();
+        List results = new ArrayList();
+
+        wm.setGlobal( "results",
+                      results );
+
+        wm.insert( new Double( 10 ) );
+        wm.insert( new Integer( 2 ) );
+
+        ruleBase = serializeRuleBase( ruleBase );
+        wm = serializeWorkingMemory( ruleBase,
+                                     wm );
+        results = (List) wm.getGlobal( "results" );
+
+        wm.fireAllRules();
+
+        Assert.assertEquals( 0,
+                             results.size() );
+        
+        wm.insert( new Double(15) );
+        wm.fireAllRules();
+        
+        Assert.assertEquals( 2,
+                             results.size() );
+        
+        Assert.assertEquals( "collect",
+                             results.get( 0 ) );
+        Assert.assertEquals( "accumulate",
+                             results.get( 1 ) );
+    }
+
 }

@@ -1,0 +1,25 @@
+package org.drools;
+
+import java.util.ArrayList;
+
+global java.util.List results;
+
+rule "Collect results beta constraint"
+    salience 10
+when
+    Integer( $count : intValue )
+    $doubles: ArrayList( size == $count ) from collect(Double())
+  then
+    results.add( "collect" );
+end
+
+rule "Accumulate results beta constraint"
+when
+    Integer( $count:intValue )
+    $doubles: ArrayList( size == $count ) from accumulate( $d : Double(),
+                                                           init( ArrayList list = new ArrayList(); ),
+                                                           action( list.add( $d ); ),
+                                                           result( list ) )
+  then
+    results.add( "accumulate" );
+end

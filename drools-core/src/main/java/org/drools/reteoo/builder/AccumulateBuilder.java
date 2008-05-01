@@ -85,7 +85,7 @@ public class AccumulateBuilder
         
         final BetaConstraints resultsBinder = utils.createBetaNodeConstraint( context,
                                                                               resultBetaConstraints,
-                                                                              false );
+                                                                              true );
         final BetaConstraints sourceBinder = utils.createBetaNodeConstraint( context,
                                                                              context.getBetaconstraints(),
                                                                              false );
