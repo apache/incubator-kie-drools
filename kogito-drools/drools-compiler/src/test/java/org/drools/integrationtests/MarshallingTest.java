@@ -23,13 +23,13 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
-import org.drools.util.DroolsStreamUtils;
 import org.drools.common.InternalFactHandle;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.rule.MapBackedClassLoader;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
+import org.drools.util.DroolsStreamUtils;
 
 public class MarshallingTest extends TestCase {
 
@@ -847,12 +847,36 @@ public class MarshallingTest extends TestCase {
 
         serializedSession = null;
         serializedRulebase = null;
-
         serializedSession = DroolsStreamUtils.streamOut( session );
         serializedRulebase = DroolsStreamUtils.streamOut( ruleBase );
 
         session.dispose();
-
+        // Deserialize the rulebase and the session 
+        ruleBase = (RuleBase) DroolsStreamUtils.streamIn( serializedRulebase );
+        session = ruleBase.newStatefulSession( new ByteArrayInputStream( serializedSession ) );    //  throws java.lang.ClassNotFoundException Exception
+        results = (List) session.getGlobal( "results" );
+             
+        InternalFactHandle stilton5 = (InternalFactHandle) session.insert( new Cheese( "stilton", 30 ) );
+        InternalFactHandle brie5 = (InternalFactHandle) session.insert( new Cheese( "brie", 30 ) );
+        InternalFactHandle bob7 = (InternalFactHandle) session.insert( new Person( "bob", 30 ) );
+        InternalFactHandle bob8 = (InternalFactHandle) session.insert( new Person( "bob", 40 ) );
+        session.fireAllRules();
+ 
+        assertEquals( 8,
+                      results.size() );
+        assertEquals( bob8.getObject(),
+                      results.get( 6 ) );
+        assertEquals( bob7.getObject(),
+                      results.get( 7 ) );
+       
+        serializedSession = null;
+        serializedRulebase = null;
+       
+        serializedSession = DroolsStreamUtils.streamOut( session );
+        serializedRulebase = DroolsStreamUtils.streamOut( ruleBase );
+       
+        session.dispose();        
+       
     }
 
     /**
