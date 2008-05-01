@@ -2,13 +2,13 @@ package org.drools.base;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,8 +30,6 @@ import org.drools.util.DateUtils;
 public class FieldFactory {
     private static final FieldFactory INSTANCE = new FieldFactory();
 
-    private static final String     DEFAULT_FORMAT_MASK = "dd-MMM-yyyy";
-    private static final String     DATE_FORMAT_MASK    = getDateFormatMask();
 
     public static FieldFactory getInstance() {
         return FieldFactory.INSTANCE;
@@ -243,12 +241,5 @@ public class FieldFactory {
         return value;
     }
 
-    /** Check for the system property override, if it exists */
-    private static String getDateFormatMask() {
-        String fmt = System.getProperty( "drools.dateformat" );
-        if ( fmt == null ) {
-            fmt = FieldFactory.DEFAULT_FORMAT_MASK;
-        }
-        return fmt;
-    }
+
 }

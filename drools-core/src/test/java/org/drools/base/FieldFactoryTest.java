@@ -2,6 +2,8 @@ package org.drools.base;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import junit.framework.TestCase;
 
@@ -23,6 +25,17 @@ public class FieldFactoryTest extends TestCase {
         assertEquals( BigInteger.class,
                       val.getValue().getClass() );
         assertTrue( val.getValue().equals( new BigInteger( "424242" ) ) );
+    }
+
+    public void testDate() throws Exception {
+    	SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+    	String s = df.format(df.parse("10-Jul-1974"));
+        final FieldValue val = FieldFactory.getFieldValue( s, ValueType.DATE_TYPE );
+        assertEquals( Date.class, val.getValue().getClass() );
+
+        Date dt = (Date) val.getValue();
+        assertEquals(s, df.format(dt));
+
     }
 
 }
