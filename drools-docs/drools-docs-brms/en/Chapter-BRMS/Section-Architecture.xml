@@ -4,13 +4,13 @@
 <section>
   <title>Architecture</title>
 
-  <para>This section covers the innards of the BRMS - it is not necessary to
+  <para>This section covers the technical aspects of the Business Rules Management System (BRMS), it is not necessary to
   use this if you are integrating or an end user of the BRMS application.
   However, JBoss Rules is open source, so build instructions form part of the
   manual.</para>
 
   <para>You may want to build from source if you want to re-use components, or
-  embed the application in your own.</para>
+  embed the application within another.</para>
 
   <figure>
       <title>Architectural diagram</title>
@@ -24,7 +24,7 @@
     </figure>
 
   <para>The above diagram shows the major components of the system and how
-  they integrate and are deployed. The Admin guide has more details on the
+  they integrate and are deployed. The User Guide has more details on the
   parts that are highly configurable (eg database).</para>
 
   <para>The BRMS is deployed as a war, which provides user interfaces over the
@@ -36,7 +36,7 @@
   <section>
     <title>Building from source</title>
 
-    <para>This section will go over the steps you will need to take to build
+    <para>This section will go over the steps necessary to build
     various components. Mostly this is automated, but the manual process is
     described for thoroughness.</para>
 
@@ -46,44 +46,34 @@
       <para>There are 2 modules: drools-repository (back end) and drools-jbrms
       (front end and rules integration). The drools-jbrms module depends on
       the drools-repository module, as well as other components. The BRMS is
-      part of the main build for all of Drools - when you build Drools - you
-      will also build the BRMS.</para>
+      part of the main build for all of Drools - when building Drools, the BRMS is built alongside it.</para>
     </section>
 
     <section>
       <title>Working with Maven 2</title>
 
-      <para>Maven 2 is used as the build system. To get started, you will need
-      to check out the WHOLE of the source tree for JBoss Rules. This includes
-      the other modules, and the top level lib and repository directories
-      (which are needed by the build). As the BRMS build is part of the main
-      drools build.</para>
+      <para>Maven 2 is used as the build system. To get started, the WHOLE of the source tree for JBoss Rules will need to be checked out. This includes the other modules, and the top level lib and repository directories (which are needed by the build); as the BRMS build is part of the main drools build.</para>
 
-      <para>Initially, you should go into the root of the jboss-rules checked
+      <para>Initially, go into the root of the jboss-rules checked
       out source tree, and run mvn install to install all the components for
-      the inter project dependencies. If the build is broken (no ! say it isn't
-      so !) you can use the flag -Dmaven.test.skip=true to prevent failing
+      the inter project dependencies. If the build is broken (all care is taken for this eventuality not to occur), the flag -Dmaven.test.skip=true can be used to prevent failing
       unit tests from preventing the build.</para>
 
-      <para>When you want to build the BRMS - you can go into the
-      drools-jbrms directory, and run "mvn package" - this will run the tests,
-      and then build a deployable war. The only thing this won't do is rebuild
-      the GWT front end (see the next section for details on that). Once you
-      have the war file (in the target directory) you should be good to go
-      !</para>
+      <para>When wishing to build the BRMS, go into the
+      drools-jbrms directory, and run <code>mvn package</code>. This will run the tests,
+      and then build a deployable war. The only thing this will not do is rebuild
+      the GWT front end (see the next section for details on that). Once the war file is in the target directory, the BRMS is ready to go.</para>
     </section>
 
     <section>
       <title>Working with GWT</title>
 
       <para>The GUI widgets for the web front end are developed with GWT
-      (google web toolkit). If you need to make changes to or build the GUI,
-      you will need to download GWT separately. Once GWT is downloaded, you
-      can modify the build.properties file in the drools-jbrms directory to
-      point to where you installed GWT. Once you have this, you can use the
-      ant tasks to build the GWT components, as well as launch GWT in
-      debug/hosted mode should you desire. If you run the build, it will
-      update the webapp directory in the project with the new "compiled"
+      (Google Web Toolkit). If there is a need to make changes to or build the GUI, GWT will need to be downloaded separately. Once GWT is downloaded, the <filename>build.properties</filename> file in the drools-jbrms directory to
+      point to where GWT is installed. Once this is completed, the
+      ant tasks can be used to build the GWT components, as well as launch GWT in
+      debug/hosted mode if it is desired. If running the build, it will
+      update the webapp directory in the project with the new <emphasis>compiled</emphasis>
       artifacts (GWT does not use JSP, only html and javascript at
       runtime).</para>
     </section>
@@ -92,96 +82,88 @@
       <title>Debugging, Editing and running with Eclipse</title>
 
       <para>Each module has a ready to go and up to date eclipse project
-      configuration, so you can just import them into your eclipse workspace.
-      These projects are generated by maven (mvn eclipse:eclipse to refresh
+      configuration, so they can merely be imported into the eclipse workspace.
+      These projects are generated by Maven (<code>mvn eclipse:eclipse</code> to refresh
       them in case they are wrong or outdated). They have been manually
-      modified to have project dependencies (means you can step through code
-      when debugging).</para>
+      modified to have project dependencies (this means the code can be stepped through when debugging).</para>
 
       <para>Some environment variables are required in eclipse
-      (Window-&gt;Preferences-&gt;Java-&gt;Build path-&gt;Classpath
-      variables): the M2_REPO, as normal, to point to where maven downloads
+      (for Window: &gt;Preferences-&gt;Java-&gt;Build path-&gt;Classpath
+      variables): the M2_REPO, as normal, to point to where Maven downloads
       shared dependencies. GWT_HOME should point to where you installed GWT.
       GWT_DEV must point to the platform specific "dev" jar that ships with
       the version of GWT you have.</para>
 
-      <para>How you launch from eclipse: you can launch unit tests, as normal
-      (in which case you only need M2_REPO setup - you don't even need to
-      download GWT seperately) - OR, you can launch it in "hosted mode" using
-      the GWT browser, which is great for debugging (from GUI to back end, you
-      can step through code, and make changes on the fly and simply hit
-      refresh). There is a JBRMS.launch file in in the drools-jbrms directory.
-      This should allow Eclipse to launch the JBRMS in debug mode - open the
-      Run dialog (Run-&gt;Run), and then choose "JBRMS" from the list.
+      <para>How to launch from Eclipse: unit tests can be launched, as normal
+      (in which case only M2_REPO setup is needed, GWT does not need to be downloaded seperately), or it can be launched it in <emphasis>hosted mode</empahsis> using
+      the GWT browser, which is great for debugging (from GUI to back end, the code can be stepped through, and  changes made on the fly and simply hit
+      refresh). There is a <filename>JBRMS.launch</filename> file in in the drools-jbrms directory.
+      To launch the JBRMS in debug mode, open the
+      Run dialog (Run-&gt;Run), and then choose <emphasis>JBRMS</emphasis> from the list.
       Launching this will open a new window, with the BRMS in debug mode,
       ready to go</para>
 
       <para>Normally</para>
 
-      <para>Downloading and debugging the BRMS with GWT is optional, and if
-      you are only working on non GUI issues, you can skip this step.</para>
+      <para>Downloading and debugging the BRMS with GWT is optional, so if there are no GUI issues being worked on then this step can be safely skipped.</para>
     </section>
   </section>
 
   <section>
     <title>Re-usable components</title>
 
-    <para>The BRMS uses a service interface to separate the GUI from the "back
-    end" functionality - in this case the back end both includes the asset
+    <para>The BRMS uses a service interface to separate the GUI from the back
+    end functionality. In this case the back end both includes the asset
     repository (drools-repository and JCR) as well as the compiler specifics
     to deal with rules. </para>
 
     <para>The main interface is RepositoryService, which is implemented in
     ServiceImplementation. The GWT ajax front end talks to this interface (via
     the asynchrony callback mechanism that GWT uses). The seam configuration file
-    is components.xml (consult Seam documentation, and the components.xml file
+    is <filename>components.xml</filename> (consult Seam documentation, and the components.xml file
     for details).</para>
 
     <para>This service interface may be re-used by alternative components or
     front ends.</para>
 
-    <para>The GWT user interface may be re-used - as it is GWT there is only
-    one html page: JBRMS.html. For those familiar with GWT, each of the
-    "features" can be used separate (eg in a portal) - look at the
-    JBRMSFeature class and the classes that implement it (they can in theory
+    <para>The GWT user interface may be re-used, as it is GWT is only
+    one html page: <filename>JBRMS.html</filename>. For those familiar with GWT, each of the
+    <emphasis>features</emphasis> can be used separate (eg in a portal), look at the
+    <classname>JBRMSFeature</classname> class and the classes that implement it (they can in theory
     be stand alone).</para>
 
     <para>Normally the BRMS is intended to be deployed as its own war, however
-    you could in theory combine it with your own application (with some care)
-    - but it is easier to keep it as a separate war, and will make it easier
+    it can be combined with another application (with some care), but it is easier to keep it as a separate war. Deploying the BRMS by itself will also make it easier
     to upgrade to newer releases as they come out.</para>
     
-    <para>The JBRMS.html file can be customized - for example to change logos or embed
-    the BRMS in another page. Take a look at the JBRMS.html file for details (its 
-    very simple).    
+    <para>The <filename>JBRMS.html</filename> file can be customized. For example to change logos or embed
+    the BRMS in another page. Take a look at the <filename>JBRMS.html</filename> file for details.
     </para>
   </section>
 
   <section>
     <title>Versioning and Storage</title>
 
-    <para>The Admin guide goes over configuration options in some detail, for
+    <para>The User Guide, Admin Section covers configuration options in some detail, for
     database and filesystems.</para>
 
     <para>Versions of assets are stored in the database along with the data.
     </para>
 
-    <para>When "snapshots" are created, copies are made of the entire package
+    <para>When <emphasis>snapshots</emphasis> are created, copies are made of the entire package
     into a separate location in the JCR database. </para>
 
-    <para>For those familiar with jcr and jackrabbit, you can look at the
-    *.cnd files in the source for the node type definitions. In a nutshell, a
-    package is a "folder" and each asset is a file: an asset can either be
+    <para>For those familiar with jcr and jackrabbit, the *.cnd files are in the source for the node type definitions as some wish to view these. In a nutshell, a
+    package is a <emphasis>folder</emphasis> and each asset is a file: an asset can either be
     textual or have a binary attachment.</para>
   </section>
 
   <section>
     <title>Contributing</title>
 
-    <para>Consult the wiki and project home-pages if you are interested in
-    contributing. A useful way to contribute is via logging issues or feature
-    requests in JIRA. However, if you are creating an issue in JIRA for the
-    BRMS, it is important that you choose "drools-brms" as the component in
-    the list in JIRA (or else it may get lost !)</para>
+    <para>As an open source project, contributions from the wider community are encouraged. In order to contribute consult the wiki and project home pages. A useful way to contribute is via logging issues or feature
+    requests in JIRA. However, when creating an issue in JIRA for the
+    BRMS, it is important to choose <emphasis>drools-brms</emphasis> as the component in
+    the list in JIRA (or else it may become lost)</para>
   </section>
 </section>
