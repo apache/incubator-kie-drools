@@ -86,7 +86,8 @@ public class CollectBuilder
         }
         
         BetaConstraints binder = utils.createBetaNodeConstraint( context, context.getBetaconstraints(), false );
-        BetaConstraints resultBinder = utils.createBetaNodeConstraint( context, resultBetaConstraints, false );
+        // indexing for the results should be always disabled
+        BetaConstraints resultBinder = utils.createBetaNodeConstraint( context, resultBetaConstraints, true );
         
         context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
                                                                 new CollectNode( context.getNextId(),
