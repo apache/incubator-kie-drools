@@ -12,6 +12,10 @@ public class RuleAttribute
     private static final String NOLOOP   = "no-loop";
     private static final String SALIENCE = "salience";
     private static final String ENABLED  = "enabled";
+    private static final String DURATION = "duration";
+    private static final String LOCK_ON_ACTIVE = "lock-on-active";
+
+    private static final String AUTO_FOCUS = "auto-focus";
 
     public RuleAttribute(final String name,
                          final String value) {
@@ -30,13 +34,25 @@ public class RuleAttribute
     public String toString() {
         StringBuffer ret = new StringBuffer();
         ret.append( this.attributeName );
-        if ( NOLOOP.equals( attributeName ) ) {
+        if ( NOLOOP.equals( attributeName ) )
+        {
             ret.append( " " );
             ret.append( this.value == null ? "true" : this.value );
-        } else if ( SALIENCE.equals( this.attributeName ) || ENABLED.equals(this.attributeName) ) {
+        }
+        else if (SALIENCE.equals( this.attributeName ) ||
+         DURATION.equals( this.attributeName ))
+        {
             ret.append( " " );
             ret.append( this.value );
-        } else if ( this.value != null ) {
+        }
+        else if (ENABLED.equals( this.attributeName ) ||
+         AUTO_FOCUS.equals( this.attributeName ) ||
+         LOCK_ON_ACTIVE.equals( this.attributeName ))
+        {
+            ret.append( " " );
+            ret.append( this.value.equals("true") ? "true" : "false" );
+        }
+        else if ( this.value != null ) {
             ret.append( " \"" );
             ret.append( this.value );
             ret.append( "\"" );

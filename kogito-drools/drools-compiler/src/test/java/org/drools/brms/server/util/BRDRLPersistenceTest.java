@@ -584,4 +584,22 @@ public class BRDRLPersistenceTest extends TestCase {
 
     }
 
+    public void testLockOnActive() {
+    	RuleModel m = new RuleModel();
+
+    	m.addAttribute(new RuleAttribute("lock-on-active", "true"));
+    	m.addAttribute(new RuleAttribute("auto-focus", "true"));
+    	m.addAttribute(new RuleAttribute("duration", "42"));
+
+        String s = BRDRLPersistence.getInstance().marshal( m );
+
+        assertTrue(s.indexOf( "lock-on-active true" ) > -1);
+        assertTrue(s.indexOf( "auto-focus true" ) > -1);
+        assertTrue(s.indexOf( "duration 42" ) > -1);
+
+
+
+
+    }
+
 }
