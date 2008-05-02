@@ -15,4 +15,5 @@ rule "Match Stilton"
     then
     	$stilton.setFieldValue( "price", new Integer( 200 ) );
     	list.add( $stilton );
+    	retract( $stilton );
 end    
