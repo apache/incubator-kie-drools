@@ -131,6 +131,7 @@ public class ReteTest extends DroolsTestCase {
                            new PropagationContextImpl( 0,
                                                        PropagationContext.ASSERTION,
                                                        null,
+                                                       null,
                                                        null ),
                            workingMemory );
 
@@ -140,14 +141,15 @@ public class ReteTest extends DroolsTestCase {
                            new PropagationContextImpl( 0,
                                                        PropagationContext.ASSERTION,
                                                        null,
+                                                       null,
                                                        null ),
                            workingMemory );               
         
-        ClassObjectTypeConf conf = ( ClassObjectTypeConf ) workingMemory.getObjectTypeConfigurationRegistry().getObjectTypeConf( this.entryPoint.getEntryPoint(), ArrayList.class );
+        ClassObjectTypeConf conf = ( ClassObjectTypeConf ) workingMemory.getObjectTypeConfigurationRegistry().getObjectTypeConf( this.entryPoint.getEntryPoint(),  new ArrayList() );
         assertLength( 3,
                       conf.getObjectTypeNodes() );
 
-        conf = ( ClassObjectTypeConf ) workingMemory.getObjectTypeConfigurationRegistry().getObjectTypeConf( this.entryPoint.getEntryPoint(), LinkedList.class );
+        conf = ( ClassObjectTypeConf ) workingMemory.getObjectTypeConfigurationRegistry().getObjectTypeConf( this.entryPoint.getEntryPoint(), new ArrayList() );
         assertLength( 3,
                       conf.getObjectTypeNodes() );
 
@@ -181,6 +183,7 @@ public class ReteTest extends DroolsTestCase {
                            new PropagationContextImpl( 0,
                                                        PropagationContext.ASSERTION,
                                                        null,
+                                                       null,
                                                        null ),
                            workingMemory );
 
@@ -195,6 +198,7 @@ public class ReteTest extends DroolsTestCase {
         rete.assertObject( h2,
                            new PropagationContextImpl( 0,
                                                        PropagationContext.ASSERTION,
+                                                       null,
                                                        null,
                                                        null ),
                            workingMemory );
@@ -243,12 +247,12 @@ public class ReteTest extends DroolsTestCase {
         assertEquals( 3,
                       rete.getObjectTypeNodes().size() );
 
-        // double check that the Listreference is the same as the one we created, i.e. engine should try and recreate it
+        // double check that the List reference is the same as the one we created, i.e. engine should try and recreate it
         assertSame( listOtn,
                     rete.getObjectTypeNodes( EntryPoint.DEFAULT ).get( new ClassObjectType( List.class ) ) );
 
         // ArrayConf should match two ObjectTypenodes for List and ArrayList
-        ClassObjectTypeConf arrayConf = ( ClassObjectTypeConf ) workingMemory.getObjectTypeConfigurationRegistry().getObjectTypeConf( this.entryPoint.getEntryPoint(), ArrayList.class );
+        ClassObjectTypeConf arrayConf = ( ClassObjectTypeConf ) workingMemory.getObjectTypeConfigurationRegistry().getObjectTypeConf( this.entryPoint.getEntryPoint(), new ArrayList() );
         final ObjectTypeNode arrayOtn = arrayConf.getConcreteObjectTypeNode();
         assertEquals( 2,
                       arrayConf.getObjectTypeNodes().length );
@@ -323,6 +327,7 @@ public class ReteTest extends DroolsTestCase {
                            new PropagationContextImpl( 0,
                                                        PropagationContext.ASSERTION,
                                                        null,
+                                                       null,
                                                        null ),
                            workingMemory );
         assertLength( 0,
@@ -340,12 +345,14 @@ public class ReteTest extends DroolsTestCase {
                            new PropagationContextImpl( 0,
                                                        PropagationContext.ASSERTION,
                                                        null,
+                                                       null,
                                                        null ),
                            workingMemory );
 
         rete.retractObject( h2,
                             new PropagationContextImpl( 0,
                                                         PropagationContext.ASSERTION,
+                                                        null,
                                                         null,
                                                         null ),
                             workingMemory );
@@ -382,6 +389,7 @@ public class ReteTest extends DroolsTestCase {
         rete.assertObject( h1,
                            new PropagationContextImpl( 0,
                                                        PropagationContext.ASSERTION,
+                                                       null,
                                                        null,
                                                        null ),
                            workingMemory );
@@ -429,6 +437,7 @@ public class ReteTest extends DroolsTestCase {
         rete.assertObject( h1,
                            new PropagationContextImpl( 0,
                                                        PropagationContext.ASSERTION,
+                                                       null,
                                                        null,
                                                        null ),
                            workingMemory );
