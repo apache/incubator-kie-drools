@@ -36,28 +36,29 @@ public class ObjectTypeConfigurationRegistry implements Serializable {
     public ObjectTypeConf getObjectTypeConf(EntryPoint entrypoint,
                                             Object object) {
         
-        // first see if it's a ClassObjectTypeConf
+        // first see if it's a ClassObjectTypeConf        
+        ObjectTypeConf objectTypeConf = null;
         Class cls = null;
-        if ( object instanceof ShadowProxy ) {
-            cls = ((ShadowProxy) object).getShadowedObject().getClass();
+        if ( object instanceof Fact ) {
+            String key = ((Fact) object).getFactTemplate().getName();
+            objectTypeConf = (ObjectTypeConf) this.typeConfMap.get( key );            
         } else {
-            cls = object.getClass();
-        }        
-        ObjectTypeConf objectTypeConf = this.typeConfMap.get( cls );
-        
-        // Now see if it's something else 
-        if ( objectTypeConf == null ) {
-            objectTypeConf = this.typeConfMap.get( object );
-        }
-        
+            if ( object instanceof ShadowProxy ) {
+                cls = ((ShadowProxy) object).getShadowedObject().getClass();
+            } else {
+                cls = object.getClass();
+            }        
+            objectTypeConf = this.typeConfMap.get( cls );            
+        }                       
         
         // it doesn't exist, so create it.
         if ( objectTypeConf == null ) {
-            if ( object instanceof Fact ) {
+            if ( object instanceof Fact ) {;
                 objectTypeConf = new FactTemplateTypeConf( entrypoint,
                                                            ((Fact) object).getFactTemplate(),
                                                            this.ruleBase );           
-                this.typeConfMap.put( object, objectTypeConf );
+                this.typeConfMap.put( ((Fact) object).getFactTemplate().getName(), 
+                                      objectTypeConf );
             } else {
                 objectTypeConf = new ClassObjectTypeConf( entrypoint,
                                                           cls,
