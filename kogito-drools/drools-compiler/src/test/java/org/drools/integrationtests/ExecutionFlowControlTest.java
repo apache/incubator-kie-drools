@@ -2,6 +2,8 @@ package org.drools.integrationtests;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.drools.Alarm;
 import org.drools.Cheese;
 import org.drools.FactHandle;
 import org.drools.Message;
@@ -33,6 +35,7 @@ import org.drools.spi.AgendaGroup;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -493,6 +496,39 @@ public class ExecutionFlowControlTest extends TestCase {
         assertEquals( 1,
                       list.size() );
     }
+    
+    public void testDurationMemoryLeakonRepeatedUpdate() throws Exception {
+        String str = "package org.drools.test\n" +
+        "import org.drools.Alarm\n" +
+        "global java.util.List list;" +
+        "rule \"COMPTEUR\"\n" +
+        "  duration 50\n" +
+        "  when\n" +        
+        "    $alarm : Alarm( number < 5 )\n" +
+        "  then\n" +
+        "    $alarm.incrementNumber();\n" +
+        "    list.add( $alarm );\n" +
+        "    update($alarm);\n" +
+        "end\n";
+        
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new StringReader( str ) );
+        
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        ruleBase.addPackage( builder.getPackage() );
+        
+        StatefulSession session = ruleBase.newStatefulSession();
+        List list = new ArrayList();
+        session.setGlobal( "list", list );
+        session.insert( new Alarm() );
+        
+        session.fireAllRules();
+        
+        Thread.sleep( 1000 );
+        
+        assertEquals( 5, list.size() );
+        assertEquals(0, session.getAgenda().getScheduledActivations().length );                        
+    }    
 
     public void testFireRuleAfterDuration() throws Exception {
         final PackageBuilder builder = new PackageBuilder();

@@ -3,6 +3,8 @@ package org.drools;
 public class Alarm {
     private String message;
 
+    private int number;
+    
     public Alarm() {
 
     }
@@ -62,5 +64,17 @@ public class Alarm {
     public void setMessage(final String message) {
         this.message = message;
     }
+    
+    public int getNumber() {
+        return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
+    }
+    
+    public void incrementNumber() {
+        this.number++;;
+    }     
 
 }
