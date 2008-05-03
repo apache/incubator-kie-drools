@@ -89,7 +89,7 @@ import org.drools.spi.PropagationContext;
 
 /**
  * Implementation of <code>WorkingMemory</code>.
- *
+ * 
  * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris </a>
@@ -98,7 +98,8 @@ public abstract class AbstractWorkingMemory
     implements
     InternalWorkingMemoryActions,
     EventSupport,
-    PropertyChangeListener, Externalizable {
+    PropertyChangeListener,
+    Externalizable {
     // ------------------------------------------------------------
     // Constants
     // ------------------------------------------------------------
@@ -111,12 +112,12 @@ public abstract class AbstractWorkingMemory
     protected long                                      id;
 
     /** The arguments used when adding/removing a property change listener. */
-    protected Object[]                             addRemovePropertyChangeListenerArgs           = new Object[]{this};
+    protected Object[]                                  addRemovePropertyChangeListenerArgs           = new Object[]{this};
 
     /** The actual memory for the <code>JoinNode</code>s. */
-    protected NodeMemories                         nodeMemories;
+    protected NodeMemories                              nodeMemories;
 
-    protected ObjectStore                          objectStore;
+    protected ObjectStore                               objectStore;
 
     protected Map                                       queryResults                                  = Collections.EMPTY_MAP;
 
@@ -135,35 +136,36 @@ public abstract class AbstractWorkingMemory
     /** The <code>RuleBase</code> with which this memory is associated. */
     protected transient InternalRuleBase                ruleBase;
 
-    protected FactHandleFactory                    handleFactory;
+    protected FactHandleFactory                         handleFactory;
 
-    protected TruthMaintenanceSystem               tms;
+    protected TruthMaintenanceSystem                    tms;
 
     /** Rule-firing agenda. */
     protected DefaultAgenda                             agenda;
 
-    protected Queue<WorkingMemoryAction>           actionQueue                                   = new LinkedList<WorkingMemoryAction>();
+    protected Queue<WorkingMemoryAction>                actionQueue                                   = new LinkedList<WorkingMemoryAction>();
 
-    protected boolean                                    evaluatingActionQueue;
+    protected volatile boolean                          evaluatingActionQueue;
 
-    protected ReentrantLock                        lock                                          = new ReentrantLock();
+    protected ReentrantLock                             lock                                          = new ReentrantLock();
 
-    protected boolean                              discardOnLogicalOverride;
+    protected boolean                                   discardOnLogicalOverride;
 
     /**
-     * This must be thread safe as it is incremented and read via different EntryPoints
+     * This must be thread safe as it is incremented and read via different
+     * EntryPoints
      */
     protected AtomicLong                                propagationIdCounter;
 
-    private boolean                                maintainTms;
-    private boolean                                sequential;
+    private boolean                                     maintainTms;
+    private boolean                                     sequential;
 
     private List                                        liaPropagations                               = Collections.EMPTY_LIST;
 
     /** Flag to determine if a rule is currently being fired. */
-    protected boolean                                   firing;
+    protected volatile boolean                          firing;
 
-    protected boolean                                   halt;
+    protected volatile boolean                          halt;
 
     private Map                                         processInstances                              = new HashMap();
 
@@ -171,9 +173,9 @@ public abstract class AbstractWorkingMemory
 
     private WorkItemManager                             workItemManager;
 
-    private TimerManager                                 timerManager;
+    private TimerManager                                timerManager;
 
-    private Map<String, ProcessInstanceFactory>          processInstanceFactories                      = new HashMap();
+    private Map<String, ProcessInstanceFactory>         processInstanceFactories                      = new HashMap();
 
     private TimeMachine                                 timeMachine                                   = new TimeMachine();
 
@@ -190,9 +192,10 @@ public abstract class AbstractWorkingMemory
     public AbstractWorkingMemory() {
 
     }
+
     /**
      * Construct.
-     *
+     * 
      * @param ruleBase
      *            The backing rule-base.
      */
@@ -222,24 +225,25 @@ public abstract class AbstractWorkingMemory
                                                           this.lock );
 
         // Only takes effect if are using idententity behaviour for assert
-        if ( LogicalOverride.DISCARD.equals(conf.getLogicalOverride()) ) {
+        if ( LogicalOverride.DISCARD.equals( conf.getLogicalOverride() ) ) {
             this.discardOnLogicalOverride = true;
         } else {
             this.discardOnLogicalOverride = false;
         }
 
         this.processInstanceFactories.put( RuleFlowProcess.RULEFLOW_TYPE,
-                                           new RuleFlowProcessInstanceFactory() );        
+                                           new RuleFlowProcessInstanceFactory() );
         this.entryPoints = new ConcurrentHashMap();
         this.entryPoints.put( "DEFAULT",
                               this );
 
         this.entryPoint = EntryPoint.DEFAULT;
         initTransient();
-    }        
-    
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        id  = in.readLong();
+    }
+
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        id = in.readLong();
         evaluatingActionQueue = in.readBoolean();
         discardOnLogicalOverride = in.readBoolean();
         propagationIdCounter = (AtomicLong) in.readObject();
@@ -248,65 +252,65 @@ public abstract class AbstractWorkingMemory
         firing = in.readBoolean();
         halt = in.readBoolean();
         processCounter = in.readInt();
-        addRemovePropertyChangeListenerArgs = (Object[])in.readObject();
-        nodeMemories = (NodeMemories)in.readObject();
-        objectStore = (ObjectStore)in.readObject();
-        queryResults = (Map)in.readObject();
-        globalResolver = (GlobalResolver)in.readObject();
-        workingMemoryEventSupport = (WorkingMemoryEventSupport)in.readObject();
-        agendaEventSupport = (AgendaEventSupport)in.readObject();
-        workflowEventSupport = (RuleFlowEventSupport)in.readObject();
-        __ruleBaseEventListeners = (List)in.readObject();
-        ruleBase    = (InternalRuleBase)in.readObject();
-        handleFactory = (FactHandleFactory)in.readObject();
-        tms = (TruthMaintenanceSystem)in.readObject();
-        agenda = (DefaultAgenda)in.readObject();
-        lock = (ReentrantLock)in.readObject();
-        actionQueue = (Queue<WorkingMemoryAction>)in.readObject();
-        liaPropagations = (List)in.readObject();
-        processInstances = (Map)in.readObject();
-        workItemManager = (WorkItemManager)in.readObject();
-        processInstanceFactories = (Map<String, ProcessInstanceFactory>)in.readObject();
-        timeMachine = (TimeMachine)in.readObject();
-        entryPoint = (EntryPoint)in.readObject();
-        entryPointNode = (EntryPointNode)in.readObject();
-        entryPoints = (Map<String, WorkingMemoryEntryPoint>)in.readObject();
+        addRemovePropertyChangeListenerArgs = (Object[]) in.readObject();
+        nodeMemories = (NodeMemories) in.readObject();
+        objectStore = (ObjectStore) in.readObject();
+        queryResults = (Map) in.readObject();
+        globalResolver = (GlobalResolver) in.readObject();
+        workingMemoryEventSupport = (WorkingMemoryEventSupport) in.readObject();
+        agendaEventSupport = (AgendaEventSupport) in.readObject();
+        workflowEventSupport = (RuleFlowEventSupport) in.readObject();
+        __ruleBaseEventListeners = (List) in.readObject();
+        ruleBase = (InternalRuleBase) in.readObject();
+        handleFactory = (FactHandleFactory) in.readObject();
+        tms = (TruthMaintenanceSystem) in.readObject();
+        agenda = (DefaultAgenda) in.readObject();
+        lock = (ReentrantLock) in.readObject();
+        actionQueue = (Queue<WorkingMemoryAction>) in.readObject();
+        liaPropagations = (List) in.readObject();
+        processInstances = (Map) in.readObject();
+        workItemManager = (WorkItemManager) in.readObject();
+        processInstanceFactories = (Map<String, ProcessInstanceFactory>) in.readObject();
+        timeMachine = (TimeMachine) in.readObject();
+        entryPoint = (EntryPoint) in.readObject();
+        entryPointNode = (EntryPointNode) in.readObject();
+        entryPoints = (Map<String, WorkingMemoryEntryPoint>) in.readObject();
         initTransient();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeLong(id);
-        out.writeBoolean(evaluatingActionQueue);
-        out.writeBoolean(discardOnLogicalOverride);
-        out.writeObject(propagationIdCounter);
-        out.writeBoolean(maintainTms);
-        out.writeBoolean(sequential);
-        out.writeBoolean(firing);
-        out.writeBoolean(halt);
-        out.writeInt(processCounter);
-        out.writeObject(addRemovePropertyChangeListenerArgs);
-        out.writeObject(nodeMemories);
-        out.writeObject(objectStore);
-        out.writeObject(queryResults);
-        out.writeObject(globalResolver);
-        out.writeObject(workingMemoryEventSupport);
-        out.writeObject(agendaEventSupport);
-        out.writeObject(workflowEventSupport);
-        out.writeObject(__ruleBaseEventListeners);
-        out.writeObject(ruleBase);
-        out.writeObject(handleFactory);
-        out.writeObject(tms);
-        out.writeObject(agenda);
-        out.writeObject(lock);
-        out.writeObject(actionQueue);
-        out.writeObject(liaPropagations);
-        out.writeObject(processInstances);
-        out.writeObject(workItemManager);
-        out.writeObject(processInstanceFactories);
-        out.writeObject(timeMachine);
-        out.writeObject(entryPoint);
-        out.writeObject(entryPointNode);
-        out.writeObject(entryPoints);
+        out.writeLong( id );
+        out.writeBoolean( evaluatingActionQueue );
+        out.writeBoolean( discardOnLogicalOverride );
+        out.writeObject( propagationIdCounter );
+        out.writeBoolean( maintainTms );
+        out.writeBoolean( sequential );
+        out.writeBoolean( firing );
+        out.writeBoolean( halt );
+        out.writeInt( processCounter );
+        out.writeObject( addRemovePropertyChangeListenerArgs );
+        out.writeObject( nodeMemories );
+        out.writeObject( objectStore );
+        out.writeObject( queryResults );
+        out.writeObject( globalResolver );
+        out.writeObject( workingMemoryEventSupport );
+        out.writeObject( agendaEventSupport );
+        out.writeObject( workflowEventSupport );
+        out.writeObject( __ruleBaseEventListeners );
+        out.writeObject( ruleBase );
+        out.writeObject( handleFactory );
+        out.writeObject( tms );
+        out.writeObject( agenda );
+        out.writeObject( lock );
+        out.writeObject( actionQueue );
+        out.writeObject( liaPropagations );
+        out.writeObject( processInstances );
+        out.writeObject( workItemManager );
+        out.writeObject( processInstanceFactories );
+        out.writeObject( timeMachine );
+        out.writeObject( entryPoint );
+        out.writeObject( entryPointNode );
+        out.writeObject( entryPoints );
     }
 
     // ------------------------------------------------------------
@@ -318,13 +322,11 @@ public abstract class AbstractWorkingMemory
         this.nodeMemories.setRuleBaseReference( this.ruleBase );
         initTransient();
     }
-    
 
     private void initTransient() {
         this.entryPointNode = this.ruleBase.getRete().getEntryPointNode( this.entryPoint );
         this.typeConfReg = new ObjectTypeConfigurationRegistry( this.ruleBase );
     }
-        
 
     public void setWorkingMemoryEventSupport(WorkingMemoryEventSupport workingMemoryEventSupport) {
         this.workingMemoryEventSupport = workingMemoryEventSupport;
@@ -602,13 +604,13 @@ public abstract class AbstractWorkingMemory
      * Returns the fact Object for the given <code>FactHandle</code>. It
      * actually attemps to return the value from the handle, before retrieving
      * it from objects map.
-     *
+     * 
      * @see WorkingMemory
-     *
+     * 
      * @param handle
      *            The <code>FactHandle</code> reference for the
      *            <code>Object</code> lookup
-     *
+     * 
      */
     public Object getObject(final FactHandle handle) {
         return this.objectStore.getObjectForHandle( (InternalFactHandle) handle );
@@ -697,7 +699,7 @@ public abstract class AbstractWorkingMemory
      * @see WorkingMemory
      */
     public FactHandle insertLogical(final Object object) throws FactException {
-        return insert( object, //Not-Dynamic
+        return insert( object, // Not-Dynamic
                        false,
                        true,
                        null,
@@ -722,20 +724,20 @@ public abstract class AbstractWorkingMemory
                        null );
     }
 
-    //    protected FactHandle insert(final EntryPoint entryPoint,
-    //                                final Object object,
-    //                                final boolean dynamic,
-    //                                boolean logical,
-    //                                final Rule rule,
-    //                                final Activation activation) throws FactException {
-    //        return this.insert( entryPoint,
-    //                            object,
-    //                            0,
-    //                            dynamic,
-    //                            logical,
-    //                            rule,
-    //                            activation );
-    //    }
+    // protected FactHandle insert(final EntryPoint entryPoint,
+    // final Object object,
+    // final boolean dynamic,
+    // boolean logical,
+    // final Rule rule,
+    // final Activation activation) throws FactException {
+    // return this.insert( entryPoint,
+    // object,
+    // 0,
+    // dynamic,
+    // logical,
+    // rule,
+    // activation );
+    // }
 
     public FactHandle insert(final Object object,
                              final boolean dynamic,
@@ -843,7 +845,7 @@ public abstract class AbstractWorkingMemory
                             key.setStatus( EqualityKey.STATED );
                             handle = key.getFactHandle();
 
-                            if ( AssertBehaviour.IDENTITY.equals(this.ruleBase.getConfiguration().getAssertBehaviour()) ) {
+                            if ( AssertBehaviour.IDENTITY.equals( this.ruleBase.getConfiguration().getAssertBehaviour() ) ) {
                                 // as assertMap may be using an "identity"
                                 // equality comparator,
                                 // we need to remove the handle from the map,
@@ -1245,7 +1247,7 @@ public abstract class AbstractWorkingMemory
     /**
      * modify is implemented as half way retract / assert due to the truth
      * maintenance issues.
-     *
+     * 
      * @see WorkingMemory
      */
     public void update(final FactHandle factHandle,
@@ -1293,7 +1295,7 @@ public abstract class AbstractWorkingMemory
                                                typeConf,
                                                this );
 
-            if ( originalObject != object || !AssertBehaviour.IDENTITY.equals(this.ruleBase.getConfiguration().getAssertBehaviour()) ) {
+            if ( originalObject != object || !AssertBehaviour.IDENTITY.equals( this.ruleBase.getConfiguration().getAssertBehaviour() ) ) {
                 this.objectStore.removeHandle( handle );
 
                 // set anyway, so that it updates the hashCodes
@@ -1350,19 +1352,23 @@ public abstract class AbstractWorkingMemory
     }
 
     public void executeQueuedActions() {
-        if ( !this.actionQueue.isEmpty() && !evaluatingActionQueue ) {
-            evaluatingActionQueue = true;
-            WorkingMemoryAction action = null;
-
-            while ( ( action = actionQueue.poll() ) != null ) {
-                action.execute( this );
+        synchronized ( this.actionQueue ) {
+            if ( !this.actionQueue.isEmpty() && !evaluatingActionQueue ) {
+                evaluatingActionQueue = true;
+                WorkingMemoryAction action = null;
+    
+                while ( (action = actionQueue.poll()) != null ) {
+                    action.execute( this );
+                }
+                evaluatingActionQueue = false;
             }
-            evaluatingActionQueue = false;
         }
     }
 
     public void queueWorkingMemoryAction(final WorkingMemoryAction action) {
-        this.actionQueue.add( action );
+        synchronized ( this.actionQueue ) {
+            this.actionQueue.add( action );
+        }
     }
 
     public void removeLogicalDependencies(final Activation activation,
@@ -1378,10 +1384,10 @@ public abstract class AbstractWorkingMemory
     /**
      * Retrieve the <code>JoinMemory</code> for a particular
      * <code>JoinNode</code>.
-     *
+     * 
      * @param node
      *            The <code>JoinNode</code> key.
-     *
+     * 
      * @return The node's memory.
      */
     public Object getNodeMemory(final NodeMemory node) {
@@ -1407,7 +1413,7 @@ public abstract class AbstractWorkingMemory
     /**
      * Sets the AsyncExceptionHandler to handle exceptions thrown by the Agenda
      * Scheduler used for duration rules.
-     *
+     * 
      * @param handler
      */
     public void setAsyncExceptionHandler(final AsyncExceptionHandler handler) {
@@ -1476,24 +1482,23 @@ public abstract class AbstractWorkingMemory
                               processInstance );
         // set variable default values
         // TODO: should be part of processInstanceImpl?
-        VariableScope variableScope = (VariableScope)
-            process.getDefaultContext(VariableScope.VARIABLE_SCOPE);
-        VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
-            processInstance.getContextInstance(VariableScope.VARIABLE_SCOPE);
-        if (variableScope != null) {
-            for (Variable variable: variableScope.getVariables()) {
-                variableScopeInstance.setVariable(variable.getName(), variable.getValue());
+        VariableScope variableScope = (VariableScope) process.getDefaultContext( VariableScope.VARIABLE_SCOPE );
+        VariableScopeInstance variableScopeInstance = (VariableScopeInstance) processInstance.getContextInstance( VariableScope.VARIABLE_SCOPE );
+        if ( variableScope != null ) {
+            for ( Variable variable : variableScope.getVariables() ) {
+                variableScopeInstance.setVariable( variable.getName(),
+                                                   variable.getValue() );
             }
         }
         // set input parameters
-        if (parameters != null) {
-            if (variableScope != null) {
-                for (Map.Entry<String, Object> entry: parameters.entrySet()) {
-                    variableScopeInstance.setVariable(entry.getKey(), entry.getValue());
+        if ( parameters != null ) {
+            if ( variableScope != null ) {
+                for ( Map.Entry<String, Object> entry : parameters.entrySet() ) {
+                    variableScopeInstance.setVariable( entry.getKey(),
+                                                       entry.getValue() );
                 }
             } else {
-                throw new IllegalArgumentException(
-                    "This process does not support parameters!");
+                throw new IllegalArgumentException( "This process does not support parameters!" );
             }
         }
         // start
@@ -1515,9 +1520,10 @@ public abstract class AbstractWorkingMemory
     }
 
     public void addProcessInstance(ProcessInstance processInstance) {
-        processInstances.put( processInstance.getId(), processInstance );
+        processInstances.put( processInstance.getId(),
+                              processInstance );
     }
-    
+
     public void removeProcessInstance(ProcessInstance processInstance) {
         processInstances.remove( processInstance.getId() );
     }
@@ -1529,15 +1535,15 @@ public abstract class AbstractWorkingMemory
     }
 
     public WorkItemManager getWorkItemManager() {
-        if (workItemManager == null) {
+        if ( workItemManager == null ) {
             workItemManager = new WorkItemManager( this );
         }
         return workItemManager;
     }
 
     public TimerManager getTimerManager() {
-        if (timerManager == null) {
-            timerManager = new TimerManager(this);
+        if ( timerManager == null ) {
+            timerManager = new TimerManager( this );
         }
         return timerManager;
     }
@@ -1589,7 +1595,7 @@ public abstract class AbstractWorkingMemory
     /**
      * The time machine defaults to returning the current time when asked.
      * However, you can use tell it to go back in time.
-     *
+     * 
      * @param timeMachine
      */
     public void setTimeMachine(TimeMachine timeMachine) {
@@ -1624,75 +1630,75 @@ public abstract class AbstractWorkingMemory
         return wmEntryPoint;
     }
 
-    //    protected static class EntryPointInterfaceImpl
-    //        implements
-    //        EntryPointInterface {
+    // protected static class EntryPointInterfaceImpl
+    // implements
+    // EntryPointInterface {
     //
-    //        private static final long           serialVersionUID = 2917871170743358801L;
+    // private static final long serialVersionUID = 2917871170743358801L;
     //
-    //        private final EntryPoint            entryPoint;
-    //        private final AbstractWorkingMemory wm;
+    // private final EntryPoint entryPoint;
+    // private final AbstractWorkingMemory wm;
     //
-    //        public EntryPointInterfaceImpl(EntryPoint entryPoint,
-    //                                       AbstractWorkingMemory wm) {
-    //            this.entryPoint = entryPoint;
-    //            this.wm = wm;
-    //        }
+    // public EntryPointInterfaceImpl(EntryPoint entryPoint,
+    // AbstractWorkingMemory wm) {
+    // this.entryPoint = entryPoint;
+    // this.wm = wm;
+    // }
     //
-    //        public FactHandle insert(Object object) throws FactException {
-    //            return wm.insert( this.entryPoint,
-    //                              object, /* Not-Dynamic */
-    //                              false,
-    //                              false,
-    //                              null,
-    //                              null );
-    //        }
+    // public FactHandle insert(Object object) throws FactException {
+    // return wm.insert( this.entryPoint,
+    // object, /* Not-Dynamic */
+    // false,
+    // false,
+    // null,
+    // null );
+    // }
     //
-    //        public FactHandle insert(Object object,
-    //                                 boolean dynamic) throws FactException {
-    //            return wm.insert( this.entryPoint,
-    //                              object, /* Not-Dynamic */
-    //                              dynamic,
-    //                              false,
-    //                              null,
-    //                              null );
-    //        }
+    // public FactHandle insert(Object object,
+    // boolean dynamic) throws FactException {
+    // return wm.insert( this.entryPoint,
+    // object, /* Not-Dynamic */
+    // dynamic,
+    // false,
+    // null,
+    // null );
+    // }
     //
-    //        public void modifyInsert(FactHandle factHandle,
-    //                                 Object object) {
-    //            wm.modifyInsert( this.entryPoint,
-    //                             factHandle,
-    //                             object,
-    //                             null,
-    //                             null );
-    //        }
+    // public void modifyInsert(FactHandle factHandle,
+    // Object object) {
+    // wm.modifyInsert( this.entryPoint,
+    // factHandle,
+    // object,
+    // null,
+    // null );
+    // }
     //
-    //        public void modifyRetract(FactHandle factHandle) {
-    //            wm.modifyRetract( this.entryPoint,
-    //                              factHandle,
-    //                              null,
-    //                              null );
-    //        }
+    // public void modifyRetract(FactHandle factHandle) {
+    // wm.modifyRetract( this.entryPoint,
+    // factHandle,
+    // null,
+    // null );
+    // }
     //
-    //        public void retract(FactHandle handle) throws FactException {
-    //            wm.retract( this.entryPoint,
-    //                        handle,
-    //                        true,
-    //                        true,
-    //                        null,
-    //                        null );
-    //        }
+    // public void retract(FactHandle handle) throws FactException {
+    // wm.retract( this.entryPoint,
+    // handle,
+    // true,
+    // true,
+    // null,
+    // null );
+    // }
     //
-    //        public void update(FactHandle handle,
-    //                           Object object) throws FactException {
-    //            wm.update( this.entryPoint,
-    //                       handle,
-    //                       object,
-    //                       null,
-    //                       null );
-    //        }
+    // public void update(FactHandle handle,
+    // Object object) throws FactException {
+    // wm.update( this.entryPoint,
+    // handle,
+    // object,
+    // null,
+    // null );
+    // }
     //
-    //    }
+    // }
 
     public ObjectTypeConfigurationRegistry getObjectTypeConfigurationRegistry() {
         return this.typeConfReg;
