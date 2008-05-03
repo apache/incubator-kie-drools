@@ -1905,6 +1905,9 @@ public class AverageAccumulateFunction implements AccumulateFunction {
     <para>"update(object, handle);" will tell the engine that an object has
     changed (one that has been bound to something on the LHS) and rules may
     need to be reconsidered.</para>
+    
+    <para>"update(object);"  can also be used, here the KnowledgeHelper will
+    lookup the facthandle for you, via an identity check, for the passed object.</para>      
 
     <para>"insert(new Something());" will place a new object of your creation
     in working memory.</para>
