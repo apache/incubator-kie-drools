@@ -22,7 +22,9 @@ public static boolean @{methodName}(@foreach{type : declarationTypes, declr : de
 @end{}
 
 @declare{"accumulateInnerClass"}
-public static class @{className} {
+public static class @{className} implements java.io.Serializable {
+
+    private static final long    serialVersionUID = 400L;
 
     @foreach{type : attributesTypes, attr : attributes} private @{type} @{attr};
     @end{}    
@@ -65,6 +67,7 @@ public static class @{className} {
     public boolean supportsReverse() {
         return @{supportsReverse};
     }
+    
 }
 @end{}
 
