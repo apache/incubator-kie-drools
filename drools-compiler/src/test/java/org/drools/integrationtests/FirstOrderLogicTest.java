@@ -988,10 +988,10 @@ public class FirstOrderLogicTest extends TestCase {
         wm.insert( new Double( 10 ) );
         wm.insert( new Integer( 2 ) );
 
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
-        wm = serializeWorkingMemory( ruleBase,
-                                     wm );
-        results = (List) wm.getGlobal( "results" );
+//        ruleBase = SerializationHelper.serializeObject( ruleBase );
+//        wm = serializeWorkingMemory( ruleBase,
+//                                     wm );
+//        results = (List) wm.getGlobal( "results" );
 
         wm.fireAllRules();
 
