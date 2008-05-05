@@ -236,7 +236,7 @@ end
       code to be executed.</para>
 
 <para>The <code>$param</code> place holder is used in templates to indicate where
-      data form the cell will be interpolated. You can also use <code>$1</cdoe> to the
+      data form the cell will be interpolated. You can also use <code>$1</code> to the
       same effect. If the cell contains a comma separated list of values, $1
       and $2 etc. may be used to indicate which positional parameter from the
       list of values in the cell will be used.</para> 
