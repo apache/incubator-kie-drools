@@ -29,6 +29,7 @@ import org.drools.common.DefaultBetaConstraints;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.PropagationContextImpl;
 import org.drools.reteoo.builder.BuildContext;
+import org.drools.rule.Behavior;
 import org.drools.rule.Rule;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.MockConstraint;
@@ -76,6 +77,7 @@ public class ExistsNodeTest extends DroolsTestCase {
                                     new MockObjectSource( 8 ),
                                     new DefaultBetaConstraints( new BetaNodeFieldConstraint[]{this.constraint},
                                                                 configuration ),
+                                    Behavior.EMPTY_BEHAVIOR_LIST,
                                     buildContext );
 
         this.sink = new MockLeftTupleSink();

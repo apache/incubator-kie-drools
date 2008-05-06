@@ -20,6 +20,7 @@ import org.drools.common.BetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.builder.BuildContext;
+import org.drools.rule.Behavior;
 import org.drools.spi.PropagationContext;
 import org.drools.util.FactEntry;
 import org.drools.util.Iterator;
@@ -67,11 +68,13 @@ public class JoinNode extends BetaNode {
                     final LeftTupleSource leftInput,
                     final ObjectSource rightInput,
                     final BetaConstraints binder,
+                    final Behavior[] behaviors,
                     final BuildContext context) {
         super( id,
                leftInput,
                rightInput,
-               binder );
+               binder,
+               behaviors );
         tupleMemoryEnabled = context.isTupleMemoryEnabled();
     }
 

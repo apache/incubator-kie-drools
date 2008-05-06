@@ -36,6 +36,7 @@ import org.drools.facttemplates.FactTemplateObjectType;
 import org.drools.lang.MVELDumper;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BaseDescr;
+import org.drools.lang.descr.BehaviorDescr;
 import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
@@ -46,11 +47,13 @@ import org.drools.lang.descr.QualifiedIdentifierRestrictionDescr;
 import org.drools.lang.descr.RestrictionConnectiveDescr;
 import org.drools.lang.descr.RestrictionDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
+import org.drools.lang.descr.SlidingWindowDescr;
 import org.drools.lang.descr.VariableRestrictionDescr;
 import org.drools.rule.AbstractCompositeConstraint;
 import org.drools.rule.AbstractCompositeRestriction;
 import org.drools.rule.AndCompositeRestriction;
 import org.drools.rule.AndConstraint;
+import org.drools.rule.Behavior;
 import org.drools.rule.Declaration;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.LiteralRestriction;
@@ -64,6 +67,7 @@ import org.drools.rule.PredicateConstraint;
 import org.drools.rule.ReturnValueConstraint;
 import org.drools.rule.ReturnValueRestriction;
 import org.drools.rule.RuleConditionElement;
+import org.drools.rule.SlidingTimeWindow;
 import org.drools.rule.VariableConstraint;
 import org.drools.rule.VariableRestriction;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
@@ -182,6 +186,14 @@ public class PatternBuilder
                                                                   patternDescr.getSource() );
 
             pattern.setSource( source );
+        }
+        
+        for( BehaviorDescr behaviorDescr : patternDescr.getBehaviors() ) {
+            if( Behavior.BehaviorType.TIME_WINDOW.matches( behaviorDescr.getType() ) ) {
+                SlidingWindowDescr swd = (SlidingWindowDescr) behaviorDescr;
+                SlidingTimeWindow window = new SlidingTimeWindow( swd.getLength() );
+                pattern.addBehavior( window );
+            }
         }
 
         // poping the pattern

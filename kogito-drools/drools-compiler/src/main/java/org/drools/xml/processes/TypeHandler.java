@@ -1,14 +1,9 @@
 package org.drools.xml.processes;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 
-import org.drools.process.core.Process;
 import org.drools.process.core.context.variable.Variable;
-import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.core.datatype.DataType;
-import org.drools.workflow.core.impl.WorkflowProcessImpl;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;

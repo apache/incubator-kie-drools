@@ -25,6 +25,7 @@ import org.drools.reteoo.CollectNode;
 import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.RightInputAdapterNode;
 import org.drools.reteoo.LeftTupleSource;
+import org.drools.rule.Behavior;
 import org.drools.rule.Collect;
 import org.drools.rule.Pattern;
 import org.drools.rule.RuleConditionElement;
@@ -96,6 +97,7 @@ public class CollectBuilder
                                                                                  (AlphaNodeFieldConstraint[]) resultAlphaConstraints.toArray( new AlphaNodeFieldConstraint[resultAlphaConstraints.size()] ),
                                                                                  binder, // source binder
                                                                                  resultBinder,
+                                                                                 Behavior.EMPTY_BEHAVIOR_LIST,
                                                                                  collect,
                                                                                  existSubNetwort,
                                                                                  context ) ) );

@@ -1,6 +1,5 @@
 package org.drools.rule.builder.dialect.java;
 
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,14 +9,12 @@ import org.drools.lang.descr.BaseDescr;
 import org.drools.rule.Declaration;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.util.StringUtils;
-import org.mvel.MVEL;
 import org.mvel.integration.impl.MapVariableResolverFactory;
-import org.mvel.templates.TemplateRegistry;
-import org.mvel.templates.SimpleTemplateRegistry;
-import org.mvel.templates.TemplateRuntime;
-import org.mvel.templates.TemplateCompiler;
 import org.mvel.optimizers.OptimizerFactory;
-import com.sun.org.apache.xalan.internal.xsltc.compiler.Template;
+import org.mvel.templates.SimpleTemplateRegistry;
+import org.mvel.templates.TemplateCompiler;
+import org.mvel.templates.TemplateRegistry;
+import org.mvel.templates.TemplateRuntime;
 
 public class AbstractJavaRuleBuilder {
 

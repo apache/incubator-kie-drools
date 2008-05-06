@@ -34,6 +34,7 @@ import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.StockTick;
 import org.drools.WorkingMemory;
+import org.drools.base.ClassObjectType;
 import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.common.ActivationGroupNode;
 import org.drools.common.InternalFactHandle;
@@ -63,12 +64,14 @@ import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
+import org.drools.lang.descr.SlidingWindowDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.VariableRestrictionDescr;
 import org.drools.process.core.Context;
 import org.drools.process.core.Process;
 import org.drools.process.core.context.variable.Variable;
 import org.drools.reteoo.ReteooRuleBase;
+import org.drools.rule.Behavior;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.GroupElement;
@@ -79,6 +82,7 @@ import org.drools.rule.Pattern;
 import org.drools.rule.PredicateConstraint;
 import org.drools.rule.ReturnValueConstraint;
 import org.drools.rule.Rule;
+import org.drools.rule.SlidingTimeWindow;
 import org.drools.rule.TypeDeclaration;
 import org.drools.rule.builder.dialect.java.JavaDialect;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
@@ -87,8 +91,8 @@ import org.drools.spi.AgendaGroup;
 import org.drools.spi.CompiledInvoker;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
-import org.drools.util.LinkedList;
 import org.drools.util.DroolsStreamUtils;
+import org.drools.util.LinkedList;
 import org.drools.workflow.core.impl.WorkflowProcessImpl;
 
 public class PackageBuilderTest extends DroolsTestCase {
@@ -189,7 +193,7 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         // Make sure the compiled classes are also removed
         assertEquals( 0,
-                      ((JavaDialectData)pkg.getDialectDatas().getDialectData( "java" )).list().length );
+                      ((JavaDialectData) pkg.getDialectDatas().getDialectData( "java" )).list().length );
 
         builder.addPackage( packageDescr );
 
@@ -324,7 +328,7 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         pattern.addConstraint( literalDescr );
 
-        ruleDescr.setConsequence( "System.out.println( stilton.getFieldValue( \"name\" ) + \" \" + stilton.getFieldValue( \"price\" ) );" );
+        ruleDescr.setConsequence( "String result = stilton.getFieldValue( \"name\" ) + \" \" + stilton.getFieldValue( \"price\" );" );
 
         builder.addPackage( packageDescr );
 
@@ -1018,9 +1022,9 @@ public class PackageBuilderTest extends DroolsTestCase {
         PackageDescr pkgDescr = new PackageDescr( "org.test" );
         TypeDeclarationDescr typeDescr = new TypeDeclarationDescr( "StockTick" );
         typeDescr.addMetaAttribute( TypeDeclaration.Role.ID,
-                                "event" );
+                                    "event" );
         typeDescr.addMetaAttribute( TypeDeclaration.ATTR_CLASS,
-                                "org.drools.StockTick" );
+                                    "org.drools.StockTick" );
         pkgDescr.addTypeDeclaration( typeDescr );
 
         PackageBuilder builder = new PackageBuilder();
@@ -1209,7 +1213,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         assertTrue( p instanceof WorkflowProcessImpl );
 
         //now serialization
-        Package pkg2 = (Package) DroolsStreamUtils.streamIn(DroolsStreamUtils.streamOut(pkg));
+        Package pkg2 = (Package) DroolsStreamUtils.streamIn( DroolsStreamUtils.streamOut( pkg ) );
         assertNotNull( pkg2 );
 
         flows = pkg2.getRuleFlows();
@@ -1258,6 +1262,44 @@ public class PackageBuilderTest extends DroolsTestCase {
         assertFalse( bldr.hasErrors() );
     }
 
+    public void testTimeWindowBehavior() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+
+        final PackageDescr packageDescr = new PackageDescr( "p1" );
+        final RuleDescr ruleDescr = new RuleDescr( "rule-1" );
+        packageDescr.addRule( ruleDescr );
+
+        final AndDescr lhs = new AndDescr();
+        ruleDescr.setLhs( lhs );
+
+        final PatternDescr patternDescr = new PatternDescr( StockTick.class.getName(),
+                                                            "$tick" );
+        final SlidingWindowDescr windowDescr = new SlidingWindowDescr( "time",
+                                                                       "60000" );
+        patternDescr.addBehavior( windowDescr );
+
+        lhs.addDescr( patternDescr );
+
+        ruleDescr.setConsequence( "System.out.println( $tick );" );
+
+        builder.addPackage( packageDescr );
+
+        assertLength( 0,
+                      builder.getErrors().getErrors() );
+
+        final Package pkg = builder.getPackage();
+        final Rule rule = pkg.getRule( "rule-1" );
+        assertNotNull( rule );
+
+        final Pattern pattern = (Pattern) rule.getLhs().getChildren().get( 0 );
+        assertEquals( StockTick.class.getName(),
+                      ((ClassObjectType)pattern.getObjectType()).getClassType().getName() );
+        final Behavior window = pattern.getBehaviors().get( 0 );
+        assertEquals( Behavior.BehaviorType.TIME_WINDOW,
+                      window.getType() );
+        assertEquals( 60000,
+                      ((SlidingTimeWindow) window).getSize() );
+    }
 
     class MockRuleFlow
         implements
@@ -1320,7 +1362,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         }
 
         public void addContext(Context context) {
-         }
+        }
 
         public List<Context> getContexts(String contextId) {
             return null;
@@ -1333,7 +1375,8 @@ public class PackageBuilderTest extends DroolsTestCase {
         public void setDefaultContext(Context context) {
         }
 
-        public Context getContext(String contextType, long id) {
+        public Context getContext(String contextType,
+                                  long id) {
             return null;
         }
 
@@ -1342,7 +1385,8 @@ public class PackageBuilderTest extends DroolsTestCase {
             return null;
         }
 
-        public void setMetaData(String name, Object value) {
+        public void setMetaData(String name,
+                                Object value) {
             // TODO Auto-generated method stub
 
         }

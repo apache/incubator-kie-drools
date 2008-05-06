@@ -1,6 +1,5 @@
 package org.drools.rule.builder.dialect.java;
 
-import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -15,8 +14,12 @@ import org.drools.base.ClassObjectType;
 import org.drools.rule.Declaration;
 import org.drools.spi.PatternExtractor;
 import org.drools.util.StringUtils;
-import org.mvel.templates.*;
 import org.mvel.integration.impl.MapVariableResolverFactory;
+import org.mvel.templates.CompiledTemplate;
+import org.mvel.templates.SimpleTemplateRegistry;
+import org.mvel.templates.TemplateCompiler;
+import org.mvel.templates.TemplateRegistry;
+import org.mvel.templates.TemplateRuntime;
 
 public class AccumulateTemplateTest extends TestCase {
 

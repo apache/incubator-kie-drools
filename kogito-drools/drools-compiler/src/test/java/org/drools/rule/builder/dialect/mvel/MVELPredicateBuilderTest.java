@@ -20,7 +20,6 @@ import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.MockLeftTupleSink;
-import org.drools.reteoo.MockRightTupleSink;
 import org.drools.rule.Declaration;
 import org.drools.rule.Package;
 import org.drools.rule.Pattern;

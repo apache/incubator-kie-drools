@@ -2,14 +2,14 @@ package org.drools;
 
 global java.util.List results;
 
-declare OrderEvent {
-    role event
-}
+declare OrderEvent
+    @role( event )
+end
 
 rule "average over threshold"
 when
     Number( $avg : intValue >= 50 ) from accumulate(
-              OrderEvent( [ win:time(30000) ], $amt : total ),
+              OrderEvent( $amt : total ) with window:time(30000),
               average( $amt ) )
 then
     //System.out.println( "Over threshold: "+$avg );

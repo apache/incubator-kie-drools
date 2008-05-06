@@ -35,24 +35,27 @@ import org.drools.spi.Constraint.ConstraintType;
 
 public class Pattern
     implements
-    RuleConditionElement, Externalizable {
+    RuleConditionElement,
+    Externalizable {
     /**
      *
      */
     private static final long serialVersionUID = 400L;
-    private ObjectType  objectType;
-    private List        constraints      = Collections.EMPTY_LIST;
-    Declaration         declaration;
+    private ObjectType        objectType;
+    private List              constraints      = Collections.EMPTY_LIST;
+    private Declaration       declaration;
     private Map               declarations;
-    private int         index;
+    private int               index;
     private PatternSource     source;
+    private List<Behavior>    behaviors;
 
     // this is the offset of the related fact inside a tuple. i.e:
     // the position of the related fact inside the tuple;
     private int               offset;
 
     public Pattern() {
-        this(0, null);
+        this( 0,
+              null );
     }
 
     public Pattern(final int index,
@@ -104,24 +107,27 @@ public class Pattern
         }
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        objectType  = (ObjectType)in.readObject();
-        constraints = (List)in.readObject();
-        declaration =  (Declaration)in.readObject();
-        declarations = (Map)in.readObject();
-        index       = in.readInt();
-        source      = (PatternSource)in.readObject();
-        offset      = in.readInt();
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        objectType = (ObjectType) in.readObject();
+        constraints = (List) in.readObject();
+        declaration = (Declaration) in.readObject();
+        declarations = (Map) in.readObject();
+        behaviors = (List<Behavior>) in.readObject();
+        index = in.readInt();
+        source = (PatternSource) in.readObject();
+        offset = in.readInt();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(objectType);
-        out.writeObject(constraints);
-        out.writeObject(declaration);
-        out.writeObject(declarations);
-        out.writeInt(index);
-        out.writeObject(source);
-        out.writeInt(offset);
+        out.writeObject( objectType );
+        out.writeObject( constraints );
+        out.writeObject( declaration );
+        out.writeObject( declarations );
+        out.writeObject( behaviors );
+        out.writeInt( index );
+        out.writeObject( source );
+        out.writeInt( offset );
     }
 
     public Object clone() {
@@ -159,6 +165,12 @@ public class Pattern
                 clone.addConstraint( constraint );
             }
         }
+
+        if ( behaviors != null ) {
+            for ( Behavior behavior : this.behaviors ) {
+                clone.addBehavior( behavior );
+            }
+        }
         return clone;
     }
 
@@ -182,7 +194,7 @@ public class Pattern
         if ( this.constraints == Collections.EMPTY_LIST ) {
             this.constraints = new ArrayList( 1 );
         }
-        if( constraint.getType().equals( Constraint.ConstraintType.UNKNOWN ) ) {
+        if ( constraint.getType().equals( Constraint.ConstraintType.UNKNOWN ) ) {
             this.setConstraintType( (MutableTypeConstraint) constraint );
         }
         this.constraints.add( constraint );
@@ -259,6 +271,7 @@ public class Pattern
         result = PRIME * result + ((this.declaration == null) ? 0 : this.declaration.hashCode());
         result = PRIME * result + this.index;
         result = PRIME * result + ((this.objectType == null) ? 0 : this.objectType.hashCode());
+        result = PRIME * result + ((this.behaviors == null) ? 0 : this.behaviors.hashCode());
         result = PRIME * result + this.offset;
         result = PRIME * result + ((this.source == null) ? 0 : this.source.hashCode());
         return result;
@@ -276,6 +289,10 @@ public class Pattern
         final Pattern other = (Pattern) object;
 
         if ( !this.constraints.equals( other.constraints ) ) {
+            return false;
+        }
+
+        if ( this.behaviors != other.behaviors || (this.behaviors != null && !this.behaviors.equals( other.behaviors )) ) {
             return false;
         }
 
@@ -323,5 +340,29 @@ public class Pattern
 
         ConstraintType type = isAlphaConstraint ? ConstraintType.ALPHA : ConstraintType.BETA;
         constraint.setType( type );
+    }
+
+    /**
+     * @return the behaviors
+     */
+    public List<Behavior> getBehaviors() {
+        if ( this.behaviors == null ) {
+            return Collections.emptyList();
+        }
+        return this.behaviors;
+    }
+
+    /**
+     * @param behaviors the behaviors to set
+     */
+    public void setBehaviors(List<Behavior> behaviors) {
+        this.behaviors = behaviors;
+    }
+
+    public void addBehavior(Behavior behavior) {
+        if ( this.behaviors == null ) {
+            this.behaviors = new ArrayList<Behavior>();
+        }
+        this.behaviors.add( behavior );
     }
 }

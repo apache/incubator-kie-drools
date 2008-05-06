@@ -21,6 +21,7 @@ import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.builder.BuildContext;
+import org.drools.rule.Behavior;
 import org.drools.spi.PropagationContext;
 import org.drools.util.FactEntry;
 import org.drools.util.Iterator;
@@ -67,11 +68,13 @@ public class NotNode extends BetaNode {
                    final LeftTupleSource leftInput,
                    final ObjectSource rightInput,
                    final BetaConstraints joinNodeBinder,
+                   final Behavior[] behaviors,
                    final BuildContext context) {
         super( id,
                leftInput,
                rightInput,
-               joinNodeBinder );
+               joinNodeBinder,
+               behaviors );
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
     }
 

@@ -28,6 +28,7 @@ import org.drools.common.BetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.builder.BuildContext;
+import org.drools.rule.Behavior;
 import org.drools.rule.Collect;
 import org.drools.rule.ContextEntry;
 import org.drools.spi.AlphaNodeFieldConstraint;
@@ -79,13 +80,15 @@ public class CollectNode extends BetaNode
                        final AlphaNodeFieldConstraint[] resultConstraints,
                        final BetaConstraints sourceBinder,
                        final BetaConstraints resultsBinder,
+                       final Behavior[] behaviors,
                        final Collect collect,
                        final boolean unwrapRight,
                        final BuildContext context) {
         super( id,
                leftInput,
                rightInput,
-               sourceBinder );
+               sourceBinder,
+               behaviors );
         this.resultsBinder = resultsBinder;
         this.resultConstraints = resultConstraints;
         this.collect = collect;
