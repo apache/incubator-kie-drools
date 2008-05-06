@@ -51,6 +51,7 @@ public class OutputPersister {
 
     public void write() throws IOException {
         writeFactHandles( context );
+        context.stream.close();
     }
 
     public static void writeFactHandles(WMSerialisationOutContext context) throws IOException {
@@ -91,31 +92,12 @@ public class OutputPersister {
                                      context );
                     i++;
                 }
-            }
-            stream.writeInt( PersisterEnums.END );
-        }
-
-        // Write out LeftTuples
-        for ( Iterator it = wm.getObjectStore().iterateFactHandles(); it.hasNext(); ) {
-            InternalFactHandle handle = (InternalFactHandle) it.next();
-
-            if ( handle.getLeftTuple() != null ) {
-                stream.writeInt( PersisterEnums.LEFT_TUPLE );
-                int i = 0;
-                for ( LeftTuple leftTuple = handle.getLeftTuple(); leftTuple != null; leftTuple = (LeftTuple) leftTuple.getLeftParentNext() ) {
-                    if ( i != 0 ) {
-                        stream.writeInt( PersisterEnums.REPEAT );
-                    }
-
-                    stream.writeInt( leftTuple.getLeftTupleSink().getId() );
-                    stream.writeInt( leftTuple.getLastHandle().getId() );
-
-                    writeLeftTuple( leftTuple,
-                                    context );
-                }
+            } else {
                 stream.writeInt( PersisterEnums.END );
             }
         }
+
+        writeLeftTuples( context );
 
         writePropagationContexts( context );
 
@@ -131,6 +113,27 @@ public class OutputPersister {
         stream.writeInt( rightTuple.getRightTupleSink().getId() );
     }
 
+    public static void writeLeftTuples(WMSerialisationOutContext context) throws IOException {
+        ObjectOutputStream stream = context.stream;
+        InternalWorkingMemory wm = context.wm;
+
+        // Write out LeftTuples
+        for ( Iterator it = wm.getObjectStore().iterateFactHandles(); it.hasNext(); ) {
+            InternalFactHandle handle = (InternalFactHandle) it.next();
+
+            for ( LeftTuple leftTuple = handle.getLeftTuple(); leftTuple != null; leftTuple = (LeftTuple) leftTuple.getLeftParentNext() ) {
+                stream.writeInt( PersisterEnums.LEFT_TUPLE );
+
+                stream.writeInt( leftTuple.getLeftTupleSink().getId() );
+                stream.writeInt( leftTuple.getLastHandle().getId() );
+
+                writeLeftTuple( leftTuple,
+                                context );
+            }
+        }
+        stream.writeInt( PersisterEnums.END );
+    }
+
     public static void writeLeftTuple(LeftTuple leftTuple,
                                       WMSerialisationOutContext context) throws IOException {
         ObjectOutputStream stream = context.stream;
@@ -138,17 +141,10 @@ public class OutputPersister {
         InternalWorkingMemory wm = context.wm;
 
         LeftTupleSink sink = leftTuple.getLeftTupleSink();
-        stream.writeInt( sink.getId() );
 
         if ( sink instanceof JoinNode ) {
-            if ( leftTuple.getBetaChildren() != null ) {
-                stream.writeInt( PersisterEnums.RIGHT_TUPLE );
-            }
-            int i = 0;
             for ( LeftTuple childLeftTuple = leftTuple.getBetaChildren(); leftTuple != null; childLeftTuple = (LeftTuple) leftTuple.getLeftParentNext() ) {
-                if ( i != 0 ) {
-                    stream.writeInt( PersisterEnums.REPEAT );
-                }
+                stream.writeInt( PersisterEnums.RIGHT_TUPLE );
                 stream.writeInt( childLeftTuple.getLeftTupleSink().getId() );
                 stream.writeInt( childLeftTuple.getRightParent().getFactHandle().getId() );
                 writeLeftTuple( childLeftTuple,
@@ -160,12 +156,8 @@ public class OutputPersister {
                 // is blocked so has children
                 stream.writeInt( PersisterEnums.LEFT_TUPLE_NOT_BLOCKED );
 
-                stream.writeInt( PersisterEnums.LEFT_TUPLE );
-                int i = 0;
                 for ( LeftTuple childLeftTuple = leftTuple.getBetaChildren(); leftTuple != null; childLeftTuple = (LeftTuple) leftTuple.getLeftParentNext() ) {
-                    if ( i != 0 ) {
-                        stream.writeInt( PersisterEnums.REPEAT );
-                    }
+                    stream.writeInt( PersisterEnums.LEFT_TUPLE );
                     stream.writeInt( childLeftTuple.getLeftTupleSink().getId() );
                     writeLeftTuple( childLeftTuple,
                                     context );
@@ -189,20 +181,15 @@ public class OutputPersister {
 
         Map<LeftTuple, Integer> tuples = context.terminalTupleMap;
         if ( !tuples.isEmpty() ) {
-            stream.writeInt( PersisterEnums.ACTIVATION );
-        }
-
-        int i = 0;
-        for ( LeftTuple leftTuple : tuples.keySet() ) {
-            if ( i != 0 ) {
-                stream.writeInt( PersisterEnums.REPEAT );
+            for ( LeftTuple leftTuple : tuples.keySet() ) {
+                stream.writeInt( PersisterEnums.ACTIVATION );
+                writeActivation( context,
+                                 leftTuple,
+                                 (AgendaItem) leftTuple.getActivation(),
+                                 (RuleTerminalNode) leftTuple.getLeftTupleSink() );
             }
-            writeActivation( context,
-                             leftTuple,
-                             (AgendaItem) leftTuple.getActivation(),
-                             (RuleTerminalNode) leftTuple.getLeftTupleSink() );
-            i++;
         }
+        stream.writeInt( PersisterEnums.END );
     }
 
     public static void writeActivation(WMSerialisationOutContext context,
@@ -218,12 +205,10 @@ public class OutputPersister {
         stream.writeInt( agendaItem.getSalience() );
 
         Rule rule = agendaItem.getRule();
-        stream.writeChars( rule.getPackage() );
-        stream.writeChars( rule.getName() );
+        stream.writeUTF( rule.getPackage() );
+        stream.writeUTF( rule.getName() );
 
         stream.writeLong( agendaItem.getPropagationContext().getPropagationNumber() );
-
-        stream.writeInt( ruleTerminalNode.getId() );
 
         stream.writeBoolean( agendaItem.isActivated() );
     }
@@ -233,24 +218,18 @@ public class OutputPersister {
 
         Map<LeftTuple, Integer> tuples = context.terminalTupleMap;
         if ( !tuples.isEmpty() ) {
-            stream.writeInt( PersisterEnums.PROPAGATION_CONTEXT );
-        }
+            Map<Long, PropagationContext> pcMap = new HashMap<Long, PropagationContext>();
 
-        Map<Long, PropagationContext> pcMap = new HashMap<Long, PropagationContext>();
-
-        int i = 0;
-        for ( LeftTuple leftTuple : tuples.keySet() ) {
-            if ( i != 0 ) {
-                stream.writeInt( PersisterEnums.REPEAT );
+            for ( LeftTuple leftTuple : tuples.keySet() ) {
+                PropagationContext pc = leftTuple.getActivation().getPropagationContext();
+                if ( !pcMap.containsKey( pc.getPropagationNumber() ) ) {
+                    stream.writeInt( PersisterEnums.PROPAGATION_CONTEXT );
+                    writePropagationContext( context,
+                                             pc );
+                    pcMap.put( pc.getPropagationNumber(),
+                               pc );
+                }
             }
-            PropagationContext pc = leftTuple.getActivation().getPropagationContext();
-            if ( !pcMap.containsKey( pc.getPropagationNumber() ) ) {
-                writePropagationContext( context,
-                                         pc );
-                pcMap.put( pc.getPropagationNumber(),
-                           pc );
-            }
-            i++;
         }
 
         stream.writeInt( PersisterEnums.END );
@@ -280,6 +259,7 @@ public class OutputPersister {
             stream.writeBoolean( false );
         }
 
+        stream.writeLong( pc.getPropagationNumber() );
         stream.writeInt( pc.getFactHandleOrigin().getId() );
 
         stream.writeInt( pc.getActiveActivations() );
@@ -287,88 +267,4 @@ public class OutputPersister {
 
         stream.writeUTF( pc.getEntryPoint().getEntryPointId() );
     }
-
-    //    public void writeParentActivations(Activation[] activations) throws IOException {
-    //        //        // we do these first as we know the parent Activation is null
-    //        //        // first create placeholders for rules
-    //        //        
-    //        //        for ( int i = 0, length = activations.length; i < length; i++ ){                
-    //        //            AgendaItem item = ( AgendaItem ) activations[i];
-    //        //            // this is a parent activation that has had it's resources released, so write first
-    //        //            if ( item.getPropagationContext().getActivationOrigin() == null ) {
-    //        //                writeActivation( item );
-    //        //            }
-    //        //            PlaceholderEntry placeHolder = this.placeholders.assignPlaceholder( item.getRule(), RulePersisterKey.getInstace() );               
-    //        //            RulePersisterKey.getInstace().writeExternal( item.getRule(), placeHolder, this.stream );
-    //        //            
-    //        //            // writeout Activation on PropagationContext
-    //        //            item = ( AgendaItem ) item.getPropagationContext().getActivationOrigin();
-    //        //            Rule rule = item.getPropagationContext().getRuleOrigin();
-    //        //        }           
-    //    }
-    //
-    ////    public void writeActivations(InternalWorkingMemory wm) throws IOException {
-    ////        //        BinaryHeapQueueAgendaGroup[] groups = ( BinaryHeapQueueAgendaGroup[] ) wm.getAgenda().getAgendaGroups();
-    ////        //        for ( int i = 0, iLength = groups.length; i < iLength; i++ ) {
-    ////        //            BinaryHeapQueueAgendaGroup group = groups[i];
-    ////        //            this.stream.writeInt( group.size() );
-    ////        //            this.stream.writeChars( group.getName() );      
-    ////        //            
-    ////        //            writeActivations( groups[i].getActivations() );
-    ////        //        }
-    ////    }
-    //
-    //    public void writeActivation(Activation[] activations) throws IOException {
-    //        //        // first create placeholders for rules, need to count rules first
-    //        //        int count =  0;
-    //        //        RulePersisterKey ruleKey = RulePersisterKey.getInstace() ;
-    //        //        for ( int i = 0, length = activations.length; i < length; i++ ){                
-    //        //            AgendaItem item = ( AgendaItem ) activations[i];    
-    //        //            
-    //        //            Rule rule = item.getRule();
-    //        //            if ( this.placeholders.lookupPlaceholder(  rule, ruleKey) == null ) {
-    //        //                this.placeholders.assignPlaceholder( rule, ruleKey );
-    //        //                count++;
-    //        //            }
-    //        //            
-    //        //            Rule rule = item.getPropagationContext().getRuleOrigin()
-    //        //            
-    //        //            // writeout Activation on PropagationContext
-    //        //            item = ( AgendaItem ) item.getPropagationContext().getActivationOrigin();
-    //        //            Rule rule = item.getPropagationContext().getRuleOrigin();
-    //        //        }   
-    //        //        
-    //        //        // write our activations
-    //        //        for ( int j = 0, jLength = group.size(); j < jLength; j++ ){                
-    //        //            AgendaItem item = ( AgendaItem ) activations[i];                
-    //        //            writeTuple( ( ReteTuple ) item.getTuple() );
-    //        //            this.stream.writeInt( this.placeholders.assignPlaceholder( item.getRule(), RulePersisterKey.getInstace() ).id );
-    //        //            this.stream.write(  item.getSalience()  );
-    //        //        }          
-    //    }
-    //
-    //    public void writeTuple(LeftTuple tuple) throws IOException {
-    //        //        tuple.writeExternal( this.stream );
-    //        //        LeftTuple leftParent = tuple;
-    //        //        LeftTuple child = tuple.getBetaChildren();
-    //        //        RightTuple rightParent = child.getRightParent();
-    //
-    //        //        int size = 0;        
-    //        //        LeftTuple entry = tuple;
-    //        //        while ( entry != null ) {
-    //        //            size++;
-    //        //            entry = entry.getParent();
-    //        //        }
-    //        //        
-    //        //        this.stream.writeInt( size );
-    //        //        while ( entry != null ) {
-    //        //            this.stream.writeLong( entry.getLastHandle().getId() );
-    //        //            entry = entry.getParent();
-    //        //        }        
-    //    }
-
-    //    public OutputPersister(WorkingMemory workingMemory) {
-    //        BinaryHeapQueueAgendaGroup[] groups = ( BinaryHeapQueueAgendaGroup[] ) workingMemory.getAgenda().getAgendaGroups();
-    //        
-    //    }
 }
