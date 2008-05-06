@@ -264,8 +264,8 @@ public class DynamicRulesTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicFunction1.drl" ) ) );
 
         //FIXME JBRULES-1258 serialising a package breaks function removal -- left the serialisation commented out for now
-        //final Package pkg = SerializationHelper.serializeObject( builder.getPackage() );
-        final Package pkg = builder.getPackage();
+        final Package pkg = SerializationHelper.serializeObject( builder.getPackage() );
+        //final Package pkg = builder.getPackage();
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );

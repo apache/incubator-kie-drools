@@ -21,6 +21,10 @@ public class MockRightTupleSink
     
     public List getRetracted() {
         return this.retracted;
+    }
+
+    public int getId() {
+        return 0;
     }    
 
 }
