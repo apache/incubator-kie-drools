@@ -51,13 +51,13 @@ public abstract class AbstractFactHandleFactory
 
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        id  = (AtomicInteger) in.readObject();
-        counter = (AtomicLong) in.readObject();
+        this.id = new AtomicInteger( in.readInt() );
+        this.counter = new AtomicLong( in.readLong() );
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(id);
-        out.writeObject(counter);
+        out.writeInt(id.get());
+        out.writeLong(counter.get());
     }
 
     /* (non-Javadoc)

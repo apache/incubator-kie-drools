@@ -8,8 +8,10 @@ import java.util.Map;
 import org.drools.base.ClassObjectType;
 import org.drools.common.AgendaItem;
 import org.drools.common.BaseNode;
+import org.drools.common.BinaryHeapQueueAgendaGroup;
 import org.drools.common.DefaultAgenda;
 import org.drools.common.DefaultFactHandle;
+import org.drools.common.InternalAgendaGroup;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
@@ -36,6 +38,7 @@ import org.drools.rule.GroupElement;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
+import org.drools.spi.AgendaGroup;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
 import org.drools.util.BinaryHeapQueue;
@@ -57,6 +60,7 @@ public class InputPersister {
     public InternalWorkingMemory read() throws IOException,
                                        ClassNotFoundException {
         readFactHandles( context );
+        context.stream.close();
         return context.wm;
     }
 
@@ -64,7 +68,7 @@ public class InputPersister {
                                                                         ClassNotFoundException {
         ObjectInputStream stream = context.stream;
         InternalRuleBase ruleBase = context.ruleBase;
-        
+
         PlaceholderResolverStrategyFactory resolverStrategyFactory = context.resolverStrategyFactory;
 
         ReteooFactHandleFactory factHandleFactory = new ReteooFactHandleFactory();
@@ -85,10 +89,10 @@ public class InputPersister {
             int id = stream.readInt();
             long recency = stream.readLong();
             PlaceholderResolverStrategy strategy = resolverStrategyFactory.get( null );
-//            ObjectPlaceholder placeHolder = strategy.read( stream );
-//
-//            Object object = placeHolder.resolveObject();
-            Object object = null;
+            ObjectPlaceholder placeHolder = strategy.read( stream );
+
+            Object object = placeHolder.resolveObject();
+
             InternalFactHandle handle = new DefaultFactHandle( id,
                                                                object,
                                                                recency );
@@ -123,28 +127,15 @@ public class InputPersister {
                      false );
         }
 
-        //        type = stream.readInt();
-        //        if ( type == PersisterEnums.LEFT_TUPLE ) {
-        //            type = PersisterEnums.REPEAT;
-        //            while ( type == PersisterEnums.REPEAT ) {
-        //                LeftTupleSink sink = (LeftTupleSink) sinks.get( stream.readInt() );
-        //                int factHandleId = stream.readInt();
-        //                LeftTuple leftTuple = new LeftTuple( context.handles[factHandleId],
-        //                                                     sink,
-        //                                                     true );
-        //                readLeftTuple( leftTuple,
-        //                               context );
-        //            }
-        //        }
-        //
-        //        readPropagationContexts( context );
+        readLeftTuples( context );
 
-        //        readActivations( context );        
+        readPropagationContexts( context );
+
+        readActivations( context );
     }
 
     public static void readRightTuple(WMSerialisationInContext context,
-                                      InternalFactHandle factHandle) throws IOException,
-                                                                    ClassNotFoundException {
+                                      InternalFactHandle factHandle) throws IOException {
         ObjectInputStream stream = context.stream;
 
         RightTupleSink sink = (RightTupleSink) context.sinks.get( stream.readInt() );
@@ -159,10 +150,23 @@ public class InputPersister {
 
         memory.getRightTupleMemory().add( rightTuple );
     }
+    
+    public static void readLeftTuples(WMSerialisationInContext context)  throws IOException {
+        ObjectInputStream stream = context.stream;
+        
+        while ( stream.readInt() == PersisterEnums.LEFT_TUPLE ) {
+            LeftTupleSink sink = (LeftTupleSink) context.sinks.get( stream.readInt() );
+            int factHandleId = stream.readInt();
+            LeftTuple leftTuple = new LeftTuple( context.handles.get( factHandleId ),
+                                                 sink,
+                                                 true );
+            readLeftTuple( leftTuple,
+                           context );
+        }
+    }
 
     public static void readLeftTuple(LeftTuple parentLeftTuple,
-                                     WMSerialisationInContext context) throws IOException,
-                                                                      ClassNotFoundException {
+                                     WMSerialisationInContext context) throws IOException {
         ObjectInputStream stream = context.stream;
         InternalRuleBase ruleBase = context.ruleBase;
         InternalWorkingMemory wm = context.wm;
@@ -174,41 +178,35 @@ public class InputPersister {
             BetaMemory memory = (BetaMemory) context.wm.getNodeMemory( (BetaNode) sink );
             memory.getLeftTupleMemory().add( parentLeftTuple );
 
-            int type = stream.readInt();
-            if ( type == PersisterEnums.RIGHT_TUPLE ) {
-                type = PersisterEnums.REPEAT;
-                while ( type == PersisterEnums.REPEAT ) {
-                    LeftTupleSink childSink = (LeftTupleSink) sinks.get( stream.readInt() );
-                    int factHandleId = stream.readInt();
-                    RightTupleKey key = new RightTupleKey( factHandleId,
-                                                           sink );
-                    RightTuple rightTuple = context.rightTuples.get( key );
-                    LeftTuple childLeftTuple = new LeftTuple( parentLeftTuple,
-                                                              rightTuple,
-                                                              childSink,
-                                                              true );
-                    readLeftTuple( childLeftTuple,
-                                   context );
-                }
+            while ( stream.readInt() == PersisterEnums.RIGHT_TUPLE ) {
+                LeftTupleSink childSink = (LeftTupleSink) sinks.get( stream.readInt() );
+                int factHandleId = stream.readInt();
+                RightTupleKey key = new RightTupleKey( factHandleId,
+                                                       sink );
+                RightTuple rightTuple = context.rightTuples.get( key );
+                LeftTuple childLeftTuple = new LeftTuple( parentLeftTuple,
+                                                          rightTuple,
+                                                          childSink,
+                                                          true );
+                readLeftTuple( childLeftTuple,
+                               context );
             }
+
         } else if ( sink instanceof NotNode ) {
             BetaMemory memory = (BetaMemory) context.wm.getNodeMemory( (BetaNode) sink );
             int type = stream.readInt();
             if ( type == PersisterEnums.LEFT_TUPLE_NOT_BLOCKED ) {
                 memory.getLeftTupleMemory().add( parentLeftTuple );
 
-                type = stream.readInt();
-                if ( type == PersisterEnums.LEFT_TUPLE ) {
-                    type = PersisterEnums.REPEAT;
-                    while ( type == PersisterEnums.REPEAT ) {
-                        LeftTupleSink childSink = (LeftTupleSink) sinks.get( stream.readInt() );
-                        LeftTuple childLeftTuple = new LeftTuple( parentLeftTuple,
-                                                                  childSink,
-                                                                  true );
-                        readLeftTuple( childLeftTuple,
-                                       context );
-                    }
+                while ( stream.readInt() == PersisterEnums.LEFT_TUPLE ) {
+                    LeftTupleSink childSink = (LeftTupleSink) sinks.get( stream.readInt() );
+                    LeftTuple childLeftTuple = new LeftTuple( parentLeftTuple,
+                                                              childSink,
+                                                              true );
+                    readLeftTuple( childLeftTuple,
+                                   context );
                 }
+
             } else {
                 int factHandleId = stream.readInt();
                 RightTupleKey key = new RightTupleKey( factHandleId,
@@ -233,21 +231,15 @@ public class InputPersister {
         }
     }
 
-    public static void readActivations(WMSerialisationInContext context) throws IOException,
-                                                                        ClassNotFoundException {
+    public static void readActivations(WMSerialisationInContext context) throws IOException {
         ObjectInputStream stream = context.stream;
 
-        int type = stream.readInt();
-        if ( type == PersisterEnums.ACTIVATION ) {
-            type = PersisterEnums.REPEAT;
-            while ( type == PersisterEnums.REPEAT ) {
-                readActivation( context );
-            }
+        while ( stream.readInt() == PersisterEnums.ACTIVATION ) {
+            readActivation( context );
         }
     }
 
-    public static Activation readActivation(WMSerialisationInContext context) throws IOException,
-                                                                             ClassNotFoundException {
+    public static Activation readActivation(WMSerialisationInContext context) throws IOException {
         ObjectInputStream stream = context.stream;
         InternalRuleBase ruleBase = context.ruleBase;
         InternalWorkingMemory wm = context.wm;
@@ -259,12 +251,12 @@ public class InputPersister {
         int salience = stream.readInt();
 
         //PropagationContext context,
-        String pkgName = (String) stream.readObject();
-        String ruleName = (String) stream.readObject();
+        String pkgName = stream.readUTF();
+        String ruleName = stream.readUTF();
         Package pkg = ruleBase.getPackage( pkgName );
         Rule rule = pkg.getRule( ruleName );
 
-        RuleTerminalNode ruleTerminalNode = (RuleTerminalNode) context.sinks.get( stream.readInt() );
+        RuleTerminalNode ruleTerminalNode = (RuleTerminalNode) leftTuple.getLeftTupleSink();
         GroupElement subRule = ruleTerminalNode.getSubRule();
 
         PropagationContext pc = context.propagationContexts.get( stream.readLong() );
@@ -279,29 +271,33 @@ public class InputPersister {
         boolean activated = stream.readBoolean();
         activation.setActivated( activated );
         if ( activated ) {
-            String agendaGroupName = (String) stream.readObject();
-            BinaryHeapQueue agendaGroup = (BinaryHeapQueue) ((DefaultAgenda) wm.getAgenda()).getAgendaGroup( agendaGroupName );
-            agendaGroup.enqueue( activation );
+            InternalAgendaGroup agendaGroup;
+            if ( rule.getAgendaGroup() == null || rule.getAgendaGroup().equals( "" ) || rule.getAgendaGroup().equals( AgendaGroup.MAIN ) ) {
+                // Is the Rule AgendaGroup undefined? If it is use MAIN,
+                // which is added to the Agenda by default
+                agendaGroup = (InternalAgendaGroup) wm.getAgenda().getAgendaGroup( AgendaGroup.MAIN );
+            } else {
+                // AgendaGroup is defined, so try and get the AgendaGroup
+                // from the Agenda
+                agendaGroup = (InternalAgendaGroup) wm.getAgenda().getAgendaGroup( rule.getAgendaGroup() );
+            }
+
+            agendaGroup.add( activation );
         }
 
         return activation;
     }
 
-    public static void readPropagationContexts(WMSerialisationInContext context) throws IOException,
-                                                                                ClassNotFoundException {
+    public static void readPropagationContexts(WMSerialisationInContext context) throws IOException {
         ObjectInputStream stream = context.stream;
 
-        int type = stream.readInt();
-        if ( type == PersisterEnums.PROPAGATION_CONTEXT ) {
-            type = PersisterEnums.REPEAT;
-            while ( type == PersisterEnums.REPEAT ) {
-                readPropagationContext( context );
-            }
+        while ( stream.readInt() == PersisterEnums.PROPAGATION_CONTEXT ) {
+            readPropagationContext( context );
         }
+
     }
 
-    public static void readPropagationContext(WMSerialisationInContext context) throws IOException,
-                                                                               ClassNotFoundException {
+    public static void readPropagationContext(WMSerialisationInContext context) throws IOException {
         ObjectInputStream stream = context.stream;
         InternalRuleBase ruleBase = context.ruleBase;
         InternalWorkingMemory wm = context.wm;
@@ -348,22 +344,4 @@ public class InputPersister {
         context.propagationContexts.put( propagationNumber,
                                          pc );
     }
-
-    //
-    //    public long getLastId() {
-    //        return lastId;
-    //    }
-    //
-    //    public long getLastRecency() {
-    //        return lastRecency;
-    //    }
-    //
-    //    public InternalFactHandle[] getHandles() {
-    //        return handles;
-    //    }
-    //
-    //    public int getSize() {
-    //        return this.size;
-    //    }
-
 }
