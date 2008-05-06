@@ -103,15 +103,8 @@ public class InputPersister {
             context.wm.getObjectStore().addHandle( handle,
                                                    object );
 
-            int type = stream.readInt();
-            if ( type == PersisterEnums.RIGHT_TUPLE ) {
-                type = PersisterEnums.REPEAT;
-                while ( type == PersisterEnums.REPEAT ) {
-                    readRightTuple( context,
-                                    handle );
-                    type = stream.readInt();
-                }
-            }
+            readRightTuples( handle,
+                             context );
         }
 
         EntryPointNode node = ruleBase.getRete().getEntryPointNode( EntryPoint.DEFAULT );
@@ -134,6 +127,15 @@ public class InputPersister {
         readActivations( context );
     }
 
+    public static void readRightTuples(InternalFactHandle factHandle,
+                                       WMSerialisationInContext context) throws IOException {
+        ObjectInputStream stream = context.stream;
+        while ( stream.readInt() == PersisterEnums.RIGHT_TUPLE ) {
+            readRightTuple( context,
+                            factHandle );
+        }
+    }
+
     public static void readRightTuple(WMSerialisationInContext context,
                                       InternalFactHandle factHandle) throws IOException {
         ObjectInputStream stream = context.stream;
@@ -150,10 +152,10 @@ public class InputPersister {
 
         memory.getRightTupleMemory().add( rightTuple );
     }
-    
-    public static void readLeftTuples(WMSerialisationInContext context)  throws IOException {
+
+    public static void readLeftTuples(WMSerialisationInContext context) throws IOException {
         ObjectInputStream stream = context.stream;
-        
+
         while ( stream.readInt() == PersisterEnums.LEFT_TUPLE ) {
             LeftTupleSink sink = (LeftTupleSink) context.sinks.get( stream.readInt() );
             int factHandleId = stream.readInt();
@@ -268,6 +270,8 @@ public class InputPersister {
                                                 rule,
                                                 subRule );
 
+        leftTuple.setActivation( activation );
+        
         boolean activated = stream.readBoolean();
         activation.setActivated( activated );
         if ( activated ) {
@@ -317,11 +321,13 @@ public class InputPersister {
             int tuplePos = stream.readInt();
             leftTuple = (LeftTuple) context.terminalTupleMap.get( tuplePos );
         }
-
+        
+        long propagationNumber = stream.readLong();
+        
         int factHandleId = stream.readInt();
         InternalFactHandle factHandle = context.handles.get( factHandleId );
 
-        long propagationNumber = stream.readLong();
+
         int activeActivations = stream.readInt();
         int dormantActivations = stream.readInt();
         String entryPointId = stream.readUTF();

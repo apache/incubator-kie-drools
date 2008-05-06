@@ -80,21 +80,8 @@ public class OutputPersister {
             strategy.write( stream,
                             object );
 
-            // Write out RightTuples for FactHandle
-            if ( handle.getRightTuple() != null ) {
-                stream.writeInt( PersisterEnums.RIGHT_TUPLE );
-                int i = 0;
-                for ( RightTuple rightTuple = handle.getRightTuple(); rightTuple != null; rightTuple = (RightTuple) rightTuple.getHandleNext() ) {
-                    if ( i != 0 ) {
-                        stream.writeInt( PersisterEnums.REPEAT );
-                    }
-                    writeRightTuple( rightTuple,
-                                     context );
-                    i++;
-                }
-            } else {
-                stream.writeInt( PersisterEnums.END );
-            }
+            writeRightTuples( handle,
+                              context );
         }
 
         writeLeftTuples( context );
@@ -103,6 +90,17 @@ public class OutputPersister {
 
         writeActivations( context );
 
+        stream.writeInt( PersisterEnums.END );
+    }
+
+    public static void writeRightTuples(InternalFactHandle handle,
+                                        WMSerialisationOutContext context) throws IOException {
+        ObjectOutputStream stream = context.stream;
+        for ( RightTuple rightTuple = handle.getRightTuple(); rightTuple != null; rightTuple = (RightTuple) rightTuple.getHandleNext() ) {
+            stream.writeInt( PersisterEnums.RIGHT_TUPLE );
+            writeRightTuple( rightTuple,
+                             context );
+        }
         stream.writeInt( PersisterEnums.END );
     }
 
