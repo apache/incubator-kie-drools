@@ -30,6 +30,7 @@ import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.PropagationContextImpl;
 import org.drools.reteoo.CollectNode.CollectMemory;
 import org.drools.reteoo.builder.BuildContext;
+import org.drools.rule.Behavior;
 import org.drools.rule.Collect;
 import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
@@ -98,6 +99,7 @@ public class CollectNodeTest extends DroolsTestCase {
                                      new AlphaNodeFieldConstraint[0],
                                      EmptyBetaConstraints.getInstance(),
                                      EmptyBetaConstraints.getInstance(),
+                                     Behavior.EMPTY_BEHAVIOR_LIST,
                                      this.collect,
                                      false,
                                      buildContext );
@@ -419,6 +421,7 @@ public class CollectNodeTest extends DroolsTestCase {
                                                          new AlphaNodeFieldConstraint[0],
                                                          EmptyBetaConstraints.getInstance(),
                                                          EmptyBetaConstraints.getInstance(),
+                                                         Behavior.EMPTY_BEHAVIOR_LIST,
                                                          this.collect,
                                                          false,
                                                          buildContext );

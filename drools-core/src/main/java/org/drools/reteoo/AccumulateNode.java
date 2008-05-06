@@ -29,6 +29,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Accumulate;
+import org.drools.rule.Behavior;
 import org.drools.rule.ContextEntry;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
@@ -64,13 +65,15 @@ public class AccumulateNode extends BetaNode {
                           final AlphaNodeFieldConstraint[] resultConstraints,
                           final BetaConstraints sourceBinder,
                           final BetaConstraints resultBinder,
+                          final Behavior[] behaviors,
                           final Accumulate accumulate,
                           final boolean unwrapRightObject,
                           final BuildContext context) {
         super( id,
                leftInput,
                rightInput,
-               sourceBinder );
+               sourceBinder,
+               behaviors );
         this.resultBinder = resultBinder;
         this.resultConstraints = resultConstraints;
         this.accumulate = accumulate;

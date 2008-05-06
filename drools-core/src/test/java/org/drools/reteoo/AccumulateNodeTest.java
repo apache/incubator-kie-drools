@@ -29,6 +29,7 @@ import org.drools.common.PropagationContextImpl;
 import org.drools.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Accumulate;
+import org.drools.rule.Behavior;
 import org.drools.rule.Declaration;
 import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
@@ -94,6 +95,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
                                         new AlphaNodeFieldConstraint[0],
                                         EmptyBetaConstraints.getInstance(),
                                         EmptyBetaConstraints.getInstance(),
+                                        Behavior.EMPTY_BEHAVIOR_LIST,
                                         this.accumulate,
                                         false,
                                         buildContext );
@@ -430,6 +432,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
                                                                   new AlphaNodeFieldConstraint[0],
                                                                   EmptyBetaConstraints.getInstance(),
                                                                   EmptyBetaConstraints.getInstance(),
+                                                                  Behavior.EMPTY_BEHAVIOR_LIST,
                                                                   this.accumulate,
                                                                   false,
                                                                   buildContext );
@@ -459,6 +462,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
                                         new AlphaNodeFieldConstraint[0],
                                         EmptyBetaConstraints.getInstance(),
                                         EmptyBetaConstraints.getInstance(),
+                                        Behavior.EMPTY_BEHAVIOR_LIST,
                                         this.accumulate,
                                         false,
                                         buildContext );

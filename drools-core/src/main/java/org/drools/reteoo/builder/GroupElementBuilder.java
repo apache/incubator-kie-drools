@@ -32,6 +32,7 @@ import org.drools.reteoo.NotNode;
 import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.RightInputAdapterNode;
 import org.drools.reteoo.LeftTupleSource;
+import org.drools.rule.Behavior;
 import org.drools.rule.GroupElement;
 import org.drools.rule.RuleConditionElement;
 
@@ -135,6 +136,7 @@ public class GroupElementBuilder
                                                                                           context.getTupleSource(),
                                                                                           context.getObjectSource(),
                                                                                           betaConstraints,
+                                                                                          Behavior.EMPTY_BEHAVIOR_LIST,
                                                                                           context ) ) );
                     context.setBetaconstraints( null );
                     context.setObjectSource( null );
@@ -242,6 +244,7 @@ public class GroupElementBuilder
                                                                                  context.getTupleSource(),
                                                                                  context.getObjectSource(),
                                                                                  betaConstraints,
+                                                                                 Behavior.EMPTY_BEHAVIOR_LIST,
                                                                                  context ) ) );
             context.setBetaconstraints( null );
             context.setObjectSource( null );
@@ -320,6 +323,7 @@ public class GroupElementBuilder
                                                                                     context.getTupleSource(),
                                                                                     context.getObjectSource(),
                                                                                     betaConstraints,
+                                                                                    Behavior.EMPTY_BEHAVIOR_LIST,
                                                                                     context ) ) );
             context.setBetaconstraints( null );
             context.setObjectSource( null );

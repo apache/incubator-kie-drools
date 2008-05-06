@@ -3,7 +3,6 @@ package org.drools.process.builder;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.drools.compiler.Dialect;
 import org.drools.compiler.ReturnValueDescr;

@@ -38,6 +38,7 @@ import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
 import org.drools.base.evaluators.Operator;
 import org.drools.common.EmptyBetaConstraints;
 import org.drools.reteoo.builder.BuildContext;
+import org.drools.rule.Behavior;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Query;
 import org.drools.spi.Evaluator;
@@ -122,6 +123,7 @@ public class QueryTerminalNodeTest extends TestCase {
                                                 liaNode,
                                                 alphaNode,
                                                 EmptyBetaConstraints.getInstance(),
+                                                Behavior.EMPTY_BEHAVIOR_LIST,
                                                 buildContext );
         joinNode.attach();
 

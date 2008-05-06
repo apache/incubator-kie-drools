@@ -26,6 +26,7 @@ import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.RightInputAdapterNode;
 import org.drools.reteoo.LeftTupleSource;
 import org.drools.rule.Accumulate;
+import org.drools.rule.Behavior;
 import org.drools.rule.RuleConditionElement;
 import org.drools.spi.AlphaNodeFieldConstraint;
 
@@ -97,6 +98,7 @@ public class AccumulateBuilder
                                                                                     (AlphaNodeFieldConstraint[]) resultAlphaConstraints.toArray( new AlphaNodeFieldConstraint[resultAlphaConstraints.size()] ),
                                                                                     sourceBinder,
                                                                                     resultsBinder,
+                                                                                    Behavior.EMPTY_BEHAVIOR_LIST,
                                                                                     accumulate,
                                                                                     existSubNetwort,
                                                                                     context ) ) );

@@ -859,6 +859,14 @@ pattern_source returns [BaseDescr d]
 	}
 	:	
 		u=lhs_pattern { $d = $u.d; } 
+		(       WITH 
+		(WINDOW COLON type=identifier param=paren_chunk
+		        {
+		                SlidingWindowDescr window = new SlidingWindowDescr( $type.text, getString( $param.text ).trim() );
+		                ((PatternDescr)$d).addBehavior( window );
+		        } 
+		)+
+		)?
 		(
 		        // THIS IS SIMPLY DUMB IMO, but it was the only way I could make it work... :( not sure if it is an 
 		        // ANTLR bug or if I'm doing something wrong.
@@ -1922,6 +1930,10 @@ WHEN    :	'when';
 THEN	:    	'then';
 
 END     :	'end';
+
+WITH	:	'with';
+
+WINDOW	:	'window';
 
 ID	
 	:	('a'..'z'|'A'..'Z'|'_'|'$'|'\u00c0'..'\u00ff')('a'..'z'|'A'..'Z'|'_'|'0'..'9'|'\u00c0'..'\u00ff')* 

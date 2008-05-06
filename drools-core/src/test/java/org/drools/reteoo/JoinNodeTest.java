@@ -30,6 +30,7 @@ import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.PropagationContextImpl;
 import org.drools.reteoo.builder.BuildContext;
+import org.drools.rule.Behavior;
 import org.drools.rule.Rule;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.MockConstraint;
@@ -76,6 +77,7 @@ public class JoinNodeTest extends DroolsTestCase {
                                   this.objectSource,
                                   new DefaultBetaConstraints( new BetaNodeFieldConstraint[]{this.constraint},
                                                               configuration ),
+                                  Behavior.EMPTY_BEHAVIOR_LIST,
                                   buildContext );
 
         this.node.addTupleSink( this.sink );
@@ -137,6 +139,7 @@ public class JoinNodeTest extends DroolsTestCase {
                                                 tupleSource,
                                                 objectSource,
                                                 EmptyBetaConstraints.getInstance(),
+                                                Behavior.EMPTY_BEHAVIOR_LIST,
                                                 buildContext );
 
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( joinNode );
@@ -209,6 +212,7 @@ public class JoinNodeTest extends DroolsTestCase {
                                   this.objectSource,
                                   new DefaultBetaConstraints( new BetaNodeFieldConstraint[]{this.constraint},
                                                               conf ),
+                                  Behavior.EMPTY_BEHAVIOR_LIST,
                                   buildContext );
 
         this.node.addTupleSink( this.sink );
@@ -483,6 +487,7 @@ public class JoinNodeTest extends DroolsTestCase {
                                                 this.tupleSource,
                                                 this.objectSource,
                                                 EmptyBetaConstraints.getInstance(),
+                                                Behavior.EMPTY_BEHAVIOR_LIST,
                                                 buildContext );
 
         // Add the first tuple sink and assert a tuple and object

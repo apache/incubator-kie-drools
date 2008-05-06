@@ -16,11 +16,11 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-import java.util.ArrayList;
-import java.util.List;
-import java.io.ObjectOutput;
 import java.io.IOException;
 import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.common.BaseNode;
@@ -28,6 +28,7 @@ import org.drools.common.BetaConstraints;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
+import org.drools.rule.Behavior;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
 import org.drools.util.LinkedList;
@@ -51,26 +52,31 @@ public abstract class BetaNode extends LeftTupleSource
     ObjectSinkNode,
     RightTupleSink,
     NodeMemory {
+    
+    public static final Behavior[] NO_BEHAVIORS = new Behavior[0];
+    
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
 
     /** The left input <code>TupleSource</code>. */
-    protected LeftTupleSource   leftInput;
+    protected LeftTupleSource leftInput;
 
     /** The right input <code>TupleSource</code>. */
-    protected ObjectSource      rightInput;
+    protected ObjectSource    rightInput;
 
-    protected BetaConstraints   constraints;
+    protected BetaConstraints constraints;
 
-    private LeftTupleSinkNode   previousTupleSinkNode;
-    private LeftTupleSinkNode   nextTupleSinkNode;
+    protected Behavior[]      behaviors = NO_BEHAVIORS;
 
-    private ObjectSinkNode previousObjectSinkNode;
-    private ObjectSinkNode nextObjectSinkNode;
+    private LeftTupleSinkNode previousTupleSinkNode;
+    private LeftTupleSinkNode nextTupleSinkNode;
 
-    protected boolean           objectMemory = true;   // hard coded to true
-    protected boolean           tupleMemoryEnabled;
+    private ObjectSinkNode    previousObjectSinkNode;
+    private ObjectSinkNode    nextObjectSinkNode;
+
+    protected boolean         objectMemory = true;   // hard coded to true
+    protected boolean         tupleMemoryEnabled;
 
     // ------------------------------------------------------------
     // Constructors
@@ -90,11 +96,13 @@ public abstract class BetaNode extends LeftTupleSource
     BetaNode(final int id,
              final LeftTupleSource leftInput,
              final ObjectSource rightInput,
-             final BetaConstraints constraints) {
+             final BetaConstraints constraints,
+             final Behavior[] behaviors) {
         super( id );
         this.leftInput = leftInput;
         this.rightInput = rightInput;
         this.constraints = constraints;
+        this.behaviors = behaviors;
 
         if ( this.constraints == null ) {
             throw new RuntimeException( "cannot have null constraints, must at least be an instance of EmptyBetaConstraints" );
@@ -104,6 +112,7 @@ public abstract class BetaNode extends LeftTupleSource
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         constraints = (BetaConstraints) in.readObject();
+        behaviors = (Behavior[]) in.readObject();
         leftInput = (LeftTupleSource) in.readObject();
         rightInput = (ObjectSource) in.readObject();
         previousTupleSinkNode = (LeftTupleSinkNode) in.readObject();
@@ -117,6 +126,7 @@ public abstract class BetaNode extends LeftTupleSource
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( constraints );
+        out.writeObject( behaviors );
         out.writeObject( leftInput );
         out.writeObject( rightInput );
         out.writeObject( previousTupleSinkNode );
@@ -137,6 +147,10 @@ public abstract class BetaNode extends LeftTupleSource
             array[i++] = (BetaNodeFieldConstraint) entry.getObject();
         }
         return array;
+    }
+    
+    public Behavior[] getBehaviors() {
+        return this.behaviors;
     }
 
     /* (non-Javadoc)

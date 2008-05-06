@@ -66,6 +66,7 @@ import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RestrictionConnectiveDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
+import org.drools.lang.descr.SlidingWindowDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.TypeFieldDescr;
 import org.drools.lang.descr.VariableRestrictionDescr;
@@ -3061,7 +3062,8 @@ public class RuleParserTest extends TestCase {
 
         AndDescr andConstr1 = (AndDescr) orConstr.getDescrs().get( 0 );
 
-        assertEquals( 3, andConstr1.getDescrs().size() );
+        assertEquals( 3,
+                      andConstr1.getDescrs().size() );
 
         FieldConstraintDescr fcd = (FieldConstraintDescr) andConstr1.getDescrs().get( 0 );
         assertEquals( "teste",
@@ -3861,6 +3863,37 @@ public class RuleParserTest extends TestCase {
         EntryPointDescr entry = (EntryPointDescr) pattern.getSource();
         assertEquals( "StreamA",
                       entry.getEntryId() );
+    }
+
+    public void testBehaviorDecl() throws Exception {
+        final String text = "StockTick( symbol==\"ACME\") with window:time(60000) from entry-point StreamA";
+        final CharStream charStream = new ANTLRStringStream( text );
+        final DRLLexer lexer = new DRLLexer( charStream );
+        final TokenStream tokenStream = new CommonTokenStream( lexer );
+        final DRLParser parser = new DRLParser( tokenStream );
+
+        PatternDescr pattern = (PatternDescr) parser.pattern_source();
+        assertFalse( parser.getErrorMessages().toString(),
+                     parser.hasErrors() );
+
+        assertEquals( 1,
+                      pattern.getDescrs().size() );
+        FieldConstraintDescr fcd = (FieldConstraintDescr) pattern.getDescrs().get( 0 );
+        assertEquals( "symbol",
+                      fcd.getFieldName() );
+
+        assertNotNull( pattern.getSource() );
+        EntryPointDescr entry = (EntryPointDescr) pattern.getSource();
+        assertEquals( "StreamA",
+                      entry.getEntryId() );
+
+        assertEquals( 1,
+                      pattern.getBehaviors().size() );
+        SlidingWindowDescr window = (SlidingWindowDescr) pattern.getBehaviors().get( 0 );
+        assertEquals( "time",
+                      window.getType() );
+        assertEquals( "60000",
+                      window.getParameters() );
     }
 
     private DRLParser parse(final String text) throws Exception {

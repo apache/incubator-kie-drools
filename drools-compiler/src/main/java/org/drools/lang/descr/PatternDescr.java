@@ -1,6 +1,7 @@
 package org.drools.lang.descr;
 
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /*
@@ -31,6 +32,7 @@ public class PatternDescr extends BaseDescr implements Cloneable {
     private int                     leftParentCharacter  = -1;
     private int                     rightParentCharacter = -1;
     private PatternSourceDescr      source;
+    private List<BehaviorDescr>     behaviors;
 
     public PatternDescr() {
         this( null,
@@ -64,7 +66,7 @@ public class PatternDescr extends BaseDescr implements Cloneable {
         return this.identifier;
     }
 
-    public List getDescrs() {
+    public List<? extends BaseDescr> getDescrs() {
         return this.constraint.getDescrs();
     }
     
@@ -120,6 +122,30 @@ public class PatternDescr extends BaseDescr implements Cloneable {
         this.source = source;
     }
     
+    /**
+     * @return the behaviors
+     */
+    public List<BehaviorDescr> getBehaviors() {
+        if( behaviors == null ) {
+            return Collections.emptyList();
+        }
+        return behaviors;
+    }
+
+    /**
+     * @param behaviors the behaviors to set
+     */
+    public void setBehaviors(List<BehaviorDescr> behaviors) {
+        this.behaviors = behaviors;
+    }
+    
+    public void addBehavior( BehaviorDescr behavior ) {
+        if( this.behaviors == null ) {
+            this.behaviors = new ArrayList<BehaviorDescr>();
+        }
+        this.behaviors.add( behavior );
+    }
+
     public Object clone() {
         PatternDescr clone = new PatternDescr( this.objectType, this.identifier );
         clone.setLeftParentCharacter( this.leftParentCharacter );
@@ -130,9 +156,15 @@ public class PatternDescr extends BaseDescr implements Cloneable {
         clone.setLocation( this.getLine(), this.getColumn() );
         clone.setEndLocation( this.getEndLine(), this.getEndColumn() );
         clone.setText( this.getText() );
-        for( Iterator it = this.getDescrs().iterator(); it.hasNext(); ) {
-            clone.addConstraint( (BaseDescr) it.next() );
+        for( BaseDescr constraint : this.getDescrs() ) {
+            clone.addConstraint( constraint );
+        }
+        if( behaviors != null ) {
+            for( BehaviorDescr behavior : behaviors ) {
+                clone.addBehavior( behavior );
+            }
         }
         return clone;
     }
+
 }
