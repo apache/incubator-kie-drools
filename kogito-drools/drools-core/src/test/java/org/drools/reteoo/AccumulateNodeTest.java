@@ -65,7 +65,8 @@ public class AccumulateNodeTest extends DroolsTestCase {
         this.context = new PropagationContextImpl( 0,
                                                    PropagationContext.ASSERTION,
                                                    null,
-                                                   null );
+                                                   null,
+                                                   null);
 
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         BuildContext buildContext = new BuildContext( ruleBase,

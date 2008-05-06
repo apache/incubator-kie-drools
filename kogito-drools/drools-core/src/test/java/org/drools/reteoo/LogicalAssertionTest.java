@@ -111,6 +111,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final PropagationContext context1 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
                                                                         null,
+                                                                        null,
                                                                         null );
 
         // Test single activation for a single logical assertions
@@ -230,6 +231,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final PropagationContext context1 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
                                                                         null,
+                                                                        null,
                                                                         null );
 
         // Test single activation for a single logical assertions
@@ -330,6 +332,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final PropagationContext context1 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
+                                                                        null,
                                                                         null,
                                                                         null );
 
@@ -490,6 +493,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final PropagationContext context1 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
                                                                         null,
+                                                                        null,
                                                                         null );
 
         // Test that a STATED assertion overrides a logical assertion
@@ -590,6 +594,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,
+                                                                       null,
                                                                        null,
                                                                        null );
 
@@ -707,6 +712,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final PropagationContext context1 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
                                                                         null,
+                                                                        null,
                                                                         null );
         // get the activation onto the agenda
         node.assertLeftTuple( tuple1,
@@ -730,6 +736,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final PropagationContext context2 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
+                                                                        null,
                                                                         null,
                                                                         null );
 
@@ -854,6 +861,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final PropagationContext context1 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
                                                                         null,
+                                                                        null,
                                                                         null );
 
         // Assert multiple stated objects
@@ -965,6 +973,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final PropagationContext context1 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
+                                                                        null,
                                                                         null,
                                                                         null );
 

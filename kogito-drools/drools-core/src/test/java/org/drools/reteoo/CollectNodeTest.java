@@ -65,9 +65,11 @@ public class CollectNodeTest extends DroolsTestCase {
         this.contextAssert = new PropagationContextImpl( 0,
                                                          PropagationContext.ASSERTION,
                                                          null,
+                                                         null,
                                                          null );
         this.contextRetract = new PropagationContextImpl( 0,
                                                           PropagationContext.RETRACTION,
+                                                          null,
                                                           null,
                                                           null );
 

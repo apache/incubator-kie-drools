@@ -88,7 +88,7 @@ public class InitialFactHandle extends DefaultFactHandle {
         this.delegate.setRecency( recency );
     }
 
-    public long getId() {
+    public int getId() {
         return this.delegate.getId();
     }
 

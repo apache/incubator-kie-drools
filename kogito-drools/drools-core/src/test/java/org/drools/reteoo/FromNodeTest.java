@@ -45,6 +45,7 @@ public class FromNodeTest extends TestCase {
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,
                                                                        null,
+                                                                       null,
                                                                        null );
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
                                                                            (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
@@ -138,6 +139,7 @@ public class FromNodeTest extends TestCase {
     public void testBetaNode() {
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,
+                                                                       null,
                                                                        null,
                                                                        null );
 
@@ -249,6 +251,7 @@ public class FromNodeTest extends TestCase {
     public void testRestract() {
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,
+                                                                       null,
                                                                        null,
                                                                        null );
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,

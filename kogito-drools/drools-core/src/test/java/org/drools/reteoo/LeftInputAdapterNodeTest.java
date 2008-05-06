@@ -93,6 +93,7 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,
                                                                        null,
+                                                                       null,
                                                                        null );
 
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,

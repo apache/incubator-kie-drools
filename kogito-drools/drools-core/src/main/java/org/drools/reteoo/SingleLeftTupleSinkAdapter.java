@@ -52,7 +52,7 @@ public class SingleLeftTupleSinkAdapter
         LeftTuple child = leftTuple.getBetaChildren();
         while ( child != null ) {
             LeftTuple temp = child.getLeftParentNext();
-            child.getSink().retractLeftTuple( child,
+            child.getLeftTupleSink().retractLeftTuple( child,
                                               context,
                                               workingMemory );
             child.unlinkFromRightParent();
@@ -67,7 +67,7 @@ public class SingleLeftTupleSinkAdapter
         LeftTuple child = leftTuple.getBetaChildren();
         while ( child != null ) {
             LeftTuple temp = child.getLeftParentNext();
-            child.getSink().retractLeftTuple( child,
+            child.getLeftTupleSink().retractLeftTuple( child,
                                               context,
                                               workingMemory );
             workingMemory.getFactHandleFactory().destroyFactHandle( child.getRightParent().getFactHandle() );
@@ -83,7 +83,7 @@ public class SingleLeftTupleSinkAdapter
         LeftTuple child = rightTuple.getBetaChildren();
         while ( child != null ) {
             LeftTuple temp = child.getRightParentNext();
-            child.getSink().retractLeftTuple( child,
+            child.getLeftTupleSink().retractLeftTuple( child,
                                               context,
                                               workingMemory );
             child.unlinkFromLeftParent();

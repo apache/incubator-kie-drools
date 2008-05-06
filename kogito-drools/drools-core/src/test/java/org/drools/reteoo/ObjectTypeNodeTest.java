@@ -91,6 +91,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,
                                                                        null,
+                                                                       null,
                                                                        null );
 
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
@@ -139,6 +140,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
     public void testAssertObjectSequentialMode() {
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,
+                                                                       null,
                                                                        null,
                                                                        null );
 
@@ -235,6 +237,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,
                                                                        null,
+                                                                       null,
                                                                        null );
 
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory)ruleBase.newStatefulSession();
@@ -285,6 +288,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         // When the attachingNewNode flag is set
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,
+                                                                       null,
                                                                        null,
                                                                        null );
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();     
@@ -396,6 +400,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
     public void testAssertObjectWithShadowEnabledNoDefaultConstr() throws Exception {
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,
+                                                                       null,
                                                                        null,
                                                                        null );
 

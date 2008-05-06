@@ -56,6 +56,7 @@ public class JoinNodeTest extends DroolsTestCase {
         this.context = new PropagationContextImpl( 0,
                                                    PropagationContext.ASSERTION,
                                                    null,
+                                                   null,
                                                    null );
         this.workingMemory = new ReteooWorkingMemory( 1,
                                                       (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
@@ -239,7 +240,7 @@ public class JoinNodeTest extends DroolsTestCase {
 
         assertEquals( new LeftTuple( tuple0,
                                      f0.getRightTuple(),
-                                     this.node,
+                                     this.sink,
                                      true ),
                       ((Object[]) this.sink.getAsserted().get( 0 ))[0] );
     }
@@ -309,7 +310,7 @@ public class JoinNodeTest extends DroolsTestCase {
 
         assertEquals( new LeftTuple( tuple1,
                                      f0.getRightTuple(),
-                                     this.node,
+                                     this.sink,
                                      true ),
                       ((Object[]) this.sink.getAsserted().get( 0 ))[0] );
 
@@ -326,7 +327,7 @@ public class JoinNodeTest extends DroolsTestCase {
                       this.sink.getAsserted().size() );
         assertEquals( new LeftTuple( tuple2,
                                      f0.getRightTuple(),
-                                     this.node,
+                                     this.sink,
                                      true ),
                       ((Object[]) this.sink.getAsserted().get( 1 ))[0] );
 
@@ -344,11 +345,11 @@ public class JoinNodeTest extends DroolsTestCase {
 
         assertTrue( tuples.contains( new LeftTuple( tuple1,
                                                     f3.getRightTuple(),
-                                                    this.node,
+                                                    this.sink,
                                                     true ) ) );
         assertTrue( tuples.contains( new LeftTuple( tuple2,
                                                     f3.getRightTuple(),
-                                                    this.node,
+                                                    this.sink,
                                                     true ) ) );
     }
 
@@ -411,11 +412,11 @@ public class JoinNodeTest extends DroolsTestCase {
 
         assertTrue( tuples.contains( new LeftTuple( tuple1,
                                                     f0.getRightTuple(),
-                                                    this.node,
+                                                    this.sink,
                                                     true ) ) );
         assertTrue( tuples.contains( new LeftTuple( tuple1,
                                                     f0.getRightTuple(),
-                                                    this.node,
+                                                    this.sink,
                                                     true ) ) );
 
         // Now check the item  is no longer in memory
@@ -433,11 +434,11 @@ public class JoinNodeTest extends DroolsTestCase {
 
         assertTrue( tuples.contains( new LeftTuple( tuple2,
                                                     f3.getRightTuple(),
-                                                    this.node,
+                                                    this.sink,
                                                     true ) ) );
         assertTrue( tuples.contains( new LeftTuple( tuple2,
                                                     f4.getRightTuple(),
-                                                    this.node,
+                                                    this.sink,
                                                     true ) ) );
     }
 

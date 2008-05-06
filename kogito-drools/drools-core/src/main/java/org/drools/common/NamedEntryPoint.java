@@ -17,6 +17,7 @@ import org.drools.RuleBaseConfiguration.AssertBehaviour;
 import org.drools.base.ShadowProxy;
 import org.drools.event.WorkingMemoryEventSupport;
 import org.drools.reteoo.EntryPointNode;
+import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ObjectTypeConf;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
@@ -140,7 +141,8 @@ public class NamedEntryPoint
         final PropagationContext propagationContext = new PropagationContextImpl( this.wm.getNextPropagationIdCounter(),
                                                                                   PropagationContext.ASSERTION,
                                                                                   rule,
-                                                                                  activation,
+                                                                                  (activation == null) ? null : (LeftTuple) activation.getTuple(),
+                                                                                  handle,
                                                                                   -1,
                                                                                   -1,
                                                                                   this.entryPoint );
@@ -196,7 +198,8 @@ public class NamedEntryPoint
             final PropagationContext propagationContext = new PropagationContextImpl( this.wm.getNextPropagationIdCounter(),
                                                                                       PropagationContext.MODIFICATION,
                                                                                       rule,
-                                                                                      activation,
+                                                                                      (activation == null) ? null : (LeftTuple) activation.getTuple(),
+                                                                                      handle,
                                                                                       -1,
                                                                                       -1,
                                                                                       this.entryPoint );
@@ -267,7 +270,8 @@ public class NamedEntryPoint
             final PropagationContext propagationContext = new PropagationContextImpl( this.wm.getNextPropagationIdCounter(),
                                                                                       PropagationContext.RETRACTION,
                                                                                       rule,
-                                                                                      activation,
+                                                                                      (activation == null) ? null : (LeftTuple) activation.getTuple(),
+                                                                                      handle,
                                                                                       -1,
                                                                                       -1,
                                                                                       this.entryPoint );
@@ -329,7 +333,8 @@ public class NamedEntryPoint
             final PropagationContext propagationContext = new PropagationContextImpl( this.wm.getNextPropagationIdCounter(),
                                                                                       PropagationContext.MODIFICATION,
                                                                                       rule,
-                                                                                      activation,
+                                                                                      (activation == null) ? null : (LeftTuple) activation.getTuple(),
+                                                                                      handle,
                                                                                       -1,
                                                                                       -1,
                                                                                       entryPoint );
@@ -388,7 +393,8 @@ public class NamedEntryPoint
             final PropagationContext propagationContext = new PropagationContextImpl( this.wm.getNextPropagationIdCounter(),
                                                                                       PropagationContext.MODIFICATION,
                                                                                       rule,
-                                                                                      activation,
+                                                                                      (activation == null) ? null : (LeftTuple) activation.getTuple(),
+                                                                                      handle,
                                                                                       -1,
                                                                                       -1,
                                                                                       entryPoint );

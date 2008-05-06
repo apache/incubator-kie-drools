@@ -120,4 +120,12 @@ public abstract class AbstractFactHandleFactory
      * @see org.drools.reteoo.FactHandleFactory#newInstance()
      */
     public abstract FactHandleFactory newInstance();
+    
+    public int getId() {
+        return this.id.get();
+    }
+
+    public long getRecency() {
+        return this.counter.get();
+    }    
 }

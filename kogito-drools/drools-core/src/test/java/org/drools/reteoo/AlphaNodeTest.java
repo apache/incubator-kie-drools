@@ -56,6 +56,7 @@ public class AlphaNodeTest extends DroolsTestCase {
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,
                                                                        null,
+                                                                       null,
                                                                        null );
 
         final MockObjectSource source = new MockObjectSource( buildContext.getNextId() );
@@ -136,6 +137,7 @@ public class AlphaNodeTest extends DroolsTestCase {
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,
                                                                        null,
+                                                                       null,
                                                                        null );
 
         final MockObjectSource source = new MockObjectSource( buildContext.getNextId() );
@@ -204,6 +206,7 @@ public class AlphaNodeTest extends DroolsTestCase {
         final Rule rule = new Rule( "test-rule" );
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,
+                                                                       null,
                                                                        null,
                                                                        null );
 

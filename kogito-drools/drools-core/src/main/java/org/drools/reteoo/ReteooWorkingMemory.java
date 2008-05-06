@@ -41,6 +41,7 @@ import org.drools.rule.EntryPoint;
 import org.drools.rule.Query;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
+import org.drools.spi.FactHandleFactory;
 import org.drools.spi.PropagationContext;
 
 /**
@@ -74,6 +75,15 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory
         super( id,
                ruleBase,
                ruleBase.newFactHandleFactory() );
+        this.agenda = new DefaultAgenda( this );
+    }
+
+    public ReteooWorkingMemory(final int id,
+                               final InternalRuleBase ruleBase,
+                               final FactHandleFactory factory) {
+        super( id,
+               ruleBase,
+               factory );
         this.agenda = new DefaultAgenda( this );
     }
 
@@ -158,7 +168,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory
 
         private Rule               ruleOrigin;
 
-        private Activation         activationOrigin;
+        private LeftTuple          leftTuple;
 
         public WorkingMemoryReteAssertAction() {
 
@@ -168,13 +178,12 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory
                                              final boolean removeLogical,
                                              final boolean updateEqualsMap,
                                              final Rule ruleOrigin,
-                                             final Activation activationOrigin) {
-            super();
+                                             final LeftTuple leftTuple) {
             this.factHandle = factHandle;
             this.removeLogical = removeLogical;
             this.updateEqualsMap = updateEqualsMap;
             this.ruleOrigin = ruleOrigin;
-            this.activationOrigin = activationOrigin;
+            this.leftTuple = leftTuple;
         }
 
         public void readExternal(ObjectInput in) throws IOException,
@@ -183,7 +192,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory
             removeLogical = in.readBoolean();
             updateEqualsMap = in.readBoolean();
             ruleOrigin = (Rule) in.readObject();
-            activationOrigin = (Activation) in.readObject();
+            leftTuple = (LeftTuple) in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
@@ -191,7 +200,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory
             out.writeBoolean( removeLogical );
             out.writeBoolean( updateEqualsMap );
             out.writeObject( ruleOrigin );
-            out.writeObject( activationOrigin );
+            out.writeObject( leftTuple );
         }
 
         public void execute(InternalWorkingMemory workingMemory) {
@@ -199,7 +208,8 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory
             final PropagationContext context = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
                                                                            PropagationContext.ASSERTION,
                                                                            this.ruleOrigin,
-                                                                           this.activationOrigin );
+                                                                           this.leftTuple,
+                                                                           this.factHandle );
             ReteooRuleBase ruleBase = (ReteooRuleBase) workingMemory.getRuleBase();
             ruleBase.assertObject( this.factHandle,
                                    this.factHandle.getObject(),

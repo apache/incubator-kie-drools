@@ -131,7 +131,8 @@ public class TruthMaintenanceSystem
                                                                          node,
                                                                          set,
                                                                          handle,
-                                                                         context );
+                                                                         context,
+                                                                         activation );
                 workingMemory.queueWorkingMemoryAction( action );
             }
         }
@@ -145,15 +146,17 @@ public class TruthMaintenanceSystem
         private Set                    set;
         private InternalFactHandle     handle;
         private PropagationContext     context;
+        private Activation             activation;
 
         public LogicalRetractCallback() {
 
         }
-        public LogicalRetractCallback(TruthMaintenanceSystem tms,
-                                      LogicalDependency node,
-                                      Set set,
-                                      InternalFactHandle handle,
-                                      PropagationContext context) {
+        public LogicalRetractCallback(final TruthMaintenanceSystem tms,
+                                      final LogicalDependency node,
+                                      final Set set,
+                                      final InternalFactHandle handle,
+                                      final PropagationContext context,
+                                      final Activation activation) {
             this.tms = tms;
             this.node = node;
             this.set = set;
@@ -167,6 +170,7 @@ public class TruthMaintenanceSystem
             set         = (Set)in.readObject();
             handle         = (InternalFactHandle)in.readObject();
             context         = (PropagationContext)in.readObject();
+            activation = ( Activation ) in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
@@ -175,6 +179,7 @@ public class TruthMaintenanceSystem
             out.writeObject(set);
             out.writeObject(handle);
             out.writeObject(context);
+            out.writeObject( activation );
         }
 
         public void execute(InternalWorkingMemory workingMemory) {
@@ -188,7 +193,7 @@ public class TruthMaintenanceSystem
                                                  false,
                                                  true,
                                                  context.getRuleOrigin(),
-                                                 context.getActivationOrigin() );
+                                                 this.activation );
                 }
             }
         }

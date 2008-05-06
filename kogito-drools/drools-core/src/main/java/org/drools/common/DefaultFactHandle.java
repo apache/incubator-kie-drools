@@ -148,7 +148,7 @@ public class DefaultFactHandle
         this.recency = recency;
     }
 
-    public long getId() {
+    public int getId() {
         return this.id;
     }
 

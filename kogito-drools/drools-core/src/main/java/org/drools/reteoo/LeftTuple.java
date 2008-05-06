@@ -70,23 +70,18 @@ public class LeftTuple
         this.handle = factHandle;
         this.recency = factHandle.getRecency();
 
-        int h = handle.hashCode();
-        h += ~(h << 9);
-        h ^= (h >>> 14);
-        h += (h << 4);
-        h ^= (h >>> 10);
-        this.hashCode = h;
+        this.hashCode = handle.hashCode();
 
         if ( leftTupleMemoryEnabled ) {
-            this.sink = sink;
             LeftTuple currentFirst = handle.getLeftTuple();
             if ( currentFirst != null ) {
                 currentFirst.leftParentPrevious = this;
                 this.leftParentNext = currentFirst;
             }
-    
+
             handle.setLeftTuple( this );
         }
+        this.sink = sink;
     }
 
     public LeftTuple(final LeftTuple leftTuple,
@@ -105,8 +100,9 @@ public class LeftTuple
                 this.leftParentNext.leftParentPrevious = this;
             }
             this.leftParent.children = this;
-            this.sink = sink;
         }
+        
+        this.sink = sink;
     }
 
     public LeftTuple(final LeftTuple leftTuple,
@@ -126,15 +122,16 @@ public class LeftTuple
                 this.rightParentNext.rightParentPrevious = this;
             }
             this.rightParent.setBetaChildren( this );
-    
+
             this.leftParent = leftTuple;
             this.leftParentNext = leftTuple.children;
             if ( this.leftParentNext != null ) {
                 this.leftParentNext.leftParentPrevious = this;
             }
             this.leftParent.children = this;
-            this.sink = sink;
         }
+        
+        this.sink = sink;
     }
 
     public void unlinkFromLeftParent() {
@@ -192,8 +189,12 @@ public class LeftTuple
         this.rightParentPrevious = null;
         this.rightParentNext = null;
     }
+    
+    public int getIndex() {
+        return this.index;
+    }
 
-    public LeftTupleSink getSink() {
+    public LeftTupleSink getLeftTupleSink() {
         return sink;
     }
 
@@ -365,19 +366,27 @@ public class LeftTuple
      * @return
      */
     public boolean equals(final LeftTuple other) {
-        // we know the object is never null and always of the  type ReteTuple
+        // we know the object is never null and always of the  type LeftTuple
         if ( other == this ) {
             return true;
         }
 
-        // A ReteTuple is  only the same if it has the same hashCode, factId and parent
-        if ( (other == null) || (this.hashCode != other.hashCode) ) {
+        // A LeftTuple is  only the same if it has the same hashCode, factId and parent
+        if ( this.hashCode != other.hashCode ) {
             return false;
         }
 
         if ( this.handle != other.handle ) {
             return false;
         }
+        
+//        if ( this.sink.getId() != other.sink.getId() ) {
+//            return false;
+//        }
+//        
+//        if ( this.index != other.index ) {
+//            return false;
+//        }
 
         if ( this.parent == null ) {
             return (other.parent == null);

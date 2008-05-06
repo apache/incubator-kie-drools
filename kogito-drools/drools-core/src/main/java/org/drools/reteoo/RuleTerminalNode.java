@@ -145,6 +145,10 @@ public final class RuleTerminalNode extends BaseNode
     public Rule getRule() {
         return this.rule;
     }
+    
+    public GroupElement getSubRule() {
+        return this.subrule;
+    }
 
     public void setSequence(int seq) {
         this.sequence = seq;
@@ -189,7 +193,7 @@ public final class RuleTerminalNode extends BaseNode
 
         // if the current Rule is no-loop and the origin rule is the same and its the same set of facts (tuple) then return
         if ( context.getType() == PropagationContext.MODIFICATION ) {
-            if ( this.rule.isNoLoop() && this.rule.equals( context.getRuleOrigin() ) && context.getActivationOrigin().getTuple().equals( tuple ) ) {
+            if ( this.rule.isNoLoop() && this.rule.equals( context.getRuleOrigin() ) && context.getLeftTupleOrigin().equals( tuple ) ) {
                 return;
             }
         } else if ( this.rule.isNoLoop() && this.rule.equals( context.getRuleOrigin() ) ) {
@@ -450,6 +454,7 @@ public final class RuleTerminalNode extends BaseNode
             final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
                                                                                       PropagationContext.RULE_ADDITION,
                                                                                       null,
+                                                                                      null,
                                                                                       null );
             this.tupleSource.updateSink( this,
                                          propagationContext,
@@ -481,6 +486,7 @@ public final class RuleTerminalNode extends BaseNode
 
                 final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
                                                                                           PropagationContext.RULE_REMOVAL,
+                                                                                          null,
                                                                                           null,
                                                                                           null );
                 workingMemory.getTruthMaintenanceSystem().removeLogicalDependencies( activation,

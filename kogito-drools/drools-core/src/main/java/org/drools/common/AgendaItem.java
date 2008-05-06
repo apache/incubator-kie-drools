@@ -49,43 +49,43 @@ public class AgendaItem
     /**
      *
      */
-    private static final long        serialVersionUID = 400L;
+    private static final long   serialVersionUID = 400L;
 
     /** The tuple. */
-    private Tuple              tuple;
+    private Tuple               tuple;
 
     /** The rule. */
-    private Rule               rule;
+    private Rule                rule;
 
     /** The salience */
-    private int                salience;
+    private int                 salience;
 
     /** Used for sequential mode */
-    private int                      sequenence;
+    private int                 sequenence;
 
     /** The subrule */
-    private GroupElement       subrule;
+    private GroupElement        subrule;
 
     /** The propagation context */
-    private PropagationContext context;
+    private PropagationContext  context;
 
     /** The activation number */
-    private long               activationNumber;
+    private long                activationNumber;
 
     /** A reference to the PriorityQeue the item is on */
-    private Queue                    queue;
+    private Queue               queue;
 
-    private int                      index;
+    private int                 index;
 
-    private LinkedList               justified;
+    private LinkedList          justified;
 
-    private boolean                  activated;
+    private boolean             activated;
 
-    private InternalAgendaGroup      agendaGroup;
+    private InternalAgendaGroup agendaGroup;
 
-    private ActivationGroupNode      activationGroupNode;
+    private ActivationGroupNode activationGroupNode;
 
-    private RuleFlowGroupNode        ruleFlowGroupNode;
+    private RuleFlowGroupNode   ruleFlowGroupNode;
 
     // ------------------------------------------------------------
     // Constructors
@@ -119,38 +119,39 @@ public class AgendaItem
     // ------------------------------------------------------------
     // Instance methods
     // ------------------------------------------------------------
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        tuple   = (Tuple)in.readObject();
-        rule    = (Rule)in.readObject();
-        salience    = in.readInt();
-        sequenence  = in.readInt();
-        subrule     = (GroupElement)in.readObject();
-        context     = (PropagationContext)in.readObject();
-        activationNumber    = in.readLong();
-        queue     = (Queue)in.readObject();
-        index     = in.readInt();
-        justified     = (LinkedList)in.readObject();
-        activated   = in.readBoolean();
-        agendaGroup     = (InternalAgendaGroup)in.readObject();
-        activationGroupNode     = (ActivationGroupNode)in.readObject();
-        ruleFlowGroupNode     = (RuleFlowGroupNode)in.readObject();
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        tuple = (Tuple) in.readObject();
+        rule = (Rule) in.readObject();
+        salience = in.readInt();
+        sequenence = in.readInt();
+        subrule = (GroupElement) in.readObject();
+        context = (PropagationContext) in.readObject();
+        activationNumber = in.readLong();
+        queue = (Queue) in.readObject();
+        index = in.readInt();
+        justified = (LinkedList) in.readObject();
+        activated = in.readBoolean();
+        agendaGroup = (InternalAgendaGroup) in.readObject();
+        activationGroupNode = (ActivationGroupNode) in.readObject();
+        ruleFlowGroupNode = (RuleFlowGroupNode) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(tuple);
-        out.writeObject(rule);
-        out.writeInt(salience);
-        out.writeInt(sequenence);
-        out.writeObject(subrule);
-        out.writeObject(context);
-        out.writeLong(activationNumber);
-        out.writeObject(queue);
-        out.writeInt(index);
-        out.writeObject(justified);
-        out.writeBoolean(activated);
-        out.writeObject(agendaGroup);
-        out.writeObject(activationGroupNode);
-        out.writeObject(ruleFlowGroupNode);
+        out.writeObject( tuple );
+        out.writeObject( rule );
+        out.writeInt( salience );
+        out.writeInt( sequenence );
+        out.writeObject( subrule );
+        out.writeObject( context );
+        out.writeLong( activationNumber );
+        out.writeObject( queue );
+        out.writeInt( index );
+        out.writeObject( justified );
+        out.writeBoolean( activated );
+        out.writeObject( agendaGroup );
+        out.writeObject( activationGroupNode );
+        out.writeObject( ruleFlowGroupNode );
     }
 
     public PropagationContext getPropagationContext() {

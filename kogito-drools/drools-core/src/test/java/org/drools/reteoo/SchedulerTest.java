@@ -101,6 +101,7 @@ public class SchedulerTest extends DroolsTestCase {
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,
                                                                        null,
+                                                                       null,
                                                                        null );
 
         final LeftTuple tuple = new LeftTuple( new DefaultFactHandle( 1,
@@ -165,7 +166,8 @@ public class SchedulerTest extends DroolsTestCase {
                     final PropagationContext context2 = new PropagationContextImpl( 0,
                                                                                     0,
                                                                                     rule,
-                                                                                    knowledgeHelper.getActivation() );
+                                                                                    ( LeftTuple ) knowledgeHelper.getTuple(),
+                                                                                    null );
                     final LeftTuple tuple2 = new LeftTuple( new DefaultFactHandle( 2,
                                                                                    "cheese" ), null,
                                                                                    true  );
@@ -186,6 +188,7 @@ public class SchedulerTest extends DroolsTestCase {
 
         final PropagationContext context1 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
+                                                                        null,
                                                                         null,
                                                                         null );
 
@@ -255,7 +258,8 @@ public class SchedulerTest extends DroolsTestCase {
                     final PropagationContext context2 = new PropagationContextImpl( 0,
                                                                                     0,
                                                                                     rule,
-                                                                                    knowledgeHelper.getActivation() );
+                                                                                    ( LeftTuple ) knowledgeHelper.getTuple(),
+                                                                                    null );
                     final LeftTuple tuple2 = new LeftTuple( new DefaultFactHandle( 2,
                                                                                    "cheese" ), null,
                                                                                    true  );
@@ -276,6 +280,7 @@ public class SchedulerTest extends DroolsTestCase {
 
         final PropagationContext context1 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
+                                                                        null,
                                                                         null,
                                                                         null );
 

@@ -211,7 +211,7 @@ public class ObjectTypeNode extends ObjectSource
         factHandle.setRightTuple( null );
 
         for ( LeftTuple leftTuple = factHandle.getLeftTuple(); leftTuple != null; leftTuple = (LeftTuple) leftTuple.getLeftParentNext() ) {
-            leftTuple.getSink().retractLeftTuple( leftTuple,
+            leftTuple.getLeftTupleSink().retractLeftTuple( leftTuple,
                                                   context,
                                                   workingMemory );
         }
@@ -245,6 +245,7 @@ public class ObjectTypeNode extends ObjectSource
             final InternalWorkingMemory workingMemory = workingMemories[i];
             final PropagationContextImpl propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
                                                                                           PropagationContext.RULE_ADDITION,
+                                                                                          null,
                                                                                           null,
                                                                                           null );
             propagationContext.setEntryPoint( ((EntryPointNode) this.source).getEntryPoint() );
