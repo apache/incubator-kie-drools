@@ -23,7 +23,7 @@ import org.drools.reteoo.RightTuple;
 public interface InternalFactHandle
     extends
     FactHandle {
-    public long getId();
+    public int getId();
 
     public long getRecency();
 

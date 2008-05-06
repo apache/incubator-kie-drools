@@ -48,20 +48,6 @@ public class RightTuple
         handle.setRightTuple( this );
     }
 
-    public RightTuple(RightTuple parent) {
-        this.handle = parent.getFactHandle();
-        this.hashCode = this.handle.hashCode();
-    }
-
-    public RightTuple(RightTuple parent,
-                      RightTupleSink sink) {
-        this.handle = parent.getFactHandle();
-        this.hashCode = this.handle.hashCode();
-
-        this.sink = sink;
-
-    }
-
     public RightTupleSink getRightTupleSink() {
         return this.sink;
     }
@@ -101,7 +87,7 @@ public class RightTuple
     public RightTupleList getMemory() {
         return memory;
     }
-
+    
     public void setMemory(RightTupleList memory) {
         this.memory = memory;
     }

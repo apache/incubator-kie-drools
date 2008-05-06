@@ -96,6 +96,7 @@ public class AgendaTest extends DroolsTestCase {
         final PropagationContext context1 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
                                                                         rule1,
+                                                                        null,
                                                                         null );
 
         // Add consequence. Notice here the context here for the add to ageyunda
@@ -217,6 +218,7 @@ public class AgendaTest extends DroolsTestCase {
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,
                                                                        rule,
+                                                                       null,
                                                                        null );
 
         // test agenda is empty
@@ -315,6 +317,7 @@ public class AgendaTest extends DroolsTestCase {
         final PropagationContext context0 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
                                                                         rule0,
+                                                                        null,
                                                                         null );
 
         final Rule rule1 = new Rule( "test-rule1",
@@ -328,6 +331,7 @@ public class AgendaTest extends DroolsTestCase {
         final PropagationContext context1 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
                                                                         rule1,
+                                                                        null,
                                                                         null );
 
         final Rule rule2 = new Rule( "test-rule2",
@@ -341,6 +345,7 @@ public class AgendaTest extends DroolsTestCase {
         final PropagationContext context2 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
                                                                         rule2,
+                                                                        null,
                                                                         null );
 
         final Rule rule3 = new Rule( "test-rule3",
@@ -354,6 +359,7 @@ public class AgendaTest extends DroolsTestCase {
         final PropagationContext context3 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
                                                                         rule3,
+                                                                        null,
                                                                         null );
 
         final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
@@ -560,6 +566,7 @@ public class AgendaTest extends DroolsTestCase {
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,
                                                                        rule,
+                                                                       null,
                                                                        null );
 
         // first test that autoFocus=false works. Here the rule should not fire
@@ -628,6 +635,7 @@ public class AgendaTest extends DroolsTestCase {
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,
                                                                        rule,
+                                                                       null,
                                                                        null );
 
         // When both the rule is lock-on-active and the agenda group is active, activations should be ignored
@@ -706,6 +714,7 @@ public class AgendaTest extends DroolsTestCase {
         final PropagationContext context0 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
                                                                         rule0,
+                                                                        null,
                                                                         null );
 
         final Rule rule1 = new Rule( "test-rule1" );
@@ -719,6 +728,7 @@ public class AgendaTest extends DroolsTestCase {
         final PropagationContext context1 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
                                                                         rule1,
+                                                                        null,
                                                                         null );
 
         final Rule rule2 = new Rule( "test-rule2" );
@@ -731,6 +741,7 @@ public class AgendaTest extends DroolsTestCase {
         final PropagationContext context2 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
                                                                         rule2,
+                                                                        null,
                                                                         null );
 
         final Rule rule3 = new Rule( "test-rule3",
@@ -745,6 +756,7 @@ public class AgendaTest extends DroolsTestCase {
         final PropagationContext context3 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
                                                                         rule3,
+                                                                        null,
                                                                         null );
 
         // Assert the tuple and check it was added to activation-group-0
@@ -925,6 +937,7 @@ public class AgendaTest extends DroolsTestCase {
         final PropagationContext context0 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
                                                                         rule0,
+                                                                        null,
                                                                         null );
 
         final RuleFlowGroup ruleFlowGroup0 = agenda.getRuleFlowGroup( "rule-flow-group-0" );
@@ -1071,6 +1084,7 @@ public class AgendaTest extends DroolsTestCase {
         final PropagationContext context0 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
                                                                         rule1,
+                                                                        null,
                                                                         null );
 
         // create rule0
@@ -1192,6 +1206,7 @@ public class AgendaTest extends DroolsTestCase {
         final PropagationContext context0 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
                                                                         rule1,
+                                                                        null,
                                                                         null );
 
         final LeftTuple tuple1 = new LeftTuple( new DefaultFactHandle( 1,
@@ -1317,6 +1332,7 @@ public class AgendaTest extends DroolsTestCase {
         final PropagationContext context0 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
                                                                         rule0,
+                                                                        null,
                                                                         null );
 
         // Create two activation for this rule
@@ -1422,6 +1438,7 @@ public class AgendaTest extends DroolsTestCase {
         final PropagationContext context0 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
                                                                         rule0,
+                                                                        null,
                                                                         null );
 
         // Create an activation for this rule
@@ -1581,6 +1598,7 @@ public class AgendaTest extends DroolsTestCase {
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,
                                                                        rule,
+                                                                       null,
                                                                        null );
 
         // When both the rule is lock-on-active and the agenda group is active, activations should be ignored
@@ -1656,6 +1674,7 @@ public class AgendaTest extends DroolsTestCase {
         final PropagationContext context0 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
                                                                         rule0,
+                                                                        null,
                                                                         null );
 
         final Rule rule1 = new Rule( "test-rule1",
@@ -1670,6 +1689,7 @@ public class AgendaTest extends DroolsTestCase {
         final PropagationContext context1 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
                                                                         rule1,
+                                                                        null,
                                                                         null );
 
         final Rule rule2 = new Rule( "test-rule2",
@@ -1684,6 +1704,7 @@ public class AgendaTest extends DroolsTestCase {
         final PropagationContext context2 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
                                                                         rule2,
+                                                                        null,
                                                                         null );
 
         final Rule rule3 = new Rule( "test-rule3",
@@ -1698,6 +1719,7 @@ public class AgendaTest extends DroolsTestCase {
         final PropagationContext context3 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
                                                                         rule3,
+                                                                        null,
                                                                         null );
 
         ruleBase.getAgendaGroupRuleTotals().put( "MAIN",

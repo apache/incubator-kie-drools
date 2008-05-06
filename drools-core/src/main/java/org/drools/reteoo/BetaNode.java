@@ -45,7 +45,7 @@ import org.drools.util.LinkedListEntry;
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
-abstract class BetaNode extends LeftTupleSource
+public abstract class BetaNode extends LeftTupleSource
     implements
     LeftTupleSinkNode,
     ObjectSinkNode,
@@ -182,6 +182,7 @@ abstract class BetaNode extends LeftTupleSource
             final InternalWorkingMemory workingMemory = workingMemories[i];
             final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
                                                                                       PropagationContext.RULE_ADDITION,
+                                                                                      null,
                                                                                       null,
                                                                                       null );
             this.rightInput.updateSink( this,

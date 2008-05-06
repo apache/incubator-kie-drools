@@ -388,7 +388,7 @@ public class PropagationQueuingNode extends ObjectSource
             this.handle.setRightTuple( null );
 
             for ( LeftTuple leftTuple = this.handle.getLeftTuple(); leftTuple != null; leftTuple = (LeftTuple) leftTuple.getLeftParentNext() ) {
-                leftTuple.getSink().retractLeftTuple( leftTuple,
+                leftTuple.getLeftTupleSink().retractLeftTuple( leftTuple,
                                                       context,
                                                       workingMemory );
             }

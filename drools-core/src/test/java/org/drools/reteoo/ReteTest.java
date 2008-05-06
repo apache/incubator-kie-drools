@@ -131,6 +131,7 @@ public class ReteTest extends DroolsTestCase {
                            new PropagationContextImpl( 0,
                                                        PropagationContext.ASSERTION,
                                                        null,
+                                                       null,
                                                        null ),
                            workingMemory );
 
@@ -139,7 +140,7 @@ public class ReteTest extends DroolsTestCase {
         rete.assertObject( h1,
                            new PropagationContextImpl( 0,
                                                        PropagationContext.ASSERTION,
-        
+                                                       null,
                                                        null,
                                                        null ),
                            workingMemory );               
@@ -182,6 +183,7 @@ public class ReteTest extends DroolsTestCase {
                            new PropagationContextImpl( 0,
                                                        PropagationContext.ASSERTION,
                                                        null,
+                                                       null,
                                                        null ),
                            workingMemory );
 
@@ -196,6 +198,7 @@ public class ReteTest extends DroolsTestCase {
         rete.assertObject( h2,
                            new PropagationContextImpl( 0,
                                                        PropagationContext.ASSERTION,
+                                                       null,
                                                        null,
                                                        null ),
                            workingMemory );
@@ -324,6 +327,7 @@ public class ReteTest extends DroolsTestCase {
                            new PropagationContextImpl( 0,
                                                        PropagationContext.ASSERTION,
                                                        null,
+                                                       null,
                                                        null ),
                            workingMemory );
         assertLength( 0,
@@ -341,12 +345,14 @@ public class ReteTest extends DroolsTestCase {
                            new PropagationContextImpl( 0,
                                                        PropagationContext.ASSERTION,
                                                        null,
+                                                       null,
                                                        null ),
                            workingMemory );
 
         rete.retractObject( h2,
                             new PropagationContextImpl( 0,
                                                         PropagationContext.ASSERTION,
+                                                        null,
                                                         null,
                                                         null ),
                             workingMemory );
@@ -383,6 +389,7 @@ public class ReteTest extends DroolsTestCase {
         rete.assertObject( h1,
                            new PropagationContextImpl( 0,
                                                        PropagationContext.ASSERTION,
+                                                       null,
                                                        null,
                                                        null ),
                            workingMemory );
@@ -430,6 +437,7 @@ public class ReteTest extends DroolsTestCase {
         rete.assertObject( h1,
                            new PropagationContextImpl( 0,
                                                        PropagationContext.ASSERTION,
+                                                       null,
                                                        null,
                                                        null ),
                            workingMemory );

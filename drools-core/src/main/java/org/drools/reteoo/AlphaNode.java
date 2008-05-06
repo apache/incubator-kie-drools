@@ -129,6 +129,7 @@ public class AlphaNode extends ObjectSource
             final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
                                                                                       PropagationContext.RULE_ADDITION,
                                                                                       null,
+                                                                                      null,
                                                                                       null );
             this.source.updateSink( this,
                                     propagationContext,

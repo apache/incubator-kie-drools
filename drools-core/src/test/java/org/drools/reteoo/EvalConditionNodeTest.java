@@ -43,6 +43,7 @@ public class EvalConditionNodeTest extends DroolsTestCase {
         this.context = new PropagationContextImpl( 0,
                                                    PropagationContext.ASSERTION,
                                                    null,
+                                                   null,
                                                    null );
 
         this.workingMemory = ( ReteooWorkingMemory ) this.ruleBase.newStatefulSession();

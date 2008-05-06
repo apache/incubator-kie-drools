@@ -59,6 +59,7 @@ public class ExistsNodeTest extends DroolsTestCase {
         this.context = new PropagationContextImpl( 0,
                                                    PropagationContext.ASSERTION,
                                                    null,
+                                                   null,
                                                    null );
 
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
@@ -134,7 +135,7 @@ public class ExistsNodeTest extends DroolsTestCase {
                       this.sink.getRetracted() );
 
         assertEquals( new LeftTuple( f0,
-                                     this.node,
+                                     this.sink,
                                      true ),
                       ((Object[]) this.sink.getAsserted().get( 0 ))[0] );
 

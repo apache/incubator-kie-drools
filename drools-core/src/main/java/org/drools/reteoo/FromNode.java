@@ -185,6 +185,7 @@ public class FromNode extends LeftTupleSource
             final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
                                                                                       PropagationContext.RULE_ADDITION,
                                                                                       null,
+                                                                                      null,
                                                                                       null );
             this.tupleSource.updateSink( this,
                                          propagationContext,

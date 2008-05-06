@@ -31,23 +31,25 @@ public class PropagationContextImpl
     implements
     PropagationContext {
 
-    private static final long serialVersionUID = 8400185220119865618L;
+    private static final long  serialVersionUID = 8400185220119865618L;
 
-    private int    type;
+    private int                type;
 
-    private Rule         rule;
+    private Rule               rule;
 
-    private Activation   activation;
+    private LeftTuple          leftTuple;
 
-    private long   propagationNumber;
+    private InternalFactHandle factHandle;
 
-    public int     activeActivations;
+    private long               propagationNumber;
 
-    public int     dormantActivations;
+    public int                 activeActivations;
 
-    public ObjectHashMap retracted;
+    public int                 dormantActivations;
 
-    private EntryPoint   entryPoint;
+    public ObjectHashMap       retracted;
+
+    private EntryPoint         entryPoint;
 
     public PropagationContextImpl() {
 
@@ -56,10 +58,12 @@ public class PropagationContextImpl
     public PropagationContextImpl(final long number,
                                   final int type,
                                   final Rule rule,
-                                  final Activation activation) {
+                                  final LeftTuple leftTuple,
+                                  final InternalFactHandle factHandle) {
         this.type = type;
         this.rule = rule;
-        this.activation = activation;
+        this.leftTuple = leftTuple;
+        this.factHandle = factHandle;
         this.propagationNumber = number;
         this.activeActivations = 0;
         this.dormantActivations = 0;
@@ -69,39 +73,42 @@ public class PropagationContextImpl
     public PropagationContextImpl(final long number,
                                   final int type,
                                   final Rule rule,
-                                  final Activation activation,
+                                  final LeftTuple leftTuple,
+                                  final InternalFactHandle factHandle,
                                   final int activeActivations,
                                   final int dormantActivations,
                                   final EntryPoint entryPoint) {
         this.type = type;
         this.rule = rule;
-        this.activation = activation;
+        this.leftTuple = leftTuple;
+        this.factHandle = factHandle;
         this.propagationNumber = number;
         this.activeActivations = activeActivations;
         this.dormantActivations = dormantActivations;
         this.entryPoint = entryPoint;
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        type    = in.readInt();
-        activeActivations   = in.readInt();
-        dormantActivations  = in.readInt();
-        propagationNumber   = in.readLong();
-        rule        = (Rule)in.readObject();
-        activation  = (Activation)in.readObject();
-        retracted   = (ObjectHashMap)in.readObject();
-        entryPoint  = (EntryPoint)in.readObject();
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        this.type = in.readInt();
+        this.activeActivations = in.readInt();
+        this.dormantActivations = in.readInt();
+        this.propagationNumber = in.readLong();
+        this.rule = (Rule) in.readObject();
+        this.leftTuple = (LeftTuple) in.readObject();
+        this.retracted = (ObjectHashMap) in.readObject();
+        this.entryPoint = (EntryPoint) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeInt(type);
-        out.writeInt(activeActivations);
-        out.writeInt(dormantActivations);
-        out.writeLong(propagationNumber);
-        out.writeObject(rule);
-        out.writeObject(activation);
-        out.writeObject(retracted);
-        out.writeObject(entryPoint);
+        out.writeInt( this.type );
+        out.writeInt( this.activeActivations );
+        out.writeInt( this.dormantActivations );
+        out.writeLong( this.propagationNumber );
+        out.writeObject( this.rule );
+        out.writeObject( this.leftTuple );
+        out.writeObject( this.retracted );
+        out.writeObject( this.entryPoint );
     }
 
     public long getPropagationNumber() {
@@ -117,13 +124,12 @@ public class PropagationContextImpl
         return this.rule;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.drools.reteoo.PropagationContext#getActivationOrigin()
-     */
-    public Activation getActivationOrigin() {
-        return this.activation;
+    public LeftTuple getLeftTupleOrigin() {
+        return this.leftTuple;
+    }
+
+    public InternalFactHandle getFactHandleOrigin() {
+        return this.factHandle;
     }
 
     /*
@@ -180,7 +186,7 @@ public class PropagationContextImpl
     }
 
     public void releaseResources() {
-        this.activation = null;
+        this.leftTuple = null;
         this.retracted = null;
         this.rule = null;
     }

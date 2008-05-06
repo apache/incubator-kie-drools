@@ -18,6 +18,7 @@ package org.drools.spi;
 
 import java.io.Externalizable;
 
+import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
@@ -36,7 +37,9 @@ public interface PropagationContext
 
     public Rule getRuleOrigin();
 
-    public Activation getActivationOrigin();
+    public LeftTuple getLeftTupleOrigin();
+    
+    public InternalFactHandle getFactHandleOrigin();
 
     public int getType();
 

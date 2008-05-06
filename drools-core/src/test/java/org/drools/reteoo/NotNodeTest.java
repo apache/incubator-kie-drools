@@ -57,6 +57,7 @@ public class NotNodeTest extends DroolsTestCase {
         this.context = new PropagationContextImpl( 0,
                                                    PropagationContext.ASSERTION,
                                                    null,
+                                                   null,
                                                    null );
         this.workingMemory = new ReteooWorkingMemory( 1,
                                                       (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
@@ -116,7 +117,7 @@ public class NotNodeTest extends DroolsTestCase {
                       this.sink.getRetracted() );
 
         assertEquals( new LeftTuple( f0,
-                                     this.node,
+                                     this.sink,
                                      true  ),
                       ((Object[]) this.sink.getAsserted().get( 0 ))[0] );
 
@@ -141,7 +142,7 @@ public class NotNodeTest extends DroolsTestCase {
                       this.sink.getRetracted() );
 
         assertEquals( new LeftTuple( f0,
-                                     this.node,
+                                     this.sink,
                                      true  ),
                       ((Object[]) this.sink.getRetracted().get( 0 ))[0] );
         
@@ -218,7 +219,7 @@ public class NotNodeTest extends DroolsTestCase {
                       this.sink.getRetracted() );
 
         assertEquals( new LeftTuple( f0,
-                                     this.node,
+                                     this.sink,
                                      true  ),
                       ((Object[]) this.sink.getAsserted().get( 0 ))[0] );
 

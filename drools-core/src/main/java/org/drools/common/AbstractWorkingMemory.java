@@ -72,6 +72,7 @@ import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.process.instance.timer.TimerManager;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.LIANodePropagation;
+import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ObjectTypeConf;
 import org.drools.rule.Declaration;
 import org.drools.rule.EntryPoint;
@@ -947,7 +948,8 @@ public abstract class AbstractWorkingMemory
         final PropagationContext propagationContext = new PropagationContextImpl( getNextPropagationIdCounter(),
                                                                                   PropagationContext.ASSERTION,
                                                                                   rule,
-                                                                                  activation,
+                                                                                  (activation == null) ? null : (LeftTuple) activation.getTuple(),
+                                                                                  handle,
                                                                                   this.agenda.getActiveActivations(),
                                                                                   this.agenda.getDormantActivations(),
                                                                                   entryPoint );
@@ -1050,7 +1052,8 @@ public abstract class AbstractWorkingMemory
             final PropagationContext propagationContext = new PropagationContextImpl( getNextPropagationIdCounter(),
                                                                                       PropagationContext.RETRACTION,
                                                                                       rule,
-                                                                                      activation,
+                                                                                      (activation == null) ? null : (LeftTuple) activation.getTuple(),
+                                                                                      handle,
                                                                                       this.agenda.getActiveActivations(),
                                                                                       this.agenda.getDormantActivations(),
                                                                                       this.entryPoint );
@@ -1137,7 +1140,8 @@ public abstract class AbstractWorkingMemory
             final PropagationContext propagationContext = new PropagationContextImpl( getNextPropagationIdCounter(),
                                                                                       PropagationContext.MODIFICATION,
                                                                                       rule,
-                                                                                      activation,
+                                                                                      (activation == null) ? null : (LeftTuple) activation.getTuple(),
+                                                                                      handle,
                                                                                       this.agenda.getActiveActivations(),
                                                                                       this.agenda.getDormantActivations(),
                                                                                       entryPoint );
@@ -1211,7 +1215,8 @@ public abstract class AbstractWorkingMemory
             final PropagationContext propagationContext = new PropagationContextImpl( getNextPropagationIdCounter(),
                                                                                       PropagationContext.MODIFICATION,
                                                                                       rule,
-                                                                                      activation,
+                                                                                      (activation == null) ? null : (LeftTuple) activation.getTuple(),
+                                                                                      handle,
                                                                                       this.agenda.getActiveActivations(),
                                                                                       this.agenda.getDormantActivations(),
                                                                                       entryPoint );
@@ -1282,7 +1287,8 @@ public abstract class AbstractWorkingMemory
             final PropagationContext propagationContext = new PropagationContextImpl( getNextPropagationIdCounter(),
                                                                                       PropagationContext.MODIFICATION,
                                                                                       rule,
-                                                                                      activation,
+                                                                                      (activation == null) ? null : (LeftTuple) activation.getTuple(),
+                                                                                      handle,
                                                                                       this.agenda.getActiveActivations(),
                                                                                       this.agenda.getDormantActivations(),
                                                                                       entryPoint );

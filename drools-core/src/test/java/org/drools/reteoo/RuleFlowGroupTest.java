@@ -136,6 +136,7 @@ public class RuleFlowGroupTest extends DroolsTestCase {
         final PropagationContext context0 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
                                                                         rule0,
+                                                                        null,
                                                                         null );
 
         // nodes
@@ -415,6 +416,7 @@ public class RuleFlowGroupTest extends DroolsTestCase {
         final PropagationContext context0 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
                                                                         rule0,
+                                                                        null,
                                                                         null );
 
         // nodes

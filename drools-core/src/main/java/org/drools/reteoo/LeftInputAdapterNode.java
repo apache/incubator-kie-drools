@@ -114,6 +114,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
             final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
                                                                                       PropagationContext.RULE_ADDITION,
                                                                                       null,
+                                                                                      null,
                                                                                       null );
             this.objectSource.updateSink( this,
                                           propagationContext,

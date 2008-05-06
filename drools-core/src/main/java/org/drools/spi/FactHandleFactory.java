@@ -57,4 +57,8 @@ public interface FactHandleFactory
     public FactHandleFactory newInstance();
 
     public Class getFactHandleType();
+
+    public int getId();
+
+    public long getRecency();
 }

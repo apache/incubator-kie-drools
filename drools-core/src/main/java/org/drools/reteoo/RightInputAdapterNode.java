@@ -157,7 +157,7 @@ public class RightInputAdapterNode extends ObjectSource
         factHandle.setRightTuple( null );
 
         for ( LeftTuple leftTuple = factHandle.getLeftTuple(); leftTuple != null; leftTuple = (LeftTuple) leftTuple.getLeftParentNext() ) {
-            leftTuple.getSink().retractLeftTuple( leftTuple,
+            leftTuple.getLeftTupleSink().retractLeftTuple( leftTuple,
                                                   context,
                                                   workingMemory );
         }
@@ -178,6 +178,7 @@ public class RightInputAdapterNode extends ObjectSource
             final InternalWorkingMemory workingMemory = workingMemories[i];
             final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
                                                                                       PropagationContext.RULE_ADDITION,
+                                                                                      null,
                                                                                       null,
                                                                                       null );
             this.tupleSource.updateSink( this,
