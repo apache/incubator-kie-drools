@@ -27,7 +27,9 @@ import org.drools.reteoo.RuleTerminalNode;
 import org.drools.rule.Package;
 
 public class WorkingMemorySerialisationTest extends TestCase {
-    
+    public void testx() {
+        
+    }
     public void xxxtest1() throws Exception {
         String rule = "package org.test;\n";
         rule += "import org.drools.Person\n";
