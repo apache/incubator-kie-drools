@@ -93,7 +93,7 @@ public class MVELConsequenceBuilderTest extends TestCase {
         final AgendaItem item = new AgendaItem( 0,
                                                 tuple,
                                                 10,
-                                                new PropagationContextImpl(1, 1, null, null),
+                                                new PropagationContextImpl(1, 1, null, null, null),
                                                 context.getRule(),
                                                 null );
         final DefaultKnowledgeHelper kbHelper = new DefaultKnowledgeHelper( wm );
