@@ -8,6 +8,8 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import junit.framework.TestCase;
 
@@ -27,10 +29,8 @@ import org.drools.reteoo.RuleTerminalNode;
 import org.drools.rule.Package;
 
 public class WorkingMemorySerialisationTest extends TestCase {
-    public void testx() {
-        
-    }
-    public void xxxtest1() throws Exception {
+
+    public void test1() throws Exception {
         String rule = "package org.test;\n";
         rule += "import org.drools.Person\n";
         rule += "global java.util.List list\n";
@@ -71,12 +71,15 @@ public class WorkingMemorySerialisationTest extends TestCase {
         
         ByteArrayInputStream bais = new ByteArrayInputStream( baos.toByteArray() );
         InputPersister ip = new InputPersister( (InternalRuleBase) ruleBase, new ObjectInputStream( bais ), factory);        
-        WorkingMemory wm2 = ip.read(); 
+        
+        WorkingMemory wm2 = ip.read();
+        wm2.setGlobal( "list", list );
         
 
-//        session.fireAllRules();
-//
-//        assertEquals( 1, ((List)session.getGlobal("list")).size());
-//        assertEquals( p, ((List)session.getGlobal("list")).get(0));
+        wm2.fireAllRules();
+
+        assertEquals( 1, ((List)wm2.getGlobal("list")).size());
+        assertEquals( p, ((List)wm2.getGlobal("list")).get(0));
     }
+
 }
