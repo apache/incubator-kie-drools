@@ -1,5 +1,9 @@
 package org.drools.audit.event;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -43,6 +47,18 @@ public class ObjectLogEvent extends LogEvent {
         super( type );
         this.factId = factId;
         this.objectToString = objectToString;
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+        factId    = in.readLong();
+        objectToString    = (String)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        out.writeLong(factId);
+        out.writeObject(objectToString);
     }
 
     /**

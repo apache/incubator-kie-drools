@@ -1,5 +1,9 @@
 package org.drools.audit.event;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -42,6 +46,18 @@ public class RuleFlowLogEvent extends LogEvent {
         super( type );
         this.processId = processId;
         this.processName = processName;
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+        processId    = (String)in.readObject();
+        processName    = (String)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        out.writeObject(processId);
+        out.writeObject(processName);
     }
 
     public String getProcessId() {

@@ -27,7 +27,7 @@ import java.io.ObjectOutput;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen </a>
  */
-public class LogEvent implements Externalizable {
+public class LogEvent { // implements Externalizable { This breaks XStream serialization !
 
 public static final int INSERTED                                = 1;
     public static final int UPDATED                             = 2;
@@ -87,6 +87,7 @@ public static final int INSERTED                                = 1;
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeInt(type);
     }
+    
     /**
      * Returns the type of the log event as defined in this class.
      * 

@@ -1,5 +1,9 @@
 package org.drools.audit.event;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -24,8 +28,8 @@ package org.drools.audit.event;
  */
 public class RuleBaseLogEvent extends LogEvent {
 
-    private final String packageName;
-    private final String ruleName;
+    private String packageName;
+    private String ruleName;
 
     /**
      * Create a new activation log event.
@@ -40,6 +44,18 @@ public class RuleBaseLogEvent extends LogEvent {
         super( type );
         this.packageName = packageName;
         this.ruleName = ruleName;
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+        packageName    = (String)in.readObject();
+        ruleName    = (String)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        out.writeObject(packageName);
+        out.writeObject(ruleName);
     }
 
     /**
