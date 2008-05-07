@@ -1,5 +1,9 @@
 package org.drools.audit.event;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -41,6 +45,18 @@ public class RuleFlowGroupLogEvent extends LogEvent {
         super( type );
         this.groupName = groupName;
         this.size = size;
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+        groupName    = (String)in.readObject();
+        size    = in.readInt();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        out.writeObject(groupName);
+        out.writeInt(size);
     }
 
     public String getGroupName() {

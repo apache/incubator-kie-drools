@@ -1,5 +1,9 @@
 package org.drools.audit.event;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 public class RuleFlowNodeLogEvent extends RuleFlowLogEvent {
     
     private String nodeId;
@@ -22,6 +26,18 @@ public class RuleFlowNodeLogEvent extends RuleFlowLogEvent {
         this.nodeName = nodeName;
     }
     
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+        nodeId    = (String)in.readObject();
+        nodeName    = (String)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        out.writeObject(nodeId);
+        out.writeObject(nodeName);
+    }
+
     public String getNodeId() {
         return nodeId;
     }
