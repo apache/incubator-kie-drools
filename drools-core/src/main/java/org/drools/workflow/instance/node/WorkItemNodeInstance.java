@@ -16,6 +16,7 @@ package org.drools.workflow.instance.node;
  * limitations under the License.
  */
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -58,7 +59,7 @@ public class WorkItemNodeInstance extends EventNodeInstance implements WorkItemL
 		workItem = new WorkItemImpl();
 		workItem.setName(work.getName());
 		workItem.setProcessInstanceId(getProcessInstance().getId());
-		workItem.setParameters(work.getParameters());
+		workItem.setParameters(new HashMap<String, Object>(work.getParameters()));
 		for (Iterator<Map.Entry<String, String>> iterator = workItemNode.getInMappings().entrySet().iterator(); iterator.hasNext(); ) {
             Map.Entry<String, String> mapping = iterator.next();
             VariableScopeInstance variableScopeInstance = (VariableScopeInstance)

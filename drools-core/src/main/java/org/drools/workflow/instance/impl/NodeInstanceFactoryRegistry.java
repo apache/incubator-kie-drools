@@ -6,6 +6,7 @@ import java.util.Map;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.ActionNode;
 import org.drools.workflow.core.node.EndNode;
+import org.drools.workflow.core.node.FaultNode;
 import org.drools.workflow.core.node.Join;
 import org.drools.workflow.core.node.MilestoneNode;
 import org.drools.workflow.core.node.RuleSetNode;
@@ -18,6 +19,7 @@ import org.drools.workflow.instance.impl.factory.CreateNewNodeFactory;
 import org.drools.workflow.instance.impl.factory.ReuseNodeFactory;
 import org.drools.workflow.instance.node.ActionNodeInstance;
 import org.drools.workflow.instance.node.EndNodeInstance;
+import org.drools.workflow.instance.node.FaultNodeInstance;
 import org.drools.workflow.instance.node.JoinInstance;
 import org.drools.workflow.instance.node.MilestoneNodeInstance;
 import org.drools.workflow.instance.node.RuleSetNodeInstance;
@@ -56,6 +58,8 @@ public class NodeInstanceFactoryRegistry {
                   new CreateNewNodeFactory( WorkItemNodeInstance.class ) );
         register( TimerNode.class,
                   new CreateNewNodeFactory( TimerNodeInstance.class ) );
+        register( FaultNode.class,
+                  new CreateNewNodeFactory( FaultNodeInstance.class ) );
     }
 
     public void register(Class< ? extends Node> cls,
