@@ -1,6 +1,7 @@
 package org.drools.bpel.instance;
 
 import org.drools.bpel.core.BPELFaultHandler;
+import org.drools.process.core.context.exception.ExceptionHandler;
 import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.instance.context.exception.ExceptionHandlerInstance;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
@@ -17,8 +18,8 @@ public class BPELExceptionHandlerInstance implements ExceptionHandlerInstance {
         return faultHandler;
     }
 
-    public void setFaultHandler(BPELFaultHandler faultHandler) {
-        this.faultHandler = faultHandler;
+    public void setExceptionHandler(ExceptionHandler handler) {
+        this.faultHandler = (BPELFaultHandler) handler;
     }
 
     public NodeInstanceContainer getNodeInstanceContainer() {

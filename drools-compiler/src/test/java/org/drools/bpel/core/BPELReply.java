@@ -13,7 +13,7 @@ public class BPELReply extends WorkItemNode implements BPELBasicActivity {
     private static final long serialVersionUID = 400L;
     
     private static final String PARTNER_LINK = "PartnerLink";
-    private static final String PORT_TYPE = "Porttype";
+    private static final String PORT_TYPE = "PortType";
     private static final String OPERATION = "Operation";
     private static final String INPUT = "Message";
     private static final String FAULT_NAME = "FaultName";

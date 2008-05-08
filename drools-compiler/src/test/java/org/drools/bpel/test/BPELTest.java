@@ -44,6 +44,7 @@ public class BPELTest {
         process.setId("1");
         process.setVersion("1");
         process.setPackageName("org.drools.bpel.test");
+    	int nodeId = 0;
         
         // variables
         VariableScope variableScope = process.getVariableScope();
@@ -80,6 +81,7 @@ public class BPELTest {
         faultHandler.setFaultName("cannotCompleteOrder");
         faultHandler.setFaultVariable("POFault");
         BPELReply reply = new BPELReply();
+        reply.setId(++nodeId);
         reply.setPartnerLink("purchasing");
         reply.setPortType("lns:purchaseOrderPT");
         reply.setOperation("sendPurchaseOrder");
@@ -91,11 +93,13 @@ public class BPELTest {
         
         // sequence
         BPELSequence sequence = new BPELSequence();
+        sequence.setId(++nodeId);
         sequence.setName("sequence");
         List<BPELActivity> sequenceActivities = new ArrayList<BPELActivity>();
         
         // Receive purchase order
         BPELReceive receive = new BPELReceive();
+        receive.setId(++nodeId);
         receive.setName("Receive Purchase Order");
         receive.setPartnerLink("purchasing");
         receive.setPortType("lns:purchaseOrderPT");
@@ -106,23 +110,27 @@ public class BPELTest {
         
         // flow
         BPELFlow flow = new BPELFlow();
+        flow.setId(++nodeId);
         flow.setName("flow");
         flow.setLinks(new String[] { "ship-to-invoice", "ship-to-scheduling" });
         List<BPELActivity> flowActivities = new ArrayList<BPELActivity>();
         
             /********** sequence1 **********/
             BPELSequence sequence1 = new BPELSequence();
+            sequence1.setId(++nodeId);
             sequence1.setName("sequence1");
             List<BPELActivity> sequence1Activities = new ArrayList<BPELActivity>();
         
             // assign1
             BPELAssign assign1 = new BPELAssign();
+            assign1.setId(++nodeId);
             // $shippingRequest.customerInfo <- $PO.customerInfo
             assign1.setAction("");
             sequence1Activities.add(assign1);
             
             // invoke1
             BPELInvoke invoke1 = new BPELInvoke();
+            invoke1.setId(++nodeId);
             invoke1.setName("Decide On Shipper");
             invoke1.setPartnerLink("shipping");
             invoke1.setPortType("lns:shippingPT");
@@ -134,6 +142,7 @@ public class BPELTest {
         
             // receive1
             BPELReceive receive1 = new BPELReceive();
+            receive1.setId(++nodeId);
             receive1.setName("Arrange Logistics");
             receive1.setPartnerLink("shipping");
             receive1.setPortType("lns:shippingCallbackPT");
@@ -148,11 +157,13 @@ public class BPELTest {
             
             /********** sequence2 **********/
             BPELSequence sequence2 = new BPELSequence();
+            sequence2.setId(++nodeId);
             sequence2.setName("sequence2");
             List<BPELActivity> sequence2Activities = new ArrayList<BPELActivity>();
         
             // invoke2a
             BPELInvoke invoke2a = new BPELInvoke();
+            invoke2a.setId(++nodeId);
             invoke2a.setName("Initial Price Calculation");
             invoke2a.setPartnerLink("invoicing");
             invoke2a.setPortType("lns:computePricePT");
@@ -162,6 +173,7 @@ public class BPELTest {
             
             // invoke2b
             BPELInvoke invoke2b = new BPELInvoke();
+            invoke2b.setId(++nodeId);
             invoke2b.setName("Complete Price Calculation");
             invoke2b.setPartnerLink("invoicing");
             invoke2b.setPortType("lns:computePricePT");
@@ -172,6 +184,7 @@ public class BPELTest {
         
             // receive2
             BPELReceive receive2 = new BPELReceive();
+            receive2.setId(++nodeId);
             receive2.setName("Receive Invoice");
             receive2.setPartnerLink("invoicing");
             receive2.setPortType("lns:invoiceCallbackPT");
@@ -185,11 +198,13 @@ public class BPELTest {
             
             /********** sequence3 **********/
             BPELSequence sequence3 = new BPELSequence();
+            sequence3.setId(++nodeId);
             sequence3.setName("sequence3");
             List<BPELActivity> sequence3Activities = new ArrayList<BPELActivity>();
         
             // invoke3a
             BPELInvoke invoke3a = new BPELInvoke();
+            invoke3a.setId(++nodeId);
             invoke3a.setName("Initiate Production Scheduling");
             invoke3a.setPartnerLink("scheduling");
             invoke3a.setPortType("lns:schedulingPT");
@@ -199,6 +214,7 @@ public class BPELTest {
             
             // invoke2b
             BPELInvoke invoke3b = new BPELInvoke();
+            invoke3b.setId(++nodeId);
             invoke3b.setName("Complete Production Scheduling");
             invoke3b.setPartnerLink("scheduling");
             invoke3b.setPortType("lns:schedulingPT");
@@ -215,6 +231,7 @@ public class BPELTest {
         
         // reply
         reply = new BPELReply();
+        reply.setId(++nodeId);
         reply.setName("Invoice Processing");
         reply.setPartnerLink("purchasing");
         reply.setPortType("lns:purchaseOrderPT");
@@ -368,6 +385,8 @@ public class BPELTest {
             System.out.println("Web service invoked "
                 + workItem.getParameter("PartnerLink") + " "
                 + workItem.getParameter("PortType") + " "
+                + (workItem.getParameter("FaultName") == null ? ""
+                		: "fault=" + workItem.getParameter("FaultName"))
                 + workItem.getParameter("Operation") + ", message = "
                 + workItem.getParameter("Message"));
         }
@@ -376,6 +395,8 @@ public class BPELTest {
             System.out.println("Web service invocation aborted "
                 + workItem.getParameter("PartnerLink") + " "
                 + workItem.getParameter("PortType") + " "
+                + (workItem.getParameter("FaultName") == null ? ""
+            		: workItem.getParameter("FaultName"))
                 + workItem.getParameter("Operation") + ", message = "
                 + workItem.getParameter("Message"));
         }
