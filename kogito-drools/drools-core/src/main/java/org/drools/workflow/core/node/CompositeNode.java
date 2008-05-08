@@ -37,6 +37,13 @@ public class CompositeNode extends NodeImpl implements NodeContainer {
     }
 
     public void addNode(Node node) {
+    	long id = 0;
+        for (Node n: nodeContainer.getNodes()) {
+            if (n.getId() > id) {
+                id = n.getId();
+            }
+        }
+        node.setId(++id);
         nodeContainer.addNode(node);
         node.setNodeContainer(this);
     }

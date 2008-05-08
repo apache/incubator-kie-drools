@@ -47,10 +47,7 @@ public class WorkItemImpl implements WorkItem, Serializable {
     }
     
     public void setParameters(Map<String, Object> parameters) {
-        for (Iterator<Map.Entry<String, Object>> iterator = parameters.entrySet().iterator(); iterator.hasNext(); ) {
-            Map.Entry<String, Object> entry = iterator.next();
-            setParameter(entry.getKey(), entry.getValue());
-        }
+    	this.parameters = parameters;
     }
     
     public void setParameter(String name, Object value) {
