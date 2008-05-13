@@ -69,6 +69,9 @@ public class BuildContext {
     // alpha constraints from the last pattern attached
     private List                      alphaConstraints;
     
+    // behaviors from the last pattern attached
+    private List                      behaviors;
+    
     // the current entry point
     private EntryPoint                currentEntryPoint;
     
@@ -347,6 +350,20 @@ public class BuildContext {
      */
     public void setCurrentEntryPoint(EntryPoint currentEntryPoint) {
         this.currentEntryPoint = currentEntryPoint;
+    }
+
+    /**
+     * @return the behaviors
+     */
+    public List getBehaviors() {
+        return behaviors;
+    }
+
+    /**
+     * @param behaviors the behaviors to set
+     */
+    public void setBehaviors(List behaviors) {
+        this.behaviors = behaviors;
     }
         
 }

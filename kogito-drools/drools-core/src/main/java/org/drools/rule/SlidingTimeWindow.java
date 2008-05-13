@@ -22,9 +22,16 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Comparator;
+import java.util.PriorityQueue;
 
+import org.drools.TemporalSession;
 import org.drools.common.EventFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.PropagationContextImpl;
+import org.drools.reteoo.ReteooTemporalSession;
+import org.drools.reteoo.RightTuple;
+import org.drools.spi.PropagationContext;
+import org.drools.temporal.SessionClock;
 
 /**
  * @author etirelli
@@ -35,14 +42,16 @@ public class SlidingTimeWindow
     Behavior {
 
     private long size;
+    private volatile transient RightTuple expiringTuple; 
 
     public SlidingTimeWindow() {
+        this( 0 );
     }
-    
+
     /**
      * @param size
      */
-    public SlidingTimeWindow(long size) {
+    public SlidingTimeWindow(final long size) {
         super();
         this.size = size;
     }
@@ -52,10 +61,9 @@ public class SlidingTimeWindow
      *
      * @see java.io.Externalizable#readExternal(java.io.ObjectInput)
      */
-    public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
-        // TODO Auto-generated method stub
-
+    public void readExternal(final ObjectInput in) throws IOException,
+                                                  ClassNotFoundException {
+        this.size = in.readLong();
     }
 
     /**
@@ -63,9 +71,8 @@ public class SlidingTimeWindow
      *
      * @see java.io.Externalizable#writeExternal(java.io.ObjectOutput)
      */
-    public void writeExternal(ObjectOutput out) throws IOException {
-        // TODO Auto-generated method stub
-
+    public void writeExternal(final ObjectOutput out) throws IOException {
+        out.writeLong( this.size );
     }
 
     public BehaviorType getType() {
@@ -82,22 +89,126 @@ public class SlidingTimeWindow
     /**
      * @param size the size to set
      */
-    public void setSize(long size) {
+    public void setSize(final long size) {
         this.size = size;
     }
 
-    public Comparator<EventFactHandle> getEventComparator() {
-        return new Comparator<EventFactHandle>() {
-            public int compare(EventFactHandle e1,
-                               EventFactHandle e2) {
-                return ( e1.getStartTimestamp() < e2.getStartTimestamp() ) ? -1 : ( e1.getStartTimestamp() == e2.getStartTimestamp() ? 0 : 1 );
-            }
-        };
+    public Object createContext() {
+        return new PriorityQueue<RightTuple>( 16, // arbitrary size... can we improve it?
+                                              new SlidingTimeWindowComparator() );
     }
 
-    public boolean isExpired(EventFactHandle event,
-                             InternalWorkingMemory workingMemory) {
-        return false;
+    /**
+     * @inheritDoc
+     *
+     * @see org.drools.rule.Behavior#assertRightTuple(java.lang.Object, org.drools.reteoo.RightTuple, org.drools.common.InternalWorkingMemory)
+     */
+    public void assertRightTuple(final Object context,
+                                 final RightTuple rightTuple,
+                                 final InternalWorkingMemory workingMemory) {
+        PriorityQueue<RightTuple> queue = (PriorityQueue<RightTuple>) context;
+        queue.add( rightTuple );
+        if ( queue.peek() == rightTuple ) {
+            // update next expiration time 
+            updateNextExpiration( rightTuple,
+                                  workingMemory,
+                                  queue );
+        }
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @see org.drools.rule.Behavior#retractRightTuple(java.lang.Object, org.drools.reteoo.RightTuple, org.drools.common.InternalWorkingMemory)
+     */
+    public void retractRightTuple(final Object context,
+                                  final RightTuple rightTuple,
+                                  final InternalWorkingMemory workingMemory) {
+        // it may be a call back to expire the tuple that is already being expired
+        if( this.expiringTuple != rightTuple ) {
+            PriorityQueue<RightTuple> queue = (PriorityQueue<RightTuple>) context;
+            if ( queue.peek() == rightTuple ) {
+                // it was the head of the queue
+                queue.poll();
+                // update next expiration time 
+                updateNextExpiration( queue.peek(),
+                                      workingMemory,
+                                      queue );
+            } else {
+                queue.remove( rightTuple );
+            }
+        }
+    }
+
+    public void expireTuples(final Object context,
+                             final InternalWorkingMemory workingMemory) {
+        SessionClock clock = ((TemporalSession<SessionClock>) workingMemory).getSessionClock();
+        long currentTime = clock.getCurrentTime();
+        PriorityQueue<RightTuple> queue = (PriorityQueue<RightTuple>) context;
+        RightTuple tuple = queue.peek();
+        while ( tuple != null && isExpired( currentTime,
+                                            tuple ) ) {
+            this.expiringTuple = tuple;
+            queue.remove();
+            final PropagationContext propagationContext = new PropagationContextImpl( ((ReteooTemporalSession<SessionClock>) workingMemory).getNextPropagationIdCounter(),
+                                                                                      PropagationContext.RETRACTION,
+                                                                                      null,
+                                                                                      null,
+                                                                                      tuple.getFactHandle() );
+            tuple.getRightTupleSink().retractRightTuple( tuple,
+                                                         propagationContext,
+                                                         workingMemory );
+            tuple.unlinkFromRightParent();
+            this.expiringTuple = null;
+            tuple = queue.peek();
+        }
+        
+        // update next expiration time 
+        updateNextExpiration( tuple,
+                              workingMemory,
+                              queue );
+    }
+
+    private boolean isExpired(final long currentTime,
+                              final RightTuple rightTuple) {
+        return ((EventFactHandle) rightTuple.getFactHandle()).getStartTimestamp() + this.size <= currentTime;
+    }
+
+    /**
+     * @param rightTuple
+     * @param workingMemory
+     */
+    private void updateNextExpiration(final RightTuple rightTuple,
+                                      final InternalWorkingMemory workingMemory,
+                                      final Object context) {
+        SessionClock clock = ((TemporalSession<SessionClock>) workingMemory).getSessionClock();
+        if ( rightTuple != null ) {
+            clock.schedule( this,
+                            context,
+                            ((EventFactHandle) rightTuple.getFactHandle()).getStartTimestamp() + this.size );
+        } else {
+            clock.unschedule( this );
+        }
+    }
+    
+    public String toString() {
+        return "SlidingTimeWindow( size="+size+" )";
+    }
+
+    /**
+     * A Comparator<RightTuple> implementation for the fact queue
+     * 
+     * @author etirelli
+     */
+    private static class SlidingTimeWindowComparator
+        implements
+        Comparator<RightTuple> {
+        public int compare(RightTuple t1,
+                           RightTuple t2) {
+            final EventFactHandle e1 = (EventFactHandle) t1.getFactHandle();
+            final EventFactHandle e2 = (EventFactHandle) t2.getFactHandle();
+            return (e1.getStartTimestamp() < e2.getStartTimestamp()) ? -1 : (e1.getStartTimestamp() == e2.getStartTimestamp() ? 0 : 1);
+        }
     }
 
 }

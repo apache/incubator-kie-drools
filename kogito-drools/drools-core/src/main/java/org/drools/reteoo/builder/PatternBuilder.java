@@ -33,14 +33,12 @@ import org.drools.reteoo.PropagationQueuingNode;
 import org.drools.rule.Declaration;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.InvalidPatternException;
-import org.drools.rule.MutableTypeConstraint;
 import org.drools.rule.Pattern;
 import org.drools.rule.PatternSource;
 import org.drools.rule.RuleConditionElement;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.Constraint;
 import org.drools.spi.ObjectType;
-import org.drools.spi.Constraint.ConstraintType;
 
 /**
  * A builder for patterns
@@ -75,6 +73,7 @@ public class PatternBuilder
 
         final List alphaConstraints = new LinkedList();
         final List betaConstraints = new LinkedList();
+        final List behaviors = new LinkedList();
 
         this.createConstraints( context,
                                 utils,
@@ -84,6 +83,10 @@ public class PatternBuilder
 
         // Create BetaConstraints object
         context.setBetaconstraints( betaConstraints );
+        
+        // set behaviors list
+        behaviors.addAll( pattern.getBehaviors() );
+        context.setBehaviors( behaviors );
 
         if ( pattern.getSource() != null ) {
             context.setAlphaConstraints( alphaConstraints );

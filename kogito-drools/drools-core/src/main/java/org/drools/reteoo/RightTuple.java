@@ -13,24 +13,24 @@ public class RightTuple
     Entry {
     private InternalFactHandle handle;
 
-    private RightTuple               handlePrevious;
-    private RightTuple               handleNext;
+    private RightTuple         handlePrevious;
+    private RightTuple         handleNext;
 
-    private RightTupleList           memory;
+    private RightTupleList     memory;
 
-    private Entry                    previous;
-    private Entry                    next;
+    private Entry              previous;
+    private Entry              next;
 
-    private LeftTuple                betaChildren;
+    private LeftTuple          betaChildren;
 
-    private LeftTuple                blocked;
+    private LeftTuple          blocked;
 
-    private RightTupleSink           sink;
+    private RightTupleSink     sink;
 
-    private int                      hashCode;
-    
+    private int                hashCode;
+
     public RightTuple() {
-        
+
     }
 
     public RightTuple(InternalFactHandle handle,
@@ -52,25 +52,28 @@ public class RightTuple
         return this.sink;
     }
 
-    //    public void unlinkFromRightParent() {
-    //        if ( this.parent != null ) {
-    //            if ( this.parentPrevious != null ) {
-    //                this.parentPrevious.parentNext = this.parentNext;
-    //            } else {
-    //                // first one in the chain, so treat differently                
-    //                this.parent.setAlphaChildren( this.parentNext );
-    //            }
-    //
-    //            if ( this.parentNext != null ) {
-    //                this.parentNext.parentPrevious = this.parentPrevious;
-    //            }
-    //        }
-    //
-    //        this.parent = null;
-    //        this.parentPrevious = null;
-    //        this.parentNext = null;
-    //        this.blocked = null;
-    //    }
+    public void unlinkFromRightParent() {
+        if ( this.handle != null ) {
+            if( this.handlePrevious != null ) {
+                this.handlePrevious.handleNext = this.handleNext;
+            }
+            if( this.handleNext != null ) {
+                this.handleNext.handlePrevious = this.handlePrevious;
+            }
+            if( this.handle.getRightTuple() == this ) {
+                this.handle.setRightTuple( this.handleNext );
+            }
+        }
+        this.handle = null;
+        this.handlePrevious = null;
+        this.handleNext = null;
+        this.blocked = null;
+        this.previous = null;
+        this.next = null;
+        this.memory = null;
+        this.betaChildren = null;
+        this.sink = null;
+    }
 
     public InternalFactHandle getFactHandle() {
         return this.handle;
@@ -87,7 +90,7 @@ public class RightTuple
     public RightTupleList getMemory() {
         return memory;
     }
-    
+
     public void setMemory(RightTupleList memory) {
         this.memory = memory;
     }
@@ -168,15 +171,15 @@ public class RightTuple
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
-        this.handle = ( InternalFactHandle ) in.readObject();
-        this.handlePrevious = ( RightTuple ) in.readObject();
-        this.handleNext = ( RightTuple ) in.readObject();
-        this.memory = ( RightTupleList ) in.readObject();
-        this.previous = ( RightTuple ) in.readObject();
-        this.next = ( RightTuple ) in.readObject();
-        this.betaChildren = ( LeftTuple) in.readObject();
-        this.blocked = ( LeftTuple) in.readObject();
-        this.sink = ( RightTupleSink ) in.readObject();
+        this.handle = (InternalFactHandle) in.readObject();
+        this.handlePrevious = (RightTuple) in.readObject();
+        this.handleNext = (RightTuple) in.readObject();
+        this.memory = (RightTupleList) in.readObject();
+        this.previous = (RightTuple) in.readObject();
+        this.next = (RightTuple) in.readObject();
+        this.betaChildren = (LeftTuple) in.readObject();
+        this.blocked = (LeftTuple) in.readObject();
+        this.sink = (RightTupleSink) in.readObject();
         this.hashCode = in.readInt();
     }
 
@@ -190,7 +193,7 @@ public class RightTuple
         out.writeObject( this.betaChildren );
         out.writeObject( this.blocked );
         out.writeObject( this.sink );
-        out.writeInt( this.hashCode );        
+        out.writeInt( this.hashCode );
     }
 
 }

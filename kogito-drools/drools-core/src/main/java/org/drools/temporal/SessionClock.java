@@ -19,12 +19,17 @@ package org.drools.temporal;
 
 import java.io.Externalizable;
 
+import org.drools.TemporalSession;
+import org.drools.rule.Behavior;
+
 /**
  * A clock interface that all engine clocks must implement
  * 
  * @author etirelli
  */
-public interface SessionClock extends Externalizable {
+public interface SessionClock
+    extends
+    Externalizable {
 
     /**
      * Returns the current time. There is no semantics attached
@@ -37,5 +42,34 @@ public interface SessionClock extends Externalizable {
      * 
      */
     public long getCurrentTime();
+
+    /**
+     * Schedule a call back to the given behavior at the given
+     * timestamp. If a callback was already registered for the
+     * given behavior, update the existing record to the new
+     * timestamp.
+     * 
+     * @param behavior
+     * @param timestamp
+     */
+    public void schedule(Behavior behavior,
+                         Object behaviorContext,
+                         long timestamp);
+
+    /**
+     * Unschedule any existing call back for the given behavior
+     * 
+     * @param behavior
+     */
+    public void unschedule(Behavior behavior);
+
+    /**
+     * Sets the temporal session associated with this clock
+     * 
+     * @param session the session to set
+     */
+    public void setSession(TemporalSession<? extends SessionClock> session);
+    
+    
 
 }

@@ -18,6 +18,8 @@
 
 package org.drools.rule;
 
+import org.drools.common.InternalWorkingMemory;
+import org.drools.reteoo.RightTuple;
 import org.drools.spi.RuleComponent;
 
 /**
@@ -45,6 +47,50 @@ public interface Behavior extends RuleComponent, Cloneable {
         }
     }
     
+    /**
+     * Returns the type of the behavior
+     * 
+     * @return
+     */
     public BehaviorType getType();
 
+    /**
+     * Creates the context object associated with this behavior.
+     * The object is given as a parameter in all behavior call backs.
+     * 
+     * @return
+     */
+    public Object createContext();
+
+    /**
+     * Makes the behavior aware of the new fact entering behavior's scope
+     * 
+     * @param context The behavior context object
+     * @param tuple The new fact entering behavior's scope
+     * @param workingMemory The working memory session reference
+     */
+    public void assertRightTuple(Object context,
+                                 RightTuple tuple,
+                                 InternalWorkingMemory workingMemory);
+
+    /**
+     * Removes a right tuple from the behavior's scope
+     * 
+     * @param context The behavior context object
+     * @param rightTuple The tuple leaving the behavior's scope
+     * @param workingMemory The working memory session reference
+     */
+    public void retractRightTuple(Object context,
+                                  RightTuple rightTuple,
+                                  InternalWorkingMemory workingMemory);
+
+    /**
+     * A callback method that allows behaviors to expire tuples
+     * 
+     * @param context The behavior context object
+     * @param workingMemory The working memory session reference
+     */
+    public void expireTuples(Object context, 
+                             InternalWorkingMemory workingMemory);
+    
 }

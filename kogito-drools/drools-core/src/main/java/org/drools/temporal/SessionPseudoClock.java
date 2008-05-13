@@ -17,9 +17,19 @@
  */
 package org.drools.temporal;
 
-import java.io.ObjectInput;
 import java.io.IOException;
+import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.PriorityQueue;
+
+import org.drools.TemporalSession;
+import org.drools.common.DroolsObjectInputStream;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.common.WorkingMemoryAction;
+import org.drools.reteoo.ReteooTemporalSession;
+import org.drools.rule.Behavior;
 
 /**
  * A SessionPseudoClock is a clock that allows the user to explicitly 
@@ -32,34 +42,166 @@ public class SessionPseudoClock
     implements
     SessionClock {
 
-    private long timer;
+    private long                                          timer;
+    private PriorityQueue<ScheduledItem>                  queue;
+    private transient Map<Behavior, ScheduledItem>        schedules;
+    private transient ReteooTemporalSession<SessionClock> session;
 
     public SessionPseudoClock() {
-        this.timer = 0;
+        this( null );
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        timer   = in.readLong();
+    public SessionPseudoClock(TemporalSession<SessionClock> session) {
+        this.timer = 0;
+        this.queue = new PriorityQueue<ScheduledItem>();
+        this.schedules = new HashMap<Behavior, ScheduledItem>();
+        this.session = (ReteooTemporalSession<SessionClock>) session;
+    }
+
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        timer = in.readLong();
+        PriorityQueue<ScheduledItem> tmp = (PriorityQueue<ScheduledItem>) in.readObject();
+        if( tmp != null ) {
+            queue = tmp;
+            for ( ScheduledItem item : queue ) {
+                this.schedules.put( item.getBehavior(),
+                                    item );
+            }
+        }
+        session = (ReteooTemporalSession<SessionClock>) ((DroolsObjectInputStream) in).getWorkingMemory();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeLong(timer);
+        out.writeLong( timer );
+        // this is a work around to a bug in the object stream code, where it raises exceptions
+        // when trying to deserialize an empty priority queue.
+        out.writeObject( queue.isEmpty() ? null : queue );
     }
 
     /* (non-Javadoc)
     * @see org.drools.temporal.SessionClock#getCurrentTime()
     */
-    public long getCurrentTime() {
+    public synchronized long getCurrentTime() {
         return this.timer;
     }
 
-    public long advanceTime( long millisecs ) {
+    public synchronized long advanceTime(long millisecs) {
         this.timer += millisecs;
+        this.runCallBacks();
         return this.timer;
     }
 
-    public void setStartupTime(int i) {
+    public synchronized void setStartupTime(int i) {
         this.timer = i;
+    }
+
+    public synchronized void schedule(final Behavior behavior,
+                                      final Object behaviorContext,
+                                      final long timestamp) {
+        ScheduledItem item = schedules.remove( behavior );
+        if ( item != null ) {
+            queue.remove( item );
+        }
+        item = new ScheduledItem( timestamp,
+                                  behavior,
+                                  behaviorContext );
+        schedules.put( behavior,
+                       item );
+        queue.add( item );
+    }
+
+    public synchronized void unschedule(final Behavior behavior) {
+        ScheduledItem item = schedules.remove( behavior );
+        if ( item != null ) {
+            queue.remove( item );
+        }
+    }
+
+    /**
+     * @return the session
+     */
+    public synchronized TemporalSession<SessionClock> getSession() {
+        return session;
+    }
+
+    /**
+     * @param session the session to set
+     */
+    public synchronized void setSession(TemporalSession<? extends SessionClock> session) {
+        this.session = (ReteooTemporalSession<SessionClock>) session;
+    }
+
+    private void runCallBacks() {
+        ScheduledItem item = queue.peek();
+        while ( item != null && item.getTimestamp() <= this.timer ) {
+            // remove the head
+            queue.remove();
+            // enqueue the callback
+            session.queueWorkingMemoryAction( item );
+            // get next head
+            item = queue.peek();
+        }
+    }
+
+    private static final class ScheduledItem
+        implements
+        Comparable<ScheduledItem>,
+        WorkingMemoryAction {
+        private long     timestamp;
+        private Behavior behavior;
+        private Object   behaviorContext;
+
+        /**
+         * @param timestamp
+         * @param behavior
+         * @param behaviorContext 
+         */
+        public ScheduledItem(final long timestamp,
+                             final Behavior behavior, 
+                             final Object behaviorContext) {
+            super();
+            this.timestamp = timestamp;
+            this.behavior = behavior;
+            this.behaviorContext = behaviorContext;
+        }
+
+        /**
+         * @return the timestamp
+         */
+        public final long getTimestamp() {
+            return timestamp;
+        }
+
+        /**
+         * @return the behavior
+         */
+        public final Behavior getBehavior() {
+            return behavior;
+        }
+
+        public int compareTo(ScheduledItem o) {
+            return this.timestamp < o.getTimestamp() ? -1 : this.timestamp == o.getTimestamp() ? 0 : 1;
+        }
+
+        public void execute(final InternalWorkingMemory workingMemory) {
+            behavior.expireTuples( behaviorContext, workingMemory );
+        }
+
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
+            timestamp = in.readLong();
+            behavior = (Behavior) in.readObject();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeLong( timestamp );
+            out.writeObject( behavior );
+        }
+        
+        public String toString() {
+            return "ScheduledItem( timestamp="+timestamp+", behavior="+behavior+" )";
+        }
     }
 
 }

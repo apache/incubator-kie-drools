@@ -49,6 +49,7 @@ public class AccumulateBuilder
 
         final List resultBetaConstraints = context.getBetaconstraints();
         final List resultAlphaConstraints = context.getAlphaConstraints();
+        final List resultBehaviors = context.getBehaviors();
 
         final RuleConditionElement source = accumulate.getSource();
 
@@ -90,6 +91,11 @@ public class AccumulateBuilder
         final BetaConstraints sourceBinder = utils.createBetaNodeConstraint( context,
                                                                              context.getBetaconstraints(),
                                                                              false );
+        
+        Behavior[] behaviors = Behavior.EMPTY_BEHAVIOR_LIST;
+        if( ! context.getBehaviors().isEmpty() ) {
+            behaviors = (Behavior[]) context.getBehaviors().toArray( new Behavior[ context.getBehaviors().size() ]);
+        }
 
         context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
                                                                 new AccumulateNode( context.getNextId(),
@@ -98,7 +104,7 @@ public class AccumulateBuilder
                                                                                     (AlphaNodeFieldConstraint[]) resultAlphaConstraints.toArray( new AlphaNodeFieldConstraint[resultAlphaConstraints.size()] ),
                                                                                     sourceBinder,
                                                                                     resultsBinder,
-                                                                                    Behavior.EMPTY_BEHAVIOR_LIST,
+                                                                                    behaviors,
                                                                                     accumulate,
                                                                                     existSubNetwort,
                                                                                     context ) ) );
