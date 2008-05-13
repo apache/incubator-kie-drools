@@ -33,7 +33,6 @@ import org.drools.rule.Behavior;
 import org.drools.rule.ContextEntry;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
-import org.drools.spi.Tuple;
 import org.drools.util.ArrayUtils;
 import org.drools.util.Entry;
 import org.drools.util.Iterator;
@@ -244,8 +243,17 @@ public class AccumulateNode extends BetaNode {
                              final InternalWorkingMemory workingMemory) {
 
         final AccumulateMemory memory = (AccumulateMemory) workingMemory.getNodeMemory( this );
+
         final RightTuple rightTuple = new RightTuple( factHandle,
                                                       this );
+        if ( !behavior.assertRightTuple( memory.behaviorContext,
+                                         rightTuple,
+                                         workingMemory ) ) {
+            // destroy right tuple
+            rightTuple.unlinkFromRightParent();
+            return;
+        }
+
         memory.betaMemory.getRightTupleMemory().add( rightTuple );
 
         if ( !this.tupleMemoryEnabled ) {
@@ -295,6 +303,8 @@ public class AccumulateNode extends BetaNode {
                                   final PropagationContext context,
                                   final InternalWorkingMemory workingMemory) {
         final AccumulateMemory memory = (AccumulateMemory) workingMemory.getNodeMemory( this );
+        
+        behavior.retractRightTuple( memory.behaviorContext, rightTuple, workingMemory );
         memory.betaMemory.getRightTupleMemory().remove( rightTuple );
 
         for ( LeftTuple childTuple = rightTuple.getBetaChildren(); childTuple != null; ) {
@@ -570,6 +580,7 @@ public class AccumulateNode extends BetaNode {
         for ( int i = 0; i < this.resultConstraints.length; i++ ) {
             memory.alphaContexts[i] = this.resultConstraints[i].createContextEntry();
         }
+        memory.behaviorContext = this.behavior.createBehaviorContext();
         return memory;
     }
 
@@ -582,6 +593,7 @@ public class AccumulateNode extends BetaNode {
         public BetaMemory         betaMemory;
         public ContextEntry[]     resultsContext;
         public ContextEntry[]     alphaContexts;
+        public Object             behaviorContext;
 
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
@@ -589,6 +601,7 @@ public class AccumulateNode extends BetaNode {
             betaMemory = (BetaMemory) in.readObject();
             resultsContext = (ContextEntry[]) in.readObject();
             alphaContexts = (ContextEntry[]) in.readObject();
+            behaviorContext = in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
@@ -596,6 +609,7 @@ public class AccumulateNode extends BetaNode {
             out.writeObject( betaMemory );
             out.writeObject( resultsContext );
             out.writeObject( alphaContexts );
+            out.writeObject( behaviorContext );
         }
 
     }

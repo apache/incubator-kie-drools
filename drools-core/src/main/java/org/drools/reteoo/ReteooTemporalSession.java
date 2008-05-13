@@ -50,6 +50,7 @@ public class ReteooTemporalSession<T extends SessionClock> extends ReteooStatefu
                ruleBase,
                executorService );
         this.sessionClock = clock;
+        this.sessionClock.setSession( this );
     }
 
     public void readExternal(ObjectInput in) throws IOException,

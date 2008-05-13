@@ -29,6 +29,7 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.rule.Behavior;
+import org.drools.rule.BehaviorManager;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
 import org.drools.util.LinkedList;
@@ -53,8 +54,6 @@ public abstract class BetaNode extends LeftTupleSource
     RightTupleSink,
     NodeMemory {
     
-    public static final Behavior[] NO_BEHAVIORS = new Behavior[0];
-    
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
@@ -67,7 +66,7 @@ public abstract class BetaNode extends LeftTupleSource
 
     protected BetaConstraints constraints;
 
-    protected Behavior[]      behaviors = NO_BEHAVIORS;
+    protected BehaviorManager behavior;
 
     private LeftTupleSinkNode previousTupleSinkNode;
     private LeftTupleSinkNode nextTupleSinkNode;
@@ -102,7 +101,7 @@ public abstract class BetaNode extends LeftTupleSource
         this.leftInput = leftInput;
         this.rightInput = rightInput;
         this.constraints = constraints;
-        this.behaviors = behaviors;
+        this.behavior = new BehaviorManager( behaviors );
 
         if ( this.constraints == null ) {
             throw new RuntimeException( "cannot have null constraints, must at least be an instance of EmptyBetaConstraints" );
@@ -112,7 +111,7 @@ public abstract class BetaNode extends LeftTupleSource
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         constraints = (BetaConstraints) in.readObject();
-        behaviors = (Behavior[]) in.readObject();
+        behavior = (BehaviorManager) in.readObject();
         leftInput = (LeftTupleSource) in.readObject();
         rightInput = (ObjectSource) in.readObject();
         previousTupleSinkNode = (LeftTupleSinkNode) in.readObject();
@@ -126,7 +125,7 @@ public abstract class BetaNode extends LeftTupleSource
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( constraints );
-        out.writeObject( behaviors );
+        out.writeObject( behavior );
         out.writeObject( leftInput );
         out.writeObject( rightInput );
         out.writeObject( previousTupleSinkNode );
@@ -150,7 +149,7 @@ public abstract class BetaNode extends LeftTupleSource
     }
     
     public Behavior[] getBehaviors() {
-        return this.behaviors;
+        return this.behavior.getBehaviors();
     }
 
     /* (non-Javadoc)
@@ -362,5 +361,5 @@ public abstract class BetaNode extends LeftTupleSource
     public void setPreviousObjectSinkNode(final ObjectSinkNode previous) {
         this.previousObjectSinkNode = previous;
     }
-
+    
 }

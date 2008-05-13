@@ -37,7 +37,7 @@ public enum ClockType {
    * client application. It is usually used during simulations or tests
    */
   PSEUDO_CLOCK {
-      public SessionPseudoClock createInstance() {
+      public SessionClock createInstance() {
           return new SessionPseudoClock();
       }
   };

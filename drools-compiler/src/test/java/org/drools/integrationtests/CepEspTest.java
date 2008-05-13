@@ -57,7 +57,7 @@ public class CepEspTest extends TestCase {
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
         // load up the rulebase
-        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
         return ruleBase;
     }
 
@@ -104,11 +104,11 @@ public class CepEspTest extends TestCase {
         assertTrue( handle3.isEvent() );
         assertTrue( handle4.isEvent() );
 
-        wm  = SerializationHelper.serializeObject(wm);
+        wm = SerializationHelper.serializeObject( wm );
         wm.fireAllRules();
 
         assertEquals( 2,
-                      ((List)wm.getGlobal("results")).size() );
+                      ((List) wm.getGlobal( "results" )).size() );
 
     }
 
@@ -136,13 +136,13 @@ public class CepEspTest extends TestCase {
         StockTick tick3 = new StockTick( 3,
                                          "ACME",
                                          10,
-                                         System.currentTimeMillis(), 
+                                         System.currentTimeMillis(),
                                          8 );
         StockTick tick4 = new StockTick( 4,
                                          "DROO",
                                          50,
                                          System.currentTimeMillis(),
-                                         7);
+                                         7 );
 
         InternalFactHandle handle1 = (InternalFactHandle) wm.insert( tick1 );
         InternalFactHandle handle2 = (InternalFactHandle) wm.insert( tick2 );
@@ -158,16 +158,20 @@ public class CepEspTest extends TestCase {
         assertTrue( handle2.isEvent() );
         assertTrue( handle3.isEvent() );
         assertTrue( handle4.isEvent() );
-        
+
         EventFactHandle eh1 = (EventFactHandle) handle1;
         EventFactHandle eh2 = (EventFactHandle) handle2;
         EventFactHandle eh3 = (EventFactHandle) handle3;
         EventFactHandle eh4 = (EventFactHandle) handle4;
-        
-        assertEquals( tick1.getDuration(), eh1.getDuration() );
-        assertEquals( tick2.getDuration(), eh2.getDuration() );
-        assertEquals( tick3.getDuration(), eh3.getDuration() );
-        assertEquals( tick4.getDuration(), eh4.getDuration() );
+
+        assertEquals( tick1.getDuration(),
+                      eh1.getDuration() );
+        assertEquals( tick2.getDuration(),
+                      eh2.getDuration() );
+        assertEquals( tick3.getDuration(),
+                      eh3.getDuration() );
+        assertEquals( tick4.getDuration(),
+                      eh4.getDuration() );
 
         wm.fireAllRules();
 
@@ -200,31 +204,31 @@ public class CepEspTest extends TestCase {
         final List results_finished_by = new ArrayList();
 
         wm.setGlobal( "results_coincides",
-                results_coincides );
+                      results_coincides );
         wm.setGlobal( "results_before",
-                results_before );
+                      results_before );
         wm.setGlobal( "results_after",
                       results_after );
         wm.setGlobal( "results_meets",
-                results_meets );
+                      results_meets );
         wm.setGlobal( "results_met_by",
                       results_met_by );
         wm.setGlobal( "results_overlaps",
-                	  results_overlaps );
+                      results_overlaps );
         wm.setGlobal( "results_overlapped_by",
                       results_overlapped_by );
         wm.setGlobal( "results_during",
-          	  results_during );
+                      results_during );
         wm.setGlobal( "results_includes",
-                results_includes );
+                      results_includes );
         wm.setGlobal( "results_starts",
-          	  results_starts );
+                      results_starts );
         wm.setGlobal( "results_started_by",
-                results_started_by );
+                      results_started_by );
         wm.setGlobal( "results_finishes",
-            	  results_finishes );
+                      results_finishes );
         wm.setGlobal( "results_finished_by",
-                  results_finished_by );
+                      results_finished_by );
 
         StockTick tick1 = new StockTick( 1,
                                          "DROO",
@@ -247,23 +251,23 @@ public class CepEspTest extends TestCase {
                                          System.currentTimeMillis(),
                                          5 );
         StockTick tick5 = new StockTick( 5,
-                						 "ACME",
-                						 10,
+                                         "ACME",
+                                         10,
                                          System.currentTimeMillis(),
                                          5 );
         StockTick tick6 = new StockTick( 6,
-										 "ACME",
-										 10,
+                                         "ACME",
+                                         10,
                                          System.currentTimeMillis(),
                                          3 );
         StockTick tick7 = new StockTick( 7,
-				 						 "ACME",
-				 						 10,
+                                         "ACME",
+                                         10,
                                          System.currentTimeMillis(),
                                          5 );
         StockTick tick8 = new StockTick( 8,
-										 "ACME",
-										 10,
+                                         "ACME",
+                                         10,
                                          System.currentTimeMillis(),
                                          3 );
 
@@ -280,7 +284,7 @@ public class CepEspTest extends TestCase {
         InternalFactHandle handle7 = (InternalFactHandle) wm.insert( tick7 );
         clock.advanceTime( 2 );
         InternalFactHandle handle8 = (InternalFactHandle) wm.insert( tick8 );
-        
+
         assertNotNull( handle1 );
         assertNotNull( handle2 );
         assertNotNull( handle3 );
@@ -298,78 +302,78 @@ public class CepEspTest extends TestCase {
         assertTrue( handle7.isEvent() );
         assertTrue( handle8.isEvent() );
 
-//        wm  = SerializationHelper.serializeObject(wm);
+        //        wm  = SerializationHelper.serializeObject(wm);
         wm.fireAllRules();
 
         assertEquals( 1,
-                results_coincides.size() );
+                      results_coincides.size() );
         assertEquals( tick5,
-                results_coincides.get( 0 ) );
-        
+                      results_coincides.get( 0 ) );
+
         assertEquals( 1,
-                results_before.size() );
+                      results_before.size() );
         assertEquals( tick2,
-                results_before.get( 0 ) );
-        
+                      results_before.get( 0 ) );
+
         assertEquals( 1,
                       results_after.size() );
         assertEquals( tick3,
                       results_after.get( 0 ) );
-        
+
         assertEquals( 1,
-                results_meets.size() );
+                      results_meets.size() );
         assertEquals( tick3,
-                results_meets.get( 0 ) );
-        
+                      results_meets.get( 0 ) );
+
         assertEquals( 1,
                       results_met_by.size() );
         assertEquals( tick2,
                       results_met_by.get( 0 ) );
-        
+
         assertEquals( 1,
-                results_met_by.size() );
+                      results_met_by.size() );
         assertEquals( tick2,
-                results_met_by.get( 0 ) );
-        
+                      results_met_by.get( 0 ) );
+
         assertEquals( 1,
-                results_overlaps.size() );
+                      results_overlaps.size() );
         assertEquals( tick4,
-                results_overlaps.get( 0 ) );
-        
+                      results_overlaps.get( 0 ) );
+
         assertEquals( 1,
-                results_overlapped_by.size() );
+                      results_overlapped_by.size() );
         assertEquals( tick7,
-                results_overlapped_by.get( 0 ) );
-        
+                      results_overlapped_by.get( 0 ) );
+
         assertEquals( 1,
-                results_during.size() );
+                      results_during.size() );
         assertEquals( tick6,
-                results_during.get( 0 ) );
-        
+                      results_during.get( 0 ) );
+
         assertEquals( 1,
-                results_includes.size() );
+                      results_includes.size() );
         assertEquals( tick4,
-                results_includes.get( 0 ) );
-        
+                      results_includes.get( 0 ) );
+
         assertEquals( 1,
-                results_starts.size() );
+                      results_starts.size() );
         assertEquals( tick6,
-                results_starts.get( 0 ) );
-        
+                      results_starts.get( 0 ) );
+
         assertEquals( 1,
-                results_started_by.size() );
+                      results_started_by.size() );
         assertEquals( tick7,
-                results_started_by.get( 0 ) );
-        
+                      results_started_by.get( 0 ) );
+
         assertEquals( 1,
-                results_finishes.size() );
+                      results_finishes.size() );
         assertEquals( tick8,
-                results_finishes.get( 0 ) );
-        
+                      results_finishes.get( 0 ) );
+
         assertEquals( 1,
-                results_finished_by.size() );
+                      results_finished_by.size() );
         assertEquals( tick7,
-                results_finished_by.get( 0 ) );
+                      results_finished_by.get( 0 ) );
 
     }
 
@@ -388,74 +392,106 @@ public class CepEspTest extends TestCase {
         // how to configure the clock?
         SessionPseudoClock clock = wm.getSessionClock();
 
-        clock.advanceTime( 10000 ); // 10 seconds
+        clock.advanceTime( 5000 ); // 5 seconds
         EventFactHandle handle1 = (EventFactHandle) wm.insert( new OrderEvent( "1",
                                                                                "customer A",
                                                                                70 ) );
-        assertEquals( 10000,
+        assertEquals( 5000,
                       handle1.getStartTimestamp() );
         assertEquals( 0,
                       handle1.getDuration() );
 
-//        wm  = SerializationHelper.serializeObject(wm);
+        //        wm  = SerializationHelper.serializeObject(wm);
         wm.fireAllRules();
 
+        assertEquals( 1,
+                      results.size() );
+        assertEquals( 70,
+                      ((Number) results.get( 0 )).intValue() );
+
+        // advance clock and assert new data
         clock.advanceTime( 10000 ); // 10 seconds
         EventFactHandle handle2 = (EventFactHandle) wm.insert( new OrderEvent( "2",
                                                                                "customer A",
                                                                                60 ) );
-        assertEquals( 20000,
+        assertEquals( 15000,
                       handle2.getStartTimestamp() );
         assertEquals( 0,
                       handle2.getDuration() );
 
         wm.fireAllRules();
 
+        assertEquals( 2,
+                      results.size() );
+        assertEquals( 65,
+                      ((Number) results.get( 1 )).intValue() );
+
+        // advance clock and assert new data
         clock.advanceTime( 10000 ); // 10 seconds
         EventFactHandle handle3 = (EventFactHandle) wm.insert( new OrderEvent( "3",
                                                                                "customer A",
                                                                                50 ) );
-        assertEquals( 30000,
+        assertEquals( 25000,
                       handle3.getStartTimestamp() );
         assertEquals( 0,
                       handle3.getDuration() );
 
         wm.fireAllRules();
 
+        assertEquals( 3,
+                      results.size() );
+        assertEquals( 60,
+                      ((Number) results.get( 2 )).intValue() );
+
+        // advance clock and assert new data
         clock.advanceTime( 10000 ); // 10 seconds
         EventFactHandle handle4 = (EventFactHandle) wm.insert( new OrderEvent( "4",
                                                                                "customer A",
-                                                                               30 ) );
-        assertEquals( 40000,
+                                                                               25 ) );
+        assertEquals( 35000,
                       handle4.getStartTimestamp() );
         assertEquals( 0,
                       handle4.getDuration() );
 
         wm.fireAllRules();
 
+        // first event should have expired, making average under the rule threshold, so no additional rule fire
+        assertEquals( 3,
+                      results.size() );
+
+        // advance clock and assert new data
         clock.advanceTime( 10000 ); // 10 seconds
         EventFactHandle handle5 = (EventFactHandle) wm.insert( new OrderEvent( "5",
                                                                                "customer A",
                                                                                70 ) );
-        assertEquals( 50000,
+        assertEquals( 45000,
                       handle5.getStartTimestamp() );
         assertEquals( 0,
                       handle5.getDuration() );
 
-//        wm  = SerializationHelper.serializeObject(wm);
+        //        wm  = SerializationHelper.serializeObject(wm);
         wm.fireAllRules();
 
+        // still under the threshold, so no fire
+        assertEquals( 3,
+                      results.size() );
+
+        // advance clock and assert new data
         clock.advanceTime( 10000 ); // 10 seconds
         EventFactHandle handle6 = (EventFactHandle) wm.insert( new OrderEvent( "6",
                                                                                "customer A",
-                                                                               80 ) );
-        assertEquals( 60000,
+                                                                               115 ) );
+        assertEquals( 55000,
                       handle6.getStartTimestamp() );
         assertEquals( 0,
                       handle6.getDuration() );
 
-        wm  = SerializationHelper.serializeObject(wm);
         wm.fireAllRules();
+
+        assertEquals( 4,
+                      results.size() );
+        assertEquals( 70,
+                      ((Number) results.get( 3 )).intValue() );
 
     }
 
