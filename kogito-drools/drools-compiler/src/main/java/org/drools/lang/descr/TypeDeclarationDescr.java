@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TypeDeclarationDescr extends BaseDescr {
-    
+
     private static final long   serialVersionUID = 400L;
     private String              typeName;
     private Map<String, String> metaAttributes;
@@ -30,7 +30,7 @@ public class TypeDeclarationDescr extends BaseDescr {
     public TypeDeclarationDescr() {
         this(null);
     }
-    
+
     public TypeDeclarationDescr(final String typeName) {
         this.typeName = typeName;
         this.metaAttributes = new HashMap<String, String>();
@@ -49,7 +49,7 @@ public class TypeDeclarationDescr extends BaseDescr {
     public void setTypeName(String typeName) {
         this.typeName = typeName;
     }
-    
+
     /**
      * Adds a new attribute
      * @param attr
@@ -61,7 +61,7 @@ public class TypeDeclarationDescr extends BaseDescr {
         }
         this.metaAttributes.put( attr, value );
     }
-    
+
     /**
      * Returns an attribute value or null if it is not defined
      * @param attr
@@ -92,7 +92,7 @@ public class TypeDeclarationDescr extends BaseDescr {
     public void setFields(Map<String, TypeFieldDescr> fields) {
         this.fields = fields;
     }
-    
+
     public void addField( TypeFieldDescr field ) {
         if( this.fields == null ) {
             this.fields = new HashMap<String, TypeFieldDescr>();
@@ -103,5 +103,6 @@ public class TypeDeclarationDescr extends BaseDescr {
     public String toString() {
         return "TypeDeclaration[ "+this.getTypeName()+" ]";
     }
+
 
 }

@@ -2,13 +2,13 @@ package org.drools.compiler;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,12 +22,16 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.ClassTypeResolver;
 import org.drools.base.TypeResolver;
 import org.drools.commons.jci.problems.CompilationProblem;
+import org.drools.factmodel.ClassBuilder;
+import org.drools.factmodel.ClassDefinition;
+import org.drools.factmodel.FieldDefinition;
 import org.drools.facttemplates.FactTemplate;
 import org.drools.facttemplates.FactTemplateImpl;
 import org.drools.facttemplates.FieldTemplate;
@@ -44,9 +48,11 @@ import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
+import org.drools.lang.descr.TypeFieldDescr;
 import org.drools.process.core.Process;
+import org.drools.rule.CompositePackageClassLoader;
 import org.drools.rule.ImportDeclaration;
-import org.drools.rule.JavaDialectData;
+import org.drools.rule.MapBackedClassLoader;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.rule.TypeDeclaration;
@@ -61,11 +67,11 @@ import org.xml.sax.SAXException;
  * This is the main compiler class for parsing and compiling rules and
  * assembling or merging them into a binary Package instance. This can be done
  * by merging into existing binary packages, or totally from source.
- * 
- * If you are using the Java dialect the JavaDialectConfiguration will attempt to 
- * validate that the specified compiler is in the classpath, using ClassLoader.loasClass(String). 
- * If you intented to just Janino sa the compiler you must either overload the compiler 
- * property before instantiating this class or the PackageBuilder, or make sure Eclipse is in the 
+ *
+ * If you are using the Java dialect the JavaDialectConfiguration will attempt to
+ * validate that the specified compiler is in the classpath, using ClassLoader.loasClass(String).
+ * If you intented to just Janino sa the compiler you must either overload the compiler
+ * property before instantiating this class or the PackageBuilder, or make sure Eclipse is in the
  * classpath, as Eclipse is the default.
  */
 public class PackageBuilder {
@@ -86,6 +92,8 @@ public class PackageBuilder {
 
     private DialectRegistry             dialectRegistry;
 
+	private MapBackedClassLoader generatedBeanClassLoader;
+
     /**
      * Use this when package is starting from scratch.
      */
@@ -105,11 +113,11 @@ public class PackageBuilder {
 
     /**
      * Pass a specific configuration for the PackageBuilder
-     * 
-     * PackageBuilderConfiguration is not thread safe and it also contains state. Once it is created and used 
-     * in one or more PackageBuilders it should be considered immutable. Do not modify its 
+     *
+     * PackageBuilderConfiguration is not thread safe and it also contains state. Once it is created and used
+     * in one or more PackageBuilders it should be considered immutable. Do not modify its
      * properties while it is being used by a PackageBuilder.
-     * 
+     *
      * @param configuration
      */
     public PackageBuilder(final PackageBuilderConfiguration configuration) {
@@ -120,7 +128,7 @@ public class PackageBuilder {
     /**
      * This allows you to pass in a pre existing package, and a configuration
      * (for instance to set the classloader).
-     * 
+     *
      * @param pkg
      *            A pre existing package (can be null if none exists)
      * @param configuration
@@ -138,16 +146,18 @@ public class PackageBuilder {
         this.classFieldExtractorCache = ClassFieldExtractorCache.getInstance();
 
         if ( this.pkg != null ) {
-            this.typeResolver = new ClassTypeResolver( new HashSet<String>( this.pkg.getImports().keySet() ),
-                                                       this.configuration.getClassLoader() );
+        	ClassLoader cl = this.pkg.getDialectDatas().getClassLoader();
+            this.typeResolver = new ClassTypeResolver( new HashSet<String>( this.pkg.getImports().keySet() ), cl );
             // make an automatic import for the current package
             this.typeResolver.addImport( this.pkg.getName() + ".*" );
         } else {
-            this.typeResolver = new ClassTypeResolver( new HashSet<String>(),
-                                                       this.configuration.getClassLoader() );
+//            this.typeResolver = new ClassTypeResolver( new HashSet<String>(),
+//                                                       this.configuration.getClassLoader() );
         }
 
         this.dialectRegistry = this.configuration.buildDialectRegistry();
+
+
 
         this.dialect = this.dialectRegistry.getDialect( this.configuration.getDefaultDialect() );
 
@@ -159,7 +169,7 @@ public class PackageBuilder {
 
     /**
      * Load a rule package from DRL source.
-     * 
+     *
      * @param reader
      * @throws DroolsParserException
      * @throws IOException
@@ -174,7 +184,7 @@ public class PackageBuilder {
 
     /**
      * Load a rule package from XML source.
-     * 
+     *
      * @param reader
      * @throws DroolsParserException
      * @throws IOException
@@ -195,7 +205,7 @@ public class PackageBuilder {
 
     /**
      * Load a rule package from DRL source using the supplied DSL configuration.
-     * 
+     *
      * @param source
      *            The source of the rules.
      * @param dsl
@@ -360,6 +370,11 @@ public class PackageBuilder {
         this.pkg = new Package( packageDescr.getName(),
                                 this.configuration.getClassLoader() );
 
+       ClassLoader cl = this.pkg.getDialectDatas().getClassLoader();
+
+
+       this.typeResolver = new ClassTypeResolver( new HashSet<String>(), cl );
+
         this.typeResolver.addImport( this.pkg.getName() + ".*" );
 
         this.dialectRegistry.initAll( this );
@@ -437,12 +452,17 @@ public class PackageBuilder {
                 type.setFormat( TypeDeclaration.Format.POJO );
                 Class clazz;
                 try {
+                	if (typeDescr.getFields().size() > 0) {
+                		//generate the bean if its needed
+                		generateDeclaredBean(typeDescr);
+                	}
                     clazz = typeResolver.resolveType( className );
                     type.setTypeClass( clazz );
                 } catch ( final ClassNotFoundException e ) {
-                    this.results.add( new TypeDeclarationError( "Class not found '" + className + "' for type '" + type.getTypeName() + "'",
-                                                                typeDescr.getLine() ) );
-                    continue;
+
+	                    this.results.add( new TypeDeclarationError( "Class not found '" + className + "' for type '" + type.getTypeName() + "'",
+	                                                                typeDescr.getLine() ) );
+	                    continue;
                 }
             }
 
@@ -463,7 +483,33 @@ public class PackageBuilder {
         }
     }
 
-    private void addFunction(final FunctionDescr functionDescr) {
+    /**
+     * Generates a bean, and adds it to the composite class loader that
+     * everything is using.
+     *
+     */
+    private void generateDeclaredBean(TypeDeclarationDescr typeDescr) {
+    	ClassBuilder cb = new ClassBuilder();
+    	String fullName = this.pkg.getName() + "." + typeDescr.getTypeName();
+    	ClassDefinition def = new ClassDefinition(fullName);
+    	Map<String, TypeFieldDescr> flds = typeDescr.getFields();
+    	for (TypeFieldDescr field : flds.values()) {
+			def.addField(new FieldDefinition(field.getFieldName(), field.getPattern().getObjectType()));
+		}
+    	try {
+	    	byte[] d = cb.buildClass(def);
+	    	if (this.generatedBeanClassLoader == null) {
+	    		this.generatedBeanClassLoader = new MapBackedClassLoader(this.configuration.getClassLoader());
+	    		CompositePackageClassLoader ccl = (CompositePackageClassLoader) this.pkg.getDialectDatas().getClassLoader();
+	    		ccl.addClassLoader(this.generatedBeanClassLoader);
+	    	}
+	    	generatedBeanClassLoader.addClass(fullName, d);
+    	} catch (Exception e) {
+    		this.results.add(new TypeDeclarationError("Unable to create a class for declared type " + typeDescr.getTypeName(), typeDescr.getLine()));
+    	}
+	}
+
+	private void addFunction(final FunctionDescr functionDescr) {
         this.dialect.addFunction( functionDescr,
                                   getTypeResolver() );
     }
@@ -536,7 +582,7 @@ public class PackageBuilder {
      *         can report on by calling getErrors or printErrors. If you try to
      *         add an invalid package (or rule) to a RuleBase, you will get a
      *         runtime exception.
-     * 
+     *
      * Compiled packages are serializable.
      */
     public Package getPackage() {
@@ -624,7 +670,7 @@ public class PackageBuilder {
      * report a compile error of its type, should it happen. This is needed, as
      * the compiling is done as one hit at the end, and we need to be able to
      * work out what rule/ast element caused the error.
-     * 
+     *
      * An error handler it created for each class task that is queued to be
      * compiled. This doesn't mean an error has occurred, it just means it *may*
      * occur in the future and we need to be able to map it back to the AST
@@ -648,7 +694,7 @@ public class PackageBuilder {
         }
 
         /**
-         * 
+         *
          * @return A DroolsError object populated as appropriate, should the
          *         unthinkable happen and this need to be reported.
          */
