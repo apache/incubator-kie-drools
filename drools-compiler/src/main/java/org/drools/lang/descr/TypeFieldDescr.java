@@ -36,6 +36,11 @@ public class TypeFieldDescr extends BaseDescr {
         this.metaAttributes = new HashMap<String, String>();
     }
 
+    public TypeFieldDescr(final String fieldName, final PatternDescr pat) {
+    	this(fieldName);
+    	this.pattern = pat;
+    }
+
     /**
      * @return the identifier
      */

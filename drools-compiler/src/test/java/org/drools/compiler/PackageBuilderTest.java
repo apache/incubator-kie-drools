@@ -66,6 +66,7 @@ import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.SlidingWindowDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
+import org.drools.lang.descr.TypeFieldDescr;
 import org.drools.lang.descr.VariableRestrictionDescr;
 import org.drools.process.core.Context;
 import org.drools.process.core.Process;
@@ -1042,6 +1043,40 @@ public class PackageBuilderTest extends DroolsTestCase {
         assertEquals( StockTick.class,
                       type.getTypeClass() );
     }
+
+    public void testTypeDeclarationNewBean() throws Exception {
+        PackageDescr pkgDescr = new PackageDescr( "org.test" );
+        TypeDeclarationDescr typeDescr = new TypeDeclarationDescr( "NewBean" );
+
+        TypeFieldDescr f1 = new TypeFieldDescr("name", new PatternDescr("String"));
+        TypeFieldDescr f2 = new TypeFieldDescr("age", new PatternDescr("int"));
+
+        typeDescr.addField(f1);
+        typeDescr.addField(f2);
+
+        pkgDescr.addTypeDeclaration( typeDescr );
+
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackage( pkgDescr );
+
+        Package pkg = builder.getPackage();
+        assertEquals( 1,
+                      pkg.getTypeDeclarations().size() );
+
+        TypeDeclaration type = pkg.getTypeDeclaration( "NewBean" );
+        assertEquals( "NewBean",
+                      type.getTypeName() );
+        assertEquals( TypeDeclaration.Role.FACT,
+                      type.getRole() );
+        assertEquals( "org.test.NewBean",
+                      type.getTypeClass().getName() );
+        assertFalse(builder.hasErrors());
+
+        Package bp = builder.getPackage();
+        Class newBean = bp.getDialectDatas().getClassLoader().loadClass("org.test.NewBean");
+        assertNotNull(newBean);
+    }
+
 
     public void testPackageMerge() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
