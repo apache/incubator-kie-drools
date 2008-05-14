@@ -5,7 +5,6 @@ import java.beans.IntrospectionException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
-
 import org.drools.asm.ClassWriter;
 import org.drools.asm.FieldVisitor;
 import org.drools.asm.Label;
@@ -142,6 +141,7 @@ public class ClassBuilder {
 
         return cw.toByteArray();
     }
+
 
     /**
      * Defines the class header for the given class definition
@@ -749,5 +749,7 @@ public class ClassBuilder {
         }
         return clazz;
     }
+
+
 
 }
