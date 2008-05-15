@@ -493,10 +493,12 @@ public class PackageBuilder {
     	String fullName = this.pkg.getName() + "." + typeDescr.getTypeName();
     	ClassDefinition def = new ClassDefinition(fullName);
     	Map<String, TypeFieldDescr> flds = typeDescr.getFields();
-    	for (TypeFieldDescr field : flds.values()) {
-			def.addField(new FieldDefinition(field.getFieldName(), field.getPattern().getObjectType()));
-		}
     	try {
+        	for (TypeFieldDescr field : flds.values()) {
+        		String fullFieldType = typeResolver.resolveType(field.getPattern().getObjectType()).getName();
+    			def.addField(new FieldDefinition(field.getFieldName(), fullFieldType));
+    		}
+
 	    	byte[] d = cb.buildClass(def);
 	    	if (this.generatedBeanClassLoader == null) {
 	    		this.generatedBeanClassLoader = new MapBackedClassLoader(this.configuration.getClassLoader());

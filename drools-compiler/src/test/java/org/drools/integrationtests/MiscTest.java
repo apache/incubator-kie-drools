@@ -17,12 +17,16 @@ package org.drools.integrationtests;
  */
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInput;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.io.Reader;
 import java.io.StringReader;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -106,6 +110,9 @@ import org.drools.event.ObjectInsertedEvent;
 import org.drools.event.ObjectRetractedEvent;
 import org.drools.event.ObjectUpdatedEvent;
 import org.drools.event.WorkingMemoryEventListener;
+import org.drools.factmodel.ClassBuilder;
+import org.drools.factmodel.ClassDefinition;
+import org.drools.factmodel.FieldDefinition;
 import org.drools.facttemplates.Fact;
 import org.drools.facttemplates.FactTemplate;
 import org.drools.lang.DrlDumper;
@@ -114,6 +121,7 @@ import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.rule.InvalidRulePackage;
+import org.drools.rule.MapBackedClassLoader;
 import org.drools.rule.Package;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.spi.Activation;
@@ -351,29 +359,29 @@ public class MiscTest extends TestCase {
         // from JBRULES-1512
         String rule1 = "package com.sample\n" +
         "rule \"rule 1\"\n" +
-        "    salience 10\n"+        
-        "    when\n" +       
+        "    salience 10\n"+
+        "    when\n" +
         "    l : java.util.List()\n" +
         "    then\n" +
-        "        l.add( \"rule 1 executed\" );\n" + 
+        "        l.add( \"rule 1 executed\" );\n" +
         "end\n";
-        
+
         String rule2 = "package com.sample\n" +
         "global String str;\n" +
         "rule \"rule 2\"\n" +
         "    when\n" +
-        "    l : java.util.List()\n" +        
+        "    l : java.util.List()\n" +
         "    then\n" +
-        "        l.add( \"rule 2 executed \" + str);\n" + 
-        "end\n";        
-        
+        "        l.add( \"rule 2 executed \" + str);\n" +
+        "end\n";
+
         PackageBuilder builder1 = new PackageBuilder();
         builder1.addPackageFromDrl( new StringReader( rule1 ));
         Package pkg1 = builder1.getPackage();
         // build second package
         PackageBuilder builder2 = new PackageBuilder();
         builder2.addPackageFromDrl( new StringReader( rule2 ) );
-        Package pkg2 = builder2.getPackage();       
+        Package pkg2 = builder2.getPackage();
         // create rule base and add both packages
         RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage(pkg1);
@@ -387,7 +395,7 @@ public class MiscTest extends TestCase {
         assertEquals( "rule 1 executed", list.get(  0 ) );
         assertEquals( "rule 2 executed boo", list.get(  1 ));
     }
-    
+
     public void testCustomGlobalResolver() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_globalCustomResolver.drl" ) ) );
@@ -526,6 +534,58 @@ public class MiscTest extends TestCase {
         wm.fireAllRules();
 
         assertEquals( 1, ((List)wm.getGlobal("list")).size() );
+    }
+
+    public void testGeneratedBeans() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_GeneratedBeans.drl" ) ) );
+        assertFalse("" + builder.getErrors(), builder.hasErrors());
+
+        Package p = builder.getPackage();
+        assertEquals(2, p.getRules().length);
+
+
+
+        //to test it we will generate another class that looks just like it
+        ClassBuilder cb = new ClassBuilder();
+        ClassDefinition def = new ClassDefinition("org.drools.generatedbeans.Cheese");
+        def.addField(new FieldDefinition("type", "java.lang.String"));
+        byte[] classdata = cb.buildClass(def);
+        MapBackedClassLoader cl = new MapBackedClassLoader(this.getClass().getClassLoader());
+        cl.addClass("org.drools.generatedbeans.Cheese", classdata);
+
+
+        //this one doesn't work
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase(new RuleBaseConfiguration(cl));
+
+
+        //this one does work...
+        ruleBase = RuleBaseFactory.newRuleBase(new RuleBaseConfiguration(p.getDialectDatas().getClassLoader()));
+
+        ruleBase.addPackage( p );
+
+        //this one just won't work
+        //Class cc = cl.loadClass("org.drools.generatedbeans.Cheese");
+
+        //this one has an error with shadow proxies unless I use the same classloader as the package...
+        Class cc = p.getDialectDatas().getClassLoader().loadClass("org.drools.generatedbeans.Cheese");
+
+        Object cheese = cc.newInstance();
+
+        WorkingMemory wm = ruleBase.newStatefulSession();
+        List result = new ArrayList();
+        wm.setGlobal("list", result);
+
+        wm.insert(cheese);
+        wm.fireAllRules();
+        assertEquals(1, result.size());
+        Integer r = (Integer) result.get(0);
+        assertEquals(new Integer(5), r);
+
+
+
+
+
     }
 
     public void testNullHandling() throws Exception {
@@ -743,7 +803,7 @@ public class MiscTest extends TestCase {
         assertEquals( bill,
                       ((List)workingMemory.getGlobal("list")).get( 0 ) );
     }
-    
+
     public void testFactBindings() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FactBindings.drl" ) ) );
@@ -789,7 +849,7 @@ public class MiscTest extends TestCase {
         assertSame( bigCheese,
                     event.getObject() );
     }
-    
+
     public void testFactTemplate() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FactTemplate.drl" ) ) );
@@ -825,9 +885,9 @@ public class MiscTest extends TestCase {
                     fact );
         assertEquals( new Integer( 200 ),
                       fact.getFieldValue( "price" ) );
-        assertEquals( -1, stiltonHandle.getId() );        
+        assertEquals( -1, stiltonHandle.getId() );
     }
-    
+
     public void testFactTemplateFieldBinding() throws Exception {
         // from JBRULES-1512
         String rule1 = "package org.drools.entity\n" +
@@ -839,22 +899,22 @@ public class MiscTest extends TestCase {
         "rule TestEntity\n" +
 
         "    when\n" +
-        "        Settlement(InstrumentType == \"guitar\", name : InstrumentName)\n" +        
+        "        Settlement(InstrumentType == \"guitar\", name : InstrumentName)\n" +
         "    then \n" +
         "        list.add( name ) ;\n" +
         "end\n";
-              
+
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new StringReader( rule1 ));
         Package pkg = builder.getPackage();
-        
+
         RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage(pkg);
 
         WorkingMemory wm = ruleBase.newStatefulSession();
         List list = new ArrayList();
         wm.setGlobal(  "list", list );
-        
+
         final FactTemplate cheese = pkg.getFactTemplate( "Settlement" );
         final Fact guitar = cheese.createFact( 0 );
         guitar.setFieldValue( "InstrumentType",
@@ -865,7 +925,7 @@ public class MiscTest extends TestCase {
 
         wm.fireAllRules();
         assertEquals( "gibson", list.get(  0 ) );
-    }     
+    }
 
     public void testPropertyChangeSupport() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
