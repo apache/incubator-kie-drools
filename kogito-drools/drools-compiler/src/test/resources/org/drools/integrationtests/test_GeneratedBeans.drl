@@ -1,0 +1,31 @@
+package org.drools.generatedbeans;
+
+
+global java.util.List list;
+
+
+declare Cheese
+    type: String
+end
+
+declare Person
+	age: Integer
+end
+
+
+
+rule "simple rule"
+    when
+        Cheese(  )
+    then
+		list.add( new Integer(5) );
+end
+
+
+
+rule "another"
+    when
+     	Person( age== 7 )
+    then
+    	list.add( new Integer(7) );
+end
