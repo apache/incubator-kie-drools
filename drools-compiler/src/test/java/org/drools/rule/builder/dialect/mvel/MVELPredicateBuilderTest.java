@@ -10,7 +10,7 @@ import junit.framework.TestCase;
 import org.drools.Cheese;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
-import org.drools.base.ClassFieldExtractorCache;
+import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassObjectType;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
@@ -25,11 +25,11 @@ import org.drools.rule.Package;
 import org.drools.rule.Pattern;
 import org.drools.rule.PredicateConstraint;
 import org.drools.rule.PredicateConstraint.PredicateContextEntry;
-import org.drools.spi.FieldExtractor;
+import org.drools.spi.InternalReadAccessor;
 
 public class MVELPredicateBuilderTest extends TestCase {
 
-    private ClassFieldExtractorCache cache = ClassFieldExtractorCache.getInstance();
+    private ClassFieldAccessorCache cache = ClassFieldAccessorCache.getInstance();
 
     public void setUp() {
     }
@@ -49,7 +49,7 @@ public class MVELPredicateBuilderTest extends TestCase {
                                                                                mvelDialect );
 
         final InstrumentedDeclarationScopeResolver declarationResolver = new InstrumentedDeclarationScopeResolver();
-        final FieldExtractor extractor = cache.getExtractor( Cheese.class,
+        final InternalReadAccessor extractor = cache.getReader( Cheese.class,
                                                              "price",
                                                              getClass().getClassLoader() );
 

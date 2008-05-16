@@ -1,39 +1,17 @@
-/*
- * Copyright 2005 JBoss Inc
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package org.drools.base.extractors;
 
 import java.lang.reflect.Method;
 
 import org.drools.RuntimeDroolsException;
-import org.drools.base.BaseClassFieldExtractor;
+import org.drools.base.BaseClassFieldReader;
 import org.drools.base.ValueType;
 import org.drools.common.InternalWorkingMemory;
 
-/**
- * A Base class for primitive byte class field
- * extractors. This class centralizes type conversions.
- *  
- * @author etirelli
- */
-public abstract class BaseByteClassFieldExtractor extends BaseClassFieldExtractor {
+public abstract class BaseCharClassFieldReader extends BaseClassFieldReader {
 
     private static final long serialVersionUID = 400L;
 
-    public BaseByteClassFieldExtractor(final Class clazz,
+    public BaseCharClassFieldReader(final Class clazz,
                                        final String fieldName) {
         super( clazz,
                fieldName );
@@ -46,7 +24,7 @@ public abstract class BaseByteClassFieldExtractor extends BaseClassFieldExtracto
      * @param fieldType
      * @param valueType
      */
-    protected BaseByteClassFieldExtractor(final int index,
+    protected BaseCharClassFieldReader(final int index,
                                           final Class fieldType,
                                           final ValueType valueType) {
         super( index,
@@ -55,37 +33,37 @@ public abstract class BaseByteClassFieldExtractor extends BaseClassFieldExtracto
     }
 
     public Object getValue(InternalWorkingMemory workingMemory, final Object object) {
-        return new Byte( getByteValue( workingMemory, object ) );
+        return new Character( getCharValue( workingMemory, object ) );
     }
 
     public boolean getBooleanValue(InternalWorkingMemory workingMemory, final Object object) {
-        throw new RuntimeDroolsException( "Conversion to boolean not supported from byte" );
+        throw new RuntimeDroolsException( "Conversion to boolean not supported from char" );
     }
 
-    public abstract byte getByteValue(InternalWorkingMemory workingMemory, Object object);
-
-    public char getCharValue(InternalWorkingMemory workingMemory, final Object object) {
-        throw new RuntimeDroolsException( "Conversion to char not supported from byte" );
+    public byte getByteValue(InternalWorkingMemory workingMemory, final Object object) {
+        return (byte) getCharValue( workingMemory, object );
     }
+
+    public abstract char getCharValue(InternalWorkingMemory workingMemory, Object object);
 
     public double getDoubleValue(InternalWorkingMemory workingMemory, final Object object) {
-        return getByteValue( workingMemory, object );
+        return getCharValue( workingMemory, object );
     }
 
     public float getFloatValue(InternalWorkingMemory workingMemory, final Object object) {
-        return getByteValue( workingMemory, object );
+        return getCharValue( workingMemory, object );
     }
 
     public int getIntValue(InternalWorkingMemory workingMemory, final Object object) {
-        return getByteValue( workingMemory, object );
+        return getCharValue( workingMemory, object );
     }
 
     public long getLongValue(InternalWorkingMemory workingMemory, final Object object) {
-        return getByteValue( workingMemory, object );
+        return getCharValue( workingMemory, object );
     }
 
     public short getShortValue(InternalWorkingMemory workingMemory, final Object object) {
-        return getByteValue( workingMemory, object );
+        return (short) getCharValue( workingMemory, object );
     }
 
     public boolean isNullValue(InternalWorkingMemory workingMemory, final Object object) {
@@ -94,7 +72,7 @@ public abstract class BaseByteClassFieldExtractor extends BaseClassFieldExtracto
     
     public Method getNativeReadMethod() {
         try {
-            return this.getClass().getDeclaredMethod( "getByteValue",
+            return this.getClass().getDeclaredMethod( "getCharValue",
                                                       new Class[]{InternalWorkingMemory.class, Object.class} );
         } catch ( final Exception e ) {
             throw new RuntimeDroolsException( "This is a bug. Please report to development team: " + e.getMessage(),
@@ -103,6 +81,6 @@ public abstract class BaseByteClassFieldExtractor extends BaseClassFieldExtracto
     }
 
     public int getHashCode(InternalWorkingMemory workingMemory, final Object object) {
-        return getByteValue( workingMemory, object );
+        return getCharValue( workingMemory, object );
     }
 }

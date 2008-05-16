@@ -2,7 +2,7 @@ package org.drools.common;
 
 import org.drools.rule.*;
 import org.drools.rule.Package;
-import org.drools.base.ClassFieldExtractorCache;
+import org.drools.base.ClassFieldAccessorCache;
 
 import java.io.ObjectInput;
 
@@ -21,6 +21,6 @@ public interface DroolsObjectInput extends ObjectInput {
     void setPackage(Package pkg);
     DialectDatas getDialectDatas();
     void setDialectDatas(DialectDatas dialectDatas);
-    ClassFieldExtractorCache getExtractorFactory();
-    void setExtractorFactory(ClassFieldExtractorCache extractorFactory);
+    ClassFieldAccessorCache getExtractorFactory();
+    void setExtractorFactory(ClassFieldAccessorCache extractorFactory);
 }

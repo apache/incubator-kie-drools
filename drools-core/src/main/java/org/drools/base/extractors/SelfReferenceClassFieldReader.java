@@ -24,11 +24,11 @@ import org.drools.common.InternalWorkingMemory;
  *  
  * @author etirelli
  */
-public class SelfReferenceClassFieldExtractor extends BaseObjectClassFieldExtractor {
+public class SelfReferenceClassFieldReader extends BaseObjectClassFieldReader {
 
     private static final long serialVersionUID = 400L;
 
-    public SelfReferenceClassFieldExtractor(final Class clazz,
+    public SelfReferenceClassFieldReader(final Class clazz,
                                             final String fieldName) {
         super( -1, // index
                clazz, // fieldType

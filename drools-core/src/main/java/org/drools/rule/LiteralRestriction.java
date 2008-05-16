@@ -16,19 +16,18 @@ package org.drools.rule;
  * limitations under the License.
  */
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
 import org.drools.spi.Evaluator;
-import org.drools.spi.Extractor;
-import org.drools.spi.FieldExtractor;
 import org.drools.spi.FieldValue;
+import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.Restriction;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectOutput;
-import java.io.ObjectInput;
 
 public class LiteralRestriction
     implements
@@ -40,7 +39,7 @@ public class LiteralRestriction
 
     private Evaluator            evaluator;
 
-    private FieldExtractor       extractor;
+    private InternalReadAccessor       extractor;
 
     private static final Declaration[] requiredDeclarations = new Declaration[0];
 
@@ -50,7 +49,7 @@ public class LiteralRestriction
 
     public LiteralRestriction(final FieldValue field,
                               final Evaluator evaluator,
-                              final FieldExtractor fieldExtractor) {
+                              final InternalReadAccessor fieldExtractor) {
         this.field = field;
         this.evaluator = evaluator;
         this.extractor = fieldExtractor;
@@ -59,7 +58,7 @@ public class LiteralRestriction
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         field   = (FieldValue)in.readObject();
         evaluator   = (Evaluator)in.readObject();
-        extractor   = (FieldExtractor)in.readObject();
+        extractor   = (InternalReadAccessor)in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -75,7 +74,7 @@ public class LiteralRestriction
         return this.field;
     }
 
-    public boolean isAllowed(final Extractor extractor,
+    public boolean isAllowed(final InternalReadAccessor extractor,
                              final InternalFactHandle handle,
                              final InternalWorkingMemory workingMemoiry,
                              final ContextEntry context ) {
@@ -153,19 +152,19 @@ public class LiteralRestriction
         ContextEntry {
 
         private static final long serialVersionUID = 2621864784428098347L;
-        public FieldExtractor     extractor;
+        public InternalReadAccessor     extractor;
         public Object             object;
         public ContextEntry       next;
 
         public LiteralContextEntry() {
         }
 
-        public LiteralContextEntry(final FieldExtractor extractor) {
+        public LiteralContextEntry(final InternalReadAccessor extractor) {
             this.extractor = extractor;
         }
 
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            extractor   = (FieldExtractor)in.readObject();
+            extractor   = (InternalReadAccessor)in.readObject();
             object      = in.readObject();
             next        = (ContextEntry)in.readObject();
         }
@@ -176,7 +175,7 @@ public class LiteralRestriction
             out.writeObject(next);
         }
 
-        public FieldExtractor getFieldExtractor() {
+        public InternalReadAccessor getFieldExtractor() {
             return this.extractor;
         }
 

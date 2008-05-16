@@ -22,7 +22,7 @@ import java.util.Map;
 
 import org.drools.InitialFact;
 import org.drools.RuleIntegrationException;
-import org.drools.base.ClassFieldExtractor;
+import org.drools.base.ClassFieldReader;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
 import org.drools.base.FieldFactory;

@@ -1,45 +1,48 @@
 package org.drools.rule;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
-import org.drools.spi.FieldExtractor;
+import org.drools.spi.InternalReadAccessor;
+import org.drools.spi.ReadAccessor;
 import org.drools.spi.Restriction;
-
-import java.io.ObjectOutput;
-import java.io.ObjectInput;
-import java.io.IOException;
 
 public class MultiRestrictionFieldConstraint extends MutableTypeConstraint {
 
     private static final long    serialVersionUID = 400L;
 
-    private FieldExtractor extractor;
+    private InternalReadAccessor extractor;
 
-    private Restriction    restrictions;
+    private Restriction          restrictions;
 
     public MultiRestrictionFieldConstraint() {
 
     }
 
-    public MultiRestrictionFieldConstraint(final FieldExtractor extractor,
+    public MultiRestrictionFieldConstraint(final InternalReadAccessor extractor,
                                            final Restriction restrictions) {
         this.extractor = extractor;
         this.restrictions = restrictions;
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        super.readExternal(in);
-        extractor   = (FieldExtractor)in.readObject();
-        restrictions   = (Restriction)in.readObject();
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        super.readExternal( in );
+        extractor = (InternalReadAccessor) in.readObject();
+        restrictions = (Restriction) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal(out);
-        out.writeObject(extractor);
-        out.writeObject(restrictions);
+        super.writeExternal( out );
+        out.writeObject( extractor );
+        out.writeObject( restrictions );
     }
-    public FieldExtractor getFieldExtractor() {
+
+    public ReadAccessor getFieldExtractor() {
         return this.extractor;
     }
 
@@ -79,7 +82,7 @@ public class MultiRestrictionFieldConstraint extends MutableTypeConstraint {
 
     public boolean isAllowed(final InternalFactHandle handle,
                              final InternalWorkingMemory workingMemory,
-                             final ContextEntry context ) {
+                             final ContextEntry context) {
         return this.restrictions.isAllowed( this.extractor,
                                             handle,
                                             workingMemory,

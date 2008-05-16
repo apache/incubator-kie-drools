@@ -26,7 +26,7 @@ import org.drools.RuntimeDroolsException;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
-import org.drools.spi.Extractor;
+import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.PredicateExpression;
 import org.drools.spi.Restriction;
 
@@ -253,7 +253,7 @@ public class PredicateConstraint extends MutableTypeConstraint
         }
     }
 
-    public boolean isAllowed(Extractor extractor,
+    public boolean isAllowed(InternalReadAccessor extractor,
                              InternalFactHandle handle,
                              InternalWorkingMemory workingMemory,
                              ContextEntry context ) {

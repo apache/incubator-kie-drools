@@ -3,19 +3,19 @@ package org.drools.base.extractors;
 import java.lang.reflect.Method;
 
 import org.drools.RuntimeDroolsException;
-import org.drools.base.BaseClassFieldExtractor;
+import org.drools.base.BaseClassFieldReader;
 import org.drools.base.ValueType;
 import org.drools.common.InternalWorkingMemory;
 
-public abstract class BaseObjectClassFieldExtractor extends BaseClassFieldExtractor {
+public abstract class BaseObjectClassFieldReader extends BaseClassFieldReader {
 
     private static final long serialVersionUID = 400L;
 
-    public BaseObjectClassFieldExtractor() {
+    public BaseObjectClassFieldReader() {
 
     }
 
-    protected BaseObjectClassFieldExtractor(final int index,
+    protected BaseObjectClassFieldReader(final int index,
                                             final Class fieldType,
                                             final ValueType valueType) {
         super( index,
@@ -23,7 +23,7 @@ public abstract class BaseObjectClassFieldExtractor extends BaseClassFieldExtrac
                valueType );
     }
 
-    public BaseObjectClassFieldExtractor(final Class clazz,
+    public BaseObjectClassFieldReader(final Class clazz,
                                          final String fieldName) {
         super( clazz,
                fieldName );

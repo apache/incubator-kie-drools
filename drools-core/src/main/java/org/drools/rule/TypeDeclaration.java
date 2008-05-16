@@ -25,7 +25,7 @@ import java.io.ObjectOutput;
 
 import org.drools.common.DroolsObjectInputStream;
 import org.drools.facttemplates.FactTemplate;
-import org.drools.spi.FieldExtractor;
+import org.drools.spi.InternalReadAccessor;
 
 /**
  * The type declaration class stores all type's metadata
@@ -36,17 +36,17 @@ import org.drools.spi.FieldExtractor;
 public class TypeDeclaration
     implements
     Externalizable {
-    
-    public static final String ATTR_CLASS = "class";
-    public static final String ATTR_TEMPLATE = "template";
-    public static final String ATTR_DURATION = "duration";
+
+    public static final String ATTR_CLASS     = "class";
+    public static final String ATTR_TEMPLATE  = "template";
+    public static final String ATTR_DURATION  = "duration";
     public static final String ATTR_TIMESTAMP = "timestamp";
-    
+
     public static enum Role {
         FACT, EVENT;
 
         public static final String ID = "role";
-        
+
         public static Role parseRole(String role) {
             if ( "event".equalsIgnoreCase( role ) ) {
                 return EVENT;
@@ -61,7 +61,7 @@ public class TypeDeclaration
         POJO, TEMPLATE;
 
         public static final String ID = "format";
-        
+
         public static Format parseFormat(String format) {
             if ( "pojo".equalsIgnoreCase( format ) ) {
                 return POJO;
@@ -72,14 +72,14 @@ public class TypeDeclaration
         }
     }
 
-    private String                   typeName;
-    private Role                     role;
-    private Format                   format;
-    private String                   timestampAttribute;
-    private String                   durationAttribute;
-    private transient FieldExtractor durationExtractor;
-    private Class< ? >               typeClass;
-    private FactTemplate             typeTemplate;
+    private String                         typeName;
+    private Role                           role;
+    private Format                         format;
+    private String                         timestampAttribute;
+    private String                         durationAttribute;
+    private transient InternalReadAccessor durationExtractor;
+    private Class< ? >                     typeClass;
+    private FactTemplate                   typeTemplate;
 
     public TypeDeclaration() {
     }
@@ -107,9 +107,9 @@ public class TypeDeclaration
         if ( this.durationAttribute != null ) {
             // generate the extractor
             DroolsObjectInputStream dois = (DroolsObjectInputStream) in;
-            this.durationExtractor = dois.getExtractorFactory().getExtractor( this.typeClass,
-                                                                              this.durationAttribute,
-                                                                              dois.getClassLoader() );
+            this.durationExtractor = dois.getExtractorFactory().getReader( this.typeClass,
+                                                                           this.durationAttribute,
+                                                                           dois.getClassLoader() );
         }
     }
 
@@ -250,11 +250,11 @@ public class TypeDeclaration
         return a == b || a != null && a.equals( b );
     }
 
-    public FieldExtractor getDurationExtractor() {
+    public InternalReadAccessor getDurationExtractor() {
         return durationExtractor;
     }
 
-    public void setDurationExtractor(FieldExtractor durationExtractor) {
+    public void setDurationExtractor(InternalReadAccessor durationExtractor) {
         this.durationExtractor = durationExtractor;
     }
 

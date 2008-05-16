@@ -17,16 +17,12 @@ package org.drools.integrationtests;
  */
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInput;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
 import java.io.Reader;
 import java.io.StringReader;
-import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -83,7 +79,6 @@ import org.drools.StatefulSession;
 import org.drools.StatelessSession;
 import org.drools.TestParam;
 import org.drools.WorkingMemory;
-import org.drools.util.DroolsStreamUtils;
 import org.drools.Cheesery.Maturity;
 import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.audit.WorkingMemoryInMemoryLogger;
@@ -127,6 +122,7 @@ import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.spi.Activation;
 import org.drools.spi.ConsequenceExceptionHandler;
 import org.drools.spi.GlobalResolver;
+import org.drools.util.DroolsStreamUtils;
 import org.drools.xml.XmlDumper;
 
 /** Run all the tests with the ReteOO engine implementation */
@@ -543,8 +539,6 @@ public class MiscTest extends TestCase {
 
         Package p = builder.getPackage();
         assertEquals(2, p.getRules().length);
-
-
 
         //to test it we will generate another class that looks just like it
         ClassBuilder cb = new ClassBuilder();

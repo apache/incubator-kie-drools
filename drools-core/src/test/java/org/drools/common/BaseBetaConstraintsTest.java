@@ -6,7 +6,7 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.drools.RuleBaseConfiguration;
-import org.drools.base.ClassFieldExtractorCache;
+import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassObjectType;
 import org.drools.base.evaluators.ComparableEvaluatorsDefinition;
 import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
@@ -21,18 +21,18 @@ import org.drools.rule.Pattern;
 import org.drools.rule.VariableConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.Evaluator;
-import org.drools.spi.FieldExtractor;
-import org.drools.util.RightTupleIndexHashTable;
-import org.drools.util.RightTupleList;
+import org.drools.spi.InternalReadAccessor;
+import org.drools.util.LeftTupleIndexHashTable;
+import org.drools.util.LeftTupleList;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListEntry;
-import org.drools.util.LeftTupleList;
-import org.drools.util.LeftTupleIndexHashTable;
+import org.drools.util.RightTupleIndexHashTable;
+import org.drools.util.RightTupleList;
 import org.drools.util.AbstractHashTable.FieldIndex;
 import org.drools.util.AbstractHashTable.Index;
 
 public abstract class BaseBetaConstraintsTest extends TestCase {
-    
+
     public static EvaluatorRegistry registry = new EvaluatorRegistry();
     static {
         registry.addEvaluatorDefinition( new EqualityEvaluatorsDefinition() );
@@ -46,16 +46,16 @@ public abstract class BaseBetaConstraintsTest extends TestCase {
                                                     Operator operator,
                                                     String fieldName,
                                                     Class clazz) {
-        FieldExtractor extractor = ClassFieldExtractorCache.getInstance().getExtractor( clazz,
-                                                                                        fieldName,
-                                                                                        getClass().getClassLoader() );
+        InternalReadAccessor extractor = ClassFieldAccessorCache.getInstance().getReader( clazz,
+                                                                                          fieldName,
+                                                                                          getClass().getClassLoader() );
         Declaration declaration = new Declaration( identifier,
                                                    extractor,
                                                    new Pattern( 0,
                                                                 new ClassObjectType( clazz ) ) );
-        Evaluator evaluator = registry.getEvaluatorDefinition( operator.getOperatorString() ).getEvaluator( extractor.getValueType(), 
-                                                                                                            operator.getOperatorString(), 
-                                                                                                            operator.isNegated(), 
+        Evaluator evaluator = registry.getEvaluatorDefinition( operator.getOperatorString() ).getEvaluator( extractor.getValueType(),
+                                                                                                            operator.getOperatorString(),
+                                                                                                            operator.isNegated(),
                                                                                                             null );
         return new VariableConstraint( extractor,
                                        declaration,

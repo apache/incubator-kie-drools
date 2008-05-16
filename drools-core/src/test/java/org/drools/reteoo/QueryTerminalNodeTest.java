@@ -28,8 +28,8 @@ import org.drools.QueryResult;
 import org.drools.QueryResults;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
-import org.drools.base.ClassFieldExtractor;
-import org.drools.base.ClassFieldExtractorCache;
+import org.drools.base.ClassFieldReader;
+import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
 import org.drools.base.FieldFactory;
@@ -49,7 +49,7 @@ public class QueryTerminalNodeTest extends TestCase {
     private BuildContext     buildContext;
     private EntryPointNode   entryPoint;
 
-    ClassFieldExtractorCache cache = ClassFieldExtractorCache.getInstance();
+    ClassFieldAccessorCache cache = ClassFieldAccessorCache.getInstance();
     private EqualityEvaluatorsDefinition equals = new EqualityEvaluatorsDefinition();
 
     protected void setUp() throws Exception {
@@ -70,7 +70,7 @@ public class QueryTerminalNodeTest extends TestCase {
                                                                        buildContext );
         queryObjectTypeNode.attach();
 
-        ClassFieldExtractor extractor = cache.getExtractor( DroolsQuery.class,
+        ClassFieldReader extractor = cache.getReader( DroolsQuery.class,
                                                             "name",
                                                             DroolsQuery.class.getClassLoader() );
 
@@ -99,7 +99,7 @@ public class QueryTerminalNodeTest extends TestCase {
                                                                         buildContext );
         cheeseObjectTypeNode.attach();
 
-        extractor = cache.getExtractor( Cheese.class,
+        extractor = cache.getReader( Cheese.class,
                                         "type",
                                         getClass().getClassLoader() );
 

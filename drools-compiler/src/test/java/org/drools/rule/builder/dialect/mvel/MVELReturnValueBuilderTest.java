@@ -10,7 +10,7 @@ import junit.framework.TestCase;
 import org.drools.Cheese;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
-import org.drools.base.ClassFieldExtractorCache;
+import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassObjectType;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
@@ -27,14 +27,14 @@ import org.drools.rule.Declaration;
 import org.drools.rule.Package;
 import org.drools.rule.Pattern;
 import org.drools.rule.ReturnValueRestriction;
-import org.drools.spi.FieldExtractor;
+import org.drools.spi.InternalReadAccessor;
 
 public class MVELReturnValueBuilderTest extends TestCase {
 
-    private ClassFieldExtractorCache cache;
+    private ClassFieldAccessorCache cache;
 
     public void setUp() {
-        cache = ClassFieldExtractorCache.getInstance();
+        cache = ClassFieldAccessorCache.getInstance();
     }
 
     public void testSimpleExpression() {
@@ -52,7 +52,7 @@ public class MVELReturnValueBuilderTest extends TestCase {
                                                                                mvelDialect );
 
         final InstrumentedDeclarationScopeResolver declarationResolver = new InstrumentedDeclarationScopeResolver();
-        final FieldExtractor extractor = cache.getExtractor( Cheese.class,
+        final InternalReadAccessor extractor = cache.getReader( Cheese.class,
                                                              "price",
                                                              getClass().getClassLoader() );
 

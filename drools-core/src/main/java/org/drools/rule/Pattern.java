@@ -28,7 +28,7 @@ import java.io.ObjectInput;
 import java.io.IOException;
 
 import org.drools.spi.Constraint;
-import org.drools.spi.Extractor;
+import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PatternExtractor;
 import org.drools.spi.Constraint.ConstraintType;
@@ -201,7 +201,7 @@ public class Pattern
     }
 
     public Declaration addDeclaration(final String identifier,
-                                      final Extractor extractor) {
+                                      final InternalReadAccessor extractor) {
         if ( this.constraints == Collections.EMPTY_LIST ) {
             this.constraints = new ArrayList( 1 );
         }

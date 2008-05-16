@@ -17,18 +17,17 @@ package org.drools.rule;
  */
 
 import java.beans.IntrospectionException;
+import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.IOException;
 
 import junit.framework.TestCase;
 
 import org.drools.Cheese;
-import org.drools.FactHandle;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
-import org.drools.base.ClassFieldExtractor;
-import org.drools.base.ClassFieldExtractorCache;
+import org.drools.base.ClassFieldAccessorCache;
+import org.drools.base.ClassFieldReader;
 import org.drools.base.ClassObjectType;
 import org.drools.base.FieldFactory;
 import org.drools.base.ShadowProxy;
@@ -44,15 +43,15 @@ import org.drools.reteoo.RightTuple;
 import org.drools.rule.PredicateConstraint.PredicateContextEntry;
 import org.drools.rule.ReturnValueRestriction.ReturnValueContextEntry;
 import org.drools.spi.Evaluator;
-import org.drools.spi.FieldExtractor;
 import org.drools.spi.FieldValue;
+import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.PredicateExpression;
 import org.drools.spi.ReturnValueExpression;
 import org.drools.spi.Tuple;
 
 public class FieldConstraintTest extends TestCase {
 
-    ClassFieldExtractorCache       cache       = ClassFieldExtractorCache.getInstance();
+    ClassFieldAccessorCache       cache       = ClassFieldAccessorCache.getInstance();
     EqualityEvaluatorsDefinition   equals      = new EqualityEvaluatorsDefinition();
     ComparableEvaluatorsDefinition comparables = new ComparableEvaluatorsDefinition();
 
@@ -78,7 +77,7 @@ public class FieldConstraintTest extends TestCase {
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
 
-        final ClassFieldExtractor extractor = cache.getExtractor( Cheese.class,
+        final ClassFieldReader extractor = cache.getReader( Cheese.class,
                                                                   "type",
                                                                   getClass().getClassLoader() );
 
@@ -128,7 +127,7 @@ public class FieldConstraintTest extends TestCase {
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
 
-        final ClassFieldExtractor extractor = cache.getExtractor( Cheese.class,
+        final ClassFieldReader extractor = cache.getReader( Cheese.class,
                                                                   "price",
                                                                   getClass().getClassLoader() );
 
@@ -179,7 +178,7 @@ public class FieldConstraintTest extends TestCase {
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
 
-        final FieldExtractor priceExtractor = cache.getExtractor( Cheese.class,
+        final InternalReadAccessor priceExtractor = cache.getReader( Cheese.class,
                                                                   "price",
                                                                   getClass().getClassLoader() );
 
@@ -281,7 +280,7 @@ public class FieldConstraintTest extends TestCase {
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
 
-        final FieldExtractor priceExtractor = cache.getExtractor( Cheese.class,
+        final InternalReadAccessor priceExtractor = cache.getReader( Cheese.class,
                                                                   "price",
                                                                   getClass().getClassLoader() );
 
@@ -404,7 +403,7 @@ public class FieldConstraintTest extends TestCase {
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
 
-        final ClassFieldExtractor extractor = cache.getExtractor( Cheese.class,
+        final ClassFieldReader extractor = cache.getReader( Cheese.class,
                                                                   "type",
                                                                   getClass().getClassLoader() );
 
@@ -417,7 +416,7 @@ public class FieldConstraintTest extends TestCase {
                                                                      evaluator,
                                                                      field );
 
-        final ClassFieldExtractor priceExtractor = cache.getExtractor( Cheese.class,
+        final ClassFieldReader priceExtractor = cache.getReader( Cheese.class,
                                                                        "price",
                                                                        getClass().getClassLoader() );
 
@@ -482,7 +481,7 @@ public class FieldConstraintTest extends TestCase {
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
 
-        final ClassFieldExtractor extractor = cache.getExtractor( Cheese.class,
+        final ClassFieldReader extractor = cache.getReader( Cheese.class,
                                                                   "type",
                                                                   getClass().getClassLoader() );
 
@@ -495,7 +494,7 @@ public class FieldConstraintTest extends TestCase {
                                                                      evaluator,
                                                                      field );
 
-        final ClassFieldExtractor priceExtractor = cache.getExtractor( Cheese.class,
+        final ClassFieldReader priceExtractor = cache.getReader( Cheese.class,
                                                                        "price",
                                                                        getClass().getClassLoader() );
 
@@ -559,7 +558,7 @@ public class FieldConstraintTest extends TestCase {
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
 
-        final ClassFieldExtractor typeExtractor = cache.getExtractor( Cheese.class,
+        final ClassFieldReader typeExtractor = cache.getReader( Cheese.class,
                                                                       "type",
                                                                       getClass().getClassLoader() );
 
@@ -573,7 +572,7 @@ public class FieldConstraintTest extends TestCase {
                                                                      stringEqual,
                                                                      cheddarField );
 
-        final ClassFieldExtractor priceExtractor = cache.getExtractor( Cheese.class,
+        final ClassFieldReader priceExtractor = cache.getReader( Cheese.class,
                                                                        "price",
                                                                        getClass().getClassLoader() );
 

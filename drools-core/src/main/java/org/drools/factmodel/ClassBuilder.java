@@ -1,5 +1,20 @@
 package org.drools.factmodel;
 
+/*
+ * Copyright 2008 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 import java.beans.IntrospectionException;
 import java.io.IOException;
@@ -13,23 +28,23 @@ import org.drools.asm.Opcodes;
 import org.drools.asm.Type;
 
 /**
- * <p><b>Title:</b> ClassBuilder</p>
- * <p><b>Description:</b> A builder to dinamically build simple Value Object classes</p>
- * <p><b>Copyright:</b> Copyright (c) 2005</p>
- * <p><b>Company:</b> Auster Solutions</p>
- *
+ * A builder to dynamically build simple Javabean(TM) classes
+ * 
  * @author etirelli
- * @version $Id: ClassBuilder.java 241 2006-05-11 19:48:25Z framos $
  */
 public class ClassBuilder {
     private boolean debug = false;
 
     public ClassBuilder() {
-        this.debug = "false".equalsIgnoreCase( System.getProperty( "br.com.auster.common.asm.debug" ) );
+        this( "true".equalsIgnoreCase( System.getProperty( "org.drools.classbuilder.debug" ) ) );
+    }
+
+    public ClassBuilder(final boolean debug) {
+        this.debug = debug;
     }
 
     /**
-     * Dinamically builds, defines and loads a class based on the given class definition
+     * Dynamically builds, defines and loads a class based on the given class definition
      *
      * @param classDef the class definition object structure
      *
@@ -46,18 +61,18 @@ public class ClassBuilder {
      * @throws NoSuchFieldException
      * @throws InstantiationException
      */
-    public Class buildAndLoadClass(ClassDefinition classDef) throws IOException,
-                                                            IntrospectionException,
-                                                            SecurityException,
-                                                            IllegalArgumentException,
-                                                            ClassNotFoundException,
-                                                            NoSuchMethodException,
-                                                            IllegalAccessException,
-                                                            InvocationTargetException,
-                                                            InstantiationException,
-                                                            NoSuchFieldException {
+    public Class< ? > buildAndLoadClass(ClassDefinition classDef) throws IOException,
+                                                                 IntrospectionException,
+                                                                 SecurityException,
+                                                                 IllegalArgumentException,
+                                                                 ClassNotFoundException,
+                                                                 NoSuchMethodException,
+                                                                 IllegalAccessException,
+                                                                 InvocationTargetException,
+                                                                 InstantiationException,
+                                                                 NoSuchFieldException {
         try {
-            Class clazz = Class.forName( classDef.getClassName() );
+            Class< ? > clazz = Class.forName( classDef.getClassName() );
 
             classDef.setDefinedClass( clazz );
 
@@ -67,8 +82,8 @@ public class ClassBuilder {
             // class not loaded, so create and load it
             byte[] serializedClazz = this.buildClass( classDef );
 
-            Class clazz = this.loadClass( classDef.getClassName(),
-                                          serializedClazz );
+            Class< ? > clazz = this.loadClass( classDef.getClassName(),
+                                               serializedClazz );
             classDef.setDefinedClass( clazz );
 
             return clazz;
@@ -76,7 +91,7 @@ public class ClassBuilder {
     }
 
     /**
-     * Dinamically builds, defines and loads a class based on the given class definition
+     * Dynamically builds, defines and loads a class based on the given class definition
      *
      * @param classDef the class definition object structure
      *
@@ -141,7 +156,6 @@ public class ClassBuilder {
 
         return cw.toByteArray();
     }
-
 
     /**
      * Defines the class header for the given class definition
@@ -724,17 +738,17 @@ public class ClassBuilder {
         }
     }
 
-    private Class loadClass(String classname,
-                            byte[] b) throws ClassNotFoundException,
-                                     SecurityException,
-                                     NoSuchMethodException,
-                                     IllegalArgumentException,
-                                     IllegalAccessException,
-                                     InvocationTargetException {
+    private Class< ? > loadClass(String classname,
+                                 byte[] b) throws ClassNotFoundException,
+                                          SecurityException,
+                                          NoSuchMethodException,
+                                          IllegalArgumentException,
+                                          IllegalAccessException,
+                                          InvocationTargetException {
         //override classDefine (as it is protected) and define the class.
-        Class clazz = null;
+        Class< ? > clazz = null;
         ClassLoader loader = ClassBuilder.class.getClassLoader();
-        Class cls = Class.forName( "java.lang.ClassLoader" );
+        Class< ? > cls = Class.forName( "java.lang.ClassLoader" );
         java.lang.reflect.Method method = cls.getDeclaredMethod( "defineClass",
                                                                  new Class[]{String.class, byte[].class, int.class, int.class} );
 
@@ -742,14 +756,12 @@ public class ClassBuilder {
         method.setAccessible( true );
         try {
             Object[] args = new Object[]{classname, b, new Integer( 0 ), new Integer( b.length )};
-            clazz = (Class) method.invoke( loader,
-                                           args );
+            clazz = (Class< ? >) method.invoke( loader,
+                                                args );
         } finally {
             method.setAccessible( false );
         }
         return clazz;
     }
-
-
 
 }

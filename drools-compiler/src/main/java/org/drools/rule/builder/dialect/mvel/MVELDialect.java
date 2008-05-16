@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import org.drools.base.ClassFieldExtractorCache;
+import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ModifyInterceptor;
 import org.drools.base.TypeResolver;
 import org.drools.base.mvel.MVELDebugHandler;
@@ -110,7 +110,7 @@ public class MVELDialect implements Dialect, Externalizable {
     protected MVELDialectData data;
     private MVELDialectConfiguration configuration;
     private TypeResolver typeResolver;
-    private ClassFieldExtractorCache classFieldExtractorCache;
+    private ClassFieldAccessorCache classFieldExtractorCache;
     private MVELExprAnalyzer analyzer;
 
     private Map imports;
@@ -134,7 +134,7 @@ public class MVELDialect implements Dialect, Externalizable {
         data = (MVELDialectData) in.readObject();
         configuration = (MVELDialectConfiguration) in.readObject();
         typeResolver = (TypeResolver) in.readObject();
-        classFieldExtractorCache = (ClassFieldExtractorCache) in.readObject();
+        classFieldExtractorCache = (ClassFieldAccessorCache) in.readObject();
         analyzer = (MVELExprAnalyzer) in.readObject();
         imports = (Map) in.readObject();
         packageImports = (Map) in.readObject();
@@ -554,7 +554,7 @@ public class MVELDialect implements Dialect, Externalizable {
         return this.builders;
     }
 
-    public ClassFieldExtractorCache getClassFieldExtractorCache() {
+    public ClassFieldAccessorCache getClassFieldExtractorCache() {
         return this.classFieldExtractorCache;
     }
 

@@ -58,14 +58,15 @@ public class ReteooFactHandleFactory extends AbstractFactHandleFactory {
             TypeDeclaration type = conf.getTypeDeclaration();
             long timestamp = ((TemporalSession) workingMemory).getSessionClock().getCurrentTime();
             long duration = 0;
-            if( type.getDurationExtractor() != null ) {
-                duration = type.getDurationExtractor().getLongValue( workingMemory, object );
+            if ( type.getDurationExtractor() != null ) {
+                duration = type.getDurationExtractor().getLongValue( workingMemory,
+                                                                     object );
             }
             return new EventFactHandle( id,
                                         object,
                                         recency,
                                         timestamp,
-                                        duration ); 
+                                        duration );
         } else {
             return new DefaultFactHandle( id,
                                           object,

@@ -10,7 +10,7 @@ import org.drools.facttemplates.FactTemplateImpl;
 import org.drools.facttemplates.FactTemplateObjectType;
 import org.drools.facttemplates.FieldTemplate;
 import org.drools.facttemplates.FieldTemplateImpl;
-import org.drools.spi.Extractor;
+import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.ObjectType;
 
 public class PatternTest extends TestCase {
@@ -21,7 +21,7 @@ public class PatternTest extends TestCase {
                                        type,
                                        "foo" );
         final Declaration dec = col.getDeclaration();
-        final Extractor ext = dec.getExtractor();
+        final InternalReadAccessor ext = dec.getExtractor();
         assertEquals( Cheese.class,
                       ext.getExtractToClass() );
 
@@ -53,7 +53,7 @@ public class PatternTest extends TestCase {
                                        type,
                                        "foo" );
         final Declaration dec = col.getDeclaration();
-        final Extractor ext = dec.getExtractor();
+        final InternalReadAccessor ext = dec.getExtractor();
         assertEquals( Fact.class,
                       ext.getExtractToClass() );
 

@@ -9,7 +9,7 @@ import junit.framework.TestCase;
 
 import org.drools.Cheese;
 import org.drools.Person;
-import org.drools.base.ClassFieldExtractorCache;
+import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassObjectType;
 import org.drools.rule.Declaration;
 import org.drools.spi.PatternExtractor;
@@ -23,11 +23,11 @@ import org.mvel.templates.TemplateRuntime;
 
 public class AccumulateTemplateTest extends TestCase {
 
-    private ClassFieldExtractorCache cache;
+    private ClassFieldAccessorCache cache;
 
     protected void setUp() throws Exception {
         super.setUp();
-        cache = ClassFieldExtractorCache.getInstance();
+        cache = ClassFieldAccessorCache.getInstance();
     }
 
     protected void tearDown() throws Exception {
@@ -46,7 +46,7 @@ public class AccumulateTemplateTest extends TestCase {
         final Declaration[] inner = new Declaration[]{new Declaration( "cheese",
                                                                        new PatternExtractor( new ClassObjectType( Cheese.class ) ),
                                                                        null ), new Declaration( "price",
-                                                                                                cache.getExtractor( Cheese.class,
+                                                                                                cache.getReader( Cheese.class,
                                                                                                                     "price",
                                                                                                                     getClass().getClassLoader() ),
                                                                                                 null )};
@@ -119,18 +119,18 @@ public class AccumulateTemplateTest extends TestCase {
 
         final String[] declarationTypes = new String[]{"String", "int"};
         final Declaration[] declarations = new Declaration[]{new Declaration( "name",
-                                                                              cache.getExtractor( Person.class,
+                                                                              cache.getReader( Person.class,
                                                                                                   "name",
                                                                                                   getClass().getClassLoader() ),
                                                                               null ), new Declaration( "age",
-                                                                                                       cache.getExtractor( Person.class,
+                                                                                                       cache.getReader( Person.class,
                                                                                                                            "age",
                                                                                                                            getClass().getClassLoader() ),
                                                                                                        null )};
         final Declaration[] inner = new Declaration[]{new Declaration( "cheese",
                                                                        new PatternExtractor( new ClassObjectType( Cheese.class ) ),
                                                                        null ), new Declaration( "price",
-                                                                                                cache.getExtractor( Cheese.class,
+                                                                                                cache.getReader( Cheese.class,
                                                                                                                     "price",
                                                                                                                     getClass().getClassLoader() ),
                                                                                                 null )};
@@ -203,11 +203,11 @@ public class AccumulateTemplateTest extends TestCase {
 
         final String[] declarationTypes = new String[]{"String", "int"};
         final Declaration[] declarations = new Declaration[]{new Declaration( "name",
-                                                                              cache.getExtractor( Person.class,
+                                                                              cache.getReader( Person.class,
                                                                                                   "name",
                                                                                                   getClass().getClassLoader() ),
                                                                               null ), new Declaration( "age",
-                                                                                                       cache.getExtractor( Person.class,
+                                                                                                       cache.getReader( Person.class,
                                                                                                                            "age",
                                                                                                                            getClass().getClassLoader() ),
                                                                                                        null )};

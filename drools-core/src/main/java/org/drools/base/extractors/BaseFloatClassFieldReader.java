@@ -3,16 +3,16 @@ package org.drools.base.extractors;
 import java.lang.reflect.Method;
 
 import org.drools.RuntimeDroolsException;
-import org.drools.base.BaseClassFieldExtractor;
+import org.drools.base.BaseClassFieldReader;
 import org.drools.base.ValueType;
 import org.drools.common.InternalWorkingMemory;
 
-public abstract class BaseDoubleClassFieldExtractor extends BaseClassFieldExtractor {
+public abstract class BaseFloatClassFieldReader extends BaseClassFieldReader {
 
     private static final long serialVersionUID = 400L;
 
-    public BaseDoubleClassFieldExtractor(final Class clazz,
-                                         final String fieldName) {
+    public BaseFloatClassFieldReader(final Class clazz,
+                                        final String fieldName) {
         super( clazz,
                fieldName );
     }
@@ -24,47 +24,47 @@ public abstract class BaseDoubleClassFieldExtractor extends BaseClassFieldExtrac
      * @param fieldType
      * @param valueType
      */
-    protected BaseDoubleClassFieldExtractor(final int index,
-                                            final Class fieldType,
-                                            final ValueType valueType) {
+    protected BaseFloatClassFieldReader(final int index,
+                                           final Class fieldType,
+                                           final ValueType valueType) {
         super( index,
                fieldType,
                valueType );
     }
 
     public Object getValue(InternalWorkingMemory workingMemory, final Object object) {
-        return new Double( getDoubleValue( workingMemory, object ) );
+        return new Float( getFloatValue( workingMemory, object ) );
     }
 
     public boolean getBooleanValue(InternalWorkingMemory workingMemory, final Object object) {
-        throw new RuntimeDroolsException( "Conversion to boolean not supported from double" );
+        throw new RuntimeDroolsException( "Conversion to boolean not supported from float" );
     }
 
     public byte getByteValue(InternalWorkingMemory workingMemory, final Object object) {
-        return (byte) getDoubleValue( workingMemory, object );
+        return (byte) getFloatValue( workingMemory, object );
 
     }
 
     public char getCharValue(InternalWorkingMemory workingMemory, final Object object) {
-        throw new RuntimeDroolsException( "Conversion to char not supported from double" );
+        throw new RuntimeDroolsException( "Conversion to char not supported from float" );
     }
 
-    public abstract double getDoubleValue(InternalWorkingMemory workingMemory, Object object);
-
-    public float getFloatValue(InternalWorkingMemory workingMemory, final Object object) {
-        return (float) getDoubleValue( workingMemory, object );
+    public double getDoubleValue(InternalWorkingMemory workingMemory, final Object object) {
+        return getFloatValue( workingMemory, object );
     }
+
+    public abstract float getFloatValue(InternalWorkingMemory workingMemory, Object object);
 
     public int getIntValue(InternalWorkingMemory workingMemory, final Object object) {
-        return (int) getDoubleValue( workingMemory, object );
+        return (int) getFloatValue( workingMemory, object );
     }
 
     public long getLongValue(InternalWorkingMemory workingMemory, final Object object) {
-        return (long) getDoubleValue( workingMemory, object );
+        return (long) getFloatValue( workingMemory, object );
     }
 
     public short getShortValue(InternalWorkingMemory workingMemory, final Object object) {
-        return (short) getDoubleValue( workingMemory, object );
+        return (short) getFloatValue( workingMemory, object );
     }
 
     public boolean isNullValue(InternalWorkingMemory workingMemory, final Object object) {
@@ -73,7 +73,7 @@ public abstract class BaseDoubleClassFieldExtractor extends BaseClassFieldExtrac
 
     public Method getNativeReadMethod() {
         try {
-            return this.getClass().getDeclaredMethod( "getDoubleValue",
+            return this.getClass().getDeclaredMethod( "getFloatValue",
                                                       new Class[]{InternalWorkingMemory.class, Object.class} );
         } catch ( final Exception e ) {
             throw new RuntimeDroolsException( "This is a bug. Please report to development team: " + e.getMessage(),
@@ -82,8 +82,7 @@ public abstract class BaseDoubleClassFieldExtractor extends BaseClassFieldExtrac
     }
 
     public int getHashCode(InternalWorkingMemory workingMemory, final Object object) {
-        final long temp = Double.doubleToLongBits( getDoubleValue( workingMemory, object ) );
-        return (int) (temp ^ (temp >>> 32));
+        return Float.floatToIntBits( getFloatValue( workingMemory, object ) );
     }
 
 }

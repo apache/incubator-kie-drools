@@ -7,32 +7,32 @@ import java.io.ObjectInput;
 
 import org.drools.base.ValueType;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.spi.Extractor;
+import org.drools.spi.InternalReadAccessor;
 import org.drools.util.ClassUtils;
 
-public class ArrayExtractor implements Extractor {
-    private Extractor arrayExtractor;
+public class ArrayElementReader implements InternalReadAccessor {
+    private InternalReadAccessor arrayExtractor;
     private int index;
-    private Class type;
+    private Class<?> type;
 
-    public ArrayExtractor() {
+    public ArrayElementReader() {
 
     }
 
-    public ArrayExtractor(Extractor arrayExtractor, int index, Class type) {
+    public ArrayElementReader(InternalReadAccessor arrayExtractor, int index, Class<?> type) {
         this.arrayExtractor = arrayExtractor;
         this.index = index;
         this.type = type;
     }
 
-    public Class getExtractToClass() {
+    public Class<?> getExtractToClass() {
         return type;
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        arrayExtractor  = (Extractor)in.readObject();
+        arrayExtractor  = (InternalReadAccessor)in.readObject();
         index           = in.readInt();
-        type            = (Class)in.readObject();
+        type            = (Class<?>)in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -111,7 +111,7 @@ public class ArrayExtractor implements Extractor {
         if ( this == obj ) return true;
         if ( obj == null ) return false;
         if ( getClass() != obj.getClass() ) return false;
-        final ArrayExtractor other = (ArrayExtractor) obj;
+        final ArrayElementReader other = (ArrayElementReader) obj;
         if ( arrayExtractor == null ) {
             if ( other.arrayExtractor != null ) return false;
         } else if ( !arrayExtractor.equals( other.arrayExtractor ) ) return false;
@@ -121,5 +121,64 @@ public class ArrayExtractor implements Extractor {
 
     public boolean isGlobal() {
         return false;
+    }
+
+    public boolean getBooleanValue(Object object) {
+        return getBooleanValue( null,
+                                object );
+    }
+
+    public byte getByteValue(Object object) {
+        return getByteValue( null,
+                             object );
+    }
+
+    public char getCharValue(Object object) {
+        return getCharValue( null,
+                             object );
+    }
+
+    public double getDoubleValue(Object object) {
+        return getDoubleValue( null,
+                               object );
+    }
+
+    public float getFloatValue(Object object) {
+        return getFloatValue( null,
+                              object );
+    }
+
+    public int getHashCode(Object object) {
+        return getHashCode( null,
+                            object );
+    }
+
+    public int getIndex() {
+        return -1;
+    }
+
+    public int getIntValue(Object object) {
+        return getIntValue( null,
+                            object );
+    }
+
+    public long getLongValue(Object object) {
+        return getLongValue( null,
+                             object );
+    }
+
+    public short getShortValue(Object object) {
+        return getShortValue( null,
+                              object );
+    }
+
+    public Object getValue(Object object) {
+        return getValue( null,
+                         object );
+    }
+
+    public boolean isNullValue(Object object) {
+        return isNullValue( null,
+                            object );
     }
 }

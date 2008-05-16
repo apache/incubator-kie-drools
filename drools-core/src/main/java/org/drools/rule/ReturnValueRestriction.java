@@ -28,8 +28,8 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
 import org.drools.spi.Evaluator;
-import org.drools.spi.Extractor;
-import org.drools.spi.FieldExtractor;
+import org.drools.spi.InternalReadAccessor;
+import org.drools.spi.ReadAccessor;
 import org.drools.spi.Restriction;
 import org.drools.spi.ReturnValueExpression;
 import org.drools.spi.Tuple;
@@ -52,7 +52,7 @@ public class ReturnValueRestriction
 
     private Evaluator            evaluator;
 
-    private FieldExtractor       extractor;
+    private ReadAccessor       extractor;
 
     private static final Declaration[] noRequiredDeclarations = new Declaration[]{};
 
@@ -62,7 +62,7 @@ public class ReturnValueRestriction
 
     }
 
-    public ReturnValueRestriction(final FieldExtractor fieldExtractor,
+    public ReturnValueRestriction(final ReadAccessor fieldExtractor,
                                   final Declaration[] previousDeclarations,
                                   final Declaration[] localDeclarations,
                                   final String[] requiredGlobals,
@@ -75,7 +75,7 @@ public class ReturnValueRestriction
               evaluator );
     }
 
-    public ReturnValueRestriction(final FieldExtractor fieldExtractor,
+    public ReturnValueRestriction(final ReadAccessor fieldExtractor,
                                   final ReturnValueExpression returnValueExpression,
                                   final Declaration[] previousDeclarations,
                                   final Declaration[] localDeclarations,
@@ -123,7 +123,7 @@ public class ReturnValueRestriction
         previousDeclarations  = (Declaration[])in.readObject();
         localDeclarations  = ( Declaration[])in.readObject();
         evaluator  = (Evaluator)in.readObject();
-        extractor  = (FieldExtractor)in.readObject();
+        extractor  = (ReadAccessor)in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -182,7 +182,7 @@ public class ReturnValueRestriction
         return this.evaluator;
     }
 
-    public boolean isAllowed(final Extractor extractor,
+    public boolean isAllowed(final InternalReadAccessor extractor,
                              final InternalFactHandle handle,
                              final Tuple tuple,
                              final WorkingMemory workingMemory,
@@ -202,7 +202,7 @@ public class ReturnValueRestriction
         }
     }
 
-    public boolean isAllowed(final Extractor extractor,
+    public boolean isAllowed(final InternalReadAccessor extractor,
                              final InternalFactHandle handle,
                              final InternalWorkingMemory workingMemoiry,
                              final ContextEntry context) {
@@ -315,7 +315,7 @@ public class ReturnValueRestriction
 
         private static final long    serialVersionUID = 400L;
 
-        public FieldExtractor        fieldExtractor;
+        public ReadAccessor        fieldExtractor;
         public InternalFactHandle    handle;
         public LeftTuple             leftTuple;
         public InternalWorkingMemory workingMemory;
@@ -329,7 +329,7 @@ public class ReturnValueRestriction
         public ReturnValueContextEntry() {
         }
 
-        public ReturnValueContextEntry(final FieldExtractor fieldExtractor,
+        public ReturnValueContextEntry(final ReadAccessor fieldExtractor,
                                        final Declaration[] previousDeclarations,
                                        final Declaration[] localDeclarations) {
             this.fieldExtractor = fieldExtractor;
@@ -338,7 +338,7 @@ public class ReturnValueRestriction
         }
 
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            fieldExtractor  = (FieldExtractor)in.readObject();
+            fieldExtractor  = (ReadAccessor)in.readObject();
             handle  = (InternalFactHandle)in.readObject();
             leftTuple  = (LeftTuple)in.readObject();
             workingMemory  = (InternalWorkingMemory)in.readObject();
@@ -382,7 +382,7 @@ public class ReturnValueRestriction
         /* (non-Javadoc)
          * @see org.drools.rule.ReturnValueContextEntry#getFieldExtractor()
          */
-        public FieldExtractor getFieldExtractor() {
+        public ReadAccessor getFieldExtractor() {
             return this.fieldExtractor;
         }
 

@@ -7,7 +7,7 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.drools.Cheese;
-import org.drools.base.ClassFieldExtractorCache;
+import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassObjectType;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
@@ -18,15 +18,15 @@ import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RightTuple;
 import org.drools.rule.Declaration;
 import org.drools.rule.Pattern;
-import org.drools.spi.FieldExtractor;
+import org.drools.spi.InternalReadAccessor;
 import org.drools.util.AbstractHashTable.FieldIndex;
 
 public class RightTupleIndexHashTableTest extends TestCase {
-    ClassFieldExtractorCache     cache  = ClassFieldExtractorCache.getInstance();
+    ClassFieldAccessorCache     cache  = ClassFieldAccessorCache.getInstance();
     EqualityEvaluatorsDefinition equals = new EqualityEvaluatorsDefinition();
 
     public void testSingleEntry() throws Exception {
-        final FieldExtractor extractor = cache.getExtractor( Cheese.class,
+        final InternalReadAccessor extractor = cache.getReader( Cheese.class,
                                                              "type",
                                                              getClass().getClassLoader() );
 
@@ -82,7 +82,7 @@ public class RightTupleIndexHashTableTest extends TestCase {
     }
 
     public void testTwoDifferentEntries() throws Exception {
-        final FieldExtractor extractor = cache.getExtractor( Cheese.class,
+        final InternalReadAccessor extractor = cache.getReader( Cheese.class,
                                                              "type",
                                                              getClass().getClassLoader() );
 
@@ -146,7 +146,7 @@ public class RightTupleIndexHashTableTest extends TestCase {
     }
 
     public void testTwoEqualEntries() throws Exception {
-        final FieldExtractor extractor = cache.getExtractor( Cheese.class,
+        final InternalReadAccessor extractor = cache.getReader( Cheese.class,
                                                              "type",
                                                              getClass().getClassLoader() );
 
@@ -209,7 +209,7 @@ public class RightTupleIndexHashTableTest extends TestCase {
     }
 
     public void testTwoDifferentEntriesSameHashCode() throws Exception {
-        final FieldExtractor extractor = cache.getExtractor( TestClass.class,
+        final InternalReadAccessor extractor = cache.getReader( TestClass.class,
                                                              "object",
                                                              getClass().getClassLoader() );
 
@@ -269,7 +269,7 @@ public class RightTupleIndexHashTableTest extends TestCase {
     }
 
     public void testRemove() throws Exception {
-        final FieldExtractor extractor = cache.getExtractor( Cheese.class,
+        final InternalReadAccessor extractor = cache.getReader( Cheese.class,
                                                              "type",
                                                              getClass().getClassLoader() );
 
@@ -343,7 +343,7 @@ public class RightTupleIndexHashTableTest extends TestCase {
     }
 
     public void testResize() throws Exception {
-        final FieldExtractor extractor = cache.getExtractor( Cheese.class,
+        final InternalReadAccessor extractor = cache.getReader( Cheese.class,
                                                              "type",
                                                              getClass().getClassLoader() );
 
@@ -569,7 +569,7 @@ public class RightTupleIndexHashTableTest extends TestCase {
     }
 
     public void testEmptyIterator() {
-        final FieldExtractor extractor = cache.getExtractor( Cheese.class,
+        final InternalReadAccessor extractor = cache.getReader( Cheese.class,
                                                              "type",
                                                              getClass().getClassLoader() );
 

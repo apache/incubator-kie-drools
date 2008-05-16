@@ -3,7 +3,7 @@ package org.drools.rule;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
-import org.drools.spi.Extractor;
+import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.Restriction;
 
 public class AndCompositeRestriction extends AbstractCompositeRestriction {
@@ -17,7 +17,7 @@ public class AndCompositeRestriction extends AbstractCompositeRestriction {
         super( restriction );
     }
 
-    public boolean isAllowed(final Extractor extractor,
+    public boolean isAllowed(final InternalReadAccessor extractor,
                              final InternalFactHandle handle,
                              final InternalWorkingMemory workingMemory,
                              final ContextEntry context ) {

@@ -73,8 +73,8 @@ import org.drools.rule.VariableRestriction;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.spi.Constraint;
 import org.drools.spi.Evaluator;
-import org.drools.spi.FieldExtractor;
 import org.drools.spi.FieldValue;
+import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.ObjectType;
 import org.drools.spi.Restriction;
 import org.drools.spi.Constraint.ConstraintType;
@@ -296,7 +296,7 @@ public class PatternBuilder
         }
 
         // if it is not a complex expression, just build a simple field constraint
-        final FieldExtractor extractor = getFieldExtractor( context,
+        final InternalReadAccessor extractor = getFieldExtractor( context,
                                                             fieldConstraintDescr,
                                                             pattern.getObjectType(),
                                                             fieldName,
@@ -431,7 +431,7 @@ public class PatternBuilder
                                           final Pattern pattern,
                                           final FieldConstraintDescr fieldConstraintDescr,
                                           final RestrictionConnectiveDescr top,
-                                          final FieldExtractor extractor) {
+                                          final InternalReadAccessor extractor) {
         Restriction[] restrictions = new Restriction[top.getRestrictions().size()];
         int index = 0;
 
@@ -499,7 +499,7 @@ public class PatternBuilder
             return;
         }
 
-        final FieldExtractor extractor = getFieldExtractor( context,
+        final InternalReadAccessor extractor = getFieldExtractor( context,
                                                             fieldBindingDescr,
                                                             pattern.getObjectType(),
                                                             fieldBindingDescr.getFieldName(),
@@ -617,7 +617,7 @@ public class PatternBuilder
         final FieldBindingDescr implicitBinding = new FieldBindingDescr( identifier,
                                                                          identifier );
 
-        final FieldExtractor extractor = getFieldExtractor( context,
+        final InternalReadAccessor extractor = getFieldExtractor( context,
                                                             implicitBinding,
                                                             pattern.getObjectType(),
                                                             implicitBinding.getFieldName(),
@@ -635,7 +635,7 @@ public class PatternBuilder
 
     private Restriction buildRestriction(final RuleBuildContext context,
                                          final Pattern pattern,
-                                         final FieldExtractor extractor,
+                                         final InternalReadAccessor extractor,
                                          final FieldConstraintDescr fieldConstraintDescr,
                                          final RestrictionDescr restrictionDescr) {
         Restriction restriction = null;
@@ -667,7 +667,7 @@ public class PatternBuilder
     }
 
     private VariableRestriction buildRestriction(final RuleBuildContext context,
-                                                 final FieldExtractor extractor,
+                                                 final InternalReadAccessor extractor,
                                                  final FieldConstraintDescr fieldConstraintDescr,
                                                  final VariableRestrictionDescr variableRestrictionDescr) {
         if ( variableRestrictionDescr.getIdentifier() == null || variableRestrictionDescr.getIdentifier().equals( "" ) ) {
@@ -713,7 +713,7 @@ public class PatternBuilder
     }
 
     private LiteralRestriction buildRestriction(final RuleBuildContext context,
-                                                final FieldExtractor extractor,
+                                                final InternalReadAccessor extractor,
                                                 final FieldConstraintDescr fieldConstraintDescr,
                                                 final LiteralRestrictionDescr literalRestrictionDescr) {
         FieldValue field = null;
@@ -747,7 +747,7 @@ public class PatternBuilder
     }
 
     private Restriction buildRestriction(final RuleBuildContext context,
-                                         final FieldExtractor extractor,
+                                         final InternalReadAccessor extractor,
                                          final FieldConstraintDescr fieldConstraintDescr,
                                          final QualifiedIdentifierRestrictionDescr qiRestrictionDescr) {
         FieldValue field = null;
@@ -839,7 +839,7 @@ public class PatternBuilder
 
     private ReturnValueRestriction buildRestriction(final RuleBuildContext context,
                                                     final Pattern pattern,
-                                                    final FieldExtractor extractor,
+                                                    final InternalReadAccessor extractor,
                                                     final FieldConstraintDescr fieldConstraintDescr,
                                                     final ReturnValueRestrictionDescr returnValueRestrictionDescr) {
         Dialect.AnalysisResult analysis = context.getDialect().analyzeExpression( context,
@@ -895,12 +895,12 @@ public class PatternBuilder
         return returnValueRestriction;
     }
 
-    private FieldExtractor getFieldExtractor(final RuleBuildContext context,
+    private InternalReadAccessor getFieldExtractor(final RuleBuildContext context,
                                              final BaseDescr descr,
                                              final ObjectType objectType,
                                              final String fieldName,
                                              final boolean reportError) {
-        FieldExtractor extractor = null;
+        InternalReadAccessor extractor = null;
 
         if ( ValueType.FACTTEMPLATE_TYPE.equals(objectType.getValueType()) ) {
             //@todo use extractor cache            
@@ -910,7 +910,7 @@ public class PatternBuilder
         } else {
             try {
                 ClassLoader classloader = context.getPkg().getDialectDatas().getClassLoader();
-                extractor = context.getDialect().getClassFieldExtractorCache().getExtractor( ((ClassObjectType) objectType).getClassType(),
+                extractor = context.getDialect().getClassFieldExtractorCache().getReader( ((ClassObjectType) objectType).getClassType(),
                                                                                              fieldName,
                                                                                              classloader );
             } catch ( final RuntimeDroolsException e ) {

@@ -23,16 +23,16 @@ import java.beans.PropertyDescriptor;
 import junit.framework.TestCase;
 
 import org.drools.Cheese;
-import org.drools.base.ClassFieldExtractorCache;
+import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassObjectType;
-import org.drools.spi.FieldExtractor;
+import org.drools.spi.InternalReadAccessor;
 
 public class DeclarationTest extends TestCase {
 
-    ClassFieldExtractorCache cache = ClassFieldExtractorCache.getInstance();
+    ClassFieldAccessorCache cache = ClassFieldAccessorCache.getInstance();
 
     public void testDeclaration() throws IntrospectionException {
-        final FieldExtractor extractor = cache.getExtractor( Cheese.class,
+        final InternalReadAccessor extractor = cache.getReader( Cheese.class,
                                                              "type",
                                                              getClass().getClassLoader() );
 
@@ -60,7 +60,7 @@ public class DeclarationTest extends TestCase {
     }
 
     public void testGetFieldValue() throws IntrospectionException {
-        final FieldExtractor extractor = cache.getExtractor( Cheese.class,
+        final InternalReadAccessor extractor = cache.getReader( Cheese.class,
                                                              "type",
                                                              getClass().getClassLoader() );
 

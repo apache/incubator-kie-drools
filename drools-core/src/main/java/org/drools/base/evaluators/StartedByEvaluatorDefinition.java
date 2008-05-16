@@ -33,7 +33,7 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.VariableRestriction.ObjectVariableContextEntry;
 import org.drools.rule.VariableRestriction.VariableContextEntry;
 import org.drools.spi.Evaluator;
-import org.drools.spi.Extractor;
+import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.FieldValue;
 
 /**
@@ -177,7 +177,7 @@ public class StartedByEvaluatorDefinition
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
-                                final Extractor extractor,
+                                final InternalReadAccessor extractor,
                                 final Object object1,
                                 final FieldValue object2) {
             throw new RuntimeDroolsException( "The 'startedby' operator can only be used to compare one event to another, and never to compare to literal constraints." );
@@ -210,9 +210,9 @@ public class StartedByEvaluatorDefinition
 		}
 
 		public boolean evaluate(InternalWorkingMemory workingMemory,
-			     final Extractor extractor1,
+			     final InternalReadAccessor extractor1,
 			     final Object object1,
-			     final Extractor extractor2,
+			     final InternalReadAccessor extractor2,
 			     final Object object2) {
 			if ( extractor1.isNullValue( workingMemory,
 			              object1 ) ) {

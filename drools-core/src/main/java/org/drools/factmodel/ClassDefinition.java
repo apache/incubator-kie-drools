@@ -1,5 +1,20 @@
 package org.drools.factmodel;
 
+/*
+ * Copyright 2008 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 import java.beans.IntrospectionException;
 import java.io.IOException;
@@ -9,20 +24,21 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.drools.base.ClassFieldAccessor;
+import org.drools.base.ClassFieldAccessorCache;
+import org.drools.base.ClassFieldReader;
+import org.drools.base.ClassFieldWriter;
+
 /**
- * <p><b>Title:</b> ClassDefinition</p>
- * <p><b>Description:</b> Declares a class to be dinamically created</p>
- * <p><b>Copyright:</b> Copyright (c) 2004-2006</p>
- * <p><b>Company:</b> Auster Solutions</p>
+ * Declares a class to be dynamically created
  *
  * @author etirelli
- * @version $Id: ClassDefinition.java 216 2006-03-24 19:16:31Z etirelli $
  */
 public class ClassDefinition {
     private String                       className;
     private String                       superClass;
     private String[]                     interfaces;
-    private Class                        definedClass;
+    private Class< ? >                   definedClass;
 
     private Map<String, FieldDefinition> fields = new LinkedHashMap<String, FieldDefinition>();
 
@@ -86,7 +102,7 @@ public class ClassDefinition {
     /**
      * @return Returns the className.
      */
-    public final Class getDefinedClass() {
+    public final Class< ? > getDefinedClass() {
         return definedClass;
     }
 
@@ -103,16 +119,16 @@ public class ClassDefinition {
      * @throws IllegalArgumentException 
      * @throws SecurityException 
      */
-    final void setDefinedClass(final Class definedClass) throws IntrospectionException,
-                                                        SecurityException,
-                                                        IllegalArgumentException,
-                                                        InstantiationException,
-                                                        IllegalAccessException,
-                                                        IOException,
-                                                        ClassNotFoundException,
-                                                        NoSuchMethodException,
-                                                        InvocationTargetException,
-                                                        NoSuchFieldException {
+    final void setDefinedClass(final Class< ? > definedClass) throws IntrospectionException,
+                                                             SecurityException,
+                                                             IllegalArgumentException,
+                                                             InstantiationException,
+                                                             IllegalAccessException,
+                                                             IOException,
+                                                             ClassNotFoundException,
+                                                             NoSuchMethodException,
+                                                             InvocationTargetException,
+                                                             NoSuchFieldException {
 
         this.definedClass = definedClass;
 
@@ -171,11 +187,12 @@ public class ClassDefinition {
                                            NoSuchMethodException,
                                            InvocationTargetException,
                                            NoSuchFieldException {
-        FieldAccessorBuilder builder = new FieldAccessorBuilder();
+        ClassFieldAccessorCache cache = ClassFieldAccessorCache.getInstance();
 
         for ( FieldDefinition attrDef : this.fields.values() ) {
-            FieldAccessor accessor = (FieldAccessor) builder.buildAndLoadFieldAccessor( this.getDefinedClass(),
-                                                                                        attrDef.getName() ).newInstance();
+            ClassFieldReader reader = cache.getReader( this.getDefinedClass(), attrDef.getName(), this.getClass().getClassLoader() );
+            ClassFieldWriter writer = cache.getWriter( this.getDefinedClass(), attrDef.getName(), this.getClass().getClassLoader() );
+            ClassFieldAccessor accessor = new ClassFieldAccessor( reader, writer );
             attrDef.setFieldAccessor( accessor );
         }
     }

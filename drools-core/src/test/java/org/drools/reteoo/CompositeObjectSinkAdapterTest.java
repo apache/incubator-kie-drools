@@ -1,15 +1,15 @@
 package org.drools.reteoo;
 
-import java.lang.reflect.Method;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.lang.reflect.Method;
 
 import junit.framework.TestCase;
 
 import org.drools.Cheese;
 import org.drools.RuleBaseFactory;
-import org.drools.base.ClassFieldExtractorCache;
+import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
 import org.drools.base.evaluators.Operator;
@@ -22,7 +22,7 @@ import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Behavior;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.PredicateConstraint;
-import org.drools.spi.FieldExtractor;
+import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.PropagationContext;
 
 public class CompositeObjectSinkAdapterTest extends TestCase {
@@ -180,7 +180,7 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
 
     public void testTripleAlpha() {
         final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
-        FieldExtractor extractor = ClassFieldExtractorCache.getInstance().getExtractor( Cheese.class,
+        InternalReadAccessor extractor = ClassFieldAccessorCache.getInstance().getReader( Cheese.class,
                                                                                         "type",
                                                                                         this.getClass().getClassLoader() );
 
@@ -242,7 +242,7 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
 
     public void testTripleAlphaCharacterConstraint() {
         final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
-        FieldExtractor extractor = ClassFieldExtractorCache.getInstance().getExtractor( Cheese.class,
+        InternalReadAccessor extractor = ClassFieldAccessorCache.getInstance().getReader( Cheese.class,
                                                                                         "charType",
                                                                                         this.getClass().getClassLoader() );
 
@@ -326,7 +326,7 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
     public void testPropagationWithNullValue() {
 
         final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
-        FieldExtractor extractor = ClassFieldExtractorCache.getInstance().getExtractor( Cheese.class,
+        InternalReadAccessor extractor = ClassFieldAccessorCache.getInstance().getReader( Cheese.class,
                                                                                         "type",
                                                                                         this.getClass().getClassLoader() );
         final LiteralConstraint lit1 = new LiteralConstraint( extractor,
@@ -375,7 +375,7 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
 
     public static class MockExtractor
         implements
-        FieldExtractor {
+        InternalReadAccessor {
 
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
@@ -480,6 +480,61 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
 
         public boolean isNullValue(InternalWorkingMemory workingMemory,
                                    Object object) {
+            // TODO Auto-generated method stub
+            return false;
+        }
+
+        public boolean getBooleanValue(Object object) {
+            // TODO Auto-generated method stub
+            return false;
+        }
+
+        public byte getByteValue(Object object) {
+            // TODO Auto-generated method stub
+            return 0;
+        }
+
+        public char getCharValue(Object object) {
+            // TODO Auto-generated method stub
+            return 0;
+        }
+
+        public double getDoubleValue(Object object) {
+            // TODO Auto-generated method stub
+            return 0;
+        }
+
+        public float getFloatValue(Object object) {
+            // TODO Auto-generated method stub
+            return 0;
+        }
+
+        public int getHashCode(Object object) {
+            // TODO Auto-generated method stub
+            return 0;
+        }
+
+        public int getIntValue(Object object) {
+            // TODO Auto-generated method stub
+            return 0;
+        }
+
+        public long getLongValue(Object object) {
+            // TODO Auto-generated method stub
+            return 0;
+        }
+
+        public short getShortValue(Object object) {
+            // TODO Auto-generated method stub
+            return 0;
+        }
+
+        public Object getValue(Object object) {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        public boolean isNullValue(Object object) {
             // TODO Auto-generated method stub
             return false;
         }

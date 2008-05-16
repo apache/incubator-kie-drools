@@ -19,22 +19,22 @@ package org.drools.base.extractors;
 import java.lang.reflect.Method;
 
 import org.drools.RuntimeDroolsException;
-import org.drools.base.BaseClassFieldExtractor;
+import org.drools.base.BaseClassFieldReader;
 import org.drools.base.ValueType;
 import org.drools.common.InternalWorkingMemory;
 
 /**
- * A Base class for primitive boolean class field
+ * A Base class for primitive byte class field
  * extractors. This class centralizes type conversions.
  *  
  * @author etirelli
  */
-public abstract class BaseBooleanClassFieldExtractor extends BaseClassFieldExtractor {
+public abstract class BaseByteClassFieldReader extends BaseClassFieldReader {
 
     private static final long serialVersionUID = 400L;
 
-    public BaseBooleanClassFieldExtractor(final Class clazz,
-                                          final String fieldName) {
+    public BaseByteClassFieldReader(final Class clazz,
+                                       final String fieldName) {
         super( clazz,
                fieldName );
     }
@@ -46,55 +46,55 @@ public abstract class BaseBooleanClassFieldExtractor extends BaseClassFieldExtra
      * @param fieldType
      * @param valueType
      */
-    protected BaseBooleanClassFieldExtractor(final int index,
-                                             final Class fieldType,
-                                             final ValueType valueType) {
+    protected BaseByteClassFieldReader(final int index,
+                                          final Class fieldType,
+                                          final ValueType valueType) {
         super( index,
                fieldType,
                valueType );
     }
 
     public Object getValue(InternalWorkingMemory workingMemory, final Object object) {
-        return getBooleanValue( workingMemory, object ) ? Boolean.TRUE : Boolean.FALSE;
+        return new Byte( getByteValue( workingMemory, object ) );
     }
 
-    public abstract boolean getBooleanValue(InternalWorkingMemory workingMemory, Object object);
-
-    public byte getByteValue(InternalWorkingMemory workingMemory, final Object object) {
-        throw new RuntimeDroolsException( "Conversion to byte not supported from boolean" );
+    public boolean getBooleanValue(InternalWorkingMemory workingMemory, final Object object) {
+        throw new RuntimeDroolsException( "Conversion to boolean not supported from byte" );
     }
+
+    public abstract byte getByteValue(InternalWorkingMemory workingMemory, Object object);
 
     public char getCharValue(InternalWorkingMemory workingMemory, final Object object) {
-        throw new RuntimeDroolsException( "Conversion to char not supported from boolean" );
+        throw new RuntimeDroolsException( "Conversion to char not supported from byte" );
     }
 
     public double getDoubleValue(InternalWorkingMemory workingMemory, final Object object) {
-        throw new RuntimeDroolsException( "Conversion to double not supported from boolean" );
+        return getByteValue( workingMemory, object );
     }
 
     public float getFloatValue(InternalWorkingMemory workingMemory, final Object object) {
-        throw new RuntimeDroolsException( "Conversion to float not supported from boolean" );
+        return getByteValue( workingMemory, object );
     }
 
     public int getIntValue(InternalWorkingMemory workingMemory, final Object object) {
-        throw new RuntimeDroolsException( "Conversion to int not supported from boolean" );
+        return getByteValue( workingMemory, object );
     }
 
     public long getLongValue(InternalWorkingMemory workingMemory, final Object object) {
-        throw new RuntimeDroolsException( "Conversion to long not supported from boolean" );
+        return getByteValue( workingMemory, object );
     }
 
     public short getShortValue(InternalWorkingMemory workingMemory, final Object object) {
-        throw new RuntimeDroolsException( "Conversion to short not supported from boolean" );
+        return getByteValue( workingMemory, object );
     }
-    
+
     public boolean isNullValue(InternalWorkingMemory workingMemory, final Object object) {
         return false;
     }
-
+    
     public Method getNativeReadMethod() {
         try {
-            return this.getClass().getDeclaredMethod( "getBooleanValue",
+            return this.getClass().getDeclaredMethod( "getByteValue",
                                                       new Class[]{InternalWorkingMemory.class, Object.class} );
         } catch ( final Exception e ) {
             throw new RuntimeDroolsException( "This is a bug. Please report to development team: " + e.getMessage(),
@@ -103,7 +103,6 @@ public abstract class BaseBooleanClassFieldExtractor extends BaseClassFieldExtra
     }
 
     public int getHashCode(InternalWorkingMemory workingMemory, final Object object) {
-        return getBooleanValue( workingMemory, object ) ? 1231 : 1237;
+        return getByteValue( workingMemory, object );
     }
-
 }

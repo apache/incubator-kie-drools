@@ -16,15 +16,11 @@ package org.drools.spi;
  * limitations under the License.
  */
 
-import java.io.Externalizable;
-import java.lang.reflect.Method;
-
-import org.drools.base.ValueType;
 import org.drools.common.InternalWorkingMemory;
 
-public interface Extractor
+public interface InternalReadAccessor
     extends
-    Externalizable {
+    ReadAccessor {
 
     public Object getValue(InternalWorkingMemory workingMemory, Object object);
 
@@ -46,16 +42,8 @@ public interface Extractor
 
     public boolean isNullValue(InternalWorkingMemory workingMemory, Object object);
 
-    public boolean isGlobal();
-
-    public ValueType getValueType();
-
-    public Class getExtractToClass();
-
-    public String getExtractToClassName();
-
-    public Method getNativeReadMethod();
-
     public int getHashCode(InternalWorkingMemory workingMemory, Object object);
+    
+    public boolean isGlobal();
 
 }
