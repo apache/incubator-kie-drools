@@ -136,10 +136,10 @@ public class RuleAgentTest extends TestCase {
 
         //now check subsequent changes
         p1.addGlobal( "goo2", String.class );
-        System.err.println("-->WRITING CHANGE");
+//        System.err.println("-->WRITING CHANGE");
         Thread.sleep( 1000 );
         RuleBaseAssemblerTest.writePackage( p1, p1f );
-        System.err.println("-->WROTE CHANGE");
+//        System.err.println("-->WROTE CHANGE");
         Thread.sleep( 1000 );
         ag.refreshRuleBase();
 

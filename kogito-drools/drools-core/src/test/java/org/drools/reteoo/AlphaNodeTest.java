@@ -21,10 +21,9 @@ import java.beans.IntrospectionException;
 import org.drools.Cheese;
 import org.drools.DroolsTestCase;
 import org.drools.FactException;
-import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
-import org.drools.base.ClassFieldExtractor;
-import org.drools.base.ClassFieldExtractorCache;
+import org.drools.base.ClassFieldAccessorCache;
+import org.drools.base.ClassFieldReader;
 import org.drools.base.FieldFactory;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
@@ -36,14 +35,13 @@ import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Rule;
 import org.drools.spi.Evaluator;
-import org.drools.spi.FieldExtractor;
 import org.drools.spi.FieldValue;
+import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.PropagationContext;
-import org.drools.util.RightTupleList;
 
 public class AlphaNodeTest extends DroolsTestCase {
 
-    ClassFieldExtractorCache     cache  = ClassFieldExtractorCache.getInstance();
+    ClassFieldAccessorCache     cache  = ClassFieldAccessorCache.getInstance();
     EqualityEvaluatorsDefinition equals = new EqualityEvaluatorsDefinition();
 
     public void testLiteralConstraintAssertObjectWithoutMemory() throws Exception {
@@ -61,7 +59,7 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final MockObjectSource source = new MockObjectSource( buildContext.getNextId() );
 
-        final ClassFieldExtractor extractor = cache.getExtractor( Cheese.class,
+        final ClassFieldReader extractor = cache.getReader( Cheese.class,
                                                                   "type",
                                                                   getClass().getClassLoader() );
 
@@ -142,7 +140,7 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final MockObjectSource source = new MockObjectSource( buildContext.getNextId() );
 
-        final FieldExtractor extractor = cache.getExtractor( Cheese.class,
+        final InternalReadAccessor extractor = cache.getReader( Cheese.class,
                                                              "type",
                                                              getClass().getClassLoader() );
 
@@ -212,7 +210,7 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final MockObjectSource source = new MockObjectSource( buildContext.getNextId() );
 
-        final FieldExtractor extractor = cache.getExtractor( Cheese.class,
+        final InternalReadAccessor extractor = cache.getReader( Cheese.class,
                                                              "type",
                                                              getClass().getClassLoader() );
 

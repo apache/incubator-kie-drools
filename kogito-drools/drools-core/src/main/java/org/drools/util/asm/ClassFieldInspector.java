@@ -21,10 +21,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -47,22 +45,22 @@ import org.drools.asm.Opcodes;
  */
 public class ClassFieldInspector {
 
-    private final List methods     = new ArrayList();
-    private final Map  fieldNames  = new HashMap();
-    private final Map  fieldTypes  = new HashMap();
-    private final Map  methodNames = new HashMap();
-    private final Set  nonGetters  = new HashSet();
+    private final Map<String, Integer>    fieldNames    = new HashMap<String, Integer>();
+    private final Map<String, Class< ? >> fieldTypes    = new HashMap<String, Class< ? >>();
+    private final Map<String, Method>     getterMethods = new HashMap<String, Method>();
+    private final Map<String, Method>     setterMethods = new HashMap<String, Method>();
+    private final Set<String>             nonGetters    = new HashSet<String>();
 
     /**
-     * @param clazz The class that the fields to be shadowed are extracted for.
+     * @param clazz The class sthat the fields to be shadowed are extracted for.
      * @throws IOException
      */
-    public ClassFieldInspector(final Class clazz) throws IOException {
+    public ClassFieldInspector(final Class< ? > clazz) throws IOException {
         this( clazz,
               true );
     }
 
-    public ClassFieldInspector(final Class clazz,
+    public ClassFieldInspector(final Class< ? > clazz,
                                final boolean includeFinalMethods) throws IOException {
         final String name = getResourcePath( clazz );
         final InputStream stream = clazz.getResourceAsStream( name );
@@ -78,7 +76,7 @@ public class ClassFieldInspector {
     }
 
     /** Walk up the inheritance hierarchy recursively, reading in fields */
-    private void processClassWithByteCode(final Class clazz,
+    private void processClassWithByteCode(final Class< ? > clazz,
                                           final InputStream stream,
                                           final boolean includeFinalMethods) throws IOException {
 
@@ -101,7 +99,7 @@ public class ClassFieldInspector {
             }
         }
         if ( clazz.isInterface() ) {
-            final Class[] interfaces = clazz.getInterfaces();
+            final Class< ? >[] interfaces = clazz.getInterfaces();
             for ( int i = 0; i < interfaces.length; i++ ) {
                 final String name = getResourcePath( interfaces[i] );
                 final InputStream parentStream = clazz.getResourceAsStream( name );
@@ -117,20 +115,28 @@ public class ClassFieldInspector {
         }
     }
 
-    private void processClassWithoutByteCode(final Class clazz,
+    private void processClassWithoutByteCode(final Class< ? > clazz,
                                              final boolean includeFinalMethods) {
         final Method[] methods = clazz.getMethods();
         for ( int i = 0; i < methods.length; i++ ) {
-
-            //only want public methods that start with 'get' or 'is'
-            //and have no args, and return a value
+            // modifiers mask  
             final int mask = includeFinalMethods ? Modifier.PUBLIC : Modifier.PUBLIC | Modifier.FINAL;
-            if ( ((methods[i].getModifiers() & mask) == Modifier.PUBLIC) && (methods[i].getParameterTypes().length == 0) && (!methods[i].getName().equals( "<init>" )) &&
-                 ( !methods[i].getName().equals( "<clinit>" )) && 
-                 (methods[i].getReturnType() != void.class) ) {
-                final int fieldIndex = this.methods.size();
+            
+            if ( ((methods[i].getModifiers() & mask) == Opcodes.ACC_PUBLIC ) && (methods[i].getParameterTypes().length == 0) && (!methods[i].getName().equals( "<init>" )) && (!methods[i].getName().equals( "<clinit>" ))
+                 && (methods[i].getReturnType() != void.class) ) {
+                
+                // want public methods that start with 'get' or 'is' and have no args, and return a value
+                final int fieldIndex = this.fieldNames.size();
                 addToMapping( methods[i],
                               fieldIndex );
+                
+            } else if ( ((methods[i].getModifiers() & mask) == Opcodes.ACC_PUBLIC ) && (methods[i].getParameterTypes().length == 1) && (methods[i].getName().startsWith( "set" ))) {
+
+                // want public methods that start with 'set' and have one arg
+                final int fieldIndex = this.fieldNames.size();
+                addToMapping( methods[i],
+                              fieldIndex );
+                
             }
         }
     }
@@ -138,39 +144,37 @@ public class ClassFieldInspector {
     /**
      * Convert it to a form so we can load the bytes from the classpath.
      */
-    private String getResourcePath(final Class clazz) {
-        return "/" + clazz.getName().replace( '.',
-                                              '/' ) + ".class";
-    }
-
-    /** 
-     * Return a list in order of which the getters (and "is") methods were found.
-     * This should only be done once when compiling a rulebase ideally.
-     */
-    public List getPropertyGetters() {
-        return this.methods;
+    private String getResourcePath(final Class< ? > clazz) {
+        return "/" + clazz.getCanonicalName() + ".class";
     }
 
     /**
      * Return a mapping of the field "names" (ie bean property name convention)
      * to the numerical index by which they can be accessed.
      */
-    public Map getFieldNames() {
+    public Map<String, Integer> getFieldNames() {
         return this.fieldNames;
     }
 
     /**
      * @return A mapping of field types (unboxed).
      */
-    public Map getFieldTypes() {
+    public Map<String, Class< ? >> getFieldTypes() {
         return this.fieldTypes;
     }
 
     /** 
      * @return A mapping of methods for the getters. 
      */
-    public Map getGetterMethods() {
-        return this.methodNames;
+    public Map<String, Method> getGetterMethods() {
+        return this.getterMethods;
+    }
+
+    /** 
+     * @return A mapping of methods for the getters. 
+     */
+    public Map<String, Method> getSetterMethods() {
+        return this.setterMethods;
     }
 
     private void addToMapping(final Method method,
@@ -179,7 +183,7 @@ public class ClassFieldInspector {
         int offset;
         if ( name.startsWith( "is" ) ) {
             offset = 2;
-        } else if ( name.startsWith( "get" ) ) {
+        } else if ( name.startsWith( "get" ) || name.startsWith( "set" ) ) {
             offset = 3;
         } else {
             offset = 0;
@@ -190,40 +194,65 @@ public class ClassFieldInspector {
             //only want it once, the first one thats found
             if ( offset != 0 && this.nonGetters.contains( fieldName ) ) {
                 //replace the non getter method with the getter one
-                removeOldField( fieldName );
+                Integer oldIndex = removeOldField( fieldName );
                 storeField( method,
-                            index,
+                            oldIndex,
                             fieldName );
+                storeGetterSetter( method,
+                                   fieldName );
                 this.nonGetters.remove( fieldName );
+            } else if ( offset != 0 ) {
+                storeGetterSetter( method,
+                                   fieldName );
             }
         } else {
             storeField( method,
-                        index,
+                        new Integer( index ),
                         fieldName );
+            storeGetterSetter( method,
+                               fieldName );
+            
             if ( offset == 0 ) {
+                // only if it is a non-standard getter method
                 this.nonGetters.add( fieldName );
             }
         }
     }
 
-    private void removeOldField(final String fieldName) {
-        this.fieldNames.remove( fieldName );
+    private Integer removeOldField(final String fieldName) {
+        Integer index = this.fieldNames.remove( fieldName );
         this.fieldTypes.remove( fieldName );
-        this.methods.remove( this.methodNames.get( fieldName ) );
-        this.methodNames.remove( fieldName );
+        this.getterMethods.remove( fieldName );
+        return index;
 
     }
 
     private void storeField(final Method method,
-                            final int index,
+                            final Integer index,
                             final String fieldName) {
         this.fieldNames.put( fieldName,
-                             new Integer( index ) );
-        this.fieldTypes.put( fieldName,
-                             method.getReturnType() );
-        this.methodNames.put( fieldName,
-                              method );
-        this.methods.add( method );
+                             index );
+    }
+
+    /**
+     * @param method
+     * @param fieldName
+     */
+    private void storeGetterSetter(final Method method,
+                                   final String fieldName) {
+        if( method.getName().startsWith( "set" ) ) {
+            this.setterMethods.put( fieldName,
+                                    method );
+            if( ! fieldTypes.containsKey( fieldName ) ) {
+                this.fieldTypes.put( fieldName,
+                                     method.getParameterTypes()[0] );
+            }
+        } else {
+            this.getterMethods.put( fieldName, 
+                                    method );
+            this.fieldTypes.put( fieldName,
+                                 method.getReturnType() );
+        }
     }
 
     private String calcFieldName(String name,
@@ -240,11 +269,11 @@ public class ClassFieldInspector {
         implements
         ClassVisitor {
 
-        private Class               clazz;
+        private Class< ? >          clazz;
         private ClassFieldInspector inspector;
         private boolean             includeFinalMethods;
 
-        ClassFieldVisitor(final Class cls,
+        ClassFieldVisitor(final Class< ? > cls,
                           final boolean includeFinalMethods,
                           final ClassFieldInspector inspector) {
             this.clazz = cls;
@@ -261,13 +290,14 @@ public class ClassFieldInspector {
             //and have no args, and return a value
             final int mask = this.includeFinalMethods ? Opcodes.ACC_PUBLIC : Opcodes.ACC_PUBLIC | Opcodes.ACC_FINAL;
             if ( (access & mask) == Opcodes.ACC_PUBLIC ) {
-                if ( desc.startsWith( "()" ) && (!name.equals( "<init>" )) &&
-                 ( ! name.equals( "<clinit>" ) ) ) {// && ( name.startsWith("get") || name.startsWith("is") ) ) {
+                if (( desc.startsWith( "()" ) && (!name.equals( "<init>" )) && (!name.equals( "<clinit>" )) ) ||
+                    ( name.startsWith( "set" ) ) ){// && ( name.startsWith("get") || name.startsWith("is") ) ) {
                     try {
                         final Method method = this.clazz.getMethod( name,
                                                                     (Class[]) null );
-                        if ( method.getReturnType() != void.class ) {
-                            final int fieldIndex = this.inspector.methods.size();
+                        if ( method.getReturnType() != void.class || 
+                             ( method.getName().startsWith( "set" ) && ( method.getParameterTypes().length == 1 ) ) ) {
+                            final int fieldIndex = this.inspector.fieldNames.size();
                             this.inspector.addToMapping( method,
                                                          fieldIndex );
                         }

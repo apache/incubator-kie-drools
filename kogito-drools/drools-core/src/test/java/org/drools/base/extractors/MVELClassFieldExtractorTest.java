@@ -7,12 +7,12 @@ import junit.framework.TestCase;
 
 import org.drools.Address;
 import org.drools.Person;
-import org.drools.base.ClassFieldExtractorCache;
-import org.drools.spi.Extractor;
+import org.drools.base.ClassFieldAccessorCache;
+import org.drools.spi.InternalReadAccessor;
 
 public class MVELClassFieldExtractorTest extends TestCase {
 
-    Extractor               extractor = ClassFieldExtractorCache.getInstance().getExtractor( Person.class,
+    InternalReadAccessor               extractor = ClassFieldAccessorCache.getInstance().getReader( Person.class,
                                                                                              "addresses['home'].street",
                                                                                              getClass().getClassLoader() );
     private final Person[]  person    = new Person[2];
@@ -146,7 +146,7 @@ public class MVELClassFieldExtractorTest extends TestCase {
             Assert.assertFalse( this.extractor.isNullValue( null,
                                                             this.person[0] ) );
 
-            Extractor nullExtractor = ClassFieldExtractorCache.getInstance().getExtractor( Person.class,
+            InternalReadAccessor nullExtractor = ClassFieldAccessorCache.getInstance().getReader( Person.class,
                                                                                            "addresses['business'].phone",
                                                                                            getClass().getClassLoader() );
             Assert.assertTrue( nullExtractor.isNullValue( null,

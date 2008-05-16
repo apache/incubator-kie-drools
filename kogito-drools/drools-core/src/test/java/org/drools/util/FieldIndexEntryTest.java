@@ -3,8 +3,8 @@ package org.drools.util;
 import junit.framework.TestCase;
 
 import org.drools.Cheese;
-import org.drools.base.ClassFieldExtractor;
-import org.drools.base.ClassFieldExtractorCache;
+import org.drools.base.ClassFieldReader;
+import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
 import org.drools.base.evaluators.Operator;
@@ -15,11 +15,11 @@ import org.drools.util.AbstractHashTable.FieldIndex;
 import org.drools.util.AbstractHashTable.SingleIndex;
 
 public class FieldIndexEntryTest extends TestCase {
-    ClassFieldExtractorCache cache = ClassFieldExtractorCache.getInstance();
+    ClassFieldAccessorCache cache = ClassFieldAccessorCache.getInstance();
     EqualityEvaluatorsDefinition equals = new EqualityEvaluatorsDefinition();
 
     public void testSingleEntry() {
-        final ClassFieldExtractor extractor = cache.getExtractor( Cheese.class,
+        final ClassFieldReader extractor = cache.getReader( Cheese.class,
                                                                   "type",
                                                                   getClass().getClassLoader() );
 
@@ -64,7 +64,7 @@ public class FieldIndexEntryTest extends TestCase {
     }
 
     public void testTwoEntries() {
-        final ClassFieldExtractor extractor = cache.getExtractor( Cheese.class,
+        final ClassFieldReader extractor = cache.getReader( Cheese.class,
                                                                   "type",
                                                                   getClass().getClassLoader() );
         final FieldIndex fieldIndex = new FieldIndex( extractor,
@@ -119,7 +119,7 @@ public class FieldIndexEntryTest extends TestCase {
     }
 
     public void testThreeEntries() {
-        final ClassFieldExtractor extractor = cache.getExtractor( Cheese.class,
+        final ClassFieldReader extractor = cache.getReader( Cheese.class,
                                                                   "type",
                                                                   getClass().getClassLoader() );
         final FieldIndex fieldIndex = new FieldIndex( extractor,

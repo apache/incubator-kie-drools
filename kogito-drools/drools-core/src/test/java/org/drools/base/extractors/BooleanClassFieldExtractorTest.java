@@ -2,12 +2,12 @@ package org.drools.base.extractors;
 
 import junit.framework.Assert;
 
-import org.drools.base.ClassFieldExtractorCache;
+import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.TestBean;
-import org.drools.spi.Extractor;
+import org.drools.spi.InternalReadAccessor;
 
 public class BooleanClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
-    Extractor extractor = ClassFieldExtractorCache.getInstance().getExtractor( TestBean.class,
+    InternalReadAccessor extractor = ClassFieldAccessorCache.getInstance().getReader( TestBean.class,
                                                                                "booleanAttr",
                                                                                getClass().getClassLoader() );
     TestBean  bean      = new TestBean();

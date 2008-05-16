@@ -16,18 +16,18 @@ package org.drools.rule;
  * limitations under the License.
  */
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.Constraint;
 import org.drools.spi.Evaluator;
-import org.drools.spi.FieldExtractor;
 import org.drools.spi.FieldValue;
-
-import java.io.Externalizable;
-import java.io.ObjectOutput;
-import java.io.ObjectInput;
-import java.io.IOException;
+import org.drools.spi.InternalReadAccessor;
 
 public class LiteralConstraint
     implements
@@ -35,14 +35,14 @@ public class LiteralConstraint
 
     private static final long        serialVersionUID = 400L;
 
-    private FieldExtractor     extractor;
+    private InternalReadAccessor     extractor;
     private LiteralRestriction restriction;
 
     public LiteralConstraint() {
         this(null, null);
     }
 
-    public LiteralConstraint(final FieldExtractor extractor,
+    public LiteralConstraint(final InternalReadAccessor extractor,
                              final Evaluator evaluator,
                              final FieldValue field) {
         this.extractor = extractor;
@@ -51,14 +51,14 @@ public class LiteralConstraint
                                                    extractor );
     }
 
-    public LiteralConstraint(final FieldExtractor extractor,
+    public LiteralConstraint(final InternalReadAccessor extractor,
                              final LiteralRestriction restriction) {
         this.extractor = extractor;
         this.restriction = restriction;
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        extractor   = (FieldExtractor)in.readObject();
+        extractor   = (InternalReadAccessor)in.readObject();
         restriction = (LiteralRestriction)in.readObject();
     }
 
@@ -75,7 +75,7 @@ public class LiteralConstraint
         return this.restriction.getField();
     }
 
-    public FieldExtractor getFieldExtractor() {
+    public InternalReadAccessor getFieldExtractor() {
         return this.extractor;
     }
 

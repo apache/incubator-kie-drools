@@ -16,11 +16,11 @@
 
 package org.drools.spi;
 
-import java.lang.reflect.Method;
-import java.util.Map;
-import java.io.ObjectOutput;
 import java.io.IOException;
 import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.lang.reflect.Method;
+import java.util.Map;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassObjectType;
@@ -35,7 +35,7 @@ import org.drools.util.ClassUtils;
  */
 public class GlobalExtractor
     implements
-    Extractor {
+    InternalReadAccessor {
 
     private static final long serialVersionUID = 400L;
     private String            key;
@@ -174,5 +174,41 @@ public class GlobalExtractor
 
     public boolean isGlobal() {
         return true;
+    }
+    public boolean getBooleanValue(Object object) {
+        throw new RuntimeDroolsException("Can't extract a value from a global without a working memory reference");
+    }
+    public byte getByteValue(Object object) {
+        throw new RuntimeDroolsException("Can't extract a value from a global without a working memory reference");
+    }
+    public char getCharValue(Object object) {
+        throw new RuntimeDroolsException("Can't extract a value from a global without a working memory reference");
+    }
+    public double getDoubleValue(Object object) {
+        throw new RuntimeDroolsException("Can't extract a value from a global without a working memory reference");
+    }
+    public float getFloatValue(Object object) {
+        throw new RuntimeDroolsException("Can't extract a value from a global without a working memory reference");
+    }
+    public int getHashCode(Object object) {
+        throw new RuntimeDroolsException("Can't extract a value from a global without a working memory reference");
+    }
+    public int getIndex() {
+        throw new RuntimeDroolsException("Can't extract a value from a global without a working memory reference");
+    }
+    public int getIntValue(Object object) {
+        throw new RuntimeDroolsException("Can't extract a value from a global without a working memory reference");
+    }
+    public long getLongValue(Object object) {
+        throw new RuntimeDroolsException("Can't extract a value from a global without a working memory reference");
+    }
+    public short getShortValue(Object object) {
+        throw new RuntimeDroolsException("Can't extract a value from a global without a working memory reference");
+    }
+    public Object getValue(Object object) {
+        throw new RuntimeDroolsException("Can't extract a value from a global without a working memory reference");
+    }
+    public boolean isNullValue(Object object) {
+        throw new RuntimeDroolsException("Can't extract a value from a global without a working memory reference");
     }
 }

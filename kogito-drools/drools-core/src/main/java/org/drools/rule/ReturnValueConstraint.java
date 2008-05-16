@@ -16,46 +16,51 @@ package org.drools.rule;
  * limitations under the License.
  */
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 import org.drools.RuntimeDroolsException;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.ReturnValueRestriction.ReturnValueContextEntry;
 import org.drools.spi.Evaluator;
-import org.drools.spi.FieldExtractor;
+import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.ReturnValueExpression;
 
-import java.io.Externalizable;
-import java.io.ObjectOutput;
-import java.io.IOException;
-import java.io.ObjectInput;
+public class ReturnValueConstraint extends MutableTypeConstraint
+    implements
+    Externalizable {
 
-public class ReturnValueConstraint extends MutableTypeConstraint implements Externalizable {
+    private static final long      serialVersionUID = 400L;
 
-    private static final long            serialVersionUID = 400L;
-
-    private FieldExtractor         fieldExtractor;
+    private InternalReadAccessor   fieldExtractor;
     private ReturnValueRestriction restriction;
 
     public ReturnValueConstraint() {
-        this(null, null);
+        this( null,
+              null );
     }
-    public ReturnValueConstraint(final FieldExtractor fieldExtractor,
+
+    public ReturnValueConstraint(final InternalReadAccessor fieldExtractor,
                                  final ReturnValueRestriction restriction) {
         this.fieldExtractor = fieldExtractor;
         this.restriction = restriction;
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        super.readExternal(in);
-        fieldExtractor  = (FieldExtractor)in.readObject();
-        restriction     = (ReturnValueRestriction)in.readObject();
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        super.readExternal( in );
+        fieldExtractor = (InternalReadAccessor) in.readObject();
+        restriction = (ReturnValueRestriction) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal(out);
-        out.writeObject(fieldExtractor);
-        out.writeObject(restriction);
+        super.writeExternal( out );
+        out.writeObject( fieldExtractor );
+        out.writeObject( restriction );
     }
 
     public Declaration[] getRequiredDeclarations() {
@@ -112,7 +117,7 @@ public class ReturnValueConstraint extends MutableTypeConstraint implements Exte
 
     public boolean isAllowed(final InternalFactHandle handle,
                              final InternalWorkingMemory workingMemory,
-                             final ContextEntry context ) {
+                             final ContextEntry context) {
         try {
             return this.restriction.isAllowed( this.fieldExtractor,
                                                handle,
@@ -156,7 +161,8 @@ public class ReturnValueConstraint extends MutableTypeConstraint implements Exte
     }
 
     public Object clone() {
-        return new ReturnValueConstraint( this.fieldExtractor, (ReturnValueRestriction) this.restriction.clone() );
+        return new ReturnValueConstraint( this.fieldExtractor,
+                                          (ReturnValueRestriction) this.restriction.clone() );
     }
 
 }

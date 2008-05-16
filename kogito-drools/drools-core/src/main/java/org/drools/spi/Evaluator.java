@@ -83,14 +83,14 @@ public interface Evaluator
      * @return Returns true if evaluation is successfull. false otherwise.
      */
     public boolean evaluate(InternalWorkingMemory workingMemory,
-                            Extractor extractor,
+                            InternalReadAccessor extractor,
                             Object object1,
                             FieldValue value);
 
     public boolean evaluate(InternalWorkingMemory workingMemory,
-                            Extractor leftExtractor,
+                            InternalReadAccessor leftExtractor,
                             Object left,
-                            Extractor rightExtractor,
+                            InternalReadAccessor rightExtractor,
                             Object right);
 
     public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,

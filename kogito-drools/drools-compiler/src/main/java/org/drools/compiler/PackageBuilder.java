@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.base.ClassFieldExtractorCache;
+import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassTypeResolver;
 import org.drools.base.TypeResolver;
 import org.drools.commons.jci.problems.CompilationProblem;
@@ -58,7 +58,7 @@ import org.drools.rule.Rule;
 import org.drools.rule.TypeDeclaration;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleBuilder;
-import org.drools.spi.FieldExtractor;
+import org.drools.spi.InternalReadAccessor;
 import org.drools.xml.XmlPackageReader;
 import org.drools.xml.XmlProcessReader;
 import org.xml.sax.SAXException;
@@ -84,7 +84,7 @@ public class PackageBuilder {
 
     private TypeResolver                typeResolver;
 
-    private ClassFieldExtractorCache    classFieldExtractorCache;
+    private ClassFieldAccessorCache    classFieldExtractorCache;
 
     private RuleBuilder                 ruleBuilder;
 
@@ -143,7 +143,7 @@ public class PackageBuilder {
         this.configuration = configuration;
         this.results = new ArrayList();
         this.pkg = pkg;
-        this.classFieldExtractorCache = ClassFieldExtractorCache.getInstance();
+        this.classFieldExtractorCache = ClassFieldAccessorCache.getInstance();
 
         if ( this.pkg != null ) {
         	ClassLoader cl = this.pkg.getDialectDatas().getClassLoader();
@@ -473,7 +473,7 @@ public class PackageBuilder {
             String duration = typeDescr.getMetaAttribute( TypeDeclaration.ATTR_DURATION );
             if ( duration != null ) {
                 type.setDurationAttribute( duration );
-                FieldExtractor extractor = ClassFieldExtractorCache.getInstance().getExtractor( type.getTypeClass(),
+                InternalReadAccessor extractor = ClassFieldAccessorCache.getInstance().getReader( type.getTypeClass(),
                                                                                                 duration,
                                                                                                 this.configuration.getClassLoader() );
                 type.setDurationExtractor( extractor );
@@ -619,7 +619,7 @@ public class PackageBuilder {
      * @return
      *      the ClsasFieldExtractorCache
      */
-    public ClassFieldExtractorCache getClassFieldExtractorCache() {
+    public ClassFieldAccessorCache getClassFieldExtractorCache() {
         return this.classFieldExtractorCache;
     }
 

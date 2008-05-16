@@ -1,24 +1,24 @@
 package org.drools.reteoo;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.Externalizable;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
+import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.common.BaseNode;
 import org.drools.rule.LiteralConstraint;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.Evaluator;
-import org.drools.spi.Extractor;
-import org.drools.spi.FieldExtractor;
 import org.drools.spi.FieldValue;
+import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.PropagationContext;
+import org.drools.spi.ReadAccessor;
 import org.drools.util.Iterator;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListNode;
@@ -251,7 +251,7 @@ public class CompositeObjectSinkAdapter
      * @return
      */
     private FieldIndex registerFieldIndex(final int index,
-                                          final FieldExtractor fieldExtractor) {
+                                          final InternalReadAccessor fieldExtractor) {
         FieldIndex fieldIndex = null;
 
         // is linkedlist null, if so create and add
@@ -322,7 +322,7 @@ public class CompositeObjectSinkAdapter
                 }
                 // this field is hashed so set the existing hashKey and see if there is a sink for it
                 final int index = fieldIndex.getIndex();
-                final FieldExtractor extractor = fieldIndex.getFieldExtactor();
+                final ReadAccessor extractor = fieldIndex.getFieldExtactor();
                 HashKey hashKey = new HashKey( index,
                                                object,
                                                fieldIndex.getFieldExtractor() );
@@ -443,7 +443,7 @@ public class CompositeObjectSinkAdapter
 
         public HashKey(final int index,
                        final FieldValue value,
-                       final Extractor extractor) {
+                       final InternalReadAccessor extractor) {
             this.setValue( index,
                            extractor,
                            value );
@@ -451,7 +451,7 @@ public class CompositeObjectSinkAdapter
 
         public HashKey(final int index,
                        final Object value,
-                       final Extractor extractor) {
+                       final InternalReadAccessor extractor) {
             this.setValue( index,
                            value,
                            extractor );
@@ -486,7 +486,7 @@ public class CompositeObjectSinkAdapter
 
         public void setValue(final int index,
                              final Object value,
-                             final Extractor extractor) {
+                             final InternalReadAccessor extractor) {
             this.index = index;
             final ValueType vtype = extractor.getValueType();
 
@@ -534,7 +534,7 @@ public class CompositeObjectSinkAdapter
         }
 
         public void setValue(final int index,
-                             final Extractor extractor,
+                             final InternalReadAccessor extractor,
                              final FieldValue value) {
             this.index = index;
 
@@ -702,7 +702,7 @@ public class CompositeObjectSinkAdapter
         LinkedListNode {
         private static final long serialVersionUID = 400L;
         private int               index;
-        private FieldExtractor    fieldExtactor;
+        private InternalReadAccessor    fieldExtactor;
 
         private int               count;
 
@@ -716,7 +716,7 @@ public class CompositeObjectSinkAdapter
         }
 
         public FieldIndex(final int index,
-                          final FieldExtractor fieldExtractor) {
+                          final InternalReadAccessor fieldExtractor) {
             this.index = index;
             this.fieldExtactor = fieldExtractor;
         }
@@ -724,7 +724,7 @@ public class CompositeObjectSinkAdapter
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
             index = in.readInt();
-            fieldExtactor = (FieldExtractor) in.readObject();
+            fieldExtactor = (InternalReadAccessor) in.readObject();
             count = in.readInt();
             hashed = in.readBoolean();
             previous = (LinkedListNode) in.readObject();
@@ -740,7 +740,7 @@ public class CompositeObjectSinkAdapter
             out.writeObject( next );
         }
 
-        public FieldExtractor getFieldExtractor() {
+        public InternalReadAccessor getFieldExtractor() {
             return this.fieldExtactor;
         }
 
@@ -752,7 +752,7 @@ public class CompositeObjectSinkAdapter
             return this.count;
         }
 
-        public FieldExtractor getFieldExtactor() {
+        public ReadAccessor getFieldExtactor() {
             return this.fieldExtactor;
         }
 

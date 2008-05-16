@@ -5,13 +5,13 @@ import java.util.List;
 
 import junit.framework.Assert;
 
-import org.drools.base.ClassFieldExtractorCache;
+import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.TestBean;
-import org.drools.spi.Extractor;
+import org.drools.spi.InternalReadAccessor;
 
 public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
 
-    Extractor extractor = ClassFieldExtractorCache.getInstance().getExtractor( TestBean.class,
+    InternalReadAccessor extractor = ClassFieldAccessorCache.getInstance().getReader( TestBean.class,
                                                                                "listAttr",
                                                                                getClass().getClassLoader() );
     TestBean  bean      = new TestBean();
@@ -117,7 +117,7 @@ public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest 
             Assert.assertFalse( this.extractor.isNullValue( null,
                                                             this.bean ) );
 
-            Extractor nullExtractor = ClassFieldExtractorCache.getInstance().getExtractor( TestBean.class,
+            InternalReadAccessor nullExtractor = ClassFieldAccessorCache.getInstance().getReader( TestBean.class,
                                                                                            "nullAttr",
                                                                                            getClass().getClassLoader() );
             Assert.assertTrue( nullExtractor.isNullValue( null,

@@ -1,7 +1,7 @@
 package org.drools.base;
 
 /*
- * Copyright 2005 JBoss Inc
+ * Copyright 2008 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,30 +16,29 @@ package org.drools.base;
  * limitations under the License.
  */
 
-import org.drools.RuntimeDroolsException;
-import org.drools.spi.FieldExtractor;
-import org.drools.util.ClassUtils;
-import org.drools.util.asm.ClassFieldInspector;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import org.drools.RuntimeDroolsException;
+import org.drools.spi.WriteAccessor;
+import org.drools.util.asm.ClassFieldInspector;
+
 /**
- * This is the supertype for the ASM generated classes for accessing a field.
- * @author Alexander Bagerman
+ * This is the supertype for the ASM generated classes for writing values into fields.
+ * 
+ * @author Edson Tirelli
  */
-abstract public class BaseClassFieldExtractor
+abstract public class BaseClassFieldWriter
     implements
-    FieldExtractor {
-    private int       index;
+    WriteAccessor {
+    private int        index;
 
-    private Class     fieldType;
+    private Class< ? > fieldType;
 
-    private ValueType valueType;
+    private ValueType  valueType;
 
-    public BaseClassFieldExtractor() {
-
+    public BaseClassFieldWriter() {
     }
 
     /**
@@ -49,9 +48,9 @@ abstract public class BaseClassFieldExtractor
      * @param fieldType
      * @param valueType
      */
-    protected BaseClassFieldExtractor(final int index,
-                                      final Class fieldType,
-                                      final ValueType valueType) {
+    protected BaseClassFieldWriter(final int index,
+                                   final Class< ? > fieldType,
+                                   final ValueType valueType) {
         this.index = index;
         this.fieldType = fieldType;
         this.valueType = valueType;
@@ -63,50 +62,42 @@ abstract public class BaseClassFieldExtractor
      * @param clazz
      * @param fieldName
      */
-    public BaseClassFieldExtractor(final Class clazz,
-                                   final String fieldName) {
+    public BaseClassFieldWriter(final Class< ? > clazz,
+                                final String fieldName) {
         try {
             final ClassFieldInspector inspector = new ClassFieldInspector( clazz );
             this.index = ((Integer) inspector.getFieldNames().get( fieldName )).intValue();
-            this.fieldType = (Class) inspector.getFieldTypes().get( fieldName );
+            this.fieldType = (Class< ? >) inspector.getFieldTypes().get( fieldName );
             this.valueType = ValueType.determineValueType( this.fieldType );
         } catch ( final Exception e ) {
             throw new RuntimeDroolsException( e );
         }
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        index   = in.readInt();
-        fieldType   = (Class)in.readObject();
-        valueType   = (ValueType)in.readObject();
-        if (valueType != null)
-            valueType   = ValueType.determineValueType(valueType.getClassType());
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        index = in.readInt();
+        fieldType = (Class< ? >) in.readObject();
+        valueType = (ValueType) in.readObject();
+        if ( valueType != null ) valueType = ValueType.determineValueType( valueType.getClassType() );
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeInt(index);
-        out.writeObject(fieldType);
-        out.writeObject(valueType);
+        out.writeInt( index );
+        out.writeObject( fieldType );
+        out.writeObject( valueType );
     }
 
     public int getIndex() {
         return this.index;
     }
 
-    public Class getExtractToClass() {
+    public Class< ? > getFieldType() {
         return this.fieldType;
-    }
-
-    public String getExtractToClassName() {
-        return ClassUtils.canonicalName( this.fieldType );
     }
 
     public ValueType getValueType() {
         return this.valueType;
-    }
-
-    public boolean isGlobal() {
-        return false;
     }
 
     public int hashCode() {
@@ -122,10 +113,10 @@ abstract public class BaseClassFieldExtractor
         if ( this == object ) {
             return true;
         }
-        if ( !(object instanceof BaseClassFieldExtractor) ) {
+        if ( !(object instanceof BaseClassFieldWriter) ) {
             return false;
         }
-        final BaseClassFieldExtractor other = (BaseClassFieldExtractor) object;
+        final BaseClassFieldWriter other = (BaseClassFieldWriter) object;
         return this.fieldType == other.fieldType && this.index == other.index && this.valueType.equals( other.valueType );
     }
 }

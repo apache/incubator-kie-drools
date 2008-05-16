@@ -76,7 +76,7 @@ public class ReteooMannersTest extends BaseMannersTest {
 
         final long start = System.currentTimeMillis();
         workingMemory.fireAllRules();
-        System.err.println( System.currentTimeMillis() - start );
+//        System.err.println( System.currentTimeMillis() - start );
 
         //System.out.println( listener );
 

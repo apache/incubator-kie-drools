@@ -24,9 +24,9 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.StringWriter;
-import java.io.ObjectOutput;
 import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -35,7 +35,7 @@ import java.util.StringTokenizer;
 import junit.framework.TestCase;
 
 import org.drools.WorkingMemory;
-import org.drools.base.ClassFieldExtractorCache;
+import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassObjectType;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
@@ -57,8 +57,8 @@ import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.Consequence;
 import org.drools.spi.ConsequenceException;
 import org.drools.spi.Evaluator;
-import org.drools.spi.FieldExtractor;
 import org.drools.spi.FieldValue;
+import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.Tuple;
 
@@ -242,7 +242,7 @@ public abstract class BaseMannersTest extends TestCase {
 
                     drools.modifyInsert( context );
 
-                    System.err.println( "assign first seat :  " + seating + " : " + path );
+//                    System.err.println( "assign first seat :  " + seating + " : " + path );
 
                 } catch ( Exception e ) {
                     e.printStackTrace();
@@ -533,7 +533,7 @@ public abstract class BaseMannersTest extends TestCase {
                     drools.update( tuple.get( contextDeclaration ),
                                    context );
 
-                    System.err.println( "find seating : " + seating + " : " + path + " : " + chosen );
+//                    System.err.println( "find seating : " + seating + " : " + path + " : " + chosen );
 
                 } catch ( Exception e ) {
                     e.printStackTrace();
@@ -887,7 +887,7 @@ public abstract class BaseMannersTest extends TestCase {
                     drools.update( tuple.get( contextDeclaration ),
                                    context );
 
-                    System.err.println( "We Are Done!!!" );
+//                    System.err.println( "We Are Done!!!" );
                 } catch ( Exception e ) {
                     throw new ConsequenceException( e );
                 }
@@ -1166,7 +1166,7 @@ public abstract class BaseMannersTest extends TestCase {
                                                           final Evaluator evaluator) throws IntrospectionException {
         final Class clazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
 
-        final FieldExtractor extractor = ClassFieldExtractorCache.getInstance().getExtractor( clazz,
+        final InternalReadAccessor extractor = ClassFieldAccessorCache.getInstance().getReader( clazz,
                                                                                               fieldName,
                                                                                               getClass().getClassLoader() );
 
@@ -1183,7 +1183,7 @@ public abstract class BaseMannersTest extends TestCase {
                                                           final Evaluator evaluator) throws IntrospectionException {
         final Class clazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
 
-        final FieldExtractor extractor = ClassFieldExtractorCache.getInstance().getExtractor( clazz,
+        final InternalReadAccessor extractor = ClassFieldAccessorCache.getInstance().getReader( clazz,
                                                                                               fieldName,
                                                                                               getClass().getClassLoader() );
 
@@ -1199,7 +1199,7 @@ public abstract class BaseMannersTest extends TestCase {
                                      final String identifier) throws IntrospectionException {
         final Class clazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
 
-        final FieldExtractor extractor = ClassFieldExtractorCache.getInstance().getExtractor( clazz,
+        final InternalReadAccessor extractor = ClassFieldAccessorCache.getInstance().getReader( clazz,
                                                                                               fieldName,
                                                                                               getClass().getClassLoader() );
 
@@ -1213,7 +1213,7 @@ public abstract class BaseMannersTest extends TestCase {
                                                                final Evaluator evaluator) throws IntrospectionException {
         final Class clazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
 
-        final FieldExtractor extractor = ClassFieldExtractorCache.getInstance().getExtractor( clazz,
+        final InternalReadAccessor extractor = ClassFieldAccessorCache.getInstance().getReader( clazz,
                                                                                               fieldName,
                                                                                               getClass().getClassLoader() );
 

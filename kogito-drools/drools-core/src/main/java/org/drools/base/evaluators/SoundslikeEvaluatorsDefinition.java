@@ -23,7 +23,7 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.VariableRestriction.ObjectVariableContextEntry;
 import org.drools.rule.VariableRestriction.VariableContextEntry;
 import org.drools.spi.Evaluator;
-import org.drools.spi.Extractor;
+import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.FieldValue;
 import org.mvel.Soundex;
 
@@ -119,7 +119,7 @@ public class SoundslikeEvaluatorsDefinition implements EvaluatorDefinition {
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
-                                final Extractor extractor,
+                                final InternalReadAccessor extractor,
                                 final Object object1, final FieldValue object2) {
             final String value1 = (String) extractor.getValue( workingMemory, object1 );
             final String value2 = (String) object2.getValue();
@@ -149,9 +149,9 @@ public class SoundslikeEvaluatorsDefinition implements EvaluatorDefinition {
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
-                                final Extractor extractor1,
+                                final InternalReadAccessor extractor1,
                                 final Object object1,
-                                final Extractor extractor2, final Object object2) {
+                                final InternalReadAccessor extractor2, final Object object2) {
             final Object value1 = extractor1.getValue( workingMemory, object1 );
             final Object value2 = extractor2.getValue( workingMemory, object2 );
             if ( value1 == null ) {
@@ -176,7 +176,7 @@ public class SoundslikeEvaluatorsDefinition implements EvaluatorDefinition {
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
-                                final Extractor extractor,
+                                final InternalReadAccessor extractor,
                                 final Object object1, final FieldValue object2) {
             final String value1 = (String) extractor.getValue( workingMemory, object1 );
             final String value2 = (String) object2.getValue();
@@ -206,9 +206,9 @@ public class SoundslikeEvaluatorsDefinition implements EvaluatorDefinition {
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
-                                final Extractor extractor1,
+                                final InternalReadAccessor extractor1,
                                 final Object object1,
-                                final Extractor extractor2, final Object object2) {
+                                final InternalReadAccessor extractor2, final Object object2) {
             final Object value1 = extractor1.getValue( workingMemory, object1 );
             final Object value2 = extractor2.getValue( workingMemory, object2 );
             if ( value1 == null ) {

@@ -2,14 +2,14 @@ package org.drools.base.extractors;
 
 import junit.framework.Assert;
 
-import org.drools.base.ClassFieldExtractorCache;
+import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.TestBean;
-import org.drools.spi.Extractor;
+import org.drools.spi.InternalReadAccessor;
 
 public class ShortClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     private static final short VALUE     = 3;
 
-    Extractor                  extractor = ClassFieldExtractorCache.getInstance().getExtractor( TestBean.class,
+    InternalReadAccessor                  extractor = ClassFieldAccessorCache.getInstance().getReader( TestBean.class,
                                                                                                 "shortAttr",
                                                                                                 getClass().getClassLoader() );
     TestBean                   bean      = new TestBean();

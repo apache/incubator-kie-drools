@@ -17,22 +17,21 @@
  */
 package org.drools.base.extractors;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.io.ObjectInput;
-import java.io.IOException;
-import java.io.ObjectOutput;
 
-import org.drools.base.ClassFieldExtractorCache;
+import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ValueType;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.spi.Extractor;
-import org.drools.spi.FieldExtractor;
+import org.drools.spi.InternalReadAccessor;
+import org.mvel.MVEL;
 import org.mvel.compiler.CompiledExpression;
 import org.mvel.compiler.ExpressionCompiler;
-import org.mvel.MVEL;
 
 /**
  * A class field extractor that uses MVEL engine to extract the actual value for a given
@@ -40,16 +39,16 @@ import org.mvel.MVEL;
  *
  * @author etirelli
  */
-public class MVELClassFieldExtractor extends BaseObjectClassFieldExtractor {
+public class MVELClassFieldReader extends BaseObjectClassFieldReader {
 
     private static final long serialVersionUID = 400L;
 
     private CompiledExpression mvelExpression = null;
     private Map extractors = null;
 
-    public MVELClassFieldExtractor() {
+    public MVELClassFieldReader() {
     }
-    public MVELClassFieldExtractor(Class clazz,
+    public MVELClassFieldReader(Class clazz,
                                    String fieldName,
                                    ClassLoader classLoader) {
         super( -1, // index
@@ -64,7 +63,7 @@ public class MVELClassFieldExtractor extends BaseObjectClassFieldExtractor {
         for( Iterator it = inputs.iterator(); it.hasNext(); ) {
             String basefield = (String) it.next();
 
-            Extractor extr = ClassFieldExtractorCache.getInstance().getExtractor(  clazz, basefield, classLoader );
+            InternalReadAccessor extr = ClassFieldAccessorCache.getInstance().getReader(  clazz, basefield, classLoader );
             this.extractors.put( basefield, extr );
         }
     }
@@ -89,7 +88,7 @@ public class MVELClassFieldExtractor extends BaseObjectClassFieldExtractor {
         for( Iterator it = this.extractors.entrySet().iterator(); it.hasNext(); ) {
             Map.Entry entry = (Map.Entry) it.next();
             String var = (String) entry.getKey();
-            FieldExtractor extr = (FieldExtractor) entry.getValue();
+            InternalReadAccessor extr = (InternalReadAccessor) entry.getValue();
 
             variables.put( var, extr.getValue( workingMemory, object ));
         }

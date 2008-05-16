@@ -6,14 +6,13 @@ import org.drools.base.DroolsQuery;
 import org.drools.base.FieldFactory;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
-import org.drools.base.extractors.ArrayExtractor;
+import org.drools.base.extractors.ArrayElementReader;
 import org.drools.compiler.DescrBuildError;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Pattern;
-import org.drools.spi.Extractor;
-import org.drools.spi.FieldExtractor;
 import org.drools.spi.FieldValue;
+import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.ObjectType;
 
 public class QueryBuilder {
@@ -25,7 +24,7 @@ public class QueryBuilder {
                                              objectType,
                                              null );
         ClassLoader classloader = context.getPkg().getDialectDatas().getClassLoader();
-        final FieldExtractor extractor = context.getDialect().getClassFieldExtractorCache().getExtractor( DroolsQuery.class,
+        final InternalReadAccessor extractor = context.getDialect().getClassFieldExtractorCache().getReader( DroolsQuery.class,
                                                                                                           "name",
                                                                                                           classloader );
 
@@ -39,9 +38,9 @@ public class QueryBuilder {
         // adds appropriate constraint to the pattern
         pattern.addConstraint( constraint );
 
-        Extractor arrayExtractor = null;
+        InternalReadAccessor arrayExtractor = null;
         try {
-            arrayExtractor = context.getDialect().getClassFieldExtractorCache().getExtractor( ((ClassObjectType) objectType).getClassType(),
+            arrayExtractor = context.getDialect().getClassFieldExtractorCache().getReader( ((ClassObjectType) objectType).getClassType(),
                                                                                               "arguments",
                                                                                               classloader );
         } catch ( final RuntimeDroolsException e ) {
@@ -57,7 +56,7 @@ public class QueryBuilder {
         try {
             for ( i = 0; i < params.length; i++ ) {
                 pattern.addDeclaration( params[i],
-                                        new ArrayExtractor( arrayExtractor,
+                                        new ArrayElementReader( arrayExtractor,
                                                             i,
                                                             context.getDialect().getTypeResolver().resolveType( types[i] ) ) );
             }

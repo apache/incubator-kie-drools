@@ -29,24 +29,18 @@ public class ClassFieldInspectorTest extends TestCase {
     public void testIt() throws Exception {
         final ClassFieldInspector ext = new ClassFieldInspector( Person.class );
         assertEquals( 7,
-                      ext.getPropertyGetters().size() );
-        assertEquals( "getAge",
-                      ((Method) ext.getPropertyGetters().get( 0 )).getName() );
-        assertEquals( "isHappy",
-                      ((Method) ext.getPropertyGetters().get( 1 )).getName() );
-        assertEquals( "getName",
-                      ((Method) ext.getPropertyGetters().get( 2 )).getName() );
+                      ext.getFieldNames().size() );
+        assertEquals( "getAge" ,
+                      ext.getGetterMethods().get( "age" ).getName() );
+        assertEquals( "isHappy" ,
+                      ext.getGetterMethods().get( "happy" ).getName() );
+        assertEquals( "getName" ,
+                      ext.getGetterMethods().get( "name" ).getName() );
 
-        final Map names = ext.getFieldNames();
+        final Map<String, Integer> names = ext.getFieldNames();
         assertNotNull( names );
         assertEquals( 7,
                       names.size() );
-        assertEquals( 0,
-                      ((Integer) names.get( "age" )).intValue() );
-        assertEquals( 1,
-                      ((Integer) names.get( "happy" )).intValue() );
-        assertEquals( 2,
-                      ((Integer) names.get( "name" )).intValue() );
         assertNull( names.get( "nAme" ) );
 
     }
@@ -54,62 +48,52 @@ public class ClassFieldInspectorTest extends TestCase {
     public void testInterface() throws Exception {
         final ClassFieldInspector ext = new ClassFieldInspector( TestInterface.class );
         assertEquals( 2,
-                      ext.getPropertyGetters().size() );
-        assertEquals( "getSomething",
-                      ((Method) ext.getPropertyGetters().get( 0 )).getName() );
-        assertEquals( "getAnother",
-                      ((Method) ext.getPropertyGetters().get( 1 )).getName() );
+                      ext.getFieldNames().size() );
+        assertEquals( "getSomething" ,
+                      ext.getGetterMethods().get( "something" ).getName() );
+        assertEquals( "getAnother" ,
+                      ext.getGetterMethods().get( "another" ).getName() );
 
-        final Map names = ext.getFieldNames();
+        final Map<String, Integer> names = ext.getFieldNames();
         assertNotNull( names );
         assertEquals( 2,
                       names.size() );
-        assertEquals( 0,
-                      ((Integer) names.get( "something" )).intValue() );
-        assertEquals( 1,
-                      ((Integer) names.get( "another" )).intValue() );
 
     }
 
     public void testAbstract() throws Exception {
         final ClassFieldInspector ext = new ClassFieldInspector( TestAbstract.class );
         assertEquals( 5,
-                      ext.getPropertyGetters().size() );
-        assertEquals( "getSomething",
-                      ((Method) ext.getPropertyGetters().get( 0 )).getName() );
-        assertEquals( "getAnother",
-                      ((Method) ext.getPropertyGetters().get( 1 )).getName() );
+                      ext.getFieldNames().size() );
+        assertEquals( "getSomething" ,
+                      ext.getGetterMethods().get( "something" ).getName() );
+        assertEquals( "getAnother" ,
+                      ext.getGetterMethods().get( "another" ).getName() );
 
-        final Map names = ext.getFieldNames();
+        final Map<String, Integer> names = ext.getFieldNames();
         assertNotNull( names );
         assertEquals( 5,
                       names.size() );
-        assertEquals( 0,
-                      ((Integer) names.get( "something" )).intValue() );
-        assertEquals( 1,
-                      ((Integer) names.get( "another" )).intValue() );
 
     }
 
     public void testInheritedFields() throws Exception {
         ClassFieldInspector ext = new ClassFieldInspector( BeanInherit.class );
         assertEquals( 5,
-                      ext.getPropertyGetters().size() );
+                      ext.getFieldNames().size() );
 
         ext = new ClassFieldInspector( InterfaceChildImpl.class );
         assertEquals( 8,
-                      ext.getPropertyGetters().size() );
+                      ext.getFieldNames().size() );
+
         // test inheritence from abstract class
-        assertEquals( 4,
-                      ((Integer) ext.getFieldNames().get( "HTML" )).intValue() );
+        assertNotNull( ext.getFieldNames().get( "HTML" ) );
 
         // check normal field on child class
-        assertEquals( 1,
-                      ((Integer) ext.getFieldNames().get( "baz" )).intValue() );
+        assertNotNull( ext.getFieldNames().get( "baz" ) );
 
         // test inheritence from an interface
-        assertEquals( 3,
-                      ((Integer) ext.getFieldNames().get( "URI" )).intValue() );
+        assertNotNull( ext.getFieldNames().get( "URI" ) );
     }
 
     public void testIntefaceInheritance() throws Exception {

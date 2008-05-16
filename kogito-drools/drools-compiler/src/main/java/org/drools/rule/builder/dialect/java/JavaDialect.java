@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.base.ClassFieldExtractorCache;
+import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.TypeResolver;
 import org.drools.commons.jci.compilers.CompilationResult;
 import org.drools.commons.jci.compilers.JavaCompiler;
@@ -120,7 +120,7 @@ public class JavaDialect
     private PackageBuilder packageBuilder;
 
     private TypeResolver typeResolver;
-    private ClassFieldExtractorCache classFieldExtractorCache;
+    private ClassFieldAccessorCache classFieldExtractorCache;
 
     // a map of registered builders
     private static Map builders;
@@ -293,7 +293,7 @@ public class JavaDialect
      *
      * @return
      */
-    public ClassFieldExtractorCache getClassFieldExtractorCache() {
+    public ClassFieldAccessorCache getClassFieldExtractorCache() {
         return this.classFieldExtractorCache;
     }
 

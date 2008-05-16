@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.base.ClassFieldExtractorCache;
+import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.TypeResolver;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.FunctionDescr;
@@ -50,7 +50,7 @@ public interface Dialect {
 
     TypeResolver getTypeResolver();
 
-    ClassFieldExtractorCache getClassFieldExtractorCache();
+    ClassFieldAccessorCache getClassFieldExtractorCache();
 
     SalienceBuilder getSalienceBuilder();
 

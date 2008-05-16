@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
-import org.drools.base.ClassFieldExtractorCache;
+import org.drools.base.ClassFieldAccessorCache;
 import org.drools.rule.DialectDatas;
 import org.drools.rule.Package;
 
@@ -59,7 +59,7 @@ public class DroolsObjectInputStream
     private InternalWorkingMemory    workingMemory;
     private Package                  pkg;
     private DialectDatas             dialectDatas;
-    private ClassFieldExtractorCache extractorFactory;
+    private ClassFieldAccessorCache extractorFactory;
 
     /**
      * Created this inner class to handle un-Externalizable objects just in case.
@@ -109,11 +109,11 @@ public class DroolsObjectInputStream
             DroolsObjectInputStream.this.setDialectDatas(dialectDatas);
         }
 
-        public ClassFieldExtractorCache getExtractorFactory() {
+        public ClassFieldAccessorCache getExtractorFactory() {
             return DroolsObjectInputStream.this.getExtractorFactory();
         }
 
-        public void setExtractorFactory(ClassFieldExtractorCache extractorFactory) {
+        public void setExtractorFactory(ClassFieldAccessorCache extractorFactory) {
             DroolsObjectInputStream.this.setExtractorFactory(extractorFactory);
         }
 
@@ -138,7 +138,7 @@ public class DroolsObjectInputStream
 
     public DroolsObjectInputStream(InputStream inputStream, ClassLoader classLoader) throws IOException {
         dataInput    = new DroolsInternalInputStream(inputStream, classLoader);
-        extractorFactory = ClassFieldExtractorCache.getInstance();
+        extractorFactory = ClassFieldAccessorCache.getInstance();
         readStreamHeader();
     }
 
@@ -178,11 +178,11 @@ public class DroolsObjectInputStream
         this.dialectDatas   = dialectDatas;
     }
 
-    public ClassFieldExtractorCache getExtractorFactory() {
+    public ClassFieldAccessorCache getExtractorFactory() {
         return extractorFactory;
     }
 
-    public void setExtractorFactory(ClassFieldExtractorCache extractorFactory) {
+    public void setExtractorFactory(ClassFieldAccessorCache extractorFactory) {
         this.extractorFactory   = extractorFactory;
     }
 

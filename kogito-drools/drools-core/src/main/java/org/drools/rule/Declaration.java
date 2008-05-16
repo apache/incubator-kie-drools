@@ -53,7 +53,7 @@ import org.drools.RuntimeDroolsException;
 import org.drools.base.ShadowProxy;
 import org.drools.base.ValueType;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.spi.Extractor;
+import org.drools.spi.InternalReadAccessor;
 
 /*
  * Copyright 2005 JBoss Inc
@@ -93,7 +93,7 @@ public class Declaration
     /** The identifier for the variable. */
     private String      identifier;
 
-    private Extractor   extractor;
+    private InternalReadAccessor   extractor;
 
     private Pattern           pattern;
 
@@ -117,7 +117,7 @@ public class Declaration
      *            The index within a rule.
      */
     public Declaration(final String identifier,
-                       final Extractor extractor,
+                       final InternalReadAccessor extractor,
                        final Pattern pattern) {
         this( identifier,
               extractor,
@@ -139,7 +139,7 @@ public class Declaration
      *            of a collect CE
      */
     public Declaration(final String identifier,
-                       final Extractor extractor,
+                       final InternalReadAccessor extractor,
                        final Pattern pattern,
                        final boolean internalFact) {
         this.identifier = identifier;
@@ -150,7 +150,7 @@ public class Declaration
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         identifier  = (String)in.readObject();
-        extractor   = (Extractor)in.readObject();
+        extractor   = (InternalReadAccessor)in.readObject();
         pattern     = (Pattern)in.readObject();
         internalFact    = in.readBoolean();
     }
@@ -209,7 +209,7 @@ public class Declaration
      *
      * @return
      */
-    public Extractor getExtractor() {
+    public InternalReadAccessor getExtractor() {
         return this.extractor;
     }
 

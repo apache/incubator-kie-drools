@@ -76,15 +76,15 @@ public class InstancesHashcodedTest extends TestCase {
 			cd.getField("cutDate").getFieldAccessor().setValue(o2, cut);
 			cd.getField("dueDate").getFieldAccessor().setValue(o2, d2);
 			
-			System.out.println(o1);
-			System.out.println(o1.hashCode());
-			System.out.println(o2);
-			System.out.println(o2.hashCode());
-			
-			System.out.println(o1.equals(o2));
+//			System.out.println(o1);
+//			System.out.println(o1.hashCode());
+//			System.out.println(o2);
+//			System.out.println(o2.hashCode());
+//			
+//			System.out.println(o1.equals(o2));
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+//			e.printStackTrace();
 		}
 	}
 }

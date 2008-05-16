@@ -29,7 +29,7 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.VariableRestriction.ObjectVariableContextEntry;
 import org.drools.rule.VariableRestriction.VariableContextEntry;
 import org.drools.spi.Evaluator;
-import org.drools.spi.Extractor;
+import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.FieldValue;
 import org.drools.util.ShadowProxyUtils;
 
@@ -182,7 +182,7 @@ public class SetEvaluatorsDefinition
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
-                                final Extractor extractor,
+                                final InternalReadAccessor extractor,
                                 final Object object1,
                                 final FieldValue object2) {
             final Object value = object2.getValue();
@@ -216,9 +216,9 @@ public class SetEvaluatorsDefinition
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
-                                final Extractor extractor1,
+                                final InternalReadAccessor extractor1,
                                 final Object object1,
-                                final Extractor extractor2,
+                                final InternalReadAccessor extractor2,
                                 final Object object2) {
             final Object value = extractor2.getValue( workingMemory,
                                                       object2 );
@@ -248,7 +248,7 @@ public class SetEvaluatorsDefinition
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
-                                final Extractor extractor,
+                                final InternalReadAccessor extractor,
                                 final Object object1,
                                 final FieldValue object2) {
             final Object value = object2.getValue();
@@ -282,9 +282,9 @@ public class SetEvaluatorsDefinition
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
-                                final Extractor extractor1,
+                                final InternalReadAccessor extractor1,
                                 final Object object1,
-                                final Extractor extractor2,
+                                final InternalReadAccessor extractor2,
                                 final Object object2) {
             final Object value = extractor2.getValue( workingMemory,
                                                       object2 );
@@ -314,7 +314,7 @@ public class SetEvaluatorsDefinition
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
-                                final Extractor extractor,
+                                final InternalReadAccessor extractor,
                                 final Object object1,
                                 final FieldValue object2) {
             final Object[] array = (Object[]) object2.getValue();
@@ -348,9 +348,9 @@ public class SetEvaluatorsDefinition
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
-                                final Extractor extractor1,
+                                final InternalReadAccessor extractor1,
                                 final Object object1,
-                                final Extractor extractor2,
+                                final InternalReadAccessor extractor2,
                                 final Object object2) {
             final Object[] array = (Object[]) extractor2.getValue( workingMemory,
                                                                    object2 );
@@ -380,7 +380,7 @@ public class SetEvaluatorsDefinition
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
-                                final Extractor extractor,
+                                final InternalReadAccessor extractor,
                                 final Object object1,
                                 final FieldValue object2) {
             final Object[] array = (Object[]) object2.getValue();
@@ -414,9 +414,9 @@ public class SetEvaluatorsDefinition
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
-                                final Extractor extractor1,
+                                final InternalReadAccessor extractor1,
                                 final Object object1,
-                                final Extractor extractor2,
+                                final InternalReadAccessor extractor2,
                                 final Object object2) {
             final Object[] array = (Object[]) extractor2.getValue( workingMemory,
                                                                    object2 );
@@ -453,7 +453,7 @@ public class SetEvaluatorsDefinition
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
-                                final Extractor extractor,
+                                final InternalReadAccessor extractor,
                                 final Object object1,
                                 final FieldValue object2) {
             if ( object2.isNull() ) {
@@ -501,9 +501,9 @@ public class SetEvaluatorsDefinition
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
-                                final Extractor extractor1,
+                                final InternalReadAccessor extractor1,
                                 final Object object1,
-                                final Extractor extractor2,
+                                final InternalReadAccessor extractor2,
                                 final Object object2) {
             final Object object = extractor2.getValue( workingMemory,
                                                        object2 );
@@ -539,7 +539,7 @@ public class SetEvaluatorsDefinition
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
-                                final Extractor extractor,
+                                final InternalReadAccessor extractor,
                                 final Object object1,
                                 final FieldValue object2) {
             if ( object2.isNull() ) {
@@ -587,9 +587,9 @@ public class SetEvaluatorsDefinition
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
-                                final Extractor extractor1,
+                                final InternalReadAccessor extractor1,
                                 final Object object1,
-                                final Extractor extractor2,
+                                final InternalReadAccessor extractor2,
                                 final Object object2) {
             final Object object = extractor2.getValue( workingMemory,
                                                        object2 );
@@ -923,7 +923,7 @@ public class SetEvaluatorsDefinition
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
-                                final Extractor extractor,
+                                final InternalReadAccessor extractor,
                                 final Object object1,
                                 final FieldValue object2) {
             final Object value = object2.getValue();
@@ -954,9 +954,9 @@ public class SetEvaluatorsDefinition
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
-                                final Extractor extractor1,
+                                final InternalReadAccessor extractor1,
                                 final Object object1,
-                                final Extractor extractor2,
+                                final InternalReadAccessor extractor2,
                                 final Object object2) {
             final Object value = extractor2.getValue( workingMemory,
                                                       object2 );
@@ -984,7 +984,7 @@ public class SetEvaluatorsDefinition
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
-                                final Extractor extractor,
+                                final InternalReadAccessor extractor,
                                 final Object object1,
                                 final FieldValue object2) {
             final Object value = object2.getValue();
@@ -1015,9 +1015,9 @@ public class SetEvaluatorsDefinition
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
-                                final Extractor extractor1,
+                                final InternalReadAccessor extractor1,
                                 final Object object1,
-                                final Extractor extractor2,
+                                final InternalReadAccessor extractor2,
                                 final Object object2) {
             final Object value = extractor2.getValue( workingMemory,
                                                       object2 );

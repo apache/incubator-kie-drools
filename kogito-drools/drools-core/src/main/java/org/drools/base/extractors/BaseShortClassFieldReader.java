@@ -3,16 +3,16 @@ package org.drools.base.extractors;
 import java.lang.reflect.Method;
 
 import org.drools.RuntimeDroolsException;
-import org.drools.base.BaseClassFieldExtractor;
+import org.drools.base.BaseClassFieldReader;
 import org.drools.base.ValueType;
 import org.drools.common.InternalWorkingMemory;
 
-public abstract class BaseCharClassFieldExtractor extends BaseClassFieldExtractor {
+public abstract class BaseShortClassFieldReader extends BaseClassFieldReader {
 
     private static final long serialVersionUID = 400L;
 
-    public BaseCharClassFieldExtractor(final Class clazz,
-                                       final String fieldName) {
+    public BaseShortClassFieldReader(final Class clazz,
+                                        final String fieldName) {
         super( clazz,
                fieldName );
     }
@@ -24,55 +24,56 @@ public abstract class BaseCharClassFieldExtractor extends BaseClassFieldExtracto
      * @param fieldType
      * @param valueType
      */
-    protected BaseCharClassFieldExtractor(final int index,
-                                          final Class fieldType,
-                                          final ValueType valueType) {
+    protected BaseShortClassFieldReader(final int index,
+                                           final Class fieldType,
+                                           final ValueType valueType) {
         super( index,
                fieldType,
                valueType );
     }
 
     public Object getValue(InternalWorkingMemory workingMemory, final Object object) {
-        return new Character( getCharValue( workingMemory, object ) );
+        return new Short( getShortValue( workingMemory, object ) );
     }
 
     public boolean getBooleanValue(InternalWorkingMemory workingMemory, final Object object) {
-        throw new RuntimeDroolsException( "Conversion to boolean not supported from char" );
+        throw new RuntimeDroolsException( "Conversion to boolean not supported from short" );
     }
 
     public byte getByteValue(InternalWorkingMemory workingMemory, final Object object) {
-        return (byte) getCharValue( workingMemory, object );
+        return (byte) getShortValue( workingMemory, object );
+
     }
 
-    public abstract char getCharValue(InternalWorkingMemory workingMemory, Object object);
+    public char getCharValue(InternalWorkingMemory workingMemory, final Object object) {
+        throw new RuntimeDroolsException( "Conversion to char not supported from short" );
+    }
 
     public double getDoubleValue(InternalWorkingMemory workingMemory, final Object object) {
-        return getCharValue( workingMemory, object );
+        return getShortValue( workingMemory, object );
     }
 
     public float getFloatValue(InternalWorkingMemory workingMemory, final Object object) {
-        return getCharValue( workingMemory, object );
+        return getShortValue( workingMemory, object );
     }
 
     public int getIntValue(InternalWorkingMemory workingMemory, final Object object) {
-        return getCharValue( workingMemory, object );
+        return getShortValue( workingMemory, object );
     }
 
     public long getLongValue(InternalWorkingMemory workingMemory, final Object object) {
-        return getCharValue( workingMemory, object );
+        return getShortValue( workingMemory, object );
     }
 
-    public short getShortValue(InternalWorkingMemory workingMemory, final Object object) {
-        return (short) getCharValue( workingMemory, object );
-    }
-
+    public abstract short getShortValue(InternalWorkingMemory workingMemory, Object object);
+    
     public boolean isNullValue(InternalWorkingMemory workingMemory, final Object object) {
         return false;
     }
-    
+
     public Method getNativeReadMethod() {
         try {
-            return this.getClass().getDeclaredMethod( "getCharValue",
+            return this.getClass().getDeclaredMethod( "getShortValue",
                                                       new Class[]{InternalWorkingMemory.class, Object.class} );
         } catch ( final Exception e ) {
             throw new RuntimeDroolsException( "This is a bug. Please report to development team: " + e.getMessage(),
@@ -81,6 +82,6 @@ public abstract class BaseCharClassFieldExtractor extends BaseClassFieldExtracto
     }
 
     public int getHashCode(InternalWorkingMemory workingMemory, final Object object) {
-        return getCharValue( workingMemory, object );
+        return getShortValue( workingMemory, object );
     }
 }

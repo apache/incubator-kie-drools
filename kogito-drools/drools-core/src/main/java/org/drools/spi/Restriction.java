@@ -15,7 +15,7 @@ public interface Restriction
     Cloneable {
     Declaration[] getRequiredDeclarations();
 
-    public boolean isAllowed(Extractor extractor,
+    public boolean isAllowed(InternalReadAccessor extractor,
                              InternalFactHandle handle,
                              InternalWorkingMemory workingMemory,
                              ContextEntry context );

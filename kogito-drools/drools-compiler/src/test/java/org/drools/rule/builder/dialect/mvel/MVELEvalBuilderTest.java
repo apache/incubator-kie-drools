@@ -9,7 +9,7 @@ import org.drools.Cheese;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
-import org.drools.base.ClassFieldExtractorCache;
+import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassObjectType;
 import org.drools.common.InternalFactHandle;
 import org.drools.compiler.PackageBuilder;
@@ -22,14 +22,14 @@ import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.Package;
 import org.drools.rule.Pattern;
-import org.drools.spi.FieldExtractor;
+import org.drools.spi.InternalReadAccessor;
 
 public class MVELEvalBuilderTest extends TestCase {
 
-    private ClassFieldExtractorCache cache;
+    private ClassFieldAccessorCache cache;
 
     public void setUp() {
-        cache = ClassFieldExtractorCache.getInstance();
+        cache = ClassFieldAccessorCache.getInstance();
     }
 
     public void testSimpleExpression() {
@@ -48,7 +48,7 @@ public class MVELEvalBuilderTest extends TestCase {
 
         final InstrumentedDeclarationScopeResolver declarationResolver = new InstrumentedDeclarationScopeResolver();
 
-        final FieldExtractor extractor = cache.getExtractor( Cheese.class,
+        final InternalReadAccessor extractor = cache.getReader( Cheese.class,
                                                              "price",
                                                              getClass().getClassLoader() );
 

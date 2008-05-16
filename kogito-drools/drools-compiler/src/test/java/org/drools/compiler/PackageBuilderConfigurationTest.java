@@ -8,7 +8,7 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
-import org.drools.base.ClassFieldExtractorCache;
+import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.TypeResolver;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
@@ -355,7 +355,7 @@ public class PackageBuilderConfigurationTest extends TestCase {
             return null;
         }
 
-        public ClassFieldExtractorCache getClassFieldExtractorCache() {
+        public ClassFieldAccessorCache getClassFieldExtractorCache() {
             return null;
         }
 

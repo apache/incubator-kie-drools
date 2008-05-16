@@ -1,27 +1,40 @@
 package org.drools.factmodel;
 
+/*
+ * Copyright 2008 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 import java.lang.reflect.InvocationTargetException;
 
+import org.drools.base.ClassFieldAccessor;
+
 /**
- * <p><b>Title:</b> FieldDefinition</p>
- * <p><b>Description:</b> Declares a field to be dynamically generated</p>
- * <p><b>Copyright:</b> Copyright (c) 2004-2006</p>
- * <p><b>Company:</b> Auster Solutions</p>
+ * Declares a field to be dynamically generated.
  *
  * @author etirelli
- * @version $Id: FieldDefinition.java 205 2006-03-21 18:27:52Z etirelli $
  */
 public class FieldDefinition {
     private String             name         = null;
     private String             type         = null;
     private boolean            key          = false;
-    
+
     private String             internalType = null;
     private String             boxTypeName  = null;
     private boolean            primitive    = false;
     private String             unboxMethod  = null;
-    private FieldAccessor      accessor     = null;
+    private ClassFieldAccessor accessor     = null;
 
     /**
      * Default constructor
@@ -31,7 +44,9 @@ public class FieldDefinition {
      */
     public FieldDefinition(String name,
                            String type) {
-        this(name, type, false);
+        this( name,
+              type,
+              false );
     }
 
     /**
@@ -41,11 +56,11 @@ public class FieldDefinition {
      * @param type the fully qualified fields type
      */
     public FieldDefinition(String name,
-                           String type, 
+                           String type,
                            boolean key) {
         this.name = name;
         this.type = type;
-        this.key  = key;
+        this.key = key;
         this.setInternals();
     }
 
@@ -154,16 +169,16 @@ public class FieldDefinition {
     }
 
     /**
-     * @return Returns the field accessor
+     * @return Returns the field extractor
      */
-    FieldAccessor getFieldAccessor() {
+    public ClassFieldAccessor getFieldAccessor() {
         return this.accessor;
     }
 
     /**
      * @param property The property descriptor to set.
      */
-    void setFieldAccessor(FieldAccessor accessor) {
+    public void setFieldAccessor(ClassFieldAccessor accessor) {
         this.accessor = accessor;
     }
 
@@ -189,10 +204,8 @@ public class FieldDefinition {
                          Object value) throws IllegalArgumentException,
                                       IllegalAccessException,
                                       InvocationTargetException {
-        if(this.accessor == null) {
-            System.out.println("ACCESSOR NULL");
-        }
-        this.accessor.setValue( bean, value );
+        this.accessor.setValue( bean,
+                                value );
     }
 
     /**

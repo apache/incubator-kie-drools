@@ -30,8 +30,8 @@ import org.drools.FactHandle;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
-import org.drools.base.ClassFieldExtractor;
-import org.drools.base.ClassFieldExtractorCache;
+import org.drools.base.ClassFieldReader;
+import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassObjectType;
 import org.drools.base.FieldFactory;
 import org.drools.base.ShadowProxy;
@@ -81,7 +81,7 @@ public class AgendaEventSupportTest extends TestCase {
         final Pattern pattern = new Pattern( 0,
                                              cheeseObjectType );
 
-        final ClassFieldExtractor extractor = ClassFieldExtractorCache.getInstance().getExtractor( Cheese.class,
+        final ClassFieldReader extractor = ClassFieldAccessorCache.getInstance().getReader( Cheese.class,
                                                                                                    "type",
                                                                                                    getClass().getClassLoader() );
 

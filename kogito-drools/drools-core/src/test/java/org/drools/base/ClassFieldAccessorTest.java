@@ -1,29 +1,159 @@
-package org.drools.factmodel;
+package org.drools.base;
+
+/*
+ * Copyright 2005 JBoss Inc
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-public class FieldAccessorBuilderTest extends TestCase {
-    FieldAccessorBuilder builder;
+import org.drools.RuntimeDroolsException;
+import org.drools.util.asm.BeanInherit;
+import org.drools.util.asm.InterfaceChild;
+import org.drools.util.asm.TestAbstract;
+import org.drools.util.asm.TestAbstractImpl;
+import org.drools.util.asm.TestBean;
+import org.drools.util.asm.TestInterface;
+import org.drools.util.asm.TestInterfaceImpl;
+
+public class ClassFieldAccessorTest extends TestCase {
+
+    private ClassFieldAccessorCache cache;
 
     protected void setUp() throws Exception {
         super.setUp();
-        this.builder = new FieldAccessorBuilder();
+        cache = ClassFieldAccessorCache.getInstance();
     }
 
-    protected void tearDown() throws Exception {
-        super.tearDown();
+    public void testBasic() throws Exception {
+        final Object[] objArray = new Object[1];
+
+        final TestBean obj = new TestBean();
+        obj.setBlah( false );
+        obj.setSomething( "no" );
+        obj.setObjArray( objArray );
+
+        final ClassFieldReader ext = cache.getReader( TestBean.class,
+                                                      "blah",
+                                                      getClass().getClassLoader() );
+        assertEquals( false,
+                      ((Boolean) ext.getValue( null,
+                                               obj )).booleanValue() );
+
+        final ClassFieldReader ext2 = cache.getReader( TestBean.class,
+                                                       "fooBar",
+                                                       getClass().getClassLoader() );
+        assertEquals( "fooBar",
+                      ext2.getValue( null,
+                                     obj ) );
+
+        final ClassFieldReader ext3 = cache.getReader( TestBean.class,
+                                                       "objArray",
+                                                       getClass().getClassLoader() );
+        assertEquals( objArray,
+                      ext3.getValue( null,
+                                     obj ) );
+
     }
 
-    /*
-     * Test method for 'br.com.auster.common.asm.FieldAccessorBuilder.buildFieldAccessor(ClassDefinition, FieldDefinition)'
-     */
+    public void testInterface() throws Exception {
+
+        final TestInterface obj = new TestInterfaceImpl();
+        final ClassFieldReader ext = cache.getReader( TestInterface.class,
+                                                      "something",
+                                                      getClass().getClassLoader() );
+
+        assertEquals( "foo",
+                      (String) ext.getValue( null,
+                                             obj ) );
+
+    }
+
+    public void testAbstract() throws Exception {
+
+        final ClassFieldReader ext = cache.getReader( TestAbstract.class,
+                                                      "something",
+                                                      getClass().getClassLoader() );
+        final TestAbstract obj = new TestAbstractImpl();
+        assertEquals( "foo",
+                      (String) ext.getValue( null,
+                                             obj ) );
+
+    }
+
+    public void testInherited() throws Exception {
+        final ClassFieldReader ext = cache.getReader( BeanInherit.class,
+                                                      "text",
+                                                      getClass().getClassLoader() );
+        final BeanInherit obj = new BeanInherit();
+        assertEquals( "hola",
+                      (String) ext.getValue( null,
+                                             obj ) );
+
+    }
+
+    public void testMultipleInterfaces() throws Exception {
+        final ConcreteChild obj = new ConcreteChild();
+        final ClassFieldReader ext = cache.getReader( InterfaceChild.class,
+                                                      "foo",
+                                                      getClass().getClassLoader() );
+        assertEquals( 42,
+                      ((Number) ext.getValue( null,
+                                              obj )).intValue() );
+    }
+
+    public void testLong() throws Exception {
+        final ClassFieldReader ext = cache.getReader( TestBean.class,
+                                                      "longField",
+                                                      getClass().getClassLoader() );
+        final TestBean bean = new TestBean();
+        assertEquals( 424242,
+                      ((Number) ext.getValue( null,
+                                              bean )).longValue() );
+    }
+
+    public void testNonExistentField() throws Exception {
+        final Object[] objArray = new Object[1];
+
+        final TestBean obj = new TestBean();
+        obj.setBlah( false );
+        obj.setSomething( "no" );
+        obj.setObjArray( objArray );
+
+        try {
+            final ClassFieldReader ext = cache.getReader( TestBean.class,
+                                                          "xyz",
+                                                          getClass().getClassLoader() );
+            fail( "A RuntimeDroolsException should have been raised" );
+        } catch ( RuntimeDroolsException e ) {
+            // everything is fine, since field does not exist
+            // e.printStackTrace();
+        } catch ( Exception e ) {
+            fail( "A RuntimeDroolsException should have been raised" );
+        }
+
+    }
+
     public void testBuildFieldAccessor() {
         try {
-            FieldAccessor intAccessor = (FieldAccessor) builder.buildAndLoadFieldAccessor( TestClass.class,
-                                                                                           "intAttr" ).newInstance();
-            FieldAccessor strAccessor = (FieldAccessor) builder.buildAndLoadFieldAccessor( TestClass.class,
-                                                                                           "strAttr" ).newInstance();
+            ClassFieldAccessor intAccessor = cache.getAccessor( TestClass.class,
+                                                                "intAttr",
+                                                                getClass().getClassLoader() );
+            ClassFieldAccessor strAccessor = cache.getAccessor( TestClass.class,
+                                                                "strAttr",
+                                                                getClass().getClassLoader() );
 
             String testString1 = "TestAttr1";
             String testString2 = "TestAttr2";
@@ -34,6 +164,9 @@ public class FieldAccessorBuilderTest extends TestCase {
             Assert.assertEquals( "Error reading int attr",
                                  10,
                                  ((Integer) intAccessor.getValue( instance )).intValue() );
+            Assert.assertEquals( "Error reading int attr",
+                                 10,
+                                 intAccessor.getIntValue( instance ) );
             Assert.assertEquals( "Error reading String attr",
                                  testString1,
                                  strAccessor.getValue( instance ) );
@@ -50,9 +183,11 @@ public class FieldAccessorBuilderTest extends TestCase {
                                  testString2,
                                  instance.getStrAttr() );
 
+            intAccessor.setIntValue( instance,
+                                     40 );
             Assert.assertEquals( "Error reading int attr",
-                                 50,
-                                 ((Integer) intAccessor.getValue( instance )).intValue() );
+                                 40,
+                                 intAccessor.getIntValue( instance ) );
             Assert.assertEquals( "Error reading String attr",
                                  testString2,
                                  strAccessor.getValue( instance ) );
@@ -65,24 +200,33 @@ public class FieldAccessorBuilderTest extends TestCase {
 
     public void testNullOnPrimitives() {
         try {
-            FieldAccessor intAccessor = (FieldAccessor) builder.buildAndLoadFieldAccessor( TestClass.class,
-                                                                                    "intAttr" ).newInstance();
-            FieldAccessor strAccessor = (FieldAccessor) builder.buildAndLoadFieldAccessor( TestClass.class,
-                                                                                    "strAttr" ).newInstance();
-            FieldAccessor byteAccessor = (FieldAccessor) builder.buildAndLoadFieldAccessor( TestClass.class,
-                                                                                     "byteAttr" ).newInstance();
-            FieldAccessor booleanAccessor = (FieldAccessor) builder.buildAndLoadFieldAccessor( TestClass.class,
-                                                                                        "booleanAttr" ).newInstance();
-            FieldAccessor charAccessor = (FieldAccessor) builder.buildAndLoadFieldAccessor( TestClass.class,
-                                                                                     "charAttr" ).newInstance();
-            FieldAccessor doubleAccessor = (FieldAccessor) builder.buildAndLoadFieldAccessor( TestClass.class,
-                                                                                       "doubleAttr" ).newInstance();
-            FieldAccessor floatAccessor = (FieldAccessor) builder.buildAndLoadFieldAccessor( TestClass.class,
-                                                                                      "floatAttr" ).newInstance();
-            FieldAccessor longAccessor = (FieldAccessor) builder.buildAndLoadFieldAccessor( TestClass.class,
-                                                                                     "longAttr" ).newInstance();
-            FieldAccessor shortAccessor = (FieldAccessor) builder.buildAndLoadFieldAccessor( TestClass.class,
-                                                                                      "shortAttr" ).newInstance();
+            ClassFieldAccessor intAccessor = cache.getAccessor( TestClass.class,
+                                                                "intAttr",
+                                                                getClass().getClassLoader() );
+            ClassFieldAccessor strAccessor = cache.getAccessor( TestClass.class,
+                                                                "strAttr",
+                                                                getClass().getClassLoader() );
+            ClassFieldAccessor byteAccessor = cache.getAccessor( TestClass.class,
+                                                                 "byteAttr",
+                                                                 getClass().getClassLoader() );
+            ClassFieldAccessor booleanAccessor = cache.getAccessor( TestClass.class,
+                                                                    "booleanAttr",
+                                                                    getClass().getClassLoader() );
+            ClassFieldAccessor charAccessor = cache.getAccessor( TestClass.class,
+                                                                 "charAttr",
+                                                                 getClass().getClassLoader() );
+            ClassFieldAccessor doubleAccessor = cache.getAccessor( TestClass.class,
+                                                                   "doubleAttr",
+                                                                   getClass().getClassLoader() );
+            ClassFieldAccessor floatAccessor = cache.getAccessor( TestClass.class,
+                                                                  "floatAttr",
+                                                                  getClass().getClassLoader() );
+            ClassFieldAccessor longAccessor = cache.getAccessor( TestClass.class,
+                                                                 "longAttr",
+                                                                 getClass().getClassLoader() );
+            ClassFieldAccessor shortAccessor = cache.getAccessor( TestClass.class,
+                                                                  "shortAttr",
+                                                                  getClass().getClassLoader() );
 
             String testString1 = "TestAttr1";
             TestClass instance = new TestClass();
@@ -316,4 +460,5 @@ public class FieldAccessorBuilderTest extends TestCase {
             this.shortAttr = shortAttr;
         }
     }
+
 }

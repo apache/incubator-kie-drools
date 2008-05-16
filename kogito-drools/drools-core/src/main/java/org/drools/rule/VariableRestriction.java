@@ -16,19 +16,18 @@ package org.drools.rule;
  * limitations under the License.
  */
 
-import java.util.Arrays;
-import java.io.Externalizable;
-import java.io.ObjectOutput;
 import java.io.IOException;
 import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Arrays;
 
 import org.drools.base.ValueType;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
 import org.drools.spi.Evaluator;
-import org.drools.spi.Extractor;
-import org.drools.spi.FieldExtractor;
+import org.drools.spi.InternalReadAccessor;
+import org.drools.spi.ReadAccessor;
 import org.drools.spi.Restriction;
 
 public class VariableRestriction
@@ -43,12 +42,12 @@ public class VariableRestriction
 
     private Evaluator      evaluator;
 
-    private FieldExtractor extractor;
+    private InternalReadAccessor extractor;
 
     public VariableRestriction() {
     }
 
-    public VariableRestriction(final FieldExtractor fieldExtractor,
+    public VariableRestriction(final InternalReadAccessor fieldExtractor,
                                final Declaration declaration,
                                final Evaluator evaluator) {
         this.declaration = declaration;
@@ -68,7 +67,7 @@ public class VariableRestriction
         declaration = (Declaration) in.readObject();
         requiredDeclarations = (Declaration[]) in.readObject();
         evaluator = (Evaluator) in.readObject();
-        extractor = (FieldExtractor) in.readObject();
+        extractor = (InternalReadAccessor) in.readObject();
     }
 
     public Declaration[] getRequiredDeclarations() {
@@ -87,7 +86,7 @@ public class VariableRestriction
         return this.evaluator;
     }
 
-    public boolean isAllowed(final Extractor extractor,
+    public boolean isAllowed(final InternalReadAccessor extractor,
                              final InternalFactHandle handle,
                              final InternalWorkingMemory workingMemory,
                              final ContextEntry context ) {
@@ -144,7 +143,7 @@ public class VariableRestriction
     }
 
     private final VariableContextEntry createContextEntry(final Evaluator eval,
-                                                          final FieldExtractor fieldExtractor) {
+                                                          final InternalReadAccessor fieldExtractor) {
         ValueType coerced = eval.getCoercedValueType();
 
         if ( coerced.isBoolean() ) {
@@ -184,7 +183,7 @@ public class VariableRestriction
     public static abstract class VariableContextEntry
         implements
         ContextEntry {
-        public FieldExtractor        extractor;
+        public InternalReadAccessor  extractor;
         public Evaluator             evaluator;
         public Object                object;
         public Declaration           declaration;
@@ -197,7 +196,7 @@ public class VariableRestriction
         public VariableContextEntry() {
         }
 
-        public VariableContextEntry(final FieldExtractor extractor,
+        public VariableContextEntry(final InternalReadAccessor extractor,
                                     final Declaration declaration,
                                     final Evaluator evaluator) {
             this.extractor = extractor;
@@ -207,7 +206,7 @@ public class VariableRestriction
 
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
             workingMemory   = (InternalWorkingMemory)in.readObject();
-            extractor       = (FieldExtractor)in.readObject();
+            extractor       = (InternalReadAccessor)in.readObject();
             evaluator       = (Evaluator)in.readObject();
             object          = in.readObject();
             declaration     = (Declaration)in.readObject();
@@ -237,7 +236,7 @@ public class VariableRestriction
             this.entry = entry;
         }
 
-        public FieldExtractor getFieldExtractor() {
+        public ReadAccessor getFieldExtractor() {
             return this.extractor;
         }
 
@@ -279,7 +278,7 @@ public class VariableRestriction
         public ObjectVariableContextEntry() {
         }
 
-        public ObjectVariableContextEntry(final FieldExtractor extractor,
+        public ObjectVariableContextEntry(final InternalReadAccessor extractor,
                                           final Declaration declaration,
                                           final Evaluator evaluator) {
             super( extractor,
@@ -340,7 +339,7 @@ public class VariableRestriction
         public LongVariableContextEntry() {
         }
 
-        public LongVariableContextEntry(final FieldExtractor extractor,
+        public LongVariableContextEntry(final InternalReadAccessor extractor,
                                         final Declaration declaration,
                                         final Evaluator evaluator) {
             super( extractor,
@@ -401,7 +400,7 @@ public class VariableRestriction
         public CharVariableContextEntry() {
         }
 
-        public CharVariableContextEntry(final FieldExtractor extractor,
+        public CharVariableContextEntry(final InternalReadAccessor extractor,
                                         final Declaration declaration,
                                         final Evaluator evaluator) {
             super( extractor,
@@ -462,7 +461,7 @@ public class VariableRestriction
         public DoubleVariableContextEntry() {
         }
 
-        public DoubleVariableContextEntry(final FieldExtractor extractor,
+        public DoubleVariableContextEntry(final InternalReadAccessor extractor,
                                           final Declaration declaration,
                                           final Evaluator evaluator) {
             super( extractor,
@@ -522,7 +521,7 @@ public class VariableRestriction
         public BooleanVariableContextEntry() {
         }
 
-        public BooleanVariableContextEntry(final FieldExtractor extractor,
+        public BooleanVariableContextEntry(final InternalReadAccessor extractor,
                                            final Declaration declaration,
                                            final Evaluator evaluator) {
             super( extractor,

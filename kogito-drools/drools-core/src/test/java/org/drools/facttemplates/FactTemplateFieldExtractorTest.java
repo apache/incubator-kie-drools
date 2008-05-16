@@ -5,7 +5,7 @@ import junit.framework.TestCase;
 import org.drools.rule.Pattern;
 import org.drools.rule.Declaration;
 import org.drools.rule.Package;
-import org.drools.spi.Extractor;
+import org.drools.spi.InternalReadAccessor;
 
 public class FactTemplateFieldExtractorTest extends TestCase {
     public void testExtractor() {
@@ -22,9 +22,9 @@ public class FactTemplateFieldExtractorTest extends TestCase {
                                                           "Cheese",
                                                           fields );
 
-        final Extractor extractName = new FactTemplateFieldExtractor( cheese,
+        final InternalReadAccessor extractName = new FactTemplateFieldExtractor( cheese,
                                                                       0 );
-        final Extractor extractPrice = new FactTemplateFieldExtractor( cheese,
+        final InternalReadAccessor extractPrice = new FactTemplateFieldExtractor( cheese,
                                                                        1 );
 
         final Fact stilton = cheese.createFact( 10 );
@@ -82,7 +82,7 @@ public class FactTemplateFieldExtractorTest extends TestCase {
                                                           "Cheese",
                                                           fields );
 
-        final Extractor extractName = new FactTemplateFieldExtractor( cheese,
+        final InternalReadAccessor extractName = new FactTemplateFieldExtractor( cheese,
                                                                       0 );
 
         final Pattern pattern = new Pattern( 0,
