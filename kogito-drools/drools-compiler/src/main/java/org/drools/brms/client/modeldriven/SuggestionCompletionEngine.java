@@ -55,7 +55,7 @@ public class SuggestionCompletionEngine
     /**
      * A map of types to the fields. key is type, value is (String[] of fields)
      *
-     * @gwt.typeArgs <java.lang.String, java.lang.String[] />
+     * @gwt.typeArgs <java.lang.String, java.lang.String[]>
      */
     public Map                    fieldsForType;
 
@@ -65,20 +65,20 @@ public class SuggestionCompletionEngine
      * This is in the format of: { 'Type.field' => 'typename' }.
      * Should not be the exact type, perhaps just a high level interface, eg "Comparable".
      *
-     * @gwt.typeArgs <java.lang.String, java.lang.String />
+     * @gwt.typeArgs <java.lang.String, java.lang.String>
      */
     public Map                    fieldTypes;
 
     /**
      * Contains a map of globals (name is key) and their type (value).
-     * @gwt.typeArgs <java.lang.String, java.lang.String />
+     * @gwt.typeArgs <java.lang.String, java.lang.String>
      */
     public Map                    globalTypes            = new HashMap();
 
     /**
      * Contains a map of { TypeName.field : String[] } - where a list is
      * valid values to display in a drop down for a given Type.field combination.
-     * @gwt.typeArgs <java.lang.String, java.lang.String[] />
+     * @gwt.typeArgs <java.lang.String, java.lang.String[]>
      */
     public Map 					  dataEnumLists			 = new HashMap();
 
