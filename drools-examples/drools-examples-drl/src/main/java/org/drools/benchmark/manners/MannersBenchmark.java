@@ -10,13 +10,11 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
 import java.util.Random;
 import java.util.StringTokenizer;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
-import org.drools.RuleBaseConfigurationTest;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.compiler.PackageBuilder;
