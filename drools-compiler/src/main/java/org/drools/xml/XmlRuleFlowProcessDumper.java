@@ -217,7 +217,7 @@ public class XmlRuleFlowProcessDumper {
             if (consequence == null) {
                 endElement();
             } else {
-                xmlDump.append(">" + consequence.trim() + "</action>" + EOL);
+                xmlDump.append(">" + XmlDumper.replaceIllegalChars(consequence.trim()) + "</action>" + EOL);
             }
         } else {
             endElement();
@@ -286,7 +286,7 @@ public class XmlRuleFlowProcessDumper {
                 }
                 String constraintString = constraint.getConstraint();
                 if (constraintString != null) {
-                    xmlDump.append(">" + constraintString + "</constraint>" + EOL);
+                    xmlDump.append(">" + XmlDumper.replaceIllegalChars(constraintString) + "</constraint>" + EOL);
                 } else {
                     xmlDump.append("/>" + EOL);
                 }
@@ -300,7 +300,7 @@ public class XmlRuleFlowProcessDumper {
         visitNode("milestone", milestoneNode, includeMeta);
         String constraint = milestoneNode.getConstraint();
         if (constraint != null) {
-            xmlDump.append(">" + constraint.trim() + "</milestone>" + EOL);
+            xmlDump.append(">" + XmlDumper.replaceIllegalChars(constraint.trim()) + "</milestone>" + EOL);
         } else {
             endElement();
         }

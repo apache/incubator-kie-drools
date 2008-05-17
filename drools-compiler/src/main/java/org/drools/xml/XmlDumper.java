@@ -390,7 +390,7 @@ public class XmlDumper extends ReflectiveVisitor
      * </p>
      * @author <a href="mailto:prietor@gmail.com">Author Javier Prieto</a>
      */
-    private String replaceIllegalChars(final String code) {
+    public static String replaceIllegalChars(final String code) {
         final StringBuffer sb = new StringBuffer();
         if ( code != null ) {
             final int n = code.length();
