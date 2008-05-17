@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<process xmlns="http://drools.org/drools-4.0/process"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+         xs:schemaLocation="http://drools.org/drools-4.0/process drools-processes-4.0.xsd"
+         type="RuleFlow" name="Number Guess" id="Number Guess" package-name="org.drools.examples" >
+
+  <header>
+    <imports>
+      <import name="org.drools.examples.NumberGuessExample.Game" />
+      <import name="org.drools.examples.NumberGuessExample.GameRules" />
+      <import name="org.drools.examples.NumberGuessExample.RandomNumber" />
+    </imports>
+  </header>
+
+  <nodes>
+    <start id="1" name="Start" />
+    <action id="2" name="Guess correct" dialect="mvel" >System.out.println( "You guessed correctly" );</action>
+    <ruleSet id="3" name="No more Guesses" ruleFlowGroup="No more Guesses" />
+    <end id="4" name="End" />
+    <split id="5" name="Guess correct?" type="2" >
+      <constraints>
+        <constraint toNodeId="13" toType="DROOLS_DEFAULT" name="too low" priority="1" type="rule" dialect="mvel" >RandomNumber( randomValue : value )
+Guess( value &lt; randomValue )</constraint>
+        <constraint toNodeId="12" toType="DROOLS_DEFAULT" name="too high" priority="1" type="rule" dialect="mvel" >RandomNumber( randomValue : value )
+Guess( value &gt; randomValue )</constraint>
+        <constraint toNodeId="2" toType="DROOLS_DEFAULT" name="correct" priority="1" type="rule" dialect="mvel" >RandomNumber( randomValue : value )
+Guess( value == randomValue )</constraint>
+      </constraints>
+    </split>
+    <join id="6" name="More guesses Join" type="2" />
+    <ruleSet id="7" name="Guess" ruleFlowGroup="Guess" />
+    <split id="8" name="More Guesses?" type="2" >
+      <constraints>
+        <constraint toNodeId="6" toType="DROOLS_DEFAULT" name="More guesses" priority="1" type="rule" dialect="mvel" >GameRules( allowed : allowedGuesses  )
+Game( guessCount &lt; allowed )</constraint>
+        <constraint toNodeId="3" toType="DROOLS_DEFAULT" name="No more Guesses" priority="1" type="rule" dialect="mvel" >GameRules( allowed : allowedGuesses  )
+Game( guessCount &gt;= allowed )</constraint>
+      </constraints>
+    </split>
+    <join id="9" name="Incorrect guess" type="2" />
+    <join id="10" name="No more guesses Join" type="2" />
+    <ruleSet id="11" name="Guess incorrect" ruleFlowGroup="Guess incorrect" />
+    <action id="12" name="Too high" dialect="mvel" >System.out.println( "Your guess was too high" );</action>
+    <action id="13" name="Too low" dialect="mvel" >System.out.println( "Your guess was too low" );</action>
+  </nodes>
+
+  <connections>
+    <connection from="5" to="2" />
+    <connection from="8" to="3" />
+    <connection from="10" to="4" />
+    <connection from="7" to="5" />
+    <connection from="1" to="6" />
+    <connection from="8" to="6" />
+    <connection from="6" to="7" />
+    <connection from="11" to="8" />
+    <connection from="12" to="9" />
+    <connection from="13" to="9" />
+    <connection from="3" to="10" />
+    <connection from="2" to="10" />
+    <connection from="9" to="11" />
+    <connection from="5" to="12" />
+    <connection from="5" to="13" />
+  </connections>
+
+</process>
