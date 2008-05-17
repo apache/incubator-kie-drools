@@ -19,7 +19,7 @@ end
 
 rule "Always do examination4 when patient older than 60"
 	when
-		Patient( age > 80 )
+		Patient( age > 60 )
 	then
 		recommendationService.createRecommendation(
 			new Recommendation("Examination4"));
