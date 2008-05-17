@@ -1,146 +1,31 @@
-<org.drools.ruleflow.core.impl.RuleFlowProcessImpl id="1">
-  <nodes id="2">
-    <entry>
-      <long>1</long>
-      <org.drools.ruleflow.core.impl.StartNodeImpl id="3">
-        <id>1</id>
-        <name>Start</name>
-        <incomingConnections id="4"/>
-        <outgoingConnections id="5">
-          <org.drools.ruleflow.core.impl.ConnectionImpl id="6">
-            <type>1</type>
-            <from class="org.drools.ruleflow.core.impl.StartNodeImpl" reference="3"/>
-            <to class="org.drools.ruleflow.core.impl.SplitImpl" id="7">
-              <type>1</type>
-              <constraints id="8"/>
-              <id>4</id>
-              <name>AND</name>
-              <incomingConnections id="9">
-                <org.drools.ruleflow.core.impl.ConnectionImpl reference="6"/>
-              </incomingConnections>
-              <outgoingConnections id="10">
-                <org.drools.ruleflow.core.impl.ConnectionImpl id="11">
-                  <type>1</type>
-                  <from class="org.drools.ruleflow.core.impl.SplitImpl" reference="7"/>
-                  <to class="org.drools.ruleflow.core.impl.ActionNodeImpl" id="12">
-                    <action class="org.drools.ruleflow.core.impl.DroolsConsequenceAction" id="13">
-                      <consequence>System.out.println(&quot;Executing TreatmentY Part1&quot;);</consequence>
-                    </action>
-                    <id>3</id>
-                    <name>Dummy TreatmentY Part1</name>
-                    <incomingConnections id="14">
-                      <org.drools.ruleflow.core.impl.ConnectionImpl reference="11"/>
-                    </incomingConnections>
-                    <outgoingConnections id="15">
-                      <org.drools.ruleflow.core.impl.ConnectionImpl id="16">
-                        <type>1</type>
-                        <from class="org.drools.ruleflow.core.impl.ActionNodeImpl" reference="12"/>
-                        <to class="org.drools.ruleflow.core.impl.JoinImpl" id="17">
-                          <type>1</type>
-                          <id>5</id>
-                          <name>AND</name>
-                          <incomingConnections id="18">
-                            <org.drools.ruleflow.core.impl.ConnectionImpl reference="16"/>
-                            <org.drools.ruleflow.core.impl.ConnectionImpl id="19">
-                              <type>1</type>
-                              <from class="org.drools.ruleflow.core.impl.ActionNodeImpl" id="20">
-                                <action class="org.drools.ruleflow.core.impl.DroolsConsequenceAction" id="21">
-                                  <consequence>System.out.println(&quot;Executing TreatmentY Part2&quot;);</consequence>
-                                </action>
-                                <id>6</id>
-                                <name>Dummy TreatmentY Part2</name>
-                                <incomingConnections id="22">
-                                  <org.drools.ruleflow.core.impl.ConnectionImpl id="23">
-                                    <type>1</type>
-                                    <from class="org.drools.ruleflow.core.impl.SplitImpl" reference="7"/>
-                                    <to class="org.drools.ruleflow.core.impl.ActionNodeImpl" reference="20"/>
-                                  </org.drools.ruleflow.core.impl.ConnectionImpl>
-                                </incomingConnections>
-                                <outgoingConnections id="24">
-                                  <org.drools.ruleflow.core.impl.ConnectionImpl reference="19"/>
-                                </outgoingConnections>
-                              </from>
-                              <to class="org.drools.ruleflow.core.impl.JoinImpl" reference="17"/>
-                            </org.drools.ruleflow.core.impl.ConnectionImpl>
-                            <org.drools.ruleflow.core.impl.ConnectionImpl id="25">
-                              <type>1</type>
-                              <from class="org.drools.ruleflow.core.impl.ActionNodeImpl" id="26">
-                                <action class="org.drools.ruleflow.core.impl.DroolsConsequenceAction" id="27">
-                                  <consequence>System.out.println(&quot;Executing TreatmentY Part3&quot;);</consequence>
-                                </action>
-                                <id>7</id>
-                                <name>Dummy TreatmentY Part3</name>
-                                <incomingConnections id="28">
-                                  <org.drools.ruleflow.core.impl.ConnectionImpl id="29">
-                                    <type>1</type>
-                                    <from class="org.drools.ruleflow.core.impl.SplitImpl" reference="7"/>
-                                    <to class="org.drools.ruleflow.core.impl.ActionNodeImpl" reference="26"/>
-                                  </org.drools.ruleflow.core.impl.ConnectionImpl>
-                                </incomingConnections>
-                                <outgoingConnections id="30">
-                                  <org.drools.ruleflow.core.impl.ConnectionImpl reference="25"/>
-                                </outgoingConnections>
-                              </from>
-                              <to class="org.drools.ruleflow.core.impl.JoinImpl" reference="17"/>
-                            </org.drools.ruleflow.core.impl.ConnectionImpl>
-                          </incomingConnections>
-                          <outgoingConnections id="31">
-                            <org.drools.ruleflow.core.impl.ConnectionImpl id="32">
-                              <type>1</type>
-                              <from class="org.drools.ruleflow.core.impl.JoinImpl" reference="17"/>
-                              <to class="org.drools.ruleflow.core.impl.EndNodeImpl" id="33">
-                                <id>2</id>
-                                <name>End</name>
-                                <incomingConnections id="34">
-                                  <org.drools.ruleflow.core.impl.ConnectionImpl reference="32"/>
-                                </incomingConnections>
-                                <outgoingConnections id="35"/>
-                              </to>
-                            </org.drools.ruleflow.core.impl.ConnectionImpl>
-                          </outgoingConnections>
-                        </to>
-                      </org.drools.ruleflow.core.impl.ConnectionImpl>
-                    </outgoingConnections>
-                  </to>
-                </org.drools.ruleflow.core.impl.ConnectionImpl>
-                <org.drools.ruleflow.core.impl.ConnectionImpl reference="23"/>
-                <org.drools.ruleflow.core.impl.ConnectionImpl reference="29"/>
-              </outgoingConnections>
-            </to>
-          </org.drools.ruleflow.core.impl.ConnectionImpl>
-        </outgoingConnections>
-      </org.drools.ruleflow.core.impl.StartNodeImpl>
-    </entry>
-    <entry>
-      <long>2</long>
-      <org.drools.ruleflow.core.impl.EndNodeImpl reference="33"/>
-    </entry>
-    <entry>
-      <long>3</long>
-      <org.drools.ruleflow.core.impl.ActionNodeImpl reference="12"/>
-    </entry>
-    <entry>
-      <long>4</long>
-      <org.drools.ruleflow.core.impl.SplitImpl reference="7"/>
-    </entry>
-    <entry>
-      <long>5</long>
-      <org.drools.ruleflow.core.impl.JoinImpl reference="17"/>
-    </entry>
-    <entry>
-      <long>6</long>
-      <org.drools.ruleflow.core.impl.ActionNodeImpl reference="20"/>
-    </entry>
-    <entry>
-      <long>7</long>
-      <org.drools.ruleflow.core.impl.ActionNodeImpl reference="26"/>
-    </entry>
+<?xml version="1.0" encoding="UTF-8"?> 
+<process xmlns="http://drools.org/drools-4.0/process"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+         xs:schemaLocation="http://drools.org/drools-4.0/process drools-processes-4.0.xsd"
+         type="RuleFlow" name="TreatmentY" id="org.drools.examples.cdss.TreatmentY" package-name="com.sample" version="1.0" >
+
+  <header>
+  </header>
+
+  <nodes>
+    <start id="1" name="Start" />
+    <split id="2" name="AND" type="1" />
+    <join id="3" name="AND" type="1" />
+    <action id="4" name="Dummy TreatmentY Part1" dialect="mvel" >System.out.println("Executing TreatmentY Part1");</action>
+    <action id="5" name="Dummy TreatmentY Part2" dialect="mvel" >System.out.println("Executing TreatmentY Part2");</action>
+    <action id="6" name="Dummy TreatmentY Part3" dialect="mvel" >System.out.println("Executing TreatmentY Part3");</action>
+    <end id="7" name="End" />
   </nodes>
-  <variables id="36"/>
-  <lastNodeId>7</lastNodeId>
-  <id>org.drools.examples.cdss.TreatmentY</id>
-  <name>TreatmentY</name>
-  <version>1.0</version>
-  <type>RuleFlow</type>
-  <packageName>com.sample</packageName>
-</org.drools.ruleflow.core.impl.RuleFlowProcessImpl>
+
+  <connections>
+    <connection from="1" to="2" />
+    <connection from="6" to="3" />
+    <connection from="5" to="3" />
+    <connection from="4" to="3" />
+    <connection from="2" to="4" />
+    <connection from="2" to="5" />
+    <connection from="2" to="6" />
+    <connection from="3" to="7" />
+  </connections>
+
+</process>
