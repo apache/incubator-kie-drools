@@ -26,17 +26,17 @@ public class GuidedDecisionTable implements PortableObject {
 	public String tableName;
 
 	/**
-	 * @gwt.typeArgs <org.drools.brms.client.modeldriven.dt.AttributeCol>
+	 * @gwt.typeArgs <org.drools.brms.client.modeldriven.dt.AttributeCol />
 	 */
 	public List attributeCols = new ArrayList();
 
 	/**
-	 * @gwt.typeArgs <org.drools.brms.client.modeldriven.dt.ConditionCol>
+	 * @gwt.typeArgs <org.drools.brms.client.modeldriven.dt.ConditionCol />
 	 */
 	public List conditionCols = new ArrayList();
 
 	/**
-	 * @gwt.typeArgs <org.drools.brms.client.modeldriven.dt.ActionCol>
+	 * @gwt.typeArgs <org.drools.brms.client.modeldriven.dt.ActionCol />
 	 */
 	public List actionCols = new ArrayList();
 

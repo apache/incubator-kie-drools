@@ -16,7 +16,7 @@ public class FactData implements Fixture {
     public String name;
 
     /**
-     * @gwt.typeArgs <org.drools.brms.client.modeldriven.testing.FactData>
+     * @gwt.typeArgs <org.drools.brms.client.modeldriven.testing.FactData />
      */
     public List fieldData = new ArrayList();
 

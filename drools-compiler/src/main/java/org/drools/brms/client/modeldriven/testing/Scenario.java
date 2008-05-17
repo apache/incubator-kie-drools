@@ -24,7 +24,7 @@ public class Scenario implements PortableObject {
 
 	/**
 	 * global data which must be setup before hand.
-	 * @gwt.typeArgs <org.drools.brms.client.modeldriven.testing.FactData>
+	 * @gwt.typeArgs <org.drools.brms.client.modeldriven.testing.FactData />
 	 */
 	public List globals = new ArrayList();
 
@@ -32,7 +32,7 @@ public class Scenario implements PortableObject {
 	 * Fixtures are parts of the test. They may be assertions, globals, data, execution runs etc.
 	 * Anything really.
 	 *
-	 * @gwt.typeArgs <org.drools.brms.client.modeldriven.testing.Fixture>
+	 * @gwt.typeArgs <org.drools.brms.client.modeldriven.testing.Fixture />
 	 */
 	public List fixtures = new ArrayList();
 
@@ -43,7 +43,7 @@ public class Scenario implements PortableObject {
 
 	/**
 	 * the rules to include or exclude
-	 * @gwt.typeArgs <java.lang.String>
+	 * @gwt.typeArgs <java.lang.String />
 	 */
 	public List rules = new ArrayList();
 
