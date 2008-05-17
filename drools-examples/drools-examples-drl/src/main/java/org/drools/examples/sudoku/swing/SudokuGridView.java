@@ -18,7 +18,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.border.EmptyBorder;
 
 public class SudokuGridView
    extends JComponent
@@ -29,7 +28,6 @@ public class SudokuGridView
    private SudokuGridModel model;
    private GridLayout gridLayout;
    private JTextField textFields[][];
-   private EmptyBorder emptyBorder = new EmptyBorder(0,0,0,0);
    
    public SudokuGridView()
    {
@@ -110,7 +108,7 @@ public class SudokuGridView
    {
       if(getModel().isCellResolved(row, col))
       {
-         textFields[row][col].setText(""+getModel().getPossibleCellValues(row, col).get(0));
+         textFields[row][col].setText(""+getModel().getPossibleCellValues(row, col).iterator().next());
       }
       else
       {
