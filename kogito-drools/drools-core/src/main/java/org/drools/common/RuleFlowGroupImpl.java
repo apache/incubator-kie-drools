@@ -16,11 +16,11 @@ package org.drools.common;
  * limitations under the License.
  */
 
-import java.util.ArrayList;
-import java.util.List;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.drools.spi.Activation;
 import org.drools.util.Iterator;
@@ -190,13 +190,13 @@ public class RuleFlowGroupImpl implements InternalRuleFlowGroup {
 
     public void addRuleFlowGroupListener(RuleFlowGroupListener listener) {
         if (listeners == null) {
-            listeners = new ArrayList<RuleFlowGroupListener>();
+            listeners = new CopyOnWriteArrayList<RuleFlowGroupListener>();
         }
         listeners.add(listener);
     }
 
     public void removeRuleFlowGroupListener(RuleFlowGroupListener listener) {
-        if (listeners == null) {
+        if (listeners != null) {
             listeners.remove(listener);
         }
     }
