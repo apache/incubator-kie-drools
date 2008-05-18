@@ -1,26 +1,21 @@
 package org.drools.marshalling;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 
 import org.drools.InitialFact;
 import org.drools.base.ClassObjectType;
 import org.drools.base.ShadowProxy;
-import org.drools.common.AbstractFactHandleFactory;
 import org.drools.common.AgendaItem;
-import org.drools.common.BinaryHeapQueueAgendaGroup;
 import org.drools.common.DefaultAgenda;
 import org.drools.common.EqualityKey;
 import org.drools.common.InternalFactHandle;
@@ -28,37 +23,35 @@ import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.LogicalDependency;
 import org.drools.common.ObjectStore;
-import org.drools.common.PropagationContextImpl;
 import org.drools.common.RuleFlowGroupImpl;
 import org.drools.common.WorkingMemoryAction;
-import org.drools.marshalling.Placeholders.PlaceholderEntry;
-import org.drools.reteoo.BetaMemory;
-import org.drools.reteoo.BetaNode;
+import org.drools.process.instance.ProcessInstance;
+import org.drools.process.instance.WorkItem;
 import org.drools.reteoo.EvalConditionNode;
 import org.drools.reteoo.ExistsNode;
 import org.drools.reteoo.JoinNode;
-import org.drools.reteoo.LeftInputAdapterNode;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTupleSink;
 import org.drools.reteoo.NotNode;
 import org.drools.reteoo.ObjectTypeNode;
-import org.drools.reteoo.ReteooFactHandleFactory;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.reteoo.RightTuple;
-import org.drools.reteoo.RightTupleSink;
 import org.drools.reteoo.RuleTerminalNode;
-import org.drools.reteoo.EvalConditionNode.EvalMemory;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
-import org.drools.spi.Activation;
+import org.drools.ruleflow.instance.RuleFlowProcessInstance;
 import org.drools.spi.ActivationGroup;
 import org.drools.spi.AgendaGroup;
-import org.drools.spi.FactHandleFactory;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.RuleFlowGroup;
 import org.drools.util.ObjectHashMap;
 import org.drools.util.ObjectHashSet;
-import org.drools.util.ObjectHashSet.ObjectEntry;
+import org.drools.workflow.instance.NodeInstance;
+import org.drools.workflow.instance.node.MilestoneNodeInstance;
+import org.drools.workflow.instance.node.RuleSetNodeInstance;
+import org.drools.workflow.instance.node.SubProcessNodeInstance;
+import org.drools.workflow.instance.node.TimerNodeInstance;
+import org.drools.workflow.instance.node.WorkItemNodeInstance;
 
 public class OutputMarshaller {
     public static void writeSession(MarshallerWriteContext context) throws IOException {
@@ -88,6 +81,10 @@ public class OutputMarshaller {
         } else {
             context.writeBoolean( false );
         }
+        
+        writeProcessInstances( context );
+        
+        writeWorkItems( context );
     }
 
     public static void writeAgenda(MarshallerWriteContext context) throws IOException {
@@ -582,6 +579,76 @@ public class OutputMarshaller {
         stream.writeInt( pc.getDormantActivations() );
 
         stream.writeUTF( pc.getEntryPoint().getEntryPointId() );
+    }
+
+    public static void writeProcessInstances(MarshallerWriteContext context) throws IOException {
+        ObjectOutputStream stream = context.stream;
+
+        Collection<ProcessInstance> processInstances = context.wm.getProcessInstances();
+        for (ProcessInstance processInstance: processInstances) {
+            stream.writeInt( PersisterEnums.PROCESS_INSTANCE );
+            writeProcessInstance( context, (RuleFlowProcessInstance) processInstance );
+        }
+        stream.writeInt( PersisterEnums.END );
+    }
+    
+    public static void writeProcessInstance(MarshallerWriteContext context,
+                                            RuleFlowProcessInstance processInstance) throws IOException {
+        ObjectOutputStream stream = context.stream;
+        stream.writeLong(processInstance.getId());
+        stream.writeUTF(processInstance.getProcessId());
+        stream.writeInt(processInstance.getState());
+        stream.writeLong(processInstance.getNodeInstanceCounter());
+        
+        for (NodeInstance nodeInstance: processInstance.getNodeInstances()) {
+            stream.writeInt( PersisterEnums.NODE_INSTANCE );
+            writeNodeInstance( context, nodeInstance );
+        }
+        stream.writeInt( PersisterEnums.END );
+    }
+    
+    public static void writeNodeInstance(MarshallerWriteContext context,
+                                         NodeInstance nodeInstance) throws IOException {
+        ObjectOutputStream stream = context.stream;
+        stream.writeLong(nodeInstance.getId());
+        stream.writeLong(nodeInstance.getNodeId());
+        if (nodeInstance instanceof RuleSetNodeInstance) {
+            stream.writeInt(PersisterEnums.RULE_SET_NODE_INSTANCE);
+        } else if (nodeInstance instanceof WorkItemNodeInstance) {
+            stream.writeInt(PersisterEnums.WORK_ITEM_NODE_INSTANCE);
+            stream.writeLong(((WorkItemNodeInstance) nodeInstance).getWorkItem().getId());
+        } else if (nodeInstance instanceof SubProcessNodeInstance) {
+            stream.writeInt(PersisterEnums.SUB_PROCESS_NODE_INSTANCE);
+            stream.writeLong(((SubProcessNodeInstance) nodeInstance).getProcessInstanceId());
+        } else if (nodeInstance instanceof MilestoneNodeInstance) {
+            stream.writeInt(PersisterEnums.MILESTONE_NODE_INSTANCE);
+        } else if (nodeInstance instanceof TimerNodeInstance) {
+            stream.writeInt(PersisterEnums.TIMER_NODE_INSTANCE);
+            stream.writeLong(((TimerNodeInstance) nodeInstance).getTimerId());
+        } else {
+            throw new IllegalArgumentException(
+                "Unknown node instance type: " + nodeInstance);
+        }
+    }
+
+    public static void writeWorkItems(MarshallerWriteContext context) throws IOException {
+        ObjectOutputStream stream = context.stream;
+
+        Set<WorkItem> workItems = context.wm.getWorkItemManager().getWorkItems();
+        for (WorkItem workItem: workItems) {
+            stream.writeInt( PersisterEnums.WORK_ITEM );
+            writeWorkItem( context, workItem );
+        }
+        stream.writeInt( PersisterEnums.END );
+    }
+    
+    public static void writeWorkItem(MarshallerWriteContext context,
+                                     WorkItem workItem) throws IOException {
+        ObjectOutputStream stream = context.stream;
+        stream.writeLong(workItem.getId());
+        stream.writeLong(workItem.getProcessInstanceId());
+        stream.writeUTF(workItem.getName());
+        stream.writeInt(workItem.getState());
     }
 
 }

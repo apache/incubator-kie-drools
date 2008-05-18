@@ -1,10 +1,7 @@
 package org.drools.marshalling;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 
@@ -24,6 +21,9 @@ import org.drools.common.PropagationContextImpl;
 import org.drools.common.RuleFlowGroupImpl;
 import org.drools.common.TruthMaintenanceSystem;
 import org.drools.concurrent.ExecutorService;
+import org.drools.process.instance.ProcessInstance;
+import org.drools.process.instance.WorkItem;
+import org.drools.process.instance.impl.WorkItemImpl;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.BetaNode;
 import org.drools.reteoo.EntryPointNode;
@@ -32,14 +32,10 @@ import org.drools.reteoo.ExistsNode;
 import org.drools.reteoo.InitialFactHandle;
 import org.drools.reteoo.InitialFactHandleDummyObject;
 import org.drools.reteoo.JoinNode;
-import org.drools.reteoo.LeftInputAdapterNode;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTupleSink;
-import org.drools.reteoo.LeftTupleSource;
 import org.drools.reteoo.NotNode;
-import org.drools.reteoo.ObjectSink;
 import org.drools.reteoo.ObjectTypeNode;
-import org.drools.reteoo.ReteooFactHandleFactory;
 import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.reteoo.RightTuple;
@@ -51,17 +47,22 @@ import org.drools.rule.EntryPoint;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
+import org.drools.ruleflow.instance.RuleFlowProcessInstance;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.RuleFlowGroup;
-import org.drools.util.BinaryHeapQueue;
-import org.drools.util.Iterator;
-import org.drools.util.ObjectHashMap;
 import org.drools.util.ObjectHashSet;
-import org.drools.util.ObjectHashSet.ObjectEntry;
+import org.drools.workflow.instance.NodeInstance;
+import org.drools.workflow.instance.impl.NodeInstanceImpl;
+import org.drools.workflow.instance.node.EventNodeInstance;
+import org.drools.workflow.instance.node.MilestoneNodeInstance;
+import org.drools.workflow.instance.node.RuleSetNodeInstance;
+import org.drools.workflow.instance.node.SubProcessNodeInstance;
+import org.drools.workflow.instance.node.TimerNodeInstance;
+import org.drools.workflow.instance.node.WorkItemNodeInstance;
 
 public class InputMarshaller {
     public static ReteooStatefulSession readSession(MarshallerReaderContext context,
@@ -102,6 +103,10 @@ public class InputMarshaller {
         if ( context.readBoolean() ) {
             readTruthMaintenanceSystem( context );
         }
+        
+        readProcessInstances( context );
+
+        readWorkItems( context );
 
         return session;
     }
@@ -510,4 +515,95 @@ public class InputMarshaller {
         context.propagationContexts.put( propagationNumber,
                                          pc );
     }
+
+    public static void readProcessInstances(MarshallerReaderContext context) throws IOException {
+        ObjectInputStream stream = context.stream;
+        while ( stream.readInt() == PersisterEnums.PROCESS_INSTANCE ) {
+            readProcessInstance( context );
+        }
+    }
+
+    public static ProcessInstance readProcessInstance(MarshallerReaderContext context) throws IOException {
+        ObjectInputStream stream = context.stream;
+        InternalRuleBase ruleBase = context.ruleBase;
+        InternalWorkingMemory wm = context.wm;
+        
+        RuleFlowProcessInstance processInstance = new RuleFlowProcessInstance();
+        processInstance.setId(stream.readLong());
+        processInstance.setProcess(ruleBase.getProcess(stream.readUTF()));
+        processInstance.setState(stream.readInt());
+        long nodeInstanceCounter = stream.readLong();
+        processInstance.setWorkingMemory(wm);
+        
+        while ( stream.readInt() == PersisterEnums.NODE_INSTANCE ) {
+            readNodeInstance( context, processInstance );
+        }
+        
+        processInstance.internalSetNodeInstanceCounter(nodeInstanceCounter);
+        wm.addProcessInstance(processInstance);
+        return processInstance;
+    }
+    
+    public static NodeInstance readNodeInstance(MarshallerReaderContext context,
+                                                RuleFlowProcessInstance processInstance) throws IOException {
+        ObjectInputStream stream = context.stream;
+        NodeInstanceImpl nodeInstance = null;
+        long id = stream.readLong();
+        long nodeId = stream.readLong();
+        int nodeType = stream.readInt();
+        switch (nodeType) {
+            case PersisterEnums.RULE_SET_NODE_INSTANCE:
+                nodeInstance = new RuleSetNodeInstance();
+                break;
+            case PersisterEnums.WORK_ITEM_NODE_INSTANCE:
+                nodeInstance = new WorkItemNodeInstance();
+                ((WorkItemNodeInstance) nodeInstance)
+                    .internalSetWorkItemId(stream.readLong());
+                break;
+            case PersisterEnums.SUB_PROCESS_NODE_INSTANCE:
+                nodeInstance = new SubProcessNodeInstance();
+                ((SubProcessNodeInstance) nodeInstance)
+                    .internalSetProcessInstanceId(stream.readLong());
+                break;
+            case PersisterEnums.MILESTONE_NODE_INSTANCE:
+                nodeInstance = new MilestoneNodeInstance();
+                break;
+            case PersisterEnums.TIMER_NODE_INSTANCE:
+                nodeInstance = new TimerNodeInstance();
+                ((TimerNodeInstance) nodeInstance)
+                    .internalSetTimerId(stream.readLong());
+                break;
+            default:
+                throw new IllegalArgumentException(
+                    "Unknown node type: " + nodeType);
+        }
+        nodeInstance.setNodeId(nodeId);
+        nodeInstance.setNodeInstanceContainer(processInstance);
+        nodeInstance.setProcessInstance(processInstance);
+        nodeInstance.setId(id);
+        ((EventNodeInstance) nodeInstance).addEventListeners();
+        return nodeInstance;
+    }
+
+    public static void readWorkItems(MarshallerReaderContext context) throws IOException {
+        ObjectInputStream stream = context.stream;
+        while ( stream.readInt() == PersisterEnums.WORK_ITEM ) {
+            readWorkItem( context );
+        }
+    }
+
+    public static WorkItem readWorkItem(MarshallerReaderContext context) throws IOException {
+        ObjectInputStream stream = context.stream;
+        InternalWorkingMemory wm = context.wm;
+        
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setId(stream.readLong());
+        workItem.setProcessInstanceId(stream.readLong());
+        workItem.setName(stream.readUTF());
+        workItem.setState(stream.readInt());
+        
+        wm.getWorkItemManager().internalAddWorkItem(workItem);
+        return workItem;
+    }
+    
 }
