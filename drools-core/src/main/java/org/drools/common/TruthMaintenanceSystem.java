@@ -31,8 +31,8 @@ import java.util.Set;
 
 import org.drools.FactException;
 import org.drools.marshalling.PersisterEnums;
-import org.drools.marshalling.WMSerialisationInContext;
-import org.drools.marshalling.WMSerialisationOutContext;
+import org.drools.marshalling.MarshallerReaderContext;
+import org.drools.marshalling.MarshallerWriteContext;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
@@ -229,7 +229,7 @@ public class TruthMaintenanceSystem {
             this.context = context;
         }
 
-        public LogicalRetractCallback(WMSerialisationInContext context) throws IOException {
+        public LogicalRetractCallback(MarshallerReaderContext context) throws IOException {
             this.tms = context.wm.getTruthMaintenanceSystem();            
             
             this.handle = context.handles.get( context.readInt() );
@@ -247,7 +247,7 @@ public class TruthMaintenanceSystem {
             }
         }
 
-        public void write(WMSerialisationOutContext context) throws IOException {
+        public void write(MarshallerWriteContext context) throws IOException {
             context.writeInt( WorkingMemoryAction.LogicalRetractCallback );
             
             context.writeInt( this.handle.getId() );

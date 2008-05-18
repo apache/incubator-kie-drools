@@ -12,20 +12,20 @@ import org.drools.concurrent.ExecutorService;
 import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.spi.GlobalResolver;
 
-public class Marshaller {
+public class DefaultMarshaller implements Marshaller {
     GlobalResolver                     globalResolver;
     private RuleBaseConfiguration      config;
     PlaceholderResolverStrategyFactory factory;
 
-    public Marshaller() {
+    public DefaultMarshaller() {
         this( null );
     }
     
-    public Marshaller(RuleBaseConfiguration config) {
+    public DefaultMarshaller(RuleBaseConfiguration config) {
         this( config, null);
     }    
 
-    public Marshaller(RuleBaseConfiguration config,
+    public DefaultMarshaller(RuleBaseConfiguration config,
                       PlaceholderResolverStrategyFactory factory) {
         this.config = (config != null) ? config : new RuleBaseConfiguration();
         
@@ -39,17 +39,20 @@ public class Marshaller {
         }
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.marshalling.Marshaller#read(java.io.InputStream, org.drools.common.InternalRuleBase, int, org.drools.concurrent.ExecutorService)
+     */
     public ReteooStatefulSession read(final InputStream stream,
                                       final InternalRuleBase ruleBase,
                                       final int id,
                                       final ExecutorService executor) throws IOException,
                                                                      ClassNotFoundException {
-        WMSerialisationInContext context = new WMSerialisationInContext( stream,
+        MarshallerReaderContext context = new MarshallerReaderContext( stream,
                                                                          ruleBase,
                                                                          RuleBaseNodes.getNodeMap( ruleBase ),
                                                                          factory );
 
-        ReteooStatefulSession session = InputPersister.readSession( context,
+        ReteooStatefulSession session = InputMarshaller.readSession( context,
                                            id,
                                            executor );
         context.close();
@@ -57,15 +60,18 @@ public class Marshaller {
         
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.marshalling.Marshaller#write(java.io.OutputStream, org.drools.common.InternalRuleBase, org.drools.StatefulSession)
+     */
     public void write(final OutputStream stream,
                       final InternalRuleBase ruleBase,
                       final StatefulSession session) throws IOException {
-        WMSerialisationOutContext context = new WMSerialisationOutContext( stream,
+        MarshallerWriteContext context = new MarshallerWriteContext( stream,
                                                                            ruleBase,
                                                                            (InternalWorkingMemory) session,
                                                                            RuleBaseNodes.getNodeMap( ruleBase ),
                                                                            this.factory );
-        OutputPersister.writeSession( context );
+        OutputMarshaller.writeSession( context );
         context.close();
     }
 

@@ -25,7 +25,7 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.StatefulSession;
 import org.drools.audit.WorkingMemoryInMemoryLogger;
-import org.drools.marshalling.WMSerialisationInContext;
+import org.drools.marshalling.MarshallerReaderContext;
 import org.drools.objenesis.Objenesis;
 import org.drools.process.core.Process;
 import org.drools.reteoo.Rete;

@@ -18,8 +18,8 @@ import org.drools.reteoo.RightTuple;
 import org.drools.rule.EntryPoint;
 import org.drools.spi.PropagationContext;
 
-public class WMSerialisationInContext extends ObjectInputStream {
-    public final WMSerialisationInContext           stream;
+public class MarshallerReaderContext extends ObjectInputStream {
+    public final MarshallerReaderContext           stream;
     public final InternalRuleBase                   ruleBase;
     public InternalWorkingMemory                    wm;
     public final Map<Integer, BaseNode>             sinks;
@@ -34,7 +34,7 @@ public class WMSerialisationInContext extends ObjectInputStream {
 
     public final Map<Long, PropagationContext>      propagationContexts;
 
-    public WMSerialisationInContext(InputStream stream,
+    public MarshallerReaderContext(InputStream stream,
                                     InternalRuleBase ruleBase,
                                     Map<Integer, BaseNode> sinks,
                                     PlaceholderResolverStrategyFactory resolverStrategyFactory) throws IOException {

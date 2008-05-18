@@ -12,7 +12,7 @@ import org.drools.common.RuleFlowGroupImpl.DeactivateCallback;
 import org.drools.common.TruthMaintenanceSystem;
 
 public class PersisterHelper {
-    public static WorkingMemoryAction readWorkingMemoryAction(WMSerialisationInContext context) throws IOException {
+    public static WorkingMemoryAction readWorkingMemoryAction(MarshallerReaderContext context) throws IOException {
         int type = context.readInt();
         switch(type) {
             case WorkingMemoryAction.WorkingMemoryReteAssertAction : {
@@ -31,7 +31,7 @@ public class PersisterHelper {
         return null;
     }
     
-    public void write(WMSerialisationOutContext context) throws IOException {
+    public void write(MarshallerWriteContext context) throws IOException {
         
     }
 }
