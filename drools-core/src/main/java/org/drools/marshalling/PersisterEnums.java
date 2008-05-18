@@ -25,4 +25,14 @@ public class PersisterEnums {
     
     public static final int RULE_FLOW_GROUP        = 15;
     public static final int RULE_FLOW_NODE         = 16;
+    
+    public static final int PROCESS_INSTANCE          = 17;
+    public static final int NODE_INSTANCE             = 18;
+    public static final int WORK_ITEM                 = 19;
+    public static final int RULE_SET_NODE_INSTANCE    = 20;
+    public static final int WORK_ITEM_NODE_INSTANCE   = 21;
+    public static final int SUB_PROCESS_NODE_INSTANCE = 22;
+    public static final int MILESTONE_NODE_INSTANCE   = 23;
+    public static final int TIMER_NODE_INSTANCE       = 24;
+
 }
