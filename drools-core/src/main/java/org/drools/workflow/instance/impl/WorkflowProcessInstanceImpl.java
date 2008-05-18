@@ -110,6 +110,14 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
         }
         return nodeInstance;
     }
+    
+    public long getNodeInstanceCounter() {
+    	return nodeInstanceCounter;
+    }
+    
+    public void internalSetNodeInstanceCounter(long nodeInstanceCounter) {
+    	this.nodeInstanceCounter = nodeInstanceCounter;
+    }
 
     public Agenda getAgenda() {
         if ( getWorkingMemory() == null ) {

@@ -1,10 +1,9 @@
 package org.drools.process.instance;
 
-import java.io.Serializable;
 import java.io.Externalizable;
 import java.io.IOException;
-import java.io.ObjectOutput;
 import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -49,13 +48,17 @@ public class WorkItemManager implements Externalizable {
 
 	public void internalExecuteWorkItem(WorkItem workItem) {
 	    ((WorkItemImpl) workItem).setId(++workItemCounter);
-	    workItems.put(new Long(workItem.getId()), workItem);
+	    internalAddWorkItem(workItem);
 	    WorkItemHandler handler = (WorkItemHandler) this.workItemHandlers.get(workItem.getName());
 	    if (handler != null) {
 	        handler.executeWorkItem(workItem, this);
 	    } else {
 	        System.err.println("Could not find work item handler for " + workItem.getName());
 	    }
+	}
+	
+	public void internalAddWorkItem(WorkItem workItem) {
+	    workItems.put(new Long(workItem.getId()), workItem);
 	}
 
     public void internalAbortWorkItem(long id) {
@@ -73,7 +76,10 @@ public class WorkItemManager implements Externalizable {
     
 	public Set<WorkItem> getWorkItems() {
 	    return new HashSet<WorkItem>(workItems.values());
-
+	}
+	
+	public WorkItem getWorkItem(long id) {
+		return workItems.get(id);
 	}
 
     public void completeWorkItem(long id, Map<String, Object> results) {

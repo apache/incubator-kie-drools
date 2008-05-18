@@ -62,6 +62,10 @@ public class SubProcessNodeInstance extends EventNodeInstance implements RuleFlo
     public long getProcessInstanceId() {
     	return processInstanceId;
     }
+    
+    public void internalSetProcessInstanceId(long processInstanceId) {
+    	this.processInstanceId = processInstanceId;
+    }
 
     public void addEventListeners() {
         super.addEventListeners();
