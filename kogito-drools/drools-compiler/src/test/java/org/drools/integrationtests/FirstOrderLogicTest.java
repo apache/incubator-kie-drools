@@ -45,15 +45,6 @@ public class FirstOrderLogicTest extends TestCase {
                                             config );
     }
 
-    private StatefulSession serializeWorkingMemory(RuleBase ruleBase,
-                                                   StatefulSession wm) throws IOException,
-                                                                      ClassNotFoundException {
-        byte[] serializedSession = DroolsStreamUtils.streamOut( wm );
-        wm.dispose();
-        wm = ruleBase.newStatefulSession( new ByteArrayInputStream( serializedSession ) );
-        return wm;
-    }
-
     public void testCollect() throws Exception {
 
         // read in the source

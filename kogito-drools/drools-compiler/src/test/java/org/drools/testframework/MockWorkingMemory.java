@@ -18,6 +18,7 @@ import org.drools.FactHandle;
 import org.drools.ObjectFilter;
 import org.drools.QueryResults;
 import org.drools.RuleBase;
+import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
@@ -518,6 +519,11 @@ public class MockWorkingMemory implements InternalWorkingMemory {
     }
 
     public ObjectTypeConfigurationRegistry getObjectTypeConfigurationRegistry() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public InternalFactHandle getInitialFactHandle() {
         // TODO Auto-generated method stub
         return null;
     }
