@@ -24,6 +24,8 @@ import java.io.ObjectOutput;
 import org.drools.TemporalSession;
 import org.drools.common.InternalRuleBase;
 import org.drools.concurrent.ExecutorService;
+import org.drools.marshalling.WMSerialisationInContext;
+import org.drools.marshalling.WMSerialisationOutContext;
 import org.drools.temporal.SessionClock;
 
 /**
@@ -39,9 +41,6 @@ public class ReteooTemporalSession<T extends SessionClock> extends ReteooStatefu
     private static final long serialVersionUID = -2129661675928809928L;
     private T                 sessionClock;
 
-    public ReteooTemporalSession() {
-    }
-
     public ReteooTemporalSession(int id,
                                  InternalRuleBase ruleBase,
                                  ExecutorService executorService,
@@ -51,17 +50,6 @@ public class ReteooTemporalSession<T extends SessionClock> extends ReteooStatefu
                executorService );
         this.sessionClock = clock;
         this.sessionClock.setSession( this );
-    }
-
-    public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
-        super.readExternal( in );
-        sessionClock = (T) in.readObject();
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal( out );
-        out.writeObject( sessionClock );
     }
 
     public T getSessionClock() {

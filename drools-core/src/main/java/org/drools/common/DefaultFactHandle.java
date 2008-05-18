@@ -50,23 +50,6 @@ public class DefaultFactHandle
     private RightTuple        rightTuple;
     private LeftTuple         leftTuple;    
 
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeInt(id);
-        out.writeLong(recency);
-        out.writeObject(object);
-        out.writeObject(key);
-        out.writeInt(objectHashCode);
-        out.writeBoolean(shadowFact);
-    }
-
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        id  = in.readInt();
-        recency = in.readLong();
-        object  = in.readObject();
-        key     = (EqualityKey)in.readObject();
-        objectHashCode  = in.readInt();
-        shadowFact  = in.readBoolean();
-    }
     // ----------------------------------------------------------------------
     // Constructors
     // ----------------------------------------------------------------------

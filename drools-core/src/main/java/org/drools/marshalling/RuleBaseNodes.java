@@ -1,4 +1,4 @@
-package org.drools.persister;
+package org.drools.marshalling;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -56,7 +56,9 @@ public class RuleBaseNodes {
                                         LeftTupleSink sink,
                                         Map<Integer, BaseNode> nodes) {
         if ( sink instanceof LeftTupleSource ) {
-            for ( LeftTupleSink leftTupleSink : ((LeftTupleSource) sink).getSinkPropagator().getSinks() ) {
+            nodes.put( sink.getId(),
+                       (LeftTupleSource) sink );            
+            for ( LeftTupleSink leftTupleSink : ((LeftTupleSource) sink).getSinkPropagator().getSinks() ) {                
                 addLeftTupleSink( ruleBase,
                                   leftTupleSink,
                                   nodes );

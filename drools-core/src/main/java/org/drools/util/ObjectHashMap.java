@@ -133,7 +133,8 @@ public class ObjectHashMap extends AbstractHashTable implements Externalizable {
 
     public static class ObjectEntry
         implements
-        Entry {
+        Entry,
+        Externalizable {
 
         private static final long serialVersionUID = 400L;
 

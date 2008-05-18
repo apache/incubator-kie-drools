@@ -165,7 +165,7 @@ public final class RuleTerminalNode extends BaseNode
     public void assertLeftTuple(final LeftTuple tuple,
                                 final PropagationContext context,
                                 final InternalWorkingMemory workingMemory) {
-        assertTuple( tuple,
+        assertLeftTuple( tuple,
                      context,
                      workingMemory,
                      true );
@@ -182,7 +182,7 @@ public final class RuleTerminalNode extends BaseNode
      * @throws AssertionException
      *             If an error occurs while asserting.
      */
-    public void assertTuple(final LeftTuple tuple,
+    public void assertLeftTuple(final LeftTuple tuple,
                             final PropagationContext context,
                             final InternalWorkingMemory workingMemory,
                             final boolean fireActivationCreated) {
@@ -475,8 +475,8 @@ public final class RuleTerminalNode extends BaseNode
 
             final TerminalNodeMemory memory = (TerminalNodeMemory) workingMemory.getNodeMemory( this );
             final Iterator it = memory.getTupleMemory().iterator();
-            for ( LeftTuple tuple = (LeftTuple) it.next(); tuple != null; tuple = (LeftTuple) it.next() ) {
-                final Activation activation = tuple.getActivation();
+            for ( LeftTuple leftTuple = (LeftTuple) it.next(); leftTuple != null; leftTuple = (LeftTuple) it.next() ) {
+                final Activation activation = leftTuple.getActivation();
 
                 if ( activation.isActivated() ) {
                     activation.remove();
@@ -492,6 +492,8 @@ public final class RuleTerminalNode extends BaseNode
                 workingMemory.getTruthMaintenanceSystem().removeLogicalDependencies( activation,
                                                                                      propagationContext,
                                                                                      this.rule );
+                leftTuple.unlinkFromLeftParent();
+                leftTuple.unlinkFromRightParent();
             }
 
             workingMemory.executeQueuedActions();

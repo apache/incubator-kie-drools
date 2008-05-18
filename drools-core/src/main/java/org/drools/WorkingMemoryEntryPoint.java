@@ -25,9 +25,7 @@ import java.io.Serializable;
  *  
  * @author etirelli
  */
-public interface WorkingMemoryEntryPoint
-    extends
-    Serializable {
+public interface WorkingMemoryEntryPoint {
     /**
      * Assert a fact.
      * 

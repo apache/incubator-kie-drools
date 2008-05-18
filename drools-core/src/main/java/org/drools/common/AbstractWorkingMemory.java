@@ -62,6 +62,12 @@ import org.drools.event.RuleFlowEventListener;
 import org.drools.event.RuleFlowEventSupport;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.event.WorkingMemoryEventSupport;
+import org.drools.marshalling.InputPersister;
+import org.drools.marshalling.OutputPersister;
+import org.drools.marshalling.PersisterEnums;
+import org.drools.marshalling.PersisterHelper;
+import org.drools.marshalling.WMSerialisationInContext;
+import org.drools.marshalling.WMSerialisationOutContext;
 import org.drools.process.core.Process;
 import org.drools.process.core.context.variable.Variable;
 import org.drools.process.core.context.variable.VariableScope;
@@ -71,9 +77,12 @@ import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.process.instance.timer.TimerManager;
 import org.drools.reteoo.EntryPointNode;
+import org.drools.reteoo.InitialFactHandle;
+import org.drools.reteoo.InitialFactHandleDummyObject;
 import org.drools.reteoo.LIANodePropagation;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ObjectTypeConf;
+import org.drools.reteoo.ReteooFactHandleFactory;
 import org.drools.rule.Declaration;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
@@ -99,8 +108,7 @@ public abstract class AbstractWorkingMemory
     implements
     InternalWorkingMemoryActions,
     EventSupport,
-    PropertyChangeListener,
-    Externalizable {
+    PropertyChangeListener {
     // ------------------------------------------------------------
     // Constants
     // ------------------------------------------------------------
@@ -113,26 +121,26 @@ public abstract class AbstractWorkingMemory
     protected long                                      id;
 
     /** The arguments used when adding/removing a property change listener. */
-    protected Object[]                                  addRemovePropertyChangeListenerArgs           = new Object[]{this};
+    protected Object[]                                  addRemovePropertyChangeListenerArgs;
 
     /** The actual memory for the <code>JoinNode</code>s. */
     protected NodeMemories                              nodeMemories;
 
     protected ObjectStore                               objectStore;
 
-    protected Map                                       queryResults                                  = Collections.EMPTY_MAP;
+    protected Map                                       queryResults;
 
     /** Global values which are associated with this memory. */
     protected GlobalResolver                            globalResolver;
 
     /** The eventSupport */
-    protected WorkingMemoryEventSupport                 workingMemoryEventSupport                     = new WorkingMemoryEventSupport();
+    protected WorkingMemoryEventSupport                 workingMemoryEventSupport;
 
-    protected AgendaEventSupport                        agendaEventSupport                            = new AgendaEventSupport();
+    protected AgendaEventSupport                        agendaEventSupport;
 
-    protected RuleFlowEventSupport                      workflowEventSupport                          = new RuleFlowEventSupport();
+    protected RuleFlowEventSupport                      workflowEventSupport;
 
-    protected List                                      __ruleBaseEventListeners                      = new LinkedList();
+    protected List                                      __ruleBaseEventListeners;
 
     /** The <code>RuleBase</code> with which this memory is associated. */
     protected transient InternalRuleBase                ruleBase;
@@ -144,11 +152,11 @@ public abstract class AbstractWorkingMemory
     /** Rule-firing agenda. */
     protected DefaultAgenda                             agenda;
 
-    protected Queue<WorkingMemoryAction>                actionQueue                                   = new LinkedList<WorkingMemoryAction>();
+    protected Queue<WorkingMemoryAction>                actionQueue;
 
     protected volatile boolean                          evaluatingActionQueue;
 
-    protected ReentrantLock                             lock                                          = new ReentrantLock();
+    protected ReentrantLock                             lock;
 
     protected boolean                                   discardOnLogicalOverride;
 
@@ -161,14 +169,14 @@ public abstract class AbstractWorkingMemory
     private boolean                                     maintainTms;
     private boolean                                     sequential;
 
-    private List                                        liaPropagations                               = Collections.EMPTY_LIST;
+    private List                                        liaPropagations;
 
     /** Flag to determine if a rule is currently being fired. */
     protected volatile boolean                          firing;
 
     protected volatile boolean                          halt;
 
-    private Map                                         processInstances                              = new HashMap();
+    private Map                                         processInstances;
 
     private int                                         processCounter;
 
@@ -176,9 +184,9 @@ public abstract class AbstractWorkingMemory
 
     private TimerManager                                timerManager;
 
-    private Map<String, ProcessInstanceFactory>         processInstanceFactories                      = new HashMap();
+    private Map<String, ProcessInstanceFactory>         processInstanceFactories;
 
-    private TimeMachine                                 timeMachine                                   = new TimeMachine();
+    private TimeMachine                                 timeMachine;
 
     protected transient ObjectTypeConfigurationRegistry typeConfReg;
 
@@ -186,6 +194,8 @@ public abstract class AbstractWorkingMemory
     protected transient EntryPointNode                  entryPointNode;
 
     protected Map<String, WorkingMemoryEntryPoint>      entryPoints;
+
+    protected InternalFactHandle                        initialFactHandle;
 
     // ------------------------------------------------------------
     // Constructors
@@ -203,12 +213,46 @@ public abstract class AbstractWorkingMemory
     public AbstractWorkingMemory(final int id,
                                  final InternalRuleBase ruleBase,
                                  final FactHandleFactory handleFactory) {
+        this( id,
+              ruleBase,
+              handleFactory,
+              null,
+              0 );
+    }
+
+    public AbstractWorkingMemory(int id,
+                                 InternalRuleBase ruleBase,
+                                 FactHandleFactory handleFactory,
+                                 InitialFactHandle initialFactHandle,
+                                 long propagationContext) {
         this.id = id;
         this.ruleBase = ruleBase;
         this.handleFactory = handleFactory;
         this.globalResolver = new MapGlobalResolver();
         this.maintainTms = this.ruleBase.getConfiguration().isMaintainTms();
         this.sequential = this.ruleBase.getConfiguration().isSequential();
+
+        if ( initialFactHandle == null ) {
+            this.initialFactHandle = new InitialFactHandle( handleFactory.newFactHandle( new InitialFactHandleDummyObject(),
+                                                                                         null,
+                                                                                         this ) );
+        } else {
+            this.initialFactHandle = initialFactHandle;
+        }
+
+        this.actionQueue = new LinkedList<WorkingMemoryAction>();
+
+        this.addRemovePropertyChangeListenerArgs = new Object[]{this};
+        this.queryResults = Collections.EMPTY_MAP;
+        this.workingMemoryEventSupport = new WorkingMemoryEventSupport();
+        this.agendaEventSupport = new AgendaEventSupport();
+        this.workflowEventSupport = new RuleFlowEventSupport();
+        this.__ruleBaseEventListeners = new LinkedList();
+        this.lock = new ReentrantLock();
+        this.liaPropagations = Collections.EMPTY_LIST;
+        this.processInstances = new HashMap();
+        this.processInstanceFactories = new HashMap();
+        this.timeMachine = new TimeMachine();
 
         this.nodeMemories = new ConcurrentNodeMemories( this.ruleBase );
 
@@ -220,7 +264,7 @@ public abstract class AbstractWorkingMemory
 
         final RuleBaseConfiguration conf = this.ruleBase.getConfiguration();
 
-        this.propagationIdCounter = new AtomicLong();
+        this.propagationIdCounter = new AtomicLong( propagationContext );
 
         this.objectStore = new SingleThreadedObjectStore( conf,
                                                           this.lock );
@@ -240,78 +284,6 @@ public abstract class AbstractWorkingMemory
 
         this.entryPoint = EntryPoint.DEFAULT;
         initTransient();
-    }
-
-    public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
-        id = in.readLong();
-        evaluatingActionQueue = in.readBoolean();
-        discardOnLogicalOverride = in.readBoolean();
-        propagationIdCounter = (AtomicLong) in.readObject();
-        maintainTms = in.readBoolean();
-        sequential = in.readBoolean();
-        firing = in.readBoolean();
-        halt = in.readBoolean();
-        processCounter = in.readInt();
-        addRemovePropertyChangeListenerArgs = (Object[]) in.readObject();
-        nodeMemories = (NodeMemories) in.readObject();
-        objectStore = (ObjectStore) in.readObject();
-        queryResults = (Map) in.readObject();
-        globalResolver = (GlobalResolver) in.readObject();
-        workingMemoryEventSupport = (WorkingMemoryEventSupport) in.readObject();
-        agendaEventSupport = (AgendaEventSupport) in.readObject();
-        workflowEventSupport = (RuleFlowEventSupport) in.readObject();
-        __ruleBaseEventListeners = (List) in.readObject();
-        ruleBase = (InternalRuleBase) in.readObject();
-        handleFactory = (FactHandleFactory) in.readObject();
-        tms = (TruthMaintenanceSystem) in.readObject();
-        agenda = (DefaultAgenda) in.readObject();
-        lock = (ReentrantLock) in.readObject();
-        actionQueue = (Queue<WorkingMemoryAction>) in.readObject();
-        liaPropagations = (List) in.readObject();
-        processInstances = (Map) in.readObject();
-        workItemManager = (WorkItemManager) in.readObject();
-        processInstanceFactories = (Map<String, ProcessInstanceFactory>) in.readObject();
-        timeMachine = (TimeMachine) in.readObject();
-        entryPoint = (EntryPoint) in.readObject();
-        entryPointNode = (EntryPointNode) in.readObject();
-        entryPoints = (Map<String, WorkingMemoryEntryPoint>) in.readObject();
-        initTransient();
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeLong( id );
-        out.writeBoolean( evaluatingActionQueue );
-        out.writeBoolean( discardOnLogicalOverride );
-        out.writeObject( propagationIdCounter );
-        out.writeBoolean( maintainTms );
-        out.writeBoolean( sequential );
-        out.writeBoolean( firing );
-        out.writeBoolean( halt );
-        out.writeInt( processCounter );
-        out.writeObject( addRemovePropertyChangeListenerArgs );
-        out.writeObject( nodeMemories );
-        out.writeObject( objectStore );
-        out.writeObject( queryResults );
-        out.writeObject( globalResolver );
-        out.writeObject( workingMemoryEventSupport );
-        out.writeObject( agendaEventSupport );
-        out.writeObject( workflowEventSupport );
-        out.writeObject( __ruleBaseEventListeners );
-        out.writeObject( ruleBase );
-        out.writeObject( handleFactory );
-        out.writeObject( tms );
-        out.writeObject( agenda );
-        out.writeObject( lock );
-        out.writeObject( actionQueue );
-        out.writeObject( liaPropagations );
-        out.writeObject( processInstances );
-        out.writeObject( workItemManager );
-        out.writeObject( processInstanceFactories );
-        out.writeObject( timeMachine );
-        out.writeObject( entryPoint );
-        out.writeObject( entryPointNode );
-        out.writeObject( entryPoints );
     }
 
     // ------------------------------------------------------------
@@ -1095,7 +1067,7 @@ public abstract class AbstractWorkingMemory
             this.objectStore.removeHandle( handle );
 
             this.handleFactory.destroyFactHandle( handle );
-
+            
             executeQueuedActions();
         } finally {
             this.lock.unlock();
@@ -1236,6 +1208,7 @@ public abstract class AbstractWorkingMemory
             propagationContext.clearRetractedTuples();
 
             executeQueuedActions();
+
         } finally {
             this.lock.unlock();
         }
@@ -1362,13 +1335,17 @@ public abstract class AbstractWorkingMemory
             if ( !this.actionQueue.isEmpty() && !evaluatingActionQueue ) {
                 evaluatingActionQueue = true;
                 WorkingMemoryAction action = null;
-    
+
                 while ( (action = actionQueue.poll()) != null ) {
                     action.execute( this );
                 }
                 evaluatingActionQueue = false;
             }
         }
+    }
+
+    public Queue<WorkingMemoryAction> getActionQueue() {
+        return this.actionQueue;
     }
 
     public void queueWorkingMemoryAction(final WorkingMemoryAction action) {
@@ -1449,6 +1426,10 @@ public abstract class AbstractWorkingMemory
 
     public long getNextPropagationIdCounter() {
         return this.propagationIdCounter.incrementAndGet();
+    }
+
+    public long getPropagationIdCounter() {
+        return this.propagationIdCounter.get();
     }
 
     public Lock getLock() {
@@ -1636,78 +1617,44 @@ public abstract class AbstractWorkingMemory
         return wmEntryPoint;
     }
 
-    // protected static class EntryPointInterfaceImpl
-    // implements
-    // EntryPointInterface {
-    //
-    // private static final long serialVersionUID = 2917871170743358801L;
-    //
-    // private final EntryPoint entryPoint;
-    // private final AbstractWorkingMemory wm;
-    //
-    // public EntryPointInterfaceImpl(EntryPoint entryPoint,
-    // AbstractWorkingMemory wm) {
-    // this.entryPoint = entryPoint;
-    // this.wm = wm;
-    // }
-    //
-    // public FactHandle insert(Object object) throws FactException {
-    // return wm.insert( this.entryPoint,
-    // object, /* Not-Dynamic */
-    // false,
-    // false,
-    // null,
-    // null );
-    // }
-    //
-    // public FactHandle insert(Object object,
-    // boolean dynamic) throws FactException {
-    // return wm.insert( this.entryPoint,
-    // object, /* Not-Dynamic */
-    // dynamic,
-    // false,
-    // null,
-    // null );
-    // }
-    //
-    // public void modifyInsert(FactHandle factHandle,
-    // Object object) {
-    // wm.modifyInsert( this.entryPoint,
-    // factHandle,
-    // object,
-    // null,
-    // null );
-    // }
-    //
-    // public void modifyRetract(FactHandle factHandle) {
-    // wm.modifyRetract( this.entryPoint,
-    // factHandle,
-    // null,
-    // null );
-    // }
-    //
-    // public void retract(FactHandle handle) throws FactException {
-    // wm.retract( this.entryPoint,
-    // handle,
-    // true,
-    // true,
-    // null,
-    // null );
-    // }
-    //
-    // public void update(FactHandle handle,
-    // Object object) throws FactException {
-    // wm.update( this.entryPoint,
-    // handle,
-    // object,
-    // null,
-    // null );
-    // }
-    //
-    // }
-
     public ObjectTypeConfigurationRegistry getObjectTypeConfigurationRegistry() {
         return this.typeConfReg;
     }
+
+    public InternalFactHandle getInitialFactHandle() {
+        return this.initialFactHandle;
+    }
+
+    public void setInitialFactHandle(InternalFactHandle initialFactHandle) {
+        this.initialFactHandle = initialFactHandle;
+    }
+
+    //    public static class FactHandleInvalidation implements WorkingMemoryAction {
+    //        private final InternalFactHandle handle;
+    //        
+    //        public FactHandleInvalidation(InternalFactHandle handle) {
+    //            this.handle = handle;
+    //        }
+    //
+    //        public void execute(InternalWorkingMemory workingMemory) {
+    //            workingMemory.getFactHandleFactory().destroyFactHandle( handle );
+    //        }
+    //
+    //        public void write(WMSerialisationOutContext context) throws IOException {
+    //           context.writeInt( handle.getId() );
+    //        }
+    //
+    //        public void readExternal(ObjectInput in) throws IOException,
+    //                                                ClassNotFoundException {
+    //            // TODO Auto-generated method stub
+    //            
+    //        }
+    //
+    //        public void writeExternal(ObjectOutput out) throws IOException {
+    //            // TODO Auto-generated method stub
+    //            
+    //        }
+    //        
+    //    }
 
 }

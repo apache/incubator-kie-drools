@@ -44,7 +44,7 @@ public class EqualityKey
     private InternalFactHandle handle;
 
     /** this is always lazily maintainned  and deleted  when empty to minimise memory consumption */
-    private List               instances;
+    private List<InternalFactHandle>               instances;
 
     /** This is cached in the constructor from the first added Object */
     private int          hashCode;
@@ -86,13 +86,13 @@ public class EqualityKey
         return this.handle;
     }
 
-    public List getOtherFactHandle() {
+    public List<InternalFactHandle> getOtherFactHandle() {
         return this.instances;
     }
 
     public void addFactHandle(final InternalFactHandle handle) {
         if ( this.instances == null ) {
-            this.instances = new ArrayList();
+            this.instances = new ArrayList<InternalFactHandle>();
         }
         this.instances.add( handle );
     }

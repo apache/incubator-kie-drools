@@ -16,20 +16,30 @@ package org.drools.common;
  * limitations under the License.
  */
 
+import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.Externalizable;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
 import org.drools.FactException;
+import org.drools.marshalling.PersisterEnums;
+import org.drools.marshalling.WMSerialisationInContext;
+import org.drools.marshalling.WMSerialisationOutContext;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
+import org.drools.spi.AgendaGroup;
 import org.drools.spi.PropagationContext;
 import org.drools.util.ObjectHashMap;
 import org.drools.util.PrimitiveLongMap;
+import org.drools.util.ObjectHashMap.ObjectEntry;
 import org.w3c.dom.views.AbstractView;
 
 /**
@@ -42,15 +52,13 @@ import org.w3c.dom.views.AbstractView;
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  *
  */
-public class TruthMaintenanceSystem
-    implements
-    Externalizable {
+public class TruthMaintenanceSystem {
 
-    private static final long           serialVersionUID = 400L;
+    private static final long     serialVersionUID = 400L;
 
     private AbstractWorkingMemory workingMemory;
 
-    private PrimitiveLongMap      justifiedMap;
+    private ObjectHashMap         justifiedMap;
 
     private ObjectHashMap         assertMap;
 
@@ -60,25 +68,81 @@ public class TruthMaintenanceSystem
     public TruthMaintenanceSystem(final AbstractWorkingMemory workingMemory) {
         this.workingMemory = workingMemory;
 
-        this.justifiedMap = new PrimitiveLongMap( 8,
-                                                  32 );
+        this.justifiedMap = new ObjectHashMap();
         this.assertMap = new ObjectHashMap();
         this.assertMap.setComparator( EqualityKeyComparator.getInstance() );
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        workingMemory   = (AbstractWorkingMemory)in.readObject();
-        justifiedMap   = (PrimitiveLongMap)in.readObject();
-        assertMap   = (ObjectHashMap)in.readObject();
-    }
+    //    public void write(WMSerialisationOutContext context) throws IOException {
+    //        ObjectOutputStream stream = context.stream;
+    //        
+    //        EqualityKey[] keys = new EqualityKey[ this.assertMap.size() ];
+    //        org.drools.util.Iterator it = this.assertMap.iterator();
+    //        int i = 0;
+    //        for ( ObjectEntry entry = ( ObjectEntry ) it.next(); entry != null; entry = ( ObjectEntry ) it.next() ) {
+    //            EqualityKey key = ( EqualityKey ) entry.getKey();
+    //            keys[i++] = key;
+    //        }
+    //        
+    //        Arrays.sort( keys, EqualityKeySorter.instance );
+    //        
+    //        // write the assert map of Equality keys
+    //        for ( EqualityKey key : keys ) {
+    //            stream.writeInt( PersisterEnums.EQUALITY_KEY );
+    //            stream.writeInt( key.getStatus() );
+    //            InternalFactHandle handle = key.getFactHandle();
+    //            stream.writeInt( handle.getId() );
+    //            context.out.println( "EqualityKey int:" + key.getStatus() + " int:" + handle.getId() );
+    //            if ( key.getOtherFactHandle() != null && !key.getOtherFactHandle().isEmpty() ) {
+    //                for ( InternalFactHandle handle2 : key.getOtherFactHandle() ) {
+    //                    stream.writeInt( PersisterEnums.FACT_HANDLE );
+    //                    stream.writeInt( handle2.getId() );
+    //                    context.out.println( "OtherHandle int:" +  handle2.getId() );
+    //                }
+    //            }
+    //            stream.writeInt( PersisterEnums.END );
+    //        }
+    //        stream.writeInt( PersisterEnums.END );        
+    //    }
+    //    
+    //    public static class EqualityKeySorter implements Comparator<EqualityKey> {
+    //        public static final EqualityKeySorter instance = new EqualityKeySorter();
+    //        public int compare(EqualityKey key1,
+    //                           EqualityKey key2) {
+    //            return key1.getFactHandle().getId() - key2.getFactHandle().getId();
+    //        }        
+    //    }        
+    //    
+    //    public void read(WMSerialisationInContext context) throws IOException {
+    //        ObjectInputStream stream = context.stream;
+    //        
+    //        while ( stream.readInt() == PersisterEnums.EQUALITY_KEY ) {
+    //            int status = stream.readInt();
+    //            InternalFactHandle handle = ( InternalFactHandle ) context.handles.get( stream.readInt() );
+    //            EqualityKey key = new EqualityKey(handle, status);     
+    //            handle.setEqualityKey( key );
+    //            while ( stream.readInt() == PersisterEnums.FACT_HANDLE ) {
+    //                handle = ( InternalFactHandle ) context.wm.getFactHandle( stream.readInt() );
+    //                key.addFactHandle( handle );
+    //                handle.setEqualityKey( key );
+    //            } 
+    //            put( key );
+    //        }        
+    //    }
 
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(workingMemory);
-        out.writeObject(justifiedMap);
-        out.writeObject(assertMap);
-    }
+    //    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+    //        workingMemory   = (AbstractWorkingMemory)in.readObject();
+    //        justifiedMap   = (PrimitiveLongMap)in.readObject();
+    //        assertMap   = (ObjectHashMap)in.readObject();
+    //    }
+    //
+    //    public void writeExternal(ObjectOutput out) throws IOException {
+    //        out.writeObject(workingMemory);
+    //        out.writeObject(justifiedMap);
+    //        out.writeObject(assertMap);
+    //    }
 
-    public PrimitiveLongMap getJustifiedMap() {
+    public ObjectHashMap getJustifiedMap() {
         return this.justifiedMap;
     }
 
@@ -151,6 +215,7 @@ public class TruthMaintenanceSystem
         public LogicalRetractCallback() {
 
         }
+
         public LogicalRetractCallback(final TruthMaintenanceSystem tms,
                                       final LogicalDependency node,
                                       final Set set,
@@ -164,37 +229,61 @@ public class TruthMaintenanceSystem
             this.context = context;
         }
 
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            tms         = (TruthMaintenanceSystem)in.readObject();
-            node         = (LogicalDependency)in.readObject();
-            set         = (Set)in.readObject();
-            handle         = (InternalFactHandle)in.readObject();
-            context         = (PropagationContext)in.readObject();
-            activation = ( Activation ) in.readObject();
+        public LogicalRetractCallback(WMSerialisationInContext context) throws IOException {
+            this.tms = context.wm.getTruthMaintenanceSystem();            
+            
+            this.handle = context.handles.get( context.readInt() );
+            this.context = context.propagationContexts.get( context.readLong() );
+            this.activation = context.terminalTupleMap.get( context.readInt() ).getActivation();
+            
+            this.set = ( Set ) this.tms.getJustifiedMap().get( handle.getId() ); 
+           
+            for ( Iterator it = this.set.iterator(); it.hasNext(); ) {
+                LogicalDependency node = ( LogicalDependency ) it.next();
+                if ( node.getJustifier() == this.activation ) {
+                    this.node = node;
+                    break;
+                }
+            }
+        }
+
+        public void write(WMSerialisationOutContext context) throws IOException {
+            context.writeInt( WorkingMemoryAction.LogicalRetractCallback );
+            
+            context.writeInt( this.handle.getId() );
+            context.writeLong( this.context.getPropagationNumber() );
+            context.writeInt( context.terminalTupleMap.get( this.activation.getTuple() ) );
+        }
+
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
+            tms = (TruthMaintenanceSystem) in.readObject();
+            node = (LogicalDependency) in.readObject();
+            set = (Set) in.readObject();
+            handle = (InternalFactHandle) in.readObject();
+            context = (PropagationContext) in.readObject();
+            activation = (Activation) in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject(tms);
-            out.writeObject(node);
-            out.writeObject(set);
-            out.writeObject(handle);
-            out.writeObject(context);
+            out.writeObject( tms );
+            out.writeObject( node );
+            out.writeObject( set );
+            out.writeObject( handle );
+            out.writeObject( context );
             out.writeObject( activation );
         }
 
         public void execute(InternalWorkingMemory workingMemory) {
-
             if ( set.isEmpty() ) {
-                if ( set.isEmpty() ) {
-                    this.tms.getJustifiedMap().remove( handle.getId() );
-                    // this needs to be scheduled so we don't upset the current
-                    // working memory operation
-                    workingMemory.retract( this.handle,
-                                                 false,
-                                                 true,
-                                                 context.getRuleOrigin(),
-                                                 this.activation );
-                }
+                this.tms.getJustifiedMap().remove( handle.getId() );
+                // this needs to be scheduled so we don't upset the current
+                // working memory operation
+                workingMemory.retract( this.handle,
+                                       false,
+                                       true,
+                                       context.getRuleOrigin(),
+                                       this.activation );
             }
         }
     }

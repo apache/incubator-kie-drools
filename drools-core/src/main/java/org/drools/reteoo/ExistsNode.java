@@ -106,12 +106,6 @@ public class ExistsNode extends BetaNode {
                                                        rightTuple.getFactHandle() ) ) {
 
                 leftTuple.setBlocker( rightTuple );
-
-                LeftTuple blockedPrevious = rightTuple.getBlocked();
-                if ( blockedPrevious != null ) {
-                    leftTuple.setBlockedNext( blockedPrevious );
-                    blockedPrevious.setBlockedPrevious( leftTuple );
-                }
                 rightTuple.setBlocked( leftTuple );
 
                 break;
@@ -193,12 +187,6 @@ public class ExistsNode extends BetaNode {
             if ( this.constraints.isAllowedCachedRight( memory.getContext(),
                                                         leftTuple ) ) {
                 leftTuple.setBlocker( rightTuple );
-
-                LeftTuple blockedPrevious = rightTuple.getBlocked();
-                if ( blockedPrevious != null ) {
-                    leftTuple.setBlockedNext( blockedPrevious );
-                    blockedPrevious.setBlockedPrevious( leftTuple );
-                }
                 rightTuple.setBlocked( leftTuple );
 
                 if ( this.tupleMemoryEnabled ) {
@@ -303,12 +291,6 @@ public class ExistsNode extends BetaNode {
                 if ( this.constraints.isAllowedCachedLeft( memory.getContext(),
                                                            newBlocker.getFactHandle() ) ) {
                     leftTuple.setBlocker( newBlocker );
-
-                    LeftTuple blockedPrevious = newBlocker.getBlocked();
-                    if ( blockedPrevious != null ) {
-                        leftTuple.setBlockedNext( blockedPrevious );
-                        blockedPrevious.setBlockedPrevious( leftTuple );
-                    }
                     newBlocker.setBlocked( leftTuple );
 
                     break;
@@ -364,22 +346,7 @@ public class ExistsNode extends BetaNode {
                                                  context,
                                                  workingMemory );
 
-            LeftTuple previous = (LeftTuple) leftTuple.getBlockedPrevious();
-            LeftTuple next = (LeftTuple) leftTuple.getBlockedNext();
-            if ( previous != null && next != null ) {
-                //remove  from middle
-                previous.setBlockedNext( next );
-                next.setBlockedPrevious( previous );
-            } else if ( next != null ) {
-                //remove from first
-                blocker.setBlocked( next );
-                next.setBlockedPrevious( null );
-            } else if ( previous != null ) {
-                //remove from end
-                previous.setBlockedNext( null );
-            } else {
-                blocker.setBlocked( null );
-            }
+            blocker.removeBlocked( leftTuple );
         } else {
             memory.getLeftTupleMemory().remove( leftTuple );            
         }

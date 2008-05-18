@@ -19,7 +19,9 @@ package org.drools;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Externalizable;
+import java.io.OutputStream;
 
+import org.drools.marshalling.Marshaller;
 import org.drools.rule.Package;
 
 /**
@@ -77,25 +79,6 @@ public interface RuleBase
     StatefulSession newStatefulSession(boolean keepReference);
 
     /**
-     * RuleBases handle the returning of a Serialized WorkingMemory
-     * pass as an InputStream. If the reference is a byte[] then
-     * wrap with new ByteArrayInputStream. By default the RuleBase retains a
-     * weak reference to returned WorkingMemory.
-     *
-     * <p>
-     * The created <code>WorkingMemory</code> uses the default conflict
-     * resolution strategy.
-     * </p>
-     *
-     * @see WorkingMemory
-     * @see org.drools.conflict.DefaultConflictResolver
-     *
-     * @return A serialised initialized <code>WorkingMemory</code>.
-     */
-    StatefulSession newStatefulSession(InputStream stream) throws IOException,
-                                                          ClassNotFoundException;
-
-    /**
      * Creates a new temporal session using the defined clock type.
      *
      * @param clockType
@@ -110,7 +93,12 @@ public interface RuleBase
      * @param clockType
      * @return
      */
-    TemporalSession newTemporalSession(boolean keepReference, ClockType clockType);
+    TemporalSession newTemporalSession(boolean keepReference,
+                                       ClockType clockType);
+
+    StatefulSession readStatefulSession(InputStream stream,
+                                        Marshaller marshaller) throws IOException,
+                                                              ClassNotFoundException;
 
     /**
      * RuleBases handle the returning of a Serialized WorkingMemory
@@ -128,9 +116,14 @@ public interface RuleBase
      *
      * @return A serialised initialized <code>WorkingMemory</code>.
      */
-    StatefulSession newStatefulSession(InputStream stream,
-                                       boolean keepReference) throws IOException,
-                                                             ClassNotFoundException;
+    StatefulSession readStatefulSession(InputStream stream,
+                                        boolean keepReference,
+                                        Marshaller marshaller) throws IOException,
+                                                              ClassNotFoundException;
+
+    public void writeStatefulSession(StatefulSession session,
+                                     OutputStream stream,
+                                     Marshaller marshaller) throws IOException;
 
     Package[] getPackages();
 

@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.io.OutputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -41,8 +42,16 @@ import org.drools.concurrent.CommandExecutor;
 import org.drools.concurrent.ExecutorService;
 import org.drools.event.RuleBaseEventListener;
 import org.drools.event.RuleBaseEventSupport;
+import org.drools.marshalling.Marshaller;
+import org.drools.marshalling.OutputPersister;
+import org.drools.marshalling.PlaceholderResolverStrategyFactory;
+import org.drools.marshalling.RuleBaseNodes;
+import org.drools.marshalling.SerializablePlaceholderResolverStrategy;
+import org.drools.marshalling.WMSerialisationInContext;
+import org.drools.marshalling.WMSerialisationOutContext;
 import org.drools.objenesis.Objenesis;
 import org.drools.process.core.Process;
+import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.rule.CompositePackageClassLoader;
 import org.drools.rule.DialectDatas;
 import org.drools.rule.Function;
@@ -197,7 +206,7 @@ abstract public class AbstractRuleBase
         droolsStream.writeInt( workingMemoryCounter );
         droolsStream.writeObject( this.processes );
         droolsStream.writeObject( this.agendaGroupRuleTotals );
-        droolsStream.writeObject( this.factHandleFactory );
+        droolsStream.writeUTF( this.factHandleFactory.getClass().getName() );
         droolsStream.writeObject( this.globals );
         droolsStream.writeObject( reloadPackageCompilationData );
 
@@ -255,7 +264,17 @@ abstract public class AbstractRuleBase
 
         this.processes = (Map) droolsStream.readObject();
         this.agendaGroupRuleTotals = (Map) droolsStream.readObject();
-        this.factHandleFactory = (FactHandleFactory) droolsStream.readObject();
+        Class cls = null;
+        try {
+            cls = droolsStream.getClassLoader().loadClass( droolsStream.readUTF() );
+            this.factHandleFactory = (FactHandleFactory) cls.newInstance();
+        } catch ( InstantiationException e ) {
+            DroolsObjectInputStream.newInvalidClassException( cls,
+                                                              e );
+        } catch ( IllegalAccessException e ) {
+            DroolsObjectInputStream.newInvalidClassException( cls,
+                                                              e );
+        }
         this.globals = (Map) droolsStream.readObject();
         this.reloadPackageCompilationData = (ReloadPackageCompilationData) droolsStream.readObject();
 
@@ -276,17 +295,17 @@ abstract public class AbstractRuleBase
         this.populateTypeDeclarationMaps();
     }
 
-	/**
-	 * Creates Objenesis instance for the RuleBase.
-	 * @return a standart Objenesis instanse with caching turned on.
-	 */
-	protected Objenesis createObjenesis() {
-	    if( this.config.isUseStaticObjenesis() ) {
-	        return ObjenesisFactory.getStaticObjenesis();
-	    } else {
-	        return ObjenesisFactory.getDefaultObjenesis();
-	    }
-	}
+    /**
+     * Creates Objenesis instance for the RuleBase.
+     * @return a standart Objenesis instanse with caching turned on.
+     */
+    protected Objenesis createObjenesis() {
+        if ( this.config.isUseStaticObjenesis() ) {
+            return ObjenesisFactory.getStaticObjenesis();
+        } else {
+            return ObjenesisFactory.getDefaultObjenesis();
+        }
+    }
 
     private void populateTypeDeclarationMaps() {
         this.classTypeDeclaration = new HashMap<Class< ? >, TypeDeclaration>();
@@ -312,17 +331,20 @@ abstract public class AbstractRuleBase
         return newStatefulSession( true );
     }
 
-    /**
-     * @see RuleBase
-     */
-    abstract public StatefulSession newStatefulSession(boolean keepReference);
-
     public synchronized void disposeStatefulSession(final StatefulSession statefulSession) {
         this.statefulSessions.remove( statefulSession );
         for ( Iterator it = statefulSession.getRuleBaseUpdateListeners().iterator(); it.hasNext(); ) {
             this.removeEventListener( (RuleBaseEventListener) it.next() );
         }
     }
+    
+    public StatefulSession readStatefulSession(final InputStream stream,
+                                               Marshaller marshaller) throws IOException,
+                                                                     ClassNotFoundException {
+         return readStatefulSession( stream,
+                                     true,
+                                     marshaller );
+     }    
 
     /**
      * @see RuleBase
@@ -333,6 +355,12 @@ abstract public class AbstractRuleBase
 
     public FactHandleFactory newFactHandleFactory() {
         return this.factHandleFactory.newInstance();
+    }
+
+    public FactHandleFactory newFactHandleFactory(int id,
+                                                  long counter) {
+        return this.factHandleFactory.newInstance( id,
+                                                   counter );
     }
 
     public Process[] getProcesses() {
@@ -427,29 +455,28 @@ abstract public class AbstractRuleBase
             this.eventSupport.fireBeforePackageAdded( newPkg );
 
             if ( pkg == null ) {
-                pkg = new Package(newPkg.getName(),
-                                  newPkg.getDialectDatas().getParentClassLoader());
-                pkgs.put(pkg.getName(), pkg);
-                this.packageClassLoader.addClassLoader( pkg.getDialectDatas().getClassLoader());
-            }
-            else {
+                pkg = new Package( newPkg.getName(),
+                                   newPkg.getDialectDatas().getParentClassLoader() );
+                pkgs.put( pkg.getName(),
+                          pkg );
+                this.packageClassLoader.addClassLoader( pkg.getDialectDatas().getClassLoader() );
+            } else {
                 this.packageClassLoader.addClassLoader( newPkg.getDialectDatas().getClassLoader() );
             }
 
             final Map<String, Class> newGlobals = newPkg.getGlobals();
 
-            if (newGlobals != null) {
+            if ( newGlobals != null ) {
                 // Check that the global data is valid, we cannot change the type
                 // of an already declared global variable
                 for ( final Map.Entry<String, Class> entry : newGlobals.entrySet() ) {
                     final String identifier = entry.getKey();
-                    final Class type    = entry.getValue();
-                    if ( this.globals.containsKey( identifier ) &&
-                         !this.globals.get( identifier ).equals( type )) {
-                            throw new PackageIntegrationException( pkg );
+                    final Class type = entry.getValue();
+                    if ( this.globals.containsKey( identifier ) && !this.globals.get( identifier ).equals( type ) ) {
+                        throw new PackageIntegrationException( pkg );
                     } else {
-                        this.globals.put(identifier,
-                                         type);
+                        this.globals.put( identifier,
+                                          type );
                     }
                 }
             }
@@ -457,7 +484,7 @@ abstract public class AbstractRuleBase
             mergePackage( pkg,
                           newPkg );
 
-            if (newPkg.getTypeDeclarations() != null) {
+            if ( newPkg.getTypeDeclarations() != null ) {
                 // Add type declarations
                 for ( TypeDeclaration type : newPkg.getTypeDeclarations().values() ) {
                     // should we allow overrides?
@@ -508,25 +535,25 @@ abstract public class AbstractRuleBase
         // Merge imports
         imports.putAll( newPkg.getImports() );
 
-        if (newPkg.getGlobals() != null) {
+        if ( newPkg.getGlobals() != null ) {
             final Map<String, Class> globals = pkg.getGlobals();
             // Add globals
             for ( final Map.Entry<String, Class> entry : newPkg.getGlobals().entrySet() ) {
                 final String identifier = entry.getKey();
-                final Class type    = entry.getValue();
-                if ( globals.containsKey( identifier ) &&
-                     !globals.get( identifier ).equals( type )) {
-                        throw new PackageIntegrationException( pkg );
-                } else if (globals == Collections.EMPTY_MAP) {
-                    pkg.addGlobal(identifier, type);
+                final Class type = entry.getValue();
+                if ( globals.containsKey( identifier ) && !globals.get( identifier ).equals( type ) ) {
+                    throw new PackageIntegrationException( pkg );
+                } else if ( globals == Collections.EMPTY_MAP ) {
+                    pkg.addGlobal( identifier,
+                                   type );
                 } else {
-                    globals.put(identifier,
-                                type);
+                    globals.put( identifier,
+                                 type );
                 }
             }
         }
 
-        if (newPkg.getTypeDeclarations() != null) {
+        if ( newPkg.getTypeDeclarations() != null ) {
             // add type declarations
             for ( TypeDeclaration type : newPkg.getTypeDeclarations().values() ) {
                 // should we allow overrides?
@@ -566,9 +593,9 @@ abstract public class AbstractRuleBase
 
         pkg.getDialectDatas().merge( newPkg.getDialectDatas() );
 
-        if ( newPkg.getFunctions() != null) {
-            for (Map.Entry<String, Function> entry : newPkg.getFunctions().entrySet()) {
-                pkg.addFunction(entry.getValue());
+        if ( newPkg.getFunctions() != null ) {
+            for ( Map.Entry<String, Function> entry : newPkg.getFunctions().entrySet() ) {
+                pkg.addFunction( entry.getValue() );
             }
         }
 
@@ -780,46 +807,6 @@ abstract public class AbstractRuleBase
         return this.config;
     }
 
-    public StatefulSession newStatefulSession(final InputStream stream) throws IOException,
-                                                                       ClassNotFoundException {
-        return newStatefulSession( stream,
-                                   true );
-    }
-
-    public StatefulSession newStatefulSession(final InputStream stream,
-                                              final boolean keepReference) throws IOException,
-                                                                          ClassNotFoundException {
-
-        if ( this.config.isSequential() ) {
-            throw new RuntimeException( "Cannot have a stateful rule session, with sequential configuration set to true" );
-        }
-
-        final DroolsObjectInputStream streamWithLoader = new DroolsObjectInputStream( stream,
-                                                                                      this.packageClassLoader );
-        streamWithLoader.setRuleBase( this );
-
-        final StatefulSession session = (StatefulSession) streamWithLoader.readObject();
-
-        synchronized ( this.pkgs ) {
-            ((InternalWorkingMemory) session).setRuleBase( this );
-            ((InternalWorkingMemory) session).setId( (nextWorkingMemoryCounter()) );
-
-
-            ExecutorService executor = ExecutorServiceFactory.createExecutorService( this.config.getExecutorService() );
-            executor.setCommandExecutor( new CommandExecutor( session ) );
-            ((InternalWorkingMemory) session).setExecutorService( executor );
-
-            if ( keepReference ) {
-                addStatefulSession( session );
-                for ( Iterator it = session.getRuleBaseUpdateListeners().iterator(); it.hasNext(); ) {
-                    addEventListener( (RuleBaseEventListener) it.next() );
-                }
-            }
-
-            return session;
-        }
-    }
-
     public void addClass(final String className,
                          final byte[] bytes) {
         this.classLoader.addClass( className,
@@ -887,8 +874,7 @@ abstract public class AbstractRuleBase
             if ( this.set == null ) {
                 this.set = new HashSet<DialectDatas>();
             }
-            if (!this.set.contains(dialectDatas))
-                this.set.add( dialectDatas );
+            if ( !this.set.contains( dialectDatas ) ) this.set.add( dialectDatas );
         }
 
         public void execute(final InternalRuleBase ruleBase) {

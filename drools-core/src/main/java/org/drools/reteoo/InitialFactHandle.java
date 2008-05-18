@@ -46,18 +46,6 @@ public class InitialFactHandle extends DefaultFactHandle {
     // ----------------------------------------------------------------------
     // Instance members
     // ----------------------------------------------------------------------
-    public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
-        super.readExternal( in );
-        delegate = (InternalFactHandle) in.readObject();
-        object = in.readObject();
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal( out );
-        out.writeObject( delegate );
-        out.writeObject( object );
-    }
 
     /**
      * @see Object

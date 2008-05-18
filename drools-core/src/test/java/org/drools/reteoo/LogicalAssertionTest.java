@@ -642,15 +642,15 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                 tuple2.getActivation() );
 
         // "logical" should only appear once
-        assertLength( 1,
-                      workingMemory.getTruthMaintenanceSystem().getJustifiedMap().values() );
+        assertEquals( 1,
+                      workingMemory.getTruthMaintenanceSystem().getJustifiedMap().size() );
 
         // retract the logical object
         workingMemory.retract( logicalHandle2 );
 
         // The logical object should never appear
-        assertLength( 0,
-                      workingMemory.getTruthMaintenanceSystem().getJustifiedMap().values() );
+        assertEquals( 0,
+                      workingMemory.getTruthMaintenanceSystem().getJustifiedMap().size() );
 
     }
 
@@ -766,8 +766,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
         assertSame( logicalHandle1, logicalHandle2 );
 
         // "logical" should only appear once
-        assertLength( 1,
-                      workingMemory.getTruthMaintenanceSystem().getJustifiedMap().values() );
+        assertEquals( 1,
+                      workingMemory.getTruthMaintenanceSystem().getJustifiedMap().size() );
 
         // Now lets cancel the first activation
         node2.retractLeftTuple( tuple2,
@@ -781,8 +781,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
                       sink.getRetracted() );
 
         // check "logical" is still in the system
-        assertLength( 1,
-                      workingMemory.getTruthMaintenanceSystem().getJustifiedMap().values() );
+        assertEquals( 1,
+                      workingMemory.getTruthMaintenanceSystem().getJustifiedMap().size() );
 
         // now remove that final justification
         node.retractLeftTuple( tuple1,
@@ -796,8 +796,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
                       sink.getRetracted() );
 
         // "logical" fact should no longer be in the system
-        assertLength( 0,
-                      workingMemory.getTruthMaintenanceSystem().getJustifiedMap().values() );
+        assertEquals( 0,
+                      workingMemory.getTruthMaintenanceSystem().getJustifiedMap().size() );
     }
 
     /**

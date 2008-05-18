@@ -45,6 +45,7 @@ import org.drools.spi.ConsequenceExceptionHandler;
 import org.drools.temporal.SessionClock;
 import org.drools.temporal.SessionPseudoClock;
 import org.drools.util.ChainedProperties;
+import org.drools.util.ClassUtils;
 import org.drools.util.ConfFileUtils;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.instance.impl.NodeInstanceFactory;
@@ -778,36 +779,38 @@ public class RuleBaseConfiguration
         if ( this.shadowProxyExcludes == null ) {
             this.shadowProxyExcludes = new HashMap();
         }
+        
+        ClassUtils.addImportStylePatterns( this.shadowProxyExcludes, excludes );
 
-        String[] items = excludes.split( " " );
-        for ( int i = 0; i < items.length; i++ ) {
-            String qualifiedNamespace = items[i].substring( 0,
-                                                            items[i].lastIndexOf( '.' ) ).trim();
-            String name = items[i].substring( items[i].lastIndexOf( '.' ) + 1 ).trim();
-            Object object = this.shadowProxyExcludes.get( qualifiedNamespace );
-            if ( object == null ) {
-                if ( STAR.equals( name ) ) {
-                    this.shadowProxyExcludes.put( qualifiedNamespace,
-                                                  STAR );
-                } else {
-                    // create a new list and add it
-                    List list = new ArrayList();
-                    list.add( name );
-                    this.shadowProxyExcludes.put( qualifiedNamespace,
-                                                  list );
-                }
-            } else if ( name.equals( STAR ) ) {
-                // if its a STAR now add it anyway, we don't care if it was a STAR or a List before
-                this.shadowProxyExcludes.put( qualifiedNamespace,
-                                              STAR );
-            } else {
-                // its a list so add it if it doesn't already exist
-                List list = (List) object;
-                if ( !list.contains( object ) ) {
-                    list.add( name );
-                }
-            }
-        }
+//        String[] items = excludes.split( " " );
+//        for ( int i = 0; i < items.length; i++ ) {
+//            String qualifiedNamespace = items[i].substring( 0,
+//                                                            items[i].lastIndexOf( '.' ) ).trim();
+//            String name = items[i].substring( items[i].lastIndexOf( '.' ) + 1 ).trim();
+//            Object object = this.shadowProxyExcludes.get( qualifiedNamespace );
+//            if ( object == null ) {
+//                if ( STAR.equals( name ) ) {
+//                    this.shadowProxyExcludes.put( qualifiedNamespace,
+//                                                  STAR );
+//                } else {
+//                    // create a new list and add it
+//                    List list = new ArrayList();
+//                    list.add( name );
+//                    this.shadowProxyExcludes.put( qualifiedNamespace,
+//                                                  list );
+//                }
+//            } else if ( name.equals( STAR ) ) {
+//                // if its a STAR now add it anyway, we don't care if it was a STAR or a List before
+//                this.shadowProxyExcludes.put( qualifiedNamespace,
+//                                              STAR );
+//            } else {
+//                // its a list so add it if it doesn't already exist
+//                List list = (List) object;
+//                if ( !list.contains( object ) ) {
+//                    list.add( name );
+//                }
+//            }
+//        }
     }
 
     public boolean isShadowed(String className) {
@@ -815,18 +818,7 @@ public class RuleBaseConfiguration
             return true;
         }
 
-        String qualifiedNamespace = className.substring( 0,
-                                                         className.lastIndexOf( '.' ) ).trim();
-        String name = className.substring( className.lastIndexOf( '.' ) + 1 ).trim();
-        Object object = this.shadowProxyExcludes.get( qualifiedNamespace );
-        if ( object == null ) {
-            return true;
-        } else if ( STAR.equals( object ) ) {
-            return false;
-        } else {
-            List list = (List) object;
-            return !list.contains( name );
-        }
+        return ClassUtils.isMatched( this.shadowProxyExcludes, className );
     }
 
     private static ConsequenceExceptionHandler determineConsequenceExceptionHandler(String className) {

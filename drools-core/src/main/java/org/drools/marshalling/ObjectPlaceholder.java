@@ -1,4 +1,4 @@
-package org.drools.persister;
+package org.drools.marshalling;
 
 public interface ObjectPlaceholder {
     

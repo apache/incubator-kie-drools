@@ -37,7 +37,12 @@ import org.drools.common.ObjectTypeConfigurationRegistry;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.WorkingMemoryAction;
 import org.drools.event.RuleBaseEventListener;
+import org.drools.marshalling.InputPersister;
+import org.drools.marshalling.OutputPersister;
+import org.drools.marshalling.WMSerialisationInContext;
+import org.drools.marshalling.WMSerialisationOutContext;
 import org.drools.rule.EntryPoint;
+import org.drools.rule.Package;
 import org.drools.rule.Query;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
@@ -51,18 +56,12 @@ import org.drools.spi.PropagationContext;
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris</a>
  */
-public class ReteooWorkingMemory extends AbstractWorkingMemory
-    implements
-    Externalizable {
+public class ReteooWorkingMemory extends AbstractWorkingMemory {
 
     /**
      *
      */
-    private static final long serialVersionUID = 400L;
-
-    public ReteooWorkingMemory() {
-
-    }
+    private static final long serialVersionUID = 400L;   
 
     /**
      * Construct.
@@ -75,18 +74,38 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory
         super( id,
                ruleBase,
                ruleBase.newFactHandleFactory() );
-        this.agenda = new DefaultAgenda( this );
+        this.agenda = new DefaultAgenda( ruleBase );
+        this.agenda.setWorkingMemory( this );
     }
 
     public ReteooWorkingMemory(final int id,
                                final InternalRuleBase ruleBase,
-                               final FactHandleFactory factory) {
+                               final FactHandleFactory handleFactory,
+                               final InitialFactHandle initialFactHandle,
+                               final long propagationContext,                               
+                               final DefaultAgenda agenda) {        
         super( id,
                ruleBase,
-               factory );
-        this.agenda = new DefaultAgenda( this );
-    }
+               handleFactory,
+               initialFactHandle,
+               //ruleBase.newFactHandleFactory(context),
+               propagationContext );
+        this.agenda = agenda;
+        this.agenda.setWorkingMemory( this );
+//        InputPersister.readFactHandles( context );
+//        super.read( context );        
+    }    
 
+//    public void write(WMSerialisationOutContext context) throws IOException, ClassNotFoundException {
+//        this.handleFactory.write( context );
+//        
+////        context.writeInt( this.initialFactHandle.getId() );
+////        context.writeLong( this.initialFactHandle.getRecency() );        
+//        
+//        OutputPersister.writeFactHandles( context );
+//        super.write( context );
+//    }
+    
     public QueryResults getQueryResults(final String query) {
         return getQueryResults( query,
                                 null );
@@ -170,10 +189,6 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory
 
         private LeftTuple          leftTuple;
 
-        public WorkingMemoryReteAssertAction() {
-
-        }
-
         public WorkingMemoryReteAssertAction(final InternalFactHandle factHandle,
                                              final boolean removeLogical,
                                              final boolean updateEqualsMap,
@@ -184,6 +199,46 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory
             this.updateEqualsMap = updateEqualsMap;
             this.ruleOrigin = ruleOrigin;
             this.leftTuple = leftTuple;
+        }
+        
+        public WorkingMemoryReteAssertAction(WMSerialisationInContext context) throws IOException {
+            this.factHandle = context.handles.get( context.readInt() );
+            this.removeLogical = context.readBoolean();
+            this.updateEqualsMap = context.readBoolean();
+            
+            if ( context.readBoolean() ) {
+                String pkgName = context.readUTF();
+                String ruleName = context.readUTF();
+                Package pkg = context.ruleBase.getPackage( pkgName );            
+                this.ruleOrigin =  pkg.getRule( ruleName );
+            }
+            if ( context.readBoolean() ) {
+                this.leftTuple = context.terminalTupleMap.get( context.readInt() );
+            }
+        }        
+        
+        public void write(WMSerialisationOutContext context) throws IOException {
+            context.writeInt( WorkingMemoryAction.WorkingMemoryReteAssertAction );
+            
+            context.writeInt( this.factHandle.getId() );
+            context.writeBoolean( this.removeLogical  );
+            context.writeBoolean( this.updateEqualsMap );
+            
+            if ( this.ruleOrigin != null ) {
+                context.writeBoolean( true );
+                context.writeUTF( ruleOrigin.getPackage() );
+                context.writeUTF( ruleOrigin.getName() );
+            } else {
+                context.writeBoolean( false );
+            }
+            
+            if ( this.leftTuple != null ) {
+                context.writeBoolean( true );
+                context.writeInt( context.terminalTupleMap.get( this.leftTuple ) );
+            } else {
+                context.writeBoolean( false );
+            }            
+ 
         }
 
         public void readExternal(ObjectInput in) throws IOException,

@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.drools.RuleBaseConfiguration;
+import org.drools.common.BaseNode;
 import org.drools.common.BetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
@@ -36,6 +37,7 @@ import org.drools.spi.PropagationContext;
 import org.drools.util.ArrayUtils;
 import org.drools.util.Entry;
 import org.drools.util.Iterator;
+import org.drools.util.ObjectHashMap.ObjectEntry;
 
 /**
  * @author etirelli
@@ -447,6 +449,15 @@ public class CollectNode extends BetaNode
             }
         }
     }
+    
+    protected void doRemove(final InternalWorkingMemory workingMemory,
+                            final CollectMemory memory) {
+          Iterator it = memory.betaMemory.getCreatedHandles().iterator();
+          for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
+              CollectContext ctx = ( CollectContext ) entry.getValue();
+              workingMemory.getFactHandleFactory().destroyFactHandle( ctx.resultTuple.getFactHandle() );              
+          }    
+    }    
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.BaseNode#hashCode()

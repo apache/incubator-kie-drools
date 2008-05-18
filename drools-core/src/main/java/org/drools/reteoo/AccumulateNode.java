@@ -36,6 +36,7 @@ import org.drools.spi.PropagationContext;
 import org.drools.util.ArrayUtils;
 import org.drools.util.Entry;
 import org.drools.util.Iterator;
+import org.drools.util.ObjectHashMap.ObjectEntry;
 
 /**
  * AccumulateNode
@@ -534,6 +535,15 @@ public class AccumulateNode extends BetaNode {
             }
         }
     }
+    
+    protected void doRemove(final InternalWorkingMemory workingMemory,
+                            final AccumulateMemory memory) {
+          Iterator it = memory.betaMemory.getCreatedHandles().iterator();
+          for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
+              AccumulateContext ctx = ( AccumulateContext ) entry.getValue();
+              workingMemory.getFactHandleFactory().destroyFactHandle( ctx.result.getFactHandle() );              
+          }    
+    }       
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.BaseNode#hashCode()

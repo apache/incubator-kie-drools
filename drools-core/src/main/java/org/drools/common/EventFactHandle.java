@@ -68,20 +68,6 @@ public class EventFactHandle extends DefaultFactHandle {
         this.duration = duration;
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        super.readExternal(in);
-        startTimestamp  = in.readLong();
-        duration    = in.readLong();
-
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal(out);
-        out.writeLong(startTimestamp);
-        out.writeLong(duration);
-    }
-
-
     /**
      * @see FactHandle
      */

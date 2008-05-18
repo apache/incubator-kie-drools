@@ -37,7 +37,7 @@ import org.drools.spi.GlobalResolver;
  * in WorkingMemories from an InputStream.
  *
  */
-public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryEntryPoint, Externalizable {
+public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryEntryPoint {
 
     /**
      * Returns the Agenda for this WorkingMemory. While the WorkingMemory interface is considered public, the Agenda interface

@@ -214,6 +214,23 @@ public class RightInputAdapterNode extends ObjectSource
         if ( !node.isInUse() ) {
             removeObjectSink( (ObjectSink) node );
         }
+        
+        if ( !this.isInUse() ) {
+            for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
+                ObjectHashMap memory = ( ObjectHashMap ) workingMemories[i].getNodeMemory( this );
+                
+                Iterator it = memory.iterator();
+                for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
+                    LeftTuple leftTuple = ( LeftTuple ) entry.getKey();
+                    leftTuple.unlinkFromLeftParent();
+                    leftTuple.unlinkFromRightParent();                    
+                    
+                    InternalFactHandle handle = ( InternalFactHandle ) entry.getValue();
+                    workingMemories[i].getFactHandleFactory().destroyFactHandle( handle);                    
+                }                                   
+            }
+        }
+        
         if ( !context.alreadyVisited( this.tupleSource ) ) {
             this.tupleSource.remove( context,
                                      builder,

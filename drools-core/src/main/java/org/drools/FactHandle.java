@@ -26,9 +26,7 @@ package org.drools;
 
 import java.io.Externalizable;
 
-public interface FactHandle
-    extends
-    Externalizable {
+public interface FactHandle {
 
     /**
      * Convert this handle to an external representation.

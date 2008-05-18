@@ -212,8 +212,8 @@ public class ObjectTypeNode extends ObjectSource
 
         for ( LeftTuple leftTuple = factHandle.getLeftTuple(); leftTuple != null; leftTuple = (LeftTuple) leftTuple.getLeftParentNext() ) {
             leftTuple.getLeftTupleSink().retractLeftTuple( leftTuple,
-                                                  context,
-                                                  workingMemory );
+                                                           context,
+                                                           workingMemory );
         }
         factHandle.setLeftTuple( null );
     }
@@ -223,8 +223,10 @@ public class ObjectTypeNode extends ObjectSource
                            final InternalWorkingMemory workingMemory) {
         final ObjectHashSet memory = (ObjectHashSet) workingMemory.getNodeMemory( this );
         Iterator it = memory.iterator();
-        for ( ObjectEntry entry = ( ObjectEntry ) it.next(); entry != null; entry = ( ObjectEntry ) it.next() ) {
-            sink.assertObject( (InternalFactHandle) entry.getValue(), context, workingMemory );
+        for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
+            sink.assertObject( (InternalFactHandle) entry.getValue(),
+                               context,
+                               workingMemory );
         }
     }
 

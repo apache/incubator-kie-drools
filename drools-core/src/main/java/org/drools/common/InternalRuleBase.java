@@ -16,6 +16,7 @@ package org.drools.common;
  * limitations under the License.
  */
 
+import java.io.IOException;
 import java.util.Map;
 
 import org.drools.FactException;
@@ -23,6 +24,8 @@ import org.drools.FactHandle;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.StatefulSession;
+import org.drools.audit.WorkingMemoryInMemoryLogger;
+import org.drools.marshalling.WMSerialisationInContext;
 import org.drools.objenesis.Objenesis;
 import org.drools.process.core.Process;
 import org.drools.reteoo.Rete;
@@ -46,6 +49,8 @@ public interface InternalRuleBase
     public int nextWorkingMemoryCounter();
 
     public FactHandleFactory newFactHandleFactory();
+    
+    public FactHandleFactory newFactHandleFactory(int id, long counter) throws IOException ;
 
     public Map getGlobals();
     

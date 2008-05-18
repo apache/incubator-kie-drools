@@ -29,6 +29,8 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.WorkingMemoryAction;
+import org.drools.marshalling.WMSerialisationInContext;
+import org.drools.marshalling.WMSerialisationOutContext;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.PropagationContext;
 
@@ -417,6 +419,14 @@ public class PropagationQueuingNode extends ObjectSource
 
         public PropagateAction(PropagationQueuingNode node) {
             this.node = node;
+        }
+        
+        public PropagateAction(WMSerialisationInContext context)  throws IOException {
+            this.node = ( PropagationQueuingNode ) context.sinks.get( context.readInt() );
+        }          
+        
+        public void write(WMSerialisationOutContext context) throws IOException {
+            context.write( node.getId() );
         }
 
         public void readExternal(ObjectInput in) throws IOException,

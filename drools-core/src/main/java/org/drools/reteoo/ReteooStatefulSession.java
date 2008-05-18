@@ -1,5 +1,6 @@
 package org.drools.reteoo;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -7,6 +8,7 @@ import java.util.List;
 
 import org.drools.FactHandle;
 import org.drools.StatefulSession;
+import org.drools.common.DefaultAgenda;
 import org.drools.common.InternalRuleBase;
 import org.drools.concurrent.AssertObject;
 import org.drools.concurrent.AssertObjects;
@@ -16,7 +18,10 @@ import org.drools.concurrent.Future;
 import org.drools.concurrent.RetractObject;
 import org.drools.concurrent.UpdateObject;
 import org.drools.event.RuleBaseEventListener;
+import org.drools.marshalling.WMSerialisationInContext;
+import org.drools.marshalling.WMSerialisationOutContext;
 import org.drools.spi.AgendaFilter;
+import org.drools.spi.FactHandleFactory;
 import org.drools.spi.RuleBaseUpdateListener;
 import org.drools.spi.RuleBaseUpdateListenerFactory;
 
@@ -29,15 +34,27 @@ public class ReteooStatefulSession extends ReteooWorkingMemory
 
     private transient List            ruleBaseListeners;
 
-    public ReteooStatefulSession() {
-
-    }
-
     public ReteooStatefulSession(final int id,
                                  final InternalRuleBase ruleBase,
                                  final ExecutorService executorService) {
         super( id,
                ruleBase );
+        this.executor = executorService;
+    }
+
+    public ReteooStatefulSession(final int id,
+                                 final InternalRuleBase ruleBase,
+                                 final ExecutorService executorService,
+                                 final FactHandleFactory handleFactory,
+                                 final InitialFactHandle initialFactHandle,
+                                 final long propagationContext,                               
+                                 final DefaultAgenda agenda) {
+        super( id,
+               ruleBase,
+               handleFactory,
+               initialFactHandle,
+               propagationContext,
+               agenda );
         this.executor = executorService;
     }
 

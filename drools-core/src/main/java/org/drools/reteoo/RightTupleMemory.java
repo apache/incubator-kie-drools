@@ -14,6 +14,8 @@ public interface RightTupleMemory {
     public void remove(RightTuple rightTuple);
 
     public boolean contains(RightTuple rightTuple);
+    
+    public Iterator iterator();
 
     public boolean isIndexed();
 

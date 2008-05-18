@@ -28,10 +28,13 @@ import org.drools.common.BetaConstraints;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
+import org.drools.reteoo.AccumulateNode.AccumulateMemory;
+import org.drools.reteoo.CollectNode.CollectMemory;
 import org.drools.rule.Behavior;
 import org.drools.rule.BehaviorManager;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
+import org.drools.util.Iterator;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListEntry;
 
@@ -218,6 +221,48 @@ public abstract class BetaNode extends LeftTupleSource
         }
         if ( !this.isInUse() ) {
             for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
+                BetaMemory memory = null;
+                Object object = workingMemories[i].getNodeMemory( this );
+                
+                // handle special cases for Collect and Accumulate to make sure they tidy up their specific data
+                // like destroying the local FactHandles
+                if ( object instanceof CollectMemory ) {
+                    ((CollectNode) this).doRemove( workingMemories[i], ( CollectMemory ) object );
+                    memory = (( CollectMemory )object).betaMemory;
+                } else if ( object instanceof AccumulateMemory ) {
+                    ((AccumulateNode) this).doRemove( workingMemories[i], ( AccumulateMemory ) object );
+                    memory = (( AccumulateMemory )object).betaMemory;
+                } else {
+                    memory = ( BetaMemory ) object;
+                }
+                
+                Iterator it = memory.getLeftTupleMemory().iterator();
+                for ( LeftTuple leftTuple = (LeftTuple) it.next(); leftTuple != null; leftTuple = (LeftTuple) it.next() ) {
+                    leftTuple.unlinkFromLeftParent();
+                    leftTuple.unlinkFromRightParent();
+                }
+                
+                it = memory.getRightTupleMemory().iterator();
+                for ( RightTuple rightTuple = (RightTuple) it.next(); rightTuple != null; rightTuple = (RightTuple) it.next() ) {
+                    if ( rightTuple.getBlocked() != null ) {
+                        // special case for a not, so unlink left tuple from here, as they aren't in the left memory
+                        for ( LeftTuple leftTuple = (LeftTuple)rightTuple.getBlocked(); leftTuple != null; ) {
+                            LeftTuple temp = leftTuple.getBlockedNext();
+          
+                            leftTuple.setBlocker( null );
+                            leftTuple.setBlockedPrevious( null );
+                            leftTuple.setBlockedNext( null );
+                            leftTuple.unlinkFromLeftParent();
+                            leftTuple = temp;
+                        }                        
+                    }
+                    
+                    if ( rightTuple.getRightTupleSink() == null ) {
+                        // special case for FromNode
+                        workingMemories[i].getFactHandleFactory().destroyFactHandle( rightTuple.getFactHandle() );
+                    }
+                    rightTuple.unlinkFromRightParent();
+                }                
                 workingMemories[i].clearNodeMemory( this );
             }
         }
