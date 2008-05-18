@@ -45,5 +45,14 @@ public class MapGlobalResolver
     public Entry[] getGlobals() {
     	return (Entry[]) this.map.entrySet().toArray(new Entry[this.map.size()]);
     }
+    
+    public GlobalResolver clone() {
+        Map clone = new HashMap();
+        
+        for ( Entry entry : getGlobals() ) {
+            clone.put( entry.getKey(), entry.getValue() );
+        }
+        return new MapGlobalResolver( clone );
+    }
 
 }

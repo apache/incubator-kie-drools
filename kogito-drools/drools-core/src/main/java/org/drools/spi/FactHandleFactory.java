@@ -16,11 +16,14 @@ package org.drools.spi;
  * limitations under the License.
  */
 
+import java.io.IOException;
 import java.io.Serializable;
 
 import org.drools.FactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.marshalling.WMSerialisationInContext;
+import org.drools.marshalling.WMSerialisationOutContext;
 import org.drools.reteoo.ObjectTypeConf;
 
 /**
@@ -31,9 +34,7 @@ import org.drools.reteoo.ObjectTypeConf;
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
-public interface FactHandleFactory
-    extends
-    Serializable {
+public interface FactHandleFactory {       
    /**
      * Construct a handle with a new id.
      * 
@@ -55,6 +56,8 @@ public interface FactHandleFactory
      * @return a fresh instance of the fact handle factory, with any IDs reset etc.
      */
     public FactHandleFactory newInstance();
+    
+    public FactHandleFactory newInstance(int id, long counter);    
 
     public Class getFactHandleType();
 

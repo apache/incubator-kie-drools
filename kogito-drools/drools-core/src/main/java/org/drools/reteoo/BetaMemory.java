@@ -8,9 +8,7 @@ import java.io.ObjectOutput;
 import org.drools.rule.ContextEntry;
 import org.drools.util.ObjectHashMap;
 
-public class BetaMemory
-    implements
-    Externalizable {
+public class BetaMemory {
 
     private static final long serialVersionUID = 400L;
 
@@ -28,21 +26,6 @@ public class BetaMemory
         this.leftTupleMemory = tupleMemory;
         this.rightTupleMemory = objectMemory;
         this.context = context;
-    }
-
-    public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
-        leftTupleMemory = (LeftTupleMemory) in.readObject();
-        rightTupleMemory = (RightTupleMemory) in.readObject();
-        createdHandles = (ObjectHashMap) in.readObject();
-        context = (ContextEntry[]) in.readObject();
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject( leftTupleMemory );
-        out.writeObject( rightTupleMemory );
-        out.writeObject( createdHandles );
-        out.writeObject( context );
     }
 
     public RightTupleMemory getRightTupleMemory() {

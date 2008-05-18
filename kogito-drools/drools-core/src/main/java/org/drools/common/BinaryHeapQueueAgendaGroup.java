@@ -17,6 +17,8 @@ package org.drools.common;
  */
 
 import org.drools.conflict.DepthConflictResolver;
+import org.drools.marshalling.WMSerialisationInContext;
+import org.drools.marshalling.WMSerialisationOutContext;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.ConflictResolver;
@@ -67,7 +69,8 @@ public class BinaryHeapQueueAgendaGroup
         this.name = name;
         this.queue = new BinaryHeapQueue( ruleBase.getConfiguration().getConflictResolver() );
     }
-
+    
+    
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         name    = (String)in.readObject();
         queue   = (BinaryHeapQueue)in.readObject();

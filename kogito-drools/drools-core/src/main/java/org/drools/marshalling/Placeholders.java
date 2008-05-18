@@ -1,4 +1,4 @@
-package org.drools.persister;
+package org.drools.marshalling;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -119,17 +119,6 @@ public class Placeholders extends AbstractHashTable {
 
         public PersisterKey getKey() {
             return key;
-        }
-
-        public void readExternal(ObjectInput in) throws IOException,
-                                                ClassNotFoundException {
-            // TODO Auto-generated method stub
-            
-        }
-
-        public void writeExternal(ObjectOutput out) throws IOException {
-            // TODO Auto-generated method stub
-            
         }
 
     }

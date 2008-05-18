@@ -200,19 +200,4 @@ public class LeftTupleList
 
         return builder.toString();
     }
-
-    public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
-        next = (LeftTuple) in.readObject();
-        first = (LeftTuple) in.readObject();
-        hashCode = in.readInt();
-        index = (Index) in.readObject();
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject( next );
-        out.writeObject( first );
-        out.writeInt( hashCode );
-        out.writeObject( index );
-    }
 }

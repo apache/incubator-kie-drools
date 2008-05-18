@@ -10,28 +10,31 @@ import org.drools.reteoo.LeftTuple;
 import org.drools.util.AbstractHashTable.HashTableIterator;
 import org.drools.util.AbstractHashTable.Index;
 import org.drools.util.AbstractHashTable.ObjectComparator;
+import org.drools.util.LeftTupleIndexHashTable.FieldIndexHashTableFullIterator;
 
 import java.io.ObjectInput;
 import java.io.IOException;
 import java.io.ObjectOutput;
 import java.io.Externalizable;
 
-public class RightTupleIndexHashTable  extends AbstractHashTable
+public class RightTupleIndexHashTable extends AbstractHashTable
     implements
     RightTupleMemory {
 
-    private static final long serialVersionUID = 400L;
+    private static final long                         serialVersionUID = 400L;
 
-    public static final int   PRIME            = 31;
+    public static final int                           PRIME            = 31;
 
-    private int               startResult;
+    private transient FieldIndexHashTableFullIterator tupleValueFullIterator;
 
-    private int               factSize;
+    private int                                       startResult;
 
-    private Index             index;      
-    
+    private int                                       factSize;
+
+    private Index                                     index;
+
     public RightTupleIndexHashTable() {
-        
+
     }
 
     public RightTupleIndexHashTable(final FieldIndex[] index) {
@@ -70,12 +73,13 @@ public class RightTupleIndexHashTable  extends AbstractHashTable
                 throw new IllegalArgumentException( "FieldIndexHashTable cannot use an index[] of length  great than 3" );
         }
     }
-    
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
         super.readExternal( in );
         startResult = in.readInt();
         factSize = in.readInt();
-        index = ( Index ) in.readObject();
+        index = (Index) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -83,7 +87,7 @@ public class RightTupleIndexHashTable  extends AbstractHashTable
         out.writeInt( startResult );
         out.writeInt( factSize );
         out.writeObject( index );
-    }    
+    }
 
     public RightTuple getFirst(LeftTuple leftTuple) {
         RightTupleList bucket = get( leftTuple );
@@ -117,6 +121,65 @@ public class RightTupleIndexHashTable  extends AbstractHashTable
                                    this.table.length );
 
         return this.table[index];
+    }
+
+    public Iterator iterator() {
+        if ( this.tupleValueFullIterator == null ) {
+            this.tupleValueFullIterator = new FieldIndexHashTableFullIterator( this );
+        }
+        this.tupleValueFullIterator.reset();
+        return this.tupleValueFullIterator;
+    }
+
+    public static class FieldIndexHashTableFullIterator
+        implements
+        Iterator {
+        private AbstractHashTable hashTable;
+        private Entry[]           table;
+        private int               row;
+        private int               length;
+        private Entry             entry;
+
+        public FieldIndexHashTableFullIterator(final AbstractHashTable hashTable) {
+            this.hashTable = hashTable;
+        }
+
+        /* (non-Javadoc)
+         * @see org.drools.util.Iterator#next()
+         */
+        public Object next() {
+            if ( this.entry == null ) {
+                // keep skipping rows until we come to the end, or find one that is populated
+                while ( this.entry == null ) {
+                    this.row++;
+                    if ( this.row == this.length ) {
+                        return null;
+                    }
+                    this.entry = (this.table[this.row] != null) ? ((RightTupleList) this.table[this.row]).first : null;
+                }
+            } else {
+                this.entry = this.entry.getNext();
+                if ( this.entry == null ) {
+                    this.entry = (Entry) next();
+                }
+            }
+
+            return this.entry;
+        }
+
+        public void remove() {
+            throw new UnsupportedOperationException( "FieldIndexHashTableFullIterator does not support remove()." );
+        }
+
+        /* (non-Javadoc)
+         * @see org.drools.util.Iterator#reset()
+         */
+        public void reset() {
+            this.table = this.hashTable.getTable();
+            this.length = this.table.length;
+            this.row = -1;
+            this.entry = null;
+        }
     }
 
     public Entry[] toArray() {
@@ -268,7 +331,7 @@ public class RightTupleIndexHashTable  extends AbstractHashTable
 
         if ( entry == null ) {
             entry = new RightTupleList( this.index,
-                                       hashCode );
+                                        hashCode );
             entry.next = this.table[index];
             this.table[index] = entry;
 

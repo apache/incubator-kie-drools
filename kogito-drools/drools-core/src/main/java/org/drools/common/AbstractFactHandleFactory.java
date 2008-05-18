@@ -24,12 +24,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.drools.WorkingMemory;
+import org.drools.marshalling.WMSerialisationInContext;
+import org.drools.marshalling.WMSerialisationOutContext;
 import org.drools.reteoo.ObjectTypeConf;
 import org.drools.spi.FactHandleFactory;
 
 public abstract class AbstractFactHandleFactory
     implements
-    FactHandleFactory, Externalizable {
+    FactHandleFactory  {
 
     /**
      *
@@ -48,17 +50,11 @@ public abstract class AbstractFactHandleFactory
         this.id = new AtomicInteger(-1);
         this.counter = new AtomicLong(-1);
     }
-
-
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        this.id = new AtomicInteger( in.readInt() );
-        this.counter = new AtomicLong( in.readLong() );
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeInt(id.get());
-        out.writeLong(counter.get());
-    }
+    
+    public AbstractFactHandleFactory(int id, long counter) {
+        this.id = new AtomicInteger( id );
+        this.counter = new AtomicLong( counter );        
+    }    
 
     /* (non-Javadoc)
     * @see org.drools.reteoo.FactHandleFactory#newFactHandle()

@@ -5,6 +5,7 @@ package org.drools.util;
 
 import org.drools.util.AbstractHashTable.EqualityEquals;
 
+import java.io.Externalizable;
 import java.io.ObjectInput;
 import java.io.IOException;
 import java.io.ObjectOutput;
@@ -139,7 +140,8 @@ public class ObjectHashSet extends AbstractHashTable {
 
     public static class ObjectEntry
         implements
-        Entry {
+        Entry,
+        Externalizable  {
 
         private static final long serialVersionUID = 400L;
 

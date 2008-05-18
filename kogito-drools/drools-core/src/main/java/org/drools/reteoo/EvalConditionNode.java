@@ -259,11 +259,19 @@ public class EvalConditionNode extends LeftTupleSource
         if ( !node.isInUse() ) {
             removeTupleSink( (LeftTupleSink) node );
         }
+        
         if ( !this.isInUse() ) {
             for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
+                BetaMemory memory = ( BetaMemory ) workingMemories[i].getNodeMemory( this );
+                Iterator it = memory.getLeftTupleMemory().iterator();
+                for ( LeftTuple leftTuple = (LeftTuple) it.next(); leftTuple != null; leftTuple = (LeftTuple) it.next() ) {
+                    leftTuple.unlinkFromLeftParent();
+                    leftTuple.unlinkFromRightParent();
+                }              
                 workingMemories[i].clearNodeMemory( this );
             }
         }
+        
         if ( !context.alreadyVisited( this.tupleSource ) ) {
             this.tupleSource.remove( context,
                                      builder,

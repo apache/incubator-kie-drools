@@ -1,8 +1,10 @@
 /**
  * 
  */
-package org.drools.persister;
+package org.drools.marshalling;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,14 +18,14 @@ import org.drools.reteoo.RightTuple;
 import org.drools.rule.EntryPoint;
 import org.drools.spi.PropagationContext;
 
-public class WMSerialisationInContext {
-    public final ObjectInputStream                  stream;
+public class WMSerialisationInContext extends ObjectInputStream {
+    public final WMSerialisationInContext           stream;
     public final InternalRuleBase                   ruleBase;
-    public InternalWorkingMemory              wm;
+    public InternalWorkingMemory                    wm;
     public final Map<Integer, BaseNode>             sinks;
 
-    public  Map<Integer, InternalFactHandle>        handles;
-    
+    public Map<Integer, InternalFactHandle>         handles;
+
     public final Map<RightTupleKey, RightTuple>     rightTuples;
     public final Map<Integer, LeftTuple>            terminalTupleMap;
 
@@ -32,15 +34,15 @@ public class WMSerialisationInContext {
 
     public final Map<Long, PropagationContext>      propagationContexts;
 
-    public WMSerialisationInContext(ObjectInputStream stream,
+    public WMSerialisationInContext(InputStream stream,
                                     InternalRuleBase ruleBase,
                                     Map<Integer, BaseNode> sinks,
-                                    PlaceholderResolverStrategyFactory resolverStrategyFactory) {
-        super();
-        this.stream = stream;
+                                    PlaceholderResolverStrategyFactory resolverStrategyFactory) throws IOException {
+        super( stream );
+        this.stream = this;
         this.ruleBase = ruleBase;
         this.sinks = sinks;
-        handles = new HashMap<Integer, InternalFactHandle>();
+        this.handles = new HashMap<Integer, InternalFactHandle>();
         this.rightTuples = new HashMap<RightTupleKey, RightTuple>();
         this.terminalTupleMap = new HashMap<Integer, LeftTuple>();
         this.entryPoints = new HashMap<String, EntryPoint>();

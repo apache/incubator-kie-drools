@@ -207,11 +207,23 @@ public class FromNode extends LeftTupleSource
         if ( !node.isInUse() ) {
             removeTupleSink( (LeftTupleSink) node );
         }
+        
         if ( !this.isInUse() ) {
             for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
+                FromMemory memory = ( FromMemory ) workingMemories[i].getNodeMemory( this );
+                Iterator it = memory.betaMemory.getLeftTupleMemory().iterator();
+                for ( LeftTuple leftTuple = (LeftTuple) it.next(); leftTuple != null; leftTuple = (LeftTuple) it.next() ) {
+                    leftTuple.unlinkFromLeftParent();
+                    leftTuple.unlinkFromRightParent();
+                }                
+                
+                // RightTuple is already disconnected via the child LeftTuple in the sink nodes
+                // special case exists in the BetaNode to handle destroying of the FactHandle
+                
                 workingMemories[i].clearNodeMemory( this );
             }
         }
+        
         if ( !context.alreadyVisited( this.tupleSource ) ) {
             this.tupleSource.remove( context,
                                      builder,

@@ -29,8 +29,7 @@ import org.drools.event.WorkingMemoryEventListener;
  */
 public interface WorkingMemoryEventManager
     extends
-    RuleBaseEventManager,
-    Externalizable {
+    RuleBaseEventManager {
     /**
      * Add an event listener.
      * 

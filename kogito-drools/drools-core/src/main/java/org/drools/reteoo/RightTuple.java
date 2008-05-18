@@ -80,11 +80,34 @@ public class RightTuple
     }
 
     public LeftTuple getBlocked() {
-        return blocked;
-    }
+        return this.blocked;
+    }    
 
-    public void setBlocked(LeftTuple blocked) {
-        this.blocked = blocked;
+    public void setBlocked(LeftTuple leftTuple) {
+        if ( this.blocked != null && leftTuple != null ) {
+            leftTuple.setBlockedNext( this.blocked );
+            this.blocked.setBlockedPrevious( leftTuple );
+        }            
+        this.blocked = leftTuple;
+    }
+    
+    public void removeBlocked(LeftTuple leftTuple) {
+        LeftTuple previous = (LeftTuple) leftTuple.getBlockedPrevious();
+        LeftTuple next = (LeftTuple) leftTuple.getBlockedNext();
+        if ( previous != null && next != null ) {
+            //remove  from middle
+            previous.setBlockedNext( next );
+            next.setBlockedPrevious( previous );
+        } else if ( next != null ) {
+            //remove from first
+            this.blocked = next ;
+            next.setBlockedPrevious( null );
+        } else if ( previous != null ) {
+            //remove from end
+            previous.setBlockedNext( null );
+        } else {
+            this.blocked =  null;
+        }        
     }
 
     public RightTupleList getMemory() {
@@ -168,32 +191,4 @@ public class RightTuple
     public boolean equals(Object object) {
         return equals( (RightTuple) object );
     }
-
-    public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
-        this.handle = (InternalFactHandle) in.readObject();
-        this.handlePrevious = (RightTuple) in.readObject();
-        this.handleNext = (RightTuple) in.readObject();
-        this.memory = (RightTupleList) in.readObject();
-        this.previous = (RightTuple) in.readObject();
-        this.next = (RightTuple) in.readObject();
-        this.betaChildren = (LeftTuple) in.readObject();
-        this.blocked = (LeftTuple) in.readObject();
-        this.sink = (RightTupleSink) in.readObject();
-        this.hashCode = in.readInt();
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject( this.handle );
-        out.writeObject( this.handlePrevious );
-        out.writeObject( this.handleNext );
-        out.writeObject( this.memory );
-        out.writeObject( this.previous );
-        out.writeObject( this.next );
-        out.writeObject( this.betaChildren );
-        out.writeObject( this.blocked );
-        out.writeObject( this.sink );
-        out.writeInt( this.hashCode );
-    }
-
 }

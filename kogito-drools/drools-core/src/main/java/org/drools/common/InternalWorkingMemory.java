@@ -96,4 +96,5 @@ public interface InternalWorkingMemory
     
     public ObjectTypeConfigurationRegistry getObjectTypeConfigurationRegistry();
     
+    public InternalFactHandle getInitialFactHandle();        
 }

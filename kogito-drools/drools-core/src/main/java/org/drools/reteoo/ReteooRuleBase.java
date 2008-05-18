@@ -17,10 +17,11 @@ package org.drools.reteoo;
  */
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.io.OutputStream;
 import java.io.Serializable;
-import java.io.Externalizable;
 import java.util.Iterator;
 
 import org.drools.ClockType;
@@ -31,6 +32,8 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.StatefulSession;
 import org.drools.StatelessSession;
 import org.drools.TemporalSession;
+import org.drools.WorkingMemory;
+import org.drools.audit.WorkingMemoryInMemoryLogger;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
@@ -38,6 +41,14 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.concurrent.CommandExecutor;
 import org.drools.concurrent.ExecutorService;
 import org.drools.event.RuleBaseEventListener;
+import org.drools.marshalling.InputPersister;
+import org.drools.marshalling.Marshaller;
+import org.drools.marshalling.OutputPersister;
+import org.drools.marshalling.PlaceholderResolverStrategyFactory;
+import org.drools.marshalling.RuleBaseNodes;
+import org.drools.marshalling.SerializablePlaceholderResolverStrategy;
+import org.drools.marshalling.WMSerialisationInContext;
+import org.drools.marshalling.WMSerialisationOutContext;
 import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.EntryPoint;
@@ -274,14 +285,8 @@ public class ReteooRuleBase extends AbstractRuleBase {
                     addEventListener( (RuleBaseEventListener) it.next() );
                 }
             }
-            
-            final InitialFactHandleDummyObject initialFact = new InitialFactHandleDummyObject();
 
-            final InitialFactHandle handle = new InitialFactHandle( session.getFactHandleFactory().newFactHandle( initialFact,
-                                                                                                                  null,
-                                                                                                                  session ) );
-
-            session.queueWorkingMemoryAction( new WorkingMemoryReteAssertAction( handle,
+            session.queueWorkingMemoryAction( new WorkingMemoryReteAssertAction( session.getInitialFactHandle(),
                                                                                  false,
                                                                                  true,
                                                                                  null,
@@ -289,6 +294,93 @@ public class ReteooRuleBase extends AbstractRuleBase {
         }
 
         return session;
+    }
+
+    public StatefulSession readStatefulSession(final InputStream stream,
+                                               final boolean keepReference,
+                                               Marshaller marshaller) throws IOException,
+                                                                          ClassNotFoundException {
+
+        if ( this.config.isSequential() ) {
+            throw new RuntimeException( "Cannot have a stateful rule session, with sequential configuration set to true" );
+        }
+
+//        PlaceholderResolverStrategyFactory factory = new PlaceholderResolverStrategyFactory();
+//        factory.addPlaceholderResolverStrategy( new SerializablePlaceholderResolverStrategy() );
+
+        StatefulSession session = null;
+        synchronized ( this.pkgs ) {
+            ExecutorService executor = ExecutorServiceFactory.createExecutorService( this.config.getExecutorService() );
+            
+            session = marshaller.read( stream, this, nextWorkingMemoryCounter(), executor );
+
+//            WMSerialisationInContext context = new WMSerialisationInContext( stream,
+//                                                                             this,
+//                                                                             RuleBaseNodes.getNodeMap( this ),
+//                                                                             factory );
+//
+//            session = InputPersister.readSession( context, nextWorkingMemoryCounter(), executor );
+
+            executor.setCommandExecutor( new CommandExecutor( session ) );
+
+
+            if ( keepReference ) {
+                super.addStatefulSession( session );
+                for ( Iterator it = session.getRuleBaseUpdateListeners().iterator(); it.hasNext(); ) {
+                    addEventListener( (RuleBaseEventListener) it.next() );
+                }
+            }
+        }
+        return session;
+
+        //        final DroolsObjectInputStream streamWithLoader = new DroolsObjectInputStream( stream,
+        //                                                                                      this.packageClassLoader );
+        //        streamWithLoader.setRuleBase( this );
+        //
+        //        final StatefulSession session = (StatefulSession) streamWithLoader.readObject();
+        //
+        //        synchronized ( this.pkgs ) {
+        //            ((InternalWorkingMemory) session).setRuleBase( this );
+        //            ((InternalWorkingMemory) session).setId( (nextWorkingMemoryCounter()) );
+        //
+        //            ExecutorService executor = ExecutorServiceFactory.createExecutorService( this.config.getExecutorService() );
+        //            executor.setCommandExecutor( new CommandExecutor( session ) );
+        //            ((InternalWorkingMemory) session).setExecutorService( executor );
+        //
+        //            if ( keepReference ) {
+        //                addStatefulSession( session );
+        //                for ( Iterator it = session.getRuleBaseUpdateListeners().iterator(); it.hasNext(); ) {
+        //                    addEventListener( (RuleBaseEventListener) it.next() );
+        //                }
+        //            }
+        //
+        //            return session;
+        //        }
+    }
+
+    public void writeStatefulSession(final StatefulSession session,
+                                     final OutputStream stream,
+                                     Marshaller marshaller) throws IOException {
+        
+//        PlaceholderResolverStrategyFactory factory = new PlaceholderResolverStrategyFactory();
+//        factory.addPlaceholderResolverStrategy( new SerializablePlaceholderResolverStrategy() );
+//
+//        WMSerialisationOutContext context = new WMSerialisationOutContext( stream,
+//                                                                           this,
+//                                                                           (InternalWorkingMemory) session,
+//                                                                           RuleBaseNodes.getNodeMap( this ),
+//                                                                           factory );
+//        OutputPersister.writeSession( context );
+        marshaller.write( stream, this, session );
+        //((ReteooStatefulSession) session).write( context );
+        
+
+        //        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        //        OutputPersister op = new OutputPersister( this,
+        //                                                  (InternalWorkingMemory) wm,
+        //                                                  baos,
+        //                                                  factory );
+        //        op.write();
     }
 
     public StatelessSession newStatelessSession() {
@@ -318,22 +410,9 @@ public class ReteooRuleBase extends AbstractRuleBase {
     }
 
     public synchronized void addPackage(final Package newPkg) {
-        super.addPackage(newPkg);
+        super.addPackage( newPkg );
         if ( this.config.isSequential() ) {
-            this.reteooBuilder.setOrdered(false);
-        }
-    }
-    
-    public static class InitialFactHandleDummyObject
-        implements
-        Externalizable {
-        private static final long serialVersionUID = 400L;
-
-        public void readExternal(ObjectInput in) throws IOException,
-                                                ClassNotFoundException {
-        }
-
-        public void writeExternal(ObjectOutput out) throws IOException {
+            this.reteooBuilder.setOrdered( false );
         }
     }
 

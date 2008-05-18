@@ -428,7 +428,7 @@ public class DroolsObjectInputStream
         objectsByHandle.put(handle, object);
     }
 
-    private static InvalidClassException newInvalidClassException(Class clazz, Throwable cause) {
+    public static InvalidClassException newInvalidClassException(Class clazz, Throwable cause) {
         InvalidClassException exception = new InvalidClassException(clazz.getName());
         exception.initCause(cause);
         return exception;

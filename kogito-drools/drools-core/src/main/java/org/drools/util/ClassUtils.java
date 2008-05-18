@@ -1,12 +1,16 @@
 package org.drools.util;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public final class ClassUtils {
-    private static Map classes = Collections.synchronizedMap( new HashMap() );
+    private static Map          classes = Collections.synchronizedMap( new HashMap() );
+
+    private static final String STAR    = "*";
 
     /**
      * Please do not use - internal
@@ -133,7 +137,7 @@ public final class ClassUtils {
                     //swallow
                 }
             }
-            
+
             if ( cls != null ) {
                 ClassUtils.classes.put( className,
                                         cls );
@@ -152,4 +156,70 @@ public final class ClassUtils {
         return object;
     }
 
+    /**
+     * Populates the import style pattern map from give comma delimited string
+     * @param patterns
+     * @param str
+     */
+    public static void addImportStylePatterns(Map<String, Object> patterns,
+                                              String str) {
+        if ( str == null || "".equals( str.trim() ) ) {
+            return;
+        }
+
+        String[] items = str.split( " " );
+        for ( int i = 0; i < items.length; i++ ) {
+            String qualifiedNamespace = items[i].substring( 0,
+                                                            items[i].lastIndexOf( '.' ) ).trim();
+            String name = items[i].substring( items[i].lastIndexOf( '.' ) + 1 ).trim();
+            Object object = patterns.get( qualifiedNamespace );
+            if ( object == null ) {
+                if ( STAR.equals( name ) ) {
+                    patterns.put( qualifiedNamespace,
+                                  STAR );
+                } else {
+                    // create a new list and add it
+                    List list = new ArrayList();
+                    list.add( name );
+                    patterns.put( qualifiedNamespace,
+                                  list );
+                }
+            } else if ( name.equals( STAR ) ) {
+                // if its a STAR now add it anyway, we don't care if it was a STAR or a List before
+                patterns.put( qualifiedNamespace,
+                              STAR );
+            } else {
+                // its a list so add it if it doesn't already exist
+                List list = (List) object;
+                if ( !list.contains( object ) ) {
+                    list.add( name );
+                }
+            }
+        }
+    }
+
+    /**
+     * Determines if a given full qualified class name matches any import style patterns.
+     * @param patterns
+     * @param className
+     * @return
+     */
+    public static boolean isMatched(Map<String, Object> patterns,
+                                    String className) {
+        String qualifiedNamespace = className.substring( 0,
+                                                         className.lastIndexOf( '.' ) ).trim();
+        String name = className.substring( className.lastIndexOf( '.' ) + 1 ).trim();
+        Object object = patterns.get( qualifiedNamespace );
+        if ( object == null ) {
+            return true;
+        } else if ( STAR.equals( object ) ) {
+            return false;
+        } else if ( patterns.containsKey( "*" ) ) {
+            // for now we assume if the name space is * then we have a catchal *.* pattern
+            return true;
+        } else {
+            List list = (List) object;
+            return !list.contains( name );
+        }
+    }
 }

@@ -19,6 +19,8 @@ package org.drools.reteoo;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.drools.TemporalSession;
 import org.drools.common.AbstractFactHandleFactory;
@@ -26,6 +28,8 @@ import org.drools.common.DefaultFactHandle;
 import org.drools.common.EventFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.marshalling.WMSerialisationInContext;
+import org.drools.marshalling.WMSerialisationOutContext;
 import org.drools.rule.TypeDeclaration;
 import org.drools.spi.FactHandleFactory;
 
@@ -36,15 +40,10 @@ public class ReteooFactHandleFactory extends AbstractFactHandleFactory {
     public ReteooFactHandleFactory() {
         super();
     }
-
-    public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
-        super.readExternal( in );
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal( out );
-    }
+    
+    public ReteooFactHandleFactory(int id, long counter) {
+        super( id, counter );     
+    }    
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.FactHandleFactory#newFactHandle(long)
@@ -79,6 +78,10 @@ public class ReteooFactHandleFactory extends AbstractFactHandleFactory {
      */
     public FactHandleFactory newInstance() {
         return new ReteooFactHandleFactory();
+    }
+    
+    public FactHandleFactory newInstance(int id, long counter) {
+        return new ReteooFactHandleFactory(id, counter);
     }
 
     public Class getFactHandleType() {

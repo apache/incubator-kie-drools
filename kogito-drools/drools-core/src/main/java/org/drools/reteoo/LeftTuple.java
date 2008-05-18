@@ -143,14 +143,23 @@ public class LeftTuple
             this.leftParentPrevious.leftParentNext = this.leftParentNext;
             this.leftParentNext.leftParentPrevious = this.leftParentPrevious;
         } else if ( next != null ) {
-            //remove from first
-            this.leftParent.children = this.leftParentNext;
+            if ( this.leftParent != null ) { 
+                //remove from first
+                this.leftParent.children = this.leftParentNext;
+            } else {
+                this.handle.setLeftTuple( this.leftParentNext );
+            }
+
             this.leftParentNext.leftParentPrevious = null;
         } else if ( previous != null ) {
             //remove from end
             this.leftParentPrevious.leftParentNext = null;
         } else {
-            this.leftParent.children = null;
+            if ( this.leftParent != null ) { 
+                this.leftParent.children = null;
+            } else {
+                this.handle.setLeftTuple( null );
+            }
         }
 
         //this.parent  = null;
@@ -163,6 +172,10 @@ public class LeftTuple
     }
 
     public void unlinkFromRightParent() {
+        if ( this.rightParent == null ) {
+            // no right parent;
+            return;
+        }
         LeftTuple previous = (LeftTuple) this.rightParentPrevious;
         LeftTuple next = (LeftTuple) this.rightParentNext;
 
@@ -443,57 +456,6 @@ public class LeftTuple
             entry = entry.parent;
         }
         return objects;
-    }
-
-    public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
-        index = in.readInt();
-        handle = (InternalFactHandle) in.readObject();
-        parent = (LeftTuple) in.readObject();
-        activation = (Activation) in.readObject();
-        recency = in.readLong();
-        hashCode = in.readInt();
-        blocker = (RightTuple) in.readObject();
-        blockedPrevious = (LeftTuple) in.readObject();
-        blockedNext = (LeftTuple) in.readObject();
-        leftParent = (LeftTuple) in.readObject();
-        leftParentPrevious = (LeftTuple) in.readObject();
-        leftParentNext = (LeftTuple) in.readObject();
-        rightParent = (RightTuple) in.readObject();
-        rightParentPrevious = (LeftTuple) in.readObject();
-        rightParentNext = (LeftTuple) in.readObject();
-        memory = (LeftTupleList) in.readObject();
-        next = (Entry) in.readObject();
-        previous = (Entry) in.readObject();
-        children = (LeftTuple) in.readObject();
-
-        // @todo should not serialise out part of the rete network
-        sink = (LeftTupleSink) in.readObject();
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeInt( index );
-        out.writeObject( handle );
-        out.writeObject( parent );
-        out.writeObject( activation );
-        out.writeLong( recency );
-        out.writeInt( hashCode );
-        out.writeObject( blocker );
-        out.writeObject( blockedPrevious );
-        out.writeObject( blockedNext );
-        out.writeObject( leftParent );
-        out.writeObject( leftParentPrevious );
-        out.writeObject( leftParentNext );
-        out.writeObject( rightParent );
-        out.writeObject( rightParentPrevious );
-        out.writeObject( rightParentNext );
-        out.writeObject( memory );
-        out.writeObject( next );
-        out.writeObject( previous );
-        out.writeObject( children );
-
-        // @todo should not serialise in part of the rete network
-        out.writeObject( sink );
     }
 
     public LeftTuple getParent() {
