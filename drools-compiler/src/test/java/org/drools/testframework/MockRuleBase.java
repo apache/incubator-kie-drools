@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectInput;
+import java.io.OutputStream;
 import java.util.List;
 
 import org.drools.ClockType;
@@ -12,6 +13,7 @@ import org.drools.StatefulSession;
 import org.drools.StatelessSession;
 import org.drools.TemporalSession;
 import org.drools.event.RuleBaseEventListener;
+import org.drools.marshalling.Marshaller;
 import org.drools.rule.Package;
 
 public class MockRuleBase implements RuleBase {
@@ -62,7 +64,7 @@ public class MockRuleBase implements RuleBase {
 		return null;
 	}
 
-	public StatefulSession newStatefulSession(InputStream stream,
+	public StatefulSession readStatefulSession(InputStream stream,
 			boolean keepReference) throws IOException, ClassNotFoundException {
 		// TODO Auto-generated method stub
 		return null;
@@ -135,5 +137,33 @@ public class MockRuleBase implements RuleBase {
 
     public void writeExternal(ObjectOutput out) throws IOException {
 
+    }
+
+    public void writeStatefulSession(StatefulSession session,
+                                     OutputStream stream) throws IOException {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public StatefulSession readStatefulSession(InputStream stream,
+                                               Marshaller marshaller) throws IOException,
+                                                                     ClassNotFoundException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public StatefulSession readStatefulSession(InputStream stream,
+                                               boolean keepReference,
+                                               Marshaller marshaller) throws IOException,
+                                                                     ClassNotFoundException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public void writeStatefulSession(StatefulSession session,
+                                     OutputStream stream,
+                                     Marshaller marshaller) throws IOException {
+        // TODO Auto-generated method stub
+        
     }
 }

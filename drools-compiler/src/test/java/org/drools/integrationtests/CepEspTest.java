@@ -14,6 +14,7 @@ import org.drools.OrderEvent;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
+import org.drools.StatefulSession;
 import org.drools.TemporalSession;
 import org.drools.StockTick;
 import org.drools.WorkingMemory;
@@ -66,11 +67,11 @@ public class CepEspTest extends TestCase {
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_SimpleEventAssertion.drl" ) );
         RuleBase ruleBase = loadRuleBase( reader );
 
-        WorkingMemory wm = ruleBase.newTemporalSession( ClockType.PSEUDO_CLOCK );
+        StatefulSession session = ruleBase.newTemporalSession( ClockType.PSEUDO_CLOCK );
         final List results = new ArrayList();
 
-        wm.setGlobal( "results",
-                      results );
+        session.setGlobal( "results",    
+                           results );
 
         StockTick tick1 = new StockTick( 1,
                                          "DROO",
@@ -89,10 +90,10 @@ public class CepEspTest extends TestCase {
                                          50,
                                          System.currentTimeMillis() );
 
-        InternalFactHandle handle1 = (InternalFactHandle) wm.insert( tick1 );
-        InternalFactHandle handle2 = (InternalFactHandle) wm.insert( tick2 );
-        InternalFactHandle handle3 = (InternalFactHandle) wm.insert( tick3 );
-        InternalFactHandle handle4 = (InternalFactHandle) wm.insert( tick4 );
+        InternalFactHandle handle1 = (InternalFactHandle) session.insert( tick1 );
+        InternalFactHandle handle2 = (InternalFactHandle) session.insert( tick2 );
+        InternalFactHandle handle3 = (InternalFactHandle) session.insert( tick3 );
+        InternalFactHandle handle4 = (InternalFactHandle) session.insert( tick4 );
 
         assertNotNull( handle1 );
         assertNotNull( handle2 );
@@ -104,11 +105,12 @@ public class CepEspTest extends TestCase {
         assertTrue( handle3.isEvent() );
         assertTrue( handle4.isEvent() );
 
-        wm = SerializationHelper.serializeObject( wm );
-        wm.fireAllRules();
+        session = SerializationHelper.getSerialisedStatefulSession( session,
+                                                                    ruleBase );
+        session.fireAllRules();
 
         assertEquals( 2,
-                      ((List) wm.getGlobal( "results" )).size() );
+                      ((List) session.getGlobal( "results" )).size() );
 
     }
 

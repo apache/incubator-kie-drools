@@ -339,20 +339,21 @@ public class DynamicRulesTest extends TestCase {
         ruleBase.addPackage( SerializationHelper.serializeObject( builder.getPackage() ) );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
 
-        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        StatefulSession session = ruleBase.newStatefulSession();
 
-        workingMemory.insert( new Precondition( "genericcode",
+        session.insert( new Precondition( "genericcode",
                                                 "genericvalue" ) );
-        workingMemory.fireAllRules();
+        session.fireAllRules();
 
-        RuleBase ruleBaseWM = workingMemory.getRuleBase();
+        RuleBase ruleBaseWM = session.getRuleBase();
         ruleBaseWM.removePackage( packageName );
         final PackageBuilder builder1 = new PackageBuilder();
         builder1.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_RemovePackage.drl" ) ) );
         ruleBaseWM.addPackage( SerializationHelper.serializeObject( builder1.getPackage() ) );
         ruleBaseWM = SerializationHelper.serializeObject( ruleBaseWM );
-        workingMemory = SerializationHelper.serializeObject( workingMemory );
-        workingMemory.fireAllRules();
+        session = SerializationHelper.getSerialisedStatefulSession( session,
+                                                                    ruleBase );
+        session.fireAllRules();
 
         ruleBaseWM.removePackage( packageName );
         ruleBaseWM.addPackage( SerializationHelper.serializeObject( builder1.getPackage() ) );
@@ -363,30 +364,31 @@ public class DynamicRulesTest extends TestCase {
 
     public void testDynamicRules() throws Exception {
         RuleBase ruleBase = getRuleBase();
-        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        StatefulSession session = ruleBase.newStatefulSession();
         final Cheese a = new Cheese( "stilton",
                                      10 );
         final Cheese b = new Cheese( "stilton",
                                      15 );
         final Cheese c = new Cheese( "stilton",
                                      20 );
-        workingMemory.insert( a );
-        workingMemory.insert( b );
-        workingMemory.insert( c );
+        session.insert( a );
+        session.insert( b );
+        session.insert( c );
 
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicRules.drl" ) ) );
         final Package pkg = builder.getPackage();
         ruleBase.addPackage( SerializationHelper.serializeObject( pkg ) );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
-        workingMemory = SerializationHelper.serializeObject( workingMemory );
+        session = SerializationHelper.getSerialisedStatefulSession( session,
+                                                                    ruleBase );
 
-        workingMemory.fireAllRules();
+        session.fireAllRules();
     }
 
     public void testDynamicRules2() throws Exception {
         RuleBase ruleBase = getRuleBase();
-        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        StatefulSession session = ruleBase.newStatefulSession();
 
         // Assert some simple facts
         final FactA a = new FactA( "hello",
@@ -395,17 +397,18 @@ public class DynamicRulesTest extends TestCase {
         final FactB b = new FactB( "hello",
                                    new Integer( 2 ),
                                    new Float( 6.28 ) );
-        workingMemory.insert( a );
-        workingMemory.insert( b );
+        session.insert( a );
+        session.insert( b );
 
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicRules2.drl" ) ) );
         final Package pkg = SerializationHelper.serializeObject( builder.getPackage() );
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
-        workingMemory = SerializationHelper.serializeObject( workingMemory );
+        session = SerializationHelper.getSerialisedStatefulSession( session,
+                                                                    ruleBase );
 
-        workingMemory.fireAllRules();
+        session.fireAllRules();
     }
 
     public void testRuleBaseAddRemove() throws Exception {
@@ -562,9 +565,9 @@ public class DynamicRulesTest extends TestCase {
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkgInit );
 
-        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        StatefulSession session = ruleBase.newStatefulSession();
         List results = new ArrayList();
-        workingMemory.setGlobal( "results",
+        session.setGlobal( "results",
                                  results );
 
         final Cheese a = new Cheese( "stilton",
@@ -573,35 +576,37 @@ public class DynamicRulesTest extends TestCase {
                                      15 );
         final Cheese c = new Cheese( "stilton",
                                      20 );
-        workingMemory.insert( a );
-        FactHandle handle = workingMemory.insert( b );
-        workingMemory.insert( c );
-
+        session.insert( a );
+        session.insert( b );
+        session.insert( c );
+        
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicNotNode.drl" ) ) );
         final Package pkg = builder.getPackage();
         ruleBase.addPackage( SerializationHelper.serializeObject( pkg ) );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
-        workingMemory = SerializationHelper.serializeObject( workingMemory );
-        results = (List) workingMemory.getGlobal( "results" );
+        session = SerializationHelper.getSerialisedStatefulSession( session,
+                                                                    ruleBase );
+        results = (List) session.getGlobal( "results" );
 
-        workingMemory.fireAllRules();
+        session.fireAllRules();
 
         assertEquals( 0,
                       results.size() );
 
         ruleBase.removePackage( "org.drools" );
 
-        workingMemory.retract( handle );
+        session.retract( session.getFactHandle( b ) );
 
         final PackageBuilder builder1 = new PackageBuilder();
         builder1.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicNotNode.drl" ) ) );
         final Package pkg1 = builder.getPackage();
         ruleBase.addPackage( SerializationHelper.serializeObject( pkg1 ) );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
-        workingMemory = SerializationHelper.serializeObject( workingMemory );
-        results = (List) workingMemory.getGlobal( "results" );
-        workingMemory.fireAllRules();
+        session = SerializationHelper.getSerialisedStatefulSession( session,
+                                                                    ruleBase );
+        results = (List) session.getGlobal( "results" );
+        session.fireAllRules();
 
         assertEquals( 1,
                       results.size() );
@@ -701,10 +706,10 @@ public class DynamicRulesTest extends TestCase {
         builder2.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicRulesWithSubnetwork2.drl" ) ) );
         ruleBase.addPackage( SerializationHelper.serializeObject( builder2.getPackage() ) );
 
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        final StatefulSession session = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
-        workingMemory.setGlobal( "results",
+        session.setGlobal( "results",
                                  list );
 
         Order order = new Order();
@@ -715,7 +720,7 @@ public class DynamicRulesTest extends TestCase {
                                          OrderItem.TYPE_BOOK,
                                          24 );
         order.addItem( item1 );
-        workingMemory.insert( item1 );
+        session.insert( item1 );
 
         OrderItem item2 = new OrderItem( order,
                                          2,
@@ -723,7 +728,7 @@ public class DynamicRulesTest extends TestCase {
                                          OrderItem.TYPE_BOOK,
                                          15 );
         order.addItem( item2 );
-        workingMemory.insert( item2 );
+        session.insert( item2 );
 
         OrderItem item3 = new OrderItem( order,
                                          3,
@@ -731,7 +736,7 @@ public class DynamicRulesTest extends TestCase {
                                          OrderItem.TYPE_CD,
                                          9 );
         order.addItem( item3 );
-        workingMemory.insert( item3 );
+        session.insert( item3 );
 
         OrderItem item4 = new OrderItem( order,
                                          4,
@@ -739,17 +744,17 @@ public class DynamicRulesTest extends TestCase {
                                          OrderItem.TYPE_CD,
                                          11 );
         order.addItem( item4 );
-        workingMemory.insert( item4 );
+        session.insert( item4 );
 
-        workingMemory.insert( order );
+        session.insert( order );
 
         assertEquals( 11,
-                      workingMemory.getAgenda().getActivations().length );
+                      session.getAgenda().getActivations().length );
 
         reteooRuleBase.removeRule( "org.drools",
                                    "Apply Discount on all books" );
         assertEquals( 10,
-                      workingMemory.getAgenda().getActivations().length );
+                      session.getAgenda().getActivations().length );
 
         reteooRuleBase.removeRule( "org.drools",
                                    "like book" );
@@ -760,17 +765,17 @@ public class DynamicRulesTest extends TestCase {
                                                OrderItem.TYPE_CD,
                                                5 );
         assertEquals( 8,
-                      workingMemory.getAgenda().getActivations().length );
+                      session.getAgenda().getActivations().length );
 
-        workingMemory.insert( item5 );
+        session.insert( item5 );
 
         assertEquals( 10,
-                      workingMemory.getAgenda().getActivations().length );
+                      session.getAgenda().getActivations().length );
 
         reteooRuleBase.removePackage( "org.drools" );
 
         assertEquals( 0,
-                      workingMemory.getAgenda().getActivations().length );
+                      session.getAgenda().getActivations().length );
     }
 
     public void testDynamicRuleRemovalsUnusedWorkingMemorySubNetwork() throws Exception {
