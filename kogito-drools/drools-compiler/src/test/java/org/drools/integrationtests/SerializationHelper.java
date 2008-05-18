@@ -2,6 +2,7 @@ package org.drools.integrationtests;
 
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
+import org.drools.marshalling.DefaultMarshaller;
 import org.drools.marshalling.Marshaller;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.util.DroolsStreamUtils;
@@ -49,7 +50,7 @@ public class SerializationHelper {
     public static StatefulSession getSerialisedStatefulSession(StatefulSession session,
                                                                RuleBase ruleBase,
                                                                boolean dispose) throws Exception {
-        Marshaller marshaller = new Marshaller();
+        Marshaller marshaller = new DefaultMarshaller();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ruleBase.writeStatefulSession( session,
@@ -63,7 +64,7 @@ public class SerializationHelper {
                                                                 marshaller );
 
         // write methods allways needs a new marshaller for Identity strategies
-        marshaller = new Marshaller();        
+        marshaller = new DefaultMarshaller();        
         baos = new ByteArrayOutputStream();
         ruleBase.writeStatefulSession( session2,
                                        baos,
