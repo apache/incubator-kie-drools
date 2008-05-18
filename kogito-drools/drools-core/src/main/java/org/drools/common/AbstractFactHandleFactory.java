@@ -24,8 +24,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.drools.WorkingMemory;
-import org.drools.marshalling.WMSerialisationInContext;
-import org.drools.marshalling.WMSerialisationOutContext;
+import org.drools.marshalling.MarshallerReaderContext;
+import org.drools.marshalling.MarshallerWriteContext;
 import org.drools.reteoo.ObjectTypeConf;
 import org.drools.spi.FactHandleFactory;
 

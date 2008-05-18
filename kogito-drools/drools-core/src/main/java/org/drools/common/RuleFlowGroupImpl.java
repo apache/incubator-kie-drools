@@ -23,8 +23,8 @@ import java.io.ObjectOutput;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.drools.marshalling.PersisterEnums;
-import org.drools.marshalling.WMSerialisationInContext;
-import org.drools.marshalling.WMSerialisationOutContext;
+import org.drools.marshalling.MarshallerReaderContext;
+import org.drools.marshalling.MarshallerWriteContext;
 import org.drools.spi.Activation;
 import org.drools.util.Iterator;
 import org.drools.util.LinkedList;
@@ -264,11 +264,11 @@ public class RuleFlowGroupImpl
             this.ruleFlowGroup = ruleFlowGroup;
         }
 
-        public DeactivateCallback(WMSerialisationInContext context) throws IOException {
+        public DeactivateCallback(MarshallerReaderContext context) throws IOException {
 
         }
 
-        public void write(WMSerialisationOutContext context) throws IOException {
+        public void write(MarshallerWriteContext context) throws IOException {
         }
 
         public void readExternal(ObjectInput in) throws IOException,

@@ -28,7 +28,7 @@ import org.drools.TemporalSession;
 import org.drools.common.DroolsObjectInputStream;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.WorkingMemoryAction;
-import org.drools.marshalling.WMSerialisationOutContext;
+import org.drools.marshalling.MarshallerWriteContext;
 import org.drools.reteoo.ReteooTemporalSession;
 import org.drools.rule.Behavior;
 
@@ -204,7 +204,7 @@ public class SessionPseudoClock
             return "ScheduledItem( timestamp="+timestamp+", behavior="+behavior+" )";
         }
 
-        public void write(WMSerialisationOutContext context) throws IOException {
+        public void write(MarshallerWriteContext context) throws IOException {
             // TODO Auto-generated method stub
             
         }

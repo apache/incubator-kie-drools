@@ -29,8 +29,8 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.WorkingMemoryAction;
-import org.drools.marshalling.WMSerialisationInContext;
-import org.drools.marshalling.WMSerialisationOutContext;
+import org.drools.marshalling.MarshallerReaderContext;
+import org.drools.marshalling.MarshallerWriteContext;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.PropagationContext;
 
@@ -421,11 +421,11 @@ public class PropagationQueuingNode extends ObjectSource
             this.node = node;
         }
         
-        public PropagateAction(WMSerialisationInContext context)  throws IOException {
+        public PropagateAction(MarshallerReaderContext context)  throws IOException {
             this.node = ( PropagationQueuingNode ) context.sinks.get( context.readInt() );
         }          
         
-        public void write(WMSerialisationOutContext context) throws IOException {
+        public void write(MarshallerWriteContext context) throws IOException {
             context.write( node.getId() );
         }
 

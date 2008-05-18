@@ -24,8 +24,8 @@ import java.io.ObjectOutput;
 import org.drools.TemporalSession;
 import org.drools.common.InternalRuleBase;
 import org.drools.concurrent.ExecutorService;
-import org.drools.marshalling.WMSerialisationInContext;
-import org.drools.marshalling.WMSerialisationOutContext;
+import org.drools.marshalling.MarshallerReaderContext;
+import org.drools.marshalling.MarshallerWriteContext;
 import org.drools.temporal.SessionClock;
 
 /**

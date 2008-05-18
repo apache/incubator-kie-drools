@@ -63,8 +63,8 @@ import org.drools.util.ObjectHashMap;
 import org.drools.util.ObjectHashSet;
 import org.drools.util.ObjectHashSet.ObjectEntry;
 
-public class InputPersister {
-    public static ReteooStatefulSession readSession(WMSerialisationInContext context,
+public class InputMarshaller {
+    public static ReteooStatefulSession readSession(MarshallerReaderContext context,
                                                     int id,
                                                     ExecutorService executor) throws IOException,
                                                                              ClassNotFoundException {
@@ -106,7 +106,7 @@ public class InputPersister {
         return session;
     }
     
-    public static void readAgenda(WMSerialisationInContext context, DefaultAgenda agenda) throws IOException {
+    public static void readAgenda(MarshallerReaderContext context, DefaultAgenda agenda) throws IOException {
         ObjectInputStream stream = context.stream;
         while ( stream.readInt() == PersisterEnums.AGENDA_GROUP ) {
             BinaryHeapQueueAgendaGroup group = new BinaryHeapQueueAgendaGroup( stream.readUTF(), context.ruleBase );
@@ -129,7 +129,7 @@ public class InputPersister {
                 
     }
 
-    public static void readActionQueue(WMSerialisationInContext context) throws IOException {
+    public static void readActionQueue(MarshallerReaderContext context) throws IOException {
         ReteooWorkingMemory wm = (ReteooWorkingMemory) context.wm;
         Queue actionQueue = wm.getActionQueue();
         while ( context.readInt() == PersisterEnums.WORKING_MEMORY_ACTION ) {
@@ -137,7 +137,7 @@ public class InputPersister {
         }
     }
 
-    public static void readTruthMaintenanceSystem(WMSerialisationInContext context) throws IOException {
+    public static void readTruthMaintenanceSystem(MarshallerReaderContext context) throws IOException {
         ObjectInputStream stream = context.stream;
 
         TruthMaintenanceSystem tms = context.wm.getTruthMaintenanceSystem();
@@ -158,7 +158,7 @@ public class InputPersister {
         }
     }
 
-    public static void readFactHandles(WMSerialisationInContext context) throws IOException,
+    public static void readFactHandles(MarshallerReaderContext context) throws IOException,
                                                                         ClassNotFoundException {
         ObjectInputStream stream = context.stream;
         InternalRuleBase ruleBase = context.ruleBase;
@@ -235,7 +235,7 @@ public class InputPersister {
     }
 
     public static void readRightTuples(InternalFactHandle factHandle,
-                                       WMSerialisationInContext context) throws IOException {
+                                       MarshallerReaderContext context) throws IOException {
         ObjectInputStream stream = context.stream;
         while ( stream.readInt() == PersisterEnums.RIGHT_TUPLE ) {
             readRightTuple( context,
@@ -243,7 +243,7 @@ public class InputPersister {
         }
     }
 
-    public static void readRightTuple(WMSerialisationInContext context,
+    public static void readRightTuple(MarshallerReaderContext context,
                                       InternalFactHandle factHandle) throws IOException {
         ObjectInputStream stream = context.stream;
 
@@ -260,7 +260,7 @@ public class InputPersister {
         memory.getRightTupleMemory().add( rightTuple );
     }
 
-    public static void readLeftTuples(WMSerialisationInContext context) throws IOException {
+    public static void readLeftTuples(MarshallerReaderContext context) throws IOException {
         ObjectInputStream stream = context.stream;
 
         while ( stream.readInt() == PersisterEnums.LEFT_TUPLE ) {
@@ -275,7 +275,7 @@ public class InputPersister {
     }
 
     public static void readLeftTuple(LeftTuple parentLeftTuple,
-                                     WMSerialisationInContext context) throws IOException {
+                                     MarshallerReaderContext context) throws IOException {
         ObjectInputStream stream = context.stream;
         InternalRuleBase ruleBase = context.ruleBase;
         InternalWorkingMemory wm = context.wm;
@@ -370,7 +370,7 @@ public class InputPersister {
         }
     }
 
-    public static void readActivations(WMSerialisationInContext context) throws IOException {
+    public static void readActivations(MarshallerReaderContext context) throws IOException {
         ObjectInputStream stream = context.stream;
 
         while ( stream.readInt() == PersisterEnums.ACTIVATION ) {
@@ -378,7 +378,7 @@ public class InputPersister {
         }
     }
 
-    public static Activation readActivation(WMSerialisationInContext context) throws IOException {
+    public static Activation readActivation(MarshallerReaderContext context) throws IOException {
         ObjectInputStream stream = context.stream;
         InternalRuleBase ruleBase = context.ruleBase;
         InternalWorkingMemory wm = context.wm;
@@ -453,7 +453,7 @@ public class InputPersister {
         return activation;
     }
 
-    public static void readPropagationContexts(WMSerialisationInContext context) throws IOException {
+    public static void readPropagationContexts(MarshallerReaderContext context) throws IOException {
         ObjectInputStream stream = context.stream;
 
         while ( stream.readInt() == PersisterEnums.PROPAGATION_CONTEXT ) {
@@ -462,7 +462,7 @@ public class InputPersister {
 
     }
 
-    public static void readPropagationContext(WMSerialisationInContext context) throws IOException {
+    public static void readPropagationContext(MarshallerReaderContext context) throws IOException {
         ObjectInputStream stream = context.stream;
         InternalRuleBase ruleBase = context.ruleBase;
         InternalWorkingMemory wm = context.wm;

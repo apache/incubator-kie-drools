@@ -60,8 +60,8 @@ import org.drools.util.ObjectHashMap;
 import org.drools.util.ObjectHashSet;
 import org.drools.util.ObjectHashSet.ObjectEntry;
 
-public class OutputPersister {
-    public static void writeSession(WMSerialisationOutContext context) throws IOException {
+public class OutputMarshaller {
+    public static void writeSession(MarshallerWriteContext context) throws IOException {
         ReteooWorkingMemory wm = (ReteooWorkingMemory) context.wm;
 
         context.writeInt( wm.getFactHandleFactory().getId() );
@@ -90,7 +90,7 @@ public class OutputPersister {
         }
     }
 
-    public static void writeAgenda(WMSerialisationOutContext context) throws IOException {
+    public static void writeAgenda(MarshallerWriteContext context) throws IOException {
         InternalWorkingMemory wm = context.wm;
         DefaultAgenda agenda = (DefaultAgenda) wm.getAgenda();
 
@@ -151,7 +151,7 @@ public class OutputPersister {
         }
     }
 
-    public static void writeActionQueue(WMSerialisationOutContext context) throws IOException {
+    public static void writeActionQueue(MarshallerWriteContext context) throws IOException {
         ReteooWorkingMemory wm = (ReteooWorkingMemory) context.wm;
 
         WorkingMemoryAction[] queue = wm.getActionQueue().toArray( new WorkingMemoryAction[wm.getActionQueue().size()] );
@@ -162,7 +162,7 @@ public class OutputPersister {
         context.writeInt( PersisterEnums.END );
     }
 
-    public static void writeTruthMaintenanceSystem(WMSerialisationOutContext context) throws IOException {
+    public static void writeTruthMaintenanceSystem(MarshallerWriteContext context) throws IOException {
         ObjectOutputStream stream = context.stream;
 
         ObjectHashMap assertMap = context.wm.getTruthMaintenanceSystem().getAssertMap();
@@ -208,7 +208,7 @@ public class OutputPersister {
         }
     }
 
-    public static void writeFactHandles(WMSerialisationOutContext context) throws IOException {
+    public static void writeFactHandles(MarshallerWriteContext context) throws IOException {
         ObjectOutputStream stream = context.stream;
         InternalWorkingMemory wm = context.wm;
         PlaceholderResolverStrategyFactory resolverStrategyFactory = context.resolverStrategyFactory;
@@ -276,7 +276,7 @@ public class OutputPersister {
         }
     }
 
-    public static void writeInitialFactHandleRightTuples(WMSerialisationOutContext context) throws IOException {
+    public static void writeInitialFactHandleRightTuples(MarshallerWriteContext context) throws IOException {
         ObjectOutputStream stream = context.stream;
         InternalRuleBase ruleBase = context.ruleBase;
 
@@ -303,7 +303,7 @@ public class OutputPersister {
         }
     }
 
-    public static void writeInitialFactHandleLeftTuples(WMSerialisationOutContext context) throws IOException {
+    public static void writeInitialFactHandleLeftTuples(MarshallerWriteContext context) throws IOException {
         ObjectOutputStream stream = context.stream;
 
         context.out.println( "InitialFact LeftTuples Start" );
@@ -321,7 +321,7 @@ public class OutputPersister {
     }
 
     public static void writeRightTuples(InternalFactHandle handle,
-                                        WMSerialisationOutContext context) throws IOException {
+                                        MarshallerWriteContext context) throws IOException {
         ObjectOutputStream stream = context.stream;
         context.out.println( "RightTuples Start" );
 
@@ -339,14 +339,14 @@ public class OutputPersister {
     }
 
     public static void writeRightTuple(RightTuple rightTuple,
-                                       WMSerialisationOutContext context) throws IOException {
+                                       MarshallerWriteContext context) throws IOException {
         ObjectOutputStream stream = context.stream;
         InternalWorkingMemory wm = context.wm;
         stream.writeInt( rightTuple.getRightTupleSink().getId() );
         context.out.println( "RightTuple int:" + rightTuple.getRightTupleSink().getId() );
     }
 
-    public static void writeLeftTuples(WMSerialisationOutContext context) throws IOException {
+    public static void writeLeftTuples(MarshallerWriteContext context) throws IOException {
         ObjectOutputStream stream = context.stream;
         InternalWorkingMemory wm = context.wm;
 
@@ -371,7 +371,7 @@ public class OutputPersister {
     }
 
     public static void writeLeftTuple(LeftTuple leftTuple,
-                                      WMSerialisationOutContext context) throws IOException {
+                                      MarshallerWriteContext context) throws IOException {
         ObjectOutputStream stream = context.stream;
         InternalRuleBase ruleBase = context.ruleBase;
         InternalWorkingMemory wm = context.wm;
@@ -447,7 +447,7 @@ public class OutputPersister {
         return leftTuple;
     }
 
-    public static void writeActivations(WMSerialisationOutContext context) throws IOException {
+    public static void writeActivations(MarshallerWriteContext context) throws IOException {
         ObjectOutputStream stream = context.stream;
         
         Entry<LeftTuple, Integer>[] entries = context.terminalTupleMap.entrySet().toArray( new Entry[ context.terminalTupleMap.size() ] );
@@ -477,7 +477,7 @@ public class OutputPersister {
         }
     }
 
-    public static void writeActivation(WMSerialisationOutContext context,
+    public static void writeActivation(MarshallerWriteContext context,
                                        LeftTuple leftTuple,
                                        AgendaItem agendaItem,
                                        RuleTerminalNode ruleTerminalNode) throws IOException {
@@ -522,7 +522,7 @@ public class OutputPersister {
         stream.writeInt( PersisterEnums.END );
     }
 
-    public static void writePropagationContexts(WMSerialisationOutContext context) throws IOException {
+    public static void writePropagationContexts(MarshallerWriteContext context) throws IOException {
         ObjectOutputStream stream = context.stream;
 
         Entry<LeftTuple, Integer>[] entries = context.terminalTupleMap.entrySet().toArray( new Entry[ context.terminalTupleMap.size() ] );
@@ -547,7 +547,7 @@ public class OutputPersister {
         stream.writeInt( PersisterEnums.END );
     }
 
-    public static void writePropagationContext(WMSerialisationOutContext context,
+    public static void writePropagationContext(MarshallerWriteContext context,
                                                PropagationContext pc) throws IOException {
         ObjectOutputStream stream = context.stream;
         Map<LeftTuple, Integer> tuples = context.terminalTupleMap;

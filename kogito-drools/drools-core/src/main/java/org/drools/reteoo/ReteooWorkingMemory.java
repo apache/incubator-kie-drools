@@ -37,10 +37,10 @@ import org.drools.common.ObjectTypeConfigurationRegistry;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.WorkingMemoryAction;
 import org.drools.event.RuleBaseEventListener;
-import org.drools.marshalling.InputPersister;
-import org.drools.marshalling.OutputPersister;
-import org.drools.marshalling.WMSerialisationInContext;
-import org.drools.marshalling.WMSerialisationOutContext;
+import org.drools.marshalling.InputMarshaller;
+import org.drools.marshalling.OutputMarshaller;
+import org.drools.marshalling.MarshallerReaderContext;
+import org.drools.marshalling.MarshallerWriteContext;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Package;
 import org.drools.rule.Query;
@@ -201,7 +201,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
             this.leftTuple = leftTuple;
         }
         
-        public WorkingMemoryReteAssertAction(WMSerialisationInContext context) throws IOException {
+        public WorkingMemoryReteAssertAction(MarshallerReaderContext context) throws IOException {
             this.factHandle = context.handles.get( context.readInt() );
             this.removeLogical = context.readBoolean();
             this.updateEqualsMap = context.readBoolean();
@@ -217,7 +217,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
             }
         }        
         
-        public void write(WMSerialisationOutContext context) throws IOException {
+        public void write(MarshallerWriteContext context) throws IOException {
             context.writeInt( WorkingMemoryAction.WorkingMemoryReteAssertAction );
             
             context.writeInt( this.factHandle.getId() );
