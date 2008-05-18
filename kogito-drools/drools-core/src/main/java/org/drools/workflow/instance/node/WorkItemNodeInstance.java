@@ -38,14 +38,23 @@ public class WorkItemNodeInstance extends EventNodeInstance implements WorkItemL
 
     private static final long serialVersionUID = 400L;
     
-    private WorkItemImpl workItem;
+    private long workItemId = -1;
+    private transient WorkItemImpl workItem;
     
     protected WorkItemNode getWorkItemNode() {
         return (WorkItemNode) getNode();
     }
     
     public WorkItem getWorkItem() {
+    	if (workItem == null && workItemId >= 0) {
+    		workItem = (WorkItemImpl) getProcessInstance().getWorkingMemory()
+    			.getWorkItemManager().getWorkItem(workItemId);
+    	}
         return workItem;
+    }
+    
+    public void internalSetWorkItemId(long workItemId) {
+    	this.workItemId = workItemId;
     }
 
     public void internalTrigger(final NodeInstance from, String type) {
@@ -78,6 +87,8 @@ public class WorkItemNodeInstance extends EventNodeInstance implements WorkItemL
         getProcessInstance().getWorkingMemory().getWorkItemManager().internalExecuteWorkItem(workItem);
         if (!workItemNode.isWaitForCompletion()) {
             triggerCompleted();
+        } else {
+        	this.workItemId = workItem.getId();
         }
     }
 
@@ -113,14 +124,14 @@ public class WorkItemNodeInstance extends EventNodeInstance implements WorkItemL
     }
 
     public void workItemAborted(WorkItem workItem) {
-        if ( this.workItem.getId() == workItem.getId() ) {
+        if ( getWorkItem().getId() == workItem.getId() ) {
             removeEventListeners();
             triggerCompleted(workItem);
         }
     }
 
     public void workItemCompleted(WorkItem workItem) {
-        if ( this.workItem.getId() == workItem.getId() ) {
+        if ( getWorkItem().getId() == workItem.getId() ) {
             removeEventListeners();
             triggerCompleted(workItem);
         }

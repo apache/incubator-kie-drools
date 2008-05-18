@@ -15,6 +15,14 @@ public class TimerNodeInstance extends EventNodeInstance implements TimerListene
     public TimerNode getTimerNode() {
         return (TimerNode) getNode();
     }
+    
+    public long getTimerId() {
+    	return timerId;
+    }
+    
+    public void internalSetTimerId(long timerId) {
+    	this.timerId = timerId;
+    }
 
     public void internalTrigger(NodeInstance from, String type) {
         if (!Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
