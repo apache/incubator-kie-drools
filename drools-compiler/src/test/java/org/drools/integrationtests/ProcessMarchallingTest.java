@@ -125,10 +125,120 @@ public class ProcessMarchallingTest extends TestCase {
         session = getSerialisedStatefulSession( session );
         assertEquals(1, session.getProcessInstances().size());
         
-        WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger(session);
         session.getWorkItemManager().completeWorkItem(handler.getWorkItemId(), null);
-        logger.writeToDisk();
+        
+        assertEquals(0, session.getProcessInstances().size());
+    }
+    
+    public void test3() throws Exception {
+        String process1 = 
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+        	"<process xmlns=\"http://drools.org/drools-4.0/process\"\n" +
+            "  xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+            "  xs:schemaLocation=\"http://drools.org/drools-4.0/process drools-processes-4.0.xsd\"\n" +
+            "  type=\"RuleFlow\" name=\"ruleflow\" id=\"com.sample.ruleflow\" package-name=\"com.sample\" >\n" +
+            "\n" +
+            "  <header>\n" +
+            "    <imports>\n" +
+            "      <import name=\"org.drools.Person\" />\n" +
+            "    </imports>\n" +
+            "  </header>\n" +
+            "\n" +
+            "  <nodes>\n" +
+            "    <start id=\"1\" name=\"Start\" />\n" +
+            "    <end id=\"4\" name=\"End\" />\n" +
+            "    <split id=\"5\" name=\"AND\" type=\"1\" />\n" +
+            "    <subProcess id=\"6\" name=\"SubProcess\" processId=\"com.sample.subflow\" />\n" +
+            "    <action id=\"7\" name=\"Action\" dialect=\"mvel\" >System.out.println(\"Executing action 1\");</action>\n" +
+            "    <join id=\"8\" name=\"AND\" type=\"1\" />\n" +
+            "    <action id=\"9\" name=\"Action\" dialect=\"mvel\" >System.out.println(\"Executing action 2\");</action>\n" +
+            "    <ruleSet id=\"10\" name=\"RuleSet\" ruleFlowGroup=\"flowgroup\" />\n" +
+            "    <milestone id=\"11\" name=\"Event Wait\" >Person( )</milestone>\n" +
+            "    <workItem id=\"12\" name=\"Log\" >\n" +
+            "      <work name=\"Log\" >\n" +
+            "        <parameter name=\"Message\" type=\"org.drools.process.core.datatype.impl.type.StringDataType\" >This is a log message</parameter>\n" +
+            "      </work>\n" +
+            "    </workItem>\n" +
+            "  </nodes>\n" +
+            "\n" +
+            "  <connections>\n" +
+            "    <connection from=\"9\" to=\"4\" />\n" +
+            "    <connection from=\"1\" to=\"5\" />\n" +
+            "    <connection from=\"5\" to=\"6\" />\n" +
+            "    <connection from=\"5\" to=\"7\" />\n" +
+            "    <connection from=\"7\" to=\"8\" />\n" +
+            "    <connection from=\"6\" to=\"8\" />\n" +
+            "    <connection from=\"10\" to=\"8\" />\n" +
+            "    <connection from=\"11\" to=\"8\" />\n" +
+            "    <connection from=\"12\" to=\"8\" />\n" +
+            "    <connection from=\"8\" to=\"9\" />\n" +
+            "    <connection from=\"5\" to=\"10\" />\n" +
+            "    <connection from=\"5\" to=\"11\" />\n" +
+            "    <connection from=\"5\" to=\"12\" />\n" +
+            "  </connections>\n" +
+            "\n" +
+            "</process>\n";
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addProcessFromXml( new StringReader( process1 ));
+        
+        String process2 =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+            "<process xmlns=\"http://drools.org/drools-4.0/process\"\n" +
+            "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+            "         xs:schemaLocation=\"http://drools.org/drools-4.0/process drools-processes-4.0.xsd\"\n" +
+            "         type=\"RuleFlow\" name=\"flow\" id=\"com.sample.subflow\" package-name=\"com.sample\" >\n" +
+            "\n" +
+            "  <header>\n" +
+            "    <imports>\n" +
+            "      <import name=\"org.drools.Person\" />\n" +
+            "    </imports>\n" +
+            "  </header>\n" +
+            "\n" +
+            "  <nodes>\n" +
+            "    <start id=\"1\" name=\"Start\" />\n" +
+            "    <milestone id=\"2\" name=\"Event Wait\" >Person( )</milestone>\n" +
+            "    <end id=\"3\" name=\"End\" />\n" +
+            "  </nodes>\n" +
+            "\n" +
+            "  <connections>\n" +
+            "    <connection from=\"1\" to=\"2\" />\n" +
+            "    <connection from=\"2\" to=\"3\" />\n" +
+            "  </connections>\n" +
+            "\n" +
+            "</process>\n";
+        builder.addProcessFromXml( new StringReader( process2 ));
+        
+        String rule = 
+            "package com.sample\n" +
+            "import org.drools.Person;\n" +
+            "rule \"Hello\" ruleflow-group \"flowgroup\"\n" +
+            "    when\n" +
+            "    then\n" +
+            "        System.out.println( \"Hello\" );\n" +
+            "end";
+        builder.addPackageFromDrl( new StringReader( rule ));
+        
+        final Package pkg = builder.getPackage();
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        ruleBase.addPackage(pkg);
 
+        StatefulSession session = ruleBase.newStatefulSession();
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        session.getWorkItemManager().registerWorkItemHandler("Log", handler);
+        session.startProcess("com.sample.ruleflow");
+
+        assertEquals(2, session.getProcessInstances().size());
+        assertTrue(handler.getWorkItemId() != -1);
+        
+        session = getSerialisedStatefulSession( session );
+        WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger(session);
+        assertEquals(2, session.getProcessInstances().size());
+
+        session.getWorkItemManager().completeWorkItem(handler.getWorkItemId(), null);
+        session.insert(new Person());
+        session.fireAllRules();
+        logger.writeToDisk();
+        
         assertEquals(0, session.getProcessInstances().size());
     }
     
