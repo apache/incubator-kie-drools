@@ -34,5 +34,6 @@ public class PersisterEnums {
     public static final int SUB_PROCESS_NODE_INSTANCE = 22;
     public static final int MILESTONE_NODE_INSTANCE   = 23;
     public static final int TIMER_NODE_INSTANCE       = 24;
+    public static final int JOIN_NODE_INSTANCE        = 25;
 
 }

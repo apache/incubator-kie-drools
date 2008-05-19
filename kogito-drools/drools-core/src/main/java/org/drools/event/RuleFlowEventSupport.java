@@ -61,7 +61,7 @@ public class RuleFlowEventSupport implements Externalizable {
         this.listeners.remove( listener );
     }
 
-    public List getEventListeners() {
+    public List<RuleFlowEventListener> getEventListeners() {
         return Collections.unmodifiableList( this.listeners );
     }
 
@@ -82,9 +82,8 @@ public class RuleFlowEventSupport implements Externalizable {
 
         final RuleFlowStartedEvent event = new RuleFlowStartedEvent( instance );
 
-        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
-            ((RuleFlowEventListener) this.listeners.get( i )).beforeRuleFlowStarted( event,
-                                                                                     workingMemory );
+        for ( RuleFlowEventListener listener: listeners ) {
+            listener.beforeRuleFlowStarted( event, workingMemory );
         }
     }
 
@@ -97,9 +96,8 @@ public class RuleFlowEventSupport implements Externalizable {
 
         final RuleFlowStartedEvent event = new RuleFlowStartedEvent( instance );
 
-        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
-            ((RuleFlowEventListener) this.listeners.get( i )).afterRuleFlowStarted( event,
-                                                                                    workingMemory );
+        for ( RuleFlowEventListener listener: listeners ) {
+            listener.afterRuleFlowStarted( event, workingMemory );
         }
     }
 
@@ -112,9 +110,8 @@ public class RuleFlowEventSupport implements Externalizable {
 
         final RuleFlowCompletedEvent event = new RuleFlowCompletedEvent( instance );
 
-        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
-            ((RuleFlowEventListener) this.listeners.get( i )).beforeRuleFlowCompleted( event,
-                                                                                       workingMemory );
+        for ( RuleFlowEventListener listener: listeners ) {
+            listener.beforeRuleFlowCompleted( event, workingMemory );
         }
     }
 
@@ -127,9 +124,8 @@ public class RuleFlowEventSupport implements Externalizable {
 
         final RuleFlowCompletedEvent event = new RuleFlowCompletedEvent( instance );
 
-        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
-            ((RuleFlowEventListener) this.listeners.get( i )).afterRuleFlowCompleted( event,
-                                                                                      workingMemory );
+        for ( RuleFlowEventListener listener: listeners ) {
+            listener.afterRuleFlowCompleted( event, workingMemory );
         }
     }
 
@@ -141,9 +137,8 @@ public class RuleFlowEventSupport implements Externalizable {
 
         final RuleFlowGroupActivatedEvent event = new RuleFlowGroupActivatedEvent( ruleFlowGroup );
 
-        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
-            ((RuleFlowEventListener) this.listeners.get( i )).beforeRuleFlowGroupActivated( event,
-                                                                                            workingMemory );
+        for ( RuleFlowEventListener listener: listeners ) {
+            listener.beforeRuleFlowGroupActivated( event, workingMemory );
         }
     }
 
@@ -155,9 +150,8 @@ public class RuleFlowEventSupport implements Externalizable {
 
         final RuleFlowGroupActivatedEvent event = new RuleFlowGroupActivatedEvent( ruleFlowGroup );
 
-        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
-            ((RuleFlowEventListener) this.listeners.get( i )).afterRuleFlowGroupActivated( event,
-                                                                                           workingMemory );
+        for ( RuleFlowEventListener listener: listeners ) {
+            listener.afterRuleFlowGroupActivated( event, workingMemory );
         }
     }
 
@@ -169,9 +163,8 @@ public class RuleFlowEventSupport implements Externalizable {
 
         final RuleFlowGroupDeactivatedEvent event = new RuleFlowGroupDeactivatedEvent( ruleFlowGroup );
 
-        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
-            ((RuleFlowEventListener) this.listeners.get( i )).beforeRuleFlowGroupDeactivated( event,
-                                                                                              workingMemory );
+        for ( RuleFlowEventListener listener: listeners ) {
+            listener.beforeRuleFlowGroupDeactivated( event, workingMemory );
         }
     }
 
@@ -183,9 +176,8 @@ public class RuleFlowEventSupport implements Externalizable {
 
         final RuleFlowGroupDeactivatedEvent event = new RuleFlowGroupDeactivatedEvent( ruleFlowGroup );
 
-        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
-            ((RuleFlowEventListener) this.listeners.get( i )).afterRuleFlowGroupDeactivated( event,
-                                                                                             workingMemory );
+        for ( RuleFlowEventListener listener: listeners ) {
+            listener.afterRuleFlowGroupDeactivated( event, workingMemory );
         }
     }
 
@@ -198,9 +190,8 @@ public class RuleFlowEventSupport implements Externalizable {
 
         final RuleFlowNodeTriggeredEvent event = new RuleFlowNodeTriggeredEvent( ruleFlowNodeInstance );
 
-        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
-            ((RuleFlowEventListener) this.listeners.get( i )).beforeRuleFlowNodeTriggered( event,
-                                                                                           workingMemory );
+        for ( RuleFlowEventListener listener: listeners ) {
+            listener.beforeRuleFlowNodeTriggered( event, workingMemory );
         }
     }
 
@@ -213,9 +204,8 @@ public class RuleFlowEventSupport implements Externalizable {
 
         final RuleFlowNodeTriggeredEvent event = new RuleFlowNodeTriggeredEvent( ruleFlowNodeInstance );
 
-        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
-            ((RuleFlowEventListener) this.listeners.get( i )).afterRuleFlowNodeTriggered( event,
-                                                                                          workingMemory );
+        for ( RuleFlowEventListener listener: listeners ) {
+            listener.afterRuleFlowNodeTriggered( event, workingMemory );
         }
     }
 
