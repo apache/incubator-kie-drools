@@ -47,6 +47,7 @@ import org.drools.spi.RuleFlowGroup;
 import org.drools.util.ObjectHashMap;
 import org.drools.util.ObjectHashSet;
 import org.drools.workflow.instance.NodeInstance;
+import org.drools.workflow.instance.node.JoinInstance;
 import org.drools.workflow.instance.node.MilestoneNodeInstance;
 import org.drools.workflow.instance.node.RuleSetNodeInstance;
 import org.drools.workflow.instance.node.SubProcessNodeInstance;
@@ -625,6 +626,14 @@ public class OutputMarshaller {
         } else if (nodeInstance instanceof TimerNodeInstance) {
             stream.writeInt(PersisterEnums.TIMER_NODE_INSTANCE);
             stream.writeLong(((TimerNodeInstance) nodeInstance).getTimerId());
+        } else if (nodeInstance instanceof JoinInstance) {
+            stream.writeInt(PersisterEnums.JOIN_NODE_INSTANCE);
+            Map<Long, Integer> triggers = ((JoinInstance) nodeInstance).getTriggers();
+            stream.writeInt(triggers.size());
+            for (Map.Entry<Long, Integer> entry: triggers.entrySet()) {
+                stream.writeLong(entry.getKey());
+                stream.writeInt(entry.getValue());
+            }
         } else {
             throw new IllegalArgumentException(
                 "Unknown node instance type: " + nodeInstance);

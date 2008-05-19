@@ -2,6 +2,7 @@ package org.drools.marshalling;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
 
@@ -58,6 +59,7 @@ import org.drools.util.ObjectHashSet;
 import org.drools.workflow.instance.NodeInstance;
 import org.drools.workflow.instance.impl.NodeInstanceImpl;
 import org.drools.workflow.instance.node.EventNodeInstance;
+import org.drools.workflow.instance.node.JoinInstance;
 import org.drools.workflow.instance.node.MilestoneNodeInstance;
 import org.drools.workflow.instance.node.RuleSetNodeInstance;
 import org.drools.workflow.instance.node.SubProcessNodeInstance;
@@ -573,6 +575,19 @@ public class InputMarshaller {
                 ((TimerNodeInstance) nodeInstance)
                     .internalSetTimerId(stream.readLong());
                 break;
+            case PersisterEnums.JOIN_NODE_INSTANCE:
+                nodeInstance = new JoinInstance();
+                int number = stream.readInt();
+                if (number > 0) {
+                    Map<Long, Integer> triggers = new HashMap<Long, Integer>();
+                    for (int i = 0; i < number; i++) {
+                        long l = stream.readLong();
+                        int count = stream.readInt();
+                        triggers.put(l, count);
+                    }
+                    ((JoinInstance) nodeInstance).internalSetTriggers(triggers);
+                }
+                break;
             default:
                 throw new IllegalArgumentException(
                     "Unknown node type: " + nodeType);
@@ -581,7 +596,9 @@ public class InputMarshaller {
         nodeInstance.setNodeInstanceContainer(processInstance);
         nodeInstance.setProcessInstance(processInstance);
         nodeInstance.setId(id);
-        ((EventNodeInstance) nodeInstance).addEventListeners();
+        if (nodeInstance instanceof EventNodeInstance) {
+            ((EventNodeInstance) nodeInstance).addEventListeners();
+        }
         return nodeInstance;
     }
 

@@ -35,7 +35,7 @@ public class JoinInstance extends NodeInstanceImpl {
 
     private static final long serialVersionUID = 400L;
     
-    private final Map<Long, Integer> triggers = new HashMap<Long, Integer>();
+    private Map<Long, Integer> triggers = new HashMap<Long, Integer>();
     
     protected Join getJoin() {
         return (Join) getNode();
@@ -117,5 +117,13 @@ public class JoinInstance extends NodeInstanceImpl {
             getNodeInstanceContainer().removeNodeInstance(this);
         }
         getNodeInstanceContainer().getNodeInstance( getJoin().getTo().getTo() ).trigger( this, getJoin().getTo().getToType() );
+    }
+    
+    public Map<Long, Integer> getTriggers() {
+        return triggers;
+    }
+    
+    public void internalSetTriggers(Map<Long, Integer> triggers) {
+        this.triggers = triggers;
     }
 }
