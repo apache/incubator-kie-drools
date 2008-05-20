@@ -22,8 +22,6 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Method;
 
-import org.drools.common.InternalWorkingMemory;
-
 /**
  * This is a wrapper for a ClassFieldExtractor that provides
  * default values and a simpler interface for non-used parameters
@@ -161,143 +159,11 @@ public class ClassFieldAccessor
     }
 
     /**
-     * @param workingMemory
-     * @param object
-     * @return
-     * @see org.drools.base.ClassFieldReader#getBooleanValue(org.drools.common.InternalWorkingMemory, java.lang.Object)
-     */
-    public boolean getBooleanValue(InternalWorkingMemory workingMemory,
-                                   Object object) {
-        return reader.getBooleanValue( workingMemory,
-                                       object );
-    }
-
-    /**
-     * @param workingMemory
-     * @param object
-     * @return
-     * @see org.drools.base.ClassFieldReader#getByteValue(org.drools.common.InternalWorkingMemory, java.lang.Object)
-     */
-    public byte getByteValue(InternalWorkingMemory workingMemory,
-                             Object object) {
-        return reader.getByteValue( workingMemory,
-                                    object );
-    }
-
-    /**
-     * @param workingMemory
-     * @param object
-     * @return
-     * @see org.drools.base.ClassFieldReader#getCharValue(org.drools.common.InternalWorkingMemory, java.lang.Object)
-     */
-    public char getCharValue(InternalWorkingMemory workingMemory,
-                             Object object) {
-        return reader.getCharValue( workingMemory,
-                                    object );
-    }
-
-    /**
-     * @param workingMemory
-     * @param object
-     * @return
-     * @see org.drools.base.ClassFieldReader#getDoubleValue(org.drools.common.InternalWorkingMemory, java.lang.Object)
-     */
-    public double getDoubleValue(InternalWorkingMemory workingMemory,
-                                 Object object) {
-        return reader.getDoubleValue( workingMemory,
-                                      object );
-    }
-
-    /**
-     * @param workingMemory
-     * @param object
-     * @return
-     * @see org.drools.base.ClassFieldReader#getFloatValue(org.drools.common.InternalWorkingMemory, java.lang.Object)
-     */
-    public float getFloatValue(InternalWorkingMemory workingMemory,
-                               Object object) {
-        return reader.getFloatValue( workingMemory,
-                                     object );
-    }
-
-    /**
-     * @param workingMemory
-     * @param object
-     * @return
-     * @see org.drools.base.ClassFieldReader#getHashCode(org.drools.common.InternalWorkingMemory, java.lang.Object)
-     */
-    public int getHashCode(InternalWorkingMemory workingMemory,
-                           Object object) {
-        return reader.getHashCode( workingMemory,
-                                   object );
-    }
-
-    /**
-     * @param workingMemory
-     * @param object
-     * @return
-     * @see org.drools.base.ClassFieldReader#getIntValue(org.drools.common.InternalWorkingMemory, java.lang.Object)
-     */
-    public int getIntValue(InternalWorkingMemory workingMemory,
-                           Object object) {
-        return reader.getIntValue( workingMemory,
-                                   object );
-    }
-
-    /**
-     * @param workingMemory
-     * @param object
-     * @return
-     * @see org.drools.base.ClassFieldReader#getLongValue(org.drools.common.InternalWorkingMemory, java.lang.Object)
-     */
-    public long getLongValue(InternalWorkingMemory workingMemory,
-                             Object object) {
-        return reader.getLongValue( workingMemory,
-                                    object );
-    }
-
-    /**
-     * @param workingMemory
-     * @param object
-     * @return
-     * @see org.drools.base.ClassFieldReader#getShortValue(org.drools.common.InternalWorkingMemory, java.lang.Object)
-     */
-    public short getShortValue(InternalWorkingMemory workingMemory,
-                               Object object) {
-        return reader.getShortValue( workingMemory,
-                                     object );
-    }
-
-    /**
-     * @param workingMemory
-     * @param object
-     * @return
-     * @see org.drools.base.ClassFieldReader#getValue(org.drools.common.InternalWorkingMemory, java.lang.Object)
-     */
-    public Object getValue(InternalWorkingMemory workingMemory,
-                           Object object) {
-        return reader.getValue( workingMemory,
-                                object );
-    }
-
-    /**
      * @return
      * @see org.drools.base.ClassFieldReader#isGlobal()
      */
     public boolean isGlobal() {
         return reader.isGlobal();
-    }
-
-    /**
-     * @param workingMemory
-     * @param object
-     * @return
-     * @see org.drools.base.ClassFieldReader#isNullValue(org.drools.common.InternalWorkingMemory, java.lang.Object)
-     */
-    public boolean isNullValue(InternalWorkingMemory workingMemory,
-                               Object object) {
-        return reader.isNullValue( workingMemory,
-                                   object );
     }
 
     /**

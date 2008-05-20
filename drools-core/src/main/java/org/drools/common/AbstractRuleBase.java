@@ -54,6 +54,7 @@ import org.drools.process.core.Process;
 import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.rule.CompositePackageClassLoader;
 import org.drools.rule.DialectDatas;
+import org.drools.rule.FactType;
 import org.drools.rule.Function;
 import org.drools.rule.ImportDeclaration;
 import org.drools.rule.InvalidPatternException;
@@ -853,6 +854,16 @@ abstract public class AbstractRuleBase
             }
         }
         return false;
+    }
+    
+    public FactType getFactType( final String name ) {
+        for ( Package pkg : this.pkgs.values() ) {
+            FactType type = pkg.getFactType( name );
+            if( type != null ) {
+                return type;
+            }
+        }
+        return null;
     }
 
     public static class ReloadPackageCompilationData

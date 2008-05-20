@@ -19,22 +19,26 @@ package org.drools.factmodel;
 import java.beans.IntrospectionException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.drools.base.ClassFieldAccessor;
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldReader;
 import org.drools.base.ClassFieldWriter;
+import org.drools.rule.FactField;
+import org.drools.rule.FactType;
 
 /**
  * Declares a class to be dynamically created
  *
  * @author etirelli
  */
-public class ClassDefinition {
+public class ClassDefinition implements FactType {
     private String                       className;
     private String                       superClass;
     private String[]                     interfaces;
@@ -85,21 +89,6 @@ public class ClassDefinition {
     }
 
     /**
-     * @return the class name replacing '.' by '/'
-     */
-    final String getClassNameAsInternal() {
-        return this.getClassName().replace( '.',
-                                            '/' );
-    }
-
-    /**
-     * @return Returns the name.
-     */
-    public final String getInternalName() {
-        return "L" + this.getClassNameAsInternal() + ";";
-    }
-
-    /**
      * @return Returns the className.
      */
     public final Class< ? > getDefinedClass() {
@@ -107,34 +96,11 @@ public class ClassDefinition {
     }
 
     /**
-     * @param className The className to set.
-     * @throws IntrospectionException 
-     * @throws NoSuchFieldException 
-     * @throws InvocationTargetException 
-     * @throws NoSuchMethodException 
-     * @throws ClassNotFoundException 
-     * @throws IOException 
-     * @throws IllegalAccessException 
-     * @throws InstantiationException 
-     * @throws IllegalArgumentException 
-     * @throws SecurityException 
+     * @param className The class to set.
      */
-    final void setDefinedClass(final Class< ? > definedClass) throws IntrospectionException,
-                                                             SecurityException,
-                                                             IllegalArgumentException,
-                                                             InstantiationException,
-                                                             IllegalAccessException,
-                                                             IOException,
-                                                             ClassNotFoundException,
-                                                             NoSuchMethodException,
-                                                             InvocationTargetException,
-                                                             NoSuchFieldException {
+    public void setDefinedClass(final Class< ? > definedClass)  {
 
         this.definedClass = definedClass;
-
-        if ( this.definedClass != null ) {
-            this.buildFieldAccessors();
-        }
     }
 
     /**
@@ -149,7 +115,7 @@ public class ClassDefinition {
     /**
      * @return Returns an unmodifiable collection of field definitions
      */
-    public final Collection<FieldDefinition> getFields() {
+    public final Collection<FieldDefinition> getFieldsDefinitions() {
         return Collections.unmodifiableCollection( this.fields.values() );
     }
 
@@ -212,18 +178,6 @@ public class ClassDefinition {
     }
 
     /**
-     * @return
-     */
-    final String[] getInterfacesAsInternal() {
-        String[] interfaces = new String[this.interfaces.length];
-        for ( int i = 0; i < interfaces.length; i++ ) {
-            interfaces[i] = this.interfaces[i].replace( '.',
-                                                        '/' );
-        }
-        return interfaces;
-    }
-
-    /**
      * @return Returns the superClass.
      */
     public final String getSuperClass() {
@@ -234,15 +188,23 @@ public class ClassDefinition {
      * @param superClass The superClass to set.
      */
     public final void setSuperClass(final String superClass) {
-        this.superClass = (superClass != null) ? superClass : "java/lang/Object";
+        this.superClass = (superClass != null) ? superClass : "java.lang.Object";
     }
 
-    /**
-     * @return Returns superclass name in the internal String representation
-     */
-    final String getSuperClassAsInternal() {
-        return this.superClass.replace( '.',
-                                        '/' );
+    public String getName() {
+        return getClassName();
+    }
+
+    public Object newInstance() throws InstantiationException, IllegalAccessException {
+        return this.definedClass.newInstance();
+    }
+
+    public Class< ? > getFactClass() {
+        return getDefinedClass();
+    }
+
+    public List<FactField> getFields() {
+        return new ArrayList<FactField>( fields.values() );
     }
 
 }

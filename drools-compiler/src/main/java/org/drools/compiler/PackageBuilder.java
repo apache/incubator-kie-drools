@@ -16,8 +16,10 @@ package org.drools.compiler;
  * limitations under the License.
  */
 
+import java.beans.IntrospectionException;
 import java.io.IOException;
 import java.io.Reader;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -25,7 +27,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.base.ClassFieldAccessor;
 import org.drools.base.ClassFieldAccessorCache;
+import org.drools.base.ClassFieldReader;
+import org.drools.base.ClassFieldWriter;
 import org.drools.base.ClassTypeResolver;
 import org.drools.base.TypeResolver;
 import org.drools.commons.jci.problems.CompilationProblem;
@@ -52,6 +57,7 @@ import org.drools.lang.descr.TypeFieldDescr;
 import org.drools.process.core.Process;
 import org.drools.rule.CompositePackageClassLoader;
 import org.drools.rule.ImportDeclaration;
+import org.drools.rule.JavaDialectData;
 import org.drools.rule.MapBackedClassLoader;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
@@ -454,10 +460,19 @@ public class PackageBuilder {
                 try {
                 	if (typeDescr.getFields().size() > 0) {
                 		//generate the bean if its needed
-                		generateDeclaredBean(typeDescr);
+                		generateDeclaredBean(typeDescr, type);
                 	}
                     clazz = typeResolver.resolveType( className );
                     type.setTypeClass( clazz );
+                    if( type.getTypeClassDef() != null ) {
+                        try {
+                            buildFieldAccessors( type );
+                        } catch ( Exception e ) {
+                            this.results.add( new TypeDeclarationError( "Error creating field accessors for '" + className + "' for type '" + type.getTypeName() + "'",
+                                                                        typeDescr.getLine() ) );
+                            continue;
+                        }
+                    }
                 } catch ( final ClassNotFoundException e ) {
 
 	                    this.results.add( new TypeDeclarationError( "Class not found '" + className + "' for type '" + type.getTypeName() + "'",
@@ -484,11 +499,51 @@ public class PackageBuilder {
     }
 
     /**
+     * 
+     * @throws SecurityException
+     * @throws IllegalArgumentException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws IOException
+     * @throws IntrospectionException
+     * @throws ClassNotFoundException
+     * @throws NoSuchMethodException
+     * @throws InvocationTargetException
+     * @throws NoSuchFieldException
+     */
+    private final void buildFieldAccessors( final TypeDeclaration type ) throws SecurityException,
+                                           IllegalArgumentException,
+                                           InstantiationException,
+                                           IllegalAccessException,
+                                           IOException,
+                                           IntrospectionException,
+                                           ClassNotFoundException,
+                                           NoSuchMethodException,
+                                           InvocationTargetException,
+                                           NoSuchFieldException {
+        ClassFieldAccessorCache cache = ClassFieldAccessorCache.getInstance();
+        ClassDefinition cd = type.getTypeClassDef();
+
+        for ( FieldDefinition attrDef : cd.getFieldsDefinitions() ) {
+            ClassFieldReader reader = cache.getReader( cd.getDefinedClass(),
+                                                       attrDef.getName(),
+                                                       this.pkg.getDialectDatas().getClassLoader() );
+            ClassFieldWriter writer = cache.getWriter( cd.getDefinedClass(),
+                                                       attrDef.getName(),
+                                                       this.pkg.getDialectDatas().getClassLoader() );
+            ClassFieldAccessor accessor = new ClassFieldAccessor( reader,
+                                                                  writer );
+            attrDef.setFieldAccessor( accessor );
+        }
+    }
+
+    /**
      * Generates a bean, and adds it to the composite class loader that
      * everything is using.
      *
      */
-    private void generateDeclaredBean(TypeDeclarationDescr typeDescr) {
+    private void generateDeclaredBean(TypeDeclarationDescr typeDescr, TypeDeclaration type) {
+        // need to fix classloader?
     	ClassBuilder cb = new ClassBuilder();
     	String fullName = this.pkg.getName() + "." + typeDescr.getTypeName();
     	ClassDefinition def = new ClassDefinition(fullName);
@@ -501,13 +556,15 @@ public class PackageBuilder {
 
 	    	byte[] d = cb.buildClass(def);
 	    	if (this.generatedBeanClassLoader == null) {
+                CompositePackageClassLoader ccl = (CompositePackageClassLoader) this.pkg.getDialectDatas().getClassLoader();
 	    		this.generatedBeanClassLoader = new MapBackedClassLoader(this.configuration.getClassLoader());
-	    		CompositePackageClassLoader ccl = (CompositePackageClassLoader) this.pkg.getDialectDatas().getClassLoader();
 	    		ccl.addClassLoader(this.generatedBeanClassLoader);
 	    	}
-	    	generatedBeanClassLoader.addClass(fullName, d);
+	    	this.generatedBeanClassLoader.addClass( fullName, d);
+	    	type.setTypeClassDef( def );
     	} catch (Exception e) {
-    		this.results.add(new TypeDeclarationError("Unable to create a class for declared type " + typeDescr.getTypeName(), typeDescr.getLine()));
+    	    e.printStackTrace();
+    		this.results.add(new TypeDeclarationError("Unable to create a class for declared type " + fullName + ": "+e.getMessage()+";", typeDescr.getLine()));
     	}
 	}
 
