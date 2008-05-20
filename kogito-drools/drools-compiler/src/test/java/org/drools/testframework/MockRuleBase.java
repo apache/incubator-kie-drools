@@ -14,6 +14,7 @@ import org.drools.StatelessSession;
 import org.drools.TemporalSession;
 import org.drools.event.RuleBaseEventListener;
 import org.drools.marshalling.Marshaller;
+import org.drools.rule.FactType;
 import org.drools.rule.Package;
 
 public class MockRuleBase implements RuleBase {
@@ -165,5 +166,10 @@ public class MockRuleBase implements RuleBase {
                                      Marshaller marshaller) throws IOException {
         // TODO Auto-generated method stub
         
+    }
+
+    public FactType getFactType(String string) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

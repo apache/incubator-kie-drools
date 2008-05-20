@@ -1,7 +1,5 @@
 package org.drools.rule;
 
-import org.drools.common.DroolsObjectInput;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;

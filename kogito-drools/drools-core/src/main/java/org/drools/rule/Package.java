@@ -29,7 +29,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.common.DroolsObjectInput;
 import org.drools.common.DroolsObjectInputStream;
 import org.drools.common.DroolsObjectOutputStream;
 import org.drools.facttemplates.FactTemplate;
@@ -88,7 +87,7 @@ public class Package
 
     /** This will keep a summary error message as to why this package is not valid */
     private String                         errorSummary;
-
+    
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -523,5 +522,15 @@ public class Package
         this.globals.clear();
         this.factTemplates.clear();
         this.typeDeclarations.clear();
+    }
+
+    public FactType getFactType(final String typeName) {
+        if( this.name != null && ! typeName.startsWith( this.name ) ) {
+            return null;
+        }
+        // in case the package name is != null, remove the package name from the beginning of the type name 
+        String key = this.name == null ? typeName : typeName.substring( this.name.length()+1 );
+        TypeDeclaration decl = this.typeDeclarations.get( key ); 
+        return decl != null ? decl.getTypeClassDef() : null;
     }
 }

@@ -12,13 +12,20 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
 
+import org.drools.base.ClassFieldAccessorCache;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
 public class ClassBuilderTest extends TestCase {
 
+    private ClassFieldAccessorCache cache;
+    private ClassLoader classLoader;
+
     protected void setUp() throws Exception {
         super.setUp();
+        cache = ClassFieldAccessorCache.getInstance();
+        classLoader = this.getClass().getClassLoader();
     }
 
     protected void tearDown() throws Exception {
@@ -45,6 +52,8 @@ public class ClassBuilderTest extends TestCase {
             classDef.addField( stringDef );
 
             Class clazz = builder.buildAndLoadClass( classDef );
+            intDef.setFieldAccessor( cache.getAccessor( clazz, intDef.getName(), classLoader ) );
+            stringDef.setFieldAccessor( cache.getAccessor( clazz, stringDef.getName(), classLoader ) );
 
 
             byte[] data = builder.buildClass(classDef);
@@ -136,6 +145,15 @@ public class ClassBuilderTest extends TestCase {
             classDef.addField( str2Def );
 
             Class clazz = builder.buildAndLoadClass( classDef );
+            long1Def.setFieldAccessor( cache.getAccessor( clazz, long1Def.getName(), classLoader ) );
+            long2Def.setFieldAccessor( cache.getAccessor( clazz, long2Def.getName(), classLoader ) );
+            doubleDef.setFieldAccessor( cache.getAccessor( clazz, doubleDef.getName(), classLoader ) );
+            intDef.setFieldAccessor( cache.getAccessor( clazz, intDef.getName(), classLoader ) );
+            strDef.setFieldAccessor( cache.getAccessor( clazz, strDef.getName(), classLoader ) );
+            dateDef.setFieldAccessor( cache.getAccessor( clazz, dateDef.getName(), classLoader ) );
+            str2Def.setFieldAccessor( cache.getAccessor( clazz, str2Def.getName(), classLoader ) );
+            
+            
             Object x = clazz.newInstance();
             Object y = clazz.newInstance();
 
@@ -224,13 +242,16 @@ public class ClassBuilderTest extends TestCase {
             classDef.addField( strDef );
 
             Class clazz = builder.buildAndLoadClass( classDef );
+            intDef.setFieldAccessor( cache.getAccessor( clazz, intDef.getName(), classLoader ) );
+            strDef.setFieldAccessor( cache.getAccessor( clazz, strDef.getName(), classLoader ) );
+
             Object x = clazz.newInstance();
 
             intDef.setValue( x,
                              new Integer( 10 ) );
             strDef.setValue( x, "abc" );
 
-            Assert.assertEquals("Wrong hashcode calculation", (new Integer(10)).hashCode(), x.hashCode());
+            Assert.assertEquals("Wrong hashcode calculation", 31+10, x.hashCode());
             Assert.assertEquals("Wrong hashcode calculation", x.hashCode(), x.hashCode());
 
         } catch ( Exception e ) {
@@ -275,6 +296,14 @@ public class ClassBuilderTest extends TestCase {
             classDef.addField( str2Def );
 
             Class clazz = builder.buildAndLoadClass( classDef );
+            long1Def.setFieldAccessor( cache.getAccessor( clazz, long1Def.getName(), classLoader ) );
+            long2Def.setFieldAccessor( cache.getAccessor( clazz, long2Def.getName(), classLoader ) );
+            doubleDef.setFieldAccessor( cache.getAccessor( clazz, doubleDef.getName(), classLoader ) );
+            intDef.setFieldAccessor( cache.getAccessor( clazz, intDef.getName(), classLoader ) );
+            strDef.setFieldAccessor( cache.getAccessor( clazz, strDef.getName(), classLoader ) );
+            dateDef.setFieldAccessor( cache.getAccessor( clazz, dateDef.getName(), classLoader ) );
+            str2Def.setFieldAccessor( cache.getAccessor( clazz, str2Def.getName(), classLoader ) );
+            
             Object x = clazz.newInstance();
 
             long1Def.setValue( x,

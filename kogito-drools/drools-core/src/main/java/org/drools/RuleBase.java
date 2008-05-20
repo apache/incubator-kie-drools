@@ -22,6 +22,7 @@ import java.io.Externalizable;
 import java.io.OutputStream;
 
 import org.drools.marshalling.Marshaller;
+import org.drools.rule.FactType;
 import org.drools.rule.Package;
 
 /**
@@ -190,4 +191,12 @@ public interface RuleBase
      * @return
      */
     public StatefulSession[] getStatefulSessions();
+
+    /**
+     * Returns a declared FactType for external handling
+     * 
+     * @param string
+     * @return
+     */
+    public FactType getFactType(String string);
 }

@@ -24,6 +24,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.common.DroolsObjectInputStream;
+import org.drools.factmodel.ClassDefinition;
 import org.drools.facttemplates.FactTemplate;
 import org.drools.spi.InternalReadAccessor;
 
@@ -80,6 +81,7 @@ public class TypeDeclaration
     private transient InternalReadAccessor durationExtractor;
     private Class< ? >                     typeClass;
     private FactTemplate                   typeTemplate;
+    private ClassDefinition                typeClassDef;
 
     public TypeDeclaration() {
     }
@@ -103,6 +105,7 @@ public class TypeDeclaration
         this.timestampAttribute = (String) in.readObject();
         this.typeClass = (Class< ? >) in.readObject();
         this.typeTemplate = (FactTemplate) in.readObject();
+        this.typeClassDef = (ClassDefinition) in.readObject();
 
         if ( this.durationAttribute != null ) {
             // generate the extractor
@@ -121,6 +124,7 @@ public class TypeDeclaration
         out.writeObject( timestampAttribute );
         out.writeObject( typeClass );
         out.writeObject( typeTemplate );
+        out.writeObject( typeClassDef );
     }
 
     /**
@@ -198,6 +202,9 @@ public class TypeDeclaration
      */
     public void setTypeClass(Class< ? > typeClass) {
         this.typeClass = typeClass;
+        if( this.typeClassDef != null ) {
+            this.typeClassDef.setDefinedClass( this.typeClass );
+        }
     }
 
     /**
@@ -256,6 +263,20 @@ public class TypeDeclaration
 
     public void setDurationExtractor(InternalReadAccessor durationExtractor) {
         this.durationExtractor = durationExtractor;
+    }
+
+    /**
+     * @return the typeClassDef
+     */
+    public ClassDefinition getTypeClassDef() {
+        return typeClassDef;
+    }
+
+    /**
+     * @param typeClassDef the typeClassDef to set
+     */
+    public void setTypeClassDef(ClassDefinition typeClassDef) {
+        this.typeClassDef = typeClassDef;
     }
 
 }

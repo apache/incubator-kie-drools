@@ -16,7 +16,6 @@ package org.drools.integrationtests;
  * limitations under the License.
  */
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInput;
@@ -105,9 +104,6 @@ import org.drools.event.ObjectInsertedEvent;
 import org.drools.event.ObjectRetractedEvent;
 import org.drools.event.ObjectUpdatedEvent;
 import org.drools.event.WorkingMemoryEventListener;
-import org.drools.factmodel.ClassBuilder;
-import org.drools.factmodel.ClassDefinition;
-import org.drools.factmodel.FieldDefinition;
 import org.drools.facttemplates.Fact;
 import org.drools.facttemplates.FactTemplate;
 import org.drools.lang.DrlDumper;
@@ -115,14 +111,13 @@ import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.reteoo.ReteooRuleBase;
+import org.drools.rule.FactType;
 import org.drools.rule.InvalidRulePackage;
-import org.drools.rule.MapBackedClassLoader;
 import org.drools.rule.Package;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.spi.Activation;
 import org.drools.spi.ConsequenceExceptionHandler;
 import org.drools.spi.GlobalResolver;
-import org.drools.util.DroolsStreamUtils;
 import org.drools.xml.XmlDumper;
 
 /** Run all the tests with the ReteOO engine implementation */
@@ -522,54 +517,90 @@ public class MiscTest extends TestCase {
                       ((List) session.getGlobal( "list" )).size() );
     }
 
-    public void testGeneratedBeans() throws Exception {
+    public void testGeneratedBeans1() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_GeneratedBeans.drl" ) ) );
-        assertFalse( "" + builder.getErrors(),
+        assertFalse( builder.getErrors().toString(),
                      builder.hasErrors() );
 
         Package p = builder.getPackage();
         assertEquals( 2,
                       p.getRules().length );
 
-        //to test it we will generate another class that looks just like it
-        ClassBuilder cb = new ClassBuilder();
-        ClassDefinition def = new ClassDefinition( "org.drools.generatedbeans.Cheese" );
-        def.addField( new FieldDefinition( "type",
-                                           "java.lang.String" ) );
-        byte[] classdata = cb.buildClass( def );
-        MapBackedClassLoader cl = new MapBackedClassLoader( this.getClass().getClassLoader() );
-        cl.addClass( "org.drools.generatedbeans.Cheese",
-                     classdata );
-
-        //this one doesn't work
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase( new RuleBaseConfiguration( cl ) );
-
-        //this one does work...
-        ruleBase = RuleBaseFactory.newRuleBase( new RuleBaseConfiguration( p.getDialectDatas().getClassLoader() ) );
-
+        // disabling shadow proxies, since they don't work yet with generated facts and
+        // we will scrap shadow proxies in drools 5 anyway.
+        RuleBaseConfiguration conf = new RuleBaseConfiguration();
+        conf.setShadowProxy( false );
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase( conf );
         ruleBase.addPackage( p );
 
-        //this one just won't work
-        //Class cc = cl.loadClass("org.drools.generatedbeans.Cheese");
+        // Retrieve the generated fact type 
+        FactType cheeseFact = ruleBase.getFactType( "org.drools.generatedbeans.Cheese" );
 
-        //this one has an error with shadow proxies unless I use the same classloader as the package...
-        Class cc = p.getDialectDatas().getClassLoader().loadClass( "org.drools.generatedbeans.Cheese" );
+        // Create a new Fact instance
+        Object cheese = cheeseFact.newInstance();
 
-        Object cheese = cc.newInstance();
+        // Set a field value using the more verbose method chain...
+        // should we add short cuts?
+        cheeseFact.getField( "type" ).getFieldAccessor().setValue( cheese,
+                                                             "stilton" );
 
-        WorkingMemory wm = ruleBase.newStatefulSession();
+        // just documenting toString() result:
+        assertEquals( "Cheese( type=stilton )",
+                      cheese.toString() );
+
+        // reading the field attribute, using the method chain
+        assertEquals( "stilton",
+                      cheeseFact.getField( "type" ).getFieldAccessor().getValue( cheese ) );
+
+        // creating a stateful session
+        StatefulSession wm = ruleBase.newStatefulSession();
         List result = new ArrayList();
         wm.setGlobal( "list",
                       result );
 
+        // inserting fact
         wm.insert( cheese );
+
+        // firing rules
         wm.fireAllRules();
+
+        // checking results
         assertEquals( 1,
                       result.size() );
-        Integer r = (Integer) result.get( 0 );
         assertEquals( new Integer( 5 ),
-                      r );
+                      result.get( 0 ) );
+
+        // creating a person that likes the cheese:
+        // Retrieve the generated fact type 
+        FactType personFact = ruleBase.getFactType( "org.drools.generatedbeans.Person" );
+
+        // Create a new Fact instance
+        Object person = personFact.newInstance();
+
+        // Set a field value using the more verbose method chain...
+        // should we add short cuts?
+        personFact.getField( "likes" ).getFieldAccessor().setValue( person,
+                                                                    cheese );
+        // demonstrating primitive type support
+        personFact.getField( "age" ).getFieldAccessor().setIntValue( person,
+                                                                     7 );
+
+        // just documenting toString() result:
+        assertEquals( "Person( age=7, likes=Cheese( type=stilton ) )",
+                      person.toString() );
+
+        // inserting fact
+        wm.insert( person );
+
+        // firing rules
+        wm.fireAllRules();
+
+        // checking results
+        assertEquals( 2,
+                      result.size() );
+        assertEquals( "OK",
+                      result.get( 1 ) );
 
     }
 
@@ -971,7 +1002,7 @@ public class MiscTest extends TestCase {
 
         final List list = new ArrayList();
         session.setGlobal( "list",
-                                 list );
+                           list );
 
         final PersonInterface bill = new Person( "bill",
                                                  null,
@@ -1005,7 +1036,7 @@ public class MiscTest extends TestCase {
 
         final List list = new ArrayList();
         session.setGlobal( "list",
-                                 list );
+                           list );
 
         final PersonInterface bill = new Person( "bill",
                                                  null,
@@ -1167,7 +1198,7 @@ public class MiscTest extends TestCase {
         StatefulSession session = ruleBase.newStatefulSession();
         final List list = new ArrayList();
         session.setGlobal( "list",
-                                 list );
+                           list );
 
         final Cheese cheddar = new Cheese( "cheddar",
                                            5 );
@@ -1189,7 +1220,7 @@ public class MiscTest extends TestCase {
                       list.size() );
 
         session.insert( new Cheese( "stilton",
-                                          5 ) );
+                                    5 ) );
         session = SerializationHelper.getSerialisedStatefulSession( session,
                                                                     ruleBase );
         session.fireAllRules();
@@ -1230,11 +1261,11 @@ public class MiscTest extends TestCase {
         StatefulSession session = ruleBase.newStatefulSession();
 
         session.setGlobal( "five",
-                                 new Integer( 5 ) );
+                           new Integer( 5 ) );
 
         final List list = new ArrayList();
         session.setGlobal( "list",
-                                 list );
+                           list );
 
         final Cheese stilton = new Cheese( "stilton",
                                            5 );
@@ -1262,11 +1293,11 @@ public class MiscTest extends TestCase {
         StatefulSession session = ruleBase.newStatefulSession();
 
         session.setGlobal( "five",
-                                 new Integer( 5 ) );
+                           new Integer( 5 ) );
 
         final List list = new ArrayList();
         session.setGlobal( "list",
-                                 list );
+                           list );
 
         final Cheese stilton = new Cheese( "stilton",
                                            5 );
@@ -1291,7 +1322,7 @@ public class MiscTest extends TestCase {
 
         final List list = new ArrayList();
         session.setGlobal( "list",
-                                 list );
+                           list );
 
         final Person foo = new Person( "foo" );
         session.insert( foo );
@@ -1314,11 +1345,11 @@ public class MiscTest extends TestCase {
         StatefulSession session = ruleBase.newStatefulSession();
 
         session.setGlobal( "two",
-                                 new Integer( 2 ) );
+                           new Integer( 2 ) );
 
         final List list = new ArrayList();
         session.setGlobal( "list",
-                                 list );
+                           list );
 
         final PersonInterface peter = new Person( "peter",
                                                   null,
@@ -1332,7 +1363,7 @@ public class MiscTest extends TestCase {
         session = SerializationHelper.getSerialisedStatefulSession( session,
                                                                     ruleBase );
         session.fireAllRules();
-        
+
         assertEquals( jane,
                       ((List) session.getGlobal( "list" )).get( 0 ) );
         assertEquals( peter,
@@ -1350,11 +1381,11 @@ public class MiscTest extends TestCase {
         StatefulSession session = ruleBase.newStatefulSession();
 
         session.setGlobal( "two",
-                                 new Integer( 2 ) );
+                           new Integer( 2 ) );
 
         final List list = new ArrayList();
         session.setGlobal( "list",
-                                 list );
+                           list );
 
         final PersonInterface peter = new Person( "peter",
                                                   null,
@@ -1367,7 +1398,7 @@ public class MiscTest extends TestCase {
 
         session = SerializationHelper.getSerialisedStatefulSession( session,
                                                                     ruleBase );
-        session.fireAllRules();        
+        session.fireAllRules();
 
         assertEquals( jane,
                       ((List) session.getGlobal( "list" )).get( 0 ) );
@@ -1410,7 +1441,7 @@ public class MiscTest extends TestCase {
         StatefulSession session = ruleBase.newStatefulSession();
         final List foo = new ArrayList();
         session.setGlobal( "messages",
-                                 foo );
+                           foo );
 
         final PersonInterface p1 = new Person( null,
                                                "food",
@@ -1704,7 +1735,7 @@ public class MiscTest extends TestCase {
 
         final List list = new ArrayList();
         session.setGlobal( "list",
-                                 list );
+                           list );
 
         final Cheese stilton = new Cheese( "stilton",
                                            5 );
