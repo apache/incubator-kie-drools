@@ -31,42 +31,51 @@ import org.drools.spi.FactHandleFactory;
  */
 public final class Jsr94FactHandleFactory extends AbstractFactHandleFactory {
 
-	private static final long serialVersionUID = 4964273923122006124L;
+    private static final long serialVersionUID = 4964273923122006124L;
 
-	protected final InternalFactHandle newFactHandle(final int id,
-			final Object object, final long recency, final ObjectTypeConf conf,
-			final InternalWorkingMemory workingMemory) {
+    protected final InternalFactHandle newFactHandle(final int id,
+                                                     final Object object,
+                                                     final long recency,
+                                                     final ObjectTypeConf conf,
+                                                     final InternalWorkingMemory workingMemory) {
         if ( conf != null && conf.isEvent() ) {
             // later we need to centralize the following code snippet in a common method
             // shared by all fact handle factory implementations
             TypeDeclaration type = conf.getTypeDeclaration();
             long timestamp = ((TemporalSession) workingMemory).getSessionClock().getCurrentTime();
             long duration = 0;
-            if( type.getDurationExtractor() != null ) {
-                duration = type.getDurationExtractor().getLongValue( workingMemory, object );
+            if ( type.getDurationExtractor() != null ) {
+                duration = type.getDurationExtractor().getLongValue( workingMemory,
+                                                                     object );
             }
             return new Jsr94EventFactHandle( id,
-                                        object,
-                                        recency,
-                                        timestamp,
-                                        duration ); 
+                                             object,
+                                             recency,
+                                             timestamp,
+                                             duration );
         } else {
             return new Jsr94FactHandle( id,
-                                          object,
-                                          recency );
+                                        object,
+                                        recency );
         }
-	}
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.drools.reteoo.FactHandleFactory#newInstance()
-	 */
-	public FactHandleFactory newInstance() {
-		return new Jsr94FactHandleFactory();
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.drools.reteoo.FactHandleFactory#newInstance()
+     */
+    public FactHandleFactory newInstance() {
+        return new Jsr94FactHandleFactory();
+    }
 
-	public Class getFactHandleType() {
-		return Jsr94FactHandle.class;
-	}
+    public Class getFactHandleType() {
+        return Jsr94FactHandle.class;
+    }
+
+    public FactHandleFactory newInstance(int id,
+                                         long counter) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }
