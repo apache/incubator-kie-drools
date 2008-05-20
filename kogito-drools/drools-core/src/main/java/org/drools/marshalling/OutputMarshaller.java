@@ -25,8 +25,10 @@ import org.drools.common.LogicalDependency;
 import org.drools.common.ObjectStore;
 import org.drools.common.RuleFlowGroupImpl;
 import org.drools.common.WorkingMemoryAction;
+import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.WorkItem;
+import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.reteoo.EvalConditionNode;
 import org.drools.reteoo.ExistsNode;
 import org.drools.reteoo.JoinNode;
@@ -600,6 +602,15 @@ public class OutputMarshaller {
         stream.writeUTF(processInstance.getProcessId());
         stream.writeInt(processInstance.getState());
         stream.writeLong(processInstance.getNodeInstanceCounter());
+        
+        VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
+        	processInstance.getContextInstance(VariableScope.VARIABLE_SCOPE);
+        Map<String, Object> variables = variableScopeInstance.getVariables();
+        stream.writeInt(variables.size());
+        for (Map.Entry<String, Object> entry: variables.entrySet()) {
+        	stream.writeUTF(entry.getKey());
+        	stream.writeObject(entry.getValue());
+        }
         
         for (NodeInstance nodeInstance: processInstance.getNodeInstances()) {
             stream.writeInt( PersisterEnums.NODE_INSTANCE );
