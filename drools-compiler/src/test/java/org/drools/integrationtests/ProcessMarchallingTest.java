@@ -4,7 +4,9 @@ import static org.drools.integrationtests.SerializationHelper.getSerialisedState
 
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -14,9 +16,11 @@ import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.compiler.PackageBuilder;
+import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemHandler;
 import org.drools.process.instance.WorkItemManager;
+import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.rule.Package;
 
 public class ProcessMarchallingTest extends TestCase {
@@ -89,6 +93,12 @@ public class ProcessMarchallingTest extends TestCase {
     		"    xs:schemaLocation=\"http://drools.org/drools-4.0/process drools-processes-4.0.xsd\"\n" +
     		"    type=\"RuleFlow\" name=\"ruleflow\" id=\"org.test.ruleflow\" package-name=\"org.test\" >\n" +
     		"  <header>\n" +
+    		"    <variables>\n" +
+    		"      <variable name=\"myVariable\" >\n" +
+    		"        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+    		"        <value>OldValue</value>\n" +
+    		"      </variable>\n" +
+    		"    </variables>\n" +
     		"  </header>\n" +
     		"  <nodes>\n" +
     		"    <start id=\"1\" name=\"Start\" />\n" +
@@ -117,13 +127,18 @@ public class ProcessMarchallingTest extends TestCase {
         StatefulSession session = ruleBase.newStatefulSession();
         TestWorkItemHandler handler = new TestWorkItemHandler();
         session.getWorkItemManager().registerWorkItemHandler("Email", handler);
-        session.startProcess("org.test.ruleflow");
+        Map<String, Object> variables = new HashMap<String, Object>();
+        variables.put("myVariable", "ThisIsMyValue");
+        session.startProcess("org.test.ruleflow", variables);
 
         assertEquals(1, session.getProcessInstances().size());
         assertTrue(handler.getWorkItemId() != -1);
         
         session = getSerialisedStatefulSession( session );
         assertEquals(1, session.getProcessInstances().size());
+        VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
+        	session.getProcessInstances().iterator().next().getContextInstance(VariableScope.VARIABLE_SCOPE);
+        assertEquals("ThisIsMyValue", variableScopeInstance.getVariable("myVariable"));
         
         session.getWorkItemManager().completeWorkItem(handler.getWorkItemId(), null);
         
