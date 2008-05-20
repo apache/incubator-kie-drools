@@ -22,8 +22,10 @@ import org.drools.common.PropagationContextImpl;
 import org.drools.common.RuleFlowGroupImpl;
 import org.drools.common.TruthMaintenanceSystem;
 import org.drools.concurrent.ExecutorService;
+import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.WorkItem;
+import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.process.instance.impl.WorkItemImpl;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.BetaNode;
@@ -537,7 +539,22 @@ public class InputMarshaller {
         long nodeInstanceCounter = stream.readLong();
         processInstance.setWorkingMemory(wm);
         
-        while ( stream.readInt() == PersisterEnums.NODE_INSTANCE ) {
+        int nbVariables = stream.readInt();
+        if (nbVariables > 0) {
+	        VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
+	    		processInstance.getContextInstance(VariableScope.VARIABLE_SCOPE);
+	        for (int i = 0; i < nbVariables; i++) {
+	        	String name = stream.readUTF();
+	        	try {
+	        		Object value = stream.readObject();
+		        	variableScopeInstance.setVariable(name, value);
+	        	} catch (ClassNotFoundException e) {
+	        		throw new IllegalArgumentException("Could not reload variable " + name);
+	        	}
+	        }
+        }
+        
+    	while ( stream.readInt() == PersisterEnums.NODE_INSTANCE ) {
             readNodeInstance( context, processInstance );
         }
         
