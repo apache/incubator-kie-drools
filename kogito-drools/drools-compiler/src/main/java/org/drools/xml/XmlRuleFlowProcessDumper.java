@@ -16,6 +16,7 @@ import org.drools.workflow.core.Node;
 import org.drools.workflow.core.impl.DroolsConsequenceAction;
 import org.drools.workflow.core.impl.NodeImpl;
 import org.drools.workflow.core.node.ActionNode;
+import org.drools.workflow.core.node.CompositeNode;
 import org.drools.workflow.core.node.EndNode;
 import org.drools.workflow.core.node.Join;
 import org.drools.workflow.core.node.MilestoneNode;
@@ -71,7 +72,7 @@ public class XmlRuleFlowProcessDumper {
         xmlDump.append(">" + EOL + EOL);
         visitHeader(process, includeMeta);
         visitNodes(process, includeMeta);
-        visitConnections(process, includeMeta);
+        visitConnections(process.getNodes(), includeMeta);
         xmlDump.append("</process>");
     }
     
@@ -134,32 +135,44 @@ public class XmlRuleFlowProcessDumper {
             visitStartNode(startNode, includeMeta);
         }
         for (Node node: process.getNodes()) {
-            if (node instanceof StartNode) {
-                // Do nothing, start node already added
-            } else if (node instanceof EndNode) {
-                visitEndNode((EndNode) node, includeMeta);
-            } else if (node instanceof ActionNode) {
-                visitActionNode((ActionNode) node, includeMeta);
-            } else if (node instanceof RuleSetNode) {
-                visitRuleSetNode((RuleSetNode) node, includeMeta);
-            } else if (node instanceof SubProcessNode) {
-                visitSubProcessNode((SubProcessNode) node, includeMeta);
-            } else if (node instanceof WorkItemNode) {
-                visitWorkItemNode((WorkItemNode) node, includeMeta);
-            } else if (node instanceof Join) {
-                visitJoinNode((Join) node, includeMeta);
-            } else if (node instanceof Split) {
-                visitSplitNode((Split) node, includeMeta);
-            } else if (node instanceof MilestoneNode) {
-                visitMileStoneNode((MilestoneNode) node, includeMeta);
-            } else if (node instanceof TimerNode) {
-                visitTimerNode((TimerNode) node, includeMeta);
-            } else {
-                throw new IllegalArgumentException(
-                    "Unknown node type: " + node);
-            }
+            visitNode(node, includeMeta);
         }
         xmlDump.append("  </nodes>" + EOL + EOL);
+    }
+    
+    private void visitNode(Node node, boolean includeMeta) {
+        if (node instanceof StartNode) {
+            // Do nothing, start node already added
+        } else if (node instanceof EndNode) {
+            visitEndNode((EndNode) node, includeMeta);
+        } else if (node instanceof ActionNode) {
+            visitActionNode((ActionNode) node, includeMeta);
+        } else if (node instanceof RuleSetNode) {
+            visitRuleSetNode((RuleSetNode) node, includeMeta);
+        } else if (node instanceof SubProcessNode) {
+            visitSubProcessNode((SubProcessNode) node, includeMeta);
+        } else if (node instanceof WorkItemNode) {
+            visitWorkItemNode((WorkItemNode) node, includeMeta);
+        } else if (node instanceof Join) {
+            visitJoinNode((Join) node, includeMeta);
+        } else if (node instanceof Split) {
+            visitSplitNode((Split) node, includeMeta);
+        } else if (node instanceof MilestoneNode) {
+            visitMileStoneNode((MilestoneNode) node, includeMeta);
+        } else if (node instanceof TimerNode) {
+            visitTimerNode((TimerNode) node, includeMeta);
+        } else if (node instanceof CompositeNode) {
+            visitCompositeNode((CompositeNode) node, includeMeta);
+        } else if (node instanceof CompositeNode.CompositeNodeStart) {
+            // do nothing, can be recreated
+        } else if (node instanceof CompositeNode.CompositeNodeEnd) {
+            // do nothing, can be recreated
+        } else if (node instanceof CompositeNode) {
+            visitCompositeNode((CompositeNode) node, includeMeta);
+        } else {
+            throw new IllegalArgumentException(
+                "Unknown node type: " + node);
+        }
     }
     
     private void visitNode(String name, Node node, boolean includeMeta) {
@@ -365,30 +378,82 @@ public class XmlRuleFlowProcessDumper {
         endElement();
     }
     
-    private void visitConnections(RuleFlowProcess process, boolean includeMeta) {
+    private void visitCompositeNode(CompositeNode compositeNode, boolean includeMeta) {
+        visitNode("composite", compositeNode, includeMeta);
+        xmlDump.append(">" + EOL);
+        xmlDump.append("      <nodes>" + EOL);
+        for (Node subNode: compositeNode.getNodes()) {
+            visitNode(subNode, includeMeta);
+        }
+        xmlDump.append("      </nodes>" + EOL);
         List<Connection> connections = new ArrayList<Connection>();
-        for (Node node: process.getNodes()) {
+        for (Node node: compositeNode.getNodes()) {
+            if (!(node instanceof CompositeNode.CompositeNodeEnd)) {
+                for (Connection connection: node.getIncomingConnections(Node.CONNECTION_DEFAULT_TYPE)) {
+                    if (!(connection.getFrom() instanceof CompositeNode.CompositeNodeStart)) {
+                        connections.add(connection);
+                    }
+                }
+            }
+        }
+        xmlDump.append("      <connections>" + EOL);
+        for (Connection connection: connections) {
+            visitConnection(connection, includeMeta);
+        }
+        xmlDump.append("      </connections>" + EOL);
+        xmlDump.append("      <in-ports>" + EOL);
+        for (Map.Entry<String, CompositeNode.NodeAndType> entry: compositeNode.getLinkedIncomingNodes().entrySet()) {
+            xmlDump.append("        <in-port type=\"" + entry.getKey() + "\" nodeId=\"" + entry.getValue().getNodeId() + "\" nodeInType=\"" + entry.getValue().getType() + "\" />" + EOL);
+        }
+        xmlDump.append("      </in-ports>" + EOL);
+        xmlDump.append("      <out-ports>" + EOL);
+        for (Map.Entry<String, CompositeNode.NodeAndType> entry: compositeNode.getLinkedOutgoingNodes().entrySet()) {
+            xmlDump.append("        <out-port type=\"" + entry.getKey() + "\" nodeId=\"" + entry.getValue().getNodeId() + "\" nodeOutType=\"" + entry.getValue().getType() + "\" />" + EOL);
+        }
+        xmlDump.append("      </out-ports>" + EOL);
+        endElement("composite");
+    }
+    
+//    private void visitCompositeNodeStart(CompositeNode.CompositeNodeStart compositeNodeStart, boolean includeMeta) {
+//        visitNode("composite-start", compositeNodeStart, includeMeta);
+//        xmlDump.append("in-nodeId=\"" + compositeNodeStart.getInNodeId() + "\" in-type=\"" + compositeNodeStart.getInType() + "\" />" + EOL);
+//        endElement();
+//    }
+//    
+//    private void visitCompositeNodeEnd(CompositeNode.CompositeNodeEnd compositeNodeEnd, boolean includeMeta) {
+//        visitNode("composite-end", compositeNodeEnd, includeMeta);
+//        xmlDump.append("out-nodeId=\"" + compositeNodeEnd.getOutNodeId() + "\" in-type=\"" + compositeNodeEnd.getOutType() + "\" />" + EOL);
+//        endElement();
+//    }
+    
+    private void visitConnections(Node[] nodes, boolean includeMeta) {
+        List<Connection> connections = new ArrayList<Connection>();
+        for (Node node: nodes) {
             connections.addAll(node.getIncomingConnections(Node.CONNECTION_DEFAULT_TYPE));
         }
         xmlDump.append("  <connections>" + EOL);
         for (Connection connection: connections) {
-            xmlDump.append("    <connection from=\"" + connection.getFrom().getId() + "\" ");
-            if (!NodeImpl.CONNECTION_DEFAULT_TYPE.equals(connection.getFromType())) {
-                xmlDump.append("fromType=\"" + connection.getFromType() + "\" ");
-            }
-            xmlDump.append("to=\"" + connection.getTo().getId() + "\" ");
-            if (!NodeImpl.CONNECTION_DEFAULT_TYPE.equals(connection.getToType())) {
-                xmlDump.append("toType=\"" + connection.getToType() + "\" ");
-            }
-            if (includeMeta) {
-                String bendpoints = (String) connection.getMetaData("bendpoints");
-                if (bendpoints != null) {
-                    xmlDump.append("bendpoints=\"" + bendpoints + "\" ");
-                }
-            }
-            xmlDump.append("/>" + EOL);
+            visitConnection(connection, includeMeta);
         }
         xmlDump.append("  </connections>" + EOL + EOL);
+    }
+    
+    private void visitConnection(Connection connection, boolean includeMeta) {
+        xmlDump.append("    <connection from=\"" + connection.getFrom().getId() + "\" ");
+        if (!NodeImpl.CONNECTION_DEFAULT_TYPE.equals(connection.getFromType())) {
+            xmlDump.append("fromType=\"" + connection.getFromType() + "\" ");
+        }
+        xmlDump.append("to=\"" + connection.getTo().getId() + "\" ");
+        if (!NodeImpl.CONNECTION_DEFAULT_TYPE.equals(connection.getToType())) {
+            xmlDump.append("toType=\"" + connection.getToType() + "\" ");
+        }
+        if (includeMeta) {
+            String bendpoints = (String) connection.getMetaData("bendpoints");
+            if (bendpoints != null) {
+                xmlDump.append("bendpoints=\"" + bendpoints + "\" ");
+            }
+        }
+        xmlDump.append("/>" + EOL);
     }
     
 }

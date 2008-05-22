@@ -1,14 +1,17 @@
 package org.drools.xml;
 
 import org.drools.xml.processes.ActionNodeHandler;
+import org.drools.xml.processes.CompositeNodeHandler;
 import org.drools.xml.processes.ConnectionHandler;
 import org.drools.xml.processes.ConstraintHandler;
 import org.drools.xml.processes.EndNodeHandler;
 import org.drools.xml.processes.GlobalHandler;
 import org.drools.xml.processes.ImportHandler;
+import org.drools.xml.processes.InPortHandler;
 import org.drools.xml.processes.JoinNodeHandler;
 import org.drools.xml.processes.MappingHandler;
 import org.drools.xml.processes.MilestoneNodeHandler;
+import org.drools.xml.processes.OutPortHandler;
 import org.drools.xml.processes.ParameterHandler;
 import org.drools.xml.processes.ProcessHandler;
 import org.drools.xml.processes.RuleSetNodeHandler;
@@ -48,6 +51,8 @@ public class ProcessSemanticModule extends DefaultSemanticModule implements Sema
                            new MilestoneNodeHandler() );
         addHandler( "timer",
                            new TimerNodeHandler() );
+        addHandler( "composite",
+                           new CompositeNodeHandler() );
         addHandler( "connection",
                            new ConnectionHandler() );
         addHandler( "import",
@@ -68,5 +73,9 @@ public class ProcessSemanticModule extends DefaultSemanticModule implements Sema
                            new MappingHandler() );        
         addHandler( "constraint",
                            new ConstraintHandler() );        
+        addHandler( "in-port",
+                           new InPortHandler() );        
+        addHandler( "out-port",
+                           new OutPortHandler() );        
     }
 }

@@ -2,9 +2,9 @@ package org.drools.xml.processes;
 
 import java.util.HashSet;
 
-import org.drools.process.core.Process;
 import org.drools.workflow.core.Connection;
 import org.drools.workflow.core.Node;
+import org.drools.workflow.core.NodeContainer;
 import org.drools.workflow.core.impl.ConnectionImpl;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.Configuration;
@@ -21,7 +21,7 @@ public class ConnectionHandler extends BaseAbstractHandler
     public ConnectionHandler() {
         if ( (this.validParents == null) && (this.validPeers == null) ) {
             this.validParents = new HashSet();
-            this.validParents.add( Process.class );
+            this.validParents.add( NodeContainer.class );
 
             this.validPeers = new HashSet();
             this.validPeers.add( null );
@@ -46,9 +46,9 @@ public class ConnectionHandler extends BaseAbstractHandler
         emptyAttributeCheck( localName, "to", toId, parser );
         String bendpoints = attrs.getValue( "bendpoints" );
         
-        ProcessBuildData buildData = (ProcessBuildData) parser.getData();
-        Node fromNode = buildData.getNode( new Long(fromId) );
-        Node toNode = buildData.getNode( new Long(toId) );
+        NodeContainer nodeContainer = (NodeContainer) parser.getParent();
+        Node fromNode = nodeContainer.getNode( new Long(fromId) );
+        Node toNode = nodeContainer.getNode( new Long(toId) );
         
         if ( fromNode == null ) {
                 throw new SAXParseException( "Node '" + fromId + "' cannot be found",

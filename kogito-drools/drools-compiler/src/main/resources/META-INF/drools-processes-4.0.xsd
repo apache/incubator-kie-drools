@@ -90,6 +90,7 @@
 				<xs:element ref="drools:subProcess"/>
 				<xs:element ref="drools:workItem"/>
 				<xs:element ref="drools:timer"/>
+				<xs:element ref="drools:composite"/>
 			</xs:choice>
 		</xs:complexType>
 	</xs:element>
@@ -261,6 +262,50 @@
 			<xs:attribute name="height" type="xs:string"/>
 			<xs:attribute name="delay" type="xs:string"/>
 			<xs:attribute name="period" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="composite">
+		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="drools:nodes"/>
+				<xs:element ref="drools:connections"/>
+				<xs:element ref="drools:in-ports"/>
+				<xs:element ref="drools:out-ports"/>
+			</xs:choice>
+			<xs:attribute name="id" type="xs:string" use="required"/>
+			<xs:attribute name="name" type="xs:string"/>
+			<xs:attribute name="x" type="xs:string"/>
+			<xs:attribute name="y" type="xs:string"/>
+			<xs:attribute name="width" type="xs:string"/>
+			<xs:attribute name="height" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="in-ports">
+		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="drools:in-port"/>
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="in-port">
+		<xs:complexType>
+			<xs:attribute name="type" type="xs:string" use="required"/>
+			<xs:attribute name="nodeId" type="xs:string" use="required"/>
+			<xs:attribute name="nodeInType" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="out-ports">
+		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="drools:out-port"/>
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="out-port">
+		<xs:complexType>
+			<xs:attribute name="type" type="xs:string" use="required"/>
+			<xs:attribute name="nodeId" type="xs:string" use="required"/>
+			<xs:attribute name="nodeOutType" type="xs:string" use="required"/>
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="connections">
