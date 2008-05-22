@@ -65,7 +65,7 @@ public class XMLPersistenceTest extends TestCase {
             throw new IllegalArgumentException("Failed to persist empty nodes!");
         }
         
-//        System.out.println(xml);
+        System.out.println(xml);
         
         XmlProcessReader reader = new XmlProcessReader(
             new PackageBuilderConfiguration().getSemanticModules());
@@ -245,7 +245,7 @@ public class XMLPersistenceTest extends TestCase {
             throw new IllegalArgumentException("Failed to persist empty nodes!");
         }
         
-//        System.out.println(xml);
+        System.out.println(xml);
         
         XmlProcessReader reader = new XmlProcessReader(
             new PackageBuilderConfiguration().getSemanticModules());

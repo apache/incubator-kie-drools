@@ -27,4 +27,14 @@ public class JoinNodeHandler extends AbstractNodeHandler {
         return Join.class;
     }
 
+	public void writeNode(Node node, StringBuffer xmlDump, boolean includeMeta) {
+		Join joinNode = (Join) node;
+		writeNode("join", joinNode, xmlDump, includeMeta);
+        int type = joinNode.getType();
+        if (type != 0) {
+            xmlDump.append("type=\"" + type + "\" ");
+        }
+        endNode(xmlDump);
+	}
+
 }
