@@ -33,6 +33,7 @@ import org.drools.workflow.core.Connection;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.impl.DroolsConsequenceAction;
 import org.drools.workflow.core.node.ActionNode;
+import org.drools.workflow.core.node.CompositeNode;
 import org.drools.workflow.core.node.EndNode;
 import org.drools.workflow.core.node.Join;
 import org.drools.workflow.core.node.MilestoneNode;
@@ -42,8 +43,8 @@ import org.drools.workflow.core.node.StartNode;
 import org.drools.workflow.core.node.SubProcessNode;
 import org.drools.workflow.core.node.WorkItemNode;
 import org.mvel.ErrorDetail;
-import org.mvel.compiler.ExpressionCompiler;
 import org.mvel.ParserContext;
+import org.mvel.compiler.ExpressionCompiler;
 
 /**
  * Default implementation of a RuleFlow validator.
@@ -57,6 +58,9 @@ public class RuleFlowProcessValidator implements ProcessValidator {
 
     private static RuleFlowProcessValidator instance;
 
+    private boolean startNodeFound;
+    private boolean endNodeFound;
+    
     private RuleFlowProcessValidator() {
     }
 
@@ -91,9 +95,32 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                 "Process has no start node."));
         }
 
-        boolean startNodeFound = false;
-        boolean endNodeFound = false;
+        startNodeFound = false;
+        endNodeFound = false;
         final Node[] nodes = process.getNodes();
+        validateNodes(nodes, errors, process);
+        if (!startNodeFound) {
+            errors.add(new ProcessValidationErrorImpl(process,
+                "Process has no start node."));
+        }
+        if (!endNodeFound) {
+            errors.add(new ProcessValidationErrorImpl(process,
+                "Process has no end node."));
+        }
+        for (final Iterator<Variable> it = process.getVariableScope().getVariables().iterator(); it.hasNext(); ) {
+            final Variable variable = it.next();
+            if (variable.getType() == null) {
+                errors.add(new ProcessValidationErrorImpl(process,
+                    "Variable '" + variable.getName() + "' has no type."));
+            }
+        }
+
+        checkAllNodesConnectedToStart(process, errors);
+
+        return errors.toArray(new ProcessValidationError[errors.size()]);
+    }
+    
+    private void validateNodes(Node[] nodes, List<ProcessValidationError> errors, RuleFlowProcess process) {
         for ( int i = 0; i < nodes.length; i++ ) {
             final Node node = nodes[i];
             if (node instanceof StartNode) {
@@ -205,33 +232,33 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                     errors.add(new ProcessValidationErrorImpl(process,
                         "Action node '" + node.getName() + "' [" + node.getId() + "] has no action."));
                 } else {
-                	if (actionNode.getAction() instanceof DroolsConsequenceAction) {
-                		DroolsConsequenceAction droolsAction = (DroolsConsequenceAction) actionNode.getAction();
-                		String actionString = droolsAction.getConsequence();
-                		if (actionString == null) {
+                    if (actionNode.getAction() instanceof DroolsConsequenceAction) {
+                        DroolsConsequenceAction droolsAction = (DroolsConsequenceAction) actionNode.getAction();
+                        String actionString = droolsAction.getConsequence();
+                        if (actionString == null) {
                             errors.add(new ProcessValidationErrorImpl(process,
                                 "Action node '" + node.getName() + "' [" + node.getId() + "] has empty action."));
-                		} else {
-	                    	try {
-	                    		ExpressionCompiler compiler = new ExpressionCompiler(actionString);
-	                    		compiler.setVerifying(true);
-		                		ParserContext parserContext = new ParserContext();
-		                		//parserContext.setStrictTypeEnforcement(true);
-		                		compiler.compile(parserContext);
-		                		List<ErrorDetail> mvelErrors = parserContext.getErrorList();
-		                		if (mvelErrors != null) {
-		                			for (Iterator<ErrorDetail> iterator = mvelErrors.iterator(); iterator.hasNext(); ) {
-		                			    ErrorDetail error = iterator.next();
-		                                errors.add(new ProcessValidationErrorImpl(process,
-	                                        "Action node '" + node.getName() + "' [" + node.getId() + "] has invalid action: " + error.getMessage() + "."));
-		                			}
-		                		}
-	                    	} catch (Throwable t) {
+                        } else {
+                            try {
+                                ExpressionCompiler compiler = new ExpressionCompiler(actionString);
+                                compiler.setVerifying(true);
+                                ParserContext parserContext = new ParserContext();
+                                //parserContext.setStrictTypeEnforcement(true);
+                                compiler.compile(parserContext);
+                                List<ErrorDetail> mvelErrors = parserContext.getErrorList();
+                                if (mvelErrors != null) {
+                                    for (Iterator<ErrorDetail> iterator = mvelErrors.iterator(); iterator.hasNext(); ) {
+                                        ErrorDetail error = iterator.next();
+                                        errors.add(new ProcessValidationErrorImpl(process,
+                                            "Action node '" + node.getName() + "' [" + node.getId() + "] has invalid action: " + error.getMessage() + "."));
+                                    }
+                                }
+                            } catch (Throwable t) {
                                 errors.add(new ProcessValidationErrorImpl(process,
                                     "Action node '" + node.getName() + "' [" + node.getId() + "] has invalid action: " + t.getMessage() + "."));
-	                    	}
-                		}
-                	}
+                            }
+                        }
+                    }
                 }
             } else if (node instanceof WorkItemNode) {
                 final WorkItemNode workItemNode = (WorkItemNode) node;
@@ -253,27 +280,24 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                             "WorkItem node '" + node.getName() + "' [" + node.getId() + "] has no work name."));
                     }
                 }
+            } else if (node instanceof CompositeNode) {
+                final CompositeNode compositeNode = (CompositeNode) node;
+                for (String inType: compositeNode.getLinkedIncomingNodes().keySet()) {
+                    if (compositeNode.getIncomingConnections(inType).size() == 0) {
+                        errors.add(new ProcessValidationErrorImpl(process,
+                            "Composite node '" + node.getName() + "' [" + node.getId() + "] has no incoming connection for type " + inType));
+                    }
+                }
+                for (String outType: compositeNode.getLinkedOutgoingNodes().keySet()) {
+                    if (compositeNode.getOutgoingConnections(outType).size() == 0) {
+                        errors.add(new ProcessValidationErrorImpl(process,
+                            "Composite node '" + node.getName() + "' [" + node.getId() + "] has no outgoing connection for type " + outType));
+                    }
+                }
+                validateNodes(compositeNode.getNodes(), errors, process);
             } 
         }
-        if (!startNodeFound) {
-            errors.add(new ProcessValidationErrorImpl(process,
-                "Process has no start node."));
-        }
-        if (!endNodeFound) {
-            errors.add(new ProcessValidationErrorImpl(process,
-                "Process has no end node."));
-        }
-        for (final Iterator<Variable> it = process.getVariableScope().getVariables().iterator(); it.hasNext(); ) {
-            final Variable variable = it.next();
-            if (variable.getType() == null) {
-                errors.add(new ProcessValidationErrorImpl(process,
-                    "Variable '" + variable.getName() + "' has no type."));
-            }
-        }
 
-        checkAllNodesConnectedToStart(process, errors);
-
-        return errors.toArray(new ProcessValidationError[errors.size()]);
     }
 
     private void checkAllNodesConnectedToStart(final RuleFlowProcess process,
