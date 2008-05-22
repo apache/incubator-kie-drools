@@ -29,6 +29,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
     
     protected void initValidPeers() {
         this.validPeers = new HashSet();
+        this.validPeers.add(null);
         this.validPeers.add(Node.class);
     }
 
