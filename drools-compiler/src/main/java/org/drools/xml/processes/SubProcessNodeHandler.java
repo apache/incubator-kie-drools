@@ -27,4 +27,17 @@ public class SubProcessNodeHandler extends AbstractNodeHandler {
         return SubProcessNode.class;
     }
 
+	public void writeNode(Node node, StringBuffer xmlDump, boolean includeMeta) {
+		SubProcessNode subProcessNode = (SubProcessNode) node;
+		writeNode("subProcess", subProcessNode, xmlDump, includeMeta);
+        String processId = subProcessNode.getProcessId();
+        if (processId != null) {
+            xmlDump.append("processId=\"" + processId + "\" ");
+        }
+        if (!subProcessNode.isWaitForCompletion()) {
+            xmlDump.append("waitForCompletion=\"false\" ");
+        }
+        endNode(xmlDump);
+	}
+
 }

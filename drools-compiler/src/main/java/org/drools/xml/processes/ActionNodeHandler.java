@@ -5,6 +5,7 @@ import org.drools.workflow.core.impl.DroolsConsequenceAction;
 import org.drools.workflow.core.node.ActionNode;
 import org.drools.xml.Configuration;
 import org.drools.xml.ExtensibleXmlParser;
+import org.drools.xml.XmlDumper;
 import org.xml.sax.SAXException;
 
 public class ActionNodeHandler extends AbstractNodeHandler {
@@ -32,6 +33,26 @@ public class ActionNodeHandler extends AbstractNodeHandler {
 
     public Class generateNodeFor() {
         return ActionNode.class;
+    }
+
+	public void writeNode(Node node, StringBuffer xmlDump, boolean includeMeta) {
+		ActionNode actionNode = (ActionNode) node;
+		writeNode("action", actionNode, xmlDump, includeMeta);
+        DroolsConsequenceAction action = (DroolsConsequenceAction) actionNode.getAction();
+        if (action != null) {
+            String dialect = action.getDialect();
+            if (dialect != null) {
+                xmlDump.append("dialect=\"" + action.getDialect() + "\" ");
+            }
+            String consequence = action.getConsequence();
+            if (consequence == null) {
+                endNode(xmlDump);
+            } else {
+                xmlDump.append(">" + XmlDumper.replaceIllegalChars(consequence.trim()) + "</action>" + EOL);
+            }
+        } else {
+        	endNode(xmlDump);
+        }
     }
 
 }

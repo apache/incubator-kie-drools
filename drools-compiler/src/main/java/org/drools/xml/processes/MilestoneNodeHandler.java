@@ -4,6 +4,7 @@ import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.MilestoneNode;
 import org.drools.xml.Configuration;
 import org.drools.xml.ExtensibleXmlParser;
+import org.drools.xml.XmlDumper;
 import org.xml.sax.SAXException;
 
 public class MilestoneNodeHandler extends AbstractNodeHandler {
@@ -30,5 +31,16 @@ public class MilestoneNodeHandler extends AbstractNodeHandler {
     public Class generateNodeFor() {
         return MilestoneNode.class;
     }
+
+	public void writeNode(Node node, StringBuffer xmlDump, boolean includeMeta) {
+		MilestoneNode milestoneNode = (MilestoneNode) node;
+		writeNode("milestone", milestoneNode, xmlDump, includeMeta);
+        String constraint = milestoneNode.getConstraint();
+        if (constraint != null) {
+            xmlDump.append(">" + XmlDumper.replaceIllegalChars(constraint.trim()) + "</milestone>" + EOL);
+        } else {
+            endNode(xmlDump);
+        }
+	}
 
 }

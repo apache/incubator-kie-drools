@@ -16,6 +16,8 @@ import org.xml.sax.SAXParseException;
 public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         Handler {
 
+    protected final static String EOL = System.getProperty( "line.separator" );
+
     public AbstractNodeHandler() {
         initValidParents();
         initValidPeers();
@@ -48,7 +50,6 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         node.setName(name);
 
         nodeContainer.addNode(node);
-        ((ProcessBuildData) parser.getData()).addNode(node);
 
         return node;
     }
@@ -98,5 +99,40 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
             }
         }
     }
+    
+    public abstract void writeNode(final Node node, final StringBuffer xmlDump, final boolean includeMeta);
+    
+    protected void writeNode(final String name, final Node node, final StringBuffer xmlDump, final boolean includeMeta) {
+    	xmlDump.append("    <" + name + " id=\"" + node.getId() + "\" "); 
+        if (node.getName() != null) {
+            xmlDump.append("name=\"" + node.getName() + "\" ");
+        }
+        if (includeMeta) {
+            Integer x = (Integer) node.getMetaData("x");
+            Integer y = (Integer) node.getMetaData("y");
+            Integer width = (Integer) node.getMetaData("width");
+            Integer height = (Integer) node.getMetaData("height");
+            if (x != null && x != 0) {
+                xmlDump.append("x=\"" + x + "\" ");
+            }
+            if (y != null && y != 0) {
+                xmlDump.append("y=\"" + y + "\" ");
+            }
+            if (width != null && width != -1) {
+                xmlDump.append("width=\"" + width + "\" ");
+            }
+            if (height != null && height != -1) {
+                xmlDump.append("height=\"" + height + "\" ");
+            }
+        }
+    }
+    
+    protected void endNode(final StringBuffer xmlDump) {
+        xmlDump.append("/>" + EOL);
+    }
 
+    protected void endNode(final String name, final StringBuffer xmlDump) {
+        xmlDump.append("    </" + name + ">" + EOL);
+    }
+    
 }

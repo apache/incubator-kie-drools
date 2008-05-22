@@ -11,13 +11,14 @@ public class StartNodeHandler extends AbstractNodeHandler {
         return new StartNode();
     }
     
-    protected void initValidPeers() {
-        this.validPeers = new HashSet();
-        this.validPeers.add(null);
-    }
-
     public Class generateNodeFor() {
         return StartNode.class;
     }
+
+	public void writeNode(Node node, StringBuffer xmlDump, boolean includeMeta) {
+		StartNode startNode = (StartNode) node;
+		writeNode("start", startNode, xmlDump, includeMeta);
+        endNode(xmlDump);
+	}
 
 }
