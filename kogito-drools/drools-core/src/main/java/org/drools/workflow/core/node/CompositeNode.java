@@ -53,8 +53,16 @@ public class CompositeNode extends NodeImpl implements NodeContainer {
         node.setNodeContainer(null);
     }
     
+    public void linkIncomingConnections(String inType, long inNodeId, String inNodeType) {
+        inConnectionMap.put(inType, new NodeAndType(inNodeId, inNodeType));
+    }
+    
     public void linkIncomingConnections(String inType, CompositeNode.NodeAndType inNode) {
         inConnectionMap.put(inType, inNode);
+    }
+    
+    public void linkOutgoingConnections(long outNodeId, String outNodeType, String outType) {
+        inConnectionMap.put(outType, new NodeAndType(outNodeId, outNodeType));
     }
     
     public void linkOutgoingConnections(CompositeNode.NodeAndType outNode, String outType) {
@@ -67,6 +75,14 @@ public class CompositeNode extends NodeImpl implements NodeContainer {
 
     public CompositeNode.NodeAndType getLinkedOutgoingNode(String outType) {
         return outConnectionMap.get(outType);
+    }
+    
+    public Map<String, CompositeNode.NodeAndType> getLinkedIncomingNodes() {
+        return inConnectionMap;
+    }
+    
+    public Map<String, CompositeNode.NodeAndType> getLinkedOutgoingNodes() {
+        return outConnectionMap;
     }
     
     public void validateAddIncomingConnection(final String type, final Connection connection) {
@@ -143,22 +159,40 @@ public class CompositeNode extends NodeImpl implements NodeContainer {
         }
     }
     
-    public static class NodeAndType {
+    public class NodeAndType {
 
-        private Node node;
+        private long nodeId;
         private String type;
+        private transient Node node;
+        
+        public NodeAndType(long nodeId, String type) {
+            if (type == null) {
+                throw new IllegalArgumentException(
+                    "Node or type may not be null!");
+            }
+            this.nodeId = nodeId;
+            this.type = type;
+        }
         
         public NodeAndType(Node node, String type) {
             if (node == null || type == null) {
                 throw new IllegalArgumentException(
                     "Node or type may not be null!");
             }
+            this.nodeId = node.getId();
             this.node = node;
             this.type = type;
         }
         
         public Node getNode() {
+            if (node == null) {
+                node = nodeContainer.getNode(nodeId);
+            }
             return node;
+        }
+        
+        public long getNodeId() {
+            return nodeId;
         }
 
         public String getType() {
@@ -167,14 +201,14 @@ public class CompositeNode extends NodeImpl implements NodeContainer {
         
         public boolean equals(Object o) {
             if (o instanceof NodeAndType) {
-                return node.equals(((NodeAndType) o).node)
+                return nodeId == ((NodeAndType) o).nodeId
                     && type.equals(((NodeAndType) o).type); 
             }
             return false;
         }
         
         public int hashCode() {
-            return node.hashCode() + 13*type.hashCode();
+            return 7*(int)nodeId + 13*type.hashCode();
         }
         
     }
@@ -183,21 +217,30 @@ public class CompositeNode extends NodeImpl implements NodeContainer {
 
         private static final long serialVersionUID = 400L;
         
-        private Node outNode;
-        private String outType;
+        private long inNodeId;
+        private transient Node inNode;
+        private String inType;
         
         public CompositeNodeStart(Node outNode, String outType) {
             setName("Composite node start");
-            this.outNode = outNode;
-            this.outType = outType;
+            this.inNodeId = outNode.getId();
+            this.inNode = outNode;
+            this.inType = outType;
         }
         
         public Node getInNode() {
-            return outNode;
+            if (inNode == null) {
+                inNode = getNodeContainer().getNode(inNodeId);
+            }
+            return inNode;
+        }
+        
+        public long getInNodeId() {
+            return inNodeId;
         }
         
         public String getInType() {
-            return outType;
+            return inType;
         }
         
         public Connection getTo() {
@@ -215,17 +258,26 @@ public class CompositeNode extends NodeImpl implements NodeContainer {
 
         private static final long serialVersionUID = 400L;
         
-        private Node outNode;
+        private long outNodeId;
+        private transient Node outNode;
         private String outType;
         
         public CompositeNodeEnd(Node outNode, String outType) {
             setName("Composite node end");
+            this.outNodeId = outNode.getId();
             this.outNode = outNode;
             this.outType = outType;
         }
         
         public Node getOutNode() {
+            if (outNode == null) {
+                outNode = getNodeContainer().getNode(outNodeId);
+            }
             return outNode;
+        }
+        
+        public long getOutNodeId() {
+            return outNodeId;
         }
         
         public String getOutType() {
