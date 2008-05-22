@@ -37,17 +37,22 @@ public class CompositeNode extends NodeImpl implements NodeContainer {
     }
 
     public void addNode(Node node) {
-    	long id = 0;
-        for (Node n: nodeContainer.getNodes()) {
-            if (n.getId() > id) {
-                id = n.getId();
-            }
-        }
-        node.setId(++id);
-        nodeContainer.addNode(node);
+    	// TODO find a more elegant solution for this
+    	// preferrable remove id setting from this class
+    	// and delegate to GUI command that drops node
+    	if (node.getId() <= 0) {
+	    	long id = 0;
+	        for (Node n: nodeContainer.getNodes()) {
+	            if (n.getId() > id) {
+	                id = n.getId();
+	            }
+	        }
+	        node.setId(++id);
+    	}
+    	nodeContainer.addNode(node);
         node.setNodeContainer(this);
     }
-
+    
     public void removeNode(Node node) {
         nodeContainer.removeNode(node);
         node.setNodeContainer(null);
