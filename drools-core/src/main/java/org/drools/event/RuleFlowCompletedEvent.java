@@ -21,7 +21,7 @@ import org.drools.process.instance.ProcessInstance;
 /**
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class RuleFlowCompletedEvent extends RuleFlowEvent {
+public class RuleFlowCompletedEvent extends ProcessEvent {
 
     private static final long serialVersionUID = 400L;
 
@@ -30,6 +30,6 @@ public class RuleFlowCompletedEvent extends RuleFlowEvent {
     }
 
     public String toString() {
-        return "==>[ProcessCompleted(name=" + getRuleFlowProcessInstance().getProcess().getName() + "; id=" + getRuleFlowProcessInstance().getProcess().getId() + ")]";
+        return "==>[ProcessCompleted(name=" + getProcessInstance().getProcess().getName() + "; id=" + getProcessInstance().getProcess().getId() + ")]";
     }
 }

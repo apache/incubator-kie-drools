@@ -17,7 +17,6 @@ package org.drools.workflow.instance.node;
  */
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.drools.workflow.core.Connection;
@@ -52,13 +51,12 @@ public class JoinInstance extends NodeInstanceImpl {
                 triggerCompleted();
                 break;
             case Join.TYPE_AND :
-                Node node = getNodeInstanceContainer().getNodeContainer().getNode( from.getNodeId() );
-                Integer count = (Integer) this.triggers.get( node.getId() );
+                Integer count = (Integer) this.triggers.get( from.getNodeId() );
                 if ( count == null ) {
-                    this.triggers.put( node.getId(),
+                    this.triggers.put( from.getNodeId(),
                                        1 );
                 } else {
-                    this.triggers.put( node.getId(),
+                    this.triggers.put( from.getNodeId(),
                                        count.intValue() + 1 );
                 }
                 if (checkAllActivated()) {
@@ -68,8 +66,7 @@ public class JoinInstance extends NodeInstanceImpl {
                 break;
             case Join.TYPE_DISCRIMINATOR :
                 boolean triggerCompleted = triggers.isEmpty();
-                node = getNodeInstanceContainer().getNodeContainer().getNode( from.getNodeId() );
-                triggers.put( node.getId(), new Integer( 1 ) );
+                triggers.put( from.getNodeId(), new Integer( 1 ) );
                 if (checkAllActivated()) {
                     resetAllTriggers();
                 }
@@ -84,8 +81,7 @@ public class JoinInstance extends NodeInstanceImpl {
 
     private boolean checkAllActivated() {
         // check whether all parent nodes have been triggered 
-        for ( final Iterator<Connection> it = getJoin().getDefaultIncomingConnections().iterator(); it.hasNext(); ) {
-            final Connection connection = it.next();
+        for (final Connection connection: getJoin().getDefaultIncomingConnections()) {
             if ( this.triggers.get( connection.getFrom().getId() ) == null ) {
                 return false;
             }
@@ -95,8 +91,7 @@ public class JoinInstance extends NodeInstanceImpl {
     
     private void decreaseAllTriggers() {
         // decrease trigger count for all incoming connections
-        for ( final Iterator<Connection> it = getJoin().getDefaultIncomingConnections().iterator(); it.hasNext(); ) {
-            final Connection connection = it.next();
+        for (final Connection connection: getJoin().getDefaultIncomingConnections()) {
             final Integer count = (Integer) this.triggers.get( connection.getFrom().getId() );
             if ( count.intValue() == 1 ) {
                 this.triggers.remove( connection.getFrom().getId() );

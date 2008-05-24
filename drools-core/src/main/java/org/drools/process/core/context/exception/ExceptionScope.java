@@ -29,6 +29,10 @@ public class ExceptionScope extends AbstractContext {
     public void removeExceptionHandler(String exception) {
         this.exceptionHandlers.remove(exception);
     }
+    
+    public Map<String, ExceptionHandler> getExceptionHandlers() {
+        return exceptionHandlers;
+    }
 
     public Context resolveContext(Object param) {
         if (param instanceof String) {
