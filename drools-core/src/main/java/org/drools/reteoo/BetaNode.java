@@ -59,7 +59,7 @@ public abstract class BetaNode extends LeftTupleSource
     
     // ------------------------------------------------------------
     // Instance members
-    // ------------------------------------------------------------
+    // ------------------------------------------------------------    
 
     /** The left input <code>TupleSource</code>. */
     protected LeftTupleSource leftInput;

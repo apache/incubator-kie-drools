@@ -46,8 +46,7 @@ import org.drools.util.ObjectHashMap.ObjectEntry;
 public class CollectNode extends BetaNode
     implements
     LeftTupleSink,
-    ObjectSink {
-
+    ObjectSink {    
     private static final long          serialVersionUID = 400L;
 
     private Collect                    collect;
@@ -505,6 +504,10 @@ public class CollectNode extends BetaNode
         }
         return memory;
     }
+    
+    public short getType() {
+        return NodeTypeEnums.CollectNode;
+    }   
 
     public static class CollectMemory
         implements

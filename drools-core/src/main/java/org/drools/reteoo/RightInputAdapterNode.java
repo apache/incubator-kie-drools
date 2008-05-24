@@ -48,7 +48,7 @@ public class RightInputAdapterNode extends ObjectSource
     LeftTupleSinkNode,
     NodeMemory {
 
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 400L; 
 
     private LeftTupleSource   tupleSource;
 
@@ -282,6 +282,10 @@ public class RightInputAdapterNode extends ObjectSource
     public void setPreviousLeftTupleSinkNode(final LeftTupleSinkNode previous) {
         this.previousTupleSinkNode = previous;
     }
+    
+    public short getType() {
+        return NodeTypeEnums.RightInputAdaterNode;
+    }     
 
     public int hashCode() {
         return this.tupleSource.hashCode() * 17 + ((this.tupleMemoryEnabled) ? 1234 : 4321);

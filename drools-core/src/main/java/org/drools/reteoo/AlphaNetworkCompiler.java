@@ -14,7 +14,7 @@ public class AlphaNetworkCompiler {
 
     public void compile(ObjectTypeNode objectTypeNode) {
         builder = new StringBuilder();
-        builder.append( "public class Compiled" + objectTypeNode.getObjectType() + "AlphaNetwork implements RightTupleSink { \n" );
+        builder.append( "public class Compiled" + objectTypeNode.getObjectType() + "AlphaNetwork implements ObjectSink { \n" );
         
         createVars( objectTypeNode.getSinkPropagator().getSinks(), 4  );
         

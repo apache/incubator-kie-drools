@@ -51,6 +51,9 @@ public final class QueryTerminalNode extends BaseNode
      *
      */
     private static final long serialVersionUID = 400L;
+    
+    public static final short type = 8;
+    
     /** The rule to invoke upon match. */
     private Rule              rule;
     private GroupElement      subrule;
@@ -259,5 +262,9 @@ public final class QueryTerminalNode extends BaseNode
     public void setNextLeftTupleSinkNode(final LeftTupleSinkNode next) {
         this.nextTupleSinkNode = next;
     }
+    
+    public short getType() {
+        return NodeTypeEnums.QueryTerminalNode;
+    } 
 
 }

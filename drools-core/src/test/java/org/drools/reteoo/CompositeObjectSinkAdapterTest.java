@@ -588,5 +588,10 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
             //  Auto-generated method stub
 
         }
+
+        public short getType() {
+            // TODO Auto-generated method stub
+            return 0;
+        }
     }
 }

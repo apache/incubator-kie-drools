@@ -54,11 +54,11 @@ public class EvalConditionNode extends LeftTupleSource
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
-
+    
     /**
-     *
-     */
-    private static final long serialVersionUID = 400L;
+    *
+    */
+   private static final long serialVersionUID = 400L;
 
     /** The semantic <code>Test</code>. */
     private EvalCondition     condition;
@@ -323,6 +323,10 @@ public class EvalConditionNode extends LeftTupleSource
     public void setPreviousLeftTupleSinkNode(final LeftTupleSinkNode previous) {
         this.previousTupleSinkNode = previous;
     }
+    
+    public short getType() {
+        return NodeTypeEnums.EvalConditionNode;
+    }     
 
     public static class EvalMemory
         implements

@@ -5,6 +5,6 @@ package org.drools.reteoo;
  * 
  * @author etirelli
  */
-public interface Sink {
+public interface Sink {   
     public int getId();
 }
