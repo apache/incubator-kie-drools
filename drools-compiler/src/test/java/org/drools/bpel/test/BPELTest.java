@@ -22,7 +22,6 @@ import org.drools.bpel.core.BPELReceive;
 import org.drools.bpel.core.BPELReply;
 import org.drools.bpel.core.BPELSequence;
 import org.drools.bpel.instance.BPELProcessInstance;
-import org.drools.bpel.instance.BPELProcessInstanceFactory;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.PackageBuilder;
@@ -252,18 +251,17 @@ public class BPELTest {
     }
     
     // normal execution
-    public static void main1(String[] args) {
+    public static void main(String[] args) {
         BPELProcess process = getProcess();
         // execute
         Properties properties = new Properties(); 
+        properties.put( "processInstanceFactoryRegistry", "bpelProcessInstanceFactory.conf" );        
         properties.put( "processNodeInstanceFactoryRegistry", "bpelProcessNodeInstanceFactory.conf" );        
         properties.put( "processContextInstanceFactoryRegistry", "bpelProcessContextInstanceFactory.conf" );        
         RuleBaseConfiguration ruleBaseConf = new RuleBaseConfiguration( properties );
         AbstractRuleBase ruleBase = (AbstractRuleBase) RuleBaseFactory.newRuleBase(ruleBaseConf);
         ruleBase.addProcess(process);
         InternalWorkingMemory workingMemory = new ReteooWorkingMemory(1, ruleBase);
-        workingMemory.registerProcessInstanceFactory(
-            BPELProcess.BPEL_TYPE, new BPELProcessInstanceFactory());
         WorkItemHandler handler = new WebServiceInvocationHandler();
         workingMemory.getWorkItemManager().registerWorkItemHandler("WebServiceInvocation", handler);
         WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger(workingMemory);
@@ -297,18 +295,17 @@ public class BPELTest {
     }
     
     // shipping returns fault
-    public static void main(String[] args) {
+    public static void main1(String[] args) {
         BPELProcess process = getProcess();
         // execute
         Properties properties = new Properties(); 
+        properties.put( "processInstanceFactoryRegistry", "bpelProcessInstanceFactory.conf" );        
         properties.put( "processNodeInstanceFactoryRegistry", "bpelProcessNodeInstanceFactory.conf" );        
         properties.put( "processContextInstanceFactoryRegistry", "bpelProcessContextInstanceFactory.conf" );        
         RuleBaseConfiguration ruleBaseConf = new RuleBaseConfiguration( properties );
         AbstractRuleBase ruleBase = (AbstractRuleBase) RuleBaseFactory.newRuleBase(ruleBaseConf);
         ruleBase.addProcess(process);
         InternalWorkingMemory workingMemory = new ReteooWorkingMemory(1, ruleBase);
-        workingMemory.registerProcessInstanceFactory(
-            BPELProcess.BPEL_TYPE, new BPELProcessInstanceFactory());
         WorkItemHandler handler = new WebServiceInvocationHandler();
         workingMemory.getWorkItemManager().registerWorkItemHandler("WebServiceInvocation", handler);
         WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger(workingMemory);

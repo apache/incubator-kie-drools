@@ -2,7 +2,7 @@ package org.drools.xml.processes;
 
 import java.util.HashSet;
 
-import org.drools.workflow.core.node.WorkItemNode;
+import org.drools.process.core.context.variable.Mappable;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
@@ -16,7 +16,7 @@ public class MappingHandler extends BaseAbstractHandler
     public MappingHandler() {
         if ( (this.validParents == null) && (this.validPeers == null) ) {
             this.validParents = new HashSet();
-            this.validParents.add( WorkItemNode.class );
+            this.validParents.add( Mappable.class );
 
             this.validPeers = new HashSet();         
             this.validPeers.add( null );            
@@ -32,17 +32,17 @@ public class MappingHandler extends BaseAbstractHandler
                         final Attributes attrs,
                         final ExtensibleXmlParser parser) throws SAXException {
         parser.startConfiguration(localName, attrs);
-        WorkItemNode workItemNode = (WorkItemNode) parser.getParent();
+        Mappable mappable = (Mappable) parser.getParent();
         final String type = attrs.getValue("type");
         emptyAttributeCheck(localName, "type", type, parser);
-        final String parameterName = attrs.getValue("parameterName");
-        emptyAttributeCheck(localName, "parameterName", parameterName, parser);
-        final String variableName = attrs.getValue("variableName");
-        emptyAttributeCheck(localName, "variableName", variableName, parser);
+        final String fromName = attrs.getValue("from");
+        emptyAttributeCheck(localName, "from", fromName, parser);
+        final String toName = attrs.getValue("to");
+        emptyAttributeCheck(localName, "to", toName, parser);
         if ("in".equals(type)) {
-            workItemNode.addInMapping(parameterName, variableName);
+            mappable.addInMapping(toName, fromName);
         } else if ("out".equals(type)) {
-            workItemNode.addOutMapping(parameterName, variableName);
+            mappable.addOutMapping(fromName, toName);
         } else {
             throw new SAXParseException(
                 "Unknown mapping type " + type, parser.getLocator());
