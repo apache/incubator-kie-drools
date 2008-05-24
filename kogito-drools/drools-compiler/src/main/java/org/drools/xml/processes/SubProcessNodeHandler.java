@@ -1,5 +1,7 @@
 package org.drools.xml.processes;
 
+import java.util.Map;
+
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.SubProcessNode;
 import org.drools.xml.Configuration;
@@ -21,6 +23,8 @@ public class SubProcessNodeHandler extends AbstractNodeHandler {
         subProcessNode.setProcessId(processId);
         String waitForCompletion = config.getAttribute("waitForCompletion");
         subProcessNode.setWaitForCompletion(!"false".equals(waitForCompletion));
+        String independent = config.getAttribute("independent");
+        subProcessNode.setIndependent(!"false".equals(independent));
     }
 
     public Class generateNodeFor() {
@@ -37,7 +41,25 @@ public class SubProcessNodeHandler extends AbstractNodeHandler {
         if (!subProcessNode.isWaitForCompletion()) {
             xmlDump.append("waitForCompletion=\"false\" ");
         }
-        endNode(xmlDump);
+        if (!subProcessNode.isIndependent()) {
+            xmlDump.append("independent=\"false\" ");
+        }
+        xmlDump.append(">" + EOL);
+        Map<String, String> inMappings = subProcessNode.getInMappings();
+        for (Map.Entry<String, String> inMapping: inMappings.entrySet()) {
+            xmlDump.append(
+                "      <mapping type=\"in\" "
+                             + "from=\"" + inMapping.getValue() + "\" "
+                             + "to=\"" + inMapping.getKey() + "\" />" + EOL);
+        }
+        Map<String, String> outMappings = subProcessNode.getOutMappings();
+        for (Map.Entry<String, String> outMapping: outMappings.entrySet()) {
+            xmlDump.append(
+                "      <mapping type=\"out\" "
+                             + "from=\"" + outMapping.getKey() + "\" "
+                             + "to=\"" + outMapping.getValue() + "\" />" + EOL);
+        }
+        endNode("subProcess", xmlDump);
 	}
 
 }

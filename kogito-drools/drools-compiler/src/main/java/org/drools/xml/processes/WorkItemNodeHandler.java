@@ -44,15 +44,15 @@ public class WorkItemNodeHandler extends AbstractNodeHandler {
         for (Map.Entry<String, String> inMapping: inMappings.entrySet()) {
             xmlDump.append(
                 "      <mapping type=\"in\" "
-                             + "parameterName=\"" + inMapping.getKey() + "\" "
-                             + "variableName=\"" + inMapping.getValue() + "\" />" + EOL);
+                             + "from=\"" + inMapping.getValue() + "\" "
+                             + "to=\"" + inMapping.getKey() + "\" />" + EOL);
         }
         Map<String, String> outMappings = workItemNode.getOutMappings();
         for (Map.Entry<String, String> outMapping: outMappings.entrySet()) {
             xmlDump.append(
                 "      <mapping type=\"out\" "
-                             + "parameterName=\"" + outMapping.getKey() + "\" "
-                             + "variableName=\"" + outMapping.getValue() + "\" />" + EOL);
+                             + "from=\"" + outMapping.getKey() + "\" "
+                             + "to=\"" + outMapping.getValue() + "\" />" + EOL);
         }
         endNode("workItem", xmlDump);
     }

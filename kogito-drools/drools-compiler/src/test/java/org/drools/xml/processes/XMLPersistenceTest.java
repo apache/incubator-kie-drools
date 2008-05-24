@@ -18,6 +18,7 @@ import org.drools.process.core.datatype.impl.type.IntegerDataType;
 import org.drools.process.core.datatype.impl.type.StringDataType;
 import org.drools.process.core.impl.ParameterDefinitionImpl;
 import org.drools.process.core.impl.WorkImpl;
+import org.drools.process.core.timer.Timer;
 import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.workflow.core.Connection;
 import org.drools.workflow.core.Constraint;
@@ -33,6 +34,7 @@ import org.drools.workflow.core.node.RuleSetNode;
 import org.drools.workflow.core.node.Split;
 import org.drools.workflow.core.node.StartNode;
 import org.drools.workflow.core.node.SubProcessNode;
+import org.drools.workflow.core.node.TimerNode;
 import org.drools.workflow.core.node.WorkItemNode;
 import org.drools.xml.XmlProcessReader;
 import org.drools.xml.XmlRuleFlowProcessDumper;
@@ -57,6 +59,7 @@ public class XMLPersistenceTest extends TestCase {
         process.addNode(new RuleSetNode());
         process.addNode(new SubProcessNode());
         process.addNode(new WorkItemNode());
+        process.addNode(new TimerNode());
         
         XmlRuleFlowProcessDumper dumper = new XmlRuleFlowProcessDumper();
         
@@ -65,7 +68,7 @@ public class XMLPersistenceTest extends TestCase {
             throw new IllegalArgumentException("Failed to persist empty nodes!");
         }
         
-        System.out.println(xml);
+//        System.out.println(xml);
         
         XmlProcessReader reader = new XmlProcessReader(
             new PackageBuilderConfiguration().getSemanticModules());
@@ -74,7 +77,7 @@ public class XMLPersistenceTest extends TestCase {
             throw new IllegalArgumentException("Failed to reload process!");
         }
         
-        assertEquals(9, process.getNodes().length);
+        assertEquals(10, process.getNodes().length);
         
 //        System.out.println("************************************");
         
@@ -83,7 +86,7 @@ public class XMLPersistenceTest extends TestCase {
             throw new IllegalArgumentException("Failed to persist empty nodes!");
         }
         
-//        System.out.println(xml2);
+        System.out.println(xml2);
         
 //        assertEquals(xml, xml2);
     }
@@ -206,6 +209,9 @@ public class XMLPersistenceTest extends TestCase {
         subProcess.setMetaData("height", 4);
         subProcess.setProcessId("processId");
         subProcess.setWaitForCompletion(false);
+        subProcess.setIndependent(false);
+        subProcess.addInMapping("subvar1", "var1");
+        subProcess.addOutMapping("subvar2", "var2");
         process.addNode(subProcess);
         connection = new ConnectionImpl(milestone, Node.CONNECTION_DEFAULT_TYPE, subProcess, Node.CONNECTION_DEFAULT_TYPE);
         connection.setMetaData("bendpoints", "[10,10]");
@@ -229,6 +235,19 @@ public class XMLPersistenceTest extends TestCase {
         connection = new ConnectionImpl(subProcess, Node.CONNECTION_DEFAULT_TYPE, workItemNode, Node.CONNECTION_DEFAULT_TYPE);
         connection.setMetaData("bendpoints", "[]");
         
+        TimerNode timerNode = new TimerNode();
+        timerNode.setName("timer");
+        timerNode.setMetaData("x", 1);
+        timerNode.setMetaData("y", 2);
+        timerNode.setMetaData("width", 3);
+        timerNode.setMetaData("height", 4);
+        Timer timer = new Timer();
+        timer.setDelay(1000);
+        timer.setPeriod(1000);
+        timerNode.setTimer(timer);
+        process.addNode(timerNode);
+        new ConnectionImpl(workItemNode, Node.CONNECTION_DEFAULT_TYPE, timerNode, Node.CONNECTION_DEFAULT_TYPE);
+        
         EndNode endNode = new EndNode();
         endNode.setName("end");
         endNode.setMetaData("x", 1);
@@ -236,7 +255,7 @@ public class XMLPersistenceTest extends TestCase {
         endNode.setMetaData("width", 3);
         endNode.setMetaData("height", 4);
         process.addNode(endNode);
-        new ConnectionImpl(workItemNode, Node.CONNECTION_DEFAULT_TYPE, endNode, Node.CONNECTION_DEFAULT_TYPE);
+        new ConnectionImpl(timerNode, Node.CONNECTION_DEFAULT_TYPE, endNode, Node.CONNECTION_DEFAULT_TYPE);
         
         XmlRuleFlowProcessDumper dumper = new XmlRuleFlowProcessDumper();
         
@@ -245,7 +264,7 @@ public class XMLPersistenceTest extends TestCase {
             throw new IllegalArgumentException("Failed to persist empty nodes!");
         }
         
-        System.out.println(xml);
+//        System.out.println(xml);
         
         XmlProcessReader reader = new XmlProcessReader(
             new PackageBuilderConfiguration().getSemanticModules());
@@ -254,7 +273,7 @@ public class XMLPersistenceTest extends TestCase {
             throw new IllegalArgumentException("Failed to reload process!");
         }
         
-        assertEquals(9, process.getNodes().length);
+        assertEquals(10, process.getNodes().length);
         
 //        System.out.println("************************************");
         
@@ -263,7 +282,7 @@ public class XMLPersistenceTest extends TestCase {
             throw new IllegalArgumentException("Failed to persist empty nodes!");
         }
         
-//        System.out.println(xml2);
+        System.out.println(xml2);
         
 //        assertEquals(xml, xml2);
     }

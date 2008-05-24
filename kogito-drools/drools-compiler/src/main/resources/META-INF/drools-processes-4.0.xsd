@@ -202,6 +202,9 @@
 	</xs:element>
 	<xs:element name="subProcess">
 		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="drools:mapping"/>
+			</xs:choice>
 			<xs:attribute name="id" type="xs:string" use="required"/>
 			<xs:attribute name="name" type="xs:string"/>
 			<xs:attribute name="x" type="xs:string"/>
@@ -210,6 +213,7 @@
 			<xs:attribute name="height" type="xs:string"/>
 			<xs:attribute name="processId" type="xs:string"/>
 			<xs:attribute name="waitForCompletion" type="xs:string"/>
+			<xs:attribute name="independent" type="xs:string"/>
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="workItem">
@@ -248,8 +252,8 @@
 	<xs:element name="mapping">
 		<xs:complexType>
 			<xs:attribute name="type" type="xs:string" use="required"/>
-			<xs:attribute name="parameterName" type="xs:string" use="required"/>
-			<xs:attribute name="variableName" type="xs:string" use="required"/>
+			<xs:attribute name="from" type="xs:string" use="required"/>
+			<xs:attribute name="to" type="xs:string" use="required"/>
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="timer">
