@@ -25,15 +25,18 @@ import java.util.List;
  * 
  * @author etirelli
  */
-public interface FactType {
-    
-    public String getName();
-    
-    public List<FactField> getFields();
-    
-    public FactField getField( String name );
-    
-    public Class<?> getFactClass();
+public interface FactType
+    extends
+    java.io.Externalizable {
 
-    public Object newInstance() throws InstantiationException, IllegalAccessException;
+    public String getName();
+
+    public List<FactField> getFields();
+
+    public FactField getField(String name);
+
+    public Class< ? > getFactClass();
+
+    public Object newInstance() throws InstantiationException,
+                               IllegalAccessException;
 }

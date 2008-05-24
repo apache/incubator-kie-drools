@@ -18,6 +18,8 @@ package org.drools.factmodel;
 
 import java.beans.IntrospectionException;
 import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,13 +40,22 @@ import org.drools.rule.FactType;
  *
  * @author etirelli
  */
-public class ClassDefinition implements FactType {
+public class ClassDefinition
+    implements
+    FactType {
+
     private String                       className;
     private String                       superClass;
     private String[]                     interfaces;
     private Class< ? >                   definedClass;
 
     private Map<String, FieldDefinition> fields = new LinkedHashMap<String, FieldDefinition>();
+
+    public ClassDefinition() {
+        this( null,
+              null,
+              null );
+    }
 
     public ClassDefinition(String className) {
         this( className,
@@ -74,6 +85,23 @@ public class ClassDefinition implements FactType {
         this.setInterfaces( interfaces );
     }
 
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        this.className = (String) in.readObject();
+        this.superClass = (String) in.readObject();
+        this.interfaces = (String[]) in.readObject();
+        this.definedClass = (Class<?>) in.readObject();
+        this.fields = (Map<String, FieldDefinition>) in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject( this.className );
+        out.writeObject( this.superClass );
+        out.writeObject( this.interfaces );
+        out.writeObject( this.definedClass );
+        out.writeObject( this.fields );
+    }
+
     /**
      * @return Returns the name.
      */
@@ -98,7 +126,7 @@ public class ClassDefinition implements FactType {
     /**
      * @param className The class to set.
      */
-    public void setDefinedClass(final Class< ? > definedClass)  {
+    public void setDefinedClass(final Class< ? > definedClass) {
 
         this.definedClass = definedClass;
     }
@@ -156,9 +184,14 @@ public class ClassDefinition implements FactType {
         ClassFieldAccessorCache cache = ClassFieldAccessorCache.getInstance();
 
         for ( FieldDefinition attrDef : this.fields.values() ) {
-            ClassFieldReader reader = cache.getReader( this.getDefinedClass(), attrDef.getName(), this.getClass().getClassLoader() );
-            ClassFieldWriter writer = cache.getWriter( this.getDefinedClass(), attrDef.getName(), this.getClass().getClassLoader() );
-            ClassFieldAccessor accessor = new ClassFieldAccessor( reader, writer );
+            ClassFieldReader reader = cache.getReader( this.getDefinedClass(),
+                                                       attrDef.getName(),
+                                                       this.getClass().getClassLoader() );
+            ClassFieldWriter writer = cache.getWriter( this.getDefinedClass(),
+                                                       attrDef.getName(),
+                                                       this.getClass().getClassLoader() );
+            ClassFieldAccessor accessor = new ClassFieldAccessor( reader,
+                                                                  writer );
             attrDef.setFieldAccessor( accessor );
         }
     }
@@ -195,7 +228,8 @@ public class ClassDefinition implements FactType {
         return getClassName();
     }
 
-    public Object newInstance() throws InstantiationException, IllegalAccessException {
+    public Object newInstance() throws InstantiationException,
+                               IllegalAccessException {
         return this.definedClass.newInstance();
     }
 

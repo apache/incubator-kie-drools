@@ -139,6 +139,7 @@ public class ClassFieldAccessorFactory {
         } catch ( final RuntimeDroolsException e ) {
             throw e;
         } catch ( final Exception e ) {
+            e.printStackTrace();
             throw new RuntimeDroolsException( e );
         }
     }

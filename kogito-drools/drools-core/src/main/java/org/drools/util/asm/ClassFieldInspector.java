@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.RuntimeDroolsException;
 import org.drools.asm.AnnotationVisitor;
 import org.drools.asm.Attribute;
 import org.drools.asm.ClassReader;
@@ -33,6 +34,7 @@ import org.drools.asm.ClassVisitor;
 import org.drools.asm.FieldVisitor;
 import org.drools.asm.MethodVisitor;
 import org.drools.asm.Opcodes;
+import org.drools.asm.Type;
 
 /**
  * Visit a POJO user class, and extract the property getter methods that are public, in the 
@@ -121,22 +123,22 @@ public class ClassFieldInspector {
         for ( int i = 0; i < methods.length; i++ ) {
             // modifiers mask  
             final int mask = includeFinalMethods ? Modifier.PUBLIC : Modifier.PUBLIC | Modifier.FINAL;
-            
-            if ( ((methods[i].getModifiers() & mask) == Opcodes.ACC_PUBLIC ) && (methods[i].getParameterTypes().length == 0) && (!methods[i].getName().equals( "<init>" )) && (!methods[i].getName().equals( "<clinit>" ))
+
+            if ( ((methods[i].getModifiers() & mask) == Opcodes.ACC_PUBLIC) && (methods[i].getParameterTypes().length == 0) && (!methods[i].getName().equals( "<init>" )) && (!methods[i].getName().equals( "<clinit>" ))
                  && (methods[i].getReturnType() != void.class) ) {
-                
+
                 // want public methods that start with 'get' or 'is' and have no args, and return a value
                 final int fieldIndex = this.fieldNames.size();
                 addToMapping( methods[i],
                               fieldIndex );
-                
-            } else if ( ((methods[i].getModifiers() & mask) == Opcodes.ACC_PUBLIC ) && (methods[i].getParameterTypes().length == 1) && (methods[i].getName().startsWith( "set" ))) {
+
+            } else if ( ((methods[i].getModifiers() & mask) == Opcodes.ACC_PUBLIC) && (methods[i].getParameterTypes().length == 1) && (methods[i].getName().startsWith( "set" )) ) {
 
                 // want public methods that start with 'set' and have one arg
                 final int fieldIndex = this.fieldNames.size();
                 addToMapping( methods[i],
                               fieldIndex );
-                
+
             }
         }
     }
@@ -211,7 +213,7 @@ public class ClassFieldInspector {
                         fieldName );
             storeGetterSetter( method,
                                fieldName );
-            
+
             if ( offset == 0 ) {
                 // only if it is a non-standard getter method
                 this.nonGetters.add( fieldName );
@@ -240,15 +242,15 @@ public class ClassFieldInspector {
      */
     private void storeGetterSetter(final Method method,
                                    final String fieldName) {
-        if( method.getName().startsWith( "set" ) ) {
+        if ( method.getName().startsWith( "set" ) ) {
             this.setterMethods.put( fieldName,
                                     method );
-            if( ! fieldTypes.containsKey( fieldName ) ) {
+            if ( !fieldTypes.containsKey( fieldName ) ) {
                 this.fieldTypes.put( fieldName,
                                      method.getParameterTypes()[0] );
             }
         } else {
-            this.getterMethods.put( fieldName, 
+            this.getterMethods.put( fieldName,
                                     method );
             this.fieldTypes.put( fieldName,
                                  method.getReturnType() );
@@ -290,20 +292,28 @@ public class ClassFieldInspector {
             //and have no args, and return a value
             final int mask = this.includeFinalMethods ? Opcodes.ACC_PUBLIC : Opcodes.ACC_PUBLIC | Opcodes.ACC_FINAL;
             if ( (access & mask) == Opcodes.ACC_PUBLIC ) {
-                if (( desc.startsWith( "()" ) && (!name.equals( "<init>" )) && (!name.equals( "<clinit>" )) ) ||
-                    ( name.startsWith( "set" ) ) ){// && ( name.startsWith("get") || name.startsWith("is") ) ) {
-                    try {
+                try {
+                    if ( desc.startsWith( "()" ) && (!name.equals( "<init>" )) && (!name.equals( "<clinit>" )) ) {// && ( name.startsWith("get") || name.startsWith("is") ) ) {
                         final Method method = this.clazz.getMethod( name,
                                                                     (Class[]) null );
-                        if ( method.getReturnType() != void.class || 
-                             ( method.getName().startsWith( "set" ) && ( method.getParameterTypes().length == 1 ) ) ) {
+                        if ( method.getReturnType() != void.class ) {
                             final int fieldIndex = this.inspector.fieldNames.size();
                             this.inspector.addToMapping( method,
                                                          fieldIndex );
                         }
-                    } catch ( final NoSuchMethodException e ) {
-                        throw new IllegalStateException( "Error in getting field access method." );
+                    } else if ( name.startsWith( "set" ) ) {
+                        // I found no safe way of getting the method object from the descriptor, so doing the other way around
+                        Method[] methods = this.clazz.getMethods();
+                        for( int i = 0; i < methods.length; i++ ) {
+                            if( desc.equals( Type.getMethodDescriptor( methods[i] ) ) ) {
+                                final int fieldIndex = this.inspector.fieldNames.size();
+                                this.inspector.addToMapping( methods[i],
+                                                             fieldIndex );
+                            }
+                        }
                     }
+                } catch ( final Exception e ) {
+                    throw new RuntimeDroolsException( "Error getting field access method: "+name+": "+e.getMessage(), e );
                 }
             }
             return null;

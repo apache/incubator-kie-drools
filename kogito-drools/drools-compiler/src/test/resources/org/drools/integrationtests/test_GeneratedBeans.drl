@@ -23,5 +23,5 @@ rule "another"
         $cheese : Cheese( type == "stilton" )
      	$person : Person( age== 7, likes == $cheese )
     then
-    	list.add( "OK" );
+    	list.add( $person );
 end

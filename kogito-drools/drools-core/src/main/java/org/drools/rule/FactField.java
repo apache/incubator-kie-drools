@@ -25,14 +25,16 @@ import org.drools.base.FieldAccessor;
  * 
  * @author etirelli
  */
-public interface FactField {
-    
-    public Class<?> getType();
-    
+public interface FactField
+    extends
+    java.io.Externalizable {
+
+    public Class< ? > getType();
+
     public String getName();
-    
+
     public boolean isKey();
 
     public FieldAccessor getFieldAccessor();
-    
+
 }
