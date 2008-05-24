@@ -23,15 +23,15 @@ import org.drools.process.instance.ProcessInstance;
 /**
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class RuleFlowEvent extends EventObject {
+public class ProcessEvent extends EventObject {
 
     private static final long serialVersionUID = 400L;
 
-    public RuleFlowEvent(final ProcessInstance instance) {
+    public ProcessEvent(final ProcessInstance instance) {
         super( instance );
     }
 
-    public ProcessInstance getRuleFlowProcessInstance() {
+    public ProcessInstance getProcessInstance() {
         return (ProcessInstance) getSource();
     }
 

@@ -21,13 +21,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.process.core.Work;
+import org.drools.process.core.context.variable.Mappable;
 
 /**
  * Default implementation of a task node.
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class WorkItemNode extends EventNode {
+public class WorkItemNode extends EventNode implements Mappable {
 
 	private static final long serialVersionUID = 400L;
 	

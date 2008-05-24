@@ -35,8 +35,6 @@ public interface InternalWorkingMemory
 
     public void setRuleFlowEventSupport(RuleFlowEventSupport ruleFlowEventSupport);
     
-    public void registerProcessInstanceFactory(String type, ProcessInstanceFactory nodeInstanceFactory);
-
     public Object getNodeMemory(NodeMemory node);
 
     public void clearNodeMemory(NodeMemory node);

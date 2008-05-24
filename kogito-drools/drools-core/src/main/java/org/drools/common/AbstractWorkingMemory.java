@@ -18,10 +18,6 @@ package org.drools.common;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -62,17 +58,12 @@ import org.drools.event.RuleFlowEventListener;
 import org.drools.event.RuleFlowEventSupport;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.event.WorkingMemoryEventSupport;
-import org.drools.marshalling.InputMarshaller;
-import org.drools.marshalling.OutputMarshaller;
-import org.drools.marshalling.PersisterEnums;
-import org.drools.marshalling.PersisterHelper;
-import org.drools.marshalling.MarshallerReaderContext;
-import org.drools.marshalling.MarshallerWriteContext;
 import org.drools.process.core.Process;
 import org.drools.process.core.context.variable.Variable;
 import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.ProcessInstanceFactory;
+import org.drools.process.instance.ProcessInstanceFactoryRegistry;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.process.instance.timer.TimerManager;
@@ -82,13 +73,10 @@ import org.drools.reteoo.InitialFactHandleDummyObject;
 import org.drools.reteoo.LIANodePropagation;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ObjectTypeConf;
-import org.drools.reteoo.ReteooFactHandleFactory;
 import org.drools.rule.Declaration;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.rule.TimeMachine;
-import org.drools.ruleflow.core.RuleFlowProcess;
-import org.drools.ruleflow.instance.RuleFlowProcessInstanceFactory;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
@@ -184,8 +172,6 @@ public abstract class AbstractWorkingMemory
 
     private TimerManager                                timerManager;
 
-    private Map<String, ProcessInstanceFactory>         processInstanceFactories;
-
     private TimeMachine                                 timeMachine;
 
     protected transient ObjectTypeConfigurationRegistry typeConfReg;
@@ -251,7 +237,6 @@ public abstract class AbstractWorkingMemory
         this.lock = new ReentrantLock();
         this.liaPropagations = Collections.EMPTY_LIST;
         this.processInstances = new HashMap();
-        this.processInstanceFactories = new HashMap();
         this.timeMachine = new TimeMachine();
 
         this.nodeMemories = new ConcurrentNodeMemories( this.ruleBase );
@@ -276,8 +261,6 @@ public abstract class AbstractWorkingMemory
             this.discardOnLogicalOverride = false;
         }
 
-        this.processInstanceFactories.put( RuleFlowProcess.RULEFLOW_TYPE,
-                                           new RuleFlowProcessInstanceFactory() );
         this.entryPoints = new ConcurrentHashMap();
         this.entryPoints.put( "DEFAULT",
                               this );
@@ -1457,11 +1440,7 @@ public abstract class AbstractWorkingMemory
         if ( process == null ) {
             throw new IllegalArgumentException( "Unknown process ID: " + processId );
         }
-        ProcessInstanceFactory factory = processInstanceFactories.get( process.getType() );
-        if ( factory == null ) {
-            throw new IllegalArgumentException( "Could not create process instance for type: " + process.getType() );
-        }
-        ProcessInstance processInstance = factory.createProcessInstance();
+        ProcessInstance processInstance = getProcessInstance(process);
         processInstance.setWorkingMemory( this );
         processInstance.setProcess( process );
         processInstance.setId( ++processCounter );
@@ -1497,6 +1476,21 @@ public abstract class AbstractWorkingMemory
 
         return processInstance;
     }
+    
+    public ProcessInstance getProcessInstance(final Process process) {
+        ProcessInstanceFactoryRegistry processRegistry =
+            ((InternalRuleBase) getRuleBase()).getConfiguration()
+                .getProcessInstanceFactoryRegistry();
+        ProcessInstanceFactory conf = processRegistry.getProcessInstanceFactory(process);
+        if (conf == null) {
+            throw new IllegalArgumentException("Illegal process type: " + process.getClass());
+        }
+        ProcessInstance processInstance = conf.createProcessInstance();
+        if (processInstance == null) {
+            throw new IllegalArgumentException("Illegal process type: " + process.getClass());
+        }
+        return processInstance;
+    }
 
     public Collection getProcessInstances() {
         return Collections.unmodifiableCollection( processInstances.values() );
@@ -1513,12 +1507,6 @@ public abstract class AbstractWorkingMemory
 
     public void removeProcessInstance(ProcessInstance processInstance) {
         processInstances.remove( processInstance.getId() );
-    }
-
-    public void registerProcessInstanceFactory(String type,
-                                               ProcessInstanceFactory processInstanceFactory) {
-        processInstanceFactories.put( type,
-                                      processInstanceFactory );
     }
 
     public WorkItemManager getWorkItemManager() {

@@ -21,7 +21,7 @@ import org.drools.workflow.instance.NodeInstance;
 /**
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class RuleFlowNodeTriggeredEvent extends RuleFlowEvent {
+public class RuleFlowNodeTriggeredEvent extends ProcessEvent {
 
     private static final long serialVersionUID = 400L;
     
@@ -38,6 +38,6 @@ public class RuleFlowNodeTriggeredEvent extends RuleFlowEvent {
 
     public String toString() {
         return "==>[WorkflowNodeTriggered(nodeId=" + nodeInstance.getNodeId() + "; id=" + nodeInstance.getId() 
-            + "; processName=" + getRuleFlowProcessInstance().getProcess().getName() + "; processId=" + getRuleFlowProcessInstance().getProcess().getId() + ")]";
+            + "; processName=" + getProcessInstance().getProcess().getName() + "; processId=" + getProcessInstance().getProcess().getId() + ")]";
     }
 }

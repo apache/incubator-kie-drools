@@ -16,6 +16,9 @@ package org.drools.workflow.instance.node;
  * limitations under the License.
  */
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.drools.WorkingMemory;
 import org.drools.event.RuleFlowCompletedEvent;
 import org.drools.event.RuleFlowEventListener;
@@ -23,7 +26,9 @@ import org.drools.event.RuleFlowGroupActivatedEvent;
 import org.drools.event.RuleFlowGroupDeactivatedEvent;
 import org.drools.event.RuleFlowNodeTriggeredEvent;
 import org.drools.event.RuleFlowStartedEvent;
+import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.instance.ProcessInstance;
+import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.SubProcessNode;
 import org.drools.workflow.instance.NodeInstance;
@@ -39,7 +44,7 @@ public class SubProcessNodeInstance extends EventNodeInstance implements RuleFlo
     
     private long processInstanceId;
 	
-    protected SubProcessNode getSubFlowNode() {
+    protected SubProcessNode getSubProcessNode() {
         return (SubProcessNode) getNode();
     }
 
@@ -48,15 +53,37 @@ public class SubProcessNodeInstance extends EventNodeInstance implements RuleFlo
             throw new IllegalArgumentException(
                 "A SubProcess node only accepts default incoming connections!");
         }
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        for (Map.Entry<String, String> mapping: getSubProcessNode().getInMappings().entrySet()) {
+            VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
+                resolveContextInstance(VariableScope.VARIABLE_SCOPE, mapping.getValue());
+            if (variableScopeInstance != null) {
+                parameters.put(mapping.getKey(), variableScopeInstance.getVariable(mapping.getValue()));
+            } else {
+                System.err.println("Could not find variable scope for variable " + mapping.getValue());
+                System.err.println("when trying to execute SubProcess node " + getSubProcessNode().getName());
+                System.err.println("Continuing without setting parameter.");
+            }
+        }
     	ProcessInstance processInstance = 
-    		getProcessInstance().getWorkingMemory().startProcess(getSubFlowNode().getProcessId());
-    	if (!getSubFlowNode().isWaitForCompletion()
+    		getProcessInstance().getWorkingMemory().startProcess(getSubProcessNode().getProcessId(), parameters);
+    	if (!getSubProcessNode().isWaitForCompletion()
     	        || processInstance.getState() == ProcessInstance.STATE_COMPLETED) {
     		triggerCompleted();
     	} else {
     	    addEventListeners();
     		this.processInstanceId = processInstance.getId();
     	}
+    }
+    
+    public void cancel() {
+        super.cancel();
+        if (!getSubProcessNode().isIndependent()) {
+            ProcessInstance processInstance =
+                getProcessInstance().getWorkingMemory()
+                    .getProcessInstance(processInstanceId);
+            processInstance.setState(ProcessInstance.STATE_ABORTED);
+        }
     }
     
     public long getProcessInstanceId() {
@@ -79,8 +106,22 @@ public class SubProcessNodeInstance extends EventNodeInstance implements RuleFlo
 
     public void afterRuleFlowCompleted(RuleFlowCompletedEvent event,
             WorkingMemory workingMemory) {
-        if ( event.getRuleFlowProcessInstance().getId() == processInstanceId ) {
+        ProcessInstance processInstance = event.getProcessInstance();
+        if ( processInstance.getId() == processInstanceId ) {
             removeEventListeners();
+            VariableScopeInstance subProcessVariableScopeInstance = (VariableScopeInstance)
+                processInstance.getContextInstance(VariableScope.VARIABLE_SCOPE);
+            for (Map.Entry<String, String> mapping: getSubProcessNode().getOutMappings().entrySet()) {
+                VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
+                    resolveContextInstance(VariableScope.VARIABLE_SCOPE, mapping.getValue());
+                if (variableScopeInstance != null) {
+                    variableScopeInstance.setVariable(mapping.getValue(), subProcessVariableScopeInstance.getVariable(mapping.getKey()));
+                } else {
+                    System.err.println("Could not find variable scope for variable " + mapping.getValue());
+                    System.err.println("when trying to complete SubProcess node " + getSubProcessNode().getName());
+                    System.err.println("Continuing without setting variable.");
+                }
+            }
             triggerCompleted();
         }
     }

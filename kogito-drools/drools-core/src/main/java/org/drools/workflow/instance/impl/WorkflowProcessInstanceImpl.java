@@ -28,6 +28,7 @@ import org.drools.common.EventSupport;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.process.core.timer.Timer;
+import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemListener;
 import org.drools.process.instance.impl.ProcessInstanceImpl;
@@ -133,7 +134,8 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
     public void setState(final int state) {
         super.setState( state );
         // TODO move most of this to ProcessInstanceImpl
-        if ( state == ProcessInstanceImpl.STATE_COMPLETED ) {
+        if ( state == ProcessInstance.STATE_COMPLETED 
+                || state == ProcessInstance.STATE_ABORTED ) {
             InternalWorkingMemory workingMemory = (InternalWorkingMemory) getWorkingMemory();
             ((EventSupport) getWorkingMemory()).getRuleFlowEventSupport()
                 .fireBeforeRuleFlowProcessCompleted( this, workingMemory );

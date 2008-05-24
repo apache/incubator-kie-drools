@@ -20,7 +20,6 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -34,10 +33,13 @@ import org.drools.common.ArrayAgendaGroupFactory;
 import org.drools.common.PriorityQueueAgendaGroupFactory;
 import org.drools.process.core.Context;
 import org.drools.process.core.ParameterDefinition;
+import org.drools.process.core.Process;
 import org.drools.process.core.WorkDefinition;
 import org.drools.process.core.datatype.DataType;
 import org.drools.process.core.impl.ParameterDefinitionImpl;
 import org.drools.process.core.impl.WorkDefinitionExtensionImpl;
+import org.drools.process.instance.ProcessInstanceFactory;
+import org.drools.process.instance.ProcessInstanceFactoryRegistry;
 import org.drools.process.instance.impl.ContextInstanceFactory;
 import org.drools.process.instance.impl.ContextInstanceFactoryRegistry;
 import org.drools.spi.ConflictResolver;
@@ -128,6 +130,7 @@ public class RuleBaseConfiguration
     private ContextInstanceFactoryRegistry processContextInstanceFactoryRegistry;
     private Map<String, WorkDefinition> workDefinitions;
 
+    private ProcessInstanceFactoryRegistry processInstanceFactoryRegistry;
     private NodeInstanceFactoryRegistry    processNodeInstanceFactoryRegistry;
 
     private transient ClassLoader          classLoader;
@@ -580,6 +583,55 @@ public class RuleBaseConfiguration
             for ( Entry<Class< ? extends Node>, NodeInstanceFactory> entry : map.entrySet() ) {
                 this.processNodeInstanceFactoryRegistry.register( entry.getKey(),
                                                                   entry.getValue() );
+            }
+        }
+    }
+
+    public ProcessInstanceFactoryRegistry getProcessInstanceFactoryRegistry() {
+        if ( this.processInstanceFactoryRegistry == null ) {
+            initProcessInstanceFactoryRegistry();
+        }
+        return this.processInstanceFactoryRegistry;
+
+    }
+
+    private void initProcessInstanceFactoryRegistry() {
+        this.processInstanceFactoryRegistry = new ProcessInstanceFactoryRegistry();
+
+        // split on each space
+        String locations[] = this.chainedProperties.getProperty( "processInstanceFactoryRegistry",
+                                                                 "" ).split( "\\s" );
+
+        int i = 0;
+        // load each SemanticModule
+        for ( String factoryLocation : locations ) {
+            // trim leading/trailing spaces and quotes
+            factoryLocation = factoryLocation.trim();
+            if ( factoryLocation.startsWith( "\"" ) ) {
+                factoryLocation = factoryLocation.substring( 1 );
+            }
+            if ( factoryLocation.endsWith( "\"" ) ) {
+                factoryLocation = factoryLocation.substring( 0,
+                                                             factoryLocation.length() - 1 );
+            }
+            if ( !factoryLocation.equals( "" ) ) {
+                loadProcessInstanceFactoryRegistry( factoryLocation );
+            }
+        }
+    }
+
+    private void loadProcessInstanceFactoryRegistry(String factoryLocation) {
+        String content = ConfFileUtils.URLContentsToString( ConfFileUtils.getURL( factoryLocation,
+                                                                                  null,
+                                                                                  RuleBaseConfiguration.class ) );
+
+        Map<Class< ? extends Process>, ProcessInstanceFactory> map = (Map<Class< ? extends Process>, ProcessInstanceFactory>) MVEL.eval( content,
+                                                                                                                             new HashMap() );
+
+        if ( map != null ) {
+            for ( Entry<Class<? extends Process>, ProcessInstanceFactory> entry : map.entrySet() ) {
+                this.processInstanceFactoryRegistry.register( entry.getKey(),
+                                                              entry.getValue() );
             }
         }
     }

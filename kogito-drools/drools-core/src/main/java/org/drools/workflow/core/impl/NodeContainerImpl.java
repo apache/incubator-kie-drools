@@ -41,11 +41,11 @@ public class NodeContainerImpl implements Serializable, NodeContainer {
     }
 
     public Node getNode(final long id) {
-        final Long idLong = new Long(id);
-        if (!this.nodes.containsKey(idLong)) {
+        Node node = this.nodes.get(id);
+        if (node == null) {
             throw new IllegalArgumentException("Unknown node id: " + id);
         }
-        return (Node) this.nodes.get(idLong);
+        return node; 
     }
 
     public void removeNode(final Node node) {
