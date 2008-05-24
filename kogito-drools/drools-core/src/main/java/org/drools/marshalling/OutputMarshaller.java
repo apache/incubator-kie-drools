@@ -34,6 +34,7 @@ import org.drools.reteoo.ExistsNode;
 import org.drools.reteoo.JoinNode;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTupleSink;
+import org.drools.reteoo.NodeTypeEnums;
 import org.drools.reteoo.NotNode;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.ReteooWorkingMemory;
@@ -84,9 +85,9 @@ public class OutputMarshaller {
         } else {
             context.writeBoolean( false );
         }
-        
+
         writeProcessInstances( context );
-        
+
         writeWorkItems( context );
     }
 
@@ -101,32 +102,32 @@ public class OutputMarshaller {
                      AgendaGroupSorter.instance );
 
         for ( AgendaGroup group : agendaGroups ) {
-            context.writeInt( PersisterEnums.AGENDA_GROUP );
+            context.writeShort( PersisterEnums.AGENDA_GROUP );
             context.writeUTF( group.getName() );
             context.writeBoolean( group.isActive() );
         }
-        context.writeInt( PersisterEnums.END );
+        context.writeShort( PersisterEnums.END );
 
         LinkedList<AgendaGroup> focusStack = agenda.getStackList();
         for ( Iterator<AgendaGroup> it = focusStack.iterator(); it.hasNext(); ) {
             AgendaGroup group = it.next();
-            context.writeInt( PersisterEnums.AGENDA_GROUP );
+            context.writeShort( PersisterEnums.AGENDA_GROUP );
             context.writeUTF( group.getName() );
         }
-        context.writeInt( PersisterEnums.END );
+        context.writeShort( PersisterEnums.END );
 
         RuleFlowGroupImpl[] ruleFlowGroups = (RuleFlowGroupImpl[]) agenda.getRuleFlowGroupsMap().values().toArray( new RuleFlowGroupImpl[agenda.getRuleFlowGroupsMap().size()] );
         Arrays.sort( ruleFlowGroups,
                      RuleFlowGroupSorter.instance );
 
         for ( RuleFlowGroupImpl group : ruleFlowGroups ) {
-            context.writeInt( PersisterEnums.RULE_FLOW_GROUP );
+            context.writeShort( PersisterEnums.RULE_FLOW_GROUP );
             //group.write( context );
             context.writeUTF( group.getName() );
             context.writeBoolean( group.isActive() );
             context.writeBoolean( group.isAutoDeactivate() );
         }
-        context.writeInt( PersisterEnums.END );
+        context.writeShort( PersisterEnums.END );
     }
 
     public static class AgendaGroupSorter
@@ -156,10 +157,10 @@ public class OutputMarshaller {
 
         WorkingMemoryAction[] queue = wm.getActionQueue().toArray( new WorkingMemoryAction[wm.getActionQueue().size()] );
         for ( int i = queue.length - 1; i >= 0; i-- ) {
-            context.writeInt( PersisterEnums.WORKING_MEMORY_ACTION );
+            context.writeShort( PersisterEnums.WORKING_MEMORY_ACTION );
             queue[i].write( context );
         }
-        context.writeInt( PersisterEnums.END );
+        context.writeShort( PersisterEnums.END );
     }
 
     public static void writeTruthMaintenanceSystem(MarshallerWriteContext context) throws IOException {
@@ -180,21 +181,21 @@ public class OutputMarshaller {
 
         // write the assert map of Equality keys
         for ( EqualityKey key : keys ) {
-            stream.writeInt( PersisterEnums.EQUALITY_KEY );
+            stream.writeShort( PersisterEnums.EQUALITY_KEY );
             stream.writeInt( key.getStatus() );
             InternalFactHandle handle = key.getFactHandle();
             stream.writeInt( handle.getId() );
             context.out.println( "EqualityKey int:" + key.getStatus() + " int:" + handle.getId() );
             if ( key.getOtherFactHandle() != null && !key.getOtherFactHandle().isEmpty() ) {
                 for ( InternalFactHandle handle2 : key.getOtherFactHandle() ) {
-                    stream.writeInt( PersisterEnums.FACT_HANDLE );
+                    stream.writeShort( PersisterEnums.FACT_HANDLE );
                     stream.writeInt( handle2.getId() );
                     context.out.println( "OtherHandle int:" + handle2.getId() );
                 }
             }
-            stream.writeInt( PersisterEnums.END );
+            stream.writeShort( PersisterEnums.END );
         }
-        stream.writeInt( PersisterEnums.END );
+        stream.writeShort( PersisterEnums.END );
     }
 
     public static class EqualityKeySorter
@@ -219,7 +220,7 @@ public class OutputMarshaller {
 
         // Write out FactHandles
         for ( InternalFactHandle handle : orderFacts( wm.getObjectStore() ) ) {
-            //stream.writeInt( PersisterEnums.FACT_HANDLE );
+            //stream.writeShort( PersisterEnums.FACT_HANDLE );
             //InternalFactHandle handle = (InternalFactHandle) it.next();
             stream.writeInt( handle.getId() );
             stream.writeLong( handle.getRecency() );
@@ -231,11 +232,11 @@ public class OutputMarshaller {
             if ( object instanceof ShadowProxy ) {
                 object = ((ShadowProxy) object).getShadowedObject();
             }
-            
+
             PlaceholderResolverStrategy strategy = resolverStrategyFactory.getStrategy( handle.getObject() );
-            
+
             stream.writeInt( strategy.getIndex() );
-            
+
             strategy.write( stream,
                             object );
 
@@ -309,14 +310,15 @@ public class OutputMarshaller {
         context.out.println( "InitialFact LeftTuples Start" );
         InternalFactHandle handle = context.wm.getInitialFactHandle();
         for ( LeftTuple leftTuple = getLeftTuple( handle.getLeftTuple() ); leftTuple != null; leftTuple = (LeftTuple) leftTuple.getLeftParentPrevious() ) {
-            stream.writeInt( PersisterEnums.LEFT_TUPLE );
+            stream.writeShort( PersisterEnums.LEFT_TUPLE );
 
             stream.writeInt( leftTuple.getLeftTupleSink().getId() );
             context.out.println( "LeftTuple int:" + leftTuple.getLeftTupleSink().getId() );
             writeLeftTuple( leftTuple,
-                            context );
+                            context,
+                            true );
         }
-        stream.writeInt( PersisterEnums.END );
+        stream.writeShort( PersisterEnums.END );
         context.out.println( "InitialFact LeftTuples End" );
     }
 
@@ -330,11 +332,11 @@ public class OutputMarshaller {
             rightTuple = tempRightTuple;
         }
         for ( ; rightTuple != null; rightTuple = (RightTuple) rightTuple.getHandlePrevious() ) {
-            stream.writeInt( PersisterEnums.RIGHT_TUPLE );
+            stream.writeShort( PersisterEnums.RIGHT_TUPLE );
             writeRightTuple( rightTuple,
                              context );
         }
-        stream.writeInt( PersisterEnums.END );
+        stream.writeShort( PersisterEnums.END );
         context.out.println( "RightTuples END" );
     }
 
@@ -344,6 +346,11 @@ public class OutputMarshaller {
         InternalWorkingMemory wm = context.wm;
         stream.writeInt( rightTuple.getRightTupleSink().getId() );
         context.out.println( "RightTuple int:" + rightTuple.getRightTupleSink().getId() );
+    }
+
+    public void xxx(RightTuple rightTuple,
+                    MarshallerWriteContext context) {
+
     }
 
     public static void writeLeftTuples(MarshallerWriteContext context) throws IOException {
@@ -356,87 +363,103 @@ public class OutputMarshaller {
             //InternalFactHandle handle = (InternalFactHandle) it.next();
 
             for ( LeftTuple leftTuple = getLeftTuple( handle.getLeftTuple() ); leftTuple != null; leftTuple = (LeftTuple) leftTuple.getLeftParentPrevious() ) {
-                stream.writeInt( PersisterEnums.LEFT_TUPLE );
+                stream.writeShort( PersisterEnums.LEFT_TUPLE );
 
                 stream.writeInt( leftTuple.getLeftTupleSink().getId() );
                 stream.writeInt( handle.getId() );
 
                 context.out.println( "LeftTuple int:" + leftTuple.getLeftTupleSink().getId() + " int:" + handle.getId() );
                 writeLeftTuple( leftTuple,
-                                context );
+                                context,
+                                true );
             }
         }
-        stream.writeInt( PersisterEnums.END );
+        stream.writeShort( PersisterEnums.END );
         context.out.println( "LeftTuples End" );
     }
 
     public static void writeLeftTuple(LeftTuple leftTuple,
-                                      MarshallerWriteContext context) throws IOException {
+                                      MarshallerWriteContext context,
+                                      boolean recurse) throws IOException {
         ObjectOutputStream stream = context.stream;
         InternalRuleBase ruleBase = context.ruleBase;
         InternalWorkingMemory wm = context.wm;
 
         LeftTupleSink sink = leftTuple.getLeftTupleSink();
 
-        if ( sink instanceof JoinNode ) {
-            context.out.println( "JoinNode" );
-
-            for ( LeftTuple childLeftTuple = getLeftTuple( leftTuple.getBetaChildren() ); childLeftTuple != null; childLeftTuple = (LeftTuple) childLeftTuple.getLeftParentPrevious() ) {
-                stream.writeInt( PersisterEnums.RIGHT_TUPLE );
-                stream.writeInt( childLeftTuple.getLeftTupleSink().getId() );
-                stream.writeInt( childLeftTuple.getRightParent().getFactHandle().getId() );
-                context.out.println( "RightTuple int:" + childLeftTuple.getLeftTupleSink().getId() + " int:" + childLeftTuple.getRightParent().getFactHandle().getId() );
-                writeLeftTuple( childLeftTuple,
-                                context );
+        switch ( sink.getType() ) {
+            case NodeTypeEnums.JoinNode : {
+                context.out.println( "JoinNode" );
+                for ( LeftTuple childLeftTuple = getLeftTuple( leftTuple.getBetaChildren() ); childLeftTuple != null; childLeftTuple = (LeftTuple) childLeftTuple.getLeftParentPrevious() ) {
+                    stream.writeShort( PersisterEnums.RIGHT_TUPLE );
+                    stream.writeInt( childLeftTuple.getLeftTupleSink().getId() );
+                    stream.writeInt( childLeftTuple.getRightParent().getFactHandle().getId() );
+                    context.out.println( "RightTuple int:" + childLeftTuple.getLeftTupleSink().getId() + " int:" + childLeftTuple.getRightParent().getFactHandle().getId() );
+                    writeLeftTuple( childLeftTuple,
+                                    context,
+                                    recurse );
+                }
+                stream.writeShort( PersisterEnums.END );
+                break;
             }
-            stream.writeInt( PersisterEnums.END );
-        } else if ( sink instanceof EvalConditionNode ) {
-            context.out.println( "EvalConditionNode" );
-            for ( LeftTuple childLeftTuple = getLeftTuple( leftTuple.getBetaChildren() ); childLeftTuple != null; childLeftTuple = (LeftTuple) childLeftTuple.getLeftParentPrevious() ) {
-                stream.writeInt( PersisterEnums.LEFT_TUPLE );
-                stream.writeInt( childLeftTuple.getLeftTupleSink().getId() );
-                writeLeftTuple( childLeftTuple,
-                                context );
-            }
-            stream.writeInt( PersisterEnums.END );
-        } else if ( sink instanceof NotNode ) {
-            if ( leftTuple.getBlocker() == null ) {
-                // is not blocked so has children
-                stream.writeInt( PersisterEnums.LEFT_TUPLE_NOT_BLOCKED );
-
-                for ( LeftTuple childLeftTuple = getLeftTuple( leftTuple.getBetaChildren() ); childLeftTuple != null; childLeftTuple = (LeftTuple) leftTuple.getLeftParentPrevious() ) {
-                    stream.writeInt( PersisterEnums.LEFT_TUPLE );
+            case NodeTypeEnums.EvalConditionNode : {
+                context.out.println( "EvalConditionNode" );
+                for ( LeftTuple childLeftTuple = getLeftTuple( leftTuple.getBetaChildren() ); childLeftTuple != null; childLeftTuple = (LeftTuple) childLeftTuple.getLeftParentPrevious() ) {
+                    stream.writeShort( PersisterEnums.LEFT_TUPLE );
                     stream.writeInt( childLeftTuple.getLeftTupleSink().getId() );
                     writeLeftTuple( childLeftTuple,
-                                    context );
+                                    context,
+                                    recurse );
                 }
-                stream.writeInt( PersisterEnums.END );
+                stream.writeShort( PersisterEnums.END );
+                break;
+            }
+            case NodeTypeEnums.NotNode : {
+                if ( leftTuple.getBlocker() == null ) {
+                    // is not blocked so has children
+                    stream.writeShort( PersisterEnums.LEFT_TUPLE_NOT_BLOCKED );
 
-            } else {
-                stream.writeInt( PersisterEnums.LEFT_TUPLE_BLOCKED );
-                stream.writeInt( leftTuple.getBlocker().getFactHandle().getId() );
-            }
-        } else if ( sink instanceof ExistsNode ) {
-            if ( leftTuple.getBlocker() == null ) {
-                // is blocked so has children
-                stream.writeInt( PersisterEnums.LEFT_TUPLE_NOT_BLOCKED );
-            } else {
-                stream.writeInt( PersisterEnums.LEFT_TUPLE_BLOCKED );
-                stream.writeInt( leftTuple.getBlocker().getFactHandle().getId() );
-                
-                for ( LeftTuple childLeftTuple = getLeftTuple( leftTuple.getBetaChildren() ); childLeftTuple != null; childLeftTuple = (LeftTuple) leftTuple.getLeftParentPrevious() ) {
-                    stream.writeInt( PersisterEnums.LEFT_TUPLE );
-                    stream.writeInt( childLeftTuple.getLeftTupleSink().getId() );
-                    writeLeftTuple( childLeftTuple,
-                                    context );
+                    for ( LeftTuple childLeftTuple = getLeftTuple( leftTuple.getBetaChildren() ); childLeftTuple != null; childLeftTuple = (LeftTuple) leftTuple.getLeftParentPrevious() ) {
+                        stream.writeShort( PersisterEnums.LEFT_TUPLE );
+                        stream.writeInt( childLeftTuple.getLeftTupleSink().getId() );
+                        writeLeftTuple( childLeftTuple,
+                                        context,
+                                        recurse );
+                    }
+                    stream.writeShort( PersisterEnums.END );
+
+                } else {
+                    stream.writeShort( PersisterEnums.LEFT_TUPLE_BLOCKED );
+                    stream.writeInt( leftTuple.getBlocker().getFactHandle().getId() );
                 }
-                stream.writeInt( PersisterEnums.END );
+                break;
             }
-        } else if ( sink instanceof RuleTerminalNode ) {
-            context.out.println( "RuleTerminalNode" );
-            int pos = context.terminalTupleMap.size();
-            context.terminalTupleMap.put( leftTuple,
-                                          pos );
+            case NodeTypeEnums.ExistsNode : {
+                if ( leftTuple.getBlocker() == null ) {
+                    // is blocked so has children
+                    stream.writeShort( PersisterEnums.LEFT_TUPLE_NOT_BLOCKED );
+                } else {
+                    stream.writeShort( PersisterEnums.LEFT_TUPLE_BLOCKED );
+                    stream.writeInt( leftTuple.getBlocker().getFactHandle().getId() );
+
+                    for ( LeftTuple childLeftTuple = getLeftTuple( leftTuple.getBetaChildren() ); childLeftTuple != null; childLeftTuple = (LeftTuple) leftTuple.getLeftParentPrevious() ) {
+                        stream.writeShort( PersisterEnums.LEFT_TUPLE );
+                        stream.writeInt( childLeftTuple.getLeftTupleSink().getId() );
+                        writeLeftTuple( childLeftTuple,
+                                        context,
+                                        recurse );
+                    }
+                    stream.writeShort( PersisterEnums.END );
+                }
+                break;
+            }
+            case NodeTypeEnums.RuleTerminalNode : {
+                context.out.println( "RuleTerminalNode" );
+                int pos = context.terminalTupleMap.size();
+                context.terminalTupleMap.put( leftTuple,
+                                              pos );
+                break;
+            }
         }
     }
 
@@ -449,28 +472,30 @@ public class OutputMarshaller {
 
     public static void writeActivations(MarshallerWriteContext context) throws IOException {
         ObjectOutputStream stream = context.stream;
-        
-        Entry<LeftTuple, Integer>[] entries = context.terminalTupleMap.entrySet().toArray( new Entry[ context.terminalTupleMap.size() ] );
-        Arrays.sort( entries, TupleSorter.instance );
-        
+
+        Entry<LeftTuple, Integer>[] entries = context.terminalTupleMap.entrySet().toArray( new Entry[context.terminalTupleMap.size()] );
+        Arrays.sort( entries,
+                     TupleSorter.instance );
+
         //Map<LeftTuple, Integer> tuples = context.terminalTupleMap;
         if ( entries.length != 0 ) {
             for ( Entry<LeftTuple, Integer> entry : entries ) {
                 LeftTuple leftTuple = entry.getKey();
-                stream.writeInt( PersisterEnums.ACTIVATION );
+                stream.writeShort( PersisterEnums.ACTIVATION );
                 writeActivation( context,
                                  leftTuple,
                                  (AgendaItem) leftTuple.getActivation(),
                                  (RuleTerminalNode) leftTuple.getLeftTupleSink() );
             }
         }
-        stream.writeInt( PersisterEnums.END );
+        stream.writeShort( PersisterEnums.END );
     }
 
     public static class TupleSorter
         implements
         Comparator<Entry<LeftTuple, Integer>> {
         public static final TupleSorter instance = new TupleSorter();
+
         public int compare(Entry<LeftTuple, Integer> e1,
                            Entry<LeftTuple, Integer> e2) {
             return e1.getValue() - e2.getValue();
@@ -514,28 +539,29 @@ public class OutputMarshaller {
         org.drools.util.LinkedList list = agendaItem.getLogicalDependencies();
         if ( list != null && !list.isEmpty() ) {
             for ( LogicalDependency node = (LogicalDependency) list.getFirst(); node != null; node = (LogicalDependency) node.getNext() ) {
-                stream.writeInt( PersisterEnums.LOGICAL_DEPENDENCY );
+                stream.writeShort( PersisterEnums.LOGICAL_DEPENDENCY );
                 stream.writeInt( ((InternalFactHandle) node.getFactHandle()).getId() );
                 context.out.println( "Logical Depenency : int " + ((InternalFactHandle) node.getFactHandle()).getId() );
             }
         }
-        stream.writeInt( PersisterEnums.END );
+        stream.writeShort( PersisterEnums.END );
     }
 
     public static void writePropagationContexts(MarshallerWriteContext context) throws IOException {
         ObjectOutputStream stream = context.stream;
 
-        Entry<LeftTuple, Integer>[] entries = context.terminalTupleMap.entrySet().toArray( new Entry[ context.terminalTupleMap.size() ] );
-        Arrays.sort( entries, TupleSorter.instance );
-        
+        Entry<LeftTuple, Integer>[] entries = context.terminalTupleMap.entrySet().toArray( new Entry[context.terminalTupleMap.size()] );
+        Arrays.sort( entries,
+                     TupleSorter.instance );
+
         //Map<LeftTuple, Integer> tuples = context.terminalTupleMap;
         if ( entries.length != 0 ) {
             Map<Long, PropagationContext> pcMap = new HashMap<Long, PropagationContext>();
-            for ( Entry<LeftTuple, Integer> entry : entries ) {    
+            for ( Entry<LeftTuple, Integer> entry : entries ) {
                 LeftTuple leftTuple = entry.getKey();
                 PropagationContext pc = leftTuple.getActivation().getPropagationContext();
                 if ( !pcMap.containsKey( pc.getPropagationNumber() ) ) {
-                    stream.writeInt( PersisterEnums.PROPAGATION_CONTEXT );
+                    stream.writeShort( PersisterEnums.PROPAGATION_CONTEXT );
                     writePropagationContext( context,
                                              pc );
                     pcMap.put( pc.getPropagationNumber(),
@@ -544,7 +570,7 @@ public class OutputMarshaller {
             }
         }
 
-        stream.writeInt( PersisterEnums.END );
+        stream.writeShort( PersisterEnums.END );
     }
 
     public static void writePropagationContext(MarshallerWriteContext context,
@@ -588,66 +614,66 @@ public class OutputMarshaller {
         ObjectOutputStream stream = context.stream;
 
         Collection<ProcessInstance> processInstances = context.wm.getProcessInstances();
-        for (ProcessInstance processInstance: processInstances) {
-            stream.writeInt( PersisterEnums.PROCESS_INSTANCE );
-            writeProcessInstance( context, (RuleFlowProcessInstance) processInstance );
+        for ( ProcessInstance processInstance : processInstances ) {
+            stream.writeShort( PersisterEnums.PROCESS_INSTANCE );
+            writeProcessInstance( context,
+                                  (RuleFlowProcessInstance) processInstance );
         }
-        stream.writeInt( PersisterEnums.END );
+        stream.writeShort( PersisterEnums.END );
     }
-    
+
     public static void writeProcessInstance(MarshallerWriteContext context,
                                             RuleFlowProcessInstance processInstance) throws IOException {
         ObjectOutputStream stream = context.stream;
-        stream.writeLong(processInstance.getId());
-        stream.writeUTF(processInstance.getProcessId());
-        stream.writeInt(processInstance.getState());
-        stream.writeLong(processInstance.getNodeInstanceCounter());
-        
-        VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
-        	processInstance.getContextInstance(VariableScope.VARIABLE_SCOPE);
+        stream.writeLong( processInstance.getId() );
+        stream.writeUTF( processInstance.getProcessId() );
+        stream.writeInt( processInstance.getState() );
+        stream.writeLong( processInstance.getNodeInstanceCounter() );
+
+        VariableScopeInstance variableScopeInstance = (VariableScopeInstance) processInstance.getContextInstance( VariableScope.VARIABLE_SCOPE );
         Map<String, Object> variables = variableScopeInstance.getVariables();
-        stream.writeInt(variables.size());
-        for (Map.Entry<String, Object> entry: variables.entrySet()) {
-        	stream.writeUTF(entry.getKey());
-        	stream.writeObject(entry.getValue());
+        stream.writeInt( variables.size() );
+        for ( Map.Entry<String, Object> entry : variables.entrySet() ) {
+            stream.writeUTF( entry.getKey() );
+            stream.writeObject( entry.getValue() );
         }
-        
-        for (NodeInstance nodeInstance: processInstance.getNodeInstances()) {
-            stream.writeInt( PersisterEnums.NODE_INSTANCE );
-            writeNodeInstance( context, nodeInstance );
+
+        for ( NodeInstance nodeInstance : processInstance.getNodeInstances() ) {
+            stream.writeShort( PersisterEnums.NODE_INSTANCE );
+            writeNodeInstance( context,
+                               nodeInstance );
         }
-        stream.writeInt( PersisterEnums.END );
+        stream.writeShort( PersisterEnums.END );
     }
-    
+
     public static void writeNodeInstance(MarshallerWriteContext context,
                                          NodeInstance nodeInstance) throws IOException {
         ObjectOutputStream stream = context.stream;
-        stream.writeLong(nodeInstance.getId());
-        stream.writeLong(nodeInstance.getNodeId());
-        if (nodeInstance instanceof RuleSetNodeInstance) {
-            stream.writeInt(PersisterEnums.RULE_SET_NODE_INSTANCE);
-        } else if (nodeInstance instanceof WorkItemNodeInstance) {
-            stream.writeInt(PersisterEnums.WORK_ITEM_NODE_INSTANCE);
-            stream.writeLong(((WorkItemNodeInstance) nodeInstance).getWorkItem().getId());
-        } else if (nodeInstance instanceof SubProcessNodeInstance) {
-            stream.writeInt(PersisterEnums.SUB_PROCESS_NODE_INSTANCE);
-            stream.writeLong(((SubProcessNodeInstance) nodeInstance).getProcessInstanceId());
-        } else if (nodeInstance instanceof MilestoneNodeInstance) {
-            stream.writeInt(PersisterEnums.MILESTONE_NODE_INSTANCE);
-        } else if (nodeInstance instanceof TimerNodeInstance) {
-            stream.writeInt(PersisterEnums.TIMER_NODE_INSTANCE);
-            stream.writeLong(((TimerNodeInstance) nodeInstance).getTimerId());
-        } else if (nodeInstance instanceof JoinInstance) {
-            stream.writeInt(PersisterEnums.JOIN_NODE_INSTANCE);
+        stream.writeLong( nodeInstance.getId() );
+        stream.writeLong( nodeInstance.getNodeId() );
+        if ( nodeInstance instanceof RuleSetNodeInstance ) {
+            stream.writeShort( PersisterEnums.RULE_SET_NODE_INSTANCE );
+        } else if ( nodeInstance instanceof WorkItemNodeInstance ) {
+            stream.writeShort( PersisterEnums.WORK_ITEM_NODE_INSTANCE );
+            stream.writeLong( ((WorkItemNodeInstance) nodeInstance).getWorkItem().getId() );
+        } else if ( nodeInstance instanceof SubProcessNodeInstance ) {
+            stream.writeShort( PersisterEnums.SUB_PROCESS_NODE_INSTANCE );
+            stream.writeLong( ((SubProcessNodeInstance) nodeInstance).getProcessInstanceId() );
+        } else if ( nodeInstance instanceof MilestoneNodeInstance ) {
+            stream.writeShort( PersisterEnums.MILESTONE_NODE_INSTANCE );
+        } else if ( nodeInstance instanceof TimerNodeInstance ) {
+            stream.writeShort( PersisterEnums.TIMER_NODE_INSTANCE );
+            stream.writeLong( ((TimerNodeInstance) nodeInstance).getTimerId() );
+        } else if ( nodeInstance instanceof JoinInstance ) {
+            stream.writeShort( PersisterEnums.JOIN_NODE_INSTANCE );
             Map<Long, Integer> triggers = ((JoinInstance) nodeInstance).getTriggers();
-            stream.writeInt(triggers.size());
-            for (Map.Entry<Long, Integer> entry: triggers.entrySet()) {
-                stream.writeLong(entry.getKey());
-                stream.writeInt(entry.getValue());
+            stream.writeInt( triggers.size() );
+            for ( Map.Entry<Long, Integer> entry : triggers.entrySet() ) {
+                stream.writeLong( entry.getKey() );
+                stream.writeInt( entry.getValue() );
             }
         } else {
-            throw new IllegalArgumentException(
-                "Unknown node instance type: " + nodeInstance);
+            throw new IllegalArgumentException( "Unknown node instance type: " + nodeInstance );
         }
     }
 
@@ -655,20 +681,21 @@ public class OutputMarshaller {
         ObjectOutputStream stream = context.stream;
 
         Set<WorkItem> workItems = context.wm.getWorkItemManager().getWorkItems();
-        for (WorkItem workItem: workItems) {
-            stream.writeInt( PersisterEnums.WORK_ITEM );
-            writeWorkItem( context, workItem );
+        for ( WorkItem workItem : workItems ) {
+            stream.writeShort( PersisterEnums.WORK_ITEM );
+            writeWorkItem( context,
+                           workItem );
         }
-        stream.writeInt( PersisterEnums.END );
+        stream.writeShort( PersisterEnums.END );
     }
-    
+
     public static void writeWorkItem(MarshallerWriteContext context,
                                      WorkItem workItem) throws IOException {
         ObjectOutputStream stream = context.stream;
-        stream.writeLong(workItem.getId());
-        stream.writeLong(workItem.getProcessInstanceId());
-        stream.writeUTF(workItem.getName());
-        stream.writeInt(workItem.getState());
+        stream.writeLong( workItem.getId() );
+        stream.writeLong( workItem.getProcessInstanceId() );
+        stream.writeUTF( workItem.getName() );
+        stream.writeInt( workItem.getState() );
     }
 
 }

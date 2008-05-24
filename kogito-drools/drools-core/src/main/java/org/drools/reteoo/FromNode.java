@@ -28,6 +28,7 @@ public class FromNode extends LeftTupleSource
      *
      */
     private static final long          serialVersionUID = 400L;
+       
 
     private DataProvider               dataProvider;
     private LeftTupleSource            tupleSource;
@@ -299,6 +300,10 @@ public class FromNode extends LeftTupleSource
     public void setPreviousLeftTupleSinkNode(final LeftTupleSinkNode previous) {
         this.previousTupleSinkNode = previous;
     }
+    
+    public short getType() {
+        return NodeTypeEnums.FromNode;
+    }   
 
     public static class FromMemory
         implements

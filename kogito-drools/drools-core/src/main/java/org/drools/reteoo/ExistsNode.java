@@ -41,8 +41,8 @@ import org.drools.util.Iterator;
  *
  */
 public class ExistsNode extends BetaNode {
-
-    private static final long serialVersionUID = 400L;
+    
+    private static final long serialVersionUID = 400L;        
 
     static int                notAssertObject  = 0;
     static int                notAssertTuple   = 0;
@@ -380,5 +380,9 @@ public class ExistsNode extends BetaNode {
 
         return "[ExistsNode - " + ((ObjectTypeNode) source).getObjectType() + "]";
     }
+    
+    public short getType() {
+        return NodeTypeEnums.ExistsNode;
+    }     
 
 }

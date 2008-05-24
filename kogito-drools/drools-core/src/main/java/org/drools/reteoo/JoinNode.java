@@ -53,12 +53,12 @@ import org.drools.util.Iterator;
 public class JoinNode extends BetaNode {
     // ------------------------------------------------------------
     // Instance methods
-    // ------------------------------------------------------------
+    // ------------------------------------------------------------    
 
     /**
      *
      */
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 400L;    
 
     public JoinNode() {
 
@@ -158,15 +158,18 @@ public class JoinNode extends BetaNode {
         this.constraints.updateFromFactHandle( memory.getContext(),
                                                workingMemory,
                                                factHandle );
+        int i = 0;
         for ( LeftTuple leftTuple = memory.getLeftTupleMemory().getFirst( rightTuple ); leftTuple != null; leftTuple = (LeftTuple) leftTuple.getNext() ) {
             if ( this.constraints.isAllowedCachedRight( memory.getContext(),
                                                         leftTuple ) ) {
+                // wm.marshaller.write( i, leftTuple )
                 this.sink.propagateAssertLeftTuple( leftTuple,
                                                     rightTuple,
                                                     context,
                                                     workingMemory,
                                                     this.tupleMemoryEnabled  );
             }
+            i++;
         }
         this.constraints.resetFactHandle( memory.getContext() );
     }
@@ -247,6 +250,10 @@ public class JoinNode extends BetaNode {
 
             this.constraints.resetTuple( memory.getContext() );
         }
+    }
+    
+    public short getType() {
+        return NodeTypeEnums.JoinNode;
     }
 
     public String toString() {

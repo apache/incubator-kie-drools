@@ -44,8 +44,8 @@ import org.drools.util.Iterator;
  *
  */
 public class NotNode extends BetaNode {
+    private static final long serialVersionUID = 400L;    
 
-    private static final long serialVersionUID = 400L;
     static int                notAssertObject  = 0;
     static int                notAssertTuple   = 0;
 
@@ -287,6 +287,10 @@ public class NotNode extends BetaNode {
                                   workingMemory );
         }
     }
+    
+    public short getType() {
+        return NodeTypeEnums.NotNode;
+    } 
 
     public String toString() {
         ObjectSource source = this.rightInput;

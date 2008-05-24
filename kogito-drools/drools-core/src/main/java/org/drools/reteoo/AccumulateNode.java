@@ -48,8 +48,8 @@ import org.drools.util.ObjectHashMap.ObjectEntry;
  * @version $Id$
  */
 public class AccumulateNode extends BetaNode {
-
-    private static final long          serialVersionUID = 400L;
+    
+    private static final long          serialVersionUID = 400L;  
 
     private boolean                    unwrapRightObject;
     private Accumulate                 accumulate;
@@ -593,6 +593,10 @@ public class AccumulateNode extends BetaNode {
         memory.behaviorContext = this.behavior.createBehaviorContext();
         return memory;
     }
+    
+    public short getType() {
+        return NodeTypeEnums.AccumulateNode;
+    } 
 
     public static class AccumulateMemory
         implements

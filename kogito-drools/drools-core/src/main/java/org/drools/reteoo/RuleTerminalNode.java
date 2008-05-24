@@ -72,6 +72,7 @@ public final class RuleTerminalNode extends BaseNode
      *
      */
     private static final long serialVersionUID = 400L;
+        
     /** The rule to invoke upon match. */
     private Rule              rule;
     /**
@@ -576,6 +577,10 @@ public final class RuleTerminalNode extends BaseNode
         final RuleTerminalNode other = (RuleTerminalNode) object;
         return this.rule.equals( other.rule );
     }
+    
+    public short getType() {
+        return NodeTypeEnums.RuleTerminalNode;
+    }    
 
     public static class TerminalNodeMemory
         implements
