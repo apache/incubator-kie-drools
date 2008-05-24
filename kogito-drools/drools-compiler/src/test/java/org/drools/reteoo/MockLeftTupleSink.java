@@ -165,4 +165,9 @@ public class MockLeftTupleSink extends LeftTupleSource
         
     }
 
+    public short getType() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
 }
