@@ -36,11 +36,11 @@ import org.drools.process.core.Process;
 
 /**
  * Collection of related <code>Rule</code>s.
- *
+ * 
  * @see Rule
- *
+ * 
  * @author <a href="mail:bob@werken.com">bob mcwhirter </a>
- *
+ * 
  * @version $Id: Package.java,v 1.1 2005/07/26 01:06:31 mproctor Exp $
  */
 public class Package
@@ -51,7 +51,7 @@ public class Package
     // ------------------------------------------------------------
 
     /**
-     *
+     * 
      */
     private static final long              serialVersionUID = 400L;
 
@@ -77,24 +77,35 @@ public class Package
 
     private Map                            ruleFlows;
 
-    //    private JavaDialectData         packageCompilationData;
+    // private JavaDialectData packageCompilationData;
     private DialectDatas                   dialectDatas;
-    
+
     private Map<String, TypeDeclaration>   typeDeclarations;
 
-    /** This is to indicate the the package has no errors during the compilation/building phase */
+    /**
+     * This is to indicate the the package has no errors during the
+     * compilation/building phase
+     */
     private boolean                        valid            = true;
 
-    /** This will keep a summary error message as to why this package is not valid */
+    /**
+     * This will keep a summary error message as to why this package is not
+     * valid
+     */
     private String                         errorSummary;
-    
+
+    /**
+     * A class loader for package scoped artifacts
+     */
+    private transient MapBackedClassLoader packageScopeClassLoader;
+
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
 
     /**
-     * Default constructor - for Externalizable. This should never be used by a user, as it
-     * will result in an invalid state for the instance.
+     * Default constructor - for Externalizable. This should never be used by a
+     * user, as it will result in an invalid state for the instance.
      */
     public Package() {
 
@@ -102,7 +113,7 @@ public class Package
 
     /**
      * Construct.
-     *
+     * 
      * @param name
      *            The name of this <code>Package</code>.
      */
@@ -113,7 +124,7 @@ public class Package
 
     /**
      * Construct.
-     *
+     * 
      * @param name
      *            The name of this <code>Package</code>.
      */
@@ -129,35 +140,78 @@ public class Package
         this.factTemplates = Collections.EMPTY_MAP;
         this.functions = Collections.EMPTY_MAP;
 
-        // This classloader test should only be here for unit testing, too much legacy api to want to change by hand at the moment
+        // This classloader test should only be here for unit testing, too much
+        // legacy api to want to change by hand at the moment
         if ( parentClassLoader == null ) {
             parentClassLoader = Thread.currentThread().getContextClassLoader();
             if ( parentClassLoader == null ) {
                 parentClassLoader = getClass().getClassLoader();
             }
         }
-        //this.packageCompilationData = new JavaDialectData( parentClassLoader );
-        this.dialectDatas = new DialectDatas( parentClassLoader );
+        this.packageScopeClassLoader = new MapBackedClassLoader( parentClassLoader );
+        this.dialectDatas = new DialectDatas( this.packageScopeClassLoader );
     }
+    
+    /**
+     * Construct.
+     * 
+     * @param name
+     *            The name of this <code>Package</code>.
+     */
+    public Package(final String name,
+                   final MapBackedClassLoader packageClassLoader ) {
+        this.name = name;
+        this.imports = new HashMap<String, ImportDeclaration>();
+        this.typeDeclarations = new HashMap<String, TypeDeclaration>();
+        this.staticImports = Collections.EMPTY_SET;
+        this.rules = new LinkedHashMap();
+        this.ruleFlows = Collections.EMPTY_MAP;
+        this.globals = Collections.EMPTY_MAP;
+        this.factTemplates = Collections.EMPTY_MAP;
+        this.functions = Collections.EMPTY_MAP;
+
+        if( packageClassLoader == null ) {
+            ClassLoader parentClassLoader = null;
+            // This classloader test should only be here for unit testing, too much
+            // legacy api to want to change by hand at the moment
+            if ( parentClassLoader == null ) {
+                parentClassLoader = Thread.currentThread().getContextClassLoader();
+                if ( parentClassLoader == null ) {
+                    parentClassLoader = getClass().getClassLoader();
+                }
+            }
+            this.packageScopeClassLoader = new MapBackedClassLoader( parentClassLoader );
+        } else {
+            this.packageScopeClassLoader = packageClassLoader;
+        }
+        this.dialectDatas = new DialectDatas( this.packageScopeClassLoader );
+    }
+    
 
     /**
-     * Handles the write serialization of the Package. Patterns in Rules may reference generated data which cannot be serialized by default methods.
-     * The Package uses PackageCompilationData to hold a reference to the generated bytecode. The generated bytecode must be restored before any Rules.
-     * @param stream out the stream to write the object to; should be an instance of DroolsObjectOutputStream or OutputStream
-     *
+     * Handles the write serialization of the Package. Patterns in Rules may
+     * reference generated data which cannot be serialized by default methods.
+     * The Package uses PackageCompilationData to hold a reference to the
+     * generated bytecode. The generated bytecode must be restored before any
+     * Rules.
+     * 
+     * @param stream
+     *            out the stream to write the object to; should be an instance
+     *            of DroolsObjectOutputStream or OutputStream
+     * 
      */
     public void writeExternal(ObjectOutput stream) throws IOException {
-        boolean                 isDroolsStream    = stream instanceof DroolsObjectOutputStream;
-        ByteArrayOutputStream   bytes = null;
-        ObjectOutput    out;
+        boolean isDroolsStream = stream instanceof DroolsObjectOutputStream;
+        ByteArrayOutputStream bytes = null;
+        ObjectOutput out;
 
-        if (isDroolsStream) {
+        if ( isDroolsStream ) {
             out = stream;
-        }
-        else {
+        } else {
             bytes = new ByteArrayOutputStream();
-            out = new DroolsObjectOutputStream(bytes);
+            out = new DroolsObjectOutputStream( bytes );
         }
+        out.writeObject( this.packageScopeClassLoader.getStore() );
         out.writeObject( this.dialectDatas );
         out.writeObject( this.typeDeclarations );
         out.writeObject( this.name );
@@ -170,30 +224,42 @@ public class Package
         out.writeBoolean( this.valid );
         out.writeObject( this.rules );
         // writing the whole stream as a byte array
-        if (!isDroolsStream) {
+        if ( !isDroolsStream ) {
             bytes.flush();
             bytes.close();
-            stream.writeObject(bytes.toByteArray());
+            stream.writeObject( bytes.toByteArray() );
         }
     }
 
     /**
-     * Handles the read serialization of the Package. Patterns in Rules may reference generated data which cannot be serialized by default methods.
-     * The Package uses PackageCompilationData to hold a reference to the generated bytecode; which must be restored before any Rules.
-     * A custom ObjectInputStream, able to resolve classes against the bytecode in the PackageCompilationData, is used to restore the Rules.
-     * @param stream, the stream to read data from in order to restore the object; should be an instance of
-     * DroolsObjectInputStream or InputStream
-     *
+     * Handles the read serialization of the Package. Patterns in Rules may
+     * reference generated data which cannot be serialized by default methods.
+     * The Package uses PackageCompilationData to hold a reference to the
+     * generated bytecode; which must be restored before any Rules. A custom
+     * ObjectInputStream, able to resolve classes against the bytecode in the
+     * PackageCompilationData, is used to restore the Rules.
+     * 
+     * @param stream,
+     *            the stream to read data from in order to restore the object;
+     *            should be an instance of DroolsObjectInputStream or
+     *            InputStream
+     * 
      */
     public void readExternal(ObjectInput stream) throws IOException,
-                                                      ClassNotFoundException {
-        boolean     isDroolsStream    = stream instanceof DroolsObjectInputStream;
-        ObjectInput in   = isDroolsStream
-                           ? stream
-                           : new DroolsObjectInputStream(new ByteArrayInputStream((byte[])stream.readObject()));
+                                                ClassNotFoundException {
+        boolean isDroolsStream = stream instanceof DroolsObjectInputStream;
+        DroolsObjectInputStream in = isDroolsStream ? (DroolsObjectInputStream) stream : new DroolsObjectInputStream( new ByteArrayInputStream( (byte[]) stream.readObject() ) );
 
-        this.dialectDatas   = (DialectDatas)in.readObject();
-        this.typeDeclarations   = (Map)in.readObject();
+        // creating package scoped classloader
+        Map store = (Map) in.readObject();
+        this.packageScopeClassLoader = new MapBackedClassLoader( in.getClassLoader(),
+                                                                 store );
+
+        // setting parent classloader for dialect datas
+        in.setClassLoader( this.packageScopeClassLoader );
+        this.dialectDatas = (DialectDatas) in.readObject();
+
+        this.typeDeclarations = (Map) in.readObject();
         this.name = (String) in.readObject();
         this.imports = (Map<String, ImportDeclaration>) in.readObject();
         this.staticImports = (Set) in.readObject();
@@ -204,7 +270,10 @@ public class Package
         this.valid = in.readBoolean();
         this.rules = (Map) in.readObject();
 
-        if (!isDroolsStream) {
+        // restoring original parent classloader
+        in.setClassLoader( this.packageScopeClassLoader.getParent() );
+
+        if ( !isDroolsStream ) {
             in.close();
         }
     }
@@ -215,7 +284,7 @@ public class Package
 
     /**
      * Retrieve the name of this <code>Package</code>.
-     *
+     * 
      * @return The name of this <code>Package</code>.
      */
     public String getName() {
@@ -238,20 +307,21 @@ public class Package
     public Map<String, ImportDeclaration> getImports() {
         return this.imports;
     }
-    
-    public void addTypeDeclaration( final TypeDeclaration typeDecl ) {
-        this.typeDeclarations.put( typeDecl.getTypeName(), typeDecl );
+
+    public void addTypeDeclaration(final TypeDeclaration typeDecl) {
+        this.typeDeclarations.put( typeDecl.getTypeName(),
+                                   typeDecl );
     }
-    
-    public void removeTypeDeclaration( final String type ) {
+
+    public void removeTypeDeclaration(final String type) {
         this.typeDeclarations.remove( type );
     }
-    
+
     public Map<String, TypeDeclaration> getTypeDeclarations() {
         return this.typeDeclarations;
     }
-    
-    public TypeDeclaration getTypeDeclaration( String type ) {
+
+    public TypeDeclaration getTypeDeclaration(String type) {
         return this.typeDeclarations.get( type );
     }
 
@@ -269,7 +339,7 @@ public class Package
 
         this.functions.put( function.getName(),
                             function );
-        dialectDatas.getDialectData(function.getDialect()).setDirty(true);
+        dialectDatas.getDialectData( function.getDialect() ).setDirty( true );
     }
 
     public Map<String, Function> getFunctions() {
@@ -323,10 +393,10 @@ public class Package
 
     /**
      * Add a <code>Rule</code> to this <code>Package</code>.
-     *
+     * 
      * @param rule
      *            The rule to add.
-     *
+     * 
      * @throws DuplicateRuleNameException
      *             If the <code>Rule</code> attempting to be added has the
      *             same name as another previously added <code>Rule</code>.
@@ -353,8 +423,8 @@ public class Package
     }
 
     /**
-     * Get the rule flows for this package. The key is the ruleflow id.
-     * It will be Collections.EMPTY_MAP if none have been added.
+     * Get the rule flows for this package. The key is the ruleflow id. It will
+     * be Collections.EMPTY_MAP if none have been added.
      */
     public Map getRuleFlows() {
         return this.ruleFlows;
@@ -374,54 +444,61 @@ public class Package
         this.rules.remove( rule.getName() );
         this.dialectDatas.removeRule( this,
                                       rule );
-        //        final String consequenceName = rule.getConsequence().getClass().getName();
+        // final String consequenceName =
+        // rule.getConsequence().getClass().getName();
         //
-        //        Object object = this.dialectData.getDialectData( rule.getDialect() );
+        // Object object = this.dialectData.getDialectData( rule.getDialect() );
         //
-        //        // check for compiled code and remove if present.
-        //        if ( this.packageCompilationData.remove( consequenceName ) ) {
-        //            removeClasses( rule.getLhs() );
+        // // check for compiled code and remove if present.
+        // if ( this.packageCompilationData.remove( consequenceName ) ) {
+        // removeClasses( rule.getLhs() );
         //
-        //            // Now remove the rule class - the name is a subset of the consequence name
-        //            this.packageCompilationData.remove( consequenceName.substring( 0,
-        //                                                                           consequenceName.indexOf( "ConsequenceInvoker" ) ) );
-        //        }
-        //        return this.packageCompilationData;
+        // // Now remove the rule class - the name is a subset of the
+        // consequence name
+        // this.packageCompilationData.remove( consequenceName.substring( 0,
+        // consequenceName.indexOf( "ConsequenceInvoker" ) ) );
+        // }
+        // return this.packageCompilationData;
     }
 
-    //    private void removeClasses(final ConditionalElement ce) {
-    //        if ( ce instanceof GroupElement ) {
-    //            final GroupElement group = (GroupElement) ce;
-    //            for ( final Iterator it = group.getChildren().iterator(); it.hasNext(); ) {
-    //                final Object object = it.next();
-    //                if ( object instanceof ConditionalElement ) {
-    //                    removeClasses( (ConditionalElement) object );
-    //                } else if ( object instanceof Pattern ) {
-    //                    removeClasses( (Pattern) object );
-    //                }
-    //            }
-    //        } else if ( ce instanceof EvalCondition ) {
-    //            this.packageCompilationData.remove( ((EvalCondition) ce).getEvalExpression().getClass().getName() );
-    //        }
-    //    }
+    // private void removeClasses(final ConditionalElement ce) {
+    // if ( ce instanceof GroupElement ) {
+    // final GroupElement group = (GroupElement) ce;
+    // for ( final Iterator it = group.getChildren().iterator(); it.hasNext(); )
+    // {
+    // final Object object = it.next();
+    // if ( object instanceof ConditionalElement ) {
+    // removeClasses( (ConditionalElement) object );
+    // } else if ( object instanceof Pattern ) {
+    // removeClasses( (Pattern) object );
+    // }
+    // }
+    // } else if ( ce instanceof EvalCondition ) {
+    // this.packageCompilationData.remove( ((EvalCondition)
+    // ce).getEvalExpression().getClass().getName() );
+    // }
+    // }
     //
-    //    private void removeClasses(final Pattern pattern) {
-    //        for ( final Iterator it = pattern.getConstraints().iterator(); it.hasNext(); ) {
-    //            final Object object = it.next();
-    //            if ( object instanceof PredicateConstraint ) {
-    //                this.packageCompilationData.remove( ((PredicateConstraint) object).getPredicateExpression().getClass().getName() );
-    //            } else if ( object instanceof ReturnValueConstraint ) {
-    //                this.packageCompilationData.remove( ((ReturnValueConstraint) object).getExpression().getClass().getName() );
-    //            }
-    //        }
-    //    }
+    // private void removeClasses(final Pattern pattern) {
+    // for ( final Iterator it = pattern.getConstraints().iterator();
+    // it.hasNext(); ) {
+    // final Object object = it.next();
+    // if ( object instanceof PredicateConstraint ) {
+    // this.packageCompilationData.remove( ((PredicateConstraint)
+    // object).getPredicateExpression().getClass().getName() );
+    // } else if ( object instanceof ReturnValueConstraint ) {
+    // this.packageCompilationData.remove( ((ReturnValueConstraint)
+    // object).getExpression().getClass().getName() );
+    // }
+    // }
+    // }
 
     /**
      * Retrieve a <code>Rule</code> by name.
-     *
+     * 
      * @param name
      *            The name of the <code>Rule</code> to retrieve.
-     *
+     * 
      * @return The named <code>Rule</code>, or <code>null</code> if not
      *         such <code>Rule</code> has been added to this
      *         <code>Package</code>.
@@ -432,16 +509,16 @@ public class Package
 
     /**
      * Retrieve all <code>Rules</code> in this <code>Package</code>.
-     *
+     * 
      * @return An array of all <code>Rules</code> in this <code>Package</code>.
      */
     public Rule[] getRules() {
         return (Rule[]) this.rules.values().toArray( new Rule[this.rules.size()] );
     }
 
-    //    public JavaDialectData getPackageCompilationData() {
-    //        return this.packageCompilationData;
-    //    }
+    // public JavaDialectData getPackageCompilationData() {
+    // return this.packageCompilationData;
+    // }
 
     public String toString() {
         return "[Package name=" + this.name + "]";
@@ -494,6 +571,7 @@ public class Package
 
     /**
      * Returns true if clazz is imported as an Event class in this package
+     * 
      * @param clazz
      * @return true if clazz is imported as an Event class in this package
      */
@@ -503,8 +581,8 @@ public class Package
         }
 
         // check if clazz is resolved by any of the type declarations
-        for( TypeDeclaration type : this.typeDeclarations.values() ) {
-            if( type.matches( clazz ) && type.getRole() == TypeDeclaration.Role.EVENT ) {
+        for ( TypeDeclaration type : this.typeDeclarations.values() ) {
+            if ( type.matches( clazz ) && type.getRole() == TypeDeclaration.Role.EVENT ) {
                 return true;
             }
         }
@@ -525,12 +603,17 @@ public class Package
     }
 
     public FactType getFactType(final String typeName) {
-        if( this.name != null && ! typeName.startsWith( this.name ) ) {
+        if ( this.name != null && !typeName.startsWith( this.name ) ) {
             return null;
         }
-        // in case the package name is != null, remove the package name from the beginning of the type name 
-        String key = this.name == null ? typeName : typeName.substring( this.name.length()+1 );
-        TypeDeclaration decl = this.typeDeclarations.get( key ); 
+        // in case the package name is != null, remove the package name from the
+        // beginning of the type name
+        String key = this.name == null ? typeName : typeName.substring( this.name.length() + 1 );
+        TypeDeclaration decl = this.typeDeclarations.get( key );
         return decl != null ? decl.getTypeClassDef() : null;
+    }
+
+    public MapBackedClassLoader getPackageScopeClassLoader() {
+        return packageScopeClassLoader;
     }
 }

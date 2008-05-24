@@ -320,7 +320,7 @@ public class JavaDialectData
                      final Object invoker) throws ClassNotFoundException,
                                           InstantiationException,
                                           IllegalAccessException {
-        final Class clazz = this.classLoader.findClass( className );
+        final Class clazz = ((CompositePackageClassLoader)this.datas.getClassLoader()).findClass( className );
 
         if (clazz != null) {
             if ( invoker instanceof ReturnValueRestriction ) {

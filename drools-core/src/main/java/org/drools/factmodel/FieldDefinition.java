@@ -16,6 +16,9 @@ package org.drools.factmodel;
  * limitations under the License.
  */
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.lang.reflect.InvocationTargetException;
 
 import org.drools.base.ClassFieldAccessor;
@@ -26,13 +29,18 @@ import org.drools.rule.FactField;
  *
  * @author etirelli
  */
-public class FieldDefinition implements FactField {
-    private String             name         = null;
-    private String             type         = null;
-    private boolean            key          = false;
+public class FieldDefinition
+    implements
+    FactField {
+    private String             name     = null;
+    private String             type     = null;
+    private boolean            key      = false;
 
-    private ClassFieldAccessor accessor     = null;
+    private ClassFieldAccessor accessor = null;
 
+    public FieldDefinition() {
+    }
+    
     /**
      * Default constructor
      * 
@@ -58,6 +66,21 @@ public class FieldDefinition implements FactField {
         this.name = name;
         this.type = type;
         this.key = key;
+    }
+
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        this.name = (String) in.readObject();
+        this.type = (String) in.readObject();
+        this.key = in.readBoolean();
+        this.accessor = (ClassFieldAccessor) in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject( this.name );
+        out.writeObject( this.type );
+        out.writeBoolean( this.key );
+        out.writeObject( this.accessor );
     }
 
     /**

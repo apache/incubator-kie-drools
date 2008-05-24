@@ -457,11 +457,12 @@ abstract public class AbstractRuleBase
 
             if ( pkg == null ) {
                 pkg = new Package( newPkg.getName(),
-                                   newPkg.getDialectDatas().getParentClassLoader() );
+                                   newPkg.getPackageScopeClassLoader() );
                 pkgs.put( pkg.getName(),
                           pkg );
                 this.packageClassLoader.addClassLoader( pkg.getDialectDatas().getClassLoader() );
             } else {
+                pkg.getPackageScopeClassLoader().getStore().putAll( newPkg.getPackageScopeClassLoader().getStore() );
                 this.packageClassLoader.addClassLoader( newPkg.getDialectDatas().getClassLoader() );
             }
 

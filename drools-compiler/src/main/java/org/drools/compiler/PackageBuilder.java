@@ -55,10 +55,7 @@ import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.TypeFieldDescr;
 import org.drools.process.core.Process;
-import org.drools.rule.CompositePackageClassLoader;
 import org.drools.rule.ImportDeclaration;
-import org.drools.rule.JavaDialectData;
-import org.drools.rule.MapBackedClassLoader;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.rule.TypeDeclaration;
@@ -97,8 +94,6 @@ public class PackageBuilder {
     private Dialect                     dialect;
 
     private DialectRegistry             dialectRegistry;
-
-	private MapBackedClassLoader generatedBeanClassLoader;
 
     /**
      * Use this when package is starting from scratch.
@@ -555,12 +550,7 @@ public class PackageBuilder {
     		}
 
 	    	byte[] d = cb.buildClass(def);
-	    	if (this.generatedBeanClassLoader == null) {
-                CompositePackageClassLoader ccl = (CompositePackageClassLoader) this.pkg.getDialectDatas().getClassLoader();
-	    		this.generatedBeanClassLoader = new MapBackedClassLoader(this.configuration.getClassLoader());
-	    		ccl.addClassLoader(this.generatedBeanClassLoader);
-	    	}
-	    	this.generatedBeanClassLoader.addClass( fullName, d);
+	    	this.pkg.getPackageScopeClassLoader().addClass( fullName, d);
 	    	type.setTypeClassDef( def );
     	} catch (Exception e) {
     	    e.printStackTrace();

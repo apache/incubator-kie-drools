@@ -111,7 +111,7 @@ public class MapBackedClassLoader extends ClassLoader
     public InputStream getResourceAsStream(final String name) {
         byte[] bytes = null;
         synchronized ( this.store ) {
-            bytes = this.store.get( name );
+            bytes = this.store.get( convertResourcePathToClassName( name ) );
         }
 
         if ( bytes != null ) {
