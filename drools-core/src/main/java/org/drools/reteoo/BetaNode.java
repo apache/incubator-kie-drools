@@ -332,7 +332,9 @@ public abstract class BetaNode extends LeftTupleSource
      * Creates a BetaMemory for the BetaNode's memory.
      */
     public Object createMemory(final RuleBaseConfiguration config) {
-        return this.constraints.createBetaMemory( config );
+        BetaMemory memory = this.constraints.createBetaMemory( config );
+        memory.setBehaviorContext( this.behavior.createBehaviorContext() );
+        return memory;
     }
 
     /**

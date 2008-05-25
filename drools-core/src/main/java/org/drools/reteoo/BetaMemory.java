@@ -8,7 +8,9 @@ import java.io.ObjectOutput;
 import org.drools.rule.ContextEntry;
 import org.drools.util.ObjectHashMap;
 
-public class BetaMemory {
+public class BetaMemory
+    implements
+    Externalizable {
 
     private static final long serialVersionUID = 400L;
 
@@ -16,6 +18,7 @@ public class BetaMemory {
     private RightTupleMemory  rightTupleMemory;
     private ObjectHashMap     createdHandles;
     private ContextEntry[]    context;
+    private Object            behaviorContext;
 
     public BetaMemory() {
     }
@@ -28,6 +31,23 @@ public class BetaMemory {
         this.context = context;
     }
 
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        leftTupleMemory = (LeftTupleMemory) in.readObject();
+        rightTupleMemory = (RightTupleMemory) in.readObject();
+        createdHandles = (ObjectHashMap) in.readObject();
+        context = (ContextEntry[]) in.readObject();
+        behaviorContext = (Object) in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject( leftTupleMemory );
+        out.writeObject( rightTupleMemory );
+        out.writeObject( createdHandles );
+        out.writeObject( context );
+        out.writeObject( behaviorContext );
+    }
+
     public RightTupleMemory getRightTupleMemory() {
         return this.rightTupleMemory;
     }
@@ -35,9 +55,9 @@ public class BetaMemory {
     public LeftTupleMemory getLeftTupleMemory() {
         return this.leftTupleMemory;
     }
-    
+
     public ObjectHashMap getCreatedHandles() {
-        if( this.createdHandles == null ) {
+        if ( this.createdHandles == null ) {
             this.createdHandles = new ObjectHashMap();
         }
         return this.createdHandles;
@@ -48,5 +68,13 @@ public class BetaMemory {
      */
     public ContextEntry[] getContext() {
         return context;
+    }
+
+    public Object getBehaviorContext() {
+        return behaviorContext;
+    }
+
+    public void setBehaviorContext(Object behaviorContext) {
+        this.behaviorContext = behaviorContext;
     }
 }

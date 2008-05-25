@@ -16,6 +16,7 @@
 
 package org.drools.reteoo;
 
+import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -24,7 +25,6 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.drools.RuleBaseConfiguration;
-import org.drools.common.BaseNode;
 import org.drools.common.BetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
@@ -231,6 +231,14 @@ public class CollectNode extends BetaNode
         final RightTuple rightTuple = new RightTuple( factHandle,
                                                       this );
 
+        if ( !behavior.assertRightTuple( memory.betaMemory.getBehaviorContext(),
+                                         rightTuple,
+                                         workingMemory ) ) {
+            // destroy right tuple
+            rightTuple.unlinkFromRightParent();
+            return;
+        }
+
         memory.betaMemory.getRightTupleMemory().add( rightTuple );
 
         if ( !this.tupleMemoryEnabled ) {
@@ -272,6 +280,7 @@ public class CollectNode extends BetaNode
                                   final InternalWorkingMemory workingMemory) {
 
         final CollectMemory memory = (CollectMemory) workingMemory.getNodeMemory( this );
+        behavior.retractRightTuple( memory.betaMemory.getBehaviorContext(), rightTuple, workingMemory );
         memory.betaMemory.getRightTupleMemory().remove( rightTuple );
 
         for ( LeftTuple leftTuple = rightTuple.getBetaChildren(); leftTuple != null; ) {
@@ -502,6 +511,7 @@ public class CollectNode extends BetaNode
         for ( int i = 0; i < this.resultConstraints.length; i++ ) {
             memory.alphaContexts[i] = this.resultConstraints[i].createContextEntry();
         }
+        memory.betaMemory.setBehaviorContext( this.behavior.createBehaviorContext() );
         return memory;
     }
     
@@ -511,11 +521,24 @@ public class CollectNode extends BetaNode
 
     public static class CollectMemory
         implements
-        Serializable {
+        Externalizable {
         private static final long serialVersionUID = 400L;
         public BetaMemory         betaMemory;
         public ContextEntry[]     resultsContext;
         public ContextEntry[]     alphaContexts;
+
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
+            betaMemory = (BetaMemory) in.readObject();
+            resultsContext = (ContextEntry[]) in.readObject();
+            alphaContexts = (ContextEntry[]) in.readObject();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject( betaMemory );
+            out.writeObject( resultsContext );
+            out.writeObject( alphaContexts );
+        }
     }
 
     private static class CollectContext

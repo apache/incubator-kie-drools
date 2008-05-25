@@ -48,8 +48,8 @@ import org.drools.util.ObjectHashMap.ObjectEntry;
  * @version $Id$
  */
 public class AccumulateNode extends BetaNode {
-    
-    private static final long          serialVersionUID = 400L;  
+
+    private static final long          serialVersionUID = 400L;
 
     private boolean                    unwrapRightObject;
     private Accumulate                 accumulate;
@@ -247,7 +247,7 @@ public class AccumulateNode extends BetaNode {
 
         final RightTuple rightTuple = new RightTuple( factHandle,
                                                       this );
-        if ( !behavior.assertRightTuple( memory.behaviorContext,
+        if ( !behavior.assertRightTuple( memory.betaMemory.getBehaviorContext(),
                                          rightTuple,
                                          workingMemory ) ) {
             // destroy right tuple
@@ -304,8 +304,10 @@ public class AccumulateNode extends BetaNode {
                                   final PropagationContext context,
                                   final InternalWorkingMemory workingMemory) {
         final AccumulateMemory memory = (AccumulateMemory) workingMemory.getNodeMemory( this );
-        
-        behavior.retractRightTuple( memory.behaviorContext, rightTuple, workingMemory );
+
+        behavior.retractRightTuple( memory.betaMemory.getBehaviorContext(),
+                                    rightTuple,
+                                    workingMemory );
         memory.betaMemory.getRightTupleMemory().remove( rightTuple );
 
         for ( LeftTuple childTuple = rightTuple.getBetaChildren(); childTuple != null; ) {
@@ -535,15 +537,15 @@ public class AccumulateNode extends BetaNode {
             }
         }
     }
-    
+
     protected void doRemove(final InternalWorkingMemory workingMemory,
                             final AccumulateMemory memory) {
-          Iterator it = memory.betaMemory.getCreatedHandles().iterator();
-          for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
-              AccumulateContext ctx = ( AccumulateContext ) entry.getValue();
-              workingMemory.getFactHandleFactory().destroyFactHandle( ctx.result.getFactHandle() );              
-          }    
-    }       
+        Iterator it = memory.betaMemory.getCreatedHandles().iterator();
+        for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
+            AccumulateContext ctx = (AccumulateContext) entry.getValue();
+            workingMemory.getFactHandleFactory().destroyFactHandle( ctx.result.getFactHandle() );
+        }
+    }
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.BaseNode#hashCode()
@@ -590,13 +592,13 @@ public class AccumulateNode extends BetaNode {
         for ( int i = 0; i < this.resultConstraints.length; i++ ) {
             memory.alphaContexts[i] = this.resultConstraints[i].createContextEntry();
         }
-        memory.behaviorContext = this.behavior.createBehaviorContext();
+        memory.betaMemory.setBehaviorContext( this.behavior.createBehaviorContext() );
         return memory;
     }
-    
+
     public short getType() {
         return NodeTypeEnums.AccumulateNode;
-    } 
+    }
 
     public static class AccumulateMemory
         implements
@@ -607,7 +609,6 @@ public class AccumulateNode extends BetaNode {
         public BetaMemory         betaMemory;
         public ContextEntry[]     resultsContext;
         public ContextEntry[]     alphaContexts;
-        public Object             behaviorContext;
 
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
@@ -615,7 +616,6 @@ public class AccumulateNode extends BetaNode {
             betaMemory = (BetaMemory) in.readObject();
             resultsContext = (ContextEntry[]) in.readObject();
             alphaContexts = (ContextEntry[]) in.readObject();
-            behaviorContext = in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
@@ -623,7 +623,6 @@ public class AccumulateNode extends BetaNode {
             out.writeObject( betaMemory );
             out.writeObject( resultsContext );
             out.writeObject( alphaContexts );
-            out.writeObject( behaviorContext );
         }
 
     }
