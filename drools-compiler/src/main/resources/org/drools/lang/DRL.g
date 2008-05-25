@@ -859,7 +859,7 @@ pattern_source returns [BaseDescr d]
 	}
 	:	
 		u=lhs_pattern { $d = $u.d; } 
-		(       WITH 
+		(       OVER 
 		(WINDOW COLON type=identifier param=paren_chunk
 		        {
 		                SlidingWindowDescr window = new SlidingWindowDescr( $type.text, getString( $param.text ).trim() );
@@ -1931,7 +1931,7 @@ THEN	:    	'then';
 
 END     :	'end';
 
-WITH	:	'with';
+OVER	:	'over';
 
 WINDOW	:	'window';
 

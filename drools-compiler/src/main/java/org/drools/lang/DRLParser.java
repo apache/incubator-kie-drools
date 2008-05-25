@@ -1,73 +1,23 @@
-// $ANTLR 3.0.1 /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g 2008-04-28 17:25:36
+// $ANTLR 3.0.1 /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g 2008-05-25 14:31:55
 
 	package org.drools.lang;
+	import java.util.List;
 	import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+	import java.util.Iterator;
+	import java.util.HashMap;	
+	import java.util.StringTokenizer;
+	import org.drools.lang.descr.*;
 
-import org.antlr.runtime.BaseRecognizer;
-import org.antlr.runtime.BitSet;
-import org.antlr.runtime.CommonToken;
-import org.antlr.runtime.DFA;
-import org.antlr.runtime.EarlyExitException;
-import org.antlr.runtime.FailedPredicateException;
-import org.antlr.runtime.IntStream;
-import org.antlr.runtime.MismatchedNotSetException;
-import org.antlr.runtime.MismatchedSetException;
-import org.antlr.runtime.MismatchedTokenException;
-import org.antlr.runtime.MismatchedTreeNodeException;
-import org.antlr.runtime.NoViableAltException;
-import org.antlr.runtime.Parser;
-import org.antlr.runtime.ParserRuleReturnScope;
-import org.antlr.runtime.RecognitionException;
-import org.antlr.runtime.Token;
-import org.antlr.runtime.TokenStream;
-import org.drools.lang.descr.AccessorDescr;
-import org.drools.lang.descr.AccumulateDescr;
-import org.drools.lang.descr.AndDescr;
-import org.drools.lang.descr.AttributeDescr;
-import org.drools.lang.descr.BaseDescr;
-import org.drools.lang.descr.CollectDescr;
-import org.drools.lang.descr.ConditionalElementDescr;
-import org.drools.lang.descr.DeclarativeInvokerDescr;
-import org.drools.lang.descr.DescrFactory;
-import org.drools.lang.descr.EntryPointDescr;
-import org.drools.lang.descr.EvalDescr;
-import org.drools.lang.descr.ExistsDescr;
-import org.drools.lang.descr.FactTemplateDescr;
-import org.drools.lang.descr.FieldAccessDescr;
-import org.drools.lang.descr.FieldBindingDescr;
-import org.drools.lang.descr.FieldConstraintDescr;
-import org.drools.lang.descr.FieldTemplateDescr;
-import org.drools.lang.descr.ForallDescr;
-import org.drools.lang.descr.FromDescr;
-import org.drools.lang.descr.FunctionCallDescr;
-import org.drools.lang.descr.FunctionDescr;
-import org.drools.lang.descr.FunctionImportDescr;
-import org.drools.lang.descr.GlobalDescr;
-import org.drools.lang.descr.ImportDescr;
-import org.drools.lang.descr.LiteralRestrictionDescr;
-import org.drools.lang.descr.MethodAccessDescr;
-import org.drools.lang.descr.NotDescr;
-import org.drools.lang.descr.OrDescr;
-import org.drools.lang.descr.PackageDescr;
-import org.drools.lang.descr.PatternDescr;
-import org.drools.lang.descr.PatternSourceDescr;
-import org.drools.lang.descr.PredicateDescr;
-import org.drools.lang.descr.QualifiedIdentifierRestrictionDescr;
-import org.drools.lang.descr.QueryDescr;
-import org.drools.lang.descr.RestrictionConnectiveDescr;
-import org.drools.lang.descr.RestrictionDescr;
-import org.drools.lang.descr.ReturnValueRestrictionDescr;
-import org.drools.lang.descr.RuleDescr;
-import org.drools.lang.descr.SlidingWindowDescr;
-import org.drools.lang.descr.TypeDeclarationDescr;
-import org.drools.lang.descr.TypeFieldDescr;
-import org.drools.lang.descr.VariableRestrictionDescr;
+
+import org.antlr.runtime.*;
+import java.util.Stack;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 public class DRLParser extends Parser {
     public static final String[] tokenNames = new String[] {
-        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "PACKAGE", "IMPORT", "FUNCTION", "ID", "DOT", "GLOBAL", "LEFT_PAREN", "COMMA", "RIGHT_PAREN", "DECLARE", "END", "AT", "COLON", "EQUALS", "QUERY", "TEMPLATE", "RULE", "WHEN", "ATTRIBUTES", "DATE_EFFECTIVE", "STRING", "DATE_EXPIRES", "ENABLED", "BOOL", "SALIENCE", "INT", "NO_LOOP", "AUTO_FOCUS", "ACTIVATION_GROUP", "RULEFLOW_GROUP", "AGENDA_GROUP", "DURATION", "DIALECT", "LOCK_ON_ACTIVE", "OR", "DOUBLE_PIPE", "AND", "DOUBLE_AMPER", "WITH", "WINDOW", "FROM", "EXISTS", "NOT", "EVAL", "FORALL", "ACCUMULATE", "INIT", "ACTION", "REVERSE", "RESULT", "COLLECT", "ENTRY_POINT", "LEFT_SQUARE", "RIGHT_SQUARE", "CONTAINS", "EXCLUDES", "MATCHES", "SOUNDSLIKE", "MEMBEROF", "TILDE", "IN", "FLOAT", "NULL", "LEFT_CURLY", "RIGHT_CURLY", "THEN", "EVENT", "EOL", "WS", "EscapeSequence", "HexDigit", "UnicodeEscape", "OctalEscape", "SH_STYLE_SINGLE_LINE_COMMENT", "C_STYLE_SINGLE_LINE_COMMENT", "MULTI_LINE_COMMENT", "MISC", "';'", "'.*'", "'->'", "'=='", "'>'", "'>='", "'<'", "'<='", "'!='"
+        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "PACKAGE", "IMPORT", "FUNCTION", "ID", "DOT", "GLOBAL", "LEFT_PAREN", "COMMA", "RIGHT_PAREN", "DECLARE", "END", "AT", "COLON", "EQUALS", "QUERY", "TEMPLATE", "RULE", "WHEN", "ATTRIBUTES", "DATE_EFFECTIVE", "STRING", "DATE_EXPIRES", "ENABLED", "BOOL", "SALIENCE", "INT", "NO_LOOP", "AUTO_FOCUS", "ACTIVATION_GROUP", "RULEFLOW_GROUP", "AGENDA_GROUP", "DURATION", "DIALECT", "LOCK_ON_ACTIVE", "OR", "DOUBLE_PIPE", "AND", "DOUBLE_AMPER", "OVER", "WINDOW", "FROM", "EXISTS", "NOT", "EVAL", "FORALL", "ACCUMULATE", "INIT", "ACTION", "REVERSE", "RESULT", "COLLECT", "ENTRY_POINT", "LEFT_SQUARE", "RIGHT_SQUARE", "CONTAINS", "EXCLUDES", "MATCHES", "SOUNDSLIKE", "MEMBEROF", "TILDE", "IN", "FLOAT", "NULL", "LEFT_CURLY", "RIGHT_CURLY", "THEN", "EVENT", "EOL", "WS", "EscapeSequence", "HexDigit", "UnicodeEscape", "OctalEscape", "SH_STYLE_SINGLE_LINE_COMMENT", "C_STYLE_SINGLE_LINE_COMMENT", "MULTI_LINE_COMMENT", "MISC", "';'", "'.*'", "'->'", "'=='", "'>'", "'>='", "'<'", "'<='", "'!='"
     };
     public static final int EXISTS=45;
     public static final int COMMA=11;
@@ -119,11 +69,11 @@ public class DRLParser extends Parser {
     public static final int WHEN=21;
     public static final int RULEFLOW_GROUP=33;
     public static final int WS=72;
+    public static final int OVER=42;
     public static final int STRING=24;
     public static final int ACTION=51;
     public static final int WINDOW=43;
     public static final int COLLECT=54;
-    public static final int WITH=42;
     public static final int IN=64;
     public static final int REVERSE=52;
     public static final int ACCUMULATE=49;
@@ -3607,7 +3557,7 @@ public class DRLParser extends Parser {
 
 
     // $ANTLR start pattern_source
-    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:856:1: pattern_source returns [BaseDescr d] : u= lhs_pattern ( WITH ( WINDOW COLON type= identifier param= paren_chunk )+ )? ( ( ( FROM ENTRY_POINT )=> FROM ep= entrypoint_statement ) | FROM ( options {k=1; backtrack=true; } : (ac= accumulate_statement ) | (cs= collect_statement ) | (fm= from_statement ) ) )? ;
+    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:856:1: pattern_source returns [BaseDescr d] : u= lhs_pattern ( OVER ( WINDOW COLON type= identifier param= paren_chunk )+ )? ( ( ( FROM ENTRY_POINT )=> FROM ep= entrypoint_statement ) | FROM ( options {k=1; backtrack=true; } : (ac= accumulate_statement ) | (cs= collect_statement ) | (fm= from_statement ) ) )? ;
     public final BaseDescr pattern_source() throws RecognitionException {
         BaseDescr d = null;
 
@@ -3630,8 +3580,8 @@ public class DRLParser extends Parser {
         		d = null;
         	
         try {
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:860:2: (u= lhs_pattern ( WITH ( WINDOW COLON type= identifier param= paren_chunk )+ )? ( ( ( FROM ENTRY_POINT )=> FROM ep= entrypoint_statement ) | FROM ( options {k=1; backtrack=true; } : (ac= accumulate_statement ) | (cs= collect_statement ) | (fm= from_statement ) ) )? )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:861:3: u= lhs_pattern ( WITH ( WINDOW COLON type= identifier param= paren_chunk )+ )? ( ( ( FROM ENTRY_POINT )=> FROM ep= entrypoint_statement ) | FROM ( options {k=1; backtrack=true; } : (ac= accumulate_statement ) | (cs= collect_statement ) | (fm= from_statement ) ) )?
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:860:2: (u= lhs_pattern ( OVER ( WINDOW COLON type= identifier param= paren_chunk )+ )? ( ( ( FROM ENTRY_POINT )=> FROM ep= entrypoint_statement ) | FROM ( options {k=1; backtrack=true; } : (ac= accumulate_statement ) | (cs= collect_statement ) | (fm= from_statement ) ) )? )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:861:3: u= lhs_pattern ( OVER ( WINDOW COLON type= identifier param= paren_chunk )+ )? ( ( ( FROM ENTRY_POINT )=> FROM ep= entrypoint_statement ) | FROM ( options {k=1; backtrack=true; } : (ac= accumulate_statement ) | (cs= collect_statement ) | (fm= from_statement ) ) )?
             {
             pushFollow(FOLLOW_lhs_pattern_in_pattern_source2369);
             u=lhs_pattern();
@@ -3640,18 +3590,18 @@ public class DRLParser extends Parser {
             if ( backtracking==0 ) {
                d = u; 
             }
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:862:3: ( WITH ( WINDOW COLON type= identifier param= paren_chunk )+ )?
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:862:3: ( OVER ( WINDOW COLON type= identifier param= paren_chunk )+ )?
             int alt43=2;
             int LA43_0 = input.LA(1);
 
-            if ( (LA43_0==WITH) ) {
+            if ( (LA43_0==OVER) ) {
                 alt43=1;
             }
             switch (alt43) {
                 case 1 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:862:11: WITH ( WINDOW COLON type= identifier param= paren_chunk )+
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:862:11: OVER ( WINDOW COLON type= identifier param= paren_chunk )+
                     {
-                    match(input,WITH,FOLLOW_WITH_in_pattern_source2384); if (failed) return d;
+                    match(input,OVER,FOLLOW_OVER_in_pattern_source2384); if (failed) return d;
                     // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:863:3: ( WINDOW COLON type= identifier param= paren_chunk )+
                     int cnt42=0;
                     loop42:
@@ -9981,7 +9931,7 @@ public class DRLParser extends Parser {
     public static final BitSet FOLLOW_pattern_source_in_lhs_unary2330 = new BitSet(new long[]{0x0000000000000002L,0x0000000000020000L});
     public static final BitSet FOLLOW_opt_semicolon_in_lhs_unary2342 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_lhs_pattern_in_pattern_source2369 = new BitSet(new long[]{0x0000140000000002L});
-    public static final BitSet FOLLOW_WITH_in_pattern_source2384 = new BitSet(new long[]{0x0000080000000000L});
+    public static final BitSet FOLLOW_OVER_in_pattern_source2384 = new BitSet(new long[]{0x0000080000000000L});
     public static final BitSet FOLLOW_WINDOW_in_pattern_source2390 = new BitSet(new long[]{0x0000000000010000L});
     public static final BitSet FOLLOW_COLON_in_pattern_source2392 = new BitSet(new long[]{0x003C1018147C42F0L,0x0000000000000061L});
     public static final BitSet FOLLOW_identifier_in_pattern_source2396 = new BitSet(new long[]{0x0000000000000400L});
