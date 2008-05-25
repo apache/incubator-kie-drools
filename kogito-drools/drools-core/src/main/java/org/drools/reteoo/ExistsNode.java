@@ -22,8 +22,6 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Behavior;
 import org.drools.spi.PropagationContext;
-import org.drools.util.FactEntry;
-import org.drools.util.Iterator;
 
 /**
  * <code>ExistsNode</code> extends <code>BetaNode</code> to perform tests for
@@ -169,6 +167,14 @@ public class ExistsNode extends BetaNode {
                                                       this );
 
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+        if ( !behavior.assertRightTuple( memory.getBehaviorContext(),
+                                         rightTuple,
+                                         workingMemory ) ) {
+            // destroy right tuple
+            rightTuple.unlinkFromRightParent();
+            return;
+        }
+
         memory.getRightTupleMemory().add( rightTuple );
 
         if ( !this.tupleMemoryEnabled ) {
@@ -269,6 +275,9 @@ public class ExistsNode extends BetaNode {
         final RightTuple rootBlocker = (RightTuple) rightTuple.getPrevious();
 
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+        behavior.retractRightTuple( memory.getBehaviorContext(),
+                                    rightTuple,
+                                    workingMemory );
         memory.getRightTupleMemory().remove( rightTuple );
 
         if ( rightTuple.getBlocked() == null ) {

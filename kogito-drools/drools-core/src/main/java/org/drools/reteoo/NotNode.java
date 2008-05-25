@@ -17,13 +17,11 @@ package org.drools.reteoo;
  */
 
 import org.drools.common.BetaConstraints;
-import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Behavior;
 import org.drools.spi.PropagationContext;
-import org.drools.util.FactEntry;
 import org.drools.util.Iterator;
 
 /**
@@ -146,6 +144,14 @@ public class NotNode extends BetaNode {
                                                       this );
 
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+        if ( !behavior.assertRightTuple( memory.getBehaviorContext(),
+                                         rightTuple,
+                                         workingMemory ) ) {
+            // destroy right tuple
+            rightTuple.unlinkFromRightParent();
+            return;
+        }
+
         memory.getRightTupleMemory().add( rightTuple );
 
         if ( !this.tupleMemoryEnabled ) {
@@ -200,6 +206,9 @@ public class NotNode extends BetaNode {
         final RightTuple rootBlocker = (RightTuple) rightTuple.getPrevious();
 
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+        behavior.retractRightTuple( memory.getBehaviorContext(),
+                                    rightTuple,
+                                    workingMemory );
         memory.getRightTupleMemory().remove( rightTuple );
 
         if ( rightTuple.getBlocked() == null ) {

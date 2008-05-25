@@ -22,7 +22,6 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Behavior;
 import org.drools.spi.PropagationContext;
-import org.drools.util.FactEntry;
 import org.drools.util.Iterator;
 
 /**
@@ -149,6 +148,14 @@ public class JoinNode extends BetaNode {
         RightTuple rightTuple = new RightTuple( factHandle,
                                                 this );
 
+        if ( !behavior.assertRightTuple( memory.getBehaviorContext(),
+                                         rightTuple,
+                                         workingMemory ) ) {
+            // destroy right tuple
+            rightTuple.unlinkFromRightParent();
+            return;
+        }
+
         memory.getRightTupleMemory().add( rightTuple );
         if ( !this.tupleMemoryEnabled ) {
             // do nothing here, as we know there are no left tuples at this stage in sequential mode.
@@ -189,6 +196,9 @@ public class JoinNode extends BetaNode {
                                   final PropagationContext context,
                                   final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+        behavior.retractRightTuple( memory.getBehaviorContext(),
+                                    rightTuple,
+                                    workingMemory );
         memory.getRightTupleMemory().remove( rightTuple );
 
         if ( rightTuple.getBetaChildren() != null ) {
