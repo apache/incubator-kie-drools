@@ -3866,7 +3866,7 @@ public class RuleParserTest extends TestCase {
     }
 
     public void testBehaviorDecl() throws Exception {
-        final String text = "StockTick( symbol==\"ACME\") with window:time(60000) from entry-point StreamA";
+        final String text = "StockTick( symbol==\"ACME\") over window:time(60000) from entry-point StreamA";
         final CharStream charStream = new ANTLRStringStream( text );
         final DRLLexer lexer = new DRLLexer( charStream );
         final TokenStream tokenStream = new CommonTokenStream( lexer );

@@ -1,18 +1,14 @@
-// $ANTLR 3.0.1 /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g 2008-04-28 17:25:39
+// $ANTLR 3.0.1 /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g 2008-05-25 14:31:57
 
 	package org.drools.lang;
 
 
+import org.antlr.runtime.*;
+import java.util.Stack;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.HashMap;
-
-import org.antlr.runtime.BaseRecognizer;
-import org.antlr.runtime.CharStream;
-import org.antlr.runtime.DFA;
-import org.antlr.runtime.EarlyExitException;
-import org.antlr.runtime.Lexer;
-import org.antlr.runtime.MismatchedSetException;
-import org.antlr.runtime.NoViableAltException;
-import org.antlr.runtime.RecognitionException;
 public class DRLLexer extends Lexer {
     public static final int EXISTS=45;
     public static final int COMMA=11;
@@ -69,12 +65,12 @@ public class DRLLexer extends Lexer {
     public static final int WHEN=21;
     public static final int RULEFLOW_GROUP=33;
     public static final int WS=72;
+    public static final int OVER=42;
     public static final int STRING=24;
     public static final int ACTION=51;
     public static final int T88=88;
     public static final int WINDOW=43;
     public static final int COLLECT=54;
-    public static final int WITH=42;
     public static final int T87=87;
     public static final int REVERSE=52;
     public static final int IN=64;
@@ -1969,14 +1965,14 @@ public class DRLLexer extends Lexer {
     }
     // $ANTLR end END
 
-    // $ANTLR start WITH
-    public final void mWITH() throws RecognitionException {
+    // $ANTLR start OVER
+    public final void mOVER() throws RecognitionException {
         try {
-            int _type = WITH;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1934:6: ( 'with' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1934:8: 'with'
+            int _type = OVER;
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1934:6: ( 'over' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1934:8: 'over'
             {
-            match("with"); if (failed) return ;
+            match("over"); if (failed) return ;
 
 
             }
@@ -1986,7 +1982,7 @@ public class DRLLexer extends Lexer {
         finally {
         }
     }
-    // $ANTLR end WITH
+    // $ANTLR end OVER
 
     // $ANTLR start WINDOW
     public final void mWINDOW() throws RecognitionException {
@@ -2521,7 +2517,7 @@ public class DRLLexer extends Lexer {
     // $ANTLR end MISC
 
     public void mTokens() throws RecognitionException {
-        // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:8: ( T81 | T82 | T83 | T84 | T85 | T86 | T87 | T88 | T89 | WS | INT | FLOAT | STRING | BOOL | PACKAGE | IMPORT | FUNCTION | EVENT | GLOBAL | DECLARE | RULE | QUERY | TEMPLATE | ATTRIBUTES | DATE_EFFECTIVE | DATE_EXPIRES | ENABLED | SALIENCE | NO_LOOP | AUTO_FOCUS | ACTIVATION_GROUP | AGENDA_GROUP | DIALECT | RULEFLOW_GROUP | DURATION | LOCK_ON_ACTIVE | FROM | ACCUMULATE | INIT | ACTION | REVERSE | RESULT | COLLECT | ENTRY_POINT | OR | AND | CONTAINS | EXCLUDES | MEMBEROF | MATCHES | SOUNDSLIKE | IN | NULL | EXISTS | NOT | EVAL | FORALL | WHEN | THEN | END | WITH | WINDOW | ID | LEFT_PAREN | RIGHT_PAREN | LEFT_SQUARE | RIGHT_SQUARE | LEFT_CURLY | RIGHT_CURLY | COMMA | DOT | DOUBLE_AMPER | DOUBLE_PIPE | TILDE | AT | EQUALS | COLON | SH_STYLE_SINGLE_LINE_COMMENT | C_STYLE_SINGLE_LINE_COMMENT | MULTI_LINE_COMMENT | MISC )
+        // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:8: ( T81 | T82 | T83 | T84 | T85 | T86 | T87 | T88 | T89 | WS | INT | FLOAT | STRING | BOOL | PACKAGE | IMPORT | FUNCTION | EVENT | GLOBAL | DECLARE | RULE | QUERY | TEMPLATE | ATTRIBUTES | DATE_EFFECTIVE | DATE_EXPIRES | ENABLED | SALIENCE | NO_LOOP | AUTO_FOCUS | ACTIVATION_GROUP | AGENDA_GROUP | DIALECT | RULEFLOW_GROUP | DURATION | LOCK_ON_ACTIVE | FROM | ACCUMULATE | INIT | ACTION | REVERSE | RESULT | COLLECT | ENTRY_POINT | OR | AND | CONTAINS | EXCLUDES | MEMBEROF | MATCHES | SOUNDSLIKE | IN | NULL | EXISTS | NOT | EVAL | FORALL | WHEN | THEN | END | OVER | WINDOW | ID | LEFT_PAREN | RIGHT_PAREN | LEFT_SQUARE | RIGHT_SQUARE | LEFT_CURLY | RIGHT_CURLY | COMMA | DOT | DOUBLE_AMPER | DOUBLE_PIPE | TILDE | AT | EQUALS | COLON | SH_STYLE_SINGLE_LINE_COMMENT | C_STYLE_SINGLE_LINE_COMMENT | MULTI_LINE_COMMENT | MISC )
         int alt18=81;
         alt18 = dfa18.predict(input);
         switch (alt18) {
@@ -2946,9 +2942,9 @@ public class DRLLexer extends Lexer {
                 }
                 break;
             case 61 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:449: WITH
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1:449: OVER
                 {
-                mWITH(); if (failed) return ;
+                mOVER(); if (failed) return ;
 
                 }
                 break;
@@ -3128,92 +3124,93 @@ public class DRLLexer extends Lexer {
     protected DFA18 dfa18 = new DFA18(this);
     static final String DFA18_eotS =
         "\2\uffff\1\57\1\55\1\62\1\64\1\66\1\55\1\uffff\1\70\1\uffff\1\55"+
-        "\21\54\10\uffff\2\55\4\uffff\1\55\16\uffff\10\54\1\154\27\54\1\u008c"+
-        "\4\54\4\uffff\11\54\1\uffff\5\54\1\u00a0\13\54\1\u00ac\10\54\1\u00b5"+
-        "\1\uffff\3\54\1\uffff\5\54\1\u00be\1\u00bf\1\54\1\u00c1\4\54\1\u00c6"+
-        "\3\54\1\u00ca\1\54\1\uffff\11\54\1\u00d6\1\54\1\uffff\7\54\1\u00e0"+
-        "\1\uffff\6\54\1\u00e7\1\u00e8\2\uffff\1\54\1\uffff\1\u00bf\3\54"+
-        "\1\uffff\3\54\1\uffff\1\u00f0\3\54\1\uffff\6\54\1\uffff\1\u00fb"+
-        "\4\54\1\uffff\3\54\2\uffff\5\54\2\uffff\1\54\1\u0109\2\54\1\u010c"+
-        "\1\54\1\u010e\2\uffff\1\54\1\u0110\1\uffff\4\54\1\u0117\1\54\1\uffff"+
-        "\2\54\1\u011b\10\54\1\u0124\1\54\1\uffff\1\54\1\u0127\1\uffff\1"+
-        "\54\1\uffff\1\u0129\3\uffff\1\u012a\1\54\1\u012c\1\u012d\1\uffff"+
-        "\1\54\1\uffff\1\54\1\uffff\4\54\1\u0134\1\54\1\u0136\1\54\1\uffff"+
-        "\1\u0138\1\u0139\1\uffff\1\u013a\2\uffff\1\u013b\2\uffff\5\54\1"+
-        "\u0141\1\uffff\1\u0142\1\uffff\1\u0143\5\uffff\4\54\3\uffff\1\54"+
-        "\1\u0149\1\u014a\1\u014b\4\uffff";
+        "\21\54\10\uffff\2\55\4\uffff\1\55\16\uffff\10\54\1\155\30\54\1\u008e"+
+        "\4\54\4\uffff\11\54\1\uffff\5\54\1\u00a1\13\54\1\u00ad\10\54\1\u00b6"+
+        "\1\uffff\4\54\1\uffff\4\54\1\u00bf\1\u00c0\1\54\1\u00c2\4\54\1\u00c7"+
+        "\3\54\1\u00cb\1\54\1\uffff\11\54\1\u00d7\1\54\1\uffff\7\54\1\u00e1"+
+        "\1\uffff\3\54\1\u00e5\3\54\1\u00e9\2\uffff\1\54\1\uffff\1\u00c0"+
+        "\3\54\1\uffff\3\54\1\uffff\1\u00f1\3\54\1\uffff\6\54\1\uffff\1\u00fc"+
+        "\4\54\1\uffff\3\54\2\uffff\2\54\1\uffff\3\54\1\uffff\1\54\1\u010a"+
+        "\2\54\1\u010d\1\54\1\u010f\2\uffff\1\54\1\u0111\1\uffff\4\54\1\u0118"+
+        "\1\54\1\uffff\2\54\1\u011c\10\54\1\u0125\1\54\1\uffff\1\54\1\u0128"+
+        "\1\uffff\1\54\1\uffff\1\u012a\3\uffff\1\u012b\1\54\1\u012d\1\u012e"+
+        "\1\uffff\1\54\1\uffff\1\54\1\uffff\4\54\1\u0135\1\54\1\u0137\1\54"+
+        "\1\uffff\1\u0139\1\u013a\1\uffff\1\u013b\2\uffff\1\u013c\2\uffff"+
+        "\5\54\1\u0142\1\uffff\1\u0143\1\uffff\1\u0144\5\uffff\4\54\3\uffff"+
+        "\1\54\1\u014a\1\u014b\1\u014c\4\uffff";
     static final String DFA18_eofS =
-        "\u014c\uffff";
+        "\u014d\uffff";
     static final String DFA18_minS =
         "\1\11\1\uffff\1\52\1\60\4\75\1\uffff\1\56\1\uffff\1\0\1\145\2\141"+
         "\1\155\1\156\1\154\1\141\1\145\1\165\1\143\1\141\3\157\1\162\1\141"+
         "\1\150\10\uffff\1\46\1\174\4\uffff\1\52\16\uffff\1\145\1\165\1\155"+
         "\1\157\1\154\1\162\1\156\1\143\1\60\1\160\1\143\2\141\1\157\1\164"+
         "\1\143\1\162\1\141\1\163\1\154\1\145\1\144\1\145\1\143\2\164\1\165"+
-        "\2\154\1\55\1\143\1\154\1\60\1\164\1\155\1\156\1\145\4\uffff\1\156"+
-        "\1\145\1\160\1\155\1\163\1\141\1\143\1\153\1\164\1\uffff\1\157\1"+
-        "\154\1\163\1\154\1\156\1\60\1\162\2\142\1\145\1\154\1\141\1\154"+
-        "\1\145\1\165\1\145\1\162\1\60\1\156\1\151\1\165\1\157\1\162\1\156"+
-        "\1\151\1\154\1\60\1\uffff\1\153\1\154\1\164\1\uffff\1\143\1\142"+
-        "\1\144\1\150\1\156\2\60\1\154\1\60\1\145\1\154\1\164\1\141\1\60"+
-        "\1\162\1\165\1\164\1\60\1\164\1\uffff\1\171\1\154\1\141\1\55\1\141"+
-        "\1\164\1\145\1\162\1\154\1\60\1\171\1\uffff\1\144\1\157\1\155\1"+
-        "\55\1\151\1\144\1\145\1\60\1\uffff\1\55\1\145\1\141\1\150\1\145"+
-        "\1\157\2\60\2\uffff\1\141\1\uffff\1\60\1\154\1\151\1\147\1\uffff"+
-        "\1\164\1\144\1\163\1\uffff\1\60\1\55\1\145\1\154\1\145\1\162\1\151"+
-        "\1\143\1\163\1\164\1\154\1\uffff\1\60\2\141\1\156\1\165\1\uffff"+
-        "\1\142\1\163\1\156\2\uffff\1\143\1\151\1\145\1\162\1\167\2\uffff"+
-        "\1\164\1\60\1\157\1\145\1\60\1\145\1\60\2\uffff\1\144\1\60\1\146"+
-        "\1\145\1\157\1\164\1\145\1\60\1\157\1\uffff\1\55\1\164\1\60\1\154"+
-        "\1\165\1\154\1\143\1\164\1\156\1\163\1\117\1\60\1\145\1\uffff\1"+
-        "\156\1\60\1\uffff\1\163\1\uffff\1\60\3\uffff\1\60\1\156\2\60\1\uffff"+
-        "\1\167\1\uffff\1\151\1\uffff\1\141\1\164\1\151\1\145\1\60\1\163"+
-        "\1\60\1\146\1\uffff\2\60\1\uffff\1\60\2\uffff\1\60\2\uffff\1\55"+
-        "\1\157\1\164\1\145\1\153\1\60\1\uffff\1\60\1\uffff\1\60\5\uffff"+
-        "\1\156\1\145\1\163\1\145\3\uffff\1\55\3\60\4\uffff";
+        "\2\154\1\55\1\143\1\154\1\145\1\60\1\164\1\155\1\156\1\145\4\uffff"+
+        "\1\156\1\145\1\160\1\155\1\163\1\141\1\143\1\153\1\164\1\uffff\1"+
+        "\157\1\154\1\163\1\154\1\156\1\60\1\162\2\142\1\145\1\154\1\141"+
+        "\1\154\1\145\1\165\1\145\1\162\1\60\1\156\1\151\1\165\1\157\1\162"+
+        "\1\156\1\151\1\154\1\60\1\uffff\1\153\1\154\1\164\1\162\1\uffff"+
+        "\1\143\1\142\1\144\1\156\2\60\1\154\1\60\1\145\1\154\1\164\1\141"+
+        "\1\60\1\162\1\165\1\164\1\60\1\164\1\uffff\1\171\1\154\1\141\1\55"+
+        "\1\141\1\164\1\145\1\162\1\154\1\60\1\171\1\uffff\1\144\1\157\1"+
+        "\155\1\55\1\151\1\144\1\145\1\60\1\uffff\1\55\1\145\1\141\1\60\1"+
+        "\150\1\145\1\157\1\60\2\uffff\1\141\1\uffff\1\60\1\154\1\151\1\147"+
+        "\1\uffff\1\164\1\144\1\163\1\uffff\1\60\1\55\1\145\1\154\1\145\1"+
+        "\162\1\151\1\143\1\163\1\164\1\154\1\uffff\1\60\2\141\1\156\1\165"+
+        "\1\uffff\1\142\1\163\1\156\2\uffff\1\143\1\151\1\uffff\1\145\1\162"+
+        "\1\167\1\uffff\1\164\1\60\1\157\1\145\1\60\1\145\1\60\2\uffff\1"+
+        "\144\1\60\1\146\1\145\1\157\1\164\1\145\1\60\1\157\1\uffff\1\55"+
+        "\1\164\1\60\1\154\1\165\1\154\1\143\1\164\1\156\1\163\1\117\1\60"+
+        "\1\145\1\uffff\1\156\1\60\1\uffff\1\163\1\uffff\1\60\3\uffff\1\60"+
+        "\1\156\2\60\1\uffff\1\167\1\uffff\1\151\1\uffff\1\141\1\164\1\151"+
+        "\1\145\1\60\1\163\1\60\1\146\1\uffff\2\60\1\uffff\1\60\2\uffff\1"+
+        "\60\2\uffff\1\55\1\157\1\164\1\145\1\153\1\60\1\uffff\1\60\1\uffff"+
+        "\1\60\5\uffff\1\156\1\145\1\163\1\145\3\uffff\1\55\3\60\4\uffff";
     static final String DFA18_maxS =
         "\1\u00ff\1\uffff\1\52\1\76\4\75\1\uffff\1\71\1\uffff\1\ufffe\1\162"+
-        "\1\165\1\141\1\156\1\170\1\154\4\165\1\157\1\165\2\157\1\162\1\145"+
+        "\1\165\1\141\1\156\1\170\1\154\4\165\1\157\1\165\2\157\1\166\1\145"+
         "\1\151\10\uffff\1\46\1\174\4\uffff\1\57\16\uffff\1\145\1\165\1\155"+
         "\1\157\1\154\1\162\1\156\1\143\1\u00ff\1\160\1\151\1\145\1\164\1"+
         "\157\1\164\1\143\1\162\1\141\1\166\1\154\1\145\1\144\1\145\3\164"+
-        "\1\165\2\154\1\164\1\143\1\156\1\u00ff\1\164\1\155\1\164\1\145\4"+
-        "\uffff\1\156\1\145\1\160\1\155\1\163\1\141\1\143\1\153\1\164\1\uffff"+
-        "\1\157\1\154\1\163\1\154\1\156\1\u00ff\1\162\2\142\1\145\1\154\1"+
-        "\141\1\154\1\145\1\165\1\145\1\162\1\u00ff\1\156\1\151\1\165\1\157"+
-        "\1\162\1\156\1\151\1\154\1\u00ff\1\uffff\1\153\1\154\1\164\1\uffff"+
-        "\1\143\1\142\1\144\1\150\1\156\2\u00ff\1\154\1\u00ff\1\145\1\154"+
-        "\1\164\1\141\1\u00ff\1\162\1\165\1\164\1\u00ff\1\164\1\uffff\1\171"+
-        "\1\154\1\141\1\55\1\141\1\164\1\145\1\162\1\154\1\u00ff\1\171\1"+
-        "\uffff\1\144\1\166\1\155\1\55\1\151\1\144\1\145\1\u00ff\1\uffff"+
-        "\1\55\1\145\1\141\1\150\1\145\1\157\2\u00ff\2\uffff\1\141\1\uffff"+
-        "\1\u00ff\1\154\1\151\1\147\1\uffff\1\164\1\144\1\163\1\uffff\1\u00ff"+
-        "\1\55\1\145\1\154\1\145\1\162\1\151\1\143\1\163\1\164\1\154\1\uffff"+
-        "\1\u00ff\2\141\1\156\1\165\1\uffff\1\142\1\163\1\156\2\uffff\1\143"+
-        "\1\151\1\145\1\162\1\167\2\uffff\1\164\1\u00ff\1\157\1\145\1\u00ff"+
-        "\1\145\1\u00ff\2\uffff\1\144\1\u00ff\1\170\1\145\1\157\1\164\1\145"+
-        "\1\u00ff\1\157\1\uffff\1\55\1\164\1\u00ff\1\154\1\165\1\154\1\143"+
-        "\1\164\1\156\1\163\1\117\1\u00ff\1\145\1\uffff\1\156\1\u00ff\1\uffff"+
-        "\1\163\1\uffff\1\u00ff\3\uffff\1\u00ff\1\156\2\u00ff\1\uffff\1\167"+
-        "\1\uffff\1\151\1\uffff\1\141\1\164\1\151\1\145\1\u00ff\1\163\1\u00ff"+
-        "\1\146\1\uffff\2\u00ff\1\uffff\1\u00ff\2\uffff\1\u00ff\2\uffff\1"+
-        "\55\1\157\1\164\1\145\1\153\1\u00ff\1\uffff\1\u00ff\1\uffff\1\u00ff"+
-        "\5\uffff\1\156\1\145\1\163\1\145\3\uffff\1\55\3\u00ff\4\uffff";
+        "\1\165\2\154\1\164\1\143\1\156\1\145\1\u00ff\1\164\1\155\1\156\1"+
+        "\145\4\uffff\1\156\1\145\1\160\1\155\1\163\1\141\1\143\1\153\1\164"+
+        "\1\uffff\1\157\1\154\1\163\1\154\1\156\1\u00ff\1\162\2\142\1\145"+
+        "\1\154\1\141\1\154\1\145\1\165\1\145\1\162\1\u00ff\1\156\1\151\1"+
+        "\165\1\157\1\162\1\156\1\151\1\154\1\u00ff\1\uffff\1\153\1\154\1"+
+        "\164\1\162\1\uffff\1\143\1\142\1\144\1\156\2\u00ff\1\154\1\u00ff"+
+        "\1\145\1\154\1\164\1\141\1\u00ff\1\162\1\165\1\164\1\u00ff\1\164"+
+        "\1\uffff\1\171\1\154\1\141\1\55\1\141\1\164\1\145\1\162\1\154\1"+
+        "\u00ff\1\171\1\uffff\1\144\1\166\1\155\1\55\1\151\1\144\1\145\1"+
+        "\u00ff\1\uffff\1\55\1\145\1\141\1\u00ff\1\150\1\145\1\157\1\u00ff"+
+        "\2\uffff\1\141\1\uffff\1\u00ff\1\154\1\151\1\147\1\uffff\1\164\1"+
+        "\144\1\163\1\uffff\1\u00ff\1\55\1\145\1\154\1\145\1\162\1\151\1"+
+        "\143\1\163\1\164\1\154\1\uffff\1\u00ff\2\141\1\156\1\165\1\uffff"+
+        "\1\142\1\163\1\156\2\uffff\1\143\1\151\1\uffff\1\145\1\162\1\167"+
+        "\1\uffff\1\164\1\u00ff\1\157\1\145\1\u00ff\1\145\1\u00ff\2\uffff"+
+        "\1\144\1\u00ff\1\170\1\145\1\157\1\164\1\145\1\u00ff\1\157\1\uffff"+
+        "\1\55\1\164\1\u00ff\1\154\1\165\1\154\1\143\1\164\1\156\1\163\1"+
+        "\117\1\u00ff\1\145\1\uffff\1\156\1\u00ff\1\uffff\1\163\1\uffff\1"+
+        "\u00ff\3\uffff\1\u00ff\1\156\2\u00ff\1\uffff\1\167\1\uffff\1\151"+
+        "\1\uffff\1\141\1\164\1\151\1\145\1\u00ff\1\163\1\u00ff\1\146\1\uffff"+
+        "\2\u00ff\1\uffff\1\u00ff\2\uffff\1\u00ff\2\uffff\1\55\1\157\1\164"+
+        "\1\145\1\153\1\u00ff\1\uffff\1\u00ff\1\uffff\1\u00ff\5\uffff\1\156"+
+        "\1\145\1\163\1\145\3\uffff\1\55\3\u00ff\4\uffff";
     static final String DFA18_acceptS =
         "\1\uffff\1\1\6\uffff\1\12\1\uffff\1\15\22\uffff\1\77\1\100\1\101"+
         "\1\102\1\103\1\104\1\105\1\106\2\uffff\1\112\1\113\1\115\1\116\1"+
         "\uffff\1\77\1\121\1\2\1\107\1\3\1\4\1\114\1\6\1\5\1\10\1\7\1\11"+
-        "\1\13\1\14\45\uffff\1\110\1\111\1\117\1\120\11\uffff\1\64\33\uffff"+
-        "\1\35\3\uffff\1\55\23\uffff\1\74\13\uffff\1\56\10\uffff\1\67\10"+
+        "\1\13\1\14\46\uffff\1\110\1\111\1\117\1\120\11\uffff\1\64\33\uffff"+
+        "\1\35\4\uffff\1\55\22\uffff\1\74\13\uffff\1\56\10\uffff\1\67\10"+
         "\uffff\1\73\1\16\1\uffff\1\45\4\uffff\1\47\3\uffff\1\70\13\uffff"+
-        "\1\25\5\uffff\1\36\3\uffff\1\65\1\44\5\uffff\1\75\1\72\7\uffff\1"+
-        "\22\1\54\11\uffff\1\26\15\uffff\1\71\2\uffff\1\20\1\uffff\1\66\1"+
-        "\uffff\1\23\1\31\1\32\4\uffff\1\52\1\uffff\1\40\1\uffff\1\50\10"+
-        "\uffff\1\76\2\uffff\1\17\1\uffff\1\33\1\24\1\uffff\1\41\1\51\6\uffff"+
-        "\1\53\1\uffff\1\62\1\uffff\1\27\1\21\1\60\1\43\1\42\4\uffff\1\34"+
-        "\1\57\1\61\4\uffff\1\37\1\46\1\30\1\63";
+        "\1\25\5\uffff\1\36\3\uffff\1\65\1\44\2\uffff\1\75\3\uffff\1\72\7"+
+        "\uffff\1\22\1\54\11\uffff\1\26\15\uffff\1\71\2\uffff\1\20\1\uffff"+
+        "\1\66\1\uffff\1\23\1\31\1\32\4\uffff\1\52\1\uffff\1\40\1\uffff\1"+
+        "\50\10\uffff\1\76\2\uffff\1\17\1\uffff\1\33\1\24\1\uffff\1\41\1"+
+        "\51\6\uffff\1\53\1\uffff\1\62\1\uffff\1\27\1\21\1\60\1\43\1\42\4"+
+        "\uffff\1\34\1\57\1\61\4\uffff\1\37\1\46\1\30\1\63";
     static final String DFA18_specialS =
-        "\u014c\uffff}>";
+        "\u014d\uffff}>";
     static final String[] DFA18_transitionS = {
             "\2\10\1\uffff\2\10\22\uffff\1\10\1\7\1\12\1\52\1\35\1\55\1\45"+
             "\1\13\1\36\1\37\2\55\1\44\1\3\1\2\1\53\12\11\1\51\1\1\1\6\1"+
@@ -3246,9 +3243,9 @@ public class DRLLexer extends Lexer {
             "\1\127\5\uffff\1\126",
             "\1\130",
             "\1\131",
-            "\1\132",
-            "\1\133\3\uffff\1\134",
-            "\1\136\1\135",
+            "\1\133\3\uffff\1\132",
+            "\1\134\3\uffff\1\135",
+            "\1\137\1\136",
             "",
             "",
             "",
@@ -3257,19 +3254,13 @@ public class DRLLexer extends Lexer {
             "",
             "",
             "",
-            "\1\137",
             "\1\140",
+            "\1\141",
             "",
             "",
             "",
             "",
-            "\1\142\4\uffff\1\141",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
+            "\1\143\4\uffff\1\142",
             "",
             "",
             "",
@@ -3278,7 +3269,12 @@ public class DRLLexer extends Lexer {
             "",
             "",
             "",
-            "\1\143",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
             "\1\144",
             "\1\145",
             "\1\146",
@@ -3286,42 +3282,43 @@ public class DRLLexer extends Lexer {
             "\1\150",
             "\1\151",
             "\1\152",
-            "\12\54\7\uffff\32\54\4\uffff\1\54\1\uffff\10\54\1\153\21\54"+
+            "\1\153",
+            "\12\54\7\uffff\32\54\4\uffff\1\54\1\uffff\10\54\1\154\21\54"+
             "\105\uffff\100\54",
-            "\1\155",
-            "\1\156\5\uffff\1\157",
-            "\1\160\3\uffff\1\161",
-            "\1\164\2\uffff\1\162\17\uffff\1\163",
-            "\1\165",
+            "\1\156",
+            "\1\157\5\uffff\1\160",
+            "\1\161\3\uffff\1\162",
+            "\1\165\2\uffff\1\163\17\uffff\1\164",
             "\1\166",
             "\1\167",
             "\1\170",
             "\1\171",
-            "\1\173\2\uffff\1\172",
-            "\1\174",
+            "\1\172",
+            "\1\174\2\uffff\1\173",
             "\1\175",
             "\1\176",
             "\1\177",
-            "\1\u0081\20\uffff\1\u0080",
-            "\1\u0082",
+            "\1\u0080",
+            "\1\u0082\20\uffff\1\u0081",
             "\1\u0083",
             "\1\u0084",
             "\1\u0085",
             "\1\u0086",
-            "\1\u0088\106\uffff\1\u0087",
-            "\1\u0089",
-            "\1\u008a\1\uffff\1\u008b",
+            "\1\u0087",
+            "\1\u0089\106\uffff\1\u0088",
+            "\1\u008a",
+            "\1\u008b\1\uffff\1\u008c",
+            "\1\u008d",
             "\12\54\7\uffff\32\54\4\uffff\1\54\1\uffff\32\54\105\uffff\100"+
             "\54",
-            "\1\u008d",
-            "\1\u008e",
-            "\1\u008f\5\uffff\1\u0090",
+            "\1\u008f",
+            "\1\u0090",
             "\1\u0091",
-            "",
-            "",
-            "",
-            "",
             "\1\u0092",
+            "",
+            "",
+            "",
+            "",
             "\1\u0093",
             "\1\u0094",
             "\1\u0095",
@@ -3330,15 +3327,15 @@ public class DRLLexer extends Lexer {
             "\1\u0098",
             "\1\u0099",
             "\1\u009a",
-            "",
             "\1\u009b",
+            "",
             "\1\u009c",
             "\1\u009d",
             "\1\u009e",
             "\1\u009f",
+            "\1\u00a0",
             "\12\54\7\uffff\32\54\4\uffff\1\54\1\uffff\32\54\105\uffff\100"+
             "\54",
-            "\1\u00a1",
             "\1\u00a2",
             "\1\u00a3",
             "\1\u00a4",
@@ -3349,9 +3346,9 @@ public class DRLLexer extends Lexer {
             "\1\u00a9",
             "\1\u00aa",
             "\1\u00ab",
+            "\1\u00ac",
             "\12\54\7\uffff\32\54\4\uffff\1\54\1\uffff\32\54\105\uffff\100"+
             "\54",
-            "\1\u00ad",
             "\1\u00ae",
             "\1\u00af",
             "\1\u00b0",
@@ -3359,39 +3356,39 @@ public class DRLLexer extends Lexer {
             "\1\u00b2",
             "\1\u00b3",
             "\1\u00b4",
+            "\1\u00b5",
             "\12\54\7\uffff\32\54\4\uffff\1\54\1\uffff\32\54\105\uffff\100"+
             "\54",
             "",
-            "\1\u00b6",
             "\1\u00b7",
             "\1\u00b8",
-            "",
             "\1\u00b9",
             "\1\u00ba",
+            "",
             "\1\u00bb",
             "\1\u00bc",
             "\1\u00bd",
+            "\1\u00be",
             "\12\54\7\uffff\32\54\4\uffff\1\54\1\uffff\32\54\105\uffff\100"+
             "\54",
             "\12\54\7\uffff\32\54\4\uffff\1\54\1\uffff\32\54\105\uffff\100"+
             "\54",
-            "\1\u00c0",
+            "\1\u00c1",
             "\12\54\7\uffff\32\54\4\uffff\1\54\1\uffff\32\54\105\uffff\100"+
             "\54",
-            "\1\u00c2",
             "\1\u00c3",
             "\1\u00c4",
             "\1\u00c5",
+            "\1\u00c6",
             "\12\54\7\uffff\32\54\4\uffff\1\54\1\uffff\32\54\105\uffff\100"+
             "\54",
-            "\1\u00c7",
             "\1\u00c8",
             "\1\u00c9",
+            "\1\u00ca",
             "\12\54\7\uffff\32\54\4\uffff\1\54\1\uffff\32\54\105\uffff\100"+
             "\54",
-            "\1\u00cb",
-            "",
             "\1\u00cc",
+            "",
             "\1\u00cd",
             "\1\u00ce",
             "\1\u00cf",
@@ -3400,47 +3397,47 @@ public class DRLLexer extends Lexer {
             "\1\u00d2",
             "\1\u00d3",
             "\1\u00d4",
-            "\12\54\7\uffff\32\54\4\uffff\1\54\1\uffff\5\54\1\u00d5\24\54"+
+            "\1\u00d5",
+            "\12\54\7\uffff\32\54\4\uffff\1\54\1\uffff\5\54\1\u00d6\24\54"+
             "\105\uffff\100\54",
-            "\1\u00d7",
-            "",
             "\1\u00d8",
-            "\1\u00da\6\uffff\1\u00d9",
-            "\1\u00db",
+            "",
+            "\1\u00d9",
+            "\1\u00db\6\uffff\1\u00da",
             "\1\u00dc",
             "\1\u00dd",
             "\1\u00de",
             "\1\u00df",
+            "\1\u00e0",
             "\12\54\7\uffff\32\54\4\uffff\1\54\1\uffff\32\54\105\uffff\100"+
             "\54",
             "",
-            "\1\u00e1",
             "\1\u00e2",
             "\1\u00e3",
             "\1\u00e4",
-            "\1\u00e5",
+            "\12\54\7\uffff\32\54\4\uffff\1\54\1\uffff\32\54\105\uffff\100"+
+            "\54",
             "\1\u00e6",
-            "\12\54\7\uffff\32\54\4\uffff\1\54\1\uffff\32\54\105\uffff\100"+
-            "\54",
+            "\1\u00e7",
+            "\1\u00e8",
             "\12\54\7\uffff\32\54\4\uffff\1\54\1\uffff\32\54\105\uffff\100"+
             "\54",
             "",
             "",
-            "\1\u00e9",
-            "",
-            "\12\54\7\uffff\32\54\4\uffff\1\54\1\uffff\32\54\105\uffff\100"+
-            "\54",
             "\1\u00ea",
+            "",
+            "\12\54\7\uffff\32\54\4\uffff\1\54\1\uffff\32\54\105\uffff\100"+
+            "\54",
             "\1\u00eb",
             "\1\u00ec",
-            "",
             "\1\u00ed",
+            "",
             "\1\u00ee",
             "\1\u00ef",
+            "\1\u00f0",
             "",
             "\12\54\7\uffff\32\54\4\uffff\1\54\1\uffff\32\54\105\uffff\100"+
             "\54",
-            "\1\u00f1",
             "\1\u00f2",
             "\1\u00f3",
             "\1\u00f4",
@@ -3450,55 +3447,55 @@ public class DRLLexer extends Lexer {
             "\1\u00f8",
             "\1\u00f9",
             "\1\u00fa",
+            "\1\u00fb",
             "",
             "\12\54\7\uffff\32\54\4\uffff\1\54\1\uffff\32\54\105\uffff\100"+
             "\54",
-            "\1\u00fc",
             "\1\u00fd",
             "\1\u00fe",
             "\1\u00ff",
-            "",
             "\1\u0100",
+            "",
             "\1\u0101",
             "\1\u0102",
-            "",
-            "",
             "\1\u0103",
+            "",
+            "",
             "\1\u0104",
             "\1\u0105",
+            "",
             "\1\u0106",
             "\1\u0107",
-            "",
-            "",
             "\1\u0108",
+            "",
+            "\1\u0109",
             "\12\54\7\uffff\32\54\4\uffff\1\54\1\uffff\32\54\105\uffff\100"+
             "\54",
-            "\1\u010a",
             "\1\u010b",
+            "\1\u010c",
             "\12\54\7\uffff\32\54\4\uffff\1\54\1\uffff\32\54\105\uffff\100"+
             "\54",
-            "\1\u010d",
+            "\1\u010e",
             "\12\54\7\uffff\32\54\4\uffff\1\54\1\uffff\32\54\105\uffff\100"+
             "\54",
             "",
             "",
-            "\1\u010f",
+            "\1\u0110",
             "\12\54\7\uffff\32\54\4\uffff\1\54\1\uffff\32\54\105\uffff\100"+
             "\54",
-            "\1\u0111\21\uffff\1\u0112",
-            "\1\u0113",
+            "\1\u0112\21\uffff\1\u0113",
             "\1\u0114",
             "\1\u0115",
             "\1\u0116",
+            "\1\u0117",
             "\12\54\7\uffff\32\54\4\uffff\1\54\1\uffff\32\54\105\uffff\100"+
             "\54",
-            "\1\u0118",
-            "",
             "\1\u0119",
+            "",
             "\1\u011a",
+            "\1\u011b",
             "\12\54\7\uffff\32\54\4\uffff\1\54\1\uffff\32\54\105\uffff\100"+
             "\54",
-            "\1\u011c",
             "\1\u011d",
             "\1\u011e",
             "\1\u011f",
@@ -3506,15 +3503,16 @@ public class DRLLexer extends Lexer {
             "\1\u0121",
             "\1\u0122",
             "\1\u0123",
+            "\1\u0124",
             "\12\54\7\uffff\32\54\4\uffff\1\54\1\uffff\32\54\105\uffff\100"+
             "\54",
-            "\1\u0125",
-            "",
             "\1\u0126",
+            "",
+            "\1\u0127",
             "\12\54\7\uffff\32\54\4\uffff\1\54\1\uffff\32\54\105\uffff\100"+
             "\54",
             "",
-            "\1\u0128",
+            "\1\u0129",
             "",
             "\12\54\7\uffff\32\54\4\uffff\1\54\1\uffff\32\54\105\uffff\100"+
             "\54",
@@ -3523,26 +3521,26 @@ public class DRLLexer extends Lexer {
             "",
             "\12\54\7\uffff\32\54\4\uffff\1\54\1\uffff\32\54\105\uffff\100"+
             "\54",
-            "\1\u012b",
+            "\1\u012c",
             "\12\54\7\uffff\32\54\4\uffff\1\54\1\uffff\32\54\105\uffff\100"+
             "\54",
             "\12\54\7\uffff\32\54\4\uffff\1\54\1\uffff\32\54\105\uffff\100"+
             "\54",
-            "",
-            "\1\u012e",
             "",
             "\1\u012f",
             "",
             "\1\u0130",
+            "",
             "\1\u0131",
             "\1\u0132",
             "\1\u0133",
+            "\1\u0134",
             "\12\54\7\uffff\32\54\4\uffff\1\54\1\uffff\32\54\105\uffff\100"+
             "\54",
-            "\1\u0135",
+            "\1\u0136",
             "\12\54\7\uffff\32\54\4\uffff\1\54\1\uffff\32\54\105\uffff\100"+
             "\54",
-            "\1\u0137",
+            "\1\u0138",
             "",
             "\12\54\7\uffff\32\54\4\uffff\1\54\1\uffff\32\54\105\uffff\100"+
             "\54",
@@ -3557,11 +3555,11 @@ public class DRLLexer extends Lexer {
             "\54",
             "",
             "",
-            "\1\u013c",
             "\1\u013d",
             "\1\u013e",
             "\1\u013f",
             "\1\u0140",
+            "\1\u0141",
             "\12\54\7\uffff\32\54\4\uffff\1\54\1\uffff\32\54\105\uffff\100"+
             "\54",
             "",
@@ -3575,14 +3573,14 @@ public class DRLLexer extends Lexer {
             "",
             "",
             "",
-            "\1\u0144",
             "\1\u0145",
             "\1\u0146",
             "\1\u0147",
-            "",
-            "",
-            "",
             "\1\u0148",
+            "",
+            "",
+            "",
+            "\1\u0149",
             "\12\54\7\uffff\32\54\4\uffff\1\54\1\uffff\32\54\105\uffff\100"+
             "\54",
             "\12\54\7\uffff\32\54\4\uffff\1\54\1\uffff\32\54\105\uffff\100"+
@@ -3625,7 +3623,7 @@ public class DRLLexer extends Lexer {
             this.transition = DFA18_transition;
         }
         public String getDescription() {
-            return "1:1: Tokens : ( T81 | T82 | T83 | T84 | T85 | T86 | T87 | T88 | T89 | WS | INT | FLOAT | STRING | BOOL | PACKAGE | IMPORT | FUNCTION | EVENT | GLOBAL | DECLARE | RULE | QUERY | TEMPLATE | ATTRIBUTES | DATE_EFFECTIVE | DATE_EXPIRES | ENABLED | SALIENCE | NO_LOOP | AUTO_FOCUS | ACTIVATION_GROUP | AGENDA_GROUP | DIALECT | RULEFLOW_GROUP | DURATION | LOCK_ON_ACTIVE | FROM | ACCUMULATE | INIT | ACTION | REVERSE | RESULT | COLLECT | ENTRY_POINT | OR | AND | CONTAINS | EXCLUDES | MEMBEROF | MATCHES | SOUNDSLIKE | IN | NULL | EXISTS | NOT | EVAL | FORALL | WHEN | THEN | END | WITH | WINDOW | ID | LEFT_PAREN | RIGHT_PAREN | LEFT_SQUARE | RIGHT_SQUARE | LEFT_CURLY | RIGHT_CURLY | COMMA | DOT | DOUBLE_AMPER | DOUBLE_PIPE | TILDE | AT | EQUALS | COLON | SH_STYLE_SINGLE_LINE_COMMENT | C_STYLE_SINGLE_LINE_COMMENT | MULTI_LINE_COMMENT | MISC );";
+            return "1:1: Tokens : ( T81 | T82 | T83 | T84 | T85 | T86 | T87 | T88 | T89 | WS | INT | FLOAT | STRING | BOOL | PACKAGE | IMPORT | FUNCTION | EVENT | GLOBAL | DECLARE | RULE | QUERY | TEMPLATE | ATTRIBUTES | DATE_EFFECTIVE | DATE_EXPIRES | ENABLED | SALIENCE | NO_LOOP | AUTO_FOCUS | ACTIVATION_GROUP | AGENDA_GROUP | DIALECT | RULEFLOW_GROUP | DURATION | LOCK_ON_ACTIVE | FROM | ACCUMULATE | INIT | ACTION | REVERSE | RESULT | COLLECT | ENTRY_POINT | OR | AND | CONTAINS | EXCLUDES | MEMBEROF | MATCHES | SOUNDSLIKE | IN | NULL | EXISTS | NOT | EVAL | FORALL | WHEN | THEN | END | OVER | WINDOW | ID | LEFT_PAREN | RIGHT_PAREN | LEFT_SQUARE | RIGHT_SQUARE | LEFT_CURLY | RIGHT_CURLY | COMMA | DOT | DOUBLE_AMPER | DOUBLE_PIPE | TILDE | AT | EQUALS | COLON | SH_STYLE_SINGLE_LINE_COMMENT | C_STYLE_SINGLE_LINE_COMMENT | MULTI_LINE_COMMENT | MISC );";
         }
     }
  
