@@ -30,10 +30,16 @@ public class TimerManager {
         };
         java.util.Timer utilTimer = new java.util.Timer();
         utilTimers.put(timer, utilTimer);
-        utilTimer.schedule(
-            timerTask, 
-            timer.getDelay(), 
-            timer.getPeriod());
+        if (timer.getPeriod() > 0) {
+            utilTimer.schedule(
+                timerTask, 
+                timer.getDelay(), 
+                timer.getPeriod());
+        } else {
+            utilTimer.schedule(
+                timerTask, 
+                timer.getPeriod());
+        }
     }
     
     public void cancelTimer(Timer timer) {

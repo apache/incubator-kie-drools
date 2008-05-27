@@ -24,6 +24,7 @@ public class WorkflowReuseContextInstanceFactory implements ContextInstanceFacto
             AbstractContextInstance contextInstance = (AbstractContextInstance) cls.newInstance();
             contextInstance.setContextId(context.getId());
             contextInstance.setContextInstanceContainer(contextInstanceContainer);
+            contextInstanceContainer.addContextInstance(context.getType(), contextInstance);
             NodeInstanceContainer nodeInstanceContainer = null;
             if (contextInstanceContainer instanceof NodeInstanceContainer) {
                 nodeInstanceContainer = (NodeInstanceContainer) contextInstanceContainer;
