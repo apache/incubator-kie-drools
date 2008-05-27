@@ -17,14 +17,15 @@
 package org.drools.reteoo.builder;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.drools.common.BetaConstraints;
 import org.drools.common.TupleStartEqualsConstraint;
 import org.drools.reteoo.AccumulateNode;
+import org.drools.reteoo.LeftTupleSource;
 import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.RightInputAdapterNode;
-import org.drools.reteoo.LeftTupleSource;
 import org.drools.rule.Accumulate;
 import org.drools.rule.Behavior;
 import org.drools.rule.RuleConditionElement;
@@ -111,6 +112,7 @@ public class AccumulateBuilder
         // source pattern was bound, so nulling context
         context.setObjectSource( null );
         context.setCurrentPatternOffset( currentPatternIndex );
+        context.setBehaviors( Collections.EMPTY_LIST );
     }
 
     /**
