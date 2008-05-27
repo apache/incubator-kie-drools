@@ -17,6 +17,7 @@
 package org.drools.reteoo.builder;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -28,10 +29,10 @@ import org.drools.common.TupleStartEqualsConstraint;
 import org.drools.reteoo.ExistsNode;
 import org.drools.reteoo.JoinNode;
 import org.drools.reteoo.LeftInputAdapterNode;
+import org.drools.reteoo.LeftTupleSource;
 import org.drools.reteoo.NotNode;
 import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.RightInputAdapterNode;
-import org.drools.reteoo.LeftTupleSource;
 import org.drools.rule.Behavior;
 import org.drools.rule.GroupElement;
 import org.drools.rule.RuleConditionElement;
@@ -84,6 +85,15 @@ public class GroupElementBuilder
         return builder.requiresLeftActivation( utils,
                                                rce );
     }
+    
+    private static Behavior[] createBehaviorArray(final BuildContext context) {
+        Behavior[] behaviors = Behavior.EMPTY_BEHAVIOR_LIST;
+        if( ! context.getBehaviors().isEmpty() ) {
+            behaviors = (Behavior[]) context.getBehaviors().toArray( new Behavior[ context.getBehaviors().size() ]);
+        }
+        context.setBehaviors( Collections.EMPTY_LIST );
+        return behaviors;
+    }
 
     private static class AndBuilder
         implements
@@ -115,11 +125,11 @@ public class GroupElementBuilder
 
                 // if a previous object source was bound, but no tuple source
                 if ( context.getObjectSource() != null && context.getTupleSource() == null ) {
-                    // adapt it to a Tuple source
+                    // adapt it to a Tuple source                    
                     context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
-                                                                            new LeftInputAdapterNode( context.getNextId(),
-                                                                                                      context.getObjectSource(),
-                                                                                                      context ) ) );
+                                                                                new LeftInputAdapterNode( context.getNextId(),
+                                                                                                          context.getObjectSource(),
+                                                                                                          context ) ) );
 
                     context.setObjectSource( null );
                 }
@@ -130,14 +140,16 @@ public class GroupElementBuilder
                     final BetaConstraints betaConstraints = utils.createBetaNodeConstraint( context,
                                                                                             context.getBetaconstraints(),
                                                                                             false );
-                    
+
+                    Behavior[] behaviors = createBehaviorArray( context );
+
                     context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
-                                                                            new JoinNode( context.getNextId(),
-                                                                                          context.getTupleSource(),
-                                                                                          context.getObjectSource(),
-                                                                                          betaConstraints,
-                                                                                          Behavior.EMPTY_BEHAVIOR_LIST,
-                                                                                          context ) ) );
+                                                                                new JoinNode( context.getNextId(),
+                                                                                              context.getTupleSource(),
+                                                                                              context.getObjectSource(),
+                                                                                              betaConstraints,
+                                                                                              behaviors,
+                                                                                              context ) ) );
                     context.setBetaconstraints( null );
                     context.setObjectSource( null );
                 }
@@ -236,16 +248,18 @@ public class GroupElementBuilder
             final BetaConstraints betaConstraints = utils.createBetaNodeConstraint( context,
                                                                                     context.getBetaconstraints(),
                                                                                     false );
+            Behavior[] behaviors = createBehaviorArray( context );
+
             // then attach the NOT node. It will work both as a simple not node
             // or as subnetwork join node as the context was set appropriatelly
             // in each case
             context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
-                                                                    new NotNode( context.getNextId(),
-                                                                                 context.getTupleSource(),
-                                                                                 context.getObjectSource(),
-                                                                                 betaConstraints,
-                                                                                 Behavior.EMPTY_BEHAVIOR_LIST,
-                                                                                 context ) ) );
+                                                                        new NotNode( context.getNextId(),
+                                                                                     context.getTupleSource(),
+                                                                                     context.getObjectSource(),
+                                                                                     betaConstraints,
+                                                                                     behaviors,
+                                                                                     context ) ) );
             context.setBetaconstraints( null );
             context.setObjectSource( null );
 
@@ -315,16 +329,18 @@ public class GroupElementBuilder
                                                                                     context.getBetaconstraints(),
                                                                                     false );
 
+            Behavior[] behaviors = createBehaviorArray( context );
+
             // then attach the EXISTS node. It will work both as a simple exists node
             // or as subnetwork join node as the context was set appropriatelly
             // in each case
             context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
-                                                                    new ExistsNode( context.getNextId(),
-                                                                                    context.getTupleSource(),
-                                                                                    context.getObjectSource(),
-                                                                                    betaConstraints,
-                                                                                    Behavior.EMPTY_BEHAVIOR_LIST,
-                                                                                    context ) ) );
+                                                                        new ExistsNode( context.getNextId(),
+                                                                                        context.getTupleSource(),
+                                                                                        context.getObjectSource(),
+                                                                                        betaConstraints,
+                                                                                        behaviors,
+                                                                                        context ) ) );
             context.setBetaconstraints( null );
             context.setObjectSource( null );
 
