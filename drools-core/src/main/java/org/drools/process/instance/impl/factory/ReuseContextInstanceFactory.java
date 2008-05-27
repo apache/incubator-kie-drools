@@ -23,8 +23,10 @@ public class ReuseContextInstanceFactory implements ContextInstanceFactory {
             AbstractContextInstance contextInstance = (AbstractContextInstance) cls.newInstance();
             contextInstance.setContextId(context.getId());
             contextInstance.setContextInstanceContainer(contextInstanceContainer);
+            contextInstanceContainer.addContextInstance(context.getType(), contextInstance);
             return contextInstance;
         } catch (Exception e) {
+            e.printStackTrace();
             throw new RuntimeException("Unable to instantiate context '"
                 + this.cls.getName() + "': " + e.getMessage());
         }

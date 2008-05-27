@@ -63,7 +63,9 @@ public class WorkItemImpl implements WorkItem, Serializable {
     }
     
     public void setResults(Map<String, Object> results) {
-        this.results = results;
+        if (results != null) {
+            this.results = results;
+        }
     }
     
     public void setResult(String name, Object value) {

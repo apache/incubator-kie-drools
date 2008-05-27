@@ -108,7 +108,6 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
         Context context = getProcess().getDefaultContext(contextId);
         if (context != null) {
             contextInstance = getContextInstance(context);
-            addContextInstance(contextId, contextInstance);
             return contextInstance;
         }
         return null;
