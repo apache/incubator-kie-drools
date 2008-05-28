@@ -63,10 +63,6 @@ public class ConnectionImpl implements Connection, Serializable {
         if (toType == null) {
             throw new IllegalArgumentException("To type is null!");
         }
-        if (from.equals(to)) {
-            throw new IllegalArgumentException(
-                "To and from nodes are the same!");
-        }
         this.from = from;
         this.fromType = fromType;
         this.to = to;
