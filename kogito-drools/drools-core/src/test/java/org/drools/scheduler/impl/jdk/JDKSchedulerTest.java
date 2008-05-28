@@ -9,6 +9,7 @@ import org.drools.scheduler.Job;
 import org.drools.scheduler.JobContext;
 import org.drools.scheduler.JobHandle;
 import org.drools.scheduler.Scheduler;
+import org.drools.scheduler.SchedulerFactory;
 import org.drools.scheduler.Trigger;
 
 import junit.framework.TestCase;
@@ -16,7 +17,7 @@ import junit.framework.TestCase;
 public class JDKSchedulerTest extends TestCase {
     
     public void test1() throws Exception {
-        JDKScheduler scheduler = new JDKScheduler(); 
+        Scheduler scheduler = SchedulerFactory.getScheduler(); 
         Trigger trigger = new DelayedTrigger( 100 );
         HelloWorldJobContext ctx = new HelloWorldJobContext( "hello world", scheduler);
         scheduler.scheduleJob( new HelloWorldJob(), ctx,  trigger);        
@@ -25,7 +26,7 @@ public class JDKSchedulerTest extends TestCase {
     }    
     
     public void test2() throws Exception {
-        JDKScheduler scheduler = new JDKScheduler(); 
+        Scheduler scheduler = SchedulerFactory.getScheduler(); 
         Trigger trigger = new DelayedTrigger(  new long[] { 100, 100, 100} );
         HelloWorldJobContext ctx = new HelloWorldJobContext( "hello world", scheduler);
         scheduler.scheduleJob( new HelloWorldJob(), ctx,  trigger);        
@@ -36,7 +37,7 @@ public class JDKSchedulerTest extends TestCase {
         
     
 	public void test3() throws Exception {
-		JDKScheduler scheduler = new JDKScheduler(); 
+        Scheduler scheduler = SchedulerFactory.getScheduler();
 		Trigger trigger = new DelayedTrigger( new long[] { 100, 100, 100, 100, 100 } );
 		HelloWorldJobContext ctx = new HelloWorldJobContext( "hello world", scheduler);
 		ctx.setLimit( 3 );
