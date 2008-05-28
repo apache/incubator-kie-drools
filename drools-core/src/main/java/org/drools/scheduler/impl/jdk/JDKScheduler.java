@@ -2,7 +2,6 @@ package org.drools.scheduler.impl.jdk;
 
 import java.util.Date;
 import java.util.concurrent.Callable;
-import java.util.concurrent.RunnableScheduledFuture;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -51,7 +50,7 @@ public class JDKScheduler
     }
 
     public boolean removeJob(JobHandle jobHandle) {
-        return this.scheduler.remove( (RunnableScheduledFuture) ((JDKJobHandle) jobHandle).getFuture() );
+        return this.scheduler.remove( (Runnable) ((JDKJobHandle) jobHandle).getFuture() );
     }
 
     public static class JDKCallableJob
