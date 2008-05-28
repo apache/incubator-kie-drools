@@ -1,10 +1,13 @@
 package org.drools.process.core.timer;
 
+import org.drools.scheduler.JobHandle;
+
 public class Timer {
 
     private long id;
     private long delay;
     private long period;
+    private JobHandle jobHandle;
     
     public long getId() {
         return id;
@@ -29,5 +32,15 @@ public class Timer {
     public void setPeriod(long period) {
         this.period = period;
     }
+
+    public JobHandle getJobHandle() {
+        return jobHandle;
+    }
+
+    public void setJobHandle(JobHandle jobHandle) {
+        this.jobHandle = jobHandle;
+    }
+    
+    
     
 }

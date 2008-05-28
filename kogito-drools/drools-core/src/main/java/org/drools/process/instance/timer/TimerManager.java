@@ -1,5 +1,6 @@
 package org.drools.process.instance.timer;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TimerTask;
@@ -7,67 +8,134 @@ import java.util.TimerTask;
 import org.drools.WorkingMemory;
 import org.drools.process.core.timer.Timer;
 import org.drools.process.instance.ProcessInstance;
+import org.drools.scheduler.Job;
+import org.drools.scheduler.JobContext;
+import org.drools.scheduler.JobHandle;
+import org.drools.scheduler.Scheduler;
+import org.drools.scheduler.SchedulerFactory;
+import org.drools.scheduler.Trigger;
 
 public class TimerManager {
-    
-    private Map<Timer, Long> timers = new HashMap<Timer, Long>();
-    private Map<Timer, java.util.Timer> utilTimers = new HashMap<Timer, java.util.Timer>();
-    private long timerId = 0;
-    
-    private WorkingMemory workingMemory;
-    
+    private long                        timerId    = 0;
+
+    private WorkingMemory               workingMemory;
+    private Scheduler                   scheduler;
+
     public TimerManager(WorkingMemory workingMemory) {
         this.workingMemory = workingMemory;
+        this.scheduler = SchedulerFactory.getScheduler();
     }
-    
-    public void registerTimer(final Timer timer, ProcessInstance processInstance) {
-        timer.setId(++timerId);
-        timers.put(timer, processInstance.getId());
-        TimerTask timerTask = new TimerTask() {
-            public void run() {
-                timerTriggered(timer);
-            }
-        };
-        java.util.Timer utilTimer = new java.util.Timer();
-        utilTimers.put(timer, utilTimer);
-        if (timer.getPeriod() > 0) {
-            utilTimer.schedule(
-                timerTask, 
-                timer.getDelay(), 
-                timer.getPeriod());
-        } else {
-            utilTimer.schedule(
-                timerTask, 
-                timer.getPeriod());
-        }
+
+    public void registerTimer(final Timer timer,
+                              ProcessInstance processInstance) {
+        timer.setId( ++timerId );
+
+        ProcessJobContext ctx = new ProcessJobContext( timer,
+                                                       processInstance.getId(),
+                                                       this.workingMemory );
+
+        JobHandle jobHandle = this.scheduler.scheduleJob( ProcessJob.instance,
+                                                          ctx,
+                                                          new TimerTrigger( timer.getDelay(),
+                                                                            timer.getPeriod() ) );
+        timer.setJobHandle( jobHandle );
     }
-    
+
     public void cancelTimer(Timer timer) {
-        java.util.Timer utilTimer = utilTimers.get(timer);
-        if (utilTimer == null) {
-            throw new IllegalArgumentException(
-                "Could not find timer implementation for timer " + timer);
-        }
-        utilTimer.cancel();
-        utilTimers.remove(timer);
-        timers.remove(timer);
+        scheduler.removeJob( timer.getJobHandle() );
     }
-    
-    public void timerTriggered(Timer timer) {
-        Long processInstanceId = timers.get(timer);
-        if (processInstanceId == null) {
-            throw new IllegalArgumentException(
-                "Could not find process instance for timer " + timer);
+
+    public static class ProcessJob
+        implements
+        Job {
+        public final static ProcessJob instance = new ProcessJob();
+
+        public void execute(JobContext c) {
+            ProcessJobContext ctx = (ProcessJobContext) c;
+
+            Long processInstanceId = ctx.getProcessInstanceId();
+            WorkingMemory workingMemory = ctx.getWorkingMemory();
+
+            if ( processInstanceId == null ) {
+                throw new IllegalArgumentException( "Could not find process instance for timer " );
+            }
+
+            ProcessInstance processInstance = workingMemory.getProcessInstance( processInstanceId );
+            // process instance may have finished already
+            if ( processInstance != null ) {
+                processInstance.timerTriggered( ctx.getTimer() );
+            }
         }
-        ProcessInstance processInstance = workingMemory.getProcessInstance(processInstanceId);
-        // process instance may have finished already
-        if (processInstance != null) {
-            processInstance.timerTriggered(timer);
+
+    }
+
+    public static class TimerTrigger
+        implements
+        Trigger {
+        private long delay;
+        private long period;
+        private int  count;
+
+        public TimerTrigger(long delay,
+                            long period) {
+            this.delay = delay;
+            this.period = period;
         }
-        if (timer.getPeriod() == 0) {
-            utilTimers.remove(timer);
-            timers.remove(timer);
+
+        public Date getNextFireTime() {
+            Date date = null;
+            if ( period == 0 ) {
+                if ( count == 0 ) {
+                    date = new Date( System.currentTimeMillis() + this.delay );
+                }
+            } else if ( count == 0 ) {
+                date = new Date( System.currentTimeMillis() + this.period + this.delay );
+            } else {
+                date = new Date( System.currentTimeMillis() + this.delay );
+            }
+            count++;
+            return date;
         }
+
+    }
+
+    public static class ProcessJobContext
+        implements
+        JobContext {
+        private Long          processInstanceId;
+        private WorkingMemory workingMemory;
+        private Timer         timer;
+
+        private JobHandle     jobHandle;
+
+        public ProcessJobContext(final Timer timer,
+                                 final Long processInstanceId,
+                                 final WorkingMemory workingMemory) {
+            this.timer = timer;
+            this.processInstanceId = processInstanceId;
+            this.workingMemory = workingMemory;
+        }
+
+        public Long getProcessInstanceId() {
+            return processInstanceId;
+        }
+
+        public WorkingMemory getWorkingMemory() {
+            return workingMemory;
+        }
+
+        public JobHandle getJobHandle() {
+            return this.jobHandle;
+        }
+
+        public void setJobHandle(JobHandle jobHandle) {
+            this.jobHandle = jobHandle;
+        }
+
+        public Timer getTimer() {
+            return timer;
+        }
+
     }
 
 }
