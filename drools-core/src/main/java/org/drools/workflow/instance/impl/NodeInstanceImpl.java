@@ -23,6 +23,7 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.process.core.Context;
 import org.drools.process.instance.ContextInstance;
 import org.drools.process.instance.ContextInstanceContainer;
+import org.drools.workflow.core.Connection;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.impl.NodeImpl;
 import org.drools.workflow.instance.NodeInstance;
@@ -91,6 +92,20 @@ public abstract class NodeInstanceImpl implements NodeInstance, Serializable {
     }
     
     public abstract void internalTrigger(NodeInstance from, String type);
+    
+    protected void triggerCompleted(String type, boolean remove) {
+        if (remove) {
+            getNodeInstanceContainer().removeNodeInstance(this);
+        }
+        for (Connection connection: getNode().getOutgoingConnections(type)) {
+            triggerConnection(connection);
+        }
+    }
+    
+    protected void triggerConnection(Connection connection) {
+        getNodeInstanceContainer().getNodeInstance(connection.getTo())
+            .trigger(this, connection.getToType());
+    }
     
     public Context resolveContext(String contextId, Object param) {
         return ((NodeImpl) getNode()).resolveContext(contextId, param);
