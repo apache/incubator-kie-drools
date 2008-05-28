@@ -29,7 +29,7 @@ public class TimerTest extends TestCase {
         Timer timer = new Timer();
         timerManager.registerTimer(timer, processInstance);
         try {
-        	Thread.sleep(500);
+        	Thread.sleep(1000);
         } catch (InterruptedException e) {
         	// do nothing
         }
@@ -49,23 +49,33 @@ public class TimerTest extends TestCase {
         
         counter = 0;
         timer = new Timer();
-        timer.setDelay(1000);
-        timer.setPeriod(1000);
+        timer.setDelay(500);
+        timer.setPeriod(2000);
         timerManager.registerTimer(timer, processInstance);
         assertEquals(0, counter);
         try {
-        	Thread.sleep(5500);
+        	Thread.sleep(2500);
         } catch (InterruptedException e) {
         	// do nothing
         }
-        assertEquals(5, counter);
+        assertEquals(1, counter);
+        
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            // do nothing
+        }
+        // we can't know exactly how many times this will fire as timers are not precise, but should be atleast 4
+        assertTrue( counter >= 4 );
+        
         timerManager.cancelTimer(timer);
-        try {
+        int lastCount = counter;
+        try {            
         	Thread.sleep(2000);
         } catch (InterruptedException e) {
         	// do nothing
         }
-        assertEquals(5, counter);
+        assertEquals(lastCount, counter);
 	}
 	
 }

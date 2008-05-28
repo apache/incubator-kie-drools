@@ -80,10 +80,12 @@ public class JDKScheduler
 
             // our triggers allow for flexible rescheduling
             Date date = this.trigger.getNextFireTime();
-            ScheduledFuture future = schedule( date,
-                                               this,
-                                               this.scheduler );
-            this.handle.setFuture( future );
+            if ( date != null ) {
+                ScheduledFuture future = schedule( date,
+                                                   this,
+                                                   this.scheduler );
+                this.handle.setFuture( future );
+            } 
 
             return null;
         }
