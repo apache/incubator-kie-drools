@@ -48,7 +48,6 @@ public class JDKSchedulerTest extends TestCase {
 	}
 	
 	public static class HelloWorldJob implements Job {
-        @Override
         public void execute(JobContext c) {
             HelloWorldJobContext ctx = (HelloWorldJobContext) c;
             int counter = ctx.increaseCounter();
@@ -83,12 +82,10 @@ public class JDKSchedulerTest extends TestCase {
 	        return this.counter++;
 	    }
 
-        @Override
         public JobHandle getJobHandle() {
             return this.jobHandle;
         }
 
-        @Override
         public void setJobHandle(JobHandle jobHandle) {
             this.jobHandle = jobHandle;
         }
@@ -122,7 +119,6 @@ public class JDKSchedulerTest extends TestCase {
             }
         }	    
 
-        @Override
         public Date getNextFireTime() {
             if ( !this.stack.isEmpty() ) {
                 return new Date( this.stack.pop() );    
