@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package org.drools.time.impl.jdk;
+package org.drools.time.impl;
 
 import java.util.Date;
 import java.util.concurrent.Callable;

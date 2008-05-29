@@ -18,7 +18,7 @@
 package org.drools;
 
 import org.drools.temporal.SessionClock;
-import org.drools.temporal.SessionPseudoClock;
+import org.drools.time.impl.SessionPseudoClock;
 
 /**
  * This enum represents all engine supported clocks
