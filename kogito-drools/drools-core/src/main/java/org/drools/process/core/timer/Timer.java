@@ -1,6 +1,6 @@
 package org.drools.process.core.timer;
 
-import org.drools.scheduler.JobHandle;
+import org.drools.time.JobHandle;
 
 public class Timer {
 

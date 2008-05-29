@@ -1,25 +1,22 @@
 package org.drools.process.instance.timer;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TimerTask;
 
 import org.drools.WorkingMemory;
 import org.drools.process.core.timer.Timer;
 import org.drools.process.instance.ProcessInstance;
-import org.drools.scheduler.Job;
-import org.drools.scheduler.JobContext;
-import org.drools.scheduler.JobHandle;
-import org.drools.scheduler.Scheduler;
-import org.drools.scheduler.SchedulerFactory;
-import org.drools.scheduler.Trigger;
+import org.drools.time.Job;
+import org.drools.time.JobContext;
+import org.drools.time.JobHandle;
+import org.drools.time.TimeServices;
+import org.drools.time.SchedulerFactory;
+import org.drools.time.Trigger;
 
 public class TimerManager {
     private long                        timerId    = 0;
 
     private WorkingMemory               workingMemory;
-    private Scheduler                   scheduler;
+    private TimeServices                   scheduler;
 
     public TimerManager(WorkingMemory workingMemory) {
         this.workingMemory = workingMemory;
