@@ -37,7 +37,7 @@ public class ProcessTimerTest extends TestCase {
 			"  <nodes>\n" +
 			"    <start id=\"1\" name=\"Start\" />\n" +
 			"    <end id=\"2\" name=\"End\" />\n" +
-			"    <timer id=\"3\" name=\"Timer\" delay=\"2000\"  period=\"1000\" />\n" +
+			"    <timer id=\"3\" name=\"Timer\" delay=\"800\"  period=\"200\" />\n" +
 			"    <action id=\"4\" name=\"Action\" dialect=\"java\" >System.out.println(\"Triggered\");\n" +
 			"insert( new Message() );\n" +
 			"myList.add( new Message() );</action>\n" +
@@ -63,8 +63,18 @@ public class ProcessTimerTest extends TestCase {
     		workingMemory.startProcess("org.drools.timer");
         assertEquals(0, myList.size());
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        
+        // test that the delay works
         try {
-        	Thread.sleep(10000);
+            Thread.sleep(600);
+        } catch (InterruptedException e) {
+            // do nothing
+        }
+        assertEquals(0, myList.size());
+        
+        // test that the period works
+        try {
+        	Thread.sleep(1300);
         } catch (InterruptedException e) {
         	// do nothing
         }
