@@ -1,11 +1,11 @@
 package org.drools.time;
 
-import org.drools.time.impl.JDKScheduler;
+import org.drools.time.impl.JDKTimerService;
 
 public class SchedulerFactory {
-    private static TimerService scheduler = new JDKScheduler();
+    private static TimerService timerService = new JDKTimerService();
     
     public static TimerService getScheduler() {
-        return scheduler;
+        return timerService;
     }
 }
