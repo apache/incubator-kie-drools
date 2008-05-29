@@ -34,16 +34,16 @@ import org.drools.time.Trigger;
  * scheduler and the system clock as the clock.
  * 
  */
-public class JDKScheduler
+public class JDKTimerService
     implements
     TimerService {
     private ScheduledThreadPoolExecutor scheduler;
 
-    public JDKScheduler() {
+    public JDKTimerService() {
         this( 3 );
     }
 
-    public JDKScheduler(int size) {
+    public JDKTimerService(int size) {
         this.scheduler = new ScheduledThreadPoolExecutor( size );
     }
 

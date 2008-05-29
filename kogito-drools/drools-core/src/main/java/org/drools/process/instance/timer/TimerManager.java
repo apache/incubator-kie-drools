@@ -81,14 +81,14 @@ public class TimerManager {
 
         public Date getNextFireTime() {
             Date date = null;
-            if ( period == 0 ) {
+            if ( delay == 0 ) {
                 if ( count == 0 ) {
-                    date = new Date( System.currentTimeMillis() + this.delay );
+                    date = new Date( System.currentTimeMillis() + this.period );
                 }
             } else if ( count == 0 ) {
-                date = new Date( System.currentTimeMillis() + this.period + this.delay );
+                date = new Date( System.currentTimeMillis() + this.delay + this.period );
             } else {
-                date = new Date( System.currentTimeMillis() + this.delay );
+                date = new Date( System.currentTimeMillis() + this.period );
             }
             count++;
             return date;

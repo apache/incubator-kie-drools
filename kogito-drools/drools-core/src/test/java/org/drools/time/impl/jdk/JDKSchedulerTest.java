@@ -1,4 +1,4 @@
-package org.drools.scheduler.impl.jdk;
+package org.drools.time.impl.jdk;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -37,7 +37,7 @@ public class JDKSchedulerTest extends TestCase {
         
     
 	public void test3() throws Exception {
-        TimerService scheduler = SchedulerFactory.getScheduler();
+	    TimerService scheduler = SchedulerFactory.getScheduler();
 		Trigger trigger = new DelayedTrigger( new long[] { 100, 100, 100, 100, 100 } );
 		HelloWorldJobContext ctx = new HelloWorldJobContext( "hello world", scheduler);
 		ctx.setLimit( 3 );
