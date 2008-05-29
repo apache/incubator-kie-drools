@@ -11,37 +11,37 @@ import org.drools.time.Job;
 import org.drools.time.JobContext;
 import org.drools.time.JobHandle;
 import org.drools.time.TimerService;
-import org.drools.time.SchedulerFactory;
+import org.drools.time.TimerServiceFactory;
 import org.drools.time.Trigger;
 
 public class JDKSchedulerTest extends TestCase {
     
-    public void test1() throws Exception {
-        TimerService scheduler = SchedulerFactory.getScheduler(); 
+    public void testSingleExecutionJob() throws Exception {
+        TimerService timeService = TimerServiceFactory.getTimerService(); 
         Trigger trigger = new DelayedTrigger( 100 );
-        HelloWorldJobContext ctx = new HelloWorldJobContext( "hello world", scheduler);
-        scheduler.scheduleJob( new HelloWorldJob(), ctx,  trigger);        
+        HelloWorldJobContext ctx = new HelloWorldJobContext( "hello world", timeService);
+        timeService.scheduleJob( new HelloWorldJob(), ctx,  trigger);        
         Thread.sleep( 500 );
         assertEquals( 1, ctx.getList().size() ); 
     }    
     
-    public void test2() throws Exception {
-        TimerService scheduler = SchedulerFactory.getScheduler(); 
+    public void testRepeatedExecutionJob() throws Exception {
+        TimerService timeService = TimerServiceFactory.getTimerService(); 
         Trigger trigger = new DelayedTrigger(  new long[] { 100, 100, 100} );
-        HelloWorldJobContext ctx = new HelloWorldJobContext( "hello world", scheduler);
-        scheduler.scheduleJob( new HelloWorldJob(), ctx,  trigger);        
+        HelloWorldJobContext ctx = new HelloWorldJobContext( "hello world", timeService);
+        timeService.scheduleJob( new HelloWorldJob(), ctx,  trigger);        
         Thread.sleep( 500 );
         
         assertEquals( 3, ctx.getList().size() );
     }    
         
     
-	public void test3() throws Exception {
-	    TimerService scheduler = SchedulerFactory.getScheduler();
+	public void testRepeatedExecutionJobWithRemove() throws Exception {
+	    TimerService timeService = TimerServiceFactory.getTimerService();
 		Trigger trigger = new DelayedTrigger( new long[] { 100, 100, 100, 100, 100 } );
-		HelloWorldJobContext ctx = new HelloWorldJobContext( "hello world", scheduler);
+		HelloWorldJobContext ctx = new HelloWorldJobContext( "hello world", timeService);
 		ctx.setLimit( 3 );
-		scheduler.scheduleJob( new HelloWorldJob(), ctx,  trigger);		
+		timeService.scheduleJob( new HelloWorldJob(), ctx,  trigger);		
 		Thread.sleep( 1000 );
 		
 		assertEquals( 4, ctx.getList().size() );
@@ -52,7 +52,7 @@ public class JDKSchedulerTest extends TestCase {
             HelloWorldJobContext ctx = (HelloWorldJobContext) c;
             int counter = ctx.increaseCounter();
             if ( counter > 3 ) {
-                ctx.scheduler.removeJob( ctx.getJobHandle() );
+                ctx.timeService.removeJob( ctx.getJobHandle() );
             }
             ctx.getList().add( ((HelloWorldJobContext)ctx).getMessage() + " : " + counter);
         }	    
@@ -60,7 +60,7 @@ public class JDKSchedulerTest extends TestCase {
 	
 	public static class HelloWorldJobContext implements JobContext {
 	    private String message;
-	    private  TimerService scheduler;
+	    private  TimerService timeService;
 	    private JobHandle jobHandle;
 	    
 	    private List list;
@@ -68,9 +68,9 @@ public class JDKSchedulerTest extends TestCase {
 	    private int counter;	    
 	    private int limit;
 	    
-	    public HelloWorldJobContext(String message, TimerService scheduler) {
+	    public HelloWorldJobContext(String message, TimerService timeService) {
 	        this.message = message;
-	        this.scheduler = scheduler;
+	        this.timeService = timeService;
 	        this.list = new ArrayList();
 	    }
 	    
