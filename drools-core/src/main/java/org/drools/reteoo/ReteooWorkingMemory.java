@@ -16,16 +16,13 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
-import org.drools.FactException;
-import org.drools.FactHandle;
 import org.drools.QueryResults;
 import org.drools.base.DroolsQuery;
 import org.drools.common.AbstractWorkingMemory;
@@ -33,19 +30,14 @@ import org.drools.common.DefaultAgenda;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.common.ObjectTypeConfigurationRegistry;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.WorkingMemoryAction;
-import org.drools.event.RuleBaseEventListener;
-import org.drools.marshalling.InputMarshaller;
-import org.drools.marshalling.OutputMarshaller;
 import org.drools.marshalling.MarshallerReaderContext;
 import org.drools.marshalling.MarshallerWriteContext;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Package;
 import org.drools.rule.Query;
 import org.drools.rule.Rule;
-import org.drools.spi.Activation;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.PropagationContext;
 

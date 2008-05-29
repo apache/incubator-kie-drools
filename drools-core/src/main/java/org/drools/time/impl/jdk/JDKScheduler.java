@@ -1,4 +1,20 @@
-package org.drools.scheduler.impl.jdk;
+/*
+ * Copyright 2008 JBoss Inc
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+package org.drools.time.impl.jdk;
 
 import java.util.Date;
 import java.util.concurrent.Callable;
@@ -6,15 +22,21 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import org.drools.scheduler.Job;
-import org.drools.scheduler.JobContext;
-import org.drools.scheduler.JobHandle;
-import org.drools.scheduler.Scheduler;
-import org.drools.scheduler.Trigger;
+import org.drools.time.Job;
+import org.drools.time.JobContext;
+import org.drools.time.JobHandle;
+import org.drools.time.TimeServices;
+import org.drools.time.Trigger;
 
+/**
+ * A default Scheduler implementation that uses the
+ * JDK built-in ScheduledThreadPoolExecutor as the
+ * scheduler and the system clock as the clock.
+ * 
+ */
 public class JDKScheduler
     implements
-    Scheduler {
+    TimeServices {
     private ScheduledThreadPoolExecutor scheduler;
 
     public JDKScheduler() {
@@ -23,6 +45,13 @@ public class JDKScheduler
 
     public JDKScheduler(int size) {
         this.scheduler = new ScheduledThreadPoolExecutor( size );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public long getCurrentTime() {
+        return System.currentTimeMillis();
     }
 
     public JobHandle scheduleJob(Job job,
@@ -51,6 +80,24 @@ public class JDKScheduler
 
     public boolean removeJob(JobHandle jobHandle) {
         return this.scheduler.remove( (Runnable) ((JDKJobHandle) jobHandle).getFuture() );
+    }
+
+    private static ScheduledFuture schedule(Date date,
+                                            JDKCallableJob callableJob,
+                                            ScheduledThreadPoolExecutor scheduler) {
+        long then = date.getTime();
+        long now = System.currentTimeMillis();
+        ScheduledFuture future = null;
+        if ( then >= now ) {
+            future = scheduler.schedule( callableJob,
+                                         then - now,
+                                         TimeUnit.MILLISECONDS );
+        } else {
+            future = scheduler.schedule( callableJob,
+                                         0,
+                                         TimeUnit.MILLISECONDS );
+        }
+        return future;
     }
 
     public static class JDKCallableJob
@@ -107,24 +154,6 @@ public class JDKScheduler
             this.future = future;
         }
 
-    }
-
-    private static ScheduledFuture schedule(Date date,
-                                            JDKCallableJob callableJob,
-                                            ScheduledThreadPoolExecutor scheduler) {
-        long then = date.getTime();
-        long now = System.currentTimeMillis();
-        ScheduledFuture future = null;
-        if ( then >= now ) {
-            future = scheduler.schedule( callableJob,
-                                         then - now,
-                                         TimeUnit.MILLISECONDS );
-        } else {
-            future = scheduler.schedule( callableJob,
-                                         0,
-                                         TimeUnit.MILLISECONDS );
-        }
-        return future;
     }
 
 }

@@ -1,4 +1,4 @@
-package org.drools.scheduler;
+package org.drools.time;
 
 import java.util.Date;
 
