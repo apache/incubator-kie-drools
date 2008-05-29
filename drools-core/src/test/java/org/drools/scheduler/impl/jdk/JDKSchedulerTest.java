@@ -10,14 +10,14 @@ import junit.framework.TestCase;
 import org.drools.time.Job;
 import org.drools.time.JobContext;
 import org.drools.time.JobHandle;
-import org.drools.time.TimeServices;
+import org.drools.time.TimerService;
 import org.drools.time.SchedulerFactory;
 import org.drools.time.Trigger;
 
 public class JDKSchedulerTest extends TestCase {
     
     public void test1() throws Exception {
-        TimeServices scheduler = SchedulerFactory.getScheduler(); 
+        TimerService scheduler = SchedulerFactory.getScheduler(); 
         Trigger trigger = new DelayedTrigger( 100 );
         HelloWorldJobContext ctx = new HelloWorldJobContext( "hello world", scheduler);
         scheduler.scheduleJob( new HelloWorldJob(), ctx,  trigger);        
@@ -26,7 +26,7 @@ public class JDKSchedulerTest extends TestCase {
     }    
     
     public void test2() throws Exception {
-        TimeServices scheduler = SchedulerFactory.getScheduler(); 
+        TimerService scheduler = SchedulerFactory.getScheduler(); 
         Trigger trigger = new DelayedTrigger(  new long[] { 100, 100, 100} );
         HelloWorldJobContext ctx = new HelloWorldJobContext( "hello world", scheduler);
         scheduler.scheduleJob( new HelloWorldJob(), ctx,  trigger);        
@@ -37,7 +37,7 @@ public class JDKSchedulerTest extends TestCase {
         
     
 	public void test3() throws Exception {
-        TimeServices scheduler = SchedulerFactory.getScheduler();
+        TimerService scheduler = SchedulerFactory.getScheduler();
 		Trigger trigger = new DelayedTrigger( new long[] { 100, 100, 100, 100, 100 } );
 		HelloWorldJobContext ctx = new HelloWorldJobContext( "hello world", scheduler);
 		ctx.setLimit( 3 );
@@ -60,7 +60,7 @@ public class JDKSchedulerTest extends TestCase {
 	
 	public static class HelloWorldJobContext implements JobContext {
 	    private String message;
-	    private  TimeServices scheduler;
+	    private  TimerService scheduler;
 	    private JobHandle jobHandle;
 	    
 	    private List list;
@@ -68,7 +68,7 @@ public class JDKSchedulerTest extends TestCase {
 	    private int counter;	    
 	    private int limit;
 	    
-	    public HelloWorldJobContext(String message, TimeServices scheduler) {
+	    public HelloWorldJobContext(String message, TimerService scheduler) {
 	        this.message = message;
 	        this.scheduler = scheduler;
 	        this.list = new ArrayList();
