@@ -31,7 +31,7 @@ import org.drools.common.PropagationContextImpl;
 import org.drools.reteoo.ReteooTemporalSession;
 import org.drools.reteoo.RightTuple;
 import org.drools.spi.PropagationContext;
-import org.drools.temporal.SessionClock;
+import org.drools.time.SessionClock;
 
 /**
  * @author etirelli

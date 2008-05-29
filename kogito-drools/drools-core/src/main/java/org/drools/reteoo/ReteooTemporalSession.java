@@ -26,7 +26,7 @@ import org.drools.common.InternalRuleBase;
 import org.drools.concurrent.ExecutorService;
 import org.drools.marshalling.MarshallerReaderContext;
 import org.drools.marshalling.MarshallerWriteContext;
-import org.drools.temporal.SessionClock;
+import org.drools.time.SessionClock;
 
 /**
  * ReteooStatefulTemporalSession implements a temporal enabled session

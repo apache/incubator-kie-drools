@@ -31,7 +31,7 @@ import org.drools.common.WorkingMemoryAction;
 import org.drools.marshalling.MarshallerWriteContext;
 import org.drools.reteoo.ReteooTemporalSession;
 import org.drools.rule.Behavior;
-import org.drools.temporal.SessionClock;
+import org.drools.time.SessionClock;
 
 /**
  * A SessionPseudoClock is a clock that allows the user to explicitly 

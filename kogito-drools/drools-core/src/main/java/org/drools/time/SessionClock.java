@@ -15,7 +15,7 @@
  *
  * Created on Oct 17, 2007
  */
-package org.drools.temporal;
+package org.drools.time;
 
 import java.io.Externalizable;
 

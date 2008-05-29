@@ -58,7 +58,7 @@ import org.drools.rule.Rule;
 import org.drools.spi.ExecutorServiceFactory;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.PropagationContext;
-import org.drools.temporal.SessionClock;
+import org.drools.time.SessionClock;
 
 /**
  * Implementation of <code>RuleBase</code>.
