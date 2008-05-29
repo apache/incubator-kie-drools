@@ -1,4 +1,4 @@
-package org.drools.time.impl.jdk;
+package org.drools.time.impl;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,7 +14,7 @@ import org.drools.time.TimerService;
 import org.drools.time.TimerServiceFactory;
 import org.drools.time.Trigger;
 
-public class JDKSchedulerTest extends TestCase {
+public class JDKTimerServiceTest extends TestCase {
     
     public void testSingleExecutionJob() throws Exception {
         TimerService timeService = TimerServiceFactory.getTimerService(); 
