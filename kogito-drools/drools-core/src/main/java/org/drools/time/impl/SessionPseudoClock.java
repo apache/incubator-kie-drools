@@ -15,7 +15,7 @@
  *
  * Created on Oct 17, 2007
  */
-package org.drools.temporal;
+package org.drools.time.impl;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -31,6 +31,7 @@ import org.drools.common.WorkingMemoryAction;
 import org.drools.marshalling.MarshallerWriteContext;
 import org.drools.reteoo.ReteooTemporalSession;
 import org.drools.rule.Behavior;
+import org.drools.temporal.SessionClock;
 
 /**
  * A SessionPseudoClock is a clock that allows the user to explicitly 
