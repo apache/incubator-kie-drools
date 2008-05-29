@@ -44,7 +44,7 @@ import org.drools.process.instance.impl.ContextInstanceFactory;
 import org.drools.process.instance.impl.ContextInstanceFactoryRegistry;
 import org.drools.spi.ConflictResolver;
 import org.drools.spi.ConsequenceExceptionHandler;
-import org.drools.temporal.SessionClock;
+import org.drools.time.SessionClock;
 import org.drools.time.impl.SessionPseudoClock;
 import org.drools.util.ChainedProperties;
 import org.drools.util.ClassUtils;

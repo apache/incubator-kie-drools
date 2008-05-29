@@ -14,7 +14,7 @@ import org.drools.process.instance.WorkItemManager;
 import org.drools.rule.TimeMachine;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.GlobalResolver;
-import org.drools.temporal.SessionClock;
+import org.drools.time.SessionClock;
 
 public class SharedWorkingMemoryContext {
     protected InternalRuleBase                  ruleBase;

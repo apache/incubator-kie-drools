@@ -17,7 +17,7 @@
  */
 package org.drools;
 
-import org.drools.temporal.SessionClock;
+import org.drools.time.SessionClock;
 import org.drools.time.impl.SessionPseudoClock;
 
 /**
