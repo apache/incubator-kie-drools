@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 import org.drools.time.Job;
 import org.drools.time.JobContext;
 import org.drools.time.JobHandle;
-import org.drools.time.TimeServices;
+import org.drools.time.TimerService;
 import org.drools.time.Trigger;
 
 /**
@@ -36,7 +36,7 @@ import org.drools.time.Trigger;
  */
 public class JDKScheduler
     implements
-    TimeServices {
+    TimerService {
     private ScheduledThreadPoolExecutor scheduler;
 
     public JDKScheduler() {

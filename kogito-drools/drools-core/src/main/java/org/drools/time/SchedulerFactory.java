@@ -3,9 +3,9 @@ package org.drools.time;
 import org.drools.time.impl.JDKScheduler;
 
 public class SchedulerFactory {
-    private static TimeServices scheduler = new JDKScheduler();
+    private static TimerService scheduler = new JDKScheduler();
     
-    public static TimeServices getScheduler() {
+    public static TimerService getScheduler() {
         return scheduler;
     }
 }

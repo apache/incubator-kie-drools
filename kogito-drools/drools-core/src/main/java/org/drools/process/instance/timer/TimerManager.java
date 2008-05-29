@@ -8,7 +8,7 @@ import org.drools.process.instance.ProcessInstance;
 import org.drools.time.Job;
 import org.drools.time.JobContext;
 import org.drools.time.JobHandle;
-import org.drools.time.TimeServices;
+import org.drools.time.TimerService;
 import org.drools.time.SchedulerFactory;
 import org.drools.time.Trigger;
 
@@ -16,7 +16,7 @@ public class TimerManager {
     private long                        timerId    = 0;
 
     private WorkingMemory               workingMemory;
-    private TimeServices                   scheduler;
+    private TimerService                   scheduler;
 
     public TimerManager(WorkingMemory workingMemory) {
         this.workingMemory = workingMemory;
