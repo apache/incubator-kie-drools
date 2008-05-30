@@ -28,6 +28,7 @@ import org.drools.IntegrationException;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleIntegrationException;
+import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
 import org.drools.StatelessSession;
 import org.drools.jsr94.rules.Constants;
@@ -169,8 +170,8 @@ public class RuleExecutionSetImpl
      *
      * @return A new WorkingMemory object.
      */
-    public StatefulSession newStatefulSession(boolean keepReference) {
-        return this.ruleBase.newStatefulSession(keepReference);
+    public StatefulSession newStatefulSession(SessionConfiguration conf) {
+        return this.ruleBase.newStatefulSession(conf);
     }
     
     /**
