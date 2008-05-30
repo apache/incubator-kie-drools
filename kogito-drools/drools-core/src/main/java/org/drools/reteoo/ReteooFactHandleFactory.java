@@ -16,20 +16,11 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
-
-import org.drools.TemporalSession;
 import org.drools.common.AbstractFactHandleFactory;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.EventFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.marshalling.MarshallerReaderContext;
-import org.drools.marshalling.MarshallerWriteContext;
 import org.drools.rule.TypeDeclaration;
 import org.drools.spi.FactHandleFactory;
 
@@ -55,7 +46,7 @@ public class ReteooFactHandleFactory extends AbstractFactHandleFactory {
                                                      final InternalWorkingMemory workingMemory) {
         if ( conf != null && conf.isEvent() ) {
             TypeDeclaration type = conf.getTypeDeclaration();
-            long timestamp = ((TemporalSession) workingMemory).getSessionClock().getCurrentTime();
+            long timestamp = workingMemory.getTimerService().getCurrentTime();
             long duration = 0;
             if ( type.getDurationExtractor() != null ) {
                 duration = type.getDurationExtractor().getLongValue( workingMemory,

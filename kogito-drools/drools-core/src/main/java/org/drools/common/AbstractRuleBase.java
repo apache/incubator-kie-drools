@@ -36,6 +36,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.drools.PackageIntegrationException;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
+import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
 import org.drools.event.RuleBaseEventListener;
 import org.drools.event.RuleBaseEventSupport;
@@ -318,7 +319,7 @@ abstract public class AbstractRuleBase
      * @see RuleBase
      */
     public StatefulSession newStatefulSession() {
-        return newStatefulSession( true );
+        return newStatefulSession( new SessionConfiguration() );
     }
 
     public synchronized void disposeStatefulSession(final StatefulSession statefulSession) {

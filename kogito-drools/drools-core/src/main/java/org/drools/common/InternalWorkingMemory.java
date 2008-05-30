@@ -10,13 +10,13 @@ import org.drools.event.AgendaEventSupport;
 import org.drools.event.RuleFlowEventSupport;
 import org.drools.event.WorkingMemoryEventSupport;
 import org.drools.process.instance.ProcessInstance;
-import org.drools.process.instance.ProcessInstanceFactory;
 import org.drools.reteoo.LIANodePropagation;
 import org.drools.rule.Rule;
 import org.drools.rule.TimeMachine;
 import org.drools.spi.Activation;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.PropagationContext;
+import org.drools.time.TimerService;
 
 public interface InternalWorkingMemory
     extends
@@ -94,5 +94,7 @@ public interface InternalWorkingMemory
     
     public ObjectTypeConfigurationRegistry getObjectTypeConfigurationRegistry();
     
-    public InternalFactHandle getInitialFactHandle();        
+    public InternalFactHandle getInitialFactHandle();       
+    
+    public TimerService getTimerService();
 }

@@ -44,6 +44,7 @@ import org.drools.QueryResults;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuntimeDroolsException;
+import org.drools.SessionConfiguration;
 import org.drools.WorkingMemory;
 import org.drools.WorkingMemoryEntryPoint;
 import org.drools.RuleBaseConfiguration.AssertBehaviour;
@@ -84,6 +85,8 @@ import org.drools.spi.AsyncExceptionHandler;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.GlobalResolver;
 import org.drools.spi.PropagationContext;
+import org.drools.time.SessionClock;
+import org.drools.time.TimerService;
 
 /**
  * Implementation of <code>WorkingMemory</code>.
@@ -182,6 +185,8 @@ public abstract class AbstractWorkingMemory
     protected Map<String, WorkingMemoryEntryPoint>      entryPoints;
 
     protected InternalFactHandle                        initialFactHandle;
+    
+    protected SessionConfiguration                      config;
 
     // ------------------------------------------------------------
     // Constructors
@@ -198,20 +203,24 @@ public abstract class AbstractWorkingMemory
      */
     public AbstractWorkingMemory(final int id,
                                  final InternalRuleBase ruleBase,
-                                 final FactHandleFactory handleFactory) {
+                                 final FactHandleFactory handleFactory,
+                                 final SessionConfiguration config ) {
         this( id,
               ruleBase,
               handleFactory,
               null,
-              0 );
+              0,
+              config );
     }
 
-    public AbstractWorkingMemory(int id,
-                                 InternalRuleBase ruleBase,
-                                 FactHandleFactory handleFactory,
-                                 InitialFactHandle initialFactHandle,
-                                 long propagationContext) {
+    public AbstractWorkingMemory(final int id,
+                                 final InternalRuleBase ruleBase,
+                                 final FactHandleFactory handleFactory,
+                                 final InitialFactHandle initialFactHandle,
+                                 final long propagationContext,
+                                 final SessionConfiguration config ) {
         this.id = id;
+        this.config = config;
         this.ruleBase = ruleBase;
         this.handleFactory = handleFactory;
         this.globalResolver = new MapGlobalResolver();
@@ -1615,6 +1624,14 @@ public abstract class AbstractWorkingMemory
 
     public void setInitialFactHandle(InternalFactHandle initialFactHandle) {
         this.initialFactHandle = initialFactHandle;
+    }
+    
+    public TimerService getTimerService() {
+        return this.timerManager.getTimerService();
+    }
+    
+    public SessionClock getSessionClock() {
+        return (SessionClock) this.timerManager.getTimerService();
     }
 
     //    public static class FactHandleInvalidation implements WorkingMemoryAction {

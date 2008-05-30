@@ -64,38 +64,17 @@ public interface RuleBase
 
     /**
      * Create a new <code>WorkingMemory</code> session for this
-     * <code>RuleBase</code>. Optionally the RuleBase retains a
-     * weak reference to returned WorkingMemory.
-     *
-     * <p>
-     * The created <code>WorkingMemory</code> uses the default conflict
-     * resolution strategy.
-     * </p>
+     * <code>RuleBase</code>.
+     * 
+     * @param config the session configuration object to use for the 
+     *               created session.
      *
      * @see WorkingMemory
      * @see org.drools.conflict.DefaultConflictResolver
      *
      * @return A newly initialized <code>WorkingMemory</code>.
      */
-    StatefulSession newStatefulSession(boolean keepReference);
-
-    /**
-     * Creates a new temporal session using the defined clock type.
-     *
-     * @param clockType
-     * @return
-     */
-    TemporalSession newTemporalSession(ClockType clockType);
-
-    /**
-     * Creates a new temporal session using the defined clock type.
-     *
-     * @param keepReference maintains a reference in the rulebase to the created session
-     * @param clockType
-     * @return
-     */
-    TemporalSession newTemporalSession(boolean keepReference,
-                                       ClockType clockType);
+    StatefulSession newStatefulSession(SessionConfiguration config);
 
     StatefulSession readStatefulSession(InputStream stream,
                                         Marshaller marshaller) throws IOException,

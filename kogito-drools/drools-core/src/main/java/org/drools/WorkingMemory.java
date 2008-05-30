@@ -16,7 +16,6 @@ package org.drools;
  * limitations under the License.
  */
 
-import java.io.Externalizable;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -28,6 +27,7 @@ import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.AsyncExceptionHandler;
 import org.drools.spi.GlobalResolver;
+import org.drools.time.SessionClock;
 
 /**
  * A knowledge session for a <code>RuleBase</code>.
@@ -308,5 +308,11 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      * @return
      */
     public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint( String id );
+    
+    /**
+     * Returns the session clock instance associated with this session
+     * @return
+     */
+    public SessionClock getSessionClock();
 
 }

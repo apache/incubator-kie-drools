@@ -18,6 +18,7 @@ package org.drools.reteoo;
 
 import org.drools.DroolsTestCase;
 import org.drools.RuleBaseFactory;
+import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 
@@ -62,8 +63,10 @@ public class ReteooRuleBaseTest extends DroolsTestCase {
     }
 
     public void testNoKeepReference() throws Exception {
-        final WorkingMemory wm5 = this.ruleBase.newStatefulSession( false );
-        final WorkingMemory wm6 = this.ruleBase.newStatefulSession( false );
+        SessionConfiguration conf = new SessionConfiguration();
+        conf.setKeepReference( false );
+        final WorkingMemory wm5 = this.ruleBase.newStatefulSession( conf );
+        final WorkingMemory wm6 = this.ruleBase.newStatefulSession( conf );
         assertLength( 4,
                       this.ruleBase.getStatefulSessions() );
         assertNotContains( wm5, this.ruleBase.getStatefulSessions() );

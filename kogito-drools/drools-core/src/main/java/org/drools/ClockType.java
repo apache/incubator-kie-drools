@@ -18,7 +18,8 @@
 package org.drools;
 
 import org.drools.time.SessionClock;
-import org.drools.time.impl.SessionPseudoClock;
+import org.drools.time.impl.JDKScheduler;
+import org.drools.time.impl.PseudoClockScheduler;
 
 /**
  * This enum represents all engine supported clocks
@@ -26,23 +27,33 @@ import org.drools.time.impl.SessionPseudoClock;
  * @author etirelli
  */
 public enum ClockType {
-//  SYSTEM_CLOCK {
-//      public SessionClock newInstance() {
-//          return new SessionPseudoClock();
-//      }
-//  },
-  
-  /**
-   * A Pseudo clock is a clock that is completely controled by the
-   * client application. It is usually used during simulations or tests
-   */
-  PSEUDO_CLOCK {
-      public SessionClock createInstance() {
-          return new SessionPseudoClock();
-      }
-  };
-  
-  public abstract SessionClock createInstance();
-  
-}
 
+    REAL_TIME {
+        public SessionClock createInstance() {
+            return new JDKScheduler();
+        }
+    },
+
+    /**
+     * A Pseudo clock is a clock that is completely controled by the
+     * client application. It is usually used during simulations or tests
+     */
+    PSEUDO_CLOCK {
+        public SessionClock createInstance() {
+            return new PseudoClockScheduler();
+        }
+    };
+
+    public abstract SessionClock createInstance();
+    
+    public static ClockType resolveClockType( String id ) {
+        ClockType clock = REAL_TIME;
+        if( "pseudo".equalsIgnoreCase( id ) ) {
+            clock = PSEUDO_CLOCK;
+        } else if( "realtime".equalsIgnoreCase( id ) ) {
+            clock = REAL_TIME;
+        }
+        return clock;
+    }
+
+}

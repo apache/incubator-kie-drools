@@ -21,6 +21,7 @@ import org.drools.Cheese;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
+import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.compiler.PackageBuilder;
@@ -56,9 +57,11 @@ public class OutOfMemoryTest extends TestCase {
 
         int i = 0;
         
+        SessionConfiguration conf = new SessionConfiguration();
+        conf.setKeepReference( true ); // this is just for documentation purposes, since the default value is "true"
         try {
             for( i = 0; i < 300000; i++ ) {
-                final StatefulSession session = ruleBase.newStatefulSession( true );
+                final StatefulSession session = ruleBase.newStatefulSession( conf );
                 session.dispose();
             } 
         } catch ( Throwable e ) {

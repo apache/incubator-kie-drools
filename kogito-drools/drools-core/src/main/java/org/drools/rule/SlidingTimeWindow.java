@@ -24,14 +24,12 @@ import java.io.ObjectOutput;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
-import org.drools.TemporalSession;
 import org.drools.common.EventFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
-import org.drools.reteoo.ReteooTemporalSession;
 import org.drools.reteoo.RightTuple;
 import org.drools.spi.PropagationContext;
-import org.drools.time.SessionClock;
+import org.drools.time.TimerService;
 
 /**
  * @author etirelli
@@ -42,6 +40,8 @@ public class SlidingTimeWindow
     Behavior {
 
     private long size;
+    
+    // FIXME: THIS IS SO WRONG!!! HOW DID I MADE THAT???? 
     private volatile transient RightTuple expiringTuple; 
 
     public SlidingTimeWindow() {
@@ -142,7 +142,7 @@ public class SlidingTimeWindow
 
     public void expireTuples(final Object context,
                              final InternalWorkingMemory workingMemory) {
-        SessionClock clock = ((TemporalSession<SessionClock>) workingMemory).getSessionClock();
+        TimerService clock = workingMemory.getTimerService();
         long currentTime = clock.getCurrentTime();
         PriorityQueue<RightTuple> queue = (PriorityQueue<RightTuple>) context;
         RightTuple tuple = queue.peek();
@@ -150,7 +150,7 @@ public class SlidingTimeWindow
                                             tuple ) ) {
             this.expiringTuple = tuple;
             queue.remove();
-            final PropagationContext propagationContext = new PropagationContextImpl( ((ReteooTemporalSession<SessionClock>) workingMemory).getNextPropagationIdCounter(),
+            final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
                                                                                       PropagationContext.RETRACTION,
                                                                                       null,
                                                                                       null,
@@ -181,13 +181,14 @@ public class SlidingTimeWindow
     private void updateNextExpiration(final RightTuple rightTuple,
                                       final InternalWorkingMemory workingMemory,
                                       final Object context) {
-        SessionClock clock = ((TemporalSession<SessionClock>) workingMemory).getSessionClock();
+        TimerService clock = workingMemory.getTimerService();
         if ( rightTuple != null ) {
-            clock.schedule( this,
-                            context,
-                            ((EventFactHandle) rightTuple.getFactHandle()).getStartTimestamp() + this.size );
+            // FIXME
+//            clock.schedule( this,
+//                            context,
+//                            ((EventFactHandle) rightTuple.getFactHandle()).getStartTimestamp() + this.size );
         } else {
-            clock.unschedule( this );
+//            clock.unschedule( this );
         }
     }
     

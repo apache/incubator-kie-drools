@@ -13,14 +13,14 @@ import org.drools.time.TimerServiceFactory;
 import org.drools.time.Trigger;
 
 public class TimerManager {
-    private long                        timerId    = 0;
+    private long          timerId = 0;
 
-    private WorkingMemory               workingMemory;
-    private TimerService                   scheduler;
+    private WorkingMemory workingMemory;
+    private TimerService  timerService;
 
     public TimerManager(WorkingMemory workingMemory) {
         this.workingMemory = workingMemory;
-        this.scheduler = TimerServiceFactory.getTimerService();
+        this.timerService = TimerServiceFactory.getTimerService();
     }
 
     public void registerTimer(final Timer timer,
@@ -31,15 +31,19 @@ public class TimerManager {
                                                        processInstance.getId(),
                                                        this.workingMemory );
 
-        JobHandle jobHandle = this.scheduler.scheduleJob( ProcessJob.instance,
-                                                          ctx,
-                                                          new TimerTrigger( timer.getDelay(),
-                                                                            timer.getPeriod() ) );
+        JobHandle jobHandle = this.timerService.scheduleJob( ProcessJob.instance,
+                                                             ctx,
+                                                             new TimerTrigger( timer.getDelay(),
+                                                                               timer.getPeriod() ) );
         timer.setJobHandle( jobHandle );
     }
 
     public void cancelTimer(Timer timer) {
-        scheduler.removeJob( timer.getJobHandle() );
+        timerService.removeJob( timer.getJobHandle() );
+    }
+    
+    public TimerService getTimerService() {
+        return this.timerService;
     }
 
     public static class ProcessJob
