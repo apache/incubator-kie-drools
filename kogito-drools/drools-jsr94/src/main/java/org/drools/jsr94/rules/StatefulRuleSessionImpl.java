@@ -32,6 +32,7 @@ import javax.rules.StatefulRuleSession;
 
 import org.drools.FactException;
 import org.drools.FactHandle;
+import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.jsr94.rules.admin.RuleExecutionSetImpl;
@@ -99,15 +100,17 @@ public class StatefulRuleSessionImpl extends AbstractRuleSessionImpl
 
         this.setRuleExecutionSet( ruleSet );
 
-        initSession( true );
+        SessionConfiguration conf = new SessionConfiguration();
+        conf.setKeepReference( true );
+        initSession( conf );
     }
     
     /**
      * Initialize this <code>RuleSession</code>
      * with a new <code>WorkingMemory</code>.
      */
-    protected void initSession(boolean keepReference) {        
-        this.session = this.getRuleExecutionSet().newStatefulSession( keepReference);
+    protected void initSession(SessionConfiguration conf) {        
+        this.session = this.getRuleExecutionSet().newStatefulSession( conf );
 
         final Map props = this.getProperties();
         if ( props != null ) {
@@ -339,7 +342,7 @@ public class StatefulRuleSessionImpl extends AbstractRuleSessionImpl
      */
     public void reset() {
         // stateful rule sessions should not be high load, thus safe to keep references
-        initSession( true );
+        initSession( new SessionConfiguration() );
     }
 
     public int getType() throws InvalidRuleSessionException {

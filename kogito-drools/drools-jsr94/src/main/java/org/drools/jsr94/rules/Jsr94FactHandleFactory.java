@@ -16,7 +16,6 @@ package org.drools.jsr94.rules;
  * limitations under the License.
  */
 
-import org.drools.TemporalSession;
 import org.drools.common.AbstractFactHandleFactory;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
@@ -42,7 +41,7 @@ public final class Jsr94FactHandleFactory extends AbstractFactHandleFactory {
             // later we need to centralize the following code snippet in a common method
             // shared by all fact handle factory implementations
             TypeDeclaration type = conf.getTypeDeclaration();
-            long timestamp = ((TemporalSession) workingMemory).getSessionClock().getCurrentTime();
+            long timestamp = workingMemory.getSessionClock().getCurrentTime();
             long duration = 0;
             if ( type.getDurationExtractor() != null ) {
                 duration = type.getDurationExtractor().getLongValue( workingMemory,
