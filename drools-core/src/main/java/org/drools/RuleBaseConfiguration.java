@@ -44,8 +44,6 @@ import org.drools.process.instance.impl.ContextInstanceFactory;
 import org.drools.process.instance.impl.ContextInstanceFactoryRegistry;
 import org.drools.spi.ConflictResolver;
 import org.drools.spi.ConsequenceExceptionHandler;
-import org.drools.time.SessionClock;
-import org.drools.time.impl.SessionPseudoClock;
 import org.drools.util.ChainedProperties;
 import org.drools.util.ClassUtils;
 import org.drools.util.ConfFileUtils;
@@ -118,7 +116,6 @@ public class RuleBaseConfiguration
     private String                         executorService;
     private ConsequenceExceptionHandler    consequenceExceptionHandler;
     private String                         ruleBaseUpdateHandler;
-    private Class< ? extends SessionClock> sessionClockClass;
 
     private ConflictResolver               conflictResolver;
 
@@ -153,7 +150,6 @@ public class RuleBaseConfiguration
         out.writeObject( executorService );
         out.writeObject( consequenceExceptionHandler );
         out.writeObject( ruleBaseUpdateHandler );
-        out.writeObject( sessionClockClass );
         out.writeObject( conflictResolver );
         out.writeBoolean( shadowProxy );
         out.writeObject( shadowProxyExcludes );
@@ -179,7 +175,6 @@ public class RuleBaseConfiguration
         executorService = (String) in.readObject();
         consequenceExceptionHandler = (ConsequenceExceptionHandler) in.readObject();
         ruleBaseUpdateHandler = (String) in.readObject();
-        sessionClockClass = (Class< ? extends SessionClock>) in.readObject();
         conflictResolver = (ConflictResolver) in.readObject();
         shadowProxy = in.readBoolean();
         shadowProxyExcludes = (Map) in.readObject();
@@ -310,9 +305,6 @@ public class RuleBaseConfiguration
 
         setShadowProxyExcludes( this.chainedProperties.getProperty( "drools.shadowProxyExcludes",
                                                                     "" ) );
-
-        setSessionClockClass( this.chainedProperties.getProperty( "drools.sessionClock",
-                                                                  SessionPseudoClock.class.getName() ) );
 
         setUseStaticObjenesis( Boolean.valueOf( this.chainedProperties.getProperty( "drools.useStaticObjenesis",
                                                                                     "false" ) ).booleanValue() );
@@ -470,51 +462,6 @@ public class RuleBaseConfiguration
     public void setRuleBaseUpdateHandler(String ruleBaseUpdateHandler) {
         checkCanChange(); // throws an exception if a change isn't possible;
         this.ruleBaseUpdateHandler = ruleBaseUpdateHandler;
-    }
-
-    /**
-     * Returns the actual class that is set to be used as the session clock
-     * for sessions of this rulebase
-     *
-     * @return
-     */
-    public Class< ? extends SessionClock> getSessionClockClass() {
-        return sessionClockClass;
-    }
-
-    /**
-     * Sets the class whose instance is to be used as the session clock
-     * for sessions of this rulebase
-     *
-     * @param sessionClockClass
-     */
-    public void setSessionClockClass(Class< ? extends SessionClock> sessionClockClass) {
-        checkCanChange(); // throws an exception if a change isn't possible;
-        this.sessionClockClass = sessionClockClass;
-    }
-
-    /**
-     * Sets the class name whose instance is to be used as the session clock
-     * for sessions of this rulebase
-     *
-     * @param className
-     */
-    public void setSessionClockClass(String className) {
-        Class< ? extends SessionClock> sessionClock;
-        try {
-            ClassLoader cl = this.getClassLoader();
-            if ( cl == null ) {
-                cl = Thread.currentThread().getContextClassLoader();
-                if ( cl == null ) {
-                    cl = this.getClass().getClassLoader();
-                }
-            }
-            sessionClock = (Class< ? extends SessionClock>) cl.loadClass( className );
-        } catch ( Exception ex ) {
-            throw new RuntimeDroolsException( "Not possible to load the session clock class: " + className,
-                                              ex );
-        }
-        setSessionClockClass( sessionClock );
     }
 
     public AgendaGroupFactory getAgendaGroupFactory() {

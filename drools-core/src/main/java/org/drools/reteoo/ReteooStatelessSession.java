@@ -8,6 +8,7 @@ import java.io.ObjectOutput;
 import java.io.ObjectInput;
 import java.io.IOException;
 
+import org.drools.SessionConfiguration;
 import org.drools.StatelessSession;
 import org.drools.StatelessSessionResult;
 import org.drools.base.MapGlobalResolver;
@@ -76,7 +77,8 @@ public class ReteooStatelessSession
     public InternalWorkingMemory newWorkingMemory() {
         synchronized ( this.ruleBase.getPackagesMap() ) {
             InternalWorkingMemory wm = new ReteooWorkingMemory( this.ruleBase.nextWorkingMemoryCounter(),
-                                                                this.ruleBase );
+                                                                this.ruleBase,
+                                                                new SessionConfiguration() );
 
             wm.setGlobalResolver( this.globalResolver );
             wm.setWorkingMemoryEventSupport( this.workingMemoryEventSupport );

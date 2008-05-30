@@ -23,7 +23,7 @@ import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.AsyncExceptionHandler;
 import org.drools.spi.GlobalResolver;
-import org.drools.temporal.SessionClock;
+import org.drools.time.SessionClock;
 
 import java.io.IOException;
 import java.io.ObjectInput;

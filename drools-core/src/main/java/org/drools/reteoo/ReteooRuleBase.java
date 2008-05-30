@@ -21,7 +21,6 @@ import java.io.InputStream;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.OutputStream;
-import java.io.Serializable;
 import java.util.Iterator;
 
 import org.drools.ClockType;
@@ -29,11 +28,9 @@ import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
+import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
 import org.drools.StatelessSession;
-import org.drools.TemporalSession;
-import org.drools.WorkingMemory;
-import org.drools.audit.WorkingMemoryInMemoryLogger;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
@@ -41,16 +38,8 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.concurrent.CommandExecutor;
 import org.drools.concurrent.ExecutorService;
 import org.drools.event.RuleBaseEventListener;
-import org.drools.marshalling.InputMarshaller;
 import org.drools.marshalling.Marshaller;
-import org.drools.marshalling.OutputMarshaller;
-import org.drools.marshalling.PlaceholderResolverStrategyFactory;
-import org.drools.marshalling.RuleBaseNodes;
-import org.drools.marshalling.SerializablePlaceholderResolverStrategy;
-import org.drools.marshalling.MarshallerReaderContext;
-import org.drools.marshalling.MarshallerWriteContext;
 import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;
-import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Package;
@@ -58,7 +47,6 @@ import org.drools.rule.Rule;
 import org.drools.spi.ExecutorServiceFactory;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.PropagationContext;
-import org.drools.time.SessionClock;
 
 /**
  * Implementation of <code>RuleBase</code>.
@@ -73,7 +61,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
      * DO NOT CHANGE BELLOW SERIAL_VERSION_ID UNLESS YOU ARE CHANGING DROOLS VERSION
      * SERIAL_VERSION_ID=320 stands for version 3.2.0
      */
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 500L;
 
     /** The root Rete-OO for this <code>RuleBase</code>. */
     private transient Rete    rete;
@@ -238,27 +226,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
                                  workingMemory );
     }
 
-    public synchronized StatefulSession newStatefulSession(final boolean keepReference) {
-        return newStatefulSession( keepReference,
-                                   null );
-    }
-
-    public synchronized TemporalSession newTemporalSession(final ClockType clockType) {
-        return (TemporalSession) newStatefulSession( true,
-                                                     clockType );
-    }
-
-    public synchronized TemporalSession newTemporalSession(final boolean keepReference,
-                                                           final ClockType clockType) {
-        return (TemporalSession) newStatefulSession( keepReference,
-                                                     clockType );
-    }
-
-    /**
-     * @see RuleBase
-     */
-    private StatefulSession newStatefulSession(final boolean keepReference,
-                                               final ClockType clockType) {
+    public synchronized StatefulSession newStatefulSession(final SessionConfiguration sessionConfig) {
         if ( this.config.isSequential() ) {
             throw new RuntimeException( "Cannot have a stateful rule session, with sequential configuration set to true" );
         }
@@ -266,20 +234,13 @@ public class ReteooRuleBase extends AbstractRuleBase {
 
         synchronized ( this.pkgs ) {
             ExecutorService executor = ExecutorServiceFactory.createExecutorService( this.config.getExecutorService() );;
-            if ( clockType == null ) {
-                session = new ReteooStatefulSession( nextWorkingMemoryCounter(),
-                                                     this,
-                                                     executor );
-            } else {
-                session = new ReteooTemporalSession( nextWorkingMemoryCounter(),
-                                                     this,
-                                                     executor,
-                                                     clockType.createInstance() );
-            }
+            session = new ReteooStatefulSession( nextWorkingMemoryCounter(),
+                                                 this,
+                                                 executor );
 
             executor.setCommandExecutor( new CommandExecutor( session ) );
 
-            if ( keepReference ) {
+            if ( sessionConfig.isKeepReference() ) {
                 super.addStatefulSession( session );
                 for ( Iterator it = session.getRuleBaseUpdateListeners().iterator(); it.hasNext(); ) {
                     addEventListener( (RuleBaseEventListener) it.next() );

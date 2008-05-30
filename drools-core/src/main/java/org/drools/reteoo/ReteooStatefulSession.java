@@ -1,12 +1,12 @@
 package org.drools.reteoo;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
 import org.drools.FactHandle;
+import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
 import org.drools.common.DefaultAgenda;
 import org.drools.common.InternalRuleBase;
@@ -18,8 +18,6 @@ import org.drools.concurrent.Future;
 import org.drools.concurrent.RetractObject;
 import org.drools.concurrent.UpdateObject;
 import org.drools.event.RuleBaseEventListener;
-import org.drools.marshalling.MarshallerReaderContext;
-import org.drools.marshalling.MarshallerWriteContext;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.RuleBaseUpdateListener;
@@ -37,8 +35,19 @@ public class ReteooStatefulSession extends ReteooWorkingMemory
     public ReteooStatefulSession(final int id,
                                  final InternalRuleBase ruleBase,
                                  final ExecutorService executorService) {
+        this( id,
+              ruleBase,
+              executorService,
+              new SessionConfiguration() );
+    }
+
+    public ReteooStatefulSession(final int id,
+                                 final InternalRuleBase ruleBase,
+                                 final ExecutorService executorService,
+                                 final SessionConfiguration config) {
         super( id,
-               ruleBase );
+               ruleBase,
+               config );
         this.executor = executorService;
     }
 
@@ -47,13 +56,15 @@ public class ReteooStatefulSession extends ReteooWorkingMemory
                                  final ExecutorService executorService,
                                  final FactHandleFactory handleFactory,
                                  final InitialFactHandle initialFactHandle,
-                                 final long propagationContext,                               
+                                 final long propagationContext,
+                                 final SessionConfiguration config,
                                  final DefaultAgenda agenda) {
         super( id,
                ruleBase,
                handleFactory,
                initialFactHandle,
                propagationContext,
+               config,
                agenda );
         this.executor = executorService;
     }

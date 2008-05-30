@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
 
+import org.drools.SessionConfiguration;
 import org.drools.base.ClassObjectType;
 import org.drools.common.AgendaItem;
 import org.drools.common.BaseNode;
@@ -95,6 +96,7 @@ public class InputMarshaller {
                                                                    handleFactory,
                                                                    initialFactHandle,
                                                                    propagationCounter,
+                                                                   new SessionConfiguration(), // FIXME: must deserialize configuration  
                                                                    agenda );
 
         // RuleFlowGroups need to reference the session

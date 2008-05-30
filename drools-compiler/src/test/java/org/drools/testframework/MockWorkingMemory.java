@@ -50,6 +50,8 @@ import org.drools.spi.AsyncExceptionHandler;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.GlobalResolver;
 import org.drools.spi.PropagationContext;
+import org.drools.time.SessionClock;
+import org.drools.time.TimerService;
 import org.drools.util.ObjectHashMap;
 
 public class MockWorkingMemory implements InternalWorkingMemory {
@@ -524,6 +526,16 @@ public class MockWorkingMemory implements InternalWorkingMemory {
     }
 
     public InternalFactHandle getInitialFactHandle() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public TimerService getTimerService() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public SessionClock getSessionClock() {
         // TODO Auto-generated method stub
         return null;
     }
