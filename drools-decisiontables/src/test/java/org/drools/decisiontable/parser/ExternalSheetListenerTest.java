@@ -404,11 +404,6 @@ public class ExternalSheetListenerTest extends TestCase {
                     return null;
                 }
 
-                public SessionClock getSessionClock() {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
-
                 public Collection getProcessInstances() {
                     // TODO Auto-generated method stub
                     return null;
@@ -452,6 +447,11 @@ public class ExternalSheetListenerTest extends TestCase {
 					// TODO Auto-generated method stub
 					return null;
 				}
+
+                public SessionClock getSessionClock() {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
 			};
 		}
 	}
