@@ -47,7 +47,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
 
     private static final String[] SUPPORTED_IDS = { Operator.EQUAL.getOperatorString(), Operator.NOT_EQUAL.getOperatorString() };
     private EvaluatorCache evaluators = new EvaluatorCache() {
-        private static final long serialVersionUID = 4782368623L;
+        private static final long serialVersionUID = 400L;
         {
             addEvaluator( ValueType.ARRAY_TYPE,         Operator.EQUAL,         ArrayEqualEvaluator.INSTANCE );
             addEvaluator( ValueType.ARRAY_TYPE,         Operator.NOT_EQUAL,     ArrayNotEqualEvaluator.INSTANCE );
@@ -1707,36 +1707,18 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
                                 final Object object1, final FieldValue object2) {
             final Object value1 = extractor.getValue( workingMemory, object1 );
             final Object value2 = object2.getValue();
-            if ( value1 == null ) {
-                return value2 == null;
-            }
-            if( value2 != null && value2 instanceof ShadowProxy ) {
-                return comparator.equals( value2, value1 );
-            }
             return comparator.equals( value1, value2 );
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
             final Object value = context.declaration.getExtractor().getValue( workingMemory, left );
-            if ( value == null ) {
-                return ((ObjectVariableContextEntry) context).right == null;
-            }
-            if( ((ObjectVariableContextEntry) context).right != null && ((ObjectVariableContextEntry) context).right instanceof ShadowProxy ) {
-                return comparator.equals( ((ObjectVariableContextEntry) context).right,  value );
-            }
             return comparator.equals( ((ObjectVariableContextEntry) context).right, value );
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
             final Object value = context.extractor.getValue( workingMemory, right );
-            if ( ((ObjectVariableContextEntry) context).left == null ) {
-                return value == null;
-            }
-            if( value != null && value instanceof ShadowProxy ) {
-                return comparator.equals( value, ((ObjectVariableContextEntry) context).left );
-            }
             return comparator.equals( value, ((ObjectVariableContextEntry) context).left );
         }
 
@@ -1746,12 +1728,6 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
                                 final InternalReadAccessor extractor2, final Object object2) {
             final Object value1 = extractor1.getValue( workingMemory, object1 );
             final Object value2 = extractor2.getValue( workingMemory, object2 );
-            if ( value1 == null ) {
-                return value2 == null;
-            }
-            if( value2 != null && value2 instanceof ShadowProxy ) {
-                return comparator.equals( value2, value1 );
-            }
             return comparator.equals( value1, value2 );
         }
 
@@ -1779,36 +1755,18 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
                                 final Object object1, final FieldValue object2) {
             final Object value1 = extractor.getValue( workingMemory, object1 );
             final Object value2 = object2.getValue();
-            if ( value1 == null ) {
-                return value2 != null;
-            }
-            if( value2 != null && value2 instanceof ShadowProxy ) {
-                return !comparator.equals( value2, value1 );
-            }
             return !comparator.equals( value1, value2 );
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
             final Object value = context.declaration.getExtractor().getValue( workingMemory, left );
-            if ( value == null ) {
-                return ((ObjectVariableContextEntry) context).right != null;
-            }
-            if( ((ObjectVariableContextEntry) context).right != null && ((ObjectVariableContextEntry) context).right instanceof ShadowProxy ) {
-                return !comparator.equals( ((ObjectVariableContextEntry) context).right, value );
-            }
             return !comparator.equals( ((ObjectVariableContextEntry) context).right, value );
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
             final Object value = context.extractor.getValue( workingMemory, right );
-            if ( ((ObjectVariableContextEntry) context).left == null ) {
-                return value != null;
-            }
-            if( value != null && value instanceof ShadowProxy ) {
-                return !comparator.equals( value, ((ObjectVariableContextEntry) context).left );
-            }
             return !comparator.equals( value, ((ObjectVariableContextEntry) context).left );
         }
 
@@ -1817,13 +1775,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
                                 final Object object1,
                                 final InternalReadAccessor extractor2, final Object object2) {
             final Object value1 = extractor1.getValue( workingMemory, object1 );
-            final Object value2 = extractor2.getValue( workingMemory, object2 );
-            if ( value1 == null ) {
-                return value2 != null;
-            }
-            if( value2 != null && value2 instanceof ShadowProxy ) {
-                return !comparator.equals( value2, value1 );
-            }
+            final Object value2 = extractor2.getValue( workingMemory, object2 );           
             return !comparator.equals( value1, value2 );
         }
 
@@ -2083,9 +2035,6 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
         public boolean equals( Object arg0, Object arg1 ) {
             if ( arg0 == null || arg1 == null ) {
                 return arg0 == arg1;
-            }
-            if( arg1 != null && arg1 instanceof ShadowProxy ) {
-                return arg1.equals( arg0 );
             }
             if( arg0 instanceof Number ){
                 double val0 = ((Number) arg0).doubleValue();
