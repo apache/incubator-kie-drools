@@ -37,11 +37,11 @@ public class TimerTest extends TestCase {
         
         counter = 0;
         timer = new Timer();
-        timer.setDelay(1000);
+        timer.setDelay(500);
         timerManager.registerTimer(timer, processInstance);
         assertEquals(0, counter);
         try {
-        	Thread.sleep(2000);
+        	Thread.sleep(1000);
         } catch (InterruptedException e) {
         	// do nothing
         }
@@ -50,18 +50,18 @@ public class TimerTest extends TestCase {
         counter = 0;
         timer = new Timer();
         timer.setDelay(500);
-        timer.setPeriod(2000);
+        timer.setPeriod(300);
         timerManager.registerTimer(timer, processInstance);
         assertEquals(0, counter);
         try {
-        	Thread.sleep(2500);
+        	Thread.sleep(700);
         } catch (InterruptedException e) {
         	// do nothing
         }
         assertEquals(1, counter);
         
         try {
-            Thread.sleep(2000);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             // do nothing
         }
@@ -71,7 +71,7 @@ public class TimerTest extends TestCase {
         timerManager.cancelTimer(timer);
         int lastCount = counter;
         try {            
-        	Thread.sleep(2000);
+        	Thread.sleep(1000);
         } catch (InterruptedException e) {
         	// do nothing
         }
