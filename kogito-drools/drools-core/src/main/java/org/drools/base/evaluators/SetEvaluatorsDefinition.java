@@ -17,6 +17,7 @@
  */
 package org.drools.base.evaluators;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.io.ObjectInput;
@@ -31,7 +32,6 @@ import org.drools.rule.VariableRestriction.VariableContextEntry;
 import org.drools.spi.Evaluator;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.FieldValue;
-import org.drools.util.ShadowProxyUtils;
 
 /**
  * This class defines all the set built in
@@ -57,70 +57,175 @@ public class SetEvaluatorsDefinition
                                                                                   true );
 
     private static final String[] SUPPORTED_IDS = {CONTAINS.getOperatorString(), EXCLUDES.getOperatorString(), MEMBEROF.getOperatorString()};
-    private EvaluatorCache     evaluators    = new EvaluatorCache() {
-        private static final long serialVersionUID = 4782368623L;
-        {
-            addEvaluator( ValueType.ARRAY_TYPE,                          CONTAINS,                          ArrayContainsEvaluator.INSTANCE );
-            addEvaluator( ValueType.ARRAY_TYPE,                          NOT_CONTAINS,                      ArrayExcludesEvaluator.INSTANCE );
-            addEvaluator( ValueType.ARRAY_TYPE,                          EXCLUDES,                          ArrayExcludesEvaluator.INSTANCE );
-            addEvaluator( ValueType.ARRAY_TYPE,                          NOT_EXCLUDES,                      ArrayContainsEvaluator.INSTANCE );
-            addEvaluator( ValueType.ARRAY_TYPE,                          MEMBEROF,                          ArrayMemberOfEvaluator.INSTANCE );
-            addEvaluator( ValueType.ARRAY_TYPE,                          NOT_MEMBEROF,                      ArrayNotMemberOfEvaluator.INSTANCE );
-            addEvaluator( ValueType.BIG_DECIMAL_TYPE,                    MEMBEROF,                          BigDecimalMemberOfEvaluator.INSTANCE );
-            addEvaluator( ValueType.BIG_DECIMAL_TYPE,                    NOT_MEMBEROF,                      BigDecimalNotMemberOfEvaluator.INSTANCE );
-            addEvaluator( ValueType.BIG_INTEGER_TYPE,                    MEMBEROF,                          BigIntegerMemberOfEvaluator.INSTANCE );
-            addEvaluator( ValueType.BIG_INTEGER_TYPE,                    NOT_MEMBEROF,                      BigIntegerNotMemberOfEvaluator.INSTANCE );
-            addEvaluator( ValueType.BOOLEAN_TYPE,                        MEMBEROF,                          BooleanMemberOfEvaluator.INSTANCE );
-            addEvaluator( ValueType.BOOLEAN_TYPE,                        NOT_MEMBEROF,                      BooleanNotMemberOfEvaluator.INSTANCE );
-            addEvaluator( ValueType.PBOOLEAN_TYPE,                       MEMBEROF,                          BooleanMemberOfEvaluator.INSTANCE );
-            addEvaluator( ValueType.PBOOLEAN_TYPE,                       NOT_MEMBEROF,                      BooleanNotMemberOfEvaluator.INSTANCE );
-            addEvaluator( ValueType.BYTE_TYPE,                           MEMBEROF,                          ByteMemberOfEvaluator.INSTANCE );
-            addEvaluator( ValueType.BYTE_TYPE,                           NOT_MEMBEROF,                      ByteNotMemberOfEvaluator.INSTANCE );
-            addEvaluator( ValueType.PBYTE_TYPE,                          MEMBEROF,                          ByteMemberOfEvaluator.INSTANCE );
-            addEvaluator( ValueType.PBYTE_TYPE,                          NOT_MEMBEROF,                      ByteNotMemberOfEvaluator.INSTANCE );
-            addEvaluator( ValueType.CHAR_TYPE,                           MEMBEROF,                          CharacterMemberOfEvaluator.INSTANCE );
-            addEvaluator( ValueType.CHAR_TYPE,                           NOT_MEMBEROF,                      CharacterNotMemberOfEvaluator.INSTANCE );
-            addEvaluator( ValueType.PCHAR_TYPE,                          MEMBEROF,                          CharacterMemberOfEvaluator.INSTANCE );
-            addEvaluator( ValueType.PCHAR_TYPE,                          NOT_MEMBEROF,                      CharacterNotMemberOfEvaluator.INSTANCE );
-            addEvaluator( ValueType.DATE_TYPE,                           MEMBEROF,                          DateMemberOfEvaluator.INSTANCE );
-            addEvaluator( ValueType.DATE_TYPE,                           NOT_MEMBEROF,                      DateNotMemberOfEvaluator.INSTANCE );
-            addEvaluator( ValueType.DOUBLE_TYPE,                         MEMBEROF,                          DoubleMemberOfEvaluator.INSTANCE );
-            addEvaluator( ValueType.DOUBLE_TYPE,                         NOT_MEMBEROF,                      DoubleNotMemberOfEvaluator.INSTANCE );
-            addEvaluator( ValueType.PDOUBLE_TYPE,                        MEMBEROF,                          DoubleMemberOfEvaluator.INSTANCE );
-            addEvaluator( ValueType.PDOUBLE_TYPE,                        NOT_MEMBEROF,                      DoubleNotMemberOfEvaluator.INSTANCE );
-            addEvaluator( ValueType.FLOAT_TYPE,                          MEMBEROF,                          FloatMemberOfEvaluator.INSTANCE );
-            addEvaluator( ValueType.FLOAT_TYPE,                          NOT_MEMBEROF,                      FloatNotMemberOfEvaluator.INSTANCE );
-            addEvaluator( ValueType.PFLOAT_TYPE,                         MEMBEROF,                          FloatMemberOfEvaluator.INSTANCE );
-            addEvaluator( ValueType.PFLOAT_TYPE,                         NOT_MEMBEROF,                      FloatNotMemberOfEvaluator.INSTANCE );
-            addEvaluator( ValueType.INTEGER_TYPE,                        MEMBEROF,                          IntegerMemberOfEvaluator.INSTANCE );
-            addEvaluator( ValueType.INTEGER_TYPE,                        NOT_MEMBEROF,                      IntegerNotMemberOfEvaluator.INSTANCE );
-            addEvaluator( ValueType.PINTEGER_TYPE,                       MEMBEROF,                          IntegerMemberOfEvaluator.INSTANCE );
-            addEvaluator( ValueType.PINTEGER_TYPE,                       NOT_MEMBEROF,                      IntegerNotMemberOfEvaluator.INSTANCE );
-            addEvaluator( ValueType.LONG_TYPE,                           MEMBEROF,                          LongMemberOfEvaluator.INSTANCE );
-            addEvaluator( ValueType.LONG_TYPE,                           NOT_MEMBEROF,                      LongNotMemberOfEvaluator.INSTANCE );
-            addEvaluator( ValueType.PLONG_TYPE,                          MEMBEROF,                          LongMemberOfEvaluator.INSTANCE );
-            addEvaluator( ValueType.PLONG_TYPE,                          NOT_MEMBEROF,                      LongNotMemberOfEvaluator.INSTANCE );
-            addEvaluator( ValueType.OBJECT_TYPE,                         CONTAINS,                          ObjectContainsEvaluator.INSTANCE );
-            addEvaluator( ValueType.OBJECT_TYPE,                         NOT_CONTAINS,                      ObjectExcludesEvaluator.INSTANCE );
-            addEvaluator( ValueType.OBJECT_TYPE,                         EXCLUDES,                          ObjectExcludesEvaluator.INSTANCE );
-            addEvaluator( ValueType.OBJECT_TYPE,                         NOT_EXCLUDES,                      ObjectContainsEvaluator.INSTANCE );
-            addEvaluator( ValueType.OBJECT_TYPE,                         MEMBEROF,                          ObjectMemberOfEvaluator.INSTANCE );
-            addEvaluator( ValueType.OBJECT_TYPE,                         NOT_MEMBEROF,                      ObjectNotMemberOfEvaluator.INSTANCE );
-            addEvaluator( ValueType.SHORT_TYPE,                          MEMBEROF,                          ShortMemberOfEvaluator.INSTANCE );
-            addEvaluator( ValueType.SHORT_TYPE,                          NOT_MEMBEROF,                      ShortNotMemberOfEvaluator.INSTANCE );
-            addEvaluator( ValueType.PSHORT_TYPE,                         MEMBEROF,                          ShortMemberOfEvaluator.INSTANCE );
-            addEvaluator( ValueType.PSHORT_TYPE,                         NOT_MEMBEROF,                      ShortNotMemberOfEvaluator.INSTANCE );
-            addEvaluator( ValueType.STRING_TYPE,                         MEMBEROF,                          StringMemberOfEvaluator.INSTANCE );
-            addEvaluator( ValueType.STRING_TYPE,                         NOT_MEMBEROF,                      StringNotMemberOfEvaluator.INSTANCE );
-        }
-    };
+    private EvaluatorCache        evaluators    = new EvaluatorCache() {
+                                                    private static final long serialVersionUID = 4782368623L;
+                                                    {
+                                                        addEvaluator( ValueType.ARRAY_TYPE,
+                                                                      CONTAINS,
+                                                                      ArrayContainsEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.ARRAY_TYPE,
+                                                                      NOT_CONTAINS,
+                                                                      ArrayExcludesEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.ARRAY_TYPE,
+                                                                      EXCLUDES,
+                                                                      ArrayExcludesEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.ARRAY_TYPE,
+                                                                      NOT_EXCLUDES,
+                                                                      ArrayContainsEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.ARRAY_TYPE,
+                                                                      MEMBEROF,
+                                                                      ArrayMemberOfEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.ARRAY_TYPE,
+                                                                      NOT_MEMBEROF,
+                                                                      ArrayNotMemberOfEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.BIG_DECIMAL_TYPE,
+                                                                      MEMBEROF,
+                                                                      BigDecimalMemberOfEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.BIG_DECIMAL_TYPE,
+                                                                      NOT_MEMBEROF,
+                                                                      BigDecimalNotMemberOfEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.BIG_INTEGER_TYPE,
+                                                                      MEMBEROF,
+                                                                      BigIntegerMemberOfEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.BIG_INTEGER_TYPE,
+                                                                      NOT_MEMBEROF,
+                                                                      BigIntegerNotMemberOfEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.BOOLEAN_TYPE,
+                                                                      MEMBEROF,
+                                                                      BooleanMemberOfEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.BOOLEAN_TYPE,
+                                                                      NOT_MEMBEROF,
+                                                                      BooleanNotMemberOfEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.PBOOLEAN_TYPE,
+                                                                      MEMBEROF,
+                                                                      BooleanMemberOfEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.PBOOLEAN_TYPE,
+                                                                      NOT_MEMBEROF,
+                                                                      BooleanNotMemberOfEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.BYTE_TYPE,
+                                                                      MEMBEROF,
+                                                                      ByteMemberOfEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.BYTE_TYPE,
+                                                                      NOT_MEMBEROF,
+                                                                      ByteNotMemberOfEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.PBYTE_TYPE,
+                                                                      MEMBEROF,
+                                                                      ByteMemberOfEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.PBYTE_TYPE,
+                                                                      NOT_MEMBEROF,
+                                                                      ByteNotMemberOfEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.CHAR_TYPE,
+                                                                      MEMBEROF,
+                                                                      CharacterMemberOfEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.CHAR_TYPE,
+                                                                      NOT_MEMBEROF,
+                                                                      CharacterNotMemberOfEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.PCHAR_TYPE,
+                                                                      MEMBEROF,
+                                                                      CharacterMemberOfEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.PCHAR_TYPE,
+                                                                      NOT_MEMBEROF,
+                                                                      CharacterNotMemberOfEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.DATE_TYPE,
+                                                                      MEMBEROF,
+                                                                      DateMemberOfEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.DATE_TYPE,
+                                                                      NOT_MEMBEROF,
+                                                                      DateNotMemberOfEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.DOUBLE_TYPE,
+                                                                      MEMBEROF,
+                                                                      DoubleMemberOfEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.DOUBLE_TYPE,
+                                                                      NOT_MEMBEROF,
+                                                                      DoubleNotMemberOfEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.PDOUBLE_TYPE,
+                                                                      MEMBEROF,
+                                                                      DoubleMemberOfEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.PDOUBLE_TYPE,
+                                                                      NOT_MEMBEROF,
+                                                                      DoubleNotMemberOfEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.FLOAT_TYPE,
+                                                                      MEMBEROF,
+                                                                      FloatMemberOfEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.FLOAT_TYPE,
+                                                                      NOT_MEMBEROF,
+                                                                      FloatNotMemberOfEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.PFLOAT_TYPE,
+                                                                      MEMBEROF,
+                                                                      FloatMemberOfEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.PFLOAT_TYPE,
+                                                                      NOT_MEMBEROF,
+                                                                      FloatNotMemberOfEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.INTEGER_TYPE,
+                                                                      MEMBEROF,
+                                                                      IntegerMemberOfEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.INTEGER_TYPE,
+                                                                      NOT_MEMBEROF,
+                                                                      IntegerNotMemberOfEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.PINTEGER_TYPE,
+                                                                      MEMBEROF,
+                                                                      IntegerMemberOfEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.PINTEGER_TYPE,
+                                                                      NOT_MEMBEROF,
+                                                                      IntegerNotMemberOfEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.LONG_TYPE,
+                                                                      MEMBEROF,
+                                                                      LongMemberOfEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.LONG_TYPE,
+                                                                      NOT_MEMBEROF,
+                                                                      LongNotMemberOfEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.PLONG_TYPE,
+                                                                      MEMBEROF,
+                                                                      LongMemberOfEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.PLONG_TYPE,
+                                                                      NOT_MEMBEROF,
+                                                                      LongNotMemberOfEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.OBJECT_TYPE,
+                                                                      CONTAINS,
+                                                                      ObjectContainsEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.OBJECT_TYPE,
+                                                                      NOT_CONTAINS,
+                                                                      ObjectExcludesEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.OBJECT_TYPE,
+                                                                      EXCLUDES,
+                                                                      ObjectExcludesEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.OBJECT_TYPE,
+                                                                      NOT_EXCLUDES,
+                                                                      ObjectContainsEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.OBJECT_TYPE,
+                                                                      MEMBEROF,
+                                                                      ObjectMemberOfEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.OBJECT_TYPE,
+                                                                      NOT_MEMBEROF,
+                                                                      ObjectNotMemberOfEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.SHORT_TYPE,
+                                                                      MEMBEROF,
+                                                                      ShortMemberOfEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.SHORT_TYPE,
+                                                                      NOT_MEMBEROF,
+                                                                      ShortNotMemberOfEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.PSHORT_TYPE,
+                                                                      MEMBEROF,
+                                                                      ShortMemberOfEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.PSHORT_TYPE,
+                                                                      NOT_MEMBEROF,
+                                                                      ShortNotMemberOfEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.STRING_TYPE,
+                                                                      MEMBEROF,
+                                                                      StringMemberOfEvaluator.INSTANCE );
+                                                        addEvaluator( ValueType.STRING_TYPE,
+                                                                      NOT_MEMBEROF,
+                                                                      StringNotMemberOfEvaluator.INSTANCE );
+                                                    }
+                                                };
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        evaluators  = (EvaluatorCache)in.readObject();
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        evaluators = (EvaluatorCache) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(evaluators);
+        out.writeObject( evaluators );
     }
 
     /**
@@ -189,7 +294,7 @@ public class SetEvaluatorsDefinition
             final Object[] array = (Object[]) extractor.getValue( workingMemory,
                                                                   object1 );
             if ( array == null ) return false;
-            return ShadowProxyUtils.contains( array,
+            return contains( array,
                                               value );
         }
 
@@ -200,7 +305,7 @@ public class SetEvaluatorsDefinition
                                                                               left );
             final Object[] array = (Object[]) ((ObjectVariableContextEntry) context).right;
             if ( array == null ) return false;
-            return ShadowProxyUtils.contains( array,
+            return contains( array,
                                               value );
         }
 
@@ -211,7 +316,7 @@ public class SetEvaluatorsDefinition
             final Object[] array = (Object[]) context.extractor.getValue( workingMemory,
                                                                           right );
             if ( array == null ) return false;
-            return ShadowProxyUtils.contains( array,
+            return contains( array,
                                               value );
         }
 
@@ -226,7 +331,7 @@ public class SetEvaluatorsDefinition
                                                                    object1 );
 
             if ( array == null ) return false;
-            return ShadowProxyUtils.contains( array,
+            return contains( array,
                                               value );
         }
 
@@ -255,8 +360,8 @@ public class SetEvaluatorsDefinition
             final Object[] array = (Object[]) extractor.getValue( workingMemory,
                                                                   object1 );
             if ( array == null ) return true;
-            return !ShadowProxyUtils.contains( array,
-                                               value );
+            return !contains( array,
+                              value );
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
@@ -266,8 +371,8 @@ public class SetEvaluatorsDefinition
                                                                               left );
             final Object[] array = (Object[]) ((ObjectVariableContextEntry) context).right;
             if ( array == null ) return true;
-            return !ShadowProxyUtils.contains( array,
-                                               value );
+            return !contains( array,
+                              value );
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
@@ -277,8 +382,8 @@ public class SetEvaluatorsDefinition
             final Object[] array = (Object[]) context.extractor.getValue( workingMemory,
                                                                           right );
             if ( array == null ) return true;
-            return !ShadowProxyUtils.contains( array,
-                                               value );
+            return !contains( array,
+                              value );
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
@@ -292,8 +397,8 @@ public class SetEvaluatorsDefinition
                                                                    object1 );
 
             if ( array == null ) return true;
-            return !ShadowProxyUtils.contains( array,
-                                               value );
+            return !contains( array,
+                              value );
         }
 
         public String toString() {
@@ -321,8 +426,8 @@ public class SetEvaluatorsDefinition
             final Object value = extractor.getValue( workingMemory,
                                                      object1 );
             if ( array == null ) return false;
-            return ShadowProxyUtils.contains( array,
-                                              value );
+            return contains( array,
+                             value );
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
@@ -332,8 +437,8 @@ public class SetEvaluatorsDefinition
                                                                                            left );
             final Object value = ((ObjectVariableContextEntry) context).right;
             if ( array == null ) return false;
-            return ShadowProxyUtils.contains( array,
-                                              value );
+            return contains( array,
+                             value );
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
@@ -343,8 +448,8 @@ public class SetEvaluatorsDefinition
             final Object value = context.extractor.getValue( workingMemory,
                                                              right );
             if ( array == null ) return false;
-            return ShadowProxyUtils.contains( array,
-                                              value );
+            return contains( array,
+                             value );
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
@@ -358,8 +463,8 @@ public class SetEvaluatorsDefinition
                                                       object1 );
 
             if ( array == null ) return false;
-            return ShadowProxyUtils.contains( array,
-                                              value );
+            return contains( array,
+                             value );
         }
 
         public String toString() {
@@ -387,8 +492,8 @@ public class SetEvaluatorsDefinition
             final Object value = extractor.getValue( workingMemory,
                                                      object1 );
             if ( array == null ) return true;
-            return !ShadowProxyUtils.contains( array,
-                                               value );
+            return !contains( array,
+                              value );
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
@@ -398,8 +503,8 @@ public class SetEvaluatorsDefinition
                                                                                            left );
             final Object value = ((ObjectVariableContextEntry) context).right;
             if ( array == null ) return true;
-            return !ShadowProxyUtils.contains( array,
-                                               value );
+            return !SetEvaluatorsDefinition.contains( array,
+                              value );
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
@@ -409,8 +514,8 @@ public class SetEvaluatorsDefinition
             final Object value = context.extractor.getValue( workingMemory,
                                                              right );
             if ( array == null ) return true;
-            return !ShadowProxyUtils.contains( array,
-                                               value );
+            return !contains( array,
+                              value );
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
@@ -424,13 +529,23 @@ public class SetEvaluatorsDefinition
                                                       object1 );
 
             if ( array == null ) return true;
-            return !ShadowProxyUtils.contains( array,
-                                               value );
+            return !SetEvaluatorsDefinition.contains( array,
+                              value );
         }
 
         public String toString() {
             return "Array not memberOf";
         }
+    }
+    
+    private static boolean contains(Object[] array,
+                             Object value) {
+        for ( int i = 0; i < array.length; i++ ) {
+            if ( array[i] == null && value == null || array[i] != null && array[i].equals( value ) ) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static abstract class BaseMemberOfEvaluator extends BaseEvaluator {
@@ -438,7 +553,8 @@ public class SetEvaluatorsDefinition
         private static final long serialVersionUID = 2017803222427893249L;
 
         public BaseMemberOfEvaluator() {
-            super(null, null);
+            super( null,
+                   null );
         }
 
         public BaseMemberOfEvaluator(ValueType type,
@@ -464,8 +580,7 @@ public class SetEvaluatorsDefinition
             final Collection col = (Collection) object2.getValue();
             final Object value = extractor.getValue( workingMemory,
                                                      object1 );
-            return ShadowProxyUtils.contains( col,
-                                              value );
+            return col.contains( value );
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
@@ -480,8 +595,7 @@ public class SetEvaluatorsDefinition
             }
             final Collection col = (Collection) object;
             final Object value = ((ObjectVariableContextEntry) context).right;
-            return ShadowProxyUtils.contains( col,
-                                              value );
+            return col.contains( value );
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
@@ -496,8 +610,7 @@ public class SetEvaluatorsDefinition
             final Collection col = (Collection) object;
             final Object value = context.extractor.getValue( workingMemory,
                                                              right );
-            return ShadowProxyUtils.contains( col,
-                                              value );
+            return col.contains( value );
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
@@ -515,8 +628,7 @@ public class SetEvaluatorsDefinition
             final Collection col = (Collection) object;
             final Object value = extractor1.getValue( workingMemory,
                                                       object1 );
-            return ShadowProxyUtils.contains( col,
-                                              value );
+            return col.contains( value );
         }
 
         public abstract String toString();
@@ -550,8 +662,7 @@ public class SetEvaluatorsDefinition
             final Collection col = (Collection) object2.getValue();
             final Object value = extractor.getValue( workingMemory,
                                                      object1 );
-            return !ShadowProxyUtils.contains( col,
-                                               value );
+            return !col.contains( value );
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
@@ -566,8 +677,7 @@ public class SetEvaluatorsDefinition
             }
             final Collection col = (Collection) object;
             final Object value = ((ObjectVariableContextEntry) context).right;
-            return !ShadowProxyUtils.contains( col,
-                                               value );
+            return !col.contains( value );
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
@@ -582,8 +692,7 @@ public class SetEvaluatorsDefinition
             final Collection col = (Collection) object;
             final Object value = context.extractor.getValue( workingMemory,
                                                              right );
-            return !ShadowProxyUtils.contains( col,
-                                               value );
+            return !col.contains( value );
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
@@ -601,8 +710,7 @@ public class SetEvaluatorsDefinition
             final Collection col = (Collection) object;
             final Object value = extractor1.getValue( workingMemory,
                                                       object1 );
-            return !ShadowProxyUtils.contains( col,
-                                               value );
+            return !col.contains( value );
         }
 
         public abstract String toString();
@@ -929,8 +1037,7 @@ public class SetEvaluatorsDefinition
             final Object value = object2.getValue();
             final Collection col = (Collection) extractor.getValue( workingMemory,
                                                                     object1 );
-            return (col == null) ? false : ShadowProxyUtils.contains( col,
-                                                                      value );
+            return (col == null) ? false : col.contains( value );
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
@@ -939,8 +1046,7 @@ public class SetEvaluatorsDefinition
             final Object value = context.declaration.getExtractor().getValue( workingMemory,
                                                                               left );
             final Collection col = (Collection) ((ObjectVariableContextEntry) context).right;
-            return (col == null) ? false : ShadowProxyUtils.contains( col,
-                                                                      value );
+            return (col == null) ? false : col.contains( value );
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
@@ -949,8 +1055,7 @@ public class SetEvaluatorsDefinition
             final Object value = ((ObjectVariableContextEntry) context).left;
             final Collection col = (Collection) context.extractor.getValue( workingMemory,
                                                                             right );
-            return (col == null) ? false : ShadowProxyUtils.contains( col,
-                                                                      value );
+            return (col == null) ? false : col.contains( value );
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
@@ -962,8 +1067,7 @@ public class SetEvaluatorsDefinition
                                                       object2 );
             final Collection col = (Collection) extractor1.getValue( workingMemory,
                                                                      object1 );
-            return (col == null) ? false : ShadowProxyUtils.contains( col,
-                                                                      value );
+            return (col == null) ? false : col.contains( value );
         }
 
         public String toString() {
@@ -990,8 +1094,7 @@ public class SetEvaluatorsDefinition
             final Object value = object2.getValue();
             final Collection col = (Collection) extractor.getValue( workingMemory,
                                                                     object1 );
-            return (col == null) ? true : !ShadowProxyUtils.contains( col,
-                                                                      value );
+            return (col == null) ? true : !col.contains( value );
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
@@ -1000,8 +1103,7 @@ public class SetEvaluatorsDefinition
             final Object value = context.declaration.getExtractor().getValue( workingMemory,
                                                                               left );
             final Collection col = (Collection) ((ObjectVariableContextEntry) context).right;
-            return (col == null) ? true : !ShadowProxyUtils.contains( col,
-                                                                      value );
+            return (col == null) ? true : !col.contains( value );
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
@@ -1010,8 +1112,7 @@ public class SetEvaluatorsDefinition
             final Object value = ((ObjectVariableContextEntry) context).left;
             final Collection col = (Collection) context.extractor.getValue( workingMemory,
                                                                             right );
-            return (col == null) ? true : !ShadowProxyUtils.contains( col,
-                                                                      value );
+            return (col == null) ? true : !col.contains( value );
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
@@ -1023,8 +1124,7 @@ public class SetEvaluatorsDefinition
                                                       object2 );
             final Collection col = (Collection) extractor1.getValue( workingMemory,
                                                                      object1 );
-            return (col == null) ? true : !ShadowProxyUtils.contains( col,
-                                                                      value );
+            return (col == null) ? true : !col.contains( value );
         }
 
         public String toString() {
