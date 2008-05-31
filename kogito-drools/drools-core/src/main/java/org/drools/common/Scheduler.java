@@ -16,8 +16,13 @@ package org.drools.common;
  * limitations under the License.
  */
 
-import java.util.Date;
-import java.util.Timer;
+import org.drools.Agenda;
+import org.drools.process.instance.timer.TimerManager.TimerTrigger;
+import org.drools.time.Job;
+import org.drools.time.JobContext;
+import org.drools.time.JobHandle;
+import org.drools.time.TimerService;
+import org.drools.time.impl.JDKTimerService;
 
 /**
  * Scheduler for rules requiring truth duration.
@@ -50,7 +55,7 @@ final class Scheduler {
     // ------------------------------------------------------------
 
     /** Alarm manager. */
-    private final Timer scheduler;
+    private final TimerService timerService;
 
     // ------------------------------------------------------------
     // Constructors
@@ -60,7 +65,7 @@ final class Scheduler {
      * Construct.
      */
     private Scheduler() {
-        this.scheduler = new Timer( true );
+        this.timerService = new JDKTimerService();
     }
 
     /**
@@ -71,12 +76,60 @@ final class Scheduler {
      * @param workingMemory
      *            The working memory session.
      */
-    void scheduleAgendaItem(final ScheduledAgendaItem item) {
-        final Date now = new Date();
-
-        final Date then = new Date( now.getTime() + item.getRule().getDuration().getDuration( item.getTuple() ) );
-
-        this.scheduler.schedule( item,
-                                 then );
+    void scheduleAgendaItem(final ScheduledAgendaItem item, DefaultAgenda agenda) {
+        DuractionJob job = new DuractionJob();        
+        DuractionJobContext ctx = new DuractionJobContext( item, agenda );
+        TimerTrigger trigger = new TimerTrigger( item.getRule().getDuration().getDuration( item.getTuple() ), 0);
+        
+        
+        JobHandle jobHandle = this.timerService.scheduleJob( job, ctx, trigger );
+        item.setJobHandle( jobHandle );
     }
+    
+    public void removeAgendaItem(final ScheduledAgendaItem item) {
+        this.timerService.removeJob( item.getJobHandle() );
+    }    
+    
+    public static class DuractionJob implements Job {
+        public void execute(JobContext ctx) {
+            DefaultAgenda agenda = ( DefaultAgenda ) ((DuractionJobContext)ctx).getAgenda();
+            ScheduledAgendaItem item  = ((DuractionJobContext)ctx).getScheduledAgendaItem();
+            
+            agenda.fireActivation( item );
+            agenda.getScheduledActivationsLinkedList().remove( item );
+            agenda.getWorkingMemory().fireAllRules();            
+        }        
+    }
+    
+    public static class DuractionJobContext implements JobContext {
+        private JobHandle jobHandle;
+        private ScheduledAgendaItem scheduledAgendaItem;
+        private Agenda agenda;                
+        
+        public DuractionJobContext(ScheduledAgendaItem scheduledAgendaItem,
+                                   Agenda agenda) {
+            this.scheduledAgendaItem = scheduledAgendaItem;
+            this.agenda = agenda;
+        }
+
+        public DuractionJobContext(ScheduledAgendaItem agendaItem) {
+            this.scheduledAgendaItem = scheduledAgendaItem;
+        }
+        
+        public Agenda getAgenda() {
+            return this.agenda;
+        }
+        
+        public ScheduledAgendaItem getScheduledAgendaItem() {
+            return this.scheduledAgendaItem;
+        }
+
+        public JobHandle getJobHandle() {
+            return this.jobHandle;
+        }
+
+        public void setJobHandle(JobHandle jobHandle) {
+            this.jobHandle = jobHandle;
+        }        
+    }    
 }

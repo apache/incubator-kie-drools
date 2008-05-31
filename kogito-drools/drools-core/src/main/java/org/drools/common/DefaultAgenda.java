@@ -265,7 +265,7 @@ public class DefaultAgenda
      *            The item to schedule.
      */
     public void scheduleItem(final ScheduledAgendaItem item) {
-        Scheduler.getInstance().scheduleAgendaItem( item );
+        Scheduler.getInstance().scheduleAgendaItem( item, this );
 
         if ( this.scheduledActivations == null ) {
             this.scheduledActivations = new org.drools.util.LinkedList();
@@ -276,7 +276,7 @@ public class DefaultAgenda
 
     public void removeScheduleItem(final ScheduledAgendaItem item) {
         this.scheduledActivations.remove( item );
-        item.cancel();
+        Scheduler.getInstance().removeAgendaItem( item );
     }
 
     public void addAgendaGroup(final AgendaGroup agendaGroup) {
@@ -502,7 +502,7 @@ public class DefaultAgenda
         final EventSupport eventsupport = (EventSupport) this.workingMemory;
         if ( this.scheduledActivations != null && !this.scheduledActivations.isEmpty() ) {
             for ( ScheduledAgendaItem item = (ScheduledAgendaItem) this.scheduledActivations.removeFirst(); item != null; item = (ScheduledAgendaItem) this.scheduledActivations.removeFirst() ) {
-                item.cancel();
+                Scheduler.getInstance().removeAgendaItem( item );
                 eventsupport.getAgendaEventSupport().fireActivationCancelled( item,
                                                                               this.workingMemory );
             }
