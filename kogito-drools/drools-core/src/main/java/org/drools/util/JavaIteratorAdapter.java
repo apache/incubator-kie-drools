@@ -51,9 +51,7 @@ public class JavaIteratorAdapter
         }
 
         if ( this.type == OBJECT ) {
-            InternalFactHandle handle = (InternalFactHandle) current.getKey();
-            Object object = (handle.isShadowFact()) ? ((ShadowProxy) handle.getObject()).getShadowedObject() : handle.getObject();
-            return object;
+            return ((InternalFactHandle) current.getKey()).getObject();
         } else {
             return current.getKey();
         }
@@ -68,8 +66,7 @@ public class JavaIteratorAdapter
                 break;
             }
             if ( this.filter != null ) {
-                InternalFactHandle handle = (InternalFactHandle) entry.getKey();
-                Object object = (handle.isShadowFact()) ? ((ShadowProxy) handle.getObject()).getShadowedObject() : handle.getObject();
+                Object object = ((InternalFactHandle) entry.getKey()).getObject();
                 if ( this.filter.accept( object ) == false ) {
                     entry = null;
                 }

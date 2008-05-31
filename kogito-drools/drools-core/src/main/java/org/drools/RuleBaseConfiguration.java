@@ -69,8 +69,6 @@ import org.mvel.MVEL;
 
 /**
  * drools.maintainTms = <true|false>
- * drools.shadowproxy = <true|false> // sequentail=true always overrides setting this to false
- * drools.shadowproxy.exclude = org.domainy.* org.domainx.ClassZ
  * drools.sequential = <true|false>
  * drools.sequential.agenda = <sequential|dynamic>
  * drools.removeIdentities = <true|false>
@@ -119,10 +117,6 @@ public class RuleBaseConfiguration
 
     private ConflictResolver               conflictResolver;
 
-    private boolean                        shadowProxy;
-    private Map                            shadowProxyExcludes;
-    private boolean                        useStaticObjenesis;
-
     private static final String            STAR             = "*";
     private ContextInstanceFactoryRegistry processContextInstanceFactoryRegistry;
     private Map<String, WorkDefinition> workDefinitions;
@@ -151,8 +145,6 @@ public class RuleBaseConfiguration
         out.writeObject( consequenceExceptionHandler );
         out.writeObject( ruleBaseUpdateHandler );
         out.writeObject( conflictResolver );
-        out.writeBoolean( shadowProxy );
-        out.writeObject( shadowProxyExcludes );
         out.writeObject( processNodeInstanceFactoryRegistry );
     }
 
@@ -176,8 +168,6 @@ public class RuleBaseConfiguration
         consequenceExceptionHandler = (ConsequenceExceptionHandler) in.readObject();
         ruleBaseUpdateHandler = (String) in.readObject();
         conflictResolver = (ConflictResolver) in.readObject();
-        shadowProxy = in.readBoolean();
-        shadowProxyExcludes = (Map) in.readObject();
         processNodeInstanceFactoryRegistry = (NodeInstanceFactoryRegistry) in.readObject();
     }
 
@@ -298,16 +288,6 @@ public class RuleBaseConfiguration
 
         setConflictResolver( RuleBaseConfiguration.determineConflictResolver( this.chainedProperties.getProperty( "drools.conflictResolver",
                                                                                                                   "org.drools.conflict.DepthConflictResolver" ) ) );
-
-        // sequential mode always overrides and sets this to false
-        setShadowProxy( determineShadowProxy( this.chainedProperties.getProperty( "drools.shadowproxy",
-                                                                                  "true" ) ) );
-
-        setShadowProxyExcludes( this.chainedProperties.getProperty( "drools.shadowProxyExcludes",
-                                                                    "" ) );
-
-        setUseStaticObjenesis( Boolean.valueOf( this.chainedProperties.getProperty( "drools.useStaticObjenesis",
-                                                                                    "false" ) ).booleanValue() );
     }
 
     /**
@@ -743,81 +723,12 @@ public class RuleBaseConfiguration
         return this.conflictResolver;
     }
 
-    public void setShadowProxy(boolean shadowProxy) {
-        checkCanChange(); // throws an exception if a change isn't possible;
-        this.shadowProxy = shadowProxy;
-    }
-
-    public boolean isShadowProxy() {
-        return this.shadowProxy;
-    }
-
-    public boolean isUseStaticObjenesis() {
-        return useStaticObjenesis;
-    }
-
-    public void setUseStaticObjenesis(boolean useStaticObjenesis) {
-        checkCanChange(); // throws an exception if a change isn't possible;
-        this.useStaticObjenesis = useStaticObjenesis;
-    }
-
     public ClassLoader getClassLoader() {
         return classLoader;
     }
 
     public void setClassLoader(ClassLoader classLoader) {
         this.classLoader = classLoader;
-    }
-
-    public void setShadowProxyExcludes(String excludes) {
-        checkCanChange(); // throws an exception if a change isn't possible;
-        if ( excludes == null || "".equals( excludes.trim() ) ) {
-            return;
-        }
-
-        if ( this.shadowProxyExcludes == null ) {
-            this.shadowProxyExcludes = new HashMap();
-        }
-        
-        ClassUtils.addImportStylePatterns( this.shadowProxyExcludes, excludes );
-
-//        String[] items = excludes.split( " " );
-//        for ( int i = 0; i < items.length; i++ ) {
-//            String qualifiedNamespace = items[i].substring( 0,
-//                                                            items[i].lastIndexOf( '.' ) ).trim();
-//            String name = items[i].substring( items[i].lastIndexOf( '.' ) + 1 ).trim();
-//            Object object = this.shadowProxyExcludes.get( qualifiedNamespace );
-//            if ( object == null ) {
-//                if ( STAR.equals( name ) ) {
-//                    this.shadowProxyExcludes.put( qualifiedNamespace,
-//                                                  STAR );
-//                } else {
-//                    // create a new list and add it
-//                    List list = new ArrayList();
-//                    list.add( name );
-//                    this.shadowProxyExcludes.put( qualifiedNamespace,
-//                                                  list );
-//                }
-//            } else if ( name.equals( STAR ) ) {
-//                // if its a STAR now add it anyway, we don't care if it was a STAR or a List before
-//                this.shadowProxyExcludes.put( qualifiedNamespace,
-//                                              STAR );
-//            } else {
-//                // its a list so add it if it doesn't already exist
-//                List list = (List) object;
-//                if ( !list.contains( object ) ) {
-//                    list.add( name );
-//                }
-//            }
-//        }
-    }
-
-    public boolean isShadowed(String className) {
-        if ( this.shadowProxyExcludes == null ) {
-            return true;
-        }
-
-        return ClassUtils.isMatched( this.shadowProxyExcludes, className );
     }
 
     private static ConsequenceExceptionHandler determineConsequenceExceptionHandler(String className) {

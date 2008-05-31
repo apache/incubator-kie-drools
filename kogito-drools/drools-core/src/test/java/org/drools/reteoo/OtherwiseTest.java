@@ -5,7 +5,6 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassObjectType;
-import org.drools.base.ShadowProxyFactory;
 import org.drools.base.TestBean;
 import org.drools.rule.Pattern;
 import org.drools.rule.Package;

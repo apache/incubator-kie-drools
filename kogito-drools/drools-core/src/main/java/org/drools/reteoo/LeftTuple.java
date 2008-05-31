@@ -449,9 +449,6 @@ public class LeftTuple
         LeftTuple entry = this;
         while ( entry != null ) {
             Object object = entry.getLastHandle().getObject();
-            if ( object instanceof ShadowProxy ) {
-                object = ((ShadowProxy) object).getShadowedObject();
-            }
             objects[entry.index] = object;
             entry = entry.parent;
         }

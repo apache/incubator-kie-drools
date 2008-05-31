@@ -60,9 +60,7 @@ public class PatternExtractor
 
     public Object getValue(InternalWorkingMemory workingMemory,
                            final Object object) {
-        // need to use instanceof because an object may be created in nodes like accumulate and from
-        // where no shadow is applied
-        return (object instanceof ShadowProxy) ? ((ShadowProxy) object).getShadowedObject() : object;
+        return object;
     }
 
     public ObjectType getObjectType() {

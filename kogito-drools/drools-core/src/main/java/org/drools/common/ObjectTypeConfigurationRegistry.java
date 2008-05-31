@@ -43,11 +43,7 @@ public class ObjectTypeConfigurationRegistry implements Serializable {
             String key = ((Fact) object).getFactTemplate().getName();
             objectTypeConf = (ObjectTypeConf) this.typeConfMap.get( key );            
         } else {
-            if ( object instanceof ShadowProxy ) {
-                cls = ((ShadowProxy) object).getShadowedObject().getClass();
-            } else {
-                cls = object.getClass();
-            }        
+            cls = object.getClass();
             objectTypeConf = this.typeConfMap.get( cls );            
         }                       
         

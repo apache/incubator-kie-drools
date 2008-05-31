@@ -1005,12 +1005,4 @@ public class LogicalAssertionTest extends DroolsTestCase {
         assertEquals( 0,
                       workingMemory.getTruthMaintenanceSystem().getAssertMap().size() );
     }
-
-    private Object unwrapShadow(Object object) {
-        if ( object instanceof ShadowProxy ) {
-            return ((ShadowProxy) object).getShadowedObject();
-        } else {
-            return object;
-        }
-    }
 }

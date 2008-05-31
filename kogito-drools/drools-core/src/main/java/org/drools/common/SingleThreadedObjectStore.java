@@ -88,10 +88,6 @@ public class  SingleThreadedObjectStore implements Externalizable, ObjectStore {
 
             Object object = internalHandle.getObject();
 
-            if ( object != null && internalHandle.isShadowFact() ) {
-                object = ((ShadowProxy) object).getShadowedObject();
-            }
-
             return object;
         } finally {
             this.lock.unlock();
@@ -118,11 +114,7 @@ public class  SingleThreadedObjectStore implements Externalizable, ObjectStore {
     public void updateHandle(InternalFactHandle handle, Object object){
         this.assertMap.remove( handle );
         Object oldObject = handle.getObject();
-        if ( oldObject instanceof ShadowProxy ) {
-            ((ShadowProxy) oldObject).setShadowedObject( object );
-        } else {
-            handle.setObject( object );
-        }
+        handle.setObject( object );
         this.assertMap.put( handle,
                             handle,
                             false );

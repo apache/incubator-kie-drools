@@ -68,7 +68,7 @@ public class EqualityAssertMapComparator
 
         final InternalFactHandle handle = ((InternalFactHandle) o2);
 
-        o2 = (handle.isShadowFact()) ? ((ShadowProxy) handle.getObject()).getShadowedObject() : handle.getObject();
+        o2 = handle.getObject();
 
         return o1 == o2 || o1.equals( o2 );
     }

@@ -25,8 +25,6 @@ public interface ObjectTypeConf {
 
     public boolean isShadowEnabled();
 
-    public Object getShadow(final Object fact) throws RuntimeDroolsException;
-
     public ObjectTypeNode getConcreteObjectTypeNode();
 
     public void resetCache();

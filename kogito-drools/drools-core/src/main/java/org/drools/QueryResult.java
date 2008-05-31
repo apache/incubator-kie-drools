@@ -111,11 +111,6 @@ public class QueryResult {
      * @return
      */
     private Object getObject(FactHandle factHandle) {
-        InternalFactHandle handle = ( InternalFactHandle ) factHandle; 
-        if ( handle.isShadowFact() ) {
-            return ((ShadowProxy) handle.getObject()).getShadowedObject();
-        } else {
-            return handle.getObject();
-        }
+        return (( InternalFactHandle ) factHandle).getObject(); 
     }
 }

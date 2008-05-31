@@ -46,7 +46,6 @@ public class DefaultFactHandle
     private Object            object;
     private EqualityKey       key;
     private int               objectHashCode;
-    private boolean           shadowFact;
     private RightTuple        rightTuple;
     private LeftTuple         leftTuple;    
 
@@ -138,14 +137,6 @@ public class DefaultFactHandle
     public void invalidate() {
         this.id = -1;
         this.object = null;
-    }
-
-    public boolean isShadowFact() {
-        return this.shadowFact;
-    }
-
-    public void setShadowFact(final boolean shadowFact) {
-        this.shadowFact = shadowFact;
     }
 
     public Object getObject() {

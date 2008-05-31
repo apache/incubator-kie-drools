@@ -131,14 +131,9 @@ public class EntryPointNode extends ObjectSource
                              final InternalWorkingMemory workingMemory) {
         // checks if shadow is enabled
         if ( objectTypeConf.isShadowEnabled() ) {
-            // need to improve this
-            if ( !(handle.getObject() instanceof ShadowProxy) ) {
-                // replaces the actual object by its shadow before propagating
-                handle.setObject( objectTypeConf.getShadow( handle.getObject() ) );
-                handle.setShadowFact( true );
-            } else {
-                ((ShadowProxy) handle.getObject()).updateProxy();
-            }
+            // the user has implemented the ShadowProxy interface, let their implementation
+            // know it is safe to update the information the engine can see.
+            ((ShadowProxy) handle.getObject()).updateProxy();
         }
 
         ObjectTypeNode[] cachedNodes = objectTypeConf.getObjectTypeNodes();
