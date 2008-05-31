@@ -85,14 +85,12 @@ public class TimerManager {
 
         public Date getNextFireTime() {
             Date date = null;
-            if ( delay == 0 ) {
-                if ( count == 0 ) {
-                    date = new Date( System.currentTimeMillis() + this.period );
-                }
-            } else if ( count == 0 ) {
-                date = new Date( System.currentTimeMillis() + this.delay + this.period );
-            } else {
-                date = new Date( System.currentTimeMillis() + this.period );
+            if ( count == 0 ) {
+                // initial delay before first fire
+                date = new Date( System.currentTimeMillis() + this.delay  );
+            } else if ( this.period != 0 ) {
+                // repeated fires for the given period
+                date = new Date( System.currentTimeMillis() + this.period );                
             }
             count++;
             return date;
