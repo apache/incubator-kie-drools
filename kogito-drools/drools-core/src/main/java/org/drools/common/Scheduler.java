@@ -22,6 +22,7 @@ import org.drools.time.Job;
 import org.drools.time.JobContext;
 import org.drools.time.JobHandle;
 import org.drools.time.TimerService;
+import org.drools.time.TimerServiceFactory;
 import org.drools.time.impl.JDKTimerService;
 
 /**
@@ -65,7 +66,7 @@ final class Scheduler {
      * Construct.
      */
     private Scheduler() {
-        this.timerService = new JDKTimerService();
+        this.timerService = TimerServiceFactory.getTimerService();
     }
 
     /**
