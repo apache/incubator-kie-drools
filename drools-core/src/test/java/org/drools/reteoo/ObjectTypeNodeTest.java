@@ -29,7 +29,6 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.base.ClassObjectType;
 import org.drools.base.ShadowProxy;
-import org.drools.base.ShadowProxyFactory;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
@@ -386,7 +385,6 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         final List asserted = sink.getAsserted();
         assertLength( 1,
                       asserted );
-        assertTrue( ((InternalFactHandle) ((Object[]) asserted.get( 0 ))[0]).getObject() instanceof ShadowProxy );
         assertEquals( cheese,
                       ((InternalFactHandle) ((Object[]) asserted.get( 0 ))[0]).getObject() );
 
@@ -415,7 +413,6 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                                                               buildContext );
         entryPoint.attach();
 
-        final Class shadowClass = ShadowProxyFactory.getProxy( Person.class );
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( idGenerator.getNextId(),
                                                                   entryPoint,
                                                                   new ClassObjectType( Person.class ),
@@ -438,7 +435,6 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         final List asserted = sink.getAsserted();
         assertLength( 1,
                       asserted );
-        assertTrue( ((InternalFactHandle) ((Object[]) asserted.get( 0 ))[0]).getObject() instanceof ShadowProxy );
         assertEquals( ((InternalFactHandle) ((Object[]) asserted.get( 0 ))[0]).getObject(),
                       person );
 

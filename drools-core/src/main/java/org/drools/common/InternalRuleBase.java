@@ -26,7 +26,6 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.StatefulSession;
 import org.drools.audit.WorkingMemoryInMemoryLogger;
 import org.drools.marshalling.MarshallerReaderContext;
-import org.drools.objenesis.Objenesis;
 import org.drools.process.core.Process;
 import org.drools.reteoo.Rete;
 import org.drools.reteoo.ReteooWorkingMemory;
@@ -118,8 +117,6 @@ public interface InternalRuleBase
      * @return
      */
     public boolean isEvent( Class clazz );
-
-	public Objenesis getObjenesis();
 	
 	public int getNodeCount();
 

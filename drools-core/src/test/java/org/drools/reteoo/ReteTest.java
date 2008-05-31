@@ -209,7 +209,7 @@ public class ReteTest extends DroolsTestCase {
 
         final Object[] results = (Object[]) asserted.get( 0 );
         assertSame( list,
-                    unwrapShadow( ((DefaultFactHandle) results[0]).getObject() ) );
+                    ((DefaultFactHandle) results[0]).getObject() );
     }
 
     public void testAssertObjectWithNoMatchingObjectTypeNode() {
@@ -363,7 +363,7 @@ public class ReteTest extends DroolsTestCase {
 
         final Object[] results = (Object[]) retracted.get( 0 );
         assertSame( list,
-                    unwrapShadow( ((DefaultFactHandle) results[0]).getObject() ) );
+                    ((DefaultFactHandle) results[0]).getObject() );
     }
 
     public void testIsShadowed() {
@@ -394,10 +394,7 @@ public class ReteTest extends DroolsTestCase {
                                                        null ),
                            workingMemory );
 
-        assertTrue( h1.isShadowFact() );
-
         final Object[] results = (Object[]) sink1.getAsserted().get( 0 );
-        assertTrue( ((DefaultFactHandle) results[0]).getObject() instanceof ShadowProxy );
     }
 
     public void testNotShadowed() {
@@ -442,16 +439,7 @@ public class ReteTest extends DroolsTestCase {
                                                        null ),
                            workingMemory );
 
-        assertFalse( h1.isShadowFact() );
         final Object[] results = (Object[]) sink1.getAsserted().get( 0 );
         assertFalse( ((DefaultFactHandle) results[0]).getObject() instanceof ShadowProxy );
-    }
-
-    private Object unwrapShadow(Object object) {
-        if ( object instanceof ShadowProxy ) {
-            return ((ShadowProxy) object).getShadowedObject();
-        } else {
-            return object;
-        }
     }
 }

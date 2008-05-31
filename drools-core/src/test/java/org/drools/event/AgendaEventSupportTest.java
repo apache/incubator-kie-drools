@@ -160,7 +160,7 @@ public class AgendaEventSupportTest extends TestCase {
                       agendaList.size() );
         ActivationCreatedEvent createdEvent = (ActivationCreatedEvent) agendaList.get( 0 );
         assertSame( cheddar,
-                    unwrapShadow( createdEvent.getActivation().getTuple().get( 0 ).getObject() ) );
+                    createdEvent.getActivation().getTuple().get( 0 ).getObject() );
         agendaList.clear();
 
         // update results in a ActivationCancelledEvent and an ActivationCreatedEvent, note the object is always resolvable
@@ -171,10 +171,10 @@ public class AgendaEventSupportTest extends TestCase {
                       agendaList.size() );
         ActivationCancelledEvent cancelledEvent = (ActivationCancelledEvent) agendaList.get( 0 );
         assertSame( cheddar,
-                    unwrapShadow( cancelledEvent.getActivation().getTuple().get( 0 ).getObject() ) );
+                    cancelledEvent.getActivation().getTuple().get( 0 ).getObject() );
         createdEvent = (ActivationCreatedEvent) agendaList.get( 1 );
         assertSame( cheddar,
-                    unwrapShadow( createdEvent.getActivation().getTuple().get( 0 ).getObject() ) );
+                    createdEvent.getActivation().getTuple().get( 0 ).getObject() );
         agendaList.clear();
 
         // retract results in a ActivationCancelledEvent, noe the object is not resolveable now as it no longer exists
@@ -204,20 +204,13 @@ public class AgendaEventSupportTest extends TestCase {
                       agendaList.size() );
         final BeforeActivationFiredEvent beforeEvent = (BeforeActivationFiredEvent) agendaList.get( 0 );
         assertSame( cheddar,
-                    unwrapShadow( beforeEvent.getActivation().getTuple().get( 0 ).getObject() ) );
+                    beforeEvent.getActivation().getTuple().get( 0 ).getObject() );
         final AfterActivationFiredEvent afterEvent = (AfterActivationFiredEvent) agendaList.get( 1 );
         assertSame( cheddar,
-                    unwrapShadow( afterEvent.getActivation().getTuple().get( 0 ).getObject() ) );
+                    afterEvent.getActivation().getTuple().get( 0 ).getObject() );
         final AgendaGroupPoppedEvent poppedEvent = (AgendaGroupPoppedEvent) agendaList.get( 2 );
         assertEquals( "test group",
                       poppedEvent.getAgendaGroup().getName() );
     }
 
-    private Object unwrapShadow(Object object) {
-        if ( object instanceof ShadowProxy ) {
-            return ((ShadowProxy) object).getShadowedObject();
-        } else {
-            return object;
-        }
-    }
 }

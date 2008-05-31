@@ -228,7 +228,7 @@ public class Declaration
                 Collection newCol = (Collection) result.getClass().newInstance();
                 for ( Iterator it = ((Collection) result).iterator(); it.hasNext(); ) {
                     Object element = it.next();
-                    newCol.add( (element instanceof ShadowProxy) ? ((ShadowProxy) element).getShadowedObject() : element );
+                    newCol.add( element );
                 }
                 return newCol;
             } catch ( InstantiationException e ) {

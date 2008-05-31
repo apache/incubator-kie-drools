@@ -446,19 +446,16 @@ public class FieldConstraintTest extends TestCase {
                                           context ) );
 
         cheddar.setPrice( 5 );
-        ((ShadowProxy) cheddarHandle.getObject()).updateProxy();
         assertFalse( constraint.isAllowed( cheddarHandle,
                                            workingMemory,
                                            context ) );
 
         cheddar.setType( "stilton" );
-        ((ShadowProxy) cheddarHandle.getObject()).updateProxy();
         assertFalse( constraint.isAllowed( cheddarHandle,
                                            workingMemory,
                                            context ) );
 
         cheddar.setPrice( 15 );
-        ((ShadowProxy) cheddarHandle.getObject()).updateProxy();
         assertFalse( constraint.isAllowed( cheddarHandle,
                                            workingMemory,
                                            context ) );
@@ -523,19 +520,16 @@ public class FieldConstraintTest extends TestCase {
                                           context ) );
 
         cheddar.setPrice( 5 );
-        ((ShadowProxy) cheddarHandle.getObject()).updateProxy();
         assertTrue( constraint.isAllowed( cheddarHandle,
                                           workingMemory,
                                           context ) );
 
         cheddar.setType( "stilton" );
-        ((ShadowProxy) cheddarHandle.getObject()).updateProxy();
         assertFalse( constraint.isAllowed( cheddarHandle,
                                            workingMemory,
                                            context ) );
 
         cheddar.setPrice( 15 );
-        ((ShadowProxy) cheddarHandle.getObject()).updateProxy();
         assertTrue( constraint.isAllowed( cheddarHandle,
                                           workingMemory,
                                           context ) );
@@ -627,19 +621,16 @@ public class FieldConstraintTest extends TestCase {
                                           context ) );
 
         cheddar.setPrice( 5 );
-        ((ShadowProxy) cheddarHandle.getObject()).updateProxy();
         assertFalse( constraint.isAllowed( cheddarHandle,
                                            workingMemory,
                                            context ) );
 
         cheddar.setType( "stilton" );
-        ((ShadowProxy) cheddarHandle.getObject()).updateProxy();
         assertTrue( constraint.isAllowed( cheddarHandle,
                                           workingMemory,
                                           context ) );
 
         cheddar.setPrice( 15 );
-        ((ShadowProxy) cheddarHandle.getObject()).updateProxy();
         assertFalse( constraint.isAllowed( cheddarHandle,
                                            workingMemory,
                                            context ) );

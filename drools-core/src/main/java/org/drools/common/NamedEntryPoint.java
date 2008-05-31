@@ -178,7 +178,7 @@ public class NamedEntryPoint
             this.ruleBase.executeQueuedActions();
 
             final InternalFactHandle handle = (InternalFactHandle) factHandle;
-            final Object originalObject = (handle.isShadowFact()) ? ((ShadowProxy) handle.getObject()).getShadowedObject() : handle.getObject();
+            final Object originalObject = handle.getObject();
 
             if ( handle.getId() == -1 || object == null ) {
                 // the handle is invalid, most likely already retracted, so
@@ -381,7 +381,7 @@ public class NamedEntryPoint
             this.ruleBase.executeQueuedActions();
 
             final InternalFactHandle handle = (InternalFactHandle) factHandle;
-            final Object originalObject = (handle.isShadowFact()) ? ((ShadowProxy) handle.getObject()).getShadowedObject() : handle.getObject();
+            final Object originalObject = handle.getObject();
 
             this.handleFactory.increaseFactHandleRecency( handle );
 

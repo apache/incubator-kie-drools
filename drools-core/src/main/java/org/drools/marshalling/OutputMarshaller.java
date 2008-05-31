@@ -229,9 +229,6 @@ public class OutputMarshaller {
             context.out.println( handle.getObject() );
 
             Object object = handle.getObject();
-            if ( object instanceof ShadowProxy ) {
-                object = ((ShadowProxy) object).getShadowedObject();
-            }
 
             PlaceholderResolverStrategy strategy = resolverStrategyFactory.getStrategy( handle.getObject() );
 

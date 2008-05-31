@@ -41,7 +41,6 @@ import org.drools.StatefulSession;
 import org.drools.event.RuleBaseEventListener;
 import org.drools.event.RuleBaseEventSupport;
 import org.drools.marshalling.Marshaller;
-import org.drools.objenesis.Objenesis;
 import org.drools.process.core.Process;
 import org.drools.rule.CompositePackageClassLoader;
 import org.drools.rule.DialectDatas;
@@ -55,7 +54,6 @@ import org.drools.rule.Rule;
 import org.drools.rule.TypeDeclaration;
 import org.drools.spi.FactHandleFactory;
 import org.drools.util.ObjectHashSet;
-import org.drools.util.ObjenesisFactory;
 
 /**
  * Implementation of <code>RuleBase</code>.
@@ -87,8 +85,6 @@ abstract public class AbstractRuleBase
     protected transient CompositePackageClassLoader    packageClassLoader;
 
     protected transient MapBackedClassLoader           classLoader;
-
-    private transient Objenesis                        objenesis;
 
     /** The fact handle factory. */
     protected FactHandleFactory                        factHandleFactory;
@@ -160,7 +156,6 @@ abstract public class AbstractRuleBase
         this.processes = new HashMap();
         this.globals = new HashMap();
         this.statefulSessions = new ObjectHashSet();
-        this.objenesis = createObjenesis();
 
         this.classTypeDeclaration = new HashMap<Class< ? >, TypeDeclaration>();
     }
@@ -242,7 +237,6 @@ abstract public class AbstractRuleBase
         this.classLoader = new MapBackedClassLoader( this.packageClassLoader,
                                                      store );
         this.packageClassLoader.addClassLoader( this.classLoader );
-        this.objenesis = createObjenesis();
 
         for ( final Object object : this.pkgs.values() ) {
             this.packageClassLoader.addClassLoader( ((Package) object).getDialectDatas().getClassLoader() );
@@ -284,18 +278,6 @@ abstract public class AbstractRuleBase
         }
 
         this.populateTypeDeclarationMaps();
-    }
-
-    /**
-     * Creates Objenesis instance for the RuleBase.
-     * @return a standart Objenesis instanse with caching turned on.
-     */
-    protected Objenesis createObjenesis() {
-        if ( this.config.isUseStaticObjenesis() ) {
-            return ObjenesisFactory.getStaticObjenesis();
-        } else {
-            return ObjenesisFactory.getDefaultObjenesis();
-        }
     }
 
     private void populateTypeDeclarationMaps() {
@@ -773,10 +755,6 @@ abstract public class AbstractRuleBase
             process = (Process) this.processes.get( id );
         }
         return process;
-    }
-
-    public Objenesis getObjenesis() {
-        return objenesis;
     }
 
     protected synchronized void addStatefulSession(final StatefulSession statefulSession) {

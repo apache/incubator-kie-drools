@@ -821,11 +821,6 @@ public abstract class AbstractWorkingMemory
                                                                object );
                             } else {
                                 Object oldObject = handle.getObject();
-                                if ( oldObject instanceof ShadowProxy ) {
-                                    ((ShadowProxy) oldObject).setShadowedObject( object );
-                                } else {
-                                    handle.setObject( object );
-                                }
                             }
                             return handle;
                         } else {
@@ -1150,7 +1145,7 @@ public abstract class AbstractWorkingMemory
             this.ruleBase.executeQueuedActions();
 
             final InternalFactHandle handle = (InternalFactHandle) factHandle;
-            final Object originalObject = (handle.isShadowFact()) ? ((ShadowProxy) handle.getObject()).getShadowedObject() : handle.getObject();
+            final Object originalObject = handle.getObject();
 
             if ( this.maintainTms ) {
                 EqualityKey key = handle.getEqualityKey();
@@ -1235,7 +1230,7 @@ public abstract class AbstractWorkingMemory
                 status = ((InternalFactHandle) factHandle).getEqualityKey().getStatus();
             }
             final InternalFactHandle handle = (InternalFactHandle) factHandle;
-            final Object originalObject = (handle.isShadowFact()) ? ((ShadowProxy) handle.getObject()).getShadowedObject() : handle.getObject();
+            final Object originalObject = handle.getObject();
 
             if ( handle.getId() == -1 || object == null ) {
                 // the handle is invalid, most likely already retracted, so

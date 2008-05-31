@@ -46,9 +46,6 @@ public class IdentityAssertMapComparator
         if ( realObject instanceof FactHandle ) {
             realObject = ((InternalFactHandle) obj).getObject();
         }
-        if ( realObject instanceof ShadowProxy ) {
-            realObject = ((ShadowProxy)realObject).getShadowedObject();
-        }
         return rehash( System.identityHashCode( realObject ) );
     }
 
@@ -70,12 +67,9 @@ public class IdentityAssertMapComparator
             return ((InternalFactHandle) o1).getObject() == ((InternalFactHandle) o2).getObject();
         }
         Object left = o1;
-        if ( left instanceof ShadowProxy ) {
-            left = ((ShadowProxy)left).getShadowedObject();
-        }
         final InternalFactHandle handle = ((InternalFactHandle) o2);
 
-        return left == ((handle.isShadowFact()) ? ((ShadowProxy) handle.getObject()).getShadowedObject() : handle.getObject());
+        return left == handle.getObject();
     }
 
     public int compare(final Object o1,
