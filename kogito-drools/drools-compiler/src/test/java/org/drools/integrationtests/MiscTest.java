@@ -535,7 +535,6 @@ public class MiscTest extends TestCase {
         // disabling shadow proxies, since they don't work yet with generated facts and
         // we will scrap shadow proxies in drools 5 anyway.
         RuleBaseConfiguration conf = new RuleBaseConfiguration();
-        conf.setShadowProxy( false );
         RuleBase ruleBase = RuleBaseFactory.newRuleBase( conf );
         ruleBase.addPackage( p );
 
@@ -4299,7 +4298,6 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( MiscTest.class.getResourceAsStream( "test_CrossProductRemovingIdentityEquals.drl" ) ) );
 
         RuleBaseConfiguration conf = new RuleBaseConfiguration();
-        conf.setShadowProxy( true );
         RuleBase rb = RuleBaseFactory.newRuleBase( conf );
         rb.addPackage( builder.getPackage() );
         rb = SerializationHelper.serializeObject( rb );
