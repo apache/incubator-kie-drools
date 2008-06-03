@@ -69,6 +69,10 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
         return this.process;
     }
     
+    public void setProcessId(String processId) {
+    	this.processId = processId;
+    }
+    
     public String getProcessId() {
         return processId;
     }

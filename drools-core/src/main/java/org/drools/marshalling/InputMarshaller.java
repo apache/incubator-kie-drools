@@ -556,7 +556,11 @@ public class InputMarshaller {
 
         RuleFlowProcessInstance processInstance = new RuleFlowProcessInstance();
         processInstance.setId( stream.readLong() );
-        processInstance.setProcess( ruleBase.getProcess( stream.readUTF() ) );
+        String processId = stream.readUTF();
+        processInstance.setProcessId( processId );
+        if (ruleBase != null) {
+        	processInstance.setProcess( ruleBase.getProcess( processId ) );
+        }
         processInstance.setState( stream.readInt() );
         long nodeInstanceCounter = stream.readLong();
         processInstance.setWorkingMemory( wm );
@@ -582,7 +586,9 @@ public class InputMarshaller {
         }
 
         processInstance.internalSetNodeInstanceCounter( nodeInstanceCounter );
-        wm.addProcessInstance( processInstance );
+        if (wm != null) {
+        	wm.addProcessInstance( processInstance );
+        }
         return processInstance;
     }
 
