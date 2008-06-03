@@ -24,7 +24,6 @@ package org.drools;
  * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
  */
 
-import java.io.Externalizable;
 
 public interface FactHandle {
 

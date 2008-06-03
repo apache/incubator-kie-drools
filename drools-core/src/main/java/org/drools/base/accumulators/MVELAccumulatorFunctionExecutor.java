@@ -42,9 +42,9 @@ public class MVELAccumulatorFunctionExecutor
     implements
     Accumulator {
 
-    private static final long        serialVersionUID = 400L;
+    private static final long  serialVersionUID = 400L;
 
-    private final Object             dummy            = new Object();
+    private final Object       dummy            = new Object();
     private DroolsMVELFactory  model;
     private Serializable       expression;
     private AccumulateFunction function;
@@ -62,16 +62,17 @@ public class MVELAccumulatorFunctionExecutor
         this.function = function;
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        model       = (DroolsMVELFactory)in.readObject();
-        expression  = (Serializable)in.readObject();
-        function    = (AccumulateFunction)in.readObject();
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        model = (DroolsMVELFactory) in.readObject();
+        expression = (Serializable) in.readObject();
+        function = (AccumulateFunction) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(model);
-        out.writeObject(expression);
-        out.writeObject(function);
+        out.writeObject( model );
+        out.writeObject( expression );
+        out.writeObject( function );
     }
 
     /* (non-Javadoc)
@@ -79,9 +80,9 @@ public class MVELAccumulatorFunctionExecutor
      */
     public Object createContext() {
         MVELAccumulatorFunctionContext context = new MVELAccumulatorFunctionContext();
-        context.context = this.function.createContext(); 
-        if( this.function.supportsReverse() ) {
-            context.reverseSupport = new HashMap<ReverseSupportKey, Object>();
+        context.context = this.function.createContext();
+        if ( this.function.supportsReverse() ) {
+            context.reverseSupport = new HashMap<FactHandle, Object>();
         }
         return context;
     }
@@ -116,8 +117,9 @@ public class MVELAccumulatorFunctionExecutor
         final Object value = MVEL.executeExpression( this.expression,
                                                      this.dummy,
                                                      factory );
-        if( this.function.supportsReverse() ) {
-            ((MVELAccumulatorFunctionContext) context).reverseSupport.put( new ReverseSupportKey(leftTuple, handle), value );
+        if ( this.function.supportsReverse() ) {
+            ((MVELAccumulatorFunctionContext) context).reverseSupport.put( handle,
+                                                                           value );
         }
         this.function.accumulate( ((MVELAccumulatorFunctionContext) context).context,
                                   value );
@@ -130,7 +132,7 @@ public class MVELAccumulatorFunctionExecutor
                         Declaration[] declarations,
                         Declaration[] innerDeclarations,
                         WorkingMemory workingMemory) throws Exception {
-        final Object value = ((MVELAccumulatorFunctionContext) context).reverseSupport.remove( new ReverseSupportKey(leftTuple, handle) );
+        final Object value = ((MVELAccumulatorFunctionContext) context).reverseSupport.remove( handle );
         this.function.reverse( ((MVELAccumulatorFunctionContext) context).context,
                                value );
     }
@@ -153,42 +155,10 @@ public class MVELAccumulatorFunctionExecutor
     public Object createWorkingMemoryContext() {
         return this.model.clone();
     }
-    
+
     private static class MVELAccumulatorFunctionContext {
-        public Object context;
-        public Map<ReverseSupportKey, Object> reverseSupport;
+        public Object                         context;
+        public Map<FactHandle, Object>        reverseSupport;
     }
-    
-    private static class ReverseSupportKey implements Serializable {
-        private static final long serialVersionUID = 1473894397336046369L;
-        public final Tuple leftTuple;
-        public final FactHandle factHandle;
-        public ReverseSupportKey( final Tuple leftTuple, final FactHandle handle ) {
-            this.leftTuple = leftTuple;
-            this.factHandle = handle;
-        }
-        @Override
-        public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + ((factHandle == null) ? 0 : factHandle.hashCode());
-            result = prime * result + ((leftTuple == null) ? 0 : leftTuple.hashCode());
-            return result;
-        }
-        @Override
-        public boolean equals(Object obj) {
-            if ( this == obj ) return true;
-            if ( obj == null ) return false;
-            if ( getClass() != obj.getClass() ) return false;
-            final ReverseSupportKey other = (ReverseSupportKey) obj;
-            if ( factHandle == null ) {
-                if ( other.factHandle != null ) return false;
-            } else if ( !factHandle.equals( other.factHandle ) ) return false;
-            if ( leftTuple == null ) {
-                if ( other.leftTuple != null ) return false;
-            } else if ( !leftTuple.equals( other.leftTuple ) ) return false;
-            return true;
-        }
-        
-    }
+
 }

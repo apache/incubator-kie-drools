@@ -26,6 +26,10 @@ public static class @{className} implements java.io.Serializable {
 
     private static final long    serialVersionUID = 400L;
 
+    @if{supportsReverse == "true"}
+    private java.util.Map reverseMap = new java.util.HashMap<org.drools.common.InternalFactHandle, ReverseSnapshot>(); 
+    @end{}
+    
     @foreach{type : attributesTypes, attr : attributes} private @{type} @{attr};
     @end{}    
     
@@ -39,22 +43,33 @@ public static class @{className} implements java.io.Serializable {
     }
     
     public void accumulate(org.drools.WorkingMemory workingMemory,
+                           org.drools.common.InternalFactHandle handle,
                            org.drools.rule.Declaration[] innerDeclarations, 
                            Object object @if{declarations != empty}, @end{}
                            @foreach{type : declarationTypes, declr : declarations} @{type} @{declr.identifier}@end{","}@if{globals != empty},@end{}
                            @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} @end{","}@if{innerDeclarations != empty},@end{}
                            @foreach{declr : innerDeclarations}@{declr.extractor.extractToClassName} @{declr.identifier}@end{","}
                            ) throws Exception {
+        @if{supportsReverse == "true"}
+        this.reverseMap.put( handle,
+                             new ReverseSnapshot(
+                               @foreach{declr : declarations}@{declr.identifier}@end{","}@if{innerDeclarations != empty && declarations != empty},@end{}
+                               @foreach{declr : innerDeclarations}@{declr.identifier}@end{","}
+                              ) );
+        @end{}
         @{actionCode}
     }
     
     public void reverse(org.drools.WorkingMemory workingMemory,
-                           org.drools.rule.Declaration[] innerDeclarations, 
-                           Object object @if{declarations != empty}, @end{}
-                           @foreach{type : declarationTypes, declr : declarations} @{type} @{declr.identifier}@end{","}@if{globals != empty},@end{}
-                           @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} @end{","}@if{innerDeclarations != empty},@end{}
-                           @foreach{declr : innerDeclarations}@{declr.extractor.extractToClassName} @{declr.identifier}@end{","}
+                           org.drools.common.InternalFactHandle handle,
+                           Object object@if{globals != empty},@end{}
+                           @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} @end{","}
                            ) throws Exception {
+        @if{supportsReverse == "true"}
+        ReverseSnapshot snapshot = (ReverseSnapshot) this.reverseMap.remove( handle );
+        @foreach{type : declarationTypes, declr : declarations}@{type} @{declr.identifier} = snapshot.@{declr.identifier};@end{}
+        @foreach{declr : innerDeclarations}@{declr.extractor.extractToClassName} @{declr.identifier} = snapshot.@{declr.identifier};@end{}
+        @end{}
         @{reverseCode}
     }
     
@@ -68,6 +83,19 @@ public static class @{className} implements java.io.Serializable {
         return @{supportsReverse};
     }
     
+    @if{supportsReverse == "true"}
+    private static class ReverseSnapshot implements java.io.Serializable {
+		@foreach{type : declarationTypes, declr : declarations} public final @{type} @{declr.identifier};@end{}
+        @foreach{declr : innerDeclarations}public final @{declr.extractor.extractToClassName} @{declr.identifier};@end{}
+        
+        public ReverseSnapshot(@foreach{type : declarationTypes, declr : declarations}final @{type} @{declr.identifier}@end{","}@if{innerDeclarations != empty && declarations != empty},@end{}
+                               @foreach{declr : innerDeclarations}final @{declr.extractor.extractToClassName} @{declr.identifier}@end{","}
+                              ) {
+			@foreach{type : declarationTypes, declr : declarations}this.@{declr.identifier} = @{declr.identifier};@end{}
+    	    @foreach{declr : innerDeclarations}this.@{declr.identifier} = @{declr.identifier};@end{}
+        }
+    } 
+    @end{}
 }
 @end{}
 

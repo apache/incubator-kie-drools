@@ -252,6 +252,7 @@ public class @{invokerClassName} implements org.drools.spi.Accumulator, org.droo
         @end{}
         ((@{ruleClassName}.@{className})context).accumulate(
             workingMemory,
+            handle,
             innerDeclarations,
             handle.getObject()@if{declarations != empty},@end{}
             @foreach{declr : declarations} @{declr.identifier}@end{","}@if{globals != empty},@end{}
@@ -283,11 +284,9 @@ public class @{invokerClassName} implements org.drools.spi.Accumulator, org.droo
 
         ((@{ruleClassName}.@{className})context).reverse(
             workingMemory,
-            innerDeclarations,
-            handle.getObject()@if{declarations != empty},@end{}
-            @foreach{declr : declarations} @{declr.identifier}@end{","}@if{globals != empty},@end{}
-	        @foreach{identifier : globals} @{identifier}@end{","}@if{innerDeclarations != empty},@end{}
-            @foreach{declr : innerDeclarations} @{declr.identifier}@end{","});
+            handle,
+            handle.getObject()@if{globals != empty},@end{}
+	        @foreach{identifier : globals} @{identifier}@end{","});
     }
 
     public Object getResult(java.lang.Object workingMemoryContext,
