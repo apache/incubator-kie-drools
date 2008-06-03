@@ -149,7 +149,7 @@ public class MVELAccumulator
                             handle.getObject(),
                             workingMemory,
                             (Map) context );
-
+        
         Package pkg = workingMemory.getRuleBase().getPackage( "MAIN" );
         if ( pkg != null ) {
             MVELDialectData data = ( MVELDialectData ) pkg.getDialectDatas().getDialectData( "mvel" );
