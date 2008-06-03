@@ -17,6 +17,7 @@
  */
 package org.drools.base.accumulators;
 
+import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.common.InternalFactHandle;
 import org.drools.rule.Declaration;
@@ -27,6 +28,9 @@ import org.drools.spi.Tuple;
 import java.io.ObjectOutput;
 import java.io.IOException;
 import java.io.ObjectInput;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * An MVEL accumulator function executor implementation
@@ -65,7 +69,12 @@ public class JavaAccumulatorFunctionExecutor
      * @see org.drools.spi.Accumulator#createContext()
      */
     public Object createContext() {
-        return this.function.createContext();
+        JavaAccumulatorFunctionContext context = new JavaAccumulatorFunctionContext();
+        context.context = this.function.createContext(); 
+        if( this.function.supportsReverse() ) {
+            context.reverseSupport = new HashMap<ReverseSupportKey, Object>();
+        }
+        return context;
     }
 
     /* (non-Javadoc)
@@ -76,7 +85,7 @@ public class JavaAccumulatorFunctionExecutor
                      Tuple leftTuple,
                      Declaration[] declarations,
                      WorkingMemory workingMemory) throws Exception {
-        this.function.init( context );
+        this.function.init( ((JavaAccumulatorFunctionContext) context).context );
     }
 
     /* (non-Javadoc)
@@ -95,7 +104,10 @@ public class JavaAccumulatorFunctionExecutor
                                                        innerDeclarations,
                                                        workingMemory,
                                                        workingMemoryContext ).getValue();
-        this.function.accumulate( context,
+        if( this.function.supportsReverse() ) {
+            ((JavaAccumulatorFunctionContext) context).reverseSupport.put( new ReverseSupportKey(leftTuple, handle), value );
+        }
+        this.function.accumulate( ((JavaAccumulatorFunctionContext) context).context,
                                   value );
     }
 
@@ -106,14 +118,10 @@ public class JavaAccumulatorFunctionExecutor
                         Declaration[] declarations,
                         Declaration[] innerDeclarations,
                         WorkingMemory workingMemory) throws Exception {
-        final Object value = this.expression.evaluate( handle.getObject(),
-                                                       leftTuple,
-                                                       declarations,
-                                                       innerDeclarations,
-                                                       workingMemory,
-                                                       workingMemoryContext ).getValue();
-        this.function.reverse( context,
-                               value );
+        
+        final Object value = ((JavaAccumulatorFunctionContext) context).reverseSupport.remove( new ReverseSupportKey(leftTuple, handle) );
+        this.function.reverse( ((JavaAccumulatorFunctionContext) context).context,
+                                  value );
     }
 
     /* (non-Javadoc)
@@ -124,7 +132,7 @@ public class JavaAccumulatorFunctionExecutor
                             Tuple leftTuple,
                             Declaration[] declarations,
                             WorkingMemory workingMemory) throws Exception {
-        return this.function.getResult( context );
+        return this.function.getResult( ((JavaAccumulatorFunctionContext) context).context );
     }
 
     public boolean supportsReverse() {
@@ -142,5 +150,43 @@ public class JavaAccumulatorFunctionExecutor
     public Object createWorkingMemoryContext() {
         // no working memory context needed
         return null;
+    }
+    
+    private static class JavaAccumulatorFunctionContext {
+        public Object context;
+        public Map<ReverseSupportKey, Object> reverseSupport;
+    }
+    
+    private static class ReverseSupportKey implements Serializable {
+        private static final long serialVersionUID = 1473894397336046369L;
+        public final Tuple leftTuple;
+        public final FactHandle factHandle;
+        public ReverseSupportKey( final Tuple leftTuple, final FactHandle handle ) {
+            this.leftTuple = leftTuple;
+            this.factHandle = handle;
+        }
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((factHandle == null) ? 0 : factHandle.hashCode());
+            result = prime * result + ((leftTuple == null) ? 0 : leftTuple.hashCode());
+            return result;
+        }
+        @Override
+        public boolean equals(Object obj) {
+            if ( this == obj ) return true;
+            if ( obj == null ) return false;
+            if ( getClass() != obj.getClass() ) return false;
+            final ReverseSupportKey other = (ReverseSupportKey) obj;
+            if ( factHandle == null ) {
+                if ( other.factHandle != null ) return false;
+            } else if ( !factHandle.equals( other.factHandle ) ) return false;
+            if ( leftTuple == null ) {
+                if ( other.leftTuple != null ) return false;
+            } else if ( !leftTuple.equals( other.leftTuple ) ) return false;
+            return true;
+        }
+        
     }
 }

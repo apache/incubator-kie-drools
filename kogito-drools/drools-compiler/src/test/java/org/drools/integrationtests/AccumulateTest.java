@@ -1,5 +1,6 @@
 package org.drools.integrationtests;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -22,6 +23,7 @@ import org.drools.WorkingMemory;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
+import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
 
@@ -41,6 +43,14 @@ public class AccumulateTest extends TestCase {
     private RuleBase loadRuleBase(final Reader reader) throws IOException,
                                                       DroolsParserException,
                                                       Exception {
+        return loadRuleBase( reader,
+                             new PackageBuilderConfiguration() );
+    }
+
+    private RuleBase loadRuleBase(final Reader reader,
+                                  final PackageBuilderConfiguration conf) throws IOException,
+                                                                         DroolsParserException,
+                                                                         Exception {
         final DrlParser parser = new DrlParser();
         final PackageDescr packageDescr = parser.parse( reader );
         if ( parser.hasErrors() ) {
@@ -48,7 +58,7 @@ public class AccumulateTest extends TestCase {
             Assert.fail( "Error messages in parser, need to sort this our (or else collect error messages)" );
         }
         // pre build the package
-        final PackageBuilder builder = new PackageBuilder();
+        final PackageBuilder builder = new PackageBuilder( conf );
         builder.addPackage( packageDescr );
         final Package pkg = builder.getPackage();
 
@@ -1136,7 +1146,7 @@ public class AccumulateTest extends TestCase {
         wm.setGlobal( "results",
                       results );
         wm.setGlobal( "globalValue",
-                      new Integer(50) );
+                      new Integer( 50 ) );
 
         wm.insert( new Cheese( "stilton",
                                10 ) );

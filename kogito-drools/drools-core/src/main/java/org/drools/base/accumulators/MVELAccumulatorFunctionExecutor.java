@@ -17,12 +17,14 @@
  */
 package org.drools.base.accumulators;
 
-import java.io.Serializable;
+import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.IOException;
+import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.common.InternalFactHandle;
@@ -76,7 +78,12 @@ public class MVELAccumulatorFunctionExecutor
      * @see org.drools.spi.Accumulator#createContext()
      */
     public Object createContext() {
-        return this.function.createContext();
+        MVELAccumulatorFunctionContext context = new MVELAccumulatorFunctionContext();
+        context.context = this.function.createContext(); 
+        if( this.function.supportsReverse() ) {
+            context.reverseSupport = new HashMap<ReverseSupportKey, Object>();
+        }
+        return context;
     }
 
     /* (non-Javadoc)
@@ -87,7 +94,7 @@ public class MVELAccumulatorFunctionExecutor
                      Tuple leftTuple,
                      Declaration[] declarations,
                      WorkingMemory workingMemory) throws Exception {
-        this.function.init( context );
+        this.function.init( ((MVELAccumulatorFunctionContext) context).context );
     }
 
     /* (non-Javadoc)
@@ -109,7 +116,10 @@ public class MVELAccumulatorFunctionExecutor
         final Object value = MVEL.executeExpression( this.expression,
                                                      this.dummy,
                                                      factory );
-        this.function.accumulate( context,
+        if( this.function.supportsReverse() ) {
+            ((MVELAccumulatorFunctionContext) context).reverseSupport.put( new ReverseSupportKey(leftTuple, handle), value );
+        }
+        this.function.accumulate( ((MVELAccumulatorFunctionContext) context).context,
                                   value );
     }
 
@@ -120,16 +130,8 @@ public class MVELAccumulatorFunctionExecutor
                         Declaration[] declarations,
                         Declaration[] innerDeclarations,
                         WorkingMemory workingMemory) throws Exception {
-        DroolsMVELFactory factory = (DroolsMVELFactory) workingMemoryContext;
-        factory.setContext( leftTuple,
-                               null,
-                               handle.getObject(),
-                               workingMemory,
-                               null );
-        final Object value = MVEL.executeExpression( this.expression,
-                                                     this.dummy,
-                                                     factory );
-        this.function.reverse( context,
+        final Object value = ((MVELAccumulatorFunctionContext) context).reverseSupport.remove( new ReverseSupportKey(leftTuple, handle) );
+        this.function.reverse( ((MVELAccumulatorFunctionContext) context).context,
                                value );
     }
 
@@ -141,7 +143,7 @@ public class MVELAccumulatorFunctionExecutor
                             Tuple leftTuple,
                             Declaration[] declarations,
                             WorkingMemory workingMemory) throws Exception {
-        return this.function.getResult( context );
+        return this.function.getResult( ((MVELAccumulatorFunctionContext) context).context );
     }
 
     public boolean supportsReverse() {
@@ -151,5 +153,42 @@ public class MVELAccumulatorFunctionExecutor
     public Object createWorkingMemoryContext() {
         return this.model.clone();
     }
-
+    
+    private static class MVELAccumulatorFunctionContext {
+        public Object context;
+        public Map<ReverseSupportKey, Object> reverseSupport;
+    }
+    
+    private static class ReverseSupportKey implements Serializable {
+        private static final long serialVersionUID = 1473894397336046369L;
+        public final Tuple leftTuple;
+        public final FactHandle factHandle;
+        public ReverseSupportKey( final Tuple leftTuple, final FactHandle handle ) {
+            this.leftTuple = leftTuple;
+            this.factHandle = handle;
+        }
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((factHandle == null) ? 0 : factHandle.hashCode());
+            result = prime * result + ((leftTuple == null) ? 0 : leftTuple.hashCode());
+            return result;
+        }
+        @Override
+        public boolean equals(Object obj) {
+            if ( this == obj ) return true;
+            if ( obj == null ) return false;
+            if ( getClass() != obj.getClass() ) return false;
+            final ReverseSupportKey other = (ReverseSupportKey) obj;
+            if ( factHandle == null ) {
+                if ( other.factHandle != null ) return false;
+            } else if ( !factHandle.equals( other.factHandle ) ) return false;
+            if ( leftTuple == null ) {
+                if ( other.leftTuple != null ) return false;
+            } else if ( !leftTuple.equals( other.leftTuple ) ) return false;
+            return true;
+        }
+        
+    }
 }
