@@ -94,7 +94,6 @@ public class DrlParser {
      */
     public PackageDescr parse(final String source,
                               final Reader dsl) throws DroolsParserException {
-    	
     	DefaultExpanderResolver resolver = getDefaultResolver(dsl);
     	
         final Expander expander = resolver.get( "*",
@@ -130,7 +129,6 @@ public class DrlParser {
     	final Expander expander = resolver.get( "*",
                                           null );
         final String expanded = expander.expand( source );
-        
         if ( expander.hasErrors() ) {
             String err = "";
             for ( Iterator iter = expander.getErrors().iterator(); iter.hasNext(); ) {

@@ -5,6 +5,7 @@ import java.io.StringReader;
 import org.drools.RuntimeDroolsException;
 import org.drools.lang.Expander;
 import org.drools.lang.dsl.DSLMappingFile;
+import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.lang.dsl.DefaultExpander;
 import org.drools.lang.dsl.DefaultExpanderResolver;
 
@@ -29,7 +30,7 @@ public class DrlParserTest extends TestCase {
         DefaultExpanderResolver resolver = new DefaultExpanderResolver(new StringReader(dsl));
         
         
-        final DSLMappingFile file = new DSLMappingFile();
+        final DSLMappingFile file = new DSLTokenizedMappingFile();
         if ( file.parseAndLoad( new StringReader(dsl) ) ) {
             final Expander expander = new DefaultExpander();
             expander.addDSLMapping( file.getMapping() );

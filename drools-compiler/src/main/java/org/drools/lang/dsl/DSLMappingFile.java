@@ -46,8 +46,8 @@ public class DSLMappingFile {
     private static final String  WHEN        = "[when]";
     private static final String  THEN        = "[then]";
 
-    private DSLMapping           mapping;
-    private List                 errors;
+    protected DSLMapping           mapping;
+    protected List                 errors;
 
     public DSLMappingFile() {
         this.mapping = new DefaultDSLMapping();
