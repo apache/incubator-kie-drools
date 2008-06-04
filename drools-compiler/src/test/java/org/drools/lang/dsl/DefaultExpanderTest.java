@@ -165,8 +165,8 @@ public class DefaultExpanderTest extends TestCase {
 
         DefaultExpander ex = new DefaultExpander();
         ex.addDSLMapping( file.getMapping() );
-        String source = "package something;\n\nrule \"1\"\nwhen\n    Invoke rule executor\nthen\n    Execute rule \"5\"\nend";
-        String expected = "package something;\n\nrule \"1\"\nwhen\n   ruleExec: RuleExecutor() \nthen\n   ruleExec.ExecuteSubRule( new Long(5)); \nend\n";
+        String source =   "package something;\n\nrule \"1\"\nwhen\n    Invoke rule executor\nthen\n    Execute rule \"5\"\nend";
+        String expected = "package something;\n\nrule \"1\"\nwhen\n    ruleExec: RuleExecutor()  \nthen\n    ruleExec.ExecuteSubRule( new Long(5)); \nend\n";
         String drl = ex.expand( source );
 //        System.out.println("["+drl+"]" );
 //        System.out.println("["+expected+"]" );
