@@ -126,9 +126,14 @@ public class AntlrDSLMappingEntry extends AbstractDSLMappingEntry implements DSL
 		valuePatternBuffer.append(value);
 		valueBuffer.append(value);
 		if(tailMatchGroupAdded){
-			Integer tailMatchGroupIndex = (Integer) Collections.max(variables.values()) + 1;//get max in variables, plus 1
-			valuePatternBuffer.append("$" + tailMatchGroupIndex);
-			valueBuffer.append("$" + tailMatchGroupIndex);
+			int maxGroupIndex = 0;
+			if(!variables.isEmpty()){
+				Integer tailMatchGroupIndex = (Integer) Collections.max(variables.values());
+				maxGroupIndex = tailMatchGroupIndex.intValue();
+			}
+			maxGroupIndex++;
+			valuePatternBuffer.append("$" + maxGroupIndex);
+			valueBuffer.append("$" + maxGroupIndex);
 		}
 		this.valuePattern = valuePatternBuffer.toString();
 		this.value = valueBuffer.toString();
