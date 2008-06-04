@@ -65,7 +65,7 @@ public class DSLTokenizedMappingFileTest extends TestCase {
             assertEquals( "(\\W|^)ATTRIBUTE \"(.*?)\" IS IN [(.*?)](\\W|$)",
                           entry.getKeyPattern().toString() );
             //Attribute( {attr} in ({list}) )
-            assertEquals( "Attribute( $2 in ($3) ) ",
+            assertEquals( "$1Attribute( $2 in ($3) ) $4",
                           entry.getValuePattern() );
 
         } catch ( final IOException e ) {
@@ -100,7 +100,7 @@ public class DSLTokenizedMappingFileTest extends TestCase {
             assertEquals( "(\\W|^)ATTRIBUTE \"(.*?)\" IS IN \\[(.*?)\\](\\W|$)",
                           entry.getKeyPattern().toString() );
             //Attribute( {attr} in ({list}) )
-            assertEquals( "Attribute( $2 in ($3) ) ",
+            assertEquals( "$1Attribute( $2 in ($3) ) $4",
                           entry.getValuePattern() );
 
         } catch ( final IOException e ) {
@@ -168,7 +168,7 @@ public class DSLTokenizedMappingFileTest extends TestCase {
                           entry.getMetaData() );
             assertEquals( "(\\W|^)something:\\=(.*?)$",
                           entry.getKeyPattern().toString() );
-            assertEquals( "Attribute( something == \"$2\" ) ",
+            assertEquals( "$1Attribute( something == \"$2\" ) ",
                           entry.getMappingValue() );
 
         } catch ( final IOException e ) {
