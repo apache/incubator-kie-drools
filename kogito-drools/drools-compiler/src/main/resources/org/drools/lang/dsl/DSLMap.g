@@ -53,6 +53,23 @@ tokens {
 		return validateLT(1, text);
 	}
 	
+	protected void mismatch(IntStream input, int ttype, BitSet follow)
+		throws RecognitionException{
+		throw new MismatchedTokenException(ttype, input);
+	}
+
+	public void recoverFromMismatchedSet(IntStream input,
+		RecognitionException e, BitSet follow) throws RecognitionException{
+		throw e;
+	}
+	
+}
+
+
+@rulecatch {
+	catch (RecognitionException e) {
+		throw e;
+	}
 }
 
 // PARSER RULES
@@ -62,18 +79,20 @@ mapping_file
 	;
 
 statement
-	: entry
-	| comment
-	| EOL!	
-	;//bang at end of EOL means to not put it into the AST
+	: entry 	
+	| comment 
+	| EOL! 
+	;
+	//! after EOL means to not put it into the AST
+	
 
 comment	: LINE_COMMENT 
 	-> ^(VT_COMMENT[$LINE_COMMENT, "COMMENT"] LINE_COMMENT )
 	;	
 
 //we need to make entry so the meta section is optional
-entry 	: scope_section meta_section key_section EQUALS value_section (EOL|EOF)
-	-> ^(VT_ENTRY scope_section meta_section key_section value_section)
+entry 	: scope_section meta_section? key_section EQUALS value_section (EOL|EOF)
+	-> ^(VT_ENTRY scope_section meta_section? key_section value_section)
 	;
 
 
@@ -101,14 +120,12 @@ key_section
 	-> ^(VT_ENTRY_KEY key_sentence+ )
 	;
  
-key_sentence //problem: if you have foo is {foo:\d{3}}, because the WS is hidden, it rebuilds back to 
-//		foo is\d{3}  when the key pattern is created.  Somehow we need to capture the 
-//trailing WS in the key_chunk
+key_sentence 
 @init {
         String text = "";
 }	
-	: variable_definition 
-	| cb=key_chunk { text = $cb.text; }
+	: variable_definition
+	| cb=key_chunk { text = $cb.text;}
 	-> VT_LITERAL[$cb.start, text]
 	;		
 
@@ -131,24 +148,51 @@ value_sentence
 	;	
 	
 value_chunk
-	: (literal|EQUALS)+
+	: (literal|EQUALS|COMMA)+
 	;	
 	
 literal 
-	: ( LITERAL | LEFT_SQUARE | RIGHT_SQUARE | COLON)
+	//: ( LITERAL | LEFT_SQUARE | RIGHT_SQUARE | COLON) 
+	: ( LITERAL | COLON | LEFT_SQUARE | RIGHT_SQUARE)
 	;	
-	
+
+
 variable_definition
 @init {
         String text = "";
-        boolean hasSpace = false;
+        boolean hasSpaceBefore = false;
+        boolean hasSpaceAfter = false;
 }	
-	: lc=LEFT_CURLY { if( ((CommonToken)input.LT(-2)).getStopIndex() < ((CommonToken)lc).getStartIndex() -1 ) hasSpace = true; } 
-	name=LITERAL ( COLON pat=pattern {text = $pat.text;} )? RIGHT_CURLY
-	-> {hasSpace && !"".equals(text)}? VT_SPACE ^(VT_VAR_DEF $name VT_PATTERN[$pat.start, text] ) //pat can be null if there's no pattern here
-	-> {!hasSpace && !"".equals(text)}? ^(VT_VAR_DEF $name VT_PATTERN[$pat.start, text] ) //pat can be null if there's no pattern here
-	-> {hasSpace}?	VT_SPACE ^(VT_VAR_DEF $name ) //do we need to build a VT_LITERAL token for $name?
-	-> ^(VT_VAR_DEF $name ) //do we need to build a VT_LITERAL token for $name?
+	: lc=LEFT_CURLY 
+		{ 
+		CommonToken back2 =  (CommonToken)input.LT(-2);
+		if( back2!=null && back2.getStopIndex() < ((CommonToken)lc).getStartIndex() -1 ) hasSpaceBefore = true; 
+		} 
+	name=LITERAL ( COLON pat=pattern {text = $pat.text;} )? rc=RIGHT_CURLY
+	{
+	CommonToken rc1 = (CommonToken)input.LT(1);
+	//System.out.println("lt1 from rc: " + rc1.getText());
+	if(!"=".equals(rc1.getText()) && ((CommonToken)rc).getStopIndex() < rc1.getStartIndex() - 1) hasSpaceAfter = true;
+	}
+	-> {hasSpaceBefore && !"".equals(text) && !hasSpaceAfter}? VT_SPACE ^(VT_VAR_DEF $name VT_PATTERN[$pat.start, text] )  //pat can be null if there's no pattern here
+	-> {!hasSpaceBefore && !"".equals(text)  && !hasSpaceAfter}? ^(VT_VAR_DEF $name VT_PATTERN[$pat.start, text] ) //pat can be null if there's no pattern here
+	-> {hasSpaceBefore  && !hasSpaceAfter}?	VT_SPACE ^(VT_VAR_DEF $name ) 
+	-> {!hasSpaceBefore  && !hasSpaceAfter}?	 ^(VT_VAR_DEF $name ) 
+	
+	-> {hasSpaceBefore && !"".equals(text) && hasSpaceAfter}? VT_SPACE ^(VT_VAR_DEF $name VT_PATTERN[$pat.start, text] ) VT_SPACE //pat can be null if there's no pattern here
+	-> {!hasSpaceBefore && !"".equals(text)  && hasSpaceAfter}? ^(VT_VAR_DEF $name VT_PATTERN[$pat.start, text] ) VT_SPACE //pat can be null if there's no pattern here
+	-> {hasSpaceBefore  && hasSpaceAfter}?	VT_SPACE ^(VT_VAR_DEF $name ) VT_SPACE
+	-> {!hasSpaceBefore  && hasSpaceAfter}?	 ^(VT_VAR_DEF $name ) VT_SPACE
+	-> ^(VT_VAR_DEF $name ) 
+	;
+	
+variable_definition2
+@init {
+        String text = "";
+}	
+	: LEFT_CURLY name=LITERAL ( COLON pat=pattern {text = $pat.text;} )? RIGHT_CURLY
+	-> {!"".equals(text)}? ^(VT_VAR_DEF $name VT_PATTERN[$pat.start, text] ) //pat can be null if there's no pattern here
+	->	^(VT_VAR_DEF $name ) //do we need to build a VT_LITERAL token for $name?
 	;
 
 
@@ -160,10 +204,31 @@ pattern
 	;	
 	
 
-	
+variable_reference
+@init {
+        boolean hasSpaceBefore = false;
+        boolean hasSpaceAfter = false;
+}	
+	: lc=LEFT_CURLY 
+		{//try too figure out how to get " {name} " to realize there's a space infron of the { char
+		//System.out.println("input is a " + input.getClass().getName());
+		//System.out.println("input is: " + input.toString());
+		//System.out.println("input LA[1]: " + input.LA(1));
+		
+		//System.out.println("lc start is: " + ((CommonToken)lc).getStartIndex() );
+		CommonToken back2 =  (CommonToken)input.LT(-2);
+		if( back2!=null && back2.getStopIndex() < ((CommonToken)lc).getStartIndex() -1 ) hasSpaceBefore = true; 
+		} 
+	name=LITERAL rc=RIGHT_CURLY
+	{if(((CommonToken)rc).getStopIndex() < ((CommonToken)input.LT(1)).getStartIndex() - 1) hasSpaceAfter = true;}
+	-> {hasSpaceBefore && hasSpaceAfter}? VT_SPACE ^(VT_VAR_REF $name ) VT_SPACE
+	-> {hasSpaceBefore && !hasSpaceAfter}? VT_SPACE ^(VT_VAR_REF $name ) 
+	-> {!hasSpaceBefore && hasSpaceAfter}?  ^(VT_VAR_REF $name ) VT_SPACE
+	->  ^(VT_VAR_REF $name )
+	;
 
 	
-variable_reference 
+variable_reference2 
 	: LEFT_CURLY name=LITERAL RIGHT_CURLY
 	-> ^(VT_VAR_REF $name )
 	;	
@@ -241,6 +306,9 @@ POUND   :	'#'
 
 COLON	:	':'
 	;
+	
+COMMA	:	','
+	;
 
 
 //the problem here with LINE COMMENT is that the lexer is not identifying 
@@ -249,7 +317,10 @@ COLON	:	':'
 LINE_COMMENT	
 	:	POUND ( options{greedy=false;} : .)* EOL /* ('\r')? '\n'  */
 	;
-	
+
+//META_LITERAL
+//	: ('a'..'z'|'A'..'Z'|'_'|'0'..'9'|'*'|DOT)+
+//	;
 
 LITERAL	
 	:	('a'..'z'|'A'..'Z'|'_'|'0'..'9'|'\u00c0'..'\u00ff'|MISC|EscapeSequence|DOT)+
@@ -257,7 +328,7 @@ LITERAL
 
 fragment		
 MISC 	:
-		'!' | '@' | '$' | '%' | '^' | '*' | '-' | '+'  | '?' | '/' | '\'' | '"' | '|' | '&' | '(' | ')' | ';'
+		'>'|'<'|'!' | '@' | '$' | '%' | '^' | '*' | '-' | '+'  | '?' | '/' | '\'' | '"' | '|' | '&' | '(' | ')' | ';'
 	;
 
 

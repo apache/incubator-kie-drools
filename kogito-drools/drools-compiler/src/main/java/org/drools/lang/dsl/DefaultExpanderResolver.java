@@ -56,7 +56,7 @@ public class DefaultExpanderResolver
      * This is the constructor most people should use.
      */
     public DefaultExpanderResolver(final Reader reader) throws IOException {
-        final DSLMappingFile file = new DSLMappingFile();
+        final DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
         if ( file.parseAndLoad( reader ) ) {
             final Expander expander = new DefaultExpander();
             expander.addDSLMapping( file.getMapping() );

@@ -228,7 +228,11 @@ public class DefaultExpander
                 // expand the expression
                 for ( final Iterator it = this.condition.iterator(); it.hasNext(); ) {
                     final DSLMappingEntry entry = (DSLMappingEntry) it.next();
-                    expanded[lastExpanded] = entry.getKeyPattern().matcher( expanded[lastExpanded] ).replaceAll( entry.getValuePattern() );
+                    String vp = entry.getValuePattern();
+//                    System.out.println("toExpand, st: " + expanded[lastExpanded] + "|");
+//                    System.out.println("kp: " + entry.getKeyPattern());
+//                    System.out.println("vp: " + vp);
+                    expanded[lastExpanded] = entry.getKeyPattern().matcher(expanded[lastExpanded]).replaceAll(vp);
                 }
 
                 // do we need to report errors for that?
