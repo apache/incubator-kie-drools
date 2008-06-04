@@ -43,7 +43,7 @@ public class Scenario implements PortableObject {
 
 	/**
 	 * the rules to include or exclude
-	 * @gwt.typeArgs <java.lang.String />
+	 * @gwt.typeArgs <java.lang.String>
 	 */
 	public List rules = new ArrayList();
 
