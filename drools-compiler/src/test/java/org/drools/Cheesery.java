@@ -53,6 +53,10 @@ public class Cheesery
 
     public void removeCheese(final Cheese cheese) {
         this.cheeses.remove( cheese );
+        recalculateTotalAmount();
+    }
+
+    private void recalculateTotalAmount() {
         this.totalAmount = 0;
         for( Iterator it = this.cheeses.iterator(); it.hasNext(); ) {
             this.totalAmount += ((Cheese) it.next()).getPrice();

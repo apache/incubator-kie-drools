@@ -113,7 +113,7 @@ public class MockAccumulator
         return false;
     }
 
-    public Object createWorkingMemoryContext() {
+    public Object createWorkingMemoryContext( ) {
         return null;
     }
 
