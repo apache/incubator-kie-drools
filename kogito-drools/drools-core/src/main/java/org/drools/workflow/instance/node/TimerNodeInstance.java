@@ -43,11 +43,8 @@ public class TimerNodeInstance extends EventNodeInstance implements TimerListene
     }
     
     public void triggerCompleted() {
-        if (getTimerNode().getTimer().getPeriod() == 0) {
-            getNodeInstanceContainer().removeNodeInstance(this);
-        }
-        getNodeInstanceContainer().getNodeInstance(getTimerNode().getTo().getTo())
-            .trigger(this, getTimerNode().getTo().getToType());
+        triggerCompleted(Node.CONNECTION_DEFAULT_TYPE,
+            getTimerNode().getTimer().getPeriod() == 0);
     }
     
     public void cancel() {

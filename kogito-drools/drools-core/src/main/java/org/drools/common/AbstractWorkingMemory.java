@@ -65,8 +65,10 @@ import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.ProcessInstanceFactory;
 import org.drools.process.instance.ProcessInstanceFactoryRegistry;
+import org.drools.process.instance.ProcessInstanceManager;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
+import org.drools.process.instance.impl.DefaultProcessInstanceManager;
 import org.drools.process.instance.timer.TimerManager;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.InitialFactHandle;
@@ -166,10 +168,8 @@ public abstract class AbstractWorkingMemory
     protected volatile boolean                          firing;
 
     protected volatile boolean                          halt;
-
-    private Map                                         processInstances;
-
-    private int                                         processCounter;
+    
+    private ProcessInstanceManager                      processInstanceManager;
 
     private WorkItemManager                             workItemManager;
 
@@ -224,8 +224,11 @@ public abstract class AbstractWorkingMemory
         this.ruleBase = ruleBase;
         this.handleFactory = handleFactory;
         this.globalResolver = new MapGlobalResolver();
-        this.maintainTms = this.ruleBase.getConfiguration().isMaintainTms();
-        this.sequential = this.ruleBase.getConfiguration().isSequential();
+        
+        final RuleBaseConfiguration conf = this.ruleBase.getConfiguration();
+
+        this.maintainTms = conf.isMaintainTms();
+        this.sequential = conf.isSequential();
 
         if ( initialFactHandle == null ) {
             this.initialFactHandle = new InitialFactHandle( handleFactory.newFactHandle( new InitialFactHandleDummyObject(),
@@ -245,7 +248,7 @@ public abstract class AbstractWorkingMemory
         this.__ruleBaseEventListeners = new LinkedList();
         this.lock = new ReentrantLock();
         this.liaPropagations = Collections.EMPTY_LIST;
-        this.processInstances = new HashMap();
+        this.processInstanceManager = conf.getProcessInstanceManager();
         this.timeMachine = new TimeMachine();
 
         this.nodeMemories = new ConcurrentNodeMemories( this.ruleBase );
@@ -255,8 +258,6 @@ public abstract class AbstractWorkingMemory
         } else {
             this.tms = null;
         }
-
-        final RuleBaseConfiguration conf = this.ruleBase.getConfiguration();
 
         this.propagationIdCounter = new AtomicLong( propagationContext );
 
@@ -1447,9 +1448,7 @@ public abstract class AbstractWorkingMemory
         ProcessInstance processInstance = getProcessInstance(process);
         processInstance.setWorkingMemory( this );
         processInstance.setProcess( process );
-        processInstance.setId( ++processCounter );
-        processInstances.put( new Long( processInstance.getId() ),
-                              processInstance );
+        addProcessInstance( processInstance );
         // set variable default values
         // TODO: should be part of processInstanceImpl?
         VariableScope variableScope = (VariableScope) process.getDefaultContext( VariableScope.VARIABLE_SCOPE );
@@ -1495,22 +1494,25 @@ public abstract class AbstractWorkingMemory
         }
         return processInstance;
     }
+    
+    public ProcessInstanceManager getProcessInstanceManager() {
+        return processInstanceManager;
+    }
 
-    public Collection getProcessInstances() {
-        return Collections.unmodifiableCollection( processInstances.values() );
+    public Collection<ProcessInstance> getProcessInstances() {
+        return processInstanceManager.getProcessInstances();
     }
 
     public ProcessInstance getProcessInstance(long id) {
-        return (ProcessInstance) processInstances.get( new Long( id ) );
+        return processInstanceManager.getProcessInstance(id);
     }
 
     public void addProcessInstance(ProcessInstance processInstance) {
-        processInstances.put( processInstance.getId(),
-                              processInstance );
+        processInstanceManager.addProcessInstance(processInstance);
     }
 
     public void removeProcessInstance(ProcessInstance processInstance) {
-        processInstances.remove( processInstance.getId() );
+        processInstanceManager.removeProcessInstance(processInstance);
     }
 
     public WorkItemManager getWorkItemManager() {

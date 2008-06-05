@@ -414,7 +414,7 @@ public class Package
     /**
      * Add a rule flow to this package.
      */
-    public void addRuleFlow(Process process) {
+    public void addProcess(Process process) {
         if ( this.ruleFlows == Collections.EMPTY_MAP ) {
             this.ruleFlows = new HashMap();
         }

@@ -69,9 +69,7 @@ public class CompositeNodeInstance extends NodeInstanceImpl implements NodeInsta
     }
 
     public void triggerCompleted(String outType) {
-        getNodeInstanceContainer().removeNodeInstance(this);
-        Connection connection = getCompositeNode().getOutgoingConnections(outType).get(0);
-        getNodeInstanceContainer().getNodeInstance( connection.getTo() ).trigger( this, connection.getToType() );
+        triggerCompleted(outType, true);
     }
 
     public void cancel() {
@@ -165,8 +163,7 @@ public class CompositeNodeInstance extends NodeInstanceImpl implements NodeInsta
         }
         
         public void triggerCompleted() {
-            getNodeInstanceContainer().removeNodeInstance(this);
-            getNodeInstanceContainer().getNodeInstance( getCompositeNodeStart().getTo().getTo() ).trigger( this, getCompositeNodeStart().getTo().getToType());
+            triggerCompleted(Node.CONNECTION_DEFAULT_TYPE, true);
         }
         
     }

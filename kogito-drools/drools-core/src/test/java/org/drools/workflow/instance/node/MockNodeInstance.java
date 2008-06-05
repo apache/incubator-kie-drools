@@ -60,8 +60,7 @@ public class MockNodeInstance extends NodeInstanceImpl {
         return getNodeId() == other.getNodeId();
     }        
     
-    public void triggerCompleted() {        
-        getNodeInstanceContainer().removeNodeInstance(this);
-        getNodeInstanceContainer().getNodeInstance(getMockNode().getTo().getTo()).trigger(this, getMockNode().getTo().getToType());
+    public void triggerCompleted() {
+        triggerCompleted(Node.CONNECTION_DEFAULT_TYPE, true);
     }
 }

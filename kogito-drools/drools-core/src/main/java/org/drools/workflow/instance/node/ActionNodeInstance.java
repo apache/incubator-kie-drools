@@ -57,8 +57,7 @@ public class ActionNodeInstance extends NodeInstanceImpl {
     }
 
     public void triggerCompleted() {
-        getNodeInstanceContainer().removeNodeInstance(this);
-        getNodeInstanceContainer().getNodeInstance(getActionNode().getTo().getTo()).trigger(this, getActionNode().getTo().getToType());
+        triggerCompleted(Node.CONNECTION_DEFAULT_TYPE, true);
     }
     
     private KnowledgeHelper createKnowledgeHelper() {

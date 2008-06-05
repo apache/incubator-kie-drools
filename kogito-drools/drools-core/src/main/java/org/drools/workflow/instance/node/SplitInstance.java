@@ -49,15 +49,10 @@ public class SplitInstance extends NodeInstanceImpl {
         // TODO make different strategies for each type
         switch ( split.getType() ) {
             case Split.TYPE_AND :
-                getNodeInstanceContainer().removeNodeInstance(this);
-                List<Connection> outgoing = split.getDefaultOutgoingConnections();
-                for ( final Iterator<Connection> iterator = outgoing.iterator(); iterator.hasNext(); ) {
-                    final Connection connection = (Connection) iterator.next();
-                    getNodeInstanceContainer().getNodeInstance(connection.getTo()).trigger(this, connection.getToType());
-                }
+                triggerCompleted(Node.CONNECTION_DEFAULT_TYPE, true);
                 break;
             case Split.TYPE_XOR :
-                outgoing = split.getDefaultOutgoingConnections();
+                List<Connection> outgoing = split.getDefaultOutgoingConnections();
                 int priority = Integer.MAX_VALUE;
                 Connection selected = null;
                 for ( final Iterator<Connection> iterator = outgoing.iterator(); iterator.hasNext(); ) {
@@ -76,7 +71,7 @@ public class SplitInstance extends NodeInstanceImpl {
                 if ( selected == null ) {
                     throw new IllegalArgumentException( "XOR split could not find at least one valid outgoing connection for split " + getSplit().getName() );
                 }
-                getNodeInstanceContainer().getNodeInstance( selected.getTo() ).trigger( this, selected.getToType() );
+                triggerConnection(selected);
                 break;
             case Split.TYPE_OR :
                 getNodeInstanceContainer().removeNodeInstance(this);
@@ -101,8 +96,8 @@ public class SplitInstance extends NodeInstanceImpl {
                     if (selectedConstraint.evaluate( this,
                                                      selectedConnection,
                                                      selectedConstraint ) ) {
-                            getNodeInstanceContainer().getNodeInstance(selectedConnection.getTo()).trigger(this, selectedConnection.getToType());
-                            found = true;
+                        triggerConnection(selectedConnection);
+                        found = true;
                     }
                     outgoingCopy.remove(selectedConnection);
                 }

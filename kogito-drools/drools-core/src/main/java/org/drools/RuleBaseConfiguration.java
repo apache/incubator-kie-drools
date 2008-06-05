@@ -40,12 +40,12 @@ import org.drools.process.core.impl.ParameterDefinitionImpl;
 import org.drools.process.core.impl.WorkDefinitionExtensionImpl;
 import org.drools.process.instance.ProcessInstanceFactory;
 import org.drools.process.instance.ProcessInstanceFactoryRegistry;
+import org.drools.process.instance.ProcessInstanceManager;
 import org.drools.process.instance.impl.ContextInstanceFactory;
 import org.drools.process.instance.impl.ContextInstanceFactoryRegistry;
 import org.drools.spi.ConflictResolver;
 import org.drools.spi.ConsequenceExceptionHandler;
 import org.drools.util.ChainedProperties;
-import org.drools.util.ClassUtils;
 import org.drools.util.ConfFileUtils;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.instance.impl.NodeInstanceFactory;
@@ -119,10 +119,11 @@ public class RuleBaseConfiguration
 
     private static final String            STAR             = "*";
     private ContextInstanceFactoryRegistry processContextInstanceFactoryRegistry;
-    private Map<String, WorkDefinition> workDefinitions;
+    private Map<String, WorkDefinition>    workDefinitions;
 
     private ProcessInstanceFactoryRegistry processInstanceFactoryRegistry;
     private NodeInstanceFactoryRegistry    processNodeInstanceFactoryRegistry;
+    private ProcessInstanceManager         processInstanceManager;
 
     private transient ClassLoader          classLoader;
 
@@ -671,6 +672,40 @@ public class RuleBaseConfiguration
                 this.processContextInstanceFactoryRegistry.register( entry.getKey(),
                                                                      entry.getValue() );
             }
+        }
+    }
+
+    public ProcessInstanceManager getProcessInstanceManager() {
+        if ( this.processInstanceManager == null ) {
+            initProcessInstanceManager();
+        }
+        return this.processInstanceManager;
+    }
+
+    private void initProcessInstanceManager() {
+        String className = this.chainedProperties.getProperty(
+            "processInstanceManager", "org.drools.process.instance.impl.DefaultProcessInstanceManager");
+        Class clazz = null;
+        try {
+            clazz = Thread.currentThread().getContextClassLoader().loadClass( className );
+        } catch ( ClassNotFoundException e ) {
+        }
+
+        if ( clazz == null ) {
+            try {
+                clazz = RuleBaseConfiguration.class.getClassLoader().loadClass( className );
+            } catch ( ClassNotFoundException e ) {
+            }
+        }
+
+        if ( clazz != null ) {
+            try {
+                this.processInstanceManager = (ProcessInstanceManager) clazz.newInstance();
+            } catch ( Exception e ) {
+                throw new IllegalArgumentException( "Unable to instantiate process instance manager '" + className + "'" );
+            }
+        } else {
+            throw new IllegalArgumentException( "Process instance manager '" + className + "' not found" );
         }
     }
 

@@ -1,5 +1,6 @@
 package org.drools.workflow.instance.node;
 
+import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.EventNode;
 import org.drools.workflow.instance.impl.NodeInstanceImpl;
 
@@ -10,9 +11,7 @@ public abstract class EventNodeInstance extends NodeInstanceImpl {
     }
     
     public void triggerCompleted() {
-        getNodeInstanceContainer().removeNodeInstance(this);
-        getNodeInstanceContainer().getNodeInstance(getEventNode().getTo().getTo())
-            .trigger(this, getEventNode().getTo().getToType());
+        triggerCompleted(Node.CONNECTION_DEFAULT_TYPE, true);
     }
     
     public void cancel() {
