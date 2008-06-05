@@ -96,7 +96,7 @@ public class ProcessBuilder {
                 e.printStackTrace( System.err );
             }
             buildNodes( process );
-            this.packageBuilder.getPackage().addRuleFlow( process );
+            this.packageBuilder.getPackage().addProcess( process );
 
             Package pkg = this.packageBuilder.getPackage();
             if ( pkg != null ) {

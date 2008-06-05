@@ -1263,13 +1263,13 @@ public class PackageBuilderTest extends DroolsTestCase {
     public void testPackageRuleFlows() throws Exception {
         Package pkg = new Package( "boo" );
         Process rf = new MockRuleFlow( "1" );
-        pkg.addRuleFlow( rf );
+        pkg.addProcess( rf );
         assertTrue( pkg.getRuleFlows().containsKey( "1" ) );
         assertSame( rf,
                     pkg.getRuleFlows().get( "1" ) );
 
         Process rf2 = new MockRuleFlow( "2" );
-        pkg.addRuleFlow( rf2 );
+        pkg.addProcess( rf2 );
         assertTrue( pkg.getRuleFlows().containsKey( "1" ) );
         assertSame( rf,
                     pkg.getRuleFlows().get( "1" ) );
