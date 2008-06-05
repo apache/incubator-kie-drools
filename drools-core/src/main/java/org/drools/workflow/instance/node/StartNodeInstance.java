@@ -16,6 +16,7 @@ package org.drools.workflow.instance.node;
  * limitations under the License.
  */
 
+import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.StartNode;
 import org.drools.workflow.instance.NodeInstance;
 import org.drools.workflow.instance.impl.NodeInstanceImpl;
@@ -46,9 +47,7 @@ public class StartNodeInstance extends NodeInstanceImpl {
     }
 
     public void triggerCompleted() {
-        getNodeInstanceContainer().removeNodeInstance(this);
-        getNodeInstanceContainer().getNodeInstance(getStartNode().getTo().getTo())
-            .trigger(this, getStartNode().getTo().getToType());
+        triggerCompleted(Node.CONNECTION_DEFAULT_TYPE, true);
     }
     
 }

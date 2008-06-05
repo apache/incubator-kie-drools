@@ -561,7 +561,7 @@ abstract public class AbstractRuleBase
             final Map flows = newPkg.getRuleFlows();
             for ( final Iterator iter = flows.values().iterator(); iter.hasNext(); ) {
                 final Process flow = (Process) iter.next();
-                pkg.addRuleFlow( flow );
+                pkg.addProcess( flow );
             }
         }
 

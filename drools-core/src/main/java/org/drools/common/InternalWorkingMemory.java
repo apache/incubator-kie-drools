@@ -10,6 +10,7 @@ import org.drools.event.AgendaEventSupport;
 import org.drools.event.RuleFlowEventSupport;
 import org.drools.event.WorkingMemoryEventSupport;
 import org.drools.process.instance.ProcessInstance;
+import org.drools.process.instance.ProcessInstanceManager;
 import org.drools.reteoo.LIANodePropagation;
 import org.drools.rule.Rule;
 import org.drools.rule.TimeMachine;
@@ -86,7 +87,8 @@ public interface InternalWorkingMemory
     public void addProcessInstance(ProcessInstance processInstance);
     
     public void removeProcessInstance(ProcessInstance processInstance);
-       
+    
+    public ProcessInstanceManager getProcessInstanceManager();
 
     public ExecutorService getExecutorService();
 

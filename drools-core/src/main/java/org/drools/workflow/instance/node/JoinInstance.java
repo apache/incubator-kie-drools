@@ -108,10 +108,7 @@ public class JoinInstance extends NodeInstanceImpl {
 
     public void triggerCompleted() {
         // join nodes are only removed from the container when they contain no more state
-        if (triggers.isEmpty()) {
-            getNodeInstanceContainer().removeNodeInstance(this);
-        }
-        getNodeInstanceContainer().getNodeInstance( getJoin().getTo().getTo() ).trigger( this, getJoin().getTo().getToType() );
+        triggerCompleted(Node.CONNECTION_DEFAULT_TYPE, triggers.isEmpty());
     }
     
     public Map<Long, Integer> getTriggers() {
