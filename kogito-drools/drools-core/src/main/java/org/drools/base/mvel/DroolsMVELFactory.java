@@ -59,7 +59,7 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
     }
 
     public DroolsMVELFactory() {
-        
+
     }
 
     public DroolsMVELFactory(final Map previousDeclarations,
@@ -89,26 +89,27 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
         }
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        tupleObjects    = (Object[])in.readObject();
-        knowledgeHelper    = (KnowledgeHelper)in.readObject();
-        object    = in.readObject();
-        localDeclarations    = (Map)in.readObject();
-        previousDeclarations    = (Map)in.readObject();
-        globals    = (Map)in.readObject();
-        workingMemory    = (WorkingMemory)in.readObject();
-        localVariables    = (Map)in.readObject();
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        tupleObjects = (Object[]) in.readObject();
+        knowledgeHelper = (KnowledgeHelper) in.readObject();
+        object = in.readObject();
+        localDeclarations = (Map) in.readObject();
+        previousDeclarations = (Map) in.readObject();
+        globals = (Map) in.readObject();
+        workingMemory = (WorkingMemory) in.readObject();
+        localVariables = (Map) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(tupleObjects);
-        out.writeObject(knowledgeHelper);
-        out.writeObject(object);
-        out.writeObject(localDeclarations);
-        out.writeObject(previousDeclarations);
-        out.writeObject(globals);
-        out.writeObject(workingMemory);
-        out.writeObject(localVariables);
+        out.writeObject( tupleObjects );
+        out.writeObject( knowledgeHelper );
+        out.writeObject( object );
+        out.writeObject( localDeclarations );
+        out.writeObject( previousDeclarations );
+        out.writeObject( globals );
+        out.writeObject( workingMemory );
+        out.writeObject( localVariables );
     }
 
     public static void addStaticImport(StaticMethodImportResolverFactory factory,
@@ -188,7 +189,7 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
 
     public void setLocalValue(final String identifier,
                               final Object value) {
-        if (this.localVariables == null) {
+        if ( this.localVariables == null ) {
             this.localVariables = new HashMap();
         }
         this.localVariables.put( identifier,
@@ -275,5 +276,33 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
         return new DroolsMVELFactory( this.previousDeclarations,
                                       this.localDeclarations,
                                       this.globals );
+    }
+
+    /**
+     * @return the localDeclarations
+     */
+    public Map getLocalDeclarations() {
+        return localDeclarations;
+    }
+
+    /**
+     * @return the previousDeclarations
+     */
+    public Map getPreviousDeclarations() {
+        return previousDeclarations;
+    }
+
+    /**
+     * @return the globals
+     */
+    protected Map getGlobals() {
+        return globals;
+    }
+
+    /**
+     * @return the localVariables
+     */
+    protected Map getLocalVariables() {
+        return localVariables;
     }
 }

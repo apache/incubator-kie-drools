@@ -1,6 +1,5 @@
 package org.drools.integrationtests;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -491,7 +490,7 @@ public class AccumulateTest extends TestCase {
 
     }
 
-    public void FIXME_testAccumulateReverseModifyMVEL2() throws Exception {
+    public void testAccumulateReverseModifyMVEL2() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateReverseModifyMVEL2.drl" ) );
         final RuleBase ruleBase = loadRuleBase( reader );
