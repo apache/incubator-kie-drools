@@ -1,7 +1,9 @@
 package org.drools.marshalling;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
@@ -14,7 +16,6 @@ import java.util.Map.Entry;
 
 import org.drools.InitialFact;
 import org.drools.base.ClassObjectType;
-import org.drools.base.ShadowProxy;
 import org.drools.common.AgendaItem;
 import org.drools.common.DefaultAgenda;
 import org.drools.common.EqualityKey;
@@ -29,13 +30,9 @@ import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
-import org.drools.reteoo.EvalConditionNode;
-import org.drools.reteoo.ExistsNode;
-import org.drools.reteoo.JoinNode;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTupleSink;
 import org.drools.reteoo.NodeTypeEnums;
-import org.drools.reteoo.NotNode;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.reteoo.RightTuple;
@@ -59,11 +56,13 @@ import org.drools.workflow.instance.node.WorkItemNodeInstance;
 
 public class OutputMarshaller {
     public static void writeSession(MarshallerWriteContext context) throws IOException {
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        PrintWriter out = new PrintWriter( buffer );
         ReteooWorkingMemory wm = (ReteooWorkingMemory) context.wm;
 
         context.writeInt( wm.getFactHandleFactory().getId() );
         context.writeLong( wm.getFactHandleFactory().getRecency() );
-        System.out.println( "FactHandleFactory int:" + wm.getFactHandleFactory().getId() + " long:" + wm.getFactHandleFactory().getRecency() );
+        out.println( "FactHandleFactory int:" + wm.getFactHandleFactory().getId() + " long:" + wm.getFactHandleFactory().getRecency() );
 
         InternalFactHandle handle = context.wm.getInitialFactHandle();
         context.writeInt( handle.getId() );
@@ -71,7 +70,7 @@ public class OutputMarshaller {
         context.out.println( "InitialFact int:" + handle.getId() + " long:" + handle.getRecency() );
 
         context.writeLong( wm.getPropagationIdCounter() );
-        System.out.println( "PropagationCounter long:" + wm.getPropagationIdCounter() );
+        out.println( "PropagationCounter long:" + wm.getPropagationIdCounter() );
 
         writeAgenda( context );
 

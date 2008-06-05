@@ -236,7 +236,8 @@ public class ReteooRuleBase extends AbstractRuleBase {
             ExecutorService executor = ExecutorServiceFactory.createExecutorService( this.config.getExecutorService() );;
             session = new ReteooStatefulSession( nextWorkingMemoryCounter(),
                                                  this,
-                                                 executor );
+                                                 executor,
+                                                 sessionConfig );
 
             executor.setCommandExecutor( new CommandExecutor( session ) );
 

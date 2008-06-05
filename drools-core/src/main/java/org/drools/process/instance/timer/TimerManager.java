@@ -9,7 +9,6 @@ import org.drools.time.Job;
 import org.drools.time.JobContext;
 import org.drools.time.JobHandle;
 import org.drools.time.TimerService;
-import org.drools.time.TimerServiceFactory;
 import org.drools.time.Trigger;
 
 public class TimerManager {
@@ -18,9 +17,9 @@ public class TimerManager {
     private WorkingMemory workingMemory;
     private TimerService  timerService;
 
-    public TimerManager(WorkingMemory workingMemory) {
+    public TimerManager(WorkingMemory workingMemory, TimerService timerService) {
         this.workingMemory = workingMemory;
-        this.timerService = TimerServiceFactory.getTimerService();
+        this.timerService = timerService;
     }
 
     public void registerTimer(final Timer timer,
