@@ -5,6 +5,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -61,7 +62,7 @@ public class CepEspTest extends TestCase {
         return ruleBase;
     }
 
-    public void FIXME_testEventAssertion() throws Exception {
+    public void testEventAssertion() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_SimpleEventAssertion.drl" ) );
         RuleBase ruleBase = loadRuleBase( reader );
@@ -116,7 +117,7 @@ public class CepEspTest extends TestCase {
 
     }
 
-    public void FIXME_testEventAssertionWithDuration() throws Exception {
+    public void testEventAssertionWithDuration() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_SimpleEventAssertionWithDuration.drl" ) );
         final RuleBase ruleBase = loadRuleBase( reader );
@@ -187,7 +188,7 @@ public class CepEspTest extends TestCase {
 
     }
 
-    public void FIXME_testTimeRelationalOperators() throws Exception {
+    public void testTimeRelationalOperators() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_TimeRelationalOperators.drl" ) );
         final RuleBase ruleBase = loadRuleBase( reader );
@@ -282,17 +283,17 @@ public class CepEspTest extends TestCase {
                                          3 );
 
         InternalFactHandle handle1 = (InternalFactHandle) wm.insert( tick1 );
-        clock.advanceTime( 4 );
+        clock.advanceTime( 4, TimeUnit.MILLISECONDS );
         InternalFactHandle handle2 = (InternalFactHandle) wm.insert( tick2 );
-        clock.advanceTime( 4 );
+        clock.advanceTime( 4, TimeUnit.MILLISECONDS );
         InternalFactHandle handle3 = (InternalFactHandle) wm.insert( tick3 );
-        clock.advanceTime( 4 );
+        clock.advanceTime( 4, TimeUnit.MILLISECONDS );
         InternalFactHandle handle4 = (InternalFactHandle) wm.insert( tick4 );
         InternalFactHandle handle5 = (InternalFactHandle) wm.insert( tick5 );
-        clock.advanceTime( 1 );
+        clock.advanceTime( 1, TimeUnit.MILLISECONDS );
         InternalFactHandle handle6 = (InternalFactHandle) wm.insert( tick6 );
         InternalFactHandle handle7 = (InternalFactHandle) wm.insert( tick7 );
-        clock.advanceTime( 2 );
+        clock.advanceTime( 2, TimeUnit.MILLISECONDS );
         InternalFactHandle handle8 = (InternalFactHandle) wm.insert( tick8 );
 
         assertNotNull( handle1 );
@@ -405,7 +406,7 @@ public class CepEspTest extends TestCase {
         // how to configure the clock?
         PseudoClockScheduler clock = (PseudoClockScheduler) wm.getSessionClock();
 
-        clock.advanceTime( 5000 ); // 5 seconds
+        clock.advanceTime( 5, TimeUnit.SECONDS ); // 5 seconds
         EventFactHandle handle1 = (EventFactHandle) wm.insert( new OrderEvent( "1",
                                                                                "customer A",
                                                                                70 ) );
@@ -423,7 +424,7 @@ public class CepEspTest extends TestCase {
                       ((Number) results.get( 0 )).intValue() );
 
         // advance clock and assert new data
-        clock.advanceTime( 10000 ); // 10 seconds
+        clock.advanceTime( 10, TimeUnit.SECONDS ); // 10 seconds
         EventFactHandle handle2 = (EventFactHandle) wm.insert( new OrderEvent( "2",
                                                                                "customer A",
                                                                                60 ) );
@@ -440,7 +441,7 @@ public class CepEspTest extends TestCase {
                       ((Number) results.get( 1 )).intValue() );
 
         // advance clock and assert new data
-        clock.advanceTime( 10000 ); // 10 seconds
+        clock.advanceTime( 10, TimeUnit.SECONDS ); // 10 seconds
         EventFactHandle handle3 = (EventFactHandle) wm.insert( new OrderEvent( "3",
                                                                                "customer A",
                                                                                50 ) );
@@ -457,7 +458,7 @@ public class CepEspTest extends TestCase {
                       ((Number) results.get( 2 )).intValue() );
 
         // advance clock and assert new data
-        clock.advanceTime( 10000 ); // 10 seconds
+        clock.advanceTime( 10, TimeUnit.SECONDS ); // 10 seconds
         EventFactHandle handle4 = (EventFactHandle) wm.insert( new OrderEvent( "4",
                                                                                "customer A",
                                                                                25 ) );
@@ -473,7 +474,7 @@ public class CepEspTest extends TestCase {
                       results.size() );
 
         // advance clock and assert new data
-        clock.advanceTime( 10000 ); // 10 seconds
+        clock.advanceTime( 10, TimeUnit.SECONDS ); // 10 seconds
         EventFactHandle handle5 = (EventFactHandle) wm.insert( new OrderEvent( "5",
                                                                                "customer A",
                                                                                70 ) );
@@ -490,7 +491,7 @@ public class CepEspTest extends TestCase {
                       results.size() );
 
         // advance clock and assert new data
-        clock.advanceTime( 10000 ); // 10 seconds
+        clock.advanceTime( 10, TimeUnit.SECONDS ); // 10 seconds
         EventFactHandle handle6 = (EventFactHandle) wm.insert( new OrderEvent( "6",
                                                                                "customer A",
                                                                                115 ) );
@@ -522,7 +523,4 @@ public class CepEspTest extends TestCase {
     //
     //    }
     
-    public void testDummy() {
-    }
-
 }

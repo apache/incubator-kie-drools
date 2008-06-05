@@ -50,7 +50,6 @@ import org.drools.WorkingMemoryEntryPoint;
 import org.drools.RuleBaseConfiguration.AssertBehaviour;
 import org.drools.RuleBaseConfiguration.LogicalOverride;
 import org.drools.base.MapGlobalResolver;
-import org.drools.base.ShadowProxy;
 import org.drools.concurrent.ExecutorService;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.AgendaEventSupport;
@@ -68,7 +67,6 @@ import org.drools.process.instance.ProcessInstanceFactoryRegistry;
 import org.drools.process.instance.ProcessInstanceManager;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
-import org.drools.process.instance.impl.DefaultProcessInstanceManager;
 import org.drools.process.instance.timer.TimerManager;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.InitialFactHandle;
@@ -89,6 +87,7 @@ import org.drools.spi.GlobalResolver;
 import org.drools.spi.PropagationContext;
 import org.drools.time.SessionClock;
 import org.drools.time.TimerService;
+import org.drools.time.TimerServiceFactory;
 
 /**
  * Implementation of <code>WorkingMemory</code>.
@@ -250,6 +249,9 @@ public abstract class AbstractWorkingMemory
         this.liaPropagations = Collections.EMPTY_LIST;
         this.processInstanceManager = conf.getProcessInstanceManager();
         this.timeMachine = new TimeMachine();
+        
+        TimerService timerService = TimerServiceFactory.getTimerService( this.config.getClockType() );
+        this.timerManager = new TimerManager(this, timerService);
 
         this.nodeMemories = new ConcurrentNodeMemories( this.ruleBase );
 
@@ -1523,9 +1525,6 @@ public abstract class AbstractWorkingMemory
     }
 
     public TimerManager getTimerManager() {
-        if ( timerManager == null ) {
-            timerManager = new TimerManager( this );
-        }
         return timerManager;
     }
 
@@ -1624,11 +1623,11 @@ public abstract class AbstractWorkingMemory
     }
     
     public TimerService getTimerService() {
-        return this.timerManager.getTimerService();
+        return this.getTimerManager().getTimerService();
     }
     
     public SessionClock getSessionClock() {
-        return (SessionClock) this.timerManager.getTimerService();
+        return (SessionClock) this.getTimerManager().getTimerService();
     }
 
     //    public static class FactHandleInvalidation implements WorkingMemoryAction {

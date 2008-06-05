@@ -1,15 +1,14 @@
 package org.drools.integrationtests;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
 import org.drools.marshalling.DefaultMarshaller;
 import org.drools.marshalling.Marshaller;
-import org.drools.reteoo.ReteooRuleBase;
 import org.drools.util.DroolsStreamUtils;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 
 /**
  * Marshalling helper class to perform serialize/de-serialize a given object

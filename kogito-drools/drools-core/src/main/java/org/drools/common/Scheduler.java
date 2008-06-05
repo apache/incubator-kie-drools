@@ -17,13 +17,13 @@ package org.drools.common;
  */
 
 import org.drools.Agenda;
+import org.drools.ClockType;
 import org.drools.process.instance.timer.TimerManager.TimerTrigger;
 import org.drools.time.Job;
 import org.drools.time.JobContext;
 import org.drools.time.JobHandle;
 import org.drools.time.TimerService;
 import org.drools.time.TimerServiceFactory;
-import org.drools.time.impl.JDKTimerService;
 
 /**
  * Scheduler for rules requiring truth duration.
@@ -66,7 +66,8 @@ final class Scheduler {
      * Construct.
      */
     private Scheduler() {
-        this.timerService = TimerServiceFactory.getTimerService();
+        // FIXME: must use the session timer service
+        this.timerService = TimerServiceFactory.getTimerService( ClockType.REAL_TIME );
     }
 
     /**

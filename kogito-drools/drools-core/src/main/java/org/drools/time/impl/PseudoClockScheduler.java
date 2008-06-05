@@ -24,13 +24,14 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.PriorityQueue;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 import org.drools.common.DroolsObjectInputStream;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.time.Job;
 import org.drools.time.JobContext;
 import org.drools.time.JobHandle;
-import org.drools.time.SessionClock;
+import org.drools.time.SessionPseudoClock;
 import org.drools.time.TimerService;
 import org.drools.time.Trigger;
 
@@ -44,7 +45,7 @@ import org.drools.time.Trigger;
 public class PseudoClockScheduler
     implements
     TimerService,
-    SessionClock {
+    SessionPseudoClock {
 
     private volatile long                   timer;
     private PriorityQueue<ScheduledJob>     queue;
@@ -117,8 +118,12 @@ public class PseudoClockScheduler
         return this.queue.remove( ((DefaultJobHandle) jobHandle).getJob() );
     }
 
-    public synchronized long advanceTime(long millisecs) {
-        this.timer += millisecs;
+    /**
+     * @inheritDoc
+     */
+    public long advanceTime(long amount,
+                            TimeUnit unit) {
+        this.timer += unit.toMillis( amount );
         this.runCallBacks();
         return this.timer;
     }
