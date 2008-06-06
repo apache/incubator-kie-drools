@@ -2,8 +2,8 @@ package org.drools.xml.processes;
 
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.RuleSetNode;
-import org.drools.xml.Configuration;
 import org.drools.xml.ExtensibleXmlParser;
+import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 public class RuleSetNodeHandler extends AbstractNodeHandler {
@@ -12,12 +12,12 @@ public class RuleSetNodeHandler extends AbstractNodeHandler {
         return new RuleSetNode();
     }
 
-    public void handleNode(final Node node, final Configuration config, final String uri,
+    public void handleNode(final Node node, final Element element, final String uri,
             final String localName, final ExtensibleXmlParser parser)
             throws SAXException {
-        super.handleNode(node, config, uri, localName, parser);
+        super.handleNode(node, element, uri, localName, parser);
         RuleSetNode ruleSetNode = (RuleSetNode) node;
-        String ruleFlowGroup = config.getAttribute("ruleFlowGroup");
+        String ruleFlowGroup = element.getAttribute("ruleFlowGroup");
         ruleSetNode.setRuleFlowGroup(ruleFlowGroup);
     }
 

@@ -23,9 +23,9 @@ import org.drools.lang.descr.ConditionalElementDescr;
 import org.drools.lang.descr.FromDescr;
 import org.drools.lang.descr.PatternDescr;
 import org.drools.xml.BaseAbstractHandler;
-import org.drools.xml.Configuration;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
+import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -54,9 +54,8 @@ public class CollectHandler extends BaseAbstractHandler
                         final String localName,
                         final Attributes attrs,
                         final ExtensibleXmlParser parser) throws SAXException {
-
-        parser.startConfiguration( localName,
-                                                  attrs );
+        parser.startElementBuilder( localName,
+                                    attrs );
         final CollectDescr collectDescr = new CollectDescr();
         return collectDescr;
     }
@@ -65,7 +64,7 @@ public class CollectHandler extends BaseAbstractHandler
                       final String localName,
                       final ExtensibleXmlParser parser) throws SAXException {
 
-        final Configuration config = parser.endConfiguration();
+        final Element element = parser.endElementBuilder();
         final CollectDescr collectDescr = (CollectDescr) parser.getCurrent();
 
         final Object parent = parser.getParent();

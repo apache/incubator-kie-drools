@@ -31,9 +31,9 @@ import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.xml.BaseAbstractHandler;
-import org.drools.xml.Configuration;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
+import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -73,8 +73,8 @@ public class AndHandler extends BaseAbstractHandler
                         final String localName,
                         final Attributes attrs,
                         final ExtensibleXmlParser parser) throws SAXException {
-        parser.startConfiguration( localName,
-                                                  attrs );
+        parser.startElementBuilder( localName,
+                                    attrs );
         final AndDescr andDescr = new AndDescr();
 
         return andDescr;
@@ -83,7 +83,7 @@ public class AndHandler extends BaseAbstractHandler
     public Object end(final String uri,
                       final String localName,
                       final ExtensibleXmlParser parser) throws SAXException {
-        final Configuration config = parser.endConfiguration();
+        final Element element = parser.endElementBuilder();
 
         final AndDescr andDescr = (AndDescr) parser.getCurrent();
 
@@ -92,9 +92,9 @@ public class AndHandler extends BaseAbstractHandler
         if ( parent instanceof RuleDescr || parent instanceof QueryDescr ) {
             final RuleDescr ruleDescr = (RuleDescr) parent;
             ruleDescr.setLhs( andDescr );
-        } else if ( parent instanceof MultiPatternDestinationDescr) {
-        	final MultiPatternDestinationDescr mpDescr = (MultiPatternDestinationDescr) parent;
-        	mpDescr.setInput(andDescr);        	
+        } else if ( parent instanceof MultiPatternDestinationDescr ) {
+            final MultiPatternDestinationDescr mpDescr = (MultiPatternDestinationDescr) parent;
+            mpDescr.setInput( andDescr );
         } else if ( parent instanceof ConditionalElementDescr ) {
             final ConditionalElementDescr ceDescr = (ConditionalElementDescr) parent;
             ceDescr.addDescr( andDescr );

@@ -6,18 +6,18 @@ import org.drools.process.core.ParameterDefinition;
 import org.drools.process.core.Work;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.WorkItemNode;
-import org.drools.xml.Configuration;
 import org.drools.xml.ExtensibleXmlParser;
+import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 public class WorkItemNodeHandler extends AbstractNodeHandler {
 
-    public void handleNode(final Node node, final Configuration config, final String uri,
+    public void handleNode(final Node node, final Element element, final String uri,
             final String localName, final ExtensibleXmlParser parser)
             throws SAXException {
-        super.handleNode(node, config, uri, localName, parser);
+        super.handleNode(node, element, uri, localName, parser);
         WorkItemNode workItemNode = (WorkItemNode) node;
-        final String waitForCompletion = config.getAttribute("waitForCompletion");
+        final String waitForCompletion = element.getAttribute("waitForCompletion");
         workItemNode.setWaitForCompletion(!"false".equals(waitForCompletion));
     }
 

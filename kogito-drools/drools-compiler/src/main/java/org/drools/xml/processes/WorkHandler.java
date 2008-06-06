@@ -29,7 +29,8 @@ public class WorkHandler extends BaseAbstractHandler implements Handler {
                         final String localName,
                         final Attributes attrs,
                         final ExtensibleXmlParser parser) throws SAXException {
-        parser.startConfiguration(localName, attrs);
+        parser.startElementBuilder( localName,
+                                    attrs );
         WorkItemNode workItemNode = (WorkItemNode) parser.getParent();
         final String name = attrs.getValue("name");
         emptyAttributeCheck(localName, "name", name, parser);
@@ -42,7 +43,7 @@ public class WorkHandler extends BaseAbstractHandler implements Handler {
     public Object end(final String uri,
                       final String localName,
                       final ExtensibleXmlParser parser) throws SAXException {
-        parser.endConfiguration();
+        parser.endElementBuilder();
         return null;
     }
 

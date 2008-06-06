@@ -31,10 +31,15 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.DocumentFragment;
+import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
@@ -102,7 +107,10 @@ public class ExtensibleXmlParser extends DefaultHandler {
 
     private final Map           namespaces                    = new HashMap();
 
-    EntityResolver              entityResolver;
+    private EntityResolver      entityResolver;
+    
+    private Document            document;
+    private DocumentFragment    docFragment;
 
     // ----------------------------------------------------------------------
     // Constructors
@@ -154,6 +162,7 @@ public class ExtensibleXmlParser extends DefaultHandler {
      *            The reader containing the rule-set.
      *
      * @return The rule-set.
+     * @throws ParserConfigurationException 
      */
     public Object read(final Reader reader) throws SAXException,
                                            IOException {
@@ -167,6 +176,7 @@ public class ExtensibleXmlParser extends DefaultHandler {
      *            The input-stream containing the rule-set.
      *
      * @return The rule-set.
+     * @throws ParserConfigurationException 
      */
     public Object read(final InputStream inputStream) throws SAXException,
                                                      IOException {
@@ -180,9 +190,19 @@ public class ExtensibleXmlParser extends DefaultHandler {
      *            The rule-set input-source.
      *
      * @return The rule-set.
+     * @throws ParserConfigurationException 
      */
     public Object read(final InputSource in) throws SAXException,
                                             IOException {
+        if ( this.docFragment == null ) {
+            try {
+                this.document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+            } catch ( ParserConfigurationException e ) {
+                throw new RuntimeException( "Unable to create new DOM Document" );
+            }
+            this.docFragment = this.document.createDocumentFragment();
+        }
+        
         SAXParser localParser = null;
         if ( this.parser == null ) {
             final SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -299,7 +319,7 @@ public class ExtensibleXmlParser extends DefaultHandler {
                                             localName );
 
         if ( handler == null ) {
-            startConfiguration( localName,
+            startElementBuilder( localName,
                                 attrs );
             return;
         }
@@ -337,7 +357,7 @@ public class ExtensibleXmlParser extends DefaultHandler {
 
         if ( handler == null ) {
             if ( this.configurationStack.size() >= 1 ) {
-                endConfiguration();
+                endElementBuilder();
             }
             return;
         }
@@ -348,7 +368,7 @@ public class ExtensibleXmlParser extends DefaultHandler {
                                  localName,
                                  this );
     }
-    
+
     public static class Null {
         public static final Null instance = new Null();
     }
@@ -437,38 +457,41 @@ public class ExtensibleXmlParser extends DefaultHandler {
      * @param attrs
      *            Tag attributes.
      */
-    public void startConfiguration(final String name,
-                                   final Attributes attrs) {
+    public void startElementBuilder(final String tagName,
+                                   final Attributes attrs) {        
         this.characters = new StringBuilder();
+                
 
-        final DefaultConfiguration config = new DefaultConfiguration( name );
+        final Element element = this.document.createElement( tagName );
+        
+        //final DefaultConfiguration config = new DefaultConfiguration( tagName );        
 
         final int numAttrs = attrs.getLength();
 
         for ( int i = 0; i < numAttrs; ++i ) {
-            config.setAttribute( attrs.getLocalName( i ),
+            element.setAttribute( attrs.getLocalName( i ),
                                  attrs.getValue( i ) );
         }
 
-        // lets add the namespaces as attributes
-        for ( final Iterator iter = this.namespaces.entrySet().iterator(); iter.hasNext(); ) {
-            final Map.Entry entry = (Map.Entry) iter.next();
-            String ns = (String) entry.getKey();
-            final String value = (String) entry.getValue();
-            if ( ns == null || ns.length() == 0 ) {
-                ns = "xmlns";
-            } else {
-                ns = "xmlns:" + ns;
-            }
-            config.setAttribute( ns,
-                                 value );
-        }
+//        // lets add the namespaces as attributes
+//        for ( final Iterator iter = this.namespaces.entrySet().iterator(); iter.hasNext(); ) {
+//            final Map.Entry entry = (Map.Entry) iter.next();
+//            String ns = (String) entry.getKey();
+//            final String value = (String) entry.getValue();
+//            if ( ns == null || ns.length() == 0 ) {
+//                ns = "xmlns";
+//            } else {
+//                ns = "xmlns:" + ns;
+//            }
+//            config.setAttribute( ns,
+//                                 value );
+//        }
 
         if ( this.configurationStack.isEmpty() ) {
-            this.configurationStack.addLast( config );
+            this.configurationStack.addLast( element );
         } else {
-            ((DefaultConfiguration) this.configurationStack.getLast()).addChild( config );
-            this.configurationStack.addLast( config );
+            ((Element) this.configurationStack.getLast()).appendChild( element );
+            this.configurationStack.addLast( element );
         }
     }
 
@@ -503,15 +526,15 @@ public class ExtensibleXmlParser extends DefaultHandler {
      *
      * @return The configuration.
      */
-    public Configuration endConfiguration() {
-        final DefaultConfiguration config = (DefaultConfiguration) this.configurationStack.removeLast();
+    public Element endElementBuilder() {
+        final Element element = (Element) this.configurationStack.removeLast();
         if ( this.characters != null ) {
-            config.setText( this.characters.toString() );
+            element.appendChild( this.document.createTextNode( this.characters.toString() ) );
         }
 
         this.characters = null;
 
-        return config;
+        return element;
     }
 
     public Object getParent() {

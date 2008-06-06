@@ -23,9 +23,11 @@ import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.PredicateDescr;
 import org.drools.xml.BaseAbstractHandler;
-import org.drools.xml.Configuration;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
+import org.mvel.templates.res.TextNode;
+import org.w3c.dom.Element;
+import org.w3c.dom.Text;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -57,9 +59,8 @@ public class PredicateHandler extends BaseAbstractHandler
                         final String localName,
                         final Attributes attrs,
                         final ExtensibleXmlParser parser) throws SAXException {
-        parser.startConfiguration( localName,
-                                                  attrs );
-
+        parser.startElementBuilder( localName,
+                                    attrs );
         final PredicateDescr predicateDescr = new PredicateDescr();
 
         return predicateDescr;
@@ -68,11 +69,11 @@ public class PredicateHandler extends BaseAbstractHandler
     public Object end(final String uri,
                       final String localName,
                       final ExtensibleXmlParser parser) throws SAXException {
-        final Configuration config = parser.endConfiguration();
+        final Element element = parser.endElementBuilder();
 
         final PredicateDescr predicateDescr = (PredicateDescr) parser.getCurrent();
 
-        final String expression = config.getText();
+        final String expression =((org.w3c.dom.Text)element.getChildNodes().item( 0 )).getWholeText();
 
         if ( expression == null || expression.trim().equals( "" ) ) {
             throw new SAXParseException( "<predicate> must have some content",

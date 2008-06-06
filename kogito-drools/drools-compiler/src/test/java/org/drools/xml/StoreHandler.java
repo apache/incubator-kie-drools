@@ -7,6 +7,7 @@ import org.drools.workflow.core.impl.DroolsConsequenceAction;
 import org.drools.workflow.core.impl.WorkflowProcessImpl;
 import org.drools.workflow.core.node.ActionNode;
 import org.drools.workflow.core.node.StartNode;
+import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -32,7 +33,7 @@ public class StoreHandler extends BaseAbstractHandler
                         final String localName,
                         final Attributes attrs,
                         final ExtensibleXmlParser xmlPackageReader) throws SAXException {
-        xmlPackageReader.startConfiguration( localName,
+        xmlPackageReader.startElementBuilder( localName,
                                                   attrs );
         
         WorkflowProcessImpl  process = ( WorkflowProcessImpl ) xmlPackageReader.getParent();
@@ -56,12 +57,12 @@ public class StoreHandler extends BaseAbstractHandler
     public Object end(final String uri,
                       final String localName,
                       final ExtensibleXmlParser xmlPackageReader) throws SAXException {
-        final Configuration config = xmlPackageReader.endConfiguration();
+        final Element element = xmlPackageReader.endElementBuilder();
         WorkflowProcessImpl  process = ( WorkflowProcessImpl ) xmlPackageReader.getParent();
 
         ActionNode actionNode = ( ActionNode ) xmlPackageReader.getCurrent();
         
-        String text = config.getText();
+        String text = ((org.w3c.dom.Text)element.getChildNodes().item( 0 )).getWholeText();
         
         DroolsConsequenceAction actionText = new DroolsConsequenceAction( "mvel", "list.add(\"" + text + "\")" );
         

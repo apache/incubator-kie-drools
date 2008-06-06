@@ -28,7 +28,8 @@ public class OutPortHandler extends BaseAbstractHandler
                         final String localName,
                         final Attributes attrs,
                         final ExtensibleXmlParser parser) throws SAXException {
-        parser.startConfiguration(localName, attrs);
+        parser.startElementBuilder( localName,
+                                    attrs );
         CompositeNode compositeNode = (CompositeNode) parser.getParent();
         final String type = attrs.getValue("type");
         emptyAttributeCheck(localName, "type", type, parser);
@@ -43,7 +44,7 @@ public class OutPortHandler extends BaseAbstractHandler
     public Object end(final String uri,
                       final String localName,
                       final ExtensibleXmlParser parser) throws SAXException {
-        parser.endConfiguration();
+        parser.endElementBuilder();
         return null;
     }
 

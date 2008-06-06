@@ -2,9 +2,10 @@ package org.drools.xml.processes;
 
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.MilestoneNode;
-import org.drools.xml.Configuration;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.XmlDumper;
+import org.w3c.dom.Element;
+import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
 public class MilestoneNodeHandler extends AbstractNodeHandler {
@@ -13,12 +14,12 @@ public class MilestoneNodeHandler extends AbstractNodeHandler {
         return new MilestoneNode();
     }
 
-    public void handleNode(final Node node, final Configuration config, final String uri,
+    public void handleNode(final Node node, final Element element, final String uri,
             final String localName, final ExtensibleXmlParser parser)
             throws SAXException {
-        super.handleNode(node, config, uri, localName, parser);
+        super.handleNode(node, element, uri, localName, parser);
         MilestoneNode milestone = (MilestoneNode) node;
-        String text = config.getText();
+        String text = ((Text)element.getChildNodes().item( 0 )).getWholeText();
         if (text != null) {
             text.trim();
             if ("".equals(text)) {

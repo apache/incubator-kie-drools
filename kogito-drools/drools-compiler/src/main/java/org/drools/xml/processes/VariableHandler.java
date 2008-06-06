@@ -36,7 +36,8 @@ public class VariableHandler extends BaseAbstractHandler
                         final String localName,
                         final Attributes attrs,
                         final ExtensibleXmlParser parser) throws SAXException {
-        parser.startConfiguration(localName, attrs);
+        parser.startElementBuilder( localName,
+                                    attrs );
         WorkflowProcessImpl process = (WorkflowProcessImpl) parser.getParent();
         final String name = attrs.getValue("name");
         emptyAttributeCheck(localName, "name", name, parser);
@@ -63,7 +64,7 @@ public class VariableHandler extends BaseAbstractHandler
     public Object end(final String uri,
                       final String localName,
                       final ExtensibleXmlParser parser) throws SAXException {
-        parser.endConfiguration();
+        parser.endElementBuilder();
         return null;
     }
 

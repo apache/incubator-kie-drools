@@ -31,7 +31,8 @@ public class MappingHandler extends BaseAbstractHandler
                         final String localName,
                         final Attributes attrs,
                         final ExtensibleXmlParser parser) throws SAXException {
-        parser.startConfiguration(localName, attrs);
+        parser.startElementBuilder( localName,
+                                    attrs );
         Mappable mappable = (Mappable) parser.getParent();
         final String type = attrs.getValue("type");
         emptyAttributeCheck(localName, "type", type, parser);
@@ -53,7 +54,7 @@ public class MappingHandler extends BaseAbstractHandler
     public Object end(final String uri,
                       final String localName,
                       final ExtensibleXmlParser parser) throws SAXException {
-        parser.endConfiguration();
+        parser.endElementBuilder();
         return null;
     }
 

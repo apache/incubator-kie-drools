@@ -7,10 +7,10 @@ import org.drools.workflow.core.Node;
 import org.drools.workflow.core.NodeContainer;
 import org.drools.workflow.core.impl.ConnectionImpl;
 import org.drools.xml.BaseAbstractHandler;
-import org.drools.xml.Configuration;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
 import org.drools.xml.ProcessBuildData;
+import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -37,8 +37,8 @@ public class ConnectionHandler extends BaseAbstractHandler
                         final String localName,
                         final Attributes attrs,
                         final ExtensibleXmlParser parser) throws SAXException {
-        parser.startConfiguration( localName,
-                                                  attrs );     
+        parser.startElementBuilder( localName,
+                                    attrs );   
         
         String fromId = attrs.getValue( "from" );
         emptyAttributeCheck( localName, "from", fromId, parser );
@@ -68,7 +68,7 @@ public class ConnectionHandler extends BaseAbstractHandler
     public Object end(final String uri,
                       final String localName,
                       final ExtensibleXmlParser parser) throws SAXException {
-        final Configuration config = parser.endConfiguration();
+        final Element element = parser.endElementBuilder();
         return parser.getCurrent();
     }
 

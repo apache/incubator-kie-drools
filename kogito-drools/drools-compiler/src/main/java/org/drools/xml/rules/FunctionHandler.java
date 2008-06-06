@@ -23,9 +23,12 @@ import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.xml.BaseAbstractHandler;
-import org.drools.xml.Configuration;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
+import org.mvel.templates.res.TextNode;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -58,8 +61,8 @@ public class FunctionHandler extends BaseAbstractHandler
                         final String localName,
                         final Attributes attrs,
                         final ExtensibleXmlParser parser) throws SAXException {
-        parser.startConfiguration( localName,
-                                             attrs );
+        parser.startElementBuilder( localName,
+                                    attrs );
         final String name = attrs.getValue( "name" );
         final String returnType = attrs.getValue( "return-type" );
         
@@ -75,15 +78,15 @@ public class FunctionHandler extends BaseAbstractHandler
     public Object end(final String uri,
                       final String localName,
                       final ExtensibleXmlParser parser) throws SAXException {
-        final Configuration config = parser.endConfiguration();
+        final Element element = parser.endElementBuilder();
 
         FunctionDescr functionDescr = ( FunctionDescr ) parser.getCurrent();
 
-        final Configuration[] parameters = config.getChildren( "parameter" );
+        final NodeList parameters = element.getElementsByTagName( "parameter" );
 
-        for ( int i = 0, length = parameters.length; i < length; i++ ) {
-            final String identifier = parameters[i].getAttribute( "identifier" );      
-            final String type = parameters[i].getAttribute( "type" );
+        for ( int i = 0, length = parameters.getLength(); i < length; i++ ) {
+            final String identifier = ((Element)parameters.item( i )).getAttribute( "identifier" );      
+            final String type = ((Element)parameters.item( i )).getAttribute( "type" );
             
             emptyAttributeCheck("parameter", "identifier", identifier, parser);                  
             emptyAttributeCheck("parameter", "type", type, parser);
@@ -93,13 +96,17 @@ public class FunctionHandler extends BaseAbstractHandler
         }
 
         // we allow empty, "", bodies - but make sure that we atleast have a body element
-        final Configuration body = config.getChild( "body" );
-        if ( body == null ) {
+              
+        NodeList list = element.getElementsByTagName( "body" );
+        if ( list.getLength() == 0 ) {
             throw new SAXParseException( "function must have a <body>",
                                          parser.getLocator() );
+
         }
 
-        functionDescr.setText( body.getText() );
+        
+        
+        functionDescr.setText( ((org.w3c.dom.Text)list.item( 0 ).getChildNodes().item( 0 )).getWholeText() );
 
         final PackageDescr packageDescr = (PackageDescr) parser.getData();
 
