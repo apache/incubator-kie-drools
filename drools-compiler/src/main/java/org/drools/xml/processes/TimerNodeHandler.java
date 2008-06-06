@@ -3,8 +3,8 @@ package org.drools.xml.processes;
 import org.drools.process.core.timer.Timer;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.TimerNode;
-import org.drools.xml.Configuration;
 import org.drools.xml.ExtensibleXmlParser;
+import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 public class TimerNodeHandler extends AbstractNodeHandler {
@@ -13,23 +13,23 @@ public class TimerNodeHandler extends AbstractNodeHandler {
         return new TimerNode();
     }
 
-    public void handleNode(final Node node, final Configuration config, final String uri,
+    public void handleNode(final Node node, final Element element, final String uri,
             final String localName, final ExtensibleXmlParser parser)
             throws SAXException {
-        super.handleNode(node, config, uri, localName, parser);
+        super.handleNode(node, element, uri, localName, parser);
         TimerNode timerNode = (TimerNode) node;
-        String delay = config.getAttribute("delay");
-        String period = config.getAttribute("period");
+        String delay = element.getAttribute("delay");
+        String period = element.getAttribute("period");
         if (delay != null || period != null) {
             Timer timer = timerNode.getTimer();
             if (timer == null) {
                 timer = new Timer();
                 timerNode.setTimer(timer);
             }
-            if (delay != null) {
+            if (delay != null && delay.length() != 0 ) {
                 timer.setDelay(new Long(delay));
             }
-            if (period != null) {
+            if (period != null && period.length() != 0 ) {
                 timer.setPeriod(new Long(period));
             }
         }

@@ -28,9 +28,9 @@ import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PatternDescr;
 import org.drools.xml.BaseAbstractHandler;
-import org.drools.xml.Configuration;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
+import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -65,8 +65,8 @@ public class OrHandler extends BaseAbstractHandler
                         final String localName,
                         final Attributes attrs,
                         final ExtensibleXmlParser parser) throws SAXException {
-        parser.startConfiguration( localName,
-                                                  attrs );
+        parser.startElementBuilder( localName,
+                                    attrs );
         final OrDescr orDescr = new OrDescr();
 
         return orDescr;
@@ -75,7 +75,7 @@ public class OrHandler extends BaseAbstractHandler
     public Object end(final String uri,
                       final String localName,
                       final ExtensibleXmlParser parser) throws SAXException {
-        final Configuration config = parser.endConfiguration();
+        final Element element = parser.endElementBuilder();
 
         final OrDescr orDescr = (OrDescr) parser.getCurrent();
 

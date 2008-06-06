@@ -23,9 +23,10 @@ import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.xml.BaseAbstractHandler;
-import org.drools.xml.Configuration;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -55,8 +56,8 @@ public class PackageHandler extends BaseAbstractHandler
                         final String localName,
                         final Attributes attrs,
                         final ExtensibleXmlParser parser) throws SAXException {
-        parser.startConfiguration( localName,
-                                                  attrs );
+        parser.startElementBuilder( localName,
+                                    attrs );
 
         final String ruleSetName = attrs.getValue( "name" );
 
@@ -75,12 +76,13 @@ public class PackageHandler extends BaseAbstractHandler
                       final String localName,
                       final ExtensibleXmlParser parser) throws SAXException {
         final PackageDescr packageDescr = ( PackageDescr ) parser.getData();
-        final Configuration config = parser.endConfiguration();
+        final Element element = parser.endElementBuilder();
 
-        final Configuration[] imports = config.getChildren( "import" );
+        
+        NodeList imports = element.getElementsByTagName( "import" );     
 
-        for ( int i = 0, length = imports.length; i < length; i++ ) {
-            final String importEntry = imports[i].getAttribute( "name" );
+        for ( int i = 0, length = imports.getLength(); i < length; i++ ) {
+            final String importEntry = ((Element)imports.item(i)).getAttribute( "name" );
 
             if ( importEntry == null || importEntry.trim().equals( "" ) ) {
                 throw new SAXParseException( "<import> cannot be blank",
@@ -89,10 +91,10 @@ public class PackageHandler extends BaseAbstractHandler
             packageDescr.addImport( new ImportDescr( importEntry ) );
         }
         
-        final Configuration[] importfunctions = config.getChildren( "importfunction" );
+        NodeList importfunctions = element.getElementsByTagName( "importfunction" );
 
-        for ( int i = 0, length = importfunctions.length; i < length; i++ ) {
-            final String importfunctionEntry = importfunctions[i].getAttribute( "name" );
+        for ( int i = 0, length = importfunctions.getLength(); i < length; i++ ) {
+            final String importfunctionEntry = ((Element)importfunctions.item(i)).getAttribute( "name" );
 
             if ( importfunctionEntry == null || importfunctionEntry.trim().equals( "" ) ) {
                 throw new SAXParseException( "<importfunction> cannot be blank",
@@ -103,20 +105,19 @@ public class PackageHandler extends BaseAbstractHandler
             funcdescr.setTarget( importfunctionEntry );
             
             packageDescr.addFunctionImport(funcdescr);
-        }
+        }        
         
+        NodeList globals = element.getElementsByTagName( "global" );
 
-        final Configuration[] globals = config.getChildren( "global" );
-
-        for ( int i = 0, length = globals.length; i < length; i++ ) {
-            final String identifier = globals[i].getAttribute( "identifier" );
+        for ( int i = 0, length = globals.getLength(); i < length; i++ ) {
+            final String identifier = ((Element)globals.item(i)).getAttribute( "identifier" );
 
             if ( identifier == null || identifier.trim().equals( "" ) ) {
                 throw new SAXParseException( "<global> must have an identifier",
                                              parser.getLocator() );
             }
 
-            final String type = globals[i].getAttribute( "type" );
+            final String type = ((Element)globals.item(i)).getAttribute( "type" );
             if ( type == null || type.trim().equals( "" ) ) {
                 throw new SAXParseException( "<global> must have specify a type",
                                              parser.getLocator() );

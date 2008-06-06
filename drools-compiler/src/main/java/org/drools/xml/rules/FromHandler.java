@@ -23,9 +23,9 @@ import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.FromDescr;
 import org.drools.lang.descr.PatternDescr;
 import org.drools.xml.BaseAbstractHandler;
-import org.drools.xml.Configuration;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
+import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -53,10 +53,8 @@ public class FromHandler extends BaseAbstractHandler
                         final String localName,
                         final Attributes attrs,
                         final ExtensibleXmlParser parser) throws SAXException {
-
-        parser.startConfiguration( localName,
-                                                  attrs );
-
+        parser.startElementBuilder( localName,
+                                    attrs );
         final FromDescr fromDesctiptor = new FromDescr();
         return fromDesctiptor;
     }
@@ -64,8 +62,7 @@ public class FromHandler extends BaseAbstractHandler
     public Object end(final String uri,
                       final String localName,
                       final ExtensibleXmlParser parser) throws SAXException {
-
-        final Configuration config = parser.endConfiguration();
+        final Element element = parser.endElementBuilder();
 
         final FromDescr fromDescr = (FromDescr) parser.getCurrent();
 
@@ -74,8 +71,8 @@ public class FromHandler extends BaseAbstractHandler
         final PatternDescr patternDescr = (PatternDescr) parent;
 
         final ConditionalElementDescr parentDescr = (ConditionalElementDescr)  parser.getParent( 1 );
-
-        if ( (config.getChild( "expression" ) != null) ) {
+                
+        if ( element.getElementsByTagName( "expression" ).getLength() > 0 ) {
             patternDescr.setSource( fromDescr );    
         }
 

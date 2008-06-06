@@ -12,9 +12,10 @@ import org.drools.process.core.datatype.impl.type.IntegerDataType;
 import org.drools.process.core.datatype.impl.type.StringDataType;
 import org.drools.process.core.impl.ParameterDefinitionImpl;
 import org.drools.xml.BaseAbstractHandler;
-import org.drools.xml.Configuration;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
+import org.w3c.dom.Element;
+import org.w3c.dom.Text;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -40,18 +41,19 @@ public class ParameterHandler extends BaseAbstractHandler
                         final String localName,
                         final Attributes attrs,
                         final ExtensibleXmlParser parser) throws SAXException {
-        parser.startConfiguration(localName, attrs);
+        parser.startElementBuilder( localName,
+                                    attrs );
         return null;
     }    
     
     public Object end(final String uri,
                       final String localName,
                       final ExtensibleXmlParser parser) throws SAXException {
-        Configuration config = parser.endConfiguration();
+        final Element element = parser.endElementBuilder();
         Work work = (Work) parser.getParent();
-        final String name = config.getAttribute("name");
+        final String name = element.getAttribute("name");
         emptyAttributeCheck(localName, "name", name, parser);
-        final String type = config.getAttribute("type");
+        final String type = element.getAttribute("type");
         emptyAttributeCheck(localName, "type", type, parser);
         DataType dataType = null;
         try {
@@ -66,9 +68,9 @@ public class ParameterHandler extends BaseAbstractHandler
             throw new SAXParseException(
                 "Could not access datatype " + name, parser.getLocator());
         }
-        String text = config.getText();
+        String text = ((Text)element.getChildNodes().item( 0 )).getWholeText();
         if (text != null) {
-            text.trim();
+            text = text.trim();
             if ("".equals(text)) {
                 text = null;
             }

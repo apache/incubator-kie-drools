@@ -6,9 +6,9 @@ import java.util.HashSet;
 import org.drools.process.core.Process;
 import org.drools.workflow.core.impl.WorkflowProcessImpl;
 import org.drools.xml.BaseAbstractHandler;
-import org.drools.xml.Configuration;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
+import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -33,8 +33,8 @@ public class ImportHandler extends BaseAbstractHandler
                         final String localName,
                         final Attributes attrs,
                         final ExtensibleXmlParser parser) throws SAXException {
-        parser.startConfiguration( localName,
-                                                  attrs );
+        parser.startElementBuilder( localName,
+                                    attrs );
         
         WorkflowProcessImpl  process = ( WorkflowProcessImpl ) parser.getParent();        
         
@@ -54,7 +54,7 @@ public class ImportHandler extends BaseAbstractHandler
     public Object end(final String uri,
                       final String localName,
                       final ExtensibleXmlParser parser) throws SAXException {
-        final Configuration config = parser.endConfiguration();
+        final Element element = parser.endElementBuilder();
         return null;
     }
 

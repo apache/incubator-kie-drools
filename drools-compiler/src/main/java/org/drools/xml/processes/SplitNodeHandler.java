@@ -5,9 +5,9 @@ import java.util.Map;
 import org.drools.workflow.core.Constraint;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.Split;
-import org.drools.xml.Configuration;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.XmlDumper;
+import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 public class SplitNodeHandler extends AbstractNodeHandler {
@@ -16,13 +16,13 @@ public class SplitNodeHandler extends AbstractNodeHandler {
         return new Split();
     }
 
-    public void handleNode(final Node node, final Configuration config, final String uri,
+    public void handleNode(final Node node, final Element element, final String uri,
             final String localName, final ExtensibleXmlParser parser)
             throws SAXException {
-        super.handleNode(node, config, uri, localName, parser);
+        super.handleNode(node, element, uri, localName, parser);
         Split splitNode = (Split) node;
-        String type = config.getAttribute("type");
-        if (type != null) {
+        String type = element.getAttribute("type");
+        if (type != null && type.length() != 0 ) {
             splitNode.setType(new Integer(type));
         }
     }

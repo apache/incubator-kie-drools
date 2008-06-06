@@ -6,9 +6,10 @@ import org.drools.workflow.core.Constraint;
 import org.drools.workflow.core.impl.ConstraintImpl;
 import org.drools.workflow.core.node.Split;
 import org.drools.xml.BaseAbstractHandler;
-import org.drools.xml.Configuration;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
+import org.w3c.dom.Element;
+import org.w3c.dom.Text;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -30,36 +31,37 @@ public class ConstraintHandler extends BaseAbstractHandler implements Handler {
                         final String localName,
                         final Attributes attrs,
                         final ExtensibleXmlParser parser) throws SAXException {
-        parser.startConfiguration(localName, attrs);
+        parser.startElementBuilder( localName,
+                                    attrs );
         return null;
     }    
     
     public Object end(final String uri,
                       final String localName,
                       final ExtensibleXmlParser parser) throws SAXException {
-        Configuration config = parser.endConfiguration();
+        final Element element = parser.endElementBuilder();
         Split splitNode = (Split) parser.getParent();
-        final String toNodeIdString = config.getAttribute("toNodeId");
+        final String toNodeIdString = element.getAttribute("toNodeId");
         emptyAttributeCheck(localName, "toNodeId", toNodeIdString, parser);
         int toNodeId = new Integer(toNodeIdString);
-        final String toType = config.getAttribute("toType");
+        final String toType = element.getAttribute("toType");
         emptyAttributeCheck(localName, "toType", toType, parser);
         Split.ConnectionRef connectionRef = new Split.ConnectionRef(toNodeId, toType);
         Constraint constraint = new ConstraintImpl();
         
-        final String name = config.getAttribute("name");
+        final String name = element.getAttribute("name");
         constraint.setName(name);
-        final String priority = config.getAttribute("priority");
-        if (priority != null) {
+        final String priority = element.getAttribute("priority");
+        if (priority != null && priority.length() != 0) {
             constraint.setPriority(new Integer(priority));
         }
-        final String type = config.getAttribute("type");
+        final String type = element.getAttribute("type");
         constraint.setType(type);
-        final String dialect = config.getAttribute("dialect");
+        final String dialect = element.getAttribute("dialect");
         constraint.setDialect(dialect);
-        String text = config.getText();
+        String text = ((Text)element.getChildNodes().item( 0 )).getWholeText();
         if (text != null) {
-            text.trim();
+            text = text.trim();
             if ("".equals(text)) {
                 text = null;
             }

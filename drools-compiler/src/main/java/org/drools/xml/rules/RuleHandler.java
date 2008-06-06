@@ -25,9 +25,11 @@ import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.xml.BaseAbstractHandler;
-import org.drools.xml.Configuration;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -60,11 +62,14 @@ public class RuleHandler extends BaseAbstractHandler
                         final String localName,
                         final Attributes attrs,
                         final ExtensibleXmlParser parser) throws SAXException {
-        parser.startConfiguration( localName,
-                                                  attrs );
+        parser.startElementBuilder( localName,
+                                    attrs );
 
         final String ruleName = attrs.getValue( "name" );
-        emptyAttributeCheck(localName, "name", ruleName, parser );
+        emptyAttributeCheck( localName,
+                             "name",
+                             ruleName,
+                             parser );
 
         final RuleDescr ruleDescr = new RuleDescr( ruleName.trim() );
 
@@ -74,7 +79,7 @@ public class RuleHandler extends BaseAbstractHandler
     public Object end(final String uri,
                       final String localName,
                       final ExtensibleXmlParser parser) throws SAXException {
-        final Configuration config = parser.endConfiguration();
+        final Element element = parser.endElementBuilder();
 
         final RuleDescr ruleDescr = (RuleDescr) parser.getCurrent();
 
@@ -85,26 +90,29 @@ public class RuleHandler extends BaseAbstractHandler
                                          parser.getLocator() );
         }
 
-        final Configuration rhs = config.getChild( "rhs" );
-        if ( rhs == null ) {
+        NodeList list = element.getElementsByTagName( "rhs" );
+        if ( list.getLength() == 0 ) {
             throw new SAXParseException( "<rule> requires a <rh> child element",
                                          parser.getLocator() );
         }
 
-        ruleDescr.setConsequence( rhs.getText() );
+        ruleDescr.setConsequence( ((org.w3c.dom.Text)list.item( 0 ).getChildNodes().item( 0 )).getWholeText() );
 
-        final Configuration[] attributes = config.getChildren( "rule-attribute" );
-        for ( int i = 0, length = attributes.length; i < length; i++ ) {
-            final String name = attributes[i].getAttribute( "name" );
-            emptyAttributeCheck( "rule-attribute", "name", name, parser );
+        NodeList attributes = element.getElementsByTagName( "rule-attribute" );
+        for ( int i = 0, length = attributes.getLength(); i < length; i++ ) {
+            final String name = ((Element) attributes.item( i )).getAttribute( "name" );
+            emptyAttributeCheck( "rule-attribute",
+                                 "name",
+                                 name,
+                                 parser );
 
-            final String value = attributes[i].getAttribute( "value" );
+            final String value = ((Element) attributes.item( i )).getAttribute( "value" );
 
             ruleDescr.addAttribute( new AttributeDescr( name,
                                                         value ) );
         }
 
-        (( PackageDescr ) parser.getData()).addRule( ruleDescr );
+        ((PackageDescr) parser.getData()).addRule( ruleDescr );
 
         return ruleDescr;
     }
