@@ -18,7 +18,7 @@
 package org.drools;
 
 import org.drools.time.SessionClock;
-import org.drools.time.impl.JDKScheduler;
+import org.drools.time.impl.JDKTimerService;
 import org.drools.time.impl.PseudoClockScheduler;
 
 /**
@@ -30,7 +30,7 @@ public enum ClockType {
 
     REAL_TIME {
         public SessionClock createInstance() {
-            return new JDKScheduler();
+            return new JDKTimerService();
         }
     },
 
