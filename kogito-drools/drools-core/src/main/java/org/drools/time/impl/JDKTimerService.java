@@ -25,6 +25,7 @@ import java.util.concurrent.TimeUnit;
 import org.drools.time.Job;
 import org.drools.time.JobContext;
 import org.drools.time.JobHandle;
+import org.drools.time.SessionClock;
 import org.drools.time.TimerService;
 import org.drools.time.Trigger;
 
@@ -36,7 +37,9 @@ import org.drools.time.Trigger;
  */
 public class JDKTimerService
     implements
-    TimerService {
+    TimerService,
+    SessionClock {
+    
     private ScheduledThreadPoolExecutor scheduler;
 
     public JDKTimerService() {
@@ -87,7 +90,7 @@ public class JDKTimerService
                                             ScheduledThreadPoolExecutor scheduler) {
         long then = date.getTime();
         long now = System.currentTimeMillis();
-        ScheduledFuture future = null;
+        ScheduledFuture<Void> future = null;
         if ( then >= now ) {
             future = scheduler.schedule( callableJob,
                                          then - now,
@@ -102,12 +105,12 @@ public class JDKTimerService
 
     public static class JDKCallableJob
         implements
-        Callable {
-        private Job                         job;
-        private Trigger                     trigger;
-        private JobContext                  ctx;
-        private ScheduledThreadPoolExecutor scheduler;
-        private JDKJobHandle                handle;
+        Callable<Void> {
+        private final Job                         job;
+        private final Trigger                     trigger;
+        private final JobContext                  ctx;
+        private final ScheduledThreadPoolExecutor scheduler;
+        private final JDKJobHandle                handle;
 
         public JDKCallableJob(Job job,
                               JobContext ctx,
@@ -121,15 +124,15 @@ public class JDKTimerService
             this.scheduler = scheduler;
         }
 
-        public Object call() throws Exception {
+        public Void call() throws Exception {
             this.job.execute( this.ctx );
 
             // our triggers allow for flexible rescheduling
             Date date = this.trigger.getNextFireTime();
             if ( date != null ) {
-                ScheduledFuture future = schedule( date,
-                                                   this,
-                                                   this.scheduler );
+                ScheduledFuture<Void> future = schedule( date,
+                                                         this,
+                                                         this.scheduler );
                 this.handle.setFuture( future );
             } 
 
@@ -140,17 +143,19 @@ public class JDKTimerService
     public static class JDKJobHandle
         implements
         JobHandle {
-        private ScheduledFuture future;
+
+        private static final long serialVersionUID = 6607880828232839927L;
+        
+        private ScheduledFuture<Void> future;
 
         public JDKJobHandle() {
-
         }
 
-        public ScheduledFuture getFuture() {
+        public ScheduledFuture<Void> getFuture() {
             return future;
         }
 
-        public void setFuture(ScheduledFuture future) {
+        public void setFuture(ScheduledFuture<Void> future) {
             this.future = future;
         }
 
