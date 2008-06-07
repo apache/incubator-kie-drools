@@ -130,6 +130,9 @@ public class AntlrDSLMappingEntry extends AbstractDSLMappingEntry implements DSL
 			if(!variables.isEmpty()){
 				Integer tailMatchGroupIndex = (Integer) Collections.max(variables.values());
 				maxGroupIndex = tailMatchGroupIndex.intValue();
+			}else if(headMatchGroupAdded){
+				//if empty, but head group matched, set max group to 1
+				maxGroupIndex++;
 			}
 			maxGroupIndex++;
 			valuePatternBuffer.append("$" + maxGroupIndex);
