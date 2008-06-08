@@ -1,5 +1,8 @@
 package org.drools.process.instance.timer;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.Date;
 
 import org.drools.WorkingMemory;
@@ -76,6 +79,10 @@ public class TimerManager {
         private long period;
         private int  count;
 
+        public TimerTrigger() {
+            
+        }
+        
         public TimerTrigger(long delay,
                             long period) {
             this.delay = delay;
@@ -93,6 +100,20 @@ public class TimerManager {
             }
             count++;
             return date;
+        }
+
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
+            this.delay = in.readLong();
+            this.period = in.readLong();
+            this.count = in.readInt();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeLong( this.delay );
+            out.writeLong( this.period );
+            out.writeInt(  this.count );
+            
         }
 
     }
