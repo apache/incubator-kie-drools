@@ -4,18 +4,15 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.Serializable;
-import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
-
-import org.drools.base.ClassFieldAccessorCache;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.drools.base.ClassFieldAccessorCache;
 
 public class ClassBuilderTest extends TestCase {
 
@@ -33,13 +30,13 @@ public class ClassBuilderTest extends TestCase {
     }
 
     /*
-     * Test method for 'br.com.auster.common.asm.ClassBuilder.buildClass(ClassDefinition)'
+     * Test method for 'org.drools.common.asm.ClassBuilder.buildClass(ClassDefinition)'
      */
     public void testBuildClass() {
         try {
             ClassBuilder builder = new ClassBuilder();
 
-            ClassDefinition classDef = new ClassDefinition( "br.com.auster.TestClass1",
+            ClassDefinition classDef = new ClassDefinition( "org.drools.TestClass1",
                                                             null,
                                                             new String[]{"java.io.Serializable"} );
             FieldDefinition intDef = new FieldDefinition( "intAttr",
@@ -113,7 +110,7 @@ public class ClassBuilderTest extends TestCase {
         try {
             ClassBuilder builder = new ClassBuilder();
 
-            ClassDefinition classDef = new ClassDefinition( "br.com.auster.TestClass2",
+            ClassDefinition classDef = new ClassDefinition( "org.drools.TestClass2",
                                                             null,
                                                             new String[]{} );
             FieldDefinition long1Def = new FieldDefinition( "longAttr1",
@@ -229,7 +226,7 @@ public class ClassBuilderTest extends TestCase {
         try {
             ClassBuilder builder = new ClassBuilder();
 
-            ClassDefinition classDef = new ClassDefinition( "br.com.auster.TestClass3",
+            ClassDefinition classDef = new ClassDefinition( "org.drools.TestClass3",
                                                             null,
                                                             new String[]{} );
             FieldDefinition intDef = new FieldDefinition( "intAttr",
@@ -264,7 +261,7 @@ public class ClassBuilderTest extends TestCase {
         try {
             ClassBuilder builder = new ClassBuilder();
 
-            ClassDefinition classDef = new ClassDefinition( "br.com.auster.TestClass2",
+            ClassDefinition classDef = new ClassDefinition( "org.drools.TestClass4",
                                                             null,
                                                             new String[]{} );
             FieldDefinition long1Def = new FieldDefinition( "longAttr1",
