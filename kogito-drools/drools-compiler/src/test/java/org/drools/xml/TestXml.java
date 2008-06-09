@@ -17,8 +17,7 @@ public class TestXml extends TestCase {
         RuleFlowProcess process = (RuleFlowProcess) reader.getProcess();
         assertNotNull(process);
 
-        XmlRuleFlowProcessDumper dumper = new XmlRuleFlowProcessDumper();
-        String output = dumper.dump(process);
+        String output = XmlRuleFlowProcessDumper.INSTANCE.dump(process);
         System.out.println(output);
         reader = new XmlProcessReader(new SemanticModules());
         reader.read(new StringReader(output));

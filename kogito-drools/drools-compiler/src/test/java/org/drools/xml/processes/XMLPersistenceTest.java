@@ -61,9 +61,7 @@ public class XMLPersistenceTest extends TestCase {
         process.addNode(new WorkItemNode());
         process.addNode(new TimerNode());
         
-        XmlRuleFlowProcessDumper dumper = new XmlRuleFlowProcessDumper();
-        
-        String xml = dumper.dump(process, false);
+        String xml = XmlRuleFlowProcessDumper.INSTANCE.dump(process, false);
         if (xml == null) {
             throw new IllegalArgumentException("Failed to persist empty nodes!");
         }
@@ -82,7 +80,7 @@ public class XMLPersistenceTest extends TestCase {
         
 //        System.out.println("************************************");
         
-        String xml2 = dumper.dump(process, false);
+        String xml2 = XmlRuleFlowProcessDumper.INSTANCE.dump(process, false);
         if (xml2 == null) {
             throw new IllegalArgumentException("Failed to persist empty nodes!");
         }
@@ -258,9 +256,7 @@ public class XMLPersistenceTest extends TestCase {
         process.addNode(endNode);
         new ConnectionImpl(timerNode, Node.CONNECTION_DEFAULT_TYPE, endNode, Node.CONNECTION_DEFAULT_TYPE);
         
-        XmlRuleFlowProcessDumper dumper = new XmlRuleFlowProcessDumper();
-        
-        String xml = dumper.dump(process, true);
+        String xml = XmlRuleFlowProcessDumper.INSTANCE.dump(process, true);
         if (xml == null) {
             throw new IllegalArgumentException("Failed to persist empty nodes!");
         }
@@ -278,7 +274,7 @@ public class XMLPersistenceTest extends TestCase {
         
 //        System.out.println("************************************");
         
-        String xml2 = dumper.dump(process, true);
+        String xml2 = XmlRuleFlowProcessDumper.INSTANCE.dump(process, true);
         if (xml2 == null) {
             throw new IllegalArgumentException("Failed to persist empty nodes!");
         }
