@@ -751,7 +751,7 @@ public class DSLMapWalker extends TreeParser {
                     match(input,VT_LITERAL,FOLLOW_VT_LITERAL_in_value_sentence302); 
                     
                     		//System.out.println("in value_sentence, literal is " + vtl.getText());
-                    		((entry_scope)entry_stack.peek()).valuebuffer.append(vtl.getText());
+                    		((entry_scope)entry_stack.peek()).valuebuffer.append(vtl.getText().replaceAll("\\$", "\\\\\\$"));
                     	
 
                     }
