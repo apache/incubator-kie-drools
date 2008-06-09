@@ -17,13 +17,12 @@
  */
 package org.drools.time;
 
+import java.io.Externalizable;
 import java.io.Serializable;
 
 /**
  * An interface for Job Handles
  */
-public interface JobHandle
-    extends
-    Serializable {
+public interface JobHandle {
 
 }
