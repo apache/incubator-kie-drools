@@ -3,6 +3,7 @@ package org.drools.integrationtests;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -25,6 +26,7 @@ import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
+import org.drools.time.SessionPseudoClock;
 import org.drools.time.impl.PseudoClockScheduler;
 
 public class CepEspTest extends TestCase {
@@ -404,7 +406,7 @@ public class CepEspTest extends TestCase {
 
         // how to initialize the clock?
         // how to configure the clock?
-        PseudoClockScheduler clock = (PseudoClockScheduler) wm.getSessionClock();
+        SessionPseudoClock clock = (SessionPseudoClock) wm.getSessionClock();
 
         clock.advanceTime( 5, TimeUnit.SECONDS ); // 5 seconds
         EventFactHandle handle1 = (EventFactHandle) wm.insert( new OrderEvent( "1",
@@ -508,7 +510,7 @@ public class CepEspTest extends TestCase {
                       ((Number) results.get( 3 )).intValue() );
 
     }
-
+    
     //    public void FIXME_testTransactionCorrelation() throws Exception {
     //        // read in the source
     //        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_TransactionCorrelation.drl" ) );
