@@ -133,7 +133,7 @@ value_sentence
 	| vtl=VT_LITERAL
 	{
 		//System.out.println("in value_sentence, literal is " + $vtl.text);
-		$entry::valuebuffer.append($vtl.text);
+		$entry::valuebuffer.append($vtl.text.replaceAll("\\$", "\\\\\\$"));
 	}
 	| VT_SPACE
 	{
@@ -189,3 +189,5 @@ any_key
 	: VT_ANY
 	{$entry::retval.setSection(DSLMappingEntry.ANY);}
 	;
+	
+	
