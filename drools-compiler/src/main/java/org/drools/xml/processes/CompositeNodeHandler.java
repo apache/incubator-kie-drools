@@ -28,7 +28,7 @@ public class CompositeNodeHandler extends AbstractNodeHandler {
         	// filter out composite start and end nodes as they can be regenerated
         	if ((!(subNode instanceof CompositeNode.CompositeNodeStart)) &&
     			(!(subNode instanceof CompositeNode.CompositeNodeEnd))) {
-        		XmlRuleFlowProcessDumper.visitNode(subNode, xmlDump, includeMeta);
+        		XmlRuleFlowProcessDumper.INSTANCE.visitNode(subNode, xmlDump, includeMeta);
         	}
         }
         xmlDump.append("      </nodes>" + EOL);
@@ -45,7 +45,7 @@ public class CompositeNodeHandler extends AbstractNodeHandler {
         }
         xmlDump.append("      <connections>" + EOL);
         for (Connection connection: connections) {
-        	XmlRuleFlowProcessDumper.visitConnection(connection, xmlDump, includeMeta);
+        	XmlRuleFlowProcessDumper.INSTANCE.visitConnection(connection, xmlDump, includeMeta);
         }
         xmlDump.append("      </connections>" + EOL);
         xmlDump.append("      <in-ports>" + EOL);
