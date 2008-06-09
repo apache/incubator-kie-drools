@@ -22,14 +22,21 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.PriorityQueue;
 
 import org.drools.common.EventFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
+import org.drools.common.WorkingMemoryAction;
+import org.drools.marshalling.MarshallerWriteContext;
 import org.drools.reteoo.RightTuple;
 import org.drools.spi.PropagationContext;
+import org.drools.time.Job;
+import org.drools.time.JobContext;
+import org.drools.time.JobHandle;
 import org.drools.time.TimerService;
+import org.drools.time.Trigger;
 
 /**
  * @author etirelli
@@ -183,12 +190,13 @@ public class SlidingTimeWindow
                                       final Object context) {
         TimerService clock = workingMemory.getTimerService();
         if ( rightTuple != null ) {
-            // FIXME
-//            clock.schedule( this,
-//                            context,
-//                            ((EventFactHandle) rightTuple.getFactHandle()).getStartTimestamp() + this.size );
-        } else {
-//            clock.unschedule( this );
+            long nextTimestamp = ((EventFactHandle) rightTuple.getFactHandle()).getStartTimestamp() + this.size;
+            JobContext jobctx = new BehaviorJobContext( workingMemory, this, context );
+            BehaviorJob job = new BehaviorJob();
+            JobHandle handle = clock.scheduleJob( job, jobctx, new PointInTimeTrigger( nextTimestamp ));
+            jobctx.setJobHandle( handle );
+//        } else { 
+//            clock.removeJob( jobHandle );
         }
     }
     
@@ -210,6 +218,105 @@ public class SlidingTimeWindow
             final EventFactHandle e2 = (EventFactHandle) t2.getFactHandle();
             return (e1.getStartTimestamp() < e2.getStartTimestamp()) ? -1 : (e1.getStartTimestamp() == e2.getStartTimestamp() ? 0 : 1);
         }
+    }
+    
+    private static class PointInTimeTrigger implements Trigger {
+        private Date timestamp;
+        
+        public PointInTimeTrigger() {}
+        
+        public PointInTimeTrigger( long timestamp ) {
+            this.timestamp = new Date( timestamp );
+        }
+
+        public Date getNextFireTime() {
+            return this.timestamp;
+        }
+
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
+            this.timestamp = (Date) in.readObject();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject( this.timestamp );
+        }
+    }
+    
+    private static class BehaviorJobContext implements JobContext {
+        public InternalWorkingMemory workingMemory;
+        public Behavior behavior;
+        public Object behaviorContext;
+        public JobHandle handle;
+        
+        /**
+         * @param workingMemory
+         * @param behavior
+         * @param behaviorContext
+         */
+        public BehaviorJobContext(InternalWorkingMemory workingMemory,
+                                  Behavior behavior,
+                                  Object behaviorContext) {
+            super();
+            this.workingMemory = workingMemory;
+            this.behavior = behavior;
+            this.behaviorContext = behaviorContext;
+        }
+
+        public JobHandle getJobHandle() {
+            return this.handle;
+        }
+
+        public void setJobHandle(JobHandle jobHandle) {
+            this.handle = jobHandle;
+        }
+        
+    }
+    
+    private static class BehaviorJob implements Job {
+
+        public void execute(JobContext ctx) {
+            BehaviorJobContext context = (BehaviorJobContext) ctx;
+            context.workingMemory.queueWorkingMemoryAction( new BehaviorExpireWMAction( context.behavior, context.behaviorContext ) );
+        }
+
+    }
+    
+    private static class BehaviorExpireWMAction implements WorkingMemoryAction {
+        private final Behavior behavior;
+        private final Object context;
+
+        /**
+         * @param behavior
+         * @param context
+         */
+        public BehaviorExpireWMAction(Behavior behavior,
+                                      Object context) {
+            super();
+            this.behavior = behavior;
+            this.context = context;
+        }
+
+        public void execute(InternalWorkingMemory workingMemory) {
+            this.behavior.expireTuples( context, workingMemory );
+        }
+
+        public void write(MarshallerWriteContext context) throws IOException {
+            // TODO Auto-generated method stub
+            
+        }
+
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
+            // TODO Auto-generated method stub
+            
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            // TODO Auto-generated method stub
+            
+        }
+        
     }
 
 }
