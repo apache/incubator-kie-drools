@@ -1,0 +1,64 @@
+#created on: 28.1.2008
+package org.drools.verifier.subsumption.patterns
+
+import org.drools.base.evaluators.Operator;
+
+import org.drools.verifier.components.LiteralRestriction;
+import org.drools.verifier.components.Field.FieldType;
+import org.drools.verifier.report.components.Subsumption;
+
+
+
+#
+# Fires when two restrictions are subsumptant.
+# Creates a Subsumption object.
+#
+# Depandencies: None
+#
+# Example 1: P( x > 10 ) and P( x > 100 )
+#
+rule "Find subsumptant restrictions, greater than"
+	when
+		# Covered x > 10
+		$lower :LiteralRestriction(
+			( valueType == Field.FieldType.INT || == Field.FieldType.DOUBLE || == Field.FieldType.DATE ),
+			( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL )
+		)
+
+		# Covered x > 100
+		$higher :LiteralRestriction( 
+			fieldId == $lower.fieldId,
+			( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL || == Operator.EQUAL)
+		)
+		
+		eval( $lower.compareValues( $higher ) == -1 )
+	then 
+		insert( new Subsumption( $lower, $higher ) );
+end
+
+#
+# Fires when two restrictions are subsumptant.
+# Creates a Subsumption object.
+#
+# Depandencies: None
+#
+# Example 1: P( x < 10 ) and P( x < 100 )
+#
+rule "Find subsumptant restrictions, less than"
+	when
+		# Covered x < 10
+		$higher :LiteralRestriction(
+			( valueType == Field.FieldType.INT || == Field.FieldType.DOUBLE || == Field.FieldType.DATE ),
+			( operator == Operator.LESS || == Operator.LESS_OR_EQUAL )
+		)
+
+		# Covered x < 100
+		$lower :LiteralRestriction( 
+			fieldId == $higher.fieldId,
+			( operator == Operator.LESS || == Operator.LESS_OR_EQUAL || == Operator.EQUAL)
+		)
+		
+		eval( $lower.compareValues( $higher ) == - 1 )
+	then 
+		insert( new Subsumption( $higher, $lower ) );
+end

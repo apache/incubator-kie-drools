@@ -1,0 +1,115 @@
+#created on: 7.9.2007
+package org.drools.verifier.redundancy.restrictions
+
+import org.drools.verifier.components.*;
+import org.drools.verifier.report.components.Redundancy;
+import org.drools.verifier.report.components.RedundancyType;
+
+#
+# Depandencies: None
+#
+rule "Find redundant VariableRestriction"
+	when
+		# Check that Restrictions $left and $right have redundant fields.
+		$left :VariableRestriction()
+		$right :VariableRestriction(
+			id != $left.id,
+			operator == $left.operator,
+			variable.objectType == $left.variable.objectType,
+			variable.objectId == $left.variable.objectId
+		)
+		# Check that there is not already a pair with these values.
+		not Redundancy(
+			left == $left,
+			right == $right
+		)
+		not Redundancy(
+			left == $right,
+			right == $left
+		)
+	then
+		insert( new Redundancy( RedundancyType.STRONG, $left, $right ) );
+end
+
+#
+# Depandencies: None
+#
+rule "Find redundant LiteralRestriction"
+	when
+		# Check that Restrictions $left and $right have redundant fields.
+		$left :LiteralRestriction()
+		and
+		(
+				$right :LiteralRestriction(
+					id != $left.id,
+					operator == $left.operator,
+					valueType == $left.valueType,
+					valueType == Field.FieldType.BOOLEAN,
+					booleanValue == $left.booleanValue
+				)
+			or
+				$right :LiteralRestriction(
+					id != $left.id,
+					operator == $left.operator,
+					valueType == $left.valueType,
+					valueType == Field.FieldType.STRING,
+					valueAsString matches $left.valueAsString
+				)
+			or
+				$right :LiteralRestriction(
+					id != $left.id,
+					operator == $left.operator,
+					valueType == $left.valueType,
+					valueType == Field.FieldType.INT,
+					intValue == $left.intValue
+				)
+			or
+				$right :LiteralRestriction(
+					id != $left.id,
+					operator == $left.operator,
+					valueType == $left.valueType,
+					valueType == Field.FieldType.DOUBLE,
+					doubleValue == $left.doubleValue
+				)
+			or
+				$right :LiteralRestriction(
+					id != $left.id,
+					operator == $left.operator,
+					valueType == $left.valueType,
+					valueType == Field.FieldType.DATE,
+					eval( dateValue.equals($left.getDateValue()) )
+				)
+			or
+			(
+				$right :LiteralRestriction(
+					id != $left.id,
+					operator == $left.operator,
+					valueType == $left.valueType,
+					valueType == Field.FieldType.VARIABLE
+				)
+				and
+					$v :Variable(
+						objectType == AnalyticsComponentType.FIELD,
+						objectId == $left.id
+					)
+				and
+					Variable(
+						objectType == AnalyticsComponentType.FIELD,
+						objectId == $right.id,
+						objectName == $v.objectName,
+						name == $v.name
+					)
+			)
+		)
+		# Check that there is not already a pair with these values.
+		not Redundancy(
+			left == $left,
+			right == $right
+		)
+		not Redundancy(
+			left == $right,
+			right == $left
+		)
+	then
+		insert( new Redundancy( RedundancyType.STRONG, $left, $right ) );
+end
