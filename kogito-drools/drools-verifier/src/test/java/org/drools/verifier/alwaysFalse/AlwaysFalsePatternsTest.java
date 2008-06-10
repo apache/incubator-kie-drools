@@ -4,10 +4,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
+import junit.framework.TestCase;
+
 import org.drools.StatelessSession;
 import org.drools.StatelessSessionResult;
 import org.drools.base.RuleNameMatchesAgendaFilter;
-import org.drools.verifier.TestBase;
 import org.drools.verifier.components.LiteralRestriction;
 import org.drools.verifier.components.Pattern;
 import org.drools.verifier.components.PatternPossibility;
@@ -26,7 +27,7 @@ import org.drools.verifier.report.components.VerifierMessageBase;
  * @author Toni Rikkola
  * 
  */
-public class AlwaysFalsePatternsTest extends TestBase {
+public class AlwaysFalsePatternsTest extends TestCase {
 
 	public void testDummy() {
 		// this is needed as eclipse will try to run this and produce a failure

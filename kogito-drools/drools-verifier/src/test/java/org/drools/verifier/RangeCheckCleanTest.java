@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import junit.framework.TestCase;
+
 import org.drools.StatelessSession;
 import org.drools.StatelessSessionResult;
 import org.drools.base.RuleNameMatchesAgendaFilter;
@@ -22,7 +24,7 @@ import org.drools.verifier.report.components.Gap;
  * @author Toni Rikkola
  * 
  */
-public class RangeCheckCleanTest extends TestBase {
+public class RangeCheckCleanTest extends TestCase {
 
 	public void testDummy() {
 		// this is needed as eclipse will try to run this and produce a failure
