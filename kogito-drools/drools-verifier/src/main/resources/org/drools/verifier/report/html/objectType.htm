@@ -1,0 +1,30 @@
+
+<div>
+	<h2>Object Type</h2>
+	<div>
+		Name: @{objectType.name}
+	</div>
+	<div>
+		Known fields:
+		@if{objectType.fields != null && !objectType.fields.empty}
+			<ul>
+				@foreach{objectType.fields as field}
+				<li>@{field.fieldType}&nbsp;<a href="@{sourceFolder}/@{fieldFolder}/@{field.id}.htm">@{field.name}</a></li>
+				@end{}
+			</ul>
+		@else{}
+			<p>
+				No known fields.
+			</p>
+		@end{}
+	</div>
+	<div>
+		Rules that use this component:
+		<ul>
+			@foreach{rules as rule}
+			<li><a href="@{sourceFolder}/@{ruleFolder}/@{rule.id}.htm">@{rule.ruleName}</a></li>
+			@end{}
+		</ul>
+	</div>
+</div>
+
