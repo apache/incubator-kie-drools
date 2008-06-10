@@ -24,6 +24,11 @@ import org.drools.verifier.report.components.Gap;
  */
 public class RangeCheckCleanTest extends TestBase {
 
+	public void testDummy() {
+		// this is needed as eclipse will try to run this and produce a failure
+		// if its not here.
+		assertTrue(true);
+	}
 //	public void testUselessIntegerGapsLesser() throws Exception {
 //		StatelessSession session = getStatelessSession(this.getClass()
 //				.getResourceAsStream("rangeChecks/Clean.drl"));
