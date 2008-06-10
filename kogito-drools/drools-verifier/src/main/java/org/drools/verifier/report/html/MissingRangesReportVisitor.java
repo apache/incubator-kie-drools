@@ -10,9 +10,9 @@ import org.drools.base.evaluators.Operator;
 import org.drools.verifier.components.Field;
 import org.drools.verifier.components.LiteralRestriction;
 import org.drools.verifier.components.Restriction;
-import org.drools.verifier.dao.AnalyticsData;
+import org.drools.verifier.dao.VerifierData;
 import org.drools.verifier.dao.DataTree;
-import org.drools.verifier.report.components.AnalyticsRangeCheckMessage;
+import org.drools.verifier.report.components.VerifierRangeCheckMessage;
 import org.drools.verifier.report.components.RangeCheckCause;
 import org.mvel.templates.TemplateRuntime;
 
@@ -121,7 +121,7 @@ class MissingRangesReportVisitor extends ReportVisitor {
 	}
 
 	public static String visitRangeCheckMessage(String sourceFolder,
-			AnalyticsRangeCheckMessage message, AnalyticsData data) {
+			VerifierRangeCheckMessage message, VerifierData data) {
 		Collection<Restriction> restrictions = data
 				.getRestrictionsByFieldId(message.getFaulty().getId());
 		Field field = (Field) message.getFaulty();

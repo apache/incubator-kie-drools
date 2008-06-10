@@ -2,7 +2,7 @@ package org.drools.verifier.components;
 
 import org.drools.verifier.report.components.CauseType;
 
-public class TextConsequence extends AnalyticsComponent implements Consequence {
+public class TextConsequence extends VerifierComponent implements Consequence {
 
 	private static int index = 0;
 	private String text;
@@ -16,8 +16,8 @@ public class TextConsequence extends AnalyticsComponent implements Consequence {
 	}
 
 	@Override
-	public AnalyticsComponentType getComponentType() {
-		return AnalyticsComponentType.CONSEQUENCE;
+	public VerifierComponentType getComponentType() {
+		return VerifierComponentType.CONSEQUENCE;
 	}
 
 	public CauseType getCauseType() {

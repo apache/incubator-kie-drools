@@ -6,12 +6,12 @@ import java.util.Collection;
 import org.drools.StatelessSession;
 import org.drools.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.TestBase;
-import org.drools.verifier.components.AnalyticsRule;
+import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.components.RulePossibility;
-import org.drools.verifier.dao.AnalyticsResult;
-import org.drools.verifier.dao.AnalyticsResultFactory;
-import org.drools.verifier.report.components.AnalyticsMessage;
-import org.drools.verifier.report.components.AnalyticsMessageBase;
+import org.drools.verifier.dao.VerifierResult;
+import org.drools.verifier.dao.VerifierResultFactory;
+import org.drools.verifier.report.components.VerifierMessage;
+import org.drools.verifier.report.components.VerifierMessageBase;
 import org.drools.verifier.report.components.Redundancy;
 import org.drools.verifier.report.components.RedundancyType;
 import org.drools.verifier.report.components.Severity;
@@ -27,8 +27,8 @@ public class WarningsTest extends TestBase {
 
 		Collection<Object> objects = new ArrayList<Object>();
 
-		AnalyticsRule rule1 = new AnalyticsRule();
-		AnalyticsRule rule2 = new AnalyticsRule();
+		VerifierRule rule1 = new VerifierRule();
+		VerifierRule rule2 = new VerifierRule();
 
 		Redundancy ruleRedundancy = new Redundancy(
 				RedundancyType.STRONG, rule1, rule2);
@@ -53,18 +53,18 @@ public class WarningsTest extends TestBase {
 		objects.add(rulePossibilityRedundancy1);
 		objects.add(rulePossibilityRedundancy2);
 
-		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
+		VerifierResult result = VerifierResultFactory.createVerifierResult();
 		session.setGlobal("result", result);
 
 		session.executeWithResults(objects);
 
-		Collection<AnalyticsMessageBase> notes = result
+		Collection<VerifierMessageBase> notes = result
 				.getBySeverity(Severity.WARNING);
 
 		// Has at least one item.
 		assertEquals(1, notes.size());
 
-		AnalyticsMessageBase warning = notes.iterator().next();
+		VerifierMessageBase warning = notes.iterator().next();
 		assertTrue(warning.getFaulty().equals(rulePossibilityRedundancy1));
 	}
 
@@ -77,8 +77,8 @@ public class WarningsTest extends TestBase {
 
 		Collection<Object> objects = new ArrayList<Object>();
 
-		AnalyticsRule rule1 = new AnalyticsRule();
-		AnalyticsRule rule2 = new AnalyticsRule();
+		VerifierRule rule1 = new VerifierRule();
+		VerifierRule rule2 = new VerifierRule();
 
 		Redundancy ruleRedundancy = new Redundancy(
 				RedundancyType.STRONG, rule1, rule2);
@@ -99,18 +99,18 @@ public class WarningsTest extends TestBase {
 		objects.add(rp2);
 		objects.add(rulePossibilityRedundancy1);
 
-		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
+		VerifierResult result = VerifierResultFactory.createVerifierResult();
 		session.setGlobal("result", result);
 
 		session.executeWithResults(objects);
 
-		Collection<AnalyticsMessageBase> notes = result
+		Collection<VerifierMessageBase> notes = result
 				.getBySeverity(Severity.WARNING);
 
 		// Has at least one item.
 		assertEquals(1, notes.size());
 
-		AnalyticsMessageBase warning = notes.iterator().next();
+		VerifierMessageBase warning = notes.iterator().next();
 		assertTrue(warning.getFaulty().equals(rulePossibilityRedundancy1));
 	}
 }

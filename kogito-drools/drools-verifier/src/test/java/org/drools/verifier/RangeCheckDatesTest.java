@@ -8,8 +8,8 @@ import java.util.Set;
 import org.drools.StatelessSession;
 import org.drools.StatelessSessionResult;
 import org.drools.base.RuleNameMatchesAgendaFilter;
-import org.drools.verifier.dao.AnalyticsResult;
-import org.drools.verifier.dao.AnalyticsResultFactory;
+import org.drools.verifier.dao.VerifierResult;
+import org.drools.verifier.dao.VerifierResultFactory;
 import org.drools.verifier.report.components.Gap;
 
 /**
@@ -30,10 +30,10 @@ public class RangeCheckDatesTest extends TestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Range check for dates, if smaller than or equal is missing"));
 
-		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
+		VerifierResult result = VerifierResultFactory.createVerifierResult();
 		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("MissingRangesForDates.drl"), result
-				.getAnalyticsData());
+				.getVerifierData());
 
 		session.setGlobal("result", result);
 
@@ -68,10 +68,10 @@ public class RangeCheckDatesTest extends TestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Range check for dates, if greater than or equal is missing"));
 
-		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
+		VerifierResult result = VerifierResultFactory.createVerifierResult();
 		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("MissingRangesForDates.drl"), result
-				.getAnalyticsData());
+				.getVerifierData());
 
 		session.setGlobal("result", result);
 
@@ -106,10 +106,10 @@ public class RangeCheckDatesTest extends TestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Range check for dates, equal and greater than"));
 
-		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
+		VerifierResult result = VerifierResultFactory.createVerifierResult();
 		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("MissingRangesForDates.drl"), result
-				.getAnalyticsData());
+				.getVerifierData());
 
 		session.setGlobal("result", result);
 
@@ -145,10 +145,10 @@ public class RangeCheckDatesTest extends TestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Range check for dates, equal and smaller than"));
 
-		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
+		VerifierResult result = VerifierResultFactory.createVerifierResult();
 		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("MissingRangesForDates.drl"), result
-				.getAnalyticsData());
+				.getVerifierData());
 
 		session.setGlobal("result", result);
 

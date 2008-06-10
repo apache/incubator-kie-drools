@@ -1,6 +1,6 @@
 package org.drools.verifier;
 
-import org.drools.verifier.components.AnalyticsRule;
+import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.components.OperatorDescr;
 
 /**
@@ -10,14 +10,14 @@ import org.drools.verifier.components.OperatorDescr;
  */
 class RuleSolver extends Solver {
 
-	private AnalyticsRule rule;
+	private VerifierRule rule;
 
-	public RuleSolver(AnalyticsRule rule) {
+	public RuleSolver(VerifierRule rule) {
 		super(OperatorDescr.Type.OR);
-		this.rule = (AnalyticsRule) rule;
+		this.rule = (VerifierRule) rule;
 	}
 
-	public AnalyticsRule getRule() {
+	public VerifierRule getRule() {
 		return rule;
 	}
 }

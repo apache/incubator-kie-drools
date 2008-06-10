@@ -3,18 +3,18 @@ package org.drools.verifier.report.html;
 import java.io.File;
 import java.io.IOException;
 
-import org.drools.verifier.components.AnalyticsClass;
-import org.drools.verifier.components.AnalyticsRule;
+import org.drools.verifier.components.VerifierClass;
+import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.components.Field;
-import org.drools.verifier.dao.AnalyticsData;
-import org.drools.verifier.dao.AnalyticsResult;
-import org.drools.verifier.report.components.AnalyticsMessage;
+import org.drools.verifier.dao.VerifierData;
+import org.drools.verifier.dao.VerifierResult;
+import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.Severity;
 
 public class ComponentsReportModeller extends ReportModeller {
 
-	public static void writeHTML(String path, AnalyticsResult result) {
-		AnalyticsData data = result.getAnalyticsData();
+	public static void writeHTML(String path, VerifierResult result) {
+		VerifierData data = result.getVerifierData();
 
 		// Source folder
 		File sourceFolder = new File(path + UrlFactory.SOURCE_FOLDER);
@@ -39,7 +39,7 @@ public class ComponentsReportModeller extends ReportModeller {
 				+ UrlFactory.RULE_FOLDER;
 		File rulesFolder = new File(ruleFolder);
 		rulesFolder.mkdir();
-		for (AnalyticsRule rule : data.getAllRules()) {
+		for (VerifierRule rule : data.getAllRules()) {
 			writeToFile(ruleFolder + File.separator + rule.getId() + ".htm",
 					formPage(UrlFactory.PREVIOUS_FOLDER,
 							ComponentsReportVisitor.visitRule(
@@ -51,7 +51,7 @@ public class ComponentsReportModeller extends ReportModeller {
 				+ File.separator + UrlFactory.OBJECT_TYPE_FOLDER;
 		File objectTypesFolder = new File(objectTypeFolder);
 		objectTypesFolder.mkdir();
-		for (AnalyticsClass objectType : data.getAllClasses()) {
+		for (VerifierClass objectType : data.getAllClasses()) {
 			writeToFile(objectTypeFolder + File.separator + objectType.getId()
 					+ ".htm", formPage(UrlFactory.PREVIOUS_FOLDER,
 					ComponentsReportVisitor.visitObjectType(
@@ -70,7 +70,7 @@ public class ComponentsReportModeller extends ReportModeller {
 									UrlFactory.PREVIOUS_FOLDER, field, result)));
 		}
 
-		// Analytics messages
+		// Verifier messages
 		writeMessages(path, result);
 
 		// css files
@@ -96,21 +96,21 @@ public class ComponentsReportModeller extends ReportModeller {
 		}
 	}
 
-	private static void writeMessages(String path, AnalyticsResult result) {
-		AnalyticsData data = result.getAnalyticsData();
+	private static void writeMessages(String path, VerifierResult result) {
+		VerifierData data = result.getVerifierData();
 
-		String errors = AnalyticsMessagesVisitor
-				.visitAnalyticsMessagesCollection(
+		String errors = VerifierMessagesVisitor
+				.visitVerifierMessagesCollection(
 						Severity.ERROR.getTuple(),
 						result.getBySeverity(Severity.ERROR),
 						data);
-		String warnings = AnalyticsMessagesVisitor
-				.visitAnalyticsMessagesCollection(
+		String warnings = VerifierMessagesVisitor
+				.visitVerifierMessagesCollection(
 						Severity.WARNING.getTuple(),
 						result.getBySeverity(Severity.WARNING),
 						data);
-		String notes = AnalyticsMessagesVisitor
-				.visitAnalyticsMessagesCollection(
+		String notes = VerifierMessagesVisitor
+				.visitVerifierMessagesCollection(
 						Severity.NOTE.getTuple(), result
 								.getBySeverity(Severity.NOTE),
 						data);

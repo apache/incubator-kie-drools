@@ -5,13 +5,13 @@ import org.drools.verifier.components.Field;
 import org.drools.verifier.components.LiteralRestriction;
 
 /**
- *
+ * 
  * @author Toni Rikkola
  */
 public class Gap extends MissingRange implements RangeCheckCause,
 		Comparable<MissingRange> {
 
-	private LiteralRestriction restriction;
+	private final LiteralRestriction restriction;
 
 	public int compareTo(MissingRange another) {
 		return super.compareTo(another);
@@ -22,7 +22,7 @@ public class Gap extends MissingRange implements RangeCheckCause,
 	}
 
 	/**
-	 *
+	 * 
 	 * @param field
 	 *            Field from where the value is missing.
 	 * @param evaluator
@@ -31,8 +31,8 @@ public class Gap extends MissingRange implements RangeCheckCause,
 	 *            The restriction that the gap begins from.
 	 */
 	public Gap(Field field, Operator operator, LiteralRestriction restriction) {
-		this.field = field;
-		this.operator = operator;
+		super(field, operator);
+
 		this.restriction = restriction;
 	}
 
@@ -42,10 +42,6 @@ public class Gap extends MissingRange implements RangeCheckCause,
 
 	public LiteralRestriction getRestriction() {
 		return restriction;
-	}
-
-	public void setRestriction(LiteralRestriction restriction) {
-		this.restriction = restriction;
 	}
 
 	public String getValueAsString() {

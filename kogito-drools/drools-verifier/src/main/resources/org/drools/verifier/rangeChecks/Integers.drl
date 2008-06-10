@@ -7,16 +7,16 @@ import org.drools.base.evaluators.Operator;
 import org.drools.verifier.components.*;
 import org.drools.verifier.report.components.Gap;
 
-import org.drools.verifier.dao.AnalyticsResult;
+import org.drools.verifier.dao.VerifierResult;
 
-global AnalyticsResult result;
+global VerifierResult result;
 
 # If all ranges are not checked for a field.
 # 
 # Type: Warning
 # Depandencies: None
 # Example: in "Rule 1" Foo( bar > 42 ) 
-#						and in Foo( <= 42 || == 42 ) is missing.
+#						and Foo( <= 42 || == 42 ) is missing.
 #
 rule "Range check for integers, if smaller than or equal is missing"
 	when
@@ -37,8 +37,6 @@ rule "Range check for integers, if smaller than or equal is missing"
 		)
 	then
 		Gap gap = new Gap( $f, Operator.LESS_OR_EQUAL, $r );
-		
-		gap.setFiredRuleName( drools.getRule().getName() );
 		
 		result.add( gap );
 		insert( gap );
@@ -70,8 +68,6 @@ rule "Range check for integers, if greater than or equal is missing"
 		)
 	then
 		Gap gap = new Gap( $f, Operator.GREATER_OR_EQUAL, $r );
-		
-		gap.setFiredRuleName( drools.getRule().getName() );
 		
 		result.add( gap );
 		insert( gap );
@@ -113,8 +109,6 @@ rule "Range check for integers, equal and greater than"
 	then
 		Gap gap =  new Gap( $f, Operator.GREATER, $r );
 		
-		gap.setFiredRuleName( drools.getRule().getName() );
-		
 		result.add( gap );
 		insert( gap );
 end
@@ -154,8 +148,6 @@ rule "Range check for integers, equal and smaller than"
 		)
 	then
 		Gap gap =  new Gap( $f, Operator.LESS, $r );
-		
-		gap.setFiredRuleName( drools.getRule().getName() );
 		
 		result.add( gap );
 		insert( gap );

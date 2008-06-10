@@ -1,6 +1,6 @@
 package org.drools.verifier.report.html;
 
-import org.drools.verifier.components.AnalyticsRule;
+import org.drools.verifier.components.VerifierRule;
 
 /**
  * 
@@ -35,8 +35,8 @@ class UrlFactory {
 	 *         be created.
 	 */
 	public static String getUrl(Object o) {
-		if (o instanceof AnalyticsRule) {
-			AnalyticsRule rule = (AnalyticsRule) o;
+		if (o instanceof VerifierRule) {
+			VerifierRule rule = (VerifierRule) o;
 			return getRuleUrl(UrlFactory.RULE_FOLDER, rule.getId(), rule
 					.getRuleName());
 		}

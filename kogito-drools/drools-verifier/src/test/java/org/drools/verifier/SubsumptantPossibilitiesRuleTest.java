@@ -11,7 +11,7 @@ import java.util.Set;
 import org.drools.StatelessSession;
 import org.drools.StatelessSessionResult;
 import org.drools.base.RuleNameMatchesAgendaFilter;
-import org.drools.verifier.components.AnalyticsComponent;
+import org.drools.verifier.components.VerifierComponent;
 import org.drools.verifier.components.LiteralRestriction;
 import org.drools.verifier.components.PatternPossibility;
 import org.drools.verifier.components.RulePossibility;
@@ -213,8 +213,8 @@ public class SubsumptantPossibilitiesRuleTest extends TestBase {
 			Object o = (Object) iter.next();
 			if (o instanceof Subsumption) {
 				Subsumption s = (Subsumption) o;
-				AnalyticsComponent left = (AnalyticsComponent) s.getLeft();
-				AnalyticsComponent right = (AnalyticsComponent) s.getRight();
+				VerifierComponent left = (VerifierComponent) s.getLeft();
+				VerifierComponent right = (VerifierComponent) s.getRight();
 
 				if (map.containsKey(left.getRuleName())) {
 					Set<String> set = map.get(left.getRuleName());

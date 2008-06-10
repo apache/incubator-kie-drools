@@ -17,7 +17,7 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
 import org.drools.verifier.PackageDescrFlattener;
-import org.drools.verifier.dao.AnalyticsData;
+import org.drools.verifier.dao.VerifierData;
 import org.drools.verifier.report.components.Cause;
 
 /**
@@ -100,7 +100,7 @@ abstract public class TestBase extends TestCase {
 	}
 
 	public Collection<? extends Object> getTestData(InputStream stream,
-			AnalyticsData data) throws Exception {
+			VerifierData data) throws Exception {
 		Reader drlReader = new InputStreamReader(stream);
 		PackageDescr descr = new DrlParser().parse(drlReader);
 

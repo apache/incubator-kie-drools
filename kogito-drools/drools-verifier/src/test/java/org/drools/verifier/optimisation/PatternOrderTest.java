@@ -7,11 +7,11 @@ import java.util.Iterator;
 import org.drools.StatelessSession;
 import org.drools.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.TestBase;
-import org.drools.verifier.components.AnalyticsComponent;
-import org.drools.verifier.dao.AnalyticsResult;
-import org.drools.verifier.dao.AnalyticsResultFactory;
-import org.drools.verifier.report.components.AnalyticsMessage;
-import org.drools.verifier.report.components.AnalyticsMessageBase;
+import org.drools.verifier.components.VerifierComponent;
+import org.drools.verifier.dao.VerifierResult;
+import org.drools.verifier.dao.VerifierResultFactory;
+import org.drools.verifier.report.components.VerifierMessage;
+import org.drools.verifier.report.components.VerifierMessageBase;
 import org.drools.verifier.report.components.Severity;
 
 public class PatternOrderTest extends TestBase {
@@ -23,24 +23,24 @@ public class PatternOrderTest extends TestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Optimise evals inside pattern"));
 
-		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
+		VerifierResult result = VerifierResultFactory.createVerifierResult();
 		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("OptimisationPatternOrderTest.drl"),
-				result.getAnalyticsData());
+				result.getVerifierData());
 
 		session.setGlobal("result", result);
 
 		session.executeWithResults(testData);
 
-		Iterator<AnalyticsMessageBase> iter = result.getBySeverity(
+		Iterator<VerifierMessageBase> iter = result.getBySeverity(
 				Severity.NOTE).iterator();
 
 		Collection<String> ruleNames = new ArrayList<String>();
 		while (iter.hasNext()) {
 			Object o = (Object) iter.next();
-			if (o instanceof AnalyticsMessage) {
-				String name = ((AnalyticsMessage) o).getCauses().toArray(
-						new AnalyticsComponent[2])[0].getRuleName();
+			if (o instanceof VerifierMessage) {
+				String name = ((VerifierMessage) o).getCauses().toArray(
+						new VerifierComponent[2])[0].getRuleName();
 
 				ruleNames.add(name);
 			}

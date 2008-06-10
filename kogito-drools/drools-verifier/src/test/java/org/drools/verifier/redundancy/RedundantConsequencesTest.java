@@ -8,8 +8,8 @@ import org.drools.StatelessSession;
 import org.drools.StatelessSessionResult;
 import org.drools.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.TestBase;
-import org.drools.verifier.dao.AnalyticsResult;
-import org.drools.verifier.dao.AnalyticsResultFactory;
+import org.drools.verifier.dao.VerifierResult;
+import org.drools.verifier.dao.VerifierResultFactory;
 
 public class RedundantConsequencesTest extends RedundancyTestBase {
 
@@ -20,10 +20,10 @@ public class RedundantConsequencesTest extends RedundancyTestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Find redundant TextConsequences"));
 
-		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
+		VerifierResult result = VerifierResultFactory.createVerifierResult();
 		Collection<? extends Object> data = getTestData(this.getClass()
 				.getResourceAsStream("ConsequenceRedundancyTest.drl"), result
-				.getAnalyticsData());
+				.getVerifierData());
 
 		session.setGlobal("result", result);
 

@@ -9,10 +9,10 @@ import org.drools.StatelessSession;
 import org.drools.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.TestBase;
 import org.drools.verifier.components.Pattern;
-import org.drools.verifier.dao.AnalyticsResult;
-import org.drools.verifier.dao.AnalyticsResultFactory;
-import org.drools.verifier.report.components.AnalyticsMessage;
-import org.drools.verifier.report.components.AnalyticsMessageBase;
+import org.drools.verifier.dao.VerifierResult;
+import org.drools.verifier.dao.VerifierResultFactory;
+import org.drools.verifier.report.components.VerifierMessage;
+import org.drools.verifier.report.components.VerifierMessageBase;
 import org.drools.verifier.report.components.Severity;
 
 /**
@@ -30,23 +30,23 @@ public class IncoherentRestrictionsTest extends TestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Incoherent LiteralRestrictions in pattern possibility"));
 
-		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
+		VerifierResult result = VerifierResultFactory.createVerifierResult();
 		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("RestrictionsTest.drl"), result
-				.getAnalyticsData());
+				.getVerifierData());
 
 		session.setGlobal("result", result);
 
 		session.executeWithResults(testData);
 
-		Iterator<AnalyticsMessageBase> iter = result.getBySeverity(
+		Iterator<VerifierMessageBase> iter = result.getBySeverity(
 				Severity.ERROR).iterator();
 
 		Set<String> rulesThatHadErrors = new HashSet<String>();
 		while (iter.hasNext()) {
 			Object o = (Object) iter.next();
-			if (o instanceof AnalyticsMessage) {
-				Pattern pattern = (Pattern) ((AnalyticsMessage) o).getFaulty();
+			if (o instanceof VerifierMessage) {
+				Pattern pattern = (Pattern) ((VerifierMessage) o).getFaulty();
 				rulesThatHadErrors.add(pattern.getRuleName());
 			}
 		}
@@ -70,23 +70,23 @@ public class IncoherentRestrictionsTest extends TestBase {
 				.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 						"Incoherent LiteralRestrictions with ranges in pattern possibility, impossible ranges"));
 
-		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
+		VerifierResult result = VerifierResultFactory.createVerifierResult();
 		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("RestrictionsTest.drl"), result
-				.getAnalyticsData());
+				.getVerifierData());
 
 		session.setGlobal("result", result);
 
 		session.executeWithResults(testData);
 
-		Iterator<AnalyticsMessageBase> iter = result.getBySeverity(
+		Iterator<VerifierMessageBase> iter = result.getBySeverity(
 				Severity.ERROR).iterator();
 
 		Set<String> rulesThatHadErrors = new HashSet<String>();
 		while (iter.hasNext()) {
 			Object o = (Object) iter.next();
-			if (o instanceof AnalyticsMessage) {
-				Pattern pattern = (Pattern) ((AnalyticsMessage) o).getFaulty();
+			if (o instanceof VerifierMessage) {
+				Pattern pattern = (Pattern) ((VerifierMessage) o).getFaulty();
 				rulesThatHadErrors.add(pattern.getRuleName());
 			}
 		}
@@ -109,23 +109,23 @@ public class IncoherentRestrictionsTest extends TestBase {
 				.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 						"Incoherent LiteralRestrictions with ranges in pattern possibility, impossible equality less or equal"));
 
-		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
+		VerifierResult result = VerifierResultFactory.createVerifierResult();
 		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("RestrictionsTest.drl"), result
-				.getAnalyticsData());
+				.getVerifierData());
 
 		session.setGlobal("result", result);
 
 		session.executeWithResults(testData);
 
-		Iterator<AnalyticsMessageBase> iter = result.getBySeverity(
+		Iterator<VerifierMessageBase> iter = result.getBySeverity(
 				Severity.ERROR).iterator();
 
 		Set<String> rulesThatHadErrors = new HashSet<String>();
 		while (iter.hasNext()) {
 			Object o = (Object) iter.next();
-			if (o instanceof AnalyticsMessage) {
-				Pattern pattern = (Pattern) ((AnalyticsMessage) o).getFaulty();
+			if (o instanceof VerifierMessage) {
+				Pattern pattern = (Pattern) ((VerifierMessage) o).getFaulty();
 				rulesThatHadErrors.add(pattern.getRuleName());
 			}
 		}
@@ -149,23 +149,23 @@ public class IncoherentRestrictionsTest extends TestBase {
 				.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 						"Incoherent LiteralRestrictions with ranges in pattern possibility, impossible equality greater"));
 
-		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
+		VerifierResult result = VerifierResultFactory.createVerifierResult();
 		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("RestrictionsTest.drl"), result
-				.getAnalyticsData());
+				.getVerifierData());
 
 		session.setGlobal("result", result);
 
 		session.executeWithResults(testData);
 
-		Iterator<AnalyticsMessageBase> iter = result.getBySeverity(
+		Iterator<VerifierMessageBase> iter = result.getBySeverity(
 				Severity.ERROR).iterator();
 
 		Set<String> rulesThatHadErrors = new HashSet<String>();
 		while (iter.hasNext()) {
 			Object o = (Object) iter.next();
-			if (o instanceof AnalyticsMessage) {
-				Pattern pattern = (Pattern) ((AnalyticsMessage) o).getFaulty();
+			if (o instanceof VerifierMessage) {
+				Pattern pattern = (Pattern) ((VerifierMessage) o).getFaulty();
 				rulesThatHadErrors.add(pattern.getRuleName());
 			}
 		}
@@ -188,23 +188,23 @@ public class IncoherentRestrictionsTest extends TestBase {
 				.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 						"Incoherent LiteralRestrictions with ranges in pattern possibility, impossible range"));
 
-		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
+		VerifierResult result = VerifierResultFactory.createVerifierResult();
 		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("RestrictionsTest.drl"), result
-				.getAnalyticsData());
+				.getVerifierData());
 
 		session.setGlobal("result", result);
 
 		session.executeWithResults(testData);
 
-		Iterator<AnalyticsMessageBase> iter = result.getBySeverity(
+		Iterator<VerifierMessageBase> iter = result.getBySeverity(
 				Severity.ERROR).iterator();
 
 		Set<String> rulesThatHadErrors = new HashSet<String>();
 		while (iter.hasNext()) {
 			Object o = (Object) iter.next();
-			if (o instanceof AnalyticsMessage) {
-				Pattern pattern = (Pattern) ((AnalyticsMessage) o).getFaulty();
+			if (o instanceof VerifierMessage) {
+				Pattern pattern = (Pattern) ((VerifierMessage) o).getFaulty();
 				rulesThatHadErrors.add(pattern.getRuleName());
 			}
 		}
@@ -226,23 +226,23 @@ public class IncoherentRestrictionsTest extends TestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Incoherent VariableRestrictions in pattern possibility"));
 
-		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
+		VerifierResult result = VerifierResultFactory.createVerifierResult();
 		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("RestrictionsTest.drl"), result
-				.getAnalyticsData());
+				.getVerifierData());
 
 		session.setGlobal("result", result);
 
 		session.executeWithResults(testData);
 
-		Iterator<AnalyticsMessageBase> iter = result.getBySeverity(
+		Iterator<VerifierMessageBase> iter = result.getBySeverity(
 				Severity.ERROR).iterator();
 
 		Set<String> rulesThatHadErrors = new HashSet<String>();
 		while (iter.hasNext()) {
 			Object o = (Object) iter.next();
-			if (o instanceof AnalyticsMessage) {
-				Pattern pattern = (Pattern) ((AnalyticsMessage) o).getFaulty();
+			if (o instanceof VerifierMessage) {
+				Pattern pattern = (Pattern) ((VerifierMessage) o).getFaulty();
 				rulesThatHadErrors.add(pattern.getRuleName());
 			}
 		}
@@ -267,23 +267,23 @@ public class IncoherentRestrictionsTest extends TestBase {
 				.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 						"Incoherent VariableRestrictions in pattern possibility, impossible range"));
 
-		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
+		VerifierResult result = VerifierResultFactory.createVerifierResult();
 		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("RestrictionsTest.drl"), result
-				.getAnalyticsData());
+				.getVerifierData());
 
 		session.setGlobal("result", result);
 
 		session.executeWithResults(testData);
 
-		Iterator<AnalyticsMessageBase> iter = result.getBySeverity(
+		Iterator<VerifierMessageBase> iter = result.getBySeverity(
 				Severity.ERROR).iterator();
 
 		Set<String> rulesThatHadErrors = new HashSet<String>();
 		while (iter.hasNext()) {
 			Object o = (Object) iter.next();
-			if (o instanceof AnalyticsMessage) {
-				Pattern pattern = (Pattern) ((AnalyticsMessage) o).getFaulty();
+			if (o instanceof VerifierMessage) {
+				Pattern pattern = (Pattern) ((VerifierMessage) o).getFaulty();
 				rulesThatHadErrors.add(pattern.getRuleName());
 			}
 		}

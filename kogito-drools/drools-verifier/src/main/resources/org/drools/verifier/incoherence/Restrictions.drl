@@ -8,10 +8,10 @@ import org.drools.verifier.components.Pattern;
 import org.drools.verifier.components.VariableRestriction;
 import org.drools.verifier.report.components.Cause;
 import org.drools.verifier.report.components.MissingRange;
-import org.drools.verifier.report.components.AnalyticsMessage;
+import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.MessageType;
-import org.drools.verifier.dao.AnalyticsResult;
+import org.drools.verifier.dao.VerifierResult;
 
 import java.util.Collection;
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import org.drools.base.evaluators.Operator;
 
 #declare any global variables here
-global AnalyticsResult result;
+global VerifierResult result;
 
 #
 # If two LiteralRestrictions are in conflict.
@@ -60,7 +60,7 @@ rule "Incoherent LiteralRestrictions in pattern possibility"
 		list.add( $r1 );
 		list.add( $r2 );
 
-		result.add( new AnalyticsMessage(
+		result.add( new VerifierMessage(
 								Severity.ERROR,
 								MessageType.INCOHERENCE,
 								$p,
@@ -106,7 +106,7 @@ rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossi
 		list.add( $r1 );
 		list.add( $r2 );
 
-		result.add( new AnalyticsMessage(
+		result.add( new VerifierMessage(
 								Severity.ERROR,
 								MessageType.INCOHERENCE,
 								$p,
@@ -152,7 +152,7 @@ rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossi
 		list.add( $r1 );
 		list.add( $r2 );
 
-		result.add( new AnalyticsMessage(
+		result.add( new VerifierMessage(
 								Severity.ERROR,
 								MessageType.INCOHERENCE,
 								$p,
@@ -198,7 +198,7 @@ rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossi
 		list.add( $r1 );
 		list.add( $r2 );
 
-		result.add( new AnalyticsMessage(
+		result.add( new VerifierMessage(
 								Severity.ERROR,
 								MessageType.INCOHERENCE,
 								$p,
@@ -244,7 +244,7 @@ rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossi
 		list.add( $r1 );
 		list.add( $r2 );
 
-		result.add( new AnalyticsMessage(
+		result.add( new VerifierMessage(
 								Severity.ERROR,
 								MessageType.INCOHERENCE,
 								$p,
@@ -291,7 +291,7 @@ rule "Incoherent VariableRestrictions in pattern possibility"
 		list.add( $r1 );
 		list.add( $r2 );
 
-		result.add( new AnalyticsMessage(
+		result.add( new VerifierMessage(
 								Severity.ERROR,
 								MessageType.INCOHERENCE,
 								$p,
@@ -335,7 +335,7 @@ rule "Incoherent VariableRestrictions in pattern possibility, impossible range"
 		list.add( $r1 );
 		list.add( $r2 );
 
-		result.add( new AnalyticsMessage(
+		result.add( new VerifierMessage(
 								Severity.ERROR,
 								MessageType.INCOHERENCE,
 								$p,
