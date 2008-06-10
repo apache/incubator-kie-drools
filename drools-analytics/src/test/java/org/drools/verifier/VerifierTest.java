@@ -7,14 +7,14 @@ import junit.framework.TestCase;
 import org.drools.RuleBase;
 import org.drools.compiler.DrlParser;
 import org.drools.lang.descr.PackageDescr;
-import org.drools.verifier.Analyzer;
-import org.drools.verifier.dao.AnalyticsResult;
+import org.drools.verifier.Verifier;
+import org.drools.verifier.dao.VerifierResult;
 import org.drools.verifier.report.components.Severity;
 
-public class AnalyzerTest extends TestCase {
+public class VerifierTest extends TestCase {
 
 	public void testAnalyzer() throws Exception {
-		Analyzer anal = new Analyzer();
+		Verifier anal = new Verifier();
 
 		DrlParser p = new DrlParser();
 		InputStreamReader reader = new InputStreamReader(this.getClass().getResourceAsStream("Misc3.drl"));
@@ -24,7 +24,7 @@ public class AnalyzerTest extends TestCase {
 		anal.addPackageDescr(pkg);
 		anal.fireAnalysis();
 
-		AnalyticsResult result = anal.getResult();
+		VerifierResult result = anal.getResult();
 		assertNotNull(result);
 		assertEquals(0, result.getBySeverity(Severity.ERROR).size());
 		assertEquals(10, result.getBySeverity(Severity.WARNING).size());
@@ -32,7 +32,7 @@ public class AnalyzerTest extends TestCase {
 
 
 		//check it again
-		anal = new Analyzer();
+		anal = new Verifier();
 
 		p = new DrlParser();
 		reader = new InputStreamReader(this.getClass().getResourceAsStream("Misc3.drl"));
@@ -54,7 +54,7 @@ public class AnalyzerTest extends TestCase {
 	}
 
 	public void testCacheKnowledgeBase() throws Exception {
-		Analyzer anal = new Analyzer();
+		Verifier anal = new Verifier();
 		DrlParser p = new DrlParser();
 		InputStreamReader reader = new InputStreamReader(this.getClass().getResourceAsStream("Misc3.drl"));
 		PackageDescr pkg = p.parse(reader);
@@ -63,14 +63,14 @@ public class AnalyzerTest extends TestCase {
 		anal.addPackageDescr(pkg);
 		anal.fireAnalysis();
 
-		RuleBase original = Analyzer.verifierKnowledgeBase;
+		RuleBase original = Verifier.verifierKnowledgeBase;
 
-		Analyzer anal2 = new Analyzer();
+		Verifier anal2 = new Verifier();
 
-		assertSame(original, Analyzer.verifierKnowledgeBase);
+		assertSame(original, Verifier.verifierKnowledgeBase);
 
 		anal2.reloadAnalysisKnowledgeBase();
-		assertNotSame(original, Analyzer.verifierKnowledgeBase);
+		assertNotSame(original, Verifier.verifierKnowledgeBase);
 
 
 	}

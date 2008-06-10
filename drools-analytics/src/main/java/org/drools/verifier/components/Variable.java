@@ -4,12 +4,12 @@ package org.drools.verifier.components;
  * 
  * @author Toni Rikkola
  */
-public class Variable extends AnalyticsComponent {
+public class Variable extends VerifierComponent {
 
 	private static int index;
 
 	private int ruleId;
-	private AnalyticsComponentType objectType;
+	private VerifierComponentType objectType;
 	private int objectId;
 	private String objectName;
 	private String name;
@@ -19,8 +19,8 @@ public class Variable extends AnalyticsComponent {
 	}
 
 	@Override
-	public AnalyticsComponentType getComponentType() {
-		return AnalyticsComponentType.VARIABLE;
+	public VerifierComponentType getComponentType() {
+		return VerifierComponentType.VARIABLE;
 	}
 
 	public int getRuleId() {
@@ -39,13 +39,13 @@ public class Variable extends AnalyticsComponent {
 		this.objectId = variableId;
 	}
 
-	public AnalyticsComponentType getObjectType() {
+	public VerifierComponentType getObjectType() {
 		return objectType;
 	}
 
-	public void setObjectType(AnalyticsComponentType type) {
-		// AnalyticsComponentType.CLASS dominates AnalyticsComponentType.FIELD.
-		if (objectType == null || objectType != AnalyticsComponentType.CLASS) {
+	public void setObjectType(VerifierComponentType type) {
+		// VerifierComponentType.CLASS dominates VerifierComponentType.FIELD.
+		if (objectType == null || objectType != VerifierComponentType.CLASS) {
 			this.objectType = type;
 		}
 	}

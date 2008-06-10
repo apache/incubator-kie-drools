@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.drools.verifier.Solvers;
-import org.drools.verifier.components.AnalyticsRule;
+import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.components.LiteralRestriction;
 import org.drools.verifier.components.OperatorDescr;
 import org.drools.verifier.components.Pattern;
@@ -36,7 +36,7 @@ public class SolversTest extends TestCase {
 	 * r3 && r4
 	 */
 	public void testNotAnd() {
-		AnalyticsRule rule = new AnalyticsRule();
+		VerifierRule rule = new VerifierRule();
 		Pattern pattern = new Pattern();
 
 		Restriction r = new LiteralRestriction();
@@ -108,7 +108,7 @@ public class SolversTest extends TestCase {
 	 * descr && descr2
 	 */
 	public void testBasicAnd() {
-		AnalyticsRule rule = new AnalyticsRule();
+		VerifierRule rule = new VerifierRule();
 		Pattern pattern = new Pattern();
 
 		Restriction r = new LiteralRestriction();

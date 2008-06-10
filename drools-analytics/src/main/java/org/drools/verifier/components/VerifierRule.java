@@ -7,7 +7,7 @@ import org.drools.verifier.report.components.CauseType;
  *
  * @author Toni Rikkola
  */
-public class AnalyticsRule extends AnalyticsComponent implements Cause {
+public class VerifierRule extends VerifierComponent implements Cause {
 
 	private static int index = 0;
 
@@ -18,14 +18,14 @@ public class AnalyticsRule extends AnalyticsComponent implements Cause {
 
 	private int packageId;
 
-	public AnalyticsRule() {
+	public VerifierRule() {
 		super(index++);
 		ruleId = index;
 	}
 
 	@Override
-	public AnalyticsComponentType getComponentType() {
-		return AnalyticsComponentType.RULE;
+	public VerifierComponentType getComponentType() {
+		return VerifierComponentType.RULE;
 	}
 
 	public CauseType getCauseType() {

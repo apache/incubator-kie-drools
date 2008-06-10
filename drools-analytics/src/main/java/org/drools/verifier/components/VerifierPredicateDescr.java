@@ -7,7 +7,7 @@ import org.drools.verifier.report.components.CauseType;
  *
  * @author Toni Rikkola
  */
-public class AnalyticsPredicateDescr extends AnalyticsComponent implements
+public class VerifierPredicateDescr extends VerifierComponent implements
 		Cause {
 
 	private static int index = 0;
@@ -15,13 +15,13 @@ public class AnalyticsPredicateDescr extends AnalyticsComponent implements
 	private String content;
 	private String classMethodName;
 
-	public AnalyticsPredicateDescr() {
+	public VerifierPredicateDescr() {
 		super(index++);
 	}
 
 	@Override
-	public AnalyticsComponentType getComponentType() {
-		return AnalyticsComponentType.PREDICATE;
+	public VerifierComponentType getComponentType() {
+		return VerifierComponentType.PREDICATE;
 	}
 
 	public CauseType getCauseType() {

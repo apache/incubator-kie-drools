@@ -11,21 +11,21 @@ import java.util.Set;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.Dialect.AnalysisResult;
 import org.drools.lang.descr.PackageDescr;
-import org.drools.verifier.Analyzer;
-import org.drools.verifier.components.AnalyticsClass;
-import org.drools.verifier.components.AnalyticsRule;
+import org.drools.verifier.Verifier;
+import org.drools.verifier.components.VerifierClass;
+import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.components.Field;
-import org.drools.verifier.dao.AnalyticsResult;
-import org.drools.verifier.report.components.AnalyticsMessage;
-import org.drools.verifier.report.components.AnalyticsMessageBase;
-import org.drools.verifier.report.components.AnalyticsRangeCheckMessage;
+import org.drools.verifier.dao.VerifierResult;
+import org.drools.verifier.report.components.VerifierMessage;
+import org.drools.verifier.report.components.VerifierMessageBase;
+import org.drools.verifier.report.components.VerifierRangeCheckMessage;
 import org.drools.verifier.report.components.Cause;
 import org.drools.verifier.report.components.Severity;
 
 /**
  * This is a sample file to launch a rule package from a rule source file.
  */
-class AnalyticsTestStandalone {
+class VerifierTestStandalone {
 
 	public static final void main(String[] args) {
 		try {
@@ -45,11 +45,11 @@ class AnalyticsTestStandalone {
 			// fileNames.add("optimisation/OptimisationPatternOrderTest.drl");
 
 			DrlParser parser = new DrlParser();
-			Analyzer a = new Analyzer();
+			Verifier a = new Verifier();
 
 			for (String s : fileNames) {
 				PackageDescr descr = parser.parse(new InputStreamReader(
-						Analyzer.class.getResourceAsStream(s)));
+						Verifier.class.getResourceAsStream(s)));
 				a.addPackageDescr(descr);
 			}
 
@@ -60,28 +60,28 @@ class AnalyticsTestStandalone {
 			// a.writeComponentsHTML("/Users/michaelneale/foo.html");
 			a.writeComponentsHTML("c:/");
 
-			AnalyticsResult result = a.getResult();
-			Collection<AnalyticsMessageBase> msgs = result
+			VerifierResult result = a.getResult();
+			Collection<VerifierMessageBase> msgs = result
 					.getBySeverity(Severity.ERROR);
 
 			for (Iterator iterator = msgs.iterator(); iterator.hasNext();) {
-				AnalyticsMessageBase msg = (AnalyticsMessageBase) iterator
+				VerifierMessageBase msg = (VerifierMessageBase) iterator
 						.next();
 				System.out.println("ERR: " + msg.getMessage());
 			}
 
 			msgs = result.getBySeverity(Severity.WARNING);
 			for (Iterator iterator = msgs.iterator(); iterator.hasNext();) {
-				AnalyticsMessageBase msg = (AnalyticsMessageBase) iterator
+				VerifierMessageBase msg = (VerifierMessageBase) iterator
 						.next();
 				System.out.println("WARN (" + msg.getClass().getSimpleName()
 						+ "): " + msg.getMessage());
 				System.out.println("\t FAULT: ["
 						+ msg.getClass().getSimpleName() + "] "
 						+ msg.getFaulty());
-				if (msg instanceof AnalyticsMessage) {
+				if (msg instanceof VerifierMessage) {
 					System.out.println("\t CAUSES (message):");
-					AnalyticsMessage amsg = (AnalyticsMessage) msg;
+					VerifierMessage amsg = (VerifierMessage) msg;
 					for (Iterator iterator2 = amsg.getCauses().iterator(); iterator2
 							.hasNext();) {
 						Cause c = (Cause) iterator2.next();
@@ -90,9 +90,9 @@ class AnalyticsTestStandalone {
 
 					}
 
-				} else if (msg instanceof AnalyticsRangeCheckMessage) {
+				} else if (msg instanceof VerifierRangeCheckMessage) {
 					System.out.println("\t CAUSES (range):");
-					AnalyticsRangeCheckMessage amsg = (AnalyticsRangeCheckMessage) msg;
+					VerifierRangeCheckMessage amsg = (VerifierRangeCheckMessage) msg;
 					for (Iterator iterator2 = amsg.getCauses().iterator(); iterator2
 							.hasNext();) {
 						Cause c = (Cause) iterator2.next();
@@ -105,24 +105,24 @@ class AnalyticsTestStandalone {
 
 			msgs = result.getBySeverity(Severity.NOTE);
 			for (Iterator iterator = msgs.iterator(); iterator.hasNext();) {
-				AnalyticsMessageBase msg = (AnalyticsMessageBase) iterator
+				VerifierMessageBase msg = (VerifierMessageBase) iterator
 						.next();
 				System.out.println("NOTE: " + msg.getMessage());
 				System.out.println("\t" + msg.getFaulty());
 			}
 
-			Collection<AnalyticsClass> classes = result.getAnalyticsData()
+			Collection<VerifierClass> classes = result.getVerifierData()
 					.getAllClasses();
 			for (Iterator iterator = classes.iterator(); iterator.hasNext();) {
-				AnalyticsClass c = (AnalyticsClass) iterator.next();
+				VerifierClass c = (VerifierClass) iterator.next();
 
-				Collection<AnalyticsRule> cr = result.getAnalyticsData()
+				Collection<VerifierRule> cr = result.getVerifierData()
 						.getRulesByClassId(c.getId());
 				System.err.println("Class rules:" + cr);
 				Set<Field> flds = c.getFields();
 				for (Iterator iterator2 = flds.iterator(); iterator2.hasNext();) {
 					Field f = (Field) iterator2.next();
-					cr = result.getAnalyticsData().getRulesByFieldId(f.getId());
+					cr = result.getVerifierData().getRulesByFieldId(f.getId());
 					System.err.println("Field rules: " + cr);
 
 				}

@@ -20,13 +20,13 @@ public class IncompatibilityBase extends TestBase {
 	}
 
 	/**
-	 * Creates redundancy map from Redundancy objects, one rule may have several
-	 * redundancy dependencies.
+	 * Creates incompatibility map from Incompatibility objects, one rule may
+	 * have several incompatibility dependencies.
 	 * 
 	 * @param iter
 	 * @return
 	 */
-	protected Map<Cause, Set<Cause>> createOppositesMap(CauseType type,
+	protected Map<Cause, Set<Cause>> createIncompatibilityMap(CauseType type,
 			Iterator<Object> iter) {
 
 		Map<Cause, Set<Cause>> map = new HashMap<Cause, Set<Cause>>();

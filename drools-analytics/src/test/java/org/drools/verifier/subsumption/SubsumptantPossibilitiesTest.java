@@ -9,13 +9,13 @@ import org.drools.StatelessSession;
 import org.drools.StatelessSessionResult;
 import org.drools.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.TestBase;
-import org.drools.verifier.components.AnalyticsRule;
+import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.components.LiteralRestriction;
 import org.drools.verifier.components.Pattern;
 import org.drools.verifier.components.PatternPossibility;
 import org.drools.verifier.components.RulePossibility;
-import org.drools.verifier.dao.AnalyticsResult;
-import org.drools.verifier.dao.AnalyticsResultFactory;
+import org.drools.verifier.dao.VerifierResult;
+import org.drools.verifier.dao.VerifierResultFactory;
 import org.drools.verifier.report.components.Cause;
 import org.drools.verifier.report.components.Redundancy;
 import org.drools.verifier.report.components.RedundancyType;
@@ -32,7 +32,7 @@ public class SubsumptantPossibilitiesTest extends SubsumptionTestBase {
 
 		Collection<Object> data = new ArrayList<Object>();
 
-		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
+		VerifierResult result = VerifierResultFactory.createVerifierResult();
 		session.setGlobal("result", result);
 
 		/*
@@ -101,7 +101,7 @@ public class SubsumptantPossibilitiesTest extends SubsumptionTestBase {
 
 		Collection<Object> data = new ArrayList<Object>();
 
-		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
+		VerifierResult result = VerifierResultFactory.createVerifierResult();
 		session.setGlobal("result", result);
 
 		/*
@@ -172,7 +172,7 @@ public class SubsumptantPossibilitiesTest extends SubsumptionTestBase {
 
 		Collection<Object> data = new ArrayList<Object>();
 
-		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
+		VerifierResult result = VerifierResultFactory.createVerifierResult();
 		session.setGlobal("result", result);
 
 		/*
@@ -181,9 +181,9 @@ public class SubsumptantPossibilitiesTest extends SubsumptionTestBase {
 		String ruleName1 = "Rule 1";
 		String ruleName2 = "Rule 2";
 
-		AnalyticsRule r1 = new AnalyticsRule();
+		VerifierRule r1 = new VerifierRule();
 		r1.setRuleName(ruleName1);
-		AnalyticsRule r2 = new AnalyticsRule();
+		VerifierRule r2 = new VerifierRule();
 		r2.setRuleName(ruleName2);
 
 		PatternPossibility pp1 = new PatternPossibility();
@@ -241,7 +241,7 @@ public class SubsumptantPossibilitiesTest extends SubsumptionTestBase {
 
 		Collection<Object> data = new ArrayList<Object>();
 
-		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
+		VerifierResult result = VerifierResultFactory.createVerifierResult();
 		session.setGlobal("result", result);
 
 		/*
@@ -250,9 +250,9 @@ public class SubsumptantPossibilitiesTest extends SubsumptionTestBase {
 		String ruleName1 = "Rule 1";
 		String ruleName2 = "Rule 2";
 
-		AnalyticsRule r1 = new AnalyticsRule();
+		VerifierRule r1 = new VerifierRule();
 		r1.setRuleName(ruleName1);
-		AnalyticsRule r2 = new AnalyticsRule();
+		VerifierRule r2 = new VerifierRule();
 		r2.setRuleName(ruleName2);
 
 		PatternPossibility pp1 = new PatternPossibility();

@@ -7,7 +7,7 @@ import org.drools.verifier.report.components.CauseType;
  *
  * @author Toni Rikkola
  */
-public class Constraint extends AnalyticsComponent implements Cause {
+public class Constraint extends VerifierComponent implements Cause {
 
 	private static int index = 0;
 
@@ -23,8 +23,8 @@ public class Constraint extends AnalyticsComponent implements Cause {
 	}
 
 	@Override
-	public AnalyticsComponentType getComponentType() {
-		return AnalyticsComponentType.CONSTRAINT;
+	public VerifierComponentType getComponentType() {
+		return VerifierComponentType.CONSTRAINT;
 	}
 
 	public CauseType getCauseType() {

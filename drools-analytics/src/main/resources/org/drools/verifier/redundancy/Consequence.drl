@@ -15,7 +15,7 @@ import org.drools.verifier.report.components.RedundancyType;
 #
 rule "Find redundant TextConsequences"
 	when
-		# Check that AnalyticsRule $left and $right have redundant fields.
+		# Check that VerifierRule $left and $right have redundant fields.
 		$left :TextConsequence()
 		$right :TextConsequence(
 			id != $left.id,

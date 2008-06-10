@@ -4,20 +4,20 @@ package org.drools.verifier.components;
  * 
  * @author Toni Rikkola
  */
-public class AnalyticsFromDescr extends AnalyticsComponent {
+public class VerifierFromDescr extends VerifierComponent {
 
 	private static int index = 0;
 
-	private AnalyticsComponentType dataSourceType;
+	private VerifierComponentType dataSourceType;
 	private int dataSourceId;
 
-	public AnalyticsFromDescr() {
+	public VerifierFromDescr() {
 		super(index++);
 	}
 
 	@Override
-	public AnalyticsComponentType getComponentType() {
-		return AnalyticsComponentType.FROM;
+	public VerifierComponentType getComponentType() {
+		return VerifierComponentType.FROM;
 	}
 
 	public int getDataSourceId() {
@@ -28,11 +28,11 @@ public class AnalyticsFromDescr extends AnalyticsComponent {
 		this.dataSourceId = dataSourceId;
 	}
 
-	public AnalyticsComponentType getDataSourceType() {
+	public VerifierComponentType getDataSourceType() {
 		return dataSourceType;
 	}
 
-	public void setDataSourceType(AnalyticsComponentType dataSourceType) {
+	public void setDataSourceType(VerifierComponentType dataSourceType) {
 		this.dataSourceType = dataSourceType;
 	}
 }

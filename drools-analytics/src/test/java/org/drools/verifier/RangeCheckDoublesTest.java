@@ -8,8 +8,8 @@ import java.util.Set;
 import org.drools.StatelessSession;
 import org.drools.StatelessSessionResult;
 import org.drools.base.RuleNameMatchesAgendaFilter;
-import org.drools.verifier.dao.AnalyticsResult;
-import org.drools.verifier.dao.AnalyticsResultFactory;
+import org.drools.verifier.dao.VerifierResult;
+import org.drools.verifier.dao.VerifierResultFactory;
 import org.drools.verifier.report.components.Gap;
 
 /**
@@ -27,10 +27,10 @@ public class RangeCheckDoublesTest extends TestBase {
 				.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 						"Range check for doubles, if smaller than or equal is missing"));
 
-		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
+		VerifierResult result = VerifierResultFactory.createVerifierResult();
 		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("MissingRangesForDoubles.drl"), result
-				.getAnalyticsData());
+				.getVerifierData());
 
 		session.setGlobal("result", result);
 
@@ -66,10 +66,10 @@ public class RangeCheckDoublesTest extends TestBase {
 				.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 						"Range check for doubles, if greater than or equal is missing"));
 
-		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
+		VerifierResult result = VerifierResultFactory.createVerifierResult();
 		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("MissingRangesForDoubles.drl"), result
-				.getAnalyticsData());
+				.getVerifierData());
 
 		session.setGlobal("result", result);
 
@@ -104,10 +104,10 @@ public class RangeCheckDoublesTest extends TestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Range check for doubles, equal and greater than"));
 
-		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
+		VerifierResult result = VerifierResultFactory.createVerifierResult();
 		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("MissingRangesForDoubles.drl"), result
-				.getAnalyticsData());
+				.getVerifierData());
 
 		session.setGlobal("result", result);
 
@@ -144,10 +144,10 @@ public class RangeCheckDoublesTest extends TestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Range check for doubles, equal and smaller than"));
 
-		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
+		VerifierResult result = VerifierResultFactory.createVerifierResult();
 		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("MissingRangesForDoubles.drl"), result
-				.getAnalyticsData());
+				.getVerifierData());
 
 		session.setGlobal("result", result);
 

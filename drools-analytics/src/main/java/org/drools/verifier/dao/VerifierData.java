@@ -2,10 +2,10 @@ package org.drools.verifier.dao;
 
 import java.util.Collection;
 
-import org.drools.verifier.components.AnalyticsClass;
-import org.drools.verifier.components.AnalyticsEvalDescr;
-import org.drools.verifier.components.AnalyticsPredicateDescr;
-import org.drools.verifier.components.AnalyticsRule;
+import org.drools.verifier.components.VerifierClass;
+import org.drools.verifier.components.VerifierEvalDescr;
+import org.drools.verifier.components.VerifierPredicateDescr;
+import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.components.Consequence;
 import org.drools.verifier.components.Constraint;
 import org.drools.verifier.components.Field;
@@ -22,17 +22,17 @@ import org.drools.verifier.components.Variable;
  * 
  * @author Toni Rikkola
  */
-public interface AnalyticsData {
+public interface VerifierData {
 
 	public void add(Consequence consequence);
 
-	public void add(AnalyticsClass clazz);
+	public void add(VerifierClass clazz);
 
 	public void add(Field field);
 
 	public void add(Variable variable);
 
-	public void add(AnalyticsRule rule);
+	public void add(VerifierRule rule);
 
 	public void add(Pattern pattern);
 
@@ -48,9 +48,9 @@ public interface AnalyticsData {
 
 	public void add(RulePackage rulePackage);
 
-	public AnalyticsClass getClassByPackageAndName(String name);
+	public VerifierClass getClassByPackageAndName(String name);
 
-	public AnalyticsClass getClassById(int id);
+	public VerifierClass getClassById(int id);
 
 	public Field getFieldByClassAndFieldName(String className, String fieldName);
 
@@ -61,21 +61,21 @@ public interface AnalyticsData {
 
 	public FieldClassLink getFieldClassLink(int id, int id2);
 
-	public Collection<AnalyticsRule> getAllRules();
+	public Collection<VerifierRule> getAllRules();
 
-	public Collection<AnalyticsClass> getClassesByRuleName(String ruleName);
+	public Collection<VerifierClass> getClassesByRuleName(String ruleName);
 
-	public Collection<AnalyticsClass> getAllClasses();
+	public Collection<VerifierClass> getAllClasses();
 
 	public Collection<RulePackage> getAllRulePackages();
 
 	public Collection<Field> getFieldsByClassId(int id);
 
-	public Collection<AnalyticsRule> getRulesByClassId(int id);
+	public Collection<VerifierRule> getRulesByClassId(int id);
 
 	public Collection<Field> getAllFields();
 
-	public Collection<AnalyticsRule> getRulesByFieldId(int id);
+	public Collection<VerifierRule> getRulesByFieldId(int id);
 
 	public RulePackage getRulePackageByName(String name);
 
@@ -83,7 +83,7 @@ public interface AnalyticsData {
 
 	public void add(OperatorDescr operatorDescr);
 
-	public void add(AnalyticsEvalDescr eval);
+	public void add(VerifierEvalDescr eval);
 
-	public void add(AnalyticsPredicateDescr predicate);
+	public void add(VerifierPredicateDescr predicate);
 }

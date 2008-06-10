@@ -8,7 +8,7 @@ import org.drools.verifier.report.components.CauseType;
  *
  * @author Toni Rikkola
  */
-public abstract class Restriction extends AnalyticsComponent implements Cause {
+public abstract class Restriction extends VerifierComponent implements Cause {
 
 	public static class RestrictionType {
 		public static final RestrictionType LITERAL = new RestrictionType(0);
@@ -41,8 +41,8 @@ public abstract class Restriction extends AnalyticsComponent implements Cause {
 	}
 
 	@Override
-	public AnalyticsComponentType getComponentType() {
-		return AnalyticsComponentType.RESTRICTION;
+	public VerifierComponentType getComponentType() {
+		return VerifierComponentType.RESTRICTION;
 	}
 
 	public CauseType getCauseType() {

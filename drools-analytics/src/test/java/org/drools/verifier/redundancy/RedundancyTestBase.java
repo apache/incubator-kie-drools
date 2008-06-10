@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.verifier.TestBase;
-import org.drools.verifier.components.AnalyticsComponent;
+import org.drools.verifier.components.VerifierComponent;
 import org.drools.verifier.report.components.Cause;
 import org.drools.verifier.report.components.CauseType;
 import org.drools.verifier.report.components.Redundancy;
@@ -33,8 +33,8 @@ public class RedundancyTestBase extends TestBase {
 			Object o = (Object) iter.next();
 			if (o instanceof Redundancy) {
 				Redundancy r = (Redundancy) o;
-				AnalyticsComponent left = (AnalyticsComponent) r.getLeft();
-				AnalyticsComponent right = (AnalyticsComponent) r.getRight();
+				VerifierComponent left = (VerifierComponent) r.getLeft();
+				VerifierComponent right = (VerifierComponent) r.getRight();
 
 				if (map.containsKey(left.getRuleName())) {
 					Set<String> set = map.get(left.getRuleName());

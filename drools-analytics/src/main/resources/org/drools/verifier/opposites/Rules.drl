@@ -1,0 +1,20 @@
+#created on: 3.6.2008
+package org.drools.verifier.opposites
+
+#list any import classes here.
+
+
+
+#declare any global variables here
+
+
+
+
+rule "Your First Rule"
+	
+	when
+		#conditions
+	then 
+		#actions
+		
+end

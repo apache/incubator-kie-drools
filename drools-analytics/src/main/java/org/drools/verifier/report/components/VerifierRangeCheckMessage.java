@@ -2,12 +2,12 @@ package org.drools.verifier.report.components;
 
 import java.util.Collection;
 
-public class AnalyticsRangeCheckMessage extends AnalyticsMessageBase {
+public class VerifierRangeCheckMessage extends VerifierMessageBase {
 	private static final long serialVersionUID = -2403507929285633672L;
 
 	private Collection<RangeCheckCause> causes;
 
-	public AnalyticsRangeCheckMessage(Severity severity, Cause faulty,
+	public VerifierRangeCheckMessage(Severity severity, Cause faulty,
 			String message, Collection<RangeCheckCause> causes) {
 		super(severity, MessageType.RANGE_CHECK, faulty, message);
 

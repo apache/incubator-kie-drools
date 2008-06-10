@@ -7,10 +7,10 @@ import org.drools.verifier.components.*;
 import org.drools.verifier.report.components.Gap;  
 import org.drools.verifier.report.components.MissingNumberPattern;
 
-import org.drools.verifier.dao.AnalyticsResult;
+import org.drools.verifier.dao.VerifierResult;
 
 #declare any global variables here
-global AnalyticsResult result;
+global VerifierResult result;
 
 #
 # Merges existing gaps from working memory. Cleans out the data for actual reporting.
@@ -61,7 +61,6 @@ rule "Merge gaps"
 											Operator.EQUAL, 
 											$g1.getField().getFieldType(), 
 											$g1.getValueAsString() );
-		mnp.setFiredRuleName( drools.getRule().getName() );
 		result.add( mnp );
 		insert( mnp );
 end

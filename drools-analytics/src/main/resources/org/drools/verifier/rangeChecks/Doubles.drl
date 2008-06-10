@@ -5,13 +5,12 @@ package org.drools.verifier.rangeChecks.doubles;
 import org.drools.base.evaluators.Operator;
 
 import org.drools.verifier.components.*;
-import org.drools.verifier.dao.AnalyticsResult;
 import org.drools.verifier.report.components.Gap;
 
-import org.drools.verifier.dao.AnalyticsResult;
+import org.drools.verifier.dao.VerifierResult;
 
 #declare any global variables here
-global AnalyticsResult result;
+global VerifierResult result;
 
 
 # If all ranges are not checked for a field.
@@ -40,8 +39,6 @@ rule "Range check for doubles, if smaller than or equal is missing"
 		)
 	then
 		Gap gap = new Gap( $f, Operator.LESS_OR_EQUAL, $r );
-		
-		gap.setFiredRuleName( drools.getRule().getName() );
 		
 		result.add( gap );
 		insert( gap );
@@ -73,8 +70,6 @@ rule "Range check for doubles, if greater than or equal is missing"
 		)
 	then
 		Gap gap = new Gap( $f, Operator.GREATER_OR_EQUAL, $r );
-		
-		gap.setFiredRuleName( drools.getRule().getName() );
 		
 		result.add( gap );
 		insert( gap );
@@ -108,8 +103,6 @@ rule "Range check for doubles, equal and greater than"
 	then
 		Gap gap =  new Gap( $f, Operator.GREATER, $r );
 		
-		gap.setFiredRuleName( drools.getRule().getName() );
-		
 		result.add( gap );
 		insert( gap );
 end
@@ -141,8 +134,6 @@ rule "Range check for doubles, equal and smaller than"
 		)
 	then
 		Gap gap =  new Gap( $f, Operator.LESS, $r );
-		
-		gap.setFiredRuleName( drools.getRule().getName() );
 		
 		result.add( gap );
 		insert( gap );
