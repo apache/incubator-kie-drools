@@ -95,10 +95,7 @@ public class StreamsTest extends TestCase {
         return SerializationHelper.serializeObject(ruleBase);
     }
 
-    public void testDummy() {
-    }
-
-    public void FIXME_testEventAssertion() throws Exception {
+    public void testEventAssertion() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_EntryPoint.drl" ) );
         final RuleBase ruleBase = loadRuleBase( reader );

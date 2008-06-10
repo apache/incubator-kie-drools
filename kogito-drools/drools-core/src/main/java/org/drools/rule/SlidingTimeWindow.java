@@ -195,8 +195,6 @@ public class SlidingTimeWindow
             BehaviorJob job = new BehaviorJob();
             JobHandle handle = clock.scheduleJob( job, jobctx, new PointInTimeTrigger( nextTimestamp ));
             jobctx.setJobHandle( handle );
-//        } else { 
-//            clock.removeJob( jobHandle );
         }
     }
     
