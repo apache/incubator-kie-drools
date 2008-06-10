@@ -8,10 +8,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.drools.verifier.components.AnalyticsClass;
-import org.drools.verifier.components.AnalyticsEvalDescr;
-import org.drools.verifier.components.AnalyticsPredicateDescr;
-import org.drools.verifier.components.AnalyticsRule;
+import org.drools.verifier.components.VerifierClass;
+import org.drools.verifier.components.VerifierEvalDescr;
+import org.drools.verifier.components.VerifierPredicateDescr;
+import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.components.Consequence;
 import org.drools.verifier.components.Constraint;
 import org.drools.verifier.components.Field;
@@ -28,19 +28,19 @@ import org.drools.verifier.components.Variable;
  * 
  * @author Toni Rikkola
  */
-class AnalyticsDataMaps implements AnalyticsData {
+class VerifierDataMaps implements VerifierData {
 
 	private Map<Integer, RulePackage> packagesById = new TreeMap<Integer, RulePackage>();
 	private Map<String, RulePackage> packagesByName = new TreeMap<String, RulePackage>();
 
-	private Map<Integer, AnalyticsClass> classesById = new TreeMap<Integer, AnalyticsClass>();
-	private Map<String, AnalyticsClass> classesByName = new TreeMap<String, AnalyticsClass>();
+	private Map<Integer, VerifierClass> classesById = new TreeMap<Integer, VerifierClass>();
+	private Map<String, VerifierClass> classesByName = new TreeMap<String, VerifierClass>();
 	private Map<String, Field> fieldsByClassAndFieldName = new TreeMap<String, Field>();
 	private Map<Integer, Field> fieldsById = new TreeMap<Integer, Field>();
 	private DataTree<Integer, Field> fieldsByClassId = new DataTree<Integer, Field>();
 	private Map<String, FieldClassLink> fieldClassLinkByIds = new TreeMap<String, FieldClassLink>();
 
-	private Map<Integer, AnalyticsRule> rulesById = new TreeMap<Integer, AnalyticsRule>();
+	private Map<Integer, VerifierRule> rulesById = new TreeMap<Integer, VerifierRule>();
 	private Map<Integer, Pattern> patternsById = new TreeMap<Integer, Pattern>();
 	private DataTree<Integer, Pattern> patternsByClassId = new DataTree<Integer, Pattern>();
 	private DataTree<String, Pattern> patternsByRuleName = new DataTree<String, Pattern>();
@@ -48,8 +48,8 @@ class AnalyticsDataMaps implements AnalyticsData {
 	private Map<Integer, Restriction> restrictionsById = new TreeMap<Integer, Restriction>();
 	private DataTree<Integer, Restriction> restrictionsByFieldId = new DataTree<Integer, Restriction>();
 	private Map<Integer, OperatorDescr> operatorsById = new TreeMap<Integer, OperatorDescr>();
-	private Map<Integer, AnalyticsEvalDescr> evalsById = new TreeMap<Integer, AnalyticsEvalDescr>();
-	private Map<Integer, AnalyticsPredicateDescr> predicatesById = new TreeMap<Integer, AnalyticsPredicateDescr>();
+	private Map<Integer, VerifierEvalDescr> evalsById = new TreeMap<Integer, VerifierEvalDescr>();
+	private Map<Integer, VerifierPredicateDescr> predicatesById = new TreeMap<Integer, VerifierPredicateDescr>();
 	private Map<Integer, Consequence> consiquencesById = new TreeMap<Integer, Consequence>();
 
 	private Map<String, Variable> variablesByRuleAndVariableName = new TreeMap<String, Variable>();
@@ -57,13 +57,13 @@ class AnalyticsDataMaps implements AnalyticsData {
 	private Map<Integer, PatternPossibility> patternPossibilitiesById = new TreeMap<Integer, PatternPossibility>();
 	private Map<Integer, RulePossibility> rulePossibilitiesById = new TreeMap<Integer, RulePossibility>();
 
-	public void add(AnalyticsClass clazz) {
+	public void add(VerifierClass clazz) {
 		classesById.put(Integer.valueOf(clazz.getId()), clazz);
 		classesByName.put(clazz.getName(), clazz);
 	}
 
 	public void add(Field field) {
-		AnalyticsClass clazz = classesById.get(Integer.valueOf(field
+		VerifierClass clazz = classesById.get(Integer.valueOf(field
 				.getClassId()));
 		fieldsByClassAndFieldName.put(clazz.getName() + "." + field.getName(),
 				field);
@@ -78,7 +78,7 @@ class AnalyticsDataMaps implements AnalyticsData {
 				+ variable.getName(), variable);
 	}
 
-	public void add(AnalyticsRule rule) {
+	public void add(VerifierRule rule) {
 		rulesById.put(Integer.valueOf(rule.getId()), rule);
 	}
 
@@ -104,7 +104,7 @@ class AnalyticsDataMaps implements AnalyticsData {
 				link);
 	}
 
-	public AnalyticsClass getClassByPackageAndName(String name) {
+	public VerifierClass getClassByPackageAndName(String name) {
 		return classesByName.get(name);
 	}
 
@@ -122,7 +122,7 @@ class AnalyticsDataMaps implements AnalyticsData {
 		return fieldClassLinkByIds.get(id + "." + id2);
 	}
 
-	public Collection<AnalyticsRule> getAllRules() {
+	public Collection<VerifierRule> getAllRules() {
 		return rulesById.values();
 	}
 
@@ -134,18 +134,18 @@ class AnalyticsDataMaps implements AnalyticsData {
 		rulePossibilitiesById.put(possibility.getId(), possibility);
 	}
 
-	public Collection<AnalyticsClass> getClassesByRuleName(String ruleName) {
-		Set<AnalyticsClass> set = new HashSet<AnalyticsClass>();
+	public Collection<VerifierClass> getClassesByRuleName(String ruleName) {
+		Set<VerifierClass> set = new HashSet<VerifierClass>();
 
 		for (Pattern pattern : patternsByRuleName.getBranch(ruleName)) {
-			AnalyticsClass clazz = getClassById(pattern.getClassId());
+			VerifierClass clazz = getClassById(pattern.getClassId());
 			set.add(clazz);
 		}
 
 		return set;
 	}
 
-	public AnalyticsClass getClassById(int id) {
+	public VerifierClass getClassById(int id) {
 		return classesById.get(id);
 	}
 
@@ -173,7 +173,7 @@ class AnalyticsDataMaps implements AnalyticsData {
 		return objects;
 	}
 
-	public Collection<AnalyticsClass> getAllClasses() {
+	public Collection<VerifierClass> getAllClasses() {
 		return classesById.values();
 	}
 
@@ -181,8 +181,8 @@ class AnalyticsDataMaps implements AnalyticsData {
 		return fieldsByClassId.getBranch(id);
 	}
 
-	public Collection<AnalyticsRule> getRulesByClassId(int id) {
-		Set<AnalyticsRule> rules = new HashSet<AnalyticsRule>();
+	public Collection<VerifierRule> getRulesByClassId(int id) {
+		Set<VerifierRule> rules = new HashSet<VerifierRule>();
 
 		for (Pattern pattern : patternsByClassId.getBranch(id)) {
 			rules.add(rulesById.get(pattern.getRuleId()));
@@ -195,9 +195,9 @@ class AnalyticsDataMaps implements AnalyticsData {
 		return fieldsById.values();
 	}
 
-	public Collection<AnalyticsRule> getRulesByFieldId(int id) {
+	public Collection<VerifierRule> getRulesByFieldId(int id) {
 
-		Set<AnalyticsRule> rules = new HashSet<AnalyticsRule>();
+		Set<VerifierRule> rules = new HashSet<VerifierRule>();
 
 		for (Restriction restriction : restrictionsByFieldId.getBranch(id)) {
 			rules.add(rulesById.get(restriction.getRuleId()));
@@ -227,11 +227,11 @@ class AnalyticsDataMaps implements AnalyticsData {
 		operatorsById.put(operatorDescr.getId(), operatorDescr);
 	}
 
-	public void add(AnalyticsEvalDescr eval) {
+	public void add(VerifierEvalDescr eval) {
 		evalsById.put(eval.getId(), eval);
 	}
 
-	public void add(AnalyticsPredicateDescr predicate) {
+	public void add(VerifierPredicateDescr predicate) {
 		predicatesById.put(predicate.getId(), predicate);
 	}
 

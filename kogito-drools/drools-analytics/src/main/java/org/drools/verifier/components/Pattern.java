@@ -7,7 +7,7 @@ import org.drools.verifier.report.components.CauseType;
  *
  * @author Toni Rikkola
  */
-public class Pattern extends AnalyticsComponent implements Cause {
+public class Pattern extends VerifierComponent implements Cause {
 
 	private static final long serialVersionUID = 5852308145251025423L;
 
@@ -16,7 +16,7 @@ public class Pattern extends AnalyticsComponent implements Cause {
 	private int ruleId;
 	private int classId;
 	private String name;
-	private AnalyticsComponentType sourceType = AnalyticsComponentType.NOTHING;
+	private VerifierComponentType sourceType = VerifierComponentType.NOTHING;
 	private int sourceId = -1;
 
 	private boolean isPatternNot = false;
@@ -28,8 +28,8 @@ public class Pattern extends AnalyticsComponent implements Cause {
 	}
 
 	@Override
-	public AnalyticsComponentType getComponentType() {
-		return AnalyticsComponentType.PATTERN;
+	public VerifierComponentType getComponentType() {
+		return VerifierComponentType.PATTERN;
 	}
 
 	public CauseType getCauseType() {
@@ -84,11 +84,11 @@ public class Pattern extends AnalyticsComponent implements Cause {
 		this.sourceId = sourceId;
 	}
 
-	public AnalyticsComponentType getSourceType() {
+	public VerifierComponentType getSourceType() {
 		return sourceType;
 	}
 
-	public void setSourceType(AnalyticsComponentType sourceType) {
+	public void setSourceType(VerifierComponentType sourceType) {
 		this.sourceType = sourceType;
 	}
 

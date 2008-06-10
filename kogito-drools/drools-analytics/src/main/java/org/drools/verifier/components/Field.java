@@ -7,7 +7,7 @@ import org.drools.verifier.report.components.CauseType;
  *
  * @author Toni Rikkola
  */
-public class Field extends AnalyticsComponent implements Cause {
+public class Field extends VerifierComponent implements Cause {
 
 	public static class FieldType {
 		public static final FieldType BOOLEAN = new FieldType("boolean");
@@ -44,8 +44,8 @@ public class Field extends AnalyticsComponent implements Cause {
 	}
 
 	@Override
-	public AnalyticsComponentType getComponentType() {
-		return AnalyticsComponentType.FIELD;
+	public VerifierComponentType getComponentType() {
+		return VerifierComponentType.FIELD;
 	}
 
 	public CauseType getCauseType() {

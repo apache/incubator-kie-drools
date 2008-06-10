@@ -9,10 +9,10 @@ import org.drools.verifier.TestBase;
 import org.drools.verifier.components.LiteralRestriction;
 import org.drools.verifier.components.PatternPossibility;
 import org.drools.verifier.components.RulePossibility;
-import org.drools.verifier.dao.AnalyticsResult;
-import org.drools.verifier.dao.AnalyticsResultFactory;
-import org.drools.verifier.report.components.AnalyticsMessage;
-import org.drools.verifier.report.components.AnalyticsMessageBase;
+import org.drools.verifier.dao.VerifierResult;
+import org.drools.verifier.dao.VerifierResultFactory;
+import org.drools.verifier.report.components.VerifierMessage;
+import org.drools.verifier.report.components.VerifierMessageBase;
 import org.drools.verifier.report.components.Redundancy;
 import org.drools.verifier.report.components.RedundancyType;
 import org.drools.verifier.report.components.Severity;
@@ -44,18 +44,18 @@ public class NotesTest extends TestBase {
 		objects.add(redundancy);
 		objects.add(possibility);
 
-		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
+		VerifierResult result = VerifierResultFactory.createVerifierResult();
 		session.setGlobal("result", result);
 
 		session.executeWithResults(objects);
 
-		Collection<AnalyticsMessageBase> notes = result
+		Collection<VerifierMessageBase> notes = result
 				.getBySeverity(Severity.NOTE);
 
 		// Has at least one item.
 		assertEquals(1, notes.size());
 
-		AnalyticsMessageBase note = notes.iterator().next();
+		VerifierMessageBase note = notes.iterator().next();
 		assertTrue(note.getFaulty().equals(redundancy));
 	}
 
@@ -85,18 +85,18 @@ public class NotesTest extends TestBase {
 		objects.add(redundancy);
 		objects.add(possibility);
 
-		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
+		VerifierResult result = VerifierResultFactory.createVerifierResult();
 		session.setGlobal("result", result);
 
 		session.executeWithResults(objects);
 
-		Collection<AnalyticsMessageBase> notes = result
+		Collection<VerifierMessageBase> notes = result
 				.getBySeverity(Severity.NOTE);
 
 		// Has at least one item.
 		assertEquals(1, notes.size());
 
-		AnalyticsMessageBase note = notes.iterator().next();
+		VerifierMessageBase note = notes.iterator().next();
 		assertTrue(note.getFaulty().equals(redundancy));
 	}
 }

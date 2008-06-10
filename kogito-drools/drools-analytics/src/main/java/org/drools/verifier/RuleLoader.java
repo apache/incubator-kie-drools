@@ -29,7 +29,7 @@ class RuleLoader {
 				// Range checks
 				"rangeChecks/Dates.drl", "rangeChecks/Doubles.drl",
 				"rangeChecks/Integers.drl",
-				"rangeChecks/Patterns.drl",
+				"rangeChecks/NumberPatterns.drl",
 				"rangeChecks/Variables.drl",
 				"rangeChecks/Clean.drl",
 				// Redundancy

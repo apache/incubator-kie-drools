@@ -89,12 +89,12 @@ rule "Find redundant LiteralRestriction"
 				)
 				and
 					$v :Variable(
-						objectType == AnalyticsComponentType.FIELD,
+						objectType == VerifierComponentType.FIELD,
 						objectId == $left.id
 					)
 				and
 					Variable(
-						objectType == AnalyticsComponentType.FIELD,
+						objectType == VerifierComponentType.FIELD,
 						objectId == $right.id,
 						objectName == $v.objectName,
 						name == $v.name

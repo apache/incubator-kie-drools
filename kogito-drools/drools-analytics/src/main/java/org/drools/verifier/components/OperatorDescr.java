@@ -6,7 +6,7 @@ import java.io.Serializable;
  * 
  * @author Toni Rikkola
  */
-public class OperatorDescr extends AnalyticsComponent implements Serializable {
+public class OperatorDescr extends VerifierComponent implements Serializable {
 	private static final long serialVersionUID = 8393994152436331910L;
 
 	private static int index = 0;
@@ -34,8 +34,8 @@ public class OperatorDescr extends AnalyticsComponent implements Serializable {
 	}
 
 	@Override
-	public AnalyticsComponentType getComponentType() {
-		return AnalyticsComponentType.OPERATOR;
+	public VerifierComponentType getComponentType() {
+		return VerifierComponentType.OPERATOR;
 	}
 
 	public Type getType() {

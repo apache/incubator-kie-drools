@@ -1,27 +1,26 @@
 package org.drools.verifier.report.components;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- *
+ * 
  * @author Toni Rikkola
  */
-abstract public class AnalyticsMessageBase implements Serializable,
-		Comparable<AnalyticsMessageBase> {
+abstract public class VerifierMessageBase implements Serializable,
+		Comparable<VerifierMessageBase> {
 	private static final long serialVersionUID = 9190003495068712452L;
 
 	private static int index = 0;
 
-	protected Severity severity;
-	protected MessageType messageType;
+	protected final Severity severity;
+	protected final MessageType messageType;
 
-	protected int id = index++;
-	protected Cause faulty;
-	protected String message;
+	protected final int id = index++;
+	protected final Cause faulty;
+	protected final String message;
 
-	public int compareTo(AnalyticsMessageBase o) {
+	public int compareTo(VerifierMessageBase o) {
 		if (id == o.getId()) {
 			return 0;
 		}
@@ -29,7 +28,7 @@ abstract public class AnalyticsMessageBase implements Serializable,
 		return (id > o.getId() ? 1 : -1);
 	}
 
-	protected AnalyticsMessageBase(Severity severity, MessageType messageType,
+	protected VerifierMessageBase(Severity severity, MessageType messageType,
 			Cause faulty, String message) {
 		this.severity = severity;
 		this.messageType = messageType;
@@ -41,40 +40,20 @@ abstract public class AnalyticsMessageBase implements Serializable,
 		return id;
 	}
 
-	public void setId(int id) {
-		this.id = id;
-	}
-
 	public String getMessage() {
 		return message;
-	}
-
-	public void setMessage(String message) {
-		this.message = message;
 	}
 
 	public Cause getFaulty() {
 		return faulty;
 	}
 
-	public void setFaulty(Cause faulty) {
-		this.faulty = faulty;
-	}
-
 	public MessageType getMessageType() {
 		return messageType;
 	}
 
-	public void setMessageType(MessageType messageType) {
-		this.messageType = messageType;
-	}
-
 	public Severity getSeverity() {
 		return severity;
-	}
-
-	public void setSeverity(Severity severity) {
-		this.severity = severity;
 	}
 
 	@Override

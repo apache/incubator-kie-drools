@@ -8,9 +8,9 @@ package org.drools.verifier.report.components;
  */
 public class PartialRedundancy {
 
-	private Cause left;
-	private Cause right;
-	private Redundancy redundancy;
+	private final Cause left;
+	private final Cause right;
+	private final Redundancy redundancy;
 
 	/**
 	 * 
@@ -31,23 +31,12 @@ public class PartialRedundancy {
 		return left;
 	}
 
-	public void setLeft(Cause left) {
-		this.left = left;
-	}
-
 	public Redundancy getRedundancy() {
 		return redundancy;
-	}
-
-	public void setRedundancy(Redundancy redundancy) {
-		this.redundancy = redundancy;
 	}
 
 	public Cause getRight() {
 		return right;
 	}
 
-	public void setRight(Cause right) {
-		this.right = right;
-	}
 }

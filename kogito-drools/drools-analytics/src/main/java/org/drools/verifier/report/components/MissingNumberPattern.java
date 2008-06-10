@@ -8,15 +8,15 @@ import org.drools.base.evaluators.Operator;
 import org.drools.verifier.components.Field;
 
 /**
- *
+ * 
  * @author Toni Rikkola
  */
 public class MissingNumberPattern extends MissingRange implements
 		RangeCheckCause, Comparable<MissingRange> {
 
-	private Field.FieldType valueType;
+	private final Field.FieldType valueType;
 
-	private String value;
+	private final String value;
 
 	public int compareTo(MissingRange another) {
 		return super.compareTo(another);
@@ -28,8 +28,8 @@ public class MissingNumberPattern extends MissingRange implements
 
 	public MissingNumberPattern(Field field, Operator operator,
 			Field.FieldType valueType, String value) {
-		this.field = field;
-		this.operator = operator;
+		super(field, operator);
+
 		this.valueType = valueType;
 		this.value = value;
 	}
@@ -70,10 +70,6 @@ public class MissingNumberPattern extends MissingRange implements
 
 	public Field.FieldType getValueType() {
 		return valueType;
-	}
-
-	public void setValueType(Field.FieldType valueType) {
-		this.valueType = valueType;
 	}
 
 	@Override

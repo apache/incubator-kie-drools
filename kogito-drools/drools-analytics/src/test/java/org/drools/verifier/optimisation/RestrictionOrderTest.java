@@ -10,15 +10,15 @@ import org.drools.StatelessSession;
 import org.drools.base.RuleNameMatchesAgendaFilter;
 import org.drools.base.evaluators.Operator;
 import org.drools.verifier.TestBase;
-import org.drools.verifier.components.AnalyticsComponent;
+import org.drools.verifier.components.VerifierComponent;
 import org.drools.verifier.components.LiteralRestriction;
 import org.drools.verifier.components.OperatorDescr;
 import org.drools.verifier.components.Pattern;
 import org.drools.verifier.components.Restriction;
-import org.drools.verifier.dao.AnalyticsResult;
-import org.drools.verifier.dao.AnalyticsResultFactory;
-import org.drools.verifier.report.components.AnalyticsMessage;
-import org.drools.verifier.report.components.AnalyticsMessageBase;
+import org.drools.verifier.dao.VerifierResult;
+import org.drools.verifier.dao.VerifierResultFactory;
+import org.drools.verifier.report.components.VerifierMessage;
+import org.drools.verifier.report.components.VerifierMessageBase;
 import org.drools.verifier.report.components.Cause;
 import org.drools.verifier.report.components.Severity;
 
@@ -31,23 +31,23 @@ public class RestrictionOrderTest extends TestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Optimise restrictions inside operator"));
 
-		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
+		VerifierResult result = VerifierResultFactory.createVerifierResult();
 		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("OptimisationRestrictionOrderTest.drl"),
-				result.getAnalyticsData());
+				result.getVerifierData());
 
 		session.setGlobal("result", result);
 
 		session.executeWithResults(testData);
 
-		Iterator<AnalyticsMessageBase> iter = result.getBySeverity(
+		Iterator<VerifierMessageBase> iter = result.getBySeverity(
 				Severity.NOTE).iterator();
 
 		Collection<String> ruleNames = new ArrayList<String>();
 		while (iter.hasNext()) {
 			Object o = (Object) iter.next();
-			if (o instanceof AnalyticsMessage) {
-				String name = ((AnalyticsMessage) o).getCauses().toArray(
+			if (o instanceof VerifierMessage) {
+				String name = ((VerifierMessage) o).getCauses().toArray(
 						new Restriction[2])[0].getRuleName();
 
 				ruleNames.add(name);
@@ -130,21 +130,21 @@ public class RestrictionOrderTest extends TestBase {
 		r6.setOrderNumber(3);
 		testData.add(r6);
 
-		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
+		VerifierResult result = VerifierResultFactory.createVerifierResult();
 		session.setGlobal("result", result);
 
 		session.executeWithResults(testData);
 
-		Iterator<AnalyticsMessageBase> iter = result.getBySeverity(
+		Iterator<VerifierMessageBase> iter = result.getBySeverity(
 				Severity.NOTE).iterator();
 
 		Map<Cause, Cause> pairs = new HashMap<Cause, Cause>();
 		while (iter.hasNext()) {
 			Object o = (Object) iter.next();
-			if (o instanceof AnalyticsMessage) {
-				Cause left = ((AnalyticsMessage) o).getCauses().toArray(
+			if (o instanceof VerifierMessage) {
+				Cause left = ((VerifierMessage) o).getCauses().toArray(
 						new Cause[2])[0];
-				Cause right = ((AnalyticsMessage) o).getCauses().toArray(
+				Cause right = ((VerifierMessage) o).getCauses().toArray(
 						new Cause[2])[1];
 
 				pairs.put(left, right);
@@ -170,24 +170,24 @@ public class RestrictionOrderTest extends TestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Optimise predicates inside operator"));
 
-		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
+		VerifierResult result = VerifierResultFactory.createVerifierResult();
 		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("OptimisationRestrictionOrderTest.drl"),
-				result.getAnalyticsData());
+				result.getVerifierData());
 
 		session.setGlobal("result", result);
 
 		session.executeWithResults(testData);
 
-		Iterator<AnalyticsMessageBase> iter = result.getBySeverity(
+		Iterator<VerifierMessageBase> iter = result.getBySeverity(
 				Severity.NOTE).iterator();
 
 		Collection<String> ruleNames = new ArrayList<String>();
 		while (iter.hasNext()) {
 			Object o = (Object) iter.next();
-			if (o instanceof AnalyticsMessage) {
-				String name = ((AnalyticsMessage) o).getCauses().toArray(
-						new AnalyticsComponent[2])[0].getRuleName();
+			if (o instanceof VerifierMessage) {
+				String name = ((VerifierMessage) o).getCauses().toArray(
+						new VerifierComponent[2])[0].getRuleName();
 
 				ruleNames.add(name);
 			}

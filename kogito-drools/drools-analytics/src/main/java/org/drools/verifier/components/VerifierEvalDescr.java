@@ -7,20 +7,20 @@ import org.drools.verifier.report.components.CauseType;
  *
  * @author Toni Rikkola
  */
-public class AnalyticsEvalDescr extends AnalyticsComponent implements Cause {
+public class VerifierEvalDescr extends VerifierComponent implements Cause {
 
 	private static int index = 0;
 
 	private String content;
 	private String classMethodName;
 
-	public AnalyticsEvalDescr() {
+	public VerifierEvalDescr() {
 		super(index++);
 	}
 
 	@Override
-	public AnalyticsComponentType getComponentType() {
-		return AnalyticsComponentType.EVAL;
+	public VerifierComponentType getComponentType() {
+		return VerifierComponentType.EVAL;
 	}
 
 	public CauseType getCauseType() {

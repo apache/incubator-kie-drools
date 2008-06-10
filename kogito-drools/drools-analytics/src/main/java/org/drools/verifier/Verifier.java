@@ -7,8 +7,8 @@ import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
-import org.drools.verifier.dao.AnalyticsResult;
-import org.drools.verifier.dao.AnalyticsResultFactory;
+import org.drools.verifier.dao.VerifierResult;
+import org.drools.verifier.dao.VerifierResultFactory;
 import org.drools.verifier.report.ReportModeller;
 import org.drools.verifier.report.html.ComponentsReportModeller;
 
@@ -18,13 +18,13 @@ import org.drools.verifier.report.html.ComponentsReportModeller;
  *
  * @author Toni Rikkola
  */
-public class Analyzer {
+public class Verifier {
 
 	static RuleBase verifierKnowledgeBase;
 
 
-	private AnalyticsResult result = AnalyticsResultFactory
-			.createAnalyticsResult();
+	private VerifierResult result = VerifierResultFactory
+			.createVerifierResult();
 
 	public void addPackageDescr(PackageDescr descr) {
 		try {
@@ -32,7 +32,7 @@ public class Analyzer {
 			PackageDescrFlattener ruleFlattener = new PackageDescrFlattener();
 
 			ruleFlattener.addPackageDescrToData(descr, result
-					.getAnalyticsData());
+					.getVerifierData());
 
 		} catch (Throwable t) {
 			t.printStackTrace();
@@ -62,7 +62,7 @@ public class Analyzer {
 
 			WorkingMemory workingMemory = verifierKnowledgeBase.newStatefulSession();
 
-			Collection<? extends Object> c = result.getAnalyticsData().getAll();
+			Collection<? extends Object> c = result.getVerifierData().getAll();
 
 			for (Object o : c) {
 				workingMemory.insert(o);
@@ -109,7 +109,7 @@ public class Analyzer {
 	 *
 	 * @return Analysis result
 	 */
-	public AnalyticsResult getResult() {
+	public VerifierResult getResult() {
 		return result;
 	}
 

@@ -2,7 +2,7 @@
 package org.drools.verifier.redundancy
 
 #list any import classes here.
-global AnalyticsResult result;
+global VerifierResult result;
 
 
 
@@ -12,9 +12,9 @@ import java.util.ArrayList;
 
 import org.drools.verifier.components.PatternPossibility;
 import org.drools.verifier.components.RulePossibility;
-import org.drools.verifier.dao.AnalyticsResult;
+import org.drools.verifier.dao.VerifierResult;
 import org.drools.verifier.report.components.Redundancy;
-import org.drools.verifier.report.components.AnalyticsMessage;
+import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.Cause;
 import org.drools.verifier.report.components.CauseType;
 import org.drools.verifier.report.components.Severity;
@@ -45,7 +45,7 @@ rule "Find redundant restrictions from pattern possibilities"
 		causes.add( $r.getLeft() );
 		causes.add( $r.getRight() );
 
-		result.add(new AnalyticsMessage(
+		result.add(new VerifierMessage(
 						Severity.NOTE, MessageType.REDUNDANCY,
 						$r, "Same restriction exists twice.", causes ) );
 end
@@ -72,7 +72,7 @@ rule "Find redundant pattern possibilities from rule possibilities"
 		causes.add( $r.getLeft() );
 		causes.add( $r.getRight() );
 
-		result.add(new AnalyticsMessage(
+		result.add(new VerifierMessage(
 						Severity.NOTE, MessageType.REDUNDANCY,
 						$r, "Two pattern possibilities with redundant restrictions exists twice in the same rule.", causes ) );
 end

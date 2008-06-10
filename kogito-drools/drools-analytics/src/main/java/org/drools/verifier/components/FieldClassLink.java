@@ -4,7 +4,7 @@ package org.drools.verifier.components;
  * 
  * @author Toni Rikkola
  */
-public class FieldClassLink extends AnalyticsComponent {
+public class FieldClassLink extends VerifierComponent {
 
 	private static int index = 0;
 
@@ -16,8 +16,8 @@ public class FieldClassLink extends AnalyticsComponent {
 	}
 
 	@Override
-	public AnalyticsComponentType getComponentType() {
-		return AnalyticsComponentType.FIELD_CLASS_LINK;
+	public VerifierComponentType getComponentType() {
+		return VerifierComponentType.FIELD_CLASS_LINK;
 	}
 
 	public int getClassId() {

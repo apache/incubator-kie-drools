@@ -8,7 +8,7 @@ import java.util.Set;
  * @author Toni Rikkola
  * 
  */
-public class AnalyticsClass implements Serializable {
+public class VerifierClass implements Serializable {
 	private static final long serialVersionUID = -783733402566313623L;
 
 	private static int index = 0;

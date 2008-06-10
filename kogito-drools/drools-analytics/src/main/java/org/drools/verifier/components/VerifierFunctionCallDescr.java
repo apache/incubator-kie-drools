@@ -4,20 +4,20 @@ package org.drools.verifier.components;
  * 
  * @author Toni Rikkola
  */
-public class AnalyticsFunctionCallDescr extends AnalyticsComponent {
+public class VerifierFunctionCallDescr extends VerifierComponent {
 
 	private static int index = 0;
 
 	private String name;
 	private String arguments;
 
-	public AnalyticsFunctionCallDescr() {
+	public VerifierFunctionCallDescr() {
 		super(index++);
 	}
 
 	@Override
-	public AnalyticsComponentType getComponentType() {
-		return AnalyticsComponentType.FUNCTION_CALL;
+	public VerifierComponentType getComponentType() {
+		return VerifierComponentType.FUNCTION_CALL;
 	}
 
 	public String getArguments() {

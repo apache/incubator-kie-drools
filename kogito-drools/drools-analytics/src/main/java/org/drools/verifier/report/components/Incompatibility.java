@@ -2,7 +2,9 @@ package org.drools.verifier.report.components;
 
 /**
  * 
- * Two causes are opposites.
+ * Two causes are incompatible.
+ * <p>
+ * For example: Restrictions (a > b) and (a == b)
  * 
  * @author Toni Rikkola
  */
@@ -10,10 +12,10 @@ public class Incompatibility implements Cause {
 
 	private static int index = 0;
 
-	private int id = index++;
+	private final int id = index++;
 
-	private Cause left;
-	private Cause right;
+	private final Cause left;
+	private final Cause right;
 
 	public Incompatibility(Cause left, Cause right) {
 		this.left = left;
@@ -25,28 +27,19 @@ public class Incompatibility implements Cause {
 	}
 
 	public CauseType getCauseType() {
-		return CauseType.OPPOSITES;
+		return CauseType.INCOMPATIBLE;
 	}
 
 	public Cause getLeft() {
 		return left;
 	}
 
-	public void setLeft(Cause left) {
-		this.left = left;
-	}
-
 	public Cause getRight() {
 		return right;
 	}
 
-	public void setRight(Cause right) {
-		this.right = right;
-	}
-
 	@Override
 	public String toString() {
-		return "(" + getLeft() + ") and (" + getRight()
-				+ ") are opposites.";
+		return "(" + getLeft() + ") and (" + getRight() + ") are incompatible.";
 	}
 }

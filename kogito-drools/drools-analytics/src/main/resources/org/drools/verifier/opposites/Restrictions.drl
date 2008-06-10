@@ -3,19 +3,23 @@ package org.drools.verifier.opposites
 
 #list any import classes here.
 import org.drools.verifier.components.LiteralRestriction;
+import org.drools.verifier.components.VariableRestriction;
 import org.drools.verifier.components.Field.FieldType;
+
 import org.drools.verifier.report.components.Cause;
 import org.drools.verifier.report.components.MissingRange;
-import org.drools.verifier.report.components.AnalyticsMessage;
+import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.MessageType;
 import org.drools.verifier.report.components.Opposites;
-import org.drools.verifier.dao.AnalyticsResult;
+import org.drools.verifier.report.components.MissingRange;
+
+import org.drools.verifier.dao.VerifierResult;
 
 import org.drools.base.evaluators.Operator;
 
 #declare any global variables here
-global AnalyticsResult result;
+global VerifierResult result;
 
 #
 # If two LiteralRestrictions are in conflict.
@@ -197,3 +201,35 @@ rule "Opposite LiteralRestrictions with ranges, less or equal - greater or equal
 		insert( new Opposites( $left, $right ));
 end
 
+#
+# If two VariableRestrictions are in conflict.
+#
+# Depandencies: None
+# Example: Pattern( a contains $o, a not contains $o )
+#
+rule "Opposite VariableRestrictions in pattern possibility"
+	when
+		$r1 :VariableRestriction()
+
+		$r2 :VariableRestriction(
+			patternId == $r1.patternId,
+			fieldId == $r1.fieldId,
+			id != $r1.id,
+			variable.objectId == $r1.variable.objectId,
+			variable.objectType == $r1.variable.objectType,
+			# Operator needs to be reverse to what the other one has.
+			eval( operator == MissingRange.getReversedOperator( $r1.getOperator() ))
+		)
+		
+		# Check that there is not already a pair with these values.
+		not Opposites( 
+			left == $r1, 
+			right == $r2 
+		)
+		not Opposites( 
+			right == $r1, 
+			left == $r2 
+		)
+	then
+		insert( new Opposites( $r1, $r2 ) );
+end

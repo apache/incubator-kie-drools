@@ -5,7 +5,7 @@ package org.drools.verifier.components;
  * 
  * @author Toni Rikkola
  */
-public class AnalyticsAccumulateDescr extends AnalyticsComponent {
+public class VerifierAccumulateDescr extends VerifierComponent {
 
 	private static int index = 0;
 
@@ -20,13 +20,13 @@ public class AnalyticsAccumulateDescr extends AnalyticsComponent {
 	private String functionIdentifier;
 	private String expression;
 
-	public AnalyticsAccumulateDescr() {
+	public VerifierAccumulateDescr() {
 		super(index++);
 	}
 
 	@Override
-	public AnalyticsComponentType getComponentType() {
-		return AnalyticsComponentType.ACCUMULATE;
+	public VerifierComponentType getComponentType() {
+		return VerifierComponentType.ACCUMULATE;
 	}
 
 	public String getActionCode() {

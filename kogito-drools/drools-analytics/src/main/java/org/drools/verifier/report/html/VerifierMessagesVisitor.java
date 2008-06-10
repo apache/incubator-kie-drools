@@ -5,10 +5,10 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.verifier.dao.AnalyticsData;
-import org.drools.verifier.report.components.AnalyticsMessage;
-import org.drools.verifier.report.components.AnalyticsMessageBase;
-import org.drools.verifier.report.components.AnalyticsRangeCheckMessage;
+import org.drools.verifier.dao.VerifierData;
+import org.drools.verifier.report.components.VerifierMessage;
+import org.drools.verifier.report.components.VerifierMessageBase;
+import org.drools.verifier.report.components.VerifierRangeCheckMessage;
 import org.drools.verifier.report.components.Cause;
 import org.mvel.templates.TemplateRuntime;
 
@@ -16,7 +16,7 @@ import org.mvel.templates.TemplateRuntime;
  * 
  * @author Toni Rikkola
  */
-class AnalyticsMessagesVisitor extends ReportVisitor {
+class VerifierMessagesVisitor extends ReportVisitor {
 
 	private static String VERIFIER_MESSAGES_TEMPLATE = "verifierMessages.htm";
 	private static String VERIFIER_MESSAGE_TEMPLATE = "verifierMessage.htm";
@@ -25,14 +25,14 @@ class AnalyticsMessagesVisitor extends ReportVisitor {
 	public static String WARNINGS = "Warnings";
 	public static String ERRORS = "Errors";
 
-	public static String visitAnalyticsMessagesCollection(String title,
-			Collection<AnalyticsMessageBase> messages, AnalyticsData data) {
+	public static String visitVerifierMessagesCollection(String title,
+			Collection<VerifierMessageBase> messages, VerifierData data) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		Collection<String> messageTemplates = new ArrayList<String>();
 		String myTemplate = readFile(VERIFIER_MESSAGES_TEMPLATE);
 
-		for (AnalyticsMessageBase message : messages) {
-			messageTemplates.add(visitAnalyticsMessage(message, data));
+		for (VerifierMessageBase message : messages) {
+			messageTemplates.add(visitVerifierMessage(message, data));
 		}
 
 		map.put("title", title);
@@ -41,26 +41,26 @@ class AnalyticsMessagesVisitor extends ReportVisitor {
 		return String.valueOf(TemplateRuntime.eval(myTemplate, map));
 	}
 
-	public static String visitAnalyticsMessage(AnalyticsMessageBase message,
-			AnalyticsData data) {
-		if (message instanceof AnalyticsRangeCheckMessage) {
-			return visitAnalyticsMessage((AnalyticsRangeCheckMessage) message,
+	public static String visitVerifierMessage(VerifierMessageBase message,
+			VerifierData data) {
+		if (message instanceof VerifierRangeCheckMessage) {
+			return visitVerifierMessage((VerifierRangeCheckMessage) message,
 					data);
-		} else if (message instanceof AnalyticsMessage) {
-			return visitAnalyticsMessage((AnalyticsMessage) message);
+		} else if (message instanceof VerifierMessage) {
+			return visitVerifierMessage((VerifierMessage) message);
 		}
 
 		return null;
 	}
 
-	public static String visitAnalyticsMessage(
-			AnalyticsRangeCheckMessage message, AnalyticsData data) {
+	public static String visitVerifierMessage(
+			VerifierRangeCheckMessage message, VerifierData data) {
 
 		return MissingRangesReportVisitor.visitRangeCheckMessage(
 				UrlFactory.THIS_FOLDER, message, data);
 	}
 
-	public static String visitAnalyticsMessage(AnalyticsMessage message) {
+	public static String visitVerifierMessage(VerifierMessage message) {
 
 		Map<String, Object> map = new HashMap<String, Object>();
 		Collection<String> causeUrls = new ArrayList<String>();

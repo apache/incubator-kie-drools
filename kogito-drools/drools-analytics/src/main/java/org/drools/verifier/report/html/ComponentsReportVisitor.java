@@ -4,13 +4,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.verifier.components.AnalyticsClass;
-import org.drools.verifier.components.AnalyticsRule;
+import org.drools.verifier.components.VerifierClass;
+import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.components.Field;
 import org.drools.verifier.components.Restriction;
 import org.drools.verifier.components.RulePackage;
-import org.drools.verifier.dao.AnalyticsData;
-import org.drools.verifier.dao.AnalyticsResult;
+import org.drools.verifier.dao.VerifierData;
+import org.drools.verifier.dao.VerifierResult;
 import org.drools.verifier.report.components.RangeCheckCause;
 import org.mvel.templates.TemplateRuntime;
 
@@ -36,7 +36,7 @@ class ComponentsReportVisitor extends ReportVisitor {
 	}
 
 	public static String visitObjectTypeCollection(String sourceFolder,
-			Collection<AnalyticsClass> objectTypes) {
+			Collection<VerifierClass> objectTypes) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("sourceFolder", sourceFolder);
 		map.put("objectTypeFolder", sourceFolder + "/"
@@ -49,9 +49,9 @@ class ComponentsReportVisitor extends ReportVisitor {
 		return String.valueOf(TemplateRuntime.eval(myTemplate, map));
 	}
 
-	public static String visitRule(String sourceFolder, AnalyticsRule rule,
-			AnalyticsData data) {
-		Collection<AnalyticsClass> objectTypes = data.getClassesByRuleName(rule
+	public static String visitRule(String sourceFolder, VerifierRule rule,
+			VerifierData data) {
+		Collection<VerifierClass> objectTypes = data.getClassesByRuleName(rule
 				.getRuleName());
 
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -67,8 +67,8 @@ class ComponentsReportVisitor extends ReportVisitor {
 	}
 
 	public static String visitObjectType(String sourceFolder,
-			AnalyticsClass objectType, AnalyticsData data) {
-		Collection<AnalyticsRule> rules = data.getRulesByClassId(objectType
+			VerifierClass objectType, VerifierData data) {
+		Collection<VerifierRule> rules = data.getRulesByClassId(objectType
 				.getId());
 
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -85,10 +85,10 @@ class ComponentsReportVisitor extends ReportVisitor {
 	}
 
 	public static String visitField(String sourceFolder, Field field,
-			AnalyticsResult result) {
-		AnalyticsData data = result.getAnalyticsData();
-		AnalyticsClass objectType = data.getClassById(field.getClassId());
-		Collection<AnalyticsRule> rules = data.getRulesByFieldId(field.getId());
+			VerifierResult result) {
+		VerifierData data = result.getVerifierData();
+		VerifierClass objectType = data.getClassById(field.getClassId());
+		Collection<VerifierRule> rules = data.getRulesByFieldId(field.getId());
 
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("sourceFolder", sourceFolder);

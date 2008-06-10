@@ -13,7 +13,7 @@ import org.drools.verifier.report.components.CauseType;
  *
  * @author Toni Rikkola
  */
-public class PatternPossibility extends AnalyticsComponent implements
+public class PatternPossibility extends VerifierComponent implements
 		Possibility {
 	private static final long serialVersionUID = 8871361928380977116L;
 
@@ -28,8 +28,8 @@ public class PatternPossibility extends AnalyticsComponent implements
 	}
 
 	@Override
-	public AnalyticsComponentType getComponentType() {
-		return AnalyticsComponentType.PATTERN_POSSIBILITY;
+	public VerifierComponentType getComponentType() {
+		return VerifierComponentType.PATTERN_POSSIBILITY;
 	}
 
 	public CauseType getCauseType() {

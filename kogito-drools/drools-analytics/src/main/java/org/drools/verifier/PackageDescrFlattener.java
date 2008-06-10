@@ -31,19 +31,19 @@ import org.drools.lang.descr.RestrictionConnectiveDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.VariableRestrictionDescr;
-import org.drools.verifier.components.AnalyticsAccessorDescr;
-import org.drools.verifier.components.AnalyticsAccumulateDescr;
-import org.drools.verifier.components.AnalyticsClass;
-import org.drools.verifier.components.AnalyticsCollectDescr;
-import org.drools.verifier.components.AnalyticsComponent;
-import org.drools.verifier.components.AnalyticsComponentType;
-import org.drools.verifier.components.AnalyticsEvalDescr;
-import org.drools.verifier.components.AnalyticsFieldAccessDescr;
-import org.drools.verifier.components.AnalyticsFromDescr;
-import org.drools.verifier.components.AnalyticsFunctionCallDescr;
-import org.drools.verifier.components.AnalyticsMethodAccessDescr;
-import org.drools.verifier.components.AnalyticsPredicateDescr;
-import org.drools.verifier.components.AnalyticsRule;
+import org.drools.verifier.components.VerifierAccessorDescr;
+import org.drools.verifier.components.VerifierAccumulateDescr;
+import org.drools.verifier.components.VerifierClass;
+import org.drools.verifier.components.VerifierCollectDescr;
+import org.drools.verifier.components.VerifierComponent;
+import org.drools.verifier.components.VerifierComponentType;
+import org.drools.verifier.components.VerifierEvalDescr;
+import org.drools.verifier.components.VerifierFieldAccessDescr;
+import org.drools.verifier.components.VerifierFromDescr;
+import org.drools.verifier.components.VerifierFunctionCallDescr;
+import org.drools.verifier.components.VerifierMethodAccessDescr;
+import org.drools.verifier.components.VerifierPredicateDescr;
+import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.components.Consequence;
 import org.drools.verifier.components.Constraint;
 import org.drools.verifier.components.Field;
@@ -58,7 +58,7 @@ import org.drools.verifier.components.RulePossibility;
 import org.drools.verifier.components.TextConsequence;
 import org.drools.verifier.components.Variable;
 import org.drools.verifier.components.VariableRestriction;
-import org.drools.verifier.dao.AnalyticsData;
+import org.drools.verifier.dao.VerifierData;
 
 /**
  * @author Toni Rikkola
@@ -68,25 +68,25 @@ class PackageDescrFlattener {
 
 	private Solvers solvers = new Solvers();
 
-	private AnalyticsData data;
+	private VerifierData data;
 
 	private RulePackage currentPackage = null;
-	private AnalyticsRule currentRule = null;
+	private VerifierRule currentRule = null;
 	private Pattern currentPattern = null;
 	private Constraint currentConstraint = null;
-	private AnalyticsClass currentClass = null;
+	private VerifierClass currentClass = null;
 	private Field currentField = null;
 
 	/**
-	 * Adds packageDescr to given AnalyticsData object
+	 * Adds packageDescr to given VerifierData object
 	 * 
 	 * @param packageDescr
 	 *            PackageDescr that will be flattened.
 	 * @param data
-	 *            AnalyticsData where the flattened objects are added.
+	 *            VerifierData where the flattened objects are added.
 	 */
 	public void addPackageDescrToData(PackageDescr packageDescr,
-			AnalyticsData data) {
+			VerifierData data) {
 
 		this.data = data;
 
@@ -95,7 +95,7 @@ class PackageDescrFlattener {
 		formPossibilities();
 	}
 
-	private void flatten(Collection<?> descrs, AnalyticsComponent parent) {
+	private void flatten(Collection<?> descrs, VerifierComponent parent) {
 
 		int orderNumber = 0;
 
@@ -143,8 +143,8 @@ class PackageDescrFlattener {
 		}
 	}
 
-	private AnalyticsComponent flatten(PatternSourceDescr descr,
-			AnalyticsComponent parent) {
+	private VerifierComponent flatten(PatternSourceDescr descr,
+			VerifierComponent parent) {
 		if (descr instanceof AccumulateDescr) {
 			return flatten((AccumulateDescr) descr, parent);
 		} else if (descr instanceof CollectDescr) {
@@ -156,8 +156,8 @@ class PackageDescrFlattener {
 		return null;
 	}
 
-	private AnalyticsComponent flatten(DeclarativeInvokerDescr descr,
-			AnalyticsComponent parent) {
+	private VerifierComponent flatten(DeclarativeInvokerDescr descr,
+			VerifierComponent parent) {
 		if (descr instanceof AccessorDescr) {
 			return flatten((AccessorDescr) descr, parent);
 		} else if (descr instanceof FieldAccessDescr) {
@@ -172,7 +172,7 @@ class PackageDescrFlattener {
 	}
 
 	private void flatten(ConditionalElementDescr descr,
-			AnalyticsComponent parent, int orderNumber) {
+			VerifierComponent parent, int orderNumber) {
 		if (descr instanceof AndDescr) {
 			flatten((AndDescr) descr, parent, orderNumber);
 		} else if (descr instanceof CollectDescr) {
@@ -192,19 +192,19 @@ class PackageDescrFlattener {
 		}
 	}
 
-	private void flatten(ForallDescr descr, AnalyticsComponent parent) {
+	private void flatten(ForallDescr descr, VerifierComponent parent) {
 		solvers.startForall();
 		flatten(descr.getDescrs(), parent);
 		solvers.endForall();
 	}
 
-	private void flatten(ExistsDescr descr, AnalyticsComponent parent) {
+	private void flatten(ExistsDescr descr, VerifierComponent parent) {
 		solvers.startExists();
 		flatten(descr.getDescrs(), parent);
 		solvers.endExists();
 	}
 
-	private void flatten(NotDescr descr, AnalyticsComponent parent) {
+	private void flatten(NotDescr descr, VerifierComponent parent) {
 		solvers.startNot();
 		flatten(descr.getDescrs(), parent);
 		solvers.endNot();
@@ -216,9 +216,9 @@ class PackageDescrFlattener {
 	 * @param descr
 	 * @return
 	 */
-	private AnalyticsFunctionCallDescr flatten(FunctionCallDescr descr,
-			AnalyticsComponent parent, int orderNumber) {
-		AnalyticsFunctionCallDescr functionCall = new AnalyticsFunctionCallDescr();
+	private VerifierFunctionCallDescr flatten(FunctionCallDescr descr,
+			VerifierComponent parent, int orderNumber) {
+		VerifierFunctionCallDescr functionCall = new VerifierFunctionCallDescr();
 		functionCall.setName(descr.getName());
 		functionCall.setArguments(descr.getArguments());
 		functionCall.setOrderNumber(orderNumber);
@@ -233,10 +233,10 @@ class PackageDescrFlattener {
 	 * @param descr
 	 * @return
 	 */
-	private AnalyticsPredicateDescr flatten(PredicateDescr descr,
-			AnalyticsComponent parent, int orderNumber) {
+	private VerifierPredicateDescr flatten(PredicateDescr descr,
+			VerifierComponent parent, int orderNumber) {
 
-		AnalyticsPredicateDescr predicate = new AnalyticsPredicateDescr();
+		VerifierPredicateDescr predicate = new VerifierPredicateDescr();
 		predicate.setRuleName(currentRule.getRuleName());
 		predicate.setRuleId(currentRule.getId());
 		predicate.setContent(descr.getContent().toString());
@@ -255,10 +255,10 @@ class PackageDescrFlattener {
 	 * @param descr
 	 * @return
 	 */
-	private AnalyticsEvalDescr flatten(EvalDescr descr,
-			AnalyticsComponent parent, int orderNumber) {
+	private VerifierEvalDescr flatten(EvalDescr descr,
+			VerifierComponent parent, int orderNumber) {
 
-		AnalyticsEvalDescr eval = new AnalyticsEvalDescr();
+		VerifierEvalDescr eval = new VerifierEvalDescr();
 		eval.setRuleId(currentRule.getId());
 		eval.setRuleName(currentRule.getRuleName());
 		eval.setContent(descr.getContent().toString());
@@ -277,11 +277,11 @@ class PackageDescrFlattener {
 	 * @param descr
 	 * @return
 	 */
-	private AnalyticsFromDescr flatten(FromDescr descr,
-			AnalyticsComponent parent) {
-		AnalyticsFromDescr from = new AnalyticsFromDescr();
+	private VerifierFromDescr flatten(FromDescr descr,
+			VerifierComponent parent) {
+		VerifierFromDescr from = new VerifierFromDescr();
 
-		AnalyticsComponent ds = flatten(descr.getDataSource(), from);
+		VerifierComponent ds = flatten(descr.getDataSource(), from);
 		from.setDataSourceId(ds.getId());
 		from.setDataSourceType(ds.getComponentType());
 		from.setParent(parent);
@@ -289,9 +289,9 @@ class PackageDescrFlattener {
 		return from;
 	}
 
-	private AnalyticsAccumulateDescr flatten(AccumulateDescr descr,
-			AnalyticsComponent parent) {
-		AnalyticsAccumulateDescr accumulate = new AnalyticsAccumulateDescr();
+	private VerifierAccumulateDescr flatten(AccumulateDescr descr,
+			VerifierComponent parent) {
+		VerifierAccumulateDescr accumulate = new VerifierAccumulateDescr();
 
 		accumulate.setInputPatternId(flatten(descr.getInputPattern(),
 				accumulate, 0));
@@ -312,9 +312,9 @@ class PackageDescrFlattener {
 		return accumulate;
 	}
 
-	private AnalyticsCollectDescr flatten(CollectDescr descr,
-			AnalyticsComponent parent) {
-		AnalyticsCollectDescr collect = new AnalyticsCollectDescr();
+	private VerifierCollectDescr flatten(CollectDescr descr,
+			VerifierComponent parent) {
+		VerifierCollectDescr collect = new VerifierCollectDescr();
 		collect.setClassMethodName(descr.getClassMethodName());
 		collect
 				.setInsidePatternId(flatten(descr.getInputPattern(), collect, 0));
@@ -323,9 +323,9 @@ class PackageDescrFlattener {
 		return collect;
 	}
 
-	private AnalyticsAccessorDescr flatten(AccessorDescr descr,
-			AnalyticsComponent parent, int orderNumber) {
-		AnalyticsAccessorDescr accessor = new AnalyticsAccessorDescr();
+	private VerifierAccessorDescr flatten(AccessorDescr descr,
+			VerifierComponent parent, int orderNumber) {
+		VerifierAccessorDescr accessor = new VerifierAccessorDescr();
 		accessor.setOrderNumber(orderNumber);
 		accessor.setParent(parent);
 		// TODO: I wonder what this descr does.
@@ -337,9 +337,9 @@ class PackageDescrFlattener {
 	 * 
 	 * @param descr
 	 */
-	private AnalyticsMethodAccessDescr flatten(MethodAccessDescr descr,
-			AnalyticsComponent parent, int orderNumber) {
-		AnalyticsMethodAccessDescr accessor = new AnalyticsMethodAccessDescr();
+	private VerifierMethodAccessDescr flatten(MethodAccessDescr descr,
+			VerifierComponent parent, int orderNumber) {
+		VerifierMethodAccessDescr accessor = new VerifierMethodAccessDescr();
 		accessor.setMethodName(descr.getMethodName());
 		accessor.setArguments(descr.getArguments());
 		accessor.setOrderNumber(orderNumber);
@@ -353,9 +353,9 @@ class PackageDescrFlattener {
 	 * 
 	 * @param descr
 	 */
-	private AnalyticsFieldAccessDescr flatten(FieldAccessDescr descr,
-			AnalyticsComponent parent, int orderNumber) {
-		AnalyticsFieldAccessDescr accessor = new AnalyticsFieldAccessDescr();
+	private VerifierFieldAccessDescr flatten(FieldAccessDescr descr,
+			VerifierComponent parent, int orderNumber) {
+		VerifierFieldAccessDescr accessor = new VerifierFieldAccessDescr();
 		accessor.setFieldName(descr.getFieldName());
 		accessor.setArgument(descr.getArgument());
 		accessor.setOrderNumber(orderNumber);
@@ -379,9 +379,9 @@ class PackageDescrFlattener {
 		flatten(descr.getRules(), rulePackage);
 	}
 
-	private void flatten(RuleDescr descr, AnalyticsComponent parent) {
+	private void flatten(RuleDescr descr, VerifierComponent parent) {
 
-		AnalyticsRule rule = new AnalyticsRule();
+		VerifierRule rule = new VerifierRule();
 		currentRule = rule;
 
 		rule.setRuleName(descr.getName());
@@ -406,9 +406,9 @@ class PackageDescrFlattener {
 	 * 
 	 * @param o
 	 *            Consequence object.
-	 * @return Analytics object that implements the Consequence interface.
+	 * @return Verifier object that implements the Consequence interface.
 	 */
-	private Consequence flattenConsequence(AnalyticsComponent parent, Object o) {
+	private Consequence flattenConsequence(VerifierComponent parent, Object o) {
 
 		TextConsequence consequence = new TextConsequence();
 
@@ -446,7 +446,7 @@ class PackageDescrFlattener {
 		return consequence;
 	}
 
-	private void flatten(OrDescr descr, AnalyticsComponent parent,
+	private void flatten(OrDescr descr, VerifierComponent parent,
 			int orderNumber) {
 		OperatorDescr operatorDescr = new OperatorDescr(OperatorDescr.Type.OR);
 		operatorDescr.setOrderNumber(orderNumber);
@@ -459,7 +459,7 @@ class PackageDescrFlattener {
 		solvers.endOperator();
 	}
 
-	private void flatten(AndDescr descr, AnalyticsComponent parent,
+	private void flatten(AndDescr descr, VerifierComponent parent,
 			int orderNumber) {
 		OperatorDescr operatorDescr = new OperatorDescr(OperatorDescr.Type.AND);
 		operatorDescr.setOrderNumber(orderNumber);
@@ -472,13 +472,13 @@ class PackageDescrFlattener {
 		solvers.endOperator();
 	}
 
-	private int flatten(PatternDescr descr, AnalyticsComponent parent,
+	private int flatten(PatternDescr descr, VerifierComponent parent,
 			int orderNumber) {
 
-		AnalyticsClass clazz = data.getClassByPackageAndName(descr
+		VerifierClass clazz = data.getClassByPackageAndName(descr
 				.getObjectType());
 		if (clazz == null) {
-			clazz = new AnalyticsClass();
+			clazz = new VerifierClass();
 			clazz.setName(descr.getObjectType());
 			data.add(clazz);
 		}
@@ -504,7 +504,7 @@ class PackageDescrFlattener {
 			variable.setRuleName(currentRule.getRuleName());
 			variable.setName(descr.getIdentifier());
 
-			variable.setObjectType(AnalyticsComponentType.CLASS);
+			variable.setObjectType(VerifierComponentType.CLASS);
 			variable.setObjectId(clazz.getId());
 			variable.setObjectName(descr.getObjectType());
 
@@ -513,12 +513,12 @@ class PackageDescrFlattener {
 
 		// flatten source.
 		if (descr.getSource() != null) {
-			AnalyticsComponent source = flatten(descr.getSource(), pattern);
+			VerifierComponent source = flatten(descr.getSource(), pattern);
 			pattern.setSourceId(source.getId());
 			pattern.setSourceType(source.getComponentType());
 		} else {
 			pattern.setSourceId(0);
-			pattern.setSourceType(AnalyticsComponentType.NOTHING);
+			pattern.setSourceType(VerifierComponentType.NOTHING);
 		}
 		solvers.startPatternSolver(pattern);
 		flatten(descr.getConstraint(), pattern, 0);
@@ -527,7 +527,7 @@ class PackageDescrFlattener {
 		return pattern.getId();
 	}
 
-	private void flatten(FieldConstraintDescr descr, AnalyticsComponent parent,
+	private void flatten(FieldConstraintDescr descr, VerifierComponent parent,
 			int orderNumber) {
 
 		Field field = data.getFieldByClassAndFieldName(currentClass.getName(),
@@ -558,7 +558,7 @@ class PackageDescrFlattener {
 	}
 
 	private void flatten(RestrictionConnectiveDescr descr,
-			AnalyticsComponent parent, int orderNumber) {
+			VerifierComponent parent, int orderNumber) {
 		// TODO: check.
 		flatten(descr.getRestrictions(), parent);
 	}
@@ -568,7 +568,7 @@ class PackageDescrFlattener {
 	 * 
 	 * @param descr
 	 */
-	private void flatten(FieldBindingDescr descr, AnalyticsComponent parent,
+	private void flatten(FieldBindingDescr descr, VerifierComponent parent,
 			int orderNumber) {
 
 		Variable variable = new Variable();
@@ -578,7 +578,7 @@ class PackageDescrFlattener {
 		variable.setOrderNumber(orderNumber);
 		variable.setParent(parent);
 
-		variable.setObjectType(AnalyticsComponentType.FIELD);
+		variable.setObjectType(VerifierComponentType.FIELD);
 
 		data.add(variable);
 	}
@@ -592,7 +592,7 @@ class PackageDescrFlattener {
 	 * @param descr
 	 */
 	private void flatten(VariableRestrictionDescr descr,
-			AnalyticsComponent parent, int orderNumber) {
+			VerifierComponent parent, int orderNumber) {
 
 		Variable variable = data.getVariableByRuleAndVariableName(currentRule
 				.getRuleName(), descr.getIdentifier());
@@ -623,7 +623,7 @@ class PackageDescrFlattener {
 	 * @param descr
 	 */
 	private void flatten(ReturnValueRestrictionDescr descr,
-			AnalyticsComponent parent, int orderNumber) {
+			VerifierComponent parent, int orderNumber) {
 
 		ReturnValueRestriction restriction = new ReturnValueRestriction();
 
@@ -652,7 +652,7 @@ class PackageDescrFlattener {
 	 * @param descr
 	 */
 	private void flatten(LiteralRestrictionDescr descr,
-			AnalyticsComponent parent, int orderNumber) {
+			VerifierComponent parent, int orderNumber) {
 
 		LiteralRestriction restriction = new LiteralRestriction();
 
@@ -682,7 +682,7 @@ class PackageDescrFlattener {
 	 * @param descr
 	 */
 	private void flatten(QualifiedIdentifierRestrictionDescr descr,
-			AnalyticsComponent parent, int orderNumber) {
+			VerifierComponent parent, int orderNumber) {
 
 		String text = descr.getText();
 		Variable variable = data.getVariableByRuleAndVariableName(currentRule
@@ -706,7 +706,7 @@ class PackageDescrFlattener {
 		// Set field value, if it is unset.
 		currentField.setFieldType(Field.FieldType.VARIABLE);
 
-		variable.setObjectType(AnalyticsComponentType.FIELD);
+		variable.setObjectType(VerifierComponentType.FIELD);
 
 		data.add(restriction);
 		solvers.addRestriction(restriction);

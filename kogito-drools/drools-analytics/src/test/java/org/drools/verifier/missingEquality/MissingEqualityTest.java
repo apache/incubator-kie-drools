@@ -9,10 +9,10 @@ import org.drools.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.TestBase;
 import org.drools.verifier.components.LiteralRestriction;
 import org.drools.verifier.components.VariableRestriction;
-import org.drools.verifier.dao.AnalyticsResult;
-import org.drools.verifier.dao.AnalyticsResultFactory;
-import org.drools.verifier.report.components.AnalyticsMessage;
-import org.drools.verifier.report.components.AnalyticsMessageBase;
+import org.drools.verifier.dao.VerifierResult;
+import org.drools.verifier.dao.VerifierResultFactory;
+import org.drools.verifier.report.components.VerifierMessage;
+import org.drools.verifier.report.components.VerifierMessageBase;
 import org.drools.verifier.report.components.Cause;
 import org.drools.verifier.report.components.Severity;
 
@@ -25,23 +25,23 @@ public class MissingEqualityTest extends TestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Missing restriction in LiteralRestrictions"));
 
-		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
+		VerifierResult result = VerifierResultFactory.createVerifierResult();
 		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("MissingEqualityTest.drl"), result
-				.getAnalyticsData());
+				.getVerifierData());
 
 		session.setGlobal("result", result);
 
 		session.executeWithResults(testData);
 
-		Iterator<AnalyticsMessageBase> iter = result.getBySeverity(
+		Iterator<VerifierMessageBase> iter = result.getBySeverity(
 				Severity.WARNING).iterator();
 
 		Collection<String> ruleNames = new ArrayList<String>();
 		while (iter.hasNext()) {
 			Object o = (Object) iter.next();
-			if (o instanceof AnalyticsMessage) {
-				Cause cause = ((AnalyticsMessage) o).getFaulty();
+			if (o instanceof VerifierMessage) {
+				Cause cause = ((VerifierMessage) o).getFaulty();
 				String name = ((LiteralRestriction) cause).getRuleName();
 
 				ruleNames.add(name);
@@ -65,23 +65,23 @@ public class MissingEqualityTest extends TestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Missing restriction in VariableRestrictions"));
 
-		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
+		VerifierResult result = VerifierResultFactory.createVerifierResult();
 		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("MissingEqualityTest.drl"), result
-				.getAnalyticsData());
+				.getVerifierData());
 
 		session.setGlobal("result", result);
 
 		session.executeWithResults(testData);
 
-		Iterator<AnalyticsMessageBase> iter = result.getBySeverity(
+		Iterator<VerifierMessageBase> iter = result.getBySeverity(
 				Severity.WARNING).iterator();
 
 		Collection<String> ruleNames = new ArrayList<String>();
 		while (iter.hasNext()) {
 			Object o = (Object) iter.next();
-			if (o instanceof AnalyticsMessage) {
-				Cause cause = ((AnalyticsMessage) o).getFaulty();
+			if (o instanceof VerifierMessage) {
+				Cause cause = ((VerifierMessage) o).getFaulty();
 				String name = ((VariableRestriction) cause).getRuleName();
 
 				ruleNames.add(name);

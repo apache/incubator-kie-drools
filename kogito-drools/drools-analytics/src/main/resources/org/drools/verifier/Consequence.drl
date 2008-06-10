@@ -2,15 +2,15 @@
 package org.drools.verifier.consequence
 
 #list any import classes here.
-import org.drools.verifier.components.AnalyticsRule;
+import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.components.TextConsequence;
-import org.drools.verifier.report.components.AnalyticsMessage;
-import org.drools.verifier.dao.AnalyticsResult;
+import org.drools.verifier.report.components.VerifierMessage;
+import org.drools.verifier.dao.VerifierResult;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.MessageType;
 
 #declare any global variables here
-global AnalyticsResult result;
+global VerifierResult result;
 
 
 rule "No action - possibly commented out"
@@ -19,11 +19,11 @@ rule "No action - possibly commented out"
 			( text == null || text matches "" )
 		)
 
-		$r :AnalyticsRule(
+		$r :VerifierRule(
 			id == $c.ruleId
 		)
 	then
-		result.add( new AnalyticsMessage(
+		result.add( new VerifierMessage(
 								Severity.WARNING,
 								MessageType.MISSING_COMPONENT,
 								$r,

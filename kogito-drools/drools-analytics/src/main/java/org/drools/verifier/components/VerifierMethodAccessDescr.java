@@ -4,20 +4,20 @@ package org.drools.verifier.components;
  * 
  * @author Toni Rikkola
  */
-public class AnalyticsMethodAccessDescr extends AnalyticsComponent {
+public class VerifierMethodAccessDescr extends VerifierComponent {
 
 	private static int index = 0;
 
 	private String methodName;
 	private String arguments;
 
-	public AnalyticsMethodAccessDescr() {
+	public VerifierMethodAccessDescr() {
 		super(index++);
 	}
 
 	@Override
-	public AnalyticsComponentType getComponentType() {
-		return AnalyticsComponentType.METHOD_ACCESSOR;
+	public VerifierComponentType getComponentType() {
+		return VerifierComponentType.METHOD_ACCESSOR;
 	}
 
 	public String getArguments() {

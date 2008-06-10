@@ -9,9 +9,9 @@ import org.drools.StatelessSession;
 import org.drools.StatelessSessionResult;
 import org.drools.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.TestBase;
-import org.drools.verifier.components.AnalyticsRule;
-import org.drools.verifier.dao.AnalyticsResult;
-import org.drools.verifier.dao.AnalyticsResultFactory;
+import org.drools.verifier.components.VerifierRule;
+import org.drools.verifier.dao.VerifierResult;
+import org.drools.verifier.dao.VerifierResultFactory;
 import org.drools.verifier.redundancy.RedundancyTestBase;
 import org.drools.verifier.report.components.Redundancy;
 
@@ -29,9 +29,9 @@ public class EquivalentRulesTest extends RedundancyTestBase {
 		String ruleName1 = "Rule 1";
 		String ruleName2 = "Rule 2";
 
-		AnalyticsRule rule1 = new AnalyticsRule();
+		VerifierRule rule1 = new VerifierRule();
 		rule1.setRuleName(ruleName1);
-		AnalyticsRule rule2 = new AnalyticsRule();
+		VerifierRule rule2 = new VerifierRule();
 		rule2.setRuleName(ruleName2);
 
 		Redundancy r1 = new Redundancy(rule1, rule2);
@@ -40,7 +40,7 @@ public class EquivalentRulesTest extends RedundancyTestBase {
 		data.add(rule2);
 		data.add(r1);
 
-		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
+		VerifierResult result = VerifierResultFactory.createVerifierResult();
 		session.setGlobal("result", result);
 
 		StatelessSessionResult sessionResult = session.executeWithResults(data);

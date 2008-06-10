@@ -5,18 +5,17 @@ package org.drools.verifier.rangeChecks.patterns;
 import org.drools.base.evaluators.Operator;
 
 import org.drools.verifier.components.*;
-import org.drools.verifier.dao.AnalyticsResult;
 import org.drools.verifier.report.components.MissingNumberPattern;
 import org.drools.verifier.report.components.Cause;
 import org.drools.verifier.FindMissingNumber;
 
+import org.drools.verifier.dao.VerifierResult;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.verifier.dao.AnalyticsResult;
-
 #declare any global variables here
-global AnalyticsResult result;
+global VerifierResult result;
 
 #
 # If all pattern ranges are not checked for a field.

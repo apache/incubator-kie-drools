@@ -12,8 +12,8 @@ import org.drools.base.evaluators.Operator;
 import org.drools.verifier.TestBase;
 import org.drools.verifier.components.Field;
 import org.drools.verifier.components.LiteralRestriction;
-import org.drools.verifier.dao.AnalyticsResult;
-import org.drools.verifier.dao.AnalyticsResultFactory;
+import org.drools.verifier.dao.VerifierResult;
+import org.drools.verifier.dao.VerifierResultFactory;
 import org.drools.verifier.report.components.Cause;
 
 public class SubsumptantRestrictionsTest extends SubsumptionTestBase {
@@ -27,7 +27,7 @@ public class SubsumptantRestrictionsTest extends SubsumptionTestBase {
 
 		Collection<Object> data = new ArrayList<Object>();
 
-		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
+		VerifierResult result = VerifierResultFactory.createVerifierResult();
 		session.setGlobal("result", result);
 
 		/*
@@ -108,7 +108,7 @@ public class SubsumptantRestrictionsTest extends SubsumptionTestBase {
 
 		Collection<Object> data = new ArrayList<Object>();
 
-		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
+		VerifierResult result = VerifierResultFactory.createVerifierResult();
 		session.setGlobal("result", result);
 
 		/*

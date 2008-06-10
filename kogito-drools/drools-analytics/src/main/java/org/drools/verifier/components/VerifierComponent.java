@@ -4,21 +4,21 @@ package org.drools.verifier.components;
  * 
  * @author Toni Rikkola
  */
-public abstract class AnalyticsComponent implements
-		Comparable<AnalyticsComponent> {
+public abstract class VerifierComponent implements
+		Comparable<VerifierComponent> {
 
 	protected String ruleName;
 	protected int ruleId;
 	protected int id;
 
-	protected AnalyticsComponent parent;
+	protected VerifierComponent parent;
 	
 	// Order number of this instance under parent.
 	protected int orderNumber = 0; 
 
-	public abstract AnalyticsComponentType getComponentType();
+	public abstract VerifierComponentType getComponentType();
 
-	public int compareTo(AnalyticsComponent o) {
+	public int compareTo(VerifierComponent o) {
 		if (id == o.getId()) {
 			return 0;
 		}
@@ -26,7 +26,7 @@ public abstract class AnalyticsComponent implements
 		return (id > o.getId() ? 1 : -1);
 	}
 
-	public AnalyticsComponent(int id) {
+	public VerifierComponent(int id) {
 		this.id = id;
 	}
 
@@ -42,11 +42,11 @@ public abstract class AnalyticsComponent implements
 		this.ruleName = ruleName;
 	}
 
-	public AnalyticsComponent getParent() {
+	public VerifierComponent getParent() {
 		return parent;
 	}
 
-	public void setParent(AnalyticsComponent parent) {
+	public void setParent(VerifierComponent parent) {
 		this.parent = parent;
 	}
 

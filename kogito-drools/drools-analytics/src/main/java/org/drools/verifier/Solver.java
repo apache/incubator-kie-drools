@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.drools.verifier.components.AnalyticsComponent;
+import org.drools.verifier.components.VerifierComponent;
 import org.drools.verifier.components.OperatorDescr;
 
 
@@ -17,7 +17,7 @@ import org.drools.verifier.components.OperatorDescr;
  */
 class Solver {
 
-	private List<Set<AnalyticsComponent>> possibilityLists = new ArrayList<Set<AnalyticsComponent>>();
+	private List<Set<VerifierComponent>> possibilityLists = new ArrayList<Set<VerifierComponent>>();
 	private Solver subSolver = null;
 	private boolean isChildExists = false;
 	private boolean isChildForall = false;
@@ -29,7 +29,7 @@ class Solver {
 		this.type = type;
 	}
 
-	public void add(AnalyticsComponent descr) {
+	public void add(VerifierComponent descr) {
 		if (subSolver != null) {
 			subSolver.add(descr);
 		} else if (descr instanceof OperatorDescr) {
@@ -38,13 +38,13 @@ class Solver {
 		} else {
 			if (type == OperatorDescr.Type.AND) {
 				if (possibilityLists.isEmpty()) {
-					possibilityLists.add(new HashSet<AnalyticsComponent>());
+					possibilityLists.add(new HashSet<VerifierComponent>());
 				}
-				for (Set<AnalyticsComponent> set : possibilityLists) {
+				for (Set<VerifierComponent> set : possibilityLists) {
 					set.add(descr);
 				}
 			} else if (type == OperatorDescr.Type.OR) {
-				Set<AnalyticsComponent> set = new HashSet<AnalyticsComponent>();
+				Set<VerifierComponent> set = new HashSet<VerifierComponent>();
 				set.add(descr);
 				possibilityLists.add(set);
 			}
@@ -59,17 +59,17 @@ class Solver {
 		if (subSolver != null && subSolver.subSolver == null) {
 			if (type == OperatorDescr.Type.AND) {
 				if (possibilityLists.isEmpty()) {
-					possibilityLists.add(new HashSet<AnalyticsComponent>());
+					possibilityLists.add(new HashSet<VerifierComponent>());
 				}
 
-				List<Set<AnalyticsComponent>> newPossibilities = new ArrayList<Set<AnalyticsComponent>>();
+				List<Set<VerifierComponent>> newPossibilities = new ArrayList<Set<VerifierComponent>>();
 
-				List<Set<AnalyticsComponent>> sets = subSolver
+				List<Set<VerifierComponent>> sets = subSolver
 						.getPossibilityLists();
-				for (Set<AnalyticsComponent> possibilityList : possibilityLists) {
+				for (Set<VerifierComponent> possibilityList : possibilityLists) {
 
-					for (Set<AnalyticsComponent> set : sets) {
-						Set<AnalyticsComponent> newSet = new HashSet<AnalyticsComponent>();
+					for (Set<VerifierComponent> set : sets) {
+						Set<VerifierComponent> newSet = new HashSet<VerifierComponent>();
 						newSet.addAll(possibilityList);
 						newSet.addAll(set);
 						newPossibilities.add(newSet);
@@ -140,7 +140,7 @@ class Solver {
 		}
 	}
 
-	public List<Set<AnalyticsComponent>> getPossibilityLists() {
+	public List<Set<VerifierComponent>> getPossibilityLists() {
 		return possibilityLists;
 	}
 }

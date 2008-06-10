@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.drools.verifier.report.components.AnalyticsMessageBase;
+import org.drools.verifier.report.components.VerifierMessageBase;
 import org.drools.verifier.report.components.Gap;
 import org.drools.verifier.report.components.MissingNumberPattern;
 import org.drools.verifier.report.components.RangeCheckCause;
@@ -17,7 +17,7 @@ import org.drools.verifier.report.components.Severity;
  *
  * @author Toni Rikkola
  */
-class AnalyticsResultNormal implements AnalyticsResult {
+class VerifierResultNormal implements VerifierResult {
 	private static final long serialVersionUID = -6207688526236713721L;
 
 	private Map<Integer, Gap> gapsById = new TreeMap<Integer, Gap>();
@@ -25,19 +25,19 @@ class AnalyticsResultNormal implements AnalyticsResult {
 	private Map<Integer, MissingNumberPattern> missingNumberPatternsById = new TreeMap<Integer, MissingNumberPattern>();
 	private DataTree<Integer, MissingNumberPattern> missingNumberPatternsByFieldId = new DataTree<Integer, MissingNumberPattern>();
 
-	private List<AnalyticsMessageBase> messages = new ArrayList<AnalyticsMessageBase>();
-	private DataTree<Severity, AnalyticsMessageBase> messagesBySeverity = new DataTree<Severity, AnalyticsMessageBase>();
+	private List<VerifierMessageBase> messages = new ArrayList<VerifierMessageBase>();
+	private DataTree<Severity, VerifierMessageBase> messagesBySeverity = new DataTree<Severity, VerifierMessageBase>();
 
-	private AnalyticsData data = new AnalyticsDataMaps();
+	private VerifierData data = new VerifierDataMaps();
 
-	public void add(AnalyticsMessageBase message) {
+	public void add(VerifierMessageBase message) {
 		messages.add(message);
 		messagesBySeverity.put(message.getSeverity(), message);
 	}
 
-	public Collection<AnalyticsMessageBase> getBySeverity(
+	public Collection<VerifierMessageBase> getBySeverity(
 			Severity severity) {
-		Collection<AnalyticsMessageBase> result = messagesBySeverity
+		Collection<VerifierMessageBase> result = messagesBySeverity
 				.getBranch(severity);
 
 		if (result == null) {
@@ -92,7 +92,7 @@ class AnalyticsResultNormal implements AnalyticsResult {
 		return result;
 	}
 
-	public AnalyticsData getAnalyticsData() {
+	public VerifierData getVerifierData() {
 		return data;
 	}
 }

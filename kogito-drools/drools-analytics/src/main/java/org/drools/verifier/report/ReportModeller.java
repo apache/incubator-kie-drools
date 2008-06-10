@@ -3,9 +3,9 @@ package org.drools.verifier.report;
 import java.util.Collection;
 
 import org.drools.verifier.components.LiteralRestriction;
-import org.drools.verifier.dao.AnalyticsResult;
-import org.drools.verifier.report.components.AnalyticsMessage;
-import org.drools.verifier.report.components.AnalyticsMessageBase;
+import org.drools.verifier.dao.VerifierResult;
+import org.drools.verifier.report.components.VerifierMessage;
+import org.drools.verifier.report.components.VerifierMessageBase;
 import org.drools.verifier.report.components.Gap;
 import org.drools.verifier.report.components.MissingNumberPattern;
 import org.drools.verifier.report.components.Severity;
@@ -18,11 +18,11 @@ import com.thoughtworks.xstream.XStream;
  */
 public class ReportModeller {
 
-	public static String writeXML(AnalyticsResult result) {
+	public static String writeXML(VerifierResult result) {
 		XStream xstream = new XStream();
 
-		xstream.alias("result", AnalyticsResult.class);
-		xstream.alias("message", AnalyticsMessage.class);
+		xstream.alias("result", VerifierResult.class);
+		xstream.alias("message", VerifierMessage.class);
 
 		xstream.alias("Gap", Gap.class);
 		xstream.alias("MissingNumber", MissingNumberPattern.class);
@@ -34,13 +34,13 @@ public class ReportModeller {
 		return "<?xml version=\"1.0\"?>\n" + xstream.toXML(result);
 	}
 
-	public static String writePlainText(AnalyticsResult result) {
+	public static String writePlainText(VerifierResult result) {
 
 		StringBuffer str = new StringBuffer();
 
 		for (Severity severity : Severity
 				.values()) {
-			Collection<AnalyticsMessageBase> messages = result
+			Collection<VerifierMessageBase> messages = result
 					.getBySeverity(severity);
 
 			str.append("************* ");
@@ -49,7 +49,7 @@ public class ReportModeller {
 
 			str.append(messages.size());
 			str.append(" ******************\n");
-			for (AnalyticsMessageBase message : messages) {
+			for (VerifierMessageBase message : messages) {
 				str.append(message);
 				str.append("\n");
 			}

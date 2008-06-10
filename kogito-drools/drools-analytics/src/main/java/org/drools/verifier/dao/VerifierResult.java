@@ -2,7 +2,7 @@ package org.drools.verifier.dao;
 
 import java.util.Collection;
 
-import org.drools.verifier.report.components.AnalyticsMessageBase;
+import org.drools.verifier.report.components.VerifierMessageBase;
 import org.drools.verifier.report.components.Gap;
 import org.drools.verifier.report.components.MissingNumberPattern;
 import org.drools.verifier.report.components.RangeCheckCause;
@@ -12,7 +12,7 @@ import org.drools.verifier.report.components.Severity;
  *
  * @author Toni Rikkola
  */
-public interface AnalyticsResult {
+public interface VerifierResult {
 
 	public void add(Gap gap);
 
@@ -20,7 +20,7 @@ public interface AnalyticsResult {
 
 	public void add(MissingNumberPattern missingNumberPattern);
 
-	public AnalyticsData getAnalyticsData();
+	public VerifierData getVerifierData();
 
 	public Collection<RangeCheckCause> getRangeCheckCauses();
 
@@ -28,7 +28,7 @@ public interface AnalyticsResult {
 
 	public Collection<Gap> getGapsByFieldId(int fieldId);
 
-	public void add(AnalyticsMessageBase note);
+	public void add(VerifierMessageBase note);
 
 	/**
 	 * Return all the items that have given severity value.
@@ -37,6 +37,6 @@ public interface AnalyticsResult {
 	 *            Severity level of item.
 	 * @return Collection of items or an empty list if none was found.
 	 */
-	public Collection<AnalyticsMessageBase> getBySeverity(Severity severity);
+	public Collection<VerifierMessageBase> getBySeverity(Severity severity);
 
 }

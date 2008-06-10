@@ -4,7 +4,7 @@ package org.drools.verifier.components;
  * 
  * @author Toni Rikkola
  */
-public class AnalyticsCollectDescr extends AnalyticsComponent {
+public class VerifierCollectDescr extends VerifierComponent {
 
 	private static int index = 0;
 
@@ -12,8 +12,8 @@ public class AnalyticsCollectDescr extends AnalyticsComponent {
 	private String classMethodName;
 
 	@Override
-	public AnalyticsComponentType getComponentType() {
-		return AnalyticsComponentType.COLLECT;
+	public VerifierComponentType getComponentType() {
+		return VerifierComponentType.COLLECT;
 	}
 
 	public int getInsidePatternId() {
@@ -32,7 +32,7 @@ public class AnalyticsCollectDescr extends AnalyticsComponent {
 		this.classMethodName = classMethodName;
 	}
 
-	public AnalyticsCollectDescr() {
+	public VerifierCollectDescr() {
 		super(index++);
 	}
 }

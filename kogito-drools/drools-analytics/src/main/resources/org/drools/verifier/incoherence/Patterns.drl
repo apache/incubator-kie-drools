@@ -2,7 +2,7 @@
 package org.drools.verifier.incoherence
 
 #list any import classes here.
-import org.drools.verifier.components.AnalyticsRule;
+import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.components.LiteralRestriction;
 import org.drools.verifier.components.PatternPossibility;
 import org.drools.verifier.components.RulePossibility;
@@ -10,11 +10,11 @@ import org.drools.verifier.components.Pattern;
 import org.drools.verifier.components.VariableRestriction;
 import org.drools.verifier.report.components.Cause;
 import org.drools.verifier.report.components.MissingRange;
-import org.drools.verifier.report.components.AnalyticsMessage;
+import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.MessageType;
 
-import org.drools.verifier.dao.AnalyticsResult;
+import org.drools.verifier.dao.VerifierResult;
 
 import java.util.Collection;
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import org.drools.base.evaluators.Operator;
 
 #declare any global variables here
-global AnalyticsResult result;
+global VerifierResult result;
 
 #
 # If two Patterns are in conflict.
@@ -38,7 +38,7 @@ rule "Incoherent Patterns in rule possibility"
 		$r1 :LiteralRestriction(
 			patternIsNot == true
 		)
-
+	
 		$r2 :LiteralRestriction(
 			ruleId == $r1.ruleId,
 			patternIsNot == false,
@@ -72,7 +72,7 @@ rule "Incoherent Patterns in rule possibility"
 			id == $r2.patternId
 		)
 
-		$r :AnalyticsRule(
+		$r :VerifierRule(
 			id == $rp.ruleId
 		)
 	then
@@ -80,7 +80,7 @@ rule "Incoherent Patterns in rule possibility"
 		list.add( $p1 );
 		list.add( $p2 );
 
-		result.add( new AnalyticsMessage(
+		result.add( new VerifierMessage(
 								Severity.WARNING,
 								MessageType.INCOHERENCE,
 								$r,
@@ -138,7 +138,7 @@ rule "Incoherent Patterns in rule possibility, variables"
 			id == $r2.patternId
 		)
 
-		$r :AnalyticsRule(
+		$r :VerifierRule(
 			id == $rp.ruleId
 		)
 	then
@@ -146,7 +146,7 @@ rule "Incoherent Patterns in rule possibility, variables"
 		list.add( $p1 );
 		list.add( $p2 );
 
-		result.add( new AnalyticsMessage(
+		result.add( new VerifierMessage(
 								Severity.WARNING,
 								MessageType.INCOHERENCE,
 								$r,
@@ -203,7 +203,7 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with le
 			id == $r2.patternId
 		)
 
-		$r :AnalyticsRule(
+		$r :VerifierRule(
 			id == $rp.ruleId
 		)
 	then
@@ -211,7 +211,7 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with le
 		list.add( $p1 );
 		list.add( $p2 );
 
-		result.add( new AnalyticsMessage(
+		result.add( new VerifierMessage(
 								Severity.WARNING,
 								MessageType.INCOHERENCE,
 								$r,
@@ -268,7 +268,7 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with gr
 			id == $r2.patternId
 		)
 
-		$r :AnalyticsRule(
+		$r :VerifierRule(
 			id == $rp.ruleId
 		)
 	then
@@ -276,7 +276,7 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with gr
 		list.add( $p1 );
 		list.add( $p2 );
 
-		result.add( new AnalyticsMessage(
+		result.add( new VerifierMessage(
 								Severity.WARNING,
 								MessageType.INCOHERENCE,
 								$r,
@@ -334,7 +334,7 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with eq
 			id == $r2.patternId
 		)
 
-		$r :AnalyticsRule(
+		$r :VerifierRule(
 			id == $rp.ruleId
 		)
 then
@@ -342,7 +342,7 @@ then
 		list.add( $p1 );
 		list.add( $p2 );
 
-		result.add( new AnalyticsMessage(
+		result.add( new VerifierMessage(
 								Severity.WARNING,
 								MessageType.INCOHERENCE,
 								$r,
@@ -400,7 +400,7 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with eq
 			id == $r2.patternId
 		)
 
-		$r :AnalyticsRule(
+		$r :VerifierRule(
 			id == $rp.ruleId
 		)
 then
@@ -408,7 +408,7 @@ then
 		list.add( $p1 );
 		list.add( $p2 );
 
-		result.add( new AnalyticsMessage(
+		result.add( new VerifierMessage(
 								Severity.WARNING,
 								MessageType.INCOHERENCE,
 								$r,
@@ -465,7 +465,7 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with eq
 			id == $r2.patternId
 		)
 
-		$r :AnalyticsRule(
+		$r :VerifierRule(
 			id == $rp.ruleId
 		)
 then
@@ -473,7 +473,7 @@ then
 		list.add( $p1 );
 		list.add( $p2 );
 
-		result.add( new AnalyticsMessage(
+		result.add( new VerifierMessage(
 								Severity.WARNING,
 								MessageType.INCOHERENCE,
 								$r,
@@ -531,7 +531,7 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with eq
 			id == $r2.patternId
 		)
 
-		$r :AnalyticsRule(
+		$r :VerifierRule(
 			id == $rp.ruleId
 		)
 then
@@ -539,7 +539,7 @@ then
 		list.add( $p1 );
 		list.add( $p2 );
 
-		result.add( new AnalyticsMessage(
+		result.add( new VerifierMessage(
 								Severity.WARNING,
 								MessageType.INCOHERENCE,
 								$r,
