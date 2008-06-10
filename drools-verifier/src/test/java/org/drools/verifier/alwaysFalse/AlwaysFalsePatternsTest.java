@@ -28,6 +28,11 @@ import org.drools.verifier.report.components.VerifierMessageBase;
  */
 public class AlwaysFalsePatternsTest extends TestBase {
 
+	public void testDummy() {
+		// this is needed as eclipse will try to run this and produce a failure
+		// if its not here.
+		assertTrue(true);
+	}
 //	public void testPatternsAlwaysFalse() throws Exception {
 //		StatelessSession session = getStatelessSession(this.getClass()
 //				.getResourceAsStream("Patterns.drl"));
