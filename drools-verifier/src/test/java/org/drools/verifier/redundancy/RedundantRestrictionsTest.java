@@ -8,22 +8,22 @@ import org.drools.StatelessSession;
 import org.drools.StatelessSessionResult;
 import org.drools.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.TestBase;
-import org.drools.verifier.dao.AnalyticsResult;
-import org.drools.verifier.dao.AnalyticsResultFactory;
+import org.drools.verifier.dao.VerifierResult;
+import org.drools.verifier.dao.VerifierResultFactory;
 
 public class RedundantRestrictionsTest extends RedundancyTestBase {
 
-	public void testAnalyticsLiteralRestrictionRedundancy() throws Exception {
+	public void testVerifierLiteralRestrictionRedundancy() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
 				.getResourceAsStream("Restrictions.drl"));
 
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Find redundant LiteralRestriction"));
 
-		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
+		VerifierResult result = VerifierResultFactory.createVerifierResult();
 		Collection<? extends Object> data = getTestData(this.getClass()
 				.getResourceAsStream("RedundancyLiteralRestrictionTest.drl"),
-				result.getAnalyticsData());
+				result.getVerifierData());
 
 		session.setGlobal("result", result);
 
@@ -50,17 +50,17 @@ public class RedundantRestrictionsTest extends RedundancyTestBase {
 		}
 	}
 
-	public void testAnalyticsVariableRestrictionRedundancy() throws Exception {
+	public void testVerifierVariableRestrictionRedundancy() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
 				.getResourceAsStream("Restrictions.drl"));
 
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Find redundant VariableRestriction"));
 
-		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
+		VerifierResult result = VerifierResultFactory.createVerifierResult();
 		Collection<? extends Object> data = getTestData(this.getClass()
 				.getResourceAsStream("SubsumptionVariableRestrictionTest.drl"),
-				result.getAnalyticsData());
+				result.getVerifierData());
 
 		session.setGlobal("result", result);
 

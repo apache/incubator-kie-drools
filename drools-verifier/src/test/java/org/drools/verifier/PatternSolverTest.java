@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.drools.verifier.PatternSolver;
-import org.drools.verifier.components.AnalyticsComponent;
+import org.drools.verifier.components.VerifierComponent;
 import org.drools.verifier.components.LiteralRestriction;
 import org.drools.verifier.components.OperatorDescr;
 import org.drools.verifier.components.Pattern;
@@ -42,7 +42,7 @@ public class PatternSolverTest extends TestCase {
 		solver.add(literalRestriction2);
 		solver.end();
 
-		List<Set<AnalyticsComponent>> list = solver.getPossibilityLists();
+		List<Set<VerifierComponent>> list = solver.getPossibilityLists();
 		assertEquals(1, list.size());
 		assertEquals(2, list.get(0).size());
 	}
@@ -73,7 +73,7 @@ public class PatternSolverTest extends TestCase {
 		solver.add(literalRestriction2);
 		solver.end();
 
-		List<Set<AnalyticsComponent>> list = solver.getPossibilityLists();
+		List<Set<VerifierComponent>> list = solver.getPossibilityLists();
 		assertEquals(2, list.size());
 		assertEquals(1, list.get(0).size());
 		assertEquals(1, list.get(1).size());
@@ -112,7 +112,7 @@ public class PatternSolverTest extends TestCase {
 		solver.end();
 		solver.end();
 
-		List<Set<AnalyticsComponent>> list = solver.getPossibilityLists();
+		List<Set<VerifierComponent>> list = solver.getPossibilityLists();
 		assertEquals(2, list.size());
 
 		assertEquals(1, list.get(0).size());
@@ -156,7 +156,7 @@ public class PatternSolverTest extends TestCase {
 		solver.end();
 		solver.end();
 
-		List<Set<AnalyticsComponent>> list = solver.getPossibilityLists();
+		List<Set<VerifierComponent>> list = solver.getPossibilityLists();
 		assertEquals(2, list.size());
 
 		assertEquals(2, list.get(0).size());
@@ -210,7 +210,7 @@ public class PatternSolverTest extends TestCase {
 		solver.end();
 		solver.end();
 
-		List<Set<AnalyticsComponent>> list = solver.getPossibilityLists();
+		List<Set<VerifierComponent>> list = solver.getPossibilityLists();
 		assertEquals(4, list.size());
 
 		assertEquals(2, list.get(0).size());
@@ -268,7 +268,7 @@ public class PatternSolverTest extends TestCase {
 		solver.end();
 		solver.end();
 
-		List<Set<AnalyticsComponent>> list = solver.getPossibilityLists();
+		List<Set<VerifierComponent>> list = solver.getPossibilityLists();
 		assertEquals(2, list.size());
 
 		assertEquals(2, list.get(0).size());
@@ -320,7 +320,7 @@ public class PatternSolverTest extends TestCase {
 		solver.end();
 		solver.end();
 
-		List<Set<AnalyticsComponent>> list = solver.getPossibilityLists();
+		List<Set<VerifierComponent>> list = solver.getPossibilityLists();
 		assertEquals(3, list.size());
 
 		assertEquals(2, list.get(0).size());
@@ -374,7 +374,7 @@ public class PatternSolverTest extends TestCase {
 		solver.add(literalRestriction5);
 		solver.end();
 
-		List<Set<AnalyticsComponent>> list = solver.getPossibilityLists();
+		List<Set<VerifierComponent>> list = solver.getPossibilityLists();
 		assertEquals(2, list.size());
 
 		assertEquals(4, list.get(0).size());

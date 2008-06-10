@@ -1,7 +1,7 @@
 #created on: 7.9.2007
 package org.drools.verifier.equivalency.rules
 
-import org.drools.verifier.components.AnalyticsRule;
+import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.report.components.Redundancy;
 import org.drools.verifier.report.components.RedundancyType;
 
@@ -13,9 +13,9 @@ import org.drools.verifier.report.components.RedundancyType;
 #
 rule "Find equivalent Rules"
 	when
-		# Check that AnalyticsRule $left and $right have redundant fields.
-		$left :AnalyticsRule()
-		$right :AnalyticsRule( 
+		# Check that VerifierRule $left and $right have redundant fields.
+		$left :VerifierRule()
+		$right :VerifierRule( 
 			id != $left.id, 
 			ruleAgendaGroup == $left.ruleAgendaGroup
 		)

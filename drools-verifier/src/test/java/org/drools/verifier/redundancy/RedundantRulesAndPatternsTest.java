@@ -9,10 +9,10 @@ import org.drools.StatelessSession;
 import org.drools.StatelessSessionResult;
 import org.drools.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.TestBase;
-import org.drools.verifier.components.AnalyticsRule;
+import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.components.TextConsequence;
-import org.drools.verifier.dao.AnalyticsResult;
-import org.drools.verifier.dao.AnalyticsResultFactory;
+import org.drools.verifier.dao.VerifierResult;
+import org.drools.verifier.dao.VerifierResultFactory;
 import org.drools.verifier.report.components.Redundancy;
 
 public class RedundantRulesAndPatternsTest extends RedundancyTestBase {
@@ -29,9 +29,9 @@ public class RedundantRulesAndPatternsTest extends RedundancyTestBase {
 		String ruleName1 = "Rule 1";
 		String ruleName2 = "Rule 2";
 
-		AnalyticsRule rule1 = new AnalyticsRule();
+		VerifierRule rule1 = new VerifierRule();
 		rule1.setRuleName(ruleName1);
-		AnalyticsRule rule2 = new AnalyticsRule();
+		VerifierRule rule2 = new VerifierRule();
 		rule2.setRuleName(ruleName2);
 
 		TextConsequence c1 = new TextConsequence();
@@ -49,7 +49,7 @@ public class RedundantRulesAndPatternsTest extends RedundancyTestBase {
 		data.add(r1);
 		data.add(r2);
 
-		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
+		VerifierResult result = VerifierResultFactory.createVerifierResult();
 		session.setGlobal("result", result);
 
 		StatelessSessionResult sessionResult = session.executeWithResults(data);
@@ -72,10 +72,10 @@ public class RedundantRulesAndPatternsTest extends RedundancyTestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Find redundant Patterns with restrictions"));
 
-		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
+		VerifierResult result = VerifierResultFactory.createVerifierResult();
 		Collection<? extends Object> data = getTestData(this.getClass()
 				.getResourceAsStream("PatternRedundancyTest.drl"), result
-				.getAnalyticsData());
+				.getVerifierData());
 
 		session.setGlobal("result", result);
 
@@ -121,10 +121,10 @@ public class RedundantRulesAndPatternsTest extends RedundancyTestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Find redundant Patterns without restrictions"));
 
-		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
+		VerifierResult result = VerifierResultFactory.createVerifierResult();
 		Collection<? extends Object> data = getTestData(this.getClass()
 				.getResourceAsStream("PatternRedundancyTest.drl"), result
-				.getAnalyticsData());
+				.getVerifierData());
 
 		session.setGlobal("result", result);
 

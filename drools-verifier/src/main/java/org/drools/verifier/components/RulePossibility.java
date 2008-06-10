@@ -14,7 +14,7 @@ import org.drools.verifier.report.components.CauseType;
  *
  * @author Toni Rikkola
  */
-public class RulePossibility extends AnalyticsComponent implements
+public class RulePossibility extends VerifierComponent implements
 		Serializable, Possibility {
 	private static final long serialVersionUID = 8871361928380977116L;
 
@@ -28,8 +28,8 @@ public class RulePossibility extends AnalyticsComponent implements
 	}
 
 	@Override
-	public AnalyticsComponentType getComponentType() {
-		return AnalyticsComponentType.RULE_POSSIBILITY;
+	public VerifierComponentType getComponentType() {
+		return VerifierComponentType.RULE_POSSIBILITY;
 	}
 
 	public CauseType getCauseType() {

@@ -10,18 +10,18 @@ import org.drools.base.evaluators.MatchesEvaluatorsDefinition;
 
 import org.drools.verifier.components.Restriction;
 import org.drools.verifier.components.Pattern;
-import org.drools.verifier.components.AnalyticsRule;
+import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.components.OperatorDescr;
-import org.drools.verifier.components.AnalyticsPredicateDescr;
-import org.drools.verifier.components.AnalyticsComponent;
-import org.drools.verifier.components.AnalyticsComponentType;
-import org.drools.verifier.report.components.AnalyticsMessage;
+import org.drools.verifier.components.VerifierPredicateDescr;
+import org.drools.verifier.components.VerifierComponent;
+import org.drools.verifier.components.VerifierComponentType;
+import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.MessageType;
-import org.drools.verifier.dao.AnalyticsResult;
+import org.drools.verifier.dao.VerifierResult;
 
 #declare any global variables here
-global AnalyticsResult result;
+global VerifierResult result;
 
 
 # Informs that rule would be more effective if the less expensive
@@ -116,7 +116,7 @@ rule "Optimise restrictions inside operator"
 		Collection list = new ArrayList();
 		list.add( $r1 );
 		list.add( $r2 );
-		result.add( new AnalyticsMessage(
+		result.add( new VerifierMessage(
 								Severity.NOTE,
 								MessageType.OPTIMISATION,
 								$pattern,
@@ -176,7 +176,7 @@ rule "Optimise restrictions inside constraint"
 		Collection list = new ArrayList();
 		list.add( $r1 );
 		list.add( $r2 );
-		result.add( new AnalyticsMessage(
+		result.add( new VerifierMessage(
 								Severity.NOTE,
 								MessageType.OPTIMISATION,
 								$pattern,
@@ -188,7 +188,7 @@ rule "Optimise restrictions inside constraint"
 								list ) );
 end
 
-# AnalyticsPredicateDescr should be last.
+# VerifierPredicateDescr should be last.
 #
 # Type: Note
 # Dependencies: None
@@ -198,25 +198,25 @@ rule "Optimise predicates inside operator"
 	when
 		$operator :OperatorDescr()
 
-		$predicate :AnalyticsPredicateDescr(
+		$predicate :VerifierPredicateDescr(
 			parent == $operator
 		)
 
-		# Any other AnalyticsComponent that is not predicate or operator
-		$other :AnalyticsComponent(
+		# Any other VerifierComponent that is not predicate or operator
+		$other :VerifierComponent(
 			parent == $operator,
 			orderNumber > $predicate.orderNumber,
-			( componentType != AnalyticsComponentType.OPERATOR && != AnalyticsComponentType.PREDICATE )
+			( componentType != VerifierComponentType.OPERATOR && != VerifierComponentType.PREDICATE )
 		)
 
-		$rule :AnalyticsRule(
+		$rule :VerifierRule(
 			id == $predicate.ruleId
 		)
 	then
 		Collection list = new ArrayList();
 		list.add( $predicate );
 		list.add( $other );
-		result.add( new AnalyticsMessage(
+		result.add( new VerifierMessage(
 								Severity.NOTE,
 								MessageType.OPTIMISATION,
 								$rule,

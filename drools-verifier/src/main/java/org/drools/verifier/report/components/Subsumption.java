@@ -8,10 +8,10 @@ public class Subsumption implements Cause {
 
 	private static int index = 0;
 
-	private int id = index++;
+	private final int id = index++;
 
-	private Cause left;
-	private Cause right;
+	private final Cause left;
+	private final Cause right;
 
 	public Subsumption(Cause left, Cause right) {
 		this.left = left;
@@ -30,16 +30,8 @@ public class Subsumption implements Cause {
 		return left;
 	}
 
-	public void setLeft(Cause left) {
-		this.left = left;
-	}
-
 	public Cause getRight() {
 		return right;
-	}
-
-	public void setRight(Cause right) {
-		this.right = right;
 	}
 
 	@Override

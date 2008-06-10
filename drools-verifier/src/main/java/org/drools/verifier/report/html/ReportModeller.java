@@ -18,7 +18,7 @@ abstract class ReportModeller {
 
 	protected static String formPage(String sourceFolder, String content) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		String myTemplate = AnalyticsMessagesVisitor.readFile("frame.htm");
+		String myTemplate = VerifierMessagesVisitor.readFile("frame.htm");
 
 		map.put("cssStyle", ReportVisitor.createStyleTag(sourceFolder + "/"
 				+ UrlFactory.CSS_FOLDER + "/" + UrlFactory.CSS_BASIC));

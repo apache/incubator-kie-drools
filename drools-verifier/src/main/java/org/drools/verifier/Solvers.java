@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.drools.verifier.components.AnalyticsComponent;
-import org.drools.verifier.components.AnalyticsRule;
+import org.drools.verifier.components.VerifierComponent;
+import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.components.OperatorDescr;
 import org.drools.verifier.components.Pattern;
 import org.drools.verifier.components.PatternPossibility;
@@ -24,7 +24,7 @@ import org.drools.verifier.components.RulePossibility;
 	private List<PatternPossibility> patternPossibilities = new ArrayList<PatternPossibility>();
 	private List<RulePossibility> rulePossibilities = new ArrayList<RulePossibility>();
 
-	public void startRuleSolver(AnalyticsRule rule) {
+	public void startRuleSolver(VerifierRule rule) {
 		ruleSolver = new RuleSolver(rule);
 	}
 
@@ -113,7 +113,7 @@ import org.drools.verifier.components.RulePossibility;
 	}
 
 	private void createPatternPossibilities() {
-		for (Set<AnalyticsComponent> list : patternSolver.getPossibilityLists()) {
+		for (Set<VerifierComponent> list : patternSolver.getPossibilityLists()) {
 			PatternPossibility possibility = new PatternPossibility();
 
 			possibility.setRuleId(ruleSolver.getRule().getId());
@@ -121,7 +121,7 @@ import org.drools.verifier.components.RulePossibility;
 			possibility.setRuleId(ruleSolver.getRule().getId());
 			possibility.setPatternId(patternSolver.getPattern().getId());
 
-			for (AnalyticsComponent descr : list) {
+			for (VerifierComponent descr : list) {
 				possibility.add((Restriction) descr);
 			}
 
@@ -131,14 +131,14 @@ import org.drools.verifier.components.RulePossibility;
 	}
 
 	private void createRulePossibilities() {
-		for (Set<AnalyticsComponent> list : ruleSolver.getPossibilityLists()) {
+		for (Set<VerifierComponent> list : ruleSolver.getPossibilityLists()) {
 			RulePossibility possibility = new RulePossibility();
 
 			possibility.setRuleId(ruleSolver.getRule().getId());
 			possibility.setRuleName(ruleSolver.getRule().getRuleName());
 			possibility.setRuleId(ruleSolver.getRule().getId());
 
-			for (AnalyticsComponent descr : list) {
+			for (VerifierComponent descr : list) {
 				PatternPossibility patternPossibility = (PatternPossibility) descr;
 				possibility.add(patternPossibility);
 			}

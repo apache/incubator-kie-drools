@@ -6,12 +6,15 @@ import org.drools.verifier.components.Field;
 public abstract class MissingRange implements Comparable<MissingRange> {
 
 	private static int index = 0;
-	protected int id = index++;
+	protected final int id = index++;
 
-	protected Field field;
-	protected Operator operator;
+	protected final Field field;
+	protected final Operator operator;
 
-	private String firedRuleName;
+	public MissingRange(Field field, Operator operator) {
+		this.field = field;
+		this.operator = operator;
+	}
 
 	/**
 	 * Takes the given operator e, and returns a reversed version of it.
@@ -57,19 +60,7 @@ public abstract class MissingRange implements Comparable<MissingRange> {
 		return field;
 	}
 
-	public void setField(Field field) {
-		this.field = field;
-	}
-
 	public Operator getOperator() {
 		return operator;
-	}
-
-	public String getFiredRuleName() {
-		return firedRuleName;
-	}
-
-	public void setFiredRuleName(String firedRuleName) {
-		this.firedRuleName = firedRuleName;
 	}
 }

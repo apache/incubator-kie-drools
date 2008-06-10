@@ -1,0 +1,66 @@
+#created on: 2.2.2008
+package org.drools.verifier.overlaps.restrictions
+
+#list any import classes here.
+import java.util.Collection;
+import java.util.ArrayList;
+
+import org.drools.verifier.dao.VerifierResult;
+
+import org.drools.verifier.components.LiteralRestriction;
+import org.drools.verifier.components.Field.FieldType;
+
+import org.drools.verifier.report.components.Subsumption;
+import org.drools.verifier.report.components.VerifierMessage;
+import org.drools.verifier.report.components.CauseType;
+import org.drools.verifier.report.components.Severity;
+import org.drools.verifier.report.components.MessageType;
+
+#declare any global variables here
+global VerifierResult result;
+
+#
+# Fires when two restrictions are overlapping.
+# Reports these restrictions as overlapping.
+#
+# Depandencies: Needs at least one rule.
+#
+#		package org.drools.verifier.subsumption.patterns
+#			rule "Find subsumptant restrictions, greater than"
+#			rule "Find subsumptant restrictions, less than"
+#
+# Example 1: Pattern1( a > 10 ) and Pattern1( a > 100 )
+#
+rule "Find overlapping restrictions"
+	when
+		# There is subsumption between two restrictions
+		$subsumption :Subsumption(
+			left.causeType == CauseType.RESTRICTION,
+			$leftId :left.id,
+			$rightId :right.id
+		)
+		
+		$left :LiteralRestriction(
+			id == $leftId
+		)
+		$right :LiteralRestriction(
+			id == $rightId
+		)
+		# There is no restriction between these two restrictions.
+		not	$center :LiteralRestriction(
+				fieldId == $left.fieldId,
+				eval( $center.compareValues( $left ) == 1 ),
+				eval( $center.compareValues( $right ) == -1 )
+		)
+	then 
+		Collection causes = new ArrayList();
+		causes.add( $left );
+		causes.add( $right );
+
+		String message = "Restriction " + $left + " overlaps " + $right + ".";
+
+		result.add(new VerifierMessage(
+						Severity.NOTE, MessageType.OVERLAP,
+						$subsumption, message, causes ) );
+
+end

@@ -2,7 +2,7 @@
 package org.drools.verifier.redundancy
 
 #list any import classes here.
-global AnalyticsResult result;
+global VerifierResult result;
 
 
 
@@ -11,10 +11,10 @@ import java.util.Collection;
 import java.util.ArrayList;
 
 import org.drools.verifier.components.RulePossibility;
-import org.drools.verifier.dao.AnalyticsResult;
+import org.drools.verifier.dao.VerifierResult;
 import org.drools.verifier.report.components.Redundancy;
 import org.drools.verifier.report.components.RedundancyType;
-import org.drools.verifier.report.components.AnalyticsMessage;
+import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.Cause;
 import org.drools.verifier.report.components.CauseType;
 import org.drools.verifier.report.components.Severity;
@@ -74,7 +74,7 @@ rule "Find redundant rule possibilities from different rules"
 			message = "Rules are redundant.";
 		}
 
-		result.add(new AnalyticsMessage(
+		result.add(new VerifierMessage(
 						Severity.WARNING, MessageType.REDUNDANCY,
 						$rulePossibilityRedundancy, message, causes ) );
 end
@@ -126,7 +126,7 @@ rule "Find subsumptant rule possibilities from different rules"
 		causes.add( $rulePossibilityRedundancy.getLeft() );
 		causes.add( $rulePossibilityRedundancy.getRight() );
 
-		result.add(new AnalyticsMessage(
+		result.add(new VerifierMessage(
 						Severity.WARNING, MessageType.REDUNDANCY,
 						$rulePossibilityRedundancy, "Rules are subsumptant.", causes ) );
 end
