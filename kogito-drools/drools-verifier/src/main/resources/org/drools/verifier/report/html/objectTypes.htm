@@ -7,11 +7,11 @@
 
             <th>Fields</th>
         </tr>
-			@foreach{objectTypes as objectType}
+			@foreach{objectType:objectTypes}
 	    	<tr class="row@{objectType.offset}">
 	                <td><a href="@{sourceFolder}/@{objectTypeFolder}/@{objectType.id}.htm">@{objectType.name}</a></td>
 					<td>
-				@foreach{objectType.fields as field}
+				@foreach{field:objectType.fields}
 					@{field.fieldType}&nbsp;<a href="@{sourceFolder}/@{fieldFolder}/@{field.id}.htm">@{field.name}</a>@end{","}
 					</td>
         	</tr>

@@ -7,7 +7,7 @@
 	<div>
 		Patterns:
 		<ul>
-			@foreach{objectTypes as objectType}
+			@foreach{objectType:objectTypes}
 			<li><a href="@{sourceFolder}/@{objectTypeFolder}/@{objectType.id}.htm">@{objectType.name}</a></li>
 			@end{}
 		</ul>

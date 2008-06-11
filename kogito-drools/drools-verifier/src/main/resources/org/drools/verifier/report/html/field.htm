@@ -9,7 +9,7 @@
 	<div>
 		Rules that use this component:
 		<ul>
-			@foreach{rules as rule}
+			@foreach{rule:rules}
 			<li><a href="@{sourceFolder}/@{ruleFolder}/@{rule.id}.htm">@{rule.ruleName}</a></li>
 			@end{}
 		</ul>

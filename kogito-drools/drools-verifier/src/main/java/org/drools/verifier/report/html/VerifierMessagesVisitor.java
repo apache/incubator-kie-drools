@@ -18,12 +18,12 @@ import org.mvel.templates.TemplateRuntime;
  */
 class VerifierMessagesVisitor extends ReportVisitor {
 
-	private static String VERIFIER_MESSAGES_TEMPLATE = "verifierMessages.htm";
-	private static String VERIFIER_MESSAGE_TEMPLATE = "verifierMessage.htm";
+	private static final String VERIFIER_MESSAGES_TEMPLATE = "verifierMessages.htm";
+	private static final String VERIFIER_MESSAGE_TEMPLATE = "verifierMessage.htm";
 
-	public static String NOTES = "Notes";
-	public static String WARNINGS = "Warnings";
-	public static String ERRORS = "Errors";
+	public static final String NOTES = "Notes";
+	public static final String WARNINGS = "Warnings";
+	public static final String ERRORS = "Errors";
 
 	public static String visitVerifierMessagesCollection(String title,
 			Collection<VerifierMessageBase> messages, VerifierData data) {
@@ -70,7 +70,7 @@ class VerifierMessagesVisitor extends ReportVisitor {
 		for (Cause cause : message.getCauses()) {
 			causeUrls.add(UrlFactory.getUrl(cause));
 		}
-
+		
 		map.put("title", message.getSeverity());
 		map.put("reason", message.getFaulty());
 		map.put("message", message.getMessage());
