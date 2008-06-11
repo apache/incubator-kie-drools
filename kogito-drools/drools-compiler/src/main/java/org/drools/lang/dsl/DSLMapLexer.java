@@ -1,4 +1,4 @@
-// $ANTLR 3.0.1 DSLMap.g 2008-06-10 17:00:29
+// $ANTLR 3.0.1 DSLMap.g 2008-06-11 12:09:03
 
 	package org.drools.lang.dsl;
 	import java.util.List;
@@ -57,10 +57,10 @@ public class DSLMapLexer extends Lexer {
     public final void mWS() throws RecognitionException {
         try {
             int _type = WS;
-            // DSLMap.g:268:9: ( ( ' ' | '\\t' | '\\f' )+ )
-            // DSLMap.g:268:17: ( ' ' | '\\t' | '\\f' )+
+            // DSLMap.g:267:9: ( ( ' ' | '\\t' | '\\f' )+ )
+            // DSLMap.g:267:17: ( ' ' | '\\t' | '\\f' )+
             {
-            // DSLMap.g:268:17: ( ' ' | '\\t' | '\\f' )+
+            // DSLMap.g:267:17: ( ' ' | '\\t' | '\\f' )+
             int cnt1=0;
             loop1:
             do {
@@ -118,10 +118,10 @@ public class DSLMapLexer extends Lexer {
     public final void mEOL() throws RecognitionException {
         try {
             int _type = EOL;
-            // DSLMap.g:275:6: ( ( ( '\\r\\n' )=> '\\r\\n' | '\\r' | '\\n' ) )
-            // DSLMap.g:276:6: ( ( '\\r\\n' )=> '\\r\\n' | '\\r' | '\\n' )
+            // DSLMap.g:274:6: ( ( ( '\\r\\n' )=> '\\r\\n' | '\\r' | '\\n' ) )
+            // DSLMap.g:275:6: ( ( '\\r\\n' )=> '\\r\\n' | '\\r' | '\\n' )
             {
-            // DSLMap.g:276:6: ( ( '\\r\\n' )=> '\\r\\n' | '\\r' | '\\n' )
+            // DSLMap.g:275:6: ( ( '\\r\\n' )=> '\\r\\n' | '\\r' | '\\n' )
             int alt2=3;
             int LA2_0 = input.LA(1);
 
@@ -140,13 +140,13 @@ public class DSLMapLexer extends Lexer {
             else {
                 if (backtracking>0) {failed=true; return ;}
                 NoViableAltException nvae =
-                    new NoViableAltException("276:6: ( ( '\\r\\n' )=> '\\r\\n' | '\\r' | '\\n' )", 2, 0, input);
+                    new NoViableAltException("275:6: ( ( '\\r\\n' )=> '\\r\\n' | '\\r' | '\\n' )", 2, 0, input);
 
                 throw nvae;
             }
             switch (alt2) {
                 case 1 :
-                    // DSLMap.g:276:14: ( '\\r\\n' )=> '\\r\\n'
+                    // DSLMap.g:275:14: ( '\\r\\n' )=> '\\r\\n'
                     {
                     match("\r\n"); if (failed) return ;
 
@@ -154,14 +154,14 @@ public class DSLMapLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // DSLMap.g:277:25: '\\r'
+                    // DSLMap.g:276:25: '\\r'
                     {
                     match('\r'); if (failed) return ;
 
                     }
                     break;
                 case 3 :
-                    // DSLMap.g:278:25: '\\n'
+                    // DSLMap.g:277:25: '\\n'
                     {
                     match('\n'); if (failed) return ;
 
@@ -183,8 +183,8 @@ public class DSLMapLexer extends Lexer {
     // $ANTLR start EscapeSequence
     public final void mEscapeSequence() throws RecognitionException {
         try {
-            // DSLMap.g:284:5: ( '\\\\' ( 'b' | 'B' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' | '.' | 'o' | 'x' | 'a' | 'e' | 'c' | 'd' | 'D' | 's' | 'S' | 'w' | 'W' | 'p' | 'A' | 'G' | 'Z' | 'z' | 'Q' | 'E' | '*' | '[' | ']' | '(' | ')' | '$' | '^' | '{' | '}' | '?' | '+' | '-' | '&' | '|' | '=' | 'u' | '0' | '#' ) )
-            // DSLMap.g:284:9: '\\\\' ( 'b' | 'B' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' | '.' | 'o' | 'x' | 'a' | 'e' | 'c' | 'd' | 'D' | 's' | 'S' | 'w' | 'W' | 'p' | 'A' | 'G' | 'Z' | 'z' | 'Q' | 'E' | '*' | '[' | ']' | '(' | ')' | '$' | '^' | '{' | '}' | '?' | '+' | '-' | '&' | '|' | '=' | 'u' | '0' | '#' )
+            // DSLMap.g:283:5: ( '\\\\' ( 'b' | 'B' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' | '.' | 'o' | 'x' | 'a' | 'e' | 'c' | 'd' | 'D' | 's' | 'S' | 'w' | 'W' | 'p' | 'A' | 'G' | 'Z' | 'z' | 'Q' | 'E' | '*' | '[' | ']' | '(' | ')' | '$' | '^' | '{' | '}' | '?' | '+' | '-' | '&' | '|' | '=' | 'u' | '0' | '#' ) )
+            // DSLMap.g:283:9: '\\\\' ( 'b' | 'B' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' | '.' | 'o' | 'x' | 'a' | 'e' | 'c' | 'd' | 'D' | 's' | 'S' | 'w' | 'W' | 'p' | 'A' | 'G' | 'Z' | 'z' | 'Q' | 'E' | '*' | '[' | ']' | '(' | ')' | '$' | '^' | '{' | '}' | '?' | '+' | '-' | '&' | '|' | '=' | 'u' | '0' | '#' )
             {
             match('\\'); if (failed) return ;
             if ( (input.LA(1)>='\"' && input.LA(1)<='$')||(input.LA(1)>='&' && input.LA(1)<='+')||(input.LA(1)>='-' && input.LA(1)<='.')||input.LA(1)=='0'||input.LA(1)=='='||input.LA(1)=='?'||(input.LA(1)>='A' && input.LA(1)<='B')||(input.LA(1)>='D' && input.LA(1)<='E')||input.LA(1)=='G'||input.LA(1)=='Q'||input.LA(1)=='S'||input.LA(1)=='W'||(input.LA(1)>='Z' && input.LA(1)<='^')||(input.LA(1)>='a' && input.LA(1)<='f')||(input.LA(1)>='n' && input.LA(1)<='p')||(input.LA(1)>='r' && input.LA(1)<='u')||(input.LA(1)>='w' && input.LA(1)<='x')||(input.LA(1)>='z' && input.LA(1)<='}') ) {
@@ -211,8 +211,8 @@ public class DSLMapLexer extends Lexer {
     public final void mLEFT_SQUARE() throws RecognitionException {
         try {
             int _type = LEFT_SQUARE;
-            // DSLMap.g:291:9: ( '[' )
-            // DSLMap.g:291:11: '['
+            // DSLMap.g:290:9: ( '[' )
+            // DSLMap.g:290:11: '['
             {
             match('['); if (failed) return ;
 
@@ -229,8 +229,8 @@ public class DSLMapLexer extends Lexer {
     public final void mRIGHT_SQUARE() throws RecognitionException {
         try {
             int _type = RIGHT_SQUARE;
-            // DSLMap.g:295:9: ( ']' )
-            // DSLMap.g:295:11: ']'
+            // DSLMap.g:294:9: ( ']' )
+            // DSLMap.g:294:11: ']'
             {
             match(']'); if (failed) return ;
 
@@ -247,8 +247,8 @@ public class DSLMapLexer extends Lexer {
     public final void mLEFT_CURLY() throws RecognitionException {
         try {
             int _type = LEFT_CURLY;
-            // DSLMap.g:299:9: ( '{' )
-            // DSLMap.g:299:11: '{'
+            // DSLMap.g:298:9: ( '{' )
+            // DSLMap.g:298:11: '{'
             {
             match('{'); if (failed) return ;
 
@@ -265,8 +265,8 @@ public class DSLMapLexer extends Lexer {
     public final void mRIGHT_CURLY() throws RecognitionException {
         try {
             int _type = RIGHT_CURLY;
-            // DSLMap.g:303:9: ( '}' )
-            // DSLMap.g:303:11: '}'
+            // DSLMap.g:302:9: ( '}' )
+            // DSLMap.g:302:11: '}'
             {
             match('}'); if (failed) return ;
 
@@ -283,8 +283,8 @@ public class DSLMapLexer extends Lexer {
     public final void mEQUALS() throws RecognitionException {
         try {
             int _type = EQUALS;
-            // DSLMap.g:306:8: ( '=' )
-            // DSLMap.g:306:10: '='
+            // DSLMap.g:305:8: ( '=' )
+            // DSLMap.g:305:10: '='
             {
             match('='); if (failed) return ;
 
@@ -301,8 +301,8 @@ public class DSLMapLexer extends Lexer {
     public final void mDOT() throws RecognitionException {
         try {
             int _type = DOT;
-            // DSLMap.g:309:5: ( '.' )
-            // DSLMap.g:309:7: '.'
+            // DSLMap.g:308:5: ( '.' )
+            // DSLMap.g:308:7: '.'
             {
             match('.'); if (failed) return ;
 
@@ -319,8 +319,8 @@ public class DSLMapLexer extends Lexer {
     public final void mPOUND() throws RecognitionException {
         try {
             int _type = POUND;
-            // DSLMap.g:312:9: ( '#' )
-            // DSLMap.g:312:11: '#'
+            // DSLMap.g:311:9: ( '#' )
+            // DSLMap.g:311:11: '#'
             {
             match('#'); if (failed) return ;
 
@@ -337,8 +337,8 @@ public class DSLMapLexer extends Lexer {
     public final void mCOLON() throws RecognitionException {
         try {
             int _type = COLON;
-            // DSLMap.g:315:7: ( ':' )
-            // DSLMap.g:315:9: ':'
+            // DSLMap.g:314:7: ( ':' )
+            // DSLMap.g:314:9: ':'
             {
             match(':'); if (failed) return ;
 
@@ -355,8 +355,8 @@ public class DSLMapLexer extends Lexer {
     public final void mCOMMA() throws RecognitionException {
         try {
             int _type = COMMA;
-            // DSLMap.g:318:7: ( ',' )
-            // DSLMap.g:318:9: ','
+            // DSLMap.g:317:7: ( ',' )
+            // DSLMap.g:317:9: ','
             {
             match(','); if (failed) return ;
 
@@ -373,11 +373,11 @@ public class DSLMapLexer extends Lexer {
     public final void mLINE_COMMENT() throws RecognitionException {
         try {
             int _type = LINE_COMMENT;
-            // DSLMap.g:326:2: ( POUND ( options {greedy=false; } : . )* EOL )
-            // DSLMap.g:326:4: POUND ( options {greedy=false; } : . )* EOL
+            // DSLMap.g:325:2: ( POUND ( options {greedy=false; } : . )* EOL )
+            // DSLMap.g:325:4: POUND ( options {greedy=false; } : . )* EOL
             {
             mPOUND(); if (failed) return ;
-            // DSLMap.g:326:10: ( options {greedy=false; } : . )*
+            // DSLMap.g:325:10: ( options {greedy=false; } : . )*
             loop3:
             do {
                 int alt3=2;
@@ -396,7 +396,7 @@ public class DSLMapLexer extends Lexer {
 
                 switch (alt3) {
             	case 1 :
-            	    // DSLMap.g:326:37: .
+            	    // DSLMap.g:325:37: .
             	    {
             	    matchAny(); if (failed) return ;
 
@@ -423,10 +423,10 @@ public class DSLMapLexer extends Lexer {
     public final void mLITERAL() throws RecognitionException {
         try {
             int _type = LITERAL;
-            // DSLMap.g:334:2: ( ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' | '\\u00c0' .. '\\u00ff' | MISC | EscapeSequence | DOT )+ )
-            // DSLMap.g:334:4: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' | '\\u00c0' .. '\\u00ff' | MISC | EscapeSequence | DOT )+
+            // DSLMap.g:333:2: ( ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' | '\\u00c0' .. '\\u00ff' | MISC | EscapeSequence | DOT )+ )
+            // DSLMap.g:333:4: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' | '\\u00c0' .. '\\u00ff' | MISC | EscapeSequence | DOT )+
             {
-            // DSLMap.g:334:4: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' | '\\u00c0' .. '\\u00ff' | MISC | EscapeSequence | DOT )+
+            // DSLMap.g:333:4: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' | '\\u00c0' .. '\\u00ff' | MISC | EscapeSequence | DOT )+
             int cnt4=0;
             loop4:
             do {
@@ -589,6 +589,7 @@ public class DSLMapLexer extends Lexer {
                 case ')':
                 case '*':
                 case '+':
+                case ',':
                 case '-':
                 case '/':
                 case ';':
@@ -617,56 +618,56 @@ public class DSLMapLexer extends Lexer {
 
                 switch (alt4) {
             	case 1 :
-            	    // DSLMap.g:334:5: 'a' .. 'z'
+            	    // DSLMap.g:333:5: 'a' .. 'z'
             	    {
             	    matchRange('a','z'); if (failed) return ;
 
             	    }
             	    break;
             	case 2 :
-            	    // DSLMap.g:334:14: 'A' .. 'Z'
+            	    // DSLMap.g:333:14: 'A' .. 'Z'
             	    {
             	    matchRange('A','Z'); if (failed) return ;
 
             	    }
             	    break;
             	case 3 :
-            	    // DSLMap.g:334:23: '_'
+            	    // DSLMap.g:333:23: '_'
             	    {
             	    match('_'); if (failed) return ;
 
             	    }
             	    break;
             	case 4 :
-            	    // DSLMap.g:334:27: '0' .. '9'
+            	    // DSLMap.g:333:27: '0' .. '9'
             	    {
             	    matchRange('0','9'); if (failed) return ;
 
             	    }
             	    break;
             	case 5 :
-            	    // DSLMap.g:334:36: '\\u00c0' .. '\\u00ff'
+            	    // DSLMap.g:333:36: '\\u00c0' .. '\\u00ff'
             	    {
             	    matchRange('\u00C0','\u00FF'); if (failed) return ;
 
             	    }
             	    break;
             	case 6 :
-            	    // DSLMap.g:334:55: MISC
+            	    // DSLMap.g:333:55: MISC
             	    {
             	    mMISC(); if (failed) return ;
 
             	    }
             	    break;
             	case 7 :
-            	    // DSLMap.g:334:60: EscapeSequence
+            	    // DSLMap.g:333:60: EscapeSequence
             	    {
             	    mEscapeSequence(); if (failed) return ;
 
             	    }
             	    break;
             	case 8 :
-            	    // DSLMap.g:334:75: DOT
+            	    // DSLMap.g:333:75: DOT
             	    {
             	    mDOT(); if (failed) return ;
 
@@ -696,10 +697,10 @@ public class DSLMapLexer extends Lexer {
     // $ANTLR start MISC
     public final void mMISC() throws RecognitionException {
         try {
-            // DSLMap.g:338:7: ( '>' | '<' | '!' | '@' | '$' | '%' | '^' | '*' | '-' | '+' | '?' | '/' | '\\'' | '\"' | '|' | '&' | '(' | ')' | ';' )
+            // DSLMap.g:337:7: ( '>' | '<' | '!' | '@' | '$' | '%' | '^' | '*' | '-' | '+' | '?' | COMMA | '/' | '\\'' | '\"' | '|' | '&' | '(' | ')' | ';' )
             // DSLMap.g:
             {
-            if ( (input.LA(1)>='!' && input.LA(1)<='\"')||(input.LA(1)>='$' && input.LA(1)<='+')||input.LA(1)=='-'||input.LA(1)=='/'||(input.LA(1)>=';' && input.LA(1)<='<')||(input.LA(1)>='>' && input.LA(1)<='@')||input.LA(1)=='^'||input.LA(1)=='|' ) {
+            if ( (input.LA(1)>='!' && input.LA(1)<='\"')||(input.LA(1)>='$' && input.LA(1)<='-')||input.LA(1)=='/'||(input.LA(1)>=';' && input.LA(1)<='<')||(input.LA(1)>='>' && input.LA(1)<='@')||input.LA(1)=='^'||input.LA(1)=='|' ) {
                 input.consume();
             failed=false;
             }
@@ -765,7 +766,7 @@ public class DSLMapLexer extends Lexer {
             {
             int LA5_8 = input.LA(2);
 
-            if ( ((LA5_8>='!' && LA5_8<='\"')||(LA5_8>='$' && LA5_8<='+')||(LA5_8>='-' && LA5_8<='9')||(LA5_8>=';' && LA5_8<='<')||(LA5_8>='>' && LA5_8<='Z')||LA5_8=='\\'||(LA5_8>='^' && LA5_8<='_')||(LA5_8>='a' && LA5_8<='z')||LA5_8=='|'||(LA5_8>='\u00C0' && LA5_8<='\u00FF')) ) {
+            if ( ((LA5_8>='!' && LA5_8<='\"')||(LA5_8>='$' && LA5_8<='9')||(LA5_8>=';' && LA5_8<='<')||(LA5_8>='>' && LA5_8<='Z')||LA5_8=='\\'||(LA5_8>='^' && LA5_8<='_')||(LA5_8>='a' && LA5_8<='z')||LA5_8=='|'||(LA5_8>='\u00C0' && LA5_8<='\u00FF')) ) {
                 alt5=13;
             }
             else {
@@ -790,7 +791,13 @@ public class DSLMapLexer extends Lexer {
             break;
         case ',':
             {
-            alt5=11;
+            int LA5_11 = input.LA(2);
+
+            if ( ((LA5_11>='!' && LA5_11<='\"')||(LA5_11>='$' && LA5_11<='9')||(LA5_11>=';' && LA5_11<='<')||(LA5_11>='>' && LA5_11<='Z')||LA5_11=='\\'||(LA5_11>='^' && LA5_11<='_')||(LA5_11>='a' && LA5_11<='z')||LA5_11=='|'||(LA5_11>='\u00C0' && LA5_11<='\u00FF')) ) {
+                alt5=13;
+            }
+            else {
+                alt5=11;}
             }
             break;
         case '!':
@@ -1051,8 +1058,8 @@ public class DSLMapLexer extends Lexer {
 
     // $ANTLR start synpred1
     public final void synpred1_fragment() throws RecognitionException {   
-        // DSLMap.g:276:14: ( '\\r\\n' )
-        // DSLMap.g:276:16: '\\r\\n'
+        // DSLMap.g:275:14: ( '\\r\\n' )
+        // DSLMap.g:275:16: '\\r\\n'
         {
         match("\r\n"); if (failed) return ;
 

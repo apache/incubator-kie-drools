@@ -1,4 +1,4 @@
-// $ANTLR 3.0.1 DSLMap.g 2008-06-10 17:00:29
+// $ANTLR 3.0.1 DSLMap.g 2008-06-11 12:09:03
 
 	package org.drools.lang.dsl;
 	import java.util.List;
@@ -1571,8 +1571,8 @@ public class DSLMapParser extends Parser {
         Object set25_tree=null;
 
         try {
-            // DSLMap.g:170:2: ( ( LITERAL | COLON | LEFT_SQUARE | RIGHT_SQUARE ) )
-            // DSLMap.g:170:4: ( LITERAL | COLON | LEFT_SQUARE | RIGHT_SQUARE )
+            // DSLMap.g:169:2: ( ( LITERAL | COLON | LEFT_SQUARE | RIGHT_SQUARE ) )
+            // DSLMap.g:169:4: ( LITERAL | COLON | LEFT_SQUARE | RIGHT_SQUARE )
             {
             root_0 = (Object)adaptor.nil();
 
@@ -1586,7 +1586,7 @@ public class DSLMapParser extends Parser {
                 if (backtracking>0) {failed=true; return retval;}
                 MismatchedSetException mse =
                     new MismatchedSetException(null,input);
-                recoverFromMismatchedSet(input,mse,FOLLOW_set_in_literal658);    throw mse;
+                recoverFromMismatchedSet(input,mse,FOLLOW_set_in_literal656);    throw mse;
             }
 
 
@@ -1615,7 +1615,7 @@ public class DSLMapParser extends Parser {
     };
 
     // $ANTLR start variable_definition
-    // DSLMap.g:174:1: variable_definition : lc= LEFT_CURLY name= LITERAL ( COLON pat= pattern )? rc= RIGHT_CURLY -> {hasSpaceBefore && !\"\".equals(text) && !hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name VT_PATTERN[$pat.start, text] ) -> {!hasSpaceBefore && !\"\".equals(text) && !hasSpaceAfter}? ^( VT_VAR_DEF $name VT_PATTERN[$pat.start, text] ) -> {hasSpaceBefore && !hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name) -> {!hasSpaceBefore && !hasSpaceAfter}? ^( VT_VAR_DEF $name) -> {hasSpaceBefore && !\"\".equals(text) && hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name VT_PATTERN[$pat.start, text] ) VT_SPACE -> {!hasSpaceBefore && !\"\".equals(text) && hasSpaceAfter}? ^( VT_VAR_DEF $name VT_PATTERN[$pat.start, text] ) VT_SPACE -> {hasSpaceBefore && hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name) VT_SPACE -> {!hasSpaceBefore && hasSpaceAfter}? ^( VT_VAR_DEF $name) VT_SPACE -> ^( VT_VAR_DEF $name) ;
+    // DSLMap.g:173:1: variable_definition : lc= LEFT_CURLY name= LITERAL ( COLON pat= pattern )? rc= RIGHT_CURLY -> {hasSpaceBefore && !\"\".equals(text) && !hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name VT_PATTERN[$pat.start, text] ) -> {!hasSpaceBefore && !\"\".equals(text) && !hasSpaceAfter}? ^( VT_VAR_DEF $name VT_PATTERN[$pat.start, text] ) -> {hasSpaceBefore && !hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name) -> {!hasSpaceBefore && !hasSpaceAfter}? ^( VT_VAR_DEF $name) -> {hasSpaceBefore && !\"\".equals(text) && hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name VT_PATTERN[$pat.start, text] ) VT_SPACE -> {!hasSpaceBefore && !\"\".equals(text) && hasSpaceAfter}? ^( VT_VAR_DEF $name VT_PATTERN[$pat.start, text] ) VT_SPACE -> {hasSpaceBefore && hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name) VT_SPACE -> {!hasSpaceBefore && hasSpaceAfter}? ^( VT_VAR_DEF $name) VT_SPACE -> ^( VT_VAR_DEF $name) ;
     public final variable_definition_return variable_definition() throws RecognitionException {
         variable_definition_return retval = new variable_definition_return();
         retval.start = input.LT(1);
@@ -1644,11 +1644,11 @@ public class DSLMapParser extends Parser {
                 boolean hasSpaceAfter = false;
 
         try {
-            // DSLMap.g:180:2: (lc= LEFT_CURLY name= LITERAL ( COLON pat= pattern )? rc= RIGHT_CURLY -> {hasSpaceBefore && !\"\".equals(text) && !hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name VT_PATTERN[$pat.start, text] ) -> {!hasSpaceBefore && !\"\".equals(text) && !hasSpaceAfter}? ^( VT_VAR_DEF $name VT_PATTERN[$pat.start, text] ) -> {hasSpaceBefore && !hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name) -> {!hasSpaceBefore && !hasSpaceAfter}? ^( VT_VAR_DEF $name) -> {hasSpaceBefore && !\"\".equals(text) && hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name VT_PATTERN[$pat.start, text] ) VT_SPACE -> {!hasSpaceBefore && !\"\".equals(text) && hasSpaceAfter}? ^( VT_VAR_DEF $name VT_PATTERN[$pat.start, text] ) VT_SPACE -> {hasSpaceBefore && hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name) VT_SPACE -> {!hasSpaceBefore && hasSpaceAfter}? ^( VT_VAR_DEF $name) VT_SPACE -> ^( VT_VAR_DEF $name) )
-            // DSLMap.g:180:4: lc= LEFT_CURLY name= LITERAL ( COLON pat= pattern )? rc= RIGHT_CURLY
+            // DSLMap.g:179:2: (lc= LEFT_CURLY name= LITERAL ( COLON pat= pattern )? rc= RIGHT_CURLY -> {hasSpaceBefore && !\"\".equals(text) && !hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name VT_PATTERN[$pat.start, text] ) -> {!hasSpaceBefore && !\"\".equals(text) && !hasSpaceAfter}? ^( VT_VAR_DEF $name VT_PATTERN[$pat.start, text] ) -> {hasSpaceBefore && !hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name) -> {!hasSpaceBefore && !hasSpaceAfter}? ^( VT_VAR_DEF $name) -> {hasSpaceBefore && !\"\".equals(text) && hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name VT_PATTERN[$pat.start, text] ) VT_SPACE -> {!hasSpaceBefore && !\"\".equals(text) && hasSpaceAfter}? ^( VT_VAR_DEF $name VT_PATTERN[$pat.start, text] ) VT_SPACE -> {hasSpaceBefore && hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name) VT_SPACE -> {!hasSpaceBefore && hasSpaceAfter}? ^( VT_VAR_DEF $name) VT_SPACE -> ^( VT_VAR_DEF $name) )
+            // DSLMap.g:179:4: lc= LEFT_CURLY name= LITERAL ( COLON pat= pattern )? rc= RIGHT_CURLY
             {
             lc=(Token)input.LT(1);
-            match(input,LEFT_CURLY,FOLLOW_LEFT_CURLY_in_variable_definition694); if (failed) return retval;
+            match(input,LEFT_CURLY,FOLLOW_LEFT_CURLY_in_variable_definition692); if (failed) return retval;
             if ( backtracking==0 ) stream_LEFT_CURLY.add(lc);
 
             if ( backtracking==0 ) {
@@ -1658,10 +1658,10 @@ public class DSLMapParser extends Parser {
               		
             }
             name=(Token)input.LT(1);
-            match(input,LITERAL,FOLLOW_LITERAL_in_variable_definition705); if (failed) return retval;
+            match(input,LITERAL,FOLLOW_LITERAL_in_variable_definition703); if (failed) return retval;
             if ( backtracking==0 ) stream_LITERAL.add(name);
 
-            // DSLMap.g:185:15: ( COLON pat= pattern )?
+            // DSLMap.g:184:15: ( COLON pat= pattern )?
             int alt13=2;
             int LA13_0 = input.LA(1);
 
@@ -1670,13 +1670,13 @@ public class DSLMapParser extends Parser {
             }
             switch (alt13) {
                 case 1 :
-                    // DSLMap.g:185:17: COLON pat= pattern
+                    // DSLMap.g:184:17: COLON pat= pattern
                     {
                     COLON26=(Token)input.LT(1);
-                    match(input,COLON,FOLLOW_COLON_in_variable_definition709); if (failed) return retval;
+                    match(input,COLON,FOLLOW_COLON_in_variable_definition707); if (failed) return retval;
                     if ( backtracking==0 ) stream_COLON.add(COLON26);
 
-                    pushFollow(FOLLOW_pattern_in_variable_definition713);
+                    pushFollow(FOLLOW_pattern_in_variable_definition711);
                     pat=pattern();
                     _fsp--;
                     if (failed) return retval;
@@ -1691,7 +1691,7 @@ public class DSLMapParser extends Parser {
             }
 
             rc=(Token)input.LT(1);
-            match(input,RIGHT_CURLY,FOLLOW_RIGHT_CURLY_in_variable_definition722); if (failed) return retval;
+            match(input,RIGHT_CURLY,FOLLOW_RIGHT_CURLY_in_variable_definition720); if (failed) return retval;
             if ( backtracking==0 ) stream_RIGHT_CURLY.add(rc);
 
             if ( backtracking==0 ) {
@@ -1713,10 +1713,10 @@ public class DSLMapParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 190:2: -> {hasSpaceBefore && !\"\".equals(text) && !hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name VT_PATTERN[$pat.start, text] )
+            // 189:2: -> {hasSpaceBefore && !\"\".equals(text) && !hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name VT_PATTERN[$pat.start, text] )
             if (hasSpaceBefore && !"".equals(text) && !hasSpaceAfter) {
                 adaptor.addChild(root_0, adaptor.create(VT_SPACE, "VT_SPACE"));
-                // DSLMap.g:190:70: ^( VT_VAR_DEF $name VT_PATTERN[$pat.start, text] )
+                // DSLMap.g:189:70: ^( VT_VAR_DEF $name VT_PATTERN[$pat.start, text] )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(adaptor.create(VT_VAR_DEF, "VT_VAR_DEF"), root_1);
@@ -1728,9 +1728,9 @@ public class DSLMapParser extends Parser {
                 }
 
             }
-            else // 191:2: -> {!hasSpaceBefore && !\"\".equals(text) && !hasSpaceAfter}? ^( VT_VAR_DEF $name VT_PATTERN[$pat.start, text] )
+            else // 190:2: -> {!hasSpaceBefore && !\"\".equals(text) && !hasSpaceAfter}? ^( VT_VAR_DEF $name VT_PATTERN[$pat.start, text] )
             if (!hasSpaceBefore && !"".equals(text)  && !hasSpaceAfter) {
-                // DSLMap.g:191:63: ^( VT_VAR_DEF $name VT_PATTERN[$pat.start, text] )
+                // DSLMap.g:190:63: ^( VT_VAR_DEF $name VT_PATTERN[$pat.start, text] )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(adaptor.create(VT_VAR_DEF, "VT_VAR_DEF"), root_1);
@@ -1742,10 +1742,10 @@ public class DSLMapParser extends Parser {
                 }
 
             }
-            else // 192:2: -> {hasSpaceBefore && !hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name)
+            else // 191:2: -> {hasSpaceBefore && !hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name)
             if (hasSpaceBefore  && !hasSpaceAfter) {
                 adaptor.addChild(root_0, adaptor.create(VT_SPACE, "VT_SPACE"));
-                // DSLMap.g:192:51: ^( VT_VAR_DEF $name)
+                // DSLMap.g:191:51: ^( VT_VAR_DEF $name)
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(adaptor.create(VT_VAR_DEF, "VT_VAR_DEF"), root_1);
@@ -1756,9 +1756,9 @@ public class DSLMapParser extends Parser {
                 }
 
             }
-            else // 193:2: -> {!hasSpaceBefore && !hasSpaceAfter}? ^( VT_VAR_DEF $name)
+            else // 192:2: -> {!hasSpaceBefore && !hasSpaceAfter}? ^( VT_VAR_DEF $name)
             if (!hasSpaceBefore  && !hasSpaceAfter) {
-                // DSLMap.g:193:44: ^( VT_VAR_DEF $name)
+                // DSLMap.g:192:44: ^( VT_VAR_DEF $name)
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(adaptor.create(VT_VAR_DEF, "VT_VAR_DEF"), root_1);
@@ -1769,10 +1769,10 @@ public class DSLMapParser extends Parser {
                 }
 
             }
-            else // 195:2: -> {hasSpaceBefore && !\"\".equals(text) && hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name VT_PATTERN[$pat.start, text] ) VT_SPACE
+            else // 194:2: -> {hasSpaceBefore && !\"\".equals(text) && hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name VT_PATTERN[$pat.start, text] ) VT_SPACE
             if (hasSpaceBefore && !"".equals(text) && hasSpaceAfter) {
                 adaptor.addChild(root_0, adaptor.create(VT_SPACE, "VT_SPACE"));
-                // DSLMap.g:195:69: ^( VT_VAR_DEF $name VT_PATTERN[$pat.start, text] )
+                // DSLMap.g:194:69: ^( VT_VAR_DEF $name VT_PATTERN[$pat.start, text] )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(adaptor.create(VT_VAR_DEF, "VT_VAR_DEF"), root_1);
@@ -1785,9 +1785,9 @@ public class DSLMapParser extends Parser {
                 adaptor.addChild(root_0, adaptor.create(VT_SPACE, "VT_SPACE"));
 
             }
-            else // 196:2: -> {!hasSpaceBefore && !\"\".equals(text) && hasSpaceAfter}? ^( VT_VAR_DEF $name VT_PATTERN[$pat.start, text] ) VT_SPACE
+            else // 195:2: -> {!hasSpaceBefore && !\"\".equals(text) && hasSpaceAfter}? ^( VT_VAR_DEF $name VT_PATTERN[$pat.start, text] ) VT_SPACE
             if (!hasSpaceBefore && !"".equals(text)  && hasSpaceAfter) {
-                // DSLMap.g:196:62: ^( VT_VAR_DEF $name VT_PATTERN[$pat.start, text] )
+                // DSLMap.g:195:62: ^( VT_VAR_DEF $name VT_PATTERN[$pat.start, text] )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(adaptor.create(VT_VAR_DEF, "VT_VAR_DEF"), root_1);
@@ -1800,10 +1800,10 @@ public class DSLMapParser extends Parser {
                 adaptor.addChild(root_0, adaptor.create(VT_SPACE, "VT_SPACE"));
 
             }
-            else // 197:2: -> {hasSpaceBefore && hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name) VT_SPACE
+            else // 196:2: -> {hasSpaceBefore && hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name) VT_SPACE
             if (hasSpaceBefore  && hasSpaceAfter) {
                 adaptor.addChild(root_0, adaptor.create(VT_SPACE, "VT_SPACE"));
-                // DSLMap.g:197:50: ^( VT_VAR_DEF $name)
+                // DSLMap.g:196:50: ^( VT_VAR_DEF $name)
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(adaptor.create(VT_VAR_DEF, "VT_VAR_DEF"), root_1);
@@ -1815,9 +1815,9 @@ public class DSLMapParser extends Parser {
                 adaptor.addChild(root_0, adaptor.create(VT_SPACE, "VT_SPACE"));
 
             }
-            else // 198:2: -> {!hasSpaceBefore && hasSpaceAfter}? ^( VT_VAR_DEF $name) VT_SPACE
+            else // 197:2: -> {!hasSpaceBefore && hasSpaceAfter}? ^( VT_VAR_DEF $name) VT_SPACE
             if (!hasSpaceBefore  && hasSpaceAfter) {
-                // DSLMap.g:198:43: ^( VT_VAR_DEF $name)
+                // DSLMap.g:197:43: ^( VT_VAR_DEF $name)
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(adaptor.create(VT_VAR_DEF, "VT_VAR_DEF"), root_1);
@@ -1829,9 +1829,9 @@ public class DSLMapParser extends Parser {
                 adaptor.addChild(root_0, adaptor.create(VT_SPACE, "VT_SPACE"));
 
             }
-            else // 199:2: -> ^( VT_VAR_DEF $name)
+            else // 198:2: -> ^( VT_VAR_DEF $name)
             {
-                // DSLMap.g:199:5: ^( VT_VAR_DEF $name)
+                // DSLMap.g:198:5: ^( VT_VAR_DEF $name)
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(adaptor.create(VT_VAR_DEF, "VT_VAR_DEF"), root_1);
@@ -1870,7 +1870,7 @@ public class DSLMapParser extends Parser {
     };
 
     // $ANTLR start variable_definition2
-    // DSLMap.g:202:1: variable_definition2 : LEFT_CURLY name= LITERAL ( COLON pat= pattern )? RIGHT_CURLY -> {!\"\".equals(text)}? ^( VT_VAR_DEF $name VT_PATTERN[$pat.start, text] ) -> ^( VT_VAR_DEF $name) ;
+    // DSLMap.g:201:1: variable_definition2 : LEFT_CURLY name= LITERAL ( COLON pat= pattern )? RIGHT_CURLY -> {!\"\".equals(text)}? ^( VT_VAR_DEF $name VT_PATTERN[$pat.start, text] ) -> ^( VT_VAR_DEF $name) ;
     public final variable_definition2_return variable_definition2() throws RecognitionException {
         variable_definition2_return retval = new variable_definition2_return();
         retval.start = input.LT(1);
@@ -1897,18 +1897,18 @@ public class DSLMapParser extends Parser {
                 String text = "";
 
         try {
-            // DSLMap.g:206:2: ( LEFT_CURLY name= LITERAL ( COLON pat= pattern )? RIGHT_CURLY -> {!\"\".equals(text)}? ^( VT_VAR_DEF $name VT_PATTERN[$pat.start, text] ) -> ^( VT_VAR_DEF $name) )
-            // DSLMap.g:206:4: LEFT_CURLY name= LITERAL ( COLON pat= pattern )? RIGHT_CURLY
+            // DSLMap.g:205:2: ( LEFT_CURLY name= LITERAL ( COLON pat= pattern )? RIGHT_CURLY -> {!\"\".equals(text)}? ^( VT_VAR_DEF $name VT_PATTERN[$pat.start, text] ) -> ^( VT_VAR_DEF $name) )
+            // DSLMap.g:205:4: LEFT_CURLY name= LITERAL ( COLON pat= pattern )? RIGHT_CURLY
             {
             LEFT_CURLY27=(Token)input.LT(1);
-            match(input,LEFT_CURLY,FOLLOW_LEFT_CURLY_in_variable_definition2898); if (failed) return retval;
+            match(input,LEFT_CURLY,FOLLOW_LEFT_CURLY_in_variable_definition2896); if (failed) return retval;
             if ( backtracking==0 ) stream_LEFT_CURLY.add(LEFT_CURLY27);
 
             name=(Token)input.LT(1);
-            match(input,LITERAL,FOLLOW_LITERAL_in_variable_definition2902); if (failed) return retval;
+            match(input,LITERAL,FOLLOW_LITERAL_in_variable_definition2900); if (failed) return retval;
             if ( backtracking==0 ) stream_LITERAL.add(name);
 
-            // DSLMap.g:206:28: ( COLON pat= pattern )?
+            // DSLMap.g:205:28: ( COLON pat= pattern )?
             int alt14=2;
             int LA14_0 = input.LA(1);
 
@@ -1917,13 +1917,13 @@ public class DSLMapParser extends Parser {
             }
             switch (alt14) {
                 case 1 :
-                    // DSLMap.g:206:30: COLON pat= pattern
+                    // DSLMap.g:205:30: COLON pat= pattern
                     {
                     COLON28=(Token)input.LT(1);
-                    match(input,COLON,FOLLOW_COLON_in_variable_definition2906); if (failed) return retval;
+                    match(input,COLON,FOLLOW_COLON_in_variable_definition2904); if (failed) return retval;
                     if ( backtracking==0 ) stream_COLON.add(COLON28);
 
-                    pushFollow(FOLLOW_pattern_in_variable_definition2910);
+                    pushFollow(FOLLOW_pattern_in_variable_definition2908);
                     pat=pattern();
                     _fsp--;
                     if (failed) return retval;
@@ -1938,7 +1938,7 @@ public class DSLMapParser extends Parser {
             }
 
             RIGHT_CURLY29=(Token)input.LT(1);
-            match(input,RIGHT_CURLY,FOLLOW_RIGHT_CURLY_in_variable_definition2917); if (failed) return retval;
+            match(input,RIGHT_CURLY,FOLLOW_RIGHT_CURLY_in_variable_definition2915); if (failed) return retval;
             if ( backtracking==0 ) stream_RIGHT_CURLY.add(RIGHT_CURLY29);
 
 
@@ -1954,9 +1954,9 @@ public class DSLMapParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 207:2: -> {!\"\".equals(text)}? ^( VT_VAR_DEF $name VT_PATTERN[$pat.start, text] )
+            // 206:2: -> {!\"\".equals(text)}? ^( VT_VAR_DEF $name VT_PATTERN[$pat.start, text] )
             if (!"".equals(text)) {
-                // DSLMap.g:207:25: ^( VT_VAR_DEF $name VT_PATTERN[$pat.start, text] )
+                // DSLMap.g:206:25: ^( VT_VAR_DEF $name VT_PATTERN[$pat.start, text] )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(adaptor.create(VT_VAR_DEF, "VT_VAR_DEF"), root_1);
@@ -1968,9 +1968,9 @@ public class DSLMapParser extends Parser {
                 }
 
             }
-            else // 208:2: -> ^( VT_VAR_DEF $name)
+            else // 207:2: -> ^( VT_VAR_DEF $name)
             {
-                // DSLMap.g:208:5: ^( VT_VAR_DEF $name)
+                // DSLMap.g:207:5: ^( VT_VAR_DEF $name)
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(adaptor.create(VT_VAR_DEF, "VT_VAR_DEF"), root_1);
@@ -2009,7 +2009,7 @@ public class DSLMapParser extends Parser {
     };
 
     // $ANTLR start pattern
-    // DSLMap.g:212:1: pattern : ( literal | LEFT_CURLY literal RIGHT_CURLY | LEFT_SQUARE pattern RIGHT_SQUARE )+ ;
+    // DSLMap.g:211:1: pattern : ( literal | LEFT_CURLY literal RIGHT_CURLY | LEFT_SQUARE pattern RIGHT_SQUARE )+ ;
     public final pattern_return pattern() throws RecognitionException {
         pattern_return retval = new pattern_return();
         retval.start = input.LT(1);
@@ -2033,12 +2033,12 @@ public class DSLMapParser extends Parser {
         Object RIGHT_SQUARE36_tree=null;
 
         try {
-            // DSLMap.g:213:9: ( ( literal | LEFT_CURLY literal RIGHT_CURLY | LEFT_SQUARE pattern RIGHT_SQUARE )+ )
-            // DSLMap.g:213:11: ( literal | LEFT_CURLY literal RIGHT_CURLY | LEFT_SQUARE pattern RIGHT_SQUARE )+
+            // DSLMap.g:212:9: ( ( literal | LEFT_CURLY literal RIGHT_CURLY | LEFT_SQUARE pattern RIGHT_SQUARE )+ )
+            // DSLMap.g:212:11: ( literal | LEFT_CURLY literal RIGHT_CURLY | LEFT_SQUARE pattern RIGHT_SQUARE )+
             {
             root_0 = (Object)adaptor.nil();
 
-            // DSLMap.g:213:11: ( literal | LEFT_CURLY literal RIGHT_CURLY | LEFT_SQUARE pattern RIGHT_SQUARE )+
+            // DSLMap.g:212:11: ( literal | LEFT_CURLY literal RIGHT_CURLY | LEFT_SQUARE pattern RIGHT_SQUARE )+
             int cnt15=0;
             loop15:
             do {
@@ -2085,9 +2085,9 @@ public class DSLMapParser extends Parser {
 
                 switch (alt15) {
             	case 1 :
-            	    // DSLMap.g:213:13: literal
+            	    // DSLMap.g:212:13: literal
             	    {
-            	    pushFollow(FOLLOW_literal_in_pattern968);
+            	    pushFollow(FOLLOW_literal_in_pattern966);
             	    literal30=literal();
             	    _fsp--;
             	    if (failed) return retval;
@@ -2096,21 +2096,21 @@ public class DSLMapParser extends Parser {
             	    }
             	    break;
             	case 2 :
-            	    // DSLMap.g:214:13: LEFT_CURLY literal RIGHT_CURLY
+            	    // DSLMap.g:213:13: LEFT_CURLY literal RIGHT_CURLY
             	    {
             	    LEFT_CURLY31=(Token)input.LT(1);
-            	    match(input,LEFT_CURLY,FOLLOW_LEFT_CURLY_in_pattern982); if (failed) return retval;
+            	    match(input,LEFT_CURLY,FOLLOW_LEFT_CURLY_in_pattern980); if (failed) return retval;
             	    if ( backtracking==0 ) {
             	    LEFT_CURLY31_tree = (Object)adaptor.create(LEFT_CURLY31);
             	    adaptor.addChild(root_0, LEFT_CURLY31_tree);
             	    }
-            	    pushFollow(FOLLOW_literal_in_pattern984);
+            	    pushFollow(FOLLOW_literal_in_pattern982);
             	    literal32=literal();
             	    _fsp--;
             	    if (failed) return retval;
             	    if ( backtracking==0 ) adaptor.addChild(root_0, literal32.getTree());
             	    RIGHT_CURLY33=(Token)input.LT(1);
-            	    match(input,RIGHT_CURLY,FOLLOW_RIGHT_CURLY_in_pattern986); if (failed) return retval;
+            	    match(input,RIGHT_CURLY,FOLLOW_RIGHT_CURLY_in_pattern984); if (failed) return retval;
             	    if ( backtracking==0 ) {
             	    RIGHT_CURLY33_tree = (Object)adaptor.create(RIGHT_CURLY33);
             	    adaptor.addChild(root_0, RIGHT_CURLY33_tree);
@@ -2119,21 +2119,21 @@ public class DSLMapParser extends Parser {
             	    }
             	    break;
             	case 3 :
-            	    // DSLMap.g:215:13: LEFT_SQUARE pattern RIGHT_SQUARE
+            	    // DSLMap.g:214:13: LEFT_SQUARE pattern RIGHT_SQUARE
             	    {
             	    LEFT_SQUARE34=(Token)input.LT(1);
-            	    match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_pattern1000); if (failed) return retval;
+            	    match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_pattern998); if (failed) return retval;
             	    if ( backtracking==0 ) {
             	    LEFT_SQUARE34_tree = (Object)adaptor.create(LEFT_SQUARE34);
             	    adaptor.addChild(root_0, LEFT_SQUARE34_tree);
             	    }
-            	    pushFollow(FOLLOW_pattern_in_pattern1002);
+            	    pushFollow(FOLLOW_pattern_in_pattern1000);
             	    pattern35=pattern();
             	    _fsp--;
             	    if (failed) return retval;
             	    if ( backtracking==0 ) adaptor.addChild(root_0, pattern35.getTree());
             	    RIGHT_SQUARE36=(Token)input.LT(1);
-            	    match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_pattern1004); if (failed) return retval;
+            	    match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_pattern1002); if (failed) return retval;
             	    if ( backtracking==0 ) {
             	    RIGHT_SQUARE36_tree = (Object)adaptor.create(RIGHT_SQUARE36);
             	    adaptor.addChild(root_0, RIGHT_SQUARE36_tree);
@@ -2178,7 +2178,7 @@ public class DSLMapParser extends Parser {
     };
 
     // $ANTLR start variable_reference
-    // DSLMap.g:220:1: variable_reference : lc= LEFT_CURLY name= LITERAL rc= RIGHT_CURLY -> {hasSpaceBefore && hasSpaceAfter}? VT_SPACE ^( VT_VAR_REF $name) VT_SPACE -> {hasSpaceBefore && !hasSpaceAfter}? VT_SPACE ^( VT_VAR_REF $name) -> {!hasSpaceBefore && hasSpaceAfter}? ^( VT_VAR_REF $name) VT_SPACE -> ^( VT_VAR_REF $name) ;
+    // DSLMap.g:219:1: variable_reference : lc= LEFT_CURLY name= LITERAL rc= RIGHT_CURLY -> {hasSpaceBefore && hasSpaceAfter}? VT_SPACE ^( VT_VAR_REF $name) VT_SPACE -> {hasSpaceBefore && !hasSpaceAfter}? VT_SPACE ^( VT_VAR_REF $name) -> {!hasSpaceBefore && hasSpaceAfter}? ^( VT_VAR_REF $name) VT_SPACE -> ^( VT_VAR_REF $name) ;
     public final variable_reference_return variable_reference() throws RecognitionException {
         variable_reference_return retval = new variable_reference_return();
         retval.start = input.LT(1);
@@ -2201,11 +2201,11 @@ public class DSLMapParser extends Parser {
                 boolean hasSpaceAfter = false;
 
         try {
-            // DSLMap.g:225:2: (lc= LEFT_CURLY name= LITERAL rc= RIGHT_CURLY -> {hasSpaceBefore && hasSpaceAfter}? VT_SPACE ^( VT_VAR_REF $name) VT_SPACE -> {hasSpaceBefore && !hasSpaceAfter}? VT_SPACE ^( VT_VAR_REF $name) -> {!hasSpaceBefore && hasSpaceAfter}? ^( VT_VAR_REF $name) VT_SPACE -> ^( VT_VAR_REF $name) )
-            // DSLMap.g:225:4: lc= LEFT_CURLY name= LITERAL rc= RIGHT_CURLY
+            // DSLMap.g:224:2: (lc= LEFT_CURLY name= LITERAL rc= RIGHT_CURLY -> {hasSpaceBefore && hasSpaceAfter}? VT_SPACE ^( VT_VAR_REF $name) VT_SPACE -> {hasSpaceBefore && !hasSpaceAfter}? VT_SPACE ^( VT_VAR_REF $name) -> {!hasSpaceBefore && hasSpaceAfter}? ^( VT_VAR_REF $name) VT_SPACE -> ^( VT_VAR_REF $name) )
+            // DSLMap.g:224:4: lc= LEFT_CURLY name= LITERAL rc= RIGHT_CURLY
             {
             lc=(Token)input.LT(1);
-            match(input,LEFT_CURLY,FOLLOW_LEFT_CURLY_in_variable_reference1039); if (failed) return retval;
+            match(input,LEFT_CURLY,FOLLOW_LEFT_CURLY_in_variable_reference1037); if (failed) return retval;
             if ( backtracking==0 ) stream_LEFT_CURLY.add(lc);
 
             if ( backtracking==0 ) {
@@ -2215,11 +2215,11 @@ public class DSLMapParser extends Parser {
               		
             }
             name=(Token)input.LT(1);
-            match(input,LITERAL,FOLLOW_LITERAL_in_variable_reference1050); if (failed) return retval;
+            match(input,LITERAL,FOLLOW_LITERAL_in_variable_reference1048); if (failed) return retval;
             if ( backtracking==0 ) stream_LITERAL.add(name);
 
             rc=(Token)input.LT(1);
-            match(input,RIGHT_CURLY,FOLLOW_RIGHT_CURLY_in_variable_reference1054); if (failed) return retval;
+            match(input,RIGHT_CURLY,FOLLOW_RIGHT_CURLY_in_variable_reference1052); if (failed) return retval;
             if ( backtracking==0 ) stream_RIGHT_CURLY.add(rc);
 
             if ( backtracking==0 ) {
@@ -2238,10 +2238,10 @@ public class DSLMapParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 232:2: -> {hasSpaceBefore && hasSpaceAfter}? VT_SPACE ^( VT_VAR_REF $name) VT_SPACE
+            // 231:2: -> {hasSpaceBefore && hasSpaceAfter}? VT_SPACE ^( VT_VAR_REF $name) VT_SPACE
             if (hasSpaceBefore && hasSpaceAfter) {
                 adaptor.addChild(root_0, adaptor.create(VT_SPACE, "VT_SPACE"));
-                // DSLMap.g:232:49: ^( VT_VAR_REF $name)
+                // DSLMap.g:231:49: ^( VT_VAR_REF $name)
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(adaptor.create(VT_VAR_REF, "VT_VAR_REF"), root_1);
@@ -2253,10 +2253,10 @@ public class DSLMapParser extends Parser {
                 adaptor.addChild(root_0, adaptor.create(VT_SPACE, "VT_SPACE"));
 
             }
-            else // 233:2: -> {hasSpaceBefore && !hasSpaceAfter}? VT_SPACE ^( VT_VAR_REF $name)
+            else // 232:2: -> {hasSpaceBefore && !hasSpaceAfter}? VT_SPACE ^( VT_VAR_REF $name)
             if (hasSpaceBefore && !hasSpaceAfter) {
                 adaptor.addChild(root_0, adaptor.create(VT_SPACE, "VT_SPACE"));
-                // DSLMap.g:233:50: ^( VT_VAR_REF $name)
+                // DSLMap.g:232:50: ^( VT_VAR_REF $name)
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(adaptor.create(VT_VAR_REF, "VT_VAR_REF"), root_1);
@@ -2267,9 +2267,9 @@ public class DSLMapParser extends Parser {
                 }
 
             }
-            else // 234:2: -> {!hasSpaceBefore && hasSpaceAfter}? ^( VT_VAR_REF $name) VT_SPACE
+            else // 233:2: -> {!hasSpaceBefore && hasSpaceAfter}? ^( VT_VAR_REF $name) VT_SPACE
             if (!hasSpaceBefore && hasSpaceAfter) {
-                // DSLMap.g:234:42: ^( VT_VAR_REF $name)
+                // DSLMap.g:233:42: ^( VT_VAR_REF $name)
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(adaptor.create(VT_VAR_REF, "VT_VAR_REF"), root_1);
@@ -2281,9 +2281,9 @@ public class DSLMapParser extends Parser {
                 adaptor.addChild(root_0, adaptor.create(VT_SPACE, "VT_SPACE"));
 
             }
-            else // 235:2: -> ^( VT_VAR_REF $name)
+            else // 234:2: -> ^( VT_VAR_REF $name)
             {
-                // DSLMap.g:235:6: ^( VT_VAR_REF $name)
+                // DSLMap.g:234:6: ^( VT_VAR_REF $name)
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(adaptor.create(VT_VAR_REF, "VT_VAR_REF"), root_1);
@@ -2322,7 +2322,7 @@ public class DSLMapParser extends Parser {
     };
 
     // $ANTLR start variable_reference2
-    // DSLMap.g:239:1: variable_reference2 : LEFT_CURLY name= LITERAL RIGHT_CURLY -> ^( VT_VAR_REF $name) ;
+    // DSLMap.g:238:1: variable_reference2 : LEFT_CURLY name= LITERAL RIGHT_CURLY -> ^( VT_VAR_REF $name) ;
     public final variable_reference2_return variable_reference2() throws RecognitionException {
         variable_reference2_return retval = new variable_reference2_return();
         retval.start = input.LT(1);
@@ -2341,19 +2341,19 @@ public class DSLMapParser extends Parser {
         RewriteRuleTokenStream stream_LEFT_CURLY=new RewriteRuleTokenStream(adaptor,"token LEFT_CURLY");
 
         try {
-            // DSLMap.g:240:2: ( LEFT_CURLY name= LITERAL RIGHT_CURLY -> ^( VT_VAR_REF $name) )
-            // DSLMap.g:240:4: LEFT_CURLY name= LITERAL RIGHT_CURLY
+            // DSLMap.g:239:2: ( LEFT_CURLY name= LITERAL RIGHT_CURLY -> ^( VT_VAR_REF $name) )
+            // DSLMap.g:239:4: LEFT_CURLY name= LITERAL RIGHT_CURLY
             {
             LEFT_CURLY37=(Token)input.LT(1);
-            match(input,LEFT_CURLY,FOLLOW_LEFT_CURLY_in_variable_reference21132); if (failed) return retval;
+            match(input,LEFT_CURLY,FOLLOW_LEFT_CURLY_in_variable_reference21130); if (failed) return retval;
             if ( backtracking==0 ) stream_LEFT_CURLY.add(LEFT_CURLY37);
 
             name=(Token)input.LT(1);
-            match(input,LITERAL,FOLLOW_LITERAL_in_variable_reference21136); if (failed) return retval;
+            match(input,LITERAL,FOLLOW_LITERAL_in_variable_reference21134); if (failed) return retval;
             if ( backtracking==0 ) stream_LITERAL.add(name);
 
             RIGHT_CURLY38=(Token)input.LT(1);
-            match(input,RIGHT_CURLY,FOLLOW_RIGHT_CURLY_in_variable_reference21138); if (failed) return retval;
+            match(input,RIGHT_CURLY,FOLLOW_RIGHT_CURLY_in_variable_reference21136); if (failed) return retval;
             if ( backtracking==0 ) stream_RIGHT_CURLY.add(RIGHT_CURLY38);
 
 
@@ -2369,9 +2369,9 @@ public class DSLMapParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 241:2: -> ^( VT_VAR_REF $name)
+            // 240:2: -> ^( VT_VAR_REF $name)
             {
-                // DSLMap.g:241:5: ^( VT_VAR_REF $name)
+                // DSLMap.g:240:5: ^( VT_VAR_REF $name)
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(adaptor.create(VT_VAR_REF, "VT_VAR_REF"), root_1);
@@ -2410,7 +2410,7 @@ public class DSLMapParser extends Parser {
     };
 
     // $ANTLR start condition_key
-    // DSLMap.g:245:1: condition_key : {...}?value= LITERAL -> VT_CONDITION[$value] ;
+    // DSLMap.g:244:1: condition_key : {...}?value= LITERAL -> VT_CONDITION[$value] ;
     public final condition_key_return condition_key() throws RecognitionException {
         condition_key_return retval = new condition_key_return();
         retval.start = input.LT(1);
@@ -2423,15 +2423,15 @@ public class DSLMapParser extends Parser {
         RewriteRuleTokenStream stream_LITERAL=new RewriteRuleTokenStream(adaptor,"token LITERAL");
 
         try {
-            // DSLMap.g:246:2: ({...}?value= LITERAL -> VT_CONDITION[$value] )
-            // DSLMap.g:246:4: {...}?value= LITERAL
+            // DSLMap.g:245:2: ({...}?value= LITERAL -> VT_CONDITION[$value] )
+            // DSLMap.g:245:4: {...}?value= LITERAL
             {
             if ( !(validateIdentifierKey("condition")||validateIdentifierKey("when")) ) {
                 if (backtracking>0) {failed=true; return retval;}
                 throw new FailedPredicateException(input, "condition_key", "validateIdentifierKey(\"condition\")||validateIdentifierKey(\"when\")");
             }
             value=(Token)input.LT(1);
-            match(input,LITERAL,FOLLOW_LITERAL_in_condition_key1167); if (failed) return retval;
+            match(input,LITERAL,FOLLOW_LITERAL_in_condition_key1165); if (failed) return retval;
             if ( backtracking==0 ) stream_LITERAL.add(value);
 
 
@@ -2446,7 +2446,7 @@ public class DSLMapParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 247:2: -> VT_CONDITION[$value]
+            // 246:2: -> VT_CONDITION[$value]
             {
                 adaptor.addChild(root_0, adaptor.create(VT_CONDITION, value));
 
@@ -2479,7 +2479,7 @@ public class DSLMapParser extends Parser {
     };
 
     // $ANTLR start consequence_key
-    // DSLMap.g:250:1: consequence_key : {...}?value= LITERAL -> VT_CONSEQUENCE[$value] ;
+    // DSLMap.g:249:1: consequence_key : {...}?value= LITERAL -> VT_CONSEQUENCE[$value] ;
     public final consequence_key_return consequence_key() throws RecognitionException {
         consequence_key_return retval = new consequence_key_return();
         retval.start = input.LT(1);
@@ -2492,15 +2492,15 @@ public class DSLMapParser extends Parser {
         RewriteRuleTokenStream stream_LITERAL=new RewriteRuleTokenStream(adaptor,"token LITERAL");
 
         try {
-            // DSLMap.g:251:2: ({...}?value= LITERAL -> VT_CONSEQUENCE[$value] )
-            // DSLMap.g:251:4: {...}?value= LITERAL
+            // DSLMap.g:250:2: ({...}?value= LITERAL -> VT_CONSEQUENCE[$value] )
+            // DSLMap.g:250:4: {...}?value= LITERAL
             {
             if ( !(validateIdentifierKey("consequence")||validateIdentifierKey("then")) ) {
                 if (backtracking>0) {failed=true; return retval;}
                 throw new FailedPredicateException(input, "consequence_key", "validateIdentifierKey(\"consequence\")||validateIdentifierKey(\"then\")");
             }
             value=(Token)input.LT(1);
-            match(input,LITERAL,FOLLOW_LITERAL_in_consequence_key1190); if (failed) return retval;
+            match(input,LITERAL,FOLLOW_LITERAL_in_consequence_key1188); if (failed) return retval;
             if ( backtracking==0 ) stream_LITERAL.add(value);
 
 
@@ -2515,7 +2515,7 @@ public class DSLMapParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 252:2: -> VT_CONSEQUENCE[$value]
+            // 251:2: -> VT_CONSEQUENCE[$value]
             {
                 adaptor.addChild(root_0, adaptor.create(VT_CONSEQUENCE, value));
 
@@ -2548,7 +2548,7 @@ public class DSLMapParser extends Parser {
     };
 
     // $ANTLR start keyword_key
-    // DSLMap.g:255:1: keyword_key : {...}?value= LITERAL -> VT_KEYWORD[$value] ;
+    // DSLMap.g:254:1: keyword_key : {...}?value= LITERAL -> VT_KEYWORD[$value] ;
     public final keyword_key_return keyword_key() throws RecognitionException {
         keyword_key_return retval = new keyword_key_return();
         retval.start = input.LT(1);
@@ -2561,15 +2561,15 @@ public class DSLMapParser extends Parser {
         RewriteRuleTokenStream stream_LITERAL=new RewriteRuleTokenStream(adaptor,"token LITERAL");
 
         try {
-            // DSLMap.g:256:2: ({...}?value= LITERAL -> VT_KEYWORD[$value] )
-            // DSLMap.g:256:4: {...}?value= LITERAL
+            // DSLMap.g:255:2: ({...}?value= LITERAL -> VT_KEYWORD[$value] )
+            // DSLMap.g:255:4: {...}?value= LITERAL
             {
             if ( !(validateIdentifierKey("keyword")) ) {
                 if (backtracking>0) {failed=true; return retval;}
                 throw new FailedPredicateException(input, "keyword_key", "validateIdentifierKey(\"keyword\")");
             }
             value=(Token)input.LT(1);
-            match(input,LITERAL,FOLLOW_LITERAL_in_keyword_key1213); if (failed) return retval;
+            match(input,LITERAL,FOLLOW_LITERAL_in_keyword_key1211); if (failed) return retval;
             if ( backtracking==0 ) stream_LITERAL.add(value);
 
 
@@ -2584,7 +2584,7 @@ public class DSLMapParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 257:2: -> VT_KEYWORD[$value]
+            // 256:2: -> VT_KEYWORD[$value]
             {
                 adaptor.addChild(root_0, adaptor.create(VT_KEYWORD, value));
 
@@ -2617,7 +2617,7 @@ public class DSLMapParser extends Parser {
     };
 
     // $ANTLR start any_key
-    // DSLMap.g:260:1: any_key : {...}?value= LITERAL -> VT_ANY[$value] ;
+    // DSLMap.g:259:1: any_key : {...}?value= LITERAL -> VT_ANY[$value] ;
     public final any_key_return any_key() throws RecognitionException {
         any_key_return retval = new any_key_return();
         retval.start = input.LT(1);
@@ -2630,15 +2630,15 @@ public class DSLMapParser extends Parser {
         RewriteRuleTokenStream stream_LITERAL=new RewriteRuleTokenStream(adaptor,"token LITERAL");
 
         try {
-            // DSLMap.g:261:2: ({...}?value= LITERAL -> VT_ANY[$value] )
-            // DSLMap.g:261:4: {...}?value= LITERAL
+            // DSLMap.g:260:2: ({...}?value= LITERAL -> VT_ANY[$value] )
+            // DSLMap.g:260:4: {...}?value= LITERAL
             {
             if ( !(validateIdentifierKey("*")) ) {
                 if (backtracking>0) {failed=true; return retval;}
                 throw new FailedPredicateException(input, "any_key", "validateIdentifierKey(\"*\")");
             }
             value=(Token)input.LT(1);
-            match(input,LITERAL,FOLLOW_LITERAL_in_any_key1236); if (failed) return retval;
+            match(input,LITERAL,FOLLOW_LITERAL_in_any_key1234); if (failed) return retval;
             if ( backtracking==0 ) stream_LITERAL.add(value);
 
 
@@ -2653,7 +2653,7 @@ public class DSLMapParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 262:2: -> VT_ANY[$value]
+            // 261:2: -> VT_ANY[$value]
             {
                 adaptor.addChild(root_0, adaptor.create(VT_ANY, value));
 
@@ -2788,10 +2788,10 @@ public class DSLMapParser extends Parser {
 
     // $ANTLR start synpred23
     public final void synpred23_fragment() throws RecognitionException {   
-        // DSLMap.g:213:13: ( literal )
-        // DSLMap.g:213:13: literal
+        // DSLMap.g:212:13: ( literal )
+        // DSLMap.g:212:13: literal
         {
-        pushFollow(FOLLOW_literal_in_synpred23968);
+        pushFollow(FOLLOW_literal_in_synpred23966);
         literal();
         _fsp--;
         if (failed) return ;
@@ -2802,15 +2802,15 @@ public class DSLMapParser extends Parser {
 
     // $ANTLR start synpred25
     public final void synpred25_fragment() throws RecognitionException {   
-        // DSLMap.g:215:13: ( LEFT_SQUARE pattern RIGHT_SQUARE )
-        // DSLMap.g:215:13: LEFT_SQUARE pattern RIGHT_SQUARE
+        // DSLMap.g:214:13: ( LEFT_SQUARE pattern RIGHT_SQUARE )
+        // DSLMap.g:214:13: LEFT_SQUARE pattern RIGHT_SQUARE
         {
-        match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_synpred251000); if (failed) return ;
-        pushFollow(FOLLOW_pattern_in_synpred251002);
+        match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_synpred25998); if (failed) return ;
+        pushFollow(FOLLOW_pattern_in_synpred251000);
         pattern();
         _fsp--;
         if (failed) return ;
-        match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_synpred251004); if (failed) return ;
+        match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_synpred251002); if (failed) return ;
 
         }
     }
@@ -2991,34 +2991,34 @@ public class DSLMapParser extends Parser {
     public static final BitSet FOLLOW_literal_in_value_chunk636 = new BitSet(new long[]{0x000000000FC00002L});
     public static final BitSet FOLLOW_EQUALS_in_value_chunk638 = new BitSet(new long[]{0x000000000FC00002L});
     public static final BitSet FOLLOW_COMMA_in_value_chunk640 = new BitSet(new long[]{0x000000000FC00002L});
-    public static final BitSet FOLLOW_set_in_literal658 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_CURLY_in_variable_definition694 = new BitSet(new long[]{0x0000000002000000L});
-    public static final BitSet FOLLOW_LITERAL_in_variable_definition705 = new BitSet(new long[]{0x0000000028000000L});
-    public static final BitSet FOLLOW_COLON_in_variable_definition709 = new BitSet(new long[]{0x000000001B800000L});
-    public static final BitSet FOLLOW_pattern_in_variable_definition713 = new BitSet(new long[]{0x0000000020000000L});
-    public static final BitSet FOLLOW_RIGHT_CURLY_in_variable_definition722 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_CURLY_in_variable_definition2898 = new BitSet(new long[]{0x0000000002000000L});
-    public static final BitSet FOLLOW_LITERAL_in_variable_definition2902 = new BitSet(new long[]{0x0000000028000000L});
-    public static final BitSet FOLLOW_COLON_in_variable_definition2906 = new BitSet(new long[]{0x000000001B800000L});
-    public static final BitSet FOLLOW_pattern_in_variable_definition2910 = new BitSet(new long[]{0x0000000020000000L});
-    public static final BitSet FOLLOW_RIGHT_CURLY_in_variable_definition2917 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_literal_in_pattern968 = new BitSet(new long[]{0x000000001B800002L});
-    public static final BitSet FOLLOW_LEFT_CURLY_in_pattern982 = new BitSet(new long[]{0x000000000B800000L});
-    public static final BitSet FOLLOW_literal_in_pattern984 = new BitSet(new long[]{0x0000000020000000L});
-    public static final BitSet FOLLOW_RIGHT_CURLY_in_pattern986 = new BitSet(new long[]{0x000000001B800002L});
-    public static final BitSet FOLLOW_LEFT_SQUARE_in_pattern1000 = new BitSet(new long[]{0x000000001B800000L});
-    public static final BitSet FOLLOW_pattern_in_pattern1002 = new BitSet(new long[]{0x0000000001000000L});
-    public static final BitSet FOLLOW_RIGHT_SQUARE_in_pattern1004 = new BitSet(new long[]{0x000000001B800002L});
-    public static final BitSet FOLLOW_LEFT_CURLY_in_variable_reference1039 = new BitSet(new long[]{0x0000000002000000L});
-    public static final BitSet FOLLOW_LITERAL_in_variable_reference1050 = new BitSet(new long[]{0x0000000020000000L});
-    public static final BitSet FOLLOW_RIGHT_CURLY_in_variable_reference1054 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_CURLY_in_variable_reference21132 = new BitSet(new long[]{0x0000000002000000L});
-    public static final BitSet FOLLOW_LITERAL_in_variable_reference21136 = new BitSet(new long[]{0x0000000020000000L});
-    public static final BitSet FOLLOW_RIGHT_CURLY_in_variable_reference21138 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LITERAL_in_condition_key1167 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LITERAL_in_consequence_key1190 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LITERAL_in_keyword_key1213 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LITERAL_in_any_key1236 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_set_in_literal656 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_CURLY_in_variable_definition692 = new BitSet(new long[]{0x0000000002000000L});
+    public static final BitSet FOLLOW_LITERAL_in_variable_definition703 = new BitSet(new long[]{0x0000000028000000L});
+    public static final BitSet FOLLOW_COLON_in_variable_definition707 = new BitSet(new long[]{0x000000001B800000L});
+    public static final BitSet FOLLOW_pattern_in_variable_definition711 = new BitSet(new long[]{0x0000000020000000L});
+    public static final BitSet FOLLOW_RIGHT_CURLY_in_variable_definition720 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_CURLY_in_variable_definition2896 = new BitSet(new long[]{0x0000000002000000L});
+    public static final BitSet FOLLOW_LITERAL_in_variable_definition2900 = new BitSet(new long[]{0x0000000028000000L});
+    public static final BitSet FOLLOW_COLON_in_variable_definition2904 = new BitSet(new long[]{0x000000001B800000L});
+    public static final BitSet FOLLOW_pattern_in_variable_definition2908 = new BitSet(new long[]{0x0000000020000000L});
+    public static final BitSet FOLLOW_RIGHT_CURLY_in_variable_definition2915 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_literal_in_pattern966 = new BitSet(new long[]{0x000000001B800002L});
+    public static final BitSet FOLLOW_LEFT_CURLY_in_pattern980 = new BitSet(new long[]{0x000000000B800000L});
+    public static final BitSet FOLLOW_literal_in_pattern982 = new BitSet(new long[]{0x0000000020000000L});
+    public static final BitSet FOLLOW_RIGHT_CURLY_in_pattern984 = new BitSet(new long[]{0x000000001B800002L});
+    public static final BitSet FOLLOW_LEFT_SQUARE_in_pattern998 = new BitSet(new long[]{0x000000001B800000L});
+    public static final BitSet FOLLOW_pattern_in_pattern1000 = new BitSet(new long[]{0x0000000001000000L});
+    public static final BitSet FOLLOW_RIGHT_SQUARE_in_pattern1002 = new BitSet(new long[]{0x000000001B800002L});
+    public static final BitSet FOLLOW_LEFT_CURLY_in_variable_reference1037 = new BitSet(new long[]{0x0000000002000000L});
+    public static final BitSet FOLLOW_LITERAL_in_variable_reference1048 = new BitSet(new long[]{0x0000000020000000L});
+    public static final BitSet FOLLOW_RIGHT_CURLY_in_variable_reference1052 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_CURLY_in_variable_reference21130 = new BitSet(new long[]{0x0000000002000000L});
+    public static final BitSet FOLLOW_LITERAL_in_variable_reference21134 = new BitSet(new long[]{0x0000000020000000L});
+    public static final BitSet FOLLOW_RIGHT_CURLY_in_variable_reference21136 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LITERAL_in_condition_key1165 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LITERAL_in_consequence_key1188 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LITERAL_in_keyword_key1211 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LITERAL_in_any_key1234 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_meta_section_in_synpred4334 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_condition_key_in_synpred6400 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_consequence_key_in_synpred7409 = new BitSet(new long[]{0x0000000000000002L});
@@ -3027,9 +3027,9 @@ public class DSLMapParser extends Parser {
     public static final BitSet FOLLOW_literal_in_synpred15636 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_EQUALS_in_synpred16638 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_COMMA_in_synpred17640 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_literal_in_synpred23968 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_SQUARE_in_synpred251000 = new BitSet(new long[]{0x000000001B800000L});
-    public static final BitSet FOLLOW_pattern_in_synpred251002 = new BitSet(new long[]{0x0000000001000000L});
-    public static final BitSet FOLLOW_RIGHT_SQUARE_in_synpred251004 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_literal_in_synpred23966 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_SQUARE_in_synpred25998 = new BitSet(new long[]{0x000000001B800000L});
+    public static final BitSet FOLLOW_pattern_in_synpred251000 = new BitSet(new long[]{0x0000000001000000L});
+    public static final BitSet FOLLOW_RIGHT_SQUARE_in_synpred251002 = new BitSet(new long[]{0x0000000000000002L});
 
 }
