@@ -7,10 +7,10 @@
 			<td>
 				@{message}<br/>
 				Reason: @{reason}<br/>
-				@if{ causes != null && !causes.isEmpty() }
+				@if{ causes != null && causes.size() > 0 }
 					<span>Causes:</span>
 					<ul>	
-					@foreach{causes as cause}
+					@foreach{cause:causes}
 						<li>@{cause}</li>
 					@end{}
 					</ul>
