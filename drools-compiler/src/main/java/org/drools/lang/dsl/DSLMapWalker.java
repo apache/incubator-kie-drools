@@ -1,4 +1,4 @@
-// $ANTLR 3.0.1 DSLMapWalker.g 2008-05-27 14:03:46
+// $ANTLR 3.0.1 DSLMapWalker.g 2008-06-10 17:00:30
 
 	package org.drools.lang.dsl;
 	
@@ -64,7 +64,7 @@ public class DSLMapWalker extends TreeParser {
 
 
     // $ANTLR start mapping_file
-    // DSLMapWalker.g:17:1: mapping_file returns [DSLMapping mapping] : ^( VT_DSL_GRAMMAR ( entry )* ) ;
+    // DSLMapWalker.g:17:1: mapping_file returns [DSLMapping mapping] : ^( VT_DSL_GRAMMAR ( valid_entry )* ) ;
     public final DSLMapping mapping_file() throws RecognitionException {
         mapping_file_stack.push(new mapping_file_scope());
         DSLMapping mapping = null;
@@ -73,30 +73,30 @@ public class DSLMapWalker extends TreeParser {
         	((mapping_file_scope)mapping_file_stack.peek()).retval = new DefaultDSLMapping() ;
 
         try {
-            // DSLMapWalker.g:24:2: ( ^( VT_DSL_GRAMMAR ( entry )* ) )
-            // DSLMapWalker.g:24:4: ^( VT_DSL_GRAMMAR ( entry )* )
+            // DSLMapWalker.g:24:2: ( ^( VT_DSL_GRAMMAR ( valid_entry )* ) )
+            // DSLMapWalker.g:24:4: ^( VT_DSL_GRAMMAR ( valid_entry )* )
             {
             match(input,VT_DSL_GRAMMAR,FOLLOW_VT_DSL_GRAMMAR_in_mapping_file54); 
 
             if ( input.LA(1)==Token.DOWN ) {
                 match(input, Token.DOWN, null); 
-                // DSLMapWalker.g:24:21: ( entry )*
+                // DSLMapWalker.g:24:21: ( valid_entry )*
                 loop1:
                 do {
                     int alt1=2;
                     int LA1_0 = input.LA(1);
 
-                    if ( (LA1_0==VT_ENTRY) ) {
+                    if ( ((LA1_0>=VT_COMMENT && LA1_0<=VT_ENTRY)) ) {
                         alt1=1;
                     }
 
 
                     switch (alt1) {
                 	case 1 :
-                	    // DSLMapWalker.g:24:21: entry
+                	    // DSLMapWalker.g:24:21: valid_entry
                 	    {
-                	    pushFollow(FOLLOW_entry_in_mapping_file56);
-                	    entry();
+                	    pushFollow(FOLLOW_valid_entry_in_mapping_file56);
+                	    valid_entry();
                 	    _fsp--;
 
 
@@ -112,12 +112,7 @@ public class DSLMapWalker extends TreeParser {
                 match(input, Token.UP, null); 
             }
             
-            		//System.out.println("done parsing file");
-            		//System.out.println(((mapping_file_scope)mapping_file_stack.peek()).retval.dumpFile());
             		mapping = ((mapping_file_scope)mapping_file_stack.peek()).retval;
-            		//java.io.StringWriter sw = new java.io.StringWriter();
-            		//((mapping_file_scope)mapping_file_stack.peek()).retval.saveMapping(sw);
-            		//System.out.println(sw.toString());
             	
 
             }
@@ -135,49 +130,17 @@ public class DSLMapWalker extends TreeParser {
     // $ANTLR end mapping_file
 
 
-    // $ANTLR start mapping_entry
-    // DSLMapWalker.g:35:1: mapping_entry : ent= entry ;
-    public final void mapping_entry() throws RecognitionException {
-        DSLMappingEntry ent = null;
-
-
-        try {
-            // DSLMapWalker.g:36:2: (ent= entry )
-            // DSLMapWalker.g:36:4: ent= entry
-            {
-            pushFollow(FOLLOW_entry_in_mapping_entry76);
-            ent=entry();
-            _fsp--;
-
-            
-            		((mapping_file_scope)mapping_file_stack.peek()).retval.addEntry(ent);
-            		//System.out.println("mapping size is now " + ((mapping_file_scope)mapping_file_stack.peek()).retval.getEntries().size());
-            	
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-        finally {
-        }
-        return ;
-    }
-    // $ANTLR end mapping_entry
-
-
     // $ANTLR start valid_entry
-    // DSLMapWalker.g:43:1: valid_entry returns [DSLMappingEntry mappingEntry] : (ent= entry | VT_COMMENT );
+    // DSLMapWalker.g:30:1: valid_entry returns [DSLMappingEntry mappingEntry] : (ent= entry | ^( VT_COMMENT lc= LINE_COMMENT ) );
     public final DSLMappingEntry valid_entry() throws RecognitionException {
         DSLMappingEntry mappingEntry = null;
 
+        CommonTree lc=null;
         DSLMappingEntry ent = null;
 
 
         try {
-            // DSLMapWalker.g:44:2: (ent= entry | VT_COMMENT )
+            // DSLMapWalker.g:31:2: (ent= entry | ^( VT_COMMENT lc= LINE_COMMENT ) )
             int alt2=2;
             int LA2_0 = input.LA(1);
 
@@ -189,26 +152,32 @@ public class DSLMapWalker extends TreeParser {
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("43:1: valid_entry returns [DSLMappingEntry mappingEntry] : (ent= entry | VT_COMMENT );", 2, 0, input);
+                    new NoViableAltException("30:1: valid_entry returns [DSLMappingEntry mappingEntry] : (ent= entry | ^( VT_COMMENT lc= LINE_COMMENT ) );", 2, 0, input);
 
                 throw nvae;
             }
             switch (alt2) {
                 case 1 :
-                    // DSLMapWalker.g:44:4: ent= entry
+                    // DSLMapWalker.g:31:4: ent= entry
                     {
-                    pushFollow(FOLLOW_entry_in_valid_entry97);
+                    pushFollow(FOLLOW_entry_in_valid_entry78);
                     ent=entry();
                     _fsp--;
 
-                    mappingEntry = ent;
+                    mappingEntry = ent; 
 
                     }
                     break;
                 case 2 :
-                    // DSLMapWalker.g:45:4: VT_COMMENT
+                    // DSLMapWalker.g:32:4: ^( VT_COMMENT lc= LINE_COMMENT )
                     {
-                    match(input,VT_COMMENT,FOLLOW_VT_COMMENT_in_valid_entry104); 
+                    match(input,VT_COMMENT,FOLLOW_VT_COMMENT_in_valid_entry86); 
+
+                    match(input, Token.DOWN, null); 
+                    lc=(CommonTree)input.LT(1);
+                    match(input,LINE_COMMENT,FOLLOW_LINE_COMMENT_in_valid_entry90); 
+
+                    match(input, Token.UP, null); 
                     mappingEntry = null;
 
                     }
@@ -237,7 +206,7 @@ public class DSLMapWalker extends TreeParser {
 
 
     // $ANTLR start entry
-    // DSLMapWalker.g:49:1: entry returns [DSLMappingEntry mappingEntry] : ^( VT_ENTRY scope_section ( meta_section )? key_section value_section ) ;
+    // DSLMapWalker.g:36:1: entry returns [DSLMappingEntry mappingEntry] : ^( VT_ENTRY scope_section ( meta_section )? key_section value_section ) ;
     public final DSLMappingEntry entry() throws RecognitionException {
         entry_stack.push(new entry_scope());
         DSLMappingEntry mappingEntry = null;
@@ -249,17 +218,17 @@ public class DSLMapWalker extends TreeParser {
         	((entry_scope)entry_stack.peek()).valuebuffer = new StringBuffer();
 
         try {
-            // DSLMapWalker.g:63:2: ( ^( VT_ENTRY scope_section ( meta_section )? key_section value_section ) )
-            // DSLMapWalker.g:63:4: ^( VT_ENTRY scope_section ( meta_section )? key_section value_section )
+            // DSLMapWalker.g:50:2: ( ^( VT_ENTRY scope_section ( meta_section )? key_section value_section ) )
+            // DSLMapWalker.g:50:4: ^( VT_ENTRY scope_section ( meta_section )? key_section value_section )
             {
-            match(input,VT_ENTRY,FOLLOW_VT_ENTRY_in_entry132); 
+            match(input,VT_ENTRY,FOLLOW_VT_ENTRY_in_entry119); 
 
             match(input, Token.DOWN, null); 
-            pushFollow(FOLLOW_scope_section_in_entry134);
+            pushFollow(FOLLOW_scope_section_in_entry121);
             scope_section();
             _fsp--;
 
-            // DSLMapWalker.g:63:29: ( meta_section )?
+            // DSLMapWalker.g:50:29: ( meta_section )?
             int alt3=2;
             int LA3_0 = input.LA(1);
 
@@ -268,9 +237,9 @@ public class DSLMapWalker extends TreeParser {
             }
             switch (alt3) {
                 case 1 :
-                    // DSLMapWalker.g:63:29: meta_section
+                    // DSLMapWalker.g:50:29: meta_section
                     {
-                    pushFollow(FOLLOW_meta_section_in_entry136);
+                    pushFollow(FOLLOW_meta_section_in_entry123);
                     meta_section();
                     _fsp--;
 
@@ -280,31 +249,21 @@ public class DSLMapWalker extends TreeParser {
 
             }
 
-            pushFollow(FOLLOW_key_section_in_entry139);
+            pushFollow(FOLLOW_key_section_in_entry126);
             key_section();
             _fsp--;
 
             ((entry_scope)entry_stack.peek()).retval.variables = ((entry_scope)entry_stack.peek()).variables; ((entry_scope)entry_stack.peek()).retval.setMappingKey(((entry_scope)entry_stack.peek()).keybuffer.toString());
-            pushFollow(FOLLOW_value_section_in_entry145);
+            pushFollow(FOLLOW_value_section_in_entry132);
             value_section();
             _fsp--;
 
 
             match(input, Token.UP, null); 
             
-            		//System.out.println("for this entry, metadata is " + ((entry_scope)entry_stack.peek()).retval.getMetaData().getMetaData());
-            		//System.out.println("variables are " + ((entry_scope)entry_stack.peek()).variables);
-            		
-            		//System.out.println("keybuffer: " + ((entry_scope)entry_stack.peek()).keybuffer);
-            		//System.out.println("valuebuffer: " + ((entry_scope)entry_stack.peek()).valuebuffer);
-            //		((mapping_file_scope)mapping_file_stack.peek()).retval.addEntry(((entry_scope)entry_stack.peek()).retval);
-            //		System.out.println("mapping size is now " + ((mapping_file_scope)mapping_file_stack.peek()).retval.getEntries().size());
-            		//((entry_scope)entry_stack.peek()).retval.variables = ((entry_scope)entry_stack.peek()).variables;
-            		//((entry_scope)entry_stack.peek()).retval.setMappingKey(((entry_scope)entry_stack.peek()).keybuffer.toString());
             		((entry_scope)entry_stack.peek()).retval.setMappingValue(((entry_scope)entry_stack.peek()).valuebuffer.toString());
-            		//System.out.println("keypattern is " + ((entry_scope)entry_stack.peek()).retval.getKeyPattern());
-            		//System.out.println("valuepattern is " + ((entry_scope)entry_stack.peek()).retval.getValuePattern());
             		mappingEntry = ((entry_scope)entry_stack.peek()).retval;
+            		((mapping_file_scope)mapping_file_stack.peek()).retval.addEntry(mappingEntry);
             	
 
             }
@@ -323,20 +282,20 @@ public class DSLMapWalker extends TreeParser {
 
 
     // $ANTLR start scope_section
-    // DSLMapWalker.g:83:1: scope_section : ^(thescope= VT_SCOPE ( condition_key )? ( consequence_key )? ( keyword_key )? ( any_key )? ) ;
+    // DSLMapWalker.g:60:1: scope_section : ^(thescope= VT_SCOPE ( condition_key )? ( consequence_key )? ( keyword_key )? ( any_key )? ) ;
     public final void scope_section() throws RecognitionException {
         CommonTree thescope=null;
 
         try {
-            // DSLMapWalker.g:84:2: ( ^(thescope= VT_SCOPE ( condition_key )? ( consequence_key )? ( keyword_key )? ( any_key )? ) )
-            // DSLMapWalker.g:84:4: ^(thescope= VT_SCOPE ( condition_key )? ( consequence_key )? ( keyword_key )? ( any_key )? )
+            // DSLMapWalker.g:61:2: ( ^(thescope= VT_SCOPE ( condition_key )? ( consequence_key )? ( keyword_key )? ( any_key )? ) )
+            // DSLMapWalker.g:61:4: ^(thescope= VT_SCOPE ( condition_key )? ( consequence_key )? ( keyword_key )? ( any_key )? )
             {
             thescope=(CommonTree)input.LT(1);
-            match(input,VT_SCOPE,FOLLOW_VT_SCOPE_in_scope_section165); 
+            match(input,VT_SCOPE,FOLLOW_VT_SCOPE_in_scope_section152); 
 
             if ( input.LA(1)==Token.DOWN ) {
                 match(input, Token.DOWN, null); 
-                // DSLMapWalker.g:84:24: ( condition_key )?
+                // DSLMapWalker.g:61:24: ( condition_key )?
                 int alt4=2;
                 int LA4_0 = input.LA(1);
 
@@ -345,9 +304,9 @@ public class DSLMapWalker extends TreeParser {
                 }
                 switch (alt4) {
                     case 1 :
-                        // DSLMapWalker.g:84:24: condition_key
+                        // DSLMapWalker.g:61:24: condition_key
                         {
-                        pushFollow(FOLLOW_condition_key_in_scope_section167);
+                        pushFollow(FOLLOW_condition_key_in_scope_section154);
                         condition_key();
                         _fsp--;
 
@@ -357,7 +316,7 @@ public class DSLMapWalker extends TreeParser {
 
                 }
 
-                // DSLMapWalker.g:84:39: ( consequence_key )?
+                // DSLMapWalker.g:61:39: ( consequence_key )?
                 int alt5=2;
                 int LA5_0 = input.LA(1);
 
@@ -366,9 +325,9 @@ public class DSLMapWalker extends TreeParser {
                 }
                 switch (alt5) {
                     case 1 :
-                        // DSLMapWalker.g:84:39: consequence_key
+                        // DSLMapWalker.g:61:39: consequence_key
                         {
-                        pushFollow(FOLLOW_consequence_key_in_scope_section170);
+                        pushFollow(FOLLOW_consequence_key_in_scope_section157);
                         consequence_key();
                         _fsp--;
 
@@ -378,7 +337,7 @@ public class DSLMapWalker extends TreeParser {
 
                 }
 
-                // DSLMapWalker.g:84:56: ( keyword_key )?
+                // DSLMapWalker.g:61:56: ( keyword_key )?
                 int alt6=2;
                 int LA6_0 = input.LA(1);
 
@@ -387,9 +346,9 @@ public class DSLMapWalker extends TreeParser {
                 }
                 switch (alt6) {
                     case 1 :
-                        // DSLMapWalker.g:84:56: keyword_key
+                        // DSLMapWalker.g:61:56: keyword_key
                         {
-                        pushFollow(FOLLOW_keyword_key_in_scope_section173);
+                        pushFollow(FOLLOW_keyword_key_in_scope_section160);
                         keyword_key();
                         _fsp--;
 
@@ -399,7 +358,7 @@ public class DSLMapWalker extends TreeParser {
 
                 }
 
-                // DSLMapWalker.g:84:69: ( any_key )?
+                // DSLMapWalker.g:61:69: ( any_key )?
                 int alt7=2;
                 int LA7_0 = input.LA(1);
 
@@ -408,9 +367,9 @@ public class DSLMapWalker extends TreeParser {
                 }
                 switch (alt7) {
                     case 1 :
-                        // DSLMapWalker.g:84:69: any_key
+                        // DSLMapWalker.g:61:69: any_key
                         {
-                        pushFollow(FOLLOW_any_key_in_scope_section176);
+                        pushFollow(FOLLOW_any_key_in_scope_section163);
                         any_key();
                         _fsp--;
 
@@ -439,19 +398,19 @@ public class DSLMapWalker extends TreeParser {
 
 
     // $ANTLR start meta_section
-    // DSLMapWalker.g:89:1: meta_section : ^( VT_META (metalit= LITERAL )? ) ;
+    // DSLMapWalker.g:66:1: meta_section : ^( VT_META (metalit= LITERAL )? ) ;
     public final void meta_section() throws RecognitionException {
         CommonTree metalit=null;
 
         try {
-            // DSLMapWalker.g:90:2: ( ^( VT_META (metalit= LITERAL )? ) )
-            // DSLMapWalker.g:90:4: ^( VT_META (metalit= LITERAL )? )
+            // DSLMapWalker.g:67:2: ( ^( VT_META (metalit= LITERAL )? ) )
+            // DSLMapWalker.g:67:4: ^( VT_META (metalit= LITERAL )? )
             {
-            match(input,VT_META,FOLLOW_VT_META_in_meta_section193); 
+            match(input,VT_META,FOLLOW_VT_META_in_meta_section180); 
 
             if ( input.LA(1)==Token.DOWN ) {
                 match(input, Token.DOWN, null); 
-                // DSLMapWalker.g:90:21: (metalit= LITERAL )?
+                // DSLMapWalker.g:67:21: (metalit= LITERAL )?
                 int alt8=2;
                 int LA8_0 = input.LA(1);
 
@@ -460,10 +419,10 @@ public class DSLMapWalker extends TreeParser {
                 }
                 switch (alt8) {
                     case 1 :
-                        // DSLMapWalker.g:90:21: metalit= LITERAL
+                        // DSLMapWalker.g:67:21: metalit= LITERAL
                         {
                         metalit=(CommonTree)input.LT(1);
-                        match(input,LITERAL,FOLLOW_LITERAL_in_meta_section197); 
+                        match(input,LITERAL,FOLLOW_LITERAL_in_meta_section184); 
 
                         }
                         break;
@@ -496,16 +455,16 @@ public class DSLMapWalker extends TreeParser {
 
 
     // $ANTLR start key_section
-    // DSLMapWalker.g:100:1: key_section : ^( VT_ENTRY_KEY ( key_sentence )+ ) ;
+    // DSLMapWalker.g:77:1: key_section : ^( VT_ENTRY_KEY ( key_sentence )+ ) ;
     public final void key_section() throws RecognitionException {
         try {
-            // DSLMapWalker.g:101:2: ( ^( VT_ENTRY_KEY ( key_sentence )+ ) )
-            // DSLMapWalker.g:101:4: ^( VT_ENTRY_KEY ( key_sentence )+ )
+            // DSLMapWalker.g:78:2: ( ^( VT_ENTRY_KEY ( key_sentence )+ ) )
+            // DSLMapWalker.g:78:4: ^( VT_ENTRY_KEY ( key_sentence )+ )
             {
-            match(input,VT_ENTRY_KEY,FOLLOW_VT_ENTRY_KEY_in_key_section214); 
+            match(input,VT_ENTRY_KEY,FOLLOW_VT_ENTRY_KEY_in_key_section201); 
 
             match(input, Token.DOWN, null); 
-            // DSLMapWalker.g:101:19: ( key_sentence )+
+            // DSLMapWalker.g:78:19: ( key_sentence )+
             int cnt9=0;
             loop9:
             do {
@@ -519,9 +478,9 @@ public class DSLMapWalker extends TreeParser {
 
                 switch (alt9) {
             	case 1 :
-            	    // DSLMapWalker.g:101:19: key_sentence
+            	    // DSLMapWalker.g:78:19: key_sentence
             	    {
-            	    pushFollow(FOLLOW_key_sentence_in_key_section216);
+            	    pushFollow(FOLLOW_key_sentence_in_key_section203);
             	    key_sentence();
             	    _fsp--;
 
@@ -540,9 +499,6 @@ public class DSLMapWalker extends TreeParser {
 
 
             match(input, Token.UP, null); 
-            
-            		//((entry_scope)entry_stack.peek()).retval.setMappingKey(((entry_scope)entry_stack.peek()).keybuffer.toString());
-            	
 
             }
 
@@ -559,12 +515,12 @@ public class DSLMapWalker extends TreeParser {
 
 
     // $ANTLR start key_sentence
-    // DSLMapWalker.g:107:1: key_sentence : ( variable_definition | vtl= VT_LITERAL | VT_SPACE );
+    // DSLMapWalker.g:81:1: key_sentence : ( variable_definition | vtl= VT_LITERAL | VT_SPACE );
     public final void key_sentence() throws RecognitionException {
         CommonTree vtl=null;
 
         try {
-            // DSLMapWalker.g:108:2: ( variable_definition | vtl= VT_LITERAL | VT_SPACE )
+            // DSLMapWalker.g:82:2: ( variable_definition | vtl= VT_LITERAL | VT_SPACE )
             int alt10=3;
             switch ( input.LA(1) ) {
             case VT_VAR_DEF:
@@ -584,16 +540,16 @@ public class DSLMapWalker extends TreeParser {
                 break;
             default:
                 NoViableAltException nvae =
-                    new NoViableAltException("107:1: key_sentence : ( variable_definition | vtl= VT_LITERAL | VT_SPACE );", 10, 0, input);
+                    new NoViableAltException("81:1: key_sentence : ( variable_definition | vtl= VT_LITERAL | VT_SPACE );", 10, 0, input);
 
                 throw nvae;
             }
 
             switch (alt10) {
                 case 1 :
-                    // DSLMapWalker.g:108:4: variable_definition
+                    // DSLMapWalker.g:82:4: variable_definition
                     {
-                    pushFollow(FOLLOW_variable_definition_in_key_sentence234);
+                    pushFollow(FOLLOW_variable_definition_in_key_sentence218);
                     variable_definition();
                     _fsp--;
 
@@ -601,21 +557,20 @@ public class DSLMapWalker extends TreeParser {
                     }
                     break;
                 case 2 :
-                    // DSLMapWalker.g:109:4: vtl= VT_LITERAL
+                    // DSLMapWalker.g:83:4: vtl= VT_LITERAL
                     {
                     vtl=(CommonTree)input.LT(1);
-                    match(input,VT_LITERAL,FOLLOW_VT_LITERAL_in_key_sentence241); 
+                    match(input,VT_LITERAL,FOLLOW_VT_LITERAL_in_key_sentence225); 
                     
-                    		//System.out.println("in key_sentence, literal is " + vtl.getText());
                     		((entry_scope)entry_stack.peek()).keybuffer.append(vtl.getText());
                     	
 
                     }
                     break;
                 case 3 :
-                    // DSLMapWalker.g:114:4: VT_SPACE
+                    // DSLMapWalker.g:87:4: VT_SPACE
                     {
-                    match(input,VT_SPACE,FOLLOW_VT_SPACE_in_key_sentence250); 
+                    match(input,VT_SPACE,FOLLOW_VT_SPACE_in_key_sentence234); 
                     
                     		((entry_scope)entry_stack.peek()).keybuffer.append("\\s+");
                     	
@@ -637,16 +592,16 @@ public class DSLMapWalker extends TreeParser {
 
 
     // $ANTLR start value_section
-    // DSLMapWalker.g:124:1: value_section : ^( VT_ENTRY_VAL ( value_sentence )+ ) ;
+    // DSLMapWalker.g:93:1: value_section : ^( VT_ENTRY_VAL ( value_sentence )+ ) ;
     public final void value_section() throws RecognitionException {
         try {
-            // DSLMapWalker.g:128:2: ( ^( VT_ENTRY_VAL ( value_sentence )+ ) )
-            // DSLMapWalker.g:128:4: ^( VT_ENTRY_VAL ( value_sentence )+ )
+            // DSLMapWalker.g:97:2: ( ^( VT_ENTRY_VAL ( value_sentence )+ ) )
+            // DSLMapWalker.g:97:4: ^( VT_ENTRY_VAL ( value_sentence )+ )
             {
-            match(input,VT_ENTRY_VAL,FOLLOW_VT_ENTRY_VAL_in_value_section273); 
+            match(input,VT_ENTRY_VAL,FOLLOW_VT_ENTRY_VAL_in_value_section255); 
 
             match(input, Token.DOWN, null); 
-            // DSLMapWalker.g:128:19: ( value_sentence )+
+            // DSLMapWalker.g:97:19: ( value_sentence )+
             int cnt11=0;
             loop11:
             do {
@@ -660,9 +615,9 @@ public class DSLMapWalker extends TreeParser {
 
                 switch (alt11) {
             	case 1 :
-            	    // DSLMapWalker.g:128:19: value_sentence
+            	    // DSLMapWalker.g:97:19: value_sentence
             	    {
-            	    pushFollow(FOLLOW_value_sentence_in_value_section275);
+            	    pushFollow(FOLLOW_value_sentence_in_value_section257);
             	    value_sentence();
             	    _fsp--;
 
@@ -681,9 +636,6 @@ public class DSLMapWalker extends TreeParser {
 
 
             match(input, Token.UP, null); 
-            
-            		//((entry_scope)entry_stack.peek()).retval.setMappingValue(((entry_scope)entry_stack.peek()).valuebuffer.toString());
-            	
 
             }
 
@@ -703,12 +655,12 @@ public class DSLMapWalker extends TreeParser {
 
 
     // $ANTLR start value_sentence
-    // DSLMapWalker.g:134:1: value_sentence : ( variable_reference | vtl= VT_LITERAL | VT_SPACE );
+    // DSLMapWalker.g:100:1: value_sentence : ( variable_reference | vtl= VT_LITERAL | VT_SPACE );
     public final void value_sentence() throws RecognitionException {
         CommonTree vtl=null;
 
         try {
-            // DSLMapWalker.g:135:2: ( variable_reference | vtl= VT_LITERAL | VT_SPACE )
+            // DSLMapWalker.g:101:2: ( variable_reference | vtl= VT_LITERAL | VT_SPACE )
             int alt12=3;
             switch ( input.LA(1) ) {
             case VT_VAR_REF:
@@ -728,16 +680,16 @@ public class DSLMapWalker extends TreeParser {
                 break;
             default:
                 NoViableAltException nvae =
-                    new NoViableAltException("134:1: value_sentence : ( variable_reference | vtl= VT_LITERAL | VT_SPACE );", 12, 0, input);
+                    new NoViableAltException("100:1: value_sentence : ( variable_reference | vtl= VT_LITERAL | VT_SPACE );", 12, 0, input);
 
                 throw nvae;
             }
 
             switch (alt12) {
                 case 1 :
-                    // DSLMapWalker.g:135:4: variable_reference
+                    // DSLMapWalker.g:101:4: variable_reference
                     {
-                    pushFollow(FOLLOW_variable_reference_in_value_sentence295);
+                    pushFollow(FOLLOW_variable_reference_in_value_sentence274);
                     variable_reference();
                     _fsp--;
 
@@ -745,21 +697,20 @@ public class DSLMapWalker extends TreeParser {
                     }
                     break;
                 case 2 :
-                    // DSLMapWalker.g:136:4: vtl= VT_LITERAL
+                    // DSLMapWalker.g:102:4: vtl= VT_LITERAL
                     {
                     vtl=(CommonTree)input.LT(1);
-                    match(input,VT_LITERAL,FOLLOW_VT_LITERAL_in_value_sentence302); 
+                    match(input,VT_LITERAL,FOLLOW_VT_LITERAL_in_value_sentence281); 
                     
-                    		//System.out.println("in value_sentence, literal is " + vtl.getText());
                     		((entry_scope)entry_stack.peek()).valuebuffer.append(vtl.getText().replaceAll("\\$", "\\\\\\$"));
                     	
 
                     }
                     break;
                 case 3 :
-                    // DSLMapWalker.g:141:4: VT_SPACE
+                    // DSLMapWalker.g:106:4: VT_SPACE
                     {
-                    match(input,VT_SPACE,FOLLOW_VT_SPACE_in_value_sentence310); 
+                    match(input,VT_SPACE,FOLLOW_VT_SPACE_in_value_sentence289); 
                     
                     		((entry_scope)entry_stack.peek()).valuebuffer.append(" ");
                     	
@@ -781,19 +732,16 @@ public class DSLMapWalker extends TreeParser {
 
 
     // $ANTLR start literal
-    // DSLMapWalker.g:151:1: literal : theliteral= VT_LITERAL ;
+    // DSLMapWalker.g:112:1: literal : theliteral= VT_LITERAL ;
     public final void literal() throws RecognitionException {
         CommonTree theliteral=null;
 
         try {
-            // DSLMapWalker.g:152:2: (theliteral= VT_LITERAL )
-            // DSLMapWalker.g:152:4: theliteral= VT_LITERAL
+            // DSLMapWalker.g:113:2: (theliteral= VT_LITERAL )
+            // DSLMapWalker.g:113:4: theliteral= VT_LITERAL
             {
             theliteral=(CommonTree)input.LT(1);
-            match(input,VT_LITERAL,FOLLOW_VT_LITERAL_in_literal330); 
-            
-            	//System.out.println("theliteral is " + theliteral.getText());
-            	
+            match(input,VT_LITERAL,FOLLOW_VT_LITERAL_in_literal307); 
 
             }
 
@@ -810,21 +758,21 @@ public class DSLMapWalker extends TreeParser {
 
 
     // $ANTLR start variable_definition
-    // DSLMapWalker.g:159:1: variable_definition : ^( VT_VAR_DEF varname= LITERAL (pattern= VT_PATTERN )? ) ;
+    // DSLMapWalker.g:116:1: variable_definition : ^( VT_VAR_DEF varname= LITERAL (pattern= VT_PATTERN )? ) ;
     public final void variable_definition() throws RecognitionException {
         CommonTree varname=null;
         CommonTree pattern=null;
 
         try {
-            // DSLMapWalker.g:161:2: ( ^( VT_VAR_DEF varname= LITERAL (pattern= VT_PATTERN )? ) )
-            // DSLMapWalker.g:161:6: ^( VT_VAR_DEF varname= LITERAL (pattern= VT_PATTERN )? )
+            // DSLMapWalker.g:117:2: ( ^( VT_VAR_DEF varname= LITERAL (pattern= VT_PATTERN )? ) )
+            // DSLMapWalker.g:117:6: ^( VT_VAR_DEF varname= LITERAL (pattern= VT_PATTERN )? )
             {
-            match(input,VT_VAR_DEF,FOLLOW_VT_VAR_DEF_in_variable_definition351); 
+            match(input,VT_VAR_DEF,FOLLOW_VT_VAR_DEF_in_variable_definition323); 
 
             match(input, Token.DOWN, null); 
             varname=(CommonTree)input.LT(1);
-            match(input,LITERAL,FOLLOW_LITERAL_in_variable_definition355); 
-            // DSLMapWalker.g:161:42: (pattern= VT_PATTERN )?
+            match(input,LITERAL,FOLLOW_LITERAL_in_variable_definition327); 
+            // DSLMapWalker.g:117:42: (pattern= VT_PATTERN )?
             int alt13=2;
             int LA13_0 = input.LA(1);
 
@@ -833,10 +781,10 @@ public class DSLMapWalker extends TreeParser {
             }
             switch (alt13) {
                 case 1 :
-                    // DSLMapWalker.g:161:42: pattern= VT_PATTERN
+                    // DSLMapWalker.g:117:42: pattern= VT_PATTERN
                     {
                     pattern=(CommonTree)input.LT(1);
-                    match(input,VT_PATTERN,FOLLOW_VT_PATTERN_in_variable_definition359); 
+                    match(input,VT_PATTERN,FOLLOW_VT_PATTERN_in_variable_definition331); 
 
                     }
                     break;
@@ -846,7 +794,6 @@ public class DSLMapWalker extends TreeParser {
 
             match(input, Token.UP, null); 
             
-            		//System.out.println("variable " + varname.getText() + " defined with pattern " + pattern);
             		((entry_scope)entry_stack.peek()).counter++;
             		((entry_scope)entry_stack.peek()).variables.put(varname.getText(), new Integer(((entry_scope)entry_stack.peek()).counter));
             		((entry_scope)entry_stack.peek()).keybuffer.append(pattern != null? "(" + pattern.getText() + ")" : "(.*?)");
@@ -867,25 +814,24 @@ public class DSLMapWalker extends TreeParser {
 
 
     // $ANTLR start variable_reference
-    // DSLMapWalker.g:171:1: variable_reference : ^(varref= VT_VAR_REF lit= LITERAL ) ;
+    // DSLMapWalker.g:126:1: variable_reference : ^(varref= VT_VAR_REF lit= LITERAL ) ;
     public final void variable_reference() throws RecognitionException {
         CommonTree varref=null;
         CommonTree lit=null;
 
         try {
-            // DSLMapWalker.g:172:2: ( ^(varref= VT_VAR_REF lit= LITERAL ) )
-            // DSLMapWalker.g:172:4: ^(varref= VT_VAR_REF lit= LITERAL )
+            // DSLMapWalker.g:127:2: ( ^(varref= VT_VAR_REF lit= LITERAL ) )
+            // DSLMapWalker.g:127:4: ^(varref= VT_VAR_REF lit= LITERAL )
             {
             varref=(CommonTree)input.LT(1);
-            match(input,VT_VAR_REF,FOLLOW_VT_VAR_REF_in_variable_reference381); 
+            match(input,VT_VAR_REF,FOLLOW_VT_VAR_REF_in_variable_reference353); 
 
             match(input, Token.DOWN, null); 
             lit=(CommonTree)input.LT(1);
-            match(input,LITERAL,FOLLOW_LITERAL_in_variable_reference385); 
+            match(input,LITERAL,FOLLOW_LITERAL_in_variable_reference357); 
 
             match(input, Token.UP, null); 
             
-            		//System.out.println("varref is " + varref.getText() + " and points to " + lit.getText());
             		((entry_scope)entry_stack.peek()).valuebuffer.append("$" + ((entry_scope)entry_stack.peek()).variables.get(lit.getText()));
             	
 
@@ -904,13 +850,13 @@ public class DSLMapWalker extends TreeParser {
 
 
     // $ANTLR start condition_key
-    // DSLMapWalker.g:179:1: condition_key : VT_CONDITION ;
+    // DSLMapWalker.g:133:1: condition_key : VT_CONDITION ;
     public final void condition_key() throws RecognitionException {
         try {
-            // DSLMapWalker.g:180:2: ( VT_CONDITION )
-            // DSLMapWalker.g:180:4: VT_CONDITION
+            // DSLMapWalker.g:134:2: ( VT_CONDITION )
+            // DSLMapWalker.g:134:4: VT_CONDITION
             {
-            match(input,VT_CONDITION,FOLLOW_VT_CONDITION_in_condition_key403); 
+            match(input,VT_CONDITION,FOLLOW_VT_CONDITION_in_condition_key375); 
             ((entry_scope)entry_stack.peek()).retval.setSection(DSLMappingEntry.CONDITION);
 
             }
@@ -928,13 +874,13 @@ public class DSLMapWalker extends TreeParser {
 
 
     // $ANTLR start consequence_key
-    // DSLMapWalker.g:184:1: consequence_key : VT_CONSEQUENCE ;
+    // DSLMapWalker.g:138:1: consequence_key : VT_CONSEQUENCE ;
     public final void consequence_key() throws RecognitionException {
         try {
-            // DSLMapWalker.g:185:2: ( VT_CONSEQUENCE )
-            // DSLMapWalker.g:185:4: VT_CONSEQUENCE
+            // DSLMapWalker.g:139:2: ( VT_CONSEQUENCE )
+            // DSLMapWalker.g:139:4: VT_CONSEQUENCE
             {
-            match(input,VT_CONSEQUENCE,FOLLOW_VT_CONSEQUENCE_in_consequence_key418); 
+            match(input,VT_CONSEQUENCE,FOLLOW_VT_CONSEQUENCE_in_consequence_key390); 
             ((entry_scope)entry_stack.peek()).retval.setSection(DSLMappingEntry.CONSEQUENCE);
 
             }
@@ -952,13 +898,13 @@ public class DSLMapWalker extends TreeParser {
 
 
     // $ANTLR start keyword_key
-    // DSLMapWalker.g:189:1: keyword_key : VT_KEYWORD ;
+    // DSLMapWalker.g:143:1: keyword_key : VT_KEYWORD ;
     public final void keyword_key() throws RecognitionException {
         try {
-            // DSLMapWalker.g:190:2: ( VT_KEYWORD )
-            // DSLMapWalker.g:190:4: VT_KEYWORD
+            // DSLMapWalker.g:144:2: ( VT_KEYWORD )
+            // DSLMapWalker.g:144:4: VT_KEYWORD
             {
-            match(input,VT_KEYWORD,FOLLOW_VT_KEYWORD_in_keyword_key433); 
+            match(input,VT_KEYWORD,FOLLOW_VT_KEYWORD_in_keyword_key405); 
             ((entry_scope)entry_stack.peek()).retval.setSection(DSLMappingEntry.KEYWORD);
 
             }
@@ -976,13 +922,13 @@ public class DSLMapWalker extends TreeParser {
 
 
     // $ANTLR start any_key
-    // DSLMapWalker.g:194:1: any_key : VT_ANY ;
+    // DSLMapWalker.g:148:1: any_key : VT_ANY ;
     public final void any_key() throws RecognitionException {
         try {
-            // DSLMapWalker.g:195:2: ( VT_ANY )
-            // DSLMapWalker.g:195:4: VT_ANY
+            // DSLMapWalker.g:149:2: ( VT_ANY )
+            // DSLMapWalker.g:149:4: VT_ANY
             {
-            match(input,VT_ANY,FOLLOW_VT_ANY_in_any_key448); 
+            match(input,VT_ANY,FOLLOW_VT_ANY_in_any_key420); 
             ((entry_scope)entry_stack.peek()).retval.setSection(DSLMappingEntry.ANY);
 
             }
@@ -1002,41 +948,41 @@ public class DSLMapWalker extends TreeParser {
  
 
     public static final BitSet FOLLOW_VT_DSL_GRAMMAR_in_mapping_file54 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_entry_in_mapping_file56 = new BitSet(new long[]{0x0000000000000048L});
-    public static final BitSet FOLLOW_entry_in_mapping_entry76 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_entry_in_valid_entry97 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_VT_COMMENT_in_valid_entry104 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_VT_ENTRY_in_entry132 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_scope_section_in_entry134 = new BitSet(new long[]{0x0000000000003000L});
-    public static final BitSet FOLLOW_meta_section_in_entry136 = new BitSet(new long[]{0x0000000000002000L});
-    public static final BitSet FOLLOW_key_section_in_entry139 = new BitSet(new long[]{0x0000000000004000L});
-    public static final BitSet FOLLOW_value_section_in_entry145 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VT_SCOPE_in_scope_section165 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_condition_key_in_scope_section167 = new BitSet(new long[]{0x0000000000000E08L});
-    public static final BitSet FOLLOW_consequence_key_in_scope_section170 = new BitSet(new long[]{0x0000000000000C08L});
-    public static final BitSet FOLLOW_keyword_key_in_scope_section173 = new BitSet(new long[]{0x0000000000000808L});
-    public static final BitSet FOLLOW_any_key_in_scope_section176 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VT_META_in_meta_section193 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_LITERAL_in_meta_section197 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VT_ENTRY_KEY_in_key_section214 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_key_sentence_in_key_section216 = new BitSet(new long[]{0x00000000000A8008L});
-    public static final BitSet FOLLOW_variable_definition_in_key_sentence234 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_VT_LITERAL_in_key_sentence241 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_VT_SPACE_in_key_sentence250 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_VT_ENTRY_VAL_in_value_section273 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_value_sentence_in_value_section275 = new BitSet(new long[]{0x00000000000B0008L});
-    public static final BitSet FOLLOW_variable_reference_in_value_sentence295 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_VT_LITERAL_in_value_sentence302 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_VT_SPACE_in_value_sentence310 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_VT_LITERAL_in_literal330 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_VT_VAR_DEF_in_variable_definition351 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_LITERAL_in_variable_definition355 = new BitSet(new long[]{0x0000000000040008L});
-    public static final BitSet FOLLOW_VT_PATTERN_in_variable_definition359 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VT_VAR_REF_in_variable_reference381 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_LITERAL_in_variable_reference385 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VT_CONDITION_in_condition_key403 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_VT_CONSEQUENCE_in_consequence_key418 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_VT_KEYWORD_in_keyword_key433 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_VT_ANY_in_any_key448 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_valid_entry_in_mapping_file56 = new BitSet(new long[]{0x0000000000000068L});
+    public static final BitSet FOLLOW_entry_in_valid_entry78 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_VT_COMMENT_in_valid_entry86 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_LINE_COMMENT_in_valid_entry90 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VT_ENTRY_in_entry119 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_scope_section_in_entry121 = new BitSet(new long[]{0x0000000000003000L});
+    public static final BitSet FOLLOW_meta_section_in_entry123 = new BitSet(new long[]{0x0000000000002000L});
+    public static final BitSet FOLLOW_key_section_in_entry126 = new BitSet(new long[]{0x0000000000004000L});
+    public static final BitSet FOLLOW_value_section_in_entry132 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VT_SCOPE_in_scope_section152 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_condition_key_in_scope_section154 = new BitSet(new long[]{0x0000000000000E08L});
+    public static final BitSet FOLLOW_consequence_key_in_scope_section157 = new BitSet(new long[]{0x0000000000000C08L});
+    public static final BitSet FOLLOW_keyword_key_in_scope_section160 = new BitSet(new long[]{0x0000000000000808L});
+    public static final BitSet FOLLOW_any_key_in_scope_section163 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VT_META_in_meta_section180 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_LITERAL_in_meta_section184 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VT_ENTRY_KEY_in_key_section201 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_key_sentence_in_key_section203 = new BitSet(new long[]{0x00000000000A8008L});
+    public static final BitSet FOLLOW_variable_definition_in_key_sentence218 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_VT_LITERAL_in_key_sentence225 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_VT_SPACE_in_key_sentence234 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_VT_ENTRY_VAL_in_value_section255 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_value_sentence_in_value_section257 = new BitSet(new long[]{0x00000000000B0008L});
+    public static final BitSet FOLLOW_variable_reference_in_value_sentence274 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_VT_LITERAL_in_value_sentence281 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_VT_SPACE_in_value_sentence289 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_VT_LITERAL_in_literal307 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_VT_VAR_DEF_in_variable_definition323 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_LITERAL_in_variable_definition327 = new BitSet(new long[]{0x0000000000040008L});
+    public static final BitSet FOLLOW_VT_PATTERN_in_variable_definition331 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VT_VAR_REF_in_variable_reference353 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_LITERAL_in_variable_reference357 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VT_CONDITION_in_condition_key375 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_VT_CONSEQUENCE_in_consequence_key390 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_VT_KEYWORD_in_keyword_key405 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_VT_ANY_in_any_key420 = new BitSet(new long[]{0x0000000000000002L});
 
 }

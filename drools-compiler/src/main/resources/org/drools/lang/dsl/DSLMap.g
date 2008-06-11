@@ -27,15 +27,27 @@ tokens {
 
 @parser::header {
 	package org.drools.lang.dsl;
+	import java.util.List;
+	import java.util.ArrayList;
+	import org.drools.lang.dsl.DSLMappingParseException;
 }
 
 @lexer::header {
 	package org.drools.lang.dsl;
+	import java.util.List;
+	import java.util.ArrayList;
+	import org.drools.lang.dsl.DSLMappingParseException;
 }
 
 @parser::members {
 //we may not need the check on [], as the LITERAL token being examined 
 //should not have them.
+	
+	private List errorList = new ArrayList();
+	public List getErrorList(){
+		return errorList;
+	}
+
 	private boolean validateLT(int LTNumber, String text){
 		if (null == input) return false;
 		if (null == input.LT(LTNumber)) return false;
@@ -53,23 +65,19 @@ tokens {
 		return validateLT(1, text);
 	}
 	
-	protected void mismatch(IntStream input, int ttype, BitSet follow)
-		throws RecognitionException{
-		throw new MismatchedTokenException(ttype, input);
-	}
-
-	public void recoverFromMismatchedSet(IntStream input,
-		RecognitionException e, BitSet follow) throws RecognitionException{
-		throw e;
+	public void reportError(RecognitionException re) {
+		// if we've already reported an error and have not matched a token
+		// yet successfully, don't report any errors.
+		if (errorRecovery) {
+			return;
+		}
+		errorRecovery = true;
+	
+		String error = "Error parsing mapping entry: " + getErrorMessage(re, tokenNames);
+		DSLMappingParseException exception = new DSLMappingParseException (error, re.line);
+		errorList.add(exception);
 	}
 	
-}
-
-
-@rulecatch {
-	catch (RecognitionException e) {
-		throw e;
-	}
 }
 
 // PARSER RULES
@@ -94,8 +102,13 @@ comment	: LINE_COMMENT
 entry 	: scope_section meta_section? key_section EQUALS value_section (EOL|EOF)
 	-> ^(VT_ENTRY scope_section meta_section? key_section value_section)
 	;
+	catch [ RecognitionException e ] {
+		reportError( e );
+	}
+	catch [ RewriteEmptyStreamException e ] {
+	}
 
-
+	
 
 scope_section 
 	: LEFT_SQUARE 
@@ -107,6 +120,7 @@ scope_section
 	RIGHT_SQUARE
 	-> ^(VT_SCOPE[$LEFT_SQUARE, "SCOPE SECTION"] $value1? $value2? $value3? $value4?)
 	;
+	
 
 
 	
@@ -116,7 +130,7 @@ meta_section
 	;
 
 key_section
-	: key_sentence+
+	: ks=key_sentence+
 	-> ^(VT_ENTRY_KEY key_sentence+ )
 	;
  
@@ -171,7 +185,6 @@ variable_definition
 	name=LITERAL ( COLON pat=pattern {text = $pat.text;} )? rc=RIGHT_CURLY
 	{
 	CommonToken rc1 = (CommonToken)input.LT(1);
-	//System.out.println("lt1 from rc: " + rc1.getText());
 	if(!"=".equals(rc1.getText()) && ((CommonToken)rc).getStopIndex() < rc1.getStartIndex() - 1) hasSpaceAfter = true;
 	}
 	-> {hasSpaceBefore && !"".equals(text) && !hasSpaceAfter}? VT_SPACE ^(VT_VAR_DEF $name VT_PATTERN[$pat.start, text] )  //pat can be null if there's no pattern here
@@ -210,12 +223,7 @@ variable_reference
         boolean hasSpaceAfter = false;
 }	
 	: lc=LEFT_CURLY 
-		{//try too figure out how to get " {name} " to realize there's a space infron of the { char
-		//System.out.println("input is a " + input.getClass().getName());
-		//System.out.println("input is: " + input.toString());
-		//System.out.println("input LA[1]: " + input.LA(1));
-		
-		//System.out.println("lc start is: " + ((CommonToken)lc).getStartIndex() );
+		{
 		CommonToken back2 =  (CommonToken)input.LT(-2);
 		if( back2!=null && back2.getStopIndex() < ((CommonToken)lc).getStartIndex() -1 ) hasSpaceBefore = true; 
 		} 
