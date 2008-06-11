@@ -166,7 +166,6 @@ value_chunk
 	;	
 	
 literal 
-	//: ( LITERAL | LEFT_SQUARE | RIGHT_SQUARE | COLON) 
 	: ( LITERAL | COLON | LEFT_SQUARE | RIGHT_SQUARE)
 	;	
 
@@ -336,7 +335,7 @@ LITERAL
 
 fragment		
 MISC 	:
-		'>'|'<'|'!' | '@' | '$' | '%' | '^' | '*' | '-' | '+'  | '?' | '/' | '\'' | '"' | '|' | '&' | '(' | ')' | ';'
+		'>'|'<'|'!' | '@' | '$' | '%' | '^' | '*' | '-' | '+'  | '?' | COMMA | '/' | '\'' | '"' | '|' | '&' | '(' | ')' | ';'
 	;
 
 
