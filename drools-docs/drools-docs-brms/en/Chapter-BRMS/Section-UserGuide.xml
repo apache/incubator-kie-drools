@@ -489,6 +489,21 @@
 			<para>In the above diagram - the "MM" indicates a value that will be used in the rule, yet "Mini Mal" will be displayed in the GUI.</para>
 			
 			<para>Getting data lists from external data sources: It is possible to have the BRMS call a piece of code which will load a list of Strings. To do this, you will need a bit of code that returns a java.util.List (of String's) to be on the classpath of the BRMS. Instead of specifying a list of values in the BRMS itself - the code can return the list of Strings (you can use the "=" inside the strings if you want to use a different display value to the rule value, as normal). For example, in the 'Person.age' line above, you could change it to: <programlisting> 'Person.age' : (new com.yourco.DataHelper()).getListOfAges()</programlisting> This assumes you have a class called "DataHelper" which has a method "getListOfAges()" which returns a List of strings (and is on the classpath). You can of course mix these "dynamic" enumerations with fixed lists. You could for example load from a database using JDBC. The data enumerations are loaded the first time you use the guided editor in a session. If you have any guided editor sessions open - you will need to close and then open the rule to see the change. To check the enumeration is loaded - if you go to the Package configuration screen, you can "save and validate" the package - this will check it and provide any error feedback.</para>
+
+			<para>
+			  Advanced enumerations: In the above cases, the values in the lists are calculated up front. This is fine for relatively static data, or small amounts of data. 
+			  Imagine a scenario where you have lists of countries, each country has a list of states, each state has a list of localities, each locality has a list of streets and so on... 
+			  You can see how this is a lot of data, and it can not be loaded up. The lists should be loaded dependent on what country was selected etc... 
+			</para>
+			<para>
+			  Well the above can be addressed in the following fashion: 
+			    <programlisting>
+			      'Fact.field[dependentField1, dependentField2]' : '(new com.yourco.DataHelper()).getListOfAges("@{dependentField1}", "@{dependentField2}")'
+			    </programlisting>
+			    Similar to above, but note that we have just specified what fields are needed, and also on the right of the ":" there are quotes around the expression. This expression will then be evaluated, only when needed, substituting the values from the fields specified. This means you can use the field values from the GUI to drive a database query, and drill down into data etc. When the drop down is loaded, or the rule loaded, 
+it will refresh the list based on the fields. 
+			</para>
+
 		</section>
 
 		
