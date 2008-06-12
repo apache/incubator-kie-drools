@@ -64,12 +64,25 @@ public class WorkItemNodeInstance extends EventNodeInstance implements WorkItemL
 //                "A WorkItemNode only accepts default incoming connections!");
 //        }
         WorkItemNode workItemNode = getWorkItemNode();
+        WorkItem workItem = createWorkItem(workItemNode);
+		if (workItemNode.isWaitForCompletion()) {
+		    addEventListeners();
+        }
+        getProcessInstance().getWorkingMemory().getWorkItemManager().internalExecuteWorkItem(workItem);
+        if (!workItemNode.isWaitForCompletion()) {
+            triggerCompleted();
+        } else {
+        	this.workItemId = workItem.getId();
+        }
+    }
+    
+    protected WorkItem createWorkItem(WorkItemNode workItemNode) {
         Work work = workItemNode.getWork();
-		workItem = new WorkItemImpl();
-		workItem.setName(work.getName());
-		workItem.setProcessInstanceId(getProcessInstance().getId());
-		workItem.setParameters(new HashMap<String, Object>(work.getParameters()));
-		for (Iterator<Map.Entry<String, String>> iterator = workItemNode.getInMappings().entrySet().iterator(); iterator.hasNext(); ) {
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setName(work.getName());
+        workItem.setProcessInstanceId(getProcessInstance().getId());
+        workItem.setParameters(new HashMap<String, Object>(work.getParameters()));
+        for (Iterator<Map.Entry<String, String>> iterator = workItemNode.getInMappings().entrySet().iterator(); iterator.hasNext(); ) {
             Map.Entry<String, String> mapping = iterator.next();
             VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
                 resolveContextInstance(VariableScope.VARIABLE_SCOPE, mapping.getValue());
@@ -81,15 +94,7 @@ public class WorkItemNodeInstance extends EventNodeInstance implements WorkItemL
                 System.err.println("Continuing without setting parameter.");
             }
         }
-		if (workItemNode.isWaitForCompletion()) {
-		    addEventListeners();
-        }
-        getProcessInstance().getWorkingMemory().getWorkItemManager().internalExecuteWorkItem(workItem);
-        if (!workItemNode.isWaitForCompletion()) {
-            triggerCompleted();
-        } else {
-        	this.workItemId = workItem.getId();
-        }
+        return workItem;
     }
 
     public void triggerCompleted(WorkItem workItem) {

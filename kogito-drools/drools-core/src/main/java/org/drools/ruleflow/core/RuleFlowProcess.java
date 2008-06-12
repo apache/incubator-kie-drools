@@ -1,5 +1,6 @@
 package org.drools.ruleflow.core;
 
+import org.drools.process.core.context.swimlane.SwimlaneContext;
 import org.drools.process.core.context.variable.VariableScope;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.NodeContainer;
@@ -18,10 +19,17 @@ public class RuleFlowProcess extends WorkflowProcessImpl {
         VariableScope variableScope = new VariableScope();
         addContext(variableScope);
         setDefaultContext(variableScope);
+        SwimlaneContext swimLaneContext = new SwimlaneContext();
+        addContext(swimLaneContext);
+        setDefaultContext(swimLaneContext);
     }
     
     public VariableScope getVariableScope() {
         return (VariableScope) getDefaultContext(VariableScope.VARIABLE_SCOPE);
+    }
+    
+    public SwimlaneContext getSwimlaneContext() {
+        return (SwimlaneContext) getDefaultContext(SwimlaneContext.SWIMLANE_SCOPE);
     }
 
     protected NodeContainer createNodeContainer() {
