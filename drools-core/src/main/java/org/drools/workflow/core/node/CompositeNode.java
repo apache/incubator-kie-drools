@@ -67,7 +67,7 @@ public class CompositeNode extends NodeImpl implements NodeContainer {
     }
     
     public void linkOutgoingConnections(long outNodeId, String outNodeType, String outType) {
-        inConnectionMap.put(outType, new NodeAndType(outNodeId, outNodeType));
+        outConnectionMap.put(outType, new NodeAndType(outNodeId, outNodeType));
     }
     
     public void linkOutgoingConnections(CompositeNode.NodeAndType outNode, String outType) {

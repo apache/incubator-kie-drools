@@ -1,5 +1,6 @@
 package org.drools.process.core.context.swimlane;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,7 +13,7 @@ public class SwimlaneContext extends AbstractContext {
 
     public static final String SWIMLANE_SCOPE = "SwimlaneScope";
     
-	private Map<String, Swimlane> swimlanes = new HashMap();
+	private Map<String, Swimlane> swimlanes = new HashMap<String, Swimlane>();
 
 	public String getType() {
 		return SWIMLANE_SCOPE;
@@ -28,6 +29,10 @@ public class SwimlaneContext extends AbstractContext {
 
     public void removeSwimlane(String name) {
         this.swimlanes.remove(name);
+    }
+    
+    public Collection<Swimlane> getSwimlanes() {
+        return swimlanes.values();
     }
 
 	public Context resolveContext(Object param) {

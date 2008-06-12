@@ -141,9 +141,6 @@ public class CompositeNodeInstance extends NodeInstanceImpl implements NodeInsta
             throw new IllegalArgumentException("Illegal node type: " + node.getClass());
         }
         NodeInstanceImpl nodeInstance = (NodeInstanceImpl) conf.getNodeInstance(node, getProcessInstance(), this);
-        nodeInstance.setNodeId(node.getId());
-        nodeInstance.setNodeInstanceContainer(this);
-        nodeInstance.setProcessInstance(getProcessInstance());
         if (nodeInstance == null) {
             throw new IllegalArgumentException("Illegal node type: " + node.getClass());
         }
@@ -181,7 +178,6 @@ public class CompositeNodeInstance extends NodeInstanceImpl implements NodeInsta
         }
         
         public void triggerCompleted() {
-            getNodeInstanceContainer().removeNodeInstance(this);
             CompositeNodeInstance.this.triggerCompleted(
                 getCompositeNodeEnd().getOutType());
         }
