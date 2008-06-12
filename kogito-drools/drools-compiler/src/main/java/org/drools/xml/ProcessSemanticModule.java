@@ -6,6 +6,7 @@ import org.drools.xml.processes.ConnectionHandler;
 import org.drools.xml.processes.ConstraintHandler;
 import org.drools.xml.processes.EndNodeHandler;
 import org.drools.xml.processes.GlobalHandler;
+import org.drools.xml.processes.HumanTaskNodeHandler;
 import org.drools.xml.processes.ImportHandler;
 import org.drools.xml.processes.InPortHandler;
 import org.drools.xml.processes.JoinNodeHandler;
@@ -18,6 +19,7 @@ import org.drools.xml.processes.RuleSetNodeHandler;
 import org.drools.xml.processes.SplitNodeHandler;
 import org.drools.xml.processes.StartNodeHandler;
 import org.drools.xml.processes.SubProcessNodeHandler;
+import org.drools.xml.processes.SwimlaneHandler;
 import org.drools.xml.processes.TimerNodeHandler;
 import org.drools.xml.processes.TypeHandler;
 import org.drools.xml.processes.ValueHandler;
@@ -51,6 +53,8 @@ public class ProcessSemanticModule extends DefaultSemanticModule implements Sema
                            new MilestoneNodeHandler() );
         addHandler( "timer",
                            new TimerNodeHandler() );
+        addHandler( "humanTask",
+                           new HumanTaskNodeHandler() );
         addHandler( "composite",
                            new CompositeNodeHandler() );
         addHandler( "connection",
@@ -61,6 +65,8 @@ public class ProcessSemanticModule extends DefaultSemanticModule implements Sema
                            new GlobalHandler() );        
         addHandler( "variable",
                            new VariableHandler() );        
+        addHandler( "swimlane",
+                           new SwimlaneHandler() );        
         addHandler( "type",
                            new TypeHandler() );        
         addHandler( "value",
