@@ -242,26 +242,115 @@ public class SuggestionCompletionEngine
      * This also takes into account enums that depend on other fields.
      *
      */
-	public String[] getEnums(FactPattern pat, String field) {
+	public DropDownData getEnums(FactPattern pat, String field) {
 
 		Map dataEnumLookupFields = loadDataEnumLookupFields();
-		String typeField = (String) dataEnumLookupFields.get(pat.factType + "." + field );
 
 		if (pat.constraintList != null && pat.constraintList.constraints != null) {
-			FieldConstraint[] cons = pat.constraintList.constraints;
-			for (int i = 0; i < cons.length; i++) {
-				FieldConstraint con = cons[i];
-				if (con instanceof SingleFieldConstraint) {
-					SingleFieldConstraint sfc = (SingleFieldConstraint) con;
-					if ( sfc.fieldName.equals(typeField)) {
-						String key = pat.factType + "." + field + "[" + typeField + "=" + sfc.value + "]";
-						return (String[]) this.dataEnumLists.get(key);
+			//we may need to check for data dependent enums
+			Object _typeField = dataEnumLookupFields.get(pat.factType + "." + field );
+			if (_typeField instanceof String) {
+				String typeField = (String) _typeField;
+				FieldConstraint[] cons = pat.constraintList.constraints;
+				for (int i = 0; i < cons.length; i++) {
+					FieldConstraint con = cons[i];
+					if (con instanceof SingleFieldConstraint) {
+						SingleFieldConstraint sfc = (SingleFieldConstraint) con;
+						if ( sfc.fieldName.equals(typeField)) {
+							String key = pat.factType + "." + field + "[" + typeField + "=" + sfc.value + "]";
+							return DropDownData.create((String[]) this.dataEnumLists.get(key));
+						}
 					}
 				}
+			} else if (_typeField != null ){
+				//these enums are calculated on demand, server side...
+				String[] fieldsNeeded = (String[]) _typeField;
+				String queryString = getQueryString(pat.factType, field, this.dataEnumLists);
+
+				String[] valuePairs = new String[fieldsNeeded.length];
+
+				//collect all the values of the fields needed, then return it as a string...
+				for (int i = 0; i < fieldsNeeded.length; i++) {
+					for (int j = 0; j < pat.constraintList.constraints.length; j++) {
+						FieldConstraint con = pat.constraintList.constraints[j];
+						if (con instanceof SingleFieldConstraint) {
+							SingleFieldConstraint sfc = (SingleFieldConstraint) con;
+							if (sfc.fieldName.equals(fieldsNeeded[i])) {
+								valuePairs[i] = fieldsNeeded[i] + "=" + sfc.value;
+							}
+						}
+					}
+				}
+				return DropDownData.create(queryString, valuePairs);
 			}
 		}
-		return getEnumValues(pat.factType, field);
+		return DropDownData.create(getEnumValues(pat.factType, field));
 	}
+
+
+
+
+
+
+	/**
+	 * Similar to the one above - but this one is for RHS.
+	 */
+	public DropDownData getEnums(String type, ActionFieldValue[] currentValues, String field) {
+
+		if (currentValues != null) {
+			Map dataEnumLookupFields = loadDataEnumLookupFields();
+			Object _typeField = dataEnumLookupFields.get(type + "." + field );
+
+			if (_typeField instanceof String) {
+				String typeField = (String) dataEnumLookupFields.get(type + "." + field );
+				for (int i = 0; i < currentValues.length; i++) {
+					ActionFieldValue val = currentValues[i];
+					if (val.field.equals(typeField)) {
+						String key = type + "." + field + "[" + typeField + "=" + val.value + "]";
+						return DropDownData.create((String[]) this.dataEnumLists.get(key));
+					}
+				}
+			} else if (_typeField != null) {
+				String[] fieldsNeeded = (String[]) _typeField;
+				String queryString = getQueryString(type, field, this.dataEnumLists);
+				String[] valuePairs = new String[fieldsNeeded.length];
+
+				//collect all the values of the fields needed, then return it as a string...
+				for (int i = 0; i < fieldsNeeded.length; i++) {
+					for (int j = 0; j < currentValues.length; j++) {
+						ActionFieldValue con = currentValues[j];
+							if (con.field.equals(fieldsNeeded[i])) {
+								valuePairs[i] = fieldsNeeded[i] + "=" + con.value;
+							}
+					}
+				}
+				return DropDownData.create(queryString, valuePairs);
+
+			}
+		}
+
+		String[] vals = (String[]) this.dataEnumLists.get(type + "." + field);
+		return DropDownData.create(vals);
+
+
+	}
+
+	/**
+	 * Get the query string for a fact.field
+	 * It will ignore any specified field, and just look for the string - as there should only be
+	 * one Fact.field of this type (it is all determined server side).
+	 */
+	String getQueryString(String factType, String field,
+			Map dataEnumLists) {
+		for (Iterator iterator = dataEnumLists.keySet().iterator(); iterator.hasNext();) {
+			String key = (String) iterator.next();
+			if (key.startsWith(factType + "." + field)) {
+				return (String) dataEnumLists.get(key);
+			}
+		}
+		throw new IllegalStateException();
+	}
+
 
 	/**
 	 * For simple cases - where a list of values are known based on a field.
@@ -270,27 +359,11 @@ public class SuggestionCompletionEngine
 		return (String[]) this.dataEnumLists.get(factType + "." + field);
 	}
 
-	public String[] getEnums(String type, ActionFieldValue[] currentValues, String field) {
-		Map dataEnumLookupFields = loadDataEnumLookupFields();
-		String typeField = (String) dataEnumLookupFields.get(type + "." + field );
 
-		if (currentValues != null) {
-			for (int i = 0; i < currentValues.length; i++) {
-				ActionFieldValue val = currentValues[i];
-				if (val.field.equals(typeField)) {
-					String key = type + "." + field + "[" + typeField + "=" + val.value + "]";
-					return (String[]) this.dataEnumLists.get(key);
-				}
-			}
-		}
-
-		return (String[]) this.dataEnumLists.get(type + "." + field);
-
-
-	}
-
-
-	private Map loadDataEnumLookupFields() {
+	/**
+	 * This is only used by enums that are like Fact.field[something=X] and so on.
+	 */
+	Map loadDataEnumLookupFields() {
 		if (this.dataEnumLookupFields == null) {
 			this.dataEnumLookupFields = new HashMap();
 			Set keys = this.dataEnumLists.keySet();
@@ -300,8 +373,14 @@ public class SuggestionCompletionEngine
 					int ix = key.indexOf('[');
 					String factField = key.substring(0, ix);
 					String predicate = key.substring(ix + 1, key.indexOf(']'));
-					String typeField = predicate.substring(0, predicate.indexOf('='));
-					dataEnumLookupFields.put(factField, typeField);
+					if (predicate.indexOf('=') > -1) {
+						String typeField = predicate.substring(0, predicate.indexOf('='));
+						dataEnumLookupFields.put(factField, typeField);
+					} else {
+						String[] fields = predicate.split(",");
+						for (int i = 0; i < fields.length; i++) {fields[i] = fields[i].trim();}
+						dataEnumLookupFields.put(factField, fields);
+					}
 				}
 			}
 		}
