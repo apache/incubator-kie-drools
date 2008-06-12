@@ -32,48 +32,58 @@ public class WorkItemNodeHandler extends AbstractNodeHandler {
 	public void writeNode(Node node, StringBuffer xmlDump, boolean includeMeta) {
 		WorkItemNode workItemNode = (WorkItemNode) node;
 		writeNode("workItem", workItemNode, xmlDump, includeMeta);
-        if (!workItemNode.isWaitForCompletion()) {
-            xmlDump.append("waitForCompletion=\"false\" ");
-        }
+        visitParameters(workItemNode, xmlDump);
         xmlDump.append(">" + EOL);
         Work work = workItemNode.getWork();
-        if (work != null) {
-            visitWork(work, xmlDump, includeMeta);
+        visitWork(work, xmlDump, includeMeta);
+        visitInMappings(workItemNode.getInMappings(), xmlDump);
+        visitOutMappings(workItemNode.getOutMappings(), xmlDump);
+        endNode("workItem", xmlDump);
+	}
+	
+	protected void visitParameters(WorkItemNode workItemNode, StringBuffer xmlDump) {
+	    if (!workItemNode.isWaitForCompletion()) {
+            xmlDump.append("waitForCompletion=\"false\" ");
         }
-        Map<String, String> inMappings = workItemNode.getInMappings();
+	}
+	
+	protected void visitInMappings(Map<String, String> inMappings, StringBuffer xmlDump) {
         for (Map.Entry<String, String> inMapping: inMappings.entrySet()) {
             xmlDump.append(
                 "      <mapping type=\"in\" "
                              + "from=\"" + inMapping.getValue() + "\" "
                              + "to=\"" + inMapping.getKey() + "\" />" + EOL);
         }
-        Map<String, String> outMappings = workItemNode.getOutMappings();
+	}
+	
+	protected void visitOutMappings(Map<String, String> outMappings, StringBuffer xmlDump) {
         for (Map.Entry<String, String> outMapping: outMappings.entrySet()) {
             xmlDump.append(
                 "      <mapping type=\"out\" "
                              + "from=\"" + outMapping.getKey() + "\" "
                              + "to=\"" + outMapping.getValue() + "\" />" + EOL);
         }
-        endNode("workItem", xmlDump);
     }
     
-    private void visitWork(Work work, StringBuffer xmlDump, boolean includeMeta) {
-        xmlDump.append("      <work name=\"" + work.getName() + "\" >" + EOL);
-        for (ParameterDefinition paramDefinition: work.getParameterDefinitions()) {
-            if (paramDefinition == null) {
-                throw new IllegalArgumentException(
-                    "Could not find parameter definition " + paramDefinition.getName()
-                        + " for work " + work.getName());
+    protected void visitWork(Work work, StringBuffer xmlDump, boolean includeMeta) {
+        if (work != null) {
+            xmlDump.append("      <work name=\"" + work.getName() + "\" >" + EOL);
+            for (ParameterDefinition paramDefinition: work.getParameterDefinitions()) {
+                if (paramDefinition == null) {
+                    throw new IllegalArgumentException(
+                        "Could not find parameter definition " + paramDefinition.getName()
+                            + " for work " + work.getName());
+                }
+                xmlDump.append("        <parameter name=\"" + paramDefinition.getName() + "\" " + 
+                                                  "type=\"" + paramDefinition.getType().getClass().getName() + "\" ");
+                Object value = work.getParameter(paramDefinition.getName());
+                if (value == null) {
+                    xmlDump.append("/>" + EOL);
+                } else {
+                    xmlDump.append(">" + value + "</parameter>" + EOL);
+                }
             }
-            xmlDump.append("        <parameter name=\"" + paramDefinition.getName() + "\" " + 
-                                              "type=\"" + paramDefinition.getType().getClass().getName() + "\" ");
-            Object value = work.getParameter(paramDefinition.getName());
-            if (value == null) {
-                xmlDump.append("/>" + EOL);
-            } else {
-                xmlDump.append(">" + value + "</parameter>" + EOL);
-            }
+            xmlDump.append("      </work>" + EOL);
         }
-        xmlDump.append("      </work>" + EOL);
     }
 }

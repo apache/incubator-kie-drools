@@ -21,6 +21,7 @@
 				<xs:element ref="drools:imports"/>
 				<xs:element ref="drools:globals"/>
 				<xs:element ref="drools:variables"/>
+				<xs:element ref="drools:swimlanes"/>
 			</xs:choice>
 		</xs:complexType>
 	</xs:element>
@@ -77,6 +78,18 @@
 			</xs:simpleContent>
 		</xs:complexType>
 	</xs:element>
+	<xs:element name="swimlanes">
+		<xs:complexType>
+			<xs:sequence minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="drools:swimlane"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="swimlane">
+		<xs:complexType>
+			<xs:attribute name="name" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
 	<xs:element name="nodes">
 		<xs:complexType>
 			<xs:choice minOccurs="0" maxOccurs="unbounded">
@@ -90,6 +103,7 @@
 				<xs:element ref="drools:subProcess"/>
 				<xs:element ref="drools:workItem"/>
 				<xs:element ref="drools:timer"/>
+				<xs:element ref="drools:humanTask"/>
 				<xs:element ref="drools:composite"/>
 			</xs:choice>
 		</xs:complexType>
@@ -266,6 +280,22 @@
 			<xs:attribute name="height" type="xs:string"/>
 			<xs:attribute name="delay" type="xs:string"/>
 			<xs:attribute name="period" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="humanTask">
+		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="drools:work"/>
+				<xs:element ref="drools:mapping"/>
+			</xs:choice>
+			<xs:attribute name="id" type="xs:string" use="required"/>
+			<xs:attribute name="name" type="xs:string"/>
+			<xs:attribute name="x" type="xs:string"/>
+			<xs:attribute name="y" type="xs:string"/>
+			<xs:attribute name="width" type="xs:string"/>
+			<xs:attribute name="height" type="xs:string"/>
+			<xs:attribute name="waitForCompletion" type="xs:string"/>
+			<xs:attribute name="swimlane" type="xs:string"/>
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="composite">

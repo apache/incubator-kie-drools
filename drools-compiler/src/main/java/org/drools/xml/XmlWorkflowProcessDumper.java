@@ -1,9 +1,12 @@
 package org.drools.xml;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.process.core.context.swimlane.Swimlane;
+import org.drools.process.core.context.swimlane.SwimlaneContext;
 import org.drools.process.core.context.variable.Variable;
 import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.core.datatype.DataType;
@@ -78,6 +81,10 @@ public class XmlWorkflowProcessDumper {
         if (variableScope != null) {
             visitVariables(variableScope.getVariables(), xmlDump);
         }
+        SwimlaneContext swimlaneContext = (SwimlaneContext) process.getDefaultContext(SwimlaneContext.SWIMLANE_SCOPE);
+        if (swimlaneContext != null) {
+            visitSwimlanes(swimlaneContext.getSwimlanes(), xmlDump);
+        }
         xmlDump.append("  </header>" + EOL + EOL);
     }
     
@@ -114,6 +121,16 @@ public class XmlWorkflowProcessDumper {
                 xmlDump.append("      </variable>" + EOL);
             }
             xmlDump.append("    </variables>" + EOL);
+        }
+    }
+    
+    private void visitSwimlanes(Collection<Swimlane> swimlanes, StringBuffer xmlDump) {
+        if (swimlanes != null && swimlanes.size() > 0) {
+            xmlDump.append("    <swimlanes>" + EOL);
+            for (Swimlane swimlane: swimlanes) {
+                xmlDump.append("      <swimlane name=\"" + swimlane.getName() + "\" />" + EOL);
+            }
+            xmlDump.append("    </swimlanes>" + EOL);
         }
     }
     

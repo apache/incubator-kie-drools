@@ -13,6 +13,7 @@ import junit.framework.TestCase;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.process.core.ParameterDefinition;
 import org.drools.process.core.Work;
+import org.drools.process.core.context.swimlane.Swimlane;
 import org.drools.process.core.context.variable.Variable;
 import org.drools.process.core.datatype.impl.type.IntegerDataType;
 import org.drools.process.core.datatype.impl.type.StringDataType;
@@ -28,6 +29,7 @@ import org.drools.workflow.core.impl.ConstraintImpl;
 import org.drools.workflow.core.impl.DroolsConsequenceAction;
 import org.drools.workflow.core.node.ActionNode;
 import org.drools.workflow.core.node.EndNode;
+import org.drools.workflow.core.node.HumanTaskNode;
 import org.drools.workflow.core.node.Join;
 import org.drools.workflow.core.node.MilestoneNode;
 import org.drools.workflow.core.node.RuleSetNode;
@@ -60,6 +62,7 @@ public class XMLPersistenceTest extends TestCase {
         process.addNode(new SubProcessNode());
         process.addNode(new WorkItemNode());
         process.addNode(new TimerNode());
+        process.addNode(new HumanTaskNode());
         
         String xml = XmlRuleFlowProcessDumper.INSTANCE.dump(process, false);
         if (xml == null) {
@@ -76,7 +79,7 @@ public class XMLPersistenceTest extends TestCase {
             throw new IllegalArgumentException("Failed to reload process!");
         }
         
-        assertEquals(10, process.getNodes().length);
+        assertEquals(11, process.getNodes().length);
         
 //        System.out.println("************************************");
         
@@ -123,6 +126,9 @@ public class XMLPersistenceTest extends TestCase {
         variable.setValue(2);
         variables.add(variable);
         process.getVariableScope().setVariables(variables);
+        
+        process.getSwimlaneContext().addSwimlane(new Swimlane("actor1"));
+        process.getSwimlaneContext().addSwimlane(new Swimlane("actor2"));
         
         StartNode startNode = new StartNode();
         startNode.setName("start");
@@ -187,7 +193,6 @@ public class XMLPersistenceTest extends TestCase {
         process.addNode(join);
         new ConnectionImpl(actionNode, Node.CONNECTION_DEFAULT_TYPE, join, Node.CONNECTION_DEFAULT_TYPE);
         new ConnectionImpl(ruleSetNode, Node.CONNECTION_DEFAULT_TYPE, join, Node.CONNECTION_DEFAULT_TYPE);
-
         
         MilestoneNode milestone = new MilestoneNode();
         milestone.setName("milestone");
@@ -234,6 +239,24 @@ public class XMLPersistenceTest extends TestCase {
         connection = new ConnectionImpl(subProcess, Node.CONNECTION_DEFAULT_TYPE, workItemNode, Node.CONNECTION_DEFAULT_TYPE);
         connection.setMetaData("bendpoints", "[]");
         
+        HumanTaskNode humanTaskNode = new HumanTaskNode();
+        work = humanTaskNode.getWork();
+        parameterDefinitions = new HashSet<ParameterDefinition>();
+        parameterDefinition = new ParameterDefinitionImpl("TaskName", new StringDataType());
+        parameterDefinitions.add(parameterDefinition);
+        parameterDefinition = new ParameterDefinitionImpl("ActorId", new StringDataType());
+        parameterDefinitions.add(parameterDefinition);
+        parameterDefinition = new ParameterDefinitionImpl("Priority", new StringDataType());
+        parameterDefinitions.add(parameterDefinition);
+        parameterDefinition = new ParameterDefinitionImpl("Comment", new StringDataType());
+        parameterDefinitions.add(parameterDefinition);
+        work.setParameterDefinitions(parameterDefinitions);
+        work.setParameter("TaskName", "Do something");
+        work.setParameter("ActorId", "John Doe");
+        workItemNode.setWaitForCompletion(false);
+        process.addNode(humanTaskNode);
+        connection = new ConnectionImpl(workItemNode, Node.CONNECTION_DEFAULT_TYPE, humanTaskNode, Node.CONNECTION_DEFAULT_TYPE);
+        
         TimerNode timerNode = new TimerNode();
         timerNode.setName("timer");
         timerNode.setMetaData("x", 1);
@@ -245,7 +268,7 @@ public class XMLPersistenceTest extends TestCase {
         timer.setPeriod(1000);
         timerNode.setTimer(timer);
         process.addNode(timerNode);
-        new ConnectionImpl(workItemNode, Node.CONNECTION_DEFAULT_TYPE, timerNode, Node.CONNECTION_DEFAULT_TYPE);
+        new ConnectionImpl(humanTaskNode, Node.CONNECTION_DEFAULT_TYPE, timerNode, Node.CONNECTION_DEFAULT_TYPE);
         
         EndNode endNode = new EndNode();
         endNode.setName("end");
@@ -270,7 +293,7 @@ public class XMLPersistenceTest extends TestCase {
             throw new IllegalArgumentException("Failed to reload process!");
         }
         
-        assertEquals(10, process.getNodes().length);
+        assertEquals(11, process.getNodes().length);
         
 //        System.out.println("************************************");
         
