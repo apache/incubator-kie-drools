@@ -11,6 +11,7 @@ import junit.framework.TestCase;
 
 import org.drools.brms.server.util.DataEnumLoader;
 import org.mvel.MVEL;
+import org.mvel.templates.TemplateRuntime;
 
 public class DataEnumLoaderTest extends TestCase {
 
@@ -87,6 +88,28 @@ public class DataEnumLoaderTest extends TestCase {
     public void testNewLines() {
         String s = "yeah yeah, \nyeah \nyeah";
         assertEquals("yeah yeah,\nyeah,\nyeah", DataEnumLoader.addCommasForNewLines( s ));
+    }
+
+    public void testLazyString() {
+    	//in this case we are dealing with an expression which will not be resolved at load time.
+    	DataEnumLoader loader = new DataEnumLoader("'Person.type[sex]' : 'something @{sex}'");
+    	assertFalse(loader.hasErrors());
+
+    	Map data = loader.getData();
+    	String s = (String) data.get("Person.type[sex]");
+    	assertEquals("something @{sex}", s);
+    	Map context = new HashMap() {{ put("sex", "cool"); }};
+
+    	Object r = TemplateRuntime.eval(s, context);
+
+    	assertEquals("something cool", r);
+
+    	loader = new DataEnumLoader("'Person.type[sex, money]' : '@{sex} @{money}'");
+    	assertFalse(loader.hasErrors());
+
+    	s = (String) loader.getData().get("Person.type[sex, money]");
+    	assertEquals("@{sex} @{money}", s);
+
     }
 
 	private StringBuffer readLines() throws IOException {

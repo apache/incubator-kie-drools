@@ -54,25 +54,28 @@ public class DataEnumLoader {
 		for (Iterator iter = map.keySet().iterator(); iter.hasNext();) {
 			String key = (String) iter.next();
 			Object list = map.get(key);
-			if (!(list instanceof List)) {
+			if (!(list instanceof List || list instanceof String)) {
 				if (list == null) {
 					addError("The item with " + key + " is null.");
 				} else {
-					addError("The item with " + key + " is not a list, it is a " + list.getClass().getName());
+					addError("The item with " + key + " is not a list or a string, it is a " + list.getClass().getName());
 				}
 				return Collections.EMPTY_MAP;
-			}
-			List items = (List) list;
-			String[] newItems = new String[items.size()];
-			for (int i = 0; i < items.size(); i++) {
-				Object listItem = items.get(i);
-				if (!(listItem instanceof String)) {
-					newItems[i] = listItem.toString();
-				} else {
-					newItems[i] = (String) listItem;
+			} else if (list instanceof String) {
+				newMap.put(key, list);
+			} else {
+				List items = (List) list;
+				String[] newItems = new String[items.size()];
+				for (int i = 0; i < items.size(); i++) {
+					Object listItem = items.get(i);
+					if (!(listItem instanceof String)) {
+						newItems[i] = listItem.toString();
+					} else {
+						newItems[i] = (String) listItem;
+					}
 				}
+				newMap.put(key, newItems);
 			}
-			newMap.put(key, newItems);
 		}
 		return newMap;
 	}

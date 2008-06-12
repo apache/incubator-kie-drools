@@ -3,6 +3,7 @@ package org.drools.brms.client.modeldriven;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -52,14 +53,15 @@ public class SuggestionCompletionEngineTest extends TestCase {
         assertEquals("42", items[0]);
         assertEquals("43", items[1]);
 
-        items = engine.getEnums(new FactPattern("Person"), "age");
+        items = engine.getEnums(new FactPattern("Person"), "age").fixedList;
         assertEquals(2, items.length);
         assertEquals("42", items[0]);
         assertEquals("43", items[1]);
 
-        items = engine.getEnums(new FactPattern("Nothing"), "age");
-        assertNull(items);
+        assertNull(engine.getEnums(new FactPattern("Nothing"), "age"));
 
+
+        assertEquals(null, engine.getEnums(new FactPattern("Something"), "else"));
 
     }
 
@@ -238,7 +240,7 @@ public class SuggestionCompletionEngineTest extends TestCase {
     	SingleFieldConstraint sfc = new SingleFieldConstraint("type");
     	sfc.value = "sex";
     	pat.addConstraint(sfc);
-    	String[] result = sce.getEnums(pat, "value");
+    	String[] result = sce.getEnums(pat, "value").fixedList;
     	assertEquals(2, result.length);
     	assertEquals("M", result[0]);
     	assertEquals("F", result[1]);
@@ -249,13 +251,13 @@ public class SuggestionCompletionEngineTest extends TestCase {
     	sfc.value = "colour";
     	pat.addConstraint(sfc);
 
-    	result = sce.getEnums(pat, "value");
+    	result = sce.getEnums(pat, "value").fixedList;
     	assertEquals(3, result.length);
     	assertEquals("RED", result[0]);
     	assertEquals("WHITE", result[1]);
     	assertEquals("BLUE", result[2]);
 
-    	result = sce.getEnums(pat, "type");
+    	result = sce.getEnums(pat, "type").fixedList;
     	assertEquals(2, result.length);
     	assertEquals("sex", result[0]);
     	assertEquals("colour", result[1]);
@@ -264,11 +266,71 @@ public class SuggestionCompletionEngineTest extends TestCase {
     	ActionFieldValue[] vals = new ActionFieldValue[2];
     	vals[0] = new ActionFieldValue("type", "sex", "blah");
     	vals[1] = new ActionFieldValue("value", null, "blah");
-    	result = sce.getEnums("Fact", vals, "value");
+    	result = sce.getEnums("Fact", vals, "value").fixedList;
     	assertNotNull(result);
     	assertEquals(2, result.length);
     	assertEquals("M", result[0]);
     	assertEquals("F", result[1]);
+
+    	assertNull(sce.getEnums("Nothing", vals, "value"));
+
+    }
+
+    public void testSmarterLookupEnums() {
+    	final SuggestionCompletionEngine sce = new SuggestionCompletionEngine();
+    	sce.dataEnumLists = new HashMap();
+    	sce.dataEnumLists.put("Fact.type", new String[] {"sex", "colour"});
+    	sce.dataEnumLists.put("Fact.value[f1, f2]", "select something from database where x=@{f1} and y=@{f2}");
+
+
+
+    	FactPattern fp = new FactPattern("Fact");
+    	String[] drops = sce.getEnums(fp, "type").fixedList;
+    	assertEquals(2, drops.length);
+    	assertEquals("sex", drops[0]);
+    	assertEquals("colour", drops[1]);
+
+
+    	Map lookupFields = sce.loadDataEnumLookupFields();
+    	assertEquals(1, lookupFields.size());
+    	String[] flds = (String[]) lookupFields.get("Fact.value");
+    	assertEquals(2, flds.length);
+    	assertEquals("f1", flds[0]);
+    	assertEquals("f2", flds[1]);
+
+
+    	FactPattern pat = new FactPattern("Fact");
+    	SingleFieldConstraint sfc = new SingleFieldConstraint("f1");
+    	sfc.value = "f1val";
+    	pat.addConstraint(sfc);
+    	sfc = new SingleFieldConstraint("f2");
+    	sfc.value = "f2val";
+    	pat.addConstraint(sfc);
+
+
+    	DropDownData dd = sce.getEnums(pat, "value");
+    	assertNull(dd.fixedList);
+    	assertNotNull(dd.queryExpression);
+    	assertNotNull(dd.valuePairs);
+
+    	assertEquals(2, dd.valuePairs.length);
+    	assertEquals("select something from database where x=@{f1} and y=@{f2}", dd.queryExpression);
+    	assertEquals("f1=f1val", dd.valuePairs[0]);
+    	assertEquals("f2=f2val", dd.valuePairs[1]);
+
+
+    	//and now for the RHS
+    	ActionFieldValue[] vals = new ActionFieldValue[2];
+    	vals[0] = new ActionFieldValue("f1", "f1val", "blah");
+    	vals[1] = new ActionFieldValue("f2", "f2val", "blah");
+    	dd = sce.getEnums("Fact", vals, "value");
+    	assertNull(dd.fixedList);
+    	assertNotNull(dd.queryExpression);
+    	assertNotNull(dd.valuePairs);
+    	assertEquals(2, dd.valuePairs.length);
+    	assertEquals("select something from database where x=@{f1} and y=@{f2}", dd.queryExpression);
+    	assertEquals("f1=f1val", dd.valuePairs[0]);
+    	assertEquals("f2=f2val", dd.valuePairs[1]);
 
 
     }
@@ -313,6 +375,15 @@ public class SuggestionCompletionEngineTest extends TestCase {
 
         assertFalse( com.isGlobalVariable( "x" ) );
         assertTrue( com.isGlobalVariable( "y" ) );
+    }
+
+    public void testDataDropDown() {
+    	assertNull( DropDownData.create(null) );
+    	assertNull( DropDownData.create(null, null));
+    	assertTrue( DropDownData.create(new String[] {"hey"}) instanceof DropDownData);
+    	assertTrue( DropDownData.create("abc", new String[] {"hey"}) instanceof DropDownData);
+
+
     }
 
     public static class NestedClass {
