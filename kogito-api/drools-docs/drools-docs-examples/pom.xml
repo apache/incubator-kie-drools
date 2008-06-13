@@ -12,7 +12,7 @@
  
     <artifactId>drools-docs-examples</artifactId>
     <packaging>jdocbook</packaging>
-    <name>Drools Examples Documentation</name>
+    <name>Drools :: Documentation :: Drools Examples</name>
     <description>Examples and Tutorials</description>
  
     <build>
