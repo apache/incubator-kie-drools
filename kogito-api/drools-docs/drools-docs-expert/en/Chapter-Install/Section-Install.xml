@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+  <title>Installing and using</title>
+
+  <para>Drools provides an Eclipse-based IDE (which is optional), but at its
+  core only Java 1.4 (J2SE) is required.</para>
+
+  <para>A simple way to get started is to download and install the Eclipse
+  plug-in - this will also require the Eclipse GEF framework to be installed
+  (see below, if you don't have it installed already). This will provide you
+  with all the dependencies you need to get going: you can simply create a new
+  rule project and everything will be done for you. Refer to the chapter on
+  the Rule Workbench and IDE for detailed instructions on this. Installing the
+  Eclipse plug-in is generally as simple as unzipping a file into your Eclipse
+  plug-in directory.</para>
+
+  <para>Use of the Eclipse plug-in is not required. Rule files are just
+  textual input (or spreadsheets as the case may be) and the IDE (also known
+  as the Rule Workbench) is just a convenience. People have integrated the
+  rule engine in many ways, there is no "one size fits all".</para>
+
+  <para>Alternatively, you can download the binary distribution, and include
+  the relevant jars in your projects classpath.</para>
+
+  <para></para>
+
+  <section>
+    <title>Dependencies and jars</title>
+
+    <para>Drools is broken down into a few modules, some are required during
+    rule development/compiling, and some are required at runtime. In many
+    cases, people will simply want to include all the dependencies at runtime,
+    and this is fine. It allows you to have the most flexibility. However,
+    some may prefer to have their "runtime" stripped down to the bare minimum,
+    as they will be deploying rules in binary form - this is also possible.
+    The core runtime engine can be quite compact, and only require a few 100
+    kilobytes across 2 jar files.</para>
+
+    <para>The following is a description of the important libraries that make
+    up JBoss Rules</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>drools-core.jar - this is the core engine, runtime component.
+        Contains both the RETE engine and the LEAPS engine. This is the only
+        runtime dependency if you are pre-compiling rules (and deploying via
+        Package or RuleBase objects).</para>
+      </listitem>
+
+      <listitem>
+        <para>drools-compiler.jar - this contains the compiler/builder
+        components to take rule source, and build executable rule bases. This
+        is often a runtime dependency of your application, but it need not be
+        if you are pre-compiling your rules. This depends on
+        drools-core</para>
+      </listitem>
+
+      <listitem>
+        <para>drools-jsr94.jar - this is the JSR-94 compliant implementation,
+        this is essentially a layer over the drools-compiler component. Note
+        that due to the nature of the JSR-94 specification, not all features
+        are easily exposed via this interface. In some cases, it will be
+        easier to go direct to the Drools API, but in some environments the
+        JSR-94 is mandated.</para>
+      </listitem>
+
+      <listitem>
+        <para>drools-decisiontables.jar - this is the decision tables
+        'compiler' component, which uses the drools-compiler component. This
+        supports both excel and CSV input formats.</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>There are quite a few other dependencies which the above components
+    require, most of which are for the drools-compiler, drools-jsr94 or
+    drools-decisiontables module. Some of these (such as the XML libraries)
+    may not be required if you run in a Java 1.5 environment. Some key ones to
+    note are "JCI" - which is the apache Java Compiler Interface utility which
+    provides runtime compiling capability, "POI" which provides the
+    spreadsheet parsing ability, and "antlr" which provides the parsing for
+    the rule language itself.</para>
+
+    <para>NOTE: if you are using Drools in J2EE or servlet containers and you
+    come across classpath issues with "JDT", then you can switch to the janino
+    compiler. Set the system property "drools.compiler": For example:
+    -Ddrools.compiler=JANINO.</para>
+
+    <para>For up to date info on dependencies in a release, consult the
+    README_DEPENDENCIES.txt file, which can be found in the lib directory of
+    the download bundle, or in the root of the project directory.</para>
+  </section>
+
+  <section>
+    <title>Runtime</title>
+
+    <para>The "runtime" requirements mentioned here are if you are deploying
+    rules as their binary form (either as Package objects, or RuleBase objects
+    etc). This is an optional feature that allows you to keep your runtime
+    very light. You may use drools-compiler to produce rule packages "out of
+    process", and then deploy them to a runtime system. This runtime system
+    only requires drools-core.jar for execution. This is an optional
+    deployment pattern, and many people do not need to "trim" their
+    application this much, but it is an ideal option for certain
+    environments.</para>
+  </section>
+
+  <section>
+    <title>Installing IDE (Rule Workbench)</title>
+
+    <para>The rule workbench (for Eclipse) requires that you have Eclipse 3.2
+    or greater, as well as Eclipse GEF 3.2 or greater. You can install it
+    either by downloading the plug-in or, or using the update site.</para>
+
+    <para>Another option is to use the JBoss IDE, which comes with all the
+    plug-in requirements pre packaged, as well as a choice of other tools
+    separate to rules. You can choose just to install rules from the "bundle"
+    that JBoss IDE ships with.</para>
+
+    <section>
+      <title>Installing GEF (a required dependency)</title>
+
+      <para>GEF is the Eclipse Graphical Editing Framework, which is used for
+      graph viewing components in the plug-in.</para>
+
+      <para>If you don't have GEF installed, you can install it using the
+      built in update mechanism (or downloading GEF from the Eclipse.org
+      website not recommended). JBoss IDE has GEF already, as do many other "distributions" of
+      Eclipse, so this step may be redundant for some people.</para>
+
+      <para>First you open the Help-&gt;Software updates-&gt;Find and install
+      from the help menu. Then you choose the Calisto update site:</para>
+
+	  <para>If you aren't using Calisto you can use the following update site do download GEF</para>
+	  <programlisting>http://europa-mirror1.Eclipse.org/tools/gef/update-site/releases/</programlisting>
+	
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="gef_update.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>Next you choose the GEF plug-in:</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="install_gef.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>Press next, and agree to install the plug-in (an Eclipse restart
+      may be required). Once this is completed, then you can continue on
+      installing the rules plug-in.</para>
+    </section>
+
+    <section>
+      <title>Installing from zip file</title>
+
+      <para>To install from the zip file, download and unzip the file. Inside
+      the zip you will see a plug-in directory, and the plug-in jar itself. You
+      place the plug-in jar into your Eclipse applications plug-in directory,
+      and restart Eclipse.</para>
+    </section>
+
+    <section>
+      <title>Installing from the update site</title>
+
+      <para>Using the update site is a handy way to install the plug-in, and
+      keep it up to date (the Eclipse platform will check for updates as
+      needed). It gives you a good chance of staying up to date with
+      improvements, fixes etc.</para>
+
+      <para>Some firewalls may cause trouble with using update sites in
+      Eclipse, if you have issues, then install it manually from the plug-in.
+      Also, if you have previously installed the plug-in manually, you will
+      need to manually remove it from your plug-in directory.</para>
+
+      <para>Step 1. Use the Eclipse help menu to find the feature installer.
+      <screenshot>
+          <screeninfo>Access the software updates menu</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="help_menu.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot></para>
+
+      <para>Step 2: Choose the option for installing a new feature (obviously
+      in future, if you want to check for updates, you use the other option
+      !). <screenshot>
+          <screeninfo>Search for new features</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="search_new_features.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot></para>
+
+      <para>Step 3: This screen will show what update sites are already
+      configured for your Eclipse instance. <screenshot>
+          <screeninfo>Update sites</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="update_sites_existing.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot></para>
+
+      <para>Step 4: This screen is where you enter in the remote site details.
+      You give it a name eg "JBoss Drools" and the url. <programlisting> Check the Drools IDE Update Site section of the Drools Downloads webpage: 
+				http://labs.jboss.com/drools/downloads.html</programlisting>
+      <screenshot>
+          <screeninfo>New remote site</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="new_remote_site.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot></para>
+
+      <para>Step 5: Select the new update site you just added. Eclipse will
+      remember this for when it checks for updates automatically in the
+      future. <screenshot>
+          <screeninfo>Choose the newly added update site</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="update_sites.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot></para>
+
+      <para>Step 6: You should see the available features (Drools IDE)
+      retrieved from the update site. <screenshot>
+          <screeninfo>Available features</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="search_results.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot></para>
+
+      <para>Step 7: The license agreement. Choose the option to accept the
+      license agreement. Once this happens, the workbench will start
+      downloading. Might be an opportune time to go have a coffee. <screenshot>
+          <screeninfo>License</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="licence.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot></para>
+
+      <para>Step 8: Confirm that this is the feature you want. <screenshot>
+          <screeninfo>Confirmation</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="confirm.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot></para>
+
+      <para>Step 9: Press Accept to accept the fact that the feature is not
+      digitally signed. No one signs their features, its a silly default
+      screen in Eclipse. <screenshot>
+          <screeninfo>Verify</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="digital_sign.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot></para>
+
+      <para>Step 10: The workbench will need to restart now for the feature to
+      take effect. <screenshot>
+          <screeninfo>Restart the workbench</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="restart.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot></para>
+
+      <para>Now go have another coffee, and then take a look at the chapter on
+      the Rule Workbench for what you can do with it.</para>
+    </section>
+  </section>
+</section>
