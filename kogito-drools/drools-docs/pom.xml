@@ -13,7 +13,8 @@
   <name>Drools :: Documentation</name>
   
   <modules>
-      <module>drools-docs-userguide</module>
+      <module>drools-docs-generaluserguide</module>
+      <module>drools-docs-expert</module>
       <module>drools-docs-flow</module>
       <module>drools-docs-fusion</module>      
       <module>drools-docs-guvnor</module>
@@ -28,6 +29,12 @@
             <artifactId>drools-docs-userguide</artifactId>
             <version>${project.version}</version>  
          </dependency>
+         
+         <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-docs-expert</artifactId>
+            <version>${project.version}</version>  
+         </dependency>            
          
          <dependency>
             <groupId>org.drools</groupId>
