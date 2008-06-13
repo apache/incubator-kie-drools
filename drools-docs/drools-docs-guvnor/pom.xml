@@ -10,10 +10,10 @@
     <version>5.0.0.SNAPSHOT</version>
   </parent>  
   
-    <artifactId>drools-docs-brms</artifactId>
+    <artifactId>drools-docs-guvnor</artifactId>
     <packaging>jdocbook</packaging>
-    <name>Drools BRMS Documentation</name>
-    <description>Drools BRMS Documentation</description>
+    <name>Drools Guvnor Documentation</name>
+    <description>Drools Guvnor Documentation</description>
  
     <build>
         <plugins>
