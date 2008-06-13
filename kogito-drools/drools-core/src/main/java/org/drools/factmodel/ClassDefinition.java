@@ -149,7 +149,7 @@ public class ClassDefinition
 
     /**
      * Returns the field definition object for the given field name
-     * 
+     *
      * @param fieldName
      * @return
      */
@@ -159,17 +159,17 @@ public class ClassDefinition
 
     /**
      * @param beanInfo The beanInfo to set.
-     * @throws NoSuchFieldException 
-     * @throws InvocationTargetException 
-     * @throws NoSuchMethodException 
-     * @throws ClassNotFoundException 
-     * @throws IntrospectionException 
-     * @throws IOException 
-     * @throws IllegalAccessException 
-     * @throws InstantiationException 
-     * @throws IllegalArgumentException 
-     * @throws SecurityException 
-     * @throws IntrospectionException 
+     * @throws NoSuchFieldException
+     * @throws InvocationTargetException
+     * @throws NoSuchMethodException
+     * @throws ClassNotFoundException
+     * @throws IntrospectionException
+     * @throws IOException
+     * @throws IllegalAccessException
+     * @throws InstantiationException
+     * @throws IllegalArgumentException
+     * @throws SecurityException
+     * @throws IntrospectionException
      */
     public final void buildFieldAccessors() throws SecurityException,
                                            IllegalArgumentException,
@@ -240,5 +240,13 @@ public class ClassDefinition
     public List<FactField> getFields() {
         return new ArrayList<FactField>( fields.values() );
     }
+
+	public Object get(Object bean, String field) {
+		return this.getField(field).getFieldAccessor().getValue(bean);
+	}
+
+	public void set(Object bean, String field, Object value) {
+		this.getField(field).getFieldAccessor().setValue(bean, value);
+	}
 
 }
