@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<book xmlns:xi="http://www.w3.org/2001/XInclude">
+  <bookinfo>
+    <title>Drools Expert User Guide</title>
+
+    <releaseinfo>5.0.0.SNAPSHOT</releaseinfo>
+
+    <author>
+      <firstname>Mark</firstname>
+      <surname>Proctor</surname>
+    </author>
+
+    <author>
+      <firstname>Michael</firstname>
+      <surname>Neale</surname>
+    </author>
+
+    <author>
+      <firstname>Edson</firstname>
+      <surname>Tirelli</surname>
+    </author>
+  </bookinfo>
+
+<!--
+  <preface id="preface" revision="2">
+    <title>Preface</title>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="drools_logo.png" />
+      </imageobject>
+    </mediaobject>
+
+    <para />
+  </preface>
+-->
+
+    <chapter>
+      <title>The Rule Engine</title>
+
+      <xi:include href="Chapter-Rule_Engine/Section-What_is_a_Rule_Engine.xml" />
+
+      <xi:include href="Chapter-Rule_Engine/Section-Why_use_a_Rule_Engine.xml" />
+
+      <xi:include href="Chapter-Rule_Engine/Section-Rules.xml" />
+
+      <xi:include href="Chapter-Rule_Engine/Section-Rete_Algorithm.xml" />
+
+      <xi:include href="Chapter-Rule_Engine/Section-The_Drools_Rule_Engine.xml" />
+
+      <!--xi:include href="Chapter-Rule_Engine/Section-Rule_Base.xml" />
+
+      <xi:include href="Chapter-Rule_Engine/Section-Working_Memory.xml" />
+
+      <xi:include href="Chapter-Rule_Engine/Section-Agenda.xml" />
+
+      <xi:include href="Chapter-Rule_Engine/Section-Event_Model.xml" /-->
+    </chapter>
+
+
+    <chapter>
+      <title>Decision Tables</title>
+
+      <xi:include href="Chapter-Decision_Tables/Section-Spreadsheet.xml" />
+    </chapter>
+
+    <chapter>
+      <title>The (Eclipse based) Rule IDE</title>
+
+      <xi:include href="Chapter-IDE/Section-QuickStart.xml" />
+    </chapter>
+
+    <chapter>
+      <title>Deployment and Testing</title>
+
+      <xi:include href="Chapter-Deployment/Section-Deployment.xml" />
+
+      <xi:include href="Chapter-Deployment/Section-Testing.xml" />
+    </chapter>
+
+      <chapter>
+        <title>The Java Rule Engine API</title>
+
+        <xi:include href="Chapter-JSR94/Section-Introduction.xml" />
+
+        <!-- Removed till it can be completed -->
+
+        <!-- include href="Chapter-JSR94/Section-Specification.xml" /-->
+
+        <xi:include href="Chapter-JSR94/Section-How_To_Use.xml" />
+
+        <xi:include href="Chapter-JSR94/Section-References.xml" />
+      </chapter>
+      
+    <chapter>
+      <title>The Rule Language</title>
+
+      <xi:include href="Chapter-Rule_Language/Section-Overview.xml" />
+
+      <xi:include href="Chapter-Rule_Language/Section-Comments.xml" />
+
+      <xi:include href="Chapter-Rule_Language/Section-Package.xml" />
+
+      <xi:include href="Chapter-Rule_Language/Section-Function.xml" />
+
+      <xi:include href="Chapter-Rule_Language/Section-Rule.xml" />
+
+      <xi:include href="Chapter-Rule_Language/Section-Query.xml" />
+
+      <xi:include href="Chapter-Rule_Language/Section-DSL.xml" />
+
+      <xi:include href="Chapter-Rule_Language/Section-XML.xml" />
+    </chapter>      
+    
+    <chapter>
+        <xi:include href="Chapter-Examples/Section-Examples.xml" />
+    <chapter>
+
+  <index/>
+</book>
