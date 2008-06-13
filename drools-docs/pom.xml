@@ -14,6 +14,7 @@
   
   <modules>
       <module>drools-docs-userguide</module>
+      <module>drools-docs-flow</module>
       <module>drools-docs-brms</module>
       <module>drools-docs-solver</module>
       <module>drools-docs-examples</module>
@@ -26,6 +27,12 @@
             <artifactId>drools-docs-userguide</artifactId>
             <version>${project.version}</version>  
          </dependency>
+         
+         <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-docs-flow</artifactId>
+            <version>${project.version}</version>  
+         </dependency>         
          
          <dependency>
             <groupId>org.drools</groupId>
