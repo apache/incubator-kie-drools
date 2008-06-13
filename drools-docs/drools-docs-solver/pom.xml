@@ -14,7 +14,7 @@
 
     <packaging>jdocbook</packaging>
     <name>Drools :: Documentation :: Drools Solver</name>
-    <description>Docbook manual for Drools Solver</description>
+    <description>Drools Solver Documentation</description>
  
     <build>
         <plugins>
