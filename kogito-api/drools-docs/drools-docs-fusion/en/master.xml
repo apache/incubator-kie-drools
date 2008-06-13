@@ -34,14 +34,7 @@
 
     <para />
   </preface>
--->
- 
-    
-    <chapter>
-      <title>Drools Fusion 5.0 Release Notes</title>
-    </chapter>
-
-      
+-->      
     <chapter>
       <title>Drools Flow</title>
       <xi:include href="Chapter-Fusion/Section-Fusion.xml" />
