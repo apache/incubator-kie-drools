@@ -112,9 +112,9 @@
       <xi:include href="Chapter-Rule_Language/Section-XML.xml" />
     </chapter>      
     
-    <chapter>
+    <chapter xmlns:xi="http://www.w3.org/2001/XInclude">
         <xi:include href="Chapter-Examples/Section-Examples.xml" />
-    <chapter>
+    </chapter>
 
   <index/>
 </book>
