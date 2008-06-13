@@ -131,8 +131,6 @@
 
       <xi:include href="Chapter-Rule_Language/Section-DSL.xml" />
 
-      <xi:include href="Chapter-Rule_Language/Section-RuleFlow.xml" />
-
       <xi:include href="Chapter-Rule_Language/Section-XML.xml" />
     </chapter>      
 
