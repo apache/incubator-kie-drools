@@ -13,7 +13,7 @@
     <artifactId>drools-docs-fusion</artifactId>
     <packaging>jdocbook</packaging>
     <name>Drools :: Documentation :: Drools Fusion</name>
-    <description>Fusion User Guide</description>
+    <description>Drools Fusion User Guide</description>
  
     <build>
         <plugins>

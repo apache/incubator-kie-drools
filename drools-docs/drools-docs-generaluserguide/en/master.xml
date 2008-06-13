@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <book xmlns:xi="http://www.w3.org/2001/XInclude">
   <bookinfo>
-    <title>Drools Flow User Guide</title>
+    <title>Drools Introduction and General User Guide</title>
 
     <releaseinfo>5.0.0.SNAPSHOT</releaseinfo>
 
@@ -19,7 +19,6 @@
       <firstname>Edson</firstname>
       <surname>Tirelli</surname>
     </author>
-    
   </bookinfo>
 
 <!--
@@ -34,11 +33,30 @@
 
     <para />
   </preface>
--->      
+-->
+ 
+    
     <chapter>
-      <title>Drools Flow</title>
-      <xi:include href="Chapter-Flow/Section-RuleFlow.xml" />
-    </chapter>      
+      <title>Drools 4.0 Release Notes</title>
+
+      <xi:include href="Chapter-Release_Notes/Section-What_is_new.xml" />
+
+      <xi:include href="Chapter-Release_Notes/Section-Upgrade_tips.xml" />
+    </chapter>
+
+    <chapter>
+      <title>Installation and Setup (Core and IDE)</title>
+
+      <xi:include href="Chapter-Install/Section-Install.xml" />
+
+      <xi:include href="Chapter-Install/Section-Setup.xml" />
+
+      <xi:include href="Chapter-Install/Section-Checkout.xml" />
+
+      <xi:include href="Chapter-Install/Section-Maven_build.xml" />
+
+      <xi:include href="Chapter-Install/Section-Eclipse.xml" />
+    </chapter>    
 
   <index/>
 </book>
