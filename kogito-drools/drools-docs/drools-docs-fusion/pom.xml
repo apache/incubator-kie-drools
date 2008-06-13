@@ -10,11 +10,10 @@
     <version>5.0.0.SNAPSHOT</version>
   </parent>  
   
-    <artifactId>drools-docs-solver</artifactId>
-
+    <artifactId>drools-docs-fusion</artifactId>
     <packaging>jdocbook</packaging>
-    <name>Drools :: Documentation :: Drools Solver</name>
-    <description>Docbook manual for Drools Solver</description>
+    <name>Drools :: Documentation :: Drools Fusion</name>
+    <description>Fusion User Guide</description>
  
     <build>
         <plugins>
@@ -65,13 +64,13 @@
                         <format>
                             <formatName>html_single</formatName>
                             <stylesheetResource>classpath:/xslt/org/jboss/nochunk-html.xsl</stylesheetResource>
-                            <finalName>index.html</finalName>
+                            <finalName>index.html</finalName>                              
                         </format>
-                        <!--format>
+                        <format>
                             <formatName>eclipse</formatName>
                             <stylesheetResource>classpath:/xslt/org/jboss/main-eclipse.xsl</stylesheetResource>
                             <finalName>index.html</finalName>
-                        </format-->
+                        </format>
                     </formats>
                     
                     <options>
