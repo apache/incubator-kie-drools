@@ -12,7 +12,7 @@
   
     <artifactId>drools-docs-guvnor</artifactId>
     <packaging>jdocbook</packaging>
-    <name>Drools Guvnor Documentation</name>
+    <name>Drools :: Documentation :: Drools Guvnor</name>
     <description>Drools Guvnor Documentation</description>
  
     <build>
