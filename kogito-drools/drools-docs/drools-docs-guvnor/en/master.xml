@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <book xmlns:xi="http://www.w3.org/2001/XInclude">
   <bookinfo>
-    <title>Drools BRMS</title>
+    <title>Drools Guvnor</title>
 
     <releaseinfo>5.0.0.SNAPSHOT</releaseinfo>
 
@@ -32,15 +32,15 @@
  
     
       <chapter>
-        <title>The BRMS (Business Rule Management System)</title>
+        <title>The Guvnor (Business Rule Management System)</title>
 
-        <xi:include href="Chapter-BRMS/Section-Introduction.xml" />
+        <xi:include href="Chapter-Guvnor/Section-Introduction.xml" />
 
-        <xi:include href="Chapter-BRMS/Section-AdminGuide.xml" />
+        <xi:include href="Chapter-Guvnor/Section-AdminGuide.xml" />
 
-        <xi:include href="Chapter-BRMS/Section-Architecture.xml" />
+        <xi:include href="Chapter-Guvnor/Section-Architecture.xml" />
 
-        <xi:include href="Chapter-BRMS/Section-UserGuide.xml" />
+        <xi:include href="Chapter-Guvnor/Section-UserGuide.xml" />
 
         
       </chapter>
