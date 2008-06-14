@@ -34,29 +34,10 @@
     <para />
   </preface>
 -->
- 
-    
-    <chapter>
-      <title>Drools 4.0 Release Notes</title>
 
-      <xi:include href="Chapter-Release_Notes/Section-What_is_new.xml" />
+    <xi:include href="Chapter-Release_Notes/Chapter-ReleaseNotes.xml" />
 
-      <xi:include href="Chapter-Release_Notes/Section-Upgrade_tips.xml" />
-    </chapter>
-
-    <chapter>
-      <title>Installation and Setup (Core and IDE)</title>
-
-      <xi:include href="Chapter-Install/Section-Install.xml" />
-
-      <xi:include href="Chapter-Install/Section-Setup.xml" />
-
-      <xi:include href="Chapter-Install/Section-Checkout.xml" />
-
-      <xi:include href="Chapter-Install/Section-Maven_build.xml" />
-
-      <xi:include href="Chapter-Install/Section-Eclipse.xml" />
-    </chapter>    
+    <xi:include href="Chapter-Install/Chapter-Install.xml" />  
 
   <index/>
 </book>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section>
+<section xml:base="../">
   <title>Setup from source</title>
 
   <para>As Drools is an open source project, instructions for building from
