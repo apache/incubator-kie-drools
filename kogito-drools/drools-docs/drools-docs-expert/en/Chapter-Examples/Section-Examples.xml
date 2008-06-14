@@ -8,355 +8,14 @@
 		<para>Make sure the Drools Eclipse plugin is installed, which needs GEF dependency installed first. Then download and extract the drools-examples zip file, which includes an already created Eclipse project. Import that project into a new Eclipse workspace. The rules all have example classes that execute the rules. If you want to try the examples in another project (or another IDE) then you will need to setup the dependencies by hand of course. Many, but not all of the examples are documented below, enjoy :)</para>
 	</section>	
 
-    <xi:include href="Section-HelloWorldExample/Section-HelloWorldExample.xml" />
-    <xi:include href="Section-StateExample/Section-StateExample.xml" />
-    <xi:include href="Section-FibonacciExample/Section-FibonacciExample.xml" />
-    <xi:include href="Section-BankingExample/Section-BankingExample.xml" />
+    <xi:include href="Section-HelloWorldExample.xml" />
+    <xi:include href="Section-StateExample.xml" />
+    <xi:include href="Section-FibonacciExample.xml" />
+    <xi:include href="Section-BankingExample.xml" />
 
-	<section>
-		<title>Golfing Example</title>
 
-		<screen><emphasis role="bold">Name:</emphasis> Golfing
-<emphasis role="bold">Main class:</emphasis> org.drools.examples.GolfingExample
-<emphasis role="bold">Type:</emphasis> java application
-<emphasis role="bold">Rules file:</emphasis> golf.drl
-<emphasis role="bold">Objective:</emphasis> Configuration example that finds the solution from a large number of available cross products
-</screen>
+	<section >
 
-		<para>The golf example solves a "riddle" style problem that is simple enough to state in sentences, but for which a conventional algorithmic solition is not obvious. It does this by searching for a suitable combination from a "space" of possible solutions.</para>
-		
-		<section>
-			<title>The riddle</title>
-
-			<para>The problem is written as a riddle:</para>
-
-			<orderedlist>
-				<listitem>
-					<para>A foursome of golfers is standing at a tee, in a line from left to right.</para>
-				</listitem>
-
-				<listitem>
-					<para>Each golfer wears different colored pants; one is wearing red pants.</para>
-				</listitem>
-
-				<listitem>
-					<para>The golfer to Fred’s immediate right is wearing blue pants.</para>
-				</listitem>
-
-				<listitem>
-					<para>Joe is second in line.</para>
-				</listitem>
-
-				<listitem>
-					<para>Bob is wearing plaid pants.</para>
-				</listitem>
-
-				<listitem>
-					<para>Tom isn’t in position one or four, and he isn’t wearing the hideous orange pants.</para>
-				</listitem>
-			</orderedlist>
-
-			<para>The immediate thing about this riddle, is that a solution is not obvious (of course ! it wouldn't be a riddle otherwise !). It also isn't obvious how to write an algorithm to solve it (if it is for you - then you can take a break now, go have a coffee or someting to reward your uber intellect).</para>
-
-			<para>Instead of thinking about how to solve it, we can be lazy and use rules instead. So we don't attempt to solve it, we just state the problem in rules, and let the engine derive the solution.</para>
-		</section>
-		
-		<section>
-			<title>Launching the example</title>
-
-			<para>The supporting code is in the GolfingExample.java class. There is an inner class "Golfer" which represents a golf player, it has their name, position (1 to 4 meaning left to right), and their pants color, as simple properties.</para>
-
-			<screen>String[] names = new String[] { "Fred", "Joe", "Bob", "Tom" };
-String[] colors = new String[] { "red", "blue", "plaid", "orange" };
-int[] positions = new int[] { 1, 2, 3, 4 };
-        
-for ( int n = 0; n &lt; names.length; n++ ) {
-    for ( int c = 0; c &lt; colors.length; c++ ) {
-        for ( int p = 0; p &lt; positions.length; p++ ) {
-            session.insert( new Golfer( names[n], colors[c], positions[p]) );
-        }                
-    }            
-}      </screen>
-
-			<para>The above listing shows the interesting part of the supporting code. Note that we have arrays representing each name, color, and position. We then go through a nested loop inserting instances of Golfer - so in the working memory we will have all combinations of name, color and position. It is then the job of the rules to find the appropriate one.</para>
-
-			<para>Launching the code as a java application should yield the following output:</para>
-
-			<programlisting>Fred 1 orange
-Joe 2 blue
-Bob 4 plaid
-Tom 3 red     </programlisting>
-
-			<para>This shows that the rule(s) have found a suitable solution.</para>
-		</section>
-
-		<section>
-			<title>The matching rule</title>
-
-			<para>The solution in rules is quite simple, it is a single rule which expresses the constraints as stated in the riddle. Effectively, we can interpret the riddle as a series of constraints on our object model. Given that we have enough "combinations" in the working memory, all we have to do is express the constraints in a rule and the engine will match it with a solution (we don't really care how it does it, as long as it works !).</para>
-
-			<para>There is one rule in the solution, in golf.drl, called "find solution". The rule is made up of 5 patterns, with constraints that map to items in the riddle.</para>
-
-			<programlisting>$fred : Golfer( name == "Fred" )      </programlisting>
-
-			<para>In the above pattern, we are simply matching a Golfer who is called fred, and binding it to a variable called $fred. All that we know is that there is a golfer called fred.</para>
-
-			<programlisting>$joe : Golfer( name == "Joe",
-               position == 2,
-               position != $fred.position,
-               color != $fred.color )      </programlisting>
-
-			<para>The next pattern says that we have a golfer named Joe, in position 2 ("second in line"). Now, we also know that he must NOT be in the same position as fred (of course !) and have different color pants. So far, nothing that amazing.</para>
-
-			<programlisting>$bob : Golfer( name == "Bob",
-               position != $fred.position,
-               position != $joe.position,
-               color == "plaid",
-               color != $fred.color,
-               color != $joe.color )      </programlisting>
-
-			<para>Refering to the above, we also know there is a golfer called Bob, who wears plaid pants - once again that all we know about him. but of course, we add in the constraints that he must be in a different position to fred, joe, and also have different colored pants.</para>
-
-			<programlisting>$tom : Golfer( name == "Tom",
-               position != 1,
-               position != 4,
-               position != $fred.position,
-               position != $joe.position,
-               position != $bob.position,
-               color != "orange,               
-               color != $fred.color,
-               color != $joe.color,
-               color != $bob.color )      </programlisting>
-
-			<para>(referring to the above) We also know that there is a guy called Tom, who doesn't wear the Orange pants, AND he is not in position 1, or 4. Of course we also add in the other constraints (he must be in a different position to the others so far, and have a different color).</para>
-
-			<programlisting>Golfer( position == ( $fred.position + 1 ),
-        color == "blue",
-        this in ( $joe, $bob, $tom ) )      </programlisting>
-
-			<para>Finally, we know that the golfer on the right of Fred (position + 1), is in blue pants. We also add in the constraint that he must be either Joe, Bob or Tom (as Fred can't be beside himself, well he can I guess, but not in the sense we mean here !) - note the use of "this" to refer to the current pattern, we don't really care who "this" is, just who they are not. Maybe if Fred was really really happy they this wouldn't work, but lets assume otherwise for now.</para>
-
-			<para>Thats it ! We have expressed the rule as constraints that map to the ones expressed in the riddle, yet we haven't had to solve the riddle, the engine does that for us.</para>
-		</section>
-
-		<section>
-			<title>Conclusion</title>
-
-			<para>This simple example shows how you can express a problem declaratively, and let the engine solve the problem for you, by making use of combinations. This is an often useful technique, as it allows you to express rules as a statement of the problem you are trying to solve.</para>
-
-			<para>Of course, care must be taken. Using combinatorics like this can cause performance problems when there are large numbers of facts (eg in this case, if there were a larger number of golfers, or colors/positions etc - possibilities). When the fact count grows, the combinations the engine has to deal with can explode exponentially, making this not very efficient. However, in cases where the rules are perhaps complex, the problem is hard, but the fact numbers are relatively low, this approach can be very very useful and help you solve problems that would otherwise be very hard.</para>
-		</section>
-
-	<section>
-		<title>Trouble Ticket</title>
-
-		<para>The trouble ticket example shows how to use the duration attribute for temporal rules, and also includes an alternative version using a dsl.</para>
-
-		<programlisting><emphasis role="bold">Name:</emphasis> TroubleTicket
-<emphasis role="bold">Main class:</emphasis> org.drools.examples.TroubleTicketExample, org.drools.examples.TroubleTicketExampleWithDSL
-<emphasis role="bold">Type:</emphasis> java application
-<emphasis role="bold">Rules file:</emphasis> TroubleTicket.drl, TroubleTicketWithDSL.dslr
-<emphasis role="bold">Objective:</emphasis> Show temporal rules in action
-</programlisting>
-
-		<para>The trouble ticket example is based around the idea of raising a "ticket" (ie an issue) with a vendor (these are the vendors rules). Each customer has a subscription class assigned to it (eg Gold, Silver etc) and their class determines how the ticket is treated with respect to time, and escalating the issue. The normal drl version will be discussed here, but logically the DSL version is the same (it just uses a DSL defined language instead of the normal DRL).</para>
-
-		<para>We have 2 types of facts, Customer and Ticket. A Ticket belongs to one and only one customer. A Customer has a name and a "subscription" type (Gold, Silver or Platinum). A ticket also has a "status" - which determines (obviously) what state it is in. The state may be set externally, or by the rules engine (eg it starts out "New", and then the system user determines that it is "Done" at some later point). The rules exist to ensure that the tickets are escalated appropriately based on the customer subscription class.</para>
-
-		<para>Customers can choose Silver, Gold, or Platinum (in order of increasing responsiveness). Platinum subscriptions also come with a set of steak knives, and a personal butler to lodge the ticket for you (but obviously it costs more).</para>
-	</section>
-	
-	<section>
-			<title>Executing the Example</title>
-
-			<para>The example creates 4 customers, with their name and subscription class, it then creates 4 tickets for each of the customers, note that the ticket takes the customer in the constructor (that sets up the object relationship. The tickets and the customers are then inserted. Notice that we keep a fact handle - which we will use to notify the engine that that specific ticket changed later on. The last line has the all important fireAllRules(), which tells the engine to take action on the data it has.</para>
-
-			<example>
-				<title>Trouble Ticket Example : Creating and Inserting Facts</title>
-
-				<programlisting>Customer a = new Customer( "A",
-                           "Gold" );
-Customer b = new Customer( "B",
-                           "Platinum" );
-Customer c = new Customer( "C",
-                           "Silver" );
-Customer d = new Customer( "D",
-                           "Silver" );
-
-Ticket t1 = new Ticket( a );
-Ticket t2 = new Ticket( b );
-Ticket t3 = new Ticket( c );
-Ticket t4 = new Ticket( d );
-
-session.insert( a );
-session.insert( b );
-session.insert( c );
-session.insert( d );
-
-session.insert( t1 );
-session.insert( t2 );
-FactHandle ft3 = session.insert( t3 );
-session.insert( t4 );
-
-session.fireAllRules();</programlisting>
-			</example>
-
-			<para>We have the "New Ticket" rule which has the highest priority (salience of 10 - the default is zero), The purpose of this is simply to log the fact that a new ticket has arrived in the system:</para>
-
-			<programlisting>rule "New Ticket"
- salience 10
- when
-  customer : Customer( )
-  ticket : Ticket( customer == customer, status == "New" )
-  then
- System.out.println( "New : " + ticket );
-end    </programlisting>
-
-			<para>Note that we are "joining" the ticket fact with the customer fact. It's not really needed in this case, as we don't do anything (yet) with the customer fact. If you look in the TroubleTicketExample.java, you will also see that the facts are being inserted into the engine - note that we assert BOTH Customer and Ticket object (even though the ticket belongs to a customer - this allows the engine to join the objects together how it wants - this is what is meant by "relational" programming - we let the rule engine define what the relationships are. For instance, although the code is structured so that a ticket belongs to a customer, we may be interested in looking at tickets from different customers of the same type in the future).</para>
-
-			<para>If we run the rules, we should expect that the "New Ticket" rule will be activated for all tickets, so looking at the audit log view (by opening the file which was saved automatically when the rules were run):</para>
-
-			<figure>
-				<title>Audit view</title>
-
-				<mediaobject>
-					<imageobject>
-						<imagedata fileref="tt_audit_view.png" />
-					</imageobject>
-				</mediaobject>
-			</figure>
-
-			<para>Referring to the above audit log, we can see each customer asserted, but nothing happens. As soon as the first ticket gets asserted, it joins it with the customer, and creates some activations: one is the "new ticket" rule, the other is for the appropriate priority (which we will show below). Note that items in the above view do not mean the rule fired at that point.</para>
-
-			<para>Also, don't forget to use "fireAllRules()" - a common mistake ! (In this case we are using a statefull session, so this is necessary).</para>
-
-			<para>If we run the rules, we should expect that the "New Ticket" rule will be activated for all tickets, so looking at the audit log view (by opening the file which was saved automatically when the rules were run):</para>
-
-			<figure>
-				<title>Audit view</title>
-
-				<mediaobject>
-					<imageobject>
-						<imagedata fileref="tt_audit_view.png" />
-					</imageobject>
-				</mediaobject>
-			</figure>
-
-			<para>Referring to the above audit log, we can see each customer asserted, but nothing happens. As soon as the first ticket gets asserted, it joins it with the customer, and creates some activations: one is the "new ticket" rule, the other is for the appropriate priority (which we will show below). Note that items in the above view do not mean the rule fired at that point.</para>
-			
-		</section>
-		
-		<section>
-			<title>Platinum gets the best service</title>
-
-			<para>All the wonderful platinum customers have to get great service, so first thing to note is that as soon as a ticket arrives, we escalate if it is for a platinum customer:</para>
-
-			<programlisting>rule "Platinum Priority"
- when
-  customer : Customer( subscription == "Platinum" )
-  ticket : Ticket( customer == customer, status == "New" )
- then;
-  ticket.setStatus( "Escalate" );
-  update( ticket );
-end      </programlisting>
-
-			<para>Here we are joining Ticket to customer again (customer == customer), but we are also checking that the customer is "Platinum". When this is the case, we set the ticket status to "Escalate" and call update (which tells the engine that the ticket has changed).</para>
-			
-		</section>
-		
-		<section>
-			<title>Silver and Gold</title>
-
-			<para>For silver and gold class, its a similar story to platinum:</para>
-
-			<programlisting>rule "Silver Priority"
- duration 3000
- when
-  customer : Customer( subscription == "Silver" )
-  ticket : Ticket( customer == customer, status == "New" )
- then
-  ticket.setStatus( "Escalate" );
-  update( ticket );
-end
-
-rule "Gold Priority"
- duration 1000
- when
-  customer : Customer( subscription == "Gold" )
-  ticket : Ticket( customer == customer, status == "New" )
- then
-  ticket.setStatus( "Escalate" );
-  update( ticket );
-end   </programlisting>
-
-			<para>In this case, note the use of "duration XXX" - XXX is the number of milliseconds to wait to check that this rule holds true. Should it do so, after XXX milliseconds, then the action takes effect. So in the above case, after 3 seconds the "Silver" priority kicks in, but after 1 second "Gold" does. In both cases the tickets are escalated (just like with platinum. This is what we mean by temporal rules (rules that take effect over time).</para>
-
-		</section>
-		
-		<section>
-			<title>Escalating</title>
-
-			<para>The actual escalation of a ticket happens in a rule:</para>
-
-			<programlisting>rule "Escalate"
- when
-  customer : Customer( )
-  ticket : Ticket( customer == customer, status == "Escalate" )
- then
-  sendEscalationEmail( customer, ticket );
-end     </programlisting>
-
-			<para>In this case, the action is to call a function which sends an email (the function is defined down the bottom of the drl file). This rule reacts to the rules which update the ticket and set its status to escalate.</para>
-
-			<para>In the code that launches the example, we have a "sleep" to make sure all this happens (and print out the results). Note also that after the rules are fired, we modify the status of the Customer "C" to "Done" - and then tell the engine. This causes it to evaluate and fire the rule that looks for "tickets" that are "Done" (in which is just logs a message).</para>
-	
-		</section>
-		
-		<section>
-			<title>Running it</title>
-
-			<para>Running the example (by launching the TroubleTicket.java class as an application) should yield the output:</para>
-
-			<programlisting>New : [Ticket [Customer D : Silver] : New]
-New : [Ticket [Customer C : Silver] : New]
-New : [Ticket [Customer B : Platinum] : New]
-New : [Ticket [Customer A : Gold] : New]
-Email : [Ticket [Customer B : Platinum] : Escalate]
-[[ Sleeping 5 seconds ]]
-Email : [Ticket [Customer A : Gold] : Escalate]
-Done : [Ticket [Customer C : Silver] : Done]
-Email : [Ticket [Customer D : Silver] : Escalate]
-[[ awake ]]    </programlisting>
-
-			<figure>
-				<title>Audit log</title>
-
-				<mediaobject>
-					<imageobject>
-						<imagedata fileref="tt_audit_firing.png" />
-					</imageobject>
-				</mediaobject>
-			</figure>
-
-			<para>Referring to the above audit log, we can see the events as they happen. Once the rules start firing, the first items are the "Activation Executed" for the new tickets, as expected (they do nothing, just log the fact). Note the "Activation executed" item for the platinum ticket - that is the next one to go (remember it has the default salience, so it happens after the "New ticket" rule, but otherwise it is immediate - there is no "duration" delay for it). The platinum activation results in a Object modification (which is the escalation) - this in turn creates an activation record for the "escalate ticket" rule - which is what we wanted. Straight after that it executes the action to escalate the ticket.</para>
-
-			<para>The next event to occur is due to the:</para>
-			<programlisting>t3.setStatus( "Done" );
-
-session.update( ft3,
-                t3 );
-</programlisting> 
-			<para>in the code (outside of rules) - this simulates a customer service officer maarking a ticket as done (and of course, uses the fact handle we kept from before). This results in a cancelled activation (as we no longer have a New Silvert customer ticket - it is done) and a new activation to log the fact it was done.</para>
-
-			<para>In all the excitement, in parallel the engine has been watching the time pass, and it happens that the Gold tickets start to escalate, and then silver (as expected).</para>
-			
-		</section>
-
-	</section>
-
-  <!-- Trouble Ticket example -->
-  
-	<section>
 		<title>Pricing Rule Decision Table Example</title>
 
 		<para>The Pricing Rule decision table demonstrates the use of a decision table in a spreadsheet (XLS format) in calculating the retail cost of an insurance policy. The purpose of the set of rules provided is to calculate a base price, and an additional discount for a car driver applying for a specific policy. The drivers age, history and the policy type all contribute to what the basic premium is, and an additional chunk of rules deals with refining this with a subtractive percentage discount.</para>
@@ -397,7 +56,7 @@ String drl = compiler.compile(getSpreadsheetStream(), InputType.XLS);
 
 				<mediaobject>
 					<imageobject>
-						<imagedata fileref="DT_Config.png" />
+						<imagedata fileref="TroubleTicket/DT_Config.png" />
 					</imageobject>
 				</mediaobject>
 			</figure>
@@ -413,7 +72,7 @@ String drl = compiler.compile(getSpreadsheetStream(), InputType.XLS);
 
 				<mediaobject>
 					<imageobject>
-						<imagedata fileref="DT_Table1.png" />
+						<imagedata fileref="TroubleTicket/DT_Table1.png" />
 					</imageobject>
 				</mediaobject>
 			</figure>
@@ -425,7 +84,7 @@ String drl = compiler.compile(getSpreadsheetStream(), InputType.XLS);
 
 				<mediaobject>
 					<imageobject>
-						<imagedata fileref="DT_Table2.png" />
+						<imagedata fileref="TroubleTicket/DT_Table2.png" />
 					</imageobject>
 				</mediaobject>
 			</figure>
@@ -434,7 +93,9 @@ String drl = compiler.compile(getSpreadsheetStream(), InputType.XLS);
 
 			<para>It is important to note that decision tables generate rules, this means they aren't simply top down logic, but more a means to capture data that generate rules (this is a subtle difference that confuses some people). The evaluation of the rules is not "top down" necessarily, all the normal indexing and mechanics of the rule engine still apply.</para>
 		</section>
-	</section>
+	</section>	
+
+
 	
 	<section>
 		<title>Shopping Example</title>
@@ -1054,157 +715,7 @@ SUGGESTION: Would you like to buy a tank for your 6 fish? - Yes</programlisting>
 			<!---<para>Todo : Add Audit and Agenda Views for this sample.</para>-->
 		</section>
 
-	<section>
-		<title>Honest Politician Example</title>
-
-		<para>The honest politician example demonstrates truth maintenance with logical assertions, the basic premise is that an object can only exist while a statement is true. A rule's consequence can logical insert an object with the insertLogical method, this means the object will only remain in the working memory as long as the rule that logically inserted it remains true, when the rule is no longer true the object is automatically retracted.</para>
-
-    <para>In this example there is Politician class with a name and a boolean
-    value for honest state, four politicians with honest state set to true are
-    inserted.</para>
-
-    <para><example>
-        <title>Politician Class</title>
-
-        <programlisting>public class Politician {
-    private String name;
-    private boolean honest;
-    ...
-}</programlisting>
-      </example><example>
-        <title>Honest Politician Example Execution</title>
-
-        <programlisting>Politician blair  = new Politician("blair", true);
-Politician bush  = new Politician("bush", true);
-Politician chirac  = new Politician("chirac", true);
-Politician schroder   = new Politician("schroder", true);
-        
-session.insert( blair );
-session.insert( bush );
-session.insert( chirac );
-session.insert( schroder );
-
-session.fireAllRules();</programlisting>
-      </example>The console out shows that while there is atleast one honest
-    polician democracy lives, however as each politician is in turn corrupted
-    by an evil corporation, when all politicians are dishonest democracy is
-    dead.<example>
-        <title>Honest Politician Example Console Output</title>
-
-        <programlisting>Hurrah!!! Democracy Lives
-I'm an evil corporation and I have corrupted schroder
-I'm an evil corporation and I have corrupted chirac
-I'm an evil corporation and I have corrupted bush
-I'm an evil corporation and I have corrupted blair
-We are all Doomed!!! Democracy is Dead
-</programlisting>
-      </example>As soon as there is one more more honest politcians in the
-    working memory a new Hope object is logically asserted, this object will
-    only exist while there is at least one or more honest politicians, the
-    moment all politicians are dishonest then the Hope object will be
-    automatically retracted. This rule is given a salience of 10 to make sure
-    it fires before any other rules, as at this stage the "Hope is Dead" rule
-    is actually true.</para>
-
-    <example>
-      <title>Honest Politician Example : Rule "We have an honest
-      politician"</title>
-
-      <programlisting>rule "We have an honest Politician"
-    salience 10
-    when
-        exists( Politician( honest == true ) )
-    then
-        insertLogical( new Hope() );
-end</programlisting>
-    </example>
-
-    <para>As soon as a Hope object exists the "Hope Lives" rule matches, and
-    fires, it has a salience of 10 so that it takes priority over "Corrupt the
-    Honest".</para>
-
-    <example>
-      <title>Honest Politician Example : Rule "Hope Lives"</title>
-
-      <programlisting>rule "Hope Lives"
-    salience 10
-    when
-        exists( Hope() )
-    then
-        System.out.println("Hurrah!!! Democracy Lives");
-end</programlisting>
-    </example>
-
-    <para>Now that hope exists and we have, at the start, four honest
-    politicians we have 4 activations for this rule all in conflict. This rule
-    iterates over those rules firing each one in turn, corrupting each
-    politician so that they are no longer honest. When all four politicians
-    have been corrupted we have no politicians with the property "honest ==
-    true" thus the rule "We hvae an honest Politician" is no longer true and
-    the object it logical inserts "new Hope()" is automatically
-    retracted.</para>
-
-    <example>
-      <title>Honest Politician Example : Rule "Corrupt the Honest"</title>
-
-      <programlisting>rule "Corrupt the Honest"
-    when
-        politician : Politician( honest == true )   
-        exists( Hope() )
-    then
-        System.out.println( "I'm an evil corporation and I have corrupted " + politician.getName() );
-        modify ( politician ) { honest = false };
-end</programlisting>
-    </example>
-
-    <para>With Hope being automatically retracted, via the truth maintenance
-    system, then Hope no longer exists in the system and this rule will match
-    and fire.</para>
-
-    <example>
-      <title>Honest Politician Example : Rule "Hope is Dead"</title>
-
-      <programlisting>rule "Hope is Dead"
-    when
-        not( Hope() )
-    then
-        System.out.println( "We are all Doomed!!! Democracy is Dead" );
-end</programlisting>
-    </example>
-
-    <para>lets take a look the audit trail for this application:</para>
-
-    <figure>
-      <title>Honest Politician Example Audit View</title>
-
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="honest_politician_audit.png" />
-        </imageobject>
-      </mediaobject>
-    </figure>
-
-    <para>The moment we insert the first politician we have two activations,
-    the "We have an honest Politician" is activated only once for the first
-    inserted politician because it uses an existential 'exists' conditional
-    element which only matches. the rule "Hope is Dead" is also activated at
-    this stage, because as of yet we have not inserted the Hope object. "We
-    have an honest Politician" fires first, as it has a higher salience over
-    "Hope is Dead" which inserts the Hope object, that action is highlighted
-    green above. The insertion of the Hope object activates "Hope Lives" and
-    de-activates "Hope is Dead", it also actives "Corrupt the Honest" for each
-    inserted honested politician. "Rule Hope Lives" executes printing
-    "Hurrah!!! Democracy Lives". Then for each politician the rule "Corrupt
-    the Honest" fires printing "I'm an evil corporation and I have corrupted
-    X", where X is the name of the politician, and modifies the politicians
-    honest value to false. When the last honest polician is corrupted Hope is
-    automatically retracted, by the truth maintenance system, as shown by the
-    blue highlighted area. The green highlighted area shows the origin of the
-    currently selected blue highlighted area. Once Hope is retracted "Hope is
-    dead" activates and fires printing "We are all Doomed!!! Democracy is
-    Dead".</para>
-
-  </section>
+    <xi:include href="Section-HonestPolitician.xml" />
 
   <section>
     <title>Sudoku Example</title>

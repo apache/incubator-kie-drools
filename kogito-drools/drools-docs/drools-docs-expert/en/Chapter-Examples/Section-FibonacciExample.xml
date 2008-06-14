@@ -95,7 +95,7 @@ end</programlisting>
 
 			<mediaobject>
 				<imageobject>
-					<imagedata fileref="fibonacci1.png" />
+					<imagedata fileref="FibonacciExample/fibonacci1.png" />
 				</imageobject>
 			</mediaobject>
 		</figure>
@@ -121,7 +121,7 @@ end</programlisting>
 
 			<mediaobject>
 				<imageobject>
-					<imagedata fileref="fibonacci_agenda1.png" />
+					<imagedata fileref="FibonacciExample/fibonacci_agenda1.png" />
 				</imageobject>
 			</mediaobject>
 		</figure>
@@ -133,7 +133,7 @@ end</programlisting>
 
 			<mediaobject>
 				<imageobject>
-					<imagedata fileref="fibonacci_agenda2.png" />
+					<imagedata fileref="FibonacciExample/fibonacci_agenda2.png" />
 				</imageobject>
 			</mediaobject>
 		</figure>
@@ -162,7 +162,7 @@ end
 
 			<mediaobject>
 				<imageobject>
-					<imagedata fileref="fibonacci4.png" />
+					<imagedata fileref="FibonacciExample/fibonacci4.png" />
 				</imageobject>
 			</mediaobject>
 		</figure>
