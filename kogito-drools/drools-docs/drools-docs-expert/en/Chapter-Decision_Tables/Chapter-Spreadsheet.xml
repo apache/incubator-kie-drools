@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section>
+<chapter xmlns:xi="http://www.w3.org/2001/XInclude" >
   <title>Decision tables in spreadsheets</title>
 
   <para>Decision tables are a "precise yet compact" (ref. Wikipedia) way of
@@ -599,4 +599,4 @@ If the template is [Foo(bar &lt; $1, baz == $2)] and the cell is [42,42] then th
     </section>
   </section>
   
-</section>
+</chapter>
