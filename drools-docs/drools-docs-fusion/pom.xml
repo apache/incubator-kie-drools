@@ -13,5 +13,5 @@
     <artifactId>drools-docs-fusion</artifactId>
     <packaging>jdocbook</packaging>
     <name>Drools :: Documentation :: Drools Fusion</name>
-    <description>Drools Fusion User Guide</description> 
+    <description>Drools Fusion Documentation</description> 
 </project>
