@@ -58,63 +58,17 @@
     </chapter>
 
 
-    <chapter>
-      <title>Decision Tables</title>
-
-      <xi:include href="Chapter-Decision_Tables/Section-Spreadsheet.xml" />
-    </chapter>
-
-    <chapter>
-      <title>The (Eclipse based) Rule IDE</title>
-
-      <xi:include href="Chapter-IDE/Section-QuickStart.xml" />
-    </chapter>
-
-    <chapter>
-      <title>Deployment and Testing</title>
-
-      <xi:include href="Chapter-Deployment/Section-Deployment.xml" />
-
-      <xi:include href="Chapter-Deployment/Section-Testing.xml" />
-    </chapter>
-
-      <chapter>
-        <title>The Java Rule Engine API</title>
-
-        <xi:include href="Chapter-JSR94/Section-Introduction.xml" />
-
-        <!-- Removed till it can be completed -->
-
-        <!-- include href="Chapter-JSR94/Section-Specification.xml" /-->
-
-        <xi:include href="Chapter-JSR94/Section-How_To_Use.xml" />
-
-        <xi:include href="Chapter-JSR94/Section-References.xml" />
-      </chapter>
-      
-    <chapter>
-      <title>The Rule Language</title>
-
-      <xi:include href="Chapter-Rule_Language/Section-Overview.xml" />
-
-      <xi:include href="Chapter-Rule_Language/Section-Comments.xml" />
-
-      <xi:include href="Chapter-Rule_Language/Section-Package.xml" />
-
-      <xi:include href="Chapter-Rule_Language/Section-Function.xml" />
-
-      <xi:include href="Chapter-Rule_Language/Section-Rule.xml" />
-
-      <xi:include href="Chapter-Rule_Language/Section-Query.xml" />
-
-      <xi:include href="Chapter-Rule_Language/Section-DSL.xml" />
-
-      <xi:include href="Chapter-Rule_Language/Section-XML.xml" />
-    </chapter>      
+    <xi:include href="Chapter-Decision_Tables/Chapter-Spreadsheet.xml" />
     
-    <chapter xmlns:xi="http://www.w3.org/2001/XInclude">
-        <xi:include href="Chapter-Examples/Section-Examples.xml" />
-    </chapter>
+    <xi:include href="Chapter-IDE/Chapter-QuickStart.xml" />  
+
+    <xi:include href="Chapter-Deployment/Chapter-DepymentAndTest.xml" />
+
+    <xi:include href="Chapter-JSR94/Chapter-JSR94.xml" />
+    
+    <xi:include href="Chapter-Rule_Language/Chapter-RuleLanguage.xml" />
+
+     <xi:include href="Chapter-Examples/Chapter-Examples.xml" />
 
   <index/>
 </book>

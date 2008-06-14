@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter xmlns:xi="http://www.w3.org/2001/XInclude" >
+      <title>The Rule Language</title>
+
+      <xi:include href="Section-Overview.xml" />
+      
+      <xi:include href="Section-Comments.xml" />
+
+      <xi:include href="Section-Package.xml" />
+
+      <xi:include href="Section-Function.xml" />
+
+      <xi:include href="Section-Rule.xml" />
+
+      <xi:include href="Section-Query.xml" />
+
+      <xi:include href="Section-DSL.xml" />
+
+      <xi:include href="Section-XML.xml" />      
+    </chapter>    

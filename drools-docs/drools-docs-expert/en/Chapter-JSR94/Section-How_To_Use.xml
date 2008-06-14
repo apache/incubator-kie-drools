@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section>
+	<section xml:base="../">
   <title>How To Use</title>
 
   <para>There are two parts to working with JSR94. The first part is the
