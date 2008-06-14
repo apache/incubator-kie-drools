@@ -13,5 +13,5 @@
     <artifactId>drools-docs-flow</artifactId>
     <packaging>jdocbook</packaging>
     <name>Drools :: Documentation :: Drools Flow</name>
-    <description>Drools Flow User Guide</description>
+    <description>Drools Flow Documentation</description>
 </project>

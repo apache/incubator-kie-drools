@@ -10,10 +10,10 @@
     <version>5.0.0.SNAPSHOT</version>
   </parent>  
   
-    <artifactId>drools-docs-generaluserguide</artifactId>
+    <artifactId>drools-docs-introduction</artifactId>
     <packaging>jdocbook</packaging>
-    <name>Drools :: Documentation :: General User Guide</name>
-    <description>Drools Introduction and General User Guide Documentation</description>
+    <name>Drools :: Documentation :: Introduction</name>
+    <description>Introduction Documentation</description>
  
     <build>
         <plugins>
