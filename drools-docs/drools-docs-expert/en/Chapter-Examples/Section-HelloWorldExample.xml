@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section>
+<section xml:base="../">
   <title>Hello World</title>
 
   <screen><emphasis role="bold">Name:</emphasis> Hello World
@@ -148,7 +148,7 @@ session.dispose();    </programlisting>
 
     <mediaobject>
       <imageobject>
-        <imagedata fileref="helloworld_agenda1.png" />
+        <imagedata fileref="HelloWorldExample/helloworld_agenda1.png" />
       </imageobject>
     </mediaobject>
   </figure>
@@ -240,7 +240,7 @@ end</programlisting>
 
     <mediaobject>
       <imageobject>
-        <imagedata fileref="helloworld_agenda2.png" />
+        <imagedata fileref="HelloWorldExample/helloworld_agenda2.png" />
       </imageobject>
     </mediaobject>
   </figure>
@@ -278,7 +278,7 @@ end</programlisting>
 
     <mediaobject>
       <imageobject>
-        <imagedata fileref="helloworld_auditview1.png" />
+        <imagedata fileref="HelloWorldExample/helloworld_auditview1.png" />
       </imageobject>
     </mediaobject>
   </figure>
