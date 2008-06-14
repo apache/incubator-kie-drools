@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section>
+<section xml:base="../">
   <title>Source Checkout</title>
 
   <para>Drools is available from two <indexterm>

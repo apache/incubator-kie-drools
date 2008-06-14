@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter xmlns:xi="http://www.w3.org/2001/XInclude" >
+      <title>Installation and Setup (Core and IDE)</title>
+
+      <xi:include href="Section-Install.xml" />
+
+      <xi:include href="Section-Setup.xml" />
+
+      <xi:include href="Section-Checkout.xml" />
+
+      <xi:include href="Section-Maven_build.xml" />
+
+      <xi:include href="Section-Eclipse.xml" />
+</chapter> 
