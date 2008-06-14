@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section>
+<section xml:base="../">
   <title>What is new in Drools 4.0</title>
 
   <para>Drools 4.0 is a major update over the previous Drools 3.0.x series. A
