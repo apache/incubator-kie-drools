@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    <section xml:base="../">
+      <title>Number Guess</title>
+
+      <programlisting><emphasis role="bold">Name:</emphasis> Number Guess 
+<emphasis role="bold">Main class:</emphasis> org.drools.examples.NumberGuessExample
+<emphasis role="bold">Type:</emphasis> java application
+<emphasis role="bold">Rules file:</emphasis> NumberGuess.drl
+<emphasis role="bold">Objective:</emphasis> Demonstrate use of Rule Flow to organise Rules
+</programlisting>
+
+      <para>The "Number Guess" example shows the use of RuleFlow, a way of
+      controlling the order in which rules are fired. It uses widely
+      understood workflow diagrams to make clear the order that groups of
+      rules will be executed.</para>
+
+      <example>
+        <title>Creating the Number Guess RuleBase - extract 1 from
+        NumberGuessExample.java main() method</title>
+
+        <programlisting>final PackageBuilder builder = new PackageBuilder();
+
+builder.addPackageFromDrl( new InputStreamReader( 
+         ShoppingExample.class.getResourceAsStream( "NumberGuess.drl" ) ) );
+builder.addRuleFlow( new InputStreamReader( 
+         ShoppingExample.class.getResourceAsStream( "NumberGuess.rfm" ) ) );
+
+final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+ruleBase.addPackage( builder.getPackage() );
+
+</programlisting>
+      </example>
+
+      <para>The creation of the package, and the loading of the rules (using
+      the addPackageFromDrl() method ) is the same as the previous examples.
+      There is a additional line to add the RuleFlow (NumberGuess.rfm) as you
+      have the option of specifying different ruleflows for the same RuleBase.
+      Otherwise the RuleBase is created in the same manner as before.</para>
+
+      <example>
+        <title>Starting the RuleFlow - extract 2 from NumberGuessExample.java
+        main() method</title>
+
+        <programlisting>final StatefulSession session = ruleBase.newStatefulSession();
+
+session.insert( new GameRules( 100,  5 ) );
+session.insert( new RandomNumber() );
+session.insert( new Game() );
+
+session.startProcess( "Number Guess" );
+session.fireAllRules();
+
+session.dispose();
+
+</programlisting>
+      </example>
+
+      <para>Once we have a RuleBase we can use it to obtain a stateful
+      session. Into our session we insert our facts (standard Java Objects).
+      For simplicity in this sample, these classes are all contained within
+      our NumberGuessExample.java file. The GameRules class provides the
+      maximum range and the number of guesses allowed. The RandomNumber class
+      automatically generates a number between 0 and 100 and makes it
+      available to our rules after insertion (via the getValue() method). The
+      Game class keeps track of the guesses we have made before, and the
+      number of guesses we have made.</para>
+
+      <para>Note that before we call the standard fireAllRules() method, we
+      also start the process that we loaded earlier (via the startProcess()
+      method). We explain where to obtain the parameter we pass ("Number
+      Guess" - the id of the ruleflow) when we talk about the RuleFlow file
+      and the graphical RuleFlow editor below.</para>
+
+      <para>Before we finish we our Java code , we note that In 'real life' we
+      would examine the final state of the objects (e.g. how many guesses it
+      took, so that we could add it to a high score table). For this example
+      we are content to ensure the working memory session is cleared by
+      calling the dispose() method.</para>
+
+      <figure>
+        <title>RuleFlow for the NumberGuess Example</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="NumberGuessExample/numberguess-ruleflow.png" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>If you open the NumberGuess.rf file open in the Drools IDE (and
+      have the JBoss Rules extensions installed correctly in Eclipse) you
+      should see the above diagram, similar to a standard flowchart. Its icons
+      are similar (but not exactly the same) as the JBoss jBPM workflow
+      product. Should you wish to edit the diagram, a menu of available
+      components should be available to the left of the diagram in the IDE,
+      which is call the pallete. This diagram is saved in a (almost human)
+      readable xml format, using xstream.</para>
+
+      <para>If it is not already open, ensure the properties view is visible
+      in the IDE. It can opened by selecting Window -&gt; Show View -&gt;
+      Other and then select the Properties view. If you do this <emphasis
+      role="bold">before</emphasis> you select any item on the RuleFlow (or
+      click on blank space in the RuleFlow) you should be presented with the
+      following set of properties.</para>
+
+      <figure>
+        <title>Properties for the Number Guess RuleFlow</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="NumberGuessExample/numberguess-ruleflow-properties.png" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>Keep an eye on the properties view as we progress through the
+      example RuleFlow as it gives valuable information. In this case it
+      provides us with the ID of the RuleFlow process that we used in our
+      earlier code example when we called session.startprocess().</para>
+
+      <para>To give an overview of each of the node types (boxes) in the
+      NumberGuess RuleFlow.</para>
+
+      <para>
+        <itemizedlist>
+          <listitem>
+            <para>The Start and End nodes (green arrow and red box) are where
+            the RuleFlow starts and ends.</para>
+          </listitem>
+
+          <listitem>
+            <para>RuleFlowGroup (simple yellow box). These map to the
+            RuleFlowGroups in our rules (DRL) file that we will look at later.
+            For example when the flow reaches the 'Too High' RuleFlowGroup,
+            only those rules marked with an attribute of <emphasis
+            role="bold">ruleflow-group "Too High" </emphasis> can potentially
+            fire.</para>
+          </listitem>
+
+          <listitem>
+            <para>Action Nodes (yellow box with cog like icon). These can
+            perform standard Java method calls. Most action nodes in this
+            example call System.out.println to give an indication to the user
+            of what is going on.</para>
+          </listitem>
+
+          <listitem>
+            <para>Split and Join Nodes (Blue Ovals) such as "Guess Correct"
+            and "More Guesses Join" where the flow of control can split
+            (according to various conditions) and / or rejoin.</para>
+          </listitem>
+
+          <listitem>
+            <para>Arrows that indicate the flow between the various
+            nodes.</para>
+          </listitem>
+        </itemizedlist>
+      </para>
+
+      <para>These various nodes work together with the Rules to make the
+      Number Guess game work. For example, the "Guess" RuleFlowGroup allows
+      only the rule "Get user Guess" to fire (details below) as only that Rule
+      has a matching attribute of <emphasis role="bold">ruleflow-group
+      "Guess"</emphasis></para>
+
+      <example>
+        <title>A Rule that will fire only a specific point in the RuleFlow -
+        extract from NumberGuess.drl</title>
+
+        <programlisting>rule "Get user Guess"
+ ruleflow-group "Guess"
+ no-loop
+ when    
+     $r : RandomNumber()
+     rules : GameRules( allowed : allowedGuesses )
+     game : Game( guessCount &lt; allowed )
+     not ( Guess() )
+ then
+     System.out.println( "You have " + ( rules.allowedGuesses - game.guessCount ) 
+     + " out of " + rules.allowedGuesses + " guesses left.\nPlease enter your guess 
+     from 0 to " + rules.maxRange );
+        br = new BufferedReader( new InputStreamReader( System.in ) );
+        modify ( game ) { guessCount = game.guessCount + 1 }
+        i = br.readLine();        
+    insert( new Guess( i ) );
+end</programlisting>
+      </example>
+
+      <para>The rest of this rule is fairly standard : The <emphasis
+      role="bold">LHS (when)</emphasis> section of the rule states that it
+      will be activated for each <emphasis>RandomNumber</emphasis> object
+      inserted into the working memory where <emphasis>guessCount</emphasis>
+      is less than the <emphasis>allowedGuesses</emphasis> ( read from the
+      GameRules Class) and where the user has not guessed the correct
+      number.</para>
+
+      <para>The <emphasis role="bold">RHS (consequence, then)</emphasis>
+      prints a message to the user, then awaits user input from
+      <emphasis>System.in. </emphasis> After getting this input (as System.in
+      blocks until the &lt;return&gt; key is pressed) it updates/modifes the
+      guess count, the actual guess and makes both available in the working
+      memory.</para>
+
+      <para>The rest of the Rules file is fairly standard ; the package
+      declares the dialect is set to MVEL, various Java classes are imported.
+      In total, there are five rules in this file:</para>
+
+      <orderedlist>
+          <listitem>
+            <para>Get User Guess, the Rule we examined above.</para>
+          </listitem>
+
+          <listitem>
+            <para>A Rule to record the highest guess.</para>
+          </listitem>
+
+          <listitem>
+            <para>A Rule to record the lowest guess.</para>
+          </listitem>
+
+          <listitem>
+            <para>A Rule to inspect the guess and retract it from memory if
+            incorrect.</para>
+          </listitem>
+
+          <listitem>
+            <para>A Rule that notifies the user that all guesses have been
+            used up.</para>
+          </listitem>
+        </orderedlist>
+	
+	<para>One point of integration between the standard Rules and
+      the RuleFlow is via the 'ruleflow-group' attribute on the rules (as
+      dicussed above). A <emphasis role="bold">second point of integration
+      between the Rules File (drl) and the Rules Flow .rf files </emphasis>is
+      that the Split Nodes (the blue ovals) can use values in working memory
+      (as updated by the Rules) to decide which flow of action to take. To see
+      how this works click on the "Guess Correct Node" ; then within the
+      properties view, open the constraints editor (the button at the right
+      that appears once you click on the 'Constraints' property line). You
+      should see something similar to the Diagram below.</para>
+
+      <figure>
+        <title>Edit Constraints for the GuessCorrect Node</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="NumberGuessExample/numberguess-editconstraints.png" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>Click on 'Edit' beside 'To node Too High' and you see a dialog
+      like the one below. The values in the 'Textual Editor' follow the
+      standard Rule Format (LHS) and can refer to objects in working memory.
+      The consequence (RHS) is that the flow of control follows this node
+      (i.e. To node Too high') if the LHS expression evaluates to true.</para>
+
+      <figure>
+        <title>Constraints Editor for the GuessCorrect Node / value too
+        high</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="NumberGuessExample/numberguess-constraint-toohigh.png" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>Since the NumberGuess.java example contains a main() method, it
+      can be run as a standard Java application (either from the command line
+      or via the IDE). A typical game might result in the interaction below
+      (the numbers in bold are typed in by the user).</para>
+
+      <example>
+        <title>Example Console output where the Number Guess Example beat the
+        human!</title>
+
+        <programlisting>You have 5 out of 5 guesses left.
+Please enter your guess from 0 to 100
+<emphasis role="bold">50</emphasis>
+Your guess was too high
+You have 4 out of 5 guesses left.
+Please enter your guess from 0 to 100
+<emphasis role="bold">25</emphasis>
+Your guess was too low
+You have 3 out of 5 guesses left.
+Please enter your guess from 0 to 100
+<emphasis role="bold">37</emphasis>
+Your guess was too low
+You have 2 out of 5 guesses left.
+Please enter your guess from 0 to 100
+<emphasis role="bold">44</emphasis>
+Your guess was too low
+You have 1 out of 5 guesses left.
+Please enter your guess from 0 to 100
+<emphasis role="bold">47</emphasis>
+Your guess was too low
+You have no more guesses
+The correct guess was 48 
+
+</programlisting>
+      </example>
+
+      <para>A summary of what is happening in this sample is:</para>
+
+
+        <orderedlist>
+          <listitem>
+            <para>Main() method of NumberGuessExample.java loads RuleBase,
+            gets a StatefulSession and inserts Game, GameRules and
+            RandomNumber (containing the target number) objects into it. This
+            method sets the process flow we are going to use, and fires all
+            rules. Control passes to the RuleFlow.</para>
+          </listitem>
+
+          <listitem>
+            <para>The NumberGuess.rf RuleFlow begins at the Start node.</para>
+          </listitem>
+
+          <listitem>
+            <para>Control passes (via the "more guesses" join node) to the
+            Guess Node..</para>
+          </listitem>
+
+          <listitem>
+            <para>At the Guess node, the appropriate RuleFlowGroup ("Get user
+            Guess") is enabled. In this case the Rule "Guess" (in the
+            NumberGuess.drl file) is triggered. This rule displays a message
+            to the user, takes the response, and puts it into memory. Flow
+            passes to the next Rule Flow Node.</para>
+          </listitem>
+
+          <listitem>
+            <para>At the next node , "Guess Correct", constraints inspect the
+            current session and decide which path we take next.</para>
+
+            <para>If the guess in step 4 was too high / too low flow procees
+            along a path which has (i) An action node with normal Java code
+            prints a too high / too low statement and (ii) a RuleFlowGroup
+            causes a highest guess / lowest guess Rule to be triggered in the
+            Rules file. Flow passes from these nodes to step 6.</para>
+
+            <para>If the guess in step 4 just right we proceed along the path
+            towards the end of the Rule Flow. Before we get there, an action
+            node with normal Java code prints a statement "you guessed
+            correctly". There is a join node here (just before the Rule Flow
+            End) so that our no-more-guesses path (step 7) can also terminate
+            the RuleFlow.</para>
+          </listitem>
+
+          <listitem>
+            <para>Control passes as per the RuleFlow via a join node, a guess
+            incorrect RuleFlowGroup (triggers a rule to retract a guess from
+            working memory) onto the "more guesses" decision node.</para>
+          </listitem>
+
+          <listitem>
+            <para>The "more guesses" decision node (right hand side of
+            ruleflow) uses constraints (again looking at values that the Rules
+            have put into the working memory) to decide if we have more
+            guesses and if so, goto step 3. If not we proceed to the end of
+            the workflow, via a RuleFlowGroup that triggers a rule stating
+            "you have no more guesses".</para>
+          </listitem>
+
+          <listitem>
+            <para>The Loop 3-7 continues until the number is guessed
+            correctly, or we run out of guesses.</para>
+          </listitem>
+        </orderedlist>
+
+    </section>
