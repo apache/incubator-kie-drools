@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section>
+<section xml:base="../">
   <title>Upgrade tips from Drools 3.0.x to Drools 4.0.x</title>
 
   <para>As mentioned before Drools 4.0 is a major update over the previous
