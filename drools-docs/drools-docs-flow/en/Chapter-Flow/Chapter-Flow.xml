@@ -2,5 +2,5 @@
 <chapter xmlns:xi="http://www.w3.org/2001/XInclude" >
     <chapter>
       <title>Drools Flow</title>
-      <xi:include href="Chapter-Flow/Section-RuleFlow.xml" />
+      <xi:include href="Section-RuleFlow.xml" />
     </chapter>  
