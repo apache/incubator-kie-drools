@@ -64,7 +64,7 @@ public class WorkItemNodeInstance extends EventNodeInstance implements WorkItemL
 //                "A WorkItemNode only accepts default incoming connections!");
 //        }
         WorkItemNode workItemNode = getWorkItemNode();
-        WorkItem workItem = createWorkItem(workItemNode);
+        createWorkItem(workItemNode);
 		if (workItemNode.isWaitForCompletion()) {
 		    addEventListeners();
         }
@@ -78,7 +78,7 @@ public class WorkItemNodeInstance extends EventNodeInstance implements WorkItemL
     
     protected WorkItem createWorkItem(WorkItemNode workItemNode) {
         Work work = workItemNode.getWork();
-        WorkItemImpl workItem = new WorkItemImpl();
+        workItem = new WorkItemImpl();
         workItem.setName(work.getName());
         workItem.setProcessInstanceId(getProcessInstance().getId());
         workItem.setParameters(new HashMap<String, Object>(work.getParameters()));
