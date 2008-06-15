@@ -12,13 +12,6 @@
   <packaging>jar</packaging>
   <name>Drools :: JSR-94 API Module</name>
   
-  <repositories>
-    <repository>
-      <id>basedir</id>
-      <url>file://${basedir}/../m2_repo</url>
-    </repository>
-  </repositories>
-
   <build>
     <plugins>
     <plugin>

@@ -9,12 +9,6 @@
   <artifactId>drools-update</artifactId>
   <packaging>jar</packaging>
   <name>Drools :: Update Tool</name>
-  <repositories>
-    <repository>
-      <id>basedir</id>
-      <url>file://${basedir}/../../m2_repo</url>
-    </repository>
-  </repositories>
   <dependencies>
     <dependency>
       <groupId>org.drools</groupId>
