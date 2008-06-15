@@ -30,20 +30,7 @@
   </preface>
 -->
  
-    
-      <chapter>
-        <title>The Guvnor (Business Rule Management System)</title>
-
-        <xi:include href="Chapter-Guvnor/Section-Introduction.xml" />
-
-        <xi:include href="Chapter-Guvnor/Section-AdminGuide.xml" />
-
-        <xi:include href="Chapter-Guvnor/Section-Architecture.xml" />
-
-        <xi:include href="Chapter-Guvnor/Section-UserGuide.xml" />
-
-        
-      </chapter>
+    <xi:include href="Chapter-Guvnor/Chapter-Guvnor.xml" />
 
   <index/>
 </book>
