@@ -35,10 +35,7 @@
     <para />
   </preface>
 -->      
-    <chapter>
-      <title>Drools Flow</title>
-      <xi:include href="Chapter-Flow/Section-RuleFlow.xml" />
-    </chapter>      
-
+    <xi:include href="Chapter-Flow/Chapter-Flow.xml" />
+    
   <index/>
 </book>
