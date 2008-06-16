@@ -122,6 +122,7 @@ import org.drools.spi.Activation;
 import org.drools.spi.ConsequenceExceptionHandler;
 import org.drools.spi.GlobalResolver;
 import org.drools.xml.XmlDumper;
+import org.mvel.MVEL;
 
 /** Run all the tests with the ReteOO engine implementation */
 public class MiscTest extends TestCase {
@@ -540,17 +541,35 @@ public class MiscTest extends TestCase {
 
         // test rulebase serialization
         ruleBase    = SerializationHelper.serializeObject(ruleBase);
-        
-        // Retrieve the generated fact type 
+
+        // Retrieve the generated fact type
         FactType cheeseFact = ruleBase.getFactType( "org.drools.generatedbeans.Cheese" );
 
         // Create a new Fact instance
         Object cheese = cheeseFact.newInstance();
 
+
+
+
+
+//see - it works with mvel !
+//        Map<String, Object> tokens = new HashMap<String, Object>();
+//        tokens.put("c", cheese);
+//        MVEL.eval("c.type= 'cheddar'", tokens);
+//        Object o  = MVEL.eval("c.type", tokens);
+//        System.err.println(o);
+
+
+
         // Set a field value using the more verbose method chain...
         // should we add short cuts?
-        cheeseFact.getField( "type" ).getFieldAccessor().setValue( cheese,
-                                                             "stilton" );
+//        cheeseFact.getField( "type" ).getFieldAccessor().setValue( cheese,
+//                                                             "stilton" );
+
+        cheeseFact.set(cheese, "type", "stilton");
+        assertEquals("stilton", cheeseFact.get(cheese, "type"));
+
+
 
         // just documenting toString() result:
 //        assertEquals( "Cheese( type=stilton )",
@@ -579,7 +598,7 @@ public class MiscTest extends TestCase {
                       result.get( 0 ) );
 
         // creating a person that likes the cheese:
-        // Retrieve the generated fact type 
+        // Retrieve the generated fact type
         FactType personFact = ruleBase.getFactType( "org.drools.generatedbeans.Person" );
 
         // Create a new Fact instance
@@ -5311,7 +5330,7 @@ public class MiscTest extends TestCase {
                       list.size() );
 
     }
-    
+
     public class SubvertedClassLoader extends URLClassLoader {
 
         private static final long serialVersionUID = 400L;
@@ -5337,6 +5356,6 @@ public class MiscTest extends TestCase {
             return c;
         }
     }
-    
+
 
 }
