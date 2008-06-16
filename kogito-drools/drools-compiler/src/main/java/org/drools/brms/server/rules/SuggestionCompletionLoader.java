@@ -9,6 +9,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
@@ -24,6 +26,8 @@ import org.drools.lang.descr.FieldTemplateDescr;
 import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.descr.TypeDeclarationDescr;
+import org.drools.lang.descr.TypeFieldDescr;
 import org.drools.lang.dsl.DSLMapping;
 import org.drools.lang.dsl.DSLMappingEntry;
 import org.drools.lang.dsl.DSLMappingFile;
@@ -272,14 +276,12 @@ public class SuggestionCompletionLoader {
             final String className = imp.getTarget();
             resolver.addImport( className );
 
-            final Class clazz = loadClass( className,
-                                           jars );
+            final Class clazz = loadClass( className, jars );
 
             if ( clazz != null ) {
                 try {
                     final String shortTypeName = getShortNameOfClass( clazz.getName() );
-                    loadClassFields( clazz,
-                                     shortTypeName );
+                    loadClassFields( clazz, shortTypeName );
                     this.builder.addFactType( shortTypeName );
                 } catch ( final IOException e ) {
                     this.errors.add( "Error while inspecting the class: " + className + ". The error was: " + e.getMessage() );
@@ -288,6 +290,44 @@ public class SuggestionCompletionLoader {
                 }
             }
         }
+
+        /** now we do the dynamic facts - the declared types */
+        Set<String> declaredTypes = new HashSet<String>();
+
+        for ( final Iterator<TypeDeclarationDescr> it = pkgDescr.getTypeDeclarations().iterator(); it.hasNext(); ) {
+        	TypeDeclarationDescr td = it.next();
+
+        	if (td.getFields().size() > 0) {
+        		//add the type to the map
+        		String declaredType = td.getTypeName();
+        		declaredTypes.add(declaredType);
+        		this.builder.addFactType(declaredType);
+        		List<String> fieldNames = new ArrayList<String>();
+        		for (Map.Entry<String, TypeFieldDescr> f : td.getFields().entrySet()) {
+        			String fieldName = f.getKey();
+        			fieldNames.add(fieldName);
+        			String fieldClass = f.getValue().getPattern().getObjectType();
+
+
+        			if (declaredTypes.contains(fieldClass)) {
+        	            this.builder.addFieldType( declaredType + "." + fieldName, SuggestionCompletionEngine.TYPE_OBJECT );
+        			} else {
+	        			try {
+							Class clz = resolver.resolveType(fieldClass);
+							this.builder.addFieldType(declaredType + "." + fieldName, getFieldType(clz));
+						} catch (ClassNotFoundException e) {
+							this.errors.add( "Class of field not found: " + fieldClass );
+						}
+        			}
+
+				}
+
+        		this.builder.addFieldsForType(declaredType, fieldNames.toArray(new String[fieldNames.size()]));
+
+        	}
+        }
+
+
 
         // iterating over templates
         populateFactTemplateTypes( pkgDescr,

@@ -32,6 +32,22 @@ public class SuggestionCompletionLoaderTest extends TestCase {
 
     }
 
+    public void testGeneratedBeans() throws Exception {
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+        SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n declare GenBean \n   id: int \n name : String \n end \n declare GenBean2 \n list: java.util.List \n gb: GenBean \n end", new ArrayList(), new ArrayList() );
+        assertFalse(loader.hasErrors());
+        assertNotNull(eng);
+
+        assertEquals(2, eng.factTypes.length);
+        assertEquals("GenBean", eng.factTypes[0]);
+        assertEquals("GenBean2", eng.factTypes[1]);
+
+        assertEquals(SuggestionCompletionEngine.TYPE_NUMERIC, eng.getFieldType( "GenBean", "id" ));
+        assertEquals(SuggestionCompletionEngine.TYPE_STRING, eng.getFieldType( "GenBean", "name"));
+
+    }
+
+
     public void testGlobal() throws Exception {
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
         SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n global org.drools.Person p", new ArrayList(), new ArrayList() );
