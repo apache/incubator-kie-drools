@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter xmlns:xi="http://www.w3.org/2001/XInclude" >
+  <title>Getting Started</title>
+  <para>This section describes how to get started with Drools Flow.  It
+  will guide you to create and exectue your first Drools Flow process.</para>
+
+  <section>
+    <title>Installation</title>
+    <para>The best way to get started is to use the Drools Eclipse IDE.  This
+    is a plugin for the Eclipse developement environment that allows users to
+    create, execute and debug Drools processes and rules.</para>
+
+    <para>To get started, you need an Eclipse 3.3.x, as well as the Eclipse
+    Graphical Editing Framework (GEF) plugin installed.  Eclipse can be downloaded
+    from <ulink url="http://www.eclipse.org/downloads/">
+    http://www.eclipse.org/downloads/</ulink> (choose either the Eclipse IDE for Java
+    Developers or the Eclipse Classic).  Eclipse GEF can also be downloaded from
+    <ulink url="http://www.eclipse.org/gef/downloads/">
+    http://www.eclipse.org/gef/downloads/</ulink> (choose the corresponding version) or
+    by using an update site.</para>
+
+    <para>Download the Drools Eclipse IDE plugin from <ulink
+    url="http://www.jboss.org/auth/drools/downloads.html">
+    http://www.jboss.org/auth/drools/downloads.html</ulink>, unzip it in your eclipse
+    folder and (re)start Eclipse.  If installation was successful, the Drools menu
+    action should appear in the top menu bar.</para>
+  </section>
+
+  <section>
+    <title>Creating your first process</title>
+
+    <para>You should switch to the Drools perspective within Eclipse first, as this will
+    open all the relevant views for you.  You can do this by clicking on the Open Perspective
+    button (top right of your screen) and selecting Other ... -> Drools.</para>
+
+    <para>A new project wizard can be used to setup an executable project to start using
+    processes immediately. This will setup a basic structure, classpath, sample
+    process and execution code to get you started.  To create a new Drools Project, select
+    File -> New -> Project ... and in the Drools folder, select Drools Project.  This should
+    open the following dialog:</para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center" format="BMP" role="" 
+                   fileref="project-wizard1.bmp"/>
+      </imageobject>
+    </mediaobject>
+
+    <para>Give your project a name and click Next.  In the following dialog you can select
+    which elements are added to your project by default.  Since we are creating a new process,
+    deselect the first two checkboxes and select the last two.  This will generate a sample
+    process and a class to execute this process in your project.</para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center" format="BMP" role="" 
+                   fileref="project-wizard2.bmp"/>
+      </imageobject>
+    </mediaobject>
+
+    <para>The end result should look like this and contains:</para>
+    <orderedlist>
+      <listitem>
+        <para>ruleflow.rf : the process definition, which is a very simple process containing
+        a start node (the entry points), and action node (that prints out 'Hello World') and an
+        end node (the end of the process).</para>
+      </listitem>
+      <listitem>
+        <para>RuleFlowTest.java : a Java class that executes the process.</para>
+      </listitem>
+      <listitem>
+        <para>The necessary libraries are automatically added to the project classpath as a
+        Drools library.</para>
+      </listitem>
+    </orderedlist>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center" format="BMP" role="" 
+                   fileref="initial.bmp"/>
+      </imageobject>
+    </mediaobject>
+
+    <para>The RuleFlow editor contains a graphical representation of your process definition.  It
+    consists of nodes that are connected.  The editor shows the overall control flow, while the
+    details of each of the elements can be viewed (and edited) in the Properties View at the bottom.
+    The editor contains a palette at the left that can be used to drag-and-drop new nodes, and an
+    outline view at the right.</para>
+
+    <para>This process is a simple sequence of three nodes.  The start node defines the start of the
+    process.  It is connected to an action node (called 'Hello' that simply prints out 'Hello World'
+    to the standard output.  You can see this by clicking on the Hello node and checking the action
+    property in the properties view below.  This node is then connected to an end node, signalling
+    the end of the process.</para>
+
+    <para>While it is probably easier to edit processes using the graphical editor, user can also
+    modify the underlying XML directly.  The XML for our sample process is shown below (note that we
+    did not include the graphical information here for simplicity).  The process element contains
+    parameters like the name and id of the process, and consists of three main subsections: a header
+    (where information like variables, globals and imports can be defined), the nodes and the
+    connections.</para>
+
+<programlisting>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;process xmlns="http://drools.org/drools-4.0/process"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+         xs:schemaLocation="http://drools.org/drools-4.0/process drools-processes-4.0.xsd"
+         type="RuleFlow" name="ruleflow" id="com.sample.ruleflow" package-name="com.sample" &gt;
+
+  &lt;header&gt;
+  &lt;/header&gt;
+
+  &lt;nodes&gt;
+    &lt;start id="1" name="Start" x="16" y="16" /&gt;
+    &lt;action id="2" name="Hello" x="128" y="16" dialect="mvel" &gt;System.out.println("Hello World");&lt;/action&gt;
+    &lt;end id="3" name="End" x="240" y="16" /&gt;
+  &lt;/nodes&gt;
+
+  &lt;connections&gt;
+    &lt;connection from="1" to="2" /&gt;
+    &lt;connection from="2" to="3" /&gt;
+  &lt;/connections&gt;
+
+&lt;/process&gt;
+</programlisting>
+
+  </section>
+
+  <section>
+    <title>Executing your first process</title>
+    <para>To execute this process, right-click on RuleFlowTest.java and select Run As - Java
+    Application.  When the process in executed, the following output should appear on the 
+    console:</para>
+<programlisting>
+Hello World
+</programlisting>
+
+    <para>If you look at the RuleFlowTest code (see below), you will see that executing a process
+    requires a few steps:</para>
+    <orderedlist>
+      <listitem>
+        <para>You should first create a knowledge base.  A knowledge base contains all the process
+        definitions and rules that are relevant in your application.  This knowledge base can be
+        created only once and can be reused.</para>
+      </listitem>
+      <listitem>
+        <para>Next, you should create a session to interact with the engine.</para>
+      </listitem>
+      <listitem>
+        <para>Finally, you can start a new process instance of our process by invoking the
+        startProcess("ruleflowId") method of the session.  This will start the execution of your
+        process.  Since our process does not contain any wait states, the process will execute
+        until it is completed in this case, passing through the start, action and end node.</para>
+      </listitem>
+    </orderedlist>
+
+<programlisting>
+package com.sample;
+
+import java.io.InputStreamReader;
+import java.io.Reader;
+
+import org.drools.RuleBase;
+import org.drools.RuleBaseFactory;
+import org.drools.StatefulSession;
+import org.drools.compiler.PackageBuilder;
+import org.drools.rule.Package;
+
+/**
+ * This is a sample file to launch a ruleflow.
+ */
+public class RuleFlowTest {
+
+  public static final void main(String[] args) {
+    try {
+      //load the process
+      RuleBase ruleBase = createKnowledgeBase();
+      // create a new session
+      StatefulSession session = ruleBase.newStatefulSession();
+      // start a new process instance
+      session.startProcess("com.sample.ruleflow");
+    } catch (Throwable t) {
+      t.printStackTrace();
+    }
+  }
+
+  /**
+   * Creates the knowledge base by loading the process definition.
+   */
+  private static RuleBase createKnowledgeBase() throws Exception {
+    // create a builder
+    PackageBuilder builder = new PackageBuilder();
+    // load the process
+    Reader source = new InputStreamReader(
+      RuleFlowTest.class.getResourceAsStream("/ruleflow.rf"));
+    builder.addProcessFromXml(source);
+    // create the knowledge base 
+    Package pkg = builder.getPackage();
+    RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+    ruleBase.addPackage(pkg);
+    return ruleBase;
+  }
+
+}
+</programlisting>
+
+    <para>Congratulations, you have successfully executed your first process!  You can now
+    start experimenting and designing your own process by modifying our example.  Note that
+    you can validate your process by clicking on the green check box action in the upper toolbar.
+    Processes will also be validated upon save and errors will be shown in the error view. Or
+    you can continue reading our documentation to learn about our more advanced features.</para>
+
+  </section>
+
+</chapter>
