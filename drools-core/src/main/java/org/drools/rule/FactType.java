@@ -43,14 +43,30 @@ public interface FactType
 
     public Class< ? > getFactClass();
 
+    /**
+     * Create a new fact based on the declared fact type.
+     * This object will normally be a javabean.
+     */
     public Object newInstance() throws InstantiationException,
                                IllegalAccessException;
 
+    /**
+     * Set the value of the field on a dynamic fact.
+     */
     public void set(Object bean, String field, Object value);
 
+    /**
+     * get the value of the specified field on the dynamic fact.
+     */
     public Object get(Object bean, String field);
 
+    /**
+     * Sets a whole chunk of fields at once.
+     */
     public Map<String, Object> getAsMap(Object bean);
 
+    /**
+     * Get the values of a dynamic fact as a map.
+     */
     public void setFromMap(Object bean, Map<String, Object> values);
 }
