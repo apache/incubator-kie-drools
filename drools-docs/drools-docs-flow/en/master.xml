@@ -6,6 +6,11 @@
     <releaseinfo>5.0.0.SNAPSHOT</releaseinfo>
 
     <author>
+      <firstname>Kris</firstname>
+      <surname>Verlaenen</surname>
+    </author>
+
+    <author>
       <firstname>Mark</firstname>
       <surname>Proctor</surname>
     </author>
@@ -35,7 +40,11 @@
     <para />
   </preface>
 -->      
-    <xi:include href="Chapter-Flow/Chapter-Flow.xml" />
+
+  <xi:include href="Chapter-Introduction/Chapter-Introduction.xml" />
+  <xi:include href="Chapter-GettingStarted/Chapter-GettingStarted.xml" />
+  <xi:include href="Chapter-Flow/Chapter-RuleFlow.xml" />
+  <xi:include href="Chapter-Debugging/Chapter-Debugging.xml" />
     
   <index/>
 </book>
