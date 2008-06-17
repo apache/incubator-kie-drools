@@ -809,6 +809,75 @@ public class ScenarioRunnerTest extends RuleUnit {
 
     }
 
+    public void testIntegrationWithDeclaredTypes() throws Exception {
+        Scenario sc = new Scenario();
+        FactData[] facts = new FactData[]{new FactData( "Coolness",
+                                                        "c",
+                                                        ls( new FieldData( "num",
+                                                                           "42" ),
+                                                            new FieldData( "name",
+                                                                           "mic" ) ),
+                                                        false )
+
+        };
+        sc.fixtures.addAll( Arrays.asList( facts ) );
+
+        ExecutionTrace executionTrace = new ExecutionTrace();
+
+        sc.rules.add( "rule1" );
+        sc.inclusive = true;
+        sc.fixtures.add( executionTrace );
+
+        Expectation[] assertions = new Expectation[2];
+
+        assertions[0] = new VerifyFact( "c",
+                                        ls( new VerifyField( "num",
+                                                             "42",
+                                                             "==" )
+
+                                        ) );
+
+
+
+        assertions[1] = new VerifyRuleFired( "rule1",
+                                             1,
+                                             null );
+
+        sc.fixtures.addAll( Arrays.asList( assertions ) );
+
+        WorkingMemory wm = getWorkingMemory( "test_rules3.drl" );
+        ClassLoader cl = wm.getRuleBase().getPackages()[0].getPackageScopeClassLoader();
+
+        HashSet<String> imports = new HashSet<String>();
+        imports.add("foo.bar.*");
+
+        TypeResolver resolver = new ClassTypeResolver( imports,
+                                                       cl );
+
+        Class cls = cl.loadClass("foo.bar.Coolness");
+        assertNotNull(cls);
+
+        ClassLoader cl_ = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(cl);
+
+        //resolver will need to have generated beans in it - possibly using a composite classloader from the package,
+        //including whatever CL has the generated beans...
+        ScenarioRunner run = new ScenarioRunner( sc,
+                                                 resolver,
+                                                 (InternalWorkingMemory) wm );
+
+        assertEquals( 1,
+                      executionTrace.numberOfRulesFired.intValue() );
+
+        assertSame( run.scenario,
+                    sc );
+
+        assertTrue( sc.wasSuccessful() );
+
+        Thread.currentThread().setContextClassLoader(cl_);
+
+    }
+
     public void testIntgerationStateful() throws Exception {
         Scenario sc = new Scenario();
         sc.fixtures.add( new FactData( "Cheese",

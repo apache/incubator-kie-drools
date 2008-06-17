@@ -85,6 +85,7 @@ import org.drools.Cheesery.Maturity;
 import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.audit.WorkingMemoryInMemoryLogger;
 import org.drools.base.ClassObjectFilter;
+import org.drools.common.AbstractRuleBase;
 import org.drools.common.AbstractWorkingMemory;
 import org.drools.common.InternalFactHandle;
 import org.drools.compiler.DescrBuildError;
@@ -122,7 +123,6 @@ import org.drools.spi.Activation;
 import org.drools.spi.ConsequenceExceptionHandler;
 import org.drools.spi.GlobalResolver;
 import org.drools.xml.XmlDumper;
-import org.mvel.MVEL;
 
 /** Run all the tests with the ReteOO engine implementation */
 public class MiscTest extends TestCase {
@@ -547,8 +547,6 @@ public class MiscTest extends TestCase {
 
         // Create a new Fact instance
         Object cheese = cheeseFact.newInstance();
-
-
 
 
 
