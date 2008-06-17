@@ -85,7 +85,6 @@ import org.drools.Cheesery.Maturity;
 import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.audit.WorkingMemoryInMemoryLogger;
 import org.drools.base.ClassObjectFilter;
-import org.drools.common.AbstractRuleBase;
 import org.drools.common.AbstractWorkingMemory;
 import org.drools.common.InternalFactHandle;
 import org.drools.compiler.DescrBuildError;
@@ -550,15 +549,6 @@ public class MiscTest extends TestCase {
 
 
 
-//see - it works with mvel !
-//        Map<String, Object> tokens = new HashMap<String, Object>();
-//        tokens.put("c", cheese);
-//        MVEL.eval("c.type= 'cheddar'", tokens);
-//        Object o  = MVEL.eval("c.type", tokens);
-//        System.err.println(o);
-
-
-
         // Set a field value using the more verbose method chain...
         // should we add short cuts?
 //        cheeseFact.getField( "type" ).getFieldAccessor().setValue( cheese,
@@ -566,6 +556,20 @@ public class MiscTest extends TestCase {
 
         cheeseFact.set(cheese, "type", "stilton");
         assertEquals("stilton", cheeseFact.get(cheese, "type"));
+
+
+        FactType personType = ruleBase.getFactType("org.drools.generatedbeans.Person");
+
+        Object ps = personType.newInstance();
+        personType.set(ps, "age", 42);
+
+        Map<String, Object> personMap = personType.getAsMap(ps);
+        assertEquals(42, personMap.get("age"));
+
+        personMap.put("age", 43);
+        personType.setFromMap(ps, personMap);
+
+        assertEquals(43, personType.get(ps, "age"));
 
 
 
