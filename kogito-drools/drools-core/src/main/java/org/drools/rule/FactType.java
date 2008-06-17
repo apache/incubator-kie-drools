@@ -19,6 +19,7 @@
 package org.drools.rule;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * FactType declarations are fact definitions (like classes) that
@@ -48,4 +49,8 @@ public interface FactType
     public void set(Object bean, String field, Object value);
 
     public Object get(Object bean, String field);
+
+    public Map<String, Object> getAsMap(Object bean);
+
+    public void setFromMap(Object bean, Map<String, Object> values);
 }
