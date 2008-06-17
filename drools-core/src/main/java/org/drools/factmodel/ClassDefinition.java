@@ -24,9 +24,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.drools.base.ClassFieldAccessor;
 import org.drools.base.ClassFieldAccessorCache;
@@ -247,6 +250,23 @@ public class ClassDefinition
 
 	public void set(Object bean, String field, Object value) {
 		this.getField(field).getFieldAccessor().setValue(bean, value);
+	}
+
+	public Map<String, Object> getAsMap(Object bean) {
+		Map<String, Object> m = new HashMap<String, Object>(fields.size());
+		for (Iterator<Map.Entry<String, FieldDefinition>> iterator = this.fields.entrySet().iterator(); iterator.hasNext();) {
+			Map.Entry<String, FieldDefinition> ent = iterator.next();
+			Object val = ent.getValue().getFieldAccessor().getValue(bean);
+			m.put(ent.getKey(), val);
+		}
+		return m;
+	}
+
+	public void setFromMap(Object bean, Map<String, Object> data) {
+		for (Iterator<Map.Entry<String, Object>> iterator = data.entrySet().iterator(); iterator.hasNext();) {
+			Map.Entry<String, Object> ent = iterator.next();
+			set(bean, ent.getKey(), ent.getValue());
+		}
 	}
 
 }
