@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.decisiontable.parser.xls.ExcelParser;
+import org.drools.template.parser.DataListener;
 
 /**
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
@@ -35,8 +36,8 @@ public class RulesheetUtil {
      * Utility method showing how to get a rule sheet listener from a stream.
      */
     public static RuleSheetListener getRuleSheetListener(final InputStream stream) throws IOException {
-        final Map sheetListeners = new HashMap();
-        final List listeners = new ArrayList(); 
+        final Map<String, List<DataListener>> sheetListeners = new HashMap<String, List<DataListener>>();
+        final List<DataListener> listeners = new ArrayList<DataListener>(); 
         final RuleSheetListener listener = new DefaultRuleSheetListener();
         listeners.add(listener);
         sheetListeners.put( ExcelParser.DEFAULT_RULESHEET_NAME,

@@ -16,7 +16,10 @@ package org.drools.decisiontable.parser.xls;
  * limitations under the License.
  */
 
+import java.util.List;
 import java.util.Map;
+
+import org.drools.template.parser.DataListener;
 
 import junit.framework.TestCase;
 import jxl.Cell;
@@ -54,7 +57,7 @@ public class ExcelParserTest extends TestCase {
      * @throws Exception
      */
     public void testCellMerge() throws Exception {
-    	ExcelParser parser = new ExcelParser((Map) null);
+    	ExcelParser parser = new ExcelParser((Map<String, List<DataListener>>) null);
     	
     	Range[] ranges = new Range[1];
     	

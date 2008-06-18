@@ -17,11 +17,10 @@ package org.drools.decisiontable.parser.xls;
  */
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
-import org.drools.decisiontable.parser.SheetListener;
+import org.drools.template.parser.DataListener;
 
 /**
  * Reads an Excel sheet as key-value properties.
@@ -38,11 +37,11 @@ import org.drools.decisiontable.parser.SheetListener;
  */
 public class PropertiesSheetListener
     implements
-    SheetListener {
+    DataListener {
 
     private static final String EMPTY_STRING   = "";
 
-    private final Map                 _rowProperties = new HashMap();
+    private final Map<Integer, String[]> _rowProperties = new HashMap<Integer, String[]>();
 
     private final Properties  _properties = new CaseInsensitiveMap();
 
@@ -74,8 +73,7 @@ public class PropertiesSheetListener
      * @see my.hssf.util.SheetListener#finishSheet()
      */
     public void finishSheet() {
-        for ( final Iterator iter = this._rowProperties.keySet().iterator(); iter.hasNext(); ) {
-            final String[] keyValue = (String[]) this._rowProperties.get( iter.next() );
+        for ( String[] keyValue : _rowProperties.values() ) {
             this._properties.put( keyValue[0],
                                      keyValue[1] );
         }
@@ -124,6 +122,7 @@ public class PropertiesSheetListener
         return value == null || value.trim().equals( "" );
     }
 
+    @SuppressWarnings("serial")
     public static class CaseInsensitiveMap extends Properties {
 
 
@@ -142,9 +141,7 @@ public class PropertiesSheetListener
     	}
 
     	private String get(String key) {
-
-    		for (Iterator iterator = this.keySet().iterator(); iterator.hasNext();) {
-    			String k = (String) iterator.next();
+    	    for ( String k : this.stringPropertyNames() ) {
     			if (key.equalsIgnoreCase(k)) {
     				return super.getProperty(k);
     			}

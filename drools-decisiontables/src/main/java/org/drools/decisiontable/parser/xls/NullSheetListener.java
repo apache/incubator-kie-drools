@@ -16,7 +16,7 @@ package org.drools.decisiontable.parser.xls;
  * limitations under the License.
  */
 
-import org.drools.decisiontable.parser.SheetListener;
+import org.drools.template.parser.DataListener;
 
 /**
  * @author <a href="mailto:shaun.addison@gmail.com"> Shaun Addison </a>
@@ -25,7 +25,7 @@ import org.drools.decisiontable.parser.SheetListener;
  */
 public class NullSheetListener
     implements
-    SheetListener {
+    DataListener {
 
     public void startSheet(final String name) {
     }

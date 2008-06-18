@@ -25,7 +25,7 @@ public class CsvLineParserTest extends TestCase {
     public void testSimpleLineParse() {
         final CsvLineParser parser = new CsvLineParser();
         final String s = "a,b,c";
-        final List list = parser.parse( s );
+        final List<String> list = parser.parse( s );
         assertEquals( 3,
                       list.size() );
 
@@ -40,7 +40,7 @@ public class CsvLineParserTest extends TestCase {
     public void testLineParse() {
         final CsvLineParser parser = new CsvLineParser();
         final String s = "a,\"b\",c";
-        final List list = parser.parse( s );
+        final List<String> list = parser.parse( s );
         assertEquals( 3,
                       list.size() );
 
@@ -55,7 +55,7 @@ public class CsvLineParserTest extends TestCase {
     public void testDoubleQuotes() {
         final CsvLineParser parser = new CsvLineParser();
         final String s = "a,\"\"\"b\"\"\",c";
-        final List list = parser.parse( s );
+        final List<String> list = parser.parse( s );
         assertEquals( 3,
                       list.size() );
 

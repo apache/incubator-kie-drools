@@ -20,10 +20,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import jxl.Cell;
 import jxl.Range;
@@ -31,9 +29,9 @@ import jxl.Sheet;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
 
-import org.drools.decisiontable.parser.DecisionTableParseException;
 import org.drools.decisiontable.parser.DecisionTableParser;
-import org.drools.decisiontable.parser.SheetListener;
+import org.drools.template.parser.DataListener;
+import org.drools.template.parser.DecisionTableParseException;
 
 /**
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale </a>
@@ -44,7 +42,7 @@ public class ExcelParser
     DecisionTableParser {
 
     public static final String DEFAULT_RULESHEET_NAME = "Decision Tables";
-    private Map                _listners              = new HashMap();
+    private Map<String, List<DataListener>> _listners = new HashMap<String, List<DataListener>>();
     private boolean            _useFirstSheet;
 
     /**
@@ -53,18 +51,18 @@ public class ExcelParser
      * @param sheetListners
      *            map of String to SheetListener
      */
-    public ExcelParser(final Map sheetListners) {
+    public ExcelParser(final Map<String, List<DataListener>> sheetListners) {
         this._listners = sheetListners;
     }
 
-    public ExcelParser(final List sheetListners) {
+    public ExcelParser(final List<DataListener> sheetListners) {
         this._listners.put( ExcelParser.DEFAULT_RULESHEET_NAME,
                             sheetListners );
         this._useFirstSheet = true;
     }
 
-    public ExcelParser(final SheetListener listener) {
-        List listeners = new ArrayList();
+    public ExcelParser(final DataListener listener) {
+        List<DataListener> listeners = new ArrayList<DataListener>();
         listeners.add( listener );
         this._listners.put( ExcelParser.DEFAULT_RULESHEET_NAME,
                             listeners );
@@ -78,14 +76,12 @@ public class ExcelParser
             if ( _useFirstSheet ) {
                 Sheet sheet = workbook.getSheet( 0 );
                 processSheet( sheet,
-                              (List) _listners.get( DEFAULT_RULESHEET_NAME ) );
+                              _listners.get( DEFAULT_RULESHEET_NAME ) );
             } else {
-                Set sheetNames = _listners.keySet();
-                for ( Iterator iter = sheetNames.iterator(); iter.hasNext(); ) {
-                    String sheetName = (String) iter.next();
+                for ( String sheetName : _listners.keySet() ) {
                     Sheet sheet = workbook.getSheet( sheetName );
                     processSheet( sheet,
-                                  (List) _listners.get( sheetName ) );
+                                  _listners.get( sheetName ) );
 
                 }
             }
@@ -101,7 +97,7 @@ public class ExcelParser
     }
 
     private void processSheet(Sheet sheet,
-                              List listeners) {
+                              List<? extends DataListener> listeners) {
         int maxRows = sheet.getRows();
 
         Range[] mergedRanges = sheet.getMergedCells();
@@ -129,7 +125,7 @@ public class ExcelParser
                              i,
                              cellNum,
                              cell.getContents(),
-                             SheetListener.NON_MERGED );
+                             DataListener.NON_MERGED );
                 }
             }
         }
@@ -157,30 +153,27 @@ public class ExcelParser
         return stringVal;
     }
 
-    private void finishSheet(List listeners) {
-        for ( Iterator it = listeners.iterator(); it.hasNext(); ) {
-            SheetListener listener = (SheetListener) it.next();
+    private void finishSheet(List<? extends DataListener> listeners) {
+        for ( DataListener listener : listeners ) {
             listener.finishSheet();
         }
     }
 
-    private void newRow(List listeners,
+    private void newRow(List<? extends DataListener> listeners,
                         int row,
                         int cols) {
-        for ( Iterator it = listeners.iterator(); it.hasNext(); ) {
-            SheetListener listener = (SheetListener) it.next();
+        for ( DataListener listener : listeners ) {
             listener.newRow( row,
                              cols );
         }
     }
 
-    public void newCell(List listeners,
+    public void newCell(List<? extends DataListener> listeners,
                         int row,
                         int column,
                         String value,
                         int mergedColStart) {
-        for ( Iterator it = listeners.iterator(); it.hasNext(); ) {
-            SheetListener listener = (SheetListener) it.next();
+        for ( DataListener listener : listeners ) {
             listener.newCell( row,
                               column,
                               value,

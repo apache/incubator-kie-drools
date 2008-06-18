@@ -18,6 +18,8 @@ package org.drools.decisiontable.parser;
 
 import java.util.Map;
 
+import org.drools.template.parser.DecisionTableParseException;
+
 /**
  * Simple holder class identifying a condition or action column etc.
  * This is stored in a map in the main listener class, to track what type of values
@@ -88,7 +90,7 @@ public class ActionType {
      * Create a new action type that matches this cell, and add it to the map,
      * keyed on that column.
      */
-    public static void addNewActionType(final Map actionTypeMap,
+    public static void addNewActionType(final Map<Integer, ActionType> actionTypeMap,
                                         final String value,
                                         final int column,
                                         final int row) {

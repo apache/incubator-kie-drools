@@ -61,7 +61,7 @@ public class SpreadsheetIntegrationTest extends TestCase {
         wm.insert( new Person( "michael",
                                      "stilton",
                                      42 ) );
-        final List list = new ArrayList();
+        final List<String> list = new ArrayList<String>();
         wm.setGlobal( "list",
                       list );
         wm.fireAllRules();

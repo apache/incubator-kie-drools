@@ -24,13 +24,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.drools.decisiontable.model.Condition;
-import org.drools.decisiontable.model.Consequence;
-import org.drools.decisiontable.model.Global;
-import org.drools.decisiontable.model.Import;
-import org.drools.decisiontable.model.Package;
-import org.drools.decisiontable.model.Rule;
 import org.drools.decisiontable.parser.xls.PropertiesSheetListener;
+import org.drools.template.model.Condition;
+import org.drools.template.model.Consequence;
+import org.drools.template.model.Global;
+import org.drools.template.model.Import;
+import org.drools.template.model.Package;
+import org.drools.template.model.Rule;
+import org.drools.template.parser.DecisionTableParseException;
 
 /**
  * @author <a href="mailto:shaun.addison@gmail.com"> Shaun Addison </a><a
@@ -83,12 +84,12 @@ public class DefaultRuleSheetListener
     private boolean                       _currentSequentialFlag = false;                        // indicates that we are in sequential mode
 
     //accumulated output
-    private Map                           _actions;
-    private final HashMap                 _cellComments          = new HashMap();
-    private final List                    _ruleList              = new LinkedList();
+    private Map<Integer, ActionType>       _actions;
+    private final HashMap<Integer, String> _cellComments          = new HashMap<Integer, String>();
+    private final List<Rule>               _ruleList              = new LinkedList<Rule>();
 
     //need to keep an ordered list of this to make conditions appear in the right order
-    private List                          sourceBuilders         = new ArrayList();
+    private List<SourceBuilder>            sourceBuilders         = new ArrayList<SourceBuilder>();
 
     private final PropertiesSheetListener _propertiesListner     = new PropertiesSheetListener();
 
@@ -130,24 +131,24 @@ public class DefaultRuleSheetListener
 
     private Package buildRuleSet() {
         final String defaultPackageName = this.defaultPackage != null ? this.defaultPackage.getName() : "rule_table";
-        final String rulesetName = getProperties().getProperty( DefaultRuleSheetListener.RULESET_TAG,
+        final String rulesetName = getProperties().getProperty( RULESET_TAG,
                                                                 defaultPackageName );
         final Package ruleset = new Package( rulesetName );
-        for ( final Iterator it = this._ruleList.iterator(); it.hasNext(); ) {
-            ruleset.addRule( (Rule) it.next() );
+        for ( Rule rule : this._ruleList ) {
+            ruleset.addRule( rule );
         }
-        final List importList = RuleSheetParserUtil.getImportList( getProperties().getProperty( DefaultRuleSheetListener.IMPORT_TAG ) );
-        for ( final Iterator it = importList.iterator(); it.hasNext(); ) {
-            ruleset.addImport( (Import) it.next() );
+        final List<Import> importList = RuleSheetParserUtil.getImportList( getProperties().getProperty( IMPORT_TAG ) );
+        for ( Import import1 : importList ) {
+            ruleset.addImport( import1 );
         }
-        final List variableList = RuleSheetParserUtil.getVariableList( getProperties().getProperty( DefaultRuleSheetListener.VARIABLES_TAG ) ); // Set the list of variables to
+        final List<Global> variableList = RuleSheetParserUtil.getVariableList( getProperties().getProperty( VARIABLES_TAG ) ); // Set the list of variables to
         // be added to the
         // application-data tags
-        for ( final Iterator it = variableList.iterator(); it.hasNext(); ) {
-            ruleset.addVariable( (Global) it.next() );
+        for ( Global global : variableList ) {
+            ruleset.addVariable( global );
         }
 
-        final String functions = getProperties().getProperty( DefaultRuleSheetListener.FUNCTIONS_TAG );
+        final String functions = getProperties().getProperty( FUNCTIONS_TAG );
         ruleset.addFunctions( functions );
         return ruleset;
     }
@@ -189,8 +190,8 @@ public class DefaultRuleSheetListener
      * As when there are merged/spanned cells, they may be left out.
      */
     private void flushRule() {
-        for ( Iterator iter = sourceBuilders.iterator(); iter.hasNext(); ) {
-            SourceBuilder src = (SourceBuilder) iter.next();
+        for ( Iterator<SourceBuilder> iter = sourceBuilders.iterator(); iter.hasNext(); ) {
+            SourceBuilder src = iter.next();
             if ( src.hasValues() ) {
                 if ( src instanceof LhsBuilder ) {
                     Condition con = new Condition();
@@ -244,11 +245,11 @@ public class DefaultRuleSheetListener
                           column,
                           value );
         this._isInRuleTable = true;
-        this._actions = new HashMap();
-        this.sourceBuilders = new ArrayList();
+        this._actions = new HashMap<Integer, ActionType>();
+        this.sourceBuilders = new ArrayList<SourceBuilder>();
         this._ruleStartColumn = column;
         this._ruleStartRow = row;
-        this._ruleRow = row + DefaultRuleSheetListener.LABEL_ROW + 1;
+        this._ruleRow = row + LABEL_ROW + 1;
 
         // setup stuff for the rules to come.. (the order of these steps are
         // important !)
@@ -287,7 +288,7 @@ public class DefaultRuleSheetListener
     }
 
     private boolean getSequentialFlag() {
-        final String seqFlag = getProperties().getProperty( DefaultRuleSheetListener.SEQUENTIAL_FLAG );
+        final String seqFlag = getProperties().getProperty( SEQUENTIAL_FLAG );
         return RuleSheetParserUtil.isStringMeaningTrue( seqFlag );
     }
 
@@ -302,7 +303,7 @@ public class DefaultRuleSheetListener
     private void processNonRuleCell(final int row,
                                     final int column,
                                     final String value) {
-        if ( value.startsWith( DefaultRuleSheetListener.RULE_TABLE_TAG ) ) {
+        if ( value.startsWith( RULE_TABLE_TAG ) ) {
             initRuleTable( row,
                            column,
                            value );
@@ -310,7 +311,7 @@ public class DefaultRuleSheetListener
             this._propertiesListner.newCell( row,
                                              column,
                                              value,
-                                             SheetListener.NON_MERGED );
+                                             RuleSheetListener.NON_MERGED );
         }
     }
 
@@ -318,7 +319,7 @@ public class DefaultRuleSheetListener
                                  final int column,
                                  final String value,
                                  final int mergedColStart) {
-        if ( value.startsWith( DefaultRuleSheetListener.RULE_TABLE_TAG ) ) {
+        if ( value.startsWith( RULE_TABLE_TAG ) ) {
             finishRuleTable();
             initRuleTable( row,
                            column,
@@ -384,7 +385,7 @@ public class DefaultRuleSheetListener
         }
         ActionType action = getActionForColumn( row,
                                                 column );
-        if ( mergedColStart == SheetListener.NON_MERGED ) {
+        if ( mergedColStart == RuleSheetListener.NON_MERGED ) {
             if ( action.type == ActionType.CONDITION ) {
                 SourceBuilder src = new LhsBuilder( value );
                 action.setSourceBuilder( src );
@@ -455,7 +456,7 @@ public class DefaultRuleSheetListener
 
     private ActionType getActionForColumn(final int row,
                                           final int column) {
-        final ActionType actionType = (ActionType) this._actions.get( new Integer( column ) );
+        final ActionType actionType = this._actions.get( new Integer( column ) );
 
         if ( actionType == null ) {
             throw new DecisionTableParseException( "Code description - row number:" + (row + 1) + " cell number:" + (column + 1) + " - does not have an 'ACTION' or 'CONDITION' column header." );
@@ -580,10 +581,6 @@ public class DefaultRuleSheetListener
 
     private boolean isCellValueEmpty(final String value) {
         return value == null || "".equals( value.trim() );
-    }
-
-    private String cellComment(final int column) {
-        return "From column: " + Rule.convertColNumToColName( column );
     }
 
 }

@@ -35,7 +35,7 @@ public class CsvLineParser {
      * Use the current lineParser implementation to return a CSV line as a List
      * of cells. (Strings).
      */
-    public List parse(final CharSequence line) {
+    public List<String> parse(final CharSequence line) {
         return this.lineParser.parse( line.toString() );
     }
 
@@ -44,7 +44,7 @@ public class CsvLineParser {
      * handlers in the future.
      */
     static interface ICsvParser {
-        public List parse(String line);
+        public List<String> parse(String line);
     }
 
     /**
@@ -87,7 +87,7 @@ public class CsvLineParser {
         }
 
         /** The fields in the current String */
-        protected List list = new ArrayList();
+        protected List<String> list = new ArrayList<String>();
 
         /** the separator char for this parser */
         protected char fieldSep;
@@ -98,7 +98,7 @@ public class CsvLineParser {
          * @return java.util.Iterator containing each field from the original as
          *         a String, in order.
          */
-        public List parse(final String line) {
+        public List<String> parse(final String line) {
             final StringBuffer sb = new StringBuffer();
             this.list.clear(); // recycle to initial state
             int i = 0;

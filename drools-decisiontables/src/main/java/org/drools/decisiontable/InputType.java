@@ -19,10 +19,10 @@ package org.drools.decisiontable;
 import java.util.List;
 
 import org.drools.decisiontable.parser.DecisionTableParser;
-import org.drools.decisiontable.parser.SheetListener;
 import org.drools.decisiontable.parser.csv.CsvLineParser;
 import org.drools.decisiontable.parser.csv.CsvParser;
 import org.drools.decisiontable.parser.xls.ExcelParser;
+import org.drools.template.parser.DataListener;
 
 /**
  * Provides valid input types for decision tables.
@@ -42,17 +42,17 @@ public abstract class InputType {
      * @param listener
      * @return The appropriate Parser. 
      */
-    public abstract DecisionTableParser createParser(SheetListener listener);
-    public abstract DecisionTableParser createParser(List listeners);
+    public abstract DecisionTableParser createParser(DataListener listener);
+    public abstract DecisionTableParser createParser(List<DataListener> listeners);
 
 }
 
 class XlsInput extends InputType {
 
-    public DecisionTableParser createParser(final SheetListener listener) {
+    public DecisionTableParser createParser(final DataListener listener) {
         return new ExcelParser( listener );
     }
-    public DecisionTableParser createParser(final List listeners) {
+    public DecisionTableParser createParser(final List<DataListener> listeners) {
     	return new ExcelParser( listeners );
     }
 
@@ -60,12 +60,12 @@ class XlsInput extends InputType {
 
 class CsvInput extends InputType {
 
-    public DecisionTableParser createParser(final SheetListener listener) {
+    public DecisionTableParser createParser(final DataListener listener) {
         return new CsvParser( listener,
                               new CsvLineParser() );
     }
 
-    public DecisionTableParser createParser(final List listeners) {
+    public DecisionTableParser createParser(final List<DataListener> listeners) {
     	return new CsvParser( listeners,
     			new CsvLineParser() );
     }

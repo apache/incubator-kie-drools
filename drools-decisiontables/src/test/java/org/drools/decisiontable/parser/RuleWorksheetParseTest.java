@@ -22,11 +22,11 @@ import java.util.Properties;
 
 import junit.framework.TestCase;
 
-import org.drools.decisiontable.model.Condition;
-import org.drools.decisiontable.model.Consequence;
-import org.drools.decisiontable.model.Import;
-import org.drools.decisiontable.model.Package;
-import org.drools.decisiontable.model.Rule;
+import org.drools.template.model.Condition;
+import org.drools.template.model.Consequence;
+import org.drools.template.model.Import;
+import org.drools.template.model.Package;
+import org.drools.template.model.Rule;
 
 /**
  * @author Shaun Addison, Michael Neale

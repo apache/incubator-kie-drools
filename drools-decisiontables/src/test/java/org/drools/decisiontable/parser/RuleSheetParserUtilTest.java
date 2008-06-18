@@ -20,8 +20,9 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.drools.decisiontable.model.Global;
-import org.drools.decisiontable.model.Import;
+import org.drools.template.model.Global;
+import org.drools.template.model.Import;
+import org.drools.template.parser.DecisionTableParseException;
 
 /**
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
@@ -63,7 +64,7 @@ public class RuleSheetParserUtilTest extends TestCase {
 
     public void testListImports() {
         String cellVal = null;
-        List list = RuleSheetParserUtil.getImportList( cellVal );
+        List<Import> list = RuleSheetParserUtil.getImportList( cellVal );
         assertNotNull( list );
         assertEquals( 0,
                       list.size() );
@@ -76,22 +77,22 @@ public class RuleSheetParserUtilTest extends TestCase {
         assertEquals( 3,
                       list.size() );
         assertEquals( "com.something.Yeah",
-                      ((Import) list.get( 0 )).getClassName() );
+                      (list.get( 0 )).getClassName() );
         assertEquals( "com.something.No",
-                      ((Import) list.get( 1 )).getClassName() );
+                      (list.get( 1 )).getClassName() );
         assertEquals( "com.something.yeah.*",
-                      ((Import) list.get( 2 )).getClassName() );
+                      (list.get( 2 )).getClassName() );
     }
 
     public void testListVariables() {
-        final List varList = RuleSheetParserUtil.getVariableList( "Var1 var1, Var2 var2,Var3 var3" );
+        final List<Global> varList = RuleSheetParserUtil.getVariableList( "Var1 var1, Var2 var2,Var3 var3" );
         assertNotNull( varList );
         assertEquals( 3,
                       varList.size() );
-        Global var = (Global) varList.get( 0 );
+        Global var = varList.get( 0 );
         assertEquals( "Var1",
                       var.getClassName() );
-        var = (Global) varList.get( 2 );
+        var = varList.get( 2 );
         assertEquals( "Var3",
                       var.getClassName() );
         assertEquals( "var3",
