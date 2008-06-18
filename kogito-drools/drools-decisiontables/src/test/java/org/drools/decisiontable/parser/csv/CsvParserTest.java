@@ -21,7 +21,7 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.drools.decisiontable.parser.SheetListener;
+import org.drools.template.parser.DataListener;
 
 public class CsvParserTest extends TestCase {
 
@@ -29,7 +29,7 @@ public class CsvParserTest extends TestCase {
         final MockSheetListener listener = new MockSheetListener();
         final CsvLineParser lineParser = new CsvLineParser();
         final CsvParser parser = new CsvParser( listener,
-                                          lineParser );
+                                                lineParser );
 
         parser.parseFile( getClass().getResourceAsStream( "/data/TestCsv.csv" ) );
         assertEquals( "A",
@@ -52,37 +52,54 @@ public class CsvParserTest extends TestCase {
                                         3 ) );
 
     }
-    
+
     /**
      * Test the handling of merged cells.
      */
     public void testCellMergeHandling() {
-        CsvParser parser = new CsvParser((SheetListener)null, null);
-        assertEquals(SheetListener.NON_MERGED, parser.calcStartMerge( SheetListener.NON_MERGED, 1, "foo" ));
-        assertEquals(42, parser.calcStartMerge( SheetListener.NON_MERGED, 42, "..." ));
-        
-        assertEquals(42, parser.calcStartMerge( 42, 43, "..." ));
-        
-        assertEquals(SheetListener.NON_MERGED, parser.calcStartMerge( 42, 44, "VanHalen" ));
-        
-        
-        assertEquals("VanHalen", parser.calcCellText( SheetListener.NON_MERGED, "VanHalen" ));
-        assertEquals("VanHalen", parser.calcCellText( 42, "VanHalen..." ));
-        assertEquals("", parser.calcCellText( 42, "..." ));
-        
-        
+        CsvParser parser = new CsvParser( (DataListener) null,
+                                          null );
+        assertEquals( DataListener.NON_MERGED,
+                      parser.calcStartMerge( DataListener.NON_MERGED,
+                                             1,
+                                             "foo" ) );
+        assertEquals( 42,
+                      parser.calcStartMerge( DataListener.NON_MERGED,
+                                             42,
+                                             "..." ) );
+
+        assertEquals( 42,
+                      parser.calcStartMerge( 42,
+                                             43,
+                                             "..." ) );
+
+        assertEquals( DataListener.NON_MERGED,
+                      parser.calcStartMerge( 42,
+                                             44,
+                                             "VanHalen" ) );
+
+        assertEquals( "VanHalen",
+                      parser.calcCellText( DataListener.NON_MERGED,
+                                           "VanHalen" ) );
+        assertEquals( "VanHalen",
+                      parser.calcCellText( 42,
+                                           "VanHalen..." ) );
+        assertEquals( "",
+                      parser.calcCellText( 42,
+                                           "..." ) );
+
     }
 
     static class MockSheetListener
         implements
-        SheetListener {
+        DataListener {
 
-        Map data = new HashMap();
+        Map<String, String> data = new HashMap<String, String>();
 
         public String getCell(final int row,
                               final int col) {
-            return (String) this.data.get( cellKey( row,
-                                               col ) );
+            return this.data.get( cellKey( row,
+                                           col ) );
         }
 
         public void startSheet(final String name) {
@@ -102,14 +119,13 @@ public class CsvParserTest extends TestCase {
                             final int mergeCellStart) {
 
             this.data.put( cellKey( row,
-                               column ),
-                      value );
+                                    column ),
+                           value );
         }
 
         String cellKey(final int row,
                        final int column) {
             return "R" + row + "C" + column;
         }
-
     }
 }

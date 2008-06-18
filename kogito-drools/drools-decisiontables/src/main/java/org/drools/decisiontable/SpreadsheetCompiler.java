@@ -22,12 +22,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.decisiontable.model.DRLOutput;
-import org.drools.decisiontable.model.Package;
 import org.drools.decisiontable.parser.DecisionTableParser;
 import org.drools.decisiontable.parser.DefaultRuleSheetListener;
 import org.drools.decisiontable.parser.RuleSheetListener;
 import org.drools.decisiontable.parser.xls.ExcelParser;
+import org.drools.template.model.DRLOutput;
+import org.drools.template.model.Package;
+import org.drools.template.parser.DataListener;
 
 /**
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale </a>
@@ -138,8 +139,8 @@ public class SpreadsheetCompiler {
     private RuleSheetListener getRuleSheetListener(final InputStream stream,
                                                    final String worksheetName) {
         final RuleSheetListener listener = new DefaultRuleSheetListener();
-        final Map sheetListeners = new HashMap();
-        final List listeners = new ArrayList();
+        final Map<String, List<DataListener>> sheetListeners = new HashMap<String, List<DataListener>>();
+        final List<DataListener> listeners = new ArrayList<DataListener>();
         listeners.add(listener);
         sheetListeners.put( worksheetName,
                        listeners );

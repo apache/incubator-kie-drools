@@ -26,9 +26,9 @@ import junit.framework.TestCase;
  */
 public class RuleWorksheetParseLargeTest extends TestCase {
 
-    private long startTimer;
-
-    private long endTimer;
+//    private long startTimer;
+//
+//    private long endTimer;
 
     /**
      * Tests parsing a large spreadsheet into an in memory ruleset. This doesn't
@@ -63,16 +63,16 @@ public class RuleWorksheetParseLargeTest extends TestCase {
          */
     }
 
-    private void startTimer() {
-        this.startTimer = System.currentTimeMillis();
-    }
-
-    private void stopTimer() {
-        this.endTimer = System.currentTimeMillis();
-    }
-
-    private long getTime() {
-        return this.endTimer - this.startTimer;
-    }
+//    private void startTimer() {
+//        this.startTimer = System.currentTimeMillis();
+//    }
+//
+//    private void stopTimer() {
+//        this.endTimer = System.currentTimeMillis();
+//    }
+//
+//    private long getTime() {
+//        return this.endTimer - this.startTimer;
+//    }
 
 }

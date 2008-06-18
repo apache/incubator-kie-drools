@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.decisiontable.model.SnippetBuilder;
+import org.drools.template.model.SnippetBuilder;
 
 /**
  * Builds up a consequence entry.
@@ -15,9 +15,9 @@ import org.drools.decisiontable.model.SnippetBuilder;
  */
 public class RhsBuilder implements SourceBuilder {
 
-    private Map     templates;
+    private Map<Integer, String> templates;
     private String  variable;
-    private List    values;
+    private List<String> values;
     private boolean hasValues;
 
     /**
@@ -27,8 +27,8 @@ public class RhsBuilder implements SourceBuilder {
      */
     public RhsBuilder(String boundVariable) {
         this.variable = boundVariable == null ? "" : boundVariable.trim();
-        this.templates = new HashMap();
-        this.values = new ArrayList();
+        this.templates = new HashMap<Integer, String>();
+        this.values = new ArrayList<String>();
     }
 
     public void addTemplate(int col,
@@ -63,7 +63,7 @@ public class RhsBuilder implements SourceBuilder {
     
     public String getResult() {
         StringBuffer buf = new StringBuffer();
-        for ( Iterator iter = this.values.iterator(); iter.hasNext(); ) {            
+        for ( Iterator<String> iter = this.values.iterator(); iter.hasNext(); ) {            
             buf.append( iter.next() );
             if (iter.hasNext()) {
                 buf.append( '\n' );

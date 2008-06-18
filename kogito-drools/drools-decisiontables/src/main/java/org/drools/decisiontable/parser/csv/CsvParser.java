@@ -21,12 +21,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-import org.drools.decisiontable.parser.DecisionTableParseException;
 import org.drools.decisiontable.parser.DecisionTableParser;
-import org.drools.decisiontable.parser.SheetListener;
+import org.drools.template.parser.DataListener;
+import org.drools.template.parser.DecisionTableParseException;
 
 /**
  * Csv implementation. This implementation removes empty "cells" at the end of
@@ -44,18 +43,18 @@ import org.drools.decisiontable.parser.SheetListener;
  */
 public class CsvParser implements DecisionTableParser {
 
-	private List _listeners;
+	private List<DataListener> _listeners;
 
 	private CsvLineParser _lineParser;
 
-	public CsvParser(final SheetListener listener,
+	public CsvParser(final DataListener listener,
 			final CsvLineParser lineParser) {
-		_listeners = new ArrayList();
+		_listeners = new ArrayList<DataListener>();
 		_listeners.add(listener);
 		this._lineParser = lineParser;
 	}
 
-	public CsvParser(final List listeners, final CsvLineParser lineParser) {
+	public CsvParser(final List<DataListener> listeners, final CsvLineParser lineParser) {
 		this._listeners = listeners;
 		this._lineParser = lineParser;
 	}
@@ -74,30 +73,26 @@ public class CsvParser implements DecisionTableParser {
 	}
 
 	private void startSheet() {
-		for (Iterator it = _listeners.iterator(); it.hasNext();) {
-			SheetListener listener = (SheetListener) it.next();
+	    for ( DataListener listener : _listeners ) {
 			listener.startSheet("csv");
 		}
 	}
 
 	private void finishSheet() {
-		for (Iterator it = _listeners.iterator(); it.hasNext();) {
-			SheetListener listener = (SheetListener) it.next();
+        for ( DataListener listener : _listeners ) {
 			listener.finishSheet();
 		}
 	}
 
 	private void newRow(final int row, final int numCells) {
-		for (Iterator it = _listeners.iterator(); it.hasNext();) {
-			SheetListener listener = (SheetListener) it.next();
+        for ( DataListener listener : _listeners ) {
 			listener.newRow(row, numCells);
 		}
 	}
 
 	private void newCell(final int row, final int column, final String value,
 			final int mergedColStart) {
-		for (Iterator it = _listeners.iterator(); it.hasNext();) {
-			SheetListener listener = (SheetListener) it.next();
+        for ( DataListener listener : _listeners ) {
 			listener.newCell(row, column, value, mergedColStart);
 		}
 	}
@@ -108,12 +103,12 @@ public class CsvParser implements DecisionTableParser {
 		int row = 0;
 		while (line != null) {
 
-			final List cells = this._lineParser.parse(line);
+			final List<String> cells = this._lineParser.parse(line);
 			// remove the trailing empty "cells" which some tools smatter around
 			// trimCells(cells);
 			newRow(row, cells.size());
 
-			int startMergeCol = SheetListener.NON_MERGED;
+			int startMergeCol = DataListener.NON_MERGED;
 			for (int col = 0; col < cells.size(); col++) {
 				String cell = (String) cells.get(col);
 
@@ -130,32 +125,19 @@ public class CsvParser implements DecisionTableParser {
 	}
 
 	String calcCellText(int startMergeCol, String cell) {
-		if (startMergeCol != SheetListener.NON_MERGED) {
+		if (startMergeCol != DataListener.NON_MERGED) {
 			cell = cell.substring(0, cell.length() - 3);
 		}
 		return cell;
 	}
 
 	int calcStartMerge(int startMergeCol, int col, String cell) {
-		if (cell.endsWith("...") && startMergeCol == SheetListener.NON_MERGED) {
+		if (cell.endsWith("...") && startMergeCol == DataListener.NON_MERGED) {
 			startMergeCol = col;
 		} else if (!cell.endsWith("...")) {
-			startMergeCol = SheetListener.NON_MERGED;
+			startMergeCol = DataListener.NON_MERGED;
 		}
 		return startMergeCol;
-	}
-
-	/** remove the trailing empty cells */
-	private void trimCells(final List cells) {
-		for (int i = cells.size() - 1; i > 0; i--) {
-			final String cell = (String) cells.get(i);
-			if (!cell.trim().equals("")) {
-				return;
-			} else {
-				cells.remove(i);
-			}
-		}
-
 	}
 
 }

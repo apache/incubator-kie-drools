@@ -16,6 +16,7 @@ package org.drools.decisiontable;
  * limitations under the License.
  */
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,10 +24,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.decisiontable.parser.DecisionTableParser;
-import org.drools.decisiontable.parser.ExternalSheetListener;
-import org.drools.decisiontable.parser.DefaultTemplateContainer;
-import org.drools.decisiontable.parser.TemplateContainer;
 import org.drools.decisiontable.parser.xls.ExcelParser;
+import org.drools.template.parser.DataListener;
+import org.drools.template.parser.DefaultTemplateContainer;
+import org.drools.template.parser.TemplateContainer;
+import org.drools.template.parser.TemplateDataListener;
 
 public class ExternalSpreadsheetCompiler {
 
@@ -60,7 +62,7 @@ public class ExternalSpreadsheetCompiler {
 			int startCol) {
 		TemplateContainer tc = new DefaultTemplateContainer(templateStream);
 		closeStream(templateStream);
-		return compile(xlsStream, type, new ExternalSheetListener(startRow,
+		return compile(xlsStream, type, new TemplateDataListener(startRow,
 				startCol, tc));
 	}
 
@@ -69,28 +71,28 @@ public class ExternalSpreadsheetCompiler {
 			int startRow, int startCol) {
 		TemplateContainer tc = new DefaultTemplateContainer(templateStream);
 		closeStream(templateStream);
-		return compile(xlsStream, worksheetName, new ExternalSheetListener(
+		return compile(xlsStream, worksheetName, new TemplateDataListener(
 				startRow, startCol, tc));
 	}
 
-	public void compile(final String xls, InputType type, final List listeners) {
+	public void compile(final String xls, InputType type, final List<DataListener> listeners) {
 		final InputStream xlsStream = this.getClass().getResourceAsStream(xls);
 		compile(xlsStream, type, listeners);
 	}
 
-	public void compile(final String xls, final Map listeners) {
+	public void compile(final String xls, final Map<String, List<DataListener>> listeners) {
 		final InputStream xlsStream = this.getClass().getResourceAsStream(xls);
 		compile(xlsStream, listeners);
 	}
 
 	public void compile(final InputStream xlsStream, InputType type,
-			final List listeners) {
+			final List<DataListener> listeners) {
 		final DecisionTableParser parser = type.createParser(listeners);
 		parser.parseFile(xlsStream);
 		closeStream(xlsStream);
 	}
 
-	public void compile(final InputStream xlsStream, final Map listeners) {
+	public void compile(final InputStream xlsStream, final Map<String, List<DataListener>> listeners) {
 		final DecisionTableParser parser = new ExcelParser(listeners);
 		parser.parseFile(xlsStream);
 		closeStream(xlsStream);
@@ -109,17 +111,17 @@ public class ExternalSpreadsheetCompiler {
 	 * @throws IOException
 	 */
 	public String compile(final InputStream xlsStream, final InputType type,
-			final ExternalSheetListener listener) {
-		List listeners = new ArrayList();
+			final TemplateDataListener listener) {
+		ArrayList<DataListener> listeners = new ArrayList<DataListener>();
 		listeners.add(listener);
 		compile(xlsStream, type, listeners);
 		return listener.renderDRL();
 	}
 
 	public String compile(final InputStream xlsStream,
-			final String worksheetName, final ExternalSheetListener listener) {
-		Map listeners = new HashMap();
-		List l = new ArrayList();
+			final String worksheetName, final TemplateDataListener listener) {
+		Map<String, List<DataListener>> listeners = new HashMap<String, List<DataListener>>();
+		List<DataListener> l = new ArrayList<DataListener>();
 		l.add(listener);
 		listeners.put(worksheetName, l);
 		compile(xlsStream, listeners);

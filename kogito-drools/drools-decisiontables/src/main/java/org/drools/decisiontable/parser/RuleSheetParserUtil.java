@@ -20,8 +20,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import org.drools.decisiontable.model.Global;
-import org.drools.decisiontable.model.Import;
+import org.drools.template.model.Global;
+import org.drools.template.model.Import;
+import org.drools.template.parser.DecisionTableParseException;
 
 /**
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale </a>
@@ -53,8 +54,8 @@ public class RuleSheetParserUtil {
      *            The cell text for all the classes to import.
      * @return A list of Import classes, which can be added to the ruleset.
      */
-    public static List getImportList(final String importCell) {
-        final List importList = new LinkedList();
+    public static List<Import> getImportList(final String importCell) {
+        final List<Import> importList = new LinkedList<Import>();
         if ( importCell == null ) {
             return importList;
         }
@@ -75,8 +76,8 @@ public class RuleSheetParserUtil {
      *            The cell text for all the application data variables to set.
      * @return A list of Variable classes, which can be added to the ruleset.
      */
-    public static List getVariableList(final String variableCell) {
-        final List variableList = new LinkedList();
+    public static List<Global> getVariableList(final String variableCell) {
+        final List<Global> variableList = new LinkedList<Global>();
         if ( variableCell == null ) {
             return variableList;
         }

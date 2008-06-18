@@ -29,8 +29,9 @@ import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.PackageBuilder;
-import org.drools.decisiontable.parser.ExternalSheetListener;
 import org.drools.rule.Package;
+import org.drools.template.parser.DataListener;
+import org.drools.template.parser.TemplateDataListener;
 /**
  * @author <a href="mailto:stevearoonie@gmail.com">Steven Williams</a> Some basic unit tests for converter utility.
  *         Note that some of this may still use the drools 2.x syntax, as it is not compiled, only tested that it
@@ -64,7 +65,7 @@ public class ExternalSpreadsheetCompilerIntegrationTest extends TestCase
         wm.insert( new Person( "michael",
                                      "stilton",
                                      42 ) );
-        final List list = new ArrayList();
+        final List<String> list = new ArrayList<String>();
         wm.setGlobal( "list",
                       list );
         wm.fireAllRules();
@@ -77,10 +78,10 @@ public class ExternalSpreadsheetCompilerIntegrationTest extends TestCase
     public void testPricing() throws Exception 
     {
         final ExternalSpreadsheetCompiler converter = new ExternalSpreadsheetCompiler();
-        final List listeners = new ArrayList();
-        ExternalSheetListener l1 = new ExternalSheetListener(10, 3, "/templates/test_pricing1.drl");
+        final List<DataListener> listeners = new ArrayList<DataListener>();
+        TemplateDataListener l1 = new TemplateDataListener(10, 3, "/templates/test_pricing1.drl");
 		listeners.add(l1);
-        ExternalSheetListener l2 = new ExternalSheetListener(30, 3, "/templates/test_pricing2.drl");
+        TemplateDataListener l2 = new TemplateDataListener(30, 3, "/templates/test_pricing2.drl");
 		listeners.add(l2);
 		converter.compile("/data/ExamplePolicyPricing.xls", InputType.XLS, listeners);
         //COMPILE

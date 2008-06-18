@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.decisiontable.model.SnippetBuilder;
+import org.drools.template.model.SnippetBuilder;
 
 /**
  * This utility will build up a list of constraints for a column.
@@ -20,13 +20,13 @@ import org.drools.decisiontable.model.SnippetBuilder;
 public class LhsBuilder implements SourceBuilder {
 
     private String column;
-    private Map    constraints;
-    private List    values;
+    private Map<Integer, String> constraints;
+    private List<String> values;
     private boolean hasValues;
-    private static Set operators;
+    private static Set<String> operators;
 
     static {
-        operators = new HashSet();
+        operators = new HashSet<String>();
         operators.add( "==" );
         operators.add( "=" );
         operators.add( "!=" );
@@ -44,8 +44,8 @@ public class LhsBuilder implements SourceBuilder {
      */
     public LhsBuilder(String colDefinition) {
         this.column = colDefinition == null ? "" : colDefinition;
-        this.constraints = new HashMap();
-        this.values = new ArrayList();
+        this.constraints = new HashMap<Integer, String>();
+        this.values = new ArrayList<String>();
     }
 
     public void addTemplate(int column, String content) {
@@ -88,8 +88,8 @@ public class LhsBuilder implements SourceBuilder {
     public String getResult() {
         StringBuffer buf = new StringBuffer();
         if ( !isMultipleConstraints() ) {
-            for ( Iterator iter = values.iterator(); iter.hasNext(); ) {
-                String content = (String) iter.next();
+            for ( Iterator<String> iter = values.iterator(); iter.hasNext(); ) {
+                String content = iter.next();
                 buf.append( content );
                 if (iter.hasNext()) {
                     buf.append( '\n' );
@@ -99,7 +99,7 @@ public class LhsBuilder implements SourceBuilder {
         } else {
             buf.append( this.column );
             buf.append( '(' );
-            for ( Iterator iter = values.iterator(); iter.hasNext(); ) {
+            for ( Iterator<String> iter = values.iterator(); iter.hasNext(); ) {
                 buf.append( iter.next());
                 if (iter.hasNext()) {
                     buf.append( ", " );
@@ -140,8 +140,7 @@ public class LhsBuilder implements SourceBuilder {
         if (content.indexOf( "$param" ) != -1 || content.indexOf( "$1" ) != -1 ) {
             return FieldType.NORMAL_FIELD;
         }
-        for ( Iterator iter = operators.iterator(); iter.hasNext(); ) {
-            String op = (String) iter.next();
+        for ( String op : operators ) {
             if (content.endsWith( op )) {
                 return FieldType.OPERATOR_FIELD;
             }            

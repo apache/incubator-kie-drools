@@ -21,6 +21,7 @@ import java.util.Properties;
 import junit.framework.TestCase;
 
 import org.drools.decisiontable.parser.xls.PropertiesSheetListener;
+import org.drools.template.parser.DataListener;
 
 public class PropertiesSheetListenerTest extends TestCase {
 
@@ -33,23 +34,23 @@ public class PropertiesSheetListenerTest extends TestCase {
 
         listener.newCell( 0,
                           0,
-                          "", SheetListener.NON_MERGED );
+                          "", DataListener.NON_MERGED );
 
         listener.newCell( 0,
                           1,
-                          "key1", SheetListener.NON_MERGED );
+                          "key1", DataListener.NON_MERGED );
         listener.newCell( 0,
                           2,
-                          "value1", SheetListener.NON_MERGED );
+                          "value1", DataListener.NON_MERGED );
 
         listener.newRow( 1,
                          4 );
         listener.newCell( 1,
                           1,
-                          "key2", SheetListener.NON_MERGED );
+                          "key2", DataListener.NON_MERGED );
         listener.newCell( 1,
                           3,
-                          "value2", SheetListener.NON_MERGED );
+                          "value2", DataListener.NON_MERGED );
 
         final Properties props = listener.getProperties();
 
@@ -57,7 +58,7 @@ public class PropertiesSheetListenerTest extends TestCase {
                          4 );
         listener.newCell( 1,
                           1,
-                          "key3", SheetListener.NON_MERGED );
+                          "key3", DataListener.NON_MERGED );
 
         assertEquals( "value1",
                       props.getProperty( "Key1" ) );

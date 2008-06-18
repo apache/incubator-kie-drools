@@ -18,7 +18,8 @@ package org.drools.decisiontable.parser;
 
 import java.util.Properties;
 
-import org.drools.decisiontable.model.Package;
+import org.drools.template.model.Package;
+import org.drools.template.parser.DataListener;
 /**
  * @author <a href="mailto:stevearoonie@gmail.com"> Steven Williams</a>
  * 
@@ -26,7 +27,7 @@ import org.drools.decisiontable.model.Package;
  */
 public interface RuleSheetListener
     extends
-    SheetListener {
+    DataListener {
 
     /**
      * Return the rule sheet properties

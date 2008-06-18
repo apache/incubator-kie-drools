@@ -19,11 +19,11 @@ package org.drools.decisiontable.parser;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.decisiontable.model.Condition;
-import org.drools.decisiontable.model.Consequence;
-import org.drools.decisiontable.model.Rule;
-import org.drools.decisiontable.model.SnippetBuilder;
 import org.drools.decisiontable.parser.DefaultRuleSheetListener;
+import org.drools.template.model.Condition;
+import org.drools.template.model.Consequence;
+import org.drools.template.model.Rule;
+import org.drools.template.model.SnippetBuilder;
 import org.drools.util.StringUtils;
 
 /**
@@ -77,7 +77,7 @@ public class RuleMatrixSheetListener extends DefaultRuleSheetListener {
     private String             _action;
     private String             _horizontalCondition;
     private String             _verticalCondition;
-    private List               _horizontalConditions   = new ArrayList();
+    private List<Condition>    _horizontalConditions   = new ArrayList<Condition>();
     private Condition          _currentVerticalCondition;
     private boolean            isInRuleTable;
     private Rule               firstRule;
