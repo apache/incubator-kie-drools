@@ -16,6 +16,7 @@ package org.drools.decisiontable.parser.xls;
  * limitations under the License.
  */
 
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -141,11 +142,14 @@ public class PropertiesSheetListener
     	}
 
     	private String get(String key) {
-    	    for ( String k : this.stringPropertyNames() ) {
-    			if (key.equalsIgnoreCase(k)) {
-    				return super.getProperty(k);
-    			}
-    		}
+    	    Enumeration< ? > keyNames = this.propertyNames();
+            while ( keyNames.hasMoreElements() ) {
+                String k = (String) keyNames.nextElement();
+                if (key.equalsIgnoreCase( k )) {
+                    return super.getProperty( k );
+                }
+                    
+            }
     		return null;
     	}
 
