@@ -16,5 +16,6 @@
   <classpathentry kind="var" path="M2_REPO/org/eclipse/jdt/core/3.2.3.v_686_R32x/core-3.2.3.v_686_R32x.jar"/>
   <classpathentry kind="var" path="M2_REPO/janino/janino/2.5.10/janino-2.5.10.jar"/>
   <classpathentry kind="src" path="/drools-decisiontables"/>
+  <classpathentry kind="src" path="/drools-templates"/>
   <classpathentry kind="var" path="M2_REPO/jexcelapi/jxl/2.4.2/jxl-2.4.2.jar"/>
 </classpath>
