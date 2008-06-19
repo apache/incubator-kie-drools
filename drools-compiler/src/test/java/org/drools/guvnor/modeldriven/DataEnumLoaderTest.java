@@ -72,7 +72,7 @@ public class DataEnumLoaderTest extends TestCase {
 
     public void testLiteralHelperUtilityClass() {
     	//this shows how you can load it up with a class (which should return a map of keys to List.
-    	DataEnumLoader loader = new DataEnumLoader("=(new org.drools.brms.modeldriven.SampleDataSource2()).loadData()");
+    	DataEnumLoader loader = new DataEnumLoader("=(new org.drools.guvnor.modeldriven.SampleDataSource2()).loadData()");
 
     	assertFalse(loader.hasErrors());
 

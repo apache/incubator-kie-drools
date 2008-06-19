@@ -53,7 +53,7 @@ public class HttpClientImpl implements IHttpClient {
 
     public static void main(String[] args) throws Exception {
         HttpClientImpl cl = new HttpClientImpl();
-        URL url = new URL("http://localhost:8888/org.drools.brms.JBRMS/package/com.billasurf.manufacturing.plant/SNAP");
+        URL url = new URL("http://localhost:8888/org.drools.guvnor.Guvnor/package/com.billasurf.manufacturing.plant/SNAP");
 
 
         LastUpdatedPing ping = cl.checkLastUpdated( url );

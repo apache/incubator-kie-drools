@@ -40,7 +40,7 @@ public class BRDRLPersistence
     }
 
     /* (non-Javadoc)
-     * @see org.drools.brms.server.util.BRLPersistence#marshal(org.drools.brms.client.modeldriven.brl.RuleModel)
+     * @see org.drools.guvnor.server.util.BRLPersistence#marshal(org.drools.guvnor.client.modeldriven.brl.RuleModel)
      */
     public String marshal(RuleModel model) {
         boolean isDSLEnhanced = model.hasDSLSentences();
@@ -63,7 +63,7 @@ public class BRDRLPersistence
     }
 
     /* (non-Javadoc)
-     * @see org.drools.brms.server.util.BRLPersistence#unmarshal(java.lang.String)
+     * @see org.drools.guvnor.server.util.BRLPersistence#unmarshal(java.lang.String)
      */
     public RuleModel unmarshal(String str) {
         throw new UnsupportedOperationException("Still not possible to convert pure DRL to RuleModel");

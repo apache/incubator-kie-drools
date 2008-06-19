@@ -72,14 +72,14 @@ public class BRXMLPersistence implements BRLPersistence {
     }
 
     /* (non-Javadoc)
-     * @see org.drools.brms.server.util.BRLPersistence#toXML(org.drools.brms.client.modeldriven.brl.RuleModel)
+     * @see org.drools.guvnor.server.util.BRLPersistence#toXML(org.drools.guvnor.client.modeldriven.brl.RuleModel)
      */
     public String marshal(final RuleModel model) {
         return this.xt.toXML( model );
     }
 
     /* (non-Javadoc)
-     * @see org.drools.brms.server.util.BRLPersistence#toModel(java.lang.String)
+     * @see org.drools.guvnor.server.util.BRLPersistence#toModel(java.lang.String)
      */
     public RuleModel unmarshal(final String xml) {
         if ( xml == null ) {

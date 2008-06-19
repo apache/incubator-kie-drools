@@ -17,7 +17,7 @@ import org.drools.guvnor.server.rules.SuggestionCompletionLoader;
 public class SuggestionCompletionEngineTest extends TestCase {
 
     public void testNestedImports() {
-        String pkg = "package org.test\n import org.drools.brms.client.modeldriven.SuggestionCompletionEngineTest.NestedClass";
+        String pkg = "package org.test\n import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngineTest.NestedClass";
 
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
         SuggestionCompletionEngine engine = loader.getSuggestionEngine( pkg, new ArrayList(), new ArrayList() );
@@ -26,7 +26,7 @@ public class SuggestionCompletionEngineTest extends TestCase {
     }
 
     public void testStringNonNumeric() {
-        String pkg = "package org.test\n import org.drools.brms.client.modeldriven.Alert";
+        String pkg = "package org.test\n import org.drools.guvnor.client.modeldriven.Alert";
 
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
         SuggestionCompletionEngine engine = loader.getSuggestionEngine( pkg, new ArrayList(), new ArrayList() );
@@ -36,7 +36,7 @@ public class SuggestionCompletionEngineTest extends TestCase {
     }
 
     public void testDataEnums() {
-        String pkg = "package org.test\n import org.drools.brms.client.modeldriven.SuggestionCompletionEngineTest.NestedClass";
+        String pkg = "package org.test\n import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngineTest.NestedClass";
 
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
 

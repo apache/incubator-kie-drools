@@ -19,7 +19,7 @@ public class SuggestionCompletionLoaderTest extends TestCase {
 
     public void testLoadDifferentFieldTypes() throws Exception {
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
-        SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n import org.drools.brms.server.rules.SomeFact", new ArrayList(), new ArrayList() );
+        SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n import org.drools.guvnor.server.rules.SomeFact", new ArrayList(), new ArrayList() );
         assertNotNull(eng);
 
         assertEquals(SuggestionCompletionEngine.TYPE_NUMERIC, eng.getFieldType( "SomeFact", "age" ));
@@ -66,7 +66,7 @@ public class SuggestionCompletionLoaderTest extends TestCase {
     public void testSortOrderOfFields() throws Exception {
 
 	    SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
-	    SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n import org.drools.brms.server.rules.SomeFact", new ArrayList(), new ArrayList() );
+	    SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n import org.drools.guvnor.server.rules.SomeFact", new ArrayList(), new ArrayList() );
 	    assertNotNull(eng);
 
 	    String[] fields = eng.getFieldCompletions("SomeFact");
@@ -79,7 +79,7 @@ public class SuggestionCompletionLoaderTest extends TestCase {
 
     public void testSortOrderOfFacts() throws Exception {
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
-        SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n import org.drools.brms.server.rules.SomeFact\n import org.drools.Person", new ArrayList(), new ArrayList() );
+        SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n import org.drools.guvnor.server.rules.SomeFact\n import org.drools.Person", new ArrayList(), new ArrayList() );
         assertNotNull(eng);
         String[] facts  = eng.getFactTypes();
         assertEquals(2, facts.length);
