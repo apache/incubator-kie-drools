@@ -15,16 +15,16 @@ import org.drools.WorkingMemory;
 import org.drools.base.ClassTypeResolver;
 import org.drools.base.TypeResolver;
 import org.drools.base.mvel.DroolsMVELFactory;
-import org.drools.brms.client.modeldriven.testing.ExecutionTrace;
-import org.drools.brms.client.modeldriven.testing.Expectation;
-import org.drools.brms.client.modeldriven.testing.FactData;
-import org.drools.brms.client.modeldriven.testing.FieldData;
-import org.drools.brms.client.modeldriven.testing.RetractFact;
-import org.drools.brms.client.modeldriven.testing.Scenario;
-import org.drools.brms.client.modeldriven.testing.VerifyFact;
-import org.drools.brms.client.modeldriven.testing.VerifyField;
-import org.drools.brms.client.modeldriven.testing.VerifyRuleFired;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.guvnor.client.modeldriven.testing.ExecutionTrace;
+import org.drools.guvnor.client.modeldriven.testing.Expectation;
+import org.drools.guvnor.client.modeldriven.testing.FactData;
+import org.drools.guvnor.client.modeldriven.testing.FieldData;
+import org.drools.guvnor.client.modeldriven.testing.RetractFact;
+import org.drools.guvnor.client.modeldriven.testing.Scenario;
+import org.drools.guvnor.client.modeldriven.testing.VerifyFact;
+import org.drools.guvnor.client.modeldriven.testing.VerifyField;
+import org.drools.guvnor.client.modeldriven.testing.VerifyRuleFired;
 import org.drools.rule.TimeMachine;
 
 public class ScenarioRunnerTest extends RuleUnit {

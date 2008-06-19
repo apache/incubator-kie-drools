@@ -2,8 +2,8 @@ package org.drools.testframework;
 
 import java.util.ArrayList;
 
-import org.drools.brms.client.modeldriven.testing.FactData;
-import org.drools.brms.client.modeldriven.testing.FieldData;
+import org.drools.guvnor.client.modeldriven.testing.FactData;
+import org.drools.guvnor.client.modeldriven.testing.FieldData;
 
 import junit.framework.TestCase;
 
