@@ -23,7 +23,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import org.drools.base.ClassFieldAccessorCache;
-import org.drools.rule.DialectDatas;
+import org.drools.rule.DialectRuntimeRegistry;
 import org.drools.rule.Package;
 
 public class DroolsObjectInputStream
@@ -58,7 +58,7 @@ public class DroolsObjectInputStream
     private InternalRuleBase         ruleBase;
     private InternalWorkingMemory    workingMemory;
     private Package                  pkg;
-    private DialectDatas             dialectDatas;
+    private DialectRuntimeRegistry             dialectRegistry;
     private ClassFieldAccessorCache extractorFactory;
 
     /**
@@ -102,11 +102,11 @@ public class DroolsObjectInputStream
             DroolsObjectInputStream.this.setPackage(pkg);
         }
 
-        public DialectDatas getDialectDatas() {
-            return DroolsObjectInputStream.this.getDialectDatas();
+        public DialectRuntimeRegistry getDialectRuntimeRegistry() {
+            return DroolsObjectInputStream.this.getDialectRuntimeRegistry();
         }
-        public void setDialectDatas(DialectDatas dialectDatas) {
-            DroolsObjectInputStream.this.setDialectDatas(dialectDatas);
+        public void setDialectRuntimeRegistry(DialectRuntimeRegistry dialectRuntimeRegistry) {
+            DroolsObjectInputStream.this.setDialectRuntimeRegistry(dialectRuntimeRegistry);
         }
 
         public ClassFieldAccessorCache getExtractorFactory() {
@@ -171,11 +171,11 @@ public class DroolsObjectInputStream
         this.pkg    = pkg;
     }
 
-    public DialectDatas getDialectDatas() {
-        return dialectDatas;
+    public DialectRuntimeRegistry getDialectRuntimeRegistry() {
+        return this.dialectRegistry;
     }
-    public void setDialectDatas(DialectDatas dialectDatas) {
-        this.dialectDatas   = dialectDatas;
+    public void setDialectRuntimeRegistry(DialectRuntimeRegistry dialectRegistry) {
+        this.dialectRegistry   = dialectRegistry;
     }
 
     public ClassFieldAccessorCache getExtractorFactory() {

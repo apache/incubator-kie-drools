@@ -43,9 +43,9 @@ import org.drools.util.StringUtils;
 import org.drools.workflow.core.node.ActionNode;
 import org.drools.workflow.instance.impl.ReturnValueConstraintEvaluator;
 
-public class JavaDialectData
+public class JavaDialectRuntimeData
     implements
-    DialectData,
+    DialectRuntimeData,
     Externalizable {
 
     /**
@@ -61,7 +61,7 @@ public class JavaDialectData
 
     private Map                           store;
 
-    private DialectDatas                  datas;
+    private DialectRuntimeRegistry        datas;
 
     private transient PackageClassLoader  classLoader;
 
@@ -70,7 +70,7 @@ public class JavaDialectData
     static {
         PROTECTION_DOMAIN = (ProtectionDomain) AccessController.doPrivileged( new PrivilegedAction() {
             public Object run() {
-                return JavaDialectData.class.getProtectionDomain();
+                return JavaDialectRuntimeData.class.getProtectionDomain();
             }
         } );
     }
@@ -79,10 +79,10 @@ public class JavaDialectData
      * Default constructor - for Externalizable. This should never be used by a user, as it
      * will result in an invalid state for the instance.
      */
-    public JavaDialectData() {
+    public JavaDialectRuntimeData() {
     }
 
-    public JavaDialectData(final DialectDatas datas) {
+    public JavaDialectRuntimeData(final DialectRuntimeRegistry datas) {
         this.datas = datas;
         this.classLoader = new PackageClassLoader( this.datas.getParentClassLoader(), this );
         this.datas.addClassLoader( this.classLoader );
@@ -91,15 +91,11 @@ public class JavaDialectData
         this.dirty = false;
     }
 
-    public DialectData clone() {
-        DialectData cloneOne = new JavaDialectData();
+    public DialectRuntimeData clone() {
+        DialectRuntimeData cloneOne = new JavaDialectRuntimeData();
 
         cloneOne.merge(this);
         return cloneOne;
-    }
-
-    public void setDialectDatas(DialectDatas datas) {
-        this.datas  = datas;
     }
 
     public boolean isDirty() {
@@ -132,7 +128,7 @@ public class JavaDialectData
                                                       ClassNotFoundException {
         DroolsObjectInput droolsStream = (DroolsObjectInput)stream;
 
-        this.datas          = droolsStream.getDialectDatas();
+        this.datas          = droolsStream.getDialectRuntimeRegistry();
         this.classLoader    = new PackageClassLoader( this.datas.getParentClassLoader(), this );
         this.datas.addClassLoader( this.classLoader );
 
@@ -172,9 +168,11 @@ public class JavaDialectData
         remove( pkg.getName() + "." + StringUtils.ucFirst( function.getName() ) );
     }
 
-    public void merge(DialectData newData) {
-        JavaDialectData newJavaData = (JavaDialectData) newData;
+    public void merge(DialectRuntimeData newData) {
+        JavaDialectRuntimeData newJavaData = (JavaDialectRuntimeData) newData;
 
+        this.datas = newJavaData.datas;
+        
         this.dirty = newData.isDirty();
         if (this.classLoader == null) {
             this.classLoader    = new PackageClassLoader(newJavaData.getClassLoader().getParent(), this);
@@ -389,12 +387,12 @@ public class JavaDialectData
     public static class PackageClassLoader extends ClassLoader
         implements
         DroolsClassLoader {
-        private JavaDialectData parent;
+        private JavaDialectRuntimeData parent;
 
         public PackageClassLoader() {
         }
 
-        public PackageClassLoader(final ClassLoader parentClassLoader, JavaDialectData parent) {
+        public PackageClassLoader(final ClassLoader parentClassLoader, JavaDialectRuntimeData parent) {
             super( parentClassLoader );
             this.parent = parent;
         }

@@ -11,26 +11,28 @@ import java.util.Map.Entry;
 
 import org.drools.common.DroolsObjectInput;
 
-public class DialectDatas implements Externalizable {
-    private transient ClassLoader parentClassLoader;
-    private CompositePackageClassLoader classLoader;
+public class DialectRuntimeRegistry
+    implements
+    Externalizable {
+    private transient ClassLoader           parentClassLoader;
+    private CompositePackageClassLoader     classLoader;
 
-    private Map<String, DialectData> dialects;
+    private Map<String, DialectRuntimeData> dialects;
 
-    private Map                           lineMappings;
+    private Map                             lineMappings;
 
     /**
      * Default constructor - for Externalizable. This should never be used by a user, as it
      * will result in an invalid state for the instance.
      */
-    public DialectDatas() {
-        this(null);
+    public DialectRuntimeRegistry() {
+        this( null );
     }
 
-    public DialectDatas(ClassLoader classLoader) {
-        setParentClassLoader(classLoader);
+    public DialectRuntimeRegistry(ClassLoader classLoader) {
+        setParentClassLoader( classLoader );
         this.classLoader = new CompositePackageClassLoader( this.parentClassLoader );
-        this.dialects = new HashMap<String, DialectData>();
+        this.dialects = new HashMap<String, DialectRuntimeData>();
     }
 
     /**
@@ -39,7 +41,7 @@ public class DialectDatas implements Externalizable {
      *
      */
     public void writeExternal(final ObjectOutput stream) throws IOException {
-        stream.writeObject(this.dialects);
+        stream.writeObject( this.dialects );
         stream.writeObject( this.lineMappings );
     }
 
@@ -50,55 +52,58 @@ public class DialectDatas implements Externalizable {
      *
      */
     public void readExternal(final ObjectInput stream) throws IOException,
-                                                              ClassNotFoundException {
-        DroolsObjectInput   droolsStream    = (DroolsObjectInput)stream;
+                                                      ClassNotFoundException {
+        DroolsObjectInput droolsStream = (DroolsObjectInput) stream;
 
-        setParentClassLoader(droolsStream.getClassLoader());
+        setParentClassLoader( droolsStream.getClassLoader() );
         this.classLoader = new CompositePackageClassLoader( this.parentClassLoader );
-        droolsStream.setDialectDatas(this);
-        droolsStream.setClassLoader(this.classLoader);
+        droolsStream.setDialectRuntimeRegistry( this );
+        droolsStream.setClassLoader( this.classLoader );
 
-        this.dialects       = (Map<String, DialectData>)droolsStream.readObject();
-        this.lineMappings   = (Map) stream.readObject();
+        this.dialects = (Map<String, DialectRuntimeData>) droolsStream.readObject();
+        this.lineMappings = (Map) stream.readObject();
     }
 
-    public void addDialectData(String dialect, DialectData dialectData) {
-        this.dialects.put( dialect, dialectData );
+    public void setDialectData(String name,
+                               DialectRuntimeData data) {
+        this.dialects.put( name,
+                           data );
     }
 
-    public void setDialectData(String name, DialectData data) {
-        this.dialects.put( name, data );
-    }
-
-    public DialectData getDialectData(String dialect) {
+    public DialectRuntimeData getDialectData(String dialect) {
         return this.dialects.get( dialect );
     }
 
-    public DialectData removeRule(final Package pkg, final Rule rule) {
-        DialectData dialect = this.dialects.get( rule.getDialect() );
-        dialect.removeRule( pkg, rule );
+    public DialectRuntimeData removeRule(final Package pkg,
+                                         final Rule rule) {
+        DialectRuntimeData dialect = this.dialects.get( rule.getDialect() );
+        dialect.removeRule( pkg,
+                            rule );
         return dialect;
     }
 
-    public DialectData removeFunction(final Package pkg, final Function function) {
-        DialectData dialect = this.dialects.get( function.getDialect() );
-        dialect.removeFunction( pkg, function );
+    public DialectRuntimeData removeFunction(final Package pkg,
+                                             final Function function) {
+        DialectRuntimeData dialect = this.dialects.get( function.getDialect() );
+        dialect.removeFunction( pkg,
+                                function );
         return dialect;
     }
 
-    public void merge(DialectDatas newDatas) {
-        for (Entry<String, DialectData> entry : newDatas.dialects.entrySet()) {
-            DialectData data = this.dialects.get( entry.getKey() );
-            if (data == null) {
-                DialectData dialectData = entry.getValue().clone();
-                dialectData.setDialectDatas(this);
-                this.dialects.put(entry.getKey(), dialectData);
-        } else {
+    public void merge(DialectRuntimeRegistry newDatas) {
+        for ( Entry<String, DialectRuntimeData> entry : newDatas.dialects.entrySet() ) {
+            DialectRuntimeData data = this.dialects.get( entry.getKey() );
+            if ( data == null ) {
+                DialectRuntimeData dialectData = entry.getValue().clone();
+                //dialectData.setDialectRuntimeRegistry( this );
+                this.dialects.put( entry.getKey(),
+                                   dialectData );
+            } else {
                 data.merge( entry.getValue() );
+            }
         }
-    }
 
-       getLineMappings().putAll(newDatas.getLineMappings());
+        getLineMappings().putAll( newDatas.getLineMappings() );
     }
 
     public boolean isDirty() {
@@ -108,8 +113,8 @@ public class DialectDatas implements Externalizable {
     public void reloadDirty() {
         // detect if any dialect is dirty, if so reload() them all
         boolean isDirty = false;
-        for(Iterator it = this.dialects.values().iterator(); it.hasNext(); ) {
-            DialectData data = ( DialectData ) it.next();
+        for ( Iterator it = this.dialects.values().iterator(); it.hasNext(); ) {
+            DialectRuntimeData data = (DialectRuntimeData) it.next();
             if ( data.isDirty() ) {
                 isDirty = true;
                 break;
@@ -118,8 +123,8 @@ public class DialectDatas implements Externalizable {
 
         if ( isDirty ) {
             this.classLoader = new CompositePackageClassLoader( this.parentClassLoader );
-            for(Iterator it = this.dialects.values().iterator(); it.hasNext(); ) {
-                DialectData data = ( DialectData ) it.next();
+            for ( Iterator it = this.dialects.values().iterator(); it.hasNext(); ) {
+                DialectRuntimeData data = (DialectRuntimeData) it.next();
                 data.reload();
             }
         }
@@ -130,7 +135,7 @@ public class DialectDatas implements Externalizable {
     }
 
     public void setParentClassLoader(ClassLoader classLoader) {
-        if (classLoader == null) {
+        if ( classLoader == null ) {
             classLoader = Thread.currentThread().getContextClassLoader();
             if ( classLoader == null ) {
                 classLoader = getClass().getClassLoader();
@@ -148,8 +153,8 @@ public class DialectDatas implements Externalizable {
     }
 
     public void removeClassLoader(ClassLoader classLoader) {
-        if (classLoader != null) {
-            this.classLoader.removeClassLoader(classLoader);
+        if ( classLoader != null ) {
+            this.classLoader.removeClassLoader( classLoader );
         }
     }
 

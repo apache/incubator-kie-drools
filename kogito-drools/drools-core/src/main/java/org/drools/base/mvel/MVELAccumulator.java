@@ -27,7 +27,7 @@ import java.util.Map;
 import org.drools.WorkingMemory;
 import org.drools.common.InternalFactHandle;
 import org.drools.rule.Declaration;
-import org.drools.rule.MVELDialectData;
+import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
 import org.drools.spi.Accumulator;
 import org.drools.spi.Tuple;
@@ -106,7 +106,7 @@ public class MVELAccumulator
         DroolsMVELFactory factory = (DroolsMVELFactory) workingMemoryContext;
         Package pkg = workingMemory.getRuleBase().getPackage( "MAIN" );
         if ( pkg != null ) {
-            MVELDialectData data = (MVELDialectData) pkg.getDialectDatas().getDialectData( "mvel" );
+            MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData( "mvel" );
             factory.setNextFactory( data.getFunctionFactory() );
         }
 

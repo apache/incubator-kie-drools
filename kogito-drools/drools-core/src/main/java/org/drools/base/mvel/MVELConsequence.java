@@ -1,7 +1,7 @@
 package org.drools.base.mvel;
 
 import org.drools.WorkingMemory;
-import org.drools.rule.MVELDialectData;
+import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
 import org.drools.spi.Consequence;
 import org.drools.spi.KnowledgeHelper;
@@ -55,7 +55,7 @@ public class MVELConsequence
 
         Package pkg = workingMemory.getRuleBase().getPackage( "MAIN" );
         if ( pkg != null ) {
-            MVELDialectData data = ( MVELDialectData ) pkg.getDialectDatas().getDialectData( "mvel" );
+            MVELDialectRuntimeData data = ( MVELDialectRuntimeData ) pkg.getDialectRuntimeRegistry().getDialectData( "mvel" );
             factory.setNextFactory( data.getFunctionFactory() );
         }
 

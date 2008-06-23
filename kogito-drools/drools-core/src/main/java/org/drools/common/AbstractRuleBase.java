@@ -43,7 +43,8 @@ import org.drools.event.RuleBaseEventSupport;
 import org.drools.marshalling.Marshaller;
 import org.drools.process.core.Process;
 import org.drools.rule.CompositePackageClassLoader;
-import org.drools.rule.DialectDatas;
+import org.drools.rule.DialectRuntimeData;
+import org.drools.rule.DialectRuntimeRegistry;
 import org.drools.rule.FactType;
 import org.drools.rule.Function;
 import org.drools.rule.ImportDeclaration;
@@ -239,7 +240,7 @@ abstract public class AbstractRuleBase
         this.packageClassLoader.addClassLoader( this.classLoader );
 
         for ( final Object object : this.pkgs.values() ) {
-            this.packageClassLoader.addClassLoader( ((Package) object).getDialectDatas().getClassLoader() );
+            this.packageClassLoader.addClassLoader( ((Package) object).getDialectRuntimeRegistry().getClassLoader() );
         }
         // PackageCompilationData must be restored before Rules as it has the ClassLoader needed to resolve the generated code references in Rules
         this.id = (String) droolsStream.readObject();
@@ -344,7 +345,7 @@ abstract public class AbstractRuleBase
         return (Package[]) this.pkgs.values().toArray( new Package[this.pkgs.size()] );
     }
 
-    public Map getPackagesMap() {
+    public Map<String, Package> getPackagesMap() {
         return this.pkgs;
     }
 
@@ -432,10 +433,10 @@ abstract public class AbstractRuleBase
                                    newPkg.getPackageScopeClassLoader() );
                 pkgs.put( pkg.getName(),
                           pkg );
-                this.packageClassLoader.addClassLoader( pkg.getDialectDatas().getClassLoader() );
+                this.packageClassLoader.addClassLoader( pkg.getDialectRuntimeRegistry().getClassLoader() );
             } else {
                 pkg.getPackageScopeClassLoader().getStore().putAll( newPkg.getPackageScopeClassLoader().getStore() );
-                this.packageClassLoader.addClassLoader( newPkg.getDialectDatas().getClassLoader() );
+                this.packageClassLoader.addClassLoader( newPkg.getDialectRuntimeRegistry().getClassLoader() );
             }
 
             final Map<String, Class> newGlobals = newPkg.getGlobals();
@@ -565,7 +566,7 @@ abstract public class AbstractRuleBase
             }
         }
 
-        pkg.getDialectDatas().merge( newPkg.getDialectDatas() );
+        pkg.getDialectRuntimeRegistry().merge( newPkg.getDialectRuntimeRegistry() );
 
         if ( newPkg.getFunctions() != null ) {
             for ( Map.Entry<String, Function> entry : newPkg.getFunctions().entrySet() ) {
@@ -576,14 +577,14 @@ abstract public class AbstractRuleBase
         if ( this.reloadPackageCompilationData == null ) {
             this.reloadPackageCompilationData = new ReloadPackageCompilationData();
         }
-        this.reloadPackageCompilationData.addDialectDatas( pkg.getDialectDatas() );
+        this.reloadPackageCompilationData.addDialectDatas( pkg.getDialectRuntimeRegistry() );
     }
 
     public TypeDeclaration getTypeDeclaration(Class< ? > clazz) {
         return this.classTypeDeclaration.get( clazz );
     }
 
-    private synchronized void addRule(final Package pkg,
+    public synchronized void addRule(final Package pkg,
                                       final Rule rule) throws InvalidPatternException {
         this.eventSupport.fireBeforeRuleAdded( pkg,
                                                rule );
@@ -622,7 +623,7 @@ abstract public class AbstractRuleBase
                                 rules[i] );
                 }
 
-                this.packageClassLoader.removeClassLoader( pkg.getDialectDatas().getClassLoader() );
+                this.packageClassLoader.removeClassLoader( pkg.getDialectRuntimeRegistry().getClassLoader() );
 
                 // getting the list of referenced globals
                 final Set referencedGlobals = new HashSet();
@@ -688,7 +689,7 @@ abstract public class AbstractRuleBase
             if ( this.reloadPackageCompilationData == null ) {
                 this.reloadPackageCompilationData = new ReloadPackageCompilationData();
             }
-            this.reloadPackageCompilationData.addDialectDatas( pkg.getDialectDatas() );
+            this.reloadPackageCompilationData.addDialectDatas( pkg.getDialectRuntimeRegistry() );
 
             // only unlock if it had been acquired implicitely
             if ( doUnlock ) {
@@ -697,7 +698,7 @@ abstract public class AbstractRuleBase
         }
     }
 
-    private void removeRule(final Package pkg,
+    public void removeRule(final Package pkg,
                             final Rule rule) {
         this.eventSupport.fireBeforeRuleRemoved( pkg,
                                                  rule );
@@ -728,7 +729,7 @@ abstract public class AbstractRuleBase
             if ( this.reloadPackageCompilationData == null ) {
                 this.reloadPackageCompilationData = new ReloadPackageCompilationData();
             }
-            this.reloadPackageCompilationData.addDialectDatas( pkg.getDialectDatas() );
+            this.reloadPackageCompilationData.addDialectDatas( pkg.getDialectRuntimeRegistry() );
 
             this.eventSupport.fireAfterFunctionRemoved( pkg,
                                                         functionName );
@@ -839,27 +840,27 @@ abstract public class AbstractRuleBase
         implements
         RuleBaseAction {
         private static final long serialVersionUID = 1L;
-        private Set<DialectDatas> set;
+        private Set<DialectRuntimeRegistry> set;
 
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
-            set = (Set<DialectDatas>) in.readObject();
+            set = (Set<DialectRuntimeRegistry>) in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
             out.writeObject( set );
         }
 
-        public void addDialectDatas(final DialectDatas dialectDatas) {
+        public void addDialectDatas(final DialectRuntimeRegistry registry) {
             if ( this.set == null ) {
-                this.set = new HashSet<DialectDatas>();
+                this.set = new HashSet<DialectRuntimeRegistry>();
             }
-            if ( !this.set.contains( dialectDatas ) ) this.set.add( dialectDatas );
+            if ( !this.set.contains( registry ) ) this.set.add( registry );
         }
 
         public void execute(final InternalRuleBase ruleBase) {
-            for ( final DialectDatas dialectDatas : this.set ) {
-                dialectDatas.reloadDirty();
+            for ( final DialectRuntimeRegistry registry : this.set ) {
+                registry.reloadDirty();
             }
         }
     }
