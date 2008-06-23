@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.drools.commons.jci.readers.MemoryResourceReader;
 import org.drools.compiler.PackageBuilder;
+import org.drools.compiler.PackageRegistry;
 import org.drools.rule.Package;
 import org.drools.rule.builder.ConsequenceBuilder;
 import org.drools.rule.builder.ReturnValueBuilder;
@@ -19,18 +20,26 @@ public class ClipsDialect extends MVELDialect {
 
     public final static String                   ID          = "clips";
 
-    public ClipsDialect() {
-        super();
+    public ClipsDialect(PackageBuilder builder,
+                                   PackageRegistry pkgRegistry,
+                                   Package pkg) {
+        super( setConf( builder ), pkgRegistry, pkg);
+
+    }
+    
+    /**
+     * hack so I can set a conf value while calling a constructor
+     * @param builder
+     * @return
+     */
+    private static PackageBuilder setConf(PackageBuilder builder) {
+        MVELDialectConfiguration conf = (MVELDialectConfiguration) builder.getPackageBuilderConfiguration().getDialectConfiguration( "mvel" );
+        conf.setLangLevel( 5 );
+        return builder;
     }
 
     public String getId() {
         return ID;
-    }
-
-    public void init(PackageBuilder builder) {
-        MVELDialectConfiguration conf = (MVELDialectConfiguration) builder.getPackageBuilderConfiguration().getDialectConfiguration( "mvel" );
-        conf.setLangLevel( 5 );
-        super.init( builder );
     }
 
     public ConsequenceBuilder getConsequenceBuilder() {

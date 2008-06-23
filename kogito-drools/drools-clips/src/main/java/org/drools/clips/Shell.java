@@ -34,7 +34,11 @@ import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
-import org.drools.rule.MVELDialectData;
+import org.drools.lang.descr.TypeDeclarationDescr;
+import org.drools.rule.ImportDeclaration;
+import org.drools.rule.MVELDialectRuntimeData;
+import org.drools.rule.Namespaceable;
+import org.drools.rule.Package;
 import org.drools.rule.builder.dialect.mvel.MVELDialectConfiguration;
 import org.drools.spi.GlobalResolver;
 import org.mvel.MVEL;
@@ -53,13 +57,14 @@ public class Shell
     PrintRouterContext {
     private Map<String, Object> vars;
 
+    private PackageBuilder      packageBuilder;
     private RuleBase            ruleBase;
     private StatefulSession     session;
 
     // private Map                 functions;
 
-    private Map                 directImports;
-    private Set                 dynamicImports;
+    //    private Map                 directImports;
+    //    private Set                 dynamicImports;
 
     private ClassTypeResolver   typeResolver;
 
@@ -75,13 +80,17 @@ public class Shell
     public Shell(RuleBase ruleBase) {
         this.moduleName = MAIN;
         this.ruleBase = ruleBase;
+
+        this.packageBuilder = new PackageBuilder();
+        this.packageBuilder.setRuleBase( this.ruleBase );
+
         this.session = this.ruleBase.newStatefulSession();
         // this.functions = new HashMap();
-        this.directImports = new HashMap();
-        this.dynamicImports = new HashSet();
+        //        this.directImports = new HashMap();
+        //        this.dynamicImports = new HashSet();
 
-        this.typeResolver = new ClassTypeResolver( new HashSet(),
-                                                   ((InternalRuleBase) this.ruleBase).getConfiguration().getClassLoader() );
+        //        this.typeResolver = new ClassTypeResolver( new HashSet(),
+        //                                                   ((InternalRuleBase) this.ruleBase).getConfiguration().getClassLoader() );
 
         this.factory = (DroolsMVELFactory) new DroolsMVELFactory( null,
                                                                   null,
@@ -121,14 +130,15 @@ public class Shell
             this.resolver = resolver;
         }
 
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            vars    = (Map<String, Object>)in.readObject();
-            resolver    = (GlobalResolver)in.readObject();
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
+            vars = (Map<String, Object>) in.readObject();
+            resolver = (GlobalResolver) in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject(vars);
-            out.writeObject(resolver);
+            out.writeObject( vars );
+            out.writeObject( resolver );
         }
 
         public Object resolveGlobal(String identifier) {
@@ -148,25 +158,14 @@ public class Shell
     }
 
     public void importHandler(ImportDescr descr) {
-        String importText = descr.getTarget().trim();
+        // use the current focus as the default namespace for these imports
+        PackageDescr pkgDescr = createPackageDescr( this.session.getAgenda().getFocus().getName() );
+        pkgDescr.addImport( descr );
+        this.packageBuilder.addPackage( pkgDescr );
+    }
 
-        this.typeResolver.addImport( descr.getTarget() );
-
-        if ( importText.endsWith( "*" ) ) {
-            this.dynamicImports.add( importText );
-        } else {
-            Class cls;
-            try {
-                cls = this.typeResolver.resolveType( importText );
-            } catch ( ClassNotFoundException e ) {
-                throw new RuntimeException( "Unable to resolve : " + importText );
-            }
-            this.directImports.put( cls.getSimpleName(),
-                                    cls );
-        }
-    }    
-    
     public void functionHandler(FunctionDescr functionDescr) {
+        setModuleName( functionDescr );
         Appendable builder = new StringBuilderAppendable();
 
         // strip lead/trailing quotes
@@ -195,24 +194,24 @@ public class Shell
                                    builder );
         }
         builder.append( "}" );
-      
+
         functionDescr.setContent( builder.toString() );
         functionDescr.setDialect( "mvel" );
 
-        PackageDescr pkgDescr = createPackageDescr( "MAIN" );
+        PackageDescr pkgDescr = createPackageDescr( functionDescr.getNamespace() );
         pkgDescr.addFunction( functionDescr );
 
         PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
         conf.getDialectConfiguration( "mvel" );
         MVELDialectConfiguration mvelConf = (MVELDialectConfiguration) conf.getDialectConfiguration( "mvel" );
-        mvelConf.setLangLevel( 5 ); 
-        
+        mvelConf.setLangLevel( 5 );
+
         PackageBuilder pkgBuilder = new PackageBuilder( conf );
         pkgBuilder.addPackage( pkgDescr );
-                
+
         if ( pkgBuilder.getErrors().isEmpty() ) {
             this.ruleBase.addPackage( pkgBuilder.getPackage() );
-        }        
+        }
     }
 
     public void lispFormHandler(LispForm lispForm) {
@@ -222,56 +221,83 @@ public class Shell
 
         ParserContext context = new ParserContext();
 
-        for ( Iterator it = this.directImports.entrySet().iterator(); it.hasNext(); ) {
-            Entry entry = (Entry) it.next();
-            context.addImport( (String) entry.getKey(),
-                               (Class) entry.getValue() );
-        }
+        String namespace = this.session.getAgenda().getFocus().getName();
 
-        for ( Iterator it = this.dynamicImports.iterator(); it.hasNext(); ) {
-            String importText = ((String) it.next()).trim();
-            context.addPackageImport( importText.substring( 0,
-                                                            importText.length() - 2 ) );
+        Package pkg = this.ruleBase.getPackage( namespace );
+
+        if ( pkg != null ) {
+            // only time this will be null is if we have yet to do any packagedescr work
+
+            try {
+                for ( Iterator it = pkg.getImports().entrySet().iterator(); it.hasNext(); ) {
+                    Entry entry = (Entry) it.next();
+                    String importName = ((ImportDeclaration) entry.getValue()).getTarget();
+                    if ( importName.endsWith( "*" )) {
+                        context.addPackageImport( importName.substring( 0,
+                                                                        importName.length() - 2 ) );                        
+                    } else {
+                        Class cls = pkg.getDialectRuntimeRegistry().getClassLoader().loadClass( importName );
+                        context.addImport( cls.getSimpleName(),
+                                           (Class) cls );
+                    }
+                }
+            } catch ( Exception e ) {
+                e.printStackTrace();
+            }
+
+            MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData( "mvel" );
+            this.factory.setNextFactory( data.getFunctionFactory() );
         }
 
         ExpressionCompiler expr = new ExpressionCompiler( appendable.toString() );
         Serializable executable = expr.compile( context );
 
-        if (  this.ruleBase.getPackage( "MAIN" ) != null ) {
-            MVELDialectData data = (MVELDialectData)  this.ruleBase.getPackage( "MAIN" ).getDialectDatas().getDialectData( "mvel" );
-            factory.setNextFactory( data.getFunctionFactory() );
-        }
-
         MVEL.executeExpression( executable,
                                 this,
                                 this.factory );
+    }
 
+    public void templateHandler(TypeDeclarationDescr typeDescr) {
+        setModuleName( typeDescr );
+
+        PackageDescr pkg = createPackageDescr( typeDescr.getNamespace() );
+        //pkg.addRule( ruleDescr );
+        pkg.addTypeDeclaration( typeDescr );
+
+        this.packageBuilder.addPackage( pkg );
+
+        //        try {
+        //            this.ruleBase.addPackage( builder.getPackage() );
+        //        } catch ( Exception e ) {
+        //            e.printStackTrace();
+        //        }     
     }
 
     public void ruleHandler(RuleDescr ruleDescr) {
-        String module = getModuleName( ruleDescr.getAttributes() );
-
-        PackageDescr pkg = createPackageDescr( module );
+        setModuleName( ruleDescr );
+        PackageDescr pkg = createPackageDescr( ruleDescr.getNamespace() );
         pkg.addRule( ruleDescr );
 
-        PackageBuilder builder = new PackageBuilder();
-        builder.addPackage( pkg );
+        this.packageBuilder.addPackage( pkg );
 
-        try {
-            this.ruleBase.addPackage( builder.getPackage() );
-        } catch ( Exception e ) {
-            e.printStackTrace();
+        this.session.fireAllRules();
+
+        //        try {
+        //            this.ruleBase.addPackage( builder.getPackage() );
+        //        } catch ( Exception e ) {
+        //            e.printStackTrace();
+        //        }
+    }
+
+    public void setModuleName(Namespaceable namespaceable) {
+        // if the namespace is not set, set it to the current focus module
+        if ( isEmpty( namespaceable.getNamespace() ) ) {
+            namespaceable.setNamespace( this.session.getAgenda().getFocus().getName() );
         }
     }
 
-    public String getModuleName(List list) {
-        for ( Iterator it = list.iterator(); it.hasNext(); ) {
-            AttributeDescr attr = (AttributeDescr) it.next();
-            if ( attr.getName().equals( "agenda-group" ) ) {
-                return attr.getValue();
-            }
-        }
-        return "MAIN";
+    public boolean isEmpty(String string) {
+        return (string == null || string.trim().length() == 0);
     }
 
     public void eval(String string) {
@@ -380,9 +406,9 @@ public class Shell
         pkg.addAttribute( new AttributeDescr( "dialect",
                                               "clips" ) );
 
-        for ( Iterator it = this.typeResolver.getImports().iterator(); it.hasNext(); ) {
-            pkg.addImport( new ImportDescr( (String) it.next() ) );
-        }
+        //        for ( Iterator it = this.typeResolver.getImports().iterator(); it.hasNext(); ) {
+        //            pkg.addImport( new ImportDescr( (String) it.next() ) );
+        //        }
 
         return pkg;
     }
