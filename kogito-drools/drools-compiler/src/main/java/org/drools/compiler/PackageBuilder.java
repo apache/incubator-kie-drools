@@ -885,6 +885,13 @@ public class PackageBuilder {
         this.results.clear();
     }
 
+    public String getDefaultNamespace() {
+        return this.defaultNamespace;
+    }
+    
+    public String getDefaultDialect() {
+        return this.defaultDialect;
+    }
     public static class MissingPackageNameException extends IllegalArgumentException {
         private static final long serialVersionUID = 400L;
 
