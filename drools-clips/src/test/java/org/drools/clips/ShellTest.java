@@ -3,6 +3,8 @@ package org.drools.clips;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -239,6 +241,49 @@ public class ShellTest extends TestCase {
         assertEquals( "yy truexx true",
                       new String( this.baos.toByteArray() ) );        
     }    
+    
+    public void testTemplateCreation() throws Exception {
+        this.shell.eval( "(deftemplate Person (slot name (type String) ) (slot age (type int) ) )" );
+
+        this.shell.eval( "(defrule yyy  => (printout t yy \" \" (eq 1 1) ) ) )" );
+        Package pkg = shell.getStatefulSession().getRuleBase().getPackage( "MAIN" );
+
+        Rule rule = pkg.getRule( "yyy" );
+        assertEquals( "yyy",
+                      rule.getName() );
+
+        this.shell.eval( "(defrule xxx (Person (name ?name&bob) (age 30) ) (Person  (name ?name) (age 35)) => (printout t xx \" \" (eq 1 1) ) )" );
+
+        rule = pkg.getRule( "xxx" );
+        assertEquals( "xxx",
+                      rule.getName() );
+
+        assertEquals( 2,
+                      pkg.getRules().length );
+
+        WorkingMemory wm = shell.getStatefulSession();
+        Class personClass = this.shell.getStatefulSession().getRuleBase().getPackage( "MAIN" ).getPackageScopeClassLoader().loadClass( "MAIN.Person" );
+        
+        Method nameMethod = personClass.getMethod( "setName", new Class[] { String.class } );
+        Method ageMethod = personClass.getMethod( "setAge", new Class[] { int.class } );
+        
+        Object bob1 = personClass.newInstance();
+        nameMethod.invoke( bob1, "bob" );
+        ageMethod.invoke( bob1, 30 );
+
+        
+        Object bob2 = personClass.newInstance();
+        nameMethod.invoke( bob2, "bob" );
+        ageMethod.invoke( bob2, 35 );
+        //Constructor constructor = personClass.getConstructor( new Class[] { String.class,String.class, int.class} );        
+        wm.insert( bob1 );
+        wm.insert( bob2 );
+        
+        
+        wm.fireAllRules();
+        assertEquals( "yy truexx true",
+                      new String( this.baos.toByteArray() ) );      	
+    }
 
     public void testEmptyLHSRule() {
         String rule1 = "(defrule testRule => (printout t hello) (printout t goodbye))";
