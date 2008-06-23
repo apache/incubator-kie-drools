@@ -19,8 +19,8 @@ public interface DroolsObjectInput extends ObjectInput {
     InternalWorkingMemory getWorkingMemory();
     Package getPackage();
     void setPackage(Package pkg);
-    DialectDatas getDialectDatas();
-    void setDialectDatas(DialectDatas dialectDatas);
+    DialectRuntimeRegistry getDialectRuntimeRegistry();
+    void setDialectRuntimeRegistry(DialectRuntimeRegistry dialectDatas);
     ClassFieldAccessorCache getExtractorFactory();
     void setExtractorFactory(ClassFieldAccessorCache extractorFactory);
 }

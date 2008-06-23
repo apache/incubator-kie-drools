@@ -7,7 +7,7 @@ import java.io.ObjectOutput;
 import java.io.Serializable;
 
 import org.drools.WorkingMemory;
-import org.drools.rule.MVELDialectData;
+import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
 import org.drools.spi.Action;
 import org.drools.spi.KnowledgeHelper;
@@ -59,7 +59,7 @@ public class MVELAction
         
         Package pkg = workingMemory.getRuleBase().getPackage( "MAIN" );
         if ( pkg != null ) {
-            MVELDialectData data = ( MVELDialectData ) pkg.getDialectDatas().getDialectData( "mvel" );
+            MVELDialectRuntimeData data = ( MVELDialectRuntimeData ) pkg.getDialectRuntimeRegistry().getDialectData( "mvel" );
             factory.setNextFactory( data.getFunctionFactory() );
         }        
         

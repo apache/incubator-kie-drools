@@ -1,11 +1,11 @@
 package org.drools.rule;
 
-public interface DialectData extends Cloneable {
+public interface DialectRuntimeData extends Cloneable {
     public void removeRule(Package pkg, Rule rule);
 
     public void removeFunction(Package pkg, Function function);
 
-    public void merge(DialectData newData);
+    public void merge(DialectRuntimeData newData);
 
     public boolean isDirty();
 
@@ -13,7 +13,5 @@ public interface DialectData extends Cloneable {
 
     public void reload();
 
-    public DialectData clone();
-
-    public void setDialectDatas(DialectDatas datas);
+    public DialectRuntimeData clone();
 }

@@ -78,7 +78,7 @@ public class Package
     private Map                            ruleFlows;
 
     // private JavaDialectData packageCompilationData;
-    private DialectDatas                   dialectDatas;
+    private DialectRuntimeRegistry         dialectRuntimeRegistry;
 
     private Map<String, TypeDeclaration>   typeDeclarations;
 
@@ -149,9 +149,9 @@ public class Package
             }
         }
         this.packageScopeClassLoader = new MapBackedClassLoader( parentClassLoader );
-        this.dialectDatas = new DialectDatas( this.packageScopeClassLoader );
+        this.dialectRuntimeRegistry = new DialectRuntimeRegistry( this.packageScopeClassLoader );
     }
-    
+
     /**
      * Construct.
      * 
@@ -159,7 +159,7 @@ public class Package
      *            The name of this <code>Package</code>.
      */
     public Package(final String name,
-                   final MapBackedClassLoader packageClassLoader ) {
+                   final MapBackedClassLoader packageClassLoader) {
         this.name = name;
         this.imports = new HashMap<String, ImportDeclaration>();
         this.typeDeclarations = new HashMap<String, TypeDeclaration>();
@@ -170,7 +170,7 @@ public class Package
         this.factTemplates = Collections.EMPTY_MAP;
         this.functions = Collections.EMPTY_MAP;
 
-        if( packageClassLoader == null ) {
+        if ( packageClassLoader == null ) {
             ClassLoader parentClassLoader = null;
             // This classloader test should only be here for unit testing, too much
             // legacy api to want to change by hand at the moment
@@ -184,9 +184,8 @@ public class Package
         } else {
             this.packageScopeClassLoader = packageClassLoader;
         }
-        this.dialectDatas = new DialectDatas( this.packageScopeClassLoader );
+        this.dialectRuntimeRegistry = new DialectRuntimeRegistry( this.packageScopeClassLoader );
     }
-    
 
     /**
      * Handles the write serialization of the Package. Patterns in Rules may
@@ -212,7 +211,7 @@ public class Package
             out = new DroolsObjectOutputStream( bytes );
         }
         out.writeObject( this.packageScopeClassLoader.getStore() );
-        out.writeObject( this.dialectDatas );
+        out.writeObject( this.dialectRuntimeRegistry );
         out.writeObject( this.typeDeclarations );
         out.writeObject( this.name );
         out.writeObject( this.imports );
@@ -257,7 +256,7 @@ public class Package
 
         // setting parent classloader for dialect datas
         in.setClassLoader( this.packageScopeClassLoader );
-        this.dialectDatas = (DialectDatas) in.readObject();
+        this.dialectRuntimeRegistry = (DialectRuntimeRegistry) in.readObject();
 
         this.typeDeclarations = (Map) in.readObject();
         this.name = (String) in.readObject();
@@ -291,8 +290,8 @@ public class Package
         return this.name;
     }
 
-    public DialectDatas getDialectDatas() {
-        return this.dialectDatas;
+    public DialectRuntimeRegistry getDialectRuntimeRegistry() {
+        return this.dialectRuntimeRegistry;
     }
 
     public void addImport(final ImportDeclaration importDecl) {
@@ -339,7 +338,7 @@ public class Package
 
         this.functions.put( function.getName(),
                             function );
-        dialectDatas.getDialectData( function.getDialect() ).setDirty( true );
+        dialectRuntimeRegistry.getDialectData( function.getDialect() ).setDirty( true );
     }
 
     public Map<String, Function> getFunctions() {
@@ -374,8 +373,8 @@ public class Package
     public void removeFunction(final String functionName) {
         Function function = this.functions.remove( functionName );
         if ( function != null ) {
-            this.dialectDatas.removeFunction( this,
-                                              function );
+            this.dialectRuntimeRegistry.removeFunction( this,
+                                                        function );
         }
     }
 
@@ -442,8 +441,8 @@ public class Package
 
     public void removeRule(final Rule rule) {
         this.rules.remove( rule.getName() );
-        this.dialectDatas.removeRule( this,
-                                      rule );
+        this.dialectRuntimeRegistry.removeRule( this,
+                                                rule );
         // final String consequenceName =
         // rule.getConsequence().getClass().getName();
         //
@@ -592,7 +591,7 @@ public class Package
 
     public void clear() {
         this.rules.clear();
-        this.dialectDatas.clear();
+        this.dialectRuntimeRegistry.clear();
         this.ruleFlows.clear();
         this.imports.clear();
         this.functions.clear();

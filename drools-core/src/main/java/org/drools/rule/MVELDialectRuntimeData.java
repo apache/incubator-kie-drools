@@ -12,28 +12,24 @@ import org.mvel.ast.Function;
 import org.mvel.integration.VariableResolver;
 import org.mvel.integration.impl.MapVariableResolverFactory;
 
-public class MVELDialectData implements DialectData, Externalizable {
+public class MVELDialectRuntimeData implements DialectRuntimeData, Externalizable {
 	private MapFunctionResolverFactory functionFactory;
 
 	/**
 	 * Default constructor - for Externalizable. This should never be used by a
 	 * user, as it will result in an invalid state for the instance.
 	 */
-	public MVELDialectData() {
-        this(null);
+	public MVELDialectRuntimeData() {
 	}
 
-	public MVELDialectData(final DialectDatas datas) {
+	public MVELDialectRuntimeData(final DialectRuntimeRegistry datas) {
 		this.functionFactory = new MapFunctionResolverFactory();
 	}
 
-    public DialectData clone() {
-        DialectData clone = new MVELDialectData();
+    public DialectRuntimeData clone() {
+        DialectRuntimeData clone = new MVELDialectRuntimeData();
         clone.merge(this);
         return clone;
-    }
-
-    public void setDialectDatas(DialectDatas datas) {
     }
 
 	public MapFunctionResolverFactory getFunctionFactory() {
@@ -59,7 +55,7 @@ public class MVELDialectData implements DialectData, Externalizable {
     public void setDirty(boolean dirty) {
     }
 
-    public void merge(DialectData newData) {
+    public void merge(DialectRuntimeData newData) {
 	}
 
 	public void reload() {
