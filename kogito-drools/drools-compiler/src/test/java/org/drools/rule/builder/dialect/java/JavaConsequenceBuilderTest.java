@@ -7,8 +7,10 @@ import junit.framework.TestCase;
 import org.antlr.runtime.RecognitionException;
 import org.drools.Cheese;
 import org.drools.base.ClassObjectType;
+import org.drools.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.compiler.PackageRegistry;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.ImportDeclaration;
 import org.drools.rule.Package;
@@ -31,7 +33,7 @@ public class JavaConsequenceBuilderTest extends TestCase {
         pkg.addImport( new ImportDeclaration( "org.drools.Cheese" ) );
         
         PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
-        PackageBuilder builder = new PackageBuilder( pkg, conf );
+        PackageBuilder pkgBuilder = new PackageBuilder( pkg, conf );
 
         String consequence = " System.out.println(\"this is a test\");\n " + " modify( $cheese ) { setPrice( 10 ), setAge( age ) }\n " + " System.out.println(\"we are done\");\n ";
         ruleDescr = new RuleDescr( "test modify block" );
@@ -40,11 +42,13 @@ public class JavaConsequenceBuilderTest extends TestCase {
         Rule rule = new Rule( ruleDescr.getName() );
         rule.addPattern( new Pattern(0, new ClassObjectType(Cheese.class), "$cheese") );
 
+        PackageRegistry pkgRegistry = pkgBuilder.getPackageRegistry( pkg.getName() );
+        DialectCompiletimeRegistry reg = pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectCompiletimeRegistry();
         context = new RuleBuildContext( conf,
-                                        pkg,
                                         ruleDescr,
-                                        builder.getDialectRegistry(),
-                                        builder.getDefaultDialect() );
+                                        reg,
+                                        pkg,                                        
+                                        reg.getDialect( pkgRegistry.getDialect() ) );
         context.getBuildStack().push( rule.getLhs() );
     }
 

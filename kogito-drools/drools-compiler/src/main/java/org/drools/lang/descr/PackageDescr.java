@@ -24,12 +24,15 @@ import java.io.ObjectInput;
 import java.io.IOException;
 import java.io.ObjectOutput;
 
-public class PackageDescr extends BaseDescr {
+import org.drools.rule.Dialectable;
+import org.drools.rule.Namespaceable;
+
+public class PackageDescr extends BaseDescr implements Namespaceable {
     /**
      *
      */
     private static final long serialVersionUID = 400L;
-    private String      name;
+    private String      namespace;
     private String      documentation;
 
     private List              imports          = Collections.EMPTY_LIST;
@@ -44,21 +47,21 @@ public class PackageDescr extends BaseDescr {
     public PackageDescr() {
     }
 
-    public PackageDescr(final String name) {
-        this( name,
+    public PackageDescr(final String namespace) {
+        this( namespace,
               "" );
     }
 
-    public PackageDescr(final String name,
+    public PackageDescr(final String namespace,
                         final String documentation) {
-        this.name = name;
+        this.namespace = namespace;
         this.documentation = documentation;
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         super.readExternal(in);
-        name    = (String)in.readObject();
-        documentation   = (String)in.readObject();
+        namespace    = (String)in.readUTF();
+        documentation   = (String)in.readUTF();
         imports    = (List)in.readObject();
         functionImports    = (List)in.readObject();
         attributes    = (List)in.readObject();
@@ -70,8 +73,8 @@ public class PackageDescr extends BaseDescr {
 
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal(out);
-        out.writeObject(name);
-        out.writeObject(documentation);
+        out.writeUTF(namespace);
+        out.writeUTF(documentation);
         out.writeObject(imports);
         out.writeObject(functionImports);
         out.writeObject(attributes);
@@ -79,10 +82,18 @@ public class PackageDescr extends BaseDescr {
         out.writeObject(factTemplates);
         out.writeObject(functions);
         out.writeObject(rules);
+    }        
+    
+    public String getNamespace() {
+        return this.namespace;
+    }
+    
+    public void setNamespace(String namespace) {
+        this.namespace = namespace;
     }
 
     public String getName() {
-        return this.name;
+        return this.namespace;
     }
 
     public String getDocumentation() {

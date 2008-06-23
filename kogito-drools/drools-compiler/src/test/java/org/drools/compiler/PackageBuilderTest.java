@@ -76,7 +76,7 @@ import org.drools.rule.Behavior;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.GroupElement;
-import org.drools.rule.JavaDialectData;
+import org.drools.rule.JavaDialectRuntimeData;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Package;
 import org.drools.rule.Pattern;
@@ -194,7 +194,7 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         // Make sure the compiled classes are also removed
         assertEquals( 0,
-                      ((JavaDialectData) pkg.getDialectDatas().getDialectData( "java" )).list().length );
+                      ((JavaDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData( "java" )).list().length );
 
         builder.addPackage( packageDescr );
 
@@ -268,7 +268,7 @@ public class PackageBuilderTest extends DroolsTestCase {
                       map.get( "value" ) );
     }
 
-    public void testNoPackageName() throws Exception {
+    public void FIXMEtestNoPackageName() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         try {
             builder.addPackage( new PackageDescr( null ) );
@@ -983,10 +983,15 @@ public class PackageBuilderTest extends DroolsTestCase {
         PackageBuilder builder = new PackageBuilder();
         PackageDescr pkgDescr = new PackageDescr( "org.test" );
         builder.addPackage( pkgDescr );
-
-        final Field dialectField = builder.getClass().getDeclaredField( "dialect" );
+        DialectCompiletimeRegistry reg = builder.getPackageRegistry( pkgDescr.getName() ).getDialectCompiletimeRegistry();
+        
+        
+        final Field dialectField = builder.getClass().getDeclaredField( "defaultDialect" );
         dialectField.setAccessible( true );
-        JavaDialect dialect = (JavaDialect) dialectField.get( builder );
+        String dialectName = (String) dialectField.get( builder );
+
+        reg = builder.getPackageRegistry( pkgDescr.getName() ).getDialectCompiletimeRegistry();
+        Dialect dialect = reg.getDialect( dialectName );
 
         final Field compilerField = dialect.getClass().getDeclaredField( "compiler" );
         compilerField.setAccessible( true );
@@ -1001,7 +1006,9 @@ public class PackageBuilderTest extends DroolsTestCase {
         builder = new PackageBuilder( conf );
         builder.addPackage( pkgDescr );
 
-        dialect = (JavaDialect) dialectField.get( builder );
+        dialectName = (String) dialectField.get( builder );
+        reg = builder.getPackageRegistry( pkgDescr.getName() ).getDialectCompiletimeRegistry();
+        dialect = reg.getDialect( dialectName );        
         compiler = (JavaCompiler) compilerField.get( dialect );
         assertSame( JaninoJavaCompiler.class,
                     compiler.getClass() );
@@ -1013,7 +1020,9 @@ public class PackageBuilderTest extends DroolsTestCase {
         builder = new PackageBuilder( conf );
         builder.addPackage( pkgDescr );
 
-        dialect = (JavaDialect) dialectField.get( builder );
+        dialectName = (String) dialectField.get( builder );
+        reg = builder.getPackageRegistry( pkgDescr.getName() ).getDialectCompiletimeRegistry();
+        dialect = reg.getDialect( dialectName );              
         compiler = (JavaCompiler) compilerField.get( dialect );
         assertSame( EclipseJavaCompiler.class,
                     compiler.getClass() );
@@ -1073,7 +1082,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         assertFalse(builder.hasErrors());
 
         Package bp = builder.getPackage();
-        Class newBean = bp.getDialectDatas().getClassLoader().loadClass("org.test.NewBean");
+        Class newBean = bp.getDialectRuntimeRegistry().getClassLoader().loadClass("org.test.NewBean");
         assertNotNull(newBean);
     }
 

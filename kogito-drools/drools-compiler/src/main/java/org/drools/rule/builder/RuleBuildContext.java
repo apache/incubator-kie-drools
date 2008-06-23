@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Stack;
 
 import org.drools.compiler.Dialect;
-import org.drools.compiler.DialectRegistry;
+import org.drools.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.QueryDescr;
@@ -60,10 +60,10 @@ public class RuleBuildContext extends PackageBuildContext {
     /**
      * Default constructor
      */
-    public RuleBuildContext(final PackageBuilderConfiguration configuration,
-                            final Package pkg,
+    public RuleBuildContext(final PackageBuilderConfiguration configuration,                            
                             final RuleDescr ruleDescr,
-                            final DialectRegistry dialectRegistry,
+                            final DialectCompiletimeRegistry dialectCompiletimeRegistry,
+                            final Package pkg,
                             final Dialect defaultDialect) {
         this.buildStack = new Stack();
         this.declarationResolver = new DeclarationScopeResolver( new Map[]{pkg.getGlobals()},
@@ -82,7 +82,7 @@ public class RuleBuildContext extends PackageBuildContext {
                        ruleDescr,
                        ruleDescr.getAttributes() );
         
-        init(configuration, pkg, ruleDescr, dialectRegistry, defaultDialect, this.rule );
+        init(configuration, pkg, ruleDescr, dialectCompiletimeRegistry, defaultDialect, this.rule );
         
         if ( this.rule.getDialect() == null ) {
             this.rule.setDialect( getDialect().getId() );

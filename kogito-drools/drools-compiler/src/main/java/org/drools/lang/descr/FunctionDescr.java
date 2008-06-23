@@ -21,13 +21,18 @@ import java.util.Collections;
 import java.util.List;
 
 import org.drools.rule.Dialectable;
+import org.drools.rule.Namespaceable;
 
-public class FunctionDescr extends BaseDescr implements Dialectable {
+public class FunctionDescr extends BaseDescr
+    implements
+    Dialectable,
+    Namespaceable {
     private static final long serialVersionUID = 400L;
 
+    private String            namespace;
     private final String      name;
     private final String      returnType;
-    private String      dialect;
+    private String            dialect;
 
     private List<String>      parameterTypes   = Collections.emptyList();
     private List<String>      parameterNames   = Collections.emptyList();
@@ -39,15 +44,23 @@ public class FunctionDescr extends BaseDescr implements Dialectable {
     private String            className;
 
     public FunctionDescr(final String name,
-                         final String returnType ) {
+                         final String returnType) {
         this.name = name;
         this.returnType = returnType;
     }
 
+    public void setNamespace(String namespace) {
+        this.namespace = namespace;
+    }
+
+    public String getNamespace() {
+        return this.namespace;
+    }
+
     public String getName() {
         return this.name;
-    }        
-    
+    }
+
     public void setDialect(String dialect) {
         this.dialect = dialect;
     }

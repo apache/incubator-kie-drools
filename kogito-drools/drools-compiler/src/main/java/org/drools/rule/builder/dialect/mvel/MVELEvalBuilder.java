@@ -28,7 +28,7 @@ import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
-import org.drools.rule.MVELDialectData;
+import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Pattern;
 import org.drools.rule.RuleConditionElement;
 import org.drools.rule.builder.RuleBuildContext;
@@ -70,7 +70,7 @@ public class MVELEvalBuilder
                                                                      null,
                                                                      context.getPkg().getGlobals() );      
             
-            MVELDialectData data = (MVELDialectData) context.getPkg().getDialectDatas().getDialectData( "mvel" );
+            MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
             factory.setNextFactory( data.getFunctionFactory() );            
 
             Dialect.AnalysisResult analysis = context.getDialect().analyzeExpression( context,

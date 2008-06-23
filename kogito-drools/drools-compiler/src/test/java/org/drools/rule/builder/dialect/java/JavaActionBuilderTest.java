@@ -10,8 +10,10 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.base.DefaultKnowledgeHelper;
+import org.drools.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.compiler.PackageRegistry;
 import org.drools.lang.descr.ActionDescr;
 import org.drools.lang.descr.ProcessDescr;
 import org.drools.rule.Package;
@@ -34,7 +36,8 @@ public class JavaActionBuilderTest extends TestCase {
 
         PackageBuilder pkgBuilder = new PackageBuilder( pkg );
         final PackageBuilderConfiguration conf = pkgBuilder.getPackageBuilderConfiguration();
-        JavaDialect javaDialect = ( JavaDialect ) pkgBuilder.getDialectRegistry().getDialect( "java" );
+        DialectCompiletimeRegistry dialectRegistry = pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectCompiletimeRegistry();
+        JavaDialect javaDialect = ( JavaDialect ) dialectRegistry.getDialect( "java" );
 
         ProcessDescr processDescr = new ProcessDescr();
         processDescr.setClassName( "Process1" );
@@ -44,9 +47,9 @@ public class JavaActionBuilderTest extends TestCase {
         process.setName( "Process1" );
         process.setPackageName( "pkg1" );
 
-        ProcessBuildContext context = new ProcessBuildContext(conf, pkgBuilder.getPackage(), null, processDescr, pkgBuilder.getDialectRegistry(), javaDialect);
+        ProcessBuildContext context = new ProcessBuildContext(conf, pkgBuilder.getPackage(), null, processDescr, dialectRegistry, javaDialect);
         
-        context.init( conf, pkg, null, pkgBuilder.getDialectRegistry(), javaDialect, null);
+        context.init( conf, pkg, null, dialectRegistry, javaDialect, null);
         
         pkgBuilder.addPackageFromDrl( new StringReader("package pkg1;\nglobal java.util.List list;\n") );        
         

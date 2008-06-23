@@ -16,6 +16,7 @@ import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
@@ -43,18 +44,19 @@ public class MVELReturnValueBuilderTest extends TestCase {
 
         PackageBuilder pkgBuilder = new PackageBuilder( pkg );
         final PackageBuilderConfiguration conf = pkgBuilder.getPackageBuilderConfiguration();
-        MVELDialect mvelDialect = (MVELDialect) pkgBuilder.getDialectRegistry().getDialect( "mvel" );
+        DialectCompiletimeRegistry dialectRegistry = pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectCompiletimeRegistry();
+        MVELDialect mvelDialect = (MVELDialect) dialectRegistry.getDialect( "mvel" );
 
         final InstrumentedBuildContent context = new InstrumentedBuildContent( conf,
-                                                                               pkg,
                                                                                ruleDescr,
-                                                                               pkgBuilder.getDialectRegistry(),
+                                                                               dialectRegistry,
+                                                                               pkg,
                                                                                mvelDialect );
 
         final InstrumentedDeclarationScopeResolver declarationResolver = new InstrumentedDeclarationScopeResolver();
         final InternalReadAccessor extractor = cache.getReader( Cheese.class,
-                                                             "price",
-                                                             getClass().getClassLoader() );
+                                                                "price",
+                                                                getClass().getClassLoader() );
 
         final Pattern patternA = new Pattern( 0,
                                               new ClassObjectType( int.class ) );
@@ -114,11 +116,16 @@ public class MVELReturnValueBuilderTest extends TestCase {
         final Cheese cheddar = new Cheese( "cheddar",
                                            10 );
         final InternalFactHandle f0 = (InternalFactHandle) wm.insert( cheddar );
-        LeftTuple tuple = new LeftTuple( f0, null, true );
+        LeftTuple tuple = new LeftTuple( f0,
+                                         null,
+                                         true );
 
         final InternalFactHandle f1 = (InternalFactHandle) wm.insert( stilton );
         tuple = new LeftTuple( tuple,
-                               new RightTuple( f1, null ), null, true );
+                               new RightTuple( f1,
+                                               null ),
+                               null,
+                               true );
 
         final Cheese brie = new Cheese( "brie",
                                         20 );
@@ -131,7 +138,8 @@ public class MVELReturnValueBuilderTest extends TestCase {
                                            retValContext ) );
 
         brie.setPrice( 18 );
-        wm.update( f2, brie );
+        wm.update( f2,
+                   brie );
         assertFalse( returnValue.isAllowed( extractor,
                                             f2,
                                             tuple,

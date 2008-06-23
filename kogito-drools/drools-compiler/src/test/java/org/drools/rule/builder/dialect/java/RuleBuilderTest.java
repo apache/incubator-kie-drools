@@ -29,9 +29,11 @@ import junit.framework.TestCase;
 import org.drools.base.ClassTypeResolver;
 import org.drools.base.TypeResolver;
 import org.drools.compiler.Dialect;
+import org.drools.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.compiler.PackageRegistry;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
@@ -90,9 +92,11 @@ public class RuleBuilderTest extends TestCase {
 
         final PackageBuilder pkgBuilder = new PackageBuilder(pkg);
         final PackageBuilderConfiguration conf = pkgBuilder.getPackageBuilderConfiguration();
-        Dialect dialect = pkgBuilder.getDialectRegistry().getDialect( "java" );
+        
+        DialectCompiletimeRegistry dialectRegistry = pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectCompiletimeRegistry();        
+        Dialect dialect = dialectRegistry.getDialect( "java" );
 
-        RuleBuildContext context = new RuleBuildContext(conf, pkg, ruleDescr, pkgBuilder.getDialectRegistry(), dialect);
+        RuleBuildContext context = new RuleBuildContext(conf, ruleDescr, dialectRegistry, pkg, dialect);
 
         builder.build( context );
 

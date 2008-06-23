@@ -4,7 +4,7 @@
 package org.drools.rule.builder.dialect.mvel;
 
 import org.drools.compiler.Dialect;
-import org.drools.compiler.DialectRegistry;
+import org.drools.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.Package;
@@ -15,14 +15,14 @@ public class InstrumentedBuildContent extends RuleBuildContext {
     private DeclarationScopeResolver declarationScopeResolver;
 
     public InstrumentedBuildContent(final PackageBuilderConfiguration conf,
-                                    final Package pkg,
                                     final RuleDescr ruleDescr,
-                                    final DialectRegistry registry,
+                                    final DialectCompiletimeRegistry registry,
+                                    final Package pkg,                                    
                                     final Dialect dialect) {
         super( conf, 
-               pkg,
                ruleDescr,
                registry,
+               pkg,               
                dialect );
     }
 

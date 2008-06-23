@@ -19,32 +19,32 @@ package org.drools.rule.builder.dialect.java;
 import java.util.List;
 
 import org.drools.commons.jci.stores.ResourceStore;
-import org.drools.rule.JavaDialectData;
+import org.drools.rule.JavaDialectRuntimeData;
 
 public class PackageStore
     implements
     ResourceStore {
-    private JavaDialectData packageCompilationData;
+    private JavaDialectRuntimeData javaDialectRuntimeData;
 
     private List                   errors;
 
     public PackageStore() {
     }
 
-    public PackageStore(final JavaDialectData packageCompiationData,
+    public PackageStore(final JavaDialectRuntimeData javaDialectRuntimeData,
                         final List errors) {
-        this.packageCompilationData = packageCompiationData;
+        this.javaDialectRuntimeData = javaDialectRuntimeData;
         this.errors = errors;
     }
 
-    public void setPackageCompilationData(final JavaDialectData packageCompiationData) {
-        this.packageCompilationData = packageCompiationData;
+    public void setPackageCompilationData(final JavaDialectRuntimeData javaDialectRuntimeData) {
+        this.javaDialectRuntimeData = javaDialectRuntimeData;
     }
 
     public void write(final String resourceName,
                       final byte[] clazzData) {
         try {
-            this.packageCompilationData.write( resourceName,
+            this.javaDialectRuntimeData.write( resourceName,
                                                clazzData );
         } catch ( final Exception e ) {
             e.printStackTrace();
@@ -55,7 +55,7 @@ public class PackageStore
     public byte[] read(final String resourceName) {
         byte[] clazz = null;
         try {
-            clazz = this.packageCompilationData.read( resourceName );
+            clazz = this.javaDialectRuntimeData.read( resourceName );
         } catch ( final Exception e ) {
             this.errors.add( new JavaDialectError( "PackageStore was unable to read resourceName='" + resourceName + "'" ) );
         }
@@ -64,7 +64,7 @@ public class PackageStore
 
     public void remove(final String resourceName) {
         try {
-            this.packageCompilationData.remove( resourceName );
+            this.javaDialectRuntimeData.remove( resourceName );
         } catch ( final Exception e ) {
             this.errors.add( new JavaDialectError( "PackageStore was unable to remove resourceName='" + resourceName + "'"  ) );
         }

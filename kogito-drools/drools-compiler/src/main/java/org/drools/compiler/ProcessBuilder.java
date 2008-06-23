@@ -100,11 +100,12 @@ public class ProcessBuilder {
 
             Package pkg = this.packageBuilder.getPackage();
             if ( pkg != null ) {
+                // FIXME, we should never have a null package                
                 // we can only do this is this.pkg != null, as otherwise the dialects won't be properly initialised
                 // as the dialects are initialised when the pkg is  first created
-                this.packageBuilder.getDialectRegistry().compileAll();
-                
-                pkg.getDialectDatas().reloadDirty();
+                PackageRegistry pkgRegistry = this.packageBuilder.getPackageRegistry( pkg.getName() );
+                pkgRegistry.compileAll();                
+                pkgRegistry.getDialectRuntimeRegistry().reloadDirty();
             }
         }
     }
@@ -119,14 +120,17 @@ public class ProcessBuilder {
         ProcessDescr processDescr = new ProcessDescr();
         processDescr.setName( rfp.getPackageName() );
 
-        Dialect dialect = this.packageBuilder.getDialectRegistry().getDialect( "java" );
+        PackageRegistry pkgRegistry = this.packageBuilder.getPackageRegistry( this.packageBuilder.getPackage().getName() );
+        DialectCompiletimeRegistry dialectRegistry = pkgRegistry.getDialectCompiletimeRegistry();           
+        
+        Dialect dialect = dialectRegistry.getDialect( "java" );
         dialect.init( processDescr );
 
         ProcessBuildContext context = new ProcessBuildContext( this.packageBuilder.getPackageBuilderConfiguration(),
                                                                this.packageBuilder.getPackage(),
                                                                process,
                                                                processDescr,
-                                                               this.packageBuilder.getDialectRegistry(),
+                                                               dialectRegistry,
                                                                dialect );
 
         processNodes(rfp.getNodes(), process, processDescr, context, nodeBuilderRegistry);
@@ -134,11 +138,8 @@ public class ProcessBuilder {
         if ( !context.getErrors().isEmpty() ) {
             this.errors.addAll( context.getErrors() );
         }
-
-        for ( Iterator it = this.packageBuilder.getDialectRegistry().iterator(); it.hasNext(); ) {
-            dialect = (Dialect) it.next();
-            dialect.addProcess( context );
-        }
+        
+        pkgRegistry.addProcess( context );
 
     }
     

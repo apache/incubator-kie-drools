@@ -12,6 +12,7 @@ import org.drools.WorkingMemory;
 import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.compiler.PackageRegistry;
 import org.drools.lang.descr.ActionDescr;
 import org.drools.rule.Package;
 import org.drools.rule.builder.PackageBuildContext;
@@ -32,10 +33,12 @@ public class MVELDecisionBuilderTest extends TestCase {
 
         PackageBuilder pkgBuilder = new PackageBuilder( pkg );
         final PackageBuilderConfiguration conf = pkgBuilder.getPackageBuilderConfiguration();
-        MVELDialect mvelDialect = ( MVELDialect ) pkgBuilder.getDialectRegistry().getDialect( "mvel" );
+        
+        PackageRegistry pkgReg = pkgBuilder.getPackageRegistry( pkg.getName() );
+        MVELDialect mvelDialect = ( MVELDialect ) pkgReg.getDialectCompiletimeRegistry().getDialect( "mvel" );
 
         PackageBuildContext context = new PackageBuildContext();
-        context.init( conf, pkg, null, pkgBuilder.getDialectRegistry(), mvelDialect, null);
+        context.init( conf, pkg, null, pkgReg.getDialectCompiletimeRegistry(), mvelDialect, null);
         
         pkgBuilder.addPackageFromDrl( new StringReader("package pkg1;\nglobal java.util.List list;\n") );        
         

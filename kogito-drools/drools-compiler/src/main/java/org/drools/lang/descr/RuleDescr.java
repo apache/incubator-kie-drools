@@ -24,10 +24,12 @@ import java.util.Collections;
 import java.util.List;
 
 import org.drools.rule.Dialectable;
+import org.drools.rule.Namespaceable;
 
-public class RuleDescr extends BaseDescr implements Dialectable {
+public class RuleDescr extends BaseDescr implements Dialectable, Namespaceable {
 
     private static final long serialVersionUID = 400L;
+    private String            namespace;    
     private String            name;
     private String            dialect;
     private String            documentation;
@@ -60,6 +62,7 @@ public class RuleDescr extends BaseDescr implements Dialectable {
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         super.readExternal(in);
+        namespace = (String) in.readObject();
         name    = (String)in.readObject();
         dialect    = (String)in.readObject();
         documentation    = (String)in.readObject();
@@ -75,6 +78,7 @@ public class RuleDescr extends BaseDescr implements Dialectable {
 
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal(out);
+        out.writeObject( namespace );
         out.writeObject(name);
         out.writeObject(dialect);
         out.writeObject(documentation);
@@ -87,6 +91,15 @@ public class RuleDescr extends BaseDescr implements Dialectable {
         out.writeObject(salience);
         out.writeObject(className);
     }
+    
+    public void setNamespace(String namespace) {
+        this.namespace = namespace;
+    }
+    
+    public String getNamespace() {
+        return this.namespace;
+    }
+    
 
     public String getName() {
         return this.name;
@@ -99,6 +112,7 @@ public class RuleDescr extends BaseDescr implements Dialectable {
     public void setDialect(String dialect) {
         this.dialect = dialect;
     }
+    
 
     public String getSalience() {
         return salience;

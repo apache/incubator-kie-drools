@@ -21,10 +21,12 @@ import org.drools.common.AgendaItem;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.PropagationContextImpl;
 import org.drools.compiler.Dialect;
+import org.drools.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.compiler.PackageRegistry;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.reteoo.LeftTuple;
@@ -52,12 +54,15 @@ public class MVELConsequenceBuilderTest extends TestCase {
 
         PackageBuilder pkgBuilder = new PackageBuilder( pkg );
         final PackageBuilderConfiguration conf = pkgBuilder.getPackageBuilderConfiguration();
-        MVELDialect mvelDialect = ( MVELDialect ) pkgBuilder.getDialectRegistry().getDialect( "mvel" );
+        
+        DialectCompiletimeRegistry dialectRegistry = pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectCompiletimeRegistry();
+        
+        MVELDialect mvelDialect = ( MVELDialect ) dialectRegistry.getDialect( "mvel" );
 
         final InstrumentedBuildContent context = new InstrumentedBuildContent( conf,
-                                                                               pkg,
                                                                                ruleDescr,
-                                                                               pkgBuilder.getDialectRegistry(),
+                                                                               dialectRegistry,
+                                                                               pkg,                                                                               
                                                                                mvelDialect );
 
         final InstrumentedDeclarationScopeResolver declarationResolver = new InstrumentedDeclarationScopeResolver();
@@ -121,12 +126,14 @@ public class MVELConsequenceBuilderTest extends TestCase {
         
         PackageBuilder pkgBuilder = new PackageBuilder( pkg, cfg1 );
         final PackageBuilderConfiguration conf = pkgBuilder.getPackageBuilderConfiguration();
-        MVELDialect mvelDialect = ( MVELDialect ) pkgBuilder.getDefaultDialect();
+        PackageRegistry pkgRegistry = pkgBuilder.getPackageRegistry( pkg.getName() );
+        DialectCompiletimeRegistry dialectRegistry = pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectCompiletimeRegistry();
+        MVELDialect mvelDialect = ( MVELDialect )dialectRegistry.getDialect( pkgRegistry.getDialect() );
 
         final InstrumentedBuildContent context = new InstrumentedBuildContent( conf,
-                                                                               pkg,
                                                                                ruleDescr,
-                                                                               pkgBuilder.getDialectRegistry(),
+                                                                               dialectRegistry,
+                                                                               pkg,                                                                               
                                                                                mvelDialect );
 
         final InstrumentedDeclarationScopeResolver declarationResolver = new InstrumentedDeclarationScopeResolver();
@@ -231,12 +238,13 @@ public class MVELConsequenceBuilderTest extends TestCase {
 
             final PackageBuilder pkgBuilder = new PackageBuilder( pkg );
             final PackageBuilderConfiguration conf = pkgBuilder.getPackageBuilderConfiguration();
-            Dialect dialect = pkgBuilder.getDialectRegistry().getDialect( "mvel" );
+            DialectCompiletimeRegistry dialectRegistry = pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectCompiletimeRegistry();
+            Dialect dialect = dialectRegistry.getDialect( "mvel" );
 
             RuleBuildContext context = new RuleBuildContext( conf,
-                                                             pkg,
                                                              ruleDescr,
-                                                             pkgBuilder.getDialectRegistry(),
+                                                             dialectRegistry,
+                                                             pkg,                                                             
                                                              dialect );
 
             builder.build( context );

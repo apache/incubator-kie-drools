@@ -522,8 +522,8 @@ public class MiscTest extends TestCase {
 
     public void testGeneratedBeans1() throws Exception {
         final PackageBuilderConfiguration pbconf = new PackageBuilderConfiguration();
-        pbconf.setDumpDir( new File("target") );
-        final PackageBuilder builder = new PackageBuilder(pbconf);
+        pbconf.setDumpDir( new File( "target" ) );
+        final PackageBuilder builder = new PackageBuilder( pbconf );
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_GeneratedBeans.drl" ) ) );
         assertFalse( builder.getErrors().toString(),
                      builder.hasErrors() );
@@ -539,7 +539,7 @@ public class MiscTest extends TestCase {
         ruleBase.addPackage( p );
 
         // test rulebase serialization
-        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
 
         // Retrieve the generated fact type
         FactType cheeseFact = ruleBase.getFactType( "org.drools.generatedbeans.Cheese" );
@@ -547,35 +547,41 @@ public class MiscTest extends TestCase {
         // Create a new Fact instance
         Object cheese = cheeseFact.newInstance();
 
-
-
         // Set a field value using the more verbose method chain...
         // should we add short cuts?
-//        cheeseFact.getField( "type" ).getFieldAccessor().setValue( cheese,
-//                                                             "stilton" );
+        //        cheeseFact.getField( "type" ).getFieldAccessor().setValue( cheese,
+        //                                                             "stilton" );
 
-        cheeseFact.set(cheese, "type", "stilton");
-        assertEquals("stilton", cheeseFact.get(cheese, "type"));
+        cheeseFact.set( cheese,
+                        "type",
+                        "stilton" );
+        assertEquals( "stilton",
+                      cheeseFact.get( cheese,
+                                      "type" ) );
 
-
-        FactType personType = ruleBase.getFactType("org.drools.generatedbeans.Person");
+        FactType personType = ruleBase.getFactType( "org.drools.generatedbeans.Person" );
 
         Object ps = personType.newInstance();
-        personType.set(ps, "age", 42);
+        personType.set( ps,
+                        "age",
+                        42 );
 
-        Map<String, Object> personMap = personType.getAsMap(ps);
-        assertEquals(42, personMap.get("age"));
+        Map<String, Object> personMap = personType.getAsMap( ps );
+        assertEquals( 42,
+                      personMap.get( "age" ) );
 
-        personMap.put("age", 43);
-        personType.setFromMap(ps, personMap);
+        personMap.put( "age",
+                       43 );
+        personType.setFromMap( ps,
+                               personMap );
 
-        assertEquals(43, personType.get(ps, "age"));
-
-
+        assertEquals( 43,
+                      personType.get( ps,
+                                      "age" ) );
 
         // just documenting toString() result:
-//        assertEquals( "Cheese( type=stilton )",
-//                      cheese.toString() );
+        //        assertEquals( "Cheese( type=stilton )",
+        //                      cheese.toString() );
 
         // reading the field attribute, using the method chain
         assertEquals( "stilton",
@@ -615,8 +621,8 @@ public class MiscTest extends TestCase {
                                                                      7 );
 
         // just documenting toString() result:
-//        assertEquals( "Person( age=7, likes=Cheese( type=stilton ) )",
-//                      person.toString() );
+        //        assertEquals( "Person( age=7, likes=Cheese( type=stilton ) )",
+        //                      person.toString() );
 
         // inserting fact
         wm.insert( person );
@@ -3947,9 +3953,15 @@ public class MiscTest extends TestCase {
             final PackageBuilder builder = new PackageBuilder();
             builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_RuleNameClashes1.drl" ) ) );
             builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_RuleNameClashes2.drl" ) ) );
-            fail( "Can't merge packages with different names " );
+            assertEquals( 2, builder.getPackages().length );
+            Package pkg1 = builder.getPackageRegistry( "org.drools.package1" ).getPackage();
+            assertEquals( "rule 1", pkg1.getRules()[0].getName() );
+            
+            Package pkg2 = builder.getPackageRegistry( "org.drools.package2" ).getPackage();
+            assertEquals( "rule 1", pkg2.getRules()[0].getName() );         
+            
         } catch ( PackageMergeException e ) {
-            // success
+            fail( "unexpected exception: " + e.getMessage() );
         } catch ( RuntimeException e ) {
             e.printStackTrace();
             fail( "unexpected exception: " + e.getMessage() );
@@ -4030,51 +4042,43 @@ public class MiscTest extends TestCase {
 
     public void testRuleReplacement() throws Exception {
         // test rule replacement
-        try {
-            final PackageBuilder builder1 = new PackageBuilder();
-            builder1.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_RuleNameClashes1.drl" ) ) );
-            builder1.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_RuleNameClashes3.drl" ) ) );
-            final Package pkg1 = builder1.getPackage();
+        final PackageBuilder builder1 = new PackageBuilder();
+        builder1.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_RuleNameClashes1.drl" ) ) );
+        builder1.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_RuleNameClashes3.drl" ) ) );
+        final Package pkg1 = builder1.getPackage();
 
-            assertEquals( 1,
-                          pkg1.getRules().length );
+        assertEquals( 1,
+                      pkg1.getRules().length );
 
-            RuleBase ruleBase = getRuleBase();
-            ruleBase.addPackage( pkg1 );
-            ruleBase = SerializationHelper.serializeObject( ruleBase );
-            final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg1 );
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
-            final List results = new ArrayList();
-            workingMemory.setGlobal( "results",
-                                     results );
+        final List results = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 results );
 
-            workingMemory.insert( new Cheese( "stilton",
-                                              10 ) );
-            workingMemory.insert( new Cheese( "brie",
-                                              5 ) );
+        workingMemory.insert( new Cheese( "stilton",
+                                          10 ) );
+        workingMemory.insert( new Cheese( "brie",
+                                          5 ) );
 
-            workingMemory.fireAllRules();
+        workingMemory.fireAllRules();
 
-            assertEquals( results.toString(),
-                          0,
-                          results.size() );
+        assertEquals( results.toString(),
+                      0,
+                      results.size() );
 
-            workingMemory.insert( new Cheese( "muzzarella",
-                                              7 ) );
+        workingMemory.insert( new Cheese( "muzzarella",
+                                          7 ) );
 
-            workingMemory.fireAllRules();
+        workingMemory.fireAllRules();
 
-            assertEquals( results.toString(),
-                          1,
-                          results.size() );
-            assertTrue( results.contains( "p1.r3" ) );
-
-        } catch ( PackageMergeException e ) {
-            fail( "Should not raise exception when merging different packages into the same rulebase: " + e.getMessage() );
-        } catch ( Exception e ) {
-            e.printStackTrace();
-            fail( "unexpected exception: " + e.getMessage() );
-        }
+        assertEquals( results.toString(),
+                      1,
+                      results.size() );
+        assertTrue( results.contains( "p1.r3" ) );
     }
 
     public void testBindingsOnConnectiveExpressions() throws Exception {
@@ -5358,6 +5362,5 @@ public class MiscTest extends TestCase {
             return c;
         }
     }
-
 
 }

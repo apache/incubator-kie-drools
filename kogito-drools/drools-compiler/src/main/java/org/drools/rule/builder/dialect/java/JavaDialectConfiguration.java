@@ -5,7 +5,10 @@ import java.util.Arrays;
 import org.drools.RuntimeDroolsException;
 import org.drools.compiler.Dialect;
 import org.drools.compiler.DialectConfiguration;
+import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.compiler.PackageRegistry;
+import org.drools.rule.Package;
 
 /**
  * 
@@ -58,8 +61,8 @@ public class JavaDialectConfiguration
         return this.conf;
     }
 
-    public Dialect getDialect() {
-        return new JavaDialect();
+    public Dialect newDialect(PackageBuilder packageBuilder, PackageRegistry pkgRegistry, Package pkg) {
+        return new JavaDialect(packageBuilder, pkgRegistry, pkg);
     }
 
     public String getJavaLanguageLevel() {

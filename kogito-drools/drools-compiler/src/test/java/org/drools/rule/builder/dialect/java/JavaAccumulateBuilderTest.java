@@ -5,6 +5,7 @@ import java.util.Set;
 import junit.framework.TestCase;
 
 import org.drools.compiler.Dialect;
+import org.drools.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.AccumulateDescr;
@@ -42,13 +43,14 @@ public class JavaAccumulateBuilderTest extends TestCase {
         accumDescr.setResultCode( "new Integer( x )" );
         
         org.drools.rule.Package pkg = new org.drools.rule.Package( "org.drools" );
-        final PackageBuilder pkgBulider = new PackageBuilder(pkg);
-        final PackageBuilderConfiguration conf = pkgBulider.getPackageBuilderConfiguration();
-        Dialect dialect = pkgBulider.getDialectRegistry().getDialect( "java" );
+        final PackageBuilder pkgBuilder = new PackageBuilder(pkg);
+        final PackageBuilderConfiguration conf = pkgBuilder.getPackageBuilderConfiguration();
+        DialectCompiletimeRegistry dialectRegistry = pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectCompiletimeRegistry();
+        Dialect dialect = dialectRegistry.getDialect( "java" );
         
         
         RuleDescr ruleDescr = new RuleDescr("test rule");
-        RuleBuildContext context = new RuleBuildContext( conf, pkg, ruleDescr, conf.buildDialectRegistry(), dialect);
+        RuleBuildContext context = new RuleBuildContext( conf, ruleDescr, dialectRegistry, pkg, dialect);
         
         Accumulate accumulate = (Accumulate) builder.build( context, accumDescr );
         

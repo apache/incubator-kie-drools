@@ -21,12 +21,14 @@ import java.io.IOException;
 import java.io.Reader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.RuleBase;
 import org.drools.base.ClassFieldAccessor;
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldReader;
@@ -55,6 +57,7 @@ import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.TypeFieldDescr;
 import org.drools.process.core.Process;
+import org.drools.reteoo.ReteooRuleBase;
 import org.drools.rule.ImportDeclaration;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
@@ -70,36 +73,48 @@ import org.xml.sax.SAXException;
  * This is the main compiler class for parsing and compiling rules and
  * assembling or merging them into a binary Package instance. This can be done
  * by merging into existing binary packages, or totally from source.
- *
- * If you are using the Java dialect the JavaDialectConfiguration will attempt to
- * validate that the specified compiler is in the classpath, using ClassLoader.loasClass(String).
- * If you intented to just Janino sa the compiler you must either overload the compiler
- * property before instantiating this class or the PackageBuilder, or make sure Eclipse is in the
- * classpath, as Eclipse is the default.
+ * 
+ * If you are using the Java dialect the JavaDialectConfiguration will attempt
+ * to validate that the specified compiler is in the classpath, using
+ * ClassLoader.loasClass(String). If you intented to just Janino sa the compiler
+ * you must either overload the compiler property before instantiating this
+ * class or the PackageBuilder, or make sure Eclipse is in the classpath, as
+ * Eclipse is the default.
  */
 public class PackageBuilder {
 
-    private Package                     pkg;
+    //private DialectRegistry              dialectRegistry;
 
-    private List                        results;
+    private Map<String, PackageRegistry> pkgRegistryMap;
 
-    private PackageBuilderConfiguration configuration;
+    private List                         results;
 
-    private TypeResolver                typeResolver;
+    private PackageBuilderConfiguration  configuration;
 
-    private ClassFieldAccessorCache    classFieldExtractorCache;
+    private ClassFieldAccessorCache      classFieldExtractorCache;
 
-    private RuleBuilder                 ruleBuilder;
+    public static final RuleBuilder      ruleBuilder = new RuleBuilder();
 
-    private Dialect                     dialect;
+    /**
+     * Optional RuleBase for incremental live building
+     */
+    private ReteooRuleBase               ruleBase;
 
-    private DialectRegistry             dialectRegistry;
+    /**
+     * Current default package
+     */
+    private String                       defaultNamespace;
+
+    /**
+     * default dialect
+     */
+    private final String                 defaultDialect;
 
     /**
      * Use this when package is starting from scratch.
      */
     public PackageBuilder() {
-        this( null,
+        this( (RuleBase) null,
               null );
     }
 
@@ -112,65 +127,113 @@ public class PackageBuilder {
               null );
     }
 
-    /**
-     * Pass a specific configuration for the PackageBuilder
-     *
-     * PackageBuilderConfiguration is not thread safe and it also contains state. Once it is created and used
-     * in one or more PackageBuilders it should be considered immutable. Do not modify its
-     * properties while it is being used by a PackageBuilder.
-     *
-     * @param configuration
-     */
-    public PackageBuilder(final PackageBuilderConfiguration configuration) {
-        this( null,
-              configuration );
+    public PackageBuilder(final RuleBase ruleBase) {
+        this( ruleBase,
+              null );
     }
 
     /**
-     * This allows you to pass in a pre existing package, and a configuration
-     * (for instance to set the classloader).
-     *
-     * @param pkg
-     *            A pre existing package (can be null if none exists)
+     * Pass a specific configuration for the PackageBuilder
+     * 
+     * PackageBuilderConfiguration is not thread safe and it also contains
+     * state. Once it is created and used in one or more PackageBuilders it
+     * should be considered immutable. Do not modify its properties while it is
+     * being used by a PackageBuilder.
+     * 
      * @param configuration
-     *            Optional configuration for this builder.
      */
-    public PackageBuilder(final Package pkg,
+    public PackageBuilder(final PackageBuilderConfiguration configuration) {
+        this( (RuleBase) null,
+              configuration );
+    }
+
+    //    /**
+    //     * This allows you to pass in a pre existing package, and a configuration
+    //     * (for instance to set the classloader).
+    //     * 
+    //     * @param pkg
+    //     *            A pre existing package (can be null if none exists)
+    //     * @param configuration
+    //     *            Optional configuration for this builder.
+    //     */
+    //    public PackageBuilder(final Package pkg,
+    //                          PackageBuilderConfiguration configuration) {
+    //        if ( configuration == null ) {
+    //            configuration = new PackageBuilderConfiguration();
+    //        }
+    //
+    //        this.configuration = configuration;
+    //        this.results = new ArrayList();
+    //        this.pkg = pkg;
+    //        this.classFieldExtractorCache = ClassFieldAccessorCache.getInstance();
+    //
+    //        if ( this.pkg != null ) {
+    //            ClassLoader cl = this.pkg.getDialectRuntimeRegistry().getClassLoader();
+    //            this.typeResolver = new ClassTypeResolver( new HashSet<String>( this.pkg.getImports().keySet() ),
+    //                                                       cl );
+    //            // make an automatic import for the current package
+    //            this.typeResolver.addImport( this.pkg.getName() + ".*" );
+    //        } else {
+    //            // this.typeResolver = new ClassTypeResolver( new HashSet<String>(),
+    //            // this.configuration.getClassLoader() );
+    //        }
+    //
+    //        this.dialectRegistry = this.configuration.buildDialectRegistry();
+    //
+    //        this.dialect = this.dialectRegistry.getDialect( this.configuration.getDefaultDialect() );
+    //
+    //        if ( this.pkg != null ) {
+    //            this.dialectRegistry.initAll( this );
+    //        }
+    //
+    //    }
+
+    public PackageBuilder(Package pkg,
                           PackageBuilderConfiguration configuration) {
         if ( configuration == null ) {
             configuration = new PackageBuilderConfiguration();
         }
-
         this.configuration = configuration;
+
+        this.defaultNamespace = pkg.getName();
+        this.defaultDialect = this.configuration.getDefaultDialect();
+
+        this.pkgRegistryMap = new HashMap<String, PackageRegistry>();
         this.results = new ArrayList();
-        this.pkg = pkg;
         this.classFieldExtractorCache = ClassFieldAccessorCache.getInstance();
 
-        if ( this.pkg != null ) {
-        	ClassLoader cl = this.pkg.getDialectDatas().getClassLoader();
-            this.typeResolver = new ClassTypeResolver( new HashSet<String>( this.pkg.getImports().keySet() ), cl );
-            // make an automatic import for the current package
-            this.typeResolver.addImport( this.pkg.getName() + ".*" );
-        } else {
-//            this.typeResolver = new ClassTypeResolver( new HashSet<String>(),
-//                                                       this.configuration.getClassLoader() );
+        PackageRegistry pkgRegistry = new PackageRegistry( this,
+                                                           pkg );
+        pkgRegistry.setDialect( this.defaultDialect );
+        this.pkgRegistryMap.put( pkg.getName(),
+                                 pkgRegistry );
+    }
+
+    public PackageBuilder(RuleBase ruleBase,
+                          PackageBuilderConfiguration configuration) {
+        if ( configuration == null ) {
+            configuration = new PackageBuilderConfiguration();
         }
+        this.configuration = configuration;
 
-        this.dialectRegistry = this.configuration.buildDialectRegistry();
+        // FIXME, we need to get drools to support "default" namespace.
+        //this.defaultNamespace = pkg.getName();        
+        this.defaultDialect = this.configuration.getDefaultDialect();
 
+        this.pkgRegistryMap = new HashMap<String, PackageRegistry>();
+        this.results = new ArrayList();
+        this.classFieldExtractorCache = ClassFieldAccessorCache.getInstance();
 
+        ruleBase = (ReteooRuleBase) ruleBase;
+    }
 
-        this.dialect = this.dialectRegistry.getDialect( this.configuration.getDefaultDialect() );
-
-        if ( this.pkg != null ) {
-            this.dialectRegistry.initAll( this );
-        }
-
+    public void setRuleBase(RuleBase ruleBase) {
+        this.ruleBase = (ReteooRuleBase) ruleBase;
     }
 
     /**
      * Load a rule package from DRL source.
-     *
+     * 
      * @param reader
      * @throws DroolsParserException
      * @throws IOException
@@ -185,7 +248,7 @@ public class PackageBuilder {
 
     /**
      * Load a rule package from XML source.
-     *
+     * 
      * @param reader
      * @throws DroolsParserException
      * @throws IOException
@@ -206,7 +269,7 @@ public class PackageBuilder {
 
     /**
      * Load a rule package from DRL source using the supplied DSL configuration.
-     *
+     * 
      * @param source
      *            The source of the rules.
      * @param dsl
@@ -241,7 +304,7 @@ public class PackageBuilder {
                                                      e ) );
         }
 
-        this.results = this.dialectRegistry.addResults( this.results );
+        this.results = getResults( this.results );
     }
 
     public void addProcessFromXml(Reader reader) {
@@ -259,11 +322,11 @@ public class PackageBuilder {
                                                      e ) );
         }
 
-        this.results = this.dialectRegistry.addResults( this.results );
+        this.results = getResults( this.results );
     }
 
     private void addSemanticModules() {
-        //this.configuration.getSemanticModules();
+        // this.configuration.getSemanticModules();
     }
 
     /**
@@ -271,11 +334,11 @@ public class PackageBuilder {
      * there are any generated classes to compile of course.
      */
     public void addPackage(final PackageDescr packageDescr) {
-        validatePackageName( packageDescr );
+        //validatePackageName( packageDescr );
         validateUniqueRuleNames( packageDescr );
 
-        String dialectName = null;
-
+        String dialectName = this.defaultDialect;
+        // see if this packageDescr overrides the current default dialect
         for ( Iterator it = packageDescr.getAttributes().iterator(); it.hasNext(); ) {
             AttributeDescr value = (AttributeDescr) it.next();
             if ( "dialect".equals( value.getName() ) ) {
@@ -284,21 +347,25 @@ public class PackageBuilder {
             }
         }
 
-        // If the PackageDescr specifies a dialect then set it.
-        if ( dialectName != null ) {
-            this.dialect = this.dialectRegistry.getDialect( dialectName );
-        } else if ( this.dialect == null ) {
-            // If a dialect is not specified and one is not set, then set from the configuration
-            this.dialect = this.dialectRegistry.getDialect( this.configuration.getDefaultDialect() );
-        }
-
-        if ( this.pkg != null ) {
-            mergePackage( packageDescr );
+        if ( !isEmpty( packageDescr.getNamespace() ) ) {
+            // use the default namespace
+            this.defaultNamespace = packageDescr.getNamespace();
         } else {
-            newPackage( packageDescr );
+            // packagedescr defines a new default namespace
+            packageDescr.setNamespace( this.defaultNamespace );
         }
 
-        this.ruleBuilder = new RuleBuilder();
+        PackageRegistry pkgRegistry = this.pkgRegistryMap.get( packageDescr.getNamespace() );
+        if ( pkgRegistry == null ) {
+            // initialise the package and namespace if it hasn't been used before
+            pkgRegistry = newPackage( packageDescr );
+        } else {
+            // merge into existing package
+            mergePackage( packageDescr );
+        }
+
+        // set the default dialect for this package
+        pkgRegistry.setDialect( dialectName );
 
         // only try to compile if there are no parse errors
         if ( !hasErrors() ) {
@@ -310,6 +377,14 @@ public class PackageBuilder {
 
                 for ( final Iterator it = packageDescr.getFunctions().iterator(); it.hasNext(); ) {
                     FunctionDescr functionDescr = (FunctionDescr) it.next();
+                    if ( isEmpty( functionDescr.getNamespace() ) ) {
+                        // make sure namespace is set on components
+                        functionDescr.setNamespace( this.defaultNamespace );
+                    }
+                    if ( isEmpty( functionDescr.getNamespace() ) ) {
+                        // make sure namespace is set on components
+                        functionDescr.setDialect( pkgRegistry.getDialect() );
+                    }
                     preCompileAddFunction( functionDescr );
                 }
 
@@ -317,12 +392,12 @@ public class PackageBuilder {
                 for ( final Iterator it = packageDescr.getFunctions().iterator(); it.hasNext(); ) {
                     // inherit the dialect from the package
                     FunctionDescr functionDescr = (FunctionDescr) it.next();
-                    functionDescr.setDialect( this.dialect.getId() );
                     addFunction( functionDescr );
                 }
 
-                // We need to compile all the functions now, so scripting languages like mvel can find them
-                this.dialectRegistry.compileAll();
+                // We need to compile all the functions now, so scripting
+                // languages like mvel can find them
+                compileAll();
 
                 for ( final Iterator it = packageDescr.getFunctions().iterator(); it.hasNext(); ) {
                     FunctionDescr functionDescr = (FunctionDescr) it.next();
@@ -332,29 +407,72 @@ public class PackageBuilder {
 
             // iterate and compile
             for ( final Iterator it = packageDescr.getRules().iterator(); it.hasNext(); ) {
-                addRule( (RuleDescr) it.next() );
+                RuleDescr ruleDescr = (RuleDescr) it.next();
+                if ( isEmpty( ruleDescr.getNamespace() ) ) {
+                    // make sure namespace is set on components
+                    ruleDescr.setNamespace( this.defaultNamespace );
+                }
+                if ( isEmpty( ruleDescr.getDialect() ) ) {
+                    ruleDescr.setDialect( pkgRegistry.getDialect() );
+                }
+                addRule( ruleDescr );
             }
         }
 
-        this.dialectRegistry.compileAll();
+        compileAll();
+        reloadAll();
 
-        // some of the rules and functions may have been redefined
-        this.pkg.getDialectDatas().reloadDirty();
-        this.results = this.dialectRegistry.addResults( this.results );
+        // some of the rules and functions may have been redefined     
+        this.results = getResults( this.results );
+
+        // iterate and compile
+        if ( this.ruleBase != null ) {
+            for ( final Iterator it = packageDescr.getRules().iterator(); it.hasNext(); ) {
+                RuleDescr ruleDescr = (RuleDescr) it.next();
+                pkgRegistry = this.pkgRegistryMap.get( ruleDescr.getNamespace() );
+                this.ruleBase.addRule( pkgRegistry.getPackage(),
+                                       pkgRegistry.getPackage().getRule( ruleDescr.getName() ) );
+            }
+        }
     }
 
-    private void validatePackageName(final PackageDescr packageDescr) {
-        if ( (this.pkg == null || this.pkg.getName() == null || this.pkg.getName().equals( "" )) && (packageDescr.getName() == null || "".equals( packageDescr.getName() )) ) {
-            throw new MissingPackageNameException( "Missing package name for rule package." );
-        }
-        if ( this.pkg != null && packageDescr.getName() != null && !"".equals( packageDescr.getName() ) && !this.pkg.getName().equals( packageDescr.getName() ) ) {
-            throw new PackageMergeException( "Can't merge packages with different names. This package: " + this.pkg.getName() + " - New package: " + packageDescr.getName() );
-        }
-        return;
+    public boolean isEmpty(String string) {
+        return (string == null || string.trim().length() == 0);
     }
+
+    private void compileAll() {
+        for ( PackageRegistry pkgRegistry : this.pkgRegistryMap.values() ) {
+            pkgRegistry.compileAll();
+        }
+    }
+
+    private void reloadAll() {
+        for ( PackageRegistry pkgRegistry : this.pkgRegistryMap.values() ) {
+            pkgRegistry.getDialectRuntimeRegistry().reloadDirty();
+        }
+    }
+
+    private List getResults(List results) {
+        for ( PackageRegistry pkgRegistry : this.pkgRegistryMap.values() ) {
+            results = pkgRegistry.getDialectCompiletimeRegistry().addResults( results );
+        }
+        return results;
+    }
+
+    //
+    //    private void validatePackageName(final PackageDescr packageDescr) {
+    //        if ( (this.pkg == null || this.pkg.getName() == null || this.pkg.getName().equals( "" )) && (packageDescr.getName() == null || "".equals( packageDescr.getName() )) ) {
+    //            throw new MissingPackageNameException( "Missing package name for rule package." );
+    //        }
+    //        if ( this.pkg != null && packageDescr.getName() != null && !"".equals( packageDescr.getName() ) && !this.pkg.getName().equals( packageDescr.getName() ) ) {
+    //            throw new PackageMergeException( "Can't merge packages with different names. This package: " + this.pkg.getName() + " - New package: " + packageDescr.getName() );
+    //        }
+    //        return;
+    //    }
 
     private void validateUniqueRuleNames(final PackageDescr packageDescr) {
         final Set names = new HashSet();
+        String namespace = packageDescr.getNamespace();
         for ( final Iterator iter = packageDescr.getRules().iterator(); iter.hasNext(); ) {
             final RuleDescr rule = (RuleDescr) iter.next();
             final String name = rule.getName();
@@ -367,38 +485,54 @@ public class PackageBuilder {
         }
     }
 
-    private void newPackage(final PackageDescr packageDescr) {
-        this.pkg = new Package( packageDescr.getName(),
-                                this.configuration.getClassLoader() );
+    private PackageRegistry newPackage(final PackageDescr packageDescr) {
+        Package pkg;
+        if ( this.ruleBase != null && this.ruleBase.getPackage( packageDescr.getName() ) != null ) {
+            // there is a rulebase and it already defines this package so use it.
+            pkg = this.ruleBase.getPackage( packageDescr.getName() );
+        } else {
+            // define a new package
+            pkg = new Package( packageDescr.getName(),
+                               this.configuration.getClassLoader() );
 
-       ClassLoader cl = this.pkg.getDialectDatas().getClassLoader();
+            // if there is a rulebase then add the package.
+            if ( this.ruleBase != null ) {
+                this.ruleBase.addPackage( pkg );
+                pkg = this.ruleBase.getPackage( packageDescr.getName() );
+            }
+        }
 
+        PackageRegistry pkgRegistry = new PackageRegistry( this,
+                                                           pkg );
 
-       this.typeResolver = new ClassTypeResolver( new HashSet<String>(), cl );
-
-        this.typeResolver.addImport( this.pkg.getName() + ".*" );
-
-        this.dialectRegistry.initAll( this );
+        this.pkgRegistryMap.put( packageDescr.getName(),
+                                 pkgRegistry );
 
         mergePackage( packageDescr );
+
+        return pkgRegistry;
     }
 
     private void mergePackage(final PackageDescr packageDescr) {
+        PackageRegistry pkgRegistry;
+        if ( isEmpty( packageDescr.getName() ) ) {
+            pkgRegistry = this.pkgRegistryMap.get( this.defaultNamespace );
+        } else {
+            pkgRegistry = this.pkgRegistryMap.get( packageDescr.getNamespace() );
+        }
+
         final List imports = packageDescr.getImports();
         for ( final Iterator it = imports.iterator(); it.hasNext(); ) {
             ImportDescr importEntry = (ImportDescr) it.next();
-            ImportDeclaration importDecl = new ImportDeclaration( importEntry.getTarget() );
-            pkg.addImport( importDecl );
-            this.typeResolver.addImport( importDecl.getTarget() );
-            this.dialectRegistry.addImport( importDecl.getTarget() );
+            pkgRegistry.addImport( importEntry.getTarget() );
         }
 
         processTypeDeclarations( packageDescr );
 
         for ( final Iterator it = packageDescr.getFunctionImports().iterator(); it.hasNext(); ) {
             String importEntry = ((FunctionImportDescr) it.next()).getTarget();
-            this.dialectRegistry.addStaticImport( importEntry );
-            this.pkg.addStaticImport( importEntry );
+            pkgRegistry.addStaticImport( importEntry );
+            pkgRegistry.getPackage().addStaticImport( importEntry );
         }
 
         final List globals = packageDescr.getGlobals();
@@ -409,9 +543,9 @@ public class PackageBuilder {
 
             Class clazz;
             try {
-                clazz = typeResolver.resolveType( className );
-                this.pkg.addGlobal( identifier,
-                                    clazz );
+                clazz = pkgRegistry.getTypeResolver().resolveType( className );
+                pkgRegistry.getPackage().addGlobal( identifier,
+                                                    clazz );
             } catch ( final ClassNotFoundException e ) {
                 this.results.add( new GlobalError( identifier,
                                                    global.getLine() ) );
@@ -424,7 +558,25 @@ public class PackageBuilder {
      * @param packageDescr
      */
     private void processTypeDeclarations(final PackageDescr packageDescr) {
+        PackageRegistry defaultRegistry;
+        if ( isEmpty( packageDescr.getName() ) ) {
+            defaultRegistry = this.pkgRegistryMap.get( this.defaultNamespace );
+        } else {
+            defaultRegistry = this.pkgRegistryMap.get( packageDescr.getNamespace() );
+        }
+
+        PackageRegistry pkgRegistry = null;
         for ( TypeDeclarationDescr typeDescr : packageDescr.getTypeDeclarations() ) {
+            // make sure namespace is set on components
+            if ( isEmpty( typeDescr.getNamespace() ) ) {
+                // use the default namespace 
+                typeDescr.setNamespace( defaultRegistry.getPackage().getName() );
+                pkgRegistry = defaultRegistry;
+            } else {
+                // use the namespace specified by the type declaration
+                pkgRegistry = this.pkgRegistryMap.get( typeDescr.getNamespace() );
+            }
+
             TypeDeclaration type = new TypeDeclaration( typeDescr.getTypeName() );
 
             // is it a regular fact or an event?
@@ -437,7 +589,7 @@ public class PackageBuilder {
             String templateName = typeDescr.getMetaAttribute( TypeDeclaration.ATTR_TEMPLATE );
             if ( templateName != null ) {
                 type.setFormat( TypeDeclaration.Format.TEMPLATE );
-                FactTemplate template = this.pkg.getFactTemplate( templateName );
+                FactTemplate template = pkgRegistry.getPackage().getFactTemplate( templateName );
                 if ( template != null ) {
                     type.setTypeTemplate( template );
                 } else {
@@ -453,15 +605,18 @@ public class PackageBuilder {
                 type.setFormat( TypeDeclaration.Format.POJO );
                 Class clazz;
                 try {
-                	if (typeDescr.getFields().size() > 0) {
-                		//generate the bean if its needed
-                		generateDeclaredBean(typeDescr, type);
-                	}
-                    clazz = typeResolver.resolveType( className );
+                    if ( typeDescr.getFields().size() > 0 ) {
+                        // generate the bean if its needed
+                        generateDeclaredBean( typeDescr,
+                                              type,
+                                              pkgRegistry );
+                    }
+                    clazz = pkgRegistry.getTypeResolver().resolveType( className );
                     type.setTypeClass( clazz );
-                    if( type.getTypeClassDef() != null ) {
+                    if ( type.getTypeClassDef() != null ) {
                         try {
-                            buildFieldAccessors( type );
+                            buildFieldAccessors( type,
+                                                 pkgRegistry );
                         } catch ( Exception e ) {
                             this.results.add( new TypeDeclarationError( "Error creating field accessors for '" + className + "' for type '" + type.getTypeName() + "'",
                                                                         typeDescr.getLine() ) );
@@ -470,9 +625,9 @@ public class PackageBuilder {
                     }
                 } catch ( final ClassNotFoundException e ) {
 
-	                    this.results.add( new TypeDeclarationError( "Class not found '" + className + "' for type '" + type.getTypeName() + "'",
-	                                                                typeDescr.getLine() ) );
-	                    continue;
+                    this.results.add( new TypeDeclarationError( "Class not found '" + className + "' for type '" + type.getTypeName() + "'",
+                                                                typeDescr.getLine() ) );
+                    continue;
                 }
             }
 
@@ -484,17 +639,18 @@ public class PackageBuilder {
             if ( duration != null ) {
                 type.setDurationAttribute( duration );
                 InternalReadAccessor extractor = ClassFieldAccessorCache.getInstance().getReader( type.getTypeClass(),
-                                                                                                duration,
-                                                                                                this.configuration.getClassLoader() );
+                                                                                                  duration,
+                                                                                                  this.configuration.getClassLoader() );
                 type.setDurationExtractor( extractor );
             }
 
-            this.pkg.addTypeDeclaration( type );
+            pkgRegistry.getPackage().addTypeDeclaration( type );
         }
     }
 
     /**
-     *
+     * 
+     * @param registry 
      * @throws SecurityException
      * @throws IllegalArgumentException
      * @throws InstantiationException
@@ -506,26 +662,27 @@ public class PackageBuilder {
      * @throws InvocationTargetException
      * @throws NoSuchFieldException
      */
-    private final void buildFieldAccessors( final TypeDeclaration type ) throws SecurityException,
-                                           IllegalArgumentException,
-                                           InstantiationException,
-                                           IllegalAccessException,
-                                           IOException,
-                                           IntrospectionException,
-                                           ClassNotFoundException,
-                                           NoSuchMethodException,
-                                           InvocationTargetException,
-                                           NoSuchFieldException {
+    private final void buildFieldAccessors(final TypeDeclaration type,
+                                           PackageRegistry registry) throws SecurityException,
+                                                                    IllegalArgumentException,
+                                                                    InstantiationException,
+                                                                    IllegalAccessException,
+                                                                    IOException,
+                                                                    IntrospectionException,
+                                                                    ClassNotFoundException,
+                                                                    NoSuchMethodException,
+                                                                    InvocationTargetException,
+                                                                    NoSuchFieldException {
         ClassFieldAccessorCache cache = ClassFieldAccessorCache.getInstance();
         ClassDefinition cd = type.getTypeClassDef();
 
         for ( FieldDefinition attrDef : cd.getFieldsDefinitions() ) {
             ClassFieldReader reader = cache.getReader( cd.getDefinedClass(),
                                                        attrDef.getName(),
-                                                       this.pkg.getDialectDatas().getClassLoader() );
+                                                       registry.getPackage().getDialectRuntimeRegistry().getClassLoader() );
             ClassFieldWriter writer = cache.getWriter( cd.getDefinedClass(),
                                                        attrDef.getName(),
-                                                       this.pkg.getDialectDatas().getClassLoader() );
+                                                       registry.getPackage().getDialectRuntimeRegistry().getClassLoader() );
             ClassFieldAccessor accessor = new ClassFieldAccessor( reader,
                                                                   writer );
             attrDef.setFieldAccessor( accessor );
@@ -535,56 +692,68 @@ public class PackageBuilder {
     /**
      * Generates a bean, and adds it to the composite class loader that
      * everything is using.
-     *
+     * 
      */
-    private void generateDeclaredBean(TypeDeclarationDescr typeDescr, TypeDeclaration type) {
+    private void generateDeclaredBean(TypeDeclarationDescr typeDescr,
+                                      TypeDeclaration type,
+                                      PackageRegistry pkgRegistry) {
         // need to fix classloader?
-    	ClassBuilder cb = new ClassBuilder();
-    	String fullName = this.pkg.getName() + "." + typeDescr.getTypeName();
-    	ClassDefinition def = new ClassDefinition(fullName);
-    	Map<String, TypeFieldDescr> flds = typeDescr.getFields();
-    	try {
-        	for (TypeFieldDescr field : flds.values()) {
-        		String fullFieldType = typeResolver.resolveType(field.getPattern().getObjectType()).getName();
-    			def.addField(new FieldDefinition(field.getFieldName(), fullFieldType));
-    		}
+        ClassBuilder cb = new ClassBuilder();
+        String fullName = typeDescr.getNamespace() + "." + typeDescr.getTypeName();
+        ClassDefinition def = new ClassDefinition( fullName );
+        Map<String, TypeFieldDescr> flds = typeDescr.getFields();
+        try {
+            for ( TypeFieldDescr field : flds.values() ) {
+                String fullFieldType = pkgRegistry.getTypeResolver().resolveType( field.getPattern().getObjectType() ).getName();
+                def.addField( new FieldDefinition( field.getFieldName(),
+                                                   fullFieldType ) );
+            }
 
-	    	byte[] d = cb.buildClass(def);
-	    	this.pkg.getPackageScopeClassLoader().addClass( fullName, d);
-	    	type.setTypeClassDef( def );
-    	} catch (Exception e) {
-    	    e.printStackTrace();
-    		this.results.add(new TypeDeclarationError("Unable to create a class for declared type " + fullName + ": "+e.getMessage()+";", typeDescr.getLine()));
-    	}
-	}
+            byte[] d = cb.buildClass( def );
+            pkgRegistry.getPackage().getPackageScopeClassLoader().addClass( fullName,
+                                                                            d );
+            type.setTypeClassDef( def );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            this.results.add( new TypeDeclarationError( "Unable to create a class for declared type " + fullName + ": " + e.getMessage() + ";",
+                                                        typeDescr.getLine() ) );
+        }
+    }
 
-	private void addFunction(final FunctionDescr functionDescr) {
-        this.dialect.addFunction( functionDescr,
-                                  getTypeResolver() );
+    private void addFunction(final FunctionDescr functionDescr) {
+        PackageRegistry pkgRegistry = this.pkgRegistryMap.get( functionDescr.getNamespace() );
+        Dialect dialect = pkgRegistry.getDialectCompiletimeRegistry().getDialect( functionDescr.getDialect() );
+        dialect.addFunction( functionDescr,
+                             pkgRegistry.getTypeResolver() );
     }
 
     private void preCompileAddFunction(final FunctionDescr functionDescr) {
-        this.dialect.preCompileAddFunction( functionDescr,
-                                            getTypeResolver() );
+        PackageRegistry pkgRegistry = this.pkgRegistryMap.get( functionDescr.getNamespace() );
+        Dialect dialect = pkgRegistry.getDialectCompiletimeRegistry().getDialect( functionDescr.getDialect() );
+        dialect.preCompileAddFunction( functionDescr,
+                                       pkgRegistry.getTypeResolver() );
     }
 
     private void postCompileAddFunction(final FunctionDescr functionDescr) {
-        this.dialect.postCompileAddFunction( functionDescr,
-                                             getTypeResolver() );
+        PackageRegistry pkgRegistry = this.pkgRegistryMap.get( functionDescr.getNamespace() );
+        Dialect dialect = pkgRegistry.getDialectCompiletimeRegistry().getDialect( functionDescr.getDialect() );
+        dialect.postCompileAddFunction( functionDescr,
+                                        pkgRegistry.getTypeResolver() );
     }
 
     private void addFactTemplate(final FactTemplateDescr factTemplateDescr) {
         final List fields = new ArrayList();
         int index = 0;
+        PackageRegistry pkgRegistry = this.pkgRegistryMap.get( this.defaultNamespace );
         for ( final Iterator it = factTemplateDescr.getFields().iterator(); it.hasNext(); ) {
             final FieldTemplateDescr fieldTemplateDescr = (FieldTemplateDescr) it.next();
             FieldTemplate fieldTemplate = null;
             try {
                 fieldTemplate = new FieldTemplateImpl( fieldTemplateDescr.getName(),
                                                        index++,
-                                                       getTypeResolver().resolveType( fieldTemplateDescr.getClassType() ) );
+                                                       pkgRegistry.getTypeResolver().resolveType( fieldTemplateDescr.getClassType() ) );
             } catch ( final ClassNotFoundException e ) {
-                this.results.add( new FieldTemplateError( this.pkg,
+                this.results.add( new FieldTemplateError( pkgRegistry.getPackage(),
                                                           fieldTemplateDescr,
                                                           null,
                                                           "Unable to resolve Class '" + fieldTemplateDescr.getClassType() + "'" ) );
@@ -592,38 +761,40 @@ public class PackageBuilder {
             fields.add( fieldTemplate );
         }
 
-        final FactTemplate factTemplate = new FactTemplateImpl( this.pkg,
+        final FactTemplate factTemplate = new FactTemplateImpl( pkgRegistry.getPackage(),
                                                                 factTemplateDescr.getName(),
                                                                 (FieldTemplate[]) fields.toArray( new FieldTemplate[fields.size()] ) );
     }
 
     private void addRule(final RuleDescr ruleDescr) {
-        //this.dialect.init( ruleDescr );
+        // this.dialect.init( ruleDescr );
 
         if ( ruleDescr instanceof QueryDescr ) {
-            //ruleDescr.getLhs().insertDescr( 0, baseDescr );
+            // ruleDescr.getLhs().insertDescr( 0, baseDescr );
         }
 
+        PackageRegistry pkgRegistry = this.pkgRegistryMap.get( ruleDescr.getNamespace() );
+
+        DialectCompiletimeRegistry ctr = pkgRegistry.getDialectCompiletimeRegistry();
         RuleBuildContext context = new RuleBuildContext( this.configuration,
-                                                         pkg,
                                                          ruleDescr,
-                                                         this.dialectRegistry,
-                                                         this.dialect );
+                                                         ctr,
+                                                         pkgRegistry.getPackage(),
+                                                         ctr.getDialect( pkgRegistry.getDialect() ) );
         this.ruleBuilder.build( context );
 
         this.results.addAll( context.getErrors() );
 
         context.getDialect().addRule( context );
 
-        this.pkg.addRule( context.getRule() );
-    }
+        if ( this.ruleBase != null ) {
+            if ( pkgRegistry.getPackage().getRule( ruleDescr.getName() ) != null ) {
+                this.ruleBase.removeRule( pkgRegistry.getPackage(),
+                                          pkgRegistry.getPackage().getRule( ruleDescr.getName() ) );
+            }
+        }
 
-    /**
-     * @return a Type resolver, lazily. If one does not exist yet, it will be
-     *         initialised.
-     */
-    public TypeResolver getTypeResolver() {
-        return this.typeResolver;
+        pkgRegistry.getPackage().addRule( context.getRule() );
     }
 
     /**
@@ -631,40 +802,58 @@ public class PackageBuilder {
      *         can report on by calling getErrors or printErrors. If you try to
      *         add an invalid package (or rule) to a RuleBase, you will get a
      *         runtime exception.
-     *
+     * 
      * Compiled packages are serializable.
      */
     public Package getPackage() {
-        if ( this.pkg != null ) {
-            this.pkg.getDialectDatas().reloadDirty();
+        PackageRegistry pkgRegistry = this.pkgRegistryMap.get( this.defaultNamespace );
+        Package pkg = null;
+        if ( pkgRegistry != null ) {
+            pkg = pkgRegistry.getPackage();
+            pkgRegistry.getPackage().getDialectRuntimeRegistry().reloadDirty();
         }
-        if ( hasErrors() && this.pkg != null ) {
-            this.pkg.setError( getErrors().toString() );
+        if ( hasErrors() && pkg != null ) {
+            pkg.setError( getErrors().toString() );
         }
-        return this.pkg;
+        return pkg;
+    }
+
+    public Package[] getPackages() {
+        Package[] pkgs = new Package[this.pkgRegistryMap.size()];
+        int i = 0;
+        String errors = getErrors().toString();
+        for ( PackageRegistry pkgRegistry : this.pkgRegistryMap.values() ) {
+            Package pkg = pkgRegistry.getPackage();
+            pkg.getDialectRuntimeRegistry().reloadDirty();
+            pkg.setError( errors );
+            pkgs[i++] = pkg;
+        }
+
+        return pkgs;
     }
 
     /**
      * Return the PackageBuilderConfiguration for this PackageBuilder session
-     * @return
-     *      The PackageBuilderConfiguration
+     * 
+     * @return The PackageBuilderConfiguration
      */
     public PackageBuilderConfiguration getPackageBuilderConfiguration() {
         return this.configuration;
     }
 
-    public DialectRegistry getDialectRegistry() {
-        return this.dialectRegistry;
+    public PackageRegistry getPackageRegistry(String name) {
+        return this.pkgRegistryMap.get( name );
     }
 
-    public Dialect getDefaultDialect() {
-        return this.dialect;
+    public Map<String, PackageRegistry> getPackageRegistry() {
+        return this.pkgRegistryMap;
     }
 
     /**
-     * Return the ClassFieldExtractorCache, this should only be used internally, and is subject to change
-     * @return
-     *      the ClsasFieldExtractorCache
+     * Return the ClassFieldExtractorCache, this should only be used internally,
+     * and is subject to change
+     * 
+     * @return the ClsasFieldExtractorCache
      */
     public ClassFieldAccessorCache getClassFieldExtractorCache() {
         return this.classFieldExtractorCache;
@@ -719,7 +908,7 @@ public class PackageBuilder {
      * report a compile error of its type, should it happen. This is needed, as
      * the compiling is done as one hit at the end, and we need to be able to
      * work out what rule/ast element caused the error.
-     *
+     * 
      * An error handler it created for each class task that is queued to be
      * compiled. This doesn't mean an error has occurred, it just means it *may*
      * occur in the future and we need to be able to map it back to the AST
@@ -743,7 +932,7 @@ public class PackageBuilder {
         }
 
         /**
-         *
+         * 
          * @return A DroolsError object populated as appropriate, should the
          *         unthinkable happen and this need to be reported.
          */

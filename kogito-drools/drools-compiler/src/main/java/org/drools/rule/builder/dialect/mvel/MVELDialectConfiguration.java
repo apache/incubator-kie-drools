@@ -2,7 +2,10 @@ package org.drools.rule.builder.dialect.mvel;
 
 import org.drools.compiler.Dialect;
 import org.drools.compiler.DialectConfiguration;
+import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.compiler.PackageRegistry;
+import org.drools.rule.Package;
 
 /**
  * The MVEL dialect.
@@ -23,8 +26,10 @@ public class MVELDialectConfiguration
     
     private int                         langLevel;
 
-    public Dialect getDialect() {
-        return new MVELDialect();
+    public Dialect newDialect(PackageBuilder packageBuilder, PackageRegistry pkgRegistry, Package pkg) {
+        return new MVELDialect(packageBuilder,
+                               pkgRegistry,
+                               pkg);
     }
 
     public void init(PackageBuilderConfiguration conf) {
