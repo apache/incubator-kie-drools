@@ -381,7 +381,7 @@ public class PackageBuilder {
                         // make sure namespace is set on components
                         functionDescr.setNamespace( this.defaultNamespace );
                     }
-                    if ( isEmpty( functionDescr.getNamespace() ) ) {
+                    if ( isEmpty( functionDescr.getDialect() ) ) {
                         // make sure namespace is set on components
                         functionDescr.setDialect( pkgRegistry.getDialect() );
                     }
