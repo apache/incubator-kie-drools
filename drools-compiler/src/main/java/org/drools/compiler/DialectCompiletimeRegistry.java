@@ -6,26 +6,34 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.base.TypeResolver;
+import org.drools.rule.Package;
+import org.drools.rule.builder.ProcessBuildContext;
+
 /**
  * A Registry of DialectConfigurations. It is also responsible for issueing actions to all registered
  * dialects.
  * This Class api is subject to change.
  *
  */
-public class DialectRegistry {
-    private Map map;
+public class DialectCompiletimeRegistry {
+    private Package              pkg;
 
-    public DialectRegistry() {
-        this.map = new HashMap();
-    }
+    
+    private Map<String, Dialect> map;
 
+    public DialectCompiletimeRegistry(Package pkg) {
+        this.pkg = pkg;
+        this.map = new HashMap<String, Dialect>();
+    }    
+    
     /**
      * Add a DialectConfiguration to the registry
      * @param name
      * @param dialect
      */
     public void addDialect(final String name,
-                                        final Dialect dialect) {
+                           final Dialect dialect) {
         this.map.put( name,
                       dialect );
     }
@@ -40,23 +48,12 @@ public class DialectRegistry {
     }
 
     /**
-     * Initialise all registered dialects for the given PackageBuilder.
-     * @param builder
-     */
-    public void initAll(PackageBuilder builder) {
-        for ( Iterator it = this.map.values().iterator(); it.hasNext(); ) {
-        	Dialect dialect = (Dialect) it.next();
-            dialect.init( builder );
-        }
-    }
-
-    /**
      * Instruct all registered dialects to compile what ever they have attempted to build.
      *
      */
     public void compileAll() {
         for ( Iterator it = this.map.values().iterator(); it.hasNext(); ) {
-        	Dialect dialect = (Dialect) it.next();
+            Dialect dialect = (Dialect) it.next();
             dialect.compileAll();
         }
     }
@@ -79,7 +76,7 @@ public class DialectRegistry {
             list = new ArrayList();
         }
         for ( Iterator it = this.map.values().iterator(); it.hasNext(); ) {
-        	Dialect dialect = (Dialect) it.next();
+            Dialect dialect = (Dialect) it.next();
             List results = dialect.getResults();
             if ( results != null ) {
                 list.addAll( results );
@@ -94,7 +91,7 @@ public class DialectRegistry {
      */
     public void addImport(String importEntry) {
         for ( Iterator it = this.map.values().iterator(); it.hasNext(); ) {
-        	Dialect dialect = (Dialect) it.next();
+            Dialect dialect = (Dialect) it.next();
             dialect.addImport( importEntry );
         }
     }
@@ -102,12 +99,19 @@ public class DialectRegistry {
     /**
      * Iterates all registered dialects, informing them of a static imports added to the PackageBuilder
      * @param staticImportEntry
-     */    
+     */
     public void addStaticImport(String staticImportEntry) {
         for ( Iterator it = this.map.values().iterator(); it.hasNext(); ) {
-        	Dialect dialect = (Dialect) it.next();
+            Dialect dialect = (Dialect) it.next();
             dialect.addStaticImport( staticImportEntry );
         }
+    }
+    
+    public void addProcess(ProcessBuildContext contgext) {
+        for ( Iterator it = this.map.values().iterator(); it.hasNext(); ) {
+            Dialect dialect = (Dialect) it.next();
+            dialect.addProcess( contgext );
+        }   
     }
 
 }

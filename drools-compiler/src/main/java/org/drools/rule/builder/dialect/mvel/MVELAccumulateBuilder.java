@@ -34,7 +34,7 @@ import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.rule.Accumulate;
 import org.drools.rule.Declaration;
-import org.drools.rule.MVELDialectData;
+import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Pattern;
 import org.drools.rule.RuleConditionElement;
 import org.drools.rule.builder.AccumulateBuilder;
@@ -111,7 +111,7 @@ public class MVELAccumulateBuilder
                                                                      source.getOuterDeclarations(),
                                                                      context.getPkg().getGlobals() );
 
-            MVELDialectData data = (MVELDialectData) context.getPkg().getDialectDatas().getDialectData( "mvel" );
+            MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
             factory.setNextFactory( data.getFunctionFactory() );
 
             accumulator = new MVELAccumulatorFunctionExecutor( factory,
@@ -204,7 +204,7 @@ public class MVELAccumulateBuilder
                                                        shadow );
             }
 
-            MVELDialectData data = (MVELDialectData) context.getPkg().getDialectDatas().getDialectData( "mvel" );
+            MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
             factory.setNextFactory( data.getFunctionFactory() );
 
             accumulator = new MVELAccumulator( factory,

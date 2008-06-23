@@ -909,7 +909,7 @@ public class PatternBuilder
                                                         factTemplate.getFieldTemplateIndex( fieldName ) );
         } else {
             try {
-                ClassLoader classloader = context.getPkg().getDialectDatas().getClassLoader();
+                ClassLoader classloader = context.getPkg().getDialectRuntimeRegistry().getClassLoader();
                 extractor = context.getDialect().getClassFieldExtractorCache().getReader( ((ClassObjectType) objectType).getClassType(),
                                                                                              fieldName,
                                                                                              classloader );

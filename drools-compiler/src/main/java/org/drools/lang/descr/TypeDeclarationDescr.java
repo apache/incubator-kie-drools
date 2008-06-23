@@ -20,9 +20,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TypeDeclarationDescr extends BaseDescr {
+import org.drools.rule.Namespaceable;
+
+public class TypeDeclarationDescr extends BaseDescr implements Namespaceable {
 
     private static final long   serialVersionUID = 400L;
+    private String              namespace;
     private String              typeName;
     private Map<String, String> metaAttributes;
     private Map<String, TypeFieldDescr> fields;
@@ -35,6 +38,14 @@ public class TypeDeclarationDescr extends BaseDescr {
         this.typeName = typeName;
         this.metaAttributes = new HashMap<String, String>();
     }
+    
+    public void setNamespace(String namespace) {
+        this.namespace = namespace;
+    }
+    
+    public String getNamespace() {
+        return this.namespace;
+    }  
 
     /**
      * @return the identifier

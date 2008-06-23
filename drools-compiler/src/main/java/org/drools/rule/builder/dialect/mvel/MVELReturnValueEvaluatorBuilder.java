@@ -9,7 +9,7 @@ import org.drools.base.mvel.MVELReturnValueEvaluator;
 import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.Dialect;
 import org.drools.compiler.ReturnValueDescr;
-import org.drools.rule.MVELDialectData;
+import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.builder.PackageBuildContext;
 import org.drools.rule.builder.ReturnValueEvaluatorBuilder;
 import org.drools.workflow.instance.impl.ReturnValueConstraintEvaluator;
@@ -50,7 +50,7 @@ public class MVELReturnValueEvaluatorBuilder
                                                                      context.getPkg().getGlobals(),
                                                                      analysis.getBoundIdentifiers() );
             
-            MVELDialectData data = (MVELDialectData) context.getPkg().getDialectDatas().getDialectData( "mvel" );
+            MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
             factory.setNextFactory( data.getFunctionFactory() );            
             
             constraintNode.setEvaluator( new MVELReturnValueEvaluator( expr, factory ) );

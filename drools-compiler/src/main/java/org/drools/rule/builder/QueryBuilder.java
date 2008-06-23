@@ -23,7 +23,7 @@ public class QueryBuilder {
                                              0, // offset is 0 by default
                                              objectType,
                                              null );
-        ClassLoader classloader = context.getPkg().getDialectDatas().getClassLoader();
+        ClassLoader classloader = context.getPkg().getDialectRuntimeRegistry().getClassLoader();
         final InternalReadAccessor extractor = context.getDialect().getClassFieldExtractorCache().getReader( DroolsQuery.class,
                                                                                                           "name",
                                                                                                           classloader );

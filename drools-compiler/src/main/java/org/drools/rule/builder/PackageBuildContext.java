@@ -23,7 +23,7 @@ import java.util.Map;
 
 import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.Dialect;
-import org.drools.compiler.DialectRegistry;
+import org.drools.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.rule.Dialectable;
@@ -63,7 +63,7 @@ public class PackageBuildContext {
     // a simple counter for generated names
     private int                         counter;
 
-    private DialectRegistry             dialectRegistry;
+    private DialectCompiletimeRegistry             dialectRegistry;
 
     private Dialect                     dialect;    
     
@@ -77,7 +77,7 @@ public class PackageBuildContext {
     public void init(final PackageBuilderConfiguration configuration,
                                final Package pkg,
                                final BaseDescr parentDescr,
-                               final DialectRegistry dialectRegistry,
+                               final DialectCompiletimeRegistry dialectRegistry,
                                final Dialect defaultDialect,
                                final Dialectable component) {
         this.configuration = configuration;
@@ -119,7 +119,7 @@ public class PackageBuildContext {
         return (Dialect) this.dialectRegistry.getDialect( dialectName );
     }
     
-    public DialectRegistry getDialectRegistry() {
+    public DialectCompiletimeRegistry getDialectRegistry() {
         return this.dialectRegistry;
     }
 

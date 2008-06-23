@@ -39,8 +39,6 @@ import org.drools.rule.builder.SalienceBuilder;
 public interface Dialect {
     String getId();
 
-    void init(PackageBuilder builder);
-
     // this is needed because some dialects use other dialects
     // to build complex expressions. Example: java dialect uses MVEL
     // to execute complex expressions
@@ -106,8 +104,6 @@ public interface Dialect {
     public void addStaticImport(String importEntry);
 
     List getResults();
-
-    void init(Package pkg);
 
     void init(RuleDescr ruleDescr);
 

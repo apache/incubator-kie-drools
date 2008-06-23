@@ -178,9 +178,9 @@ public class PackageBuilderConfigurationTest extends TestCase {
         PackageBuilder builder = new PackageBuilder( pkg,
                                                      cfg1 );
 
-        MockDialect mockDialect2 = (MockDialect) builder.getDialectRegistry().getDialect( cfg1.getDefaultDialect() );
-        assertSame( mockConf.getDialect(),
-                    mockDialect2 );
+        PackageRegistry pkgRegistry = builder.getPackageRegistry( pkg.getName() );
+        DialectCompiletimeRegistry dialectRegistry = pkgRegistry.getDialectCompiletimeRegistry();
+        MockDialect mockDialect2 = (MockDialect) dialectRegistry.getDialect( cfg1.getDefaultDialect() );
 
         assertSame( builder,
                     mockDialect2.getPackageBuilder() );
@@ -222,11 +222,10 @@ public class PackageBuilderConfigurationTest extends TestCase {
     public static class MockDialectConfiguration
         implements
         DialectConfiguration {
-        private MockDialect                 dialect = new MockDialect();
         private PackageBuilderConfiguration conf;
 
-        public Dialect getDialect() {
-            return this.dialect;
+        public Dialect newDialect(PackageBuilder pkgBuilder, PackageRegistry pkgRegistry, Package pkg) {
+            return new MockDialect( pkgBuilder, pkgRegistry, pkg);
         }
 
         public PackageBuilderConfiguration getPackageBuilderConfiguration() {
@@ -251,14 +250,9 @@ public class PackageBuilderConfigurationTest extends TestCase {
         private List           staticImports = new ArrayList();
 
         private boolean        compileAll    = false;
-
-        public void init(PackageBuilder builder) {
+        
+        public MockDialect(PackageBuilder builder, PackageRegistry pkgRegistry, Package pkg) {
             this.builder = builder;
-            this.pkg = builder.getPackage();
-
-        }
-
-        public void init(Package pkg) {
             this.pkg = pkg;
         }
 

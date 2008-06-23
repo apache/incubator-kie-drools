@@ -7,6 +7,7 @@ import junit.framework.TestCase;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.ReturnValueDescr;
@@ -39,13 +40,14 @@ public class JavaReturnValueConstraintEvaluatorBuilderTest extends TestCase {
 
         PackageBuilder pkgBuilder = new PackageBuilder( pkg );
         final PackageBuilderConfiguration conf = pkgBuilder.getPackageBuilderConfiguration();
-        JavaDialect javaDialect = (JavaDialect) pkgBuilder.getDialectRegistry().getDialect( "java" );
+        DialectCompiletimeRegistry dialectRegistry = pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectCompiletimeRegistry();
+        JavaDialect javaDialect = (JavaDialect) dialectRegistry.getDialect( "java" );
 
         ProcessBuildContext context = new ProcessBuildContext( conf,
                                                                pkg,
                                                                process,
                                                                processDescr,
-                                                               pkgBuilder.getDialectRegistry(),
+                                                               dialectRegistry,
                                                                javaDialect );
 
         pkgBuilder.addPackageFromDrl( new StringReader( "package pkg1;\nglobal Boolean value;" ) );

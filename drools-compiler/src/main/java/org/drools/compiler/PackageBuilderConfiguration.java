@@ -32,6 +32,7 @@ import org.drools.base.evaluators.EvaluatorDefinition;
 import org.drools.base.evaluators.EvaluatorRegistry;
 import org.drools.process.builder.ProcessNodeBuilder;
 import org.drools.process.builder.ProcessNodeBuilderRegistry;
+import org.drools.rule.Package;
 import org.drools.util.ChainedProperties;
 import org.drools.util.ClassUtils;
 import org.drools.util.ConfFileUtils;
@@ -196,12 +197,12 @@ public class PackageBuilderConfiguration {
                                    dialectConf );
     }
 
-    public DialectRegistry buildDialectRegistry() {
-        DialectRegistry registry = new DialectRegistry();
+    public DialectCompiletimeRegistry buildDialectRegistry(PackageBuilder packageBuilder, PackageRegistry pkgRegistry, Package pkg) {
+        DialectCompiletimeRegistry registry = new DialectCompiletimeRegistry(pkg);
         for ( Iterator it = this.dialectConfigurations.values().iterator(); it.hasNext(); ) {
             DialectConfiguration conf = (DialectConfiguration) it.next();
-            Dialect dialect = conf.getDialect();
-            registry.addDialect( conf.getDialect().getId(),
+            Dialect dialect = conf.newDialect(packageBuilder, pkgRegistry, pkg);
+            registry.addDialect( dialect.getId(),
                                  dialect );
         }
         return registry;

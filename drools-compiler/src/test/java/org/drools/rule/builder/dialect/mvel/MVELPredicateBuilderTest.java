@@ -16,6 +16,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.compiler.PackageRegistry;
 import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.reteoo.LeftTuple;
@@ -40,12 +41,13 @@ public class MVELPredicateBuilderTest extends TestCase {
 
         PackageBuilder pkgBuilder = new PackageBuilder( pkg );
         final PackageBuilderConfiguration conf = pkgBuilder.getPackageBuilderConfiguration();
-        MVELDialect mvelDialect = ( MVELDialect ) pkgBuilder.getDialectRegistry().getDialect( "mvel" );
+        PackageRegistry pkgRegistry = pkgBuilder.getPackageRegistry( pkg.getName() );
+        MVELDialect mvelDialect = ( MVELDialect ) pkgRegistry.getDialectCompiletimeRegistry().getDialect( "mvel" );
 
         final InstrumentedBuildContent context = new InstrumentedBuildContent( conf,
-                                                                               pkg,
                                                                                ruleDescr,
-                                                                               pkgBuilder.getDialectRegistry(),
+                                                                               pkgRegistry.getDialectCompiletimeRegistry(),
+                                                                               pkg,                                                                               
                                                                                mvelDialect );
 
         final InstrumentedDeclarationScopeResolver declarationResolver = new InstrumentedDeclarationScopeResolver();
