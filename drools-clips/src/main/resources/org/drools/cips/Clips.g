@@ -560,6 +560,7 @@ field_constriant[ConditionalElementDescr base, Set declarations]
 			fc = new FieldConstraintDescr(f.getText());
 			fc.setLocation( offset(f.getLine()), f.getCharPositionInLine() );
 			fc.setStartCharacter( ((CommonToken)f).getStartIndex() );
+			//base.addDescr( fc );    
 			top = fc.getRestriction();		
 		}	  
 		
