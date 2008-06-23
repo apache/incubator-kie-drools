@@ -223,6 +223,7 @@ eval[ParserHandler handler]
 	:	
 	   (		  i=importDescr{ handler.importHandler( i ); }
 				| f=deffunction { handler.functionHandler( f ); }	
+				| t=deftemplate { handler.templateHandler( t ); }				
 				| r=defrule { handler.ruleHandler( r ); }
 				| form=lisp_form { handler.lispFormHandler( form ); }
 		)*
@@ -290,6 +291,51 @@ deffunction_params[BuildContext context]
 	;	
 */
 
+deftemplate returns[TypeDeclarationDescr typeDescr]
+    :
+    loc=LEFT_PAREN 
+    DEFTEMPLATE deftemplateName=NAME	{ 	  			  		
+	  		debug( "start rule: " + deftemplateName.getText() );
+	  		String templateStr = deftemplateName.getText();
+
+            String mod = null;
+	        if ( templateStr.indexOf("::") >= 0 ) {
+                mod = templateStr.substring(0, templateStr.indexOf("::"));
+	            templateStr = templateStr.substring(templateStr.indexOf("::")+2);
+			}		    
+		    
+		    typeDescr = new TypeDeclarationDescr( templateStr );
+		    if( mod != null ) {
+		        typeDescr.setNamespace( mod );
+		    }		    
+		        
+			typeDescr.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
+			typeDescr.setStartCharacter( ((CommonToken)loc).getStartIndex() ); 
+		
+											
+		}    
+	documentation=STRING {
+		// do nothing here for now
+	}    
+	
+  	deftemplate_slot[typeDescr]*
+    RIGHT_PAREN
+    ;
+    
+deftemplate_slot[TypeDeclarationDescr typeDescr]
+     @init {
+     }
+     :	
+    LEFT_PAREN 
+    SLOT slotName=NAME
+        LEFT_PAREN 
+        TYPE slotType=NAME
+        RIGHT_PAREN {
+            typeDescr.addField( new TypeFieldDescr(slotName.getText(), new PatternDescr( slotType.getText() ) ) );
+        }
+    RIGHT_PAREN     
+     ;    
+
 deffunction returns[FunctionDescr functionDescr]
     @init {
         List content = null;
@@ -309,8 +355,7 @@ defrule returns [RuleDescr rule]
 	@init { 
 	        rule = null; 
 	        AndDescr lhs = null;
-	        PatternDescr colum = null;
-	        AttributeDescr module = null;	      
+	        PatternDescr colum = null;  
             Set declarations = null;  
 	      }
 	:	loc=LEFT_PAREN 
@@ -319,6 +364,7 @@ defrule returns [RuleDescr rule]
 	  	{ 	  			  		
 	  		debug( "start rule: " + ruleName.getText() );
 	  		String ruleStr = ruleName.getText();
+	  		AttributeDescr module = null;
 
 	        if ( ruleStr.indexOf("::") >= 0 ) {
 	            String mod = ruleStr.substring(0, ruleStr.indexOf("::"));
@@ -331,6 +377,7 @@ defrule returns [RuleDescr rule]
 		    
 		    rule = new RuleDescr( ruleStr, null ); 
 		    if( module != null ) {
+		        rule.setNamespace( module.getValue() );
 		    	rule.addAttribute( module );
 		    }
 		        
@@ -513,11 +560,11 @@ field_constriant[ConditionalElementDescr base, Set declarations]
 			fc = new FieldConstraintDescr(f.getText());
 			fc.setLocation( offset(f.getLine()), f.getCharPositionInLine() );
 			fc.setStartCharacter( ((CommonToken)f).getStartIndex() );
+			base.addDescr( fc );	
 			top = fc.getRestriction();		
 		}	  
 		
 		or_restr_connective[top, base, fc, declarations] 
-		{ if ( top.getRestrictions().size() != 0 ) base.addDescr( fc ); }
 		RIGHT_PAREN		
 	;
 /*	
@@ -709,7 +756,10 @@ WS      :       (	' '
                 )
                 { $channel=HIDDEN; }
         ;                      
-        
+
+DEFTEMPLATE :   'deftemplate';
+SLOT        :	'slot';
+TYPE        :	'type';        
 DEFRULE		:	'defrule';
 DEFFUNCTION :	'deffunction';
 OR 			:	'or';
