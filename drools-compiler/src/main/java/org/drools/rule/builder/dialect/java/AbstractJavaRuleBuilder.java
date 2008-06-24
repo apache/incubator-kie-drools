@@ -8,7 +8,9 @@ import java.util.Map;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.rule.Declaration;
 import org.drools.rule.builder.RuleBuildContext;
+import org.drools.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.util.StringUtils;
+import org.mvel.compiler.AbstractParser;
 import org.mvel.integration.impl.MapVariableResolverFactory;
 import org.mvel.optimizers.OptimizerFactory;
 import org.mvel.templates.SimpleTemplateRegistry;
@@ -35,11 +37,11 @@ public class AbstractJavaRuleBuilder {
 
     }
 
-    public TemplateRegistry getRuleTemplateRegistry() {
+    public static TemplateRegistry getRuleTemplateRegistry() {
         return RULE_REGISTRY;
     }
 
-    public TemplateRegistry getInvokerTemplateRegistry() {
+    public static TemplateRegistry getInvokerTemplateRegistry() {
         return INVOKER_REGISTRY;
     }
 
@@ -110,31 +112,34 @@ public class AbstractJavaRuleBuilder {
         return map;
     }
 
-    public void generatTemplates(final String ruleTemplate,
+    public static void generatTemplates(final String ruleTemplate,
                                  final String invokerTemplate,
                                  final RuleBuildContext context,
                                  final String className,
                                  final Map vars,
                                  final Object invokerLookup,
                                  final BaseDescr descrLookup) {
-        TemplateRegistry registry = getRuleTemplateRegistry();
-
-        context.getMethods().add(
-             TemplateRuntime.execute(registry.getNamedTemplate(ruleTemplate), null, new MapVariableResolverFactory(vars), registry)
-        );
-
-
-        registry = getInvokerTemplateRegistry();
-        final String invokerClassName = context.getPkg().getName() + "." + context.getRuleDescr().getClassName() + StringUtils.ucFirst(className) + "Invoker";
-
-
-        context.getInvokers().put(invokerClassName,
-             TemplateRuntime.execute(registry.getNamedTemplate(invokerTemplate), null, new MapVariableResolverFactory(vars), registry)
-        );
-
-        context.getInvokerLookups().put(invokerClassName,
-                invokerLookup);
-        context.getDescrLookups().put(invokerClassName,
-                descrLookup);
+        synchronized ( MVELDialect.COMPILER_LOCK ) {     
+            AbstractParser.setLanguageLevel( 5 );
+            TemplateRegistry registry = getRuleTemplateRegistry();
+    
+            context.getMethods().add(
+                 TemplateRuntime.execute(registry.getNamedTemplate(ruleTemplate), null, new MapVariableResolverFactory(vars), registry)
+            );
+    
+    
+            registry = getInvokerTemplateRegistry();
+            final String invokerClassName = context.getPkg().getName() + "." + context.getRuleDescr().getClassName() + StringUtils.ucFirst(className) + "Invoker";
+    
+    
+            context.getInvokers().put(invokerClassName,
+                 TemplateRuntime.execute(registry.getNamedTemplate(invokerTemplate), null, new MapVariableResolverFactory(vars), registry)
+            );
+    
+            context.getInvokerLookups().put(invokerClassName,
+                    invokerLookup);
+            context.getDescrLookups().put(invokerClassName,
+                    descrLookup);
+        }
     }
 }

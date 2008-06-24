@@ -134,9 +134,10 @@ public class MVELDialect
     private Map                                          imports;
     private Map                                          packageImports;
 
+    
     private boolean                                      strictMode;
-
-    private static Boolean                               languageSet                    = Boolean.FALSE;
+    private int                                          languageLevel;
+    public static final Object COMPILER_LOCK = new Object();
 
     public MVELDialect(PackageBuilder builder,
                        PackageRegistry pkgRegistry,
@@ -144,15 +145,11 @@ public class MVELDialect
         this.pkg = pkg;
         this.packageRegistry = pkgRegistry;
         
-        this.configuration = (MVELDialectConfiguration) builder.getPackageBuilderConfiguration().getDialectConfiguration( "mvel" );
+        this.configuration = (MVELDialectConfiguration) builder.getPackageBuilderConfiguration().getDialectConfiguration( "mvel" );        
         setLanguageLevel( this.configuration.getLangLevel() );
         this.classFieldExtractorCache = builder.getClassFieldExtractorCache();
         this.strictMode = this.configuration.isStrict();
 
-        // we currently default to reflective optimisation
-
-        // Commented out by Mike.
-        //   OptimizerFactory.setDefaultOptimizer( "reflective" );
 
         MVEL.setThreadSafe( true );
 
@@ -214,17 +211,22 @@ public class MVELDialect
         out.writeBoolean( strictMode );
     }
 
-    public static void setLanguageLevel(int level) {
-        synchronized ( languageSet ) {
-            // this synchronisation is needed as setLanguageLevel is now thread safe
-            // and we do not want to be calling this while something else is being parsed.
-            // the flag ensures it is just called once and no more.
-            if ( languageSet.booleanValue() == false ) {
-                languageSet = new Boolean( true );
-                AbstractParser.setLanguageLevel( level );
-            }
-        }
+    public void setLanguageLevel(int languageLevel) {
+        this.languageLevel = languageLevel;
     }
+    
+    
+//    public static void setLanguageLevel(int level) {        
+//        synchronized ( lang ) {
+//            // this synchronisation is needed as setLanguageLevel is not thread safe
+//            // and we do not want to be calling this while something else is being parsed.
+//            // the flag ensures it is just called once and no more.
+//            if ( languageSet.booleanValue() == false ) {
+//                languageSet = new Boolean( true );
+//                AbstractParser.setLanguageLevel( level );
+//            }
+//        }
+//    }
 
     public static void initBuilder() {
         if ( builders != null ) {
@@ -490,10 +492,12 @@ public class MVELDialect
         if ( MVELDebugHandler.isDebugMode() ) {
             compiler.setDebugSymbols( true );
         }
-
-        Serializable expr = compiler.compile( parserContext );
-        return expr;
-    }
+                
+        synchronized ( COMPILER_LOCK ) {            
+            AbstractParser.setLanguageLevel( languageLevel );    
+            return compiler.compile( parserContext );
+        }
+    }    
 
     public ParserContext getParserContext(final Dialect.AnalysisResult analysis,
                                           final Map outerDeclarations,
