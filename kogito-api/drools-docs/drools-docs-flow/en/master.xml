@@ -44,6 +44,7 @@
   <xi:include href="Chapter-Introduction/Chapter-Introduction.xml" />
   <xi:include href="Chapter-GettingStarted/Chapter-GettingStarted.xml" />
   <xi:include href="Chapter-Flow/Chapter-RuleFlow.xml" />
+  <xi:include href="Chapter-RulesAndProcesses/Chapter-RulesAndProcesses.xml" />
   <xi:include href="Chapter-DomainSpecificProcesses/Chapter-DomainSpecificProcesses.xml" />
   <xi:include href="Chapter-Debugging/Chapter-Debugging.xml" />
     
