@@ -292,52 +292,6 @@ deffunction_params[BuildContext context]
 	;	
 */
 
-deftemplate returns[TypeDeclarationDescr typeDescr]
-    :
-    loc=LEFT_PAREN 
-    DEFTEMPLATE deftemplateName=NAME	{ 	  			  		
-	  		debug( "start rule: " + deftemplateName.getText() );
-	  		String templateStr = deftemplateName.getText();
-
-            String mod = null;
-	        if ( templateStr.indexOf("::") >= 0 ) {
-                mod = templateStr.substring(0, templateStr.indexOf("::"));
-	            templateStr = templateStr.substring(templateStr.indexOf("::")+2);
-			}		    
-		    
-		    typeDescr = new TypeDeclarationDescr( templateStr );
-		    if( mod != null ) {
-		        typeDescr.setNamespace( mod );
-		    }		    
-		        
-			typeDescr.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
-			typeDescr.setStartCharacter( ((CommonToken)loc).getStartIndex() ); 
-		
-											
-		}    
-	documentation=STRING {
-		// do nothing here for now
-	}    
-	
-  	deftemplate_slot[typeDescr]*
-    RIGHT_PAREN
-    ; 
-    
-deftemplate_slot[TypeDeclarationDescr typeDescr]
-     @init {
-     }
-     :	
-    LEFT_PAREN 
-    
-    SLOT slotName=NAME
-        LEFT_PAREN 
-             TYPE slotType=NAME {
-            typeDescr.addField( new TypeFieldDescr(slotName.getText(), new PatternDescr( slotType.getText() ) ) );
-        }        
-        RIGHT_PAREN 
-    RIGHT_PAREN     
-     ;   
-
 deffunction returns[FunctionDescr functionDescr]
     @init {
         List content = null;
@@ -739,6 +693,49 @@ lisp_atom returns[SExpression sExpression]
 		)		
 	;		
 	
+
+deftemplate returns[TypeDeclarationDescr typeDescr]
+    :
+    loc=LEFT_PAREN 
+    DEFTEMPLATE deftemplateName=NAME	{ 	  			  		
+	  		debug( "start rule: " + deftemplateName.getText() );
+	  		String templateStr = deftemplateName.getText();
+
+            String mod = null;
+	        if ( templateStr.indexOf("::") >= 0 ) {
+                mod = templateStr.substring(0, templateStr.indexOf("::"));
+	            templateStr = templateStr.substring(templateStr.indexOf("::")+2);
+			}		    
+		    
+		    typeDescr = new TypeDeclarationDescr( templateStr );
+		    if( mod != null ) {
+		        typeDescr.setNamespace( mod );
+		    }		    
+		        
+			typeDescr.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
+			typeDescr.setStartCharacter( ((CommonToken)loc).getStartIndex() ); 
+		
+											
+		}    
+	documentation=STRING {
+		// do nothing here for now
+	}    
+	
+    LEFT_PAREN 
+    
+    SLOT slotName=NAME
+        LEFT_PAREN 
+             'type' slotType=NAME {
+            typeDescr.addField( new TypeFieldDescr(slotName.getText(), new PatternDescr( slotType.getText() ) ) );
+        }        
+        RIGHT_PAREN 
+    RIGHT_PAREN   	
+	
+//  	deftemplate_slot[typeDescr]*
+    RIGHT_PAREN
+    ;   
+	
+	
 literal returns [String text]
 	@init {
 		text = null;
@@ -762,7 +759,7 @@ WS      :       (	' '
 
      
 DEFTEMPLATE :   'deftemplate';
-TYPE        :	'qwerty';     
+  
 SLOT        :	'slot';       
 DEFRULE		:	'defrule';
 DEFFUNCTION :	'deffunction';
@@ -771,7 +768,6 @@ AND 		:	'and';
 NOT 		:	'not';
 EXISTS 		:	'exists';
 TEST 		:	'test';
-
 NULL		:	'null';
 
 DECLARE 	:	'declare';        		
