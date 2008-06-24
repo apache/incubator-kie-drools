@@ -33,8 +33,10 @@ import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
+import org.drools.lang.descr.TypeFieldDescr;
 import org.drools.rule.ImportDeclaration;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Namespaceable;
@@ -412,4 +414,5 @@ public class Shell
 
         return pkg;
     }
+    
 }
