@@ -160,6 +160,47 @@ grammar Clips;
         		this.errors.add( new GeneralParseException( "Trailing semi-colon not allowed", offset(line) ) );
         	}
         }
+        
+    		void addTypeFieldDescr(LispForm lispForm, TypeDeclarationDescr typeDescr) {
+    	        if ( !(lispForm.getSExpressions()[0] instanceof SymbolLispAtom) ) {
+    	            throw new RuntimeException("should specify a slot");
+    	        }
+    	        
+    	        SymbolLispAtom slot = (SymbolLispAtom) lispForm.getSExpressions()[0];
+    	        if ( !"slot".equals( slot.getValue().trim() )) {
+    	            throw new RuntimeException("should specify a slot");
+    	        }
+    	        
+    	        if ( !(lispForm.getSExpressions()[1] instanceof SymbolLispAtom) ) {
+    	            throw new RuntimeException("should specify a slot name");
+    	        }
+    	        SymbolLispAtom slotName = (SymbolLispAtom) lispForm.getSExpressions()[1];
+    	        
+    	        if ( !(lispForm.getSExpressions()[2] instanceof LispForm) ) {
+    	            throw new RuntimeException("should specify a type");
+    	        }
+    	        
+    	        LispForm typeForm = (LispForm) lispForm.getSExpressions()[2];
+    	        if ( !(typeForm.getSExpressions()[0] instanceof SymbolLispAtom) ) {
+    	            throw new RuntimeException("should specify a type");
+    	        }
+    	        SymbolLispAtom type = (SymbolLispAtom) typeForm.getSExpressions()[0];
+    	        if ( !"type".equals( type.getValue().trim() )) {
+    	            throw new RuntimeException("should specify a type");
+    	        }                
+    	        
+    	        if ( !(typeForm.getSExpressions()[1] instanceof SymbolLispAtom) ) {
+    	            throw new RuntimeException("should specify a slot name");
+    	        }
+    	        SymbolLispAtom typeName = (SymbolLispAtom) typeForm.getSExpressions()[1];        
+    	        
+    	        TypeFieldDescr fieldDescr = new TypeFieldDescr(removeQuotes(slotName.getValue()), new PatternDescr(removeQuotes(typeName.getValue())));        
+    	        typeDescr.addField( fieldDescr );
+            }
+    		
+    		String removeQuotes(String string) {
+    		    return string.substring( 1, string.length() -1 );
+    		}
       
 }
 
@@ -717,13 +758,14 @@ deftemplate returns[TypeDeclarationDescr typeDescr]
 		
 											
 		}    
-		/*
+		
 	documentation=STRING {
 		// do nothing here for now
-	}    */
+	}   
 	
-    (LEFT_PAREN 
-    
+	    /*
+	    // can't get this to work, so process manually as a lisp_form
+    (LEFT_PAREN     
     'slot' slotName=NAME
         LEFT_PAREN 
              'type' slotType=NAME {
@@ -731,8 +773,10 @@ deftemplate returns[TypeDeclarationDescr typeDescr]
         }        
         RIGHT_PAREN 
     RIGHT_PAREN)*
+	*/
 	
-//  	deftemplate_slot[typeDescr]*
+	(list=lisp_form { addTypeFieldDescr(list, typeDescr); })*
+
     RIGHT_PAREN
     ;   
 	
