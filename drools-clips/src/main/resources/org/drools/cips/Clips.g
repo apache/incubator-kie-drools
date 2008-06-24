@@ -247,6 +247,7 @@ importDescr returns[ImportDescr importDescr]
 	;	
 /*	
 
+
 execution_list returns[ExecutionEngine engine]
 	@init {
 	        engine = new BlockExecutionEngine();
@@ -320,21 +321,22 @@ deftemplate returns[TypeDeclarationDescr typeDescr]
 	
   	deftemplate_slot[typeDescr]*
     RIGHT_PAREN
-    ;
+    ; 
     
 deftemplate_slot[TypeDeclarationDescr typeDescr]
      @init {
      }
      :	
     LEFT_PAREN 
+    
     SLOT slotName=NAME
         LEFT_PAREN 
-        TYPE slotType=NAME
-        RIGHT_PAREN {
+             TYPE slotType=NAME {
             typeDescr.addField( new TypeFieldDescr(slotName.getText(), new PatternDescr( slotType.getText() ) ) );
-        }
+        }        
+        RIGHT_PAREN 
     RIGHT_PAREN     
-     ;    
+     ;   
 
 deffunction returns[FunctionDescr functionDescr]
     @init {
@@ -758,9 +760,10 @@ WS      :       (	' '
                 { $channel=HIDDEN; }
         ;                      
 
+     
 DEFTEMPLATE :   'deftemplate';
-SLOT        :	'slot';
-TYPE        :	'type';        
+TYPE        :	'qwerty';     
+SLOT        :	'slot';       
 DEFRULE		:	'defrule';
 DEFFUNCTION :	'deffunction';
 OR 			:	'or';
@@ -825,7 +828,7 @@ BOOL
 	;
 	
 VAR 	: '?' SYMBOL_CHAR+
-        ;
+        ;            
 
 SH_STYLE_SINGLE_LINE_COMMENT	
 	:	'#' ( options{greedy=false;} : .)* EOL /* ('\r')? '\n'  */
@@ -901,6 +904,3 @@ FIRST_SYMBOL_CHAR : ('a'..'z'|'A'..'Z'|'0'..'9'|'!'|'$'|'%'|'^'|'*'|'_'|'-'|'+'|
 // not allowed <
 fragment
 SYMBOL_CHAR : ('a'..'z'|'A'..'Z'|'0'..'9'|'!'|'$'|'%'|'^'|'*'|'_'|'-'|'+'|'='|'\\'|'/'|'@'|'#'|':'|'>'|','|'.'|'['|']'|'{'|'}'|'?');		
-
-
-
