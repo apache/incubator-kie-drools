@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter xmlns:xi="http://www.w3.org/2001/XInclude" >
+  <title>Rules and Processes</title>
+  <para>Drools Flow is a workflow and process engine that allows
+  advanced integration of processes and rules.  This chapter gives an
+  overview of how to integrate rules and processes, ranging from simple
+  to advanced.</para>
+
+  <section>
+    <title>Why use rules in processes?</title>
+    <para>
+      <orderedlist>
+        <listitem>
+          <para>Simplicity: Complex decisions are sometimes easier to specify using rules</para>
+        </listitem>
+        <listitem>
+          <para>Separate life cycle => Agility: Change rules without having to change process</para>
+        </listitem>
+        <listitem>
+          <para>Different scope: Rules can be reused accross processes or outside processes</para>
+        </listitem>
+        <listitem>
+          <para>Declarative: Focus on what instead of how, rules are additive</para>
+        </listitem>
+        <listitem>
+          <para>Granularity: Easy to write rules for specific circumstances, processes should be more generic</para>
+        </listitem>
+        <listitem>
+          <para>Data-centric: Rules can easily handle large data sets</para>
+        </listitem>
+        <listitem>
+          <para>Performance: Rule evaluation is optimized</para>
+        </listitem>
+        <listitem>
+          <para>Advanced condition and action language: Supports advanced features like custom functions, collections, not, exists, for all, etc.</para>
+        </listitem>
+        <listitem>
+          <para>Higher-level: Using DSLs, business editors, decision tables, decision trees, etc.</para>
+        </listitem>
+      </orderedlist>
+    </para>
+  </section>
+
+  <section>
+    <title>Why integrate rules and processes in a single engine?</title>
+    <para>
+      <orderedlist>
+        <listitem>
+          <para>Simplicity: Easier for end user to use both rules and processes</para>
+        </listitem>
+        <listitem>
+          <para>Encapsulation: Sometimes close integration between processes and rules is beneficial</para>
+        </listitem>
+        <listitem>
+          <para>Performance: No unnecessary passing, transformation or synchronization of data</para>
+        </listitem>
+        <listitem>
+          <para>Learning curve: Easier to learn one product</para>
+        </listitem>
+        <listitem>
+          <para>Manageability: Easier to manage one product, rules and processes can be similar artefacts in a larger knowledge repository</para>
+        </listitem>
+        <listitem>
+          <para>Integration of features: Audit log, IDE, Web-based management platform, Repository, Debugging, etc.</para>
+        </listitem>
+      </orderedlist>
+    </para>
+  </section>
+
+  <section>
+    <title>Approach</title>
+    <para>
+    </para>
+  </section>
+
+
+  <section>
+    <title>Examples</title>
+
+    <section>
+      <title>Evaluating a set of rules in your process</title>
+      <para>This example evaluates a set of rules as part of the process.
+      The rules that need to be evaluated should be grouped in a ruleflow
+      group (using the ruleflow-group rule attribute) and a RuleSet node
+      can be used to trigger the evaluation of these rules in your process.</para>
+    </section>
+
+    <section>
+      <title>Using rules for evaluating constraints</title>
+	<para>Rules can be used for expressing and evaluating complex constraints
+      in your process.  For example, when a decision should be made which execution
+      paths should be selected at a split, rules could be used to define these
+      conditions.  Similarly, a wait state could use a rule to define how long
+      to wait.</para>
+    </section>
+
+    <section>
+      <title>Assignment rules</title>
+	<para>Human tasks can be used in a process to describe work that needs to
+      be executed by a human actor.  Which actor could be based on the current
+      state of the process, and the history.  Assignment rules can be used to
+	describe how to the actor based on this information.  These assignment rules
+      will then be applied automatically whenever a new human task needs to be
+      executed.</para>
+    </section>
+
+    <section>
+      <title>Describing exceptional situations using rules</title>
+	<para>Rules can be used for describing exceptional situations and how to respond
+      to these situations.  Adding all this information in the control flow of the main
+      process would make the basic process much more complex.  Rules can be used to
+      handle each of these situations separately, without making the core process more
+      complex.  It also makes it much easier to adapt existing processes to take new
+      unanticipated events into account.</para>
+    </section>
+
+    <section>
+      <title>Modularizing concerns using rules</title>
+      <para>The process defines the overall control flow.  Rules could be used
+      to add additional concerns to this process without making the overall control
+      flow more complex.  For example, rules could be defined to log certain information
+      during the execution of the process.  The original process is not altered and
+      all logging functionality is cleanly modularized as a set of rules.  This
+      greatly improves reusability (allows users to easily apply the same strategy
+      on different processes), readability (control flow of the original process
+      is still the same) and modifiability (you can easily add, remove or change the
+      logging strategy by adding, removing or changing the rules, the process should not
+      be modified).</para>
+    </section>
+
+    <section>
+      <title>Using rules to dynamically alter the behaviour of the process</title>
+      <para>If a problem is encountered at runtime with one of the processes, new rules
+      could be added at runtime to for example log additional information or handle
+      specific cases of the process.  Once the problem is solved (e.g. an improved
+      process has been deployed), these rules can easily be removed again.  Based on
+      current circumstances, different strategies could be selected dynamically,
+      for example based on the current load of all the services, rules could be used
+      to optimize the process to the current load.</para>
+    </section>
+
+  </section>
+
+</chapter>
