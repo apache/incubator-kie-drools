@@ -23,19 +23,9 @@ public class ClipsDialect extends MVELDialect {
     public ClipsDialect(PackageBuilder builder,
                                    PackageRegistry pkgRegistry,
                                    Package pkg) {
-        super( setConf( builder ), pkgRegistry, pkg);
+        super( builder, pkgRegistry, pkg);
+        setLanguageLevel( 5 );
 
-    }
-    
-    /**
-     * hack so I can set a conf value while calling a constructor
-     * @param builder
-     * @return
-     */
-    private static PackageBuilder setConf(PackageBuilder builder) {
-        MVELDialectConfiguration conf = (MVELDialectConfiguration) builder.getPackageBuilderConfiguration().getDialectConfiguration( "mvel" );
-        conf.setLangLevel( 5 );
-        return builder;
     }
 
     public String getId() {
