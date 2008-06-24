@@ -717,19 +717,20 @@ deftemplate returns[TypeDeclarationDescr typeDescr]
 		
 											
 		}    
+		/*
 	documentation=STRING {
 		// do nothing here for now
-	}    
+	}    */
 	
-    LEFT_PAREN 
+    (LEFT_PAREN 
     
-    SLOT slotName=NAME
+    'slot' slotName=NAME
         LEFT_PAREN 
              'type' slotType=NAME {
             typeDescr.addField( new TypeFieldDescr(slotName.getText(), new PatternDescr( slotType.getText() ) ) );
         }        
         RIGHT_PAREN 
-    RIGHT_PAREN   	
+    RIGHT_PAREN)*
 	
 //  	deftemplate_slot[typeDescr]*
     RIGHT_PAREN
@@ -760,7 +761,7 @@ WS      :       (	' '
      
 DEFTEMPLATE :   'deftemplate';
   
-SLOT        :	'slot';       
+//SLOT        :	'slot';       
 DEFRULE		:	'defrule';
 DEFFUNCTION :	'deffunction';
 OR 			:	'or';
