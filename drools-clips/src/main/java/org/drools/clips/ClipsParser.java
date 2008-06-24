@@ -1,4 +1,4 @@
-// $ANTLR 3.0.1 C:\\dev\\drools\\trunk6\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g 2008-06-24 02:24:27
+// $ANTLR 3.0.1 C:\\dev\\drools\\trunk6\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g 2008-06-24 02:38:09
 
 	package org.drools.clips;
 
@@ -23,50 +23,49 @@ import java.util.Map;
 import java.util.HashMap;
 public class ClipsParser extends Parser {
     public static final String[] tokenNames = new String[] {
-        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "LEFT_PAREN", "NAME", "RIGHT_PAREN", "DEFFUNCTION", "DEFRULE", "STRING", "SALIENCE", "INT", "AND", "OR", "NOT", "EXISTS", "TEST", "VAR", "ASSIGN_OP", "PIPE", "AMPERSAND", "TILDE", "COLON", "EQUALS", "FLOAT", "BOOL", "NULL", "DEFTEMPLATE", "SLOT", "EOL", "WS", "DECLARE", "EscapeSequence", "HexDigit", "UnicodeEscape", "OctalEscape", "SYMBOL_CHAR", "SH_STYLE_SINGLE_LINE_COMMENT", "C_STYLE_SINGLE_LINE_COMMENT", "LEFT_SQUARE", "RIGHT_SQUARE", "LEFT_CURLY", "RIGHT_CURLY", "MULTI_LINE_COMMENT", "SYMBOL", "FIRST_SYMBOL_CHAR", "'import'", "'=>'", "'type'"
+        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "LEFT_PAREN", "NAME", "RIGHT_PAREN", "DEFFUNCTION", "DEFRULE", "STRING", "SALIENCE", "INT", "AND", "OR", "NOT", "EXISTS", "TEST", "VAR", "ASSIGN_OP", "PIPE", "AMPERSAND", "TILDE", "COLON", "EQUALS", "FLOAT", "BOOL", "NULL", "DEFTEMPLATE", "EOL", "WS", "DECLARE", "EscapeSequence", "HexDigit", "UnicodeEscape", "OctalEscape", "SYMBOL_CHAR", "SH_STYLE_SINGLE_LINE_COMMENT", "C_STYLE_SINGLE_LINE_COMMENT", "LEFT_SQUARE", "RIGHT_SQUARE", "LEFT_CURLY", "RIGHT_CURLY", "MULTI_LINE_COMMENT", "SYMBOL", "FIRST_SYMBOL_CHAR", "'import'", "'=>'", "'slot'", "'type'"
     };
-    public static final int RIGHT_SQUARE=40;
-    public static final int RIGHT_CURLY=42;
+    public static final int RIGHT_SQUARE=39;
+    public static final int RIGHT_CURLY=41;
     public static final int EQUALS=23;
     public static final int FLOAT=24;
     public static final int NOT=14;
-    public static final int SYMBOL_CHAR=36;
-    public static final int SH_STYLE_SINGLE_LINE_COMMENT=37;
+    public static final int SYMBOL_CHAR=35;
+    public static final int SH_STYLE_SINGLE_LINE_COMMENT=36;
     public static final int AND=12;
-    public static final int FIRST_SYMBOL_CHAR=45;
+    public static final int FIRST_SYMBOL_CHAR=44;
     public static final int EOF=-1;
-    public static final int HexDigit=33;
+    public static final int HexDigit=32;
     public static final int DEFFUNCTION=7;
     public static final int ASSIGN_OP=18;
     public static final int RIGHT_PAREN=6;
     public static final int NAME=5;
-    public static final int EOL=29;
+    public static final int EOL=28;
     public static final int DEFRULE=8;
     public static final int TILDE=21;
     public static final int PIPE=19;
     public static final int VAR=17;
     public static final int EXISTS=15;
-    public static final int SYMBOL=44;
+    public static final int SYMBOL=43;
     public static final int NULL=26;
     public static final int BOOL=25;
     public static final int SALIENCE=10;
     public static final int AMPERSAND=20;
     public static final int INT=11;
-    public static final int MULTI_LINE_COMMENT=43;
+    public static final int MULTI_LINE_COMMENT=42;
     public static final int COLON=22;
-    public static final int WS=30;
-    public static final int UnicodeEscape=34;
-    public static final int SLOT=28;
-    public static final int LEFT_CURLY=41;
+    public static final int WS=29;
+    public static final int UnicodeEscape=33;
+    public static final int LEFT_CURLY=40;
     public static final int OR=13;
     public static final int TEST=16;
     public static final int LEFT_PAREN=4;
-    public static final int DECLARE=31;
+    public static final int DECLARE=30;
     public static final int DEFTEMPLATE=27;
-    public static final int LEFT_SQUARE=39;
-    public static final int EscapeSequence=32;
-    public static final int OctalEscape=35;
-    public static final int C_STYLE_SINGLE_LINE_COMMENT=38;
+    public static final int LEFT_SQUARE=38;
+    public static final int EscapeSequence=31;
+    public static final int OctalEscape=34;
+    public static final int C_STYLE_SINGLE_LINE_COMMENT=37;
     public static final int STRING=9;
 
         public ClipsParser(TokenStream input) {
@@ -257,7 +256,7 @@ public class ClipsParser extends Parser {
                         alt1=4;
                         }
                         break;
-                    case 46:
+                    case 45:
                         {
                         alt1=1;
                         }
@@ -383,7 +382,7 @@ public class ClipsParser extends Parser {
             // C:\\dev\\drools\\trunk6\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:246:4: LEFT_PAREN 'import' importName= NAME RIGHT_PAREN
             {
             match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_importDescr140); if (failed) return importDescr;
-            match(input,46,FOLLOW_46_in_importDescr142); if (failed) return importDescr;
+            match(input,45,FOLLOW_45_in_importDescr142); if (failed) return importDescr;
             importName=(Token)input.LT(1);
             match(input,NAME,FOLLOW_NAME_in_importDescr146); if (failed) return importDescr;
             if ( backtracking==0 ) {
@@ -593,7 +592,7 @@ public class ClipsParser extends Parser {
                 }
             } while (true);
 
-            match(input,47,FOLLOW_47_in_defrule330); if (failed) return rule;
+            match(input,46,FOLLOW_46_in_defrule330); if (failed) return rule;
             pushFollow(FOLLOW_rule_consequence_in_defrule339);
             list=rule_consequence();
             _fsp--;
@@ -2092,19 +2091,18 @@ public class ClipsParser extends Parser {
 
 
     // $ANTLR start deftemplate
-    // C:\\dev\\drools\\trunk6\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:697:1: deftemplate returns [TypeDeclarationDescr typeDescr] : loc= LEFT_PAREN DEFTEMPLATE deftemplateName= NAME documentation= STRING LEFT_PAREN SLOT slotName= NAME LEFT_PAREN 'type' slotType= NAME RIGHT_PAREN RIGHT_PAREN RIGHT_PAREN ;
+    // C:\\dev\\drools\\trunk6\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:697:1: deftemplate returns [TypeDeclarationDescr typeDescr] : loc= LEFT_PAREN DEFTEMPLATE deftemplateName= NAME ( LEFT_PAREN 'slot' slotName= NAME LEFT_PAREN 'type' slotType= NAME RIGHT_PAREN RIGHT_PAREN )* RIGHT_PAREN ;
     public final TypeDeclarationDescr deftemplate() throws RecognitionException {
         TypeDeclarationDescr typeDescr = null;
 
         Token loc=null;
         Token deftemplateName=null;
-        Token documentation=null;
         Token slotName=null;
         Token slotType=null;
 
         try {
-            // C:\\dev\\drools\\trunk6\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:698:5: (loc= LEFT_PAREN DEFTEMPLATE deftemplateName= NAME documentation= STRING LEFT_PAREN SLOT slotName= NAME LEFT_PAREN 'type' slotType= NAME RIGHT_PAREN RIGHT_PAREN RIGHT_PAREN )
-            // C:\\dev\\drools\\trunk6\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:699:5: loc= LEFT_PAREN DEFTEMPLATE deftemplateName= NAME documentation= STRING LEFT_PAREN SLOT slotName= NAME LEFT_PAREN 'type' slotType= NAME RIGHT_PAREN RIGHT_PAREN RIGHT_PAREN
+            // C:\\dev\\drools\\trunk6\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:698:5: (loc= LEFT_PAREN DEFTEMPLATE deftemplateName= NAME ( LEFT_PAREN 'slot' slotName= NAME LEFT_PAREN 'type' slotType= NAME RIGHT_PAREN RIGHT_PAREN )* RIGHT_PAREN )
+            // C:\\dev\\drools\\trunk6\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:699:5: loc= LEFT_PAREN DEFTEMPLATE deftemplateName= NAME ( LEFT_PAREN 'slot' slotName= NAME LEFT_PAREN 'type' slotType= NAME RIGHT_PAREN RIGHT_PAREN )* RIGHT_PAREN
             {
             loc=(Token)input.LT(1);
             match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_deftemplate1598); if (failed) return typeDescr;
@@ -2133,29 +2131,46 @@ public class ClipsParser extends Parser {
               											
               		
             }
-            documentation=(Token)input.LT(1);
-            match(input,STRING,FOLLOW_STRING_in_deftemplate1620); if (failed) return typeDescr;
-            if ( backtracking==0 ) {
-              
-              		// do nothing here for now
-              	
-            }
-            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_deftemplate1634); if (failed) return typeDescr;
-            match(input,SLOT,FOLLOW_SLOT_in_deftemplate1646); if (failed) return typeDescr;
-            slotName=(Token)input.LT(1);
-            match(input,NAME,FOLLOW_NAME_in_deftemplate1650); if (failed) return typeDescr;
-            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_deftemplate1660); if (failed) return typeDescr;
-            match(input,48,FOLLOW_48_in_deftemplate1676); if (failed) return typeDescr;
-            slotType=(Token)input.LT(1);
-            match(input,NAME,FOLLOW_NAME_in_deftemplate1680); if (failed) return typeDescr;
-            if ( backtracking==0 ) {
-              
-                          typeDescr.addField( new TypeFieldDescr(slotName.getText(), new PatternDescr( slotType.getText() ) ) );
-                      
-            }
-            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_deftemplate1700); if (failed) return typeDescr;
-            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_deftemplate1707); if (failed) return typeDescr;
-            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_deftemplate1720); if (failed) return typeDescr;
+            // C:\\dev\\drools\\trunk6\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:725:5: ( LEFT_PAREN 'slot' slotName= NAME LEFT_PAREN 'type' slotType= NAME RIGHT_PAREN RIGHT_PAREN )*
+            loop19:
+            do {
+                int alt19=2;
+                int LA19_0 = input.LA(1);
+
+                if ( (LA19_0==LEFT_PAREN) ) {
+                    alt19=1;
+                }
+
+
+                switch (alt19) {
+            	case 1 :
+            	    // C:\\dev\\drools\\trunk6\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:725:6: LEFT_PAREN 'slot' slotName= NAME LEFT_PAREN 'type' slotType= NAME RIGHT_PAREN RIGHT_PAREN
+            	    {
+            	    match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_deftemplate1628); if (failed) return typeDescr;
+            	    match(input,47,FOLLOW_47_in_deftemplate1640); if (failed) return typeDescr;
+            	    slotName=(Token)input.LT(1);
+            	    match(input,NAME,FOLLOW_NAME_in_deftemplate1644); if (failed) return typeDescr;
+            	    match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_deftemplate1654); if (failed) return typeDescr;
+            	    match(input,48,FOLLOW_48_in_deftemplate1670); if (failed) return typeDescr;
+            	    slotType=(Token)input.LT(1);
+            	    match(input,NAME,FOLLOW_NAME_in_deftemplate1674); if (failed) return typeDescr;
+            	    if ( backtracking==0 ) {
+            	      
+            	                  typeDescr.addField( new TypeFieldDescr(slotName.getText(), new PatternDescr( slotType.getText() ) ) );
+            	              
+            	    }
+            	    match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_deftemplate1694); if (failed) return typeDescr;
+            	    match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_deftemplate1701); if (failed) return typeDescr;
+
+            	    }
+            	    break;
+
+            	default :
+            	    break loop19;
+                }
+            } while (true);
+
+            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_deftemplate1712); if (failed) return typeDescr;
 
             }
 
@@ -2172,7 +2187,7 @@ public class ClipsParser extends Parser {
 
 
     // $ANTLR start literal
-    // C:\\dev\\drools\\trunk6\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:739:1: literal returns [String text] : (t= STRING | t= NAME | t= INT | t= FLOAT | t= BOOL | t= NULL ) ;
+    // C:\\dev\\drools\\trunk6\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:740:1: literal returns [String text] : (t= STRING | t= NAME | t= INT | t= FLOAT | t= BOOL | t= NULL ) ;
     public final String literal() throws RecognitionException {
         String text = null;
 
@@ -2182,56 +2197,56 @@ public class ClipsParser extends Parser {
         		text = null;
         	
         try {
-            // C:\\dev\\drools\\trunk6\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:743:2: ( (t= STRING | t= NAME | t= INT | t= FLOAT | t= BOOL | t= NULL ) )
-            // C:\\dev\\drools\\trunk6\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:743:4: (t= STRING | t= NAME | t= INT | t= FLOAT | t= BOOL | t= NULL )
+            // C:\\dev\\drools\\trunk6\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:744:2: ( (t= STRING | t= NAME | t= INT | t= FLOAT | t= BOOL | t= NULL ) )
+            // C:\\dev\\drools\\trunk6\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:744:4: (t= STRING | t= NAME | t= INT | t= FLOAT | t= BOOL | t= NULL )
             {
-            // C:\\dev\\drools\\trunk6\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:743:4: (t= STRING | t= NAME | t= INT | t= FLOAT | t= BOOL | t= NULL )
-            int alt19=6;
+            // C:\\dev\\drools\\trunk6\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:744:4: (t= STRING | t= NAME | t= INT | t= FLOAT | t= BOOL | t= NULL )
+            int alt20=6;
             switch ( input.LA(1) ) {
             case STRING:
                 {
-                alt19=1;
+                alt20=1;
                 }
                 break;
             case NAME:
                 {
-                alt19=2;
+                alt20=2;
                 }
                 break;
             case INT:
                 {
-                alt19=3;
+                alt20=3;
                 }
                 break;
             case FLOAT:
                 {
-                alt19=4;
+                alt20=4;
                 }
                 break;
             case BOOL:
                 {
-                alt19=5;
+                alt20=5;
                 }
                 break;
             case NULL:
                 {
-                alt19=6;
+                alt20=6;
                 }
                 break;
             default:
                 if (backtracking>0) {failed=true; return text;}
                 NoViableAltException nvae =
-                    new NoViableAltException("743:4: (t= STRING | t= NAME | t= INT | t= FLOAT | t= BOOL | t= NULL )", 19, 0, input);
+                    new NoViableAltException("744:4: (t= STRING | t= NAME | t= INT | t= FLOAT | t= BOOL | t= NULL )", 20, 0, input);
 
                 throw nvae;
             }
 
-            switch (alt19) {
+            switch (alt20) {
                 case 1 :
-                    // C:\\dev\\drools\\trunk6\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:743:8: t= STRING
+                    // C:\\dev\\drools\\trunk6\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:744:8: t= STRING
                     {
                     t=(Token)input.LT(1);
-                    match(input,STRING,FOLLOW_STRING_in_literal1756); if (failed) return text;
+                    match(input,STRING,FOLLOW_STRING_in_literal1748); if (failed) return text;
                     if ( backtracking==0 ) {
                        text = getString( t ); 
                     }
@@ -2239,10 +2254,10 @@ public class ClipsParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // C:\\dev\\drools\\trunk6\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:744:7: t= NAME
+                    // C:\\dev\\drools\\trunk6\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:745:7: t= NAME
                     {
                     t=(Token)input.LT(1);
-                    match(input,NAME,FOLLOW_NAME_in_literal1769); if (failed) return text;
+                    match(input,NAME,FOLLOW_NAME_in_literal1761); if (failed) return text;
                     if ( backtracking==0 ) {
                        text = t.getText(); 
                     }
@@ -2250,10 +2265,10 @@ public class ClipsParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // C:\\dev\\drools\\trunk6\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:745:7: t= INT
+                    // C:\\dev\\drools\\trunk6\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:746:7: t= INT
                     {
                     t=(Token)input.LT(1);
-                    match(input,INT,FOLLOW_INT_in_literal1785); if (failed) return text;
+                    match(input,INT,FOLLOW_INT_in_literal1777); if (failed) return text;
                     if ( backtracking==0 ) {
                        text = t.getText(); 
                     }
@@ -2261,10 +2276,10 @@ public class ClipsParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // C:\\dev\\drools\\trunk6\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:746:7: t= FLOAT
+                    // C:\\dev\\drools\\trunk6\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:747:7: t= FLOAT
                     {
                     t=(Token)input.LT(1);
-                    match(input,FLOAT,FOLLOW_FLOAT_in_literal1800); if (failed) return text;
+                    match(input,FLOAT,FOLLOW_FLOAT_in_literal1792); if (failed) return text;
                     if ( backtracking==0 ) {
                        text = t.getText(); 
                     }
@@ -2272,10 +2287,10 @@ public class ClipsParser extends Parser {
                     }
                     break;
                 case 5 :
-                    // C:\\dev\\drools\\trunk6\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:747:7: t= BOOL
+                    // C:\\dev\\drools\\trunk6\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:748:7: t= BOOL
                     {
                     t=(Token)input.LT(1);
-                    match(input,BOOL,FOLLOW_BOOL_in_literal1813); if (failed) return text;
+                    match(input,BOOL,FOLLOW_BOOL_in_literal1805); if (failed) return text;
                     if ( backtracking==0 ) {
                        text = t.getText(); 
                     }
@@ -2283,10 +2298,10 @@ public class ClipsParser extends Parser {
                     }
                     break;
                 case 6 :
-                    // C:\\dev\\drools\\trunk6\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:748:7: t= NULL
+                    // C:\\dev\\drools\\trunk6\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:749:7: t= NULL
                     {
                     t=(Token)input.LT(1);
-                    match(input,NULL,FOLLOW_NULL_in_literal1827); if (failed) return text;
+                    match(input,NULL,FOLLOW_NULL_in_literal1819); if (failed) return text;
                     if ( backtracking==0 ) {
                        text = null; 
                     }
@@ -2318,8 +2333,8 @@ public class ClipsParser extends Parser {
     public static final BitSet FOLLOW_deftemplate_in_eval84 = new BitSet(new long[]{0x0000000000000012L});
     public static final BitSet FOLLOW_defrule_in_eval100 = new BitSet(new long[]{0x0000000000000012L});
     public static final BitSet FOLLOW_lisp_form_in_eval112 = new BitSet(new long[]{0x0000000000000012L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_importDescr140 = new BitSet(new long[]{0x0000400000000000L});
-    public static final BitSet FOLLOW_46_in_importDescr142 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_importDescr140 = new BitSet(new long[]{0x0000200000000000L});
+    public static final BitSet FOLLOW_45_in_importDescr142 = new BitSet(new long[]{0x0000000000000020L});
     public static final BitSet FOLLOW_NAME_in_importDescr146 = new BitSet(new long[]{0x0000000000000040L});
     public static final BitSet FOLLOW_RIGHT_PAREN_in_importDescr150 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_LEFT_PAREN_in_deffunction185 = new BitSet(new long[]{0x0000000000000080L});
@@ -2331,14 +2346,14 @@ public class ClipsParser extends Parser {
     public static final BitSet FOLLOW_LEFT_PAREN_in_defrule283 = new BitSet(new long[]{0x0000000000000100L});
     public static final BitSet FOLLOW_DEFRULE_in_defrule291 = new BitSet(new long[]{0x0000000000000020L});
     public static final BitSet FOLLOW_NAME_in_defrule295 = new BitSet(new long[]{0x0000000000000200L});
-    public static final BitSet FOLLOW_STRING_in_defrule307 = new BitSet(new long[]{0x0000800000020010L});
-    public static final BitSet FOLLOW_ruleAttribute_in_defrule313 = new BitSet(new long[]{0x0000800000020010L});
-    public static final BitSet FOLLOW_ce_in_defrule321 = new BitSet(new long[]{0x0000800000020010L});
-    public static final BitSet FOLLOW_47_in_defrule330 = new BitSet(new long[]{0x0000000000000050L});
+    public static final BitSet FOLLOW_STRING_in_defrule307 = new BitSet(new long[]{0x0000400000020010L});
+    public static final BitSet FOLLOW_ruleAttribute_in_defrule313 = new BitSet(new long[]{0x0000400000020010L});
+    public static final BitSet FOLLOW_ce_in_defrule321 = new BitSet(new long[]{0x0000400000020010L});
+    public static final BitSet FOLLOW_46_in_defrule330 = new BitSet(new long[]{0x0000000000000050L});
     public static final BitSet FOLLOW_rule_consequence_in_defrule339 = new BitSet(new long[]{0x0000000000000040L});
     public static final BitSet FOLLOW_RIGHT_PAREN_in_defrule347 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_lisp_form_in_rule_consequence379 = new BitSet(new long[]{0x0000000000000012L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_ruleAttribute412 = new BitSet(new long[]{0x0000000080000000L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_ruleAttribute412 = new BitSet(new long[]{0x0000000040000000L});
     public static final BitSet FOLLOW_DECLARE_in_ruleAttribute414 = new BitSet(new long[]{0x0000000000000050L});
     public static final BitSet FOLLOW_LEFT_PAREN_in_ruleAttribute421 = new BitSet(new long[]{0x0000000000000400L});
     public static final BitSet FOLLOW_salience_in_ruleAttribute425 = new BitSet(new long[]{0x0000000000000040L});
@@ -2419,22 +2434,21 @@ public class ClipsParser extends Parser {
     public static final BitSet FOLLOW_NAME_in_lisp_atom1557 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_LEFT_PAREN_in_deftemplate1598 = new BitSet(new long[]{0x0000000008000000L});
     public static final BitSet FOLLOW_DEFTEMPLATE_in_deftemplate1605 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_NAME_in_deftemplate1609 = new BitSet(new long[]{0x0000000000000200L});
-    public static final BitSet FOLLOW_STRING_in_deftemplate1620 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_deftemplate1634 = new BitSet(new long[]{0x0000000010000000L});
-    public static final BitSet FOLLOW_SLOT_in_deftemplate1646 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_NAME_in_deftemplate1650 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_deftemplate1660 = new BitSet(new long[]{0x0001000000000000L});
-    public static final BitSet FOLLOW_48_in_deftemplate1676 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_NAME_in_deftemplate1680 = new BitSet(new long[]{0x0000000000000040L});
-    public static final BitSet FOLLOW_RIGHT_PAREN_in_deftemplate1700 = new BitSet(new long[]{0x0000000000000040L});
-    public static final BitSet FOLLOW_RIGHT_PAREN_in_deftemplate1707 = new BitSet(new long[]{0x0000000000000040L});
-    public static final BitSet FOLLOW_RIGHT_PAREN_in_deftemplate1720 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_STRING_in_literal1756 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_NAME_in_literal1769 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_INT_in_literal1785 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_FLOAT_in_literal1800 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_BOOL_in_literal1813 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_NULL_in_literal1827 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_NAME_in_deftemplate1609 = new BitSet(new long[]{0x0000000000000050L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_deftemplate1628 = new BitSet(new long[]{0x0000800000000000L});
+    public static final BitSet FOLLOW_47_in_deftemplate1640 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_NAME_in_deftemplate1644 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_deftemplate1654 = new BitSet(new long[]{0x0001000000000000L});
+    public static final BitSet FOLLOW_48_in_deftemplate1670 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_NAME_in_deftemplate1674 = new BitSet(new long[]{0x0000000000000040L});
+    public static final BitSet FOLLOW_RIGHT_PAREN_in_deftemplate1694 = new BitSet(new long[]{0x0000000000000040L});
+    public static final BitSet FOLLOW_RIGHT_PAREN_in_deftemplate1701 = new BitSet(new long[]{0x0000000000000050L});
+    public static final BitSet FOLLOW_RIGHT_PAREN_in_deftemplate1712 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_STRING_in_literal1748 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_NAME_in_literal1761 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_INT_in_literal1777 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_FLOAT_in_literal1792 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_BOOL_in_literal1805 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_NULL_in_literal1819 = new BitSet(new long[]{0x0000000000000002L});
 
 }
