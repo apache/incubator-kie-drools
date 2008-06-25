@@ -224,10 +224,6 @@ public class PackageBuilder {
         this.results = new ArrayList();
         this.classFieldExtractorCache = ClassFieldAccessorCache.getInstance();
 
-        ruleBase = (ReteooRuleBase) ruleBase;
-    }
-
-    public void setRuleBase(RuleBase ruleBase) {
         this.ruleBase = (ReteooRuleBase) ruleBase;
     }
 

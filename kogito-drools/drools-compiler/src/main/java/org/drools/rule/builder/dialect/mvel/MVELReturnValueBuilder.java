@@ -63,9 +63,6 @@ public class MVELReturnValueBuilder
                                                                  localMap,
                                                                  context.getPkg().getGlobals() );
 
-        MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
-        factory.setNextFactory( data.getFunctionFactory() );
-
         Dialect.AnalysisResult analysis = context.getDialect().analyzeExpression( context,
                                                                                   returnValueRestrictionDescr,
                                                                                   returnValueRestrictionDescr.getContent(),
@@ -79,7 +76,8 @@ public class MVELReturnValueBuilder
                                                                                 context );
 
         returnValueRestriction.setReturnValueExpression( new MVELReturnValueExpression( expr,
-                                                                                        factory ) );
+                                                                                        factory,
+                                                                                        context.getDialect().getId()) );
     }
 
 }

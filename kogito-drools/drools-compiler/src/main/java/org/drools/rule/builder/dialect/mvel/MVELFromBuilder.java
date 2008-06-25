@@ -78,7 +78,8 @@ public class MVELFromBuilder
                                                        context );
 
             dataProvider = new MVELDataProvider( expr,
-                                                 factory );
+                                                 factory,
+                                                 context.getDialect().getId() );
         } catch ( final Exception e ) {
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                           fromDescr,
