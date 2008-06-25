@@ -64,9 +64,6 @@ public class MVELPredicateBuilder
                                                                      localMap,
                                                                      context.getPkg().getGlobals() );
             
-            MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
-            factory.setNextFactory( data.getFunctionFactory() );            
-
             Dialect.AnalysisResult analysis = context.getDialect().analyzeExpression( context,
                                                                                       predicateDescr,
                                                                                       predicateDescr.getContent(),
@@ -80,7 +77,8 @@ public class MVELPredicateBuilder
                                                                                     context );
 
             predicate.setPredicateExpression( new MVELPredicateExpression( expr,
-                                                                           factory ) );
+                                                                           factory,
+                                                                           context.getDialect().getId()) );
         } catch ( final Exception e ) {
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                     predicateDescr,

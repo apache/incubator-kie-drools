@@ -41,6 +41,7 @@ import org.drools.lang.descr.ProcessDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.Declaration;
+import org.drools.rule.DialectRuntimeRegistry;
 import org.drools.rule.JavaDialectRuntimeData;
 import org.drools.rule.LineMappings;
 import org.drools.rule.MVELDialectRuntimeData;
@@ -83,7 +84,7 @@ public class MVELDialect
     Dialect,
     Externalizable {
 
-    public final static String                           ID                             = "mvel";
+    private String                                        id                             = "mvel";
 
     private final static String                          EXPRESSION_DIALECT_NAME        = "MVEL";
 
@@ -124,32 +125,37 @@ public class MVELDialect
     protected MemoryResourceReader                       src;
 
     protected Package                                    pkg;
-    protected MVELDialectRuntimeData                     data;
     private MVELDialectConfiguration                     configuration;
-    
-    private PackageRegistry                          packageRegistry;
-    
+
+    private PackageRegistry                              packageRegistry;
+
     private ClassFieldAccessorCache                      classFieldExtractorCache;
 
     private Map                                          imports;
     private Map                                          packageImports;
 
-    
     private boolean                                      strictMode;
     private int                                          languageLevel;
-    public static final Object COMPILER_LOCK = new Object();
-
+    public static final Object                           COMPILER_LOCK                  = new Object();
+    
     public MVELDialect(PackageBuilder builder,
                        PackageRegistry pkgRegistry,
                        Package pkg) {
+        this( builder, pkgRegistry, pkg, "mvel" );
+    }
+
+    public MVELDialect(PackageBuilder builder,
+                       PackageRegistry pkgRegistry,
+                       Package pkg,
+                       String id) {
+        this.id = id;
         this.pkg = pkg;
         this.packageRegistry = pkgRegistry;
-        
-        this.configuration = (MVELDialectConfiguration) builder.getPackageBuilderConfiguration().getDialectConfiguration( "mvel" );        
+
+        this.configuration = (MVELDialectConfiguration) builder.getPackageBuilderConfiguration().getDialectConfiguration( "mvel" );
         setLanguageLevel( this.configuration.getLangLevel() );
         this.classFieldExtractorCache = builder.getClassFieldExtractorCache();
         this.strictMode = this.configuration.isStrict();
-
 
         MVEL.setThreadSafe( true );
 
@@ -161,28 +167,27 @@ public class MVELDialect
                                new ModifyInterceptor() );
 
         this.results = new ArrayList();
-        
-        
-//        this.data = new MVELDialectRuntimeData( this.pkg.getDialectRuntimeRegistry() );
-//        
-//        this.pkg.getDialectRuntimeRegistry().setDialectData( ID,
-//                                                             this.data );
-        
+
+        //        this.data = new MVELDialectRuntimeData( this.pkg.getDialectRuntimeRegistry() );
+        //        
+        //        this.pkg.getDialectRuntimeRegistry().setDialectData( ID,
+        //                                                             this.data );
+
         MVELDialectRuntimeData data = null;
         // initialise the dialect runtime data if it doesn't already exist
-        if ( pkg.getDialectRuntimeRegistry().getDialectData( ID ) == null ) {
+        if ( pkg.getDialectRuntimeRegistry().getDialectData( getId() ) == null ) {
             data = new MVELDialectRuntimeData( this.pkg.getDialectRuntimeRegistry() );
-            this.pkg.getDialectRuntimeRegistry().setDialectData( ID,
+            this.pkg.getDialectRuntimeRegistry().setDialectData( getId(),
                                                                  data );
-        }        
-        
-        
+        }
+
         this.results = new ArrayList();
         this.src = new MemoryResourceReader();
         if ( this.pkg != null ) {
             this.addImport( this.pkg.getName() + ".*" );
         }
     }
+        
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
@@ -190,7 +195,7 @@ public class MVELDialect
         results = (List) in.readObject();
         src = (MemoryResourceReader) in.readObject();
         pkg = (Package) in.readObject();
-        data = (MVELDialectRuntimeData) in.readObject();
+        packageRegistry = (PackageRegistry) in.readObject();
         configuration = (MVELDialectConfiguration) in.readObject();
         classFieldExtractorCache = (ClassFieldAccessorCache) in.readObject();
         imports = (Map) in.readObject();
@@ -203,7 +208,7 @@ public class MVELDialect
         out.writeObject( results );
         out.writeObject( src );
         out.writeObject( pkg );
-        out.writeObject( data );
+        out.writeObject( packageRegistry );
         out.writeObject( configuration );
         out.writeObject( classFieldExtractorCache );
         out.writeObject( imports );
@@ -214,19 +219,18 @@ public class MVELDialect
     public void setLanguageLevel(int languageLevel) {
         this.languageLevel = languageLevel;
     }
-    
-    
-//    public static void setLanguageLevel(int level) {        
-//        synchronized ( lang ) {
-//            // this synchronisation is needed as setLanguageLevel is not thread safe
-//            // and we do not want to be calling this while something else is being parsed.
-//            // the flag ensures it is just called once and no more.
-//            if ( languageSet.booleanValue() == false ) {
-//                languageSet = new Boolean( true );
-//                AbstractParser.setLanguageLevel( level );
-//            }
-//        }
-//    }
+
+    //    public static void setLanguageLevel(int level) {        
+    //        synchronized ( lang ) {
+    //            // this synchronisation is needed as setLanguageLevel is not thread safe
+    //            // and we do not want to be calling this while something else is being parsed.
+    //            // the flag ensures it is just called once and no more.
+    //            if ( languageSet.booleanValue() == false ) {
+    //                languageSet = new Boolean( true );
+    //                AbstractParser.setLanguageLevel( level );
+    //            }
+    //        }
+    //    }
 
     public static void initBuilder() {
         if ( builders != null ) {
@@ -330,8 +334,9 @@ public class MVELDialect
         ExpressionCompiler compiler = new ExpressionCompiler( (String) functionDescr.getContent() );
         Serializable s1 = compiler.compile();
         Map<String, org.mvel.ast.Function> map = CompilerTools.extractAllDeclaredFunctions( (CompiledExpression) s1 );
+        MVELDialectRuntimeData data = (MVELDialectRuntimeData) this.packageRegistry.getDialectRuntimeRegistry().getDialectData( getId() );
         for ( org.mvel.ast.Function function : map.values() ) {
-            this.data.addFunction( function );
+            data.addFunction( function );
         }
     }
 
@@ -492,12 +497,12 @@ public class MVELDialect
         if ( MVELDebugHandler.isDebugMode() ) {
             compiler.setDebugSymbols( true );
         }
-                
-        synchronized ( COMPILER_LOCK ) {            
-            AbstractParser.setLanguageLevel( languageLevel );    
+
+        synchronized ( COMPILER_LOCK ) {
+            AbstractParser.setLanguageLevel( languageLevel );
             return compiler.compile( parserContext );
         }
-    }    
+    }
 
     public ParserContext getParserContext(final Dialect.AnalysisResult analysis,
                                           final Map outerDeclarations,
@@ -647,7 +652,7 @@ public class MVELDialect
     }
 
     public String getId() {
-        return ID;
+        return this.id;
     }
 
 }

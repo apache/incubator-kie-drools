@@ -68,10 +68,7 @@ public class MVELEvalBuilder
         try {
             final DroolsMVELFactory factory = new DroolsMVELFactory( context.getDeclarationResolver().getDeclarations(),
                                                                      null,
-                                                                     context.getPkg().getGlobals() );      
-            
-            MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
-            factory.setNextFactory( data.getFunctionFactory() );            
+                                                                     context.getPkg().getGlobals() );   
 
             Dialect.AnalysisResult analysis = context.getDialect().analyzeExpression( context,
                                                                                       evalDescr,
@@ -94,7 +91,8 @@ public class MVELEvalBuilder
                                                                               context );
 
             eval.setEvalExpression( new MVELEvalExpression( expr,
-                                                            factory ) );
+                                                            factory,
+                                                            context.getDialect().getId() ) );
 
             return eval;
         } catch ( final Exception e ) {

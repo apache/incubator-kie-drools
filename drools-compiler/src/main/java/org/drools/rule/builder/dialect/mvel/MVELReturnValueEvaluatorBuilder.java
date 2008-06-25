@@ -29,7 +29,7 @@ public class MVELReturnValueEvaluatorBuilder
         String text = descr.getText();
 
         try {
-            MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
+            MVELDialect dialect = (MVELDialect)  context.getDialect();
 
             Dialect.AnalysisResult analysis = dialect.analyzeBlock( context,
                                                                     descr,
@@ -53,7 +53,7 @@ public class MVELReturnValueEvaluatorBuilder
             MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
             factory.setNextFactory( data.getFunctionFactory() );            
             
-            constraintNode.setEvaluator( new MVELReturnValueEvaluator( expr, factory ) );
+            constraintNode.setEvaluator( new MVELReturnValueEvaluator( expr, factory, context.getDialect().getId() ) );
         } catch ( final Exception e ) {
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                           descr,

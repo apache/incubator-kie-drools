@@ -68,7 +68,7 @@ public class MVELConsequenceBuilder
         context.getBuildStack().push( context.getRule().getLhs() );
 
         try {
-            MVELDialect dialect = (MVELDialect) context.getDialect();
+            MVELDialect dialect = (MVELDialect) context.getDialect( context.getDialect().getId() );
 
             String text = processMacros( (String) context.getRuleDescr().getConsequence() );
 
@@ -93,7 +93,8 @@ public class MVELConsequenceBuilder
             
 
             context.getRule().setConsequence( new MVELConsequence( expr,
-                                                                   factory ) );
+                                                                   factory,
+                                                                   dialect.getId() ) );
         } catch ( final Exception e ) {
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                     context.getRuleDescr(),
