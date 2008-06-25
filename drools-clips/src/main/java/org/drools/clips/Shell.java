@@ -1,8 +1,10 @@
 /**
- * 
+ *
  */
 package org.drools.clips;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.Reader;
 import java.io.Serializable;
@@ -10,13 +12,16 @@ import java.io.StringReader;
 import java.io.ObjectInput;
 import java.io.IOException;
 import java.io.ObjectOutput;
+import java.nio.CharBuffer;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 import java.util.Map.Entry;
+import java.util.logging.ConsoleHandler;
 
 import org.antlr.runtime.ANTLRReaderStream;
 import org.antlr.runtime.CommonTokenStream;
@@ -26,6 +31,25 @@ import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.base.ClassTypeResolver;
 import org.drools.base.mvel.DroolsMVELFactory;
+import org.drools.clips.functions.AssertFunction;
+import org.drools.clips.functions.BindFunction;
+import org.drools.clips.functions.CallFunction;
+import org.drools.clips.functions.CreateListFunction;
+import org.drools.clips.functions.EqFunction;
+import org.drools.clips.functions.GetFunction;
+import org.drools.clips.functions.IfFunction;
+import org.drools.clips.functions.LessThanFunction;
+import org.drools.clips.functions.ModifyFunction;
+import org.drools.clips.functions.MoreThanFunction;
+import org.drools.clips.functions.MultiplyFunction;
+import org.drools.clips.functions.NewFunction;
+import org.drools.clips.functions.PlusFunction;
+import org.drools.clips.functions.PrintoutFunction;
+import org.drools.clips.functions.PrognFunction;
+import org.drools.clips.functions.ReturnFunction;
+import org.drools.clips.functions.RunFunction;
+import org.drools.clips.functions.SetFunction;
+import org.drools.clips.functions.SwitchFunction;
 import org.drools.common.InternalRuleBase;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
@@ -79,7 +103,69 @@ public class Shell
         this( RuleBaseFactory.newRuleBase() );
     }
 
-    public Shell(RuleBase ruleBase) {
+    public static void main(String[] args) throws Exception {
+
+
+        StringBuffer buf = new StringBuffer();
+        FunctionHandlers handlers = FunctionHandlers.getInstance();
+        handlers.registerFunction( new PlusFunction() );
+        handlers.registerFunction( new MultiplyFunction() );
+        handlers.registerFunction( new ModifyFunction() );
+        handlers.registerFunction( new CreateListFunction() );
+        handlers.registerFunction( new PrintoutFunction() );
+        handlers.registerFunction( new PrognFunction() );
+        handlers.registerFunction( new IfFunction() );
+        handlers.registerFunction( new LessThanFunction() );
+        handlers.registerFunction( new MoreThanFunction() );
+        handlers.registerFunction( new EqFunction() );
+        handlers.registerFunction( new SwitchFunction() );
+        //handlers.registerFunction( new DeffunctionFunction() );
+        handlers.registerFunction( new ReturnFunction() );
+        handlers.registerFunction( new RunFunction() );
+        handlers.registerFunction( new BindFunction() );
+        handlers.registerFunction( new NewFunction() );
+        handlers.registerFunction( new SetFunction() );
+        handlers.registerFunction( new GetFunction() );
+        handlers.registerFunction( new CallFunction() );
+        handlers.registerFunction( new AssertFunction() );
+        Shell shell = new Shell();
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        shell.addRouter( "t",
+                new PrintStream( out ) );
+        while(true) {
+            byte name[] = new byte[256];
+	        System.out.print("Drools>");
+	        Thread.sleep(1);
+	        System.in.read(name);
+	        String cmd = (new String(name)).trim();
+	        //System.out.println("ECHO:" + cmd);
+	        if (cmd.equals("(exit)") || cmd.equals("(quit)")) break;
+	        buf.append(cmd);
+
+	        if (isBalancedBrackets(buf)) {
+	        	shell.eval(buf.toString());
+	        	String output = new String(out.toByteArray());
+	        	if (output != null && output.trim().length() > 0) {
+	        		System.out.println(output);
+	        	}
+	        	out.reset();
+	        	buf = new StringBuffer();
+	        }
+        }
+
+    }
+
+    private static boolean isBalancedBrackets(StringBuffer buf) {
+		char[] cs = buf.toString().toCharArray();
+		int stack = 0;
+		for (int i = 0; i < cs.length; i++) {
+			if (cs[i] == '(') stack++;
+			if (cs[i] == ')') stack--;
+		}
+		return stack == 0;
+	}
+
+	public Shell(RuleBase ruleBase) {
         this.moduleName = MAIN;
         this.ruleBase = ruleBase;
 
@@ -236,7 +322,7 @@ public class Shell
                     String importName = ((ImportDeclaration) entry.getValue()).getTarget();
                     if ( importName.endsWith( "*" )) {
                         context.addPackageImport( importName.substring( 0,
-                                                                        importName.length() - 2 ) );                        
+                                                                        importName.length() - 2 ) );
                     } else {
                         Class cls = pkg.getDialectRuntimeRegistry().getClassLoader().loadClass( importName );
                         context.addImport( cls.getSimpleName(),
@@ -272,7 +358,7 @@ public class Shell
         //            this.ruleBase.addPackage( builder.getPackage() );
         //        } catch ( Exception e ) {
         //            e.printStackTrace();
-        //        }     
+        //        }
     }
 
     public void ruleHandler(RuleDescr ruleDescr) {
