@@ -132,9 +132,10 @@ public class Shell
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         shell.addRouter( "t",
                 new PrintStream( out ) );
+        System.out.print("Drools>");
         while(true) {
             byte name[] = new byte[256];
-	        System.out.print("Drools>");
+
 	        Thread.sleep(1);
 	        System.in.read(name);
 	        String cmd = (new String(name)).trim();
@@ -148,9 +149,10 @@ public class Shell
 	        	if (output != null && output.trim().length() > 0) {
 	        		System.out.println(output);
 	        	} else {
-	        		System.out.println("OK");
+	        		//System.out.println("OK");
 	        	}
 	        	out.reset();
+	        	System.out.print("Drools>");
 	        	buf = new StringBuffer();
 	        }
         }
