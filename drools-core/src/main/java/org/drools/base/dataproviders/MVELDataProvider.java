@@ -27,15 +27,18 @@ public class MVELDataProvider
 
     private Serializable      expression;
     private DroolsMVELFactory prototype;
+    private String id;
 
     public MVELDataProvider() {
 
     }
 
     public MVELDataProvider(final Serializable expression,
-                            final DroolsMVELFactory factory) {
+                            final DroolsMVELFactory factory,
+                            final String id) {
         this.expression = expression;
         this.prototype = factory;
+        this.id = id;
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
