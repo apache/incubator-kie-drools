@@ -29,7 +29,7 @@ public class MVELReturnValueEvaluatorBuilder
         String text = descr.getText();
 
         try {
-            MVELDialect dialect = (MVELDialect)  context.getDialect();
+            MVELDialect dialect = (MVELDialect)  context.getDialect( "mvel" );
 
             Dialect.AnalysisResult analysis = dialect.analyzeBlock( context,
                                                                     descr,
