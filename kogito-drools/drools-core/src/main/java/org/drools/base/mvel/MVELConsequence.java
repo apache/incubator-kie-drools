@@ -23,14 +23,17 @@ public class MVELConsequence
 
     private Serializable      expr;
     private DroolsMVELFactory prototype;
-
+    private String id;
+    
     public MVELConsequence() {
-    }
+    }    
 
     public MVELConsequence(final Serializable expr,
-                           final DroolsMVELFactory factory) {
+                           final DroolsMVELFactory factory,
+                           final String id) {
         this.expr = expr;
         this.prototype = factory;
+        this.id = id;
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
@@ -52,10 +55,11 @@ public class MVELConsequence
                             null,
                             workingMemory,
                             null );
-
+        
+        // do we have any functions for this namespace?
         Package pkg = workingMemory.getRuleBase().getPackage( "MAIN" );
         if ( pkg != null ) {
-            MVELDialectRuntimeData data = ( MVELDialectRuntimeData ) pkg.getDialectRuntimeRegistry().getDialectData( "mvel" );
+            MVELDialectRuntimeData data = ( MVELDialectRuntimeData ) pkg.getDialectRuntimeRegistry().getDialectData( this.id );
             factory.setNextFactory( data.getFunctionFactory() );
         }
 

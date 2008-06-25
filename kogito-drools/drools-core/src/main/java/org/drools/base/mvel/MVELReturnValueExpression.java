@@ -23,14 +23,17 @@ public class MVELReturnValueExpression
 
     private Serializable      expr;
     private DroolsMVELFactory prototype;
-
+    private String id;
+    
     public MVELReturnValueExpression() {
     }
 
     public MVELReturnValueExpression(final Serializable expr,
-                                     final DroolsMVELFactory factory) {
+                                     final DroolsMVELFactory factory,
+                                     final String id) {
         this.expr = expr;
         this.prototype = factory;
+        this.id = id;
     }
 
     public FieldValue evaluate(final Object object,
@@ -46,9 +49,10 @@ public class MVELReturnValueExpression
                                  workingMemory,
                                  null );
 
+        // do we have any functions for this namespace?
         Package pkg = workingMemory.getRuleBase().getPackage( "MAIN" );
         if ( pkg != null ) {
-            MVELDialectRuntimeData data = ( MVELDialectRuntimeData ) pkg.getDialectRuntimeRegistry().getDialectData( "mvel" );
+            MVELDialectRuntimeData data = ( MVELDialectRuntimeData ) pkg.getDialectRuntimeRegistry().getDialectData( this.id );
             factory.setNextFactory( data.getFunctionFactory() );
         }
 
