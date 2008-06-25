@@ -147,11 +147,15 @@ public class Shell
 	        	String output = new String(out.toByteArray());
 	        	if (output != null && output.trim().length() > 0) {
 	        		System.out.println(output);
+	        	} else {
+	        		System.out.println("OK");
 	        	}
 	        	out.reset();
 	        	buf = new StringBuffer();
 	        }
         }
+
+        System.out.println("Goobye !");
 
     }
 
@@ -491,5 +495,5 @@ public class Shell
 
         return pkg;
     }
-    
+
 }
