@@ -301,13 +301,11 @@ public class ShellTest extends TestCase {
                       new String( this.baos.toByteArray() ) );
     }
 
-    // @FIXME - org.mvel.PropertyAccessException: unable to resolve property: run()
     public void testRuleCallDeftemplate() {
         String function = "(deffunction max (?a ?b) (if (> ?a ?b) then (return ?a) else (return ?b) ) )";
         this.shell.eval( function );
         
         this.shell.eval( "(import org.drools.*)" );
-        //this.shell.eval( "(defrule testRule (Person (name mark) (age ?age) ) => (printout t hello) (printout t \" \" (max 5 ?age) ) )" );
         this.shell.eval( "(defrule testRule (Person (age ?age) ) => (printout t hello) (printout t \" \" (max 3 ?age) ) )" );
         this.shell.eval( "(assert (Person (name mark) (age 32) ) )" );
         this.shell.eval( "(run)" );
@@ -317,27 +315,23 @@ public class ShellTest extends TestCase {
     
     public void testTwoSimpleRulesWithModify() {
         this.shell.eval( "(import org.drools.*)" );
-        this.shell.eval( "(defrule testRule ?p <- (Person (name ?name&mark) ) => (printout t hello) (printout t \" \" ?name) (modify ?p (name bob) ) )" );
-        this.shell.eval( "(defrule testRule (Person (name ?name&bob) ) => (printout t hello) (printout t \" \" ?name))" );
+        this.shell.eval( "(defrule testRule1 ?p <- (Person (name ?name&mark) ) => (printout t hello) (printout t \" \" ?name) (modify ?p (name bob) ) )" );
+        this.shell.eval( "(defrule testRule2 (Person (name ?name&bob) ) => (printout t hello) (printout t \" \" ?name))" );
         this.shell.eval( "(assert (Person (name mark) ) )" );
         this.shell.eval( "(run)" );
-// @FIXME testTwoSimpleRulesWithModify
-// commenting out failed test
-//        assertEquals( "hello markhello bob",
-//                      new String( this.baos.toByteArray() ) );
+        assertEquals( "hello markhello bob",
+                      new String( this.baos.toByteArray() ) );
     }
 
     public void testBlockEval() {
         String text = "(import org.drools.*)";
-        text += "(defrule testRule ?p <- (Person (name ?name&mark) ) => (printout t hello) (printout t \" \" ?name) (modify ?p (name bob) ) )";
-        text += "(defrule testRule (Person (name ?name&bob) ) => (printout t hello) (printout t \" \" ?name))";
+        text += "(defrule testRule1 ?p <- (Person (name ?name&mark) ) => (printout t hello) (printout t \" \" ?name) (modify ?p (name bob) ) )";
+        text += "(defrule testRule2 (Person (name ?name&bob) ) => (printout t hello) (printout t \" \" ?name))";
         text += "(assert (Person (name mark) ) )";
         text += "(run)";
         this.shell.eval( text );
-// @FIXME testBlockEval
-// commenting out failed test
-//        assertEquals( "hello markhello bob",
-//                      new String( this.baos.toByteArray() ) );
+        assertEquals( "hello markhello bob",
+                      new String( this.baos.toByteArray() ) );
     }
 
     public void testRun() {
