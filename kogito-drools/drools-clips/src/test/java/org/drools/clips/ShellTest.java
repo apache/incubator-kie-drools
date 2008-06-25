@@ -147,7 +147,7 @@ public class ShellTest extends TestCase {
     }
 
     // @FIXME - org.mvel.CompileException: unable to resolve property: unable to resolve method: org.drools.clips.Shell.max(java.lang.Integer, java.lang.Integer) [arglength=2]
-    public void FIXME_testDeffunction() {
+    public void testDeffunction() {
         String function = "(deffunction max (?a ?b) (if (> ?a ?b) then (return ?a) else (return ?b) ) )";
         this.shell.eval( function );
 
@@ -302,7 +302,7 @@ public class ShellTest extends TestCase {
     }
 
     // @FIXME - org.mvel.PropertyAccessException: unable to resolve property: run()
-    public void FIXME_testRuleCallDeftemplate() {
+    public void testRuleCallDeftemplate() {
         String function = "(deffunction max (?a ?b) (if (> ?a ?b) then (return ?a) else (return ?b) ) )";
         this.shell.eval( function );
         

@@ -169,8 +169,7 @@ public class Shell
         this.moduleName = MAIN;
         this.ruleBase = ruleBase;
 
-        this.packageBuilder = new PackageBuilder();
-        this.packageBuilder.setRuleBase( this.ruleBase );
+        this.packageBuilder = new PackageBuilder( this.ruleBase );
 
         this.session = this.ruleBase.newStatefulSession();
         // this.functions = new HashMap();
@@ -253,7 +252,9 @@ public class Shell
     }
 
     public void functionHandler(FunctionDescr functionDescr) {
-        setModuleName( functionDescr );
+        // for now all functions are in MAIN
+        //setModuleName( functionDescr );
+        functionDescr.setNamespace( "MAIN" );
         Appendable builder = new StringBuilderAppendable();
 
         // strip lead/trailing quotes
@@ -284,22 +285,12 @@ public class Shell
         builder.append( "}" );
 
         functionDescr.setContent( builder.toString() );
-        functionDescr.setDialect( "mvel" );
+        functionDescr.setDialect( "clips" );
 
         PackageDescr pkgDescr = createPackageDescr( functionDescr.getNamespace() );
         pkgDescr.addFunction( functionDescr );
 
-        PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
-        conf.getDialectConfiguration( "mvel" );
-        MVELDialectConfiguration mvelConf = (MVELDialectConfiguration) conf.getDialectConfiguration( "mvel" );
-        mvelConf.setLangLevel( 5 );
-
-        PackageBuilder pkgBuilder = new PackageBuilder( conf );
-        pkgBuilder.addPackage( pkgDescr );
-
-        if ( pkgBuilder.getErrors().isEmpty() ) {
-            this.ruleBase.addPackage( pkgBuilder.getPackage() );
-        }
+        this.packageBuilder.addPackage( pkgDescr );
     }
 
     public void lispFormHandler(LispForm lispForm) {
@@ -333,7 +324,7 @@ public class Shell
                 e.printStackTrace();
             }
 
-            MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData( "mvel" );
+            MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData( "clips" );
             this.factory.setNextFactory( data.getFunctionFactory() );
         }
 
