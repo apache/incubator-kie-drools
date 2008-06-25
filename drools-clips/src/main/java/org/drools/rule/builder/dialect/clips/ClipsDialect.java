@@ -23,7 +23,7 @@ public class ClipsDialect extends MVELDialect {
     public ClipsDialect(PackageBuilder builder,
                                    PackageRegistry pkgRegistry,
                                    Package pkg) {
-        super( builder, pkgRegistry, pkg);
+        super( builder, pkgRegistry, pkg, ID);
         setLanguageLevel( 5 );
 
     }
