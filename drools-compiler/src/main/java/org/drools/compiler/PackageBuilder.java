@@ -500,6 +500,9 @@ public class PackageBuilder {
 
         PackageRegistry pkgRegistry = new PackageRegistry( this,
                                                            pkg );
+        
+        // add default import for this namespace
+        pkgRegistry.addImport( packageDescr.getNamespace() + ".*" );
 
         this.pkgRegistryMap.put( packageDescr.getName(),
                                  pkgRegistry );
