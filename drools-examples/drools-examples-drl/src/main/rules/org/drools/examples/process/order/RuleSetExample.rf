@@ -33,26 +33,26 @@
     <end id="8" name="End" x="88" y="486" width="80" height="40" />
     <humanTask id="9" name="Correct Order" x="16" y="215" width="96" height="40" swimlane="SalesRepresentative" >
       <work name="Human Task" >
-        <parameter name="TaskName" type="org.drools.process.core.datatype.impl.type.StringDataType" >Correct Order</parameter>
+        <parameter name="Comment" type="org.drools.process.core.datatype.impl.type.StringDataType" >Invalid order #{orderId}, needs to be corrected (contact customer if necessary)</parameter>
         <parameter name="Priority" type="org.drools.process.core.datatype.impl.type.StringDataType" />
+        <parameter name="TaskName" type="org.drools.process.core.datatype.impl.type.StringDataType" >Correct Order</parameter>
         <parameter name="ActorId" type="org.drools.process.core.datatype.impl.type.StringDataType" />
-        <parameter name="Comment" type="org.drools.process.core.datatype.impl.type.StringDataType" >Invalid order ${orderId}, needs to be corrected (contact customer if necessary)</parameter>
       </work>
     </humanTask>
     <humanTask id="10" name="Follow-up Order" x="144" y="215" width="106" height="40" swimlane="SalesRepresentative" >
       <work name="Human Task" >
-        <parameter name="TaskName" type="org.drools.process.core.datatype.impl.type.StringDataType" >Follow-up Order</parameter>
-        <parameter name="Priority" type="org.drools.process.core.datatype.impl.type.StringDataType" />
-        <parameter name="ActorId" type="org.drools.process.core.datatype.impl.type.StringDataType" />
         <parameter name="Comment" type="org.drools.process.core.datatype.impl.type.StringDataType" >This is a large order, follow up this order manually</parameter>
+        <parameter name="Priority" type="org.drools.process.core.datatype.impl.type.StringDataType" />
+        <parameter name="TaskName" type="org.drools.process.core.datatype.impl.type.StringDataType" >Follow-up Order</parameter>
+        <parameter name="ActorId" type="org.drools.process.core.datatype.impl.type.StringDataType" />
       </work>
     </humanTask>
     <humanTask id="11" name="Human Task" x="72" y="340" width="111" height="40" >
       <work name="Human Task" >
-        <parameter name="TaskName" type="org.drools.process.core.datatype.impl.type.StringDataType" />
-        <parameter name="Priority" type="org.drools.process.core.datatype.impl.type.StringDataType" />
-        <parameter name="ActorId" type="org.drools.process.core.datatype.impl.type.StringDataType" />
         <parameter name="Comment" type="org.drools.process.core.datatype.impl.type.StringDataType" />
+        <parameter name="Priority" type="org.drools.process.core.datatype.impl.type.StringDataType" />
+        <parameter name="TaskName" type="org.drools.process.core.datatype.impl.type.StringDataType" />
+        <parameter name="ActorId" type="org.drools.process.core.datatype.impl.type.StringDataType" />
       </work>
     </humanTask>
   </nodes>
