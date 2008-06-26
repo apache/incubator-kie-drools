@@ -13,9 +13,9 @@ public class RuleFlowDelegate implements ConwayRuleDelegate {
     
     public RuleFlowDelegate() {
         final Reader drl = new InputStreamReader( CellGridImpl.class.getResourceAsStream( "/org/drools/examples/conway/conway-ruleflow.drl" ) );
-        final Reader generationRf = new InputStreamReader( CellGridImpl.class.getResourceAsStream( "/org/drools/examples/conway/generation.rfm" ) );
-        final Reader killAllRf = new InputStreamReader( CellGridImpl.class.getResourceAsStream( "/org/drools/examples/conway/killAll.rfm" ) );
-        final Reader registerNeighborRf = new InputStreamReader( CellGridImpl.class.getResourceAsStream( "/org/drools/examples/conway/registerNeighbor.rfm" ) );
+        final Reader generationRf = new InputStreamReader( CellGridImpl.class.getResourceAsStream( "/org/drools/examples/conway/generation.rf" ) );
+        final Reader killAllRf = new InputStreamReader( CellGridImpl.class.getResourceAsStream( "/org/drools/examples/conway/killAll.rf" ) );
+        final Reader registerNeighborRf = new InputStreamReader( CellGridImpl.class.getResourceAsStream( "/org/drools/examples/conway/registerNeighbor.rf" ) );
 
         try {
             PackageBuilder builder = new PackageBuilder();

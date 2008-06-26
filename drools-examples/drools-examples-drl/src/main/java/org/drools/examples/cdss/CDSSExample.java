@@ -83,13 +83,13 @@ public class CDSSExample {
 			CDSSExample.class.getResourceAsStream("/org/drools/examples/cdss/ClinicalPathwayX.drl"));
 		builder.addPackageFromDrl(reader);
 		reader = new InputStreamReader(
-			CDSSExample.class.getResourceAsStream("/org/drools/examples/cdss/ClinicalPathwayX.rfm"));
+			CDSSExample.class.getResourceAsStream("/org/drools/examples/cdss/ClinicalPathwayX.rf"));
 		builder.addRuleFlow(reader);
 		reader = new InputStreamReader(
-			CDSSExample.class.getResourceAsStream("/org/drools/examples/cdss/TreatmentX.rfm"));
+			CDSSExample.class.getResourceAsStream("/org/drools/examples/cdss/TreatmentX.rf"));
 		builder.addRuleFlow(reader);
 		reader = new InputStreamReader(
-			CDSSExample.class.getResourceAsStream("/org/drools/examples/cdss/TreatmentY.rfm"));
+			CDSSExample.class.getResourceAsStream("/org/drools/examples/cdss/TreatmentY.rf"));
 		builder.addRuleFlow(reader);
 
 		Package pkg = builder.getPackage();

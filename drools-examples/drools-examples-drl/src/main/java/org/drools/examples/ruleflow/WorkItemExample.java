@@ -38,7 +38,7 @@ public class WorkItemExample {
 
 	private static RuleBase readRule() throws Exception {
 		PackageBuilder builder = new PackageBuilder();
-		Reader source = new InputStreamReader( WorkItemExample.class.getResourceAsStream( "/org/drools/examples/ruleflow/workitems.rfm" ) );
+		Reader source = new InputStreamReader( WorkItemExample.class.getResourceAsStream( "/org/drools/examples/ruleflow/workitems.rf" ) );
 		builder.addRuleFlow(source);
 		Package pkg = builder.getPackage();
 		RuleBase ruleBase = RuleBaseFactory.newRuleBase();
