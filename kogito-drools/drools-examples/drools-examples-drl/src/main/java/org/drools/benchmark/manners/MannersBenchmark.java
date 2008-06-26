@@ -45,7 +45,7 @@ public class MannersBenchmark {
 		
 
         RuleBaseConfiguration conf = new RuleBaseConfiguration();
-        conf.setShadowProxy( false );
+//        conf.setShadowProxy( false );
         
         // add the package to a rulebase
 		final RuleBase ruleBase = RuleBaseFactory.newRuleBase(conf);
