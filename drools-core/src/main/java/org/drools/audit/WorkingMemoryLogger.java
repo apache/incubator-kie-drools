@@ -16,17 +16,17 @@ package org.drools.audit;
  * limitations under the License.
  */
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.io.ObjectOutput;
-import java.io.IOException;
-import java.io.ObjectInput;
 
-import org.drools.WorkingMemoryEventManager;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
+import org.drools.WorkingMemoryEventManager;
 import org.drools.audit.event.ActivationLogEvent;
 import org.drools.audit.event.ILogEventFilter;
 import org.drools.audit.event.LogEvent;
@@ -59,8 +59,8 @@ import org.drools.event.BeforeRuleBaseLockedEvent;
 import org.drools.event.BeforeRuleBaseUnlockedEvent;
 import org.drools.event.BeforeRuleRemovedEvent;
 import org.drools.event.ObjectInsertedEvent;
-import org.drools.event.ObjectUpdatedEvent;
 import org.drools.event.ObjectRetractedEvent;
+import org.drools.event.ObjectUpdatedEvent;
 import org.drools.event.RuleBaseEventListener;
 import org.drools.event.RuleFlowCompletedEvent;
 import org.drools.event.RuleFlowEventListener;
@@ -337,28 +337,32 @@ public abstract class WorkingMemoryLogger
             					      WorkingMemory workingMemory) {
         filterLogEvent( new RuleFlowLogEvent( LogEvent.BEFORE_RULEFLOW_CREATED,
         		event.getProcessInstance().getProcess().getId(),
-                event.getProcessInstance().getProcess().getName() ) );
+                event.getProcessInstance().getProcess().getName(),
+                event.getProcessInstance().getId()) );
     }
 
     public void afterRuleFlowStarted(RuleFlowStartedEvent event,
                                      WorkingMemory workingMemory) {
         filterLogEvent(new RuleFlowLogEvent(LogEvent.AFTER_RULEFLOW_CREATED,
                 event.getProcessInstance().getProcess().getId(),
-                event.getProcessInstance().getProcess().getName()));
+                event.getProcessInstance().getProcess().getName(),
+                event.getProcessInstance().getId()) );
     }
 
     public void beforeRuleFlowCompleted(RuleFlowCompletedEvent event,
               					  WorkingMemory workingMemory) {
         filterLogEvent( new RuleFlowLogEvent( LogEvent.BEFORE_RULEFLOW_COMPLETED,
         		event.getProcessInstance().getProcess().getId(),
-                event.getProcessInstance().getProcess().getName() ) );
+                event.getProcessInstance().getProcess().getName(),
+                event.getProcessInstance().getId()) );
     }
     
     public void afterRuleFlowCompleted(RuleFlowCompletedEvent event,
                                        WorkingMemory workingMemory) {
         filterLogEvent(new RuleFlowLogEvent(LogEvent.AFTER_RULEFLOW_COMPLETED,
                 event.getProcessInstance().getProcess().getId(),
-                event.getProcessInstance().getProcess().getName()));
+                event.getProcessInstance().getProcess().getName(),
+                event.getProcessInstance().getId()) );
     }
 
     public void beforeRuleFlowGroupActivated(
@@ -402,8 +406,9 @@ public abstract class WorkingMemoryLogger
         filterLogEvent(new RuleFlowNodeLogEvent(LogEvent.BEFORE_RULEFLOW_NODE_TRIGGERED,
                 event.getRuleFlowNodeInstance().getId() + "",
                 event.getRuleFlowNodeInstance().getNode().getName(),
-                event.getProcessInstance().getProcess().getId(), event
-                        .getProcessInstance().getProcess().getName()));
+                event.getProcessInstance().getProcess().getId(),
+                event.getProcessInstance().getProcess().getName(),
+                event.getProcessInstance().getId()) );
     }
 
     public void afterRuleFlowNodeTriggered(RuleFlowNodeTriggeredEvent event,
@@ -411,8 +416,9 @@ public abstract class WorkingMemoryLogger
         filterLogEvent(new RuleFlowNodeLogEvent(LogEvent.AFTER_RULEFLOW_NODE_TRIGGERED,
                 event.getRuleFlowNodeInstance().getId() + "",
                 event.getRuleFlowNodeInstance().getNode().getName(),
-                event.getProcessInstance().getProcess().getId(), event
-                        .getProcessInstance().getProcess().getName()));
+                event.getProcessInstance().getProcess().getId(), 
+                event.getProcessInstance().getProcess().getName(),
+                event.getProcessInstance().getId()) );
     }
 
     public void afterPackageAdded(AfterPackageAddedEvent event) {

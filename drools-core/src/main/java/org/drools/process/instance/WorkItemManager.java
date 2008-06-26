@@ -94,6 +94,7 @@ public class WorkItemManager implements Externalizable {
                 processInstance.workItemCompleted(workItem);
             }
             workItems.remove(new Long(id));
+            workingMemory.fireAllRules();
         }
     }
 
@@ -108,6 +109,7 @@ public class WorkItemManager implements Externalizable {
                 processInstance.workItemAborted(workItem);
             }
             workItems.remove(new Long(id));
+            workingMemory.fireAllRules();
         }
     }
 

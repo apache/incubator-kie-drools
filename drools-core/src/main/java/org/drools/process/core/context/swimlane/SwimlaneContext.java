@@ -1,5 +1,6 @@
 package org.drools.process.core.context.swimlane;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,7 +33,14 @@ public class SwimlaneContext extends AbstractContext {
     }
     
     public Collection<Swimlane> getSwimlanes() {
-        return swimlanes.values();
+        return new ArrayList<Swimlane>(swimlanes.values());
+    }
+    
+    public void setSwimlanes(Collection<Swimlane> swimlanes) {
+        this.swimlanes.clear();
+        for (Swimlane swimlane: swimlanes) {
+            addSwimlane(swimlane);
+        }
     }
 
 	public Context resolveContext(Object param) {

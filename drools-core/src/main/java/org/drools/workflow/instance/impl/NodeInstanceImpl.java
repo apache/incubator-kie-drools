@@ -81,6 +81,10 @@ public abstract class NodeInstanceImpl implements NodeInstance, Serializable {
         return this.nodeInstanceContainer.getNodeContainer().getNode( this.nodeId );
     }
     
+    public boolean isInversionOfControl() {
+        return false;
+    }
+    
     public void cancel() {
         nodeInstanceContainer.removeNodeInstance(this);
     }

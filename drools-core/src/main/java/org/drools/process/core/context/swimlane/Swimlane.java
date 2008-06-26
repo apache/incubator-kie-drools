@@ -9,12 +9,12 @@ public class Swimlane implements Serializable {
 	private String name;
 	private String actorId;
 	
-	public Swimlane(String name) {
-		this.name = name;
-	}
-	
 	public String getName() {
 		return this.name;
+	}
+	
+	public void setName(String name) {
+	    this.name = name;
 	}
 	
 	public void setActorId(String actorId) {
@@ -23,6 +23,10 @@ public class Swimlane implements Serializable {
 	
 	public String getActorId() {
 		return this.actorId;
+	}
+	
+	public String toString() {
+	    return name;
 	}
 
 }
