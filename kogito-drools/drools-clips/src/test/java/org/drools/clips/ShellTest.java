@@ -45,7 +45,7 @@ public class ShellTest extends TestCase {
     public void setUp() {
         FunctionHandlers handlers = FunctionHandlers.getInstance();
         handlers.registerFunction( new PlusFunction() );
-        handlers.registerFunction( new MinusFunction() );        
+        handlers.registerFunction( new MinusFunction() );
         handlers.registerFunction( new MultiplyFunction() );
         handlers.registerFunction( new ModifyFunction() );
         handlers.registerFunction( new CreateListFunction() );
@@ -56,7 +56,7 @@ public class ShellTest extends TestCase {
         handlers.registerFunction( new MoreThanFunction() );
         handlers.registerFunction( new EqFunction() );
         handlers.registerFunction( new SwitchFunction() );
-        //handlers.registerFunction( new DeffunctionFunction() );    
+        //handlers.registerFunction( new DeffunctionFunction() );
         handlers.registerFunction( new ReturnFunction() );
         handlers.registerFunction( new RunFunction() );
         handlers.registerFunction( new BindFunction() );
@@ -75,15 +75,15 @@ public class ShellTest extends TestCase {
 
     //    public void test1() {
     //        String expr = "(* (+ 4 4 ) 2) (create$ 10 20 (+ 10 10) a) (modify ?p (name mark) (location \"london\")(age (+ 16 16) ) ) (printout t a b c (+ 4 4) )";
-    //        
+    //
     //        SExpression[] lisplists = evalString( expr );
     //
-    //        StringBuilderAppendable appendable = new StringBuilderAppendable();        
-    //        MVELClipsContext context = new MVELClipsContext();         
+    //        StringBuilderAppendable appendable = new StringBuilderAppendable();
+    //        MVELClipsContext context = new MVELClipsContext();
     //        for ( SExpression sExpression : lisplists ) {
     //            FunctionHandlers.dump( sExpression, appendable, context );
     //        }
-    //        
+    //
     //        System.out.println( appendable );
     //    }
 
@@ -210,7 +210,7 @@ public class ShellTest extends TestCase {
         assertEquals( "[Person name='bob' likes='stilton' age='35']",
                       new String( this.baos.toByteArray() ) );
     }
-    
+
     public void testRuleCreation() {
         this.shell.eval( "(import org.drools.Person)" );
 
@@ -241,9 +241,18 @@ public class ShellTest extends TestCase {
                                35 ) );
         wm.fireAllRules();
         assertEquals( "yy truexx true",
-                      new String( this.baos.toByteArray() ) );        
-    }    
-    
+                      new String( this.baos.toByteArray() ) );
+    }
+
+    public void FIXME_testTemplateCreation2() throws Exception {
+    	this.shell.eval( "(deftemplate PersonTemplate (slot name (type String) ) (slot age (type int) ) )" );
+        this.shell.eval( "(defrule xxx (PersonTemplate (name ?name&bob) (age 30) ) (PersonTemplate  (name ?name) (age 35)) => (printout t xx \" \" (eq 1 1) ) )" );
+        this.shell.eval( "(assert (PersonTemplate (name 'mike') (age 34)))");
+
+        Class personClass = this.shell.getStatefulSession().getRuleBase().getPackage( "MAIN" ).getPackageScopeClassLoader().loadClass( "MAIN.PersonTemplate" );
+        assertNotNull(personClass);
+    }
+
     public void testTemplateCreation() throws Exception {
         this.shell.eval( "(deftemplate Person (slot name (type String) ) (slot age (type int) ) )" );
 
@@ -265,26 +274,26 @@ public class ShellTest extends TestCase {
 
         WorkingMemory wm = shell.getStatefulSession();
         Class personClass = this.shell.getStatefulSession().getRuleBase().getPackage( "MAIN" ).getPackageScopeClassLoader().loadClass( "MAIN.Person" );
-        
+
         Method nameMethod = personClass.getMethod( "setName", new Class[] { String.class } );
         Method ageMethod = personClass.getMethod( "setAge", new Class[] { int.class } );
-        
+
         Object bob1 = personClass.newInstance();
         nameMethod.invoke( bob1, "bob" );
         ageMethod.invoke( bob1, 30 );
 
-        
+
         Object bob2 = personClass.newInstance();
         nameMethod.invoke( bob2, "bob" );
         ageMethod.invoke( bob2, 35 );
-        //Constructor constructor = personClass.getConstructor( new Class[] { String.class,String.class, int.class} );        
+        //Constructor constructor = personClass.getConstructor( new Class[] { String.class,String.class, int.class} );
         wm.insert( bob1 );
         wm.insert( bob2 );
-        
-        
+
+
         wm.fireAllRules();
         assertEquals( "yy truexx true",
-                      new String( this.baos.toByteArray() ) );      	
+                      new String( this.baos.toByteArray() ) );
     }
 
     public void testEmptyLHSRule() {
@@ -306,15 +315,15 @@ public class ShellTest extends TestCase {
     public void testRuleCallDeftemplate() {
         String function = "(deffunction max (?a ?b) (if (> ?a ?b) then (return ?a) else (return ?b) ) )";
         this.shell.eval( function );
-        
+
         this.shell.eval( "(import org.drools.*)" );
         this.shell.eval( "(defrule testRule (Person (age ?age) ) => (printout t hello) (printout t \" \" (max 3 ?age) ) )" );
         this.shell.eval( "(assert (Person (name mark) (age 32) ) )" );
         this.shell.eval( "(run)" );
         assertEquals( "hello 32",
-                      new String( this.baos.toByteArray() ) );        
+                      new String( this.baos.toByteArray() ) );
     }
-    
+
     public void testTwoSimpleRulesWithModify() {
         this.shell.eval( "(import org.drools.*)" );
         this.shell.eval( "(defrule testRule1 ?p <- (Person (name ?name&mark) ) => (printout t hello) (printout t \" \" ?name) (modify ?p (name bob) ) )" );
@@ -335,7 +344,7 @@ public class ShellTest extends TestCase {
         assertEquals( "hello markhello bob",
                       new String( this.baos.toByteArray() ) );
     }
-    
+
     public void testPredicate() {
         this.shell.eval( "(import org.drools.Person)" );
         this.shell.eval( "(defrule testRule1 (Person (name ?name) (age ?age&:(> ?age 30)) ) => (printout t hello) (printout t \" \" ?name) )" );
@@ -343,9 +352,9 @@ public class ShellTest extends TestCase {
         this.shell.eval( "(assert (Person (name bob) (age 35) ) )" );
         this.shell.eval( "(run)" );
         assertEquals( "hello bob",
-                      new String( this.baos.toByteArray() ) );        
+                      new String( this.baos.toByteArray() ) );
     }
-    
+
     public void testReturnValue() {
         this.shell.eval( "(import org.drools.Person)" );
         this.shell.eval( "(defrule testRule1 (Person (age ?age) ) (Person (name ?name) (age =(- ?age 3)) ) => (printout t hello) (printout t \" \" ?name) )" );
@@ -353,9 +362,9 @@ public class ShellTest extends TestCase {
         this.shell.eval( "(assert (Person (name bob) (age 35) ) )" );
         this.shell.eval( "(run)" );
         assertEquals( "hello mark",
-                      new String( this.baos.toByteArray() ) );           
+                      new String( this.baos.toByteArray() ) );
     }
-    
+
     public void testTest() {
         this.shell.eval( "(import org.drools.Person)" );
         this.shell.eval( "(defrule testRule1 (Person (age ?age1) ) (Person (name ?name) (age ?age2) ) (test(eq ?age1 (+ ?age2 3) )) => (printout t hello) )" );
@@ -363,7 +372,7 @@ public class ShellTest extends TestCase {
         this.shell.eval( "(assert (Person (name bob) (age 35) ) )" );
         this.shell.eval( "(run)" );
         assertEquals( "hello",
-                      new String( this.baos.toByteArray() ) );           
+                      new String( this.baos.toByteArray() ) );
     }
 
     public void testRun() {

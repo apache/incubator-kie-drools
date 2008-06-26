@@ -4,24 +4,23 @@
 package org.drools.clips;
 
 import java.io.ByteArrayOutputStream;
-import java.io.InputStreamReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.io.PrintStream;
 import java.io.Reader;
 import java.io.Serializable;
 import java.io.StringReader;
-import java.io.ObjectInput;
-import java.io.IOException;
-import java.io.ObjectOutput;
-import java.nio.CharBuffer;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.Stack;
 import java.util.Map.Entry;
-import java.util.logging.ConsoleHandler;
 
 import org.antlr.runtime.ANTLRReaderStream;
 import org.antlr.runtime.CommonTokenStream;
@@ -53,29 +52,29 @@ import org.drools.clips.functions.SetFunction;
 import org.drools.clips.functions.SwitchFunction;
 import org.drools.common.InternalRuleBase;
 import org.drools.compiler.PackageBuilder;
-import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.PackageDescr;
-import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
-import org.drools.lang.descr.TypeFieldDescr;
 import org.drools.rule.ImportDeclaration;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Namespaceable;
 import org.drools.rule.Package;
-import org.drools.rule.builder.dialect.mvel.MVELDialectConfiguration;
+import org.drools.rule.TypeDeclaration;
 import org.drools.spi.GlobalResolver;
 import org.mvel.MVEL;
 import org.mvel.ParserContext;
 import org.mvel.ast.Function;
-import org.mvel.compiler.CompiledExpression;
 import org.mvel.compiler.ExpressionCompiler;
-import org.mvel.debug.DebugTools;
-import org.mvel.util.CompilerTools;
 
+/**
+ * An interactive Clips session shell.
+ * You can launch this as a Main class, no parameters are required.
+ * @author Michael Neale
+ *
+ */
 public class Shell
     implements
     ParserHandler,
@@ -110,7 +109,7 @@ public class Shell
         StringBuffer buf = new StringBuffer();
         FunctionHandlers handlers = FunctionHandlers.getInstance();
         handlers.registerFunction( new PlusFunction() );
-        handlers.registerFunction( new MinusFunction() );            
+        handlers.registerFunction( new MinusFunction() );
         handlers.registerFunction( new MultiplyFunction() );
         handlers.registerFunction( new ModifyFunction() );
         handlers.registerFunction( new CreateListFunction() );
@@ -132,38 +131,110 @@ public class Shell
         handlers.registerFunction( new AssertFunction() );
         Shell shell = new Shell();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        shell.addRouter( "t",
-                new PrintStream( out ) );
+        shell.addRouter( "t", new PrintStream( out ) );
+
         System.out.print("Drools>");
+
+        StringBuffer sessionLog = new StringBuffer();
         while(true) {
             byte name[] = new byte[256];
 
-	        Thread.sleep(1);
 	        System.in.read(name);
 	        String cmd = (new String(name)).trim();
+
 	        //System.out.println("ECHO:" + cmd);
-	        if (cmd.equals("(exit)") || cmd.equals("(quit)")) break;
+
+	        if (cmd.equals("(exit)") || cmd.equals("(quit)")) {
+	        	sessionLog.append(cmd);
+	        	break;
+	        }
 	        buf.append(cmd);
 
 	        if (isBalancedBrackets(buf)) {
-	        	shell.eval(buf.toString());
-	        	String output = new String(out.toByteArray());
-	        	if (output != null && output.trim().length() > 0) {
-	        		System.out.println(output);
+	        	String exp = buf.toString();
+	        	if (exp.startsWith("(save ")) {
+	        		String file = getFileName(exp);
+	        		System.out.println("Saving transcript to [" + file + "]");
+	        		writeFile(file, sessionLog);
+	        		sessionLog = new StringBuffer();
+	        		System.out.print("Drools>");
 	        	} else {
-	        		//System.out.println("OK");
+	        		sessionLog.append(cmd + "\n");
+
+	        		if (exp.startsWith("(load ")) {
+	        			String file = getFileName(exp);
+	        			System.out.println("Loading transcript from [" + file + "]");
+	        			exp = loadFile(file);
+	        		}
+
+		        	shell.eval(exp);
+		        	String output = new String(out.toByteArray());
+		        	if (output != null && output.trim().length() > 0) {
+		        		System.out.println(output);
+		        	}
+		        	out.reset();
+		        	System.out.print("Drools>");
+		        	buf = new StringBuffer();
 	        	}
-	        	out.reset();
-	        	System.out.print("Drools>");
-	        	buf = new StringBuffer();
 	        }
         }
 
-        System.out.println("Goobye !");
+        System.out.println("Goodbye, and good luck !");
 
     }
 
-    private static boolean isBalancedBrackets(StringBuffer buf) {
+	private static String loadFile(String fileName) throws IOException {
+		File f = new File(fileName);
+        InputStream is = new FileInputStream(f);
+
+        long length = f.length();
+        byte[] bytes = new byte[(int)length];
+
+        int offset = 0;
+        int numRead = 0;
+        while (offset < bytes.length
+               && (numRead=is.read(bytes, offset, bytes.length-offset)) >= 0) {
+            offset += numRead;
+        }
+
+        if (offset < bytes.length) {
+            throw new IOException("Could not completely read file "+f.getName());
+        }
+
+        is.close();
+		return new String(bytes);
+	}
+
+	private static String getFileName(String exp) {
+		char qt = '\'';
+		if (exp.contains("\"")) {
+			qt = '"';
+		}
+		String file = exp.substring(exp.indexOf(qt) + 1, exp.lastIndexOf(qt));
+		return file;
+	}
+
+    private static void writeFile(String file, StringBuffer sessionLog) {
+    	FileOutputStream fout;
+		try {
+			File f = new File(file);
+			if (!f.exists()) {
+				f.createNewFile();
+			}
+			fout = new FileOutputStream(f);
+			fout.write(sessionLog.toString().getBytes());
+			fout.flush();
+			fout.close();
+		} catch (FileNotFoundException e) {
+			System.err.println("File " + file + " does not exist.");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+
+	}
+
+	private static boolean isBalancedBrackets(StringBuffer buf) {
 		char[] cs = buf.toString().toCharArray();
 		int stack = 0;
 		for (int i = 0; i < cs.length; i++) {
@@ -328,6 +399,7 @@ public class Shell
                                            (Class) cls );
                     }
                 }
+
             } catch ( Exception e ) {
                 e.printStackTrace();
             }
