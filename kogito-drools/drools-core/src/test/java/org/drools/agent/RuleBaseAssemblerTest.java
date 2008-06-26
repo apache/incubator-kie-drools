@@ -76,10 +76,23 @@ public class RuleBaseAssemblerTest extends TestCase {
         if (dir.isDirectory()) {
             String[] children = dir.list();
             for (String child : children) {
-                boolean success = deleteDir(new File(dir, child));
+                File file = new File(dir, child);
+                boolean success = deleteDir( file );
                 if (!success) {                    
-                    //throw new RuntimeException("Unable to delete !");
-                    return false;
+                    // this is a hack, but some time you need to wait for a file release to release
+                    // Windows was having intermittent issues with DirectoryScannerTest with the dir not being empty
+                    System.gc();
+                    try {
+                        Thread.sleep( 300 );
+                    } catch ( InterruptedException e ) {
+                        throw new RuntimeException( "This should never happen" );
+                    }
+                    success = deleteDir( file );
+                    if ( !success) {
+                        //ok now give up 
+                        //throw new RuntimeException("Unable to delete !");
+                        return false;
+                    }
                 }
             }
         }
