@@ -19,7 +19,7 @@ public class NumberGuessExample {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( ShoppingExample.class.getResourceAsStream( "NumberGuess.drl" ) ) );
 
-        builder.addRuleFlow( new InputStreamReader( ShoppingExample.class.getResourceAsStream( "NumberGuess.rfm" ) ) );
+        builder.addRuleFlow( new InputStreamReader( ShoppingExample.class.getResourceAsStream( "NumberGuess.rf" ) ) );
 
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage( builder.getPackage() );
