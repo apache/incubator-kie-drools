@@ -85,8 +85,10 @@ public class ProcessUpgradeTest extends TestCase {
             "  <nodes>\n" +
             "    <start id=\"1\" name=\"Start\" />\n" +
             "    <ruleSet id=\"2\" name=\"Hello\" ruleFlowGroup=\"hello\" />\n" +
-            "    <action id=\"4\" name=\"Action\" dialect=\"java\">System.out.println();\n" +
+            "    <actionNode id=\"4\" name=\"Action\" >" +
+            "      <action type=\"expression\" dialect=\"java\">System.out.println();\n" +
             "list.add(\"Executed\");</action>/n" +
+            "    </actionNode>\n" + 
             "    <end id=\"3\" name=\"End\" />\n" +
             "  </nodes>\n" +
             "  <connections>\n" +

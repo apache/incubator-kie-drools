@@ -164,9 +164,13 @@ public class ProcessMarchallingTest extends TestCase {
             "    <end id=\"4\" name=\"End\" />\n" +
             "    <split id=\"5\" name=\"AND\" type=\"1\" />\n" +
             "    <subProcess id=\"6\" name=\"SubProcess\" processId=\"com.sample.subflow\" />\n" +
-            "    <action id=\"7\" name=\"Action\" dialect=\"mvel\" >System.out.println(\"Executing action 1\");</action>\n" +
+            "    <actionNode id=\"7\" name=\"Action\" >\n" +
+            "      <action type=\"expression\" dialect=\"mvel\" >System.out.println(\"Executing action 1\");</action>\n" +
+            "	 </actionNode>/n" +
             "    <join id=\"8\" name=\"AND\" type=\"1\" />\n" +
-            "    <action id=\"9\" name=\"Action\" dialect=\"mvel\" >System.out.println(\"Executing action 2\");</action>\n" +
+            "    <actionNode id=\"9\" name=\"Action\" >\n" +
+            "      <action type=\"expression\" dialect=\"mvel\" >System.out.println(\"Executing action 2\");</action>\n" +
+            "    </actionNode>\n" +
             "    <ruleSet id=\"10\" name=\"RuleSet\" ruleFlowGroup=\"flowgroup\" />\n" +
             "    <milestone id=\"11\" name=\"Event Wait\" >Person( )</milestone>\n" +
             "    <workItem id=\"12\" name=\"Log\" >\n" +

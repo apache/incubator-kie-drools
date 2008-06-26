@@ -207,7 +207,7 @@ public class XMLPersistenceTest extends TestCase {
         milestone.setConstraint("constraint");
         process.addNode(milestone);
         connection = new ConnectionImpl(join, Node.CONNECTION_DEFAULT_TYPE, milestone, Node.CONNECTION_DEFAULT_TYPE);
-        connection.setMetaData("bendpoints", "[10,10;20;20]");
+        connection.setMetaData("bendpoints", "[10,10;20,20]");
         
         SubProcessNode subProcess = new SubProcessNode();
         subProcess.setName("subProcess");

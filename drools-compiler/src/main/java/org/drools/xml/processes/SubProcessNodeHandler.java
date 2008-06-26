@@ -25,6 +25,9 @@ public class SubProcessNodeHandler extends AbstractNodeHandler {
         subProcessNode.setWaitForCompletion(!"false".equals(waitForCompletion));
         String independent = element.getAttribute("independent");
         subProcessNode.setIndependent(!"false".equals(independent));
+        for (String eventType: subProcessNode.getActionTypes()) {
+        	handleAction(node, element, eventType);
+        }
     }
 
     public Class generateNodeFor() {
@@ -58,6 +61,9 @@ public class SubProcessNodeHandler extends AbstractNodeHandler {
                 "      <mapping type=\"out\" "
                              + "from=\"" + outMapping.getKey() + "\" "
                              + "to=\"" + outMapping.getValue() + "\" />" + EOL);
+        }
+        for (String eventType: subProcessNode.getActionTypes()) {
+        	writeActions(eventType, subProcessNode.getActions(eventType), xmlDump);
         }
         endNode("subProcess", xmlDump);
 	}

@@ -95,7 +95,7 @@
 			<xs:choice minOccurs="0" maxOccurs="unbounded">
 				<xs:element ref="drools:start"/>
 				<xs:element ref="drools:end"/>
-				<xs:element ref="drools:action"/>
+				<xs:element ref="drools:actionNode"/>
 				<xs:element ref="drools:ruleSet"/>
 				<xs:element ref="drools:split"/>
 				<xs:element ref="drools:join"/>
@@ -128,16 +128,25 @@
 			<xs:attribute name="height" type="xs:string"/>
 		</xs:complexType>
 	</xs:element>
+	<xs:element name="actionNode">
+		<xs:complexType>
+			<xs:sequence minOccurs="0" maxOccurs="1">
+				<xs:element ref="drools:action"/>
+			</xs:sequence>
+			<xs:attribute name="id" type="xs:string" use="required"/>
+			<xs:attribute name="name" type="xs:string"/>
+			<xs:attribute name="x" type="xs:string"/>
+			<xs:attribute name="y" type="xs:string"/>
+			<xs:attribute name="width" type="xs:string"/>
+			<xs:attribute name="height" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
 	<xs:element name="action">
 		<xs:complexType>
 			<xs:simpleContent>
 				<xs:extension base="xs:string">
-					<xs:attribute name="id" type="xs:string" use="required"/>
 					<xs:attribute name="name" type="xs:string"/>
-					<xs:attribute name="x" type="xs:string"/>
-					<xs:attribute name="y" type="xs:string"/>
-					<xs:attribute name="width" type="xs:string"/>
-					<xs:attribute name="height" type="xs:string"/>
+					<xs:attribute name="type" type="xs:string"/>
 					<xs:attribute name="dialect" type="xs:string"/>
 				</xs:extension>
 			</xs:simpleContent>
@@ -235,6 +244,8 @@
 			<xs:choice minOccurs="0" maxOccurs="unbounded">
 				<xs:element ref="drools:work"/>
 				<xs:element ref="drools:mapping"/>
+				<xs:element ref="drools:onEntry"/>
+				<xs:element ref="drools:onExit"/>
 			</xs:choice>
 			<xs:attribute name="id" type="xs:string" use="required"/>
 			<xs:attribute name="name" type="xs:string"/>
@@ -270,7 +281,20 @@
 			<xs:attribute name="to" type="xs:string" use="required"/>
 		</xs:complexType>
 	</xs:element>
-	<xs:element name="timer">
+	<xs:element name="onEntry">
+		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="drools:action"/>
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="onExit">
+		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="drools:action"/>
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>	<xs:element name="timer">
 		<xs:complexType>
 			<xs:attribute name="id" type="xs:string" use="required"/>
 			<xs:attribute name="name" type="xs:string"/>

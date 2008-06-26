@@ -9,20 +9,19 @@ import org.drools.workflow.core.Node;
 import org.drools.workflow.core.impl.DroolsConsequenceAction;
 import org.drools.workflow.core.node.ActionNode;
 
-public class ActionNodeBuilder
-    implements
-    ProcessNodeBuilder {
+public class ActionNodeBuilder extends ExtendedNodeBuilder {
 
     public void build(Process process,
-                           ProcessDescr processDescr,
-                           ProcessBuildContext context,
-                           Node node) {
+                      ProcessDescr processDescr,
+                      ProcessBuildContext context,
+                      Node node) {
+    	super.build(process, processDescr, context, node);
         ActionNode actionNode = ( ActionNode ) node;
         DroolsConsequenceAction action = (DroolsConsequenceAction) actionNode.getAction();
         ActionDescr actionDescr = new ActionDescr();
         actionDescr.setText( action.getConsequence() );   
         Dialect dialect = context.getDialectRegistry().getDialect( action.getDialect() );            
-        dialect.getActionBuilder().build( context, actionNode, actionDescr );
+        dialect.getActionBuilder().build( context, action, actionDescr );
     }
 
 }

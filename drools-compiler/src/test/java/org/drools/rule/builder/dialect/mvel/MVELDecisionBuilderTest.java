@@ -18,6 +18,8 @@ import org.drools.rule.Package;
 import org.drools.rule.builder.PackageBuildContext;
 import org.drools.spi.Action;
 import org.drools.spi.KnowledgeHelper;
+import org.drools.workflow.core.DroolsAction;
+import org.drools.workflow.core.impl.DroolsConsequenceAction;
 import org.drools.workflow.core.node.ActionNode;
 
 public class MVELDecisionBuilderTest extends TestCase {
@@ -43,10 +45,12 @@ public class MVELDecisionBuilderTest extends TestCase {
         pkgBuilder.addPackageFromDrl( new StringReader("package pkg1;\nglobal java.util.List list;\n") );        
         
         ActionNode actionNode = new ActionNode();
+        DroolsAction action = new DroolsConsequenceAction("java", null);
+        actionNode.setAction(action);
         
         final MVELActionBuilder builder = new MVELActionBuilder();
         builder.build( context,
-                       actionNode,
+                       action,
                        actionDescr );
 
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
@@ -57,7 +61,7 @@ public class MVELDecisionBuilderTest extends TestCase {
         wm.setGlobal( "list", list );        
         
         KnowledgeHelper knowledgeHelper = new DefaultKnowledgeHelper();
-        ((Action)actionNode.getAction()).execute( knowledgeHelper, wm );
+        ((Action)actionNode.getAction().getMetaData("Action")).execute( knowledgeHelper, wm );
         
         assertEquals("hello world", list.get(0) );
     }    

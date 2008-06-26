@@ -26,10 +26,18 @@ eval( list.contains( 25 ) )</constraint>
 		<constraint toNodeId="6" toType="DROOLS_DEFAULT" name="JavaCodeConstraint" priority="3" type="code" dialect="java" >return inList.contains( 3 );</constraint>
       </constraints>
     </split>
-    <action id="3" name="MVELRuleConstraintAction" dialect="mvel" >outList.add("MVELRuleConstraint was here");</action>
-    <action id="4" name="JavaRuleConstraintAction" dialect="java" >outList.add("JavaRuleConstraint was here");</action>
-    <action id="5" name="MVELCodeConstraintAction" dialect="mvel" >outList.add("MVELCodeConstraint was here");</action>
-    <action id="6" name="JavaCodeConstraintAction" dialect="java" >outList.add("JavaCodeConstraint was here");</action>
+    <actionNode id="3" name="MVELRuleConstraintAction" >
+      <action type="expression" dialect="mvel" >outList.add("MVELRuleConstraint was here");</action>
+    </actionNode>
+    <actionNode id="4" name="JavaRuleConstraintAction" >
+      <action type="expression" dialect="java" >outList.add("JavaRuleConstraint was here");</action>
+    </actionNode>
+    <actionNode id="5" name="MVELCodeConstraintAction" >
+      <action type="expression" dialect="mvel" >outList.add("MVELCodeConstraint was here");</action>
+    </actionNode>
+    <actionNode id="6" name="JavaCodeConstraintAction" >
+      <action type="expression" dialect="java" >outList.add("JavaCodeConstraint was here");</action>
+    </actionNode>
     <join id="7" name="Join" type="1" />
     <end id="8" name="End" />
   </nodes>

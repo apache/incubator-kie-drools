@@ -27,7 +27,7 @@ import org.drools.process.core.context.variable.VariableScope;
 import org.drools.rule.builder.ActionBuilder;
 import org.drools.rule.builder.PackageBuildContext;
 import org.drools.rule.builder.ProcessBuildContext;
-import org.drools.workflow.core.node.ActionNode;
+import org.drools.workflow.core.DroolsAction;
 
 /**
  * @author etirelli
@@ -41,15 +41,15 @@ public class JavaActionBuilder extends AbstractJavaProcessBuilder
      * @see org.drools.semantics.java.builder.ConsequenceBuilder#buildConsequence(org.drools.semantics.java.builder.BuildContext, org.drools.semantics.java.builder.BuildUtils, org.drools.lang.descr.RuleDescr)
      */
     public void build(final PackageBuildContext context,
-                      final ActionNode actionNode,
+                      final DroolsAction action,
                       final ActionDescr actionDescr) {
         build( context,
-               actionNode,
+               action,
                actionDescr,
                null );
     }
     public void build(final PackageBuildContext context,
-                      final ActionNode actionNode,
+                      final DroolsAction action,
                       final ActionDescr actionDescr,
                       final VariableScope variableScope) {
 
@@ -82,7 +82,7 @@ public class JavaActionBuilder extends AbstractJavaProcessBuilder
                           (ProcessBuildContext)context,
                           className,
                           map,
-                          actionNode,
+                          action,
                           actionDescr );
     }
 
