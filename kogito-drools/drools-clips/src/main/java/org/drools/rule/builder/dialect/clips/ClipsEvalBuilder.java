@@ -24,10 +24,15 @@ import java.util.Set;
 
 import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.base.mvel.MVELEvalExpression;
+import org.drools.clips.Appendable;
+import org.drools.clips.FunctionHandlers;
+import org.drools.clips.LispForm;
+import org.drools.clips.StringBuilderAppendable;
 import org.drools.compiler.Dialect;
 import org.drools.compiler.DescrBuildError;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.EvalDescr;
+import org.drools.lang.descr.PredicateDescr;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.MVELDialectRuntimeData;
@@ -71,6 +76,11 @@ public class ClipsEvalBuilder extends MVELEvalBuilder
     public RuleConditionElement build(final RuleBuildContext context,
                                       final BaseDescr descr,
                                       final Pattern prefixPattern) {
+        Appendable builder = new StringBuilderAppendable();
+        EvalDescr edescr = (EvalDescr) descr;
+            FunctionHandlers.dump( (LispForm) edescr.getContent(),
+                                   builder );
+            edescr.setContent( builder.toString() );
         return super.build(context, descr, prefixPattern);
     }
 
