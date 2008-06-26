@@ -18,12 +18,17 @@ package org.drools.rule.builder.dialect.clips;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.base.mvel.MVELPredicateExpression;
+import org.drools.clips.Appendable;
+import org.drools.clips.FunctionHandlers;
+import org.drools.clips.LispForm;
+import org.drools.clips.StringBuilderAppendable;
 import org.drools.compiler.Dialect;
 import org.drools.compiler.DescrBuildError;
 import org.drools.lang.descr.PredicateDescr;
@@ -51,7 +56,7 @@ public class ClipsPredicateBuilder extends MVELPredicateBuilder
                       final Declaration[] previousDeclarations,
                       final Declaration[] localDeclarations,
                       final PredicateConstraint predicate,
-                      final PredicateDescr predicateDescr) {
+                      final PredicateDescr predicateDescr) {        
         super.build(context, usedIdentifiers, previousDeclarations, localDeclarations, predicate, predicateDescr);
     }
 

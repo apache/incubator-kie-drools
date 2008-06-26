@@ -333,6 +333,16 @@ public class ShellTest extends TestCase {
         assertEquals( "hello markhello bob",
                       new String( this.baos.toByteArray() ) );
     }
+    
+    public void testPredicate() {
+        this.shell.eval( "(import org.drools.Person)" );
+        this.shell.eval( "(defrule testRule1 (Person (name ?name) (age ?age&:(> ?age 30)) ) => (printout t hello) (printout t \" \" ?name) )" );
+        this.shell.eval( "(assert (Person (name mark) (age 27) ) )" );
+        this.shell.eval( "(assert (Person (name bob) (age 35) ) )" );
+        this.shell.eval( "(run)" );
+        assertEquals( "hello bob",
+                      new String( this.baos.toByteArray() ) );        
+    }
 
     public void testRun() {
         this.shell.eval( "(run)" );

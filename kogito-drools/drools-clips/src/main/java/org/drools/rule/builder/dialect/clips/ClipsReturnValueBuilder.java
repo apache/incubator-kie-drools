@@ -19,18 +19,7 @@ public class ClipsReturnValueBuilder extends MVELReturnValueBuilder {
                       final Declaration[] previousDeclarations,
                       final Declaration[] localDeclarations,
                       final ReturnValueRestriction returnValueRestriction,
-                      final ReturnValueRestrictionDescr returnValueRestrictionDescr) {
-        Appendable builder = new StringBuilderAppendable();
-        
-        List list = (List) context.getRuleDescr().getConsequence();
-        for ( Iterator it = list.iterator(); it.hasNext(); ) {
-            FunctionHandlers.dump( (LispForm) it.next(),
-                                   builder );
-        }
-        
-        returnValueRestrictionDescr.setContent( builder.toString() );
-        context.getRuleDescr().setDialect( "mvel" );
-        
+                      final ReturnValueRestrictionDescr returnValueRestrictionDescr) {        
         super.build(context, usedIdentifiers, previousDeclarations, localDeclarations, returnValueRestriction, returnValueRestrictionDescr );
     }
 }

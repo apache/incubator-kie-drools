@@ -84,7 +84,7 @@ public class LhsClpParserTest extends TestCase {
                       personPattern.getObjectType() );
 
         List colList = personPattern.getDescrs();
-        assertEquals( 2,
+        assertEquals( 3,
                       colList.size() );
         
         // first, we have a field binding
@@ -97,7 +97,7 @@ public class LhsClpParserTest extends TestCase {
         // then, we have a field constraint
         FieldConstraintDescr fieldConstraintDescr = (FieldConstraintDescr) colList.get( 1 );
         assertEquals( "name",
-                      fieldConstraintDescr.getFieldName() );
+                      fieldConstraintDescr.getFieldName() );                        
         RestrictionConnectiveDescr root = (RestrictionConnectiveDescr) fieldConstraintDescr.getRestriction();
         assertEquals( 1,
                       root.getRestrictions().size() );
@@ -123,15 +123,8 @@ public class LhsClpParserTest extends TestCase {
                       litDescr.getEvaluator() );
         assertEquals( "zzz",
                       litDescr.getText() );
-
-        // third, we have an AND restriction connective
-        RestrictionConnectiveDescr and = (RestrictionConnectiveDescr) restrictionList.get( 2 );
-        assertEquals( RestrictionConnectiveDescr.AND,
-                      and.getConnective() );
-        assertEquals( 2, 
-                      and.getRestrictions().size() );
         
-        ReturnValueRestrictionDescr retDescr = (ReturnValueRestrictionDescr) and.getRestrictions().get( 0 );
+        ReturnValueRestrictionDescr retDescr = (ReturnValueRestrictionDescr) restrictionList.get( 2 );
         assertEquals( "!=",
                       retDescr.getEvaluator() );
         
@@ -139,8 +132,8 @@ public class LhsClpParserTest extends TestCase {
         assertEquals("(+ 2 3)", lispForm.toString() );                         
 
         // ----------------
-        // this is how it would be compatible to our core engine
-        PredicateDescr predicateDescr = (PredicateDescr) and.getRestrictions().get( 1 );
+        // this is how it would be compatible to our core engine 
+        PredicateDescr predicateDescr = (PredicateDescr) colList.get( 2 );
         
         lispForm = ( LispForm ) predicateDescr.getContent();
         assertEquals("(< 1 2)", lispForm.toString() );                

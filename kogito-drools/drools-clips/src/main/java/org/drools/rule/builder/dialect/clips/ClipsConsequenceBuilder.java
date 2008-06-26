@@ -22,7 +22,6 @@ public class ClipsConsequenceBuilder extends MVELConsequenceBuilder  {
         }
         
         context.getRuleDescr().setConsequence( builder.toString() );
-        context.getRuleDescr().setDialect( "mvel" );
         
         super.build(  context );
         
