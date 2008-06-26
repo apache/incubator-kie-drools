@@ -166,7 +166,7 @@ public class RuleFlowGroupImpl
         final Iterator it = this.list.iterator();
         for ( RuleFlowGroupNode node = (RuleFlowGroupNode) it.next(); node != null; node = (RuleFlowGroupNode) it.next() ) {
             final Activation activation = node.getActivation();
-            ((BinaryHeapQueueAgendaGroup) activation.getAgendaGroup()).add( activation );
+            ((InternalAgendaGroup) activation.getAgendaGroup()).add( activation );
         }
     }
 
