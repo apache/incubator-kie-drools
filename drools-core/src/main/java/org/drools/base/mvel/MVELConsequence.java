@@ -68,6 +68,8 @@ public class MVELConsequence
         //Receive breakpoints from debugger
         MVELDebugHandler.prepare();
         
+        pkg = knowledgeHelper.getWorkingMemory().getRuleBase().getPackage( knowledgeHelper.getRule().getPackage() );
+        
         ClassLoader tempClassLoader = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader( pkg.getPackageScopeClassLoader() );
 
