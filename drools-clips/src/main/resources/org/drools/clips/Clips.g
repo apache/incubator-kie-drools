@@ -562,7 +562,10 @@ field_constriant[ConditionalElementDescr base, Set declarations]
 		}	  
 		
 		or_restr_connective[top, base, fc, declarations] 
-		{ if ( top.getRestrictions().size() != 0 ) base.addDescr( fc ); }
+		{ if ( top.getRestrictions().size() != 0 ) {
+		    base.insertBeforeLast( PredicateDescr.class, fc ); 
+		  }
+		}
 		RIGHT_PAREN		
 	;
 /*	
@@ -648,7 +651,7 @@ restriction[RestrictionConnectiveDescr rc, ConditionalElementDescr base, FieldCo
 
 predicate_constraint[RestrictionConnectiveDescr rc, String op, ConditionalElementDescr base]	
 	:	COLON
-		t=lisp_form { $rc.addRestriction( new PredicateDescr( t ) ); }	
+		t=lisp_form { $base.addDescr( new PredicateDescr( t ) ); }	
 		
 	;
 
@@ -669,7 +672,7 @@ variable_restriction[String op, RestrictionConnectiveDescr rc, ConditionalElemen
 		 		FieldBindingDescr fbd = new FieldBindingDescr();
 		 		fbd.setIdentifier( identifier );		
 		 		fbd.setFieldName( fcBase.getFieldName() ); 		
-		 		ceBase.insertBeforeLast( FieldConstraintDescr.class, fbd );
+		 		ceBase.addDescr( fbd );
 		 		declarations.add( identifier );
 		 	}
 		}
