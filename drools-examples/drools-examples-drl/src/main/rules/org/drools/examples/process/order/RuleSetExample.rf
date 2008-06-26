@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<process xmlns="http://drools.org/drools-4.0/process"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+         xs:schemaLocation="http://drools.org/drools-4.0/process drools-processes-4.0.xsd"
+         type="RuleFlow" name="RuleSetExample" id="org.drools.examples.process.ruleset.RuleSetExample" package-name="org.drools.examples.process.order" version="1" >
+
+  <header>
+    <imports>
+      <import name="org.drools.examples.process.order.Order" />
+    </imports>
+    <variables>
+      <variable name="orderId" >
+        <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
+      </variable>
+    </variables>
+    <swimlanes>
+      <swimlane name="SalesRepresentative" />
+    </swimlanes>
+  </header>
+
+  <nodes>
+    <start id="1" name="Start" x="88" y="16" width="80" height="40" />
+    <ruleSet id="2" name="Validate Order" x="88" y="88" width="80" height="40" ruleFlowGroup="validate" />
+    <split id="5" name="XOR" x="116" y="160" width="26" height="23" type="2" >
+      <constraints>
+        <constraint toNodeId="10" toType="DROOLS_DEFAULT" name="large order" priority="2" type="rule" dialect="mvel" >Order( price &gt; 1000 )</constraint>
+        <constraint toNodeId="9" toType="DROOLS_DEFAULT" name="invalid order" priority="1" type="rule" dialect="mvel" >Order( errorList != null )</constraint>
+        <constraint toNodeId="6" toType="DROOLS_DEFAULT" name="default" priority="3" type="rule" dialect="mvel" >eval(true)</constraint>
+      </constraints>
+    </split>
+    <join id="6" name="" x="118" y="287" width="20" height="23" type="2" />
+    <ruleSet id="7" name="Process Order" x="88" y="414" width="80" height="40" ruleFlowGroup="process" />
+    <end id="8" name="End" x="88" y="486" width="80" height="40" />
+    <humanTask id="9" name="Correct Order" x="16" y="215" width="96" height="40" swimlane="SalesRepresentative" >
+      <work name="Human Task" >
+        <parameter name="TaskName" type="org.drools.process.core.datatype.impl.type.StringDataType" >Correct Order</parameter>
+        <parameter name="Priority" type="org.drools.process.core.datatype.impl.type.StringDataType" />
+        <parameter name="ActorId" type="org.drools.process.core.datatype.impl.type.StringDataType" />
+        <parameter name="Comment" type="org.drools.process.core.datatype.impl.type.StringDataType" >Invalid order ${orderId}, needs to be corrected (contact customer if necessary)</parameter>
+      </work>
+    </humanTask>
+    <humanTask id="10" name="Follow-up Order" x="144" y="215" width="106" height="40" swimlane="SalesRepresentative" >
+      <work name="Human Task" >
+        <parameter name="TaskName" type="org.drools.process.core.datatype.impl.type.StringDataType" >Follow-up Order</parameter>
+        <parameter name="Priority" type="org.drools.process.core.datatype.impl.type.StringDataType" />
+        <parameter name="ActorId" type="org.drools.process.core.datatype.impl.type.StringDataType" />
+        <parameter name="Comment" type="org.drools.process.core.datatype.impl.type.StringDataType" >This is a large order, follow up this order manually</parameter>
+      </work>
+    </humanTask>
+    <humanTask id="11" name="Human Task" x="72" y="340" width="111" height="40" >
+      <work name="Human Task" >
+        <parameter name="TaskName" type="org.drools.process.core.datatype.impl.type.StringDataType" />
+        <parameter name="Priority" type="org.drools.process.core.datatype.impl.type.StringDataType" />
+        <parameter name="ActorId" type="org.drools.process.core.datatype.impl.type.StringDataType" />
+        <parameter name="Comment" type="org.drools.process.core.datatype.impl.type.StringDataType" />
+      </work>
+    </humanTask>
+  </nodes>
+
+  <connections>
+    <connection from="1" to="2" />
+    <connection from="2" to="5" />
+    <connection from="9" to="6" />
+    <connection from="10" to="6" />
+    <connection from="5" to="6" />
+    <connection from="11" to="7" />
+    <connection from="7" to="8" />
+    <connection from="5" to="9" />
+    <connection from="5" to="10" />
+    <connection from="6" to="11" />
+  </connections>
+
+</process>
