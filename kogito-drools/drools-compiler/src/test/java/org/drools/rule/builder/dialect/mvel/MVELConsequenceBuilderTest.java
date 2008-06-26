@@ -31,6 +31,7 @@ import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.MockLeftTupleSink;
+import org.drools.reteoo.ReteooRuleBase;
 import org.drools.rule.Declaration;
 import org.drools.rule.Package;
 import org.drools.rule.Pattern;
@@ -48,11 +49,15 @@ public class MVELConsequenceBuilderTest extends TestCase {
     }    
 
     public void testSimpleExpression() throws Exception {
-        final Package pkg = new Package( "pkg1" );
+        PackageDescr pkgDescr = new PackageDescr( "pkg1" );
+        PackageBuilder pkgBuilder = new PackageBuilder();
+        pkgBuilder.addPackage( pkgDescr );                
+
+        final Package pkg = pkgBuilder.getPackageRegistry( "pkg1" ).getPackage();
         final RuleDescr ruleDescr = new RuleDescr( "rule 1" );
+        ruleDescr.setNamespace( "pkg1" );
         ruleDescr.setConsequence( "modify (cheese) {price = 5 };\nretract (cheese)" );
 
-        PackageBuilder pkgBuilder = new PackageBuilder( pkg );
         final PackageBuilderConfiguration conf = pkgBuilder.getPackageBuilderConfiguration();
         
         DialectCompiletimeRegistry dialectRegistry = pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectCompiletimeRegistry();
@@ -86,7 +91,8 @@ public class MVELConsequenceBuilderTest extends TestCase {
         final MVELConsequenceBuilder builder = new MVELConsequenceBuilder();
         builder.build( context );
 
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        ruleBase.addPackage( pkg );
         final WorkingMemory wm = ruleBase.newStatefulSession();
 
         MockLeftTupleSink sink = new MockLeftTupleSink();
