@@ -378,10 +378,16 @@ public class Shell
                                appendable );
 
         ParserContext context = new ParserContext();
+        
 
         String namespace = this.session.getAgenda().getFocus().getName();
 
         Package pkg = this.ruleBase.getPackage( namespace );
+        if ( pkg == null ) {
+            this.packageBuilder.addPackage( createPackageDescr( namespace ) );
+            pkg = this.ruleBase.getPackage( namespace );
+            
+        }
 
         if ( pkg != null ) {
             // only time this will be null is if we have yet to do any packagedescr work
@@ -408,12 +414,16 @@ public class Shell
             this.factory.setNextFactory( data.getFunctionFactory() );
         }
 
+        ClassLoader tempClassLoader = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader( pkg.getPackageScopeClassLoader() );
+        
         ExpressionCompiler expr = new ExpressionCompiler( appendable.toString() );
         Serializable executable = expr.compile( context );
 
         MVEL.executeExpression( executable,
                                 this,
                                 this.factory );
+        Thread.currentThread().setContextClassLoader( tempClassLoader );
     }
 
     public void templateHandler(TypeDeclarationDescr typeDescr) {

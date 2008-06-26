@@ -256,6 +256,18 @@ public class ShellTest extends TestCase {
     public void testTemplateCreation() throws Exception {
         this.shell.eval( "(deftemplate Person (slot name (type String) ) (slot age (type int) ) )" );
 
+        this.shell.eval( "(defrule xxx (Person (name ?name&bob) (age 30) ) => (printout t hello bob ) )" );
+        
+        this.shell.eval( "(assert (Person (name bob) (age 30) ) )" );
+        this.shell.eval( "(run)" );
+
+        assertEquals( "hellobob",
+                      new String( this.baos.toByteArray() ) );          
+    }    
+    
+    public void testTemplateCreationWithJava() throws Exception {
+        this.shell.eval( "(deftemplate Person (slot name (type String) ) (slot age (type int) ) )" );
+
         this.shell.eval( "(defrule yyy  => (printout t yy \" \" (eq 1 1) ) ) )" );
         Package pkg = shell.getStatefulSession().getRuleBase().getPackage( "MAIN" );
 
