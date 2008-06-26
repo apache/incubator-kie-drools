@@ -88,25 +88,25 @@ public class MVELDialect
 
     private final static String                          EXPRESSION_DIALECT_NAME        = "MVEL";
 
-    private static final PatternBuilder                  PATTERN_BUILDER                = new PatternBuilder();
-    private static final QueryBuilder                    QUERY_BUILDER                  = new QueryBuilder();
-    private static final MVELAccumulateBuilder           ACCUMULATE_BUILDER             = new MVELAccumulateBuilder();
-    private static final SalienceBuilder                 SALIENCE_BUILDER               = new MVELSalienceBuilder();
-    private static final MVELEvalBuilder                 EVAL_BUILDER                   = new MVELEvalBuilder();
-    private static final MVELPredicateBuilder            PREDICATE_BUILDER              = new MVELPredicateBuilder();
-    private static final MVELReturnValueBuilder          RETURN_VALUE_BUILDER           = new MVELReturnValueBuilder();
-    private static final MVELConsequenceBuilder          CONSEQUENCE_BUILDER            = new MVELConsequenceBuilder();
-    private static final MVELActionBuilder               ACTION_BUILDER                 = new MVELActionBuilder();
-    private static final MVELReturnValueEvaluatorBuilder RETURN_VALUE_EVALUATOR_BUILDER = new MVELReturnValueEvaluatorBuilder();
+    protected static final PatternBuilder                  PATTERN_BUILDER                = new PatternBuilder();
+    protected static final QueryBuilder                    QUERY_BUILDER                  = new QueryBuilder();
+    protected static final MVELAccumulateBuilder           ACCUMULATE_BUILDER             = new MVELAccumulateBuilder();
+    protected static final SalienceBuilder                 SALIENCE_BUILDER               = new MVELSalienceBuilder();
+    protected static final MVELEvalBuilder                 EVAL_BUILDER                   = new MVELEvalBuilder();
+    protected static final MVELPredicateBuilder            PREDICATE_BUILDER              = new MVELPredicateBuilder();
+    protected static final MVELReturnValueBuilder          RETURN_VALUE_BUILDER           = new MVELReturnValueBuilder();
+    protected static final MVELConsequenceBuilder          CONSEQUENCE_BUILDER            = new MVELConsequenceBuilder();
+    protected static final MVELActionBuilder               ACTION_BUILDER                 = new MVELActionBuilder();
+    protected static final MVELReturnValueEvaluatorBuilder RETURN_VALUE_EVALUATOR_BUILDER = new MVELReturnValueEvaluatorBuilder();
     //private final JavaRuleClassBuilder            rule        = new JavaRuleClassBuilder();
-    private static final MVELFromBuilder                 FROM_BUILDER                   = new MVELFromBuilder();
-    private static final JavaFunctionBuilder             FUNCTION_BUILDER               = new JavaFunctionBuilder();
-    private static final CollectBuilder                  COLLECT_BUILDER                = new CollectBuilder();
+    protected static final MVELFromBuilder                 FROM_BUILDER                   = new MVELFromBuilder();
+    protected static final JavaFunctionBuilder             FUNCTION_BUILDER               = new JavaFunctionBuilder();
+    protected static final CollectBuilder                  COLLECT_BUILDER                = new CollectBuilder();
 
-    private static final ForallBuilder                   FORALL_BUILDER                 = new ForallBuilder();
-    private static final EntryPointBuilder               ENTRY_POINT_BUILDER            = new EntryPointBuilder();
+    protected static final ForallBuilder                   FORALL_BUILDER                 = new ForallBuilder();
+    protected static final EntryPointBuilder               ENTRY_POINT_BUILDER            = new EntryPointBuilder();
 
-    private static final GroupElementBuilder             GE_BUILDER                     = new GroupElementBuilder();
+    protected static final GroupElementBuilder             GE_BUILDER                     = new GroupElementBuilder();
 
     // a map of registered builders
     private static Map                                   builders;
