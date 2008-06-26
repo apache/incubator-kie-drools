@@ -67,7 +67,7 @@ public class ReturnValueRestrictionDescr extends EvaluatorBasedRestrictionDescr 
         return this.content;
     }
 
-    public void setContent(final String text) {
+    public void setContent(final Object text) {
         this.content = text;
     }
 
