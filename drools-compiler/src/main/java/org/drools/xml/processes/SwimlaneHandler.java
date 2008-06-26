@@ -43,7 +43,8 @@ public class SwimlaneHandler extends BaseAbstractHandler
         SwimlaneContext swimlaneContext = (SwimlaneContext) 
             process.getDefaultContext(SwimlaneContext.SWIMLANE_SCOPE);
         if (swimlaneContext != null) {
-            Swimlane swimlane = new Swimlane(name);
+            Swimlane swimlane = new Swimlane();
+            swimlane.setName(name);
             swimlaneContext.addSwimlane(swimlane);
         } else {
             throw new SAXParseException(
