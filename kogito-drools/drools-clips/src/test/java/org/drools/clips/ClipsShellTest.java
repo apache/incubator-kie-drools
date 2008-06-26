@@ -13,7 +13,7 @@ import junit.framework.TestCase;
 import org.drools.Person;
 import org.drools.WorkingMemory;
 import org.drools.clips.FunctionHandlers;
-import org.drools.clips.Shell;
+import org.drools.clips.ClipsShell;
 import org.drools.clips.functions.AssertFunction;
 import org.drools.clips.functions.BindFunction;
 import org.drools.clips.functions.CallFunction;
@@ -37,10 +37,10 @@ import org.drools.clips.functions.SwitchFunction;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 
-public class ShellTest extends TestCase {
+public class ClipsShellTest extends TestCase {
     private ByteArrayOutputStream baos;
 
-    Shell                         shell;
+    ClipsShell                         shell;
 
     public void setUp() {
         FunctionHandlers handlers = FunctionHandlers.getInstance();
@@ -66,7 +66,7 @@ public class ShellTest extends TestCase {
         handlers.registerFunction( new CallFunction() );
         handlers.registerFunction( new AssertFunction() );
 
-        this.shell = new Shell();
+        this.shell = new ClipsShell();
 
         this.baos = new ByteArrayOutputStream();
         shell.addRouter( "t",

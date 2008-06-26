@@ -75,7 +75,7 @@ import org.mvel.compiler.ExpressionCompiler;
  * @author Michael Neale
  *
  */
-public class Shell
+public class ClipsShell
     implements
     ParserHandler,
     VariableContext,
@@ -99,7 +99,7 @@ public class Shell
 
     private DroolsMVELFactory   factory;
 
-    public Shell() {
+    public ClipsShell() {
         this( RuleBaseFactory.newRuleBase() );
     }
 
@@ -129,7 +129,7 @@ public class Shell
         handlers.registerFunction( new GetFunction() );
         handlers.registerFunction( new CallFunction() );
         handlers.registerFunction( new AssertFunction() );
-        Shell shell = new Shell();
+        ClipsShell shell = new ClipsShell();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         shell.addRouter( "t", new PrintStream( out ) );
 
@@ -244,7 +244,7 @@ public class Shell
 		return stack == 0;
 	}
 
-	public Shell(RuleBase ruleBase) {
+	public ClipsShell(RuleBase ruleBase) {
         this.moduleName = MAIN;
         this.ruleBase = ruleBase;
 
