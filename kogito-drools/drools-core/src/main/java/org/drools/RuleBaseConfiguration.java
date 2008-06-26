@@ -120,6 +120,7 @@ public class RuleBaseConfiguration
     private static final String            STAR             = "*";
     private ContextInstanceFactoryRegistry processContextInstanceFactoryRegistry;
     private Map<String, WorkDefinition>    workDefinitions;
+    private boolean                        advancedProcessRuleIntegration;
 
     private ProcessInstanceFactoryRegistry processInstanceFactoryRegistry;
     private NodeInstanceFactoryRegistry    processNodeInstanceFactoryRegistry;
@@ -147,6 +148,7 @@ public class RuleBaseConfiguration
         out.writeObject( ruleBaseUpdateHandler );
         out.writeObject( conflictResolver );
         out.writeObject( processNodeInstanceFactoryRegistry );
+        out.writeBoolean( advancedProcessRuleIntegration );
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -170,6 +172,7 @@ public class RuleBaseConfiguration
         ruleBaseUpdateHandler = (String) in.readObject();
         conflictResolver = (ConflictResolver) in.readObject();
         processNodeInstanceFactoryRegistry = (NodeInstanceFactoryRegistry) in.readObject();
+        advancedProcessRuleIntegration = in.readBoolean();
     }
 
     /**
@@ -289,6 +292,9 @@ public class RuleBaseConfiguration
 
         setConflictResolver( RuleBaseConfiguration.determineConflictResolver( this.chainedProperties.getProperty( "drools.conflictResolver",
                                                                                                                   "org.drools.conflict.DepthConflictResolver" ) ) );
+        
+        setAdvancedProcessRuleIntegration( Boolean.valueOf( this.chainedProperties.getProperty( "drools.advancedProcessRuleIntegration",
+                                                                                      "false" ) ).booleanValue() );
     }
 
     /**
@@ -707,6 +713,14 @@ public class RuleBaseConfiguration
         } else {
             throw new IllegalArgumentException( "Process instance manager '" + className + "' not found" );
         }
+    }
+    
+    public boolean isAdvancedProcessRuleIntegration() {
+        return advancedProcessRuleIntegration;
+    }
+    
+    public void setAdvancedProcessRuleIntegration(boolean advancedProcessRuleIntegration) {
+        this.advancedProcessRuleIntegration = advancedProcessRuleIntegration;
     }
 
     private boolean determineShadowProxy(String userValue) {

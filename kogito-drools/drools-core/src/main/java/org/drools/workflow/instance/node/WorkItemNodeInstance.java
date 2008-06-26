@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.drools.WorkingMemory;
+import org.drools.common.InternalRuleBase;
 import org.drools.process.core.Work;
 import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.instance.WorkItem;
@@ -53,8 +55,16 @@ public class WorkItemNodeInstance extends EventNodeInstance implements WorkItemL
         return workItem;
     }
     
+    public long getWorkItemId() {
+        return workItemId;
+    }
+    
     public void internalSetWorkItemId(long workItemId) {
     	this.workItemId = workItemId;
+    }
+    
+    public boolean isInversionOfControl() {
+        return ((InternalRuleBase) getProcessInstance().getWorkingMemory().getRuleBase()).getConfiguration().isAdvancedProcessRuleIntegration();
     }
 
     public void internalTrigger(final NodeInstance from, String type) {
@@ -68,7 +78,11 @@ public class WorkItemNodeInstance extends EventNodeInstance implements WorkItemL
 		if (workItemNode.isWaitForCompletion()) {
 		    addEventListeners();
         }
-        getProcessInstance().getWorkingMemory().getWorkItemManager().internalExecuteWorkItem(workItem);
+		if (isInversionOfControl()) {
+		    getProcessInstance().getWorkingMemory().update(getProcessInstance().getWorkingMemory().getFactHandle(this), this);
+		} else {
+		    getProcessInstance().getWorkingMemory().getWorkItemManager().internalExecuteWorkItem(workItem);
+		}
         if (!workItemNode.isWaitForCompletion()) {
             triggerCompleted();
         } else {
@@ -110,7 +124,12 @@ public class WorkItemNodeInstance extends EventNodeInstance implements WorkItemL
                 System.err.println("Continuing without setting variable.");
             }
         }
-        triggerCompleted();
+        if (isInversionOfControl()) {
+            WorkingMemory workingMemory = getProcessInstance().getWorkingMemory();
+            workingMemory.update(workingMemory.getFactHandle(this), this);
+        } else {
+            triggerCompleted();
+        }
     }
     
     public void cancel() {

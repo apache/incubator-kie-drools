@@ -31,6 +31,7 @@ public class RuleFlowLogEvent extends LogEvent {
 
     private String processId;
     private String processName;
+    private long processInstanceId;
 
     /**
      * Create a new ruleflow log event.
@@ -42,22 +43,26 @@ public class RuleFlowLogEvent extends LogEvent {
      */
     public RuleFlowLogEvent(final int type,
                             final String processId,
-                            final String processName) {
+                            final String processName,
+                            final long processInstanceId) {
         super( type );
         this.processId = processId;
         this.processName = processName;
+        this.processInstanceId = processInstanceId;
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         super.readExternal(in);
         processId    = (String)in.readObject();
         processName    = (String)in.readObject();
+        processInstanceId = in.readLong();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal(out);
         out.writeObject(processId);
         out.writeObject(processName);
+        out.writeLong(processInstanceId);
     }
 
     public String getProcessId() {
@@ -66,6 +71,10 @@ public class RuleFlowLogEvent extends LogEvent {
 
     public String getProcessName() {
         return this.processName;
+    }
+    
+    public long getProcessInstanceId() {
+        return this.processInstanceId;
     }
 
     public String toString() {

@@ -20,8 +20,9 @@ public class RuleFlowNodeLogEvent extends RuleFlowLogEvent {
                                 final String nodeId,
                                 final String nodeName,
                                 final String processId,
-                                final String processName) {
-        super( type, processId, processName );
+                                final String processName,
+                                final long processInstanceId) {
+        super( type, processId, processName, processInstanceId );
         this.nodeId = nodeId;
         this.nodeName = nodeName;
     }

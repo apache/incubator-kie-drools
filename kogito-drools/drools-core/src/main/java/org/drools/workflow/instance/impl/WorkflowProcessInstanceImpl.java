@@ -66,6 +66,9 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
     }
 
     public void removeNodeInstance(final NodeInstance nodeInstance) {
+        if (((NodeInstanceImpl) nodeInstance).isInversionOfControl()) {
+            getWorkingMemory().retract(getWorkingMemory().getFactHandle(nodeInstance));
+        }
         this.nodeInstances.remove(nodeInstance);
     }
 
@@ -108,6 +111,9 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
         NodeInstanceImpl nodeInstance = (NodeInstanceImpl) conf.getNodeInstance(node, this, this);
         if (nodeInstance == null) {
             throw new IllegalArgumentException("Illegal node type: " + node.getClass());
+        }
+        if (((NodeInstanceImpl) nodeInstance).isInversionOfControl()) {
+            getWorkingMemory().insert(nodeInstance);
         }
         return nodeInstance;
     }
