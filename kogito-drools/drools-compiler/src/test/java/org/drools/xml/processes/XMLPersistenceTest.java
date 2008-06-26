@@ -127,8 +127,12 @@ public class XMLPersistenceTest extends TestCase {
         variables.add(variable);
         process.getVariableScope().setVariables(variables);
         
-        process.getSwimlaneContext().addSwimlane(new Swimlane("actor1"));
-        process.getSwimlaneContext().addSwimlane(new Swimlane("actor2"));
+        Swimlane swimlane = new Swimlane();
+        swimlane.setName("actor1");
+        process.getSwimlaneContext().addSwimlane(swimlane);
+        swimlane = new Swimlane();
+        swimlane.setName("actor2");
+        process.getSwimlaneContext().addSwimlane(swimlane);
         
         StartNode startNode = new StartNode();
         startNode.setName("start");
