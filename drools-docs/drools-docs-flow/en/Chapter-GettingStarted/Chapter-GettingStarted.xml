@@ -113,7 +113,9 @@
 
   &lt;nodes&gt;
     &lt;start id="1" name="Start" x="16" y="16" /&gt;
-    &lt;action id="2" name="Hello" x="128" y="16" dialect="mvel" &gt;System.out.println("Hello World");&lt;/action&gt;
+    &lt;actionNode id="2" name="Hello" x="128" y="16" &gt;
+      &lt;action type="expression" dialect="mvel" &gt;System.out.println("Hello World");&lt;/action&gt;
+    &lt;/actionNode&gt;
     &lt;end id="3" name="End" x="240" y="16" /&gt;
   &lt;/nodes&gt;
 
