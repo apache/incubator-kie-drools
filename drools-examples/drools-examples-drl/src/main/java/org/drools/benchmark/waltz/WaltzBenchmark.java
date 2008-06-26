@@ -43,7 +43,7 @@ public abstract class WaltzBenchmark {
             //add the package to a rulebase
             RuleBaseConfiguration conf = new RuleBaseConfiguration();
             //conf.setAlphaMemory( true );
-            conf.setShadowProxy( false );
+//            conf.setShadowProxy( false );
             final RuleBase ruleBase = RuleBaseFactory.newRuleBase( conf );
             ruleBase.addPackage( pkg );
             
