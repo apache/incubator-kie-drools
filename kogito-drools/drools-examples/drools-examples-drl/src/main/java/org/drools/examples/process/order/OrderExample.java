@@ -7,12 +7,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.RuleBase;
+import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.compiler.PackageBuilder;
 import org.drools.process.instance.impl.demo.UIWorkItemHandler;
 
-public class RuleSetExample {
+public class OrderExample {
 	
 	public static void main(String[] args) {
 		try {
@@ -33,7 +34,7 @@ public class RuleSetExample {
 			Item i = new Item("I-9876");
 			i.setName("Rampage !!! PC game");
 			i.setMinimalAge(18);
-			itemCatalog.addItem(i);
+			//itemCatalog.addItem(i);
 			session.setGlobal("itemCatalog", itemCatalog);
 			
 			UIWorkItemHandler handler = new UIWorkItemHandler();
@@ -58,12 +59,14 @@ public class RuleSetExample {
 	private static RuleBase createKnowledgeBase() throws Exception {
 		PackageBuilder builder = new PackageBuilder();
 		Reader source = new InputStreamReader(
-				RuleSetExample.class.getResourceAsStream("RuleSetExample.rf"));
+			OrderExample.class.getResourceAsStream("RuleSetExample.rf"));
 		builder.addProcessFromXml(source);
 		source = new InputStreamReader(
-				RuleSetExample.class.getResourceAsStream("validation.drl"));
+			OrderExample.class.getResourceAsStream("validation.drl"));
 		builder.addPackageFromDrl(source);
-		RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+		RuleBaseConfiguration configuration = new RuleBaseConfiguration();
+		configuration.setAdvancedProcessRuleIntegration(true);
+		RuleBase ruleBase = RuleBaseFactory.newRuleBase(configuration);
 		ruleBase.addPackage(builder.getPackage());
 		return ruleBase;
 	}

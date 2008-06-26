@@ -13,7 +13,9 @@
 
   <nodes>
     <start id="1" name="Start" x="26" y="100" width="80" height="40" />
-    <action id="3" name="Notify GP" x="463" y="199" width="80" height="40" dialect="mvel" >System.out.println("Notifying GP of patient of the diagnose.");</action>
+    <actionNode id="3" name="Notify GP" x="463" y="199" width="80" height="40" >
+      <action type="expression" dialect="mvel" >System.out.println("Notifying GP of patient of the diagnose.");</action>
+    </actionNode>
     <ruleSet id="4" name="Examinations" x="145" y="102" ruleFlowGroup="Examinations" />
     <join id="5" name="" x="255" y="113" width="19" height="17" type="2" />
     <ruleSet id="6" name="Additional Examinations" x="310" y="24" width="144" height="40" ruleFlowGroup="AdditionalExaminations" />
@@ -34,7 +36,9 @@
     <subProcess id="10" name="Treatment Y" x="437" y="342" width="99" height="40" processId="org.drools.examples.cdss.TreatmentY" />
     <join id="11" name="" x="416" y="416" width="19" height="19" type="2" />
     <end id="12" name="End" x="576" y="341" width="80" height="40" />
-    <action id="13" name="Schedule Follow-up" x="356" y="455" width="139" height="40" dialect="mvel" >System.out.println("Scheduling follow-up of patient.");</action>
+    <actionNode id="13" name="Schedule Follow-up" x="356" y="455" width="139" height="40" >
+      <action type="expression" dialect="mvel" >System.out.println("Scheduling follow-up of patient.");</action>
+    </actionNode>
     <end id="14" name="End" x="386" y="528" width="80" height="40" />
     <milestone id="15" name="Wait for Diagnose" x="293" y="101" width="124" height="40" >Diagnose( )</milestone>
   </nodes>

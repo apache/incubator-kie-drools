@@ -25,8 +25,12 @@
 $policy : Policy( approved == true )</constraint>
       </constraints>
     </split>
-    <action id="8" name="Action" x="333" y="68" width="80" height="40" dialect="mvel" >System.out.println("Insurance calculate");</action>
-    <action id="9" name="Action" x="333" y="138" dialect="mvel" >System.out.println("Rejection");</action>
+    <actionNode id="8" name="Action" x="333" y="68" width="80" height="40" >
+      <action type="expression" dialect="mvel" >System.out.println("Insurance calculate");</action>
+    </actionNode>
+    <actionNode id="9" name="Action" x="333" y="138" >
+      <action type="expression" dialect="mvel" >System.out.println("Rejection");</action>
+    </actionNode>
   </nodes>
 
   <connections>
