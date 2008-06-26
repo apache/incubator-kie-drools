@@ -67,6 +67,9 @@ public class MVELConsequence
 
         //Receive breakpoints from debugger
         MVELDebugHandler.prepare();
+        
+        ClassLoader tempClassLoader = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader( pkg.getPackageScopeClassLoader() );
 
         if ( MVELDebugHandler.isDebugMode() ) {
             if ( MVELDebugHandler.verbose ) {
@@ -80,6 +83,8 @@ public class MVELConsequence
                                     null,
                                     factory );
         }
+        
+        Thread.currentThread().setContextClassLoader( tempClassLoader );
 
     }
 

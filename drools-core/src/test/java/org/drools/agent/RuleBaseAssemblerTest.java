@@ -77,7 +77,7 @@ public class RuleBaseAssemblerTest extends TestCase {
             String[] children = dir.list();
             for (String child : children) {
                 boolean success = deleteDir(new File(dir, child));
-                if (!success) {
+                if (!success) {                    
                     //throw new RuntimeException("Unable to delete !");
                     return false;
                 }
