@@ -39,6 +39,7 @@ import org.drools.clips.functions.EqFunction;
 import org.drools.clips.functions.GetFunction;
 import org.drools.clips.functions.IfFunction;
 import org.drools.clips.functions.LessThanFunction;
+import org.drools.clips.functions.MinusFunction;
 import org.drools.clips.functions.ModifyFunction;
 import org.drools.clips.functions.MoreThanFunction;
 import org.drools.clips.functions.MultiplyFunction;
@@ -109,6 +110,7 @@ public class Shell
         StringBuffer buf = new StringBuffer();
         FunctionHandlers handlers = FunctionHandlers.getInstance();
         handlers.registerFunction( new PlusFunction() );
+        handlers.registerFunction( new MinusFunction() );            
         handlers.registerFunction( new MultiplyFunction() );
         handlers.registerFunction( new ModifyFunction() );
         handlers.registerFunction( new CreateListFunction() );

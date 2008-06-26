@@ -85,17 +85,19 @@ public class ClipsDialect extends MVELDialect {
             if ( pdescr.getContent() instanceof LispForm ) {
                 FunctionHandlers.dump( (LispForm) pdescr.getContent(),
                                        builder );
-    
+
                 content = builder.toString();
                 pdescr.setContent( content );
             }
         } else if ( descr instanceof ReturnValueRestrictionDescr ) {
-//            Appendable builder = new StringBuilderAppendable();
-//            ReturnValueRestrictionDescr rdescr = (ReturnValueRestrictionDescr) descr;
-//            FunctionHandlers.dump( (LispForm) rdescr.getContent(),
-//                                   builder );
-//            content = builder.toString();
-//            rdescr.setContent( content );
+            Appendable builder = new StringBuilderAppendable();
+            ReturnValueRestrictionDescr rdescr = (ReturnValueRestrictionDescr) descr;
+            if ( rdescr.getContent() instanceof LispForm ) {
+                FunctionHandlers.dump( (LispForm) rdescr.getContent(),
+                                       builder );
+                content = builder.toString();
+                rdescr.setContent( content );
+            }
         }
         return super.analyzeExpression( context,
                                         descr,

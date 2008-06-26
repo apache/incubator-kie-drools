@@ -22,6 +22,7 @@ import org.drools.clips.functions.EqFunction;
 import org.drools.clips.functions.GetFunction;
 import org.drools.clips.functions.IfFunction;
 import org.drools.clips.functions.LessThanFunction;
+import org.drools.clips.functions.MinusFunction;
 import org.drools.clips.functions.ModifyFunction;
 import org.drools.clips.functions.MoreThanFunction;
 import org.drools.clips.functions.MultiplyFunction;
@@ -44,6 +45,7 @@ public class ShellTest extends TestCase {
     public void setUp() {
         FunctionHandlers handlers = FunctionHandlers.getInstance();
         handlers.registerFunction( new PlusFunction() );
+        handlers.registerFunction( new MinusFunction() );        
         handlers.registerFunction( new MultiplyFunction() );
         handlers.registerFunction( new ModifyFunction() );
         handlers.registerFunction( new CreateListFunction() );
@@ -342,6 +344,16 @@ public class ShellTest extends TestCase {
         this.shell.eval( "(run)" );
         assertEquals( "hello bob",
                       new String( this.baos.toByteArray() ) );        
+    }
+    
+    public void testReturnValue() {
+        this.shell.eval( "(import org.drools.Person)" );
+        this.shell.eval( "(defrule testRule1 (Person (age ?age) ) (Person (name ?name) (age =(- ?age 3)) ) => (printout t hello) (printout t \" \" ?name) )" );
+        this.shell.eval( "(assert (Person (name mark) (age 32) ) )" );
+        this.shell.eval( "(assert (Person (name bob) (age 35) ) )" );
+        this.shell.eval( "(run)" );
+        assertEquals( "hello mark",
+                      new String( this.baos.toByteArray() ) );           
     }
 
     public void testRun() {
