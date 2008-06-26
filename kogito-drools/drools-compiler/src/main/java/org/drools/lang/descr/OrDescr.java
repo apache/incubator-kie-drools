@@ -43,7 +43,8 @@ public class OrDescr extends BaseDescr
                     return;
                 }                
             }
-        }        
+        }    
+        addDescr( baseDescr );
     }
     
     public void insertDescr(int index, final BaseDescr baseDescr) {

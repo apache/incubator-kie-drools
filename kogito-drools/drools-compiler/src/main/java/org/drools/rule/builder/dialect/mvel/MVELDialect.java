@@ -242,8 +242,6 @@ public class MVELDialect
         // if we want to
         builders = new HashMap();
 
-        final GroupElementBuilder gebuilder = new GroupElementBuilder();
-
         builders.put( AndDescr.class,
                       GE_BUILDER );
 
