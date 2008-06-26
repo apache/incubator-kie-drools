@@ -19,8 +19,10 @@ import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.spi.Action;
 import org.drools.spi.KnowledgeHelper;
+import org.drools.workflow.core.DroolsAction;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.impl.ConnectionImpl;
+import org.drools.workflow.core.impl.DroolsConsequenceAction;
 import org.drools.workflow.core.node.ActionNode;
 import org.drools.workflow.core.node.EndNode;
 import org.drools.workflow.core.node.ForEachNode;
@@ -71,11 +73,13 @@ public class ForEachTest extends TestCase {
         final List<String> myList = new ArrayList<String>();
         ActionNode actionNode = new ActionNode();
         actionNode.setName("Print child");
-        actionNode.setAction(new Action() {
+        DroolsAction action = new DroolsConsequenceAction("java", null);
+        action.setMetaData("Action", new Action() {
             public void execute(KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory) throws Exception {
                 myList.add("Executed action");
             }
         });
+        actionNode.setAction(action);
         forEachNode.getCompositeNode().addNode(actionNode);
         forEachNode.getCompositeNode().linkIncomingConnections(
             Node.CONNECTION_DEFAULT_TYPE,

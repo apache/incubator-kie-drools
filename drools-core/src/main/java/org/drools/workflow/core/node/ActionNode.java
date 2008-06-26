@@ -1,5 +1,7 @@
 package org.drools.workflow.core.node;
 
+import org.drools.workflow.core.DroolsAction;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -26,13 +28,13 @@ public class ActionNode extends SequenceNode {
 
 	private static final long serialVersionUID = 400L;
 	
-	private Object action;
+	private DroolsAction action;
 
-	public Object getAction() {
+	public DroolsAction getAction() {
 		return action;
 	}
 
-	public void setAction(Object action) {
+	public void setAction(DroolsAction action) {
 		this.action = action;
 	}
 

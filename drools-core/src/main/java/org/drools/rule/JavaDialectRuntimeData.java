@@ -40,7 +40,7 @@ import org.drools.spi.PredicateExpression;
 import org.drools.spi.ReturnValueEvaluator;
 import org.drools.spi.ReturnValueExpression;
 import org.drools.util.StringUtils;
-import org.drools.workflow.core.node.ActionNode;
+import org.drools.workflow.core.DroolsAction;
 import org.drools.workflow.instance.impl.ReturnValueConstraintEvaluator;
 
 public class JavaDialectRuntimeData
@@ -333,8 +333,8 @@ public class JavaDialectRuntimeData
                 ((Rule) invoker).setConsequence( (Consequence) clazz.newInstance() );
             } else if ( invoker instanceof JavaAccumulatorFunctionExecutor ) {
                 ((JavaAccumulatorFunctionExecutor) invoker).setExpression( (ReturnValueExpression) clazz.newInstance() );
-            } else if ( invoker instanceof ActionNode ) {
-                ((ActionNode) invoker).setAction( clazz.newInstance() );
+            } else if ( invoker instanceof DroolsAction ) {
+            	((DroolsAction) invoker).setMetaData( "Action", clazz.newInstance() );
             } else if ( invoker instanceof ReturnValueConstraintEvaluator ) {
                 ((ReturnValueConstraintEvaluator) invoker).setEvaluator( (ReturnValueEvaluator) clazz.newInstance() );
             }

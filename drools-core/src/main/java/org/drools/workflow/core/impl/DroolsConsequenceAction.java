@@ -2,7 +2,9 @@ package org.drools.workflow.core.impl;
 
 import java.io.Serializable;
 
-public class DroolsConsequenceAction implements Serializable {
+import org.drools.workflow.core.DroolsAction;
+
+public class DroolsConsequenceAction extends DroolsAction implements Serializable {
 	
     private static final long serialVersionUID = 400L;
     
