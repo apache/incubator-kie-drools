@@ -15,8 +15,12 @@
 
   <nodes>
     <start id="1" name="Start" />
-    <action id="2" name="mvel" dialect="mvel" >list.add("mvel was here")</action>
-    <action id="3" name="java" dialect="java" >list.add("java was here");</action>
+    <actionNode id="2" name="mvel" >
+      <action type="expression" dialect="mvel" >list.add("mvel was here")</action>
+    </actionNode>
+    <actionNode id="3" name="java" >
+      <action type="expression" dialect="java" >list.add("java was here");</action>
+    </actionNode>
     <end id="4" name="End" />
   </nodes>
 

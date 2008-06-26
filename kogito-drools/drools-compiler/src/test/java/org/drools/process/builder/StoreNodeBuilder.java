@@ -14,9 +14,9 @@ public class StoreNodeBuilder
     ProcessNodeBuilder {
 
     public void build(Process process,
-                           ProcessDescr processDescr,
-                           ProcessBuildContext context,
-                           Node node) {
+                      ProcessDescr processDescr,
+                      ProcessBuildContext context,
+                      Node node) {
         ActionNode actionNode = ( ActionNode ) node;
         DroolsConsequenceAction action = (DroolsConsequenceAction) actionNode.getAction();
         ActionDescr actionDescr = new ActionDescr();
@@ -24,7 +24,7 @@ public class StoreNodeBuilder
         
         Dialect dialect = context.getDialectRegistry().getDialect( action.getDialect() );            
         
-        dialect.getActionBuilder().build( context, actionNode, actionDescr );
+        dialect.getActionBuilder().build( context, action, actionDescr );
     }
 
 }

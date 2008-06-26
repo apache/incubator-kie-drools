@@ -1,12 +1,12 @@
 package org.drools.rule.builder;
 
 import org.drools.lang.descr.ActionDescr;
-import org.drools.workflow.core.node.ActionNode;
+import org.drools.workflow.core.DroolsAction;
 
 public interface ActionBuilder {
 
     public void build(final PackageBuildContext context,
-                      final ActionNode actionNode,
+                      final DroolsAction action,
                       final ActionDescr actionDescr);
 
 }

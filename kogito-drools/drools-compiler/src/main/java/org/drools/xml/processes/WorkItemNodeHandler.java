@@ -19,6 +19,9 @@ public class WorkItemNodeHandler extends AbstractNodeHandler {
         WorkItemNode workItemNode = (WorkItemNode) node;
         final String waitForCompletion = element.getAttribute("waitForCompletion");
         workItemNode.setWaitForCompletion(!"false".equals(waitForCompletion));
+        for (String eventType: workItemNode.getActionTypes()) {
+        	handleAction(node, element, eventType);
+        }
     }
 
     protected Node createNode() {
@@ -38,6 +41,9 @@ public class WorkItemNodeHandler extends AbstractNodeHandler {
         visitWork(work, xmlDump, includeMeta);
         visitInMappings(workItemNode.getInMappings(), xmlDump);
         visitOutMappings(workItemNode.getOutMappings(), xmlDump);
+        for (String eventType: workItemNode.getActionTypes()) {
+        	writeActions(eventType, workItemNode.getActions(eventType), xmlDump);
+        }
         endNode("workItem", xmlDump);
 	}
 	
@@ -69,11 +75,6 @@ public class WorkItemNodeHandler extends AbstractNodeHandler {
         if (work != null) {
             xmlDump.append("      <work name=\"" + work.getName() + "\" >" + EOL);
             for (ParameterDefinition paramDefinition: work.getParameterDefinitions()) {
-                if (paramDefinition == null) {
-                    throw new IllegalArgumentException(
-                        "Could not find parameter definition " + paramDefinition.getName()
-                            + " for work " + work.getName());
-                }
                 xmlDump.append("        <parameter name=\"" + paramDefinition.getName() + "\" " + 
                                                   "type=\"" + paramDefinition.getType().getClass().getName() + "\" ");
                 Object value = work.getParameter(paramDefinition.getName());

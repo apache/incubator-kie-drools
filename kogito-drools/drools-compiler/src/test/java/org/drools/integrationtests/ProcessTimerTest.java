@@ -38,9 +38,11 @@ public class ProcessTimerTest extends TestCase {
 			"    <start id=\"1\" name=\"Start\" />\n" +
 			"    <end id=\"2\" name=\"End\" />\n" +
 			"    <timer id=\"3\" name=\"Timer\" delay=\"800\"  period=\"200\" />\n" +
-			"    <action id=\"4\" name=\"Action\" dialect=\"java\" >System.out.println(\"Triggered\");\n" +
+			"    <actionNode id=\"4\" name=\"Action\" >\n" +
+			"      <action type=\"expression\" dialect=\"java\" >System.out.println(\"Triggered\");\n" +
 			"insert( new Message() );\n" +
 			"myList.add( new Message() );</action>\n" +
+			"    </actionNode>/n" + 
 			"    <milestone id=\"5\" name=\"Wait\" >Number( intValue &gt;= 5 ) from accumulate ( m: Message( ), count( m ) )</milestone>\n" +
 			"  </nodes>\n" +
 			"\n" +

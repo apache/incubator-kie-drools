@@ -14,7 +14,7 @@ import org.drools.lang.descr.ActionDescr;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.builder.ActionBuilder;
 import org.drools.rule.builder.PackageBuildContext;
-import org.drools.workflow.core.node.ActionNode;
+import org.drools.workflow.core.DroolsAction;
 import org.mvel.Macro;
 import org.mvel.MacroProcessor;
 
@@ -65,7 +65,7 @@ public class MVELActionBuilder
     }
 
     public void build(final PackageBuildContext context,
-                      final ActionNode actionNode,
+                      final DroolsAction action,
                       final ActionDescr actionDescr) {
 
         String text = processMacros( actionDescr.getText() );
@@ -95,7 +95,7 @@ public class MVELActionBuilder
             MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
             factory.setNextFactory( data.getFunctionFactory() );            
             
-            actionNode.setAction( new MVELAction( expr, factory )  );
+            action.setMetaData("Action", new MVELAction( expr, factory )  );
         } catch ( final Exception e ) {
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                           actionDescr,

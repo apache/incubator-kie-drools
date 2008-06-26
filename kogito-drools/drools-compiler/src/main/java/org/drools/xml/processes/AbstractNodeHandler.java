@@ -1,14 +1,20 @@
 package org.drools.xml.processes;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
+import org.drools.workflow.core.DroolsAction;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.NodeContainer;
+import org.drools.workflow.core.impl.DroolsConsequenceAction;
+import org.drools.workflow.core.impl.ExtendedNodeImpl;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
-import org.drools.xml.ProcessBuildData;
+import org.drools.xml.XmlDumper;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -101,6 +107,37 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         }
     }
     
+    protected void handleAction(final Node node, final Element element, String type) {
+        NodeList nodeList = element.getChildNodes();
+        for (int i = 0; i < nodeList.getLength(); i++) {
+        	org.w3c.dom.Node xmlNode = nodeList.item(i);
+        	String nodeName = xmlNode.getNodeName();
+        	if (nodeName.equals(type)) {
+        		List<DroolsAction> actions = new ArrayList<DroolsAction>();
+        		NodeList subNodeList = xmlNode.getChildNodes();
+                for (int j = 0; j < subNodeList.getLength(); j++) {
+                	Element subXmlNode = (Element) subNodeList.item(j);
+                	DroolsAction action = extractAction(subXmlNode);
+                	actions.add(action);
+                }
+                ((ExtendedNodeImpl) node).setActions(type, actions);
+        		return;
+        	}
+        }
+    }
+    
+    protected DroolsAction extractAction(Element xmlNode) {
+    	String actionType = xmlNode.getAttribute("type");
+    	if ("expression".equals(actionType)) {
+    		String consequence = xmlNode.getTextContent();
+    		DroolsConsequenceAction action = new DroolsConsequenceAction(xmlNode.getAttribute("dialect"), consequence);
+    		return action;
+    	} else {
+    		throw new IllegalArgumentException(
+				"Unknown action type " + actionType);
+    	}
+    }
+    
     public abstract void writeNode(final Node node, final StringBuffer xmlDump, final boolean includeMeta);
     
     protected void writeNode(final String name, final Node node, final StringBuffer xmlDump, final boolean includeMeta) {
@@ -126,6 +163,40 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
                 xmlDump.append("height=\"" + height + "\" ");
             }
         }
+    }
+    
+    protected void writeActions(final String type, List<DroolsAction> actions, final StringBuffer xmlDump) {
+    	if (actions != null && actions.size() > 0) {
+    		xmlDump.append("      <" + type + ">" + EOL);
+	    	for (DroolsAction action: actions) {
+	    		writeAction(action, xmlDump);
+	    	}
+    		xmlDump.append("      </" + type + ">" + EOL);
+    	}
+    }
+    
+    protected void writeAction(final DroolsAction action, final StringBuffer xmlDump) {
+    	if (action instanceof DroolsConsequenceAction) {
+    		DroolsConsequenceAction consequenceAction = (DroolsConsequenceAction) action;
+    		xmlDump.append("        <action type=\"expression\" ");
+            String name = consequenceAction.getName();
+            if (name != null) {
+                xmlDump.append("name=\"" + name + "\" ");
+            }
+            String dialect = consequenceAction.getDialect();
+            if (dialect != null) {
+                xmlDump.append("dialect=\"" + dialect + "\" ");
+            }
+            String consequence = consequenceAction.getConsequence();
+            if (consequence == null) {
+            	xmlDump.append("/>" + EOL);
+            } else {
+                xmlDump.append(">" + XmlDumper.replaceIllegalChars(consequence.trim()) + "</action>" + EOL);
+            }
+    	} else {
+    		throw new IllegalArgumentException(
+				"Unknown action " + action);
+    	}
     }
     
     protected void endNode(final StringBuffer xmlDump) {

@@ -855,7 +855,7 @@ public class ExecutionFlowControlTest extends TestCase {
         
         RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage( builder.getPackage() );
-        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        ruleBase = SerializationHelper.serializeObject(ruleBase);
 
         StatefulSession session = ruleBase.newStatefulSession();
         List list = new ArrayList();

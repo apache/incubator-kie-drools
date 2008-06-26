@@ -37,7 +37,7 @@ public class ProcessSemanticModule extends DefaultSemanticModule implements Sema
                            new StartNodeHandler() );
         addHandler( "end",
                            new EndNodeHandler() );
-        addHandler( "action",
+        addHandler( "actionNode",
                            new ActionNodeHandler() );
         addHandler( "ruleSet",
                            new RuleSetNodeHandler() );
