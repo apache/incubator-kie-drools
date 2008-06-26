@@ -329,8 +329,7 @@ public class MVELDialect
 
     public void addFunction(FunctionDescr functionDescr,
                             TypeResolver typeResolver) {
-        ExpressionCompiler compiler = new ExpressionCompiler( (String) functionDescr.getContent() );
-        Serializable s1 = compiler.compile();
+        Serializable s1 = compile( (String) functionDescr.getContent(), null, null, null, null,null );
         Map<String, org.mvel.ast.Function> map = CompilerTools.extractAllDeclaredFunctions( (CompiledExpression) s1 );
         MVELDialectRuntimeData data = (MVELDialectRuntimeData) this.packageRegistry.getDialectRuntimeRegistry().getDialectData( getId() );
         for ( org.mvel.ast.Function function : map.values() ) {
@@ -497,8 +496,15 @@ public class MVELDialect
         }
 
         synchronized ( COMPILER_LOCK ) {
+            ClassLoader tempClassLoader = Thread.currentThread().getContextClassLoader();
+            Thread.currentThread().setContextClassLoader( pkg.getPackageScopeClassLoader() );
+            
             AbstractParser.setLanguageLevel( languageLevel );
-            return compiler.compile( parserContext );
+            Serializable expr = compiler.compile( parserContext );
+            
+            Thread.currentThread().setContextClassLoader( tempClassLoader );
+            
+            return expr;
         }
     }
 
@@ -522,45 +528,47 @@ public class MVELDialect
             parserContext.setInterceptors( interceptors );
         }
 
-        List list[] = analysis.getBoundIdentifiers();
-
-        // @TODO yuck, we don't want conditions for configuration :(
-        if ( context instanceof RuleBuildContext ) {
-            //FIXME: analysis can be null, throws an NPE
-            DeclarationScopeResolver resolver = ((RuleBuildContext) context).getDeclarationResolver();
-            for ( Iterator it = list[0].iterator(); it.hasNext(); ) {
+        if ( analysis != null ) {
+            List list[] = analysis.getBoundIdentifiers();
+    
+            // @TODO yuck, we don't want conditions for configuration :(
+            if ( context instanceof RuleBuildContext ) {
+                //FIXME: analysis can be null, throws an NPE
+                DeclarationScopeResolver resolver = ((RuleBuildContext) context).getDeclarationResolver();
+                for ( Iterator it = list[0].iterator(); it.hasNext(); ) {
+                    String identifier = (String) it.next();
+                    Class cls = resolver.getDeclaration( identifier ).getExtractor().getExtractToClass();
+                    parserContext.addInput( identifier,
+                                            cls );
+                }
+            }
+    
+            Map globalTypes = context.getPkg().getGlobals();
+            for ( Iterator it = list[1].iterator(); it.hasNext(); ) {
                 String identifier = (String) it.next();
-                Class cls = resolver.getDeclaration( identifier ).getExtractor().getExtractToClass();
                 parserContext.addInput( identifier,
-                                        cls );
+                                        (Class) globalTypes.get( identifier ) );
             }
-        }
-
-        Map globalTypes = context.getPkg().getGlobals();
-        for ( Iterator it = list[1].iterator(); it.hasNext(); ) {
-            String identifier = (String) it.next();
-            parserContext.addInput( identifier,
-                                    (Class) globalTypes.get( identifier ) );
-        }
-
-        if ( otherInputVariables != null ) {
-            for ( Iterator it = otherInputVariables.entrySet().iterator(); it.hasNext(); ) {
-                Entry entry = (Entry) it.next();
-                parserContext.addInput( (String) entry.getKey(),
-                                        (Class) entry.getValue() );
+    
+            if ( otherInputVariables != null ) {
+                for ( Iterator it = otherInputVariables.entrySet().iterator(); it.hasNext(); ) {
+                    Entry entry = (Entry) it.next();
+                    parserContext.addInput( (String) entry.getKey(),
+                                            (Class) entry.getValue() );
+                }
             }
-        }
-
-        if ( outerDeclarations != null ) {
-            for ( Iterator it = outerDeclarations.entrySet().iterator(); it.hasNext(); ) {
-                Entry entry = (Entry) it.next();
-                parserContext.addInput( (String) entry.getKey(),
-                                        ((Declaration) entry.getValue()).getExtractor().getExtractToClass() );
+    
+            if ( outerDeclarations != null ) {
+                for ( Iterator it = outerDeclarations.entrySet().iterator(); it.hasNext(); ) {
+                    Entry entry = (Entry) it.next();
+                    parserContext.addInput( (String) entry.getKey(),
+                                            ((Declaration) entry.getValue()).getExtractor().getExtractToClass() );
+                }
             }
+    
+            parserContext.addInput( "drools",
+                                    KnowledgeHelper.class );
         }
-
-        parserContext.addInput( "drools",
-                                KnowledgeHelper.class );
 
         return parserContext;
     }
