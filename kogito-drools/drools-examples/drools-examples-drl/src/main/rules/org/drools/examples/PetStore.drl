@@ -12,7 +12,7 @@ import javax.swing.JFrame
 global JFrame frame 
 global javax.swing.JTextArea textArea
  
-dialect "mvel"
+// dialect "mvel"
 
 // insert each item in the shopping cart into the Working Memory 
 rule "Explode Cart"
