@@ -14,12 +14,12 @@ import junit.framework.TestCase;
 public class DirectoryScannerTest extends TestCase {
 
     public void testScan() throws Exception {
-        File dir = RuleBaseAssemblerTest.getTempDirectory();
+        File dir = RuleBaseAssemblerTest.getTempDirectory();       
         
         Package p1 = new Package("p1");
         Package p2 = new Package("p2");
         File p1f = new File(dir, "p1.pkg");
-        File p2f = new File(dir, "p2.pkg");
+        File p2f = new File(dir, "p2.pkg");        
         
         RuleBaseAssemblerTest.writePackage( p1, p1f );
         RuleBaseAssemblerTest.writePackage( p2, p2f);
@@ -33,7 +33,7 @@ public class DirectoryScannerTest extends TestCase {
         
         RuleBase rb = RuleBaseFactory.newRuleBase();
         PackageProvider.applyChanges( rb, true, scan.loadPackageChanges(), new MockListener() );
-
+        
         assertEquals(2, rb.getPackages().length);
                 
         Package p3 = new Package("p3");
