@@ -19,6 +19,8 @@ package org.drools.workflow.instance.node;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.drools.WorkingMemory;
 import org.drools.common.InternalRuleBase;
@@ -32,13 +34,14 @@ import org.drools.workflow.core.node.WorkItemNode;
 import org.drools.workflow.instance.NodeInstance;
 
 /**
- * Runtime counterpart of a task node.
+ * Runtime counterpart of a work item node.
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class WorkItemNodeInstance extends EventNodeInstance implements WorkItemListener {
 
     private static final long serialVersionUID = 400L;
+    private static final Pattern PARAMETER_MATCHER = Pattern.compile("#\\{(\\S+)\\}", Pattern.DOTALL);
     
     private long workItemId = -1;
     private transient WorkItemImpl workItem;
@@ -68,6 +71,7 @@ public class WorkItemNodeInstance extends EventNodeInstance implements WorkItemL
     }
 
     public void internalTrigger(final NodeInstance from, String type) {
+    	super.internalTrigger(from, type);
         // TODO this should be included for ruleflow only, not for BPEL
 //        if (!Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
 //            throw new IllegalArgumentException(
@@ -107,6 +111,32 @@ public class WorkItemNodeInstance extends EventNodeInstance implements WorkItemL
                 System.err.println("when trying to execute Work Item " + work.getName());
                 System.err.println("Continuing without setting parameter.");
             }
+        }
+        for (Map.Entry<String, Object> entry: workItem.getParameters().entrySet()) {
+        	if (entry.getValue() instanceof String) {
+        		String s = (String) entry.getValue();
+        		Map<String, String> replacements = new HashMap<String, String>();
+        		Matcher matcher = PARAMETER_MATCHER.matcher(s);
+                while (matcher.find()) {
+                	String paramName = matcher.group(1);
+                	if (replacements.get(paramName) == null) {
+		            	VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
+		                	resolveContextInstance(VariableScope.VARIABLE_SCOPE, paramName);
+		                if (variableScopeInstance != null) {
+		                	String variableValue = (String) variableScopeInstance.getVariable(paramName);
+			                replacements.put(paramName, variableValue);
+		                } else {
+		                    System.err.println("Could not find variable scope for variable " + paramName);
+		                    System.err.println("when trying to replace variable in string for Work Item " + work.getName());
+		                    System.err.println("Continuing without setting parameter.");
+		                }
+                	}
+                }
+                for (Map.Entry<String, String> replacement: replacements.entrySet()) {
+                	s = s.replace("#{" + replacement.getKey() + "}", replacement.getValue());
+                }
+                workItem.setParameter(entry.getKey(), s);
+        	}
         }
         return workItem;
     }

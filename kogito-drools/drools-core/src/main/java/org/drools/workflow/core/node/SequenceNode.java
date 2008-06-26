@@ -4,13 +4,13 @@ import java.util.List;
 
 import org.drools.workflow.core.Connection;
 import org.drools.workflow.core.Node;
-import org.drools.workflow.core.impl.NodeImpl;
+import org.drools.workflow.core.impl.ExtendedNodeImpl;
 
 /**
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public abstract class SequenceNode extends NodeImpl {
+public abstract class SequenceNode extends ExtendedNodeImpl {
 
     public Connection getFrom() {
         final List<Connection> list =

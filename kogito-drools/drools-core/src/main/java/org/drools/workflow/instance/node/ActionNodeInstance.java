@@ -45,10 +45,9 @@ public class ActionNodeInstance extends NodeInstanceImpl {
             throw new IllegalArgumentException(
                 "An ActionNode only accepts default incoming connections!");
         }
-		Action action = (Action) getActionNode().getAction();
+		Action action = (Action) getActionNode().getAction().getMetaData("Action");
 		try {
 		    KnowledgeHelper knowledgeHelper = createKnowledgeHelper();
-		    
 	        action.execute( knowledgeHelper, getProcessInstance().getWorkingMemory() );		    
 		} catch (Exception e) {
 		    throw new RuntimeException("unable to execute Action", e);

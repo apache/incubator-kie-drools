@@ -2,9 +2,9 @@ package org.drools.workflow.instance.node;
 
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.EventNode;
-import org.drools.workflow.instance.impl.NodeInstanceImpl;
+import org.drools.workflow.instance.impl.ExtendedNodeInstanceImpl;
 
-public abstract class EventNodeInstance extends NodeInstanceImpl {
+public abstract class EventNodeInstance extends ExtendedNodeInstanceImpl {
 
     public EventNode getEventNode() {
         return (EventNode) getNode();
