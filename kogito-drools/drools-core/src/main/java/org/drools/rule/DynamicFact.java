@@ -72,34 +72,33 @@ public class DynamicFact implements Map<String, Object> {
 	}
 
 	public Set<String> keySet() {
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	public Object put(String key, Object value) {
-		// TODO Auto-generated method stub
-		return null;
+		Object old = this.typeDef.get(bean, key);
+		this.typeDef.set(this.bean, key, value);
+		return old;
 	}
 
 	public void putAll(Map arg0) {
-		// TODO Auto-generated method stub
-
+		throw new UnsupportedOperationException();
 	}
 
 	public Object remove(Object arg0) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+		throw new UnsupportedOperationException();	}
 
 	public int size() {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.typeDef.getFields().size();
 	}
 
 	public Collection values() {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
+	/**
+	 * Return the underlying fact itself. This is what you asset into the session/engine.
+	 */
 	public Object getFactObject() {
 		return this.bean;
 	}
