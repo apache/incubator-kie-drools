@@ -559,6 +559,8 @@ public class MiscTest extends TestCase {
                       cheeseFact.get( cheese,
                                       "type" ) );
 
+
+
         FactType personType = ruleBase.getFactType( "org.drools.generatedbeans.Person" );
 
         Object ps = personType.newInstance();
@@ -589,6 +591,8 @@ public class MiscTest extends TestCase {
 
         // creating a stateful session
         StatefulSession wm = ruleBase.newStatefulSession();
+        Object cg = cheeseFact.newInstance();
+        wm.setGlobal("cg", cg);
         List result = new ArrayList();
         wm.setGlobal( "list",
                       result );
@@ -3956,10 +3960,10 @@ public class MiscTest extends TestCase {
             assertEquals( 2, builder.getPackages().length );
             Package pkg1 = builder.getPackageRegistry( "org.drools.package1" ).getPackage();
             assertEquals( "rule 1", pkg1.getRules()[0].getName() );
-            
+
             Package pkg2 = builder.getPackageRegistry( "org.drools.package2" ).getPackage();
-            assertEquals( "rule 1", pkg2.getRules()[0].getName() );         
-            
+            assertEquals( "rule 1", pkg2.getRules()[0].getName() );
+
         } catch ( PackageMergeException e ) {
             fail( "unexpected exception: " + e.getMessage() );
         } catch ( RuntimeException e ) {
