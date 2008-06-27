@@ -1,6 +1,8 @@
 package org.drools.generatedbeans;
 
 global java.util.List list;
+global Cheese cg;
+
 
 declare Cheese
     type: String
@@ -16,6 +18,7 @@ rule "simple rule"
         Cheese( type == "stilton" )
     then
 		list.add( new Integer(5) );
+		cg.setType("nothing");
 end
 
 rule "another"
