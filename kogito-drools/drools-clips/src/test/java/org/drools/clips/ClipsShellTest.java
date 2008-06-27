@@ -3,17 +3,12 @@ package org.drools.clips;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 
 import junit.framework.TestCase;
 
 import org.drools.Person;
 import org.drools.WorkingMemory;
-import org.drools.clips.FunctionHandlers;
-import org.drools.clips.ClipsShell;
 import org.drools.clips.functions.AssertFunction;
 import org.drools.clips.functions.BindFunction;
 import org.drools.clips.functions.CallFunction;
@@ -22,9 +17,11 @@ import org.drools.clips.functions.EqFunction;
 import org.drools.clips.functions.GetFunction;
 import org.drools.clips.functions.IfFunction;
 import org.drools.clips.functions.LessThanFunction;
+import org.drools.clips.functions.LessThanOrEqFunction;
 import org.drools.clips.functions.MinusFunction;
 import org.drools.clips.functions.ModifyFunction;
 import org.drools.clips.functions.MoreThanFunction;
+import org.drools.clips.functions.MoreThanOrEqFunction;
 import org.drools.clips.functions.MultiplyFunction;
 import org.drools.clips.functions.NewFunction;
 import org.drools.clips.functions.PlusFunction;
@@ -40,7 +37,7 @@ import org.drools.rule.Rule;
 public class ClipsShellTest extends TestCase {
     private ByteArrayOutputStream baos;
 
-    ClipsShell                         shell;
+    ClipsShell                    shell;
 
     public void setUp() {
         FunctionHandlers handlers = FunctionHandlers.getInstance();
@@ -53,7 +50,9 @@ public class ClipsShellTest extends TestCase {
         handlers.registerFunction( new PrognFunction() );
         handlers.registerFunction( new IfFunction() );
         handlers.registerFunction( new LessThanFunction() );
+        handlers.registerFunction( new LessThanOrEqFunction() );
         handlers.registerFunction( new MoreThanFunction() );
+        handlers.registerFunction( new MoreThanOrEqFunction() );
         handlers.registerFunction( new EqFunction() );
         handlers.registerFunction( new SwitchFunction() );
         //handlers.registerFunction( new DeffunctionFunction() );
@@ -112,6 +111,10 @@ public class ClipsShellTest extends TestCase {
 
         assertEquals( "hellohello",
                       new String( baos.toByteArray() ) );
+
+        if ( 1 <= 10 ) {
+
+        }
     }
 
     public void testIfElse() {
@@ -196,7 +199,6 @@ public class ClipsShellTest extends TestCase {
                       new String( this.baos.toByteArray() ) );
     }
 
-
     public void testExplicitCall() {
         String t = "(import org.drools.*) (bind ?p (new Person mark cheddar) ) (call ?p setFields bob stilton 35)  (printout t (call ?p toLongString))";
         this.shell.eval( t );
@@ -245,26 +247,26 @@ public class ClipsShellTest extends TestCase {
     }
 
     public void FIXME_testTemplateCreation2() throws Exception {
-    	this.shell.eval( "(deftemplate PersonTemplate (slot name (type String) ) (slot age (type int) ) )" );
+        this.shell.eval( "(deftemplate PersonTemplate (slot name (type String) ) (slot age (type int) ) )" );
         this.shell.eval( "(defrule xxx (PersonTemplate (name ?name&bob) (age 30) ) (PersonTemplate  (name ?name) (age 35)) => (printout t xx \" \" (eq 1 1) ) )" );
-        this.shell.eval( "(assert (PersonTemplate (name 'mike') (age 34)))");
+        this.shell.eval( "(assert (PersonTemplate (name 'mike') (age 34)))" );
 
         Class personClass = this.shell.getStatefulSession().getRuleBase().getPackage( "MAIN" ).getPackageScopeClassLoader().loadClass( "MAIN.PersonTemplate" );
-        assertNotNull(personClass);
+        assertNotNull( personClass );
     }
 
     public void testTemplateCreation() throws Exception {
         this.shell.eval( "(deftemplate Person (slot name (type String) ) (slot age (type int) ) )" );
 
         this.shell.eval( "(defrule xxx (Person (name ?name&bob) (age 30) ) => (printout t hello bob ) )" );
-        
+
         this.shell.eval( "(assert (Person (name bob) (age 30) ) )" );
         this.shell.eval( "(run)" );
 
         assertEquals( "hellobob",
-                      new String( this.baos.toByteArray() ) );          
-    }    
-    
+                      new String( this.baos.toByteArray() ) );
+    }
+
     public void testTemplateCreationWithJava() throws Exception {
         this.shell.eval( "(deftemplate Person (slot name (type String) ) (slot age (type int) ) )" );
 
@@ -287,21 +289,25 @@ public class ClipsShellTest extends TestCase {
         WorkingMemory wm = shell.getStatefulSession();
         Class personClass = this.shell.getStatefulSession().getRuleBase().getPackage( "MAIN" ).getPackageScopeClassLoader().loadClass( "MAIN.Person" );
 
-        Method nameMethod = personClass.getMethod( "setName", new Class[] { String.class } );
-        Method ageMethod = personClass.getMethod( "setAge", new Class[] { int.class } );
+        Method nameMethod = personClass.getMethod( "setName",
+                                                   new Class[]{String.class} );
+        Method ageMethod = personClass.getMethod( "setAge",
+                                                  new Class[]{int.class} );
 
         Object bob1 = personClass.newInstance();
-        nameMethod.invoke( bob1, "bob" );
-        ageMethod.invoke( bob1, 30 );
-
+        nameMethod.invoke( bob1,
+                           "bob" );
+        ageMethod.invoke( bob1,
+                          30 );
 
         Object bob2 = personClass.newInstance();
-        nameMethod.invoke( bob2, "bob" );
-        ageMethod.invoke( bob2, 35 );
+        nameMethod.invoke( bob2,
+                           "bob" );
+        ageMethod.invoke( bob2,
+                          35 );
         //Constructor constructor = personClass.getConstructor( new Class[] { String.class,String.class, int.class} );
         wm.insert( bob1 );
         wm.insert( bob2 );
-
 
         wm.fireAllRules();
         assertEquals( "yy truexx true",
@@ -391,4 +397,36 @@ public class ClipsShellTest extends TestCase {
         this.shell.eval( "(run)" );
     }
 
+    public void testMixed() {
+        this.shell.eval( "(import org.drools.Cheese)" );
+        String str ="";
+        str += "(deftemplate Person ";
+        str += "  (slot name ";
+        str += "    (type String) ) ";
+        str += "  (slot age";
+        str += "    (type String) ) ";
+        str += "  (slot location";
+        str += "    (type String) ) ";        
+        str += "  (slot cheese";
+        str += "    (type String) ) ";
+        str += ")";
+        this.shell.eval( str );
+        this.shell.eval( "(deffunction max (?a ?b) (if (> ?a ?b) then (return ?a) else (return ?b) ) )" );
+
+        str = "";
+        str += "(defrule sendsomecheese ";
+        str += "  (Person (name ?name) (age ?personAge) (cheese ?cheeseType) (location \"london\") ) ";
+        str += "  (Cheese (type ?cheeseType) (price ?cheesePrice&:(eq (max ?personAge ?cheesePrice) ?cheesePrice)  ) )";
+        str += "\n=>\n";
+        str += "  (printout t \"send some \" ?cheeseType \" \" to \" \" ?name) ";
+        str += ")";
+        this.shell.eval( str );
+        
+        this.shell.eval( "(assert (Person (name mark) (location \"london\") (cheese \"cheddar\") (age 25) ) )" );
+        this.shell.eval( "(assert (Cheese (type \"cheddar\") (price  30) ) ) " );
+        this.shell.eval( "(run)" );
+        
+        assertEquals( "send some cheddar to mark",
+                      new String( this.baos.toByteArray() ) );        
+    }
 }
