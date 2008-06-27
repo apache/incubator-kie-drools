@@ -65,8 +65,8 @@ public interface RuleBase
     /**
      * Create a new <code>WorkingMemory</code> session for this
      * <code>RuleBase</code>.
-     * 
-     * @param config the session configuration object to use for the 
+     *
+     * @param config the session configuration object to use for the
      *               created session.
      *
      * @see WorkingMemory
@@ -172,10 +172,16 @@ public interface RuleBase
     public StatefulSession[] getStatefulSessions();
 
     /**
-     * Returns a declared FactType for external handling
-     * 
-     * @param string
-     * @return
+     * Returns a declared FactType.
+     * FactTypes are types that are declared as part of the rules (an alternative to POJOs).
+     * From a fact type you can generate instances of facts which you can use to communicate with the engine.
+     *
+     * @param string - the name of the declared type (a type defined in the rules).
+     * This would typically be packagename + . + type name.
+     *
+     * Eg, if there is a delcared type of name "Driver", and the package name is "com.company".
+     * Then the string you pass in would be "com.company.Driver".
+     *
      */
     public FactType getFactType(String string);
 }
