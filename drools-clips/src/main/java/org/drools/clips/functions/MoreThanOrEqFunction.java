@@ -1,6 +1,6 @@
 package org.drools.clips.functions;
 
-public class EqOrMoreThanFunction  extends BaseInfixFunction  {
+public class MoreThanOrEqFunction  extends BaseInfixFunction  {
     private static final String name = ">=";
     private static final String mappedSymbol = ">=";
 
