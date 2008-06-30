@@ -10,6 +10,7 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
+import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.compiler.PackageBuilder;
 import org.drools.process.instance.impl.demo.UIWorkItemHandler;
 import org.drools.rule.Package;
@@ -20,6 +21,7 @@ public class OrderExample {
 		try {
 			RuleBase ruleBase = createKnowledgeBase();
 			StatefulSession session = ruleBase.newStatefulSession();
+			WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger(session); 
 			
 			CustomerService customerService = new DefaultCustomerService();
 			Customer c = new Customer("A-12345");
@@ -52,6 +54,8 @@ public class OrderExample {
 			parameters.put("orderId", order.getOrderId());
 			session.startProcess("org.drools.examples.process.ruleset.RuleSetExample", parameters);
 			session.fireAllRules();
+			
+			logger.writeToDisk();
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}
@@ -67,6 +71,9 @@ public class OrderExample {
 		builder.addPackageFromDrl(source);
 		source = new InputStreamReader(
 			OrderExample.class.getResourceAsStream("validation.drl"));
+		builder.addPackageFromDrl(source);
+		source = new InputStreamReader(
+			OrderExample.class.getResourceAsStream("logging.drl"));
 		builder.addPackageFromDrl(source);
 		RuleBaseConfiguration configuration = new RuleBaseConfiguration();
 		configuration.setAdvancedProcessRuleIntegration(true);

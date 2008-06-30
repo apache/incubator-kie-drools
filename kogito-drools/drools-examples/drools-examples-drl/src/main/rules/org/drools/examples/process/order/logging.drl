@@ -1,0 +1,15 @@
+package org.drools.examples.process.order.logging
+
+import org.drools.process.instance.impl.WorkItemImpl
+import org.drools.workflow.instance.node.WorkItemNodeInstance
+import org.drools.process.core.context.variable.VariableScope
+import org.drools.process.instance.context.variable.VariableScopeInstance
+
+rule "WorkItemLogging" salience 30
+	when
+		workItemNodeInstance: WorkItemNodeInstance( workItemId == -1, node.name == "Correct Order" )
+	    workItem: WorkItemImpl( state == WorkItemImpl.PENDING ) from workItemNodeInstance.getWorkItem()
+	then 
+		VariableScopeInstance variableScopeInstance = (VariableScopeInstance) workItemNodeInstance.getProcessInstance().getContextInstance(VariableScope.VARIABLE_SCOPE);
+		System.out.println("LOGGING: Requesting the correction of order " + variableScopeInstance.getVariable("orderId"));
+end
