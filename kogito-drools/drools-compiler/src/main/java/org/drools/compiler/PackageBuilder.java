@@ -820,11 +820,16 @@ public class PackageBuilder {
     public Package[] getPackages() {
         Package[] pkgs = new Package[this.pkgRegistryMap.size()];
         int i = 0;
-        String errors = getErrors().toString();
+        String errors = null;
+        if (!getErrors().isEmpty()) {
+        	errors = getErrors().toString();
+        }
         for ( PackageRegistry pkgRegistry : this.pkgRegistryMap.values() ) {
             Package pkg = pkgRegistry.getPackage();
             pkg.getDialectRuntimeRegistry().reloadDirty();
-            pkg.setError( errors );
+            if (errors != null) {
+            	pkg.setError( errors );
+            }
             pkgs[i++] = pkg;
         }
 
