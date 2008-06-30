@@ -1,14 +1,13 @@
-package org.drools.process.workflow
+package org.drools.examples.process.order
 
-import org.drools.process.instance.WorkItem
+import org.drools.process.instance.impl.WorkItemImpl
 import org.drools.workflow.instance.node.WorkItemNodeInstance
 
 rule "Execute Pending Work Item" salience 20
 	when
-	    workItemNodeInstance: WorkItemNodeInstance( workItemId == 0 )
-	    workItem: WorkItem( state == WorkItem.PENDING ) from workItemNodeInstance.getWorkItem()
+	    workItemNodeInstance: WorkItemNodeInstance( workItemId == -1 )
+	    workItem: WorkItemImpl( state == WorkItemImpl.PENDING ) from workItemNodeInstance.getWorkItem()
 	then 
-		System.out.println("Executing work item " + workItem);
 		workItemNodeInstance.getProcessInstance().getWorkingMemory()
 			.getWorkItemManager().internalExecuteWorkItem(workItem);
 		workItemNodeInstance.internalSetWorkItemId(workItem.getId());
@@ -18,14 +17,7 @@ end
 rule "Complete WorkItemNodeInstance" salience 20
 	when
 	    workItemNodeInstance: WorkItemNodeInstance( )
-		WorkItem( state == WorkItem.COMPLETED ) from workItemNodeInstance.getWorkItem()
+		WorkItemImpl( state == WorkItemImpl.COMPLETED ) from workItemNodeInstance.getWorkItem()
 	then 
-		System.out.println("Completing work item node instance" + workItemNodeInstance);
 		workItemNodeInstance.triggerCompleted();
-end
-
-rule "Test"
-   when
-   then
-       System.out.println("Test");
 end

@@ -8,7 +8,7 @@ rule "Invalid customer id" ruleflow-group "validate" lock-on-active true
 		o: Order( )
 		not (Customer( ) from customerService.getCustomer(o.getCustomerId()))
 	then 
-	    System.out.println("Invalid customer id found!");
+	    System.err.println("Invalid customer id found!");
 		o.addError("Invalid customer id");
 end
 
@@ -18,7 +18,7 @@ rule "Invalid item id" ruleflow-group "validate" lock-on-active true
 		i: Order.OrderItem( ) from o.getOrderItems()
 		not (Item( ) from itemCatalog.getItem(i.getItemId()))
 	then 
-	    System.out.println("Invalid item id found!");
+	    System.err.println("Invalid item id found!");
 		o.addError("Invalid item id " + i.getItemId());
 end
 
@@ -29,7 +29,7 @@ rule "Minimal age" ruleflow-group "validate" lock-on-active true
 		oi: Order.OrderItem( ) from o.getOrderItems()
 		i: Item( minimalAge > (c.getAge()) ) from itemCatalog.getItem(oi.getItemId())
 	then 
-	    System.out.println("Minimal age violated!");
+	    System.err.println("Minimal age violated!");
 	    o.addError("Minimal age not met for item " + i.getItemId());
 end
 
