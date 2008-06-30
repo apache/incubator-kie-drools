@@ -12,6 +12,7 @@ import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.compiler.PackageBuilder;
 import org.drools.process.instance.impl.demo.UIWorkItemHandler;
+import org.drools.rule.Package;
 
 public class OrderExample {
 	
@@ -62,12 +63,20 @@ public class OrderExample {
 			OrderExample.class.getResourceAsStream("RuleSetExample.rf"));
 		builder.addProcessFromXml(source);
 		source = new InputStreamReader(
+			OrderExample.class.getResourceAsStream("workflow_rules.drl"));
+		builder.addPackageFromDrl(source);
+		source = new InputStreamReader(
 			OrderExample.class.getResourceAsStream("validation.drl"));
 		builder.addPackageFromDrl(source);
 		RuleBaseConfiguration configuration = new RuleBaseConfiguration();
 		configuration.setAdvancedProcessRuleIntegration(true);
 		RuleBase ruleBase = RuleBaseFactory.newRuleBase(configuration);
-		ruleBase.addPackage(builder.getPackage());
+		for (Package p: builder.getPackages()) {
+			if (!p.isValid()) {
+				System.err.println("Invalid package " + p.getName() + ": " + p.getErrorSummary());
+			}
+			ruleBase.addPackage(p);
+		}
 		return ruleBase;
 	}
 }
