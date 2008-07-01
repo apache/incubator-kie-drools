@@ -23,8 +23,8 @@
     <ruleSet id="2" name="Validate Order" x="88" y="88" width="80" height="40" ruleFlowGroup="validate" />
     <split id="5" name="XOR" x="116" y="160" width="26" height="23" type="2" >
       <constraints>
-        <constraint toNodeId="10" toType="DROOLS_DEFAULT" name="large order" priority="2" type="rule" dialect="mvel" >Order( price &gt; 1000 )</constraint>
-        <constraint toNodeId="9" toType="DROOLS_DEFAULT" name="invalid order" priority="1" type="rule" dialect="mvel" >Order( errorList != null )</constraint>
+        <constraint toNodeId="10" toType="DROOLS_DEFAULT" name="large order" priority="1" type="rule" dialect="mvel" >Order( price &gt; 1000 )</constraint>
+        <constraint toNodeId="9" toType="DROOLS_DEFAULT" name="invalid order" priority="2" type="rule" dialect="mvel" >Order( errorList != null )</constraint>
         <constraint toNodeId="6" toType="DROOLS_DEFAULT" name="default" priority="3" type="rule" dialect="mvel" >eval(true)</constraint>
       </constraints>
     </split>

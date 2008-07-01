@@ -5,9 +5,9 @@ import org.drools.workflow.instance.node.WorkItemNodeInstance
 import org.drools.process.core.context.variable.VariableScope
 import org.drools.process.instance.context.variable.VariableScopeInstance
 
-rule "WorkItemLogging" salience 30
+rule "WorkItemLogging" salience 25
 	when
-		workItemNodeInstance: WorkItemNodeInstance( workItemId == -1, node.name == "Correct Order" )
+		workItemNodeInstance: WorkItemNodeInstance( workItemId <= 0, node.name == "Correct Order" )
 	    workItem: WorkItemImpl( state == WorkItemImpl.PENDING ) from workItemNodeInstance.getWorkItem()
 	then 
 		VariableScopeInstance variableScopeInstance = (VariableScopeInstance) workItemNodeInstance.getProcessInstance().getContextInstance(VariableScope.VARIABLE_SCOPE);
