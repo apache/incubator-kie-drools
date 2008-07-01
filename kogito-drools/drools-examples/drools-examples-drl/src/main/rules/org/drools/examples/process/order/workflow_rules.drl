@@ -5,7 +5,7 @@ import org.drools.workflow.instance.node.WorkItemNodeInstance
 
 rule "Execute Pending Work Item" salience 20
 	when
-	    workItemNodeInstance: WorkItemNodeInstance( workItemId == -1 )
+	    workItemNodeInstance: WorkItemNodeInstance( workItemId <= 0 )
 	    workItem: WorkItemImpl( state == WorkItemImpl.PENDING ) from workItemNodeInstance.getWorkItem()
 	then 
 		workItemNodeInstance.getProcessInstance().getWorkingMemory()
