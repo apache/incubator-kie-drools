@@ -72,7 +72,7 @@ public class JavaActionBuilderTest extends TestCase {
         wm.setGlobal( "list", list );        
         
         KnowledgeHelper knowledgeHelper = new DefaultKnowledgeHelper();
-        ((Action) actionNode.getAction().getMetaData("Action")).execute( knowledgeHelper, wm );
+        ((Action) actionNode.getAction().getMetaData("Action")).execute( knowledgeHelper, wm, null );
        
         assertEquals("hello world", list.get(0) );
     }    
