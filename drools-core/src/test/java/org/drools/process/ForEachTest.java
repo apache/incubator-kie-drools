@@ -18,6 +18,7 @@ import org.drools.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.spi.Action;
+import org.drools.spi.ActionContext;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.workflow.core.DroolsAction;
 import org.drools.workflow.core.Node;
@@ -75,7 +76,7 @@ public class ForEachTest extends TestCase {
         actionNode.setName("Print child");
         DroolsAction action = new DroolsConsequenceAction("java", null);
         action.setMetaData("Action", new Action() {
-            public void execute(KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory) throws Exception {
+            public void execute(KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory, ActionContext context) throws Exception {
                 myList.add("Executed action");
             }
         });

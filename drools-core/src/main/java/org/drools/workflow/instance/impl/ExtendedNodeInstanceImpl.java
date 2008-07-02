@@ -9,6 +9,7 @@ import org.drools.common.InternalRuleBase;
 import org.drools.process.core.context.exception.ExceptionScope;
 import org.drools.process.instance.context.exception.ExceptionScopeInstance;
 import org.drools.spi.Action;
+import org.drools.spi.ActionContext;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.workflow.core.DroolsAction;
 import org.drools.workflow.core.impl.ExtendedNodeImpl;
@@ -41,8 +42,10 @@ public abstract class ExtendedNodeInstanceImpl extends NodeInstanceImpl {
 	        }
 			for (DroolsAction droolsAction: actions) {
 				Action action = (Action) droolsAction.getMetaData("Action");
+				ActionContext context = new ActionContext();
+				context.setNodeInstance(this);
 				try {
-					action.execute(knowledgeHelper, workingMemory);
+					action.execute(knowledgeHelper, workingMemory, context);
 				} catch (Exception exception) {
 					String exceptionName = exception.getClass().getName();
 					ExceptionScopeInstance exceptionScopeInstance = (ExceptionScopeInstance)

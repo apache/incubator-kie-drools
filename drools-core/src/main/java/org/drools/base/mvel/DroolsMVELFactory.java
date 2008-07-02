@@ -255,7 +255,7 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
         return false;
     }
 
-    private void addResolver(String name,
+    public void addResolver(String name,
                              VariableResolver vr) {
         if ( this.variableResolvers == null ) {
             this.variableResolvers = new HashMap();

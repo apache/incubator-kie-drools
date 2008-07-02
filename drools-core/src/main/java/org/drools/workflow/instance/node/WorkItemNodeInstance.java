@@ -123,8 +123,9 @@ public class WorkItemNodeInstance extends EventNodeInstance implements WorkItemL
 		            	VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
 		                	resolveContextInstance(VariableScope.VARIABLE_SCOPE, paramName);
 		                if (variableScopeInstance != null) {
-		                	String variableValue = (String) variableScopeInstance.getVariable(paramName);
-			                replacements.put(paramName, variableValue);
+		                    Object variableValue = variableScopeInstance.getVariable(paramName);
+		                	String variableValueString = variableValue == null ? "" : variableValue.toString(); 
+			                replacements.put(paramName, variableValueString);
 		                } else {
 		                    System.err.println("Could not find variable scope for variable " + paramName);
 		                    System.err.println("when trying to replace variable in string for Work Item " + work.getName());

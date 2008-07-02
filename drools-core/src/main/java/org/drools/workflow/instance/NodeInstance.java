@@ -1,5 +1,6 @@
 package org.drools.workflow.instance;
 
+import org.drools.process.instance.ContextInstance;
 import org.drools.workflow.core.Node;
 
 
@@ -42,5 +43,7 @@ public interface NodeInstance {
     void cancel();
     
     Node getNode();
+    
+    ContextInstance resolveContextInstance(String contextId, Object param);
     
 }
