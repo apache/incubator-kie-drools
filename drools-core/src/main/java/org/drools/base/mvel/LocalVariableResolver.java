@@ -27,28 +27,28 @@ import java.util.Map;
 public class LocalVariableResolver implements VariableResolver {
     private String name;
     private Class knownType;
-    private DroolsMVELFactory factory;
+    private DroolsLocalVariableMVELFactory factory;
 
     private boolean cache = false;
 
-    public LocalVariableResolver(DroolsMVELFactory factory, String name) {
+    public LocalVariableResolver(DroolsLocalVariableMVELFactory factory, String name) {
         this.factory = factory;
         this.name = name;
     }
 
-    public LocalVariableResolver(DroolsMVELFactory factory, String name, Class knownType) {
+    public LocalVariableResolver(DroolsLocalVariableMVELFactory factory, String name, Class knownType) {
         this.name = name;
         this.knownType = knownType;
         this.factory = factory;
     }
 
-    public LocalVariableResolver(DroolsMVELFactory factory, String name, boolean cache) {
+    public LocalVariableResolver(DroolsLocalVariableMVELFactory factory, String name, boolean cache) {
         this.factory = factory;
         this.name = name;
         this.cache = cache;
     }
 
-    public LocalVariableResolver(DroolsMVELFactory factory, String name, Class knownType, boolean cache) {
+    public LocalVariableResolver(DroolsLocalVariableMVELFactory factory, String name, Class knownType, boolean cache) {
         this.name = name;
         this.knownType = knownType;
         this.factory = factory;
