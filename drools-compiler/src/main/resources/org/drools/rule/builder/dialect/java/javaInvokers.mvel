@@ -393,6 +393,11 @@ public class @{invokerClassName} implements org.drools.spi.Action, java.io.Exter
 
     public void execute(org.drools.spi.KnowledgeHelper knowledgeHelper,
                         org.drools.WorkingMemory workingMemory) throws Exception {
+        execute(knowledgeHelper, workingMemory, null);
+    }
+
+    public void execute(org.drools.spi.KnowledgeHelper knowledgeHelper,
+                        org.drools.WorkingMemory workingMemory, org.drools.spi.ActionContext context ) throws Exception {
 
         @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
         @end{}
@@ -400,7 +405,7 @@ public class @{invokerClassName} implements org.drools.spi.Action, java.io.Exter
         @{processClassName}.@{methodName} (
 	        knowledgeHelper@if{globals != empty},@end{}
 	        @foreach{identifier : globals} @{identifier}
-	        @end{","} );
+	        @end{","}, context );
     }
 
     public void writeExternal(java.io.ObjectOutput out) throws java.io.IOException {
