@@ -1,517 +1,804 @@
 <?xml version="1.0" encoding="UTF-8"?>
-	<section xml:base="../" >
-	<title>Quick start guide</title>
-
-	<section>
-		<title>Quick start guide</title>
-
-		<para>If you are reading this, you must be the impatient type who wants to kick the tyres (and light the fires) and have a look around as soon as possible. This section will provide a quick end to end tour of the steps involved (but does not go through the concepts in detail). This assumes you have installed the repository correctly, and are able to access the main login screen.</para>
-
-		<para>You can also consult the wiki: http://wiki.jboss.org/wiki/Wiki.jsp?page=RulesRepository for some tutorials and user tips (it IS a wiki, so you can even contribute your own tips and examples and even upload files if you desire !).</para>
-
-		<figure>
-			<title>Main feature areas of BRMS</title>
-
-			<mediaobject>
-				<imageobject>
-					<imagedata align="center" fileref="Features.png" format="PNG" scalefit="1" />
-				</imageobject>
-			</mediaobject>
-		</figure>
-
-		<para>The above picture shows the main feature areas of the BRMS.</para>
-
-		<itemizedlist>
-			<listitem>
-				<para>Info: This is the initial screen, with links to resources.</para>
-			</listitem>
-
-			<listitem>
-				<para>Rules: This is the category and business user perspective.</para>
-			</listitem>
-
-			<listitem>
-				<para>Package: This is where packages are configured and managed.</para>
-			</listitem>
-
-			<listitem>
-				<para>Deployment: this is where deployment snapshots are managed.</para>
-			</listitem>
-
-			<listitem>
-				<para>Admin: Administrative functions (categories, statuses, import and export)</para>
-			</listitem>
-		</itemizedlist>
-
-		<section>
-			<title>Supported browser platforms</title>
-
-			<para>The supported server side platforms are mentioned in the installation guide. For browsers - the major ones are supported, this includes Firefox (1.5 and up), IE6 and up, Opera, Safari etc. The preferred browser for most platforms is firefox, it is widely available and free, if you have any choice at all, Firefox is the preferred platform, followed by safari on mac.</para>
-		</section>
-
-		<section>
-			<title>Initial configuration</title>
-
-			<para>Some initial setup is required the first time. The first time the server starts up, it will create an empty repository, then take the following steps:</para>
-
-			<itemizedlist>
-				<listitem>
-					<para>Once deployed, go to "http://&lt;your server&gt;/drools-jbrms/" (This will show the initial info screen - or login screen depending on the configuration).</para>
-				</listitem>
-
-				<listitem>
-					<para>If it is a brand new repository, you will want to go to "Admin", and choose "Manage Categories"</para>
-
-					<para>(Add a few categories of your choosing, categories are only for classification, not for execution or anything else.)</para>
-				</listitem>
-
-				<listitem>
-					<para>Rules need a fact model (object model) to work off, so next you will want to go to the Package management feature. From here you can click on the icon to create a new package (give it a meaningful name, with no spaces).</para>
-				</listitem>
-
-				<listitem>
-					<para>To upload a model, use a jar which has the fact model (API) that you will be using in your rules and your code (go and make one now if you need to !). When you are in the model editor screen, you can upload a jar file, choose the package name from the list that you created in the previous step.</para>
-				</listitem>
-
-				<listitem>
-					<para>Now edit your package configuration (you just created) to import the fact types you just uploaded (add import statements), and save the changes.</para>
-				</listitem>
-
-				<listitem>
-					<para>At this point, the package is configured and ready to go (you generally won't have to go through that step very often).</para>
-
-					<para>(Note that you can also import an existing drl package - it will store the rules in the repository as individual assets).</para>
-				</listitem>
-			</itemizedlist>
-		</section>
-
-		<section>
-			<title>Writing some rules</title>
-
-			<itemizedlist>
-				<listitem>
-					<para>Once you have at least one category and one package setup, you can author rules.</para>
-				</listitem>
-
-				<listitem>
-					<para>There are multiple rule "formats", but from the BRMS point of view, they are all "assets".</para>
-				</listitem>
-
-				<listitem>
-					<para>You create a rule by clicking the icon with the rules logo (the head), and from that you enter a name.</para>
-				</listitem>
-
-				<listitem>
-					<para>You will also have to choose one category. Categories provide a way of viewing rules that is separate to packages (and you can make rules appear in multiple packages) - think of it like tagging.</para>
-				</listitem>
-
-				<listitem>
-					<para>Chose the "Business rule (guided editor)" formats.</para>
-				</listitem>
-
-				<listitem>
-					<para>This will open a rule modeler, which is a guided editor. You can add and edit conditions and actions based on the model that is in use in the current package. Also, any DSL sentence templates setup for the package will be available.</para>
-				</listitem>
-
-				<listitem>
-					<para>When you are done with rule editing, you can check in the changes (save), or you can validate or "view source" (for the effective source).</para>
-				</listitem>
-
-				<listitem>
-					<para>You can also add/remove categories from the rule editor, and other attributes such as documentation (if you aren't sure what to do, write a document in natural language describing the rule, and check it in, that can also serve as a template later)</para>
-				</listitem>
-			</itemizedlist>
-		</section>
-
-		<section>
-			<title>Finding stuff</title>
-
-			<para>In terms of navigating, you can either use the Rules feature, which shows things grouped by categories, or you can use the Package feature, and view by package (and rule type). If you know the name or part of the name of an asset, you can also use the "Quick find", start typing a rule name and it will return a list of matches as you type (so if you have a sensible naming scheme, it will make it very quick to find stuff).</para>
-		</section>
-
-		<section>
-			<title>Deployment</title>
-
-			<itemizedlist>
-				<listitem>
-					<para>After you have edited some rules in a package, you can click on the package feature, open the package that you wish, and build the whole package.</para>
-				</listitem>
-
-				<listitem>
-					<para>If that succeeds, then you will be able to download a binary package file which can be deployed into a runtime system.</para>
-				</listitem>
-
-				<listitem>
-					<para>You can also take a "snapshot" of a package for deployment. This freezes the package at that point in time, so any concurrent changes to not effect the package. It also makes the package available on a URL of the form: "http://&lt;your server&gt;/drools-jbrms/org.drools.brms.JBRMS/packages/&lt;packageName&gt;/&lt;snapshotName&gt;" (where you can use that URL and downloads will be covered in the section on deployment).</para>
-				</listitem>
-			</itemizedlist>
-		</section>
-	</section>
-
-  	<section>
-		<title>BRMS concepts</title>
-
-		<section>
-			<title>Rules are assets</title>
-
-			<para>As the BRMS can manage many different types of rules (and more), they are all classed as "assets". An asset is anything that can be stored as a version in the repository. This includes decision tables, models, DSLs and more. Sometimes the word "rule" will be used to really mean "asset" (ie the things you can do also apply to the other asset types). You can think of asset as a lot like a file in a folder. Assets are grouped together for viewing, or to make a package for deployment etc.</para>
-		</section>
-
-		<section>
-			<title>Categorisation</title>
-
-			<figure>
-				<title>Categories</title>
-
-				<mediaobject>
-					<imageobject>
-						<imagedata align="center" fileref="CatZoom.png" format="PNG" scalefit="1" />
-					</imageobject>
-				</mediaobject>
-			</figure>
-
-			<para>Categories allow rules (assets) to be labeled (or tagged) with any number of categories that you define. This means that you can then view a list of rules that match a specific category. Rules can belong to any number of categories. In the above diagram, you can see this can in effect create a folder/explorer like view of assets. The names can be anything you want, and are defined by the BRMS administrator (you can also remove/add new categories - you can only remove them if they are not currently in use).</para>
-
-			<para>Generally categories are created with meaningful name that match the area of the business the rule applies to (if the rule applies to multiple areas, multiple categories can be attached). Categories can also be used to "tag" rules as part of their life-cycle, for example to mark as "Draft" or "For Review".</para>
-
-			<figure>
-				<title>Assets can have multiple categories</title>
-
-				<mediaobject>
-					<imageobject>
-						<imagedata align="center" fileref="CatEdit.png" format="PNG" scalefit="1" />
-					</imageobject>
-				</mediaobject>
-			</figure>
-
-			<para>The view above shows the category editor/viewer that is seen when you open an asset. In this example you can see the asset belongs to 2 categories, with a "+" button to add additional items (use the trash can item to remove them). This means that when either category is used to show a list of assets, you will see that asset.</para>
-
-			<para>In the above example, the first Category "Finance" is a "top level" category. The second one: "HR/Awards/QAS" is a still a single category, but its a nested category: Categories are hierarchical. This means there is a category called "HR", which contains a category "Awards" (it will in fact have more sub-categories of course), and "Awards" has a sub-category of QAS. The screen shows this as "HR/Awards/QAS" - its very much like a folder structure you would have on your hard disk (the notable exception is of course that rules can appear in multiple places).</para>
-
-			<para>When you open an asset to view or edit, it will show a list of categories that it currently belongs to If you make a change (remove or add a category) you will need to save the asset - this will create a new item in the version history. Changing the categories of a rule has no effect on its execution.</para>
-
-			<figure>
-				<title>Creating categories</title>
-
-				<mediaobject>
-					<imageobject>
-						<imagedata align="center" fileref="AdminCats.png" format="PNG" scalefit="1" />
-					</imageobject>
-				</mediaobject>
-			</figure>
-
-			<para>The above view shows the administration screen for setting up categories (there) are no categories in the system by default. As the categories can be hierarchical you chose the "parent" category that you want to create a sub-category for. From here categories can also be removed (but only if they are not in use by any current versions of assets).</para>
-
-			<para>As a general rule, an asset should only belong to 1 or 2 categories at a time. Categories are critical in cases where you have large numbers of rules. The hierarchies do not need to be too deep, but should be able to see how this can help you break down rules/assets into manageable chunks. Its ok if its not clear at first, you are free to change categories as you go.</para>
-		</section>
-
-		<section>
-			<title>The asset editor</title>
-
-		<figure>
-			<title>The Asset editor view</title>
-
-			<mediaobject>
-				<imageobject>
-					<imagedata align="center" fileref="AssetEditor.png" format="PNG" scalefit="1" />
-				</imageobject>
-			</mediaobject>
-		</figure>
-
-		<para>The above diagram shows the "asset editor" with some annotated areas. The asset editor is where all rule changes are made. Below is a list which describes the different parts of the editor.</para>
-
-		<itemizedlist>
-			<listitem>
-				<para>A</para>
-
-				<para>This is where the "editor widget" lives - exactly what form the editor takes depends on the asset or rule type.</para>
-			</listitem>
-
-			<listitem>
-				<para>B</para>
-
-				<para>This is the documentation area - a free text area where descriptions of the rule can live. It is encouraged to write a plain description in the rule here before editing.</para>
-			</listitem>
-
-			<listitem>
-				<para>C</para>
-
-				<para>These are the actions - for saving, archiving, changing status etc. Archiving is the equivalent of deleting an asset.</para>
-			</listitem>
-
-			<listitem>
-				<para>D</para>
-
-				<para>This has the asset name, as well as the list of categories that the asset belongs to.</para>
-			</listitem>
-
-			<listitem>
-				<para>E</para>
-
-				<para>This section contains read-only meta data, including when changes were made, and by whom.</para>
-
-				<para>"Modified on:" - this is the last modified date.</para>
-
-				<para>"By:" - who made the last change.</para>
-
-				<para>"Note:" - this is the comment made when the asset was last updated (ie why a change was made)</para>
-
-				<para>"Version:" - this is a number which is incremented by 1 each time a change is checked in (saved).</para>
-
-				<para>"Created on:" - the date and time the asset was created.</para>
-
-				<para>"Created by:" - this initial author of the asset.</para>
-
-				<para>"Format:" - the short format name of the type of asset.</para>
-			</listitem>
-
-			<listitem>
-				<para>F</para>
-
-				<para>This shows what package the asset belong to (you can also change it from here).</para>
-			</listitem>
-
-			<listitem>
-				<para>G</para>
-
-				<para>This is some more (optional) meta data (taken from the Dublin Core meta data standard)</para>
-			</listitem>
-
-			<listitem>
-				<para>H</para>
-
-				<para>This will show the version history list when requested.</para>
-			</listitem>
-		</itemizedlist>
-	</section>
-
-	<section>
-		<title>Rule authoring</title>
-
-		<para>The BRMS supports a (growing) list of formats of assets (rules). Here the key ones are described. Some of these are covered in other parts of the manual, and the detail will not be repeated here.</para>
-
-		<section>
-			<title>Business rules with the guided editor</title>
-
-			<para>Guided editor style "Business rules": (also known as "BRL format"). These rules use the guided GUI which controls and prompts user input based on knowledge of the object model. This can also be augmented with DSL sentences.</para>
-
-			<para>IMPORTANT: to use the BRL guided editor, someone will need to have you package configured before hand.</para>
-
-			<para>Also note that there is a guided editor in the Eclipse plug in, most of the details in this section can also apply to it.</para>
-
-			<figure>
-			<title>The guided BRL editor</title>
-
-			<mediaobject>
-				<imageobject>
-					<imagedata align="center" fileref="GuidedEditor.png" format="PNG" scalefit="1" />
-				</imageobject>
-			</mediaobject>
-			</figure>
-
-			<para>The above diagram shows the editor in action. The following description apply to the letter boxes in the diagram above:</para>
-
-			<para>A: The different parts of a rule. The "WHEN" part is the condition, "THEN" action, and "(options)" are optional attributes that may effect the operation of the rule.</para>
-
-			<para>B: This shows a pattern which is declaring that the rule is looking for a "Driver" fact (the fields are listed below, in this case just "age"). Note the green triangle, it will popup a list of options to add to the fact declaration: you can add more fields (eg their "location"), or you can assign a variable name to the fact (which you can use later on if needs be). As well as adding more fields to this pattern - you can add "multiple field" constraints - ie constraints that span across fields (eg age &gt; 42 or risk &gt; 2). The popup dialog shows the options.</para>
-
-			<para>C: The small "-" icons indicate you can remove something - in this case it would remove the whole Driver fact declaration. If its the one below, it would remove just the age constraint.</para>
-
-			<para>D: The "+" symbols allow you to add more patterns to the condition or the action part of the rule, or more attributes. In all cases, a popup option box is provided. For the "WHEN" part of the rule, you can choose to add a constraint on a fact (it will give you a list of facts), or you can use another conditional element, the choices which are : "There is no" - which means the fact+constraints must not exist, "There exists" - which means that there exists at least one match (but there only needs to be one - it will not trigger for each match), and "Any of" - which means that any of the patterns can match (you then add patterns to these higher level patterns). If you just put a fact (like is shown above) then all the patterns are combined together so they are all true ("and").</para>
-
-			<para>E: This shows the constraint for the "age" field. (Looking from left to right) the green triangle allows you to "assign" a variable name to the "age" field, which you may use later on in the rule. Next is the list of constraint operations - this list changes depending on the data type. After that is the value field - the value field will be one of: a) a literal value (eg number, text), b) a "formula" - in which case it is an expression which is calculated (this is for advanced users) or b) a variable (in which case a list will be provided to choose values from). After this there is a horizontal arrow icon, this is for "connective constraints" : these are constraints which allow you to have alternative values to check a field against, for example: "age is less than 42 or age is not equal to 39" is possibly this way.</para>
-
-			<para>F: This shows an "action" of the rule, a rule consists of a list of actions. In this case, we are asserting/inserting a new fact, which is a rejection (with the "reason" field set to an explanation). There are quite a few other types of actions you can use: you can modify an existing fact (which tells the engine the fact has changed) - or you can simply set a field on a fact (in which case the engine doesn't know about the change - normally because you are setting a result). You can also retract a fact. In most cases the green arrow will give you a list of fields you can add so you can change the value. The values you enter are "literal" - in the sense that what you type is what the value is. If it needs to be a calculation, then add an "=" at the start of the value - this will be interpreted as a "formula" (for advanced users only) ! and the calculation will be performed (not unlike a spreadsheet).</para>
-
-			<para>G: This is where the rule options live. In this case, only salience is used which is a numeric value representing the rules "priority". This would probably be the most common option to use.</para>
-
-			<section>
-				<title>User driven drop down lists</title>
-
-				<figure>
-					<title>Data enumeration showing as a drop down list</title>
-			
-					<mediaobject>
-						<imageobject>
-							<imagedata align="center" fileref="EnumDropDown.png" format="PNG" scalefit="1" />
-						</imageobject>
-					</mediaobject>
-				</figure>
-
-				<para>Note that is it possible to limit field values to items in a pre configured list. This list is configured as part of the package (using a data enumeration to provide values for the drop down list). These values can be a fixed list, or (for example) loaded from a database. This is useful for codes, and other fields where there are set values. It is also possible to have what is displayed on screen, in a drop down, be different to the value (or code) used in a rule. See the section on data enumerations for how these are configured.</para>
-			</section>
-
-			<section>
-				<title>Augmenting with DSL sentences</title>
-				
-				<para>If the package the rule is part of has a dsl configuration, when when you add conditions or actions, then it will provide a list of "DSL Sentences" which you can choose from - when you choose one, it will add a row to the rule - where the DSL specifies values come from a user, then a edit box (text) will be shown (so it ends up looking a bit like a form). This is optional, and there is another DSL editor. Please note that the DSL capabilities in this editor are slightly less then the full set of DSL features (basically you can do [when] and [then] sections of the DSL only - which is no different to drools 3 in effect).</para>
-
-				<para>The following diagram shows the DSL sentences in action in the guided editor:</para>
-	
-				<figure>
-					<title>DSL in guided editor</title>
-			
-					<mediaobject>
-						<imageobject>
-							<imagedata align="center" fileref="GuidedDSL.png" format="PNG" scalefit="1" />
-						</imageobject>
-					</mediaobject>
-				</figure>
-			
-			</section>
-			
-			<section>
-				<title>A more complex example:</title>
-	
-				<figure>
-					<title>A more complex BRL example</title>
-	
-					<mediaobject>
-						<imageobject>
-							<imagedata align="center" fileref="GuidedComplex.png" format="PNG" scalefit="1" />
-						</imageobject>
-					</mediaobject>
-				</figure>
-	
-				<para>In the above example, you can see it is using a mixture of literal values, and formulas. The second constraint on the "Person" fact, is a formula (in this case it is doing a silly calculation on the persons age, and checking something against their name - both "age" and "name" are fields of the Person fact in this case. In the 3rd line (which says "age is less than .." - it is also using a formula, although, in this case the formula does a calculation and returns a value (which is used in the comparison) - in the former case, it had to return True or False (in this case, its a value). Obvious formulas are basically pieces of code - so this is for experienced users only.</para>
-
-				<para>Looking at the "Board" pattern (the second pattern with the horizontal grey bar): this uses a top level conditional element ("There is no") - this means that the pattern is actually looking for the "non existence" of a fact that matches the pattern. Note the "Any of:" - this means that EITHER the "type" field constraint is matched, or the "name" field is matched (to "myname" in the case above). This is what is termed a Multiple field constraint (you can nest these, and have it as complex as you like, depending on how much you want the next person to hate you: Some paraphrased advice: Write your rules in such as way as if the person who has to read/maintain them is a psychopath, has a gun, and knows where you live).</para>
-	
-				<figure>
-					<title>Adding constraints</title>
-			
-					<mediaobject>
-						<imageobject>
-							<imagedata align="center" fileref="GuidedLHSConstraints.png" format="PNG" scalefit="1" />
-						</imageobject>
-					</mediaobject>
-				</figure>
-			
-				<para>The above dialog is what you will get when you want to add constraints to the Person fact. In the top half are the simple options: you can either add a field straight away (a list of fields of the Person fact will be shown), or you can add a "Multiple field constraint" - of a given type (which is described above). The Advanced options: you can add a formula (which resolves to True or False - this is like in the example above: "age &lt; (age * 2) ...."). You can also assign a Variable name to the Person fact (which means you can then access that variable on the action part of the rule, to set a value etc).</para>
-			</section>
-		</section>
-
-		<section>
-			<title>DSL rules</title>
-
-			<para>DSL rules are textual rules, that use a language configuration asset to control how they appear.</para>
-
-			<figure>
-				<title>DSL rule</title>
-
-				<mediaobject>
-					<imageobject>
-						<imagedata align="center" fileref="DSLRule.png" format="PNG" scalefit="1" />
-					</imageobject>
-				</mediaobject>
-			</figure>
-
-			<para>A dsl rule is a single rule. Referring to the picture above, you can a text editor. You can use the icons to the right to provide lists of conditions and actions to choose from (or else press Control + Space at the same time to pop up a list).</para>
-		</section>
-
-		<section>
-			<title>Spreadsheet decision tables</title>
-
-			<para>Multiple rules can be stored in a spreadsheet (each row is a rule). The details of the spreadsheet are not covered in this chapter (as there is a separate chapter for them).</para>
-
-			<figure>
-				<title>Spreadsheet decision table</title>
-
-				<mediaobject>
-					<imageobject>
-						<imagedata align="center" fileref="DecisionTable.png" format="PNG" scalefit="1" />
-					</imageobject>
-				</mediaobject>
-			</figure>
-
-			<para>To use a spreadsheet, you upload an xls (and can download the current version, as per the picture above). To create a new decision table, when you launch the rule wizard, you will get an option to create one (after that point, you can upload the xls file).</para>
-		</section>
-
-		<section>
-			<title>Rule flows</title>
-
-			<para>Rule flows: Rule flows allow you to visually describe the steps taken - so not all rules are evaluated at once, but there is a flow of logic. Rule flows are not covered in this chapter on the BRMS, but you can use the IDE to graphically draw ruleflows, and upload the .rfm file to the BRMS.</para>
-
-			<para>Similar to spreadsheets, you upload/download ruleflow files (the eclipse IDE has a graphical editor for them). The details of Rule Flows are not discussed here.</para>
-		</section>
-
-		<section>
-			<title>Technical rules (drl)</title>
-
-			<para>Technical (drl) rules are stored as text - they can be managed in the BRMS. A DRL can either be a whole chunk of rules, or an individual rule. if its an individual rule, no package statement or imports are required (in fact, you can skip the "rule" statement altogether, just use "when" and "then" to mark the condition and action sections respectively). Normally you would use the IDE to edit raw DRL files, since it has all the advanced tooling and content assistance and debugging, however there are times when a rule may have to deal with something fairly technical. In any typical package of rules, you generally have a been for some "technical rules" - you can mix and match all the rule types together of course.</para>
-
-			<figure>
-				<title>DRL technical rule</title>
-
-				<mediaobject>
-					<imageobject>
-						<imagedata align="center" fileref="DRLRule.png" format="PNG" scalefit="1" />
-					</imageobject>
-				</mediaobject>
-			</figure>
-		</section>
-
-		<section>
-			<title>Functions</title>
-
-			<para>Functions are another asset type. They are NOT rules, and should only be used when necessary. The function editor is a textual editor. Functions</para>
-
-			<figure>
-				<title>Function</title>
-
-				<mediaobject>
-					<imageobject>
-						<imagedata align="center" fileref="Function.png" format="PNG" scalefit="1" />
-					</imageobject>
-				</mediaobject>
-			</figure>
-		</section>
-
-		<section>
-			<title>Data enumerations (drop down list configurations)</title>
-
-			<para>Data enumerations are an optional asset type that technical folk can configure to provide drop down lists for the guided editor. These are stored and edited just like any other asset, and apply to the package that they belong to.</para>
-
-			<para>The contents of an enum config are a mapping of Fact.field to a list of values to be used in a drop down. That list can either be literal, or use a utility class (which you put on the classpath) to load a list of strings. The strings are either a value to be shown on a drop down, or a mapping from the code value (what ends up used in the rule) and a display value (see the example below, using the '=').</para>
-
-			<figure>
-				<title>Data enumeration</title>
-
-				<mediaobject>
-					<imageobject>
-						<imagedata align="center" fileref="EnumConfig.png" format="PNG" scalefit="1" />
-					</imageobject>
-				</mediaobject>
-			</figure>
-			
-			<para>In the above diagram - the "MM" indicates a value that will be used in the rule, yet "Mini Mal" will be displayed in the GUI.</para>
-			
-			<para>Getting data lists from external data sources: It is possible to have the BRMS call a piece of code which will load a list of Strings. To do this, you will need a bit of code that returns a java.util.List (of String's) to be on the classpath of the BRMS. Instead of specifying a list of values in the BRMS itself - the code can return the list of Strings (you can use the "=" inside the strings if you want to use a different display value to the rule value, as normal). For example, in the 'Person.age' line above, you could change it to: <programlisting> 'Person.age' : (new com.yourco.DataHelper()).getListOfAges()</programlisting> This assumes you have a class called "DataHelper" which has a method "getListOfAges()" which returns a List of strings (and is on the classpath). You can of course mix these "dynamic" enumerations with fixed lists. You could for example load from a database using JDBC. The data enumerations are loaded the first time you use the guided editor in a session. If you have any guided editor sessions open - you will need to close and then open the rule to see the change. To check the enumeration is loaded - if you go to the Package configuration screen, you can "save and validate" the package - this will check it and provide any error feedback.</para>
-
-			<para>
-			  Advanced enumerations: In the above cases, the values in the lists are calculated up front. This is fine for relatively static data, or small amounts of data. 
-			  Imagine a scenario where you have lists of countries, each country has a list of states, each state has a list of localities, each locality has a list of streets and so on... 
-			  You can see how this is a lot of data, and it can not be loaded up. The lists should be loaded dependent on what country was selected etc... 
-			</para>
-			<para>
-			  Well the above can be addressed in the following fashion: 
-			    <programlisting>
-			      'Fact.field[dependentField1, dependentField2]' : '(new com.yourco.DataHelper()).getListOfAges("@{dependentField1}", "@{dependentField2}")'
-			    </programlisting>
-			    Similar to above, but note that we have just specified what fields are needed, and also on the right of the ":" there are quotes around the expression. This expression will then be evaluated, only when needed, substituting the values from the fields specified. This means you can use the field values from the GUI to drive a database query, and drill down into data etc. When the drop down is loaded, or the rule loaded, 
-it will refresh the list based on the fields. 
-			</para>
-
-		</section>
-
-		
-
-		<section>
-			<title>Advanced enumaration concepts</title>
-
-			<para>There are a few other advanced things you can do with data enumerations.</para>
-
-			<para>Drop down lists that depend on field values: Lets imagine a simple fact model, we have a class called Vehicle, which has 2 fields: "engineType" and "fuelType". We want to have a choice for the "engineType" of "Petrol" or "Diesel". Now, obviously the choice type for fuel must be dependent on the engine type (so for Petrol we have ULP and PULP, and for Diesel we have BIO and NORMAL). We can express this dependency in an enumerattion as:</para>
+<section xml:base="../">
+  <title>Quick start guide</title>
+
+  <section>
+    <title>Quick start guide</title>
+
+    <para>If you are reading this, you must be the impatient type who wants to
+    kick the tyres (and light the fires) and have a look around as soon as
+    possible. This section will provide a quick end to end tour of the steps
+    involved (but does not go through the concepts in detail). This assumes
+    you have installed the repository correctly, and are able to access the
+    main login screen.</para>
+
+    <para>You can also consult the wiki:
+    http://wiki.jboss.org/wiki/Wiki.jsp?page=RulesRepository for some
+    tutorials and user tips (it IS a wiki, so you can even contribute your own
+    tips and examples and even upload files if you desire !).</para>
+
+    <figure>
+      <title>Main feature areas of BRMS</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="Features.png" format="PNG"
+                     scalefit="1" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>The above picture shows the main feature areas of the BRMS.</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>Info: This is the initial screen, with links to
+        resources.</para>
+      </listitem>
+
+      <listitem>
+        <para>Rules: This is the category and business user
+        perspective.</para>
+      </listitem>
+
+      <listitem>
+        <para>Package: This is where packages are configured and
+        managed.</para>
+      </listitem>
+
+      <listitem>
+        <para>Deployment: this is where deployment snapshots are
+        managed.</para>
+      </listitem>
+
+      <listitem>
+        <para>Admin: Administrative functions (categories, statuses, import
+        and export)</para>
+      </listitem>
+    </itemizedlist>
+
+    <section>
+      <title>Supported browser platforms</title>
+
+      <para>The supported server side platforms are mentioned in the
+      installation guide. For browsers - the major ones are supported, this
+      includes Firefox (1.5 and up), IE6 and up, Opera, Safari etc. The
+      preferred browser for most platforms is firefox, it is widely available
+      and free, if you have any choice at all, Firefox is the preferred
+      platform, followed by safari on mac.</para>
+    </section>
+
+    <section>
+      <title>Initial configuration</title>
+
+      <para>Some initial setup is required the first time. The first time the
+      server starts up, it will create an empty repository, then take the
+      following steps:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Once deployed, go to "http://&lt;your
+          server&gt;/drools-jbrms/" (This will show the initial info screen -
+          or login screen depending on the configuration).</para>
+        </listitem>
+
+        <listitem>
+          <para>If it is a brand new repository, you will want to go to
+          "Admin", and choose "Manage Categories"</para>
+
+          <para>(Add a few categories of your choosing, categories are only
+          for classification, not for execution or anything else.)</para>
+        </listitem>
+
+        <listitem>
+          <para>Rules need a fact model (object model) to work off, so next
+          you will want to go to the Package management feature. From here you
+          can click on the icon to create a new package (give it a meaningful
+          name, with no spaces).</para>
+        </listitem>
+
+        <listitem>
+          <para>To upload a model, use a jar which has the fact model (API)
+          that you will be using in your rules and your code (go and make one
+          now if you need to !). When you are in the model editor screen, you
+          can upload a jar file, choose the package name from the list that
+          you created in the previous step.</para>
+        </listitem>
+
+        <listitem>
+          <para>Now edit your package configuration (you just created) to
+          import the fact types you just uploaded (add import statements), and
+          save the changes.</para>
+        </listitem>
+
+        <listitem>
+          <para>At this point, the package is configured and ready to go (you
+          generally won't have to go through that step very often).</para>
+
+          <para>(Note that you can also import an existing drl package - it
+          will store the rules in the repository as individual assets).</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+    <section>
+      <title>Writing some rules</title>
+
+      <itemizedlist>
+        <listitem>
+          <para>Once you have at least one category and one package setup, you
+          can author rules.</para>
+        </listitem>
+
+        <listitem>
+          <para>There are multiple rule "formats", but from the BRMS point of
+          view, they are all "assets".</para>
+        </listitem>
+
+        <listitem>
+          <para>You create a rule by clicking the icon with the rules logo
+          (the head), and from that you enter a name.</para>
+        </listitem>
+
+        <listitem>
+          <para>You will also have to choose one category. Categories provide
+          a way of viewing rules that is separate to packages (and you can
+          make rules appear in multiple packages) - think of it like
+          tagging.</para>
+        </listitem>
+
+        <listitem>
+          <para>Chose the "Business rule (guided editor)" formats.</para>
+        </listitem>
+
+        <listitem>
+          <para>This will open a rule modeler, which is a guided editor. You
+          can add and edit conditions and actions based on the model that is
+          in use in the current package. Also, any DSL sentence templates
+          setup for the package will be available.</para>
+        </listitem>
+
+        <listitem>
+          <para>When you are done with rule editing, you can check in the
+          changes (save), or you can validate or "view source" (for the
+          effective source).</para>
+        </listitem>
+
+        <listitem>
+          <para>You can also add/remove categories from the rule editor, and
+          other attributes such as documentation (if you aren't sure what to
+          do, write a document in natural language describing the rule, and
+          check it in, that can also serve as a template later)</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+    <section>
+      <title>Finding stuff</title>
+
+      <para>In terms of navigating, you can either use the Rules feature,
+      which shows things grouped by categories, or you can use the Package
+      feature, and view by package (and rule type). If you know the name or
+      part of the name of an asset, you can also use the "Quick find", start
+      typing a rule name and it will return a list of matches as you type (so
+      if you have a sensible naming scheme, it will make it very quick to find
+      stuff).</para>
+    </section>
+
+    <section>
+      <title>Deployment</title>
+
+      <itemizedlist>
+        <listitem>
+          <para>After you have edited some rules in a package, you can click
+          on the package feature, open the package that you wish, and build
+          the whole package.</para>
+        </listitem>
+
+        <listitem>
+          <para>If that succeeds, then you will be able to download a binary
+          package file which can be deployed into a runtime system.</para>
+        </listitem>
+
+        <listitem>
+          <para>You can also take a "snapshot" of a package for deployment.
+          This freezes the package at that point in time, so any concurrent
+          changes to not effect the package. It also makes the package
+          available on a URL of the form: "http://&lt;your
+          server&gt;/drools-jbrms/org.drools.brms.JBRMS/packages/&lt;packageName&gt;/&lt;snapshotName&gt;"
+          (where you can use that URL and downloads will be covered in the
+          section on deployment).</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+  </section>
+
+  <section>
+    <title>BRMS concepts</title>
+
+    <section>
+      <title>Rules are assets</title>
+
+      <para>As the BRMS can manage many different types of rules (and more),
+      they are all classed as "assets". An asset is anything that can be
+      stored as a version in the repository. This includes decision tables,
+      models, DSLs and more. Sometimes the word "rule" will be used to really
+      mean "asset" (ie the things you can do also apply to the other asset
+      types). You can think of asset as a lot like a file in a folder. Assets
+      are grouped together for viewing, or to make a package for deployment
+      etc.</para>
+    </section>
+
+    <section>
+      <title>Categorisation</title>
+
+      <figure>
+        <title>Categories</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="CatZoom.png" format="PNG"
+                       scalefit="1" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>Categories allow rules (assets) to be labeled (or tagged) with any
+      number of categories that you define. This means that you can then view
+      a list of rules that match a specific category. Rules can belong to any
+      number of categories. In the above diagram, you can see this can in
+      effect create a folder/explorer like view of assets. The names can be
+      anything you want, and are defined by the BRMS administrator (you can
+      also remove/add new categories - you can only remove them if they are
+      not currently in use).</para>
+
+      <para>Generally categories are created with meaningful name that match
+      the area of the business the rule applies to (if the rule applies to
+      multiple areas, multiple categories can be attached). Categories can
+      also be used to "tag" rules as part of their life-cycle, for example to
+      mark as "Draft" or "For Review".</para>
+
+      <figure>
+        <title>Assets can have multiple categories</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="CatEdit.png" format="PNG"
+                       scalefit="1" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>The view above shows the category editor/viewer that is seen when
+      you open an asset. In this example you can see the asset belongs to 2
+      categories, with a "+" button to add additional items (use the trash can
+      item to remove them). This means that when either category is used to
+      show a list of assets, you will see that asset.</para>
+
+      <para>In the above example, the first Category "Finance" is a "top
+      level" category. The second one: "HR/Awards/QAS" is a still a single
+      category, but its a nested category: Categories are hierarchical. This
+      means there is a category called "HR", which contains a category
+      "Awards" (it will in fact have more sub-categories of course), and
+      "Awards" has a sub-category of QAS. The screen shows this as
+      "HR/Awards/QAS" - its very much like a folder structure you would have
+      on your hard disk (the notable exception is of course that rules can
+      appear in multiple places).</para>
+
+      <para>When you open an asset to view or edit, it will show a list of
+      categories that it currently belongs to If you make a change (remove or
+      add a category) you will need to save the asset - this will create a new
+      item in the version history. Changing the categories of a rule has no
+      effect on its execution.</para>
+
+      <figure>
+        <title>Creating categories</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="AdminCats.png" format="PNG"
+                       scalefit="1" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>The above view shows the administration screen for setting up
+      categories (there) are no categories in the system by default. As the
+      categories can be hierarchical you chose the "parent" category that you
+      want to create a sub-category for. From here categories can also be
+      removed (but only if they are not in use by any current versions of
+      assets).</para>
+
+      <para>As a general rule, an asset should only belong to 1 or 2
+      categories at a time. Categories are critical in cases where you have
+      large numbers of rules. The hierarchies do not need to be too deep, but
+      should be able to see how this can help you break down rules/assets into
+      manageable chunks. Its ok if its not clear at first, you are free to
+      change categories as you go.</para>
+    </section>
+
+    <section>
+      <title>The asset editor</title>
+
+      <figure>
+        <title>The Asset editor view</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="AssetEditor.png" format="PNG"
+                       scalefit="1" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>The above diagram shows the "asset editor" with some annotated
+      areas. The asset editor is where all rule changes are made. Below is a
+      list which describes the different parts of the editor.</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>A</para>
+
+          <para>This is where the "editor widget" lives - exactly what form
+          the editor takes depends on the asset or rule type.</para>
+        </listitem>
+
+        <listitem>
+          <para>B</para>
+
+          <para>This is the documentation area - a free text area where
+          descriptions of the rule can live. It is encouraged to write a plain
+          description in the rule here before editing.</para>
+        </listitem>
+
+        <listitem>
+          <para>C</para>
+
+          <para>These are the actions - for saving, archiving, changing status
+          etc. Archiving is the equivalent of deleting an asset.</para>
+        </listitem>
+
+        <listitem>
+          <para>D</para>
+
+          <para>This has the asset name, as well as the list of categories
+          that the asset belongs to.</para>
+        </listitem>
+
+        <listitem>
+          <para>E</para>
+
+          <para>This section contains read-only meta data, including when
+          changes were made, and by whom.</para>
+
+          <para>"Modified on:" - this is the last modified date.</para>
+
+          <para>"By:" - who made the last change.</para>
+
+          <para>"Note:" - this is the comment made when the asset was last
+          updated (ie why a change was made)</para>
+
+          <para>"Version:" - this is a number which is incremented by 1 each
+          time a change is checked in (saved).</para>
+
+          <para>"Created on:" - the date and time the asset was
+          created.</para>
+
+          <para>"Created by:" - this initial author of the asset.</para>
+
+          <para>"Format:" - the short format name of the type of asset.</para>
+        </listitem>
+
+        <listitem>
+          <para>F</para>
+
+          <para>This shows what package the asset belong to (you can also
+          change it from here).</para>
+        </listitem>
+
+        <listitem>
+          <para>G</para>
+
+          <para>This is some more (optional) meta data (taken from the Dublin
+          Core meta data standard)</para>
+        </listitem>
+
+        <listitem>
+          <para>H</para>
+
+          <para>This will show the version history list when requested.</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+    <section>
+      <title>Rule authoring</title>
+
+      <para>The BRMS supports a (growing) list of formats of assets (rules).
+      Here the key ones are described. Some of these are covered in other
+      parts of the manual, and the detail will not be repeated here.</para>
+
+      <section>
+        <title>Business rules with the guided editor</title>
+
+        <para>Guided editor style "Business rules": (also known as "BRL
+        format"). These rules use the guided GUI which controls and prompts
+        user input based on knowledge of the object model. This can also be
+        augmented with DSL sentences.</para>
+
+        <para>IMPORTANT: to use the BRL guided editor, someone will need to
+        have you package configured before hand.</para>
+
+        <para>Also note that there is a guided editor in the Eclipse plug in,
+        most of the details in this section can also apply to it.</para>
+
+        <figure>
+          <title>The guided BRL editor</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="GuidedEditor.png"
+                         format="PNG" scalefit="1" />
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <para>The above diagram shows the editor in action. The following
+        description apply to the letter boxes in the diagram above:</para>
+
+        <para>A: The different parts of a rule. The "WHEN" part is the
+        condition, "THEN" action, and "(options)" are optional attributes that
+        may effect the operation of the rule.</para>
+
+        <para>B: This shows a pattern which is declaring that the rule is
+        looking for a "Driver" fact (the fields are listed below, in this case
+        just "age"). Note the green triangle, it will popup a list of options
+        to add to the fact declaration: you can add more fields (eg their
+        "location"), or you can assign a variable name to the fact (which you
+        can use later on if needs be). As well as adding more fields to this
+        pattern - you can add "multiple field" constraints - ie constraints
+        that span across fields (eg age &gt; 42 or risk &gt; 2). The popup
+        dialog shows the options.</para>
+
+        <para>C: The small "-" icons indicate you can remove something - in
+        this case it would remove the whole Driver fact declaration. If its
+        the one below, it would remove just the age constraint.</para>
+
+        <para>D: The "+" symbols allow you to add more patterns to the
+        condition or the action part of the rule, or more attributes. In all
+        cases, a popup option box is provided. For the "WHEN" part of the
+        rule, you can choose to add a constraint on a fact (it will give you a
+        list of facts), or you can use another conditional element, the
+        choices which are : "There is no" - which means the fact+constraints
+        must not exist, "There exists" - which means that there exists at
+        least one match (but there only needs to be one - it will not trigger
+        for each match), and "Any of" - which means that any of the patterns
+        can match (you then add patterns to these higher level patterns). If
+        you just put a fact (like is shown above) then all the patterns are
+        combined together so they are all true ("and").</para>
+
+        <para>E: This shows the constraint for the "age" field. (Looking from
+        left to right) the green triangle allows you to "assign" a variable
+        name to the "age" field, which you may use later on in the rule. Next
+        is the list of constraint operations - this list changes depending on
+        the data type. After that is the value field - the value field will be
+        one of: a) a literal value (eg number, text), b) a "formula" - in
+        which case it is an expression which is calculated (this is for
+        advanced users) or b) a variable (in which case a list will be
+        provided to choose values from). After this there is a horizontal
+        arrow icon, this is for "connective constraints" : these are
+        constraints which allow you to have alternative values to check a
+        field against, for example: "age is less than 42 or age is not equal
+        to 39" is possibly this way.</para>
+
+        <para>F: This shows an "action" of the rule, a rule consists of a list
+        of actions. In this case, we are asserting/inserting a new fact, which
+        is a rejection (with the "reason" field set to an explanation). There
+        are quite a few other types of actions you can use: you can modify an
+        existing fact (which tells the engine the fact has changed) - or you
+        can simply set a field on a fact (in which case the engine doesn't
+        know about the change - normally because you are setting a result).
+        You can also retract a fact. In most cases the green arrow will give
+        you a list of fields you can add so you can change the value. The
+        values you enter are "literal" - in the sense that what you type is
+        what the value is. If it needs to be a calculation, then add an "=" at
+        the start of the value - this will be interpreted as a "formula" (for
+        advanced users only) ! and the calculation will be performed (not
+        unlike a spreadsheet).</para>
+
+        <para>G: This is where the rule options live. In this case, only
+        salience is used which is a numeric value representing the rules
+        "priority". This would probably be the most common option to
+        use.</para>
+
+        <section>
+          <title>User driven drop down lists</title>
+
+          <figure>
+            <title>Data enumeration showing as a drop down list</title>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata align="center" fileref="EnumDropDown.png"
+                           format="PNG" scalefit="1" />
+              </imageobject>
+            </mediaobject>
+          </figure>
+
+          <para>Note that is it possible to limit field values to items in a
+          pre configured list. This list is configured as part of the package
+          (using a data enumeration to provide values for the drop down list).
+          These values can be a fixed list, or (for example) loaded from a
+          database. This is useful for codes, and other fields where there are
+          set values. It is also possible to have what is displayed on screen,
+          in a drop down, be different to the value (or code) used in a rule.
+          See the section on data enumerations for how these are
+          configured.</para>
+        </section>
+
+        <section>
+          <title>Augmenting with DSL sentences</title>
+
+          <para>If the package the rule is part of has a dsl configuration,
+          when when you add conditions or actions, then it will provide a list
+          of "DSL Sentences" which you can choose from - when you choose one,
+          it will add a row to the rule - where the DSL specifies values come
+          from a user, then a edit box (text) will be shown (so it ends up
+          looking a bit like a form). This is optional, and there is another
+          DSL editor. Please note that the DSL capabilities in this editor are
+          slightly less then the full set of DSL features (basically you can
+          do [when] and [then] sections of the DSL only - which is no
+          different to drools 3 in effect).</para>
+
+          <para>The following diagram shows the DSL sentences in action in the
+          guided editor:</para>
+
+          <figure>
+            <title>DSL in guided editor</title>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata align="center" fileref="GuidedDSL.png" format="PNG"
+                           scalefit="1" />
+              </imageobject>
+            </mediaobject>
+          </figure>
+        </section>
+
+        <section>
+          <title>A more complex example:</title>
+
+          <figure>
+            <title>A more complex BRL example</title>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata align="center" fileref="GuidedComplex.png"
+                           format="PNG" scalefit="1" />
+              </imageobject>
+            </mediaobject>
+          </figure>
+
+          <para>In the above example, you can see it is using a mixture of
+          literal values, and formulas. The second constraint on the "Person"
+          fact, is a formula (in this case it is doing a silly calculation on
+          the persons age, and checking something against their name - both
+          "age" and "name" are fields of the Person fact in this case. In the
+          3rd line (which says "age is less than .." - it is also using a
+          formula, although, in this case the formula does a calculation and
+          returns a value (which is used in the comparison) - in the former
+          case, it had to return True or False (in this case, its a value).
+          Obvious formulas are basically pieces of code - so this is for
+          experienced users only.</para>
+
+          <para>Looking at the "Board" pattern (the second pattern with the
+          horizontal grey bar): this uses a top level conditional element
+          ("There is no") - this means that the pattern is actually looking
+          for the "non existence" of a fact that matches the pattern. Note the
+          "Any of:" - this means that EITHER the "type" field constraint is
+          matched, or the "name" field is matched (to "myname" in the case
+          above). This is what is termed a Multiple field constraint (you can
+          nest these, and have it as complex as you like, depending on how
+          much you want the next person to hate you: Some paraphrased advice:
+          Write your rules in such as way as if the person who has to
+          read/maintain them is a psychopath, has a gun, and knows where you
+          live).</para>
+
+          <figure>
+            <title>Adding constraints</title>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata align="center" fileref="GuidedLHSConstraints.png"
+                           format="PNG" scalefit="1" />
+              </imageobject>
+            </mediaobject>
+          </figure>
+
+          <para>The above dialog is what you will get when you want to add
+          constraints to the Person fact. In the top half are the simple
+          options: you can either add a field straight away (a list of fields
+          of the Person fact will be shown), or you can add a "Multiple field
+          constraint" - of a given type (which is described above). The
+          Advanced options: you can add a formula (which resolves to True or
+          False - this is like in the example above: "age &lt; (age * 2)
+          ...."). You can also assign a Variable name to the Person fact
+          (which means you can then access that variable on the action part of
+          the rule, to set a value etc).</para>
+        </section>
+      </section>
+
+      <section>
+        <title>DSL rules</title>
+
+        <para>DSL rules are textual rules, that use a language configuration
+        asset to control how they appear.</para>
+
+        <figure>
+          <title>DSL rule</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="DSLRule.png" format="PNG"
+                         scalefit="1" />
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <para>A dsl rule is a single rule. Referring to the picture above, you
+        can a text editor. You can use the icons to the right to provide lists
+        of conditions and actions to choose from (or else press Control +
+        Space at the same time to pop up a list).</para>
+      </section>
+
+      <section>
+        <title>Spreadsheet decision tables</title>
+
+        <para>Multiple rules can be stored in a spreadsheet (each row is a
+        rule). The details of the spreadsheet are not covered in this chapter
+        (as there is a separate chapter for them).</para>
+
+        <figure>
+          <title>Spreadsheet decision table</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="DecisionTable.png"
+                         format="PNG" scalefit="1" />
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <para>To use a spreadsheet, you upload an xls (and can download the
+        current version, as per the picture above). To create a new decision
+        table, when you launch the rule wizard, you will get an option to
+        create one (after that point, you can upload the xls file).</para>
+      </section>
+
+      <section>
+        <title>Rule flows</title>
+
+        <para>Rule flows: Rule flows allow you to visually describe the steps
+        taken - so not all rules are evaluated at once, but there is a flow of
+        logic. Rule flows are not covered in this chapter on the BRMS, but you
+        can use the IDE to graphically draw ruleflows, and upload the .rfm
+        file to the BRMS.</para>
+
+        <para>Similar to spreadsheets, you upload/download ruleflow files (the
+        eclipse IDE has a graphical editor for them). The details of Rule
+        Flows are not discussed here.</para>
+      </section>
+
+      <section>
+        <title>Technical rules (drl)</title>
+
+        <para>Technical (drl) rules are stored as text - they can be managed
+        in the BRMS. A DRL can either be a whole chunk of rules, or an
+        individual rule. if its an individual rule, no package statement or
+        imports are required (in fact, you can skip the "rule" statement
+        altogether, just use "when" and "then" to mark the condition and
+        action sections respectively). Normally you would use the IDE to edit
+        raw DRL files, since it has all the advanced tooling and content
+        assistance and debugging, however there are times when a rule may have
+        to deal with something fairly technical. In any typical package of
+        rules, you generally have a been for some "technical rules" - you can
+        mix and match all the rule types together of course.</para>
+
+        <figure>
+          <title>DRL technical rule</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="DRLRule.png" format="PNG"
+                         scalefit="1" />
+            </imageobject>
+          </mediaobject>
+        </figure>
+      </section>
+
+      <section>
+        <title>Functions</title>
+
+        <para>Functions are another asset type. They are NOT rules, and should
+        only be used when necessary. The function editor is a textual editor.
+        Functions</para>
+
+        <figure>
+          <title>Function</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="Function.png" format="PNG"
+                         scalefit="1" />
+            </imageobject>
+          </mediaobject>
+        </figure>
+      </section>
+
+      <section>
+        <title>Data enumerations (drop down list configurations)</title>
+
+        <para>Data enumerations are an optional asset type that technical folk
+        can configure to provide drop down lists for the guided editor. These
+        are stored and edited just like any other asset, and apply to the
+        package that they belong to.</para>
+
+        <para>The contents of an enum config are a mapping of Fact.field to a
+        list of values to be used in a drop down. That list can either be
+        literal, or use a utility class (which you put on the classpath) to
+        load a list of strings. The strings are either a value to be shown on
+        a drop down, or a mapping from the code value (what ends up used in
+        the rule) and a display value (see the example below, using the
+        '=').</para>
+
+        <figure>
+          <title>Data enumeration</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="EnumConfig.png" format="PNG"
+                         scalefit="1" />
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <para>In the above diagram - the "MM" indicates a value that will be
+        used in the rule, yet "Mini Mal" will be displayed in the GUI.</para>
+
+        <para>Getting data lists from external data sources: It is possible to
+        have the BRMS call a piece of code which will load a list of Strings.
+        To do this, you will need a bit of code that returns a java.util.List
+        (of String's) to be on the classpath of the BRMS. Instead of
+        specifying a list of values in the BRMS itself - the code can return
+        the list of Strings (you can use the "=" inside the strings if you
+        want to use a different display value to the rule value, as normal).
+        For example, in the 'Person.age' line above, you could change it to:
+        <programlisting> 'Person.age' : (new com.yourco.DataHelper()).getListOfAges()</programlisting>
+        This assumes you have a class called "DataHelper" which has a method
+        "getListOfAges()" which returns a List of strings (and is on the
+        classpath). You can of course mix these "dynamic" enumerations with
+        fixed lists. You could for example load from a database using JDBC.
+        The data enumerations are loaded the first time you use the guided
+        editor in a session. If you have any guided editor sessions open - you
+        will need to close and then open the rule to see the change. To check
+        the enumeration is loaded - if you go to the Package configuration
+        screen, you can "save and validate" the package - this will check it
+        and provide any error feedback.</para>
+      </section>
+
+      <section>
+        <title>Advanced enumaration concepts</title>
+
+        <para>There are a few other advanced things you can do with data
+        enumerations.</para>
+
+        <para>Drop down lists that depend on field values: Lets imagine a
+        simple fact model, we have a class called Vehicle, which has 2 fields:
+        "engineType" and "fuelType". We want to have a choice for the
+        "engineType" of "Petrol" or "Diesel". Now, obviously the choice type
+        for fuel must be dependent on the engine type (so for Petrol we have
+        ULP and PULP, and for Diesel we have BIO and NORMAL). We can express
+        this dependency in an enumerattion as:</para>
 
         <programlisting>
  'Vehicle.engineType' : ['Petrol', 'Diesel']
@@ -553,6 +840,27 @@ public class SampleDataSource2 {
 </programlisting>
 
         <para>The "=" tells it to load the data by executing your code.</para>
+
+        <para>Mode advanced enumerations: In the above cases, the values in
+        the lists are calculated up front. This is fine for relatively static
+        data, or small amounts of data. Imagine a scenario where you have
+        lists of countries, each country has a list of states, each state has
+        a list of localities, each locality has a list of streets and so on...
+        You can see how this is a lot of data, and it can not be loaded up.
+        The lists should be loaded dependent on what country was selected
+        etc...</para>
+
+        <para>Well the above can be addressed in the following fashion:
+        <programlisting>
+      'Fact.field[dependentField1, dependentField2]' : '(new com.yourco.DataHelper()).getListOfAges("@{dependentField1}", "@{dependentField2}")'
+    </programlisting> Similar to above, but note that we have just specified
+        what fields are needed, and also on the right of the ":" there are
+        quotes around the expression. This expression will then be evaluated,
+        only when needed, substituting the values from the fields specified.
+        This means you can use the field values from the GUI to drive a
+        database query, and drill down into data etc. When the drop down is
+        loaded, or the rule loaded, it will refresh the list based on the
+        fields.</para>
       </section>
     </section>
 
@@ -857,6 +1165,79 @@ public class SampleDataSource2 {
       <para>The above shows the alternate way of exploring - using
       packages.</para>
     </section>
+  </section>
+
+  <section>
+    <title>The fact model (object model)</title>
+
+    <para>For any rule base application, a fact model is needed to drive the
+    rules. The fact model typically overlaps with the applications domain
+    model, but in general it will be decoupled from it (as it makes the rules
+    easier to manage over time).</para>
+
+    <para>There are 2 ways to to do this: you can upload jar files containing
+    classes which your application and the rules both use, or you can use
+    models that are declared along with the rules.</para>
+
+    <figure>
+      <title>Choosing a model type</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="ModelChooseType.png" format="PNG"
+                     scalefit="1" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>When a jar is uploaded, it will add import statements to the package
+    configuration (you can then review and change them).</para>
+
+    <para>Using declared models, you will see an editor like the
+    following:</para>
+
+    <figure>
+      <title>Choosing a model type</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="ModelEdit.png" format="PNG"
+                     scalefit="1" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>In here you can define types, and add fields (each field has a
+    type). The type of a field is suggested by a list (but this list is not
+    exhaustive):</para>
+
+    <figure>
+      <title>Choosing a model type</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="ModelChooseFieldType.png"
+                     format="PNG" scalefit="1" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>These fact models can be used like normal fact objects, however the
+    way you create them is different (as they are not on your applications
+    classpath). To create these objects, they are available from the RuleBase
+    instance. <programlisting>
+          // Retrieve the generated fact type
+        FactType cheeseFact = ruleBase.getFactType( "org.drools.generatedbeans.Cheese" );
+
+        // Create a new Fact instance
+        Object cheese = cheeseFact.newInstance();
+
+        cheeseFact.set( cheese,
+                        "type",
+                        "stilton" );
+
+</programlisting> The "cheese" object above can then be inserted into working
+    memory just like a normal pojo based fact.</para>
   </section>
 
   <section>
