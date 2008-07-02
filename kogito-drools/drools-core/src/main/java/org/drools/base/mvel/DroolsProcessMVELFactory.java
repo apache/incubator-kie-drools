@@ -23,11 +23,11 @@ import org.mvel.integration.impl.BaseVariableResolverFactory;
 import org.mvel.integration.impl.LocalVariableResolverFactory;
 import org.mvel.integration.impl.StaticMethodImportResolverFactory;
 
-public class DroolsMVELFactory extends BaseVariableResolverFactory
+public class DroolsProcessMVELFactory extends BaseVariableResolverFactory
     implements
-    DroolsGlobalVariableMVELFactory,
-    DroolsLocalVariableMVELFactory,
     LocalVariableResolverFactory,
+    DroolsGlobalVariableMVELFactory,
+    DroolsLocalVariableMVELFactory,    
     Externalizable,
     Cloneable {
 
@@ -36,15 +36,6 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
     /**
      * Holds the instance of the variables.
      */
-    private Object[]          tupleObjects;
-
-    private KnowledgeHelper   knowledgeHelper;
-
-    private Object            object;
-
-    private Map               localDeclarations;
-
-    private Map               previousDeclarations;
 
     private Map               globals;
 
@@ -60,25 +51,17 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
                                              new MVELCalendarCoercion() );
     }
 
-    public DroolsMVELFactory() {
+    public DroolsProcessMVELFactory() {
 
     }
 
-    public DroolsMVELFactory(final Map previousDeclarations,
-                             final Map localDeclarations,
-                             final Map globals) {
-        this( previousDeclarations,
-              localDeclarations,
-              globals,
+    public DroolsProcessMVELFactory(final Map globals) {
+        this( globals,
               null );
     }
 
-    public DroolsMVELFactory(final Map previousDeclarations,
-                             final Map localDeclarations,
-                             final Map globals,
+    public DroolsProcessMVELFactory(final Map globals,
                              final List[] externals) {
-        this.previousDeclarations = previousDeclarations;
-        this.localDeclarations = localDeclarations;
         this.globals = globals;
 
         if ( externals != null && MVELDebugHandler.isDebugMode() ) {
@@ -93,22 +76,12 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
-        tupleObjects = (Object[]) in.readObject();
-        knowledgeHelper = (KnowledgeHelper) in.readObject();
-        object = in.readObject();
-        localDeclarations = (Map) in.readObject();
-        previousDeclarations = (Map) in.readObject();
         globals = (Map) in.readObject();
         workingMemory = (WorkingMemory) in.readObject();
         localVariables = (Map) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject( tupleObjects );
-        out.writeObject( knowledgeHelper );
-        out.writeObject( object );
-        out.writeObject( localDeclarations );
-        out.writeObject( previousDeclarations );
         out.writeObject( globals );
         out.writeObject( workingMemory );
         out.writeObject( localVariables );
@@ -142,43 +115,12 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
         return this.variableResolvers;
     }
 
-    public Object getObject() {
-        return this.object;
-    }
-
     public WorkingMemory getWorkingMemory() {
         return this.workingMemory;
     }
 
-    public void setContext(final Tuple tuple,
-                           final KnowledgeHelper knowledgeHelper,
-                           final Object object,
-                           final WorkingMemory workingMemory,
-                           final Map variables) {
-        if ( tuple != null ) {
-            this.tupleObjects = ((LeftTuple) tuple).toObjectArray();
-        }
-        this.knowledgeHelper = knowledgeHelper;
-        this.object = object;
+    public void setContext(final WorkingMemory workingMemory) {
         this.workingMemory = workingMemory;
-        if ( variables == null ) {
-            if ( this.localVariables == null ) {
-                this.localVariables = new HashMap();
-            } else {
-                this.localVariables.clear();
-            }
-        } else {
-            this.localVariables = variables;
-        }
-    }
-
-    public KnowledgeHelper getKnowledgeHelper() {
-        return this.knowledgeHelper;
-    }
-
-    public Object getValue(final Declaration declaration) {
-        int i = declaration.getPattern().getOffset();
-        return this.tupleObjects[i];
     }
 
     public Object getValue(final String identifier) {
@@ -227,22 +169,7 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
     }
 
     public boolean isResolveable(String name) {
-        if ( DroolsMVELKnowledgeHelper.DROOLS.equals( name ) ) {
-            addResolver( DroolsMVELKnowledgeHelper.DROOLS,
-                         new DroolsMVELKnowledgeHelper( this ) );
-            return true;
-
-        } else if ( this.variableResolvers != null && this.variableResolvers.containsKey( name ) ) {
-            return true;
-        } else if ( this.previousDeclarations != null && this.previousDeclarations.containsKey( name ) ) {
-            addResolver( name,
-                         new DroolsMVELPreviousDeclarationVariable( (Declaration) this.previousDeclarations.get( name ),
-                                                                    this ) );
-            return true;
-        } else if ( this.localDeclarations != null && this.localDeclarations.containsKey( name ) ) {
-            addResolver( name,
-                         new DroolsMVELLocalDeclarationVariable( (Declaration) this.localDeclarations.get( name ),
-                                                                 this ) );
+        if ( this.variableResolvers != null && this.variableResolvers.containsKey( name ) ) {
             return true;
         } else if ( this.workingMemory.getGlobal( name ) != null ) {
             addResolver( name,
@@ -257,7 +184,7 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
         return false;
     }
 
-    public void addResolver(String name,
+    private void addResolver(String name,
                              VariableResolver vr) {
         if ( this.variableResolvers == null ) {
             this.variableResolvers = new HashMap();
@@ -275,23 +202,7 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
     }
 
     public Object clone() {
-        return new DroolsMVELFactory( this.previousDeclarations,
-                                      this.localDeclarations,
-                                      this.globals );
-    }
-
-    /**
-     * @return the localDeclarations
-     */
-    public Map getLocalDeclarations() {
-        return localDeclarations;
-    }
-
-    /**
-     * @return the previousDeclarations
-     */
-    public Map getPreviousDeclarations() {
-        return previousDeclarations;
+        return new DroolsProcessMVELFactory( this.globals );
     }
 
     /**

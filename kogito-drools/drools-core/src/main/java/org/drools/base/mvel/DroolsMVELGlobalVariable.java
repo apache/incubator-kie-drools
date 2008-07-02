@@ -17,14 +17,14 @@ public class DroolsMVELGlobalVariable
     
     private String            name;
     private Class             knownType;
-    private DroolsMVELFactory factory;
+    private DroolsGlobalVariableMVELFactory factory;
 
     public DroolsMVELGlobalVariable() {
     }
 
     public DroolsMVELGlobalVariable(final String identifier,
                                     final Class knownType,
-                                    final DroolsMVELFactory factory) {
+                                    final DroolsGlobalVariableMVELFactory factory) {
         this.name = identifier;
         this.factory = factory;
         this.knownType = knownType;
