@@ -97,6 +97,13 @@
     state of the application.
     </para>
 
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center" format="BMP" role="" 
+                   fileref="rulesAndProcesses.bmp"/>
+      </imageobject>
+    </mediaobject>
+
     <para>
     Workflow processes are very good at describing the overall control flow of (possibly long-running)
     applications.  However, processes that are used to define complex business decisions or contain a lot
