@@ -26,3 +26,10 @@ rule "Assign 'Follow-up Order' to a senior sales representative" salience 40
 	then 
 		Set actor id "Senior Sales Representative"
 end
+
+rule "RuleName"
+	when
+		// conditions
+	then
+		// actions
+end
