@@ -1468,4 +1468,42 @@ name=MyConfig</programlisting>
       updated.</para>
     </section>
   </section>
+
+  <section>
+    <title>WebDAV and HTTP</title>
+    <para>The repository back end can also be accessed via webdav. WebDAV is a http based file system API - which has clients on all platforms (some operating systems such as windows can connect directly to WebDAV repositories almost like a file system.     
+    </para>
+    <section>
+      <title>WebDAV</title>
+      <figure>
+        <title>Windows webdav</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="WebDAVWindows.png"
+                       format="PNG" scalefit="1" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+      <para>
+	In windows the "web folders" feature can be used. On OSX - the free cyberduck client can work well.
+	To access the repository as webdav, you the url is the same as the web interface, only with /webdav at the end, instead of Guvnor.html. 
+	Authentication will be required to get access this way. 
+	This will show a packages and snapshots directory - the snapshots directory is read only (a view of created snapshots of packages). The packages directory will contain a list of packages in the repository, drilling in to them will show the individual assets as files. 
+      </para>
+    </section>
+
+    <section>
+      <title>URLs</title>
+      <para>
+	There are a few other URLs which are handy to know exist.
+The package deployment URL mentioned in the section about rule agent deployment also has a few other features: 
+By appending .drl to the end of a URL, you will show the generated DRL for that package.
+eg: /package/testPDSGetPackage/LATEST.drl - will show the DRL (not the binary package) for the latest package. 
+Further to this, you can append /assetName.drl - and it will show the generated DRL for that item. (even if it isn't a drl file).
+eg /package/testPDSGetPackage/LATEST/SomeFile.drl.
+      </para>
+    </section>
+     
+  </section>
 </section>
