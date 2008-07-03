@@ -28,6 +28,9 @@ import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.compiler.PackageBuilder;
+import org.drools.process.instance.WorkItem;
+import org.drools.process.instance.WorkItemHandler;
+import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.impl.demo.UIWorkItemHandler;
 import org.drools.rule.Package;
 
@@ -43,6 +46,7 @@ public class OrderExample extends JFrame {
 	private JComboBox itemComboBox;
 	private JTextField amountTextField;
 	private JTextField customerIdTextField;
+	private JTextField emailTextField;
 	
 	public static void main(String[] args) {
 		new OrderExample().setVisible(true);
@@ -109,6 +113,21 @@ public class OrderExample extends JFrame {
         c.insets = new Insets(5, 5, 5, 5);
         panel.add(amountTextField, c);
         
+        label = new JLabel("Email");
+        c = new GridBagConstraints();
+        c.gridy = 3;
+        c.insets = new Insets(5, 5, 5, 5);
+        panel.add(label, c);
+        
+        emailTextField = new JTextField();
+        c = new GridBagConstraints();
+        c.gridx = 1;
+        c.weightx = 1;
+        c.gridy = 3;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.insets = new Insets(5, 5, 5, 5);
+        panel.add(emailTextField, c);
+        
         JButton createOrderButton = new JButton("Create");
         createOrderButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -116,7 +135,7 @@ public class OrderExample extends JFrame {
 			}
         });
         c = new GridBagConstraints();
-        c.gridy = 3;
+        c.gridy = 4;
         c.insets = new Insets(5, 5, 5, 5);
         panel.add(createOrderButton, c);
         
@@ -132,7 +151,7 @@ public class OrderExample extends JFrame {
         });
         c = new GridBagConstraints();
         c.gridwidth = 2;
-        c.gridy = 4;
+        c.gridy = 5;
         c.weightx = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
         c.insets = new Insets(5, 5, 5, 5);
@@ -165,9 +184,28 @@ public class OrderExample extends JFrame {
 			itemCatalog.addItem(i);
 			session.setGlobal("itemCatalog", itemCatalog);
 			
+			session.getWorkItemManager().registerWorkItemHandler("Shipping", new ShippingWorkItemHandler(session));
+			
+			session.getWorkItemManager().registerWorkItemHandler("Email", new WorkItemHandler() {
+				public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+					System.out.println("***********************************************************");
+					System.out.println("Sending email:");
+					System.out.println("From: " + workItem.getParameter("From"));
+					System.out.println("To: " + workItem.getParameter("To"));
+					System.out.println("Subject: " + workItem.getParameter("Subject"));
+					System.out.println("Text: ");
+					System.out.println(workItem.getParameter("Text"));
+					System.out.println("***********************************************************");
+			        manager.completeWorkItem(workItem.getId(), null);
+			    }
+			    public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
+			    }
+			});
+			
 			UIWorkItemHandler handler = new UIWorkItemHandler();
 			session.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
 			handler.setVisible(true);
+			
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}
@@ -208,7 +246,8 @@ public class OrderExample extends JFrame {
 		session.insert(order);
 		
 		Map<String, Object> parameters = new HashMap<String, Object>();
-		parameters.put("orderId", order.getOrderId());
+		parameters.put("order", order);
+		parameters.put("email", emailTextField.getText());
 		session.startProcess("org.drools.examples.process.ruleset.RuleSetExample", parameters);
 		session.fireAllRules();
 	}
@@ -229,6 +268,9 @@ public class OrderExample extends JFrame {
 		Reader dsl = new InputStreamReader(
 			OrderExample.class.getResourceAsStream("assignment.dsl"));
 		builder.addPackageFromDrl(source, dsl);
+		source = new InputStreamReader(
+			OrderExample.class.getResourceAsStream("discount.drl"));
+		builder.addPackageFromDrl(source);
 		RuleBaseConfiguration configuration = new RuleBaseConfiguration();
 		configuration.setAdvancedProcessRuleIntegration(true);
 		RuleBase ruleBase = RuleBaseFactory.newRuleBase(configuration);

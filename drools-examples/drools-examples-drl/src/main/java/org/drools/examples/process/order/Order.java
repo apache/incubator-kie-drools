@@ -1,14 +1,22 @@
 package org.drools.examples.process.order;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Order {
 	
 	private String orderId;
 	private String customerId;
+	private int discountPercentage;
+	private Date date;
 	private List<OrderItem> orderItems = new ArrayList<OrderItem>();
 	private List<String> errorList;
+	private String trackingId;
+	
+	public Order() {
+		date = new Date();
+	}
 	
 	public String getOrderId() {
 		return orderId;
@@ -30,6 +38,18 @@ public class Order {
 		return orderItems;
 	}
 	
+	public int getDiscountPercentage() {
+		return discountPercentage;
+	}
+
+	public void setDiscountPercentage(int discountPercentage) {
+		this.discountPercentage = discountPercentage;
+	}
+	
+	public Date getDate() {
+		return date;
+	}
+
 	public void addOrderItem(String itemId, int amount, double price) {
 		orderItems.add(new OrderItem(itemId, amount, price));
 	}
@@ -51,6 +71,18 @@ public class Order {
 			errorList = new ArrayList<String>();
 		}
 		errorList.add(error);
+	}
+	
+	public String getTrackingId() {
+		return trackingId;
+	}
+
+	public void setTrackingId(String trackingId) {
+		this.trackingId = trackingId;
+	}
+
+	public String toString() {
+		return "Order " + orderId;
 	}
 	
 	public class OrderItem {
