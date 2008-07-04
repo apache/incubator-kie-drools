@@ -25,7 +25,7 @@ global VerifierResult result;
 # If two LiteralRestrictions are in conflict.
 #
 # Type: Error
-# Depandencies: None
+# Dependencies: None
 # Example: IncorencePattern1( a == "b", a != "b" )
 #
 rule "Incoherent LiteralRestrictions in pattern possibility"
@@ -74,7 +74,7 @@ end
 # If two LiteralRestrictions are in conflict.
 #
 # Type: Error
-# Depandencies: None
+# Dependencies: None
 # Example: IncorencePattern( a > 10 && a < -10 )
 #
 rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossible ranges"
@@ -120,7 +120,7 @@ end
 # If two LiteralRestrictions are in conflict.
 #
 # Type: Error
-# Depandencies: None
+# Dependencies: None
 # Example: IncorencePattern( a < 1 && a == 10 )
 #
 rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossible equality less or equal"
@@ -166,7 +166,7 @@ end
 # If two LiteralRestrictions are in conflict.
 #
 # Type: Error
-# Depandencies: None
+# Dependencies: None
 # Example: IncorencePattern( a > 10 && a == 1 )
 #
 rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossible equality greater"
@@ -212,7 +212,7 @@ end
 # If two LiteralRestrictions are in conflict.
 #
 # Type: Error
-# Depandencies: None
+# Dependencies: None
 # Example: IncorencePattern( a < "12-Dec-2007", a > "12-Dec-2007" )
 #
 rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossible range"
@@ -258,7 +258,7 @@ end
 # If two VariableRestrictions are in conflict.
 #
 # Type: Error
-# Depandencies: None
+# Dependencies: None
 # Example: IncorencePattern( a contains $o, a not contains $o )
 #
 rule "Incoherent VariableRestrictions in pattern possibility"
@@ -305,7 +305,7 @@ end
 # If two VariableRestrictions are in conflict.
 #
 # Type: Error
-# Depandencies: None
+# Dependencies: None
 # Example: IncorencePattern( a > $var, a < $var )
 #
 rule "Incoherent VariableRestrictions in pattern possibility, impossible range"

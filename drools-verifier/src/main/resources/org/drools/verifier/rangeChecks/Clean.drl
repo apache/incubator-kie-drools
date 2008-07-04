@@ -16,7 +16,7 @@ global VerifierResult result;
 # Merges existing gaps from working memory. Cleans out the data for actual reporting.
 #
 # Type: None
-# Depandencies: Needs at least one of the following packages or rules to fire.
+# Dependencies: Needs at least one of the following packages or rules to fire.
 #
 # 		package org.drools.verifier.rangeChecks.patterns;
 #			rule "Range check for number patterns"
@@ -69,7 +69,7 @@ end
 # Removes existing gaps from working memory. Cleans out the data for actual reporting.
 #
 # Type: None
-# Depandencies: Needs at least one of the following packages or rules to fire.
+# Dependencies: Needs at least one of the following packages or rules to fire.
 #
 #		package org.drools.verifier.rangeChecks.integers
 #			rule "Range check for integers, if smaller than or equal is missing"
@@ -121,7 +121,7 @@ end
 # Removes existing gaps from working memory. Cleans out the data for actual reporting.
 #
 # Type: None
-# Depandencies: Needs at least one of the following packages or rules to fire.
+# Dependencies: Needs at least one of the following packages or rules to fire.
 #
 #		package org.drools.verifier.rangeChecks.integers
 #			rule "Range check for integers, if smaller than or equal is missing"
@@ -173,7 +173,7 @@ end
 # Removes existing gaps from working memory. Cleans out the data for actual reporting.
 #
 # Type: None
-# Depandencies: Needs at least one of the following packages or rules to fire.
+# Dependencies: Needs at least one of the following packages or rules to fire.
 #
 #		package org.drools.verifier.rangeChecks.doubles
 #			rule "Range check for doubles, if smaller than or equal is missing"
@@ -225,7 +225,7 @@ end
 # Removes existing gaps from working memory. Cleans out the data for actual reporting.
 #
 # Type: None
-# Depandencies: Needs at least one of the following packages or rules to fire.
+# Dependencies: Needs at least one of the following packages or rules to fire.
 #
 #		package org.drools.verifier.rangeChecks.doubles
 #			rule "Range check for doubles, if smaller than or equal is missing"
@@ -277,7 +277,7 @@ end
 # Removes existing gaps from working memory. Cleans out the data for actual reporting.
 #
 # Type: None
-# Depandencies: Needs at least one of the following packages or rules to fire.
+# Dependencies: Needs at least one of the following packages or rules to fire.
 #
 #		package org.drools.verifier.rangeChecks.dates
 #			rule "Range check for dates, if smaller than or equal is missing"
@@ -329,7 +329,7 @@ end
 # Removes existing gaps from working memory. Cleans out the data for actual reporting.
 #
 # Type: None
-# Depandencies: Needs at least one of the following packages or rules to fire.
+# Dependencies: Needs at least one of the following packages or rules to fire.
 #
 #		package org.drools.verifier.rangeChecks.dates
 #			rule "Range check for dates, if smaller than or equal is missing"

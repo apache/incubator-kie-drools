@@ -236,7 +236,7 @@ public class OppositeRestrictionsTest extends OppositesBase {
 				.getResourceAsStream("Restrictions.drl"));
 
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
-				"Opposite VariableRestrictions in pattern possibility"));
+				"Opposite VariableRestrictions"));
 
 		Collection<Object> data = new ArrayList<Object>();
 

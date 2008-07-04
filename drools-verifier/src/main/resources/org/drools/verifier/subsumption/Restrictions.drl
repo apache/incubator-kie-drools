@@ -13,7 +13,7 @@ import org.drools.verifier.report.components.Subsumption;
 # Fires when two restrictions are subsumptant.
 # Creates a Subsumption object.
 #
-# Depandencies: None
+# Dependencies: None
 #
 # Example 1: P( x > 10 ) and P( x > 100 )
 #
@@ -40,7 +40,7 @@ end
 # Fires when two restrictions are subsumptant.
 # Creates a Subsumption object.
 #
-# Depandencies: None
+# Dependencies: None
 #
 # Example 1: P( x < 10 ) and P( x < 100 )
 #

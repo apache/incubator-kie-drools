@@ -9,18 +9,16 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.drools.compiler.DrlParser;
-import org.drools.compiler.Dialect.AnalysisResult;
 import org.drools.lang.descr.PackageDescr;
-import org.drools.verifier.Verifier;
-import org.drools.verifier.components.VerifierClass;
-import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.components.Field;
+import org.drools.verifier.components.ObjectType;
+import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.dao.VerifierResult;
+import org.drools.verifier.report.components.Cause;
+import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.VerifierMessageBase;
 import org.drools.verifier.report.components.VerifierRangeCheckMessage;
-import org.drools.verifier.report.components.Cause;
-import org.drools.verifier.report.components.Severity;
 
 /**
  * This is a sample file to launch a rule package from a rule source file.
@@ -56,9 +54,10 @@ class VerifierTestStandalone {
 			a.fireAnalysis();
 			// System.out.print(a.getResultAsPlainText());
 			// System.out.print(a.getResultAsXML());
-			// a.writeComponentsHTML("/stash/");
-			// a.writeComponentsHTML("/Users/michaelneale/foo.html");
-			a.writeComponentsHTML("c:/");
+//			 a.writeComponentsHTML("/stash/");
+//			 a.writeComponentsHTML("/Users/michaelneale/foo.html");
+			 a.writeComponentsHTML("/home/trikkola/");
+//			a.writeComponentsHTML("c:/");
 
 			VerifierResult result = a.getResult();
 			Collection<VerifierMessageBase> msgs = result
@@ -111,10 +110,10 @@ class VerifierTestStandalone {
 				System.out.println("\t" + msg.getFaulty());
 			}
 
-			Collection<VerifierClass> classes = result.getVerifierData()
+			Collection<ObjectType> classes = result.getVerifierData()
 					.getAllClasses();
 			for (Iterator iterator = classes.iterator(); iterator.hasNext();) {
-				VerifierClass c = (VerifierClass) iterator.next();
+				ObjectType c = (ObjectType) iterator.next();
 
 				Collection<VerifierRule> cr = result.getVerifierData()
 						.getRulesByClassId(c.getId());

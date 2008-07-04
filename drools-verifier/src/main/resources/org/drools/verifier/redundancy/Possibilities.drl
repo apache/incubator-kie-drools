@@ -15,7 +15,7 @@ import java.util.ArrayList;
 # Fires when two PatternPossibilities are redundant.
 # Marks these possibilities as redundant.
 #
-# Depandencies: Needs at least one rule from both packages.
+# Dependencies: Needs at least one rule from both packages.
 #
 #		package org.drools.verifier.redundancy.patterns
 #			rule "Find redundant Patterns with restrictions"
@@ -100,7 +100,7 @@ end
 # Fires when two PatternPossibilities are redundant.
 # Marks these possibilities as redundant.
 #
-# Depandencies:
+# Dependencies:
 #
 #	Needs at least one rule from these packages:
 #		package org.drools.verifier.equivalency.rules

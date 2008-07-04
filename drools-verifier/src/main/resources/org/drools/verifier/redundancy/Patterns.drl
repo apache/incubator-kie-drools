@@ -9,7 +9,7 @@ import org.drools.verifier.report.components.RedundancyType;
 # Only checks for redundant pattern specifications,
 # does not include actual restriction checks.
 #
-# Depandencies: None
+# Dependencies: None
 #
 rule "Find redundant Patterns with restrictions"
 	when
@@ -48,7 +48,7 @@ end
 #
 # Checks for redundant pattern specifications when the patterns have no possibilities.
 #
-# Depandencies: None
+# Dependencies: None
 #
 rule "Find redundant Patterns without restrictions"
 	when

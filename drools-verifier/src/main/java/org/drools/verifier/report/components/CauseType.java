@@ -18,6 +18,7 @@ public class CauseType {
 	public static final CauseType SUBSUMPTION = new CauseType(13);
 	public static final CauseType OPPOSITE = new CauseType(14);
 	public static final CauseType INCOMPATIBLE = new CauseType(15);
+	public static final CauseType ALWAYS_TRUE = new CauseType(16);
 
 	public final int index;
 

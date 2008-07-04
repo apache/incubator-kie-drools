@@ -16,7 +16,6 @@ global VerifierResult result;
 #
 # Pattern possibilities are opposites if all of the restrictions are opposites.
 #
-# Depandencies: None
 # Dependencies:
 #
 #	Needs at least one of the following packages or rules to fire:

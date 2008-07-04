@@ -9,12 +9,12 @@ public abstract class VerifierComponent implements
 
 	protected String ruleName;
 	protected int ruleId;
-	protected int id;
+	protected final int id;
 
 	protected VerifierComponent parent;
-	
+
 	// Order number of this instance under parent.
-	protected int orderNumber = 0; 
+	protected int orderNumber = 0;
 
 	public abstract VerifierComponentType getComponentType();
 

@@ -16,7 +16,7 @@ global VerifierResult result;
 # If all ranges are not checked for a field.
 # 
 # Type: Warning
-# Depandencies: None
+# Dependencies: None
 # Example: in "Rule 1" Foo( bar > 42 ) 
 #						and in Foo( <= 42 || == 42 ) is missing.
 #
@@ -47,7 +47,7 @@ end
 # If all ranges are not checked for a field.
 # 
 # Type: Warning
-# Depandencies: None
+# Dependencies: None
 # Example: in "Rule 1" Foo( bar < 42 ) 
 #						and in Foo( >= 42 || == 42 ) is missing.
 #
@@ -78,7 +78,7 @@ end
 # If all ranges are not checked for a field.
 #
 # Type: Warning
-# Depandencies: None
+# Dependencies: None
 # Example: in "Rule 1" Foo( bar == 42 || bar <= 42 ) 
 # 					and no Foo( bar > 42 || >= 42 || >= 43 || == 43 ) 
 #						then Foo( bar > 42 ) is missing.
@@ -110,7 +110,7 @@ end
 # If all ranges are not checked for a field.
 #
 # Type: Warning
-# Depandencies: None
+# Dependencies: None
 # Example: in "Rule 1" Foo( bar == 42 || bar >= 42 ) 
 # 					and no Foo( bar < 42 || <= 42 || <= 41 || == 41 ) 
 #						then Foo( bar < 42 ) is missing.

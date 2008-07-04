@@ -23,7 +23,7 @@ global VerifierResult result;
 # Fires when two restrictions are overlapping.
 # Reports these restrictions as overlapping.
 #
-# Depandencies: Needs at least one rule.
+# Dependencies: Needs at least one rule.
 #
 #		package org.drools.verifier.subsumption.patterns
 #			rule "Find subsumptant restrictions, greater than"

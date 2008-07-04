@@ -49,9 +49,9 @@ public class SolversTest extends TestCase {
 
 		solvers.startRuleSolver(rule);
 
-		solvers.startOperator(andDescr);
+		solvers.startOperator(OperatorDescr.Type.AND);
 		solvers.startPatternSolver(pattern);
-		solvers.startOperator(andDescr);
+		solvers.startOperator(OperatorDescr.Type.AND);
 		solvers.addRestriction(r);
 		solvers.addRestriction(r2);
 		solvers.endOperator();
@@ -59,7 +59,7 @@ public class SolversTest extends TestCase {
 
 		solvers.startNot();
 		solvers.startPatternSolver(pattern);
-		solvers.startOperator(andDescr);
+		solvers.startOperator(OperatorDescr.Type.AND);
 		solvers.addRestriction(r3);
 		solvers.addRestriction(r4);
 		solvers.endOperator();
@@ -119,7 +119,7 @@ public class SolversTest extends TestCase {
 
 		solvers.startRuleSolver(rule);
 		solvers.startPatternSolver(pattern);
-		solvers.startOperator(andDescr);
+		solvers.startOperator(OperatorDescr.Type.AND);
 		solvers.addRestriction(r);
 		solvers.addRestriction(r2);
 		solvers.endOperator();

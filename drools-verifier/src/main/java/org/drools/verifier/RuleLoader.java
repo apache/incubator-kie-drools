@@ -16,29 +16,50 @@ class RuleLoader {
 	public static Collection<Package> loadPackages() {
 
 		String[] fileNames = new String[] {
+				// Missing consequence
+				"Consequence.drl",
+				// Always false
+				"alwaysFalse/Patterns.drl",
 				// Equivalence
 				"equivalence/Rules.drl",
 				// Incoherence
 				"incoherence/Patterns.drl",
 				"incoherence/Restrictions.drl",
+				// Incompatibility
+				"incompatibility/Patterns.drl",
+				"incompatibility/Restrictions.drl",
 				// Missing equality
 				"missingEquality/MissingEquality.drl",
+				// Opposites
+				"opposites/Patterns.drl",
+				"opposites/Restrictions.drl",
+				"opposites/Rules.drl",
 				// Optimization
-				"optimisation/RestrictionOrder.drl",
 				"optimisation/PatternOrder.drl",
+				"optimisation/RestrictionOrder.drl",
+				// Overlaps
+				"overlaps/Restrictions.drl",
 				// Range checks
-				"rangeChecks/Dates.drl", "rangeChecks/Doubles.drl",
+				"rangeChecks/Clean.drl",
+				"rangeChecks/Dates.drl", 
+				"rangeChecks/Doubles.drl",
 				"rangeChecks/Integers.drl",
 				"rangeChecks/NumberPatterns.drl",
 				"rangeChecks/Variables.drl",
-				"rangeChecks/Clean.drl",
 				// Redundancy
-				"redundancy/Restrictions.drl", "redundancy/Notes.drl",
-				"redundancy/Consequence.drl", "redundancy/Patterns.drl",
-				"redundancy/Possibilities.drl", "redundancy/Rules.drl",
-				"redundancy/Warnings.drl", "reports/RangeCheckReports.drl",
-				// Missing consequence
-				"Consequence.drl", };
+				"redundancy/Consequence.drl", 
+				"redundancy/Notes.drl",
+				"redundancy/Patterns.drl",
+				"redundancy/Possibilities.drl",
+				"redundancy/Restrictions.drl",  
+				"redundancy/Rules.drl",
+				"redundancy/Warnings.drl", 
+				// Reporting
+				"reports/RangeCheckReports.drl", 
+				// Subsumption
+				"subsumption/Possibilities.drl",
+				"subsumption/Restrictions.drl"
+			};
 
 		Collection<Package> packages = new ArrayList<Package>();
 

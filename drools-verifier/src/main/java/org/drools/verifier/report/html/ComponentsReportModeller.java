@@ -3,12 +3,11 @@ package org.drools.verifier.report.html;
 import java.io.File;
 import java.io.IOException;
 
-import org.drools.verifier.components.VerifierClass;
-import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.components.Field;
+import org.drools.verifier.components.ObjectType;
+import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.dao.VerifierData;
 import org.drools.verifier.dao.VerifierResult;
-import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.Severity;
 
 public class ComponentsReportModeller extends ReportModeller {
@@ -51,7 +50,7 @@ public class ComponentsReportModeller extends ReportModeller {
 				+ File.separator + UrlFactory.OBJECT_TYPE_FOLDER;
 		File objectTypesFolder = new File(objectTypeFolder);
 		objectTypesFolder.mkdir();
-		for (VerifierClass objectType : data.getAllClasses()) {
+		for (ObjectType objectType : data.getAllClasses()) {
 			writeToFile(objectTypeFolder + File.separator + objectType.getId()
 					+ ".htm", formPage(UrlFactory.PREVIOUS_FOLDER,
 					ComponentsReportVisitor.visitObjectType(

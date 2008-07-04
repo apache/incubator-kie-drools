@@ -28,7 +28,7 @@ global VerifierResult result;
 # If two Patterns are in conflict.
 #
 # Type: Warning
-# Depandencies: None
+# Dependencies: None
 # Example:
 #		IncorencePattern( a == 1 )
 #		not IncorencePattern( a == 1 )
@@ -94,7 +94,7 @@ end
 # If two Patterns are in conflict.
 #
 # Type: Warning
-# Depandencies: None
+# Dependencies: None
 # Example:
 #		$var :Object()
 #		IncorencePattern( a == $var )
@@ -160,7 +160,7 @@ end
 # If two Patterns are in conflict.
 #
 # Type: Warning
-# Depandencies: None
+# Dependencies: None
 # Example:
 #		IncorencePattern8( a > 11 )
 #		not IncorencePattern8( a > 1 )
@@ -225,7 +225,7 @@ end
 # If two Patterns are in conflict.
 #
 # Type: Warning
-# Depandencies: None
+# Dependencies: None
 # Example:
 #		IncorencePattern( a < 1 )
 #		not IncorencePattern( a < 11 )
@@ -290,7 +290,7 @@ end
 # If two Patterns are in conflict.
 #
 # Type: Warning
-# Depandencies: None
+# Dependencies: None
 # Example:
 #		IncoherencePattern( a >= 1 )
 #		not IncoherencePattern( a != 1 )
@@ -356,7 +356,7 @@ end
 # If two Patterns are in conflict.
 #
 # Type: Warning
-# Depandencies: None
+# Dependencies: None
 # Example:
 #		IncoherencePattern15( a >= $var )
 #		not IncoherencePattern15( a != $var )
@@ -422,7 +422,7 @@ end
 # If two Patterns are in conflict.
 #
 # Type: Warning
-# Depandencies: None
+# Dependencies: None
 # Example:
 #		IncoherencePattern13( a == $var )
 #		not IncoherencePattern13( a >= $var )
@@ -487,7 +487,7 @@ end
 # If two Patterns are in conflict.
 #
 # Type: Warning
-# Depandencies: None
+# Dependencies: None
 # Example:
 #		IncoherencePattern13( a == $var )
 #		not IncoherencePattern13( a >= $var )

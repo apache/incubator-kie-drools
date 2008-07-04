@@ -21,7 +21,7 @@ global VerifierResult result;
 # If all pattern ranges are not checked for a field.
 # 
 # Type: Warning
-# Depandencies: None
+# Dependencies: None
 # Example: in "Rule 1" Foo( bar == 10 ) and in "Rule 2" Foo( bar == 20 ) and in "Rule 3" Foo( bar == 40 )
 # 					then Foo( bar == 30 ) is missing.
 rule "Range check for number patterns"
@@ -62,7 +62,7 @@ end
 # If all pattern ranges are not checked for a field.
 # 
 # Type: Warning
-# Depandencies: None
+# Dependencies: None
 # Example: in "Rule 1" Foo( bar == 10 ) and in "Rule 2" Foo( bar == 20 ) and in "Rule 3" Foo( bar == 40 )
 # 					then Foo( bar == 30 ) is missing.
 rule "Range check for number patterns, !="

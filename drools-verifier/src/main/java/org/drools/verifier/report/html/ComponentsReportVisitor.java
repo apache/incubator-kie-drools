@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.verifier.components.VerifierClass;
+import org.drools.verifier.components.ObjectType;
 import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.components.Field;
 import org.drools.verifier.components.Restriction;
@@ -36,7 +36,7 @@ class ComponentsReportVisitor extends ReportVisitor {
 	}
 
 	public static String visitObjectTypeCollection(String sourceFolder,
-			Collection<VerifierClass> objectTypes) {
+			Collection<ObjectType> objectTypes) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("sourceFolder", sourceFolder);
 		map.put("objectTypeFolder", sourceFolder + "/"
@@ -51,7 +51,7 @@ class ComponentsReportVisitor extends ReportVisitor {
 
 	public static String visitRule(String sourceFolder, VerifierRule rule,
 			VerifierData data) {
-		Collection<VerifierClass> objectTypes = data.getClassesByRuleName(rule
+		Collection<ObjectType> objectTypes = data.getClassesByRuleName(rule
 				.getRuleName());
 
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -67,7 +67,7 @@ class ComponentsReportVisitor extends ReportVisitor {
 	}
 
 	public static String visitObjectType(String sourceFolder,
-			VerifierClass objectType, VerifierData data) {
+			ObjectType objectType, VerifierData data) {
 		Collection<VerifierRule> rules = data.getRulesByClassId(objectType
 				.getId());
 
@@ -87,7 +87,7 @@ class ComponentsReportVisitor extends ReportVisitor {
 	public static String visitField(String sourceFolder, Field field,
 			VerifierResult result) {
 		VerifierData data = result.getVerifierData();
-		VerifierClass objectType = data.getClassById(field.getClassId());
+		ObjectType objectType = data.getClassById(field.getClassId());
 		Collection<VerifierRule> rules = data.getRulesByFieldId(field.getId());
 
 		Map<String, Object> map = new HashMap<String, Object>();
