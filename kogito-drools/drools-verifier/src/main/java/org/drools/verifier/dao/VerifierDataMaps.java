@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.drools.verifier.components.VerifierClass;
+import org.drools.verifier.components.ObjectType;
 import org.drools.verifier.components.VerifierEvalDescr;
 import org.drools.verifier.components.VerifierPredicateDescr;
 import org.drools.verifier.components.VerifierRule;
@@ -33,8 +33,8 @@ class VerifierDataMaps implements VerifierData {
 	private Map<Integer, RulePackage> packagesById = new TreeMap<Integer, RulePackage>();
 	private Map<String, RulePackage> packagesByName = new TreeMap<String, RulePackage>();
 
-	private Map<Integer, VerifierClass> classesById = new TreeMap<Integer, VerifierClass>();
-	private Map<String, VerifierClass> classesByName = new TreeMap<String, VerifierClass>();
+	private Map<Integer, ObjectType> classesById = new TreeMap<Integer, ObjectType>();
+	private Map<String, ObjectType> classesByName = new TreeMap<String, ObjectType>();
 	private Map<String, Field> fieldsByClassAndFieldName = new TreeMap<String, Field>();
 	private Map<Integer, Field> fieldsById = new TreeMap<Integer, Field>();
 	private DataTree<Integer, Field> fieldsByClassId = new DataTree<Integer, Field>();
@@ -57,15 +57,15 @@ class VerifierDataMaps implements VerifierData {
 	private Map<Integer, PatternPossibility> patternPossibilitiesById = new TreeMap<Integer, PatternPossibility>();
 	private Map<Integer, RulePossibility> rulePossibilitiesById = new TreeMap<Integer, RulePossibility>();
 
-	public void add(VerifierClass clazz) {
-		classesById.put(Integer.valueOf(clazz.getId()), clazz);
-		classesByName.put(clazz.getName(), clazz);
+	public void add(ObjectType objectType) {
+		classesById.put(Integer.valueOf(objectType.getId()), objectType);
+		classesByName.put(objectType.getName(), objectType);
 	}
 
 	public void add(Field field) {
-		VerifierClass clazz = classesById.get(Integer.valueOf(field
+		ObjectType objectType = classesById.get(Integer.valueOf(field
 				.getClassId()));
-		fieldsByClassAndFieldName.put(clazz.getName() + "." + field.getName(),
+		fieldsByClassAndFieldName.put(objectType.getName() + "." + field.getName(),
 				field);
 
 		fieldsById.put(field.getId(), field);
@@ -104,7 +104,7 @@ class VerifierDataMaps implements VerifierData {
 				link);
 	}
 
-	public VerifierClass getClassByPackageAndName(String name) {
+	public ObjectType getClassByPackageAndName(String name) {
 		return classesByName.get(name);
 	}
 
@@ -134,18 +134,18 @@ class VerifierDataMaps implements VerifierData {
 		rulePossibilitiesById.put(possibility.getId(), possibility);
 	}
 
-	public Collection<VerifierClass> getClassesByRuleName(String ruleName) {
-		Set<VerifierClass> set = new HashSet<VerifierClass>();
+	public Collection<ObjectType> getClassesByRuleName(String ruleName) {
+		Set<ObjectType> set = new HashSet<ObjectType>();
 
 		for (Pattern pattern : patternsByRuleName.getBranch(ruleName)) {
-			VerifierClass clazz = getClassById(pattern.getClassId());
-			set.add(clazz);
+			ObjectType objectType = getClassById(pattern.getClassId());
+			set.add(objectType);
 		}
 
 		return set;
 	}
 
-	public VerifierClass getClassById(int id) {
+	public ObjectType getClassById(int id) {
 		return classesById.get(id);
 	}
 
@@ -173,7 +173,7 @@ class VerifierDataMaps implements VerifierData {
 		return objects;
 	}
 
-	public Collection<VerifierClass> getAllClasses() {
+	public Collection<ObjectType> getAllClasses() {
 		return classesById.values();
 	}
 

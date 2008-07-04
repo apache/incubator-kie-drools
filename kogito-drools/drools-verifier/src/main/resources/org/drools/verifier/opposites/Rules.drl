@@ -6,15 +6,7 @@ package org.drools.verifier.opposites
 
 
 #declare any global variables here
+#
+#
+#
 
-
-
-
-rule "Your First Rule"
-	
-	when
-		#conditions
-	then 
-		#actions
-		
-end

@@ -2,7 +2,7 @@ package org.drools.verifier.dao;
 
 import java.util.Collection;
 
-import org.drools.verifier.components.VerifierClass;
+import org.drools.verifier.components.ObjectType;
 import org.drools.verifier.components.VerifierEvalDescr;
 import org.drools.verifier.components.VerifierPredicateDescr;
 import org.drools.verifier.components.VerifierRule;
@@ -26,7 +26,7 @@ public interface VerifierData {
 
 	public void add(Consequence consequence);
 
-	public void add(VerifierClass clazz);
+	public void add(ObjectType objectType);
 
 	public void add(Field field);
 
@@ -48,9 +48,9 @@ public interface VerifierData {
 
 	public void add(RulePackage rulePackage);
 
-	public VerifierClass getClassByPackageAndName(String name);
+	public ObjectType getClassByPackageAndName(String name);
 
-	public VerifierClass getClassById(int id);
+	public ObjectType getClassById(int id);
 
 	public Field getFieldByClassAndFieldName(String className, String fieldName);
 
@@ -63,9 +63,9 @@ public interface VerifierData {
 
 	public Collection<VerifierRule> getAllRules();
 
-	public Collection<VerifierClass> getClassesByRuleName(String ruleName);
+	public Collection<ObjectType> getClassesByRuleName(String ruleName);
 
-	public Collection<VerifierClass> getAllClasses();
+	public Collection<ObjectType> getAllClasses();
 
 	public Collection<RulePackage> getAllRulePackages();
 

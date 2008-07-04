@@ -88,3 +88,12 @@ rule "Incoherent restrictions 11"
 		# Test
 end
 
+# no problems in this one
+rule "Gold Discount High Priority"
+   dialect "mvel"
+   when
+       customer : Customer( status > "30" && < "50" )
+       order : OrderHeader( customer == customer , orderPriority == "3" || == "4" )
+   then
+       order.setOrderDiscount( 6.0 );
+end 

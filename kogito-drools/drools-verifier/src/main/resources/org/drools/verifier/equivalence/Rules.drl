@@ -9,7 +9,7 @@ import org.drools.verifier.report.components.RedundancyType;
 # Only checks for redundant rule specifications where consequences are not redundant, 
 # does not include actual pattern and restriction checks.
 #
-# Depandencies: None
+# Dependencies: None
 #
 rule "Find equivalent Rules"
 	when

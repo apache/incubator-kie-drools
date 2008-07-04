@@ -24,8 +24,8 @@ global VerifierResult result;
 #
 # If two LiteralRestrictions are in conflict.
 #
-# Depandencies: None
-# Example: Pattern1( a == "b", a != "b" )
+# Dependencies: None
+# Example: Pattern( a == "b", a != "b" )
 #
 rule "Opposite LiteralRestrictions"
 	when
@@ -61,7 +61,7 @@ end
 #
 # If two LiteralRestrictions are in conflict.
 #
-# Depandencies: None
+# Dependencies: None
 # Example: Pattern( a >= 10 && a < 10 )
 #
 rule "Opposite LiteralRestrictions with ranges, greater or equal - less"
@@ -96,7 +96,7 @@ end
 #
 # If two LiteralRestrictions are in conflict.
 #
-# Depandencies: None
+# Dependencies: None
 # Example: Pattern( a > 10 && a <= 10 )
 #
 rule "Opposite LiteralRestrictions with ranges, greater - less or equal"
@@ -132,7 +132,7 @@ end
 #
 # If two LiteralRestrictions are in conflict.
 #
-# Depandencies: None
+# Dependencies: None
 # Example: Pattern( a < 10 && a > 9 )
 #
 rule "Opposite LiteralRestrictions with ranges, less - greater for ints and dates"
@@ -168,7 +168,7 @@ end
 #
 # If two LiteralRestrictions are in conflict.
 #
-# Depandencies: None
+# Dependencies: None
 # Example: Pattern( a >= 10 && a <= 9 )
 #
 rule "Opposite LiteralRestrictions with ranges, less or equal - greater or equal for ints and dates"
@@ -204,15 +204,14 @@ end
 #
 # If two VariableRestrictions are in conflict.
 #
-# Depandencies: None
+# Dependencies: None
 # Example: Pattern( a contains $o, a not contains $o )
 #
-rule "Opposite VariableRestrictions in pattern possibility"
+rule "Opposite VariableRestrictions"
 	when
 		$r1 :VariableRestriction()
 
 		$r2 :VariableRestriction(
-			patternId == $r1.patternId,
 			fieldId == $r1.fieldId,
 			id != $r1.id,
 			variable.objectId == $r1.variable.objectId,

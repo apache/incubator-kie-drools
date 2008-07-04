@@ -31,7 +31,7 @@ function boolean checkDates(Date d1, Date d2, boolean up) {
 # If all ranges are not checked for a field.
 # 
 # Type: Warning
-# Depandencies: None
+# Dependencies: None
 # Example: in "Rule 1" Foo( bar > "27-Oct-2007" ) 
 #						and in Foo( <= "27-Oct-2007" || == "27-Oct-2007" ) is missing.
 #
@@ -62,7 +62,7 @@ end
 # If all ranges are not checked for a field.
 # 
 # Type: Warning
-# Depandencies: None
+# Dependencies: None
 # Example: in "Rule 1" Foo( bar < "27-Oct-2007" ) 
 #						and in Foo( >= "27-Oct-2007" || == "27-Oct-2007" ) is missing.
 #
@@ -93,7 +93,7 @@ end
 # If all ranges are not checked for a field.
 #
 # Type: Warning
-# Depandencies: None
+# Dependencies: None
 # Example: in "Rule 1" Foo( bar == "27-Oct-2007" || bar <= "27-Oct-2007" ) 
 # 					and no Foo( bar > "27-Oct-2007" || >= "27-Oct-2007" || >= "28-Oct-2007" || == "28-Oct-2007" ) 
 #						then Foo( bar > "27-Oct-2007" ) is missing.
@@ -133,7 +133,7 @@ end
 # If all ranges are not checked for a field.
 #
 # Type: Warning
-# Depandencies: None
+# Dependencies: None
 # Example: in "Rule 1" Foo( bar == "27-Oct-2007" || bar >= "27-Oct-2007" ) 
 # 					and no Foo( bar < "27-Oct-2007" || <= "27-Oct-2007" || <= "26-Oct-2007" || == "26-Oct-2007" ) 
 #						then Foo( bar < "27-Oct-2007" ) is missing.

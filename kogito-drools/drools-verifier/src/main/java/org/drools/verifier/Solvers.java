@@ -16,7 +16,7 @@ import org.drools.verifier.components.RulePossibility;
  * 
  * @author Toni Rikkola
  */
- class Solvers {
+class Solvers {
 
 	private RuleSolver ruleSolver = null;
 	private PatternSolver patternSolver = null;
@@ -92,11 +92,11 @@ import org.drools.verifier.components.RulePossibility;
 		}
 	}
 
-	public void startOperator(OperatorDescr operatorDescr) {
+	public void startOperator(OperatorDescr.Type type) {
 		if (patternSolver != null) {
-			patternSolver.add(operatorDescr);
+			patternSolver.addOperator(type);
 		} else if (ruleSolver != null) {
-			ruleSolver.add(operatorDescr);
+			ruleSolver.addOperator(type);
 		}
 	}
 

@@ -34,10 +34,9 @@ public class PatternSolverTest extends TestCase {
 		LiteralRestriction literalRestriction = new LiteralRestriction();
 		LiteralRestriction literalRestriction2 = new LiteralRestriction();
 
-		OperatorDescr operatorDescr = new OperatorDescr(OperatorDescr.Type.AND);
 		PatternSolver solver = new PatternSolver(pattern);
 
-		solver.add(operatorDescr);
+		solver.addOperator(OperatorDescr.Type.AND);
 		solver.add(literalRestriction);
 		solver.add(literalRestriction2);
 		solver.end();
@@ -65,10 +64,9 @@ public class PatternSolverTest extends TestCase {
 		LiteralRestriction literalRestriction = new LiteralRestriction();
 		LiteralRestriction literalRestriction2 = new LiteralRestriction();
 
-		OperatorDescr operatorDescr = new OperatorDescr(OperatorDescr.Type.OR);
 		PatternSolver solver = new PatternSolver(pattern);
 
-		solver.add(operatorDescr);
+		solver.addOperator(OperatorDescr.Type.OR);
 		solver.add(literalRestriction);
 		solver.add(literalRestriction2);
 		solver.end();
@@ -100,13 +98,11 @@ public class PatternSolverTest extends TestCase {
 		LiteralRestriction literalRestriction2 = new LiteralRestriction();
 		LiteralRestriction literalRestriction3 = new LiteralRestriction();
 
-		OperatorDescr orDescr = new OperatorDescr(OperatorDescr.Type.OR);
-		OperatorDescr andDescr = new OperatorDescr(OperatorDescr.Type.AND);
 		PatternSolver solver = new PatternSolver(pattern);
 
-		solver.add(orDescr);
+		solver.addOperator(OperatorDescr.Type.OR);
 		solver.add(literalRestriction);
-		solver.add(andDescr);
+		solver.addOperator(OperatorDescr.Type.AND);
 		solver.add(literalRestriction2);
 		solver.add(literalRestriction3);
 		solver.end();
@@ -144,13 +140,11 @@ public class PatternSolverTest extends TestCase {
 		LiteralRestriction literalRestriction2 = new LiteralRestriction();
 		LiteralRestriction literalRestriction3 = new LiteralRestriction();
 
-		OperatorDescr orDescr = new OperatorDescr(OperatorDescr.Type.AND);
-		OperatorDescr andDescr = new OperatorDescr(OperatorDescr.Type.OR);
 		PatternSolver solver = new PatternSolver(pattern);
 
-		solver.add(orDescr);
+		solver.addOperator(OperatorDescr.Type.AND);
 		solver.add(literalRestriction);
-		solver.add(andDescr);
+		solver.addOperator(OperatorDescr.Type.OR);
 		solver.add(literalRestriction2);
 		solver.add(literalRestriction3);
 		solver.end();
@@ -194,17 +188,14 @@ public class PatternSolverTest extends TestCase {
 		LiteralRestriction literalRestriction3 = new LiteralRestriction();
 		LiteralRestriction literalRestriction4 = new LiteralRestriction();
 
-		OperatorDescr andDescr = new OperatorDescr(OperatorDescr.Type.AND);
-		OperatorDescr orDescr = new OperatorDescr(OperatorDescr.Type.OR);
-		OperatorDescr orDescr2 = new OperatorDescr(OperatorDescr.Type.OR);
 		PatternSolver solver = new PatternSolver(pattern);
 
-		solver.add(andDescr);
-		solver.add(orDescr);
+		solver.addOperator(OperatorDescr.Type.AND);
+		solver.addOperator(OperatorDescr.Type.OR);
 		solver.add(literalRestriction);
 		solver.add(literalRestriction2);
 		solver.end();
-		solver.add(orDescr2);
+		solver.addOperator(OperatorDescr.Type.OR);
 		solver.add(literalRestriction3);
 		solver.add(literalRestriction4);
 		solver.end();
@@ -252,17 +243,14 @@ public class PatternSolverTest extends TestCase {
 		LiteralRestriction literalRestriction3 = new LiteralRestriction();
 		LiteralRestriction literalRestriction4 = new LiteralRestriction();
 
-		OperatorDescr orDescr = new OperatorDescr(OperatorDescr.Type.OR);
-		OperatorDescr andDescr = new OperatorDescr(OperatorDescr.Type.AND);
-		OperatorDescr andDescr2 = new OperatorDescr(OperatorDescr.Type.AND);
 		PatternSolver solver = new PatternSolver(pattern);
 
-		solver.add(orDescr);
-		solver.add(andDescr);
+		solver.addOperator(OperatorDescr.Type.OR);
+		solver.addOperator(OperatorDescr.Type.AND);
 		solver.add(literalRestriction);
 		solver.add(literalRestriction2);
 		solver.end();
-		solver.add(andDescr2);
+		solver.addOperator(OperatorDescr.Type.AND);
 		solver.add(literalRestriction3);
 		solver.add(literalRestriction4);
 		solver.end();
@@ -304,17 +292,14 @@ public class PatternSolverTest extends TestCase {
 		LiteralRestriction literalRestriction3 = new LiteralRestriction();
 		LiteralRestriction literalRestriction4 = new LiteralRestriction();
 
-		OperatorDescr orDescr = new OperatorDescr(OperatorDescr.Type.OR);
-		OperatorDescr andDescr = new OperatorDescr(OperatorDescr.Type.AND);
-		OperatorDescr orDescr2 = new OperatorDescr(OperatorDescr.Type.OR);
 		PatternSolver solver = new PatternSolver(pattern);
 
-		solver.add(orDescr);
-		solver.add(andDescr);
+		solver.addOperator(OperatorDescr.Type.OR);
+		solver.addOperator(OperatorDescr.Type.AND);
 		solver.add(literalRestriction);
 		solver.add(literalRestriction2);
 		solver.end();
-		solver.add(orDescr2);
+		solver.addOperator(OperatorDescr.Type.OR);
 		solver.add(literalRestriction3);
 		solver.add(literalRestriction4);
 		solver.end();
@@ -357,17 +342,14 @@ public class PatternSolverTest extends TestCase {
 		LiteralRestriction literalRestriction4 = new LiteralRestriction();
 		LiteralRestriction literalRestriction5 = new LiteralRestriction();
 
-		OperatorDescr andDescr = new OperatorDescr(OperatorDescr.Type.AND);
-		OperatorDescr andDescr2 = new OperatorDescr(OperatorDescr.Type.AND);
-		OperatorDescr orDescr = new OperatorDescr(OperatorDescr.Type.OR);
 		PatternSolver solver = new PatternSolver(pattern);
 
-		solver.add(andDescr);
-		solver.add(andDescr2);
+		solver.addOperator(OperatorDescr.Type.AND);
+		solver.addOperator(OperatorDescr.Type.AND);
 		solver.add(literalRestriction);
 		solver.add(literalRestriction2);
 		solver.end();
-		solver.add(orDescr);
+		solver.addOperator(OperatorDescr.Type.OR);
 		solver.add(literalRestriction3);
 		solver.add(literalRestriction4);
 		solver.end();

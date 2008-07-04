@@ -33,7 +33,7 @@ import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.VariableRestrictionDescr;
 import org.drools.verifier.components.VerifierAccessorDescr;
 import org.drools.verifier.components.VerifierAccumulateDescr;
-import org.drools.verifier.components.VerifierClass;
+import org.drools.verifier.components.ObjectType;
 import org.drools.verifier.components.VerifierCollectDescr;
 import org.drools.verifier.components.VerifierComponent;
 import org.drools.verifier.components.VerifierComponentType;
@@ -74,7 +74,7 @@ class PackageDescrFlattener {
 	private VerifierRule currentRule = null;
 	private Pattern currentPattern = null;
 	private Constraint currentConstraint = null;
-	private VerifierClass currentClass = null;
+	private ObjectType currentClass = null;
 	private Field currentField = null;
 
 	/**
@@ -84,9 +84,10 @@ class PackageDescrFlattener {
 	 *            PackageDescr that will be flattened.
 	 * @param data
 	 *            VerifierData where the flattened objects are added.
+	 * @throws UnknownDescriptionException
 	 */
 	public void addPackageDescrToData(PackageDescr packageDescr,
-			VerifierData data) {
+			VerifierData data) throws UnknownDescriptionException {
 
 		this.data = data;
 
@@ -95,7 +96,8 @@ class PackageDescrFlattener {
 		formPossibilities();
 	}
 
-	private void flatten(Collection<?> descrs, VerifierComponent parent) {
+	private void flatten(Collection<?> descrs, VerifierComponent parent)
+			throws UnknownDescriptionException {
 
 		int orderNumber = 0;
 
@@ -144,20 +146,20 @@ class PackageDescrFlattener {
 	}
 
 	private VerifierComponent flatten(PatternSourceDescr descr,
-			VerifierComponent parent) {
+			VerifierComponent parent) throws UnknownDescriptionException {
 		if (descr instanceof AccumulateDescr) {
 			return flatten((AccumulateDescr) descr, parent);
 		} else if (descr instanceof CollectDescr) {
 			return flatten((CollectDescr) descr, parent);
 		} else if (descr instanceof FromDescr) {
 			return flatten((FromDescr) descr, parent);
+		}else {
+			throw new UnknownDescriptionException(descr);
 		}
-
-		return null;
 	}
 
 	private VerifierComponent flatten(DeclarativeInvokerDescr descr,
-			VerifierComponent parent) {
+			VerifierComponent parent) throws UnknownDescriptionException {
 		if (descr instanceof AccessorDescr) {
 			return flatten((AccessorDescr) descr, parent);
 		} else if (descr instanceof FieldAccessDescr) {
@@ -166,13 +168,15 @@ class PackageDescrFlattener {
 			return flatten((FunctionCallDescr) descr, parent);
 		} else if (descr instanceof MethodAccessDescr) {
 			return flatten((MethodAccessDescr) descr, parent);
+		}else {
+			throw new UnknownDescriptionException(descr);
 		}
-
-		return null;
 	}
 
 	private void flatten(ConditionalElementDescr descr,
-			VerifierComponent parent, int orderNumber) {
+			VerifierComponent parent, int orderNumber)
+			throws UnknownDescriptionException {
+
 		if (descr instanceof AndDescr) {
 			flatten((AndDescr) descr, parent, orderNumber);
 		} else if (descr instanceof CollectDescr) {
@@ -192,19 +196,22 @@ class PackageDescrFlattener {
 		}
 	}
 
-	private void flatten(ForallDescr descr, VerifierComponent parent) {
+	private void flatten(ForallDescr descr, VerifierComponent parent)
+			throws UnknownDescriptionException {
 		solvers.startForall();
 		flatten(descr.getDescrs(), parent);
 		solvers.endForall();
 	}
 
-	private void flatten(ExistsDescr descr, VerifierComponent parent) {
+	private void flatten(ExistsDescr descr, VerifierComponent parent)
+			throws UnknownDescriptionException {
 		solvers.startExists();
 		flatten(descr.getDescrs(), parent);
 		solvers.endExists();
 	}
 
-	private void flatten(NotDescr descr, VerifierComponent parent) {
+	private void flatten(NotDescr descr, VerifierComponent parent)
+			throws UnknownDescriptionException {
 		solvers.startNot();
 		flatten(descr.getDescrs(), parent);
 		solvers.endNot();
@@ -276,9 +283,9 @@ class PackageDescrFlattener {
 	 * 
 	 * @param descr
 	 * @return
+	 * @throws UnknownDescriptionException 
 	 */
-	private VerifierFromDescr flatten(FromDescr descr,
-			VerifierComponent parent) {
+	private VerifierFromDescr flatten(FromDescr descr, VerifierComponent parent) throws UnknownDescriptionException {
 		VerifierFromDescr from = new VerifierFromDescr();
 
 		VerifierComponent ds = flatten(descr.getDataSource(), from);
@@ -290,7 +297,7 @@ class PackageDescrFlattener {
 	}
 
 	private VerifierAccumulateDescr flatten(AccumulateDescr descr,
-			VerifierComponent parent) {
+			VerifierComponent parent) throws UnknownDescriptionException {
 		VerifierAccumulateDescr accumulate = new VerifierAccumulateDescr();
 
 		accumulate.setInputPatternId(flatten(descr.getInputPattern(),
@@ -313,7 +320,7 @@ class PackageDescrFlattener {
 	}
 
 	private VerifierCollectDescr flatten(CollectDescr descr,
-			VerifierComponent parent) {
+			VerifierComponent parent) throws UnknownDescriptionException {
 		VerifierCollectDescr collect = new VerifierCollectDescr();
 		collect.setClassMethodName(descr.getClassMethodName());
 		collect
@@ -364,7 +371,7 @@ class PackageDescrFlattener {
 		return accessor;
 	}
 
-	private void flatten(PackageDescr descr) {
+	private void flatten(PackageDescr descr) throws UnknownDescriptionException {
 		RulePackage rulePackage = data.getRulePackageByName(descr.getName());
 
 		if (rulePackage == null) {
@@ -379,7 +386,8 @@ class PackageDescrFlattener {
 		flatten(descr.getRules(), rulePackage);
 	}
 
-	private void flatten(RuleDescr descr, VerifierComponent parent) {
+	private void flatten(RuleDescr descr, VerifierComponent parent)
+			throws UnknownDescriptionException {
 
 		VerifierRule rule = new VerifierRule();
 		currentRule = rule;
@@ -447,48 +455,48 @@ class PackageDescrFlattener {
 	}
 
 	private void flatten(OrDescr descr, VerifierComponent parent,
-			int orderNumber) {
+			int orderNumber) throws UnknownDescriptionException {
 		OperatorDescr operatorDescr = new OperatorDescr(OperatorDescr.Type.OR);
 		operatorDescr.setOrderNumber(orderNumber);
 		operatorDescr.setParent(parent);
 
 		data.add(operatorDescr);
 
-		solvers.startOperator(operatorDescr);
+		solvers.startOperator(OperatorDescr.Type.OR);
 		flatten(descr.getDescrs(), operatorDescr);
 		solvers.endOperator();
 	}
 
 	private void flatten(AndDescr descr, VerifierComponent parent,
-			int orderNumber) {
+			int orderNumber) throws UnknownDescriptionException {
 		OperatorDescr operatorDescr = new OperatorDescr(OperatorDescr.Type.AND);
 		operatorDescr.setOrderNumber(orderNumber);
 		operatorDescr.setParent(parent);
 
 		data.add(operatorDescr);
 
-		solvers.startOperator(operatorDescr);
+		solvers.startOperator(OperatorDescr.Type.AND);
 		flatten(descr.getDescrs(), operatorDescr);
 		solvers.endOperator();
 	}
 
 	private int flatten(PatternDescr descr, VerifierComponent parent,
-			int orderNumber) {
+			int orderNumber) throws UnknownDescriptionException {
 
-		VerifierClass clazz = data.getClassByPackageAndName(descr
+		ObjectType objectType = data.getClassByPackageAndName(descr
 				.getObjectType());
-		if (clazz == null) {
-			clazz = new VerifierClass();
-			clazz.setName(descr.getObjectType());
-			data.add(clazz);
+		if (objectType == null) {
+			objectType = new ObjectType();
+			objectType.setName(descr.getObjectType());
+			data.add(objectType);
 		}
-		currentClass = clazz;
+		currentClass = objectType;
 
 		Pattern pattern = new Pattern();
 		pattern.setRuleId(currentRule.getId());
 		pattern.setRuleName(currentRule.getRuleName());
-		pattern.setClassId(clazz.getId());
-		pattern.setName(clazz.getName());
+		pattern.setClassId(objectType.getId());
+		pattern.setName(objectType.getName());
 		pattern.setPatternNot(solvers.getRuleSolver().isChildNot());
 		pattern.setPatternExists(solvers.getRuleSolver().isExists());
 		pattern.setPatternForall(solvers.getRuleSolver().isForall());
@@ -505,7 +513,7 @@ class PackageDescrFlattener {
 			variable.setName(descr.getIdentifier());
 
 			variable.setObjectType(VerifierComponentType.CLASS);
-			variable.setObjectId(clazz.getId());
+			variable.setObjectId(objectType.getId());
 			variable.setObjectName(descr.getObjectType());
 
 			data.add(variable);
@@ -528,7 +536,7 @@ class PackageDescrFlattener {
 	}
 
 	private void flatten(FieldConstraintDescr descr, VerifierComponent parent,
-			int orderNumber) {
+			int orderNumber) throws UnknownDescriptionException {
 
 		Field field = data.getFieldByClassAndFieldName(currentClass.getName(),
 				descr.getFieldName());
@@ -558,9 +566,24 @@ class PackageDescrFlattener {
 	}
 
 	private void flatten(RestrictionConnectiveDescr descr,
-			VerifierComponent parent, int orderNumber) {
-		// TODO: check.
-		flatten(descr.getRestrictions(), parent);
+			VerifierComponent parent, int orderNumber)
+			throws UnknownDescriptionException {
+
+		if (descr.getConnective() == RestrictionConnectiveDescr.AND) {
+
+			solvers.startOperator(OperatorDescr.Type.AND);
+			flatten(descr.getRestrictions(), parent);
+			solvers.endOperator();
+
+		} else if (descr.getConnective() == RestrictionConnectiveDescr.OR) {
+
+			solvers.startOperator(OperatorDescr.Type.OR);
+			flatten(descr.getRestrictions(), parent);
+			solvers.endOperator();
+
+		} else {
+			throw new UnknownDescriptionException(descr);
+		}
 	}
 
 	/**

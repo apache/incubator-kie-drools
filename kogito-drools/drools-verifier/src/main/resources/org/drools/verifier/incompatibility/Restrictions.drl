@@ -13,7 +13,7 @@ import org.drools.base.evaluators.Operator;
 #
 # If two LiteralRestrictions are in conflict.
 #
-# Depandencies: None
+# Dependencies: None
 # Example: IncorencePattern( a < 1 && a == 10 )
 #
 rule "Incompatible LiteralRestrictions with ranges in pattern possibility, impossible equality less or equal"
@@ -23,7 +23,6 @@ rule "Incompatible LiteralRestrictions with ranges in pattern possibility, impos
 		)
 
 		$r2 :LiteralRestriction(
-			patternId == $r1.patternId,
 			restrictionType == $r1.restrictionType,
 			fieldId == $r1.fieldId,
 			valueType == $r1.valueType,
@@ -39,7 +38,7 @@ end
 #
 # If two LiteralRestrictions are in conflict.
 #
-# Depandencies: None
+# Dependencies: None
 # Example: IncorencePattern( a > 10 && a == 1 )
 #
 rule "Incompatible LiteralRestrictions with ranges in pattern possibility, impossible equality greater"
@@ -49,7 +48,6 @@ rule "Incompatible LiteralRestrictions with ranges in pattern possibility, impos
 		)
 
 		$r2 :LiteralRestriction(
-			patternId == $r1.patternId,
 			restrictionType == $r1.restrictionType,
 			fieldId == $r1.fieldId,
 			valueType == $r1.valueType,
@@ -65,7 +63,7 @@ end
 #
 # If two LiteralRestrictions are in conflict.
 #
-# Depandencies: None
+# Dependencies: None
 # Example: IncorencePattern( a < "12-Dec-2007", a > "12-Dec-2007" )
 #
 rule "Incompatible LiteralRestrictions with ranges in pattern possibility, impossible range"
@@ -75,7 +73,6 @@ rule "Incompatible LiteralRestrictions with ranges in pattern possibility, impos
 		)
 
 		$r2 :LiteralRestriction(
-			patternId == $r1.patternId,
 			restrictionType == $r1.restrictionType,
 			fieldId == $r1.fieldId,
 			valueType == $r1.valueType,
@@ -91,7 +88,7 @@ end
 #
 # If two VariableRestrictions are in conflict.
 #
-# Depandencies: None
+# Dependencies: None
 # Example: Pattern( a > $var, a < $var )
 #
 rule "Incoherent VariableRestrictions in pattern possibility, impossible range"
@@ -101,7 +98,6 @@ rule "Incoherent VariableRestrictions in pattern possibility, impossible range"
 		)
 
 		$r2 :VariableRestriction(
-			patternId == $r1.patternId,
 			fieldId == $r1.fieldId,
 			operator == Operator.GREATER,
 			variable.objectId == $r1.variable.objectId,

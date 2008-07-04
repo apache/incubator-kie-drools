@@ -28,7 +28,7 @@ public class VerifierTest extends TestCase {
 		assertNotNull(result);
 		assertEquals(0, result.getBySeverity(Severity.ERROR).size());
 		assertEquals(10, result.getBySeverity(Severity.WARNING).size());
-		assertEquals(1, result.getBySeverity(Severity.NOTE).size());
+		assertEquals(16, result.getBySeverity(Severity.NOTE).size());
 
 
 		//check it again
@@ -46,7 +46,7 @@ public class VerifierTest extends TestCase {
 		assertNotNull(result);
 		assertEquals(0, result.getBySeverity(Severity.ERROR).size());
 		assertEquals(10, result.getBySeverity(Severity.WARNING).size());
-		assertEquals(1, result.getBySeverity(Severity.NOTE).size());
+		assertEquals(16, result.getBySeverity(Severity.NOTE).size());
 
 
 

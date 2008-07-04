@@ -8,8 +8,6 @@ import java.util.Set;
 import org.drools.verifier.components.VerifierComponent;
 import org.drools.verifier.components.OperatorDescr;
 
-
-
 /**
  * Takes a list of Constraints and makes possibilities from them.
  * 
@@ -29,12 +27,28 @@ class Solver {
 		this.type = type;
 	}
 
+	public void addOperator(OperatorDescr.Type type) {
+		if (subSolver != null) {
+			subSolver.addOperator(type);
+		} else {
+			subSolver = new Solver(type);
+		}
+	}
+
+	/**
+	 * Add new descr.
+	 * 
+	 * @param descr
+	 */
 	public void add(VerifierComponent descr) {
+
+		if (descr instanceof OperatorDescr) {
+			throw new UnsupportedOperationException(
+					"Operator descrs are not supported.");
+		}
+
 		if (subSolver != null) {
 			subSolver.add(descr);
-		} else if (descr instanceof OperatorDescr) {
-			OperatorDescr operatorDescr = (OperatorDescr) descr;
-			subSolver = new Solver(operatorDescr.getType());
 		} else {
 			if (type == OperatorDescr.Type.AND) {
 				if (possibilityLists.isEmpty()) {

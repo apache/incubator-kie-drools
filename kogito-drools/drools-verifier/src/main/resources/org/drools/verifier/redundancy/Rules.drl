@@ -9,7 +9,7 @@ import org.drools.verifier.report.components.RedundancyType;
 # Only checks for redundant rule specifications,
 # does not include actual pattern and restriction checks.
 #
-# Depandencies:
+# Dependencies:
 #
 #		package org.drools.verifier.redundancy.consequences
 #			rule "Find redundant TextConsequences"

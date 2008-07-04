@@ -139,3 +139,19 @@ rule "Incoherent patterns 16"
 	then 
 		# Test
 end
+
+rule "This is not an incoherent pattern 1"
+	when
+		not Something( abc > 1 )
+		Something( abc < 1 )
+	then
+		# Test
+end
+
+rule "This is not an incoherent pattern 2"
+	when
+		not Something( abc == 1 )
+		Something( abc == 2 )
+	then
+		# Test
+end

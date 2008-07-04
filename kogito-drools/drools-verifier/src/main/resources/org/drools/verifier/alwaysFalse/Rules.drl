@@ -6,8 +6,8 @@
 #
 package org.drools.verifier.alwaysFalse
 #list any import classes here.
-import org.drools.verifier.components.Pattern;
-import org.drools.verifier.components.PatternPossibility;
+import org.drools.verifier.components.VerifierRule;
+import org.drools.verifier.components.RulePossibility;
 
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.MessageType;
@@ -19,32 +19,29 @@ import org.drools.verifier.dao.VerifierResult;
 global VerifierResult result;
 
 #
-# Finds patterns that are always false.
+# Finds rules that are always false.
 #
-# Dependencies: 
+# Dependencies:
 #	Needs at least one of the following packages or rules to fire:
 # 		package org.drools.verifier.incompatibility;
-#			rule "Incompatible LiteralRestrictions with ranges in pattern possibility, impossible equality less or equal"
-#			rule "Incompatible LiteralRestrictions with ranges in pattern possibility, impossible equality greater"
-#			rule "Incompatible LiteralRestrictions with ranges in pattern possibility, impossible range"
-#			rule "Incoherent VariableRestrictions in pattern possibility, impossible range"
+#			rule "Incompatible Patterns"
 #
 # Example:
 #		Pattern( a == b && a != b )
 #
-rule "Pattern that is always false"
+rule "Rule that is always false"
 	when
-		$p :Pattern()
+		$r :VerifierRule()
 		
-		# All the pattern possibilities for pattern need to be in conflict
+		# All the rule possibilities for rule need to be in conflict
 		forall( 
-			$pp :PatternPossibility(
-				patternId == $p.id
+			$rp :RulePossibility(
+				ruleId == $r.id
 			)
 			
 			Incompatibility( 
-				left memberOf $pp.items,
-				right memberOf $pp.items
+				left memberOf $rp.items,
+				right memberOf $rp.items
 			)
 		)
 	then 
@@ -52,6 +49,6 @@ rule "Pattern that is always false"
 		result.add( new VerifierMessage(
 								Severity.ERROR,
 								MessageType.ALWAYS_FALSE,
-								$p,
-								$p + " can never be satisfied." ) );
+								$r,
+								$r + " can never be satisfied." ) );
 end
