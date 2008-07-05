@@ -23,7 +23,7 @@ public class RangeCheckDatesTest extends TestBase {
 		assertTrue(true);
 	}
 
-	public void fixmetestSmallerOrEqual() throws Exception {
+	public void testSmallerOrEqual() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
 				.getResourceAsStream("rangeChecks/Dates.drl"));
 
@@ -61,7 +61,7 @@ public class RangeCheckDatesTest extends TestBase {
 		}
 	}
 
-	public void fixmetestGreaterOrEqual() throws Exception {
+	public void testGreaterOrEqual() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
 				.getResourceAsStream("rangeChecks/Dates.drl"));
 
@@ -99,7 +99,7 @@ public class RangeCheckDatesTest extends TestBase {
 		}
 	}
 
-	public void fixmetestEqualAndGreaterThan() throws Exception {
+	public void testEqualAndGreaterThan() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
 				.getResourceAsStream("rangeChecks/Dates.drl"));
 
@@ -138,7 +138,7 @@ public class RangeCheckDatesTest extends TestBase {
 		}
 	}
 
-	public void fixmetestEqualAndSmallerThan() throws Exception {
+	public void testEqualAndSmallerThan() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
 				.getResourceAsStream("rangeChecks/Dates.drl"));
 
