@@ -4,25 +4,45 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CompositePackageClassLoader extends ClassLoader implements DroolsClassLoader  {
+public class CompositePackageClassLoader extends ClassLoader
+    implements
+    DroolsClassLoader {
 
     private final List<ClassLoader> classLoaders = new ArrayList<ClassLoader>();
+    private final List<ClassLoader> parents      = new ArrayList<ClassLoader>();
 
     public CompositePackageClassLoader(final ClassLoader parentClassLoader) {
         super( parentClassLoader );
+        this.parents.add( getParent() );
     }
 
     public void addClassLoader(final ClassLoader classLoader) {
+        // don't add duplicate classloaders;
+        for ( final ClassLoader cl : this.classLoaders ) {
+            if ( cl == classLoader ) {
+                return;
+            }
+        }
         this.classLoaders.add( classLoader );
+
+        // we need to record parents for fast finding in a unique list
+        ClassLoader parent = classLoader.getParent();
+        for ( final ClassLoader cl : this.parents ) {
+            if ( cl == parent ) {
+                return;
+            }
+        }
+        this.parents.add( parent );
+
     }
 
     public void removeClassLoader(final ClassLoader classLoader) {
-        classLoaders.remove(classLoader);
+        classLoaders.remove( classLoader );
     }
 
     public Class fastFindClass(final String name) {
         for ( final ClassLoader classLoader : this.classLoaders ) {
-            final Class clazz = ((DroolsClassLoader)classLoader).fastFindClass( name );
+            final Class clazz = ((DroolsClassLoader) classLoader).fastFindClass( name );
             if ( clazz != null ) {
                 return clazz;
             }
@@ -39,33 +59,42 @@ public class CompositePackageClassLoader extends ClassLoader implements DroolsCl
      */
     protected synchronized Class loadClass(final String name,
                                            final boolean resolve) throws ClassNotFoundException {
-        Class clazz = findLoadedClass( name );
+        Class cls = findLoadedClass( name );
 
-        if ( clazz == null ) {
-            clazz = fastFindClass( name );
+        if ( cls == null ) {
+            cls = fastFindClass( name );
 
-            if ( clazz == null ) {
+            if ( cls == null ) {
+                // now check all parents
+                for ( final ClassLoader parent : this.parents ) {
+                    try {
+                        // due to this bug http://bugs.sun.com/bugdatabase/view_bug.do;jsessionid=2a9a78e4393c5e678a2c80f90c1?bug_id=6434149
+                        cls = Class.forName( name,
+                                             true,
+                                             parent );
+                    } catch ( ClassNotFoundException e ) {
+                        // swallow
+                    }
+                    if ( cls != null ) {
+                        break;
+                    }
+                }
 
-                final ClassLoader parent = getParent();
-                if ( parent != null ) {
-                    clazz = Class.forName( name,
-                                           true,
-                                           parent );
-                } else {
+                if ( cls == null ) {
                     return null;
                 }
             }
         }
 
         if ( resolve ) {
-            resolveClass( clazz );
+            resolveClass( cls );
         }
 
-        return clazz;
+        return cls;
     }
 
     public InputStream getResourceAsStream(final String name) {
-        InputStream stream =  super.getResourceAsStream( name );
+        InputStream stream = super.getResourceAsStream( name );
 
         for ( final ClassLoader classLoader : this.classLoaders ) {
             stream = classLoader.getResourceAsStream( name );
