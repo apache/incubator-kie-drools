@@ -34,11 +34,11 @@ public class ImportError extends DroolsError {
     }
 
     public String getMessage() {
-        return this.importName;
+        return "Error importing : '" + this.importName + "'";
     }
     
     public String toString() {
-        return this.getMessage();
+        return getMessage();
     }
 
 }
