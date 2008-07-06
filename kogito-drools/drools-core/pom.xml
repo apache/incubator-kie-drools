@@ -18,12 +18,18 @@
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
       <optional>true</optional>
-    </dependency>
-
+    </dependency>    
+        
     <dependency>
       <groupId>org.mvel</groupId>
       <artifactId>mvel</artifactId>
-    </dependency>     
+    </dependency> 
+
+    <!--dependency>
+      <groupId>milyn</groupId>
+      <artifactId>milyn-smooks-javabean</artifactId>
+      <version>1.0.1</version>
+    </dependency-->         
     
   </dependencies>
   
