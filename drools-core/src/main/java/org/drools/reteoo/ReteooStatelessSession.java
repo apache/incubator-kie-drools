@@ -13,6 +13,7 @@ import org.drools.StatelessSession;
 import org.drools.StatelessSessionResult;
 import org.drools.base.MapGlobalResolver;
 import org.drools.common.InternalRuleBase;
+import org.drools.common.InternalStatelessSession;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.concurrent.AssertObject;
 import org.drools.concurrent.AssertObjects;
@@ -36,6 +37,7 @@ import org.drools.spi.GlobalResolver;
 public class ReteooStatelessSession
     implements
     StatelessSession,
+    InternalStatelessSession,
     Externalizable {
     //private WorkingMemory workingMemory;
 
@@ -72,6 +74,10 @@ public class ReteooStatelessSession
         out.writeObject( agendaFilter );
         out.writeObject( globalResolver );
         out.writeObject( globalExporter );
+    }
+    
+    public InternalRuleBase getRuleBase() {
+        return this.ruleBase;
     }
 
     public InternalWorkingMemory newWorkingMemory() {
