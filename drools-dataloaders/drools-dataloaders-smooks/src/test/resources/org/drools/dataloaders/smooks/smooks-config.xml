@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.0.xsd">
+
+    <!--
+    Create an "example.beans.Order" bean instance when we visit the start of the <order> element.
+    Assign the new bean instance to the beanId of "order".
+    -->
+    <resource-config selector="root">
+        <resource>org.milyn.javabean.BeanPopulator</resource>
+        <param name="beanId">root</param>
+        <param name="beanClass">org.drools.dataloaders.smooks.Root</param>
+        <param name="bindings">
+            <binding property="children" selector="${children}" />
+        </param>
+    </resource-config>
+
+    <!--
+    Create an ArrayList bean instance when we visit the start of the <order> element.
+    Call it "orderItems" and seet it on the "order".
+    -->
+    <resource-config selector="root">
+        <resource>org.milyn.javabean.BeanPopulator</resource>
+        <param name="beanId">children</param>
+        <param name="beanClass">java.util.ArrayList</param>
+        <param name="bindings">
+			<binding selector="${orderItem}" />
+		</param>
+    </resource-config>
+
+    <!--
+    Create an "example.beans.OrderItem" bean instance when we visit the start of the <order-item> element.
+    Set the OrderItem instances on the "orderItem".
+    -->
+    <resource-config selector="order-item">
+        <resource>org.milyn.javabean.BeanPopulator</resource>
+        <param name="beanClass">example.OrderItem</param>
+        <param name="bindings">
+            <!-- OrderItem bindings... -->
+            <binding property="productId" type="Long" selector="order-item product" />
+            <binding property="quantity" type="Integer" selector="order-item quantity" />
+            <binding property="price" type="Double" selector="order-item price" />
+        </param>
+    </resource-config>
+
+
+</smooks-resource-list>
