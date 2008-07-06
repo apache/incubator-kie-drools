@@ -198,7 +198,7 @@ public class PackageBuilderConfigurationTest extends TestCase {
         PackageDescr pkgDescr = new PackageDescr( "org.pkg1" );
         pkgDescr.addImport( new ImportDescr( "java.util.HashMap" ) );
         FunctionImportDescr functionImportDescr = new FunctionImportDescr();
-        functionImportDescr.setTarget( "System.out.println" );
+        functionImportDescr.setTarget( "java.lang.System.currentTimeMillis" );
         pkgDescr.addFunctionImport( functionImportDescr );
 
         pkgDescr.addRule( ruleDescr );
@@ -208,15 +208,17 @@ public class PackageBuilderConfigurationTest extends TestCase {
         assertSame( ruleDescr,
                     mockDialect2.getRuleDescr() );
         assertTrue( mockDialect2.getImport().contains( "java.util.HashMap" ) );
-        assertTrue( mockDialect2.getStaticImport().contains( "System.out.println" ) );
+        assertTrue( mockDialect2.getStaticImport().contains( "java.lang.System.currentTimeMillis" ) );
         assertEquals( "eval was built",
                       evalDescr.getContent() );
         assertEquals( "consequence was built",
                       ruleDescr.getConsequence() );
-        assertTrue( mockDialect2.isCompileAll() );
+        assertTrue( mockDialect2.isCompileAll() );        
 
         assertNotNull( pkg.getRule( "test rule" ) );
 
+        // make sure there were no other general errors.
+        assertFalse( builder.hasErrors() );
     }
 
     public static class MockDialectConfiguration
