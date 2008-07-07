@@ -4,19 +4,20 @@ import org.drools.verifier.report.components.Cause;
 import org.drools.verifier.report.components.CauseType;
 
 /**
- *
+ * 
  * @author Toni Rikkola
  */
 public class Field extends VerifierComponent implements Cause {
 
 	public static class FieldType {
 		public static final FieldType BOOLEAN = new FieldType("boolean");
-		public static final FieldType STRING = new FieldType( "String");
-		public static final FieldType INT = new FieldType( "int");
-		public static final FieldType DOUBLE = new FieldType( "double");
-		public static final FieldType DATE = new FieldType( "Date");
-		public static final FieldType VARIABLE = new FieldType( "Variable");
-		public static final FieldType OBJECT = new FieldType( "Object");
+		public static final FieldType STRING = new FieldType("String");
+		public static final FieldType INT = new FieldType("int");
+		public static final FieldType DOUBLE = new FieldType("double");
+		public static final FieldType DATE = new FieldType("Date");
+		public static final FieldType VARIABLE = new FieldType("Variable");
+		public static final FieldType OBJECT = new FieldType("Object");
+		public static final FieldType ENUM = new FieldType("Enum");
 
 		private final String string;
 
@@ -25,19 +26,17 @@ public class Field extends VerifierComponent implements Cause {
 		}
 
 		@Override
-		public   String toString() {
+		public String toString() {
 			return string;
 		}
 	}
 
 	private static int index = 0;
 
-	private int classId;
-	private String className;
-	private String name;
+	private int objectTypeId;
+	protected String objectTypeName;
+	protected String name;
 	private FieldType fieldType;
-
-	private int lineNumber;
 
 	public Field() {
 		super(index++);
@@ -73,32 +72,24 @@ public class Field extends VerifierComponent implements Cause {
 		}
 	}
 
-	public int getClassId() {
-		return classId;
+	public int getObjectTypeId() {
+		return objectTypeId;
 	}
 
-	public void setClassId(int classId) {
-		this.classId = classId;
+	public void setObjectTypeId(int objectTypeId) {
+		this.objectTypeId = objectTypeId;
 	}
 
-	public int getLineNumber() {
-		return lineNumber;
+	public String getObjectTypeName() {
+		return objectTypeName;
 	}
 
-	public void setLineNumber(int lineNumber) {
-		this.lineNumber = lineNumber;
-	}
-
-	public String getClassName() {
-		return className;
-	}
-
-	public void setClassName(String className) {
-		this.className = className;
+	public void setClassName(String objectTypeName) {
+		this.objectTypeName = objectTypeName;
 	}
 
 	@Override
 	public String toString() {
-		return "Field '" + name + "' from class '" + className + "'";
+		return "Field '" + name + "' from object type '" + objectTypeName + "'";
 	}
 }

@@ -15,7 +15,7 @@ import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.components.Consequence;
 import org.drools.verifier.components.Constraint;
 import org.drools.verifier.components.Field;
-import org.drools.verifier.components.FieldClassLink;
+import org.drools.verifier.components.FieldObjectTypeLink;
 import org.drools.verifier.components.OperatorDescr;
 import org.drools.verifier.components.Pattern;
 import org.drools.verifier.components.PatternPossibility;
@@ -33,16 +33,16 @@ class VerifierDataMaps implements VerifierData {
 	private Map<Integer, RulePackage> packagesById = new TreeMap<Integer, RulePackage>();
 	private Map<String, RulePackage> packagesByName = new TreeMap<String, RulePackage>();
 
-	private Map<Integer, ObjectType> classesById = new TreeMap<Integer, ObjectType>();
-	private Map<String, ObjectType> classesByName = new TreeMap<String, ObjectType>();
-	private Map<String, Field> fieldsByClassAndFieldName = new TreeMap<String, Field>();
+	private Map<Integer, ObjectType> objectTypesById = new TreeMap<Integer, ObjectType>();
+	private Map<String, ObjectType> objectTypesByName = new TreeMap<String, ObjectType>();
+	private Map<String, Field> fieldsByObjectTypeAndFieldName = new TreeMap<String, Field>();
 	private Map<Integer, Field> fieldsById = new TreeMap<Integer, Field>();
-	private DataTree<Integer, Field> fieldsByClassId = new DataTree<Integer, Field>();
-	private Map<String, FieldClassLink> fieldClassLinkByIds = new TreeMap<String, FieldClassLink>();
+	private DataTree<Integer, Field> fieldsByObjectTypeId = new DataTree<Integer, Field>();
+	private Map<String, FieldObjectTypeLink> fieldObjectTypeLinkByIds = new TreeMap<String, FieldObjectTypeLink>();
 
 	private Map<Integer, VerifierRule> rulesById = new TreeMap<Integer, VerifierRule>();
 	private Map<Integer, Pattern> patternsById = new TreeMap<Integer, Pattern>();
-	private DataTree<Integer, Pattern> patternsByClassId = new DataTree<Integer, Pattern>();
+	private DataTree<Integer, Pattern> patternsByObjectTypeId = new DataTree<Integer, Pattern>();
 	private DataTree<String, Pattern> patternsByRuleName = new DataTree<String, Pattern>();
 	private Map<Integer, Constraint> constraintsById = new TreeMap<Integer, Constraint>();
 	private Map<Integer, Restriction> restrictionsById = new TreeMap<Integer, Restriction>();
@@ -58,19 +58,19 @@ class VerifierDataMaps implements VerifierData {
 	private Map<Integer, RulePossibility> rulePossibilitiesById = new TreeMap<Integer, RulePossibility>();
 
 	public void add(ObjectType objectType) {
-		classesById.put(Integer.valueOf(objectType.getId()), objectType);
-		classesByName.put(objectType.getName(), objectType);
+		objectTypesById.put(Integer.valueOf(objectType.getId()), objectType);
+		objectTypesByName.put(objectType.getName(), objectType);
 	}
 
 	public void add(Field field) {
-		ObjectType objectType = classesById.get(Integer.valueOf(field
-				.getClassId()));
-		fieldsByClassAndFieldName.put(objectType.getName() + "." + field.getName(),
-				field);
+		ObjectType objectType = objectTypesById.get(Integer.valueOf(field
+				.getObjectTypeId()));
+		fieldsByObjectTypeAndFieldName.put(objectType.getName() + "."
+				+ field.getName(), field);
 
 		fieldsById.put(field.getId(), field);
 
-		fieldsByClassId.put(field.getClassId(), field);
+		fieldsByObjectTypeId.put(field.getObjectTypeId(), field);
 	}
 
 	public void add(Variable variable) {
@@ -85,7 +85,7 @@ class VerifierDataMaps implements VerifierData {
 	public void add(Pattern pattern) {
 		patternsById.put(Integer.valueOf(pattern.getId()), pattern);
 
-		patternsByClassId.put(pattern.getClassId(), pattern);
+		patternsByObjectTypeId.put(pattern.getObjectTypeId(), pattern);
 		patternsByRuleName.put(pattern.getRuleName(), pattern);
 	}
 
@@ -99,17 +99,19 @@ class VerifierDataMaps implements VerifierData {
 		restrictionsByFieldId.put(restriction.getFieldId(), restriction);
 	}
 
-	public void add(FieldClassLink link) {
-		fieldClassLinkByIds.put(link.getFieldId() + "." + link.getClassId(),
-				link);
+	public void add(FieldObjectTypeLink link) {
+		fieldObjectTypeLinkByIds.put(link.getFieldId() + "."
+				+ link.getObjectTypeId(), link);
 	}
 
-	public ObjectType getClassByPackageAndName(String name) {
-		return classesByName.get(name);
+	public ObjectType getObjectTypeByName(String name) {
+		return objectTypesByName.get(name);
 	}
 
-	public Field getFieldByClassAndFieldName(String className, String fieldName) {
-		return fieldsByClassAndFieldName.get(className + "." + fieldName);
+	public Field getFieldByObjectTypeAndFieldName(String objectTypeName,
+			String fieldName) {
+		return fieldsByObjectTypeAndFieldName.get(objectTypeName + "."
+				+ fieldName);
 	}
 
 	public Variable getVariableByRuleAndVariableName(String ruleName,
@@ -118,8 +120,8 @@ class VerifierDataMaps implements VerifierData {
 				.get(ruleName + "." + variableName);
 	}
 
-	public FieldClassLink getFieldClassLink(int id, int id2) {
-		return fieldClassLinkByIds.get(id + "." + id2);
+	public FieldObjectTypeLink getFieldObjectTypeLink(int id, int id2) {
+		return fieldObjectTypeLinkByIds.get(id + "." + id2);
 	}
 
 	public Collection<VerifierRule> getAllRules() {
@@ -134,19 +136,19 @@ class VerifierDataMaps implements VerifierData {
 		rulePossibilitiesById.put(possibility.getId(), possibility);
 	}
 
-	public Collection<ObjectType> getClassesByRuleName(String ruleName) {
+	public Collection<ObjectType> getObjectTypesByRuleName(String ruleName) {
 		Set<ObjectType> set = new HashSet<ObjectType>();
 
 		for (Pattern pattern : patternsByRuleName.getBranch(ruleName)) {
-			ObjectType objectType = getClassById(pattern.getClassId());
+			ObjectType objectType = getObjectTypeById(pattern.getObjectTypeId());
 			set.add(objectType);
 		}
 
 		return set;
 	}
 
-	public ObjectType getClassById(int id) {
-		return classesById.get(id);
+	public ObjectType getObjectTypeById(int id) {
+		return objectTypesById.get(id);
 	}
 
 	public Collection<? extends Object> getAll() {
@@ -166,25 +168,25 @@ class VerifierDataMaps implements VerifierData {
 		objects.addAll(patternPossibilitiesById.values());
 		objects.addAll(rulePossibilitiesById.values());
 
-		objects.addAll(classesByName.values());
-		objects.addAll(fieldsByClassAndFieldName.values());
+		objects.addAll(objectTypesByName.values());
+		objects.addAll(fieldsByObjectTypeAndFieldName.values());
 		objects.addAll(variablesByRuleAndVariableName.values());
 
 		return objects;
 	}
 
-	public Collection<ObjectType> getAllClasses() {
-		return classesById.values();
+	public Collection<ObjectType> getAllObjectTypes() {
+		return objectTypesById.values();
 	}
 
-	public Collection<Field> getFieldsByClassId(int id) {
-		return fieldsByClassId.getBranch(id);
+	public Collection<Field> getFieldsByObjectTypeId(int id) {
+		return fieldsByObjectTypeId.getBranch(id);
 	}
 
-	public Collection<VerifierRule> getRulesByClassId(int id) {
+	public Collection<VerifierRule> getRulesByObjectTypeId(int id) {
 		Set<VerifierRule> rules = new HashSet<VerifierRule>();
 
-		for (Pattern pattern : patternsByClassId.getBranch(id)) {
+		for (Pattern pattern : patternsByObjectTypeId.getBranch(id)) {
 			rules.add(rulesById.get(pattern.getRuleId()));
 		}
 

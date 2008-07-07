@@ -37,7 +37,8 @@ class VerifierTestStandalone {
 			// fileNames.add("MissingRangesForVariables.drl");
 			// fileNames.add("Misc.drl");
 			// fileNames.add("Misc2.drl");
-			fileNames.add("Misc3.drl");
+			// fileNames.add("Misc3.drl");
+			fileNames.add("Enums.drl");
 			// fileNames.add("ConsequenceTest.drl");
 			// fileNames.add("optimisation/OptimisationRestrictionOrderTest.drl");
 			// fileNames.add("optimisation/OptimisationPatternOrderTest.drl");
@@ -54,25 +55,23 @@ class VerifierTestStandalone {
 			a.fireAnalysis();
 			// System.out.print(a.getResultAsPlainText());
 			// System.out.print(a.getResultAsXML());
-//			 a.writeComponentsHTML("/stash/");
-//			 a.writeComponentsHTML("/Users/michaelneale/foo.html");
-			 a.writeComponentsHTML("/home/trikkola/");
-//			a.writeComponentsHTML("c:/");
+			// a.writeComponentsHTML("/stash/");
+			// a.writeComponentsHTML("/Users/michaelneale/foo.html");
+			a.writeComponentsHTML("/home/trikkola/");
+			// a.writeComponentsHTML("c:/");
 
 			VerifierResult result = a.getResult();
 			Collection<VerifierMessageBase> msgs = result
 					.getBySeverity(Severity.ERROR);
 
 			for (Iterator iterator = msgs.iterator(); iterator.hasNext();) {
-				VerifierMessageBase msg = (VerifierMessageBase) iterator
-						.next();
+				VerifierMessageBase msg = (VerifierMessageBase) iterator.next();
 				System.out.println("ERR: " + msg.getMessage());
 			}
 
 			msgs = result.getBySeverity(Severity.WARNING);
 			for (Iterator iterator = msgs.iterator(); iterator.hasNext();) {
-				VerifierMessageBase msg = (VerifierMessageBase) iterator
-						.next();
+				VerifierMessageBase msg = (VerifierMessageBase) iterator.next();
 				System.out.println("WARN (" + msg.getClass().getSimpleName()
 						+ "): " + msg.getMessage());
 				System.out.println("\t FAULT: ["
@@ -104,19 +103,18 @@ class VerifierTestStandalone {
 
 			msgs = result.getBySeverity(Severity.NOTE);
 			for (Iterator iterator = msgs.iterator(); iterator.hasNext();) {
-				VerifierMessageBase msg = (VerifierMessageBase) iterator
-						.next();
+				VerifierMessageBase msg = (VerifierMessageBase) iterator.next();
 				System.out.println("NOTE: " + msg.getMessage());
 				System.out.println("\t" + msg.getFaulty());
 			}
 
 			Collection<ObjectType> classes = result.getVerifierData()
-					.getAllClasses();
+					.getAllObjectTypes();
 			for (Iterator iterator = classes.iterator(); iterator.hasNext();) {
 				ObjectType c = (ObjectType) iterator.next();
 
 				Collection<VerifierRule> cr = result.getVerifierData()
-						.getRulesByClassId(c.getId());
+						.getRulesByObjectTypeId(c.getId());
 				System.err.println("Class rules:" + cr);
 				Set<Field> flds = c.getFields();
 				for (Iterator iterator2 = flds.iterator(); iterator2.hasNext();) {

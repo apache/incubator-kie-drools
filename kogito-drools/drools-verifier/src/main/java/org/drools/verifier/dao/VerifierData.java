@@ -9,7 +9,7 @@ import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.components.Consequence;
 import org.drools.verifier.components.Constraint;
 import org.drools.verifier.components.Field;
-import org.drools.verifier.components.FieldClassLink;
+import org.drools.verifier.components.FieldObjectTypeLink;
 import org.drools.verifier.components.OperatorDescr;
 import org.drools.verifier.components.Pattern;
 import org.drools.verifier.components.PatternPossibility;
@@ -40,7 +40,7 @@ public interface VerifierData {
 
 	public void add(Restriction restriction);
 
-	public void add(FieldClassLink link);
+	public void add(FieldObjectTypeLink link);
 
 	public void add(PatternPossibility possibility);
 
@@ -48,30 +48,30 @@ public interface VerifierData {
 
 	public void add(RulePackage rulePackage);
 
-	public ObjectType getClassByPackageAndName(String name);
+	public ObjectType getObjectTypeByName(String name);
 
-	public ObjectType getClassById(int id);
+	public ObjectType getObjectTypeById(int id);
 
-	public Field getFieldByClassAndFieldName(String className, String fieldName);
+	public Field getFieldByObjectTypeAndFieldName(String className, String fieldName);
 
 	public Variable getVariableByRuleAndVariableName(String ruleName,
 			String variableName);
 
 	public Collection<? extends Object> getAll();
 
-	public FieldClassLink getFieldClassLink(int id, int id2);
+	public FieldObjectTypeLink getFieldObjectTypeLink(int id, int id2);
 
 	public Collection<VerifierRule> getAllRules();
 
-	public Collection<ObjectType> getClassesByRuleName(String ruleName);
+	public Collection<ObjectType> getObjectTypesByRuleName(String ruleName);
 
-	public Collection<ObjectType> getAllClasses();
+	public Collection<ObjectType> getAllObjectTypes();
 
 	public Collection<RulePackage> getAllRulePackages();
 
-	public Collection<Field> getFieldsByClassId(int id);
+	public Collection<Field> getFieldsByObjectTypeId(int id);
 
-	public Collection<VerifierRule> getRulesByClassId(int id);
+	public Collection<VerifierRule> getRulesByObjectTypeId(int id);
 
 	public Collection<Field> getAllFields();
 

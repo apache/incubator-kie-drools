@@ -51,7 +51,7 @@ class ComponentsReportVisitor extends ReportVisitor {
 
 	public static String visitRule(String sourceFolder, VerifierRule rule,
 			VerifierData data) {
-		Collection<ObjectType> objectTypes = data.getClassesByRuleName(rule
+		Collection<ObjectType> objectTypes = data.getObjectTypesByRuleName(rule
 				.getRuleName());
 
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -68,7 +68,7 @@ class ComponentsReportVisitor extends ReportVisitor {
 
 	public static String visitObjectType(String sourceFolder,
 			ObjectType objectType, VerifierData data) {
-		Collection<VerifierRule> rules = data.getRulesByClassId(objectType
+		Collection<VerifierRule> rules = data.getRulesByObjectTypeId(objectType
 				.getId());
 
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -87,7 +87,7 @@ class ComponentsReportVisitor extends ReportVisitor {
 	public static String visitField(String sourceFolder, Field field,
 			VerifierResult result) {
 		VerifierData data = result.getVerifierData();
-		ObjectType objectType = data.getClassById(field.getClassId());
+		ObjectType objectType = data.getObjectTypeById(field.getObjectTypeId());
 		Collection<VerifierRule> rules = data.getRulesByFieldId(field.getId());
 
 		Map<String, Object> map = new HashMap<String, Object>();

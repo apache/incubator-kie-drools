@@ -24,7 +24,7 @@ public class ComponentsReportModeller extends ReportModeller {
 		writeToFile(path + UrlFactory.SOURCE_FOLDER + File.separator
 				+ UrlFactory.HTML_FILE_INDEX, formPage(UrlFactory.THIS_FOLDER,
 				ComponentsReportVisitor.visitObjectTypeCollection(
-						UrlFactory.THIS_FOLDER, data.getAllClasses())));
+						UrlFactory.THIS_FOLDER, data.getAllObjectTypes())));
 
 		// packages.htm
 		writeToFile(path + UrlFactory.SOURCE_FOLDER + File.separator
@@ -50,7 +50,7 @@ public class ComponentsReportModeller extends ReportModeller {
 				+ File.separator + UrlFactory.OBJECT_TYPE_FOLDER;
 		File objectTypesFolder = new File(objectTypeFolder);
 		objectTypesFolder.mkdir();
-		for (ObjectType objectType : data.getAllClasses()) {
+		for (ObjectType objectType : data.getAllObjectTypes()) {
 			writeToFile(objectTypeFolder + File.separator + objectType.getId()
 					+ ".htm", formPage(UrlFactory.PREVIOUS_FOLDER,
 					ComponentsReportVisitor.visitObjectType(
