@@ -17,7 +17,7 @@ rule "Find redundant Patterns with restrictions"
 		$left :Pattern()
 		$right :Pattern(
 			id != $left.id,
-	  		classId == $left.classId,
+	  		objectTypeId == $left.objectTypeId,
 	  		# TODO: In some cases the source might be redundant with different sources.
 	 		sourceType == $left.sourceType,
 	  		sourceId == $left.sourceId,
@@ -56,7 +56,7 @@ rule "Find redundant Patterns without restrictions"
 		$left :Pattern()
 		$right :Pattern(
 			id != $left.id,
-	  		classId == $left.classId,
+	  		objectTypeId == $left.objectTypeId,
 	  		# TODO: In some cases the source might be redundant with different sources.
 	 		sourceType == $left.sourceType,
 	  		sourceId == $left.sourceId,

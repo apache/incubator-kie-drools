@@ -14,7 +14,7 @@ public class Pattern extends VerifierComponent implements Cause {
 	private static int index = 0;
 
 	private int ruleId;
-	private int classId;
+	private int objectTypeId;
 	private String name;
 	private VerifierComponentType sourceType = VerifierComponentType.NOTHING;
 	private int sourceId = -1;
@@ -60,12 +60,12 @@ public class Pattern extends VerifierComponent implements Cause {
 		this.isPatternExists = isExists;
 	}
 
-	public int getClassId() {
-		return classId;
+	public int getObjectTypeId() {
+		return objectTypeId;
 	}
 
 	public void setClassId(int classId) {
-		this.classId = classId;
+		this.objectTypeId = classId;
 	}
 
 	public boolean isPatternForall() {

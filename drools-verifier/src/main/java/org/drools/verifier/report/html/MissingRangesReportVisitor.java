@@ -139,7 +139,7 @@ class MissingRangesReportVisitor extends ReportVisitor {
 				+ UrlFactory.CSS_FOLDER + "/" + UrlFactory.CSS_BASIC));
 
 		map.put("field", field);
-		map.put("objectType", data.getClassById(field.getClassId()));
+		map.put("objectType", data.getObjectTypeById(field.getObjectTypeId()));
 		map.put("ranges", visitRanges(UrlFactory.THIS_FOLDER, restrictions,
 				message.getCauses()));
 

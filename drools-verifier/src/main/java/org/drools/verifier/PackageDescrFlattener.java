@@ -31,6 +31,8 @@ import org.drools.lang.descr.RestrictionConnectiveDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.VariableRestrictionDescr;
+import org.drools.verifier.components.EnumField;
+import org.drools.verifier.components.EnumRestriction;
 import org.drools.verifier.components.VerifierAccessorDescr;
 import org.drools.verifier.components.VerifierAccumulateDescr;
 import org.drools.verifier.components.ObjectType;
@@ -74,7 +76,7 @@ class PackageDescrFlattener {
 	private VerifierRule currentRule = null;
 	private Pattern currentPattern = null;
 	private Constraint currentConstraint = null;
-	private ObjectType currentClass = null;
+	private ObjectType currentObjectType = null;
 	private Field currentField = null;
 
 	/**
@@ -153,7 +155,7 @@ class PackageDescrFlattener {
 			return flatten((CollectDescr) descr, parent);
 		} else if (descr instanceof FromDescr) {
 			return flatten((FromDescr) descr, parent);
-		}else {
+		} else {
 			throw new UnknownDescriptionException(descr);
 		}
 	}
@@ -168,7 +170,7 @@ class PackageDescrFlattener {
 			return flatten((FunctionCallDescr) descr, parent);
 		} else if (descr instanceof MethodAccessDescr) {
 			return flatten((MethodAccessDescr) descr, parent);
-		}else {
+		} else {
 			throw new UnknownDescriptionException(descr);
 		}
 	}
@@ -283,9 +285,10 @@ class PackageDescrFlattener {
 	 * 
 	 * @param descr
 	 * @return
-	 * @throws UnknownDescriptionException 
+	 * @throws UnknownDescriptionException
 	 */
-	private VerifierFromDescr flatten(FromDescr descr, VerifierComponent parent) throws UnknownDescriptionException {
+	private VerifierFromDescr flatten(FromDescr descr, VerifierComponent parent)
+			throws UnknownDescriptionException {
 		VerifierFromDescr from = new VerifierFromDescr();
 
 		VerifierComponent ds = flatten(descr.getDataSource(), from);
@@ -483,14 +486,8 @@ class PackageDescrFlattener {
 	private int flatten(PatternDescr descr, VerifierComponent parent,
 			int orderNumber) throws UnknownDescriptionException {
 
-		ObjectType objectType = data.getClassByPackageAndName(descr
-				.getObjectType());
-		if (objectType == null) {
-			objectType = new ObjectType();
-			objectType.setName(descr.getObjectType());
-			data.add(objectType);
-		}
-		currentClass = objectType;
+		ObjectType objectType = findOrCreateNewObjectType(descr.getObjectType());
+		currentObjectType = objectType;
 
 		Pattern pattern = new Pattern();
 		pattern.setRuleId(currentRule.getId());
@@ -538,11 +535,11 @@ class PackageDescrFlattener {
 	private void flatten(FieldConstraintDescr descr, VerifierComponent parent,
 			int orderNumber) throws UnknownDescriptionException {
 
-		Field field = data.getFieldByClassAndFieldName(currentClass.getName(),
-				descr.getFieldName());
+		Field field = data.getFieldByObjectTypeAndFieldName(currentObjectType
+				.getName(), descr.getFieldName());
 		if (field == null) {
-			field = createField(descr.getFieldName(), descr.getLine(),
-					currentClass.getId(), currentClass.getName());
+			field = createField(descr.getFieldName(),
+					currentObjectType.getId(), currentObjectType.getName());
 			data.add(field);
 		}
 		currentField = field;
@@ -708,42 +705,94 @@ class PackageDescrFlattener {
 			VerifierComponent parent, int orderNumber) {
 
 		String text = descr.getText();
+
+		String base = text.substring(0, text.indexOf("."));
+		String fieldName = text.substring(text.indexOf("."));
+
 		Variable variable = data.getVariableByRuleAndVariableName(currentRule
-				.getRuleName(), text.substring(0, text.indexOf(".")));
+				.getRuleName(), base);
 
-		QualifiedIdentifierRestriction restriction = new QualifiedIdentifierRestriction();
+		if (variable != null) {
 
-		restriction.setRuleId(currentRule.getId());
-		restriction.setPatternId(currentPattern.getId());
-		restriction.setPatternIsNot(currentPattern.isPatternNot());
-		restriction.setConstraintId(currentConstraint.getId());
-		restriction.setFieldId(currentConstraint.getFieldId());
-		restriction.setOperator(Operator.determineOperator(
-				descr.getEvaluator(), descr.isNegated()));
-		restriction.setVariableId(variable.getId());
-		restriction.setVariableName(text.substring(0, text.indexOf(".")));
-		restriction.setVariablePath(text.substring(text.indexOf(".")));
-		restriction.setOrderNumber(orderNumber);
-		restriction.setParent(parent);
+			QualifiedIdentifierRestriction restriction = new QualifiedIdentifierRestriction();
 
-		// Set field value, if it is unset.
-		currentField.setFieldType(Field.FieldType.VARIABLE);
+			restriction.setRuleId(currentRule.getId());
+			restriction.setPatternId(currentPattern.getId());
+			restriction.setPatternIsNot(currentPattern.isPatternNot());
+			restriction.setConstraintId(currentConstraint.getId());
+			restriction.setFieldId(currentConstraint.getFieldId());
+			restriction.setOperator(Operator.determineOperator(descr
+					.getEvaluator(), descr.isNegated()));
+			restriction.setVariableId(variable.getId());
+			restriction.setVariableName(base);
+			restriction.setVariablePath(fieldName);
+			restriction.setOrderNumber(orderNumber);
+			restriction.setParent(parent);
 
-		variable.setObjectType(VerifierComponentType.FIELD);
+			// Set field value, if it is not set.
+			currentField.setFieldType(Field.FieldType.VARIABLE);
 
-		data.add(restriction);
-		solvers.addRestriction(restriction);
+			variable.setObjectType(VerifierComponentType.FIELD);
+
+			data.add(restriction);
+			solvers.addRestriction(restriction);
+		} else {
+
+			EnumField enumField = (EnumField) data
+					.getFieldByObjectTypeAndFieldName(base, fieldName);
+			if (enumField == null) {
+				ObjectType objectType = findOrCreateNewObjectType(base);
+
+				enumField = new EnumField();
+				enumField.setObjectTypeId(objectType.getId());
+				enumField.setClassName(objectType.getName());
+				enumField.setName(fieldName);
+
+				objectType.getFields().add(enumField);
+
+				data.add(enumField);
+			}
+
+			EnumRestriction restriction = new EnumRestriction();
+
+			restriction.setRuleId(currentRule.getId());
+			restriction.setPatternId(currentPattern.getId());
+			restriction.setPatternIsNot(currentPattern.isPatternNot());
+			restriction.setConstraintId(currentConstraint.getId());
+			restriction.setFieldId(currentConstraint.getFieldId());
+			restriction.setOperator(Operator.determineOperator(descr
+					.getEvaluator(), descr.isNegated()));
+			restriction.setEnumBaseId(enumField.getId());
+			restriction.setEnumBase(base);
+			restriction.setEnumName(fieldName);
+			restriction.setOrderNumber(orderNumber);
+			restriction.setParent(parent);
+
+			// Set field value, if it is not set.
+			currentField.setFieldType(Field.FieldType.ENUM);
+
+			data.add(restriction);
+			solvers.addRestriction(restriction);
+		}
 	}
 
-	private Field createField(String fieldName, int line, int classId,
-			String className) {
+	private ObjectType findOrCreateNewObjectType(String name) {
+		ObjectType objectType = data.getObjectTypeByName(name);
+		if (objectType == null) {
+			objectType = new ObjectType();
+			objectType.setName(name);
+			data.add(objectType);
+		}
+		return objectType;
+	}
+
+	private Field createField(String fieldName, int classId, String className) {
 		Field field = new Field();
-		field.setClassId(classId);
+		field.setObjectTypeId(classId);
 		field.setClassName(className);
 		field.setName(fieldName);
-		field.setLineNumber(line);
 
-		currentClass.getFields().add(field);
+		currentObjectType.getFields().add(field);
 		return field;
 	}
 

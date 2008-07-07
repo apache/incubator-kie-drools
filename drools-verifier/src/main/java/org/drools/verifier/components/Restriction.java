@@ -5,7 +5,7 @@ import org.drools.verifier.report.components.Cause;
 import org.drools.verifier.report.components.CauseType;
 
 /**
- *
+ * 
  * @author Toni Rikkola
  */
 public abstract class Restriction extends VerifierComponent implements Cause {
@@ -17,6 +17,7 @@ public abstract class Restriction extends VerifierComponent implements Cause {
 				2);
 		public static final RestrictionType RETURN_VALUE_RESTRICTION = new RestrictionType(
 				3);
+		public static final RestrictionType ENUM = new RestrictionType(4);
 
 		private final int index;
 

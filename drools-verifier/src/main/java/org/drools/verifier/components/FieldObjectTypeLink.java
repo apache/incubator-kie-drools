@@ -4,14 +4,14 @@ package org.drools.verifier.components;
  * 
  * @author Toni Rikkola
  */
-public class FieldClassLink extends VerifierComponent {
+public class FieldObjectTypeLink extends VerifierComponent {
 
 	private static int index = 0;
 
 	private int fieldId;
-	private int classId;
+	private int objectTypeId;
 
-	public FieldClassLink() {
+	public FieldObjectTypeLink() {
 		super(index++);
 	}
 
@@ -20,12 +20,12 @@ public class FieldClassLink extends VerifierComponent {
 		return VerifierComponentType.FIELD_CLASS_LINK;
 	}
 
-	public int getClassId() {
-		return classId;
+	public int getObjectTypeId() {
+		return objectTypeId;
 	}
 
 	public void setClassId(int classId) {
-		this.classId = classId;
+		this.objectTypeId = classId;
 	}
 
 	public int getFieldId() {
