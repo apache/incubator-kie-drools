@@ -3,6 +3,7 @@ package org.drools.agent;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 
 import org.drools.RuleBase;
@@ -24,7 +25,7 @@ public abstract class PackageProvider {
      * If there was an error reading the packages, this will not fail, it will 
      * just do nothing (as there may be a temporary IO issue). 
      */
-    abstract Package[] loadPackageChanges();
+    abstract PackageChangeInfo loadPackageChanges();
 
     /**
      * This will be passed the entire config.
@@ -47,29 +48,49 @@ public abstract class PackageProvider {
             }
         }
     }    
+
+    static void removePackages(	Collection<String> removedPackages,
+    							RuleBase rb, 
+    							AgentEventListener listener ) {
+    	
+    	for (String name : removedPackages) {
+	        listener.info( "Removing package called " + name );
+	    	removePackage(name, rb);
+		}
+    }    
     
-    
-    static void applyChanges(RuleBase rb, boolean removeExistingPackages, Package[] ps, AgentEventListener listener) {
-        applyChanges( rb, removeExistingPackages, Arrays.asList( ps ), listener );
+    static void applyChanges(RuleBase rb, boolean removeExistingPackages, Collection changes, 
+    		AgentEventListener listener) {
+    	applyChanges(rb, removeExistingPackages, changes, null, listener);
     }
     
-    static void applyChanges(RuleBase rb, boolean removeExistingPackages, Collection changes, AgentEventListener listener) {
-        rb.lock();
-        if ( changes == null ) return;
-        for ( Iterator iter = changes.iterator(); iter.hasNext(); ) {
-            Package p = (Package) iter.next();
-            
-            if ( removeExistingPackages ) {
-                removePackage( p.getName(),
-                               rb );
-            }
-            try {
-                listener.info( "Adding package called " + p.getName() );
-                rb.addPackage( p );
-            } catch ( Exception e ) {
-                throw new RuntimeDroolsException( e );
-            }
-        }
+    static void applyChanges(RuleBase rb, boolean removeExistingPackages, Collection changes, 
+    							Collection<String> removed, AgentEventListener listener) {
+    	if ( changes == null && removed == null ) return;
+    	
+    	rb.lock();
+        
+    	if(removed != null ) {
+    		removePackages(removed, rb, listener);
+    	}
+    	
+    	if( changes != null ) {
+	        for ( Iterator iter = changes.iterator(); iter.hasNext(); ) {
+	            Package p = (Package) iter.next();
+	            
+	            if ( removeExistingPackages ) {
+	                removePackage( p.getName(),
+	                               rb );
+	            }
+	            try {
+	                listener.info( "Adding package called " + p.getName() );
+	                rb.addPackage( p );
+	            } catch ( Exception e ) {
+	                throw new RuntimeDroolsException( e );
+	            }
+	        }
+    	}
+        
         rb.unlock();
     }
     

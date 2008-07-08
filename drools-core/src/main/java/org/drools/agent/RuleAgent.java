@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -290,18 +291,25 @@ public class RuleAgent {
     }
 
     public void refreshRuleBase() {
-
-        List changedPackages = new ArrayList();
+    	
+        List<Package> changedPackages = new ArrayList<Package>();
+        List<String> removedPackages = new ArrayList<String>();
 
         for ( Iterator iter = providers.iterator(); iter.hasNext(); ) {
             PackageProvider prov = (PackageProvider) iter.next();
-            Package[] changes = checkForChanges( prov );
-            if (changes != null && changes.length > 0) {
-                changedPackages.addAll( Arrays.asList( changes ) );
+            PackageChangeInfo info = checkForChanges( prov );
+            Collection<Package> changes = info.getChangedPackages(); 
+            Collection<String> removed = info.getRemovedPackages(); 
+            if (changes != null && changes.size() > 0) {
+                changedPackages.addAll( changes );
+            } 
+            if (removed != null && removed.size() > 0) {
+                removedPackages.addAll( removed );
             }
         }
 
-        if (changedPackages.size() > 0) {
+        // Update changes.
+        if (changedPackages.size() > 0 || removedPackages.size() > 0) {
             listener.info( "Applying changes to the rulebase." );
             //we have a change
             if (this.newInstance) {
@@ -309,30 +317,33 @@ public class RuleAgent {
                 //blow away old
                 this.ruleBase = RuleBaseFactory.newRuleBase( this.ruleBaseConf );
 
+                // Remove removed packages.
+                for (String name : removedPackages) {
+            		this.packages.remove( name );
+				}
                 //need to store ALL packages
-                for ( Iterator iter = changedPackages.iterator(); iter.hasNext(); ) {
-                    Package element = (Package) iter.next();
+                for ( Package element : changedPackages ) {
                     this.packages.put( element.getName(), element ); //replace
                 }
                 //get packages from full name
                 PackageProvider.applyChanges( this.ruleBase, false, this.packages.values(), this.listener );
             } else {
-                PackageProvider.applyChanges( this.ruleBase, true, changedPackages, this.listener );
+                PackageProvider.applyChanges( this.ruleBase, true, changedPackages, removedPackages, this.listener );
             }
         }
 
 
     }
 
-    private synchronized Package[] checkForChanges(PackageProvider prov) {
+    private synchronized PackageChangeInfo checkForChanges(PackageProvider prov) {
         listener.debug( "SCANNING FOR CHANGE " + prov.toString() );
         if (this.ruleBase == null) ruleBase = RuleBaseFactory.newRuleBase( this.ruleBaseConf );
-        Package[] changes = prov.loadPackageChanges();
-        return changes;
+        PackageChangeInfo info = prov.loadPackageChanges();
+        return info ;
     }
 
     /**
-     * Convert a space seperated list into a List of stuff.
+     * Convert a space separated list into a List of stuff.
      * If a filename or whatnot has a space in it, you can put double quotes around it
      * and it will read it in as one token.
      */

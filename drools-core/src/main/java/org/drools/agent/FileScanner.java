@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,9 +18,10 @@ import org.drools.util.DroolsStreamUtils;
  *
  */
 public class FileScanner extends PackageProvider {
-
-    File[] files;
-    Map    lastUpdated = new HashMap();
+	
+    File[] 				files;
+    Map    				lastUpdated = new HashMap();
+    Map<String,String> 	pathToPackage = null;
 
 
     /**
@@ -52,8 +52,8 @@ public class FileScanner extends PackageProvider {
      * If there was an error reading the packages, this will not fail, it will
      * just do nothing (as there may be a temporary IO issue).
      */
-    Package[] loadPackageChanges() {
-        Package[] changes = getChangeSet();
+    PackageChangeInfo loadPackageChanges() {
+    	PackageChangeInfo changes = getChangeSet();
         return changes;
     }
 
@@ -64,19 +64,31 @@ public class FileScanner extends PackageProvider {
      * Calculate a change set, based on last updated times.
      * (keep a map of files).
      */
-    private Package[] getChangeSet() {
-        if ( this.files == null ) return new Package[0];
-        List list = new ArrayList();
+    private PackageChangeInfo getChangeSet() {
+    	PackageChangeInfo info = new PackageChangeInfo();
+        if ( this.files == null ) return info;
+        
+        if( pathToPackage == null ) pathToPackage = new HashMap<String,String>();
+        
         for ( int i = 0; i < files.length; i++ ) {
             File f = files[i];
-            if ( hasChanged( f.getPath(),
+            
+            if( !f.exists() ){
+            	String name = pathToPackage.get(f.getPath());
+            	if( name != null ){
+            		info.addRemovedPackage( name );
+            	}
+            } else if ( hasChanged( f.getPath(),
                              this.lastUpdated,
                              f.lastModified() ) ) {
                 Package p = readPackage( f );
-                if ( p != null ) list.add( p );
+                if ( p != null ) {
+                	info.addPackage( p );
+                	pathToPackage.put(f.getPath(), p.getName());
+                }
             }
         }
-        return (Package[]) list.toArray( new Package[list.size()] );
+        return info;
     }
 
     /**

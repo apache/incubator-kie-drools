@@ -84,8 +84,8 @@ public class URLScanner extends PackageProvider {
 
 
 
-    Package[] loadPackageChanges() { //void updateRuleBase(RuleBase rb, boolean removeExistingPackages) {
-        Package[] changes = null;
+    PackageChangeInfo loadPackageChanges() { //void updateRuleBase(RuleBase rb, boolean removeExistingPackages) {
+    	PackageChangeInfo changes = null;
         try {
             changes = getChangeSet();
             return changes;
@@ -102,21 +102,24 @@ public class URLScanner extends PackageProvider {
         return null;
     }
 
-    private Package[] getChangeSet() throws IOException, ClassNotFoundException {
-        if ( this.urls == null ) return new Package[0];
-        List list = new ArrayList();
+    private PackageChangeInfo getChangeSet() throws IOException, ClassNotFoundException {
+    	
+    	PackageChangeInfo info = new PackageChangeInfo();
+    	
+        if ( this.urls == null ) return info;
+        
         for ( int i = 0; i < urls.length; i++ ) {
             URL u = urls[i];
             if ( hasChanged( u, this.lastUpdated) ) {
                 Package p = readPackage( u );
                 if ( p == null ) return null;
-                list.add( p );
+                info.addPackage( p );
                 if (localCacheDir != null) {
                     writeLocalCacheCopy(p, u, localCacheDir);
                 }
             }
         }
-        return (Package[]) list.toArray( new Package[list.size()] );
+        return info;
     }
 
     private void writeLocalCacheCopy(Package p, URL u, File localCacheDir) {
