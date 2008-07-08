@@ -136,7 +136,7 @@ public class URLScannerTest extends TestCase {
 
         RuleBase rb = RuleBaseFactory.newRuleBase();
         AgentEventListener list = getNilListener();
-        PackageProvider.applyChanges( rb, false, scan.loadPackageChanges(), list );
+        PackageProvider.applyChanges( rb, false, scan.loadPackageChanges().getChangedPackages(), list );
 
 
         assertEquals( 2, rb.getPackages().length );
@@ -202,7 +202,7 @@ public class URLScannerTest extends TestCase {
         assertNotNull( scan.localCacheDir );
 
         RuleBase rb = RuleBaseFactory.newRuleBase();
-        PackageProvider.applyChanges( rb, false, scan.loadPackageChanges(), getNilListener() );
+        PackageProvider.applyChanges( rb, false, scan.loadPackageChanges().getChangedPackages(), getNilListener() );
 
 
         assertEquals( 2, rb.getPackages().length );
@@ -236,7 +236,7 @@ public class URLScannerTest extends TestCase {
 
         rb = RuleBaseFactory.newRuleBase();
         assertEquals(0, rb.getPackages().length);
-        PackageProvider.applyChanges( rb, true, scan.loadPackageChanges(), getNilListener() );
+        PackageProvider.applyChanges( rb, true, scan.loadPackageChanges().getChangedPackages(), getNilListener() );
 
         assertEquals(2, rb.getPackages().length);
 
@@ -261,8 +261,8 @@ public class URLScannerTest extends TestCase {
 
         };
 
-        Package[] changes = scan.loadPackageChanges();
-        assertEquals(0, changes.length);
+        PackageChangeInfo changes = scan.loadPackageChanges();
+        assertEquals(0, changes.getChangedPackages().size());
         assertEquals(true, fetchCalled[0]);
         assertEquals(2, ((MockListener)scan.listener).exceptions.size());
 
@@ -305,7 +305,7 @@ public class URLScannerTest extends TestCase {
         assertNotNull( scan.localCacheDir );
 
         RuleBase rb = RuleBaseFactory.newRuleBase();
-        PackageProvider.applyChanges( rb, true, scan.loadPackageChanges(), getNilListener() );
+        PackageProvider.applyChanges( rb, true, scan.loadPackageChanges().getChangedPackages(), getNilListener() );
         assertEquals(2, rb.getPackages().length);
 
 

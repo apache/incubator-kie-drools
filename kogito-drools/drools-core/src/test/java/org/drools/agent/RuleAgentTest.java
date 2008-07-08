@@ -223,6 +223,120 @@ public class RuleAgentTest extends TestCase {
 
 
     }
+    
+    public void testPollingFilesRuleBaseRemoveNewInstanceFalse() throws Exception {
+    	File dir = RuleBaseAssemblerTest.getTempDirectory();
+    	
+    	Package p1 = new Package("p1");
+    	File p1f = new File(dir, "p43_.pkg");
+    	RuleBaseAssemblerTest.writePackage( p1, p1f );
+    	
+    	Package p2 = new Package("p2");
+    	File p2f = new File(dir, "p44_.pkg");
+    	RuleBaseAssemblerTest.writePackage( p2, p2f );
+    	
+    	
+    	
+    	String path = dir.getPath() + "/" + "p43_.pkg " + dir.getPath() + "/p44_.pkg";
+    	
+    	Properties props = new Properties();
+    	props.setProperty( "file", path );
+    	
+    	props.setProperty( "newInstance", "false" );
+    	RuleAgent ag = RuleAgent.newRuleAgent(props);
+    	
+    	assertFalse(ag.isNewInstance());
+    	
+    	RuleBase rb = ag.getRuleBase();
+    	assertEquals(2, rb.getPackages().length);
+    	
+    	
+    	boolean success = p2f.delete();
+    	assertTrue(success);
+    	
+    	ag.refreshRuleBase();
+
+    	assertEquals(1, rb.getPackages().length);
+    	Thread.sleep( 1000 );
+    	//only change one
+    	RuleBaseAssemblerTest.writePackage( p1, p1f );
+    	Thread.sleep( 1000 );
+    	ag.refreshRuleBase();
+    	    	
+    	
+    	//check we will have 2
+    	assertEquals(1, rb.getPackages().length);
+    	
+    	ag.refreshRuleBase();
+    	ag.refreshRuleBase();
+    	
+    	assertEquals(1, rb.getPackages().length);
+    	
+    	
+    	
+    	
+    }
+    
+    public void testPollingFilesRuleBaseRemoveNewInstanceTrue() throws Exception {
+    	File dir = RuleBaseAssemblerTest.getTempDirectory();
+    	
+    	Package p1 = new Package("p1");
+    	File p1f = new File(dir, "p43_.pkg");
+    	RuleBaseAssemblerTest.writePackage( p1, p1f );
+    	
+    	Package p2 = new Package("p2");
+    	File p2f = new File(dir, "p44_.pkg");
+    	RuleBaseAssemblerTest.writePackage( p2, p2f );
+    	
+    	
+    	
+    	String path = dir.getPath() + "/" + "p43_.pkg " + dir.getPath() + "/p44_.pkg";
+    	
+    	Properties props = new Properties();
+    	props.setProperty( "file", path );
+    	
+    	props.setProperty( "newInstance", "true" );
+    	RuleAgent ag = RuleAgent.newRuleAgent(props);
+    	
+    	assertTrue(ag.isNewInstance());
+    	
+    	RuleBase rb = ag.getRuleBase();
+    	assertEquals(2, rb.getPackages().length);
+    	
+    	
+    	boolean success = p2f.delete();
+    	assertTrue(success);
+    	
+    	ag.refreshRuleBase();
+
+    	RuleBase rb_ = ag.getRuleBase();
+    	
+    	assertNotSame(rb, rb_);
+    	
+    	assertEquals(1, rb_.getPackages().length);
+    	Thread.sleep( 1000 );
+    	//only change one
+    	RuleBaseAssemblerTest.writePackage( p1, p1f );
+    	Thread.sleep( 1000 );
+    	ag.refreshRuleBase();
+
+    	RuleBase rb__ = ag.getRuleBase();
+    	
+    	assertNotSame(rb, rb__);
+    	
+    	//check we will have 2
+    	assertEquals(1, rb__.getPackages().length);
+    	
+    	ag.refreshRuleBase();
+    	ag.refreshRuleBase();
+
+    	RuleBase rb___ = ag.getRuleBase();
+    	assertEquals(1, rb___.getPackages().length);
+    	
+    	
+    	
+    	
+    }
 
 
     public void testDirectory() throws Exception {

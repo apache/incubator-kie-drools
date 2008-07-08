@@ -52,7 +52,7 @@ public class FileScannerTest extends TestCase {
         scan.configure( props );
         
         RuleBase rb = RuleBaseFactory.newRuleBase();
-        PackageProvider.applyChanges( rb, true, scan.loadPackageChanges(), new MockListener() );
+        PackageProvider.applyChanges( rb, true, scan.loadPackageChanges().getChangedPackages(), new MockListener() );
         
         
         
@@ -60,13 +60,13 @@ public class FileScannerTest extends TestCase {
         assertTrue("p1".equals(rb.getPackages()[0].getName()) || "p1".equals(rb.getPackages()[1].getName()));
         assertTrue("p2".equals(rb.getPackages()[0].getName()) || "p2".equals(rb.getPackages()[1].getName()));
 
-        PackageProvider.applyChanges( rb, true, scan.loadPackageChanges(), new MockListener() );
+        PackageProvider.applyChanges( rb, true, scan.loadPackageChanges().getChangedPackages(), new MockListener() );
         assertEquals(2, rb.getPackages().length);
         assertTrue("p1".equals(rb.getPackages()[0].getName()) || "p1".equals(rb.getPackages()[1].getName()));
         assertTrue("p2".equals(rb.getPackages()[0].getName()) || "p2".equals(rb.getPackages()[1].getName()));
 
         RuleBaseAssemblerTest.writePackage( p2, p2f );
-        PackageProvider.applyChanges( rb, true, scan.loadPackageChanges(), new MockListener() );
+        PackageProvider.applyChanges( rb, true, scan.loadPackageChanges().getChangedPackages(), new MockListener() );
 
 
         assertEquals(2, rb.getPackages().length);
@@ -79,7 +79,7 @@ public class FileScannerTest extends TestCase {
         FileScanner scan = new FileScanner();
         RuleBase rb = RuleBaseFactory.newRuleBase();
         
-        PackageProvider.applyChanges( rb, true, scan.loadPackageChanges(), new MockListener() );
+        PackageProvider.applyChanges( rb, true, scan.loadPackageChanges().getChangedPackages(), new MockListener() );
 
         assertEquals(0, rb.getPackages().length);
     }

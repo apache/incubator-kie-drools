@@ -11,7 +11,7 @@ public  class MockProvider extends PackageProvider {
         public void configure(Properties config) {
         }
 
-        Package[] loadPackageChanges() {
+        PackageChangeInfo loadPackageChanges() {
             return null;
         }
 
