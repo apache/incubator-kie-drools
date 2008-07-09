@@ -1,6 +1,8 @@
 package org.drools.guvnor.client.modeldriven.brl;
 
 
+import java.util.List;
+
 /**
  * A fact pattern is a declaration of a fact type, and its constraint,
  * and perhaps a variable that is it bound to
@@ -64,4 +66,18 @@ public class FactPattern
         }
     }
 
+    public void setFieldConstraints(final List sortedConstraints) {
+        if (sortedConstraints != null) {
+            if (this.constraintList != null) {
+                this.constraintList.constraints = new FieldConstraint[sortedConstraints.size()];
+                for (int i = 0; i < sortedConstraints.size(); i++) {
+                    this.constraintList.constraints[i] = (FieldConstraint) sortedConstraints.get(i);
+                }
+            } else if (sortedConstraints.size() > 0) {
+                throw new IllegalStateException("Cannot have constraints if constraint list is null.");
+            }
+            } else {
+                this.constraintList.constraints = null;
+            }
+        }
 }

@@ -2,6 +2,7 @@ package org.drools.guvnor.server.rules;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -310,7 +311,7 @@ public class SuggestionCompletionLoader {
 
 
         			if (declaredTypes.contains(fieldClass)) {
-        	            this.builder.addFieldType( declaredType + "." + fieldName, SuggestionCompletionEngine.TYPE_OBJECT );
+        	            this.builder.addFieldType( declaredType + "." + fieldName, fieldClass);//SuggestionCompletionEngine.TYPE_OBJECT );
         			} else {
 	        			try {
 							Class clz = resolver.resolveType(fieldClass);
@@ -401,6 +402,19 @@ public class SuggestionCompletionLoader {
 
         this.builder.addFieldsForType( shortTypeName,
                                        fields );
+
+        Method[] methods = clazz.getMethods();
+        List modifierStrings = new ArrayList();
+        for (int i = 0; i < methods.length; i++) {
+            Method method = methods[i];
+            modifierStrings.add((String) method.getName());
+        }
+        String[] modifiers = new String[modifierStrings.size()];
+        modifierStrings.toArray(modifiers);
+
+        this.builder.addModifiersForType( shortTypeName,
+                                       modifiers);
+
         for ( int i = 0; i < fields.length; i++ ) {
             final Class type = (Class) inspector.getFieldTypes().get( fields[i] );
             final String fieldType = getFieldType( type );
@@ -480,7 +494,12 @@ public class SuggestionCompletionLoader {
                 fieldType = SuggestionCompletionEngine.TYPE_DATE; MN: wait until we support it.
 
             }*/ else {
-                fieldType = SuggestionCompletionEngine.TYPE_OBJECT;
+                try {
+                    Class clazz = resolver.resolveType(type.getName());
+                    fieldType = clazz.getSimpleName();
+                } catch (ClassNotFoundException e) {
+                    fieldType = SuggestionCompletionEngine.TYPE_OBJECT;
+                }
             }
         }
         return fieldType;

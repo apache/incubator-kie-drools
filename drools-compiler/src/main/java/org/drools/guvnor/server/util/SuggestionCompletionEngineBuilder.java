@@ -34,6 +34,7 @@ public class SuggestionCompletionEngineBuilder {
     private SuggestionCompletionEngine instance              = new SuggestionCompletionEngine();
     private List                       factTypes             = new ArrayList();
     private Map                        fieldsForType         = new HashMap();
+    private Map                        modifiersForType      = new HashMap();
     private Map                        fieldTypes            = new HashMap();
     private Map                        globalTypes           = new HashMap();
     private List                       actionDSLSentences    = new ArrayList();
@@ -49,6 +50,7 @@ public class SuggestionCompletionEngineBuilder {
         this.instance = new SuggestionCompletionEngine();
         this.factTypes = new ArrayList();
         this.fieldsForType = new HashMap();
+        this.modifiersForType = new HashMap();
         this.fieldTypes = new HashMap();
         this.globalTypes = new HashMap();
         this.actionDSLSentences = new ArrayList();
@@ -73,6 +75,18 @@ public class SuggestionCompletionEngineBuilder {
     public void addFieldsForType(final String type,
                                  final String[] fields) {
         this.fieldsForType.put( type,
+                                fields );
+    }
+
+    /**
+     * Adds the list of modifiers for a given type
+     *
+     * @param type
+     * @param fields
+     */
+    public void addModifiersForType(final String type,
+                                 final String[] fields) {
+        this.modifiersForType.put( type,
                                 fields );
     }
 
@@ -134,6 +148,7 @@ public class SuggestionCompletionEngineBuilder {
     public SuggestionCompletionEngine getInstance() {
         this.instance.factTypes = (String[]) this.factTypes.toArray( new String[this.factTypes.size()] );
         this.instance.fieldsForType = this.fieldsForType;
+        this.instance.modifiers = this.modifiersForType;
         this.instance.fieldTypes = this.fieldTypes;
         this.instance.globalTypes = this.globalTypes;
         this.instance.actionDSLSentences = (DSLSentence[]) this.actionDSLSentences.toArray( new DSLSentence[this.actionDSLSentences.size()] );
