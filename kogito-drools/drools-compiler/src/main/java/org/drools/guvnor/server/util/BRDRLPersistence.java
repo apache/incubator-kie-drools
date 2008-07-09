@@ -1,6 +1,7 @@
 package org.drools.guvnor.server.util;
 
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.guvnor.client.modeldriven.brl.ActionFieldFunction;
 import org.drools.guvnor.client.modeldriven.brl.ActionFieldValue;
 import org.drools.guvnor.client.modeldriven.brl.ActionInsertFact;
 import org.drools.guvnor.client.modeldriven.brl.ActionInsertLogicalFact;
@@ -221,11 +222,17 @@ public class BRDRLPersistence
         }
 
         private void generateConstraints(FactPattern pattern) {
+            int printedCount = 0;
             for ( int i = 0; i < pattern.getFieldConstraints().length; i++ ) {
-                if ( i > 0 ) {
+                StringBuffer buffer = new StringBuffer();
+                generateConstraint( pattern.constraintList.constraints[i], false, buffer );
+                if (buffer.length() > 0) {
+                    if ( printedCount > 0 ) {
                     buf.append( ", " );
                 }
-                generateConstraint( pattern.constraintList.constraints[i], false );
+                    buf.append(buffer);
+                    printedCount++;
+                }
             }
         }
 
@@ -234,14 +241,14 @@ public class BRDRLPersistence
          * It will only put brackets in for the ones that aren't at top level.
          * This makes for more readable DRL in the most common cases.
          */
-        private void generateConstraint(FieldConstraint con, boolean nested) {
+        private void generateConstraint(FieldConstraint con, boolean nested, StringBuffer buf) {
             if (con instanceof CompositeFieldConstraint) {
                 CompositeFieldConstraint cfc = (CompositeFieldConstraint) con;
                 if (nested) buf.append( "( " );
                 FieldConstraint[] nestedConstraints = cfc.constraints;
                 if (nestedConstraints != null) {
                     for ( int i = 0; i < nestedConstraints.length; i++ ) {
-                        generateConstraint( nestedConstraints[i] , true);
+                        generateConstraint( nestedConstraints[i] , true, buf);
                         if (i < (nestedConstraints.length - 1)) {
                             //buf.append(" ) ");
                             buf.append( cfc.compositeJunctionType + " ");
@@ -251,11 +258,11 @@ public class BRDRLPersistence
                 }
                 if (nested) buf.append( ")" );
             } else {
-                generateSingleFieldConstraint( (SingleFieldConstraint) con );
+                generateSingleFieldConstraint( (SingleFieldConstraint) con, buf );
             }
         }
 
-        private void generateSingleFieldConstraint(final SingleFieldConstraint constr) {
+        private void generateSingleFieldConstraint(final SingleFieldConstraint constr, StringBuffer buf) {
             if ( constr.constraintValueType == ISingleFieldConstraint.TYPE_PREDICATE ) {
                 buf.append( "eval( " );
                 buf.append( constr.value );
@@ -267,6 +274,13 @@ public class BRDRLPersistence
                 }
                 if ((constr.operator != null && constr.value != null)
                         || constr.fieldBinding != null) {
+                    SingleFieldConstraint parent = (SingleFieldConstraint) constr.parent;
+                    StringBuffer parentBuf = new StringBuffer();
+                    while (parent != null) {
+                        parentBuf.insert(0, parent.fieldName + ".");
+                        parent = (SingleFieldConstraint) parent.parent;
+                    }
+                    buf.append(parentBuf);
                     buf.append( constr.fieldName );
                 }
 
@@ -415,9 +429,16 @@ public class BRDRLPersistence
                     buf.append( ">" );
                 }
                 buf.append( variableName );
+
+                ActionFieldValue value = fieldValues[i];
+                if (value instanceof ActionFieldFunction) {
+                    buf.append(".");
+                    buf.append(value.field);
+                } else {
                 buf.append( ".set" );
                 buf.append( Character.toUpperCase( fieldValues[i].field.charAt( 0 ) ) );
                 buf.append( fieldValues[i].field.substring( 1 ) );
+                }
                 buf.append( "( " );
                 if ( fieldValues[i].isFormula() ) {
                     buf.append( fieldValues[i].value.substring( 1 ) );

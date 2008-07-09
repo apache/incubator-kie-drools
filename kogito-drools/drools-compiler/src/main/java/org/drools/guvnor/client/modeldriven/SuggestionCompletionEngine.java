@@ -75,6 +75,13 @@ public class SuggestionCompletionEngine
      */
     public Map                    globalTypes            = new HashMap();
 
+    /** A map of types to the modifying methods they expose. key is type,
+      * value is (Sting[] of modifying methods)
+      *
+      * @gwt.typeArgs <java.lang.String, java.lang.String>
+    **/
+    public Map                    modifiers;
+
     /**
      * Contains a map of { TypeName.field : String[] } - where a list is
      * valid values to display in a drop down for a given Type.field combination.

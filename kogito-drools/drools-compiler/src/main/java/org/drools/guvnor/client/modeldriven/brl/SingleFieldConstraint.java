@@ -12,14 +12,27 @@ public class SingleFieldConstraint extends ISingleFieldConstraint implements Fie
     public String                 fieldBinding;
     public String                 fieldName;
     public String                 operator;
+    public String                 fieldType;
+    public FieldConstraint  parent;
 
     public ConnectiveConstraint[] connectives;
 
+    public SingleFieldConstraint(final String field, final String fieldType, final FieldConstraint parent) {
+        this.fieldName = field;
+        this.fieldType = fieldType;
+        this.parent = parent;
+    }
+
     public SingleFieldConstraint(final String field) {
         this.fieldName = field;
+        this.fieldType = "";
+        this.parent = null;
     }
 
     public SingleFieldConstraint() {
+        this.fieldName = null;
+        this.fieldType = "";
+        this.parent = null;
     }
 
     /**

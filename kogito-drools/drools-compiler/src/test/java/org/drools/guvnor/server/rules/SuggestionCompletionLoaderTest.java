@@ -27,7 +27,7 @@ public class SuggestionCompletionLoaderTest extends TestCase {
         assertEquals(SuggestionCompletionEngine.TYPE_STRING, eng.getFieldType( "SomeFact","name"));
         assertEquals(SuggestionCompletionEngine.TYPE_NUMERIC, eng.getFieldType("SomeFact", "bigDecimal"));
         assertEquals(SuggestionCompletionEngine.TYPE_COMPARABLE, eng.getFieldType( "SomeFact", "date"));
-        assertEquals(SuggestionCompletionEngine.TYPE_OBJECT, eng.getFieldType( "SomeFact", "cheese"));
+        assertEquals("Cheese", eng.getFieldType( "SomeFact", "cheese"));
         assertEquals(SuggestionCompletionEngine.TYPE_BOOLEAN, eng.getFieldType( "SomeFact", "dead"));
         assertEquals(SuggestionCompletionEngine.TYPE_BOOLEAN, eng.getFieldType( "SomeFact", "alive"));
 
@@ -45,6 +45,8 @@ public class SuggestionCompletionLoaderTest extends TestCase {
 
         assertEquals(SuggestionCompletionEngine.TYPE_NUMERIC, eng.getFieldType( "GenBean", "id" ));
         assertEquals(SuggestionCompletionEngine.TYPE_STRING, eng.getFieldType( "GenBean", "name"));
+
+        assertEquals("GenBean", eng.getFieldType("GenBean2", "gb"));
 
     }
 

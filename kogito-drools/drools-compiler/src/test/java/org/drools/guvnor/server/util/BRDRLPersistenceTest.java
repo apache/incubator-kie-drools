@@ -434,6 +434,40 @@ public class BRDRLPersistenceTest extends TestCase {
 
     }
 
+    public void testSubConstraints() {
+
+        RuleModel m = new RuleModel();
+        m.name = "test sub constraints";
+
+        FactPattern p = new FactPattern("Person");
+        SingleFieldConstraint con = new SingleFieldConstraint();
+        con.fieldName = "field1";
+        p.addConstraint(con);
+
+        SingleFieldConstraint con2 = new SingleFieldConstraint();
+        con2.fieldName = "field2";
+        con2.operator = "==";
+        con2.value = "variableHere";
+        con2.constraintValueType = SingleFieldConstraint.TYPE_VARIABLE;
+        con2.parent = con;
+        p.addConstraint( con2 );
+
+
+
+        m.addLhsItem( p );
+
+        String result = BRDRLPersistence.getInstance().marshal( m );
+        assertEqualsIgnoreWhitespace( "rule \"test sub constraints\"" +
+                                          "\tdialect \"mvel\"\n when " +
+                                          "     Person(field1.field2 == variableHere)" +
+                                          " then " +
+                                          "end", result );
+
+
+
+
+    }
+
     private void assertEqualsIgnoreWhitespace(final String expected,
                                               final String actual) {
         final String cleanExpected = expected.replaceAll( "\\s+",
