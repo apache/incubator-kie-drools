@@ -234,9 +234,10 @@ public class ClassTypeResolver
             }
 
             // maybe its a nested class?
-            if ( clazz == null ) {
+            int lastIndex;
+            while ( clazz == null && (lastIndex = qualifiedClass.lastIndexOf( '.' )) != -1 ) {
                 try {
-                    final int lastIndex = qualifiedClass.lastIndexOf( '.' );
+
                     qualifiedClass = qualifiedClass.substring( 0,
                                                                lastIndex ) + "$" + qualifiedClass.substring( lastIndex + 1 );
                     clazz = this.classLoader.loadClass( qualifiedClass );
@@ -244,6 +245,7 @@ public class ClassTypeResolver
                     clazz = null;
                 }
             }
+
         }
 
         if ( clazz != null ) {
@@ -284,11 +286,11 @@ public class ClassTypeResolver
      * (non-Javadoc)
      * @see org.drools.base.TypeResolver#getFullTypeName(java.lang.String)
      */
-	public String getFullTypeName(String shortName) throws ClassNotFoundException {
+    public String getFullTypeName(String shortName) throws ClassNotFoundException {
 
-		Class clz = resolveType(shortName);
-		if (clz == null)  throw new IllegalArgumentException("Unable to resolve the full type name for " + shortName);
-		return clz.getName();
+        Class clz = resolveType( shortName );
+        if ( clz == null ) throw new IllegalArgumentException( "Unable to resolve the full type name for " + shortName );
+        return clz.getName();
 
-	}
+    }
 }
