@@ -117,4 +117,12 @@ public class Person {
         this.addressArray = addressArray;
     }
     
+    public static class Nested1 {
+        public static class Nested2 {
+            public static class Nested3 {
+                
+            }   
+        }        
+    }    
+    
 }

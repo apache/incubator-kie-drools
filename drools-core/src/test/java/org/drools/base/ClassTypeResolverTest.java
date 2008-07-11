@@ -1,7 +1,7 @@
 /**
  *
  */
-package org.codehaus.jfdi.interpreter;
+package org.drools.base;
 
 import java.util.HashSet;
 
@@ -12,6 +12,7 @@ import org.drools.FirstClass;
 import org.drools.SecondClass;
 import org.drools.base.ClassTypeResolver;
 import org.drools.base.TypeResolver;
+import org.drools.Person.Nested1.Nested2.Nested3;
 
 /**
  * @author fburlet
@@ -198,4 +199,36 @@ public class ClassTypeResolverTest extends TestCase {
         assertEquals( Cheese[][].class,
                       resolver.resolveType( "org.drools.Cheese[][]" ) );
     }
+    
+    public void testDefaultPackageImport() throws Exception {
+        final ClassTypeResolver resolver = new ClassTypeResolver( new HashSet(), Thread.currentThread().getContextClassLoader() );
+        resolver.addImport( "Goo" );
+        try {
+            resolver.resolveType( "Goo" );
+            fail( "Can't import default namespace classes");
+        } catch ( ClassNotFoundException e) {
+            // swallow as this should be thrown
+        }
+    }    
+    
+    public void testNestedClassResolving() throws Exception {
+        final ClassTypeResolver resolver = new ClassTypeResolver( new HashSet(), Thread.currentThread().getContextClassLoader() );
+        
+        // single nesting
+        resolver.addImport( "org.drools.Person.Nested1" );    
+        assertEquals( org.drools.Person.Nested1.class,
+                      resolver.resolveType( "Nested1" ) );
+        
+        // double nesting
+        resolver.addImport( "org.drools.Person.Nested1.Nested2" );    
+        assertEquals( org.drools.Person.Nested1.Nested2.class,
+                      resolver.resolveType( "Nested2" ) );        
+        
+        // triple nesting
+        resolver.addImport( "org.drools.Person.Nested1.Nested2.Nested3" );    
+        assertEquals( org.drools.Person.Nested1.Nested2.Nested3.class,
+                      resolver.resolveType( "Nested3" ) );          
+        
+    }
+    
 }
