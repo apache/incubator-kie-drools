@@ -226,6 +226,41 @@ public class Scenario implements PortableObject {
 		return new int[] {failures, total};
 	}
 
+	public String printFailureReport() {
+		int total = 0;
+		int failures = 0;
+		StringBuffer buf = new StringBuffer();
+		buf.append("------- Unmet expectations: -------\n");
+		for (Iterator iterator = fixtures.iterator(); iterator.hasNext();) {
+			Fixture f = (Fixture) iterator.next();
+			if (f instanceof VerifyRuleFired) {
+				total++;
+				VerifyRuleFired vr = (VerifyRuleFired) f;
+				if (vr.successResult != null && !vr.successResult.booleanValue()) {
+					failures++;
+					buf.append(vr.explanation);
+					buf.append('\n');
+				}
+			} else if (f instanceof VerifyFact) {
+				VerifyFact vf = (VerifyFact) f;
+				for (Iterator it = vf.fieldValues.iterator(); it
+						.hasNext();) {
+					VerifyField vfl = (VerifyField) it.next();
+					if (vfl.successResult != null && !vfl.successResult.booleanValue()) {
+						failures++;
+						buf.append(vfl.explanation);
+						buf.append('\n');
+
+					}
+					total++;
+				}
+			}
+		}
+		buf.append("\n------- Summary: ------\n");
+		buf.append(failures + " failures out of " + total + " expectations.");
+		return buf.toString();
+	}
+
 }
 
 

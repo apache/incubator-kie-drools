@@ -25,6 +25,7 @@ import org.drools.guvnor.client.modeldriven.testing.Scenario;
 import org.drools.guvnor.client.modeldriven.testing.VerifyFact;
 import org.drools.guvnor.client.modeldriven.testing.VerifyField;
 import org.drools.guvnor.client.modeldriven.testing.VerifyRuleFired;
+import org.drools.guvnor.server.util.ScenarioXMLPersistence;
 import org.drools.rule.TimeMachine;
 
 public class ScenarioRunnerTest extends RuleUnit {
@@ -1017,7 +1018,57 @@ public class ScenarioRunnerTest extends RuleUnit {
 
     public void testIntegrationWithFailure() throws Exception {
         Scenario sc = new Scenario();
-        FactData[] facts = new FactData[]{new FactData( "Cheese",
+        Expectation[] assertions = populateScenarioForFailure(sc);
+
+        TypeResolver resolver = new ClassTypeResolver( new HashSet<String>(),
+                                                       Thread.currentThread().getContextClassLoader() );
+        resolver.addImport( "org.drools.Cheese" );
+        resolver.addImport( "org.drools.Person" );
+
+        WorkingMemory wm = getWorkingMemory( "test_rules2.drl" );
+
+        ScenarioRunner run = new ScenarioRunner( sc,
+                                                 resolver,
+                                                 (InternalWorkingMemory) wm );
+
+        assertSame( run.scenario,
+                    sc );
+
+        assertFalse( sc.wasSuccessful() );
+
+        VerifyFact vf = (VerifyFact) assertions[1];
+        assertFalse( ((VerifyField) vf.fieldValues.get( 0 )).successResult );
+        assertEquals( "XXX",
+                      ((VerifyField) vf.fieldValues.get( 0 )).expected );
+        assertEquals( "rule1",
+                      ((VerifyField) vf.fieldValues.get( 0 )).actualResult );
+        assertNotNull( ((VerifyField) vf.fieldValues.get( 0 )).explanation );
+
+        VerifyRuleFired vr = (VerifyRuleFired) assertions[4];
+        assertFalse( vr.successResult );
+
+        assertEquals( 2,
+                      vr.expectedCount.intValue() );
+        assertEquals( 1,
+                      vr.actualResult.intValue() );
+
+    }
+
+    public void testRunAsString() throws Exception {
+    	Scenario sc = new Scenario();
+    	populateScenarioForFailure(sc);
+    	String xml = ScenarioXMLPersistence.getInstance().marshal(sc);
+    	WorkingMemory wm = getWorkingMemory( "test_rules2.drl" );
+    	ScenarioRunner runner = new ScenarioRunner(xml, wm.getRuleBase());
+    	assertFalse(runner.wasSuccess());
+
+    	String failures = runner.getReport();
+    	assertFalse("".equals(failures));
+    	System.err.println(failures);
+    }
+
+	private Expectation[] populateScenarioForFailure(Scenario sc) {
+		FactData[] facts = new FactData[]{new FactData( "Cheese",
                                                         "c1",
                                                         ls( new FieldData( "type",
                                                                            "cheddar" ),
@@ -1068,40 +1119,8 @@ public class ScenarioRunnerTest extends RuleUnit {
                                              null );
 
         sc.fixtures.addAll( Arrays.asList( assertions ) );
-
-        TypeResolver resolver = new ClassTypeResolver( new HashSet<String>(),
-                                                       Thread.currentThread().getContextClassLoader() );
-        resolver.addImport( "org.drools.Cheese" );
-        resolver.addImport( "org.drools.Person" );
-
-        WorkingMemory wm = getWorkingMemory( "test_rules2.drl" );
-
-        ScenarioRunner run = new ScenarioRunner( sc,
-                                                 resolver,
-                                                 (InternalWorkingMemory) wm );
-
-        assertSame( run.scenario,
-                    sc );
-
-        assertFalse( sc.wasSuccessful() );
-
-        VerifyFact vf = (VerifyFact) assertions[1];
-        assertFalse( ((VerifyField) vf.fieldValues.get( 0 )).successResult );
-        assertEquals( "XXX",
-                      ((VerifyField) vf.fieldValues.get( 0 )).expected );
-        assertEquals( "rule1",
-                      ((VerifyField) vf.fieldValues.get( 0 )).actualResult );
-        assertNotNull( ((VerifyField) vf.fieldValues.get( 0 )).explanation );
-
-        VerifyRuleFired vr = (VerifyRuleFired) assertions[4];
-        assertFalse( vr.successResult );
-
-        assertEquals( 2,
-                      vr.expectedCount.intValue() );
-        assertEquals( 1,
-                      vr.actualResult.intValue() );
-
-    }
+		return assertions;
+	}
 
     private <T> List<T> ls(T... objects) {
         return Arrays.asList( objects );

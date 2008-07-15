@@ -10,6 +10,8 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.drools.FactHandle;
+import org.drools.RuleBase;
+import org.drools.base.ClassTypeResolver;
 import org.drools.base.TypeResolver;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.guvnor.client.modeldriven.testing.ExecutionTrace;
@@ -22,6 +24,8 @@ import org.drools.guvnor.client.modeldriven.testing.Scenario;
 import org.drools.guvnor.client.modeldriven.testing.VerifyFact;
 import org.drools.guvnor.client.modeldriven.testing.VerifyField;
 import org.drools.guvnor.client.modeldriven.testing.VerifyRuleFired;
+import org.drools.guvnor.server.util.ScenarioXMLPersistence;
+import org.drools.rule.Package;
 import org.drools.rule.TimeMachine;
 
 /**
@@ -41,6 +45,7 @@ public class ScenarioRunner {
 
 
 	/**
+	 * This constructor is normally used by Guvnor for running tests on a users request.
 	 * @param scenario
 	 *            The scenario to run.
 	 * @param resolver
@@ -58,85 +63,101 @@ public class ScenarioRunner {
 			final InternalWorkingMemory wm) throws ClassNotFoundException {
 		this.scenario = scenario;
 		this.workingMemory = wm;
+		runScenario(scenario, resolver, wm);
+	}
+
+	/**
+	 * Use this constructor if you have a scenario in a file, for instance.
+	 * @throws ClassNotFoundException
+	 */
+	public ScenarioRunner(String xml, RuleBase rb) throws ClassNotFoundException {
+		this.scenario = ScenarioXMLPersistence.getInstance().unmarshal(xml);
+		this.workingMemory = (InternalWorkingMemory) rb.newStatefulSession();
+		Package pk = rb.getPackages()[0];
+        ClassLoader cl = pk.getPackageScopeClassLoader();
+        HashSet<String> imports = new HashSet<String>();
+        imports.add(pk.getName() + ".*");
+        imports.addAll(pk.getImports().keySet());
+        TypeResolver resolver = new ClassTypeResolver( imports, cl );
+        runScenario(scenario, resolver, this.workingMemory);
+	}
+
+	private void runScenario(final Scenario scenario,
+			final TypeResolver resolver, final InternalWorkingMemory wm)
+			throws ClassNotFoundException {
 		scenario.lastRunResult = new Date();
+		//stub out any rules we don't want to have the consequences firing of.
+		HashSet<String> ruleList = new HashSet<String>();
+		ruleList.addAll(scenario.rules);
+		//TestingEventListener.stubOutRules(ruleList, wm.getRuleBase(), scenario.inclusive);
 
+		TestingEventListener listener = null;
 
+		for (Iterator iterator = scenario.globals.iterator(); iterator.hasNext();) {
+			FactData fact = (FactData) iterator.next();
+			Object f = eval("new " + resolver.getFullTypeName(fact.type) + "()");
+			populateFields(fact, globalData, f);
+			globalData.put(fact.name, f);
+			wm.setGlobal(fact.name, f);
+		}
 
-			//stub out any rules we don't want to have the consequences firing of.
-			HashSet<String> ruleList = new HashSet<String>();
-			ruleList.addAll(scenario.rules);
-			//TestingEventListener.stubOutRules(ruleList, wm.getRuleBase(), scenario.inclusive);
+		for (Iterator<Fixture> iterator = scenario.fixtures.iterator(); iterator.hasNext();) {
+			Fixture fx = iterator.next();
 
-			TestingEventListener listener = null;
-
-			for (Iterator iterator = scenario.globals.iterator(); iterator.hasNext();) {
-				FactData fact = (FactData) iterator.next();
-				Object f = eval("new " + resolver.getFullTypeName(fact.type) + "()");
-				populateFields(fact, globalData, f);
-				globalData.put(fact.name, f);
-				wm.setGlobal(fact.name, f);
-			}
-
-			for (Iterator<Fixture> iterator = scenario.fixtures.iterator(); iterator.hasNext();) {
-				Fixture fx = iterator.next();
-
-				if (fx instanceof FactData) {
-					//deal with facts and globals
-					FactData fact = (FactData)fx;
-					Object f = (fact.isModify)? this.populatedData.get(fact.name) : eval("new " + resolver.getFullTypeName(fact.type) + "()");
-					if (fact.isModify) {
-						if (!this.factHandles.containsKey(fact.name)) {
-							throw new IllegalArgumentException("Was not a previously inserted fact. [" + fact.name  + "]");
-						}
-						populateFields(fact, populatedData, f);
-						this.workingMemory.update(this.factHandles.get(fact.name), f);
-					} else /* a new one */ {
-						populateFields(fact, populatedData, f);
-						populatedData.put(fact.name, f);
-						this.factHandles.put(fact.name, wm.insert(f));
+			if (fx instanceof FactData) {
+				//deal with facts and globals
+				FactData fact = (FactData)fx;
+				Object f = (fact.isModify)? this.populatedData.get(fact.name) : eval("new " + resolver.getFullTypeName(fact.type) + "()");
+				if (fact.isModify) {
+					if (!this.factHandles.containsKey(fact.name)) {
+						throw new IllegalArgumentException("Was not a previously inserted fact. [" + fact.name  + "]");
 					}
-				} else if (fx instanceof RetractFact) {
-					RetractFact f = (RetractFact)fx;
-					this.workingMemory.retract(this.factHandles.get(f.name));
-					this.populatedData.remove(f.name);
-				} else if (fx instanceof ExecutionTrace) {
-					ExecutionTrace executionTrace = (ExecutionTrace)fx;
-					//create the listener to trace rules
-
-					if (listener != null) wm.removeEventListener(listener); //remove the old
-					listener = new TestingEventListener();
-
-					wm.addEventListener(listener);
-
-					//set up the time machine
-					applyTimeMachine(wm, executionTrace);
-
-					//love you
-					long time = System.currentTimeMillis();
-					wm.fireAllRules(listener.getAgendaFilter(ruleList, scenario.inclusive),scenario.maxRuleFirings);
-					executionTrace.executionTimeResult = System.currentTimeMillis() - time;
-					executionTrace.numberOfRulesFired = listener.totalFires;
-					executionTrace.rulesFired = listener.getRulesFiredSummary();
-
-
-				} else if (fx instanceof Expectation) {
-						Expectation assertion = (Expectation) fx;
-						if (assertion instanceof VerifyFact) {
-							verify((VerifyFact) assertion);
-						} else if (assertion instanceof VerifyRuleFired) {
-							verify((VerifyRuleFired) assertion,
-									(listener.firingCounts != null) ? listener.firingCounts : new HashMap<String, Integer>());
-						}
-				} else {
-					throw new IllegalArgumentException("Not sure what to do with " + fx);
+					populateFields(fact, populatedData, f);
+					this.workingMemory.update(this.factHandles.get(fact.name), f);
+				} else /* a new one */ {
+					populateFields(fact, populatedData, f);
+					populatedData.put(fact.name, f);
+					this.factHandles.put(fact.name, wm.insert(f));
 				}
+			} else if (fx instanceof RetractFact) {
+				RetractFact f = (RetractFact)fx;
+				this.workingMemory.retract(this.factHandles.get(f.name));
+				this.populatedData.remove(f.name);
+			} else if (fx instanceof ExecutionTrace) {
+				ExecutionTrace executionTrace = (ExecutionTrace)fx;
+				//create the listener to trace rules
+
+				if (listener != null) wm.removeEventListener(listener); //remove the old
+				listener = new TestingEventListener();
+
+				wm.addEventListener(listener);
+
+				//set up the time machine
+				applyTimeMachine(wm, executionTrace);
+
+				//love you
+				long time = System.currentTimeMillis();
+				wm.fireAllRules(listener.getAgendaFilter(ruleList, scenario.inclusive),scenario.maxRuleFirings);
+				executionTrace.executionTimeResult = System.currentTimeMillis() - time;
+				executionTrace.numberOfRulesFired = listener.totalFires;
+				executionTrace.rulesFired = listener.getRulesFiredSummary();
 
 
-
+			} else if (fx instanceof Expectation) {
+					Expectation assertion = (Expectation) fx;
+					if (assertion instanceof VerifyFact) {
+						verify((VerifyFact) assertion);
+					} else if (assertion instanceof VerifyRuleFired) {
+						verify((VerifyRuleFired) assertion,
+								(listener.firingCounts != null) ? listener.firingCounts : new HashMap<String, Integer>());
+					}
+			} else {
+				throw new IllegalArgumentException("Not sure what to do with " + fx);
 			}
 
 
 
+		}
 	}
 
 	private void applyTimeMachine(final InternalWorkingMemory wm,
@@ -277,6 +298,21 @@ public class ScenarioRunner {
 			}
 		}
 		return factObject;
+	}
+
+	/**
+	 * True if the scenario was run with 100% success.
+	 */
+	public boolean wasSuccess() {
+		return this.scenario.wasSuccessful();
+	}
+
+	/**
+	 * @return A pretty printed report detailing any failures that occured
+	 * when running the scenario (unmet expectations).
+	 */
+	public String getReport() {
+		return this.scenario.printFailureReport();
 	}
 
 
