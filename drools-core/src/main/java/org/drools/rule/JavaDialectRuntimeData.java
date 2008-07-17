@@ -91,10 +91,10 @@ public class JavaDialectRuntimeData
         this.dirty = false;
     }
 
-    public DialectRuntimeData clone() {
-        DialectRuntimeData cloneOne = new JavaDialectRuntimeData();
+    public DialectRuntimeData clone(DialectRuntimeRegistry registry) {
+        DialectRuntimeData cloneOne = new JavaDialectRuntimeData(registry);
 
-        cloneOne.merge(this);
+        cloneOne.merge(registry, this);
         return cloneOne;
     }
 
@@ -168,16 +168,8 @@ public class JavaDialectRuntimeData
         remove( pkg.getName() + "." + StringUtils.ucFirst( function.getName() ) );
     }
 
-    public void merge(DialectRuntimeData newData) {
-        JavaDialectRuntimeData newJavaData = (JavaDialectRuntimeData) newData;
-
-        this.datas = newJavaData.datas;
-        
-        this.dirty = newData.isDirty();
-        if (this.classLoader == null) {
-            this.classLoader    = new PackageClassLoader(newJavaData.getClassLoader().getParent(), this);
-            this.dirty = true;
-        }
+    public void merge(DialectRuntimeRegistry registry, DialectRuntimeData newData) {
+        JavaDialectRuntimeData newJavaData = (JavaDialectRuntimeData) newData;        
 
         // First update the binary files
         // @todo: this probably has issues if you add classes in the incorrect order - functions, rules, invokers.

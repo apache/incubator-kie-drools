@@ -26,9 +26,9 @@ public class MVELDialectRuntimeData implements DialectRuntimeData, Externalizabl
 		this.functionFactory = new MapFunctionResolverFactory();
 	}
 
-    public DialectRuntimeData clone() {
-        DialectRuntimeData clone = new MVELDialectRuntimeData();
-        clone.merge(this);
+    public DialectRuntimeData clone(DialectRuntimeRegistry registry) {
+        DialectRuntimeData clone = new MVELDialectRuntimeData(registry);
+        clone.merge(registry, this);
         return clone;
     }
 
@@ -55,7 +55,7 @@ public class MVELDialectRuntimeData implements DialectRuntimeData, Externalizabl
     public void setDirty(boolean dirty) {
     }
 
-    public void merge(DialectRuntimeData newData) {
+    public void merge(DialectRuntimeRegistry registry, DialectRuntimeData newData) {
 	}
 
 	public void reload() {

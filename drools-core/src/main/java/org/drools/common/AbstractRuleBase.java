@@ -428,56 +428,47 @@ abstract public class AbstractRuleBase
 
             this.eventSupport.fireBeforePackageAdded( newPkg );
 
+            // create new base package if it doesn't exist, as we always merge the newPkg into the existing one, 
+            // to isolate the base package from further possible changes to newPkg.
             if ( pkg == null ) {
+                // create a new package, use the same parent classloader as the incoming new package
                 pkg = new Package( newPkg.getName(),
-                                   newPkg.getPackageScopeClassLoader() );
+                                   new MapBackedClassLoader( newPkg.getPackageScopeClassLoader().getParent() ) );
+                                   //newPkg.getPackageScopeClassLoader() );
                 pkgs.put( pkg.getName(),
                           pkg );
+                // add the dialect registry composite classloader (which uses the above classloader as it's parent)
                 this.packageClassLoader.addClassLoader( pkg.getDialectRuntimeRegistry().getClassLoader() );
-            } else {
-                pkg.getPackageScopeClassLoader().getStore().putAll( newPkg.getPackageScopeClassLoader().getStore() );
-                this.packageClassLoader.addClassLoader( newPkg.getDialectRuntimeRegistry().getClassLoader() );
-            }
+            } 
+//            else {
+//
+//                this.packageClassLoader.addClassLoader( newPkg.getDialectRuntimeRegistry().getClassLoader() );
+//            }
+            
+            // now merge the new package into the existing one
+            mergePackage( pkg, newPkg );
 
-            final Map<String, Class> newGlobals = newPkg.getGlobals();
-
-            if ( newGlobals != null ) {
-                // Check that the global data is valid, we cannot change the type
-                // of an already declared global variable
-                for ( final Map.Entry<String, Class> entry : newGlobals.entrySet() ) {
-                    final String identifier = entry.getKey();
-                    final Class type = entry.getValue();
-                    if ( this.globals.containsKey( identifier ) && !this.globals.get( identifier ).equals( type ) ) {
-                        throw new PackageIntegrationException( pkg );
-                    } else {
-                        this.globals.put( identifier,
-                                          type );
-                    }
-                }
-            }
-
-            mergePackage( pkg,
-                          newPkg );
-
+            // Add the type declarations to the RuleBase
             if ( newPkg.getTypeDeclarations() != null ) {
-                // Add type declarations
+                // add type declarations
                 for ( TypeDeclaration type : newPkg.getTypeDeclarations().values() ) {
-                    // should we allow overrides?
+                    // @TODO should we allow overrides? only if the class is not in use.
                     if ( !this.classTypeDeclaration.containsKey( type.getTypeClass() ) ) {
+                        // add to rulebase list of type declarations                        
                         this.classTypeDeclaration.put( type.getTypeClass(),
                                                        type );
                     }
                 }
-            }
+            } 
 
+            // add the rules to the RuleBase
             final Rule[] rules = newPkg.getRules();
-
             for ( int i = 0; i < rules.length; ++i ) {
                 addRule( newPkg,
                          rules[i] );
             }
-
-            //and now the rule flows
+            
+            // add the flows to the RuleBase
             if ( newPkg.getRuleFlows() != null ) {
                 final Map flows = newPkg.getRuleFlows();
                 for ( final Object object : newPkg.getRuleFlows().entrySet() ) {
@@ -504,45 +495,43 @@ abstract public class AbstractRuleBase
      * and the actual Rule objects into the package).
      */
     private void mergePackage(final Package pkg,
-                              final Package newPkg) {
-        final Map<String, ImportDeclaration> imports = pkg.getImports();
-
+                              final Package newPkg) {        
         // Merge imports
+        final Map<String, ImportDeclaration> imports = pkg.getImports();
         imports.putAll( newPkg.getImports() );
 
-        if ( newPkg.getGlobals() != null ) {
-            final Map<String, Class> globals = pkg.getGlobals();
+        // merge globals
+        if ( newPkg.getGlobals() != null || newPkg.getGlobals() != Collections.EMPTY_MAP ) {
+            Map<String, Class> globals = pkg.getGlobals();
             // Add globals
             for ( final Map.Entry<String, Class> entry : newPkg.getGlobals().entrySet() ) {
                 final String identifier = entry.getKey();
                 final Class type = entry.getValue();
                 if ( globals.containsKey( identifier ) && !globals.get( identifier ).equals( type ) ) {
                     throw new PackageIntegrationException( pkg );
-                } else if ( globals == Collections.EMPTY_MAP ) {
+                } else {
                     pkg.addGlobal( identifier,
                                    type );
-                } else {
-                    globals.put( identifier,
-                                 type );
-                }
+                } 
             }
         }
-
+        
+        // merge the type declarations
         if ( newPkg.getTypeDeclarations() != null ) {
             // add type declarations
             for ( TypeDeclaration type : newPkg.getTypeDeclarations().values() ) {
-                // should we allow overrides?
-                if ( !this.classTypeDeclaration.containsKey( type.getTypeClass() ) ) {
-                    this.classTypeDeclaration.put( type.getTypeClass(),
-                                                   type );
-                }
+                // @TODO should we allow overrides? only if the class is not in use.
                 if ( !pkg.getTypeDeclarations().containsKey( type.getTypeName() ) ) {
+                    // add to package list of type declarations
                     pkg.addTypeDeclaration( type );
                 }
             }
-        }
-
-        //Add rules into the RuleBase package
+        }              
+        
+        // merge the contents of the MapBackedClassloader, that is the root of the dialect registry's composite classloader.
+        pkg.getPackageScopeClassLoader().getStore().putAll( newPkg.getPackageScopeClassLoader().getStore() );        
+                    
+        //Merge rules into the RuleBase package
         //as this is needed for individual rule removal later on
         final Rule[] newRules = newPkg.getRules();
         for ( int i = 0; i < newRules.length; i++ ) {
@@ -555,16 +544,16 @@ abstract public class AbstractRuleBase
             }
 
             pkg.addRule( newRule );
-        }
-
-        //and now the rule flows
+        }           
+        
+        //Merge The Rule Flows
         if ( newPkg.getRuleFlows() != null ) {
             final Map flows = newPkg.getRuleFlows();
             for ( final Iterator iter = flows.values().iterator(); iter.hasNext(); ) {
                 final Process flow = (Process) iter.next();
                 pkg.addProcess( flow );
             }
-        }
+        }            
 
         pkg.getDialectRuntimeRegistry().merge( newPkg.getDialectRuntimeRegistry() );
 
@@ -574,6 +563,8 @@ abstract public class AbstractRuleBase
             }
         }
 
+        // this handles re-wiring any dirty Packages, it's done lazily to allow incremental 
+        // additions without incurring the repeated cost.
         if ( this.reloadPackageCompilationData == null ) {
             this.reloadPackageCompilationData = new ReloadPackageCompilationData();
         }
