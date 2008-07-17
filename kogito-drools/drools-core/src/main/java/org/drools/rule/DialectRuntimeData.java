@@ -5,7 +5,7 @@ public interface DialectRuntimeData extends Cloneable {
 
     public void removeFunction(Package pkg, Function function);
 
-    public void merge(DialectRuntimeData newData);
+    public void merge(DialectRuntimeRegistry registry, DialectRuntimeData newData);
 
     public boolean isDirty();
 
@@ -13,5 +13,5 @@ public interface DialectRuntimeData extends Cloneable {
 
     public void reload();
 
-    public DialectRuntimeData clone();
+    public DialectRuntimeData clone(DialectRuntimeRegistry registry);
 }

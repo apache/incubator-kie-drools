@@ -94,12 +94,12 @@ public class DialectRuntimeRegistry
         for ( Entry<String, DialectRuntimeData> entry : newDatas.dialects.entrySet() ) {
             DialectRuntimeData data = this.dialects.get( entry.getKey() );
             if ( data == null ) {
-                DialectRuntimeData dialectData = entry.getValue().clone();
+                DialectRuntimeData dialectData = entry.getValue().clone( this );
                 //dialectData.setDialectRuntimeRegistry( this );
                 this.dialects.put( entry.getKey(),
                                    dialectData );
             } else {
-                data.merge( entry.getValue() );
+                data.merge( null, entry.getValue() );
             }
         }
 

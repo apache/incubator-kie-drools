@@ -31,6 +31,7 @@ import org.drools.compiler.PackageBuilder.ProcessErrorHandler;
 import org.drools.compiler.PackageBuilder.ProcessInvokerErrorHandler;
 import org.drools.compiler.PackageBuilder.RuleErrorHandler;
 import org.drools.compiler.PackageBuilder.RuleInvokerErrorHandler;
+import org.drools.compiler.PackageBuilder.SrcErrorHandler;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BaseDescr;
@@ -128,7 +129,7 @@ public class JavaDialect
     private Map                                      errorHandlers;
     private List                                     results;
     private PackageBuilder                           packageBuilder;
-    
+
     private PackageRegistry                          packageRegistry;
 
     private ClassFieldAccessorCache                  classFieldExtractorCache;
@@ -139,7 +140,7 @@ public class JavaDialect
         this.packageBuilder = builder;
         this.pkg = pkg;
         this.packageRegistry = pkgRegistry;
-        
+
         this.configuration = (JavaDialectConfiguration) builder.getPackageBuilderConfiguration().getDialectConfiguration( "java" );
         this.classFieldExtractorCache = builder.getClassFieldExtractorCache();
 
@@ -389,13 +390,13 @@ public class JavaDialect
                            dumpDir );
         }
 
-        //        for (String clazz : classes) {
-        //            System.out.println("---" + clazz + "----");
-        //            for (byte b : src.getBytes(clazz)) {
-        //                System.out.print((char) b);
-        //            }
-        //            System.out.println("--- END: " + clazz + "----");
-        //        }
+//        for ( String clazz : classes ) {
+//            System.out.println( "---" + clazz + "----" );
+//            for ( byte b : src.getBytes( clazz ) ) {
+//                System.out.print( (char) b );
+//            }
+//            System.out.println( "--- END: " + clazz + "----" );
+//        }
 
         final CompilationResult result = this.compiler.compile( classes,
                                                                 this.src,
@@ -638,6 +639,19 @@ public class JavaDialect
                                        TypeResolver typeResolver) {
         final String functionClassName = this.pkg.getName() + "." + StringUtils.ucFirst( functionDescr.getName() );
         this.packageRegistry.addStaticImport( functionClassName + "." + functionDescr.getName() );
+    }
+
+    public void addSrc(String resourceName,
+                       byte[] content) {
+
+        src.add( resourceName,
+                 content );
+
+        this.errorHandlers.put( resourceName,
+                                new SrcErrorHandler( "Src compile error" ) );
+
+        addClassName( resourceName );
+
     }
 
     /**
