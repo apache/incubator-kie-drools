@@ -417,9 +417,7 @@ public class PackageBuilder {
 
         compileAll();
         reloadAll();
-
-        // some of the rules and functions may have been redefined     
-        this.results = getResults( this.results );
+        updateResults();
 
         // iterate and compile
         if ( this.ruleBase != null ) {
@@ -435,14 +433,19 @@ public class PackageBuilder {
     public boolean isEmpty(String string) {
         return (string == null || string.trim().length() == 0);
     }
+    
+    public void updateResults() {
+        // some of the rules and functions may have been redefined     
+        this.results = getResults( this.results );        
+    }
 
-    private void compileAll() {
+    public void compileAll() {
         for ( PackageRegistry pkgRegistry : this.pkgRegistryMap.values() ) {
             pkgRegistry.compileAll();
         }
     }
 
-    private void reloadAll() {
+    public void reloadAll() {
         for ( PackageRegistry pkgRegistry : this.pkgRegistryMap.values() ) {
             pkgRegistry.getDialectRuntimeRegistry().reloadDirty();
         }
@@ -965,6 +968,7 @@ public class PackageBuilder {
         }
     }
 
+
     public static class RuleErrorHandler extends ErrorHandler {
 
         private BaseDescr descr;
@@ -1053,6 +1057,62 @@ public class PackageBuilder {
         }
 
     }
+    
+
+    public static class SrcErrorHandler extends ErrorHandler {        
+
+        public SrcErrorHandler(final String message) {
+            this.message = message;
+        }
+
+        public DroolsError getError() {
+            return new SrcError( collectCompilerProblems(),
+                                 this.message );
+        }
+
+    }
+
+    public static class SrcError extends DroolsError {
+        private Object object;
+        private String message;
+        private int[]  errorLines = new int[0];
+
+        public SrcError(Object object, String message) {
+            this.object = object;
+            this.message = message;
+        }
+        
+        public Object getObject() {
+            return this.object;
+        }        
+
+        public int[] getErrorLines() {
+            return this.errorLines;
+        }
+
+        public String getMessage() {
+            return this.message;
+        }
+        
+        public String toString() {
+            final StringBuffer buf = new StringBuffer();
+            buf.append( this.message );
+            buf.append( " : " );
+            buf.append( "\n" );
+            if ( this.object instanceof CompilationProblem[] ) {
+                final CompilationProblem[] problem = (CompilationProblem[]) this.object;
+                for ( int i = 0; i < problem.length; i++ ) {
+                    buf.append( "\t" );
+                    buf.append( problem[i] );
+                    buf.append( "\n" );
+                }
+            } else if ( this.object != null ) {
+                buf.append( this.object );
+            }
+            return buf.toString();
+        }
+
+    }    
 
     private String ucFirst(final String name) {
         return name.toUpperCase().charAt( 0 ) + name.substring( 1 );
