@@ -428,22 +428,31 @@ abstract public class AbstractRuleBase
 
             this.eventSupport.fireBeforePackageAdded( newPkg );
 
-            // create new base package if it doesn't exist, as we always merge the newPkg into the existing one, 
-            // to isolate the base package from further possible changes to newPkg.
+//            // create new base package if it doesn't exist, as we always merge the newPkg into the existing one, 
+//            // to isolate the base package from further possible changes to newPkg.
+//            if ( pkg == null ) {
+//                // create a new package, use the same parent classloader as the incoming new package
+//                pkg = new Package( newPkg.getName(),
+//                                   new MapBackedClassLoader( newPkg.getPackageScopeClassLoader().getParent() ) );
+//                //newPkg.getPackageScopeClassLoader() );
+//                pkgs.put( pkg.getName(),
+//                          pkg );
+//                // add the dialect registry composite classloader (which uses the above classloader as it's parent)
+//                this.packageClassLoader.addClassLoader( pkg.getDialectRuntimeRegistry().getClassLoader() );
+//            }
+            
             if ( pkg == null ) {
-                // create a new package, use the same parent classloader as the incoming new package
                 pkg = new Package( newPkg.getName(),
-                                   new MapBackedClassLoader( newPkg.getPackageScopeClassLoader().getParent() ) );
-                //newPkg.getPackageScopeClassLoader() );
+                                   newPkg.getPackageScopeClassLoader() );
                 pkgs.put( pkg.getName(),
                           pkg );
-                // add the dialect registry composite classloader (which uses the above classloader as it's parent)
                 this.packageClassLoader.addClassLoader( pkg.getDialectRuntimeRegistry().getClassLoader() );
+            } else {
+                pkg.getPackageScopeClassLoader().getStore().putAll( newPkg.getPackageScopeClassLoader().getStore() );
+                this.packageClassLoader.addClassLoader( newPkg.getDialectRuntimeRegistry().getClassLoader() );
             }
-            //            else {
-            //
-            //                this.packageClassLoader.addClassLoader( newPkg.getDialectRuntimeRegistry().getClassLoader() );
-            //            }
+            
+
 
             // now merge the new package into the existing one
             mergePackage( pkg,

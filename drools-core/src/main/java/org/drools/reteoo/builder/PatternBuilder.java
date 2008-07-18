@@ -219,31 +219,6 @@ public class PatternBuilder
                 context.setTerminalNodeMemoryEnabled( false );
                 context.setAlphaNodeMemoryAllowed( false );
             }
-            
-            Class cls = ((ClassObjectType)pattern.getObjectType()).getClassType();
-            try {
-                Class rbCls = context.getRuleBase().getCompositePackageClassLoader().loadClass( cls.getName() );
-                if ( cls != rbCls ) {
-                    // the class has been redefined as part of the merge, us the redefined version
-                    objectType = new ClassObjectType( rbCls );
-                    
-                    // @FIXME ok this is just plain nasty, but I want something to work for now.
-                    // we now need to serialize the alpha constraints, to force the fields readers to be regenerated (shitty classloader issues)
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    DroolsObjectOutputStream stream = new DroolsObjectOutputStream( baos );
-                    List list = new ArrayList( alphaConstraints.size() );
-                    for ( final Iterator it = alphaConstraints.iterator(); it.hasNext(); ) {
-                        AlphaNodeFieldConstraint constraint = (AlphaNodeFieldConstraint) it.next();                        
-                        constraint.writeExternal( stream );
-                        constraint = constraint.getClass().newInstance();
-                        constraint.readExternal( new DroolsObjectInputStream( new ByteArrayInputStream( baos.toByteArray() ), context.getRuleBase().getCompositePackageClassLoader() ) );
-                        list.add( constraint );
-                    }
-                    alphaConstraints = list;
-               }                
-            } catch ( Exception e ) {
-                throw new RuntimeDroolsException( "Unable to Attach ObjectTypeNode as class cannot be found '" +  cls.getName() + "'", e );
-            }
         }
 
         context.setObjectSource( (ObjectSource) utils.attachNode( context,
