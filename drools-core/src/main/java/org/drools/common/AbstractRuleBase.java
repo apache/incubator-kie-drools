@@ -311,14 +311,14 @@ abstract public class AbstractRuleBase
             this.removeEventListener( (RuleBaseEventListener) it.next() );
         }
     }
-    
+
     public StatefulSession readStatefulSession(final InputStream stream,
                                                Marshaller marshaller) throws IOException,
                                                                      ClassNotFoundException {
-         return readStatefulSession( stream,
-                                     true,
-                                     marshaller );
-     }    
+        return readStatefulSession( stream,
+                                    true,
+                                    marshaller );
+    }
 
     /**
      * @see RuleBase
@@ -434,19 +434,20 @@ abstract public class AbstractRuleBase
                 // create a new package, use the same parent classloader as the incoming new package
                 pkg = new Package( newPkg.getName(),
                                    new MapBackedClassLoader( newPkg.getPackageScopeClassLoader().getParent() ) );
-                                   //newPkg.getPackageScopeClassLoader() );
+                //newPkg.getPackageScopeClassLoader() );
                 pkgs.put( pkg.getName(),
                           pkg );
                 // add the dialect registry composite classloader (which uses the above classloader as it's parent)
                 this.packageClassLoader.addClassLoader( pkg.getDialectRuntimeRegistry().getClassLoader() );
-            } 
-//            else {
-//
-//                this.packageClassLoader.addClassLoader( newPkg.getDialectRuntimeRegistry().getClassLoader() );
-//            }
-            
+            }
+            //            else {
+            //
+            //                this.packageClassLoader.addClassLoader( newPkg.getDialectRuntimeRegistry().getClassLoader() );
+            //            }
+
             // now merge the new package into the existing one
-            mergePackage( pkg, newPkg );
+            mergePackage( pkg,
+                          newPkg );
 
             // Add the type declarations to the RuleBase
             if ( newPkg.getTypeDeclarations() != null ) {
@@ -459,7 +460,7 @@ abstract public class AbstractRuleBase
                                                        type );
                     }
                 }
-            } 
+            }
 
             // add the rules to the RuleBase
             final Rule[] rules = newPkg.getRules();
@@ -467,7 +468,7 @@ abstract public class AbstractRuleBase
                 addRule( newPkg,
                          rules[i] );
             }
-            
+
             // add the flows to the RuleBase
             if ( newPkg.getRuleFlows() != null ) {
                 final Map flows = newPkg.getRuleFlows();
@@ -495,7 +496,7 @@ abstract public class AbstractRuleBase
      * and the actual Rule objects into the package).
      */
     private void mergePackage(final Package pkg,
-                              final Package newPkg) {        
+                              final Package newPkg) {
         // Merge imports
         final Map<String, ImportDeclaration> imports = pkg.getImports();
         imports.putAll( newPkg.getImports() );
@@ -513,11 +514,12 @@ abstract public class AbstractRuleBase
                     pkg.addGlobal( identifier,
                                    type );
                     // this isn't a package merge, it's adding to the rulebase, but I've put it here for convienience
-                    this.globals.put( identifier, type );
-                } 
+                    this.globals.put( identifier,
+                                      type );
+                }
             }
         }
-        
+
         // merge the type declarations
         if ( newPkg.getTypeDeclarations() != null ) {
             // add type declarations
@@ -528,11 +530,11 @@ abstract public class AbstractRuleBase
                     pkg.addTypeDeclaration( type );
                 }
             }
-        }              
-        
+        }
+
         // merge the contents of the MapBackedClassloader, that is the root of the dialect registry's composite classloader.
-        pkg.getPackageScopeClassLoader().getStore().putAll( newPkg.getPackageScopeClassLoader().getStore() );        
-                    
+        pkg.getPackageScopeClassLoader().getStore().putAll( newPkg.getPackageScopeClassLoader().getStore() );
+
         //Merge rules into the RuleBase package
         //as this is needed for individual rule removal later on
         final Rule[] newRules = newPkg.getRules();
@@ -546,8 +548,8 @@ abstract public class AbstractRuleBase
             }
 
             pkg.addRule( newRule );
-        }           
-        
+        }
+
         //Merge The Rule Flows
         if ( newPkg.getRuleFlows() != null ) {
             final Map flows = newPkg.getRuleFlows();
@@ -555,7 +557,7 @@ abstract public class AbstractRuleBase
                 final Process flow = (Process) iter.next();
                 pkg.addProcess( flow );
             }
-        }            
+        }
 
         pkg.getDialectRuntimeRegistry().merge( newPkg.getDialectRuntimeRegistry() );
 
@@ -578,7 +580,7 @@ abstract public class AbstractRuleBase
     }
 
     public synchronized void addRule(final Package pkg,
-                                      final Rule rule) throws InvalidPatternException {
+                                     final Rule rule) throws InvalidPatternException {
         this.eventSupport.fireBeforeRuleAdded( pkg,
                                                rule );
         if ( !rule.isValid() ) {
@@ -692,7 +694,7 @@ abstract public class AbstractRuleBase
     }
 
     public void removeRule(final Package pkg,
-                            final Rule rule) {
+                           final Rule rule) {
         this.eventSupport.fireBeforeRuleRemoved( pkg,
                                                  rule );
         removeRule( rule );
@@ -818,11 +820,11 @@ abstract public class AbstractRuleBase
         }
         return false;
     }
-    
-    public FactType getFactType( final String name ) {
+
+    public FactType getFactType(final String name) {
         for ( Package pkg : this.pkgs.values() ) {
             FactType type = pkg.getFactType( name );
-            if( type != null ) {
+            if ( type != null ) {
                 return type;
             }
         }
@@ -832,7 +834,7 @@ abstract public class AbstractRuleBase
     public static class ReloadPackageCompilationData
         implements
         RuleBaseAction {
-        private static final long serialVersionUID = 1L;
+        private static final long           serialVersionUID = 1L;
         private Set<DialectRuntimeRegistry> set;
 
         public void readExternal(ObjectInput in) throws IOException,
