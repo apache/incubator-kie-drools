@@ -16,6 +16,12 @@
 
 package org.drools.reteoo.builder;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,6 +29,8 @@ import java.util.List;
 import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
+import org.drools.common.DroolsObjectInputStream;
+import org.drools.common.DroolsObjectOutputStream;
 import org.drools.common.InstanceNotEqualsConstraint;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.AlphaNode;
@@ -202,6 +210,7 @@ public class PatternBuilder
         boolean objectMemory = context.isObjectTypeNodeMemoryEnabled();
         boolean alphaMemory = context.isAlphaMemoryAllowed();
 
+        ObjectType objectType = pattern.getObjectType();
         if ( pattern.getObjectType() instanceof ClassObjectType ) {
             // Is this the query node, if so we don't want any memory
             if ( DroolsQuery.class == ((ClassObjectType) pattern.getObjectType()).getClassType() ) {
@@ -209,6 +218,31 @@ public class PatternBuilder
                 context.setObjectTypeNodeMemoryEnabled( false );
                 context.setTerminalNodeMemoryEnabled( false );
                 context.setAlphaNodeMemoryAllowed( false );
+            }
+            
+            Class cls = ((ClassObjectType)pattern.getObjectType()).getClassType();
+            try {
+                Class rbCls = context.getRuleBase().getCompositePackageClassLoader().loadClass( cls.getName() );
+                if ( cls != rbCls ) {
+                    // the class has been redefined as part of the merge, us the redefined version
+                    objectType = new ClassObjectType( rbCls );
+                    
+                    // @FIXME ok this is just plain nasty, but I want something to work for now.
+                    // we now need to serialize the alpha constraints, to force the fields readers to be regenerated (shitty classloader issues)
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    DroolsObjectOutputStream stream = new DroolsObjectOutputStream( baos );
+                    List list = new ArrayList( alphaConstraints.size() );
+                    for ( final Iterator it = alphaConstraints.iterator(); it.hasNext(); ) {
+                        AlphaNodeFieldConstraint constraint = (AlphaNodeFieldConstraint) it.next();                        
+                        constraint.writeExternal( stream );
+                        constraint = constraint.getClass().newInstance();
+                        constraint.readExternal( new DroolsObjectInputStream( new ByteArrayInputStream( baos.toByteArray() ), context.getRuleBase().getCompositePackageClassLoader() ) );
+                        list.add( constraint );
+                    }
+                    alphaConstraints = list;
+               }                
+            } catch ( Exception e ) {
+                throw new RuntimeDroolsException( "Unable to Attach ObjectTypeNode as class cannot be found '" +  cls.getName() + "'", e );
             }
         }
 
@@ -220,7 +254,7 @@ public class PatternBuilder
         context.setObjectSource( (ObjectSource) utils.attachNode( context,
                                                                   new ObjectTypeNode( context.getNextId(),
                                                                                       (EntryPointNode) context.getObjectSource(),
-                                                                                      pattern.getObjectType(),
+                                                                                      objectType,
                                                                                       context ) ) );
 
         for ( final Iterator it = alphaConstraints.iterator(); it.hasNext(); ) {

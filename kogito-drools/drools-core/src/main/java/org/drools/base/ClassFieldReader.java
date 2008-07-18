@@ -80,22 +80,26 @@ public class ClassFieldReader
 
     public void writeExternal(ObjectOutput out) throws IOException {
         // Call even if there is no default serializable fields.
-        out.writeObject( clazz );
+        out.writeObject( clazz.getName() );
         out.writeObject( fieldName );
     }
 
     public void readExternal(final ObjectInput is) throws ClassNotFoundException,
                                                   IOException {
-        clazz = (Class< ? >) is.readObject();
+        String clsName = (String) is.readObject();
         fieldName = (String) is.readObject();
         if ( is instanceof DroolsObjectInput ) {
             DroolsObjectInput droolsInput = (DroolsObjectInput) is;
+            this.clazz = droolsInput.getClassLoader().loadClass( clsName );
             reader = droolsInput.getExtractorFactory().getReader( clazz,
                                                                      fieldName,
                                                                      droolsInput.getClassLoader() );
-        } else reader = ClassFieldAccessorCache.getInstance().getReader( clazz,
+        } else {
+            this.clazz = getClass().getClassLoader() .loadClass( clsName );            
+            reader = ClassFieldAccessorCache.getInstance().getReader( clazz,        
                                                                             fieldName,
                                                                             getClass().getClassLoader() );
+        }
     }
 
     private void init(final ClassLoader classLoader,
