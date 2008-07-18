@@ -501,7 +501,7 @@ abstract public class AbstractRuleBase
         imports.putAll( newPkg.getImports() );
 
         // merge globals
-        if ( newPkg.getGlobals() != null || newPkg.getGlobals() != Collections.EMPTY_MAP ) {
+        if ( newPkg.getGlobals() != null && newPkg.getGlobals() != Collections.EMPTY_MAP ) {
             Map<String, Class> globals = pkg.getGlobals();
             // Add globals
             for ( final Map.Entry<String, Class> entry : newPkg.getGlobals().entrySet() ) {
@@ -512,6 +512,8 @@ abstract public class AbstractRuleBase
                 } else {
                     pkg.addGlobal( identifier,
                                    type );
+                    // this isn't a package merge, it's adding to the rulebase, but I've put it here for convienience
+                    this.globals.put( identifier, type );
                 } 
             }
         }
