@@ -16,6 +16,8 @@ package org.drools.template.parser;
  * limitations under the License.
  */
 
+import java.io.InputStream;
+
 import org.drools.StatefulSession;
 import org.drools.template.model.DRLOutput;
 
@@ -51,6 +53,11 @@ public class TemplateDataListener implements DataListener {
 	public TemplateDataListener(final int startRow, final int startCol,
 	                             final String template) {
 	    this(startRow, startCol, new DefaultTemplateContainer(template));
+	}
+	
+	public TemplateDataListener(final int startRow, final int startCol,
+	                            final InputStream templateStream) {
+	    this(startRow, startCol, new DefaultTemplateContainer(templateStream));
 	}
 	
 	public TemplateDataListener(final int startRow, final int startCol,
