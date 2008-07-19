@@ -11,6 +11,33 @@ import junit.framework.TestCase;
 
 public class DataProviderCompilerIntegrationTest extends TestCase {
 
+    private static final StringBuffer EXPECTED_RULES = new StringBuffer();
+    
+    static {
+        String head = "package org.drools.decisiontable;\n#generated from Decision Table\nglobal FeeResult result;\n\n";
+        String rule3_a = "rule \"Fee Schedule_3\"\n\tagenda-group \"STANDARD\"\n\twhen\n\t\tFeeEvent(productType == \"SBLC\",\n";
+        String rule3_b = "\t\t\tactivityType == \"ISS\",\n\t\t\tfeeType == \"Telex\",\n\n\n\t\t\tamount < 30000,\n\t\t\tccy == \"YEN\"\n\t\t)\n";
+        String rule3_then = "\tthen\n\t\tresult.setSchedule(new FeeSchedule(\"62\", \"STANDARD\", 45));\nend\n\n";
+        
+        String rule2_a = "rule \"Fee Schedule_2\"\n\tagenda-group \"STANDARD\"\n\twhen\n\t\tFeeEvent(productType == \"SBLC\",\n";
+        String rule2_b = "\t\t\tactivityType == \"ISS\",\n\t\t\tfeeType == \"Postage\",\n\n\n\n\t\t\tccy == \"YEN\"\n\t\t)\n";
+        String rule2_then = "\tthen\n\t\tresult.setSchedule(new FeeSchedule(\"12\", \"STANDARD\", 40));\nend\n\n";
+
+        String rule1_a = "rule \"Fee Schedule_1\"\n\tagenda-group \"STANDARD\"\n\twhen\n\t\tFeeEvent(productType == \"SBLC\",\n";
+        String rule1_b = "\t\t\tactivityType == \"ISS\",\n\t\t\tfeeType == \"Commission\",\n\n\t\t\tentityBranch == \"Entity Branch 1\",\n\n\t\t\tccy == \"YEN\"\n\t\t)\n";
+        String rule1_then = "\tthen\n\t\tresult.setSchedule(new FeeSchedule(\"15\", \"STANDARD\", 1600));\nend\n\n";
+        
+        String rule0_a = "rule \"Fee Schedule_0\"\n\tagenda-group \"STANDARD\"\n\twhen\n\t\tFeeEvent(productType == \"SBLC\",\n";
+        String rule0_b = "\t\t\tactivityType == \"ISS\",\n\t\t\tfeeType == \"Commission\",\n\t\t\ttxParty == \"Party 1\",\n\n\n\t\t\tccy == \"USD\"\n\t\t)\n";
+        String rule0_then = "\tthen\n\t\tresult.setSchedule(new FeeSchedule(\"1\", \"STANDARD\", 750));\nend\n\n\n";
+        
+        EXPECTED_RULES.append( head );
+        EXPECTED_RULES.append( rule3_a ).append( rule3_b ).append( rule3_then );
+        EXPECTED_RULES.append( rule2_a ).append( rule2_b ).append( rule2_then );
+        EXPECTED_RULES.append( rule1_a ).append( rule1_b ).append( rule1_then );
+        EXPECTED_RULES.append( rule0_a ).append( rule0_b ).append( rule0_then );
+    }
+    
     private class TestDataProvider
         implements
         DataProvider {
@@ -40,14 +67,14 @@ public class DataProviderCompilerIntegrationTest extends TestCase {
                              "SBLC",
                              "ISS",
                              "Commission",
-                             null,
+                             "Party 1",
                              "USD",
                              null,
                              "750" ) );
         rows.add( createRow( "15",
                              "STANDARD",
                              "FLAT",
-                             null,
+                             "Entity Branch 1",
                              "SBLC",
                              "ISS",
                              "Commission",
@@ -82,6 +109,7 @@ public class DataProviderCompilerIntegrationTest extends TestCase {
         final String drl = converter.compile( tdp,
                                               "/templates/rule_template_1.drl" );
         System.out.println( drl );
+        assertEquals( EXPECTED_RULES.toString(), drl );
 
     }
 
