@@ -363,7 +363,8 @@ public class BRDRLPersistence
                 buf.append( ">" );
             }
             if ( action.fieldValues.length == 0 ) {
-                buf.append( "insert( new " );
+            	buf.append((isLogic) ?  "insertLogical( new " : "insert( new ");
+
                 buf.append( action.factType );
                 buf.append( "() );\n" );
             } else {
