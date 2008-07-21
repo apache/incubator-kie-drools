@@ -1,0 +1,1640 @@
+gunit Tree2TestDRL walks DRL;
+
+@header{
+package org.drools.lang;
+}
+
+package_statement walks package_statement:
+
+/**
+ * test Package One Segment
+ */
+	"package foo" 
+		OK
+
+/**
+ * test Package Multiple Segments
+ */
+	"package foo.bar.baz;"
+		OK
+
+compilation_unit walks compilation_unit:
+/**
+ * test Empty Compilation Unit
+ */
+	""
+		OK
+/**
+ * test Compilation Unit
+ */
+	"package foo; import com.foo.Bar; import com.foo.Baz;"
+		OK
+/**
+ * test Empty Rule
+ */
+	<<rule empty 
+
+then
+  
+end>>
+		OK
+
+/**
+ * test Damaged syntax
+ */
+	<<#the purpose of this is to see what happens when we have some partially damaged syntax
+#as the IDE uses the parsers AST to work out completion suggestions.
+package test
+
+
+rule simple_rule 
+  when
+    foo3 : Bar(
+
+>>
+		FAIL
+/**
+ * test Templates
+ */
+	<<package test.templates
+
+template Cheese
+	String 	name
+	Integer age
+end
+
+template "Wine"
+	String 		name
+	String 		year
+	String[] 	accolades
+end
+
+
+rule "a rule"
+  when
+	Cheese(name == "Stilton", age==2001)
+	Wine(name == "Grange", age == "1978", accolades contains "world champion")
+  then
+  	baz();
+end>>
+		OK
+/**
+ * test Ternary Expression
+ */
+	<<package foo
+
+rule rule_one 
+  when
+  	Foo()
+  then
+  	 if (speed > speedLimit ? true : false;)
+     pullEmOver();
+end>>
+		OK
+/**
+ * test Function With Arrays
+ */
+	<<package foo
+
+function String[] yourFunction(String args[]) {
+     baz();
+}
+
+rule "new rule"
+
+	when
+		Something()
+	then
+		yourFunction(new String[3] {"a","b","c"});
+		
+end>>
+		OK
+/**
+ * test Almost Empty Rule
+ */
+	<<
+rule almost_empty 
+  when
+  then
+end>>
+		OK
+/**
+ * test Quoted String Name Rule
+ */
+	<<rule "quoted string name"
+  when
+  then
+end>>
+		OK
+/**
+ * test No Loop
+ */
+	<<
+rule rule1 
+  no-loop false
+  when
+  	not Cheese(type == "stilton")
+  then
+	funky();
+end>>
+		OK
+/**
+ * test Auto focus
+ */
+	<<
+rule rule1 
+  auto-focus true
+  when
+  	not Cheese(type == "stilton")
+  then
+	funky();
+end>>
+		OK
+/**
+ * test Rule Flow Group
+ */
+	<<
+rule rule1 
+  ruleflow-group "a group"
+  when
+  	not Cheese(type == "stilton")
+  then
+	funky();
+end>>
+		OK
+/**
+ * test Consequence With Declaration
+ */
+	<<
+
+rule myrule 
+  when
+  then
+  	int i = 0;
+	i = 1;
+	i / 1;
+	i == 1;
+	i(i);
+	i = 'i';
+	i.i.i;
+	i\i;
+	i<i;
+	i>i;
+	i="i";	
+	++i;
+	i++;
+	--i;
+	i--;
+	i += i;
+	i -= i;
+	i *= i;
+	i /= i;
+	int i = 5;
+	for(int j; j<i; ++j) {
+	  System.out.println(j);
+	}	
+	Object o = new String("Hello");
+	String s = (String) o;	
+	
+end>>
+		OK
+/**
+ * test Literal Bool And Negative Numbers Rule
+ */
+	<<#check that it can handle true/false literals, and 
+#negative numbers
+rule simple_rule 
+  when
+	Foo(bar == false)
+	Foo(boo > -42)
+	Foo(boo > -42.42)
+  then
+	cons();
+end>>
+		OK
+<<package org.drools.test;
+ 
+import org.drools.Cheese;
+ 
+rule "simple rule"
+    when
+        Cheese( )
+    then
+end >>
+		OK
+/**
+ * test Simple Method Call With From
+ */
+	<<
+rule blah
+
+ when 
+
+	Col1() from something.doIt( foo,bar,42,"hello",{ a => "b", "something" => 42, "a" => foo, x => {x=>y}},"end", [a, "b", 42] )
+	Col2()
+ then
+	partay();
+end	>>
+		OK
+/**
+ * test Simple Function Call With From
+ */
+	<<
+rule blah
+
+ when 
+
+	Col1() from doIt( foo,bar,42,"hello",{ a => "b", "something" => 42, "a" => foo, x => {x=>y}},"end", [a, "b", 42] )
+	Col2()
+ then
+	partay();
+end	>>
+		OK
+/**
+ * test Simple Accessor With From
+ */
+	<<
+rule blah
+
+ when 
+
+	Col1() from something.doIt
+	Col2()
+ then
+	partay();
+end	>>
+		OK
+/**
+ * test Simple Accessor And Arg With From
+ */
+	<<
+rule blah
+
+ when 
+
+	Col1() from something.doIt["key"]
+	Col2()
+ then
+	partay();
+end	>>
+		OK
+/**
+ * test Complex Chained Acessor
+ */
+	<<rule blah
+ when 
+	Col1() from doIt1( foo,bar,42,"hello",{ a => "b"}, [a, "b", 42] )
+	            .doIt2(bar, [a, "b", 42]).field["key"]
+	Col2()
+ then
+	partay();
+end	>>
+		OK
+/**
+ * test Simple Rule
+ */
+	<<
+rule simple_rule 
+  when
+    foo3 : Bar(a==3)
+    foo4 : Bar(a4:a==4)
+    Baz()
+  then
+  if ( a == b ) {
+    assert( foo3 );
+  } else {
+    retract( foo4 );
+  } 
+  System.out.println( a4 );
+end>>
+		OK
+/**
+ * test Restrictions Multiple
+ */
+	<<#this is for showing off all the new multi restriction stuff
+
+
+
+
+rule simple_rule 
+  when
+  	Person(age > 30 && < 40)
+  	Vehicle(type == "sedan" || == "wagon", age < 3)
+  then
+	consequence();
+end>>
+		OK
+/**
+ * test Line Number Including Comments In RHS
+ */
+	<<package la
+
+
+rule simple_rule 
+  when
+  	Baz()
+  then
+  	//woot
+  	first
+  	
+  	#
+  	
+  	/* lala
+  	
+  	*/
+  	second  
+end>>
+		OK
+/**
+ * test Lhs Semicolon Delim
+ */
+	<<
+rule simple_rule 
+  when
+    foo3 : Bar(a==3) ; foo4 : Bar(a4:a==4) ; Baz()
+  then
+  if ( a == b ) {
+    assert( foo3 );
+  } else {
+    retract( foo4 );
+  } 
+  System.out.println( a4 );
+end>>
+		OK
+/**
+ * test Not Node
+ */
+	<<
+rule simple_rule 
+  when
+  	not Cheese(type == "stilton")
+  then
+	funky();
+end>>
+		OK
+/**
+ * test Function Import
+ */
+	<<package HR1
+
+import function abd.def.x
+import function qed.wah.*
+
+rule simple_rule 
+  when  		  	
+  	not ( Cheese(type == "stilton") )
+  	exists ( Foo() )
+  then
+	funky();
+end>>
+		OK
+/**
+ * test Not Exist With Brackets
+ */
+	<<package HR1
+
+rule simple_rule 
+  when  		  	
+  	not ( Cheese(type == "stilton") )
+  	exists ( Foo() )
+  then
+	funky();
+end>>
+		OK
+/**
+ * test Damaged syntax
+ */
+	<<package HR2
+
+rule simple_rule 
+  when  		  	
+  	a : (not ( Cheese(type == "stilton") ))
+  	exists ( Foo() )
+  then
+	funky();
+end>>
+		FAIL
+/**
+ * test Simple Query
+ */
+	<<
+
+query "simple_query" 
+    foo3 : Bar(a==3)
+    foo4 : Bar(a4:a==4)
+    Baz()
+	
+end>>
+		OK
+/**
+ * test Query Rule Mixed
+ */
+	<<
+package foo
+
+rule bar
+	when
+		Baz()
+	then
+		Boo()
+end
+
+query "simple_query" 
+    foo3 : Bar(a==3)
+    foo4 : Bar(a4:a==4)
+    Baz()
+	
+end
+
+rule bar2
+	when
+		Baz()
+	then
+		Boo()
+end
+
+query "simple_query2" 
+    foo3 : Bar(a==3)
+    foo4 : Bar(a4:a==4)
+    Baz()
+	
+end
+	>>
+		OK
+/**
+ * test Multiple Rules
+ */
+	<<package org.drools.test;
+
+import org.drools.integrationtests.Cheese;
+
+rule "Like Stilton"
+    when
+        Cheese( t:type == "stilton" )
+    then
+        System.out.println("I like " + t);
+end    
+
+rule "Like Cheddar"
+    when
+        Cheese( t:type == "cheddar" )
+    then
+        System.out.println("I like " + t );
+end    >>
+		OK
+/**
+ * test Basic Binding
+ */
+	<<package org.drools.test;
+
+import org.drools.Cheese;
+
+rule "like cheddar"
+    when
+        Cheese( $type:type )
+    then
+        System.out.println("I like " + $type);
+end    >>
+		OK
+/**
+ * test Bound Variables
+ */
+	<<package org.drools.test;
+
+import org.drools.Cheese;
+import org.drools.Person;
+
+rule "Who likes Stilton"
+    when
+        Cheese($type : type == "stilton")
+        $person : Person($name : name == "bob", likes == $type)        
+    then
+        System.out.println( $name + " likes " + $type);
+end    >>
+		OK
+/**
+ * test Or Nesting
+ */
+	<<
+import org.drools.Person
+
+rule simple_rule 
+  when
+	Person(name == "mark") or 
+	( Person(type == "fan") and Cheese(type == "green") )
+  then
+	System.out.println( "Mark and Michael" + bar );
+end>>
+		OK
+/**
+ * test And Or Rules
+ */
+	<<
+import org.drools.Person
+
+rule simple_rule 
+  when
+    Person(name == "mark") && Cheese(type == "stilton")
+    Person(name == "mark") || Cheese(type == "stilton")
+  then
+	System.out.println( "Mark and Michael" );
+end>>
+		OK
+/**
+ * test Or With Binding
+ */
+	<<
+import org.drools.Person
+
+rule simple_rule 
+  when
+	foo :  ( Person(name == "mark") or Person(type == "fan") ) 
+	Cheese(type == "green")
+  then
+	System.out.println( "Mark and Michael" + bar );
+end>>
+		OK
+/**
+ * test Or Binding Complex
+ */
+	<<
+
+rule simple_rule 
+  when
+	foo : ( Person(name == "mark") 
+		or 
+		Person(type == "fan") )
+  then
+	System.out.println( "Mark and Michael" + bar );
+end>>
+		OK
+/**
+ * test Or Binding With Brackets
+ */
+	<<rule simple_rule 
+  when
+	foo : ( 
+		Person(name == "mark") or Person(type == "fan") 
+		)
+  then
+	System.out.println( "Mark and Michael" + bar );
+end>>
+		OK
+/**
+ * test Brackets Precedence
+ */
+	<<
+rule simple_rule 
+  when
+	 ( (not Foo(x=="a") or Foo(x=="y") ) and ( Shoes() or Butt() ) )
+  then
+	go wild
+end>>
+		OK
+/**
+ * test Eval Multiple
+ */
+	<<
+rule simple_rule 
+  when
+	eval(abc("foo") + 5)
+	Foo()
+	eval(qed())
+	Bar()
+  then
+	Kapow
+	Poof
+	
+end>>
+		OK
+/**
+ * test With Eval
+ */
+	<<
+rule simple_rule 
+  when
+	Foo()
+	Bar()
+	eval(abc("foo"))
+  then
+	Kapow
+	
+end>>
+		OK
+/**
+ * test With Retval
+ */
+	<<
+rule simple_rule 
+  when
+	Foo(name== (a + b))
+  then
+	Kapow
+	
+end>>
+		OK
+/**
+ * test With Predicate
+ */
+	<<
+rule simple_rule 
+  when
+  	Person( $age2:age -> ($age2 == $age1+2 ) ) 
+  then
+	foo bar
+end>>
+		OK
+/**
+ * test Not With Constraint
+ */
+	<<package org.drools.test;
+
+import org.drools.Cheese;
+
+global java.util.List list;
+global java.lang.Integer five;
+
+rule "not rule test"
+    when
+        $person : Person( $likes:like )
+        not Cheese( type == $likes )
+    then
+		list.add( $person );
+end    >>
+		OK
+/**
+ * test Global
+ */
+	<<package org.drools.test;
+
+import org.drools.Cheese;
+
+global java.lang.String foo
+global java.lang.Integer bar;
+
+rule baz
+    when
+        Cheese( )
+    then
+
+end    >>
+		OK
+/**
+ * test Functions
+ */
+	<<
+import java.lang.String
+
+function String functionA(String s, Integer i) {
+	
+	foo();
+
+}
+
+function void functionB() {
+	bar();	
+}
+
+
+rule something 
+	when
+	then
+end
+
+rule "one more thing"
+	when
+	then
+end
+
+
+
+	>>
+		OK
+/**
+ * test Comment
+ */
+	<<#this starts with a comment
+package foo.bar
+
+//and another comment
+
+/*
+yet
+	   another
+   				style
+*/
+
+rule "test"
+  when
+  then
+end>>
+		OK
+/**
+ * test Attributes
+ */
+	<<
+
+
+rule simple_rule 
+		#attributes keywork (and colon) is totally optional
+		salience 42
+		agenda-group "my_group"
+		no-loop 
+		duration 42
+		activation-group "my_activation_group"
+		lock-on-active true
+	when
+		Foo()
+	then
+		bar();
+end>>
+		OK
+/**
+ * test Attributes alternate Syntax
+ */
+	<<
+
+
+rule simple_rule 
+	attributes: 
+		salience 42, agenda-group "my_group", no-loop,  lock-on-active, duration 42, activation-group "my_activation_group"
+	when
+		Foo()
+	then
+		bar();
+end>>
+		OK
+/**
+ * test Enumeration
+ */
+	<<
+rule simple_rule 
+  when
+  	Foo(bar == Foo.BAR)
+  then
+end>>
+		OK
+/**
+ * test Syntax Damage
+ */
+	<<rule one
+  when
+    exists Foo()
+    exits Bar()
+  then
+end
+
+rule two 
+  when
+    ford = ford = ford
+  then
+end>>
+		FAIL
+/**
+ * test Extra Lhs Newline
+ */
+	<<
+rule "another test"
+    when
+        s : String()
+        eval(s.equals("foo") && s.startsWith("f"))
+        
+        
+    then
+        list.add( s );
+end >>
+		OK
+/**
+ * test Sounds Like
+ */
+	<<package nesting;
+
+
+
+
+rule "test something"
+
+	when
+		p: Person( name soundslike "Michael" )
+	then
+		p.name = "goober"
+		System.out.println(p.name)
+end>>
+		OK
+/**
+ * test Package Attributes
+ */
+	<<package com.foo;
+
+agenda-group "x"
+
+import goo.ber
+import wee.waa
+
+
+dialect "java"
+
+
+
+
+rule bar
+  when
+  then
+end
+
+rule baz
+  dialect "mvel"
+  when
+  then
+end>>
+		OK
+/**
+ * test Statement Ordering 1
+ */
+	<<
+package com.foo;
+
+import im.one
+
+import im.two
+
+rule foo
+  when
+  then
+end
+
+function cheeseIt() {
+
+}
+
+import im.three;
+
+rule bar
+  when
+  then
+end
+
+function uncheeseIt() {
+
+}
+
+import im.four;>>
+		OK
+/**
+ * test Rule Names Starting With Numbers
+ */
+	<<
+rule "1. Do Stuff!"
+  when
+  then
+end
+
+rule "2. Do More Stuff!"
+  when
+  then
+end>>
+		OK
+/**
+ * test Eval With Newline
+ */
+	<<
+rule simple_rule 
+  when
+	Foo()
+	Bar()
+	eval(
+	
+	
+	
+	       abc(
+	       
+	       "foo") + 
+	       5
+	       
+	       
+	       
+	        
+	       )
+  then
+	Kapow
+	Poof
+	
+end>>
+		OK
+/**
+ * test Syntax Damage
+ */
+	<<
+rule simple_rule 
+  when
+	eval(abc();)
+  then
+	Kapow
+	Poof
+end>>
+		FAIL
+/**
+ * test End Position
+ */
+	<<
+
+
+rule simple_rule 
+  when
+	Foo(
+	  bar == baz, la==laz
+	  )
+  then
+	Kapow
+	Poof
+end
+	>>
+		OK
+/**
+ * test Qualified Classname
+ */
+	<<package org.drools.test;
+
+rule "Who likes Stilton"
+    when
+        com.cheeseco.Cheese($type : type == "stilton")
+    then
+        System.out.println( $name + " likes " + $type);
+end    >>
+		OK
+/**
+ * test Accumulate
+ */
+	<<rule "AccumulateParserTest"
+when
+     Integer() from accumulate( Person( age > 21 ),
+                                init( int x = 0; ),
+                                action( x++; ),
+                                result( new Integer(x) ) );
+then
+end>>
+		OK
+/**
+ * test Accumulate With Bindings
+ */
+	<<rule "AccumulateParserTest"
+when
+     $counter:Integer() from accumulate( $person : Person( age > 21 ),
+                                         init( int x = 0; ),
+                                         action( x++; ),
+                                         result( new Integer(x) ) );
+then
+end>>
+		OK
+/**
+ * test Collect
+ */
+	<<rule "CollectParserTest"
+when
+     $personList : ArrayList() from collect( Person( age > 21 ) );
+then
+end>>
+		OK
+	<<rule "test_Quotes"
+   when
+      InitialFact()
+   then
+      String s = "\"\n\t\\";
+end >>
+		OK
+/**
+ * test Nested CEs
+ */
+	<<rule "test nested CEs"	
+	when
+	    not ( State( $state : state ) and
+	          not( Person( status == $state, $likes : likes ) and
+	               Cheese( type == $likes ) ) )
+	    Person( name == "Bob" )
+	    ( Cheese( price == 10 ) or Cheese( type == "brie" ) )
+	then 
+		results.add("OK");		
+end>>
+		OK
+/**
+ * test For All
+ */
+	<<rule "ForallParserTest"
+when
+     forall( Person( age > 21, $likes : likes )
+             Cheese( type == $likes ) );
+then
+end>>
+		OK
+/**
+ * test In Operator
+ */
+	<<#testing 'in' operator
+
+rule simple_rule 
+  when
+  	Person(age > 30 && < 40)
+  	Vehicle(type in ( "sedan", "wagon" ), age < 3)
+  then
+	consequence();
+end>>
+		OK
+/**
+ * test Not In Operator
+ */
+	<<#testing not 'in' operator
+
+rule simple_rule 
+  when
+  	Person(age > 30 && < 40)
+  	Vehicle(type not in ( "sedan", "wagon" ), age < 3)
+  then
+	consequence();
+end>>
+		OK
+/**
+ * test Semicolon
+ */
+	<<package org.drools;
+
+global java.util.List list;
+
+rule "rule1"
+when
+    Pattern1();
+    Pattern2() from x.y.z;
+then
+    System.out.println("Test");
+end;
+
+query "query1"
+	Pattern5();
+	Pattern6();
+	Pattern7();
+end;
+
+rule "rule2"
+when
+    Pattern3();
+    Pattern4() from collect( Pattern5() );
+then
+    System.out.println("Test");
+end;
+
+	>>
+		OK
+/**
+ * test Eval
+ */
+	<<package org.drools
+
+rule "Test Parse"
+
+when
+    eval( 3==3 )
+then
+    System.out.println("OK");
+end >>
+		OK
+/**
+ * test Accumulate Reverse
+ */
+	<<rule "AccumulateReverseParserTest"
+when
+     Integer() from accumulate( Person( age > 21 ),
+                                init( int x = 0; ),
+                                action( x++; ),
+                                reverse( x--; ),
+                                result( new Integer(x) ) );
+then
+end>>
+		OK
+/**
+ * test Accumulate External Function
+ */
+	<<rule "AccumulateReverseParserTest"
+when
+     Number() from accumulate( Person( $age : age > 21 ),
+                               average( $age ) );
+then
+end>>
+		OK
+/**
+ * test Collect With Nested From
+ */
+	<<rule "CollectParserTest"
+when
+     #bellow statement makes no sense, but is useful to test parsing recursiveness
+     $personList : ArrayList() from collect( $p : Person( age > 21 || age < 10 ) from collect( People() from $town.getPeople() ) );
+then
+end
+
+	>>
+		OK
+/**
+ * test Accumulate With Nested From
+ */
+	<<rule "AccumulateParserTest"
+when
+     #bellow statement makes no sense, but is useful to test parsing recursiveness
+     $personList : ArrayList() from accumulate( Person( $age : age > 21 || < 10 ) from collect( People() from $town.getPeople() ),
+                                                max( $age ) );
+then
+end
+
+	>>
+		OK
+/**
+ * test Or CE
+ */
+	<<package org.drools;
+
+rule "testing OR CE"
+when
+    $p : Person( name == "bob" )
+    $c : Cheese( type == $p.likes ) || Cheese( price == 10 )
+then
+    // do something
+end >>
+		OK
+/**
+ * test Rule Single Line
+ */
+	<<rule "another test" salience 10 when eval( true ) then System.out.println(1); end>>
+		OK
+/**
+ * test Rule Two Lines
+ */
+	<<rule "another test" salience 10 when eval( true ) then System.out.println(1);
+end>>
+		OK
+
+/**
+ * test Accumulate Multi Pattern
+ */
+	<<rule "AccumulateMultiPatternParserTest"
+when
+     $counter:Integer() from accumulate( $person : Person( age > 21 ) and Cheese( type == $person.likes ),
+                                         init( int x = 0; ),
+                                         action( x++; ),
+                                         result( new Integer(x) ) );
+then
+end>>
+		OK
+/**
+ * test Syntax Damage
+ */
+	<<package org.drools;
+
+rule "test rule"
+	salience 10
+	when
+		$c: WorkerPerformanceContext(eval)$c.getBalanceMonth() != null))
+	then
+		retract($p);
+end
+	>>
+		FAIL
+/**
+ * test Syntax Damage
+ */
+	<<package org.drools;
+
+rule "Avoid NPE on wrong syntax"
+when
+    not( Cheese( ( type == "stilton", price == 10 ) || ( type == "brie", price == 15 ) ) from $cheeseList )
+then
+    System.out.println("OK");
+end>>
+		FAIL
+
+/**
+ * test Pluggable Operators
+ */
+	<<package org.drools;
+
+rule "test pluggable operators"
+when
+    $a : EventA()
+    $b : EventB( this `after[1,10] $a )
+    $c : EventC( this finishes $b )
+    $d : EventD( this not starts $a )
+    $e : EventE( this not `before [1, 10] $b )
+then
+end>>
+		OK
+
+lhs walks pattern_source:
+/**
+ * test Entry Point
+ */
+	<<StockTick( symbol=="ACME") from entry-point StreamA>>
+		OK
+
+lhs_block walks normal_lhs_block:
+
+/**
+ * test Empty lhs
+ */
+	"" OK
+/**
+ * test Member Of
+ */
+	<<
+     Country( $cities : city )
+     Person( city memberOf $cities )
+    >>
+    	OK
+/**
+ * test Not Member Of
+ */
+	<<
+     Country( $cities : city )
+     Person( city not memberOf $cities )
+    >>
+    	OK
+/**
+ * test Constraint And Connective
+ */
+	<< Person( age < 42 && location=="atlanta") >>
+		OK
+
+/**
+ * test Constraint Or Connective
+ */
+	<< Person( age < 42 || location=="atlanta") >>
+		OK
+
+/**
+ * test Constraint Connectives Precedence
+ */
+	<<Person( age < 42 && location=="atlanta" || age > 20 && location=="Seatle" || location == "Chicago")>>
+		OK
+
+/**
+ * test Constraint Connectives Precedence With Bracks
+ */
+	<<Person( age < 42 && ( location=="atlanta" || age > 20 && location=="Seatle") || location == "Chicago")>>
+		OK
+
+/**
+ * test Constraint Connectives Precedence With Bracks2
+ */
+	<< Person( ( age == 70 && hair == "black" ) || ( age == 40 && hair == "pink" ) || ( age == 12 && ( hair == "yellow" || hair == "blue" ) ) ) >>
+		OK
+
+/**
+ * test Constraint Connectives Matches
+ */
+	<< Person( name matches "mark" || matches "bob" ) >>
+		OK
+
+/**
+ * test Not Contains
+ */
+	<<
+	City( $city : city )
+	Country( cities not contains $city )
+	>>
+		OK
+
+/**
+ * test Not Matches
+ */
+	<< Message( text not matches '[abc]*' ) >>
+		OK
+	
+/**
+ * test Restrictions
+ */
+	<<Foo( bar > 1 || == 1 )>>
+		OK
+
+/**
+ * test Rule Parse Lhs 3
+ */
+	<<
+	(or
+	not Person()
+		(and Cheese()
+			Meat()
+			Wine()))
+	>>
+		OK
+
+/**
+ * test Restriction Connectives
+ */
+	<<Person( ( age ( > 60 && < 70 ) || ( > 50 && < 55 ) && hair == "black" ) || ( age == 40 && hair == "pink" ) || ( age == 12 && ( hair == "yellow" || hair == "blue" ) ))>>
+		OK
+
+/**
+ * test Accessor Paths
+ */
+	<<org   .   drools/*comment*/	  .Message( text not matches $c#comment
+. property )
+>>
+		OK
+
+/**
+ * test General Lhs
+ */
+<< $id : Something( duration == "foo") >>
+	OK
+"foo3 : Bar(" FAIL
+<<
+Cheese(name == "Stilton", age==2001)
+Wine(name == "Grange", age == "1978", accolades contains "world champion")
+>> OK
+"Foo()"
+	OK
+<<not Cheese(type == "stilton")>>
+	OK
+<<
+Person(age < 42, location=="atlanta") 
+or
+Person(name=="bob")
+>>
+	OK
+<<
+Foo(bar == false)
+Foo(boo > -42)
+Foo(boo > -42.42)
+>>
+	OK
+"Cheese( )" 
+	OK
+	
+<<
+Col1() from something.doIt( foo,bar,42,"hello",{ a => "b", "something" => 42, "a" => foo, x => {x=>y}},"end", [a, "b", 42] )
+Col2()
+>>
+	OK
+<<
+Col1() from doIt( foo,bar,42,"hello",{ a => "b", "something" => 42, "a" => foo, x => {x=>y}},"end", [a, "b", 42] )
+Col2()
+>>
+	OK	
+<<
+Col1() from something.doIt
+Col2()
+>>
+	OK
+<<
+Col1() from something.doIt["key"]
+Col2()
+>>
+	OK
+<<
+Col1() from doIt1( foo,bar,42,"hello",{ a => "b"}, [a, "b", 42] )
+            .doIt2(bar, [a, "b", 42]).field["key"]
+Col2()
+>>
+	OK
+<<
+foo3 : Bar(a==3)
+foo4 : Bar(a4:a==4)
+Baz()
+>>
+	OK
+<<
+Person(age > 30 && < 40)
+Vehicle(type == "sedan" || == "wagon", age < 3)
+>>
+	OK
+"    foo3 : Bar(a==3) ; foo4 : Bar(a4:a==4) ; Baz()"
+	OK
+<<
+not ( Cheese(type == "stilton") )
+exists ( Foo() )
+>>
+	OK
+<<
+not ( Cheese(type == "stilton") )
+exists ( Foo() )
+>>
+	OK
+<<
+a : (not ( Cheese(type == "stilton") ))
+exists ( Foo() )
+>>
+	FAIL
+<< Cheese( t:type == "cheddar" ) >>
+	OK
+
+"Cheese( $type:type )"
+	OK
+<<
+    Cheese($type : type == "stilton")
+    $person : Person($name : name == "bob", likes == $type)        
+>>
+	OK
+<<
+Person(name == "mark") or 
+( Person(type == "fan") and Cheese(type == "green") )
+>>
+	OK
+<<
+Person(name == "mark") && Cheese(type == "stilton")
+Person(name == "mark") || Cheese(type == "stilton")
+>>
+	OK
+<<
+foo :  ( Person(name == "mark") or Person(type == "fan") ) 
+Cheese(type == "green")
+>>
+	OK
+<<
+foo : ( Person(name == "mark") 
+	or 
+	Person(type == "fan") )
+>>
+	OK
+<<
+foo : ( 
+	Person(name == "mark") or Person(type == "fan") 
+	)
+>>
+	OK
+<<
+ ( (not Foo(x=="a") or Foo(x=="y") ) and ( Shoes() or Butt() ) )
+>>
+	OK
+<<
+eval(abc("foo") + 5)
+Foo()
+eval(qed())
+Bar()
+>>
+	OK
+<<
+Foo()
+Bar()
+eval(abc("foo"))
+>>
+	OK
+"Foo(name== (a + b))"
+	OK
+
+"Person( $age2:age -> ($age2 == $age1+2 ) )"
+	OK
+
+"Foo(bar == Foo.BAR)"
+	OK
+<<
+p: Person( name soundslike "Michael" )
+>>
+	OK
+
+<<
+Foo()
+Bar()
+eval(
+
+
+
+       abc(
+       
+       "foo") + 
+       5
+       
+       
+       
+        
+       )
+>>
+	OK
+
+"eval(abc();)"
+	FAIL
+
+<<
+Foo(
+  bar == baz, la==laz
+  )
+ >>
+ 	OK
+
+<<com.cheeseco.Cheese($type : type == "stilton")>>
+	OK
+
+<<
+     Integer() from accumulate( Person( age > 21 ),
+                            init( int x = 0; ),
+                            action( x++; ),
+                            result( new Integer(x) ) );
+>>
+	OK
+
+<<
+ $counter:Integer() from accumulate( $person : Person( age > 21 ),
+                                     init( int x = 0; ),
+                                     action( x++; ),
+                                     result( new Integer(x) ) );
+>>
+	OK
+
+"$personList : ArrayList() from collect( Person( age > 21 ) );"
+	OK
+
+
+<<
+	not ( State( $state : state ) and
+          not( Person( status == $state, $likes : likes ) and
+               Cheese( type == $likes ) ) )
+    Person( name == "Bob" )
+    ( Cheese( price == 10 ) or Cheese( type == "brie" ) )
+>>
+	OK
+
+<<
+ forall( Person( age > 21, $likes : likes )
+         Cheese( type == $likes ) );
+>>
+	OK
+
+
+	<<
+  	Person(age > 30 && < 40)
+  	Vehicle(type in ( "sedan", "wagon" ), age < 3)
+	>>
+		OK
+
+	<<
+  	Person(age > 30 && < 40)
+  	Vehicle(type not in ( "sedan", "wagon" ), age < 3)
+	>>
+		OK
+
+		<<
+		Pattern1();
+		Pattern2() from x.y.z;
+		Pattern5();
+		Pattern6();
+		Pattern7();
+		Pattern3();
+		Pattern4() from collect( Pattern5() );
+		>>
+			OK
+
+		<< eval( 3==3 ) >>
+			OK
+
+		<<
+		Integer() from accumulate( Person( age > 21 ),
+		                           init( int x = 0; ),
+		                           action( x++; ),
+		                           reverse( x--; ),
+		                           result( new Integer(x) ) );
+		>>
+			OK
+
+		<<
+	     Number() from accumulate( Person( $age : age > 21 ),
+	                               average( $age ) );
+		>>
+			OK
+
+		<<
+	     #bellow statement makes no sense, but is useful to test parsing recursiveness
+	     $personList : ArrayList() from collect( $p : Person( age > 21 || age < 10 ) from collect( People() from $town.getPeople() ) );
+		>>
+			OK
+
+		<<
+	     $personList : ArrayList() from accumulate( Person( $age : age > 21 || < 10 ) from collect( People() from $town.getPeople() ),
+	                                                max( $age ) );
+		>>
+			OK
+
+		<<
+	    $p : Person( name == "bob" )
+	    $c : Cheese( type == $p.likes ) || Cheese( price == 10 )
+	    >>
+	    	OK
+			<<
+		     $counter:Integer() from accumulate( $person : Person( age > 21 ) and Cheese( type == $person.likes ),
+		                                         init( int x = 0; ),
+		                                         action( x++; ),
+		                                         result( new Integer(x) ) );
+			>>
+				OK
+
+			<<
+		    $a : EventA()
+		    $b : EventB( this `after[1,10] $a )
+		    $c : EventC( this finishes $b )
+		    $d : EventD( this not starts $a )
+		    $e : EventE( this not `before [1, 10] $b )
+			>>
+				OK
+
+			<<StockTick( symbol=="ACME") from entry-point StreamA>>
+				OK
+
+/**
+ * test Constraint
+ */
+fact_expression walks constraints:
+	<<eval( $var.equals("xyz") )>>
+		OK

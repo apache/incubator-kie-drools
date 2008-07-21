@@ -26,11 +26,15 @@ import org.antlr.runtime.ANTLRReaderStream;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
-import org.drools.lang.DRLLexer;
-import org.drools.lang.DRLParser;
+import org.antlr.runtime.tree.CommonTreeNodeStream;
+import org.drools.lang.DescrBuilderTree;
+import org.drools.lang.DroolsTree;
+import org.drools.lang.DroolsTreeAdaptor;
 import org.drools.lang.Expander;
 import org.drools.lang.ExpanderException;
 import org.drools.lang.Location;
+import org.drools.lang.DRLLexer;
+import org.drools.lang.DRLParser;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.dsl.DefaultExpanderResolver;
 
@@ -41,7 +45,7 @@ import org.drools.lang.dsl.DefaultExpanderResolver;
 public class DrlParser {
 
     private final List results = new ArrayList();
-    private Location location = null;
+    private Location location = new Location( Location.LOCATION_UNKNOWN );
 
     public DrlParser() {
 
@@ -50,18 +54,12 @@ public class DrlParser {
     /** Parse a rule from text */
     public PackageDescr parse(final String text) throws DroolsParserException {
         final DRLParser parser = getParser( text );
-        compile( parser );
-        this.location = parser.getLocation();
-        return parser.getPackageDescr();
-
+        return compile( parser );
     }
 
     public PackageDescr parse(final Reader reader) throws DroolsParserException {
         final DRLParser parser = getParser( reader );
-        compile( parser );
-        this.location = parser.getLocation();
-        return parser.getPackageDescr();
-
+        return compile( parser );
     }
 
     //    /** Parse and build a rule package from a DRL source */
@@ -170,14 +168,22 @@ public class DrlParser {
         return this.results;
     }
 
-    private void compile(final DRLParser parser) throws DroolsParserException {
+    private PackageDescr compile(final DRLParser parser) throws DroolsParserException {
         try {
-            parser.compilation_unit();
-
+            DroolsTree resultTree = (DroolsTree) parser.compilation_unit().getTree();
             makeErrorList( parser );
-        } catch ( final RecognitionException e ) {
-            throw new DroolsParserException( e );
-        } catch ( Exception e ) {
+            if (!this.hasErrors()){
+				CommonTreeNodeStream nodes = new CommonTreeNodeStream(resultTree);
+				// AST nodes have payload that point into token stream
+				nodes.setTokenStream(parser.getTokenStream());
+				// Create a tree walker attached to the nodes stream
+            	DescrBuilderTree walker = new DescrBuilderTree(nodes);
+            	walker.compilation_unit();
+            	return walker.getPackageDescr();            	
+            } else {
+            	return null;
+            }
+        }  catch ( Exception e ) {
             throw new DroolsParserException( "Unknown error while parsing. This is a bug. Please contact the Development team.", e);
         }
     }
@@ -185,10 +191,10 @@ public class DrlParser {
     /** Convert the antlr exceptions to drools parser exceptions */
     private void makeErrorList(final DRLParser parser) {
         for ( final Iterator iter = parser.getErrors().iterator(); iter.hasNext(); ) {
-            final RecognitionException recogErr = (RecognitionException) iter.next();
-            final ParserError err = new ParserError( parser.createErrorMessage( recogErr ),
-                                                     recogErr.line,
-                                                     recogErr.charPositionInLine );
+            final DroolsParserException recogErr = (DroolsParserException) iter.next();
+            final ParserError err = new ParserError( recogErr.getMessage(),
+                                                     recogErr.getLineNumber(),
+                                                     recogErr.getColumn() );
             this.results.add( err );
         }
     }
@@ -197,18 +203,22 @@ public class DrlParser {
      * @return An instance of a RuleParser should you need one (most folks will not).
      */
     private DRLParser getParser(final String text) {
-        return new DRLParser( new CommonTokenStream( new DRLLexer( new ANTLRStringStream( text ) ) ) );
+    	DRLParser parser = new DRLParser( new CommonTokenStream( new DRLLexer( new ANTLRStringStream( text ) ) ) );
+    	parser.setTreeAdaptor(new DroolsTreeAdaptor());
+        return parser;
     }
 
     private DRLParser getParser(final Reader reader) {
-        try {
-            return new DRLParser( new CommonTokenStream( new DRLLexer( new ANTLRReaderStream( reader ) ) ) );
+    	try {
+        	DRLParser parser = new DRLParser( new CommonTokenStream( new DRLLexer( new ANTLRReaderStream( reader ) ) ) );
+        	parser.setTreeAdaptor(new DroolsTreeAdaptor());
+            return parser;
         } catch ( final Exception e ) {
             throw new RuntimeException( "Unable to parser Reader",
                                         e );
         }
     }
-    
+
     public Location getLocation() {
         return this.location; 
     }

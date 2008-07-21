@@ -1,0 +1,5 @@
+rule "test something"
+    when
+      p: Person( street == "Low" && sss[1] == 234 )
+    then
+    end

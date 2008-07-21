@@ -21,8 +21,9 @@ public class FieldBindingDescr extends BaseDescr {
      * 
      */
     private static final long serialVersionUID = 400L;
-    private String            fieldName;
-    private String            identifier;
+    private String               fieldName;
+    private String               identifier;
+    private FieldConstraintDescr fieldConstraint = null;
 
     public FieldBindingDescr() {
         this( null,
@@ -51,8 +52,15 @@ public class FieldBindingDescr extends BaseDescr {
         return this.identifier;
     }
 
+	public FieldConstraintDescr getFieldConstraint() {
+		return fieldConstraint;
+	}
+
+	public void setFieldConstraint(FieldConstraintDescr fieldConstraint) {
+		this.fieldConstraint = fieldConstraint;
+	}
+
     public String toString() {
         return "[FieldBinding: field=" + this.fieldName + "; identifier=" + this.identifier + "]";
     }
-
 }

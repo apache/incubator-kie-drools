@@ -23,6 +23,9 @@ public class ReturnValueRestrictionDescr extends EvaluatorBasedRestrictionDescr 
     private String[]          declarations;
     private String            classMethodName;
 
+    public ReturnValueRestrictionDescr(){
+    }
+
     public ReturnValueRestrictionDescr(final String evaluator ) {
         super( evaluator,
                false,

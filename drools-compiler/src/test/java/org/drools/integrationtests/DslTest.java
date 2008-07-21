@@ -138,7 +138,7 @@ public class DslTest extends TestCase {
         Package pkg = builder.getPackage();
 
         pkg = SerializationHelper.serializeObject(pkg);
-        assertFalse( pkg.isValid() );
+        assertNull( pkg );
     }
 
     public void testDSLWithIndividualConstraintMappings() throws Exception {

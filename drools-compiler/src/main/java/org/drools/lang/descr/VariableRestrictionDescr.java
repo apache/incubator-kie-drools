@@ -20,6 +20,9 @@ public class VariableRestrictionDescr extends EvaluatorBasedRestrictionDescr {
 
     private static final long serialVersionUID = 400L;
 
+    public VariableRestrictionDescr(){    	
+    }
+
     public VariableRestrictionDescr(final String evaluator,
                                     final String identifier ) {
         super( evaluator,
