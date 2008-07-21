@@ -1,0 +1,1883 @@
+gunit DRL;
+
+@header{
+package org.drools.lang;
+}
+
+package_statement:
+
+/**
+ * test Package One Segment
+ */
+	"package foo" 
+		-> (package (VT_PACKAGE_ID foo))
+
+/**
+ * test Package Multiple Segments
+ */
+	"package foo.bar.baz;"
+		-> (package (VT_PACKAGE_ID foo bar baz))
+
+compilation_unit:
+/**
+ * test Empty Compilation Unit
+ */
+	""
+		-> "VT_COMPILATION_UNIT"
+/**
+ * test Compilation Unit
+ */
+	"package foo; import com.foo.Bar; import com.foo.Baz;"
+		-> (VT_COMPILATION_UNIT (package (VT_PACKAGE_ID foo)) (import (VT_IMPORT_ID com foo Bar)) (import (VT_IMPORT_ID com foo Baz)))
+/**
+ * test Empty Rule
+ */
+	<<rule empty 
+
+then
+  
+end>>
+		-> (VT_COMPILATION_UNIT (rule empty then
+  
+end))
+/**
+ * test Damaged syntax
+ */
+	<<#the purpose of this is to see what happens when we have some partially damaged syntax
+#as the IDE uses the parsers AST to work out completion suggestions.
+package test
+
+
+rule simple_rule 
+  when
+    foo3 : Bar(
+
+>>
+		FAIL
+/**
+ * test Templates
+ */
+	<<package test.templates
+
+template Cheese
+	String 	name
+	Integer age
+end
+
+template "Wine"
+	String 		name
+	String 		year
+	String[] 	accolades
+end
+
+
+rule "a rule"
+  when
+	Cheese(name == "Stilton", age==2001)
+	Wine(name == "Grange", age == "1978", accolades contains "world champion")
+  then
+  	baz();
+end>>
+		-> (VT_COMPILATION_UNIT (package (VT_PACKAGE_ID test templates)) (template Cheese (VT_SLOT (VT_DATA_TYPE String) name) (VT_SLOT (VT_DATA_TYPE Integer) age) end) (template "Wine" (VT_SLOT (VT_DATA_TYPE String) name) (VT_SLOT (VT_DATA_TYPE String) year) (VT_SLOT (VT_DATA_TYPE String [ ]) accolades) end) (rule "a rule" when (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Cheese) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT name)) (== "Stilton")) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (== 2001)))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Wine) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT name)) (== "Grange")) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (== "1978")) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT accolades)) (contains "world champion"))))) then
+  	baz();
+end))
+/**
+ * test Ternary Expression
+ */
+	<<package foo
+
+rule rule_one 
+  when
+  	Foo()
+  then
+  	 if (speed > speedLimit ? true : false;)
+     pullEmOver();
+end>>
+		-> (VT_COMPILATION_UNIT (package (VT_PACKAGE_ID foo)) (rule rule_one when (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Foo)))) then
+  	 if (speed > speedLimit ? true : false;)
+     pullEmOver();
+end))
+/**
+ * test Function With Arrays
+ */
+	<<package foo
+
+function String[] yourFunction(String args[]) {
+     baz();
+}
+
+rule "new rule"
+
+	when
+		Something()
+	then
+		yourFunction(new String[3] {"a","b","c"});
+		
+end>>
+		-> (VT_COMPILATION_UNIT (package (VT_PACKAGE_ID foo)) (function (VT_DATA_TYPE String [ ]) yourFunction (VT_PARAM_LIST (VT_DATA_TYPE String) args [ ]) {
+     baz();
+}) (rule "new rule" when (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Something)))) then
+		yourFunction(new String[3] {"a","b","c"});
+		
+end))
+/**
+ * test Almost Empty Rule
+ */
+	<<
+rule almost_empty 
+  when
+  then
+end>>
+		-> (VT_COMPILATION_UNIT (rule almost_empty when VT_AND_IMPLICIT then
+end))
+/**
+ * test Quoted String Name Rule
+ */
+	<<rule "quoted string name"
+  when
+  then
+end>>
+		-> (VT_COMPILATION_UNIT (rule "quoted string name" when VT_AND_IMPLICIT then
+end))
+/**
+ * test No Loop
+ */
+	<<
+rule rule1 
+  no-loop false
+  when
+  	not Cheese(type == "stilton")
+  then
+	funky();
+end>>
+		-> (VT_COMPILATION_UNIT (rule rule1 (VT_RULE_ATTRIBUTES (no-loop false)) when (VT_AND_IMPLICIT (not (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Cheese) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type)) (== "stilton")))))) then
+	funky();
+end))
+/**
+ * test Auto focus
+ */
+	<<
+rule rule1 
+  auto-focus true
+  when
+  	not Cheese(type == "stilton")
+  then
+	funky();
+end>>
+		-> (VT_COMPILATION_UNIT (rule rule1 (VT_RULE_ATTRIBUTES (auto-focus true)) when (VT_AND_IMPLICIT (not (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Cheese) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type)) (== "stilton")))))) then
+	funky();
+end))
+/**
+ * test Rule Flow Group
+ */
+	<<
+rule rule1 
+  ruleflow-group "a group"
+  when
+  	not Cheese(type == "stilton")
+  then
+	funky();
+end>>
+		-> (VT_COMPILATION_UNIT (rule rule1 (VT_RULE_ATTRIBUTES (ruleflow-group "a group")) when (VT_AND_IMPLICIT (not (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Cheese) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type)) (== "stilton")))))) then
+	funky();
+end))
+/**
+ * test Consequence With Declaration
+ */
+	<<
+
+rule myrule 
+  when
+  then
+  	int i = 0;
+	i = 1;
+	i / 1;
+	i == 1;
+	i(i);
+	i = 'i';
+	i.i.i;
+	i\i;
+	i<i;
+	i>i;
+	i="i";	
+	++i;
+	i++;
+	--i;
+	i--;
+	i += i;
+	i -= i;
+	i *= i;
+	i /= i;
+	int i = 5;
+	for(int j; j<i; ++j) {
+	  System.out.println(j);
+	}	
+	Object o = new String("Hello");
+	String s = (String) o;	
+	
+end>>
+		-> (VT_COMPILATION_UNIT (rule myrule when VT_AND_IMPLICIT then
+  	int i = 0;
+	i = 1;
+	i / 1;
+	i == 1;
+	i(i);
+	i = 'i';
+	i.i.i;
+	i\i;
+	i<i;
+	i>i;
+	i="i";	
+	++i;
+	i++;
+	--i;
+	i--;
+	i += i;
+	i -= i;
+	i *= i;
+	i /= i;
+	int i = 5;
+	for(int j; j<i; ++j) {
+	  System.out.println(j);
+	}	
+	Object o = new String("Hello");
+	String s = (String) o;	
+	
+end))
+/**
+ * test Literal Bool And Negative Numbers Rule
+ */
+	<<#check that it can handle true/false literals, and 
+#negative numbers
+rule simple_rule 
+  when
+	Foo(bar == false)
+	Foo(boo > -42)
+	Foo(boo > -42.42)
+  then
+	cons();
+end>>
+		-> (VT_COMPILATION_UNIT (rule simple_rule when (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Foo) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT bar)) (== false)))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Foo) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT boo)) (> -42)))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Foo) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT boo)) (> -42.42))))) then
+	cons();
+end))
+
+	<<package org.drools.test;
+ 
+import org.drools.Cheese;
+ 
+rule "simple rule"
+    when
+        Cheese( )
+    then
+end >>
+		-> (VT_COMPILATION_UNIT (package (VT_PACKAGE_ID org drools test)) (import (VT_IMPORT_ID org drools Cheese)) (rule "simple rule" when (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Cheese)))) then
+end))
+/**
+ * test Simple Method Call With From
+ */
+	<<
+rule blah
+
+ when 
+
+	Col1() from something.doIt( foo,bar,42,"hello",{ a => "b", "something" => 42, "a" => foo, x => {x=>y}},"end", [a, "b", 42] )
+	Col2()
+ then
+	partay();
+end	>>
+		-> (VT_COMPILATION_UNIT (rule blah when (VT_AND_IMPLICIT (from (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Col1))) (VT_FROM_SOURCE something (. doIt ( foo,bar,42,"hello",{ a => "b", "something" => 42, "a" => foo, x => {x=>y}},"end", [a, "b", 42] )))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Col2)))) then
+	partay();
+end))
+/**
+ * test Simple Function Call With From
+ */
+	<<
+rule blah
+
+ when 
+
+	Col1() from doIt( foo,bar,42,"hello",{ a => "b", "something" => 42, "a" => foo, x => {x=>y}},"end", [a, "b", 42] )
+	Col2()
+ then
+	partay();
+end	>>
+		-> (VT_COMPILATION_UNIT (rule blah when (VT_AND_IMPLICIT (from (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Col1))) (VT_FROM_SOURCE doIt ( foo,bar,42,"hello",{ a => "b", "something" => 42, "a" => foo, x => {x=>y}},"end", [a, "b", 42] ))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Col2)))) then
+	partay();
+end))
+/**
+ * test Simple Accessor With From
+ */
+	<<
+rule blah
+
+ when 
+
+	Col1() from something.doIt
+	Col2()
+ then
+	partay();
+end	>>
+		-> (VT_COMPILATION_UNIT (rule blah when (VT_AND_IMPLICIT (from (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Col1))) (VT_FROM_SOURCE something (. doIt))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Col2)))) then
+	partay();
+end))
+/**
+ * test Simple Accessor And Arg With From
+ */
+	<<
+rule blah
+
+ when 
+
+	Col1() from something.doIt["key"]
+	Col2()
+ then
+	partay();
+end	>>
+		-> (VT_COMPILATION_UNIT (rule blah when (VT_AND_IMPLICIT (from (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Col1))) (VT_FROM_SOURCE something (. doIt ["key"]))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Col2)))) then
+	partay();
+end))
+/**
+ * test Complex Chained Acessor
+ */
+	<<rule blah
+ when 
+	Col1() from doIt1( foo,bar,42,"hello",{ a => "b"}, [a, "b", 42] )
+	            .doIt2(bar, [a, "b", 42]).field["key"]
+	Col2()
+ then
+	partay();
+end	>>
+		-> (VT_COMPILATION_UNIT (rule blah when (VT_AND_IMPLICIT (from (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Col1))) (VT_FROM_SOURCE doIt1 ( foo,bar,42,"hello",{ a => "b"}, [a, "b", 42] ) (. doIt2 (bar, [a, "b", 42]) (. field ["key"])))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Col2)))) then
+	partay();
+end))
+/**
+ * test Simple Rule
+ */
+	<<
+rule simple_rule 
+  when
+    foo3 : Bar(a==3)
+    foo4 : Bar(a4:a==4)
+    Baz()
+  then
+  if ( a == b ) {
+    assert( foo3 );
+  } else {
+    retract( foo4 );
+  } 
+  System.out.println( a4 );
+end>>
+		-> (VT_COMPILATION_UNIT (rule simple_rule when (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT_BINDING foo3 (VT_FACT (VT_PATTERN_TYPE Bar) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT a)) (== 3))))) (VT_PATTERN (VT_FACT_BINDING foo4 (VT_FACT (VT_PATTERN_TYPE Bar) (VT_BIND_FIELD a4 (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT a)) (== 4)))))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Baz)))) then
+  if ( a == b ) {
+    assert( foo3 );
+  } else {
+    retract( foo4 );
+  } 
+  System.out.println( a4 );
+end))
+/**
+ * test Restrictions Multiple
+ */
+	<<#this is for showing off all the new multi restriction stuff
+
+
+
+
+rule simple_rule 
+  when
+  	Person(age > 30 && < 40)
+  	Vehicle(type == "sedan" || == "wagon", age < 3)
+  then
+	consequence();
+end>>
+		-> (VT_COMPILATION_UNIT (rule simple_rule when (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (&& (> 30) (< 40))))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Vehicle) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type)) (|| (== "sedan") (== "wagon"))) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (< 3))))) then
+	consequence();
+end))
+/**
+ * test Line Number Including Comments In RHS
+ */
+	<<package la
+
+
+rule simple_rule 
+  when
+  	Baz()
+  then
+  	//woot
+  	first
+  	
+  	#
+  	
+  	/* lala
+  	
+  	*/
+  	second  
+end>>
+		-> (VT_COMPILATION_UNIT (package (VT_PACKAGE_ID la)) (rule simple_rule when (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Baz)))) then
+  	//woot
+  	first
+  	
+  	//
+  	
+  	/* lala
+  	
+  	*/
+  	second  
+end))
+/**
+ * test Lhs Semicolon Delim
+ */
+	<<
+rule simple_rule 
+  when
+    foo3 : Bar(a==3) ; foo4 : Bar(a4:a==4) ; Baz()
+  then
+  if ( a == b ) {
+    assert( foo3 );
+  } else {
+    retract( foo4 );
+  } 
+  System.out.println( a4 );
+end>>
+		-> (VT_COMPILATION_UNIT (rule simple_rule when (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT_BINDING foo3 (VT_FACT (VT_PATTERN_TYPE Bar) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT a)) (== 3))))) (VT_PATTERN (VT_FACT_BINDING foo4 (VT_FACT (VT_PATTERN_TYPE Bar) (VT_BIND_FIELD a4 (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT a)) (== 4)))))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Baz)))) then
+  if ( a == b ) {
+    assert( foo3 );
+  } else {
+    retract( foo4 );
+  } 
+  System.out.println( a4 );
+end))
+/**
+ * test Not Node
+ */
+	<<
+rule simple_rule 
+  when
+  	not Cheese(type == "stilton")
+  then
+	funky();
+end>>
+		-> (VT_COMPILATION_UNIT (rule simple_rule when (VT_AND_IMPLICIT (not (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Cheese) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type)) (== "stilton")))))) then
+	funky();
+end))
+/**
+ * test Function Import
+ */
+	<<package HR1
+
+import function abd.def.x
+import function qed.wah.*
+
+rule simple_rule 
+  when  		  	
+  	not ( Cheese(type == "stilton") )
+  	exists ( Foo() )
+  then
+	funky();
+end>>
+		-> (VT_COMPILATION_UNIT (package (VT_PACKAGE_ID HR1)) (import function (VT_IMPORT_ID abd def x)) (import function (VT_IMPORT_ID qed wah .*)) (rule simple_rule when (VT_AND_IMPLICIT (not (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Cheese) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type)) (== "stilton"))))) (exists (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Foo))))) then
+	funky();
+end))
+/**
+ * test Not Exist With Brackets
+ */
+	<<package HR1
+
+rule simple_rule 
+  when  		  	
+  	not ( Cheese(type == "stilton") )
+  	exists ( Foo() )
+  then
+	funky();
+end>>
+		-> (VT_COMPILATION_UNIT (package (VT_PACKAGE_ID HR1)) (rule simple_rule when (VT_AND_IMPLICIT (not (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Cheese) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type)) (== "stilton"))))) (exists (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Foo))))) then
+	funky();
+end))
+/**
+ * test Damaged syntax
+ */
+	<<package HR2
+
+rule simple_rule 
+  when  		  	
+  	a : (not ( Cheese(type == "stilton") ))
+  	exists ( Foo() )
+  then
+	funky();
+end>>
+		FAIL
+/**
+ * test Simple Query
+ */
+	<<
+
+query "simple_query" 
+    foo3 : Bar(a==3)
+    foo4 : Bar(a4:a==4)
+    Baz()
+	
+end>>
+		-> (VT_COMPILATION_UNIT (query "simple_query" (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT_BINDING foo3 (VT_FACT (VT_PATTERN_TYPE Bar) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT a)) (== 3))))) (VT_PATTERN (VT_FACT_BINDING foo4 (VT_FACT (VT_PATTERN_TYPE Bar) (VT_BIND_FIELD a4 (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT a)) (== 4)))))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Baz)))) end))
+/**
+ * test Query Rule Mixed
+ */
+	<<
+package foo
+
+rule bar
+	when
+		Baz()
+	then
+		Boo()
+end
+
+query "simple_query" 
+    foo3 : Bar(a==3)
+    foo4 : Bar(a4:a==4)
+    Baz()
+	
+end
+
+rule bar2
+	when
+		Baz()
+	then
+		Boo()
+end
+
+query "simple_query2" 
+    foo3 : Bar(a==3)
+    foo4 : Bar(a4:a==4)
+    Baz()
+	
+end
+	>>
+		-> (VT_COMPILATION_UNIT (package (VT_PACKAGE_ID foo)) (rule bar when (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Baz)))) then
+		Boo()
+end) (query "simple_query" (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT_BINDING foo3 (VT_FACT (VT_PATTERN_TYPE Bar) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT a)) (== 3))))) (VT_PATTERN (VT_FACT_BINDING foo4 (VT_FACT (VT_PATTERN_TYPE Bar) (VT_BIND_FIELD a4 (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT a)) (== 4)))))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Baz)))) end) (rule bar2 when (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Baz)))) then
+		Boo()
+end) (query "simple_query2" (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT_BINDING foo3 (VT_FACT (VT_PATTERN_TYPE Bar) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT a)) (== 3))))) (VT_PATTERN (VT_FACT_BINDING foo4 (VT_FACT (VT_PATTERN_TYPE Bar) (VT_BIND_FIELD a4 (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT a)) (== 4)))))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Baz)))) end))
+
+/**
+ * test Multiple Rules
+ */
+	<<package org.drools.test;
+
+import org.drools.integrationtests.Cheese;
+
+rule "Like Stilton"
+    when
+        Cheese( t:type == "stilton" )
+    then
+        System.out.println("I like " + t);
+end    
+
+rule "Like Cheddar"
+    when
+        Cheese( t:type == "cheddar" )
+    then
+        System.out.println("I like " + t );
+end    >>
+		-> (VT_COMPILATION_UNIT (package (VT_PACKAGE_ID org drools test)) (import (VT_IMPORT_ID org drools integrationtests Cheese)) (rule "Like Stilton" when (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Cheese) (VT_BIND_FIELD t (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type)) (== "stilton")))))) then
+        System.out.println("I like " + t);
+end) (rule "Like Cheddar" when (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Cheese) (VT_BIND_FIELD t (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type)) (== "cheddar")))))) then
+        System.out.println("I like " + t );
+end))
+/**
+ * test Basic Binding
+ */
+	<<package org.drools.test;
+
+import org.drools.Cheese;
+
+rule "like cheddar"
+    when
+        Cheese( $type:type )
+    then
+        System.out.println("I like " + $type);
+end    >>
+		-> (VT_COMPILATION_UNIT (package (VT_PACKAGE_ID org drools test)) (import (VT_IMPORT_ID org drools Cheese)) (rule "like cheddar" when (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Cheese) (VT_BIND_FIELD $type (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type))))))) then
+        System.out.println("I like " + $type);
+end))
+/**
+ * test Bound Variables
+ */
+	<<package org.drools.test;
+
+import org.drools.Cheese;
+import org.drools.Person;
+
+rule "Who likes Stilton"
+    when
+        Cheese($type : type == "stilton")
+        $person : Person($name : name == "bob", likes == $type)        
+    then
+        System.out.println( $name + " likes " + $type);
+end    >>
+		-> (VT_COMPILATION_UNIT (package (VT_PACKAGE_ID org drools test)) (import (VT_IMPORT_ID org drools Cheese)) (import (VT_IMPORT_ID org drools Person)) (rule "Who likes Stilton" when (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Cheese) (VT_BIND_FIELD $type (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type)) (== "stilton"))))) (VT_PATTERN (VT_FACT_BINDING $person (VT_FACT (VT_PATTERN_TYPE Person) (VT_BIND_FIELD $name (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT name)) (== "bob"))) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT likes)) (== (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT $type)))))))) then
+        System.out.println( $name + " likes " + $type);
+end))
+/**
+ * test Or Nesting
+ */
+	<<
+import org.drools.Person
+
+rule simple_rule 
+  when
+	Person(name == "mark") or 
+	( Person(type == "fan") and Cheese(type == "green") )
+  then
+	System.out.println( "Mark and Michael" + bar );
+end>>
+		-> (VT_COMPILATION_UNIT (import (VT_IMPORT_ID org drools Person)) (rule simple_rule when (VT_AND_IMPLICIT (or (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT name)) (== "mark")))) (and (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type)) (== "fan")))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Cheese) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type)) (== "green"))))))) then
+	System.out.println( "Mark and Michael" + bar );
+end))
+/**
+ * test And Or Rules
+ */
+	<<
+import org.drools.Person
+
+rule simple_rule 
+  when
+    Person(name == "mark") && Cheese(type == "stilton")
+    Person(name == "mark") || Cheese(type == "stilton")
+  then
+	System.out.println( "Mark and Michael" );
+end>>
+		-> (VT_COMPILATION_UNIT (import (VT_IMPORT_ID org drools Person)) (rule simple_rule when (VT_AND_IMPLICIT (&& (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT name)) (== "mark")))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Cheese) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type)) (== "stilton"))))) (|| (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT name)) (== "mark")))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Cheese) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type)) (== "stilton")))))) then
+	System.out.println( "Mark and Michael" );
+end))
+/**
+ * test Or With Binding
+ */
+	<<
+import org.drools.Person
+
+rule simple_rule 
+  when
+	foo :  ( Person(name == "mark") or Person(type == "fan") ) 
+	Cheese(type == "green")
+  then
+	System.out.println( "Mark and Michael" + bar );
+end>>
+		-> (VT_COMPILATION_UNIT (import (VT_IMPORT_ID org drools Person)) (rule simple_rule when (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT_BINDING foo (or (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT name)) (== "mark"))) (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type)) (== "fan")))))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Cheese) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type)) (== "green"))))) then
+	System.out.println( "Mark and Michael" + bar );
+end))
+/**
+ * test Or Binding Complex
+ */
+	<<
+
+rule simple_rule 
+  when
+	foo : ( Person(name == "mark") 
+		or 
+		Person(type == "fan") )
+  then
+	System.out.println( "Mark and Michael" + bar );
+end>>
+		-> (VT_COMPILATION_UNIT (rule simple_rule when (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT_BINDING foo (or (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT name)) (== "mark"))) (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type)) (== "fan"))))))) then
+	System.out.println( "Mark and Michael" + bar );
+end))
+/**
+ * test Or Binding With Brackets
+ */
+	<<rule simple_rule 
+  when
+	foo : ( 
+		Person(name == "mark") or Person(type == "fan") 
+		)
+  then
+	System.out.println( "Mark and Michael" + bar );
+end>>
+		-> (VT_COMPILATION_UNIT (rule simple_rule when (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT_BINDING foo (or (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT name)) (== "mark"))) (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type)) (== "fan"))))))) then
+	System.out.println( "Mark and Michael" + bar );
+end))
+/**
+ * test Brackets Precedence
+ */
+	<<
+rule simple_rule 
+  when
+	 ( (not Foo(x=="a") or Foo(x=="y") ) and ( Shoes() or Butt() ) )
+  then
+	go wild
+end>>
+		-> (VT_COMPILATION_UNIT (rule simple_rule when (VT_AND_IMPLICIT (and (or (not (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Foo) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT x)) (== "a"))))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Foo) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT x)) (== "y"))))) (or (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Shoes))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Butt)))))) then
+	go wild
+end))
+/**
+ * test Eval Multiple
+ */
+	<<
+rule simple_rule 
+  when
+	eval(abc("foo") + 5)
+	Foo()
+	eval(qed())
+	Bar()
+  then
+	Kapow
+	Poof
+	
+end>>
+		-> (VT_COMPILATION_UNIT (rule simple_rule when (VT_AND_IMPLICIT (eval (abc("foo") + 5)) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Foo))) (eval (qed())) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Bar)))) then
+	Kapow
+	Poof
+	
+end))
+/**
+ * test With Eval
+ */
+	<<
+rule simple_rule 
+  when
+	Foo()
+	Bar()
+	eval(abc("foo"))
+  then
+	Kapow
+	
+end>>
+		-> (VT_COMPILATION_UNIT (rule simple_rule when (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Foo))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Bar))) (eval (abc("foo")))) then
+	Kapow
+	
+end))
+/**
+ * test With Retval
+ */
+	<<
+rule simple_rule 
+  when
+	Foo(name== (a + b))
+  then
+	Kapow
+	
+end>>
+		-> (VT_COMPILATION_UNIT (rule simple_rule when (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Foo) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT name)) (== (a + b)))))) then
+	Kapow
+	
+end))
+/**
+ * test With Predicate
+ */
+	<<
+rule simple_rule 
+  when
+  	Person( $age2:age -> ($age2 == $age1+2 ) ) 
+  then
+	foo bar
+end>>
+		-> (VT_COMPILATION_UNIT (rule simple_rule when (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Person) (VT_BIND_FIELD $age2 (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)))) (-> ($age2 == $age1+2 ))))) then
+	foo bar
+end))
+/**
+ * test Not With Constraint
+ */
+	<<package org.drools.test;
+
+import org.drools.Cheese;
+
+global java.util.List list;
+global java.lang.Integer five;
+
+rule "not rule test"
+    when
+        $person : Person( $likes:like )
+        not Cheese( type == $likes )
+    then
+		list.add( $person );
+end    >>
+		-> (VT_COMPILATION_UNIT (package (VT_PACKAGE_ID org drools test)) (import (VT_IMPORT_ID org drools Cheese)) (global (VT_DATA_TYPE java util List) list) (global (VT_DATA_TYPE java lang Integer) five) (rule "not rule test" when (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT_BINDING $person (VT_FACT (VT_PATTERN_TYPE Person) (VT_BIND_FIELD $likes (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT like))))))) (not (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Cheese) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type)) (== (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT $likes)))))))) then
+		list.add( $person );
+end))
+/**
+ * test Global
+ */
+	<<package org.drools.test;
+
+import org.drools.Cheese;
+
+global java.lang.String foo
+global java.lang.Integer bar;
+
+rule baz
+    when
+        Cheese( )
+    then
+
+end    >>
+		-> (VT_COMPILATION_UNIT (package (VT_PACKAGE_ID org drools test)) (import (VT_IMPORT_ID org drools Cheese)) (global (VT_DATA_TYPE java lang String) foo) (global (VT_DATA_TYPE java lang Integer) bar) (rule baz when (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Cheese)))) then
+
+end))
+/**
+ * test Functions
+ */
+	<<
+import java.lang.String
+
+function String functionA(String s, Integer i) {
+	
+	foo();
+
+}
+
+function void functionB() {
+	bar();	
+}
+
+
+rule something 
+	when
+	then
+end
+
+rule "one more thing"
+	when
+	then
+end
+
+
+
+	>>
+		-> (VT_COMPILATION_UNIT (import (VT_IMPORT_ID java lang String)) (function (VT_DATA_TYPE String) functionA (VT_PARAM_LIST (VT_DATA_TYPE String) s (VT_DATA_TYPE Integer) i) {
+	
+	foo();
+
+}) (function (VT_DATA_TYPE void) functionB VT_PARAM_LIST {
+	bar();	
+}) (rule something when VT_AND_IMPLICIT then
+end) (rule "one more thing" when VT_AND_IMPLICIT then
+end))
+
+/**
+ * test Comment
+ */
+	<<#this starts with a comment
+package foo.bar
+
+//and another comment
+
+/*
+yet
+	   another
+   				style
+*/
+
+rule "test"
+  when
+  then
+end>>
+		-> (VT_COMPILATION_UNIT (package (VT_PACKAGE_ID foo bar)) (rule "test" when VT_AND_IMPLICIT then
+end))
+/**
+ * test Attributes
+ */
+	<<
+
+
+rule simple_rule 
+		#attributes keywork (and colon) is totally optional
+		salience 42
+		agenda-group "my_group"
+		no-loop 
+		duration 42
+		activation-group "my_activation_group"
+		lock-on-active true
+	when
+		Foo()
+	then
+		bar();
+end>>
+		-> (VT_COMPILATION_UNIT (rule simple_rule (VT_RULE_ATTRIBUTES (salience 42) (agenda-group "my_group") no-loop (duration 42) (activation-group "my_activation_group") (lock-on-active true)) when (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Foo)))) then
+		bar();
+end))
+/**
+ * test Attributes alternate Syntax
+ */
+	<<
+
+
+rule simple_rule 
+	attributes: 
+		salience 42, agenda-group "my_group", no-loop,  lock-on-active, duration 42, activation-group "my_activation_group"
+	when
+		Foo()
+	then
+		bar();
+end>>
+		-> (VT_COMPILATION_UNIT (rule simple_rule (VT_RULE_ATTRIBUTES attributes (salience 42) (agenda-group "my_group") no-loop lock-on-active (duration 42) (activation-group "my_activation_group")) when (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Foo)))) then
+		bar();
+end))
+/**
+ * test Enumeration
+ */
+	<<
+rule simple_rule 
+  when
+  	Foo(bar == Foo.BAR)
+  then
+end>>
+		-> (VT_COMPILATION_UNIT (rule simple_rule when (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Foo) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT bar)) (== (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT Foo) (VT_ACCESSOR_ELEMENT BAR))))))) then
+end))
+/**
+ * test Syntax Damage
+ */
+	<<rule one
+  when
+    exists Foo()
+    exits Bar()
+  then
+end
+
+rule two 
+  when
+    ford = ford = ford
+  then
+end>>
+		FAIL
+/**
+ * test Extra Lhs Newline
+ */
+	<<
+rule "another test"
+    when
+        s : String()
+        eval(s.equals("foo") && s.startsWith("f"))
+        
+        
+    then
+        list.add( s );
+end >>
+		-> (VT_COMPILATION_UNIT (rule "another test" when (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT_BINDING s (VT_FACT (VT_PATTERN_TYPE String)))) (eval (s.equals("foo") && s.startsWith("f")))) then
+        list.add( s );
+end))
+/**
+ * test Sounds Like
+ */
+	<<package nesting;
+
+
+
+
+rule "test something"
+
+	when
+		p: Person( name soundslike "Michael" )
+	then
+		p.name = "goober"
+		System.out.println(p.name)
+end>>
+		-> (VT_COMPILATION_UNIT (package (VT_PACKAGE_ID nesting)) (rule "test something" when (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT_BINDING p (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT name)) (soundslike "Michael")))))) then
+		p.name = "goober"
+		System.out.println(p.name)
+end))
+/**
+ * test Package Attributes
+ */
+	<<package com.foo;
+
+agenda-group "x"
+
+import goo.ber
+import wee.waa
+
+
+dialect "java"
+
+
+
+
+rule bar
+  when
+  then
+end
+
+rule baz
+  dialect "mvel"
+  when
+  then
+end>>
+		-> (VT_COMPILATION_UNIT (package (VT_PACKAGE_ID com foo)) (agenda-group "x") (import (VT_IMPORT_ID goo ber)) (import (VT_IMPORT_ID wee waa)) (dialect "java") (rule bar when VT_AND_IMPLICIT then
+end) (rule baz (VT_RULE_ATTRIBUTES (dialect "mvel")) when VT_AND_IMPLICIT then
+end))
+/**
+ * test Statement Ordering 1
+ */
+	<<
+package com.foo;
+
+import im.one
+
+import im.two
+
+rule foo
+  when
+  then
+end
+
+function cheeseIt() {
+
+}
+
+import im.three;
+
+rule bar
+  when
+  then
+end
+
+function uncheeseIt() {
+
+}
+
+import im.four;>>
+		-> (VT_COMPILATION_UNIT (package (VT_PACKAGE_ID com foo)) (import (VT_IMPORT_ID im one)) (import (VT_IMPORT_ID im two)) (rule foo when VT_AND_IMPLICIT then
+end) (function cheeseIt VT_PARAM_LIST {
+
+}) (import (VT_IMPORT_ID im three)) (rule bar when VT_AND_IMPLICIT then
+end) (function uncheeseIt VT_PARAM_LIST {
+
+}) (import (VT_IMPORT_ID im four)))
+/**
+ * test Rule Names Starting With Numbers
+ */
+	<<
+rule "1. Do Stuff!"
+  when
+  then
+end
+
+rule "2. Do More Stuff!"
+  when
+  then
+end>>
+		-> (VT_COMPILATION_UNIT (rule "1. Do Stuff!" when VT_AND_IMPLICIT then
+end) (rule "2. Do More Stuff!" when VT_AND_IMPLICIT then
+end))
+/**
+ * test Eval With Newline
+ */
+	<<
+rule simple_rule 
+  when
+	Foo()
+	Bar()
+	eval(
+	
+	
+	
+	       abc(
+	       
+	       "foo") + 
+	       5
+	       
+	       
+	       
+	        
+	       )
+  then
+	Kapow
+	Poof
+	
+end>>
+		-> (VT_COMPILATION_UNIT (rule simple_rule when (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Foo))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Bar))) (eval (
+	
+	
+	
+	       abc(
+	       
+	       "foo") + 
+	       5
+	       
+	       
+	       
+	        
+	       ))) then
+	Kapow
+	Poof
+	
+end))
+/**
+ * test Syntax Damage
+ */
+	<<
+rule simple_rule 
+  when
+	eval(abc();)
+  then
+	Kapow
+	Poof
+end>>
+		FAIL
+/**
+ * test End Position
+ */
+	<<
+
+
+rule simple_rule 
+  when
+	Foo(
+	  bar == baz, la==laz
+	  )
+  then
+	Kapow
+	Poof
+end
+	>>
+		-> (VT_COMPILATION_UNIT (rule simple_rule when (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Foo) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT bar)) (== (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT baz)))) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT la)) (== (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT laz))))))) then
+	Kapow
+	Poof
+end))
+/**
+ * test Qualified Classname
+ */
+	<<package org.drools.test;
+
+rule "Who likes Stilton"
+    when
+        com.cheeseco.Cheese($type : type == "stilton")
+    then
+        System.out.println( $name + " likes " + $type);
+end    >>
+		-> (VT_COMPILATION_UNIT (package (VT_PACKAGE_ID org drools test)) (rule "Who likes Stilton" when (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE com cheeseco Cheese) (VT_BIND_FIELD $type (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type)) (== "stilton")))))) then
+        System.out.println( $name + " likes " + $type);
+end))
+/**
+ * test Accumulate
+ */
+	<<rule "AccumulateParserTest"
+when
+     Integer() from accumulate( Person( age > 21 ),
+                                init( int x = 0; ),
+                                action( x++; ),
+                                result( new Integer(x) ) );
+then
+end>>
+		-> (VT_COMPILATION_UNIT (rule "AccumulateParserTest" when (VT_AND_IMPLICIT (from (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Integer))) (accumulate (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (> 21)))) (VT_ACCUMULATE_INIT_CLAUSE (init ( int x = 0; )) (action ( x++; )) (result ( new Integer(x) )))))) then
+end))
+/**
+ * test Accumulate With Bindings
+ */
+	<<rule "AccumulateParserTest"
+when
+     $counter:Integer() from accumulate( $person : Person( age > 21 ),
+                                         init( int x = 0; ),
+                                         action( x++; ),
+                                         result( new Integer(x) ) );
+then
+end>>
+		-> (VT_COMPILATION_UNIT (rule "AccumulateParserTest" when (VT_AND_IMPLICIT (from (VT_PATTERN (VT_FACT_BINDING $counter (VT_FACT (VT_PATTERN_TYPE Integer)))) (accumulate (VT_PATTERN (VT_FACT_BINDING $person (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (> 21))))) (VT_ACCUMULATE_INIT_CLAUSE (init ( int x = 0; )) (action ( x++; )) (result ( new Integer(x) )))))) then
+end))
+/**
+ * test Collect
+ */
+	<<rule "CollectParserTest"
+when
+     $personList : ArrayList() from collect( Person( age > 21 ) );
+then
+end>>
+		-> (VT_COMPILATION_UNIT (rule "CollectParserTest" when (VT_AND_IMPLICIT (from (VT_PATTERN (VT_FACT_BINDING $personList (VT_FACT (VT_PATTERN_TYPE ArrayList)))) (collect (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (> 21))))))) then
+end))
+	<<rule "test_Quotes"
+   when
+      InitialFact()
+   then
+      String s = "\"\n\t\\";
+end >>
+		-> (VT_COMPILATION_UNIT (rule "test_Quotes" when (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE InitialFact)))) then
+      String s = "\"\n\t\\";
+end))
+/**
+ * test Nested CEs
+ */
+	<<rule "test nested CEs"	
+	when
+	    not ( State( $state : state ) and
+	          not( Person( status == $state, $likes : likes ) and
+	               Cheese( type == $likes ) ) )
+	    Person( name == "Bob" )
+	    ( Cheese( price == 10 ) or Cheese( type == "brie" ) )
+	then 
+		results.add("OK");		
+end>>
+		-> (VT_COMPILATION_UNIT (rule "test nested CEs" when (VT_AND_IMPLICIT (not (and (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE State) (VT_BIND_FIELD $state (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT state)))))) (not (and (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT status)) (== (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT $state)))) (VT_BIND_FIELD $likes (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT likes)))))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Cheese) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type)) (== (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT $likes)))))))))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT name)) (== "Bob")))) (or (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Cheese) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT price)) (== 10)))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Cheese) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type)) (== "brie")))))) then 
+		results.add("OK");		
+end))
+/**
+ * test For All
+ */
+	<<rule "ForallParserTest"
+when
+     forall( Person( age > 21, $likes : likes )
+             Cheese( type == $likes ) );
+then
+end>>
+		-> (VT_COMPILATION_UNIT (rule "ForallParserTest" when (VT_AND_IMPLICIT (forall (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (> 21)) (VT_BIND_FIELD $likes (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT likes)))))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Cheese) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type)) (== (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT $likes)))))))) then
+end))
+/**
+ * test In Operator
+ */
+	<<#testing 'in' operator
+
+rule simple_rule 
+  when
+  	Person(age > 30 && < 40)
+  	Vehicle(type in ( "sedan", "wagon" ), age < 3)
+  then
+	consequence();
+end>>
+		-> (VT_COMPILATION_UNIT (rule simple_rule when (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (&& (> 30) (< 40))))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Vehicle) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type)) (in "sedan" "wagon")) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (< 3))))) then
+	consequence();
+end))
+/**
+ * test Not In Operator
+ */
+	<<#testing not 'in' operator
+
+rule simple_rule 
+  when
+  	Person(age > 30 && < 40)
+  	Vehicle(type not in ( "sedan", "wagon" ), age < 3)
+  then
+	consequence();
+end>>
+		-> (VT_COMPILATION_UNIT (rule simple_rule when (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (&& (> 30) (< 40))))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Vehicle) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type)) (in not "sedan" "wagon")) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (< 3))))) then
+	consequence();
+end))
+/**
+ * test Semicolon
+ */
+	<<package org.drools;
+
+global java.util.List list;
+
+rule "rule1"
+when
+    Pattern1();
+    Pattern2() from x.y.z;
+then
+    System.out.println("Test");
+end;
+
+query "query1"
+	Pattern5();
+	Pattern6();
+	Pattern7();
+end;
+
+rule "rule2"
+when
+    Pattern3();
+    Pattern4() from collect( Pattern5() );
+then
+    System.out.println("Test");
+end;
+
+	>>
+		-> (VT_COMPILATION_UNIT (package (VT_PACKAGE_ID org drools)) (global (VT_DATA_TYPE java util List) list) (rule "rule1" when (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Pattern1))) (from (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Pattern2))) (VT_FROM_SOURCE x (. y (. z))))) then
+    System.out.println("Test");
+end;) (query "query1" (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Pattern5))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Pattern6))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Pattern7)))) end) (rule "rule2" when (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Pattern3))) (from (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Pattern4))) (collect (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Pattern5)))))) then
+    System.out.println("Test");
+end;))
+/**
+ * test Eval
+ */
+	<<package org.drools
+
+rule "Test Parse"
+
+when
+    eval( 3==3 )
+then
+    System.out.println("OK");
+end >>
+		-> (VT_COMPILATION_UNIT (package (VT_PACKAGE_ID org drools)) (rule "Test Parse" when (VT_AND_IMPLICIT (eval ( 3==3 ))) then
+    System.out.println("OK");
+end))
+/**
+ * test Accumulate Reverse
+ */
+	<<rule "AccumulateReverseParserTest"
+when
+     Integer() from accumulate( Person( age > 21 ),
+                                init( int x = 0; ),
+                                action( x++; ),
+                                reverse( x--; ),
+                                result( new Integer(x) ) );
+then
+end>>
+		-> (VT_COMPILATION_UNIT (rule "AccumulateReverseParserTest" when (VT_AND_IMPLICIT (from (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Integer))) (accumulate (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (> 21)))) (VT_ACCUMULATE_INIT_CLAUSE (init ( int x = 0; )) (action ( x++; )) (reverse ( x--; )) (result ( new Integer(x) )))))) then
+end))
+/**
+ * test Accumulate External Function
+ */
+	<<rule "AccumulateReverseParserTest"
+when
+     Number() from accumulate( Person( $age : age > 21 ),
+                               average( $age ) );
+then
+end>>
+		-> (VT_COMPILATION_UNIT (rule "AccumulateReverseParserTest" when (VT_AND_IMPLICIT (from (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Number))) (accumulate (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Person) (VT_BIND_FIELD $age (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (> 21))))) (VT_ACCUMULATE_ID_CLAUSE average ( $age ))))) then
+end))
+/**
+ * test Collect With Nested From
+ */
+	<<rule "CollectParserTest"
+when
+     #bellow statement makes no sense, but is useful to test parsing recursiveness
+     $personList : ArrayList() from collect( $p : Person( age > 21 || age < 10 ) from collect( People() from $town.getPeople() ) );
+then
+end
+
+	>>
+		-> (VT_COMPILATION_UNIT (rule "CollectParserTest" when (VT_AND_IMPLICIT (from (VT_PATTERN (VT_FACT_BINDING $personList (VT_FACT (VT_PATTERN_TYPE ArrayList)))) (collect (from (VT_PATTERN (VT_FACT_BINDING $p (VT_FACT (VT_PATTERN_TYPE Person) (|| (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (> 21)) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (< 10)))))) (collect (from (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE People))) (VT_FROM_SOURCE $town (. getPeople ())))))))) then
+end))
+/**
+ * test Accumulate With Nested From
+ */
+	<<rule "AccumulateParserTest"
+when
+     #bellow statement makes no sense, but is useful to test parsing recursiveness
+     $personList : ArrayList() from accumulate( Person( $age : age > 21 || < 10 ) from collect( People() from $town.getPeople() ),
+                                                max( $age ) );
+then
+end
+
+	>>
+		-> (VT_COMPILATION_UNIT (rule "AccumulateParserTest" when (VT_AND_IMPLICIT (from (VT_PATTERN (VT_FACT_BINDING $personList (VT_FACT (VT_PATTERN_TYPE ArrayList)))) (accumulate (from (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Person) (VT_BIND_FIELD $age (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (|| (> 21) (< 10)))))) (collect (from (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE People))) (VT_FROM_SOURCE $town (. getPeople ()))))) (VT_ACCUMULATE_ID_CLAUSE max ( $age ))))) then
+end))
+/**
+ * test Or CE
+ */
+	<<package org.drools;
+
+rule "testing OR CE"
+when
+    $p : Person( name == "bob" )
+    $c : Cheese( type == $p.likes ) || Cheese( price == 10 )
+then
+    // do something
+end >>
+		-> (VT_COMPILATION_UNIT (package (VT_PACKAGE_ID org drools)) (rule "testing OR CE" when (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT_BINDING $p (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT name)) (== "bob"))))) (|| (VT_PATTERN (VT_FACT_BINDING $c (VT_FACT (VT_PATTERN_TYPE Cheese) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type)) (== (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT $p) (VT_ACCESSOR_ELEMENT likes))))))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Cheese) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT price)) (== 10)))))) then
+    // do something
+end))
+/**
+ * test Rule Single Line
+ */
+	<<rule "another test" salience 10 when eval( true ) then System.out.println(1); end>>
+		-> (VT_COMPILATION_UNIT (rule "another test" (VT_RULE_ATTRIBUTES (salience 10)) when (VT_AND_IMPLICIT (eval ( true ))) then System.out.println(1); end))
+/**
+ * test Rule Two Lines
+ */
+	<<rule "another test" salience 10 when eval( true ) then System.out.println(1);
+end>>
+		-> (VT_COMPILATION_UNIT (rule "another test" (VT_RULE_ATTRIBUTES (salience 10)) when (VT_AND_IMPLICIT (eval ( true ))) then System.out.println(1);
+end))
+/**
+ * test Accumulate Multi Pattern
+ */
+	<<rule "AccumulateMultiPatternParserTest"
+when
+     $counter:Integer() from accumulate( $person : Person( age > 21 ) and Cheese( type == $person.likes ),
+                                         init( int x = 0; ),
+                                         action( x++; ),
+                                         result( new Integer(x) ) );
+then
+end>>
+		-> (VT_COMPILATION_UNIT (rule "AccumulateMultiPatternParserTest" when (VT_AND_IMPLICIT (from (VT_PATTERN (VT_FACT_BINDING $counter (VT_FACT (VT_PATTERN_TYPE Integer)))) (accumulate (and (VT_PATTERN (VT_FACT_BINDING $person (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (> 21))))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Cheese) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type)) (== (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT $person) (VT_ACCESSOR_ELEMENT likes))))))) (VT_ACCUMULATE_INIT_CLAUSE (init ( int x = 0; )) (action ( x++; )) (result ( new Integer(x) )))))) then
+end))
+/**
+ * test Syntax Damage
+ */
+	<<package org.drools;
+
+rule "test rule"
+	salience 10
+	when
+		$c: WorkerPerformanceContext(eval)$c.getBalanceMonth() != null))
+	then
+		retract($p);
+end
+	>>
+		FAIL
+/**
+ * test Syntax Damage
+ */
+	<<package org.drools;
+
+rule "Avoid NPE on wrong syntax"
+when
+    not( Cheese( ( type == "stilton", price == 10 ) || ( type == "brie", price == 15 ) ) from $cheeseList )
+then
+    System.out.println("OK");
+end>>
+		FAIL
+
+/**
+ * test Pluggable Operators
+ */
+	<<package org.drools;
+
+rule "test pluggable operators"
+when
+    $a : EventA()
+    $b : EventB( this `after[1,10] $a )
+    $c : EventC( this finishes $b )
+    $d : EventD( this not starts $a )
+    $e : EventE( this not `before [1, 10] $b )
+then
+end>>
+		-> (VT_COMPILATION_UNIT (package (VT_PACKAGE_ID org drools)) (rule "test pluggable operators" when (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT_BINDING $a (VT_FACT (VT_PATTERN_TYPE EventA)))) (VT_PATTERN (VT_FACT_BINDING $b (VT_FACT (VT_PATTERN_TYPE EventB) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT this)) (after [1,10] (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT $a))))))) (VT_PATTERN (VT_FACT_BINDING $c (VT_FACT (VT_PATTERN_TYPE EventC) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT this)) (finishes (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT $b))))))) (VT_PATTERN (VT_FACT_BINDING $d (VT_FACT (VT_PATTERN_TYPE EventD) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT this)) (starts not (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT $a))))))) (VT_PATTERN (VT_FACT_BINDING $e (VT_FACT (VT_PATTERN_TYPE EventE) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT this)) (before not [1, 10] (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT $b)))))))) then
+end))
+
+pattern_source:
+/**
+ * test Entry Point
+ */
+	<<StockTick( symbol=="ACME") from entry-point StreamA>>
+		-> (from (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE StockTick) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT symbol)) (== "ACME")))) (entry-point StreamA))
+
+paren_chunk:
+/**
+ * test Chunk Without Parens
+ */
+	<<( foo )>>
+		-> ( foo )
+/**
+ * test Chunk With Parens
+ */
+	<<(fnord())>>
+		-> (fnord())
+/**
+ * test Chunk With Parens And Quoted String
+ */
+	<<( fnord( "cheese" ) )>>
+		-> ( fnord( "cheese" ) )
+/**
+ * test Chunk With Random Charac5ters
+ */
+	<<( %*9dkj)>>
+		-> ( %*9dkj)
+
+normal_lhs_block:
+/**
+ * test Empty lhs
+ */
+	"" -> "VT_AND_IMPLICIT"
+/**
+ * test Member Of
+ */
+	<<
+     Country( $cities : city )
+     Person( city memberOf $cities )
+    >>
+    	-> (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Country) (VT_BIND_FIELD $cities (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT city)))))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT city)) (memberOf (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT $cities)))))))
+/**
+ * test Not Member Of
+ */
+	<<
+     Country( $cities : city )
+     Person( city not memberOf $cities )
+    >>
+    	-> (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Country) (VT_BIND_FIELD $cities (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT city)))))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT city)) (memberOf not (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT $cities)))))))
+/**
+ * test Constraint And Connective
+ */
+	<< Person( age < 42 && location=="atlanta") >>
+		-> (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Person) (&& (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (< 42)) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT location)) (== "atlanta"))))))
+
+/**
+ * test Constraint Or Connective
+ */
+	<< Person( age < 42 || location=="atlanta") >>
+		-> (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Person) (|| (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (< 42)) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT location)) (== "atlanta"))))))
+
+/**
+ * test Constraint Connectives Precedence
+ */
+	<<Person( age < 42 && location=="atlanta" || age > 20 && location=="Seatle" || location == "Chicago")>>
+		-> (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Person) (|| (|| (&& (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (< 42)) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT location)) (== "atlanta"))) (&& (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (> 20)) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT location)) (== "Seatle")))) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT location)) (== "Chicago"))))))
+
+/**
+ * test Constraint Connectives Precedence With Bracks
+ */
+	<<Person( age < 42 && ( location=="atlanta" || age > 20 && location=="Seatle") || location == "Chicago")>>
+		-> (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Person) (|| (&& (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (< 42)) (|| (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT location)) (== "atlanta")) (&& (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (> 20)) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT location)) (== "Seatle"))))) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT location)) (== "Chicago"))))))
+
+/**
+ * test Constraint Connectives Precedence With Bracks2
+ */
+	<< Person( ( age == 70 && hair == "black" ) || ( age == 40 && hair == "pink" ) || ( age == 12 && ( hair == "yellow" || hair == "blue" ) ) ) >>
+		-> (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Person) (|| (|| (&& (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (== 70)) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT hair)) (== "black"))) (&& (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (== 40)) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT hair)) (== "pink")))) (&& (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (== 12)) (|| (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT hair)) (== "yellow")) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT hair)) (== "blue"))))))))
+
+/**
+ * test Constraint Connectives Matches
+ */
+	<< Person( name matches "mark" || matches "bob" ) >>
+		-> (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT name)) (|| (matches "mark") (matches "bob"))))))
+
+/**
+ * test Not Contains
+ */
+	<<
+	City( $city : city )
+	Country( cities not contains $city )
+	>>
+		-> (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE City) (VT_BIND_FIELD $city (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT city)))))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Country) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT cities)) (contains not (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT $city)))))))
+
+/**
+ * test Not Matches
+ */
+	<< Message( text not matches '[abc]*' ) >>
+		-> (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Message) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT text)) (matches not '[abc]*')))))
+	
+/**
+ * test Restrictions
+ */
+	<<Foo( bar > 1 || == 1 )>>
+		-> (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Foo) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT bar)) (|| (> 1) (== 1))))))
+
+/**
+ * test Rule Parse Lhs 3
+ */
+	<<
+	(or
+	not Person()
+		(and Cheese()
+			Meat()
+			Wine()))
+	>>
+		-> (VT_AND_IMPLICIT (or (not (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Person)))) (and (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Cheese))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Meat))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Wine))))))
+
+/**
+ * test Restriction Connectives
+ */
+	<<Person( ( age ( > 60 && < 70 ) || ( > 50 && < 55 ) && hair == "black" ) || ( age == 40 && hair == "pink" ) || ( age == 12 && ( hair == "yellow" || hair == "blue" ) ))>>
+		-> (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Person) (|| (|| (&& (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (|| (&& (> 60) (< 70)) (&& (> 50) (< 55)))) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT hair)) (== "black"))) (&& (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (== 40)) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT hair)) (== "pink")))) (&& (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (== 12)) (|| (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT hair)) (== "yellow")) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT hair)) (== "blue"))))))))
+
+/**
+ * test Accessor Paths
+ */
+	<<org   .   drools/*comment*/	  .Message( text not matches $c#comment
+. property )
+>>
+		-> (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE org drools Message) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT text)) (matches not (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT $c) (VT_ACCESSOR_ELEMENT property)))))))
+
+/**
+ * test General Lhs
+ */
+<< $id : Something( duration == "foo") >>
+	->  (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT_BINDING $id (VT_FACT (VT_PATTERN_TYPE Something) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT duration)) (== "foo"))))))
+"foo3 : Bar(" FAIL
+<<
+Cheese(name == "Stilton", age==2001)
+Wine(name == "Grange", age == "1978", accolades contains "world champion")
+>> -> (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Cheese) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT name)) (== "Stilton")) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (== 2001)))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Wine) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT name)) (== "Grange")) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (== "1978")) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT accolades)) (contains "world champion")))))
+"Foo()"
+	-> (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Foo))))
+<<not Cheese(type == "stilton")>>
+	-> (VT_AND_IMPLICIT (not (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Cheese) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type)) (== "stilton"))))))
+<<
+Person(age < 42, location=="atlanta") 
+or
+Person(name=="bob")
+>>
+	-> (VT_AND_IMPLICIT (or (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (< 42)) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT location)) (== "atlanta")))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT name)) (== "bob"))))))
+<<
+Foo(bar == false)
+Foo(boo > -42)
+Foo(boo > -42.42)
+>>
+	-> (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Foo) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT bar)) (== false)))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Foo) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT boo)) (> -42)))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Foo) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT boo)) (> -42.42)))))
+"Cheese( )" 
+	-> (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Cheese))))
+	
+<<
+Col1() from something.doIt( foo,bar,42,"hello",{ a => "b", "something" => 42, "a" => foo, x => {x=>y}},"end", [a, "b", 42] )
+Col2()
+>>
+	-> (VT_AND_IMPLICIT (from (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Col1))) (VT_FROM_SOURCE something (. doIt ( foo,bar,42,"hello",{ a => "b", "something" => 42, "a" => foo, x => {x=>y}},"end", [a, "b", 42] )))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Col2))))
+<<
+Col1() from doIt( foo,bar,42,"hello",{ a => "b", "something" => 42, "a" => foo, x => {x=>y}},"end", [a, "b", 42] )
+Col2()
+>>
+	-> (VT_AND_IMPLICIT (from (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Col1))) (VT_FROM_SOURCE doIt ( foo,bar,42,"hello",{ a => "b", "something" => 42, "a" => foo, x => {x=>y}},"end", [a, "b", 42] ))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Col2))))	
+<<
+Col1() from something.doIt
+Col2()
+>>
+	-> (VT_AND_IMPLICIT (from (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Col1))) (VT_FROM_SOURCE something (. doIt))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Col2))))	
+<<
+Col1() from something.doIt["key"]
+Col2()
+>>
+	-> (VT_AND_IMPLICIT (from (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Col1))) (VT_FROM_SOURCE something (. doIt ["key"]))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Col2))))
+<<
+Col1() from doIt1( foo,bar,42,"hello",{ a => "b"}, [a, "b", 42] )
+            .doIt2(bar, [a, "b", 42]).field["key"]
+Col2()
+>>
+	-> (VT_AND_IMPLICIT (from (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Col1))) (VT_FROM_SOURCE doIt1 ( foo,bar,42,"hello",{ a => "b"}, [a, "b", 42] ) (. doIt2 (bar, [a, "b", 42]) (. field ["key"])))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Col2))))
+<<
+foo3 : Bar(a==3)
+foo4 : Bar(a4:a==4)
+Baz()
+>>
+	-> (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT_BINDING foo3 (VT_FACT (VT_PATTERN_TYPE Bar) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT a)) (== 3))))) (VT_PATTERN (VT_FACT_BINDING foo4 (VT_FACT (VT_PATTERN_TYPE Bar) (VT_BIND_FIELD a4 (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT a)) (== 4)))))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Baz))))
+<<
+Person(age > 30 && < 40)
+Vehicle(type == "sedan" || == "wagon", age < 3)
+>>
+	-> (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (&& (> 30) (< 40))))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Vehicle) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type)) (|| (== "sedan") (== "wagon"))) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (< 3)))))
+"    foo3 : Bar(a==3) ; foo4 : Bar(a4:a==4) ; Baz()"
+	-> (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT_BINDING foo3 (VT_FACT (VT_PATTERN_TYPE Bar) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT a)) (== 3))))) (VT_PATTERN (VT_FACT_BINDING foo4 (VT_FACT (VT_PATTERN_TYPE Bar) (VT_BIND_FIELD a4 (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT a)) (== 4)))))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Baz))))
+<<
+not ( Cheese(type == "stilton") )
+exists ( Foo() )
+>>
+	-> (VT_AND_IMPLICIT (not (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Cheese) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type)) (== "stilton"))))) (exists (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Foo)))))
+<<
+not ( Cheese(type == "stilton") )
+exists ( Foo() )
+>>
+	-> (VT_AND_IMPLICIT (not (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Cheese) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type)) (== "stilton"))))) (exists (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Foo)))))
+<<
+a : (not ( Cheese(type == "stilton") ))
+exists ( Foo() )
+>>
+	FAIL
+<< Cheese( t:type == "cheddar" ) >>
+	-> (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Cheese) (VT_BIND_FIELD t (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type)) (== "cheddar"))))))
+
+"Cheese( $type:type )"
+	-> (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Cheese) (VT_BIND_FIELD $type (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type)))))))
+<<
+    Cheese($type : type == "stilton")
+    $person : Person($name : name == "bob", likes == $type)        
+>>
+	-> (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Cheese) (VT_BIND_FIELD $type (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type)) (== "stilton"))))) (VT_PATTERN (VT_FACT_BINDING $person (VT_FACT (VT_PATTERN_TYPE Person) (VT_BIND_FIELD $name (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT name)) (== "bob"))) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT likes)) (== (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT $type))))))))
+<<
+Person(name == "mark") or 
+( Person(type == "fan") and Cheese(type == "green") )
+>>
+	-> (VT_AND_IMPLICIT (or (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT name)) (== "mark")))) (and (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type)) (== "fan")))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Cheese) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type)) (== "green")))))))
+<<
+Person(name == "mark") && Cheese(type == "stilton")
+Person(name == "mark") || Cheese(type == "stilton")
+>>
+	-> (VT_AND_IMPLICIT (&& (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT name)) (== "mark")))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Cheese) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type)) (== "stilton"))))) (|| (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT name)) (== "mark")))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Cheese) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type)) (== "stilton"))))))
+<<
+foo :  ( Person(name == "mark") or Person(type == "fan") ) 
+Cheese(type == "green")
+>>
+	-> (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT_BINDING foo (or (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT name)) (== "mark"))) (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type)) (== "fan")))))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Cheese) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type)) (== "green")))))
+<<
+foo : ( Person(name == "mark") 
+	or 
+	Person(type == "fan") )
+>>
+	-> (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT_BINDING foo (or (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT name)) (== "mark"))) (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type)) (== "fan")))))))
+<<
+foo : ( 
+	Person(name == "mark") or Person(type == "fan") 
+	)
+>>
+	-> (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT_BINDING foo (or (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT name)) (== "mark"))) (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type)) (== "fan")))))))
+<<
+ ( (not Foo(x=="a") or Foo(x=="y") ) and ( Shoes() or Butt() ) )
+>>
+	-> (VT_AND_IMPLICIT (and (or (not (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Foo) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT x)) (== "a"))))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Foo) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT x)) (== "y"))))) (or (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Shoes))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Butt))))))
+<<
+eval(abc("foo") + 5)
+Foo()
+eval(qed())
+Bar()
+>>
+	-> (VT_AND_IMPLICIT (eval (abc("foo") + 5)) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Foo))) (eval (qed())) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Bar))))
+<<
+Foo()
+Bar()
+eval(abc("foo"))
+>>
+	-> (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Foo))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Bar))) (eval (abc("foo"))))
+"Foo(name== (a + b))"
+	-> (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Foo) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT name)) (== (a + b))))))
+
+"Person( $age2:age -> ($age2 == $age1+2 ) )"
+	-> (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Person) (VT_BIND_FIELD $age2 (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)))) (-> ($age2 == $age1+2 )))))
+
+"Foo(bar == Foo.BAR)"
+	-> (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Foo) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT bar)) (== (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT Foo) (VT_ACCESSOR_ELEMENT BAR)))))))
+<<
+p: Person( name soundslike "Michael" )
+>>
+	-> (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT_BINDING p (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT name)) (soundslike "Michael"))))))
+
+<<
+Foo()
+Bar()
+eval(
+
+
+
+       abc(
+       
+       "foo") + 
+       5
+       
+       
+       
+        
+       )
+>>
+	-> (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Foo))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Bar))) (eval (
+
+
+
+       abc(
+       
+       "foo") + 
+       5
+       
+       
+       
+        
+       )))
+
+"eval(abc();)"
+	FAIL
+
+<<
+Foo(
+  bar == baz, la==laz
+  )
+ >>
+ 	-> (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Foo) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT bar)) (== (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT baz)))) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT la)) (== (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT laz)))))))
+
+<<com.cheeseco.Cheese($type : type == "stilton")>>
+	-> (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE com cheeseco Cheese) (VT_BIND_FIELD $type (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type)) (== "stilton"))))))
+
+<<
+     Integer() from accumulate( Person( age > 21 ),
+                            init( int x = 0; ),
+                            action( x++; ),
+                            result( new Integer(x) ) );
+>>
+	-> (VT_AND_IMPLICIT (from (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Integer))) (accumulate (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (> 21)))) (VT_ACCUMULATE_INIT_CLAUSE (init ( int x = 0; )) (action ( x++; )) (result ( new Integer(x) ))))))
+
+<<
+ $counter:Integer() from accumulate( $person : Person( age > 21 ),
+                                     init( int x = 0; ),
+                                     action( x++; ),
+                                     result( new Integer(x) ) );
+>>
+	-> (VT_AND_IMPLICIT (from (VT_PATTERN (VT_FACT_BINDING $counter (VT_FACT (VT_PATTERN_TYPE Integer)))) (accumulate (VT_PATTERN (VT_FACT_BINDING $person (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (> 21))))) (VT_ACCUMULATE_INIT_CLAUSE (init ( int x = 0; )) (action ( x++; )) (result ( new Integer(x) ))))))
+
+"$personList : ArrayList() from collect( Person( age > 21 ) );"
+	-> (VT_AND_IMPLICIT (from (VT_PATTERN (VT_FACT_BINDING $personList (VT_FACT (VT_PATTERN_TYPE ArrayList)))) (collect (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (> 21)))))))
+
+
+<<
+	not ( State( $state : state ) and
+          not( Person( status == $state, $likes : likes ) and
+               Cheese( type == $likes ) ) )
+    Person( name == "Bob" )
+    ( Cheese( price == 10 ) or Cheese( type == "brie" ) )
+>>
+	-> (VT_AND_IMPLICIT (not (and (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE State) (VT_BIND_FIELD $state (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT state)))))) (not (and (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT status)) (== (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT $state)))) (VT_BIND_FIELD $likes (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT likes)))))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Cheese) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type)) (== (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT $likes)))))))))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT name)) (== "Bob")))) (or (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Cheese) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT price)) (== 10)))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Cheese) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type)) (== "brie"))))))
+
+<<
+ forall( Person( age > 21, $likes : likes )
+         Cheese( type == $likes ) );
+>>
+	-> (VT_AND_IMPLICIT (forall (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (> 21)) (VT_BIND_FIELD $likes (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT likes)))))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Cheese) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type)) (== (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT $likes))))))))
+
+
+	<<
+  	Person(age > 30 && < 40)
+  	Vehicle(type in ( "sedan", "wagon" ), age < 3)
+	>>
+		-> (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (&& (> 30) (< 40))))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Vehicle) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type)) (in "sedan" "wagon")) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (< 3)))))
+
+	<<
+  	Person(age > 30 && < 40)
+  	Vehicle(type not in ( "sedan", "wagon" ), age < 3)
+	>>
+		-> (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (&& (> 30) (< 40))))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Vehicle) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type)) (in not "sedan" "wagon")) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (< 3)))))
+
+		<<
+		Pattern1();
+		Pattern2() from x.y.z;
+		Pattern5();
+		Pattern6();
+		Pattern7();
+		Pattern3();
+		Pattern4() from collect( Pattern5() );
+		>>
+			-> (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Pattern1))) (from (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Pattern2))) (VT_FROM_SOURCE x (. y (. z)))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Pattern5))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Pattern6))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Pattern7))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Pattern3))) (from (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Pattern4))) (collect (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Pattern5))))))
+
+		<< eval( 3==3 ) >>
+			-> (VT_AND_IMPLICIT (eval ( 3==3 )))
+
+		<<
+		Integer() from accumulate( Person( age > 21 ),
+		                           init( int x = 0; ),
+		                           action( x++; ),
+		                           reverse( x--; ),
+		                           result( new Integer(x) ) );
+		>>
+			-> (VT_AND_IMPLICIT (from (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Integer))) (accumulate (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (> 21)))) (VT_ACCUMULATE_INIT_CLAUSE (init ( int x = 0; )) (action ( x++; )) (reverse ( x--; )) (result ( new Integer(x) ))))))
+
+		<<
+	     Number() from accumulate( Person( $age : age > 21 ),
+	                               average( $age ) );
+		>>
+			-> (VT_AND_IMPLICIT (from (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Number))) (accumulate (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Person) (VT_BIND_FIELD $age (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (> 21))))) (VT_ACCUMULATE_ID_CLAUSE average ( $age )))))
+
+		<<
+	     #bellow statement makes no sense, but is useful to test parsing recursiveness
+	     $personList : ArrayList() from collect( $p : Person( age > 21 || age < 10 ) from collect( People() from $town.getPeople() ) );
+		>>
+			-> (VT_AND_IMPLICIT (from (VT_PATTERN (VT_FACT_BINDING $personList (VT_FACT (VT_PATTERN_TYPE ArrayList)))) (collect (from (VT_PATTERN (VT_FACT_BINDING $p (VT_FACT (VT_PATTERN_TYPE Person) (|| (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (> 21)) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (< 10)))))) (collect (from (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE People))) (VT_FROM_SOURCE $town (. getPeople ()))))))))
+
+		<<
+	     $personList : ArrayList() from accumulate( Person( $age : age > 21 || < 10 ) from collect( People() from $town.getPeople() ),
+	                                                max( $age ) );
+		>>
+			-> (VT_AND_IMPLICIT (from (VT_PATTERN (VT_FACT_BINDING $personList (VT_FACT (VT_PATTERN_TYPE ArrayList)))) (accumulate (from (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Person) (VT_BIND_FIELD $age (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (|| (> 21) (< 10)))))) (collect (from (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE People))) (VT_FROM_SOURCE $town (. getPeople ()))))) (VT_ACCUMULATE_ID_CLAUSE max ( $age )))))
+
+		<<
+	    $p : Person( name == "bob" )
+	    $c : Cheese( type == $p.likes ) || Cheese( price == 10 )
+	    >>
+	    	-> (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT_BINDING $p (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT name)) (== "bob"))))) (|| (VT_PATTERN (VT_FACT_BINDING $c (VT_FACT (VT_PATTERN_TYPE Cheese) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type)) (== (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT $p) (VT_ACCESSOR_ELEMENT likes))))))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Cheese) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT price)) (== 10))))))
+			<<
+		     $counter:Integer() from accumulate( $person : Person( age > 21 ) and Cheese( type == $person.likes ),
+		                                         init( int x = 0; ),
+		                                         action( x++; ),
+		                                         result( new Integer(x) ) );
+			>>
+				-> (VT_AND_IMPLICIT (from (VT_PATTERN (VT_FACT_BINDING $counter (VT_FACT (VT_PATTERN_TYPE Integer)))) (accumulate (and (VT_PATTERN (VT_FACT_BINDING $person (VT_FACT (VT_PATTERN_TYPE Person) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (> 21))))) (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Cheese) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT type)) (== (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT $person) (VT_ACCESSOR_ELEMENT likes))))))) (VT_ACCUMULATE_INIT_CLAUSE (init ( int x = 0; )) (action ( x++; )) (result ( new Integer(x) ))))))
+
+			<<
+		    $a : EventA()
+		    $b : EventB( this `after[1,10] $a )
+		    $c : EventC( this finishes $b )
+		    $d : EventD( this not starts $a )
+		    $e : EventE( this not `before [1, 10] $b )
+			>>
+				-> (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT_BINDING $a (VT_FACT (VT_PATTERN_TYPE EventA)))) (VT_PATTERN (VT_FACT_BINDING $b (VT_FACT (VT_PATTERN_TYPE EventB) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT this)) (after [1,10] (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT $a))))))) (VT_PATTERN (VT_FACT_BINDING $c (VT_FACT (VT_PATTERN_TYPE EventC) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT this)) (finishes (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT $b))))))) (VT_PATTERN (VT_FACT_BINDING $d (VT_FACT (VT_PATTERN_TYPE EventD) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT this)) (starts not (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT $a))))))) (VT_PATTERN (VT_FACT_BINDING $e (VT_FACT (VT_PATTERN_TYPE EventE) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT this)) (before not [1, 10] (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT $b))))))))
+
+			<<StockTick( symbol=="ACME") from entry-point StreamA>>
+				-> (VT_AND_IMPLICIT (from (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE StockTick) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT symbol)) (== "ACME")))) (entry-point StreamA)))
+
+/**
+ * test Constraint
+ */
+constraints:
+	<<eval( $var.equals("xyz") )>>
+		-> (eval ( $var.equals("xyz") ))

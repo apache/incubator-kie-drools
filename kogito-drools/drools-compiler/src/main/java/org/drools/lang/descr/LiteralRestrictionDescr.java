@@ -33,6 +33,9 @@ public class LiteralRestrictionDescr extends EvaluatorBasedRestrictionDescr {
     private static final long serialVersionUID = 400L;
     private int               type;
 
+    public LiteralRestrictionDescr(){
+    }
+
     public LiteralRestrictionDescr(final String evaluator,
                                    final String text) {
         this( evaluator,

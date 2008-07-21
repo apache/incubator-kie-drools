@@ -16,11 +16,11 @@
 
 package org.drools.lang.descr;
 
-import java.util.Collections;
-import java.util.List;
-import java.io.ObjectOutput;
 import java.io.IOException;
 import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * A descr class for accumulate node

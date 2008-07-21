@@ -1,1772 +1,995 @@
-grammar DRL; 
+grammar DRL;
+
+options {
+	output=AST;
+}
+
+tokens {
+	VT_COMPILATION_UNIT;
+	VT_FUNCTION_IMPORT;
+
+	VT_FACT;
+	VT_CONSTRAINTS;
+	VT_LABEL;
+
+	VT_QUERY_ID;
+	VT_TEMPLATE_ID;
+	VT_RULE_ID;
+	VT_ENTRYPOINT_ID;
+	VT_SLOT_ID;
+	
+	VT_SLOT;
+	VT_RULE_ATTRIBUTES;
+
+	VT_RHS_CHUNK;
+	VT_CURLY_CHUNK;
+	VT_SQUARE_CHUNK;
+	VT_PAREN_CHUNK;
+
+	VT_AND_IMPLICIT;
+	VT_AND_PREFIX;
+	VT_OR_PREFIX;
+	VT_AND_INFIX;
+	VT_OR_INFIX;
+
+	VT_ACCUMULATE_INIT_CLAUSE;
+	VT_ACCUMULATE_ID_CLAUSE;
+	VT_FROM_SOURCE;
+	VT_EXPRESSION_CHAIN;
+
+	VT_PATTERN;
+	VT_FACT_BINDING;
+	VT_FACT_OR;
+	VT_BIND_FIELD;
+	VT_FIELD;
+
+	VT_ACCESSOR_PATH;
+	VT_ACCESSOR_ELEMENT;
+	
+	VT_DATA_TYPE;
+	VT_PATTERN_TYPE;
+	VT_PACKAGE_ID;
+	VT_IMPORT_ID;
+	VT_GLOBAL_ID;
+	VT_FUNCTION_ID;
+	VT_PARAM_LIST;
+
+	VK_DATE_EFFECTIVE;
+	VK_DATE_EXPIRES;
+	VK_LOCK_ON_ACTIVE;
+	VK_NO_LOOP;
+	VK_AUTO_FOCUS;
+	VK_ACTIVATION_GROUP;
+	VK_AGENDA_GROUP;
+	VK_RULEFLOW_GROUP;
+	VK_DURATION;
+	VK_DIALECT;
+	VK_SALIENCE;
+	VK_ENABLED;
+	VK_ATTRIBUTES;
+	VK_WHEN;
+	VK_RULE;
+	VK_IMPORT;
+	VK_PACKAGE;
+	VK_TEMPLATE;
+	VK_QUERY;
+	VK_DECLARE;
+	VK_FUNCTION;
+	VK_GLOBAL;
+	VK_EVAL;
+	VK_CONTAINS;
+	VK_MATCHES;
+	VK_EXCLUDES;
+	VK_SOUNDSLIKE;
+	VK_MEMBEROF;
+	VK_ENTRY_POINT;
+	VK_NOT;
+	VK_IN;
+	VK_OR;
+	VK_AND;
+	VK_EXISTS;
+	VK_FORALL;
+	VK_FROM;
+	VK_ACCUMULATE;
+	VK_INIT;
+	VK_ACTION;
+	VK_REVERSE;
+	VK_RESULT;
+	VK_COLLECT;
+}
 
 @parser::header {
 	package org.drools.lang;
-	import java.util.List;
-	import java.util.ArrayList;
-	import java.util.Iterator;
-	import java.util.HashMap;	
-	import java.util.StringTokenizer;
-	import org.drools.lang.descr.*;
-}
-
-@parser::members {
-	private PackageDescr packageDescr;
-	private List errors = new ArrayList();
-	private String source = "unknown";
-	private int lineOffset = 0;
-	private DescrFactory factory = new DescrFactory();
-	private boolean parserDebug = false;
-	private Location location = new Location( Location.LOCATION_UNKNOWN );
 	
-	// THE FOLLOWING LINES ARE DUMMY ATTRIBUTES TO WORK AROUND AN ANTLR BUG
-	private BaseDescr from = null;
-	private FieldConstraintDescr fc = null;
-	private RestrictionConnectiveDescr and = null;
-	private RestrictionConnectiveDescr or = null;
-	private ConditionalElementDescr base = null;
-	
-	public void setParserDebug(boolean parserDebug) {
-		this.parserDebug = parserDebug;
-	}
-	
-	public void debug(String message) {
-		if ( parserDebug ) 
-			System.err.println( "drl parser: " + message );
-	}
-	
-	public void setSource(String source) {
-		this.source = source;
-	}
-	public DescrFactory getFactory() {
-		return factory;
-	}	
-
-	public String getSource() {
-		return this.source;
-	}
-	
-	public PackageDescr getPackageDescr() {
-		return packageDescr;
-	}
-	
-	private int offset(int line) {
-		return line + lineOffset;
-	}
-	
-	/**
-	 * This will set the offset to record when reparsing. Normally is zero of course 
-	 */
-	public void setLineOffset(int i) {
-	 	this.lineOffset = i;
-	}
-	
-	private String getString(String token) {
-		return safeSubstring( token, 1, token.length() -1 );
-	}
-	
-	private String cleanupSpaces( String input ) {
-                return input.replaceAll( "\\s", "" );
-        }
-	
-	
-	public void reportError(RecognitionException ex) {
-	        // if we've already reported an error and have not matched a token
-                // yet successfully, don't report any errors.
-                if ( errorRecovery ) {
-                        return;
-                }
-                errorRecovery = true;
-
-		ex.line = offset(ex.line); //add the offset if there is one
-		errors.add( ex ); 
-	}
-     	
-     	/** return the raw RecognitionException errors */
-     	public List getErrors() {
-     		return errors;
-     	}
-     	
-     	/** Return a list of pretty strings summarising the errors */
-     	public List getErrorMessages() {
-     		List messages = new ArrayList();
- 		for ( Iterator errorIter = errors.iterator() ; errorIter.hasNext() ; ) {
-     	     		messages.add( createErrorMessage( (RecognitionException) errorIter.next() ) );
-     	     	}
-     	     	return messages;
-     	}
-     	
-     	/** return true if any parser errors were accumulated */
-     	public boolean hasErrors() {
-  		return ! errors.isEmpty();
-     	}
-     	
-     	/** This will take a RecognitionException, and create a sensible error message out of it */
-     	public String createErrorMessage(RecognitionException e)
-        {
-		StringBuffer message = new StringBuffer();		
-                message.append( source + ":"+e.line+":"+e.charPositionInLine+" ");
-                if ( e instanceof MismatchedTokenException ) {
-                        MismatchedTokenException mte = (MismatchedTokenException)e;
-                        if( mte.expecting >=0 && mte.expecting < tokenNames.length ) {
-	                        message.append("mismatched token: "+
-                                                           e.token+
-                                                           "; expecting type "+
-                                                           tokenNames[mte.expecting]);
-                        } else {
-	                        message.append("mismatched token: "+
-                                                           e.token+
-                                                           ";");
-                        }
-                }
-                else if ( e instanceof MismatchedTreeNodeException ) {
-                        MismatchedTreeNodeException mtne = (MismatchedTreeNodeException)e;
-                        if( mtne.expecting >=0 && mtne.expecting < tokenNames.length ) {
-	                        message.append("mismatched tree node: "+
-                                                           mtne.toString() +
-                                                           "; expecting type "+
-                                                           tokenNames[mtne.expecting]);
-                        } else {
-	                        message.append("mismatched tree node: "+
-                                                           mtne.toString() +
-                                                           ";");
-                        }
-                }
-                else if ( e instanceof NoViableAltException ) {
-                        NoViableAltException nvae = (NoViableAltException)e;
-			message.append( "Unexpected token '" + e.token.getText() + "'" );
-                        /*
-                        message.append("decision=<<"+nvae.grammarDecisionDescription+">>"+
-                                                           " state "+nvae.stateNumber+
-                                                           " (decision="+nvae.decisionNumber+
-                                                           ") no viable alt; token="+
-                                                           e.token);
-                                                           */
-                }
-                else if ( e instanceof EarlyExitException ) {
-                        EarlyExitException eee = (EarlyExitException)e;
-                        message.append("required (...)+ loop (decision="+
-                                                           eee.decisionNumber+
-                                                           ") did not match anything; token="+
-                                                           e.token);
-                }
-                else if ( e instanceof MismatchedSetException ) {
-                        MismatchedSetException mse = (MismatchedSetException)e;
-                        message.append("mismatched token '"+
-                                                           e.token+
-                                                           "' expecting set "+mse.expecting);
-                }
-                else if ( e instanceof MismatchedNotSetException ) {
-                        MismatchedNotSetException mse = (MismatchedNotSetException)e;
-                        message.append("mismatched token '"+
-                                                           e.token+
-                                                           "' expecting set "+mse.expecting);
-                }
-                else if ( e instanceof FailedPredicateException ) {
-                        FailedPredicateException fpe = (FailedPredicateException)e;
-                        message.append("rule "+fpe.ruleName+" failed predicate: {"+
-                                                           fpe.predicateText+"}?");
-                } else if (e instanceof GeneralParseException) {
-			message.append(" " + e.getMessage());
-		}
-               	return message.toString();
-        }   
-        
-        void checkTrailingSemicolon(String text, int line) {
-        	if (text.trim().endsWith( ";" ) ) {
-        		this.errors.add( new GeneralParseException( "Trailing semi-colon not allowed", offset(line) ) );
-        	}
-        }
-        
-        public Location getLocation() {
-                return this.location;
-        }
-        
-        private String safeSubstring( String text, int start, int end ) {
-            	return text.substring( Math.min( start, text.length() ), Math.min( Math.max( start, end ), text.length() ) );
-        }
-      
+	import org.drools.compiler.DroolsParserException;
 }
 
 @lexer::header {
 	package org.drools.lang;
 }
 
-opt_semicolon
-	: ';'?
-	;
+
+@lexer::members {
+	/** The standard method called to automatically emit a token at the
+	 *  outermost lexical rule.  The token object should point into the
+	 *  char buffer start..stop.  If there is a text override in 'text',
+	 *  use that to set the token's text.  Override this method to emit
+	 *  custom Token objects.
+	 */
+	public Token emit() {
+		Token t = new DroolsToken(input, type, channel, tokenStartCharIndex, getCharIndex()-1);
+		t.setLine(tokenStartLine);
+		t.setText(text);
+		t.setCharPositionInLine(tokenStartCharPositionInLine);
+		emit(t);
+		return t;
+	}
+}
+
+@parser::members {
+	private Stack<Map<Integer, String>> paraphrases = new Stack<Map<Integer, String>>();
+	private List<DroolsParserException> errors = new ArrayList<DroolsParserException>();
+	private DroolsParserExceptionFactory errorMessageFactory = new DroolsParserExceptionFactory(tokenNames, paraphrases);
+	private String source = "unknown";
+
+	private boolean validateLT(int LTNumber, String text) {
+		if (null == input)
+			return false;
+		if (null == input.LT(LTNumber))
+			return false;
+		if (null == input.LT(LTNumber).getText())
+			return false;
+	
+		String text2Validate = input.LT(LTNumber).getText();
+		return text2Validate.equalsIgnoreCase(text);
+	}
+	
+	private boolean validateIdentifierKey(String text) {
+		return validateLT(1, text);
+	}
+	
+	void checkTrailingSemicolon(String text, Token token) {
+		if (text.trim().endsWith(";")) {
+			errors.add(errorMessageFactory
+					.createTrailingSemicolonException(((DroolsToken) token)
+							.getLine(), ((DroolsToken) token)
+							.getCharPositionInLine(), ((DroolsToken) token)
+							.getStopIndex()));
+		}
+	}
+	
+	private String safeSubstring(String text, int start, int end) {
+		return text.substring(Math.min(start, text.length()), Math.min(Math
+				.max(start, end), text.length()));
+	}
+	
+	public void reportError(RecognitionException ex) {
+		// if we've already reported an error and have not matched a token
+		// yet successfully, don't report any errors.
+		if (errorRecovery) {
+			return;
+		}
+		errorRecovery = true;
+	
+		errors.add(errorMessageFactory.createDroolsException(ex));
+	}
+	
+	/** return the raw DroolsParserException errors */
+	public List<DroolsParserException> getErrors() {
+		return errors;
+	}
+	
+	/** Return a list of pretty strings summarising the errors */
+	public List<String> getErrorMessages() {
+		List<String> messages = new ArrayList<String>(errors.size());
+	
+		for (DroolsParserException activeException : errors) {
+			messages.add(activeException.getMessage());
+		}
+	
+		return messages;
+	}
+	
+	/** return true if any parser errors were accumulated */
+	public boolean hasErrors() {
+		return !errors.isEmpty();
+	}
+
+	/**
+	 * Method that adds a paraphrase type into paraphrases stack.
+	 * 
+	 * @param type
+	 *            paraphrase type
+	 */
+	private void pushParaphrases(int type) {
+		Map<Integer, String> activeMap = new HashMap<Integer, String>();
+		activeMap.put(type, "");
+		paraphrases.push(activeMap);
+	}
+
+	/**
+	 * Method that sets paraphrase value for a type into paraphrases stack.
+	 * 
+	 * @param type
+	 *            paraphrase type
+	 * @param value
+	 *            paraphrase value
+	 */
+	private void setParaphrasesValue(int type, String value) {
+		paraphrases.peek().put(type, value);
+	}
+
+	/**
+	 * Helper method that creates a string from a token list.
+	 * 
+	 * @param tokenList
+	 *            token list
+	 * @return string
+	 */
+	private String buildStringFromTokens(List<Token> tokenList) {
+		StringBuilder sb = new StringBuilder();
+		if (null != tokenList) {
+			for (Token activeToken : tokenList) {
+				if (null != activeToken) {
+					sb.append(activeToken.getText());
+				}
+			}
+		}
+		return sb.toString();
+	}
+}
 
 compilation_unit
-	@init {
-		// reset Location information
-		this.location = new Location( Location.LOCATION_UNKNOWN );
-	}
-	:	prolog 
+	:	package_statement?
 		statement*
 		EOF
+		-> ^(VT_COMPILATION_UNIT package_statement? statement*) 
 	;
 	catch [ RecognitionException e ] {
 		reportError( e );
 	}
-	
-prolog
-	@init {
-		String packageName = "";
+	catch [ RewriteEmptyStreamException e ] {
 	}
-	:	( pkgstmt=package_statement { packageName = $pkgstmt.packageName; } )?
-		{ 
-			this.packageDescr = factory.createPackage( packageName ); 
-		}	
+
+package_statement
+@init  { pushParaphrases(DroolsParaphareseTypes.PACKAGE); }
+@after { paraphrases.pop(); }
+	:	package_key package_id SEMICOLON?
+		-> ^(package_key package_id)
 	;
-	
+
+package_id
+	:	id+=ID ( id+=DOT id+=ID )*
+	{	setParaphrasesValue(DroolsParaphareseTypes.PACKAGE, buildStringFromTokens($id));	}
+		-> ^(VT_PACKAGE_ID ID+)
+	;
 
 statement
-	:	a=rule_attribute { this.packageDescr.addAttribute( a ); }
-	|	function_import_statement 
+	:	rule_attribute
+	|{(validateLT(1, "import") && validateLT(2, "function") )}?=> function_import_statement 
 	|	import_statement 
 	|	global 
-	|	function 
-	|       t=template { this.packageDescr.addFactTemplate( $t.template ); }
-	|	r=rule { this.packageDescr.addRule( $r.rule ); }			
-	|	q=query	{ this.packageDescr.addRule( $q.query ); }
-	|       d=type_declaration { this.packageDescr.addTypeDeclaration( $d.declaration ); }
+	|	function
+	|	template
+	|	rule
+	|	query
 	;
-	
-package_statement returns [String packageName]
-	@init{
-		$packageName = null;
-	}
-	:	
-		PACKAGE n=dotted_name opt_semicolon
-		{
-			$packageName = $n.text;
-		}
-	;
-
-	
 
 import_statement
-        @init {
-        	ImportDescr importDecl = null;
-        }
-	:	IMPORT 
-	        {
-	            importDecl = factory.createImport( );
-	            importDecl.setStartCharacter( ((CommonToken)$IMPORT).getStartIndex() );
-		    if (packageDescr != null) {
-			packageDescr.addImport( importDecl );
-		    }
-	        }
-	        import_name[importDecl] opt_semicolon
+@init  { pushParaphrases(DroolsParaphareseTypes.IMPORT); }
+@after { paraphrases.pop(); }
+	:	import_key import_name[DroolsParaphareseTypes.IMPORT] SEMICOLON?
+		-> ^(import_key import_name)
 	;
 
 function_import_statement
-        @init {
-        	FunctionImportDescr importDecl = null;
-        }
-	:	IMPORT FUNCTION 
-	        {
-	            importDecl = factory.createFunctionImport();
-	            importDecl.setStartCharacter( ((CommonToken)$IMPORT).getStartIndex() );
-		    if (packageDescr != null) {
-			packageDescr.addFunctionImport( importDecl );
-		    }
-	        }
-	        import_name[importDecl] opt_semicolon
+@init  { pushParaphrases(DroolsParaphareseTypes.FUNCTION_IMPORT); }
+@after { paraphrases.pop(); }
+	:	imp=import_key function_key import_name[DroolsParaphareseTypes.FUNCTION_IMPORT] SEMICOLON?
+		-> ^(VT_FUNCTION_IMPORT[$imp.start] function_key import_name)
 	;
 
-import_name[ImportDescr importDecl] returns [String name]
-	@init {
-		$name = null;
-	}
-	:	
-		ID 
-		{ 
-		    $name=$ID.text; 
-		    $importDecl.setTarget( name );
-		    $importDecl.setEndCharacter( ((CommonToken)$ID).getStopIndex() );
-		} 
-		( DOT id=identifier 
-		    { 
-		        $name = $name + $DOT.text + $id.text; 
-			$importDecl.setTarget( $name );
-		        $importDecl.setEndCharacter( ((CommonToken)$id.start).getStopIndex() );
-		    } 
-		)* 
-		( star='.*' 
-		    { 
-		        $name = $name + $star.text; 
-			$importDecl.setTarget( $name );
-		        $importDecl.setEndCharacter( ((CommonToken)$star).getStopIndex() );
-		    }
-		)?
+import_name [int importType]
+	:	id+=ID ( id+=DOT id+=ID )* id+=DOT_STAR?
+	{	setParaphrasesValue($importType, buildStringFromTokens($id));	}
+		-> ^(VT_IMPORT_ID ID+ DOT_STAR?)
 	;
-
 
 global
-	@init {
-	    GlobalDescr global = null;
-	}
-	:
-		GLOBAL 
-		{
-		    global = factory.createGlobal();
-	            global.setStartCharacter( ((CommonToken)$GLOBAL).getStartIndex() );
-		    packageDescr.addGlobal( global );
-		}
-		type=dotted_name 
-		{
-		    global.setType( $type.text );
-		}
-		id=identifier opt_semicolon
-		{
-		    global.setIdentifier( $id.text );
-		    global.setEndCharacter( ((CommonToken)$id.start).getStopIndex() );
-		}
+@init  { pushParaphrases(DroolsParaphareseTypes.GLOBAL); }
+@after { paraphrases.pop(); }
+	:	global_key data_type global_id SEMICOLON?
+		-> ^(global_key data_type global_id)
 	;
-	
+
+global_id
+	:	id=ID
+	{	setParaphrasesValue(DroolsParaphareseTypes.GLOBAL, $id.text);	}
+		-> VT_GLOBAL_ID[$id]
+	;
 
 function
-	@init {
-		FunctionDescr f = null;
-		String type = null;
-	}
-	:
-		FUNCTION retType=dotted_name? id=identifier
-		{
-			//System.err.println( "function :: " + n.getText() );
-			type = retType != null ? $retType.text : null;
-			f = factory.createFunction( $id.text, type );
-			f.setLocation(offset($FUNCTION.line), $FUNCTION.pos);
-	        	f.setStartCharacter( ((CommonToken)$FUNCTION).getStartIndex() );
-			packageDescr.addFunction( f );
-		} 
-		LEFT_PAREN
-			(	paramType=dotted_name? paramName=argument
-				{
-					type = paramType != null ? $paramType.text : null;
-					f.addParameter( type, $paramName.name );
-				}
-				(	COMMA paramType=dotted_name? paramName=argument
-					{
-						type = paramType != null ? $paramType.text : null;
-						f.addParameter( type, $paramName.name );
-					}
-				)*
-			)?
+@init  { pushParaphrases(DroolsParaphareseTypes.FUNCTION); }
+@after { paraphrases.pop(); }
+	:	function_key data_type? function_id parameters curly_chunk
+		-> ^(function_key data_type? function_id parameters curly_chunk)
+	;
+
+function_id
+	:	id=ID
+	{	setParaphrasesValue(DroolsParaphareseTypes.FUNCTION, $id.text);	}
+		-> VT_FUNCTION_ID[$id]
+	;
+
+query
+@init  { pushParaphrases(DroolsParaphareseTypes.QUERY); }
+@after { paraphrases.pop(); }
+	:	query_key query_id parameters? normal_lhs_block END SEMICOLON?
+		-> ^(query_key query_id parameters? normal_lhs_block END)
+	;
+
+query_id
+	: 	id=ID
+	{	setParaphrasesValue(DroolsParaphareseTypes.QUERY, $id.text);	} -> VT_QUERY_ID[$id]
+	| 	id=STRING
+	{	setParaphrasesValue(DroolsParaphareseTypes.QUERY, $id.text);	} -> VT_QUERY_ID[$id]
+	;
+
+parameters
+	:	LEFT_PAREN
+			( param_definition (COMMA param_definition)* )?
 		RIGHT_PAREN
-		body=curly_chunk
-		{
-			//strip out '{','}'
-			f.setText( safeSubstring( $body.text, 1, $body.text.length()-1 ) );
-			f.setEndCharacter( ((CommonToken)$body.stop).getStopIndex() );
-			f.setEndLocation(offset($body.stop.getLine()), $body.stop.getCharPositionInLine());
-		}
+		-> ^(VT_PARAM_LIST param_definition* RIGHT_PAREN)
 	;
 
-argument returns [String name]
-	@init {
-		$name = null;
-	}
-	:	id=identifier { $name=$id.text; } ( '[' ']' { $name += "[]";})*
+param_definition
+	:	data_type? argument
+	;
+
+argument
+	:	ID dimension_definition*
+	;
+
+
+template
+@init  { pushParaphrases(DroolsParaphareseTypes.TEMPLATE); }
+@after { paraphrases.pop(); }
+	:	template_key template_id SEMICOLON?
+		template_slot+
+		END SEMICOLON?
+		-> ^(template_key template_id template_slot+ END)
+	;
+
+template_id
+	: 	id=ID
+	{	setParaphrasesValue(DroolsParaphareseTypes.TEMPLATE, $id.text);	} -> VT_TEMPLATE_ID[$id]
+	| 	id=STRING
+	{	setParaphrasesValue(DroolsParaphareseTypes.TEMPLATE, $id.text);	} -> VT_TEMPLATE_ID[$id]
+	;
+
+template_slot
+	:	 data_type slot_id SEMICOLON?
+		-> ^(VT_SLOT data_type slot_id)
+	;
+
+slot_id	:	id=ID
+		-> VT_SLOT_ID[$id]
+	;
+
+rule
+@init  { pushParaphrases(DroolsParaphareseTypes.RULE); }
+@after { paraphrases.pop(); }
+	:	rule_key rule_id rule_attributes? when_part? rhs_chunk
+		-> ^(rule_key rule_id rule_attributes? when_part? rhs_chunk)
+	;
+
+when_part
+	:	when_key COLON? normal_lhs_block
+	->	when_key normal_lhs_block
+	;
+
+rule_id
+	: 	id=ID
+	{	setParaphrasesValue(DroolsParaphareseTypes.RULE, $id.text);	} -> VT_RULE_ID[$id]
+	| 	id=STRING
+	{	setParaphrasesValue(DroolsParaphareseTypes.RULE, $id.text);	} -> VT_RULE_ID[$id]
+	;
+
+rule_attributes
+	:	( attributes_key COLON )? rule_attribute ( COMMA? attr=rule_attribute )*
+		-> ^(VT_RULE_ATTRIBUTES attributes_key? rule_attribute+)
+	;
+
+rule_attribute
+@init  { pushParaphrases(DroolsParaphareseTypes.RULE_ATTRIBUTE); }
+@after { paraphrases.pop(); }
+	:	salience 
+	|	no_loop  
+	|	agenda_group  
+	|	duration  
+	|	activation_group 
+	|	auto_focus 
+	|	date_effective 
+	|	date_expires 
+	|	enabled 
+	|	ruleflow_group 
+	|	lock_on_active
+	|	dialect 
+	;
+
+date_effective
+	:	date_effective_key^ STRING
+	;
+
+date_expires
+	:	date_expires_key^ STRING  
 	;
 	
-type_declaration returns [TypeDeclarationDescr declaration]
-        @init {
-                $declaration = factory.createTypeDeclaration();
-        }
-        :	DECLARE id=identifier 
-                        {
-                            $declaration.setTypeName( $id.text );
-                        }
-                        decl_metadata[$declaration]*
-                        decl_field[$declaration]*
-                END
-        ;
-        
-decl_metadata[BaseDescr declaration]
-        :	AT att=identifier val=paren_chunk
-                {
-                    if( $declaration instanceof TypeDeclarationDescr )
-                        ((TypeDeclarationDescr)$declaration).addMetaAttribute( $att.text, getString( $val.text ).trim() );
-                    else
-                        ((TypeFieldDescr)$declaration).addMetaAttribute( $att.text, getString( $val.text ).trim() );
-                }
-        ;    
-        
-decl_field[TypeDeclarationDescr declaration]
-@init {
-        TypeFieldDescr field = null;
-}
-	:      id=identifier init=initialization? COLON type=qualified_id 
-		{
-		    field = new TypeFieldDescr( $id.text );
-		    if( init != null )
-		        field.setInitExpr( $init.expr );
-		    field.setPattern( new PatternDescr($type.text) );
-		    $declaration.addField( field );
-		}
-		decl_metadata[field]* 
-	;   
-	
-initialization returns [String expr]
-	:      EQUALS val=paren_chunk
-	       {
-	           $expr = getString( $val.text ).trim();
-	       }
+enabled
+	:	enabled_key^ BOOL
 	;	
 
-query returns [QueryDescr query]
-	@init {
-		$query = null;
-		AndDescr lhs = null;
-		List params = null;
-		List types = null;		
- 
-	}
-	:
-		QUERY queryName=name
-		{ 
-			$query = factory.createQuery( $queryName.name ); 
-			$query.setLocation( offset($QUERY.line), $QUERY.pos );
-			$query.setStartCharacter( ((CommonToken)$QUERY).getStartIndex() );
-			lhs = new AndDescr(); $query.setLhs( lhs ); 
-			lhs.setLocation( offset($QUERY.line), $QUERY.pos );
-                        location.setType( Location.LOCATION_RULE_HEADER );
-		}
-		( LEFT_PAREN
-		        ( { params = new ArrayList(); types = new ArrayList();}
- 
-		            (paramType=qualified_id? paramName=ID { params.add( $paramName.text ); String type = (paramType != null) ? $paramType.text : "Object"; types.add( type ); } )
-		            (COMMA paramType=qualified_id? paramName=ID { params.add( $paramName.text );  String type = (paramType != null) ? $paramType.text : "Object"; types.add( type );  } )*
- 
-		            {	$query.setParameters( (String[]) params.toArray( new String[params.size()] ) ); 
-		            	$query.setParameterTypes( (String[]) types.toArray( new String[types.size()] ) ); 
-		            }
-		         )?
-	          RIGHT_PAREN
-	        )?		
-	        {
-                        location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
-	        }
-		normal_lhs_block[lhs]
-		END opt_semicolon
-		{
-			$query.setEndCharacter( ((CommonToken)$END).getStopIndex() );
-		}
-	;
-	
-template returns [FactTemplateDescr template]
-	@init {
-		$template = null;		
-	}
-	:
-		TEMPLATE templateName=name opt_semicolon
-		{
-			$template = new FactTemplateDescr($templateName.name);
-			$template.setLocation( offset($TEMPLATE.line), $TEMPLATE.pos );			
-			$template.setStartCharacter( ((CommonToken)$TEMPLATE).getStartIndex() );
-		}
-		(
-			slot=template_slot 
-			{
-				template.addFieldTemplate( $slot.field );
-			}
-		)+
-		END opt_semicolon 
-		{
-			template.setEndCharacter( ((CommonToken)$END).getStopIndex() );
-		}		
-	;
-	
-template_slot returns [FieldTemplateDescr field]
-	@init {
-		$field = null;
-	}
-	:
-	         {
-			$field = factory.createFieldTemplate();
-	         }
-		 fieldType=qualified_id
-		 {
-		        $field.setClassType( $fieldType.text );
-			$field.setStartCharacter( ((CommonToken)$fieldType.start).getStartIndex() );
-			$field.setEndCharacter( ((CommonToken)$fieldType.stop).getStopIndex() );
-		 }
-		 
-		 id=identifier opt_semicolon
-		 {
-		        $field.setName( $id.text );
-			$field.setLocation( offset($id.start.getLine()), $id.start.getCharPositionInLine() );
-			$field.setEndCharacter( ((CommonToken)$id.start).getStopIndex() );
-		 } 
-	;	
-	
-rule returns [RuleDescr rule]
-	@init {
-		$rule = null;
-		AndDescr lhs = null;
-	}
-	:
-		RULE ruleName=name 
-		{ 
-			location.setType( Location.LOCATION_RULE_HEADER );
-			debug( "start rule: " + $ruleName.name );
-			$rule = new RuleDescr( $ruleName.name, null ); 
-			$rule.setLocation( offset($RULE.line), $RULE.pos );
-			$rule.setStartCharacter( ((CommonToken)$RULE).getStartIndex() );
-			lhs = new AndDescr(); 
-			$rule.setLhs( lhs ); 
-		}
-		rule_attributes[$rule]?
-		(	
-			WHEN COLON?
-			{ 
-				this.location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
-				lhs.setLocation( offset($WHEN.line), $WHEN.pos );
-				lhs.setStartCharacter( ((CommonToken)$WHEN).getStartIndex() );
-			}
-			normal_lhs_block[lhs]
-		)?
-		rhs_chunk[$rule]
-	;
-	
-
-
-rule_attributes[RuleDescr rule]
-	: 
-	( ATTRIBUTES COLON )?
-	attr=rule_attribute { $rule.addAttribute( $attr.attr ); }
-	( ','? attr=rule_attribute { $rule.addAttribute( $attr.attr ); } )*
-	;
-
-
-	
-rule_attribute returns [AttributeDescr attr]
-	@init {
-		$attr = null;
-	}
-	@after {
-		$attr = $a.descr;
-	}
-	:	a=salience 
-	|	a=no_loop  
-	|	a=agenda_group  
-	|	a=duration  
-	|	a=activation_group 
-	|	a=auto_focus 
-	|	a=date_effective 
-	|	a=date_expires 
-	|	a=enabled 
-	|	a=ruleflow_group 
-	|	a=lock_on_active
-	|	a=dialect 
-	;
-	
-date_effective returns [AttributeDescr descr]
-	@init {
-		$descr = null;
-	}	
-	:
-		DATE_EFFECTIVE STRING  
-		{
-			$descr = new AttributeDescr( "date-effective", getString( $STRING.text ) );
-			$descr.setLocation( offset( $DATE_EFFECTIVE.line ), $DATE_EFFECTIVE.pos );
-			$descr.setStartCharacter( ((CommonToken)$DATE_EFFECTIVE).getStartIndex() );
-			$descr.setEndCharacter( ((CommonToken)$STRING).getStopIndex() );
-		}
-
-	;
-
-date_expires returns [AttributeDescr descr]
-	@init {
-		$descr = null;
-	}	
-	:	DATE_EXPIRES STRING  
-		{
-			$descr = new AttributeDescr( "date-expires", getString( $STRING.text ) );
-			$descr.setLocation( offset($DATE_EXPIRES.line), $DATE_EXPIRES.pos );
-			$descr.setStartCharacter( ((CommonToken)$DATE_EXPIRES).getStartIndex() );
-			$descr.setEndCharacter( ((CommonToken)$STRING).getStopIndex() );
-		}
-	;
-	
-enabled returns [AttributeDescr descr]
-	@init {
-		$descr = null;
-	}
-	:		ENABLED BOOL   
-			{
-				$descr = new AttributeDescr( "enabled", $BOOL.text );
-				$descr.setLocation( offset($ENABLED.line), $ENABLED.pos );
-				$descr.setStartCharacter( ((CommonToken)$ENABLED).getStartIndex() );
-				$descr.setEndCharacter( ((CommonToken)$BOOL).getStopIndex() );
-			}
-	;	
-
-salience returns [AttributeDescr descr]
-	@init {
-		$descr = null;
-	}
-	:	
-		SALIENCE 
-		{
-			$descr = new AttributeDescr( "salience" );
-			$descr.setLocation( offset($SALIENCE.line), $SALIENCE.pos );
-			$descr.setStartCharacter( ((CommonToken)$SALIENCE).getStartIndex() );
-		}
+salience
+	:	salience_key^
 		( INT   
-		{
-			$descr.setValue( $INT.text );
-			$descr.setEndCharacter( ((CommonToken)$INT).getStopIndex() );
-		}
-		| txt=paren_chunk
-		{
-			$descr.setValue( $txt.text );
-			$descr.setEndCharacter( ((CommonToken)$txt.stop).getStopIndex() );
-		}
+		| paren_chunk
 		)
 	;
 	
-no_loop returns [AttributeDescr descr]
-	@init {
-		$descr = null;
-	}
-	:	NO_LOOP   
-		{
-			$descr = new AttributeDescr( "no-loop", "true" );
-			$descr.setLocation( offset($NO_LOOP.line), $NO_LOOP.pos );
-			$descr.setStartCharacter( ((CommonToken)$NO_LOOP).getStartIndex() );
-			$descr.setEndCharacter( ((CommonToken)$NO_LOOP).getStopIndex() );
-		}
-		( BOOL   
-			{
-				$descr.setValue( $BOOL.text );
-				$descr.setEndCharacter( ((CommonToken)$BOOL).getStopIndex() );
-			}
-		)?
+no_loop
+	:	no_loop_key^ BOOL?
 	;
-	
-auto_focus returns [AttributeDescr descr]
-	@init {
-		$descr = null;
-	}
-	:	AUTO_FOCUS   
-		{
-			$descr = new AttributeDescr( "auto-focus", "true" );
-			$descr.setLocation( offset($AUTO_FOCUS.line), $AUTO_FOCUS.pos );
-			$descr.setStartCharacter( ((CommonToken)$AUTO_FOCUS).getStartIndex() );
-			$descr.setEndCharacter( ((CommonToken)$AUTO_FOCUS).getStopIndex() );
-		}
-		( BOOL   
-			{
-				$descr.setValue( $BOOL.text );
-				$descr.setEndCharacter( ((CommonToken)$BOOL).getStopIndex() );
-			}
-		)?
+
+auto_focus
+	:	auto_focus_key^ BOOL?
 	;	
 	
-activation_group returns [AttributeDescr descr]
-	@init {
-		$descr = null;
-	}
-	:	ACTIVATION_GROUP STRING   
-		{
-			$descr = new AttributeDescr( "activation-group", getString( $STRING.text ) );
-			$descr.setLocation( offset($ACTIVATION_GROUP.line), $ACTIVATION_GROUP.pos );
-			$descr.setStartCharacter( ((CommonToken)$ACTIVATION_GROUP).getStartIndex() );
-			$descr.setEndCharacter( ((CommonToken)$STRING).getStopIndex() );
-		}
+activation_group
+	:	activation_group_key^ STRING
 	;
 
-ruleflow_group returns [AttributeDescr descr]
-	@init {
-		$descr = null;
-	}
-	:	RULEFLOW_GROUP STRING   
-		{
-			$descr = new AttributeDescr( "ruleflow-group", getString( $STRING.text ) );
-			$descr.setLocation( offset($RULEFLOW_GROUP.line), $RULEFLOW_GROUP.pos );
-			$descr.setStartCharacter( ((CommonToken)$RULEFLOW_GROUP).getStartIndex() );
-			$descr.setEndCharacter( ((CommonToken)$STRING).getStopIndex() );
-		}
+ruleflow_group
+	:	ruleflow_group_key^ STRING
 	;
 
-agenda_group returns [AttributeDescr descr]
-	@init {
-		$descr = null;
-	}
-	:	AGENDA_GROUP STRING   
-		{
-			$descr = new AttributeDescr( "agenda-group", getString( $STRING.text ) );
-			$descr.setLocation( offset($AGENDA_GROUP.line), $AGENDA_GROUP.pos );
-			$descr.setStartCharacter( ((CommonToken)$AGENDA_GROUP).getStartIndex() );
-			$descr.setEndCharacter( ((CommonToken)$STRING).getStopIndex() );
-		}
+agenda_group
+	:	agenda_group_key^ STRING
 	;
 
-duration returns [AttributeDescr descr]
-	@init {
-		$descr = null;
-	}
-	:	DURATION INT 
-		{
-			$descr = new AttributeDescr( "duration", $INT.text );
-			$descr.setLocation( offset($DURATION.line), $DURATION.pos );
-			$descr.setStartCharacter( ((CommonToken)$DURATION).getStartIndex() );
-			$descr.setEndCharacter( ((CommonToken)$INT).getStopIndex() );
-		}
+duration
+	:	duration_key^ INT 
 	;	
 	
-dialect returns [AttributeDescr descr]
-	@init {
-		$descr = null;
-	}
-	:	DIALECT STRING   
-		{
-			$descr = new AttributeDescr( "dialect", getString( $STRING.text ) );
-			$descr.setLocation( offset($DIALECT.line), $DIALECT.pos );
-			$descr.setStartCharacter( ((CommonToken)$DIALECT).getStartIndex() );
-			$descr.setEndCharacter( ((CommonToken)$STRING).getStopIndex() );
-		}
+dialect
+	:	dialect_key^ STRING   
 	;			
 	
-lock_on_active returns [AttributeDescr descr]
-	@init {
-		$descr = null;
-	}
-	:	LOCK_ON_ACTIVE   
-		{
-			$descr = new AttributeDescr( "lock-on-active", "true" );
-			$descr.setLocation( offset($LOCK_ON_ACTIVE.line), $LOCK_ON_ACTIVE.pos );
-			$descr.setStartCharacter( ((CommonToken)$LOCK_ON_ACTIVE).getStartIndex() );
-			$descr.setEndCharacter( ((CommonToken)$LOCK_ON_ACTIVE).getStopIndex() );
-		}
-		( BOOL   
-			{
-				$descr.setValue( $BOOL.text );
-				$descr.setEndCharacter( ((CommonToken)$BOOL).getStopIndex() );
-			}
-		)?
-	;		
-
-normal_lhs_block[AndDescr descr]
-	@init {
-		location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
-	}
-	:
-		(	d=lhs[$descr]
-			{ if( $d.d != null) $descr.addDescr( $d.d ); }
-		)*
+lock_on_active
+	:	lock_on_active_key^ BOOL?
 	;
 
-	
-lhs[ConditionalElementDescr ce] returns [BaseDescr d]
-	@init {
-		$d=null;
-	}
-	:	l=lhs_or { $d = $l.d; } 
+normal_lhs_block
+	:	lhs*
+	->	^(VT_AND_IMPLICIT lhs*)
 	;
 
-	
-lhs_or returns [BaseDescr d]
-	@init{
-		$d = null;
-		OrDescr or = null;
-	}
-	:	LEFT_PAREN OR 
-		{
-			or = new OrDescr();
-			$d = or;
-			location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR );
-		}
-		( lhsand=lhs_and 
-		{
-			or.addDescr( $lhsand.d );
-		})+
-		RIGHT_PAREN // PREFIX
-	|	
-	        left=lhs_and { $d = $left.d; }
-		( (OR|DOUBLE_PIPE)
-			{
-				location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR );
-			}
-			right=lhs_and
-			{
-				if ( or == null ) {
-					or = new OrDescr();
-					or.addDescr( $left.d );
-					$d = or;
-				}
-				
-				or.addDescr( $right.d );
-			}
-		)*
+lhs	:	lhs_or
+	;
+
+lhs_or
+@init{
+	Token orToken = null;
+}	:	(LEFT_PAREN or_key)=> LEFT_PAREN or=or_key lhs_and+ RIGHT_PAREN // PREFIX
+		-> ^(VT_OR_PREFIX[$or.start] lhs_and+ RIGHT_PAREN)
+	|	(lhs_and -> lhs_and) 
+		( (or_key|DOUBLE_PIPE)=> (value=or_key {orToken = $value.start;} |pipe=DOUBLE_PIPE {orToken = $pipe;}) lhs_and 
+		-> ^(VT_OR_INFIX[orToken] $lhs_or lhs_and))*
+	;
+
+lhs_and
+@init{
+	Token andToken = null;
+}	:	(LEFT_PAREN and_key)=> LEFT_PAREN and=and_key lhs_unary+ RIGHT_PAREN // PREFIX
+		-> ^(VT_AND_PREFIX[$and.start] lhs_unary+ RIGHT_PAREN)
+	|	(lhs_unary -> lhs_unary) 
+		( (and_key|DOUBLE_AMPER)=> (value=and_key {andToken = $value.start;} |amper=DOUBLE_AMPER {andToken = $amper;}) lhs_unary 
+		-> ^(VT_AND_INFIX[andToken] $lhs_and lhs_unary) )*
+	;
+
+lhs_unary
+options{backtrack=true;}
+	:	(	lhs_exist
+		|	lhs_not
+		|	lhs_eval
+		|	lhs_forall
+		|	LEFT_PAREN! lhs_or RIGHT_PAREN
+		|	pattern_source
+		)
+		((SEMICOLON)=> SEMICOLON!)?
+	;
+
+lhs_exist
+	:	exists_key
+	        ( (LEFT_PAREN (or_key|and_key))=> lhs_or //prevent "((" 
+		| LEFT_PAREN lhs_or RIGHT_PAREN
+	        | lhs_pattern
+	        )
+	        -> ^(exists_key lhs_or? lhs_pattern? RIGHT_PAREN?)
 	;
 	
-lhs_and returns [BaseDescr d]
-	@init{
-		$d = null;
-		AndDescr and = null;
-	}
-	:	LEFT_PAREN AND 
-		{
-			and = new AndDescr();
-			$d = and;
-			location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR );
-		}
-		(lhsunary=lhs_unary
-		{
-			and.addDescr( $lhsunary.d );
-		})+
-		RIGHT_PAREN 
-	|	
-	        left=lhs_unary { $d = $left.d; }
-		( (AND|DOUBLE_AMPER)
-			{
-				location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR );
-			}
-			right=lhs_unary
-			{
-				if ( and == null ) {
-					and = new AndDescr();
-					and.addDescr( $left.d );
-					$d = and;
-				}
-				
-				and.addDescr( $right.d );
-			}
-		)* 
+lhs_not	:	not_key
+		( (LEFT_PAREN (or_key|and_key))=> lhs_or //prevent "((" 
+		|	LEFT_PAREN lhs_or RIGHT_PAREN 
+		| 	lhs_pattern )
+	        -> ^(not_key lhs_or? lhs_pattern? RIGHT_PAREN?)
 	;
-	
-lhs_unary returns [BaseDescr d]
-	@init {
-		$d = null;
-	}
-	:	(	( EXISTS ) => u=lhs_exist { $d = $u.d; }
-		|	( NOT ) => u=lhs_not  { $d = $u.d; }
-		|	( EVAL ) => u=lhs_eval  { $d = $u.d; }
-		|	( FORALL ) => u=lhs_forall  { $d = $u.d; }
-		|	( LEFT_PAREN ) => LEFT_PAREN u=lhs_or RIGHT_PAREN  { $d = $u.d; }
-		|	ps=pattern_source  { $d = (BaseDescr) $ps.d; }
-		) 
-		opt_semicolon
+
+lhs_eval
+	:	ev=eval_key pc=paren_chunk
+	{	String body = safeSubstring( $pc.text, 1, $pc.text.length()-1 );
+		checkTrailingSemicolon( body, $ev.start );	}
+		-> ^(eval_key paren_chunk)
 	;
-	
-pattern_source returns [BaseDescr d]
-	@init {
-		$d = null;
-	}
-	:	
-		u=lhs_pattern { $d = $u.d; } 
-		(       OVER 
-		(WINDOW COLON type=identifier param=paren_chunk
-		        {
-		                SlidingWindowDescr window = new SlidingWindowDescr( $type.text, getString( $param.text ).trim() );
-		                ((PatternDescr)$d).addBehavior( window );
-		        } 
-		)+
-		)?
+
+lhs_forall
+	:	forall_key LEFT_PAREN lhs_pattern+ RIGHT_PAREN
+		-> ^(forall_key lhs_pattern+ RIGHT_PAREN)
+	;
+
+pattern_source
+options { k=3;}
+	:	lhs_pattern
 		(
-		        // THIS IS SIMPLY DUMB IMO, but it was the only way I could make it work... :( not sure if it is an 
-		        // ANTLR bug or if I'm doing something wrong.
-		        ( (FROM ENTRY_POINT) => FROM ep=entrypoint_statement { if( $d != null ) ((PatternDescr)$d).setSource((PatternSourceDescr) $ep.d); })
-		        |
-			FROM 
-		        {
-				location.setType(Location.LOCATION_LHS_FROM);
-				location.setProperty(Location.LOCATION_FROM_CONTENT, "");
-		        }
-		        ( options { k=1; backtrack=true;} :
-		          ( ac=accumulate_statement { if( $d != null ) ((PatternDescr)$d).setSource((PatternSourceDescr) $ac.d); })
-		          | ( cs=collect_statement { if( $d != null ) ((PatternDescr)$d).setSource((PatternSourceDescr) $cs.d); }) 
-		          //| ( ep=entrypoint_statement { if( $d != null ) ((PatternDescr)$d).setSource((PatternSourceDescr) $ep.d); })
-		          | ( fm=from_statement { if( $d != null ) ((PatternDescr)$d).setSource((PatternSourceDescr) $fm.d); }) 
+			from_key^
+		        (  accumulate_statement
+		          | collect_statement 
+		          | entrypoint_statement
+		          | from_source
 		        )
 		)?
 	;
-	
-lhs_exist returns [BaseDescr d]
-	@init {
-		$d = null;
-	}
-	:	EXISTS 
-		{
-			$d = new ExistsDescr( ); 
-			$d.setLocation( offset($EXISTS.line), $EXISTS.pos );
-			$d.setStartCharacter( ((CommonToken)$EXISTS).getStartIndex() );
-			location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION_EXISTS );
-		}
-	        ( ( LEFT_PAREN or=lhs_or 
-	           	{ if ( $or.d != null ) ((ExistsDescr)$d).addDescr( $or.d ); }
-	           RIGHT_PAREN 
-	                { $d.setEndCharacter( ((CommonToken)$RIGHT_PAREN).getStopIndex() ); }
-	        )    
-	        | pattern=lhs_pattern
-	                {
-	                	if ( $pattern.d != null ) {
-	                		((ExistsDescr)$d).addDescr( $pattern.d );
-	                		$d.setEndCharacter( $pattern.d.getEndCharacter() );
-	                	}
-	                }
-	        )
-	;
-	
-lhs_not	returns [NotDescr d]
-	@init {
-		$d = null;
-	}
-	:	NOT 
-		{
-			$d = new NotDescr( ); 
-			$d.setLocation( offset($NOT.line), $NOT.pos );
-			$d.setStartCharacter( ((CommonToken)$NOT).getStartIndex() );
-			location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION_NOT );
-		}
-		( ( LEFT_PAREN or=lhs_or  
-	           	{ if ( $or.d != null ) $d.addDescr( $or.d ); }
-	           RIGHT_PAREN 
-	                { $d.setEndCharacter( ((CommonToken)$RIGHT_PAREN).getStopIndex() ); }
-		  )
-		| 
-		pattern=lhs_pattern
-	                {
-	                	if ( $pattern.d != null ) {
-	                		$d.addDescr( $pattern.d );
-	                		$d.setEndCharacter( $pattern.d.getEndCharacter() );
-	                	}
-	                }
-		)
-	;
 
-lhs_eval returns [BaseDescr d]
-	@init {
-		$d = new EvalDescr( );
-	}
-	:
-		EVAL 
-		{
-			location.setType( Location.LOCATION_LHS_INSIDE_EVAL );
-		}
-		c=paren_chunk
-		{ 
-			$d.setStartCharacter( ((CommonToken)$EVAL).getStartIndex() );
-		        if( $c.text != null ) {
-	  		    this.location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
-		            String body = safeSubstring( $c.text, 1, $c.text.length()-1 );
-			    checkTrailingSemicolon( body, offset($EVAL.line) );
-			    ((EvalDescr) $d).setContent( body );
-			    location.setProperty(Location.LOCATION_EVAL_CONTENT, body);
-			}
-			if( $c.stop != null ) {
-			    $d.setEndCharacter( ((CommonToken)$c.stop).getStopIndex() );
-			}
-		}
-	;
-	
-lhs_forall returns [ForallDescr d]
-	@init {
-		$d = factory.createForall();
-	}
-	:	FORALL LEFT_PAREN base=lhs_pattern   
-		{
-			$d.setStartCharacter( ((CommonToken)$FORALL).getStartIndex() );
-		        // adding the base pattern
-		        $d.addDescr( $base.d );
-			$d.setLocation( offset($FORALL.line), $FORALL.pos );
-		}
-		( pattern=lhs_pattern
-		   {
-		        // adding additional patterns
-			$d.addDescr( $pattern.d );
-		   }
-		)*
-		RIGHT_PAREN
-		{
-		        $d.setEndCharacter( ((CommonToken)$RIGHT_PAREN).getStopIndex() );
-		}
-	;
-
-lhs_pattern returns [BaseDescr d]
-	@init {
-		$d=null;
-	}
-	@after {
-		$d=$f.d;
-	}
-	:	f=fact_binding	
-	|	f=fact[null]		
-	;
-
-from_statement returns [FromDescr d]
-	@init {
-		$d=factory.createFrom();
-	}
-	:
-	ds=from_source[$d]
-	{
-		$d.setDataSource( $ds.ds );
-	}
-	;
-	
-
-accumulate_statement returns [AccumulateDescr d]
-	@init {
-		$d = factory.createAccumulate();
-	} 
-	:
-	        ACCUMULATE 
-		{ 
-			$d.setLocation( offset($ACCUMULATE.line), $ACCUMULATE.pos );
-			$d.setStartCharacter( ((CommonToken)$ACCUMULATE).getStartIndex() );
-			location.setType( Location.LOCATION_LHS_FROM_ACCUMULATE );
-		}	
-		LEFT_PAREN inputCE=lhs_or COMMA? 
-		{
-		        $d.setInput( $inputCE.d );
-		}
-		( ( 
-			INIT 
-			{
-				location.setType( Location.LOCATION_LHS_FROM_ACCUMULATE_INIT );
-			}
-			text=paren_chunk COMMA?
-			{
-				if( $text.text != null ) {
-				        $d.setInitCode( safeSubstring( $text.text, 1, $text.text.length()-1 ) );
-					location.setProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_INIT_CONTENT, $d.getInitCode());
-					location.setType( Location.LOCATION_LHS_FROM_ACCUMULATE_ACTION );
-				}
-			}
-			ACTION text=paren_chunk COMMA?
-			{
-				if( $text.text != null ) {
-				        $d.setActionCode( safeSubstring( $text.text, 1, $text.text.length()-1 ) );
-	       				location.setProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_ACTION_CONTENT, $d.getActionCode());
-					location.setType( Location.LOCATION_LHS_FROM_ACCUMULATE_REVERSE );
-				}
-			}
-			( REVERSE text=paren_chunk COMMA?
-			{
-				if( $text.text != null ) {
-				        $d.setReverseCode( safeSubstring( $text.text, 1, $text.text.length()-1 ) );
-	       				location.setProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_REVERSE_CONTENT, $d.getReverseCode());
-					location.setType( Location.LOCATION_LHS_FROM_ACCUMULATE_RESULT );
-				}
-			}
-			)?
-			RESULT text=paren_chunk 
-			{
-				if( $text.text != null ) {
-				        $d.setResultCode( safeSubstring( $text.text, 1, $text.text.length()-1 ) );
-					location.setProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_RESULT_CONTENT, $d.getResultCode());
-				}
-			}
-		) 
-		|
-		(
-			id=ID text=paren_chunk
-			{
-				if( $id.text != null ) {
-				        $d.setExternalFunction( true );
-					$d.setFunctionIdentifier( $id.text );
-				}
-				if( $text.text != null ) {
-				        $d.setExpression( safeSubstring( $text.text, 1, $text.text.length()-1 ) );
-	       				location.setProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_EXPRESSION_CONTENT, $d.getExpression());
-				}
-			}
-		)
+accumulate_statement
+	:	accumulate_key
+		LEFT_PAREN lhs_or COMMA? 
+		(	accumulate_init_clause
+		|	accumulate_id_clause
 		)
 		RIGHT_PAREN
-		{
-			location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
-			d.setEndCharacter( ((CommonToken)$RIGHT_PAREN).getStopIndex() );
-		} 
-	; 
+		-> ^(accumulate_key lhs_or accumulate_init_clause? accumulate_id_clause? RIGHT_PAREN)
+	;
+
+accumulate_init_clause
+	:	init_key
+	pc1=paren_chunk COMMA?
+	action_key pc2=paren_chunk COMMA?
+	( reverse_key pc3=paren_chunk COMMA?)?
+	result_key pc4=paren_chunk
+	-> ^(VT_ACCUMULATE_INIT_CLAUSE ^(init_key $pc1) ^(action_key $pc2) ^(reverse_key $pc3)? ^(result_key $pc4))
+	;
+
+accumulate_id_clause
+	:	id=ID text=paren_chunk
+	-> ^(VT_ACCUMULATE_ID_CLAUSE ID paren_chunk)
+	;
+
+collect_statement
+	:	collect_key
+		LEFT_PAREN pattern_source RIGHT_PAREN
+	-> ^(collect_key pattern_source RIGHT_PAREN)
+	;
+
+entrypoint_statement
+	:	entry_point_key entrypoint_id
+	-> ^(entry_point_key entrypoint_id)
+	;
+
+entrypoint_id
+	: 	value=ID	-> VT_ENTRYPOINT_ID[$value]
+	| 	value=STRING	-> VT_ENTRYPOINT_ID[$value]
+	;
+
+from_source
+	:	ID
+		( (LEFT_PAREN)=> args=paren_chunk )?
+		expression_chain?
+	->	^(VT_FROM_SOURCE ID paren_chunk? expression_chain?)
+	;
 	
-from_source[FromDescr from] returns [DeclarativeInvokerDescr ds]
-	@init {
-		$ds = null;
-		AccessorDescr ad = null;
-		FunctionCallDescr fc = null;
-	}
-	:	ident=identifier
-		{
-			ad = new AccessorDescr(ident.start.getText());	
-			ad.setLocation( offset(ident.start.getLine()), ident.start.getCharPositionInLine() );
-			ad.setStartCharacter( ((CommonToken)ident.start).getStartIndex() );
-			ad.setEndCharacter( ((CommonToken)ident.start).getStopIndex() );
-			$ds = ad;
-			location.setProperty(Location.LOCATION_FROM_CONTENT, ident.start.getText());
-		}
-		(	/* WARNING: $o : O() from x(y) could be also $o : O() from x followed
-			   by (y).  Resolve by always forcing (...) to be paren_chunk if
-			   after a from.  Setting k=1 will force this to happen.  No backtracking
-			   but you'll get a warning from ANTLR.  ANTLR resolves by choosing first
-			   alternative to win, which is the paren_chunk case not the loop exit.
-			*/
-			options {k=1;}
-		:	args=paren_chunk
-		{
-			if( $args.text != null ) {
-				ad.setVariableName( null );
-				fc = new FunctionCallDescr($ident.start.getText());
-				fc.setLocation( offset($ident.start.getLine()), $ident.start.getCharPositionInLine() );			
-				fc.setArguments($args.text);
-				fc.setStartCharacter( ((CommonToken)$ident.start).getStartIndex() );
-				fc.setEndCharacter( ((CommonToken)$ident.start).getStopIndex() );
-				location.setProperty(Location.LOCATION_FROM_CONTENT, $args.text);
-				$from.setEndCharacter( ((CommonToken)$args.stop).getStopIndex() );
-			}
-		}
-		)?
-		expression_chain[$from, ad]?
-	;	
-	finally {
-		if( ad != null ) {
-			if( fc != null ) {
-				ad.addFirstInvoker( fc );
-			}
-			location.setProperty(Location.LOCATION_FROM_CONTENT, ad.toString() );
-		}
-	}
-	
-expression_chain[FromDescr from, AccessorDescr as] 
-	@init {
-  		FieldAccessDescr fa = null;
-	    	MethodAccessDescr ma = null;	
-	}
+expression_chain
 	:
-	( DOT field=identifier  
-	    {
-	        fa = new FieldAccessDescr($field.start.getText());	
-		fa.setLocation( offset($field.start.getLine()), $field.start.getCharPositionInLine() );
-		fa.setStartCharacter( ((CommonToken)$field.start).getStartIndex() );
-		fa.setEndCharacter( ((CommonToken)$field.start).getStopIndex() );
-	    }
+	 startToken=DOT ID
 	  (
-	    ( LEFT_SQUARE ) => sqarg=square_chunk
-	      {
-	          fa.setArgument( $sqarg.text );	
-		  $from.setEndCharacter( ((CommonToken)$sqarg.stop).getStopIndex() );
-	      }
+	    ( LEFT_SQUARE ) => square_chunk
 	    |
-	    ( LEFT_PAREN ) => paarg=paren_chunk
-		{
-	    	  ma = new MethodAccessDescr( $field.start.getText(), $paarg.text );	
-		  ma.setLocation( offset($field.start.getLine()), $field.start.getCharPositionInLine() );
-		  ma.setStartCharacter( ((CommonToken)$field.start).getStartIndex() );
-		  $from.setEndCharacter( ((CommonToken)$paarg.stop).getStopIndex() );
-		}
+	    ( LEFT_PAREN ) => paren_chunk
 	  )?
-	  expression_chain[from, as]?
-	)  
-	;	
-	finally {
-		// must be added to the start, since it is a recursive rule
-		if( ma != null ) {
-			$as.addFirstInvoker( ma );
-		} else {
-			$as.addFirstInvoker( fa );
-		}
-	}
-	
-		
- 		
-collect_statement returns [CollectDescr d]
-	@init {
-		$d = factory.createCollect();
-	}
-	:
-	        COLLECT 
-		{ 
-			$d.setLocation( offset($COLLECT.line), $COLLECT.pos );
-			$d.setStartCharacter( ((CommonToken)$COLLECT).getStartIndex() );
-			location.setType( Location.LOCATION_LHS_FROM_COLLECT );
-		}	
-		LEFT_PAREN pattern=pattern_source RIGHT_PAREN
-		{
-		        $d.setInputPattern( (PatternDescr) $pattern.d );
-			$d.setEndCharacter( ((CommonToken)$RIGHT_PAREN).getStopIndex() );
-			location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
-		}
-	; 		
+	  expression_chain?
+	  -> ^(VT_EXPRESSION_CHAIN[$startToken] ID square_chunk? paren_chunk? expression_chain?)
+	;
 
-entrypoint_statement returns [EntryPointDescr d]
-	@init {
-		$d = factory.createEntryPoint();
-	}
-	:
-	        ENTRY_POINT 
-		{ 
-			$d.setLocation( offset($ENTRY_POINT.line), $ENTRY_POINT.pos );
-			$d.setStartCharacter( ((CommonToken)$ENTRY_POINT).getStartIndex() );
-			location.setType( Location.LOCATION_LHS_FROM_ENTRY_POINT );
-		}	
-		id=name
-		{
-		        $d.setEntryId( $id.name );
-			$d.setEndCharacter( ((CommonToken)$id.stop).getStopIndex() );
-			location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
-		}
-	; 		
+lhs_pattern
+	:	fact_binding -> ^(VT_PATTERN fact_binding)
+	|	fact -> ^(VT_PATTERN fact)
+	;
 
-fact_binding returns [BaseDescr d]
-	@init {
-		$d=null;
-		OrDescr or = null;
-	}
- 	:
- 		ID COLON 
- 		{
- 		        // handling incomplete parsing
- 		        $d = new PatternDescr( );
- 		        ((PatternDescr) $d).setIdentifier( $ID.text );
- 		}
-		( fe=fact[$ID.text]
- 		{
- 		        // override previously instantiated pattern
- 			$d=$fe.d;
- 			if( $d != null ) {
-   			    $d.setStartCharacter( ((CommonToken)$ID).getStartIndex() );
-   			}
- 		}
- 		|
- 		LEFT_PAREN left=fact[$ID.text]
- 		{
- 		        // override previously instantiated pattern
- 			$d=$left.d;
- 			if( $d != null ) {
-   			    $d.setStartCharacter( ((CommonToken)$ID).getStartIndex() );
-   			}
- 		}
- 		( (OR|DOUBLE_PIPE)
- 			right=fact[$ID.text]
- 			{
-				if ( or == null ) {
-					or = new OrDescr();
-					or.addDescr( $left.d );
-					$d = or;
-				}
-				or.addDescr( $right.d );
- 			}
- 		)*
- 		RIGHT_PAREN
+fact_binding
+ 	:	label
+		( fact
+ 		| LEFT_PAREN fact_binding_expression RIGHT_PAREN
  		)
-	;
- 
-fact[String ident] returns [BaseDescr d] 
-	@init {
-		$d=null;
-		PatternDescr pattern = null;
-	}
- 	:	
- 	        {
- 			pattern = new PatternDescr( );
- 			if( $ident != null ) {
- 				pattern.setIdentifier( $ident );
- 			}
- 			$d = pattern; 
- 	        }
- 	        id=qualified_id
- 		{ 
- 			if( id != null ) {
-	 		        pattern.setObjectType( $id.text );
- 			        pattern.setEndCharacter( -1 );
-				pattern.setStartCharacter( ((CommonToken)$id.start).getStartIndex() );
- 			}
- 		}
- 		LEFT_PAREN 
- 		{
-		        location.setType( Location.LOCATION_LHS_INSIDE_CONDITION_START );
-            		location.setProperty( Location.LOCATION_PROPERTY_CLASS_NAME, $id.text );
- 				
- 			pattern.setLocation( offset($LEFT_PAREN.line), $LEFT_PAREN.pos );
- 			pattern.setLeftParentCharacter( ((CommonToken)$LEFT_PAREN).getStartIndex() );
- 		} 
- 		constraints[pattern]?
- 		RIGHT_PAREN
-		{
-		        if( ")".equals( $RIGHT_PAREN.text ) ) {
-				this.location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
-				pattern.setEndLocation( offset($RIGHT_PAREN.line), $RIGHT_PAREN.pos );	
-				pattern.setEndCharacter( ((CommonToken)$RIGHT_PAREN).getStopIndex() );
-		        	pattern.setRightParentCharacter( ((CommonToken)$RIGHT_PAREN).getStartIndex() );
-		        }
- 		}
- 		EOF? // this is needed for partial parsing
- 	;
-	
-	
-constraints[PatternDescr pattern]
-	:	(constraint[$pattern]|behaviors)
-		( COMMA { location.setType( Location.LOCATION_LHS_INSIDE_CONDITION_START ); } 
-		  (constraint[$pattern]|behaviors) 
-		)* 
-	;
-	
-constraint[PatternDescr pattern]
-	@init {
-		ConditionalElementDescr top = null;
-		location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_START);
-		location.setProperty(Location.LOCATION_PROPERTY_PROPERTY_NAME, input.LT(1).getText() );
-	}
-	:
-		{
-			top = $pattern.getConstraint();
-		}
-		or_constr[top]
-	;	
-	
-behaviors 
-	:	LEFT_SQUARE behavior ( COMMA behavior )* RIGHT_SQUARE
-	;	
-	
-behavior 
-	:	ID (COLON ID)? paren_chunk?
-	;
-	
-or_constr[ConditionalElementDescr base]
-	@init {
-		OrDescr or = new OrDescr();
-	}
-	:
-		and_constr[or] 
-		( DOUBLE_PIPE 
-		{
-			location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_START);
-		}
-		and_constr[or] 
-		)*
-		{
-		        if( or.getDescrs().size() == 1 ) {
-		                $base.addOrMerge( (BaseDescr) or.getDescrs().get(0) );
-		        } else if ( or.getDescrs().size() > 1 ) {
-		        	$base.addDescr( or );
-		        }
-		}
-	;
-	
-and_constr[ConditionalElementDescr base]
-	@init {
-		AndDescr and = new AndDescr();
-	}
-	:
-		unary_constr[and] 
-		( DOUBLE_AMPER 
-		{
-			location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_START);
-		}
-		unary_constr[and] 
-		)*
-		{
-		        if( and.getDescrs().size() == 1) {
-		                $base.addOrMerge( (BaseDescr) and.getDescrs().get(0) );
-		        } else if( and.getDescrs().size() > 1) {
-		        	$base.addDescr( and );
-		        }
-		}
-	;
-	
-unary_constr[ConditionalElementDescr base]
-	:
-		( field_constraint[$base] 
-		| LEFT_PAREN or_constr[$base] RIGHT_PAREN
-		| EVAL predicate[$base]
-		)
-	;	
-		
-field_constraint[ConditionalElementDescr base]
-	@init {
-		FieldBindingDescr fbd = null;
-		FieldConstraintDescr fc = null;
-		RestrictionConnectiveDescr top = null;
-	}
-	:
-	        (
-		ID COLON 
-		    { 
-			fbd = new FieldBindingDescr();
-			fbd.setIdentifier( $ID.text );
-			fbd.setLocation( offset($ID.line), $ID.pos );
-			fbd.setStartCharacter( ((CommonToken)$ID).getStartIndex() );
-			$base.addDescr( fbd );
-
-		    }
-		 
-		f=accessor_path	
-		{
-		    // use $f.start to get token matched in identifier
-		    // or use $f.text to get text.
-		    if( $f.text != null ) {
-			location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
-			location.setProperty(Location.LOCATION_PROPERTY_PROPERTY_NAME, $f.text);
-		    
-			if ( fbd != null ) {
-			    fbd.setFieldName( $f.text );
-			    // may have been overwritten
-			    fbd.setStartCharacter( ((CommonToken)$ID).getStartIndex() );
-			} 
-			fc = new FieldConstraintDescr($f.text);
-			fc.setLocation( offset($f.start.getLine()), $f.start.getCharPositionInLine() );
-			fc.setStartCharacter( ((CommonToken)$f.start).getStartIndex() );
-			top = fc.getRestriction();
-			
-			// it must be a field constraint, as it is not a binding
-			if( $ID == null ) {
-			    $base.addDescr( fc );
-			}
-		    }
-		}
-		(
-			or_restr_connective[top]
-			{
-				// we must add now as we didn't before
-				if( $ID != null) {
-				    $base.addDescr( fc );
-				}
-			}
-		|
-			'->' predicate[$base] 
-		)?
-		) 
-		|
-		(
-		f=accessor_path	
-		{
-		    // use $f.start to get token matched in identifier
-		    // or use $f.text to get text.
-		    if( $f.text != null ) {
-			location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
-			location.setProperty(Location.LOCATION_PROPERTY_PROPERTY_NAME, $f.text);
-		    
-			fc = new FieldConstraintDescr($f.text);
-			fc.setLocation( offset($f.start.getLine()), $f.start.getCharPositionInLine() );
-			fc.setStartCharacter( ((CommonToken)$f.start).getStartIndex() );
-			top = fc.getRestriction();
-			
-			$base.addDescr( fc );
-		    }
-		}
-		or_restr_connective[top]
-		)
-	;
-	catch[ NoViableAltException nvae ] {
-	    if( input.LT(1) != null ) {
-	                // in case of incomplete parsing, build as much as possible of the AST
-	                // so that IDE requirements can be met
-			fc = new FieldConstraintDescr( input.LT(1).getText() );
-			fc.setLocation( offset(input.LT(1).getLine()), input.LT(1).getCharPositionInLine() );
-			fc.setStartCharacter( ((CommonToken)input.LT(1)).getStartIndex() );
-			$base.addDescr( fc );
-	    }
-	    throw nvae;
-	}
-	
-
-or_restr_connective[ RestrictionConnectiveDescr base ]
-	options { 
-		backtrack=true;
-	}
-	@init {
-		RestrictionConnectiveDescr or = new RestrictionConnectiveDescr(RestrictionConnectiveDescr.OR);
-	}
-	:
-		and_restr_connective[or]
-		( 
-			options {backtrack=true;} : 
-			DOUBLE_PIPE 
-			{
-				location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
-			}
-			and_restr_connective[or] 
-		)*
-	;
-	finally {
-	        if( or.getRestrictions().size() == 1 ) {
-	                $base.addOrMerge( (RestrictionDescr) or.getRestrictions().get( 0 ) );
-	        } else if ( or.getRestrictions().size() > 1 ) {
-	        	$base.addRestriction( or );
-	        }
-	}
-
-and_restr_connective[ RestrictionConnectiveDescr base ]
-	@init {
-		RestrictionConnectiveDescr and = new RestrictionConnectiveDescr(RestrictionConnectiveDescr.AND);
-	}
-	:
-		constraint_expression[and]
-		(	options {backtrack=true;}
-		:	t=DOUBLE_AMPER 
-			{
-				location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
-			}
-			constraint_expression[and] 
-		)*
-	;
-	finally {
-	        if( and.getRestrictions().size() == 1) {
-	                $base.addOrMerge( (RestrictionDescr) and.getRestrictions().get( 0 ) );
-	        } else if ( and.getRestrictions().size() > 1 ) {
-	        	$base.addRestriction( and );
-	        }
-	}
-	
-constraint_expression[RestrictionConnectiveDescr base]
-        :	
-		( compound_operator[$base]
-		| simple_operator[$base] 
-		| LEFT_PAREN 
-		{
-			location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
-		}
-		or_restr_connective[$base]
-		RIGHT_PAREN
- 		)
-	;	
-	
-simple_operator[RestrictionConnectiveDescr base]
-	@init {
-		String op = null;
-		String paramText = null;
-		boolean isNegated = false;
-	}
-	:
-		(	t='=='
-		|	t='>'
-		|	t='>='
-		|	t='<'
-		|	t='<='
-		|	t='!='
-                |       t=CONTAINS
-                |       n=NOT t=CONTAINS
-                |       t=EXCLUDES
-                |       t=MATCHES
-                |       t=SOUNDSLIKE
-                |       n=NOT t=MATCHES
-                |       t=MEMBEROF
-                |       n=NOT t=MEMBEROF
-		|	TILDE t=ID param=square_chunk?
-		|	n=NOT TILDE t=ID param=square_chunk?
-		)
-		{
-  		    location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
-                    location.setProperty(Location.LOCATION_PROPERTY_OPERATOR, $t.text);
- 	            op = $t.text;
- 	            isNegated = $n != null;
- 	            if( param != null ) {
-                        paramText = safeSubstring( $param.text, 1, $param.text.length()-1 );
- 	            } 
-		}
-		rd=expression_value[$base, op, isNegated, paramText]
-	;	
-	finally {
-		if ( $rd.rd == null && op != null ) {
-		        $base.addRestriction( new LiteralRestrictionDescr(op, false, null) );
-		}
-	}
-	
-compound_operator[RestrictionConnectiveDescr base]
-	@init {
-		String op = null;
-		RestrictionConnectiveDescr group = null;
-	}
-	:
-		( IN 
-			{
-			  op = "==";
-			  group = new RestrictionConnectiveDescr(RestrictionConnectiveDescr.OR);
-			  $base.addRestriction( group );
-  		    	  location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
-                    	  location.setProperty(Location.LOCATION_PROPERTY_OPERATOR, "in");
-			}
-		| NOT IN 
-			{
-			  op = "!=";
-			  group = new RestrictionConnectiveDescr(RestrictionConnectiveDescr.AND);
-			  $base.addRestriction( group );
-  		    	  location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
-                    	  location.setProperty(Location.LOCATION_PROPERTY_OPERATOR, "in");
-			}	
-		)
-		LEFT_PAREN rd=expression_value[group, op, false, null]
-		( COMMA rd=expression_value[group, op, false, null]	)* 
-		RIGHT_PAREN 
-		{
-			location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_END);
-		}
-	;
-	
-expression_value[RestrictionConnectiveDescr base, String op, boolean isNegated, String paramText] returns [RestrictionDescr rd]
-	@init {
-		$rd = null;
-	}
-	:
-		(	ap=accessor_path 
-			{ 
-			        if( $ap.text.indexOf( '.' ) > -1 || $ap.text.indexOf( '[' ) > -1) {
-					$rd = new QualifiedIdentifierRestrictionDescr($op, $isNegated, $paramText, $ap.text);
-				} else {
-					$rd = new VariableRestrictionDescr($op, $isNegated, $paramText, $ap.text);
-				}
-			}						
-		|	lc=literal_constraint 
-			{ 
-				$rd  = new LiteralRestrictionDescr($op, $isNegated, $paramText, $lc.text, $lc.type );
-			}
-		|	rvc=paren_chunk 
-			{ 
-				$rd = new ReturnValueRestrictionDescr($op, $isNegated, $paramText, safeSubstring( $rvc.text, 1, $rvc.text.length()-1) );							
-			} 
-		)	
-		{
-			if( $rd != null ) {
-				$base.addRestriction( $rd );
-			}
-			location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_END);
-		}
-	;	
-	
-literal_constraint returns [String text, int type]
-	@init {
-		$text = null;
-	}
-	:	(	t=STRING { $text = getString( $t.text ); $type = LiteralRestrictionDescr.TYPE_STRING; } 
-		|	t=INT    { $text = $t.text; $type = LiteralRestrictionDescr.TYPE_NUMBER; }
-		|	t=FLOAT	 { $text = $t.text; $type = LiteralRestrictionDescr.TYPE_NUMBER; }
-		|	t=BOOL 	 { $text = $t.text; $type = LiteralRestrictionDescr.TYPE_BOOLEAN; }
-		|	t=NULL   { $text = null; $type = LiteralRestrictionDescr.TYPE_NULL; }
-		)
-	;
-	
-predicate[ConditionalElementDescr base]
-        @init {
-		PredicateDescr d = null;
-        }
-	:
-		text=paren_chunk
-		{
-		        if( $text.text != null ) {
-				d = new PredicateDescr( );
-			        d.setContent( safeSubstring( $text.text, 1, $text.text.length()-1 ) );
-				d.setEndCharacter( ((CommonToken)$text.stop).getStopIndex() );
-				$base.addDescr( d );
-		        }
-		}
+ 	-> ^(VT_FACT_BINDING label fact? fact_binding_expression? RIGHT_PAREN?)
 	;
 
+fact_binding_expression
+@init{
+	Token orToken = null;
+}	:	(fact -> fact) ( (value=or_key {orToken = $value.start;}|pipe=DOUBLE_PIPE {orToken = $pipe;}) fact 
+		-> ^(VT_FACT_OR[orToken] $fact_binding_expression fact) )*
+	;
+
+fact
+@init  { pushParaphrases(DroolsParaphareseTypes.PATTERN); }
+@after { paraphrases.pop(); }
+	:	pattern_type LEFT_PAREN constraints? RIGHT_PAREN
+	->	^(VT_FACT pattern_type constraints? RIGHT_PAREN)
+	;
+
+constraints
+	:	constraint ( COMMA! constraint )*
+	;
+
+constraint
+	:	or_constr
+	;
+
+or_constr
+	:	and_constr ( DOUBLE_PIPE^ and_constr )* 
+	;
+
+and_constr
+	:	unary_constr ( DOUBLE_AMPER^ unary_constr )*
+	;
+
+unary_constr
+options {k=2;}
+	:	eval_key^ paren_chunk
+	|	field_constraint
+	|	LEFT_PAREN! or_constr RIGHT_PAREN
+	;
+
+field_constraint
+@init{
+	boolean isArrow = false;
+}	:	label accessor_path ( or_restr_connective | arw=ARROW paren_chunk {isArrow = true;})?
+		-> {isArrow}? ^(VT_BIND_FIELD label ^(VT_FIELD accessor_path)) ^(VK_EVAL[$arw] paren_chunk)?
+		-> ^(VT_BIND_FIELD label ^(VT_FIELD accessor_path or_restr_connective?))
+	|	accessor_path or_restr_connective
+		-> ^(VT_FIELD accessor_path or_restr_connective)
+	;
+
+label	:	value=ID COLON -> VT_LABEL[$value]
+	;
+
+or_restr_connective
+	:	and_restr_connective ((DOUBLE_PIPE)=> DOUBLE_PIPE^ and_restr_connective )* 
+	;
+
+and_restr_connective
+	:	constraint_expression ((DOUBLE_AMPER)=> DOUBLE_AMPER^ constraint_expression )*
+	;
+
+constraint_expression
+options{
+k=3;
+}	:	compound_operator
+	|	simple_operator
+	|	LEFT_PAREN! or_restr_connective RIGHT_PAREN
+	;
+
+simple_operator
+	:	(EQUAL^
+	|	GREATER^
+	|	GREATER_EQUAL^
+	|	LESS^
+	|	LESS_EQUAL^
+	|	NOT_EQUAL^
+	|	not_key (contains_key^|soundslike_key^|matches_key^|memberof_key^| ID^ | GRAVE_ACCENT! ID^ square_chunk)
+	|	contains_key^
+	|	excludes_key^
+	|	matches_key^
+	|	soundslike_key^
+	|	memberof_key^
+	|	ID^
+	|	GRAVE_ACCENT! ID^ square_chunk)
+	expression_value
+	;
+
+//Simple Syntax Sugar
+compound_operator 
+	:	( in_key^ | not_key in_key^ ) LEFT_PAREN! expression_value ( COMMA! expression_value )* RIGHT_PAREN
+	;
+
+expression_value
+	:	accessor_path
+	|	literal_constraint 
+	|	paren_chunk
+	;
+
+literal_constraint
+	:	STRING
+	|	INT
+	|	FLOAT
+	|	BOOL
+	|	NULL
+	;
+
+pattern_type
+	:	id+=ID ( id+=DOT id+=ID )* 
+	{	setParaphrasesValue(DroolsParaphareseTypes.PATTERN, buildStringFromTokens($id));	} 
+	    dimension_definition*
+		-> ^(VT_PATTERN_TYPE ID+ dimension_definition*)
+	;
+
+data_type
+	:	ID ( DOT ID )* dimension_definition*
+		-> ^(VT_DATA_TYPE ID+ dimension_definition*)
+	;
+
+dimension_definition
+	:	LEFT_SQUARE RIGHT_SQUARE
+	;
+
+accessor_path
+	:	accessor_element ( DOT accessor_element )*
+	-> ^(VT_ACCESSOR_PATH accessor_element+)
+	;
+
+accessor_element
+	:	ID square_chunk*
+	-> ^(VT_ACCESSOR_ELEMENT ID square_chunk*)
+	;
+
+rhs_chunk
+@init{
+	String text = "";
+}	:	rc=rhs_chunk_data {text = $rc.text;}
+	-> VT_RHS_CHUNK[$rc.start,text]
+	;
+
+rhs_chunk_data
+	:	THEN ( ~END )* END SEMICOLON?
+	;
 
 curly_chunk
-	:
-		LEFT_CURLY ( ~(LEFT_CURLY|RIGHT_CURLY) | curly_chunk )* RIGHT_CURLY
+@init{
+	String text = "";
+}	:	cc=curly_chunk_data {text = $cc.text;}
+	-> VT_CURLY_CHUNK[$cc.start,text]
 	;
-	
+
+curly_chunk_data
+	:	LEFT_CURLY (~ ( LEFT_CURLY | RIGHT_CURLY ) | curly_chunk_data )* RIGHT_CURLY
+	;
+
 paren_chunk
-	:
-		LEFT_PAREN ( ~(LEFT_PAREN|RIGHT_PAREN) | paren_chunk )* RIGHT_PAREN
+@init{
+	String text = "";
+}	:	pc=paren_chunk_data {text = $pc.text;} 
+	-> VT_PAREN_CHUNK[$pc.start,text]
+	;
+
+paren_chunk_data
+	:	LEFT_PAREN (~ ( LEFT_PAREN | RIGHT_PAREN ) | paren_chunk_data )* RIGHT_PAREN 
 	;
 
 square_chunk
-	:
-		LEFT_SQUARE ( ~(LEFT_SQUARE|RIGHT_SQUARE) | square_chunk )* RIGHT_SQUARE
-	;
-	
-qualified_id returns [ String text ]
-	@init {
-	        StringBuffer buf = new StringBuffer();
-	}
-	@after {
-	        $text = buf != null ? buf.toString() : "";
-	}
-	: 	ID {buf.append($ID.text);} ( DOT identifier {buf.append("."+$identifier.text);} )* ( LEFT_SQUARE RIGHT_SQUARE {buf.append("[]");})*
-	;
-	
-dotted_name returns [ String text ]
-	@init {
-	        StringBuffer buf = new StringBuffer();
-	}
-	@after {
-	        $text = buf != null ? buf.toString() : "";
-	}
-	:	i=identifier {buf.append($i.text);} ( DOT i=identifier {buf.append("."+$i.text);} )* ( LEFT_SQUARE RIGHT_SQUARE {buf.append("[]");})*
-	;
-	
-accessor_path returns [ String text ]
-	@init {
-	        StringBuffer buf = new StringBuffer();
-	}
-	@after {
-	        $text = buf != null ? buf.toString() : "";
-	}
-	:	a=accessor_element {buf.append($a.text);} ( DOT a=accessor_element {buf.append("."+$a.text);} )* 
-	;
-	
-accessor_element returns [ String text ]
-	@init {
-	        StringBuffer buf = new StringBuffer();
-	}
-	@after {
-	        $text = buf != null ? buf.toString() : "";
-	}
-	:
-		i=identifier {buf.append($i.text);} (s=square_chunk {buf.append($s.text);} )*
-	;	
-	
-rhs_chunk[RuleDescr rule]
-	:
-		THEN { location.setType( Location.LOCATION_RHS ); }
-		( ~END )*
-                loc=END opt_semicolon
-                {
-                    // ignoring first line in the consequence
-                    String buf = input.toString( $THEN, $loc );
-                    // removing final END keyword
-                    int idx=4;
-                    while( idx < buf.length()-3 && (buf.charAt(idx) == ' ' || buf.charAt(idx) == '\t') ) {
-                        idx++;
-                    }
-                    if( idx < buf.length()-3 && buf.charAt(idx) == '\r' ) idx++;
-                    if( idx < buf.length()-3 && buf.charAt(idx) == '\n' ) idx++;
-                    buf = safeSubstring( buf, idx, buf.length()-3 );
-		    $rule.setConsequence( buf );
-     		    $rule.setConsequenceLocation(offset($THEN.line), $THEN.pos);
- 		    $rule.setEndCharacter( ((CommonToken)$loc).getStopIndex() );
- 		    location.setProperty( Location.LOCATION_RHS_CONTENT, $rule.getConsequence() );
-                }
+@init{
+	String text = "";
+}	:	sc=square_chunk_data {text = $sc.text;}
+	-> VT_SQUARE_CHUNK[$sc.start,text]
 	;
 
-name returns [String name]
-	: 	ID { $name = $ID.text; }
-	| 	STRING { $name = getString( $STRING.text ); }
+square_chunk_data
+	:	LEFT_SQUARE (~ ( LEFT_SQUARE | RIGHT_SQUARE ) | square_chunk_data )* RIGHT_SQUARE
 	;
-	
-identifier
-	:       ID      
-	|	PACKAGE
-	|	FUNCTION
-	|	GLOBAL
-	|	IMPORT  
-	|	EVENT
-	|	RULE
-	|	QUERY 
-        |       TEMPLATE        
-        |       ATTRIBUTES      
-        |       ENABLED         
-        |       SALIENCE 	
-        |       DURATION 
-        |	DIALECT	
-        |       FROM	        
-        |       INIT	        
-        |       ACTION	        
-        |       REVERSE	        
-        |       RESULT	        
-        |       WHEN            
-        |       THEN	        
-        |       END     
-        |	IN        
+
+
+date_effective_key
+@init{
+	String text = "";
+}	:	{(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EFFECTIVE))}?=>  ID MISC ID {text = $text;}
+	->	VK_DATE_EFFECTIVE[$start, text]
 	;
-	
+
+date_expires_key
+@init{
+	String text = "";
+}	:	{(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EXPIRES))}?=>  ID MISC ID {text = $text;}
+	->	VK_DATE_EXPIRES[$start, text]
+	;
+
+lock_on_active_key
+@init{
+	String text = "";
+}	:	{(validateIdentifierKey(DroolsSoftKeywords.LOCK) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.ON) && validateLT(4, "-") && validateLT(5, DroolsSoftKeywords.ACTIVE))}?=>  ID MISC ID MISC ID {text = $text;}
+	->	VK_LOCK_ON_ACTIVE[$start, text]
+	;
+
+no_loop_key
+@init{
+	String text = "";
+}	:	{(validateIdentifierKey(DroolsSoftKeywords.NO) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.LOOP))}?=>  ID MISC ID {text = $text;}
+	->	VK_NO_LOOP[$start, text]
+	;
+
+auto_focus_key
+@init{
+	String text = "";
+}	:	{(validateIdentifierKey(DroolsSoftKeywords.AUTO) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.FOCUS))}?=>  ID MISC ID {text = $text;}
+	->	VK_AUTO_FOCUS[$start, text]
+	;
+
+activation_group_key
+@init{
+	String text = "";
+}	:	{(validateIdentifierKey(DroolsSoftKeywords.ACTIVATION) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))}?=>  ID MISC ID {text = $text;}
+	->	VK_ACTIVATION_GROUP[$start, text]
+	;
+
+agenda_group_key
+@init{
+	String text = "";
+}	:	{(validateIdentifierKey(DroolsSoftKeywords.AGENDA) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))}?=>  ID MISC ID {text = $text;}
+	->	VK_AGENDA_GROUP[$start, text]
+	;
+
+ruleflow_group_key
+@init{
+	String text = "";
+}	:	{(validateIdentifierKey(DroolsSoftKeywords.RULEFLOW) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))}?=>  ID MISC ID {text = $text;}
+	->	VK_RULEFLOW_GROUP[$start, text]
+	;
+
+duration_key
+	:	{(validateIdentifierKey(DroolsSoftKeywords.DURATION))}?=>  id=ID	->	VK_DURATION[$id]
+	;
+
+package_key
+	:	{(validateIdentifierKey(DroolsSoftKeywords.PACKAGE))}?=>  id=ID	->	VK_PACKAGE[$id]
+	;
+
+import_key
+	:	{(validateIdentifierKey(DroolsSoftKeywords.IMPORT))}?=>  id=ID	->	VK_IMPORT[$id]
+	;
+
+dialect_key
+	:	{(validateIdentifierKey(DroolsSoftKeywords.DIALECT))}?=>  id=ID	->	VK_DIALECT[$id]
+	;
+
+salience_key
+	:	{(validateIdentifierKey(DroolsSoftKeywords.SALIENCE))}?=>  id=ID	->	VK_SALIENCE[$id]
+	;
+
+enabled_key
+	:	{(validateIdentifierKey(DroolsSoftKeywords.ENABLED))}?=>  id=ID	->	VK_ENABLED[$id]
+	;
+
+attributes_key
+	:	{(validateIdentifierKey(DroolsSoftKeywords.ATTRIBUTES))}?=>  id=ID	->	VK_ATTRIBUTES[$id]
+	;
+
+when_key
+	:	{(validateIdentifierKey(DroolsSoftKeywords.WHEN))}?=>  id=ID	->	VK_WHEN[$id]
+	;
+
+rule_key
+	:	{(validateIdentifierKey(DroolsSoftKeywords.RULE))}?=>  id=ID	->	VK_RULE[$id]
+	;
+
+template_key
+	:	{(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE))}?=>  id=ID	->	VK_TEMPLATE[$id]
+	;
+
+query_key
+	:	{(validateIdentifierKey(DroolsSoftKeywords.QUERY))}?=>  id=ID	->	VK_QUERY[$id]
+	;
+
+declare_key
+	:	{(validateIdentifierKey(DroolsSoftKeywords.DECLARE))}?=>  id=ID	->	VK_DECLARE[$id]
+	;
+
+function_key
+	:	{(validateIdentifierKey(DroolsSoftKeywords.FUNCTION))}?=>  id=ID	->	VK_FUNCTION[$id]
+	;
+
+global_key
+	:	{(validateIdentifierKey(DroolsSoftKeywords.GLOBAL))}?=>  id=ID	->	VK_GLOBAL[$id]
+	;
+
+eval_key
+	:	{(validateIdentifierKey(DroolsSoftKeywords.EVAL))}?=>  id=ID	->	VK_EVAL[$id]
+	;
+
+contains_key
+	:	{(validateIdentifierKey(DroolsSoftKeywords.CONTAINS))}?=>  id=ID	->	VK_CONTAINS[$id]
+	;
+
+matches_key
+	:	{(validateIdentifierKey(DroolsSoftKeywords.MATCHES))}?=>  id=ID	->	VK_MATCHES[$id]
+	;
+
+excludes_key
+	:	{(validateIdentifierKey(DroolsSoftKeywords.EXCLUDES))}?=>  id=ID	->	VK_EXCLUDES[$id]
+	;
+
+soundslike_key
+	:	{(validateIdentifierKey(DroolsSoftKeywords.SOUNDSLIKE))}?=>  id=ID	->	VK_SOUNDSLIKE[$id]
+	;
+
+memberof_key
+	:	{(validateIdentifierKey(DroolsSoftKeywords.MEMBEROF))}?=>  id=ID	->	VK_MEMBEROF[$id]
+	;
+
+not_key
+	:	{(validateIdentifierKey(DroolsSoftKeywords.NOT))}?=>  id=ID	->	VK_NOT[$id]
+	;
+
+in_key
+	:	{(validateIdentifierKey(DroolsSoftKeywords.IN))}?=>  id=ID	->	VK_IN[$id]
+	;
+
+or_key
+	:	{(validateIdentifierKey(DroolsSoftKeywords.OR))}?=>  id=ID	->	VK_OR[$id]
+	;
+
+and_key
+	:	{(validateIdentifierKey(DroolsSoftKeywords.AND))}?=>  id=ID	->	VK_AND[$id]
+	;
+
+exists_key
+	:	{(validateIdentifierKey(DroolsSoftKeywords.EXISTS))}?=>  id=ID	->	VK_EXISTS[$id]
+	;
+
+forall_key
+	:	{(validateIdentifierKey(DroolsSoftKeywords.FORALL))}?=>  id=ID	->	VK_FORALL[$id]
+	;
+
+from_key
+	:	{(validateIdentifierKey(DroolsSoftKeywords.FROM))}?=>  id=ID	->	VK_FROM[$id]
+	;
+
+entry_point_key
+@init{
+	String text = "";
+}	:	{(validateIdentifierKey(DroolsSoftKeywords.ENTRY) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.POINT))}?=>  ID MISC ID {text = $text;}
+	->	VK_ENTRY_POINT[$start, text]
+	;
+
+accumulate_key
+	:	{(validateIdentifierKey(DroolsSoftKeywords.ACCUMULATE))}?=>  id=ID	->	VK_ACCUMULATE[$id]
+	;
+
+init_key
+	:	{(validateIdentifierKey(DroolsSoftKeywords.INIT))}?=>  id=ID	->	VK_INIT[$id]
+	;
+
+action_key
+	:	{(validateIdentifierKey(DroolsSoftKeywords.ACTION))}?=>  id=ID	->	VK_ACTION[$id]
+	;
+
+reverse_key
+	:	{(validateIdentifierKey(DroolsSoftKeywords.REVERSE))}?=>  id=ID	->	VK_REVERSE[$id]
+	;
+
+result_key
+	:	{(validateIdentifierKey(DroolsSoftKeywords.RESULT))}?=>  id=ID	->	VK_RESULT[$id]
+	;
+
+collect_key
+	:	{(validateIdentifierKey(DroolsSoftKeywords.COLLECT))}?=>  id=ID	->	VK_COLLECT[$id]
+	;
+
 WS      :       (	' '
                 |	'\t'
                 |	'\f'
@@ -1781,7 +1004,7 @@ EOL 	:
                 |       '\r'    // Macintosh
                 |       '\n'    // Unix (the right way)
                 )
-        ;  
+        ;
         
 INT	
 	:	('-')?('0'..'9')+
@@ -1825,115 +1048,59 @@ BOOL
 	:	('true'|'false') 
 	;	
 
-PACKAGE	:	'package';
-
-IMPORT	:	'import';
-
-FUNCTION :	'function';
-
-EVENT :		'event';
-
-GLOBAL	:	'global';
-	
-DECLARE	:	'declare';
-
-RULE    :	'rule';
-
-QUERY	:	'query';
-
-TEMPLATE :	'template';
-
-ATTRIBUTES :	'attributes';
-	
-DATE_EFFECTIVE 
-	:	'date-effective';
-
-DATE_EXPIRES 
-	:	'date-expires';	
-	
-ENABLED :	'enabled';
-
-SALIENCE 
-	:	'salience';
-	
-NO_LOOP :	'no-loop';
-
-AUTO_FOCUS 
-	:	'auto-focus';
-	
-ACTIVATION_GROUP 
-	:	'activation-group';
-	
-AGENDA_GROUP 
-	:	'agenda-group';
-	
-DIALECT 
-	:	'dialect';	
-	
-RULEFLOW_GROUP 
-	:	'ruleflow-group';
-	
-DURATION 
-	:	'duration';
-	
-LOCK_ON_ACTIVE
-	:	'lock-on-active';	
-	
-FROM	:	'from';
-
-ACCUMULATE 
-	:	'accumulate';
-	
-INIT	:	'init';
-
-ACTION	:	'action';
-
-REVERSE	:	'reverse';
-
-RESULT	:	'result';
-
-COLLECT :	'collect';
-
-ENTRY_POINT :	'entry-point';
-
-OR	:	'or';
-
-AND	:	'and';
-
-CONTAINS 
-       :       'contains';
-
-EXCLUDES 
-       :       'excludes';
-
-MEMBEROF
-       :       'memberOf';
-
-MATCHES :      'matches';
-
-SOUNDSLIKE :   'soundslike';
-
-IN	:	'in';
-
 NULL	:	'null';
 
-EXISTS	:	'exists';
 
-NOT	:	'not';
+THEN
+	:	'then'
+	;
 
-EVAL	:	'eval';
+END	:	'end'
+	;
 
-FORALL	:	'forall';							
+GRAVE_ACCENT
+	:	'`'
+	;
 
-WHEN    :	'when'; 
+SEMICOLON
+	:	';'
+	;
 
-THEN	:    	'then';
+DOT_STAR
+	:	'.*'
+	;
 
-END     :	'end';
+COLON
+	:	':'
+	;
 
-OVER	:	'over';
+EQUAL
+	:	'=='
+	;
 
-WINDOW	:	'window';
+NOT_EQUAL
+	:	'!='
+	;
+
+GREATER
+	:	'>'
+	;
+
+GREATER_EQUAL
+	:	'>='
+	;
+
+LESS
+	:	'<'
+	;
+
+LESS_EQUAL
+	:	'<='
+	;
+
+ARROW
+	:	'->'
+	;
 
 ID	
 	:	('a'..'z'|'A'..'Z'|'_'|'$'|'\u00c0'..'\u00ff')('a'..'z'|'A'..'Z'|'_'|'0'..'9'|'\u00c0'..'\u00ff')* 
@@ -1975,16 +1142,8 @@ DOUBLE_AMPER
 	
 DOUBLE_PIPE
 	:	'||'
-	;				
-	
-TILDE	:	'~';	
+	;
 
-AT	:       '@';
-
-EQUALS  :	'=';
-
-COLON   :	':';
-	
 SH_STYLE_SINGLE_LINE_COMMENT	
 	:	'#' ( options{greedy=false;} : .)* EOL /* ('\r')? '\n'  */
                 { $channel=HIDDEN; setText("//"+getText().substring(1));}
@@ -2002,7 +1161,5 @@ MULTI_LINE_COMMENT
 	;
 
 MISC 	:
-		'!' | '$' | '%' | '^' | '*' | '_' | '-' | '+'  | '?' | '/' | '\'' | '\\' | '|' | '&'
+		'!' | '@' | '$' | '%' | '^' | '*' | '_' | '-' | '+'  | '?' | '=' | '/' | '\'' | '\\' | '|' | '&'
 	;
-
-

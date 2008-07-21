@@ -26,6 +26,9 @@ public class QualifiedIdentifierRestrictionDescr extends EvaluatorBasedRestricti
 
     private static final long serialVersionUID = 400L;
 
+    public QualifiedIdentifierRestrictionDescr(){
+    }
+
     public QualifiedIdentifierRestrictionDescr(final String evaluator,
                                                final boolean isNegated,
                                                final String parameterText,

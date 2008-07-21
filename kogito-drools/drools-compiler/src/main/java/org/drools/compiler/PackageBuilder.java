@@ -239,7 +239,9 @@ public class PackageBuilder {
         final DrlParser parser = new DrlParser();
         final PackageDescr pkg = parser.parse( reader );
         this.results.addAll( parser.getErrors() );
-        addPackage( pkg );
+        if (!parser.hasErrors()){
+        	addPackage( pkg );
+        }
     }
 
     /**
@@ -280,7 +282,9 @@ public class PackageBuilder {
         final PackageDescr pkg = parser.parse( source,
                                                dsl );
         this.results.addAll( parser.getErrors() );
-        addPackage( pkg );
+        if (!parser.hasErrors()){
+        	addPackage( pkg );
+        }
     }
 
     /**

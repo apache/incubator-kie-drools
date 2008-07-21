@@ -23,10 +23,14 @@ import org.antlr.runtime.CharStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.TokenStream;
+import org.antlr.runtime.tree.CommonTreeNodeStream;
+import org.antlr.runtime.tree.Tree;
+import org.drools.lang.DescrBuilderTree;
+import org.drools.lang.DroolsTreeAdaptor;
 import org.drools.lang.DRLLexer;
 import org.drools.lang.DRLParser;
+import org.drools.lang.DescrBuilderTree.from_source_clause_return;
 import org.drools.lang.descr.BaseDescr;
-import org.drools.lang.descr.DeclarativeInvokerDescr;
 import org.drools.lang.descr.FromDescr;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
@@ -82,17 +86,27 @@ public class ExpressionHandler extends BaseAbstractHandler
         
         emptyContentCheck( localName, expression, parser );
 
-        final Object parent = parser.getParent();
+        FromDescr parent = (FromDescr) parser.getParent();
 
-        final FromDescr fromSource = (FromDescr) parent;
         final CharStream charStream = new ANTLRStringStream( expression.trim() );
         final DRLLexer lexer = new DRLLexer( charStream );
         final TokenStream tokenStream = new CommonTokenStream( lexer );
         final DRLParser drlParser = new DRLParser( tokenStream );
+        drlParser.setTreeAdaptor(new DroolsTreeAdaptor());
 
         try {
-            final DeclarativeInvokerDescr declarativeInvoker = drlParser.from_source( fromSource );
-            fromSource.setDataSource( declarativeInvoker );
+        	Tree fromSourceTree = (Tree) drlParser.from_source().getTree();
+        	if (!drlParser.hasErrors()){
+				CommonTreeNodeStream nodes = new CommonTreeNodeStream(fromSourceTree);
+				nodes.setTokenStream(tokenStream);
+            	DescrBuilderTree walker = new DescrBuilderTree(nodes);
+            	from_source_clause_return fromReturn = walker.from_source_clause();
+            	parent.setDataSource(fromReturn.retAccessorDescr);
+            	parent = fromReturn.fromDescr;
+        	} else {
+                throw new SAXParseException( "<" + localName + "> must have a valid expression content ",
+                        parser.getLocator() );        		
+        	}
         } catch ( final RecognitionException e ) {
             throw new SAXParseException( "<" + localName + "> must have a valid expression content ",
                                          parser.getLocator() );
@@ -100,5 +114,4 @@ public class ExpressionHandler extends BaseAbstractHandler
 
         return null;
     }
-
 }

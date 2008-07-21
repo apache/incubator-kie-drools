@@ -27,6 +27,10 @@
       <artifactId>antlr-runtime</artifactId>     
     </dependency>
     <dependency>
+      <groupId>org.antlr</groupId>
+      <artifactId>gunit</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.eclipse.jdt</groupId>
       <artifactId>core</artifactId>
     </dependency>
