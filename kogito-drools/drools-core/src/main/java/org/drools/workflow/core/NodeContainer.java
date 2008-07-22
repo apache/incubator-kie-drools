@@ -46,4 +46,6 @@ public interface NodeContainer {
     
     Context resolveContext(String contextId, Object param);
     
+    Node internalGetNode(long id);
+    
 }

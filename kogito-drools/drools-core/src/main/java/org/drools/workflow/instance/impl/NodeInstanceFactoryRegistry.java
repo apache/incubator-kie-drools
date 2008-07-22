@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.ActionNode;
+import org.drools.workflow.core.node.CompositeContextNode;
 import org.drools.workflow.core.node.CompositeNode;
 import org.drools.workflow.core.node.EndNode;
 import org.drools.workflow.core.node.FaultNode;
@@ -21,6 +22,7 @@ import org.drools.workflow.core.node.WorkItemNode;
 import org.drools.workflow.instance.impl.factory.CreateNewNodeFactory;
 import org.drools.workflow.instance.impl.factory.ReuseNodeFactory;
 import org.drools.workflow.instance.node.ActionNodeInstance;
+import org.drools.workflow.instance.node.CompositeContextNodeInstance;
 import org.drools.workflow.instance.node.CompositeNodeInstance;
 import org.drools.workflow.instance.node.EndNodeInstance;
 import org.drools.workflow.instance.node.FaultNodeInstance;
@@ -68,6 +70,8 @@ public class NodeInstanceFactoryRegistry {
                   new CreateNewNodeFactory( FaultNodeInstance.class ) );
         register( CompositeNode.class,
                   new CreateNewNodeFactory( CompositeNodeInstance.class ) );
+        register( CompositeContextNode.class,
+                  new CreateNewNodeFactory( CompositeContextNodeInstance.class ) );
         register( HumanTaskNode.class,
                   new CreateNewNodeFactory( HumanTaskNodeInstance.class ) );
         register( ForEachNode.class,

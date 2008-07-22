@@ -1,5 +1,6 @@
 package org.drools.workflow.core.node;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -31,9 +32,20 @@ public class CompositeNode extends NodeImpl implements NodeContainer {
     public Node getNode(long id) {
         return nodeContainer.getNode(id);
     }
+    
+    public Node internalGetNode(long id) {
+    	return getNode(id);
+    }
 
     public Node[] getNodes() {
-        return nodeContainer.getNodes();
+    	List<Node> subNodes = new ArrayList<Node>();
+    	for (Node node: nodeContainer.getNodes()) {
+    		if (!(node instanceof CompositeNode.CompositeNodeStart) &&
+    				!(node instanceof CompositeNode.CompositeNodeEnd)) {
+    			subNodes.add(node);
+    		}
+    	}
+    	return subNodes.toArray(new Node[subNodes.size()]);
     }
 
     public void addNode(Node node) {
@@ -53,28 +65,72 @@ public class CompositeNode extends NodeImpl implements NodeContainer {
         node.setNodeContainer(this);
     }
     
+    protected void internalAddNode(Node node) {
+    	addNode(node);
+    }
+    
     public void removeNode(Node node) {
         nodeContainer.removeNode(node);
         node.setNodeContainer(null);
     }
     
     public void linkIncomingConnections(String inType, long inNodeId, String inNodeType) {
-        inConnectionMap.put(inType, new NodeAndType(inNodeId, inNodeType));
+        linkIncomingConnections(inType, new NodeAndType(inNodeId, inNodeType));
     }
     
     public void linkIncomingConnections(String inType, CompositeNode.NodeAndType inNode) {
+        CompositeNode.NodeAndType oldNodeAndType = inConnectionMap.get(inType);
+        if (oldNodeAndType != null) {
+        	if (oldNodeAndType.equals(inNode)) {
+        		return;
+        	} else {
+        		// TODO remove old composite start nodes and connections 
+        	}
+        }
         inConnectionMap.put(inType, inNode);
+        if (inNode != null) {
+	        List<Connection> connections = getIncomingConnections(inType);
+	        for (Connection connection: connections) {
+	        	CompositeNodeStart start = new CompositeNodeStart(connection.getFrom(), inType);
+		        internalAddNode(start);
+		        new ConnectionImpl(
+		            start, Node.CONNECTION_DEFAULT_TYPE, 
+		            inNode.getNode(), inNode.getType());
+	        }
+        }
     }
     
     public void linkOutgoingConnections(long outNodeId, String outNodeType, String outType) {
-        outConnectionMap.put(outType, new NodeAndType(outNodeId, outNodeType));
+        linkOutgoingConnections(new NodeAndType(outNodeId, outNodeType), outType);
     }
     
     public void linkOutgoingConnections(CompositeNode.NodeAndType outNode, String outType) {
+        CompositeNode.NodeAndType oldNodeAndType = outConnectionMap.get(outType);
+        if (oldNodeAndType != null) {
+        	if (oldNodeAndType.equals(outNode)) {
+        		return;
+        	} else {
+        		// TODO remove old composite start nodes and connections 
+        	}
+        }
         outConnectionMap.put(outType, outNode);
+        if (outNode != null) {
+	        List<Connection> connections = getOutgoingConnections(outType);
+	        for (Connection connection: connections) {
+		        CompositeNodeEnd end = new CompositeNodeEnd(connection.getTo(), outType);
+		        internalAddNode(end);
+		        new ConnectionImpl(
+		            outNode.getNode(), outNode.getType(), 
+		            end, Node.CONNECTION_DEFAULT_TYPE);
+	        }
+        }
     }
 
     public CompositeNode.NodeAndType getLinkedIncomingNode(String inType) {
+        return inConnectionMap.get(inType);
+    }
+
+    public CompositeNode.NodeAndType internalGetLinkedIncomingNode(String inType) {
         return inConnectionMap.get(inType);
     }
 
@@ -82,6 +138,10 @@ public class CompositeNode extends NodeImpl implements NodeContainer {
         return outConnectionMap.get(outType);
     }
     
+    public CompositeNode.NodeAndType internalGetLinkedOutgoingNode(String inType) {
+        return inConnectionMap.get(inType);
+    }
+
     public Map<String, CompositeNode.NodeAndType> getLinkedIncomingNodes() {
         return inConnectionMap;
     }
@@ -91,51 +151,71 @@ public class CompositeNode extends NodeImpl implements NodeContainer {
     }
     
     public void validateAddIncomingConnection(final String type, final Connection connection) {
-        CompositeNode.NodeAndType nodeAndType = getLinkedIncomingNode(type);
-        if (nodeAndType == null) {
-            throw new IllegalArgumentException(
-                "Cannot add incoming connections to a composite node until these connections can be mapped correctly to a subnode!");
-        }
-        ((NodeImpl) nodeAndType.getNode()).validateAddIncomingConnection(nodeAndType.getType(), connection);
+    	CompositeNode.NodeAndType nodeAndType = internalGetLinkedIncomingNode(type);
+    	if (connection.getFrom().getNodeContainer() == this) {
+    		if (nodeAndType != null) {
+    			throw new IllegalArgumentException("Cannot link incoming connection type more than once: " + type);
+    		}
+    	} else {
+	        if (nodeAndType != null) {
+	        	((NodeImpl) nodeAndType.getNode()).validateAddIncomingConnection(nodeAndType.getType(), connection);
+	        }
+    	}
     }
     
     public void addIncomingConnection(String type, Connection connection) {
-        super.addIncomingConnection(type, connection);
-        CompositeNodeStart start = new CompositeNodeStart(connection.getFrom(), type);
-        addNode(start);
-        CompositeNode.NodeAndType inNode = getLinkedIncomingNode(type);
-        new ConnectionImpl(
-            start, Node.CONNECTION_DEFAULT_TYPE, 
-            inNode.getNode(), inNode.getType());
+    	if (connection.getFrom().getNodeContainer() == this) {
+    		linkOutgoingConnections(connection.getFrom().getId(), connection.getFromType(), Node.CONNECTION_DEFAULT_TYPE);
+    	} else {
+	        super.addIncomingConnection(type, connection);
+	        CompositeNode.NodeAndType inNode = internalGetLinkedIncomingNode(type);
+	        if (inNode != null) {
+		        CompositeNodeStart start = new CompositeNodeStart(connection.getFrom(), type);
+		        internalAddNode(start);
+		        new ConnectionImpl(
+		            start, Node.CONNECTION_DEFAULT_TYPE, 
+		            inNode.getNode(), inNode.getType());
+	        }
+    	}
     }
     
     public void validateAddOutgoingConnection(final String type, final Connection connection) {
-        CompositeNode.NodeAndType nodeAndType = getLinkedOutgoingNode(type);
-        if (nodeAndType == null) {
-            throw new IllegalArgumentException(
-                "Cannot add outgoing connections to a composite node until these connections can be mapped correctly to a subnode!");
-        }
-        ((NodeImpl) nodeAndType.getNode()).validateAddOutgoingConnection(nodeAndType.getType(), connection);
-    }
+        CompositeNode.NodeAndType nodeAndType = internalGetLinkedOutgoingNode(type);
+        if (connection.getTo().getNodeContainer() == this) {
+    		if (nodeAndType != null) {
+    			throw new IllegalArgumentException("Cannot link outgoing connection type more than once: " + type);
+    		}
+    	} else {
+    		if (nodeAndType != null) {
+	        	((NodeImpl) nodeAndType.getNode()).validateAddOutgoingConnection(nodeAndType.getType(), connection);
+	        }
+    	}
+	}
     
     public void addOutgoingConnection(String type, Connection connection) {
-        super.addOutgoingConnection(type, connection);
-        CompositeNodeEnd end = new CompositeNodeEnd(connection.getTo(), type);
-        addNode(end);
-        CompositeNode.NodeAndType outNode = getLinkedOutgoingNode(type);
-        new ConnectionImpl(
-            outNode.getNode(), outNode.getType(), 
-            end, Node.CONNECTION_DEFAULT_TYPE);
+    	if (connection.getTo().getNodeContainer() == this) {
+    		linkIncomingConnections(Node.CONNECTION_DEFAULT_TYPE, connection.getTo().getId(), connection.getToType());    		
+    	} else {
+	        super.addOutgoingConnection(type, connection);
+	        CompositeNode.NodeAndType outNode = internalGetLinkedOutgoingNode(type);
+	        if (outNode != null) {
+		        CompositeNodeEnd end = new CompositeNodeEnd(connection.getTo(), type);
+		        internalAddNode(end);
+		        new ConnectionImpl(
+		            outNode.getNode(), outNode.getType(), 
+		            end, Node.CONNECTION_DEFAULT_TYPE);
+	        }
+    	}
     }
     
     public void validateRemoveIncomingConnection(final String type, final Connection connection) {
-        CompositeNode.NodeAndType nodeAndType = getLinkedIncomingNode(type);
+        CompositeNode.NodeAndType nodeAndType = internalGetLinkedIncomingNode(type);
         ((NodeImpl) nodeAndType.getNode()).validateRemoveIncomingConnection(nodeAndType.getType(), connection);
     }
     
     public void removeIncomingConnection(String type, Connection connection) {
         super.removeIncomingConnection(type, connection);
-        CompositeNode.NodeAndType inNode = getLinkedIncomingNode(type);
+        CompositeNode.NodeAndType inNode = internalGetLinkedIncomingNode(type);
         List<Connection> connections = inNode.getNode().getIncomingConnections(inNode.getType());
         for (Iterator<Connection> iterator = connections.iterator(); iterator.hasNext(); ) {
             Connection internalConnection = iterator.next();
@@ -147,13 +227,13 @@ public class CompositeNode extends NodeImpl implements NodeContainer {
     }
     
     public void validateRemoveOutgoingConnection(final String type, final Connection connection) {
-        CompositeNode.NodeAndType nodeAndType = getLinkedOutgoingNode(type);
+        CompositeNode.NodeAndType nodeAndType = internalGetLinkedOutgoingNode(type);
         ((NodeImpl) nodeAndType.getNode()).validateRemoveOutgoingConnection(nodeAndType.getType(), connection);
     }
     
     public void removeOutgoingConnection(String type, Connection connection) {
         super.removeOutgoingConnection(type, connection);
-        CompositeNode.NodeAndType outNode = getLinkedOutgoingNode(type);
+        CompositeNode.NodeAndType outNode = internalGetLinkedOutgoingNode(type);
         List<Connection> connections = outNode.getNode().getOutgoingConnections(outNode.getType());
         for (Iterator<Connection> iterator = connections.iterator(); iterator.hasNext(); ) {
             Connection internalConnection = iterator.next();

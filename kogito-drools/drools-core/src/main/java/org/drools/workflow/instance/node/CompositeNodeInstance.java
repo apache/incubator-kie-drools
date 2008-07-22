@@ -54,7 +54,7 @@ public class CompositeNodeInstance extends NodeInstanceImpl implements NodeInsta
     }
     
     public void internalTrigger(final NodeInstance from, String type) {
-        CompositeNode.NodeAndType nodeAndType = getCompositeNode().getLinkedIncomingNode(type);
+        CompositeNode.NodeAndType nodeAndType = getCompositeNode().internalGetLinkedIncomingNode(type);
         List<Connection> connections = nodeAndType.getNode().getIncomingConnections(nodeAndType.getType());
         for (Iterator<Connection> iterator = connections.iterator(); iterator.hasNext(); ) {
             Connection connection = iterator.next();

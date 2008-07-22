@@ -54,6 +54,10 @@ public class WorkflowProcessImpl extends ProcessImpl implements WorkflowProcess 
     public Node getNode(final long id) {
         return nodeContainer.getNode(id);
     }
+    
+    public Node internalGetNode(long id) {
+    	return getNode(id);
+    }
 
     public void removeNode(final Node node) {
         nodeContainer.removeNode(node);

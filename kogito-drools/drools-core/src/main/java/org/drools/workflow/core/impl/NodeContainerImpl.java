@@ -47,6 +47,10 @@ public class NodeContainerImpl implements Serializable, NodeContainer {
         }
         return node; 
     }
+    
+    public Node internalGetNode(long id) {
+    	return getNode(id);
+    }
 
     public void removeNode(final Node node) {
         validateRemoveNode(node);

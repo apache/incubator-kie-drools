@@ -40,28 +40,38 @@ public class ForEachNode extends CompositeNode {
     
     private String variableName;
     private String collectionExpression;
+    private boolean waitForCompletion = true;
 
     public ForEachNode() {
         // Split
         ForEachSplitNode split = new ForEachSplitNode();
         split.setName("ForEachSplit");
-        addNode(split);
-        linkIncomingConnections(
+        super.addNode(split);
+        super.linkIncomingConnections(
             Node.CONNECTION_DEFAULT_TYPE, 
             new CompositeNode.NodeAndType(split, Node.CONNECTION_DEFAULT_TYPE));
         // Composite node
-        CompositeNode compositeNode = new CompositeNode();
+        CompositeContextNode compositeNode = new CompositeContextNode();
         compositeNode.setName("ForEachComposite");
-        addNode(compositeNode);
+        super.addNode(compositeNode);
         VariableScope variableScope = new VariableScope();
         compositeNode.setContext(VariableScope.VARIABLE_SCOPE, variableScope);
+        compositeNode.setDefaultContext(variableScope);
         // Join
         ForEachJoinNode join = new ForEachJoinNode();
         join.setName("ForEachJoin");
-        addNode(join);
-        linkOutgoingConnections(
+        super.addNode(join);
+        super.linkOutgoingConnections(
             new CompositeNode.NodeAndType(join, Node.CONNECTION_DEFAULT_TYPE),
             Node.CONNECTION_DEFAULT_TYPE);
+        new ConnectionImpl(
+            super.getNode(1), Node.CONNECTION_DEFAULT_TYPE,
+            getCompositeNode(), Node.CONNECTION_DEFAULT_TYPE
+        );
+        new ConnectionImpl(
+            getCompositeNode(), Node.CONNECTION_DEFAULT_TYPE,
+            super.getNode(3), Node.CONNECTION_DEFAULT_TYPE
+        );
     }
     
     public String getVariableName() {
@@ -69,9 +79,53 @@ public class ForEachNode extends CompositeNode {
     }
     
     public CompositeNode getCompositeNode() {
-        return (CompositeNode) getNode(2); 
+        return (CompositeNode) super.getNode(2); 
+    }
+    
+    public void addNode(Node node) {
+    	getCompositeNode().addNode(node);
+    }
+    
+    protected void internalAddNode(Node node) {
+    	super.addNode(node);
+    }
+    
+    public Node getNode(long id) {
+    	return getCompositeNode().getNode(id);
+    }
+    
+    public Node internalGetNode(long id) {
+    	return super.getNode(id);
+    }
+    
+    public Node[] getNodes() {
+    	return getCompositeNode().getNodes();
+    }
+    
+    public void linkIncomingConnections(String inType, long inNodeId, String inNodeType) {
+    	getCompositeNode().linkIncomingConnections(inType, inNodeId, inNodeType);
     }
 
+    public void linkOutgoingConnections(long outNodeId, String outNodeType, String outType) {
+    	getCompositeNode().linkOutgoingConnections(outNodeId, outNodeType, outType);
+	}
+    
+    public CompositeNode.NodeAndType getLinkedIncomingNode(String inType) {
+    	return getCompositeNode().getLinkedIncomingNode(inType);
+    }
+
+    public CompositeNode.NodeAndType internalGetLinkedIncomingNode(String inType) {
+        return super.getLinkedIncomingNode(inType);
+    }
+    
+    public CompositeNode.NodeAndType getLinkedOutgoingNode(String inType) {
+    	return getCompositeNode().getLinkedOutgoingNode(inType);
+    }
+
+    public CompositeNode.NodeAndType internalGetLinkedOutgoingNode(String inType) {
+        return super.getLinkedOutgoingNode(inType);
+    }
+    
     public void setVariable(String variableName, DataType type) {
         this.variableName = variableName;
         List<Variable> variables = new ArrayList<Variable>();
@@ -80,15 +134,6 @@ public class ForEachNode extends CompositeNode {
         variable.setType(type);
         variables.add(variable);
         ((VariableScope) getCompositeNode().getContext(VariableScope.VARIABLE_SCOPE)).setVariables(variables);
-        // TODO: can only create connections after linking composite node ports 
-        new ConnectionImpl(
-            getNode(1), Node.CONNECTION_DEFAULT_TYPE,
-            getCompositeNode(), Node.CONNECTION_DEFAULT_TYPE
-        );
-        new ConnectionImpl(
-            getCompositeNode(), Node.CONNECTION_DEFAULT_TYPE,
-            getNode(3), Node.CONNECTION_DEFAULT_TYPE
-        );
     }
     
     public String getCollectionExpression() {
@@ -99,7 +144,15 @@ public class ForEachNode extends CompositeNode {
         this.collectionExpression = collectionExpression;
     }
 
-    public class ForEachSplitNode extends SequenceNode {
+    public boolean isWaitForCompletion() {
+        return waitForCompletion;
+    }
+
+    public void setWaitForCompletion(boolean waitForCompletion) {
+        this.waitForCompletion = waitForCompletion;
+    }
+
+   public class ForEachSplitNode extends SequenceNode {
         private static final long serialVersionUID = 4L;
     }
 

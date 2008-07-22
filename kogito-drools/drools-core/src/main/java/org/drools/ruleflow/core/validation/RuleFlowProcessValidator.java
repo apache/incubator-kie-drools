@@ -35,6 +35,7 @@ import org.drools.workflow.core.impl.DroolsConsequenceAction;
 import org.drools.workflow.core.node.ActionNode;
 import org.drools.workflow.core.node.CompositeNode;
 import org.drools.workflow.core.node.EndNode;
+import org.drools.workflow.core.node.ForEachNode;
 import org.drools.workflow.core.node.Join;
 import org.drools.workflow.core.node.MilestoneNode;
 import org.drools.workflow.core.node.RuleSetNode;
@@ -280,6 +281,35 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                             "WorkItem node '" + node.getName() + "' [" + node.getId() + "] has no work name."));
                     }
                 }
+            } else if (node instanceof ForEachNode) {
+                final ForEachNode forEachNode = (ForEachNode) node;
+                String variableName = forEachNode.getVariableName();
+                if (variableName == null || "".equals(variableName)) {
+                    errors.add(new ProcessValidationErrorImpl(process,
+                        "ForEach node '" + node.getName() + "' [" + node.getId() + "] has no variable name"));
+                }
+                String collectionExpression = forEachNode.getCollectionExpression();
+                if (collectionExpression == null || "".equals(collectionExpression)) {
+                    errors.add(new ProcessValidationErrorImpl(process,
+                        "ForEach node '" + node.getName() + "' [" + node.getId() + "] has no collection expression"));
+                }
+                if (forEachNode.getIncomingConnections(Node.CONNECTION_DEFAULT_TYPE).size() == 0) {
+                    errors.add(new ProcessValidationErrorImpl(process,
+                        "ForEach node '" + node.getName() + "' [" + node.getId() + "] has no incoming connection"));
+                }
+                if (forEachNode.getOutgoingConnections(Node.CONNECTION_DEFAULT_TYPE).size() == 0) {
+                    errors.add(new ProcessValidationErrorImpl(process,
+                        "ForEach node '" + node.getName() + "' [" + node.getId() + "] has no outgoing connection"));
+                }
+                if (forEachNode.getLinkedIncomingNode(Node.CONNECTION_DEFAULT_TYPE) == null) {
+                    errors.add(new ProcessValidationErrorImpl(process,
+                        "ForEach node '" + node.getName() + "' [" + node.getId() + "] has no linked start node"));
+                }
+                if (forEachNode.getLinkedOutgoingNode(Node.CONNECTION_DEFAULT_TYPE) == null) {
+                    errors.add(new ProcessValidationErrorImpl(process,
+                        "ForEach node '" + node.getName() + "' [" + node.getId() + "] has no linked end node"));
+                }
+                validateNodes(forEachNode.getNodes(), errors, process);
             } else if (node instanceof CompositeNode) {
                 final CompositeNode compositeNode = (CompositeNode) node;
                 for (String inType: compositeNode.getLinkedIncomingNodes().keySet()) {
