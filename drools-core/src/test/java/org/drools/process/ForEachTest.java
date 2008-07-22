@@ -77,15 +77,16 @@ public class ForEachTest extends TestCase {
         DroolsAction action = new DroolsConsequenceAction("java", null);
         action.setMetaData("Action", new Action() {
             public void execute(KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory, ActionContext context) throws Exception {
+            	System.out.println("Executed action for child " + ((Person) context.getVariable("child")).getName());
                 myList.add("Executed action");
             }
         });
         actionNode.setAction(action);
-        forEachNode.getCompositeNode().addNode(actionNode);
-        forEachNode.getCompositeNode().linkIncomingConnections(
+        forEachNode.addNode(actionNode);
+        forEachNode.linkIncomingConnections(
             Node.CONNECTION_DEFAULT_TYPE,
             actionNode.getId(), Node.CONNECTION_DEFAULT_TYPE);
-        forEachNode.getCompositeNode().linkOutgoingConnections(
+        forEachNode.linkOutgoingConnections(
             actionNode.getId(), Node.CONNECTION_DEFAULT_TYPE,
             Node.CONNECTION_DEFAULT_TYPE);
         forEachNode.setVariable("child", personDataType);

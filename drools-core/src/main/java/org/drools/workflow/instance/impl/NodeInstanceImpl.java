@@ -78,7 +78,7 @@ public abstract class NodeInstanceImpl implements NodeInstance, Serializable {
     }
 
     public Node getNode() {
-        return this.nodeInstanceContainer.getNodeContainer().getNode( this.nodeId );
+        return this.nodeInstanceContainer.getNodeContainer().internalGetNode( this.nodeId );
     }
     
     public boolean isInversionOfControl() {
@@ -122,7 +122,24 @@ public abstract class NodeInstanceImpl implements NodeInstance, Serializable {
         }
         // TODO: find right context instance container and get context instance
         // TODO: currently, only the process instance acts as a context instance container
-        ContextInstanceContainer contextInstanceContainer = getProcessInstance();
+        ContextInstanceContainer contextInstanceContainer = null;
+        if (this instanceof ContextInstanceContainer) {
+        	contextInstanceContainer = (ContextInstanceContainer) this; 
+        } else {
+        	NodeInstanceContainer nodeInstanceContainer = this.getNodeInstanceContainer();
+        	while (contextInstanceContainer == null) {
+        		if (nodeInstanceContainer instanceof ContextInstanceContainer) {
+        			contextInstanceContainer = (ContextInstanceContainer) nodeInstanceContainer;
+        		} else if (nodeInstanceContainer instanceof NodeInstance) {
+        			nodeInstanceContainer = ((NodeInstance) nodeInstanceContainer).getNodeInstanceContainer();
+        		} else {
+        			break;
+        		}
+        	}
+        }
+        if (contextInstanceContainer == null) {
+        	contextInstanceContainer = getProcessInstance();
+        }
         return contextInstanceContainer.getContextInstance(context);
     }
     

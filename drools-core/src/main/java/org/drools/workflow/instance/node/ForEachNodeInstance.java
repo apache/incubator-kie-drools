@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
-import org.drools.workflow.core.Connection;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.ForEachNode;
 import org.drools.workflow.core.node.ForEachNode.ForEachJoinNode;
@@ -90,6 +89,9 @@ public class ForEachNodeInstance extends CompositeNodeInstance {
             for (NodeInstance nodeInstance: nodeInstances) {
                 nodeInstance.trigger(this, getForEachSplitNode().getTo().getToType());
             }
+            if (!getForEachNode().isWaitForCompletion()) {
+            	ForEachNodeInstance.this.triggerCompleted(Node.CONNECTION_DEFAULT_TYPE, false);
+            }
         }
         
         private Collection<?> evaluateCollectionExpression(String collectionExpression) {
@@ -116,7 +118,9 @@ public class ForEachNodeInstance extends CompositeNodeInstance {
         public void internalTrigger(NodeInstance from, String type) {
             if (getNodeInstanceContainer().getNodeInstances().size() == 1) {
                 getNodeInstanceContainer().removeNodeInstance(this);
-                triggerConnection(getForEachJoinNode().getTo());
+                if (getForEachNode().isWaitForCompletion()) {
+                	triggerConnection(getForEachJoinNode().getTo());
+                }
             }
         }
         
