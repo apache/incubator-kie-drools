@@ -17,4 +17,5 @@ public class DroolsParaphareseTypes {
 	public static int RULE = 7;
 	public static int RULE_ATTRIBUTE = 8;
 	public static int PATTERN = 9;
+	public static int TYPE_DECLARE = 10;
 }

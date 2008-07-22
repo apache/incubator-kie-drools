@@ -342,6 +342,70 @@ public class DescrFactory {
 	}
 
 	/**
+	 * Factory method that creates a TypeDeclarationDescr.
+	 * 
+	 * @param id
+	 *            type declaration descriptior id
+	 * @param declMetadaList
+	 *            metadata list
+	 * @param declFieldList
+	 *            field list
+	 * @return TypeDeclarationDescr filled
+	 */
+	@SuppressWarnings("unchecked")
+	public TypeDeclarationDescr createTypeDeclr(DroolsTree id,
+			List<Map> declMetadaList, List<TypeFieldDescr> declFieldList) {
+		TypeDeclarationDescr typeDeclr = new TypeDeclarationDescr();
+		typeDeclr.setTypeName(id.getText());
+
+		for (Map activeMetadata : declMetadaList) {
+			Entry activeEntry = (Entry) activeMetadata.entrySet().iterator()
+					.next();
+			String chunkData = ((DroolsTree) activeEntry.getValue()).getText();
+			typeDeclr.addMetaAttribute(((DroolsTree) activeEntry.getKey())
+					.getText(), chunkData.substring(1, chunkData.length() - 1)
+					.trim());
+		}
+
+		for (TypeFieldDescr typeFieldDescr : declFieldList) {
+			typeDeclr.addField(typeFieldDescr);
+		}
+		return typeDeclr;
+	}
+
+	/**
+	 * Factory method that creates a TypeFieldDescr.
+	 * 
+	 * @param id
+	 *            type field id
+	 * @param initExpr
+	 *            initial expression
+	 * @param dt
+	 *            data type
+	 * @param declMetadaList
+	 *            metadata list
+	 * @return TypeFieldDescr filled
+	 */
+	@SuppressWarnings("unchecked")
+	public TypeFieldDescr createTypeField(DroolsTree id, String initExpr,
+			BaseDescr dt, List<Map> declMetadaList) {
+		TypeFieldDescr field = new TypeFieldDescr(id.getText());
+		if (null != initExpr) {
+			field.setInitExpr(initExpr);
+		}
+		field.setPattern(new PatternDescr(dt.getText()));
+		for (Map activeMetadata : declMetadaList) {
+			Entry activeEntry = (Entry) activeMetadata.entrySet().iterator()
+					.next();
+			String chunkData = ((DroolsTree) activeEntry.getValue()).getText();
+			field.addMetaAttribute(((DroolsTree) activeEntry.getKey())
+					.getText(), chunkData.substring(1, chunkData.length() - 1));
+		}
+
+		return field;
+	}
+
+	/**
 	 * Factory method that creates a RuleDescr.
 	 * 
 	 * @param start
@@ -783,6 +847,39 @@ public class DescrFactory {
 		}
 
 		return declarativeInvoker;
+	}
+
+	/**
+	 * Method that setups the PatternDescr, setting all the behavior data
+	 * 
+	 * @param descr
+	 *            PatternDescr to be setted
+	 * @param behaviorList
+	 *            list of behaviors
+	 * @return BaseDescr setted
+	 */
+	public BaseDescr setupBehavior(BaseDescr descr,
+			List<BehaviorDescr> behaviorList) {
+		if (null != behaviorList && descr instanceof PatternDescr) {
+			for (BehaviorDescr activeBehavior : behaviorList) {
+				((PatternDescr) descr).addBehavior(activeBehavior);
+			}
+		}
+		return descr;
+	}
+
+	/**
+	 * Factory method that creates a BehaviorDescr.
+	 * 
+	 * @param type
+	 *            behavior type
+	 * @param param
+	 *            chunk data
+	 * @return BehaviorDescr filled
+	 */
+	public BehaviorDescr createBehavior(DroolsTree type, DroolsTree param) {
+		return new SlidingWindowDescr(type.getText(), param.getText()
+				.substring(1, param.getText().length() - 1));
 	}
 
 	/**
