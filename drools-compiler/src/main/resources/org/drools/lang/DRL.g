@@ -14,6 +14,7 @@ tokens {
 
 	VT_QUERY_ID;
 	VT_TEMPLATE_ID;
+	VT_TYPE_DECLARE_ID;
 	VT_RULE_ID;
 	VT_ENTRYPOINT_ID;
 	VT_SLOT_ID;
@@ -25,6 +26,7 @@ tokens {
 	VT_CURLY_CHUNK;
 	VT_SQUARE_CHUNK;
 	VT_PAREN_CHUNK;
+	VT_BEHAVIOR;
 
 	VT_AND_IMPLICIT;
 	VT_AND_PREFIX;
@@ -265,12 +267,15 @@ package_id
 	;
 
 statement
-	:	rule_attribute
+options{
+k = 2;
+}	:	rule_attribute
 	|{(validateLT(1, "import") && validateLT(2, "function") )}?=> function_import_statement 
 	|	import_statement 
 	|	global 
 	|	function
-	|	template
+	|	{(validateLT(1, DroolsSoftKeywords.TEMPLATE))}?=> template
+	|	{(validateLT(1, DroolsSoftKeywords.DECLARE))}?=> type_declaration
 	|	rule
 	|	query
 	;
@@ -350,6 +355,36 @@ argument
 	:	ID dimension_definition*
 	;
 
+type_declaration
+@init  { pushParaphrases(DroolsParaphareseTypes.TYPE_DECLARE); }
+@after { paraphrases.pop(); }
+	:	declare_key  type_declare_id
+		decl_metadata*
+		decl_field*
+		END
+		-> ^(declare_key type_declare_id decl_metadata* decl_field* END)
+	;
+
+type_declare_id
+	: 	id=ID
+	{	setParaphrasesValue(DroolsParaphareseTypes.TYPE_DECLARE, $id.text);	} -> VT_TYPE_DECLARE_ID[$id]
+	;
+
+decl_metadata
+	:	AT ID paren_chunk
+		-> ^(AT ID paren_chunk)
+	;
+
+decl_field
+	:	ID decl_field_initialization? COLON data_type
+		decl_metadata*
+		-> ^(ID decl_field_initialization? data_type decl_metadata*)
+	;
+
+decl_field_initialization
+	:	EQUALS paren_chunk
+	-> ^(EQUALS paren_chunk)
+	;
 
 template
 @init  { pushParaphrases(DroolsParaphareseTypes.TEMPLATE); }
@@ -537,8 +572,9 @@ lhs_forall
 	;
 
 pattern_source
-options { k=3;}
+options { backtrack=true;}
 	:	lhs_pattern
+		over_clause?
 		(
 			from_key^
 		        (  accumulate_statement
@@ -547,6 +583,15 @@ options { k=3;}
 		          | from_source
 		        )
 		)?
+	;
+
+over_clause
+	:	OVER^ over_elements (COMMA! over_elements)*
+	;
+
+over_elements
+	:	ID COLON ID paren_chunk
+	-> ^(VT_BEHAVIOR ID ID paren_chunk)
 	;
 
 accumulate_statement
@@ -1050,6 +1095,9 @@ BOOL
 
 NULL	:	'null';
 
+OVER
+	:	'over'
+	;
 
 THEN
 	:	'then'
@@ -1060,6 +1108,13 @@ END	:	'end'
 
 GRAVE_ACCENT
 	:	'`'
+	;
+
+AT	:	'@'
+	;
+
+EQUALS
+	:	'='
 	;
 
 SEMICOLON
@@ -1161,5 +1216,5 @@ MULTI_LINE_COMMENT
 	;
 
 MISC 	:
-		'!' | '@' | '$' | '%' | '^' | '*' | '_' | '-' | '+'  | '?' | '=' | '/' | '\'' | '\\' | '|' | '&'
+		'!' | '$' | '%' | '^' | '*' | '_' | '-' | '+'  | '?' | '/' | '\'' | '\\' | '|' | '&'
 	;

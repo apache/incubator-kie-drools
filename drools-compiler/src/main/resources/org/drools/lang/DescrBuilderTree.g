@@ -12,25 +12,28 @@ options{
 	import java.util.HashMap;
 	import java.util.Map;
 	import java.util.LinkedList;
-	import org.drools.lang.descr.DescrFactory;
-	import org.drools.lang.descr.BaseDescr;
-	import org.drools.lang.descr.PackageDescr;
+	import org.drools.lang.descr.AccessorDescr;
+	import org.drools.lang.descr.AccumulateDescr;
+	import org.drools.lang.descr.AndDescr;
 	import org.drools.lang.descr.AttributeDescr;
-	import org.drools.lang.descr.ImportDescr;
+	import org.drools.lang.descr.BaseDescr;
+	import org.drools.lang.descr.BehaviorDescr;
+	import org.drools.lang.descr.DeclarativeInvokerDescr;
+	import org.drools.lang.descr.DescrFactory;
+	import org.drools.lang.descr.FactTemplateDescr;
+	import org.drools.lang.descr.FieldConstraintDescr;
+	import org.drools.lang.descr.FieldTemplateDescr;
+	import org.drools.lang.descr.FromDescr;
+	import org.drools.lang.descr.FunctionDescr;
 	import org.drools.lang.descr.FunctionImportDescr;
 	import org.drools.lang.descr.GlobalDescr;
-	import org.drools.lang.descr.FunctionDescr;
-	import org.drools.lang.descr.FactTemplateDescr;
-	import org.drools.lang.descr.FieldTemplateDescr;
-	import org.drools.lang.descr.AndDescr;
+	import org.drools.lang.descr.ImportDescr;
+	import org.drools.lang.descr.PackageDescr;
+	import org.drools.lang.descr.PatternSourceDescr;
 	import org.drools.lang.descr.QueryDescr;
 	import org.drools.lang.descr.RuleDescr;
-	import org.drools.lang.descr.PatternSourceDescr;
-	import org.drools.lang.descr.AccumulateDescr;
-	import org.drools.lang.descr.AccessorDescr;
-	import org.drools.lang.descr.DeclarativeInvokerDescr;
-	import org.drools.lang.descr.FromDescr;
-	import org.drools.lang.descr.FieldConstraintDescr;
+	import org.drools.lang.descr.TypeDeclarationDescr;
+	import org.drools.lang.descr.TypeFieldDescr;
 }
 
 @members {
@@ -77,6 +80,8 @@ statement
 	{	this.packageDescr.addRule($rl.ruleDescr);	}
 	|	qr=query
 	{	this.packageDescr.addRule($qr.queryDescr);	}
+	|	td=type_declaration
+	{	this.packageDescr.addTypeDeclaration($td.declaration);	}
 	;
 
 import_statement returns [ImportDescr importDescr]
@@ -154,6 +159,32 @@ param_definition returns [Map param]
 argument returns [BaseDescr arg]
 	:	id=ID (LEFT_SQUARE rightList+=RIGHT_SQUARE)*
 	{	$arg = factory.createArgument($id, $rightList);	}
+	;
+
+type_declaration returns [TypeDeclarationDescr declaration]
+@init {	List<Map> declMetadaList = new LinkedList<Map>();
+		List<TypeFieldDescr> declFieldList = new LinkedList<TypeFieldDescr>(); }
+	:	^(VK_DECLARE id=VT_TYPE_DECLARE_ID 
+			(dm=decl_metadata {declMetadaList.add($dm.attData);	})* 
+			(df=decl_field {declFieldList.add($df.fieldDescr);	})* END)
+	{	$declaration = factory.createTypeDeclr($id, declMetadaList, declFieldList);	}
+	;
+
+decl_metadata returns [Map attData]
+@init {attData = new HashMap();}
+	:	^(AT att=ID pc=VT_PAREN_CHUNK)
+	{	$attData.put($att, $pc);	}
+	;
+
+decl_field returns [TypeFieldDescr fieldDescr]
+@init {List<Map> declMetadaList = new LinkedList<Map>(); }
+	:	^(id=ID init=decl_field_initialization? dt=data_type (dm=decl_metadata {declMetadaList.add($dm.attData);})*)
+	{	$fieldDescr = factory.createTypeField($id, $init.expr, $dt.dataType, declMetadaList);	}			
+	;
+
+decl_field_initialization returns [String expr]
+	:	^(EQUALS pc=VT_PAREN_CHUNK)
+	{	$expr = $pc.text.substring(1, $pc.text.length() -1 ).trim();	}
 	;
 
 rule_attribute returns [AttributeDescr attributeDescr]
@@ -269,8 +300,18 @@ expression_chain
 	;
 
 lhs_pattern returns [BaseDescr baseDescr]
-	:	^(VT_PATTERN fe=fact_expression)
-	{	$baseDescr = $fe.descr;	}
+	:	^(VT_PATTERN fe=fact_expression) oc=over_clause?
+	{	$baseDescr = factory.setupBehavior($fe.descr, $oc.behaviorList);	}
+	;
+
+over_clause returns [List behaviorList]
+@init {$behaviorList = new LinkedList();}
+	:	^(OVER (oe=over_element {$behaviorList.add($oe.behavior);})+)
+	;
+
+over_element returns [BehaviorDescr behavior]
+	:	^(VT_BEHAVIOR ID id2=ID pc=VT_PAREN_CHUNK)
+	{	$behavior = factory.createBehavior($id2,$pc);	}
 	;
 
 fact_expression returns [BaseDescr descr]

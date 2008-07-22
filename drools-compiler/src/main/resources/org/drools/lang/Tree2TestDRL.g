@@ -31,6 +31,7 @@ statement
 	|	template
 	|	rule
 	|	query
+	|	type_declaration
 	;
 
 import_statement
@@ -69,6 +70,21 @@ argument
 	:	ID dimension_definition*
 	;
 
+type_declaration
+	:	^(VK_DECLARE VT_TYPE_DECLARE_ID decl_metadata* decl_field* END)
+	;
+
+decl_metadata
+	:	^(AT ID VT_PAREN_CHUNK)
+	;
+
+decl_field
+	:	^(ID decl_field_initialization? data_type decl_metadata*)
+	;
+
+decl_field_initialization
+	:	^(EQUALS VT_PAREN_CHUNK)
+	;
 
 template
 	:	^(VK_TEMPLATE VT_TEMPLATE_ID template_slot+ END)
@@ -146,7 +162,15 @@ accumulate_id_clause
 	;
 
 lhs_pattern
-	:	^(VT_PATTERN fact_expression)
+	:	^(VT_PATTERN fact_expression) over_clause?
+	;
+
+over_clause
+	:	^(OVER over_element+)
+	;
+
+over_element
+	:	^(VT_BEHAVIOR ID ID VT_PAREN_CHUNK)
 	;
 
 fact_expression
