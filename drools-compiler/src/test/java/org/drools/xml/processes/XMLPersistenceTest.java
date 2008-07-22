@@ -16,6 +16,7 @@ import org.drools.process.core.Work;
 import org.drools.process.core.context.swimlane.Swimlane;
 import org.drools.process.core.context.variable.Variable;
 import org.drools.process.core.datatype.impl.type.IntegerDataType;
+import org.drools.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.process.core.datatype.impl.type.StringDataType;
 import org.drools.process.core.impl.ParameterDefinitionImpl;
 import org.drools.process.core.impl.WorkImpl;
@@ -29,6 +30,7 @@ import org.drools.workflow.core.impl.ConstraintImpl;
 import org.drools.workflow.core.impl.DroolsConsequenceAction;
 import org.drools.workflow.core.node.ActionNode;
 import org.drools.workflow.core.node.EndNode;
+import org.drools.workflow.core.node.ForEachNode;
 import org.drools.workflow.core.node.HumanTaskNode;
 import org.drools.workflow.core.node.Join;
 import org.drools.workflow.core.node.MilestoneNode;
@@ -63,6 +65,7 @@ public class XMLPersistenceTest extends TestCase {
         process.addNode(new WorkItemNode());
         process.addNode(new TimerNode());
         process.addNode(new HumanTaskNode());
+        process.addNode(new ForEachNode());
         
         String xml = XmlRuleFlowProcessDumper.INSTANCE.dump(process, false);
         if (xml == null) {
@@ -79,7 +82,7 @@ public class XMLPersistenceTest extends TestCase {
             throw new IllegalArgumentException("Failed to reload process!");
         }
         
-        assertEquals(11, process.getNodes().length);
+        assertEquals(12, process.getNodes().length);
         
 //        System.out.println("************************************");
         
@@ -274,6 +277,20 @@ public class XMLPersistenceTest extends TestCase {
         process.addNode(timerNode);
         new ConnectionImpl(humanTaskNode, Node.CONNECTION_DEFAULT_TYPE, timerNode, Node.CONNECTION_DEFAULT_TYPE);
         
+        ForEachNode forEachNode = new ForEachNode();
+        forEachNode.setCollectionExpression("collection");
+        forEachNode.setVariable("variableName", new ObjectDataType());
+        forEachNode.setWaitForCompletion(false);
+        ActionNode subActionNode1 = new ActionNode();
+        forEachNode.getCompositeNode().addNode(subActionNode1);
+        ActionNode subActionNode2 = new ActionNode();
+        forEachNode.getCompositeNode().addNode(subActionNode2);
+        new ConnectionImpl(subActionNode1, Node.CONNECTION_DEFAULT_TYPE, subActionNode2, Node.CONNECTION_DEFAULT_TYPE);
+        forEachNode.getCompositeNode().linkIncomingConnections(Node.CONNECTION_DEFAULT_TYPE, subActionNode1.getId(), Node.CONNECTION_DEFAULT_TYPE);
+        forEachNode.getCompositeNode().linkOutgoingConnections(subActionNode2.getId(), Node.CONNECTION_DEFAULT_TYPE, Node.CONNECTION_DEFAULT_TYPE);
+        process.addNode(forEachNode);
+        new ConnectionImpl(timerNode, Node.CONNECTION_DEFAULT_TYPE, forEachNode, Node.CONNECTION_DEFAULT_TYPE);
+        
         EndNode endNode = new EndNode();
         endNode.setName("end");
         endNode.setMetaData("x", 1);
@@ -281,11 +298,11 @@ public class XMLPersistenceTest extends TestCase {
         endNode.setMetaData("width", 3);
         endNode.setMetaData("height", 4);
         process.addNode(endNode);
-        new ConnectionImpl(timerNode, Node.CONNECTION_DEFAULT_TYPE, endNode, Node.CONNECTION_DEFAULT_TYPE);
+        new ConnectionImpl(forEachNode, Node.CONNECTION_DEFAULT_TYPE, endNode, Node.CONNECTION_DEFAULT_TYPE);
         
         String xml = XmlRuleFlowProcessDumper.INSTANCE.dump(process, true);
         if (xml == null) {
-            throw new IllegalArgumentException("Failed to persist empty nodes!");
+            throw new IllegalArgumentException("Failed to persist full nodes!");
         }
         
 //        System.out.println(xml);
@@ -297,7 +314,7 @@ public class XMLPersistenceTest extends TestCase {
             throw new IllegalArgumentException("Failed to reload process!");
         }
         
-        assertEquals(11, process.getNodes().length);
+        assertEquals(12, process.getNodes().length);
         
 //        System.out.println("************************************");
         

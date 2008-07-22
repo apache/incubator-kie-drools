@@ -5,6 +5,7 @@ import org.drools.xml.processes.CompositeNodeHandler;
 import org.drools.xml.processes.ConnectionHandler;
 import org.drools.xml.processes.ConstraintHandler;
 import org.drools.xml.processes.EndNodeHandler;
+import org.drools.xml.processes.ForEachNodeHandler;
 import org.drools.xml.processes.GlobalHandler;
 import org.drools.xml.processes.HumanTaskNodeHandler;
 import org.drools.xml.processes.ImportHandler;
@@ -55,6 +56,8 @@ public class ProcessSemanticModule extends DefaultSemanticModule implements Sema
                            new TimerNodeHandler() );
         addHandler( "humanTask",
                            new HumanTaskNodeHandler() );
+        addHandler( "forEach",
+                           new ForEachNodeHandler() );
         addHandler( "composite",
                            new CompositeNodeHandler() );
         addHandler( "connection",

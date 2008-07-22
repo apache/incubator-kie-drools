@@ -105,6 +105,7 @@
 				<xs:element ref="drools:timer"/>
 				<xs:element ref="drools:humanTask"/>
 				<xs:element ref="drools:composite"/>
+				<xs:element ref="drools:forEach"/>
 			</xs:choice>
 		</xs:complexType>
 	</xs:element>
@@ -294,7 +295,8 @@
 				<xs:element ref="drools:action"/>
 			</xs:choice>
 		</xs:complexType>
-	</xs:element>	<xs:element name="timer">
+	</xs:element>
+	<xs:element name="timer">
 		<xs:complexType>
 			<xs:attribute name="id" type="xs:string" use="required"/>
 			<xs:attribute name="name" type="xs:string"/>
@@ -336,6 +338,24 @@
 			<xs:attribute name="y" type="xs:string"/>
 			<xs:attribute name="width" type="xs:string"/>
 			<xs:attribute name="height" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="forEach">
+		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="drools:nodes"/>
+				<xs:element ref="drools:connections"/>
+				<xs:element ref="drools:in-ports"/>
+				<xs:element ref="drools:out-ports"/>
+			</xs:choice>
+			<xs:attribute name="id" type="xs:string" use="required"/>
+			<xs:attribute name="name" type="xs:string"/>
+			<xs:attribute name="x" type="xs:string"/>
+			<xs:attribute name="y" type="xs:string"/>
+			<xs:attribute name="width" type="xs:string"/>
+			<xs:attribute name="height" type="xs:string"/>
+			<xs:attribute name="variableName" type="xs:string"/>
+			<xs:attribute name="collectionExpression" type="xs:string"/>
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="in-ports">
