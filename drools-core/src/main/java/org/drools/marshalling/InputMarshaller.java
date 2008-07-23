@@ -59,7 +59,7 @@ import org.drools.spi.RuleFlowGroup;
 import org.drools.util.ObjectHashSet;
 import org.drools.workflow.instance.NodeInstance;
 import org.drools.workflow.instance.impl.NodeInstanceImpl;
-import org.drools.workflow.instance.node.EventNodeInstance;
+import org.drools.workflow.instance.node.EventBasedNodeInstance;
 import org.drools.workflow.instance.node.JoinInstance;
 import org.drools.workflow.instance.node.MilestoneNodeInstance;
 import org.drools.workflow.instance.node.RuleSetNodeInstance;
@@ -636,8 +636,8 @@ public class InputMarshaller {
         nodeInstance.setNodeInstanceContainer( processInstance );
         nodeInstance.setProcessInstance( processInstance );
         nodeInstance.setId( id );
-        if ( nodeInstance instanceof EventNodeInstance ) {
-            ((EventNodeInstance) nodeInstance).addEventListeners();
+        if ( nodeInstance instanceof EventBasedNodeInstance ) {
+            ((EventBasedNodeInstance) nodeInstance).addEventListeners();
         }
         return nodeInstance;
     }

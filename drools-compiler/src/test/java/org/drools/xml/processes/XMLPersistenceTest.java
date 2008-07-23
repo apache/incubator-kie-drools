@@ -18,6 +18,7 @@ import org.drools.process.core.context.variable.Variable;
 import org.drools.process.core.datatype.impl.type.IntegerDataType;
 import org.drools.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.process.core.datatype.impl.type.StringDataType;
+import org.drools.process.core.event.EventTypeFilter;
 import org.drools.process.core.impl.ParameterDefinitionImpl;
 import org.drools.process.core.impl.WorkImpl;
 import org.drools.process.core.timer.Timer;
@@ -30,6 +31,7 @@ import org.drools.workflow.core.impl.ConstraintImpl;
 import org.drools.workflow.core.impl.DroolsConsequenceAction;
 import org.drools.workflow.core.node.ActionNode;
 import org.drools.workflow.core.node.EndNode;
+import org.drools.workflow.core.node.EventNode;
 import org.drools.workflow.core.node.ForEachNode;
 import org.drools.workflow.core.node.HumanTaskNode;
 import org.drools.workflow.core.node.Join;
@@ -66,6 +68,7 @@ public class XMLPersistenceTest extends TestCase {
         process.addNode(new TimerNode());
         process.addNode(new HumanTaskNode());
         process.addNode(new ForEachNode());
+        process.addNode(new EventNode());
         
         String xml = XmlRuleFlowProcessDumper.INSTANCE.dump(process, false);
         if (xml == null) {
@@ -82,7 +85,7 @@ public class XMLPersistenceTest extends TestCase {
             throw new IllegalArgumentException("Failed to reload process!");
         }
         
-        assertEquals(12, process.getNodes().length);
+        assertEquals(13, process.getNodes().length);
         
 //        System.out.println("************************************");
         
@@ -190,6 +193,18 @@ public class XMLPersistenceTest extends TestCase {
         process.addNode(split);
         new ConnectionImpl(startNode, Node.CONNECTION_DEFAULT_TYPE, split, Node.CONNECTION_DEFAULT_TYPE);
         
+        EventNode eventNode = new EventNode();
+        eventNode.setName("action");
+        eventNode.setMetaData("x", 1);
+        eventNode.setMetaData("y", 2);
+        eventNode.setMetaData("width", 3);
+        eventNode.setMetaData("height", 4);
+        eventNode.setVariableName("eventVariable");
+        EventTypeFilter eventFilter = new EventTypeFilter();
+        eventFilter.setType("eventType");
+        eventNode.addEventFilter(eventFilter);
+        process.addNode(eventNode);
+        
         Join join = new Join();
         join.setName("join");
         join.setMetaData("x", 1);
@@ -200,6 +215,7 @@ public class XMLPersistenceTest extends TestCase {
         process.addNode(join);
         new ConnectionImpl(actionNode, Node.CONNECTION_DEFAULT_TYPE, join, Node.CONNECTION_DEFAULT_TYPE);
         new ConnectionImpl(ruleSetNode, Node.CONNECTION_DEFAULT_TYPE, join, Node.CONNECTION_DEFAULT_TYPE);
+        new ConnectionImpl(eventNode, Node.CONNECTION_DEFAULT_TYPE, join, Node.CONNECTION_DEFAULT_TYPE);
         
         MilestoneNode milestone = new MilestoneNode();
         milestone.setName("milestone");
@@ -293,6 +309,7 @@ public class XMLPersistenceTest extends TestCase {
         
         EndNode endNode = new EndNode();
         endNode.setName("end");
+        endNode.setTerminate(false);
         endNode.setMetaData("x", 1);
         endNode.setMetaData("y", 2);
         endNode.setMetaData("width", 3);
@@ -314,7 +331,7 @@ public class XMLPersistenceTest extends TestCase {
             throw new IllegalArgumentException("Failed to reload process!");
         }
         
-        assertEquals(12, process.getNodes().length);
+        assertEquals(13, process.getNodes().length);
         
 //        System.out.println("************************************");
         

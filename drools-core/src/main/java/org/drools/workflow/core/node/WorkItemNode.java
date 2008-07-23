@@ -28,7 +28,7 @@ import org.drools.process.core.context.variable.Mappable;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class WorkItemNode extends EventNode implements Mappable {
+public class WorkItemNode extends EventBasedNode implements Mappable {
 
 	private static final long serialVersionUID = 400L;
 	

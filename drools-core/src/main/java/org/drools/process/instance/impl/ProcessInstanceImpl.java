@@ -28,10 +28,8 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.process.core.Context;
 import org.drools.process.core.ContextContainer;
 import org.drools.process.core.Process;
-import org.drools.process.core.timer.Timer;
 import org.drools.process.instance.ContextInstance;
 import org.drools.process.instance.ProcessInstance;
-import org.drools.process.instance.WorkItem;
 
 /**
  * Default implementation of a process instance.
@@ -156,14 +154,8 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
         }
         return contextInstance;
     }
-
-    public void workItemCompleted(WorkItem taskInstance) {
-    }
-
-    public void workItemAborted(WorkItem taskInstance) {
-    }
-
-    public void timerTriggered(Timer timer) {
+    
+    public void signalEvent(String type, Object event) {
     }
 
     public void start() {

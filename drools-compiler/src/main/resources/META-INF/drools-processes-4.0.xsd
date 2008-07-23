@@ -106,6 +106,7 @@
 				<xs:element ref="drools:humanTask"/>
 				<xs:element ref="drools:composite"/>
 				<xs:element ref="drools:forEach"/>
+				<xs:element ref="drools:eventNode"/>
 			</xs:choice>
 		</xs:complexType>
 	</xs:element>
@@ -127,6 +128,7 @@
 			<xs:attribute name="y" type="xs:string"/>
 			<xs:attribute name="width" type="xs:string"/>
 			<xs:attribute name="height" type="xs:string"/>
+			<xs:attribute name="terminate" type="xs:string"/>
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="actionNode">
@@ -356,6 +358,7 @@
 			<xs:attribute name="height" type="xs:string"/>
 			<xs:attribute name="variableName" type="xs:string"/>
 			<xs:attribute name="collectionExpression" type="xs:string"/>
+			<xs:attribute name="waitForCompletion" type="xs:string"/>
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="in-ports">
@@ -384,6 +387,33 @@
 			<xs:attribute name="type" type="xs:string" use="required"/>
 			<xs:attribute name="nodeId" type="xs:string" use="required"/>
 			<xs:attribute name="nodeOutType" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="eventNode">
+		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="1">
+				<xs:element ref="drools:eventFilters"/>
+			</xs:choice>
+			<xs:attribute name="id" type="xs:string" use="required"/>
+			<xs:attribute name="name" type="xs:string"/>
+			<xs:attribute name="x" type="xs:string"/>
+			<xs:attribute name="y" type="xs:string"/>
+			<xs:attribute name="width" type="xs:string"/>
+			<xs:attribute name="height" type="xs:string"/>
+			<xs:attribute name="variableName" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="eventFilters">
+		<xs:complexType>
+			<xs:sequence minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="drools:eventFilter"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="eventFilter">
+		<xs:complexType>
+			<xs:attribute name="type" type="xs:string" use="required"/>
+			<xs:attribute name="eventType" type="xs:string" use="required"/>
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="connections">

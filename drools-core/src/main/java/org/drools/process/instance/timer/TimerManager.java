@@ -66,7 +66,7 @@ public class TimerManager {
             ProcessInstance processInstance = workingMemory.getProcessInstance( processInstanceId );
             // process instance may have finished already
             if ( processInstance != null ) {
-                processInstance.timerTriggered( ctx.getTimer() );
+                processInstance.signalEvent( "timerTriggered", ctx.getTimer() );
             }
         }
 
