@@ -38,7 +38,7 @@ import org.drools.workflow.instance.NodeInstance;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class SubProcessNodeInstance extends EventNodeInstance implements RuleFlowEventListener {
+public class SubProcessNodeInstance extends EventBasedNodeInstance implements RuleFlowEventListener {
 
     private static final long serialVersionUID = 400L;
     

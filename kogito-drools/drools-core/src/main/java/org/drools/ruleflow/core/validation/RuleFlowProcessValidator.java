@@ -35,6 +35,7 @@ import org.drools.workflow.core.impl.DroolsConsequenceAction;
 import org.drools.workflow.core.node.ActionNode;
 import org.drools.workflow.core.node.CompositeNode;
 import org.drools.workflow.core.node.EndNode;
+import org.drools.workflow.core.node.EventNode;
 import org.drools.workflow.core.node.ForEachNode;
 import org.drools.workflow.core.node.Join;
 import org.drools.workflow.core.node.MilestoneNode;
@@ -325,6 +326,16 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                     }
                 }
                 validateNodes(compositeNode.getNodes(), errors, process);
+            } else if (node instanceof EventNode) {
+                final EventNode eventNode = (EventNode) node;
+                if (eventNode.getEventFilters().size() == 0) {
+                    errors.add(new ProcessValidationErrorImpl(process,
+                        "Event node '" + node.getName() + "' [" + node.getId() + "] should specify an event type"));
+                }
+                if (eventNode.getOutgoingConnections(Node.CONNECTION_DEFAULT_TYPE).size() == 0) {
+                    errors.add(new ProcessValidationErrorImpl(process,
+                        "Event node '" + node.getName() + "' [" + node.getId() + "] has no outgoing connection"));
+                }
             } 
         }
 
@@ -334,13 +345,20 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                                                final List<ProcessValidationError> errors) {
         final Map<Node, Boolean> processNodes = new HashMap<Node, Boolean>();
         final Node[] nodes = process.getNodes();
+        List<Node> eventNodes = new ArrayList<Node>();
         for (int i = 0; i < nodes.length; i++) {
             final Node node = nodes[i];
             processNodes.put(node, Boolean.FALSE);
+            if (node instanceof EventNode) {
+            	eventNodes.add(node);
+            }
         }
         final Node start = process.getStart();
         if (start != null) {
             processNode(start, processNodes);
+        }
+        for (Node eventNode: eventNodes) {
+            processNode(eventNode, processNodes);
         }
         for ( final Iterator<Node> it = processNodes.keySet().iterator(); it.hasNext(); ) {
             final Node node = it.next();

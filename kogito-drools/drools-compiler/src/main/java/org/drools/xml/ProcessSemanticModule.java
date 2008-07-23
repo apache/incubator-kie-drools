@@ -5,6 +5,8 @@ import org.drools.xml.processes.CompositeNodeHandler;
 import org.drools.xml.processes.ConnectionHandler;
 import org.drools.xml.processes.ConstraintHandler;
 import org.drools.xml.processes.EndNodeHandler;
+import org.drools.xml.processes.EventFilterHandler;
+import org.drools.xml.processes.EventNodeHandler;
 import org.drools.xml.processes.ForEachNodeHandler;
 import org.drools.xml.processes.GlobalHandler;
 import org.drools.xml.processes.HumanTaskNodeHandler;
@@ -86,5 +88,9 @@ public class ProcessSemanticModule extends DefaultSemanticModule implements Sema
                            new InPortHandler() );        
         addHandler( "out-port",
                            new OutPortHandler() );        
+        addHandler( "eventNode",
+                		   new EventNodeHandler() );        
+        addHandler( "eventFilter",
+                		   new EventFilterHandler() );        
     }
 }

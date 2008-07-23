@@ -20,7 +20,6 @@ import org.drools.Agenda;
 import org.drools.WorkingMemory;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.process.core.Process;
-import org.drools.process.instance.timer.TimerListener;
 
 /**
  * A process instance is the representation of a process during its execution.
@@ -29,7 +28,7 @@ import org.drools.process.instance.timer.TimerListener;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public interface ProcessInstance extends ContextInstanceContainer, ContextableInstance, WorkItemListener, TimerListener {
+public interface ProcessInstance extends ContextInstanceContainer, ContextableInstance, EventListener {
 
     int STATE_PENDING   = 0;
     int STATE_ACTIVE    = 1;

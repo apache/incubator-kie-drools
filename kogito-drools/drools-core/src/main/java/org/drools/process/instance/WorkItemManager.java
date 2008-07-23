@@ -91,7 +91,7 @@ public class WorkItemManager implements Externalizable {
             workItem.setState(WorkItem.COMPLETED);
             // process instance may have finished already
             if (processInstance != null) {
-                processInstance.workItemCompleted(workItem);
+                processInstance.signalEvent("workItemCompleted", workItem);
             }
             workItems.remove(new Long(id));
             workingMemory.fireAllRules();
@@ -106,7 +106,7 @@ public class WorkItemManager implements Externalizable {
             workItem.setState(WorkItem.ABORTED);
             // process instance may have finished already
             if (processInstance != null) {
-                processInstance.workItemAborted(workItem);
+                processInstance.signalEvent("workItemAborted", workItem);
             }
             workItems.remove(new Long(id));
             workingMemory.fireAllRules();

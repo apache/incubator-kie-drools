@@ -26,8 +26,8 @@ import org.drools.WorkingMemory;
 import org.drools.common.InternalRuleBase;
 import org.drools.process.core.Work;
 import org.drools.process.core.context.variable.VariableScope;
+import org.drools.process.instance.EventListener;
 import org.drools.process.instance.WorkItem;
-import org.drools.process.instance.WorkItemListener;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.process.instance.impl.WorkItemImpl;
 import org.drools.workflow.core.node.WorkItemNode;
@@ -38,7 +38,7 @@ import org.drools.workflow.instance.NodeInstance;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class WorkItemNodeInstance extends EventNodeInstance implements WorkItemListener {
+public class WorkItemNodeInstance extends EventBasedNodeInstance implements EventListener {
 
     private static final long serialVersionUID = 400L;
     private static final Pattern PARAMETER_MATCHER = Pattern.compile("#\\{(\\S+)\\}", Pattern.DOTALL);
@@ -170,12 +170,22 @@ public class WorkItemNodeInstance extends EventNodeInstance implements WorkItemL
     
     public void addEventListeners() {
         super.addEventListeners();
-        getProcessInstance().addWorkItemListener(this);
+        getProcessInstance().addEventListener("workItemCompleted", this);
+        getProcessInstance().addEventListener("workItemAborted", this);
     }
     
     public void removeEventListeners() {
         super.removeEventListeners();
-        getProcessInstance().removeWorkItemListener(this);
+        getProcessInstance().removeEventListener("workItemCompleted", this);
+        getProcessInstance().removeEventListener("workItemAborted", this);
+    }
+    
+    public void signalEvent(String type, Object event) {
+    	if ("workItemCompleted".equals(type)) {
+    		workItemCompleted((WorkItem) event);
+    	} else if ("workItemAborted".equals(type)) {
+    		workItemAborted((WorkItem) event);
+    	} 
     }
 
     public void workItemAborted(WorkItem workItem) {

@@ -1,12 +1,12 @@
 package org.drools.workflow.instance.node;
 
 import org.drools.process.core.timer.Timer;
-import org.drools.process.instance.timer.TimerListener;
+import org.drools.process.instance.EventListener;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.TimerNode;
 import org.drools.workflow.instance.NodeInstance;
 
-public class TimerNodeInstance extends EventNodeInstance implements TimerListener {
+public class TimerNodeInstance extends EventBasedNodeInstance implements EventListener {
 
     private static final long serialVersionUID = 400L;
     
@@ -36,10 +36,13 @@ public class TimerNodeInstance extends EventNodeInstance implements TimerListene
         timerId = timer.getId();
     }
 
-    public void timerTriggered(Timer timer) {
-        if (timer.getId() == timerId) {
-            triggerCompleted();
-        }
+    public void signalEvent(String type, Object event) {
+    	if ("timerTriggered".equals(type)) {
+    		Timer timer = (Timer) event;
+            if (timer.getId() == timerId) {
+                triggerCompleted();
+            }
+    	}
     }
     
     public void triggerCompleted() {
@@ -55,12 +58,12 @@ public class TimerNodeInstance extends EventNodeInstance implements TimerListene
     
     public void addEventListeners() {
         super.addEventListeners();
-        getProcessInstance().addTimerListener(this);
+        getProcessInstance().addEventListener("timerTriggered", this);
     }
     
     public void removeEventListeners() {
         super.removeEventListeners();
-        getProcessInstance().removeTimerListener(this);
+        getProcessInstance().removeEventListener("timerTriggered", this);
     }
 
 }

@@ -19,26 +19,28 @@ package org.drools.workflow.instance.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.drools.Agenda;
 import org.drools.common.EventSupport;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.process.core.timer.Timer;
+import org.drools.process.core.event.EventFilter;
+import org.drools.process.instance.EventListener;
 import org.drools.process.instance.ProcessInstance;
-import org.drools.process.instance.WorkItem;
-import org.drools.process.instance.WorkItemListener;
 import org.drools.process.instance.impl.ProcessInstanceImpl;
-import org.drools.process.instance.timer.TimerListener;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.NodeContainer;
 import org.drools.workflow.core.WorkflowProcess;
+import org.drools.workflow.core.node.EventNode;
 import org.drools.workflow.instance.NodeInstance;
 import org.drools.workflow.instance.NodeInstanceContainer;
 import org.drools.workflow.instance.WorkflowProcessInstance;
+import org.drools.workflow.instance.node.EventBasedNodeInstance;
 import org.drools.workflow.instance.node.EventNodeInstance;
 
 /**
@@ -53,8 +55,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 
     private final List<NodeInstance> nodeInstances = new ArrayList<NodeInstance>();;
     private long nodeInstanceCounter = 0;
-    private List<WorkItemListener> workItemListeners = new CopyOnWriteArrayList<WorkItemListener>();
-    private List<TimerListener> timerListeners = new CopyOnWriteArrayList<TimerListener>();
+    private Map<String, List<EventListener>> eventListeners = new HashMap<String, List<EventListener>>();
 
     public NodeContainer getNodeContainer() {
         return getWorkflowProcess();
@@ -158,8 +159,8 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 
     public void disconnect() {
         for (NodeInstance nodeInstance: nodeInstances) {
-            if (nodeInstance instanceof EventNodeInstance) {
-                ((EventNodeInstance) nodeInstance).removeEventListeners();
+            if (nodeInstance instanceof EventBasedNodeInstance) {
+                ((EventBasedNodeInstance) nodeInstance).removeEventListeners();
             }
         }
         super.disconnect();
@@ -168,8 +169,8 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
     public void reconnect() {
         super.reconnect();
         for (NodeInstance nodeInstance: nodeInstances) {
-            if (nodeInstance instanceof EventNodeInstance) {
-                ((EventNodeInstance) nodeInstance).addEventListeners();
+            if (nodeInstance instanceof EventBasedNodeInstance) {
+                ((EventBasedNodeInstance) nodeInstance).addEventListeners();
             }
         }
     }
@@ -184,39 +185,50 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
         sb.append( "]" );
         return sb.toString();
     }
-
-    public void workItemCompleted(WorkItem workItem) {
-        for (WorkItemListener listener: workItemListeners) {
-            listener.workItemCompleted(workItem);
-        }
-    }
-
-    public void workItemAborted(WorkItem workItem) {
-        for (WorkItemListener listener: workItemListeners) {
-            listener.workItemCompleted(workItem);
-        }
-    }
     
-    public void addWorkItemListener(WorkItemListener listener) {
-        workItemListeners.add(listener);
-    }
-    
-    public void removeWorkItemListener(WorkItemListener listener) {
-        workItemListeners.remove(listener);
-    }
-    
-    public void timerTriggered(Timer timer) {
-        for (TimerListener listener: timerListeners) {
-            listener.timerTriggered(timer);
-        }
+    public void signalEvent(String type, Object event) {
+    	List<EventListener> listeners = eventListeners.get(type);
+    	if (listeners != null) {
+    		for (EventListener listener: listeners) {
+    			listener.signalEvent(type, event);
+    		}
+    	} else {
+    		for (Node node: getWorkflowProcess().getNodes()) {
+    			if (node instanceof EventNode) {
+    				if (acceptsEvent((EventNode) node, type, event)) {
+    					EventNodeInstance eventNodeInstance = (EventNodeInstance) getNodeInstance(node);
+    					eventNodeInstance.setEvent(type, event);
+    					eventNodeInstance.trigger(null, null);
+    				}
+    			}
+    		}
+    	}
     }
 
-    public void addTimerListener(TimerListener listener) {
-        timerListeners.add(listener);
+    public boolean acceptsEvent(EventNode eventNode, String type, Object event) {
+    	List<EventFilter> eventFilters = eventNode.getEventFilters();
+    	for (EventFilter filter: eventFilters) {
+    		if (!filter.acceptsEvent(type, event)) {
+    			return false;
+    		}
+    	}
+    	return true;
     }
     
-    public void removeTimerListener(TimerListener listener) {
-        timerListeners.remove(listener);
+    public void addEventListener(String type, EventListener listener) {
+    	List<EventListener> listeners = eventListeners.get(type);
+    	if (listeners == null) {
+    		listeners = new CopyOnWriteArrayList<EventListener>();
+    		eventListeners.put(type, listeners);
+    	}
+        listeners.add(listener);
+    }
+    
+    public void removeEventListener(String type, EventListener listener) {
+    	List<EventListener> listeners = eventListeners.get(type);
+    	if (listeners != null) {
+    		listeners.remove(listener);
+    	}
     }
     
 }
