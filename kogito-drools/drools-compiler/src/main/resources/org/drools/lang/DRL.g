@@ -133,6 +133,7 @@ tokens {
 	private List<DroolsParserException> errors = new ArrayList<DroolsParserException>();
 	private DroolsParserExceptionFactory errorMessageFactory = new DroolsParserExceptionFactory(tokenNames, paraphrases);
 	private String source = "unknown";
+	private boolean lookaheadTest = false;
 
 	private boolean validateLT(int LTNumber, String text) {
 		if (null == input)
@@ -158,6 +159,40 @@ tokens {
 							.getCharPositionInLine(), ((DroolsToken) token)
 							.getStopIndex()));
 		}
+	}
+	
+	private boolean validateRestr() {
+		int lookahead = 2;
+		int countParen = 1;
+
+		while (true) {
+			if (input.LA(lookahead) == COMMA) {
+				break;
+			} else if (input.LA(lookahead) == LEFT_PAREN) {
+				countParen++;
+			} else if (input.LA(lookahead) == RIGHT_PAREN) {
+				countParen--;
+			}
+			if (countParen == 0){
+				break;
+			}
+			lookahead++;
+		}
+		
+		boolean returnValue = false;
+		int activeIndex = input.index();
+		lookaheadTest = true;
+		try {
+			input.seek(input.LT(2).getTokenIndex());
+			constraint_expression();
+			returnValue = true;
+		} catch (RecognitionException e) {
+		} finally{
+			input.seek(activeIndex);
+		}
+		lookaheadTest = false;
+
+		return returnValue;
 	}
 	
 	private String safeSubstring(String text, int start, int end) {
@@ -717,11 +752,11 @@ label	:	value=ID COLON -> VT_LABEL[$value]
 	;
 
 or_restr_connective
-	:	and_restr_connective ((DOUBLE_PIPE)=> DOUBLE_PIPE^ and_restr_connective )* 
+	:	and_restr_connective ({(validateRestr())}?=> DOUBLE_PIPE^ and_restr_connective )* 
 	;
 
 and_restr_connective
-	:	constraint_expression ((DOUBLE_AMPER)=> DOUBLE_AMPER^ constraint_expression )*
+	:	constraint_expression ({(validateRestr())}?=> DOUBLE_AMPER^ constraint_expression )*
 	;
 
 constraint_expression
@@ -731,6 +766,14 @@ k=3;
 	|	simple_operator
 	|	LEFT_PAREN! or_restr_connective RIGHT_PAREN
 	;
+	catch [ RecognitionException re ] {
+		if (!lookaheadTest){
+			reportError(re);
+			recover(input, re);
+		} else {
+			throw re;
+		}
+	}
 
 simple_operator
 	:	(EQUAL^
