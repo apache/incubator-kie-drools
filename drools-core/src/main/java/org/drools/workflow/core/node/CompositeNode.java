@@ -2,7 +2,6 @@ package org.drools.workflow.core.node;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -210,38 +209,56 @@ public class CompositeNode extends NodeImpl implements NodeContainer {
     
     public void validateRemoveIncomingConnection(final String type, final Connection connection) {
         CompositeNode.NodeAndType nodeAndType = internalGetLinkedIncomingNode(type);
-        ((NodeImpl) nodeAndType.getNode()).validateRemoveIncomingConnection(nodeAndType.getType(), connection);
+        for (Connection inConnection: nodeAndType.getNode().getIncomingConnections(nodeAndType.getType())) {
+            if (((CompositeNodeStart) inConnection.getFrom()).getInNodeId() == connection.getFrom().getId()) {
+                ((NodeImpl) nodeAndType.getNode()).validateRemoveIncomingConnection(nodeAndType.getType(), inConnection);
+                return;
+            }
+        }
+        throw new IllegalArgumentException(
+            "Could not find internal incoming connection for node");
     }
     
     public void removeIncomingConnection(String type, Connection connection) {
         super.removeIncomingConnection(type, connection);
-        CompositeNode.NodeAndType inNode = internalGetLinkedIncomingNode(type);
-        List<Connection> connections = inNode.getNode().getIncomingConnections(inNode.getType());
-        for (Iterator<Connection> iterator = connections.iterator(); iterator.hasNext(); ) {
-            Connection internalConnection = iterator.next();
-            if (((CompositeNodeStart) internalConnection.getFrom()).getInNode().equals(connection.getFrom())) {
-                ((ConnectionImpl) internalConnection).terminate();
-                removeNode(internalConnection.getFrom());
+        CompositeNode.NodeAndType nodeAndType = internalGetLinkedIncomingNode(type);
+        for (Connection inConnection: nodeAndType.getNode().getIncomingConnections(nodeAndType.getType())) {
+            if (((CompositeNodeStart) inConnection.getFrom()).getInNodeId() == connection.getFrom().getId()) {
+                Node compositeNodeStart = inConnection.getFrom();
+                ((ConnectionImpl) inConnection).terminate();
+                removeNode(compositeNodeStart);
+                return;
             }
         }
+        throw new IllegalArgumentException(
+            "Could not find internal incoming connection for node");
     }
     
     public void validateRemoveOutgoingConnection(final String type, final Connection connection) {
         CompositeNode.NodeAndType nodeAndType = internalGetLinkedOutgoingNode(type);
-        ((NodeImpl) nodeAndType.getNode()).validateRemoveOutgoingConnection(nodeAndType.getType(), connection);
+        for (Connection outConnection: nodeAndType.getNode().getOutgoingConnections(nodeAndType.getType())) {
+            if (((CompositeNodeEnd) outConnection.getTo()).getOutNodeId() == connection.getTo().getId()) {
+                ((NodeImpl) nodeAndType.getNode()).validateRemoveOutgoingConnection(nodeAndType.getType(), outConnection);
+                return;
+            }
+        }
+        throw new IllegalArgumentException(
+            "Could not find internal outgoing connection for node");
     }
     
     public void removeOutgoingConnection(String type, Connection connection) {
         super.removeOutgoingConnection(type, connection);
-        CompositeNode.NodeAndType outNode = internalGetLinkedOutgoingNode(type);
-        List<Connection> connections = outNode.getNode().getOutgoingConnections(outNode.getType());
-        for (Iterator<Connection> iterator = connections.iterator(); iterator.hasNext(); ) {
-            Connection internalConnection = iterator.next();
-            if (((CompositeNodeEnd) internalConnection.getTo()).getOutNode().equals(connection.getTo())) {
-                ((ConnectionImpl) internalConnection).terminate();
-                removeNode(internalConnection.getTo());
+        CompositeNode.NodeAndType nodeAndType = internalGetLinkedOutgoingNode(type);
+        for (Connection outConnection: nodeAndType.getNode().getOutgoingConnections(nodeAndType.getType())) {
+            if (((CompositeNodeEnd) outConnection.getTo()).getOutNodeId() == connection.getTo().getId()) {
+                Node compositeNodeEnd = outConnection.getTo();
+                ((ConnectionImpl) outConnection).terminate();
+                removeNode(compositeNodeEnd);
+                return;
             }
         }
+        throw new IllegalArgumentException(
+            "Could not find internal outgoing connection for node");
     }
     
     public class NodeAndType {
