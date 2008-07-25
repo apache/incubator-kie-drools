@@ -28,9 +28,17 @@ public class FaultNode extends SequenceNode {
 	private static final long serialVersionUID = 400L;
 	
 	private String faultName;
-	private String faultData;
+	private String faultVariable;
 
-    public String getFaultName() {
+    public String getFaultVariable() {
+		return faultVariable;
+	}
+
+	public void setFaultVariable(String faultVariable) {
+		this.faultVariable = faultVariable;
+	}
+
+	public String getFaultName() {
 		return faultName;
 	}
 

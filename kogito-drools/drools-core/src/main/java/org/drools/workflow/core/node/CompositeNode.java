@@ -137,8 +137,8 @@ public class CompositeNode extends NodeImpl implements NodeContainer {
         return outConnectionMap.get(outType);
     }
     
-    public CompositeNode.NodeAndType internalGetLinkedOutgoingNode(String inType) {
-        return inConnectionMap.get(inType);
+    public CompositeNode.NodeAndType internalGetLinkedOutgoingNode(String outType) {
+        return outConnectionMap.get(outType);
     }
 
     public Map<String, CompositeNode.NodeAndType> getLinkedIncomingNodes() {

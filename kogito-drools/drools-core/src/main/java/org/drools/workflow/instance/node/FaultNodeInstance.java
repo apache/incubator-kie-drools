@@ -17,8 +17,10 @@ package org.drools.workflow.instance.node;
  */
 
 import org.drools.process.core.context.exception.ExceptionScope;
+import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.context.exception.ExceptionScopeInstance;
+import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.FaultNode;
 import org.drools.workflow.instance.NodeInstance;
@@ -46,10 +48,27 @@ public class FaultNodeInstance extends NodeInstanceImpl {
         ExceptionScopeInstance exceptionScopeInstance = (ExceptionScopeInstance)
             resolveContextInstance(ExceptionScope.EXCEPTION_SCOPE, faultNode.getFaultName());
         if (exceptionScopeInstance != null) {
-            exceptionScopeInstance.handleException(faultNode.getFaultName(), null);
+        	handleException(exceptionScopeInstance);
         } else {
         	getProcessInstance().setState(ProcessInstance.STATE_ABORTED);
         }
+    }
+    
+    protected void handleException(ExceptionScopeInstance exceptionScopeInstance) {
+    	Object value = null;
+    	String faultVariable = getFaultNode().getFaultVariable();
+    	if (faultVariable != null) {
+    		VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
+            	resolveContextInstance(VariableScope.VARIABLE_SCOPE, faultVariable);
+            if (variableScopeInstance != null) {
+                value = variableScopeInstance.getVariable(faultVariable);
+            } else {
+                System.err.println("Could not find variable scope for variable " + faultVariable);
+                System.err.println("when trying to execute fault node " + getFaultNode().getName());
+                System.err.println("Continuing without setting value.");
+            }
+    	}
+        exceptionScopeInstance.handleException(getFaultNode().getFaultName(), value);
     }
 
 }
