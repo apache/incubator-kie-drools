@@ -164,8 +164,10 @@ public class WorkItemNodeInstance extends EventBasedNodeInstance implements Even
     }
     
     public void cancel() {
+    	if (workItemId != -1) {
+    		getProcessInstance().getWorkingMemory().getWorkItemManager().internalAbortWorkItem(workItemId);
+    	}
         super.cancel();
-        getProcessInstance().getWorkingMemory().getWorkItemManager().internalAbortWorkItem(workItem.getId());
     }
     
     public void addEventListeners() {
