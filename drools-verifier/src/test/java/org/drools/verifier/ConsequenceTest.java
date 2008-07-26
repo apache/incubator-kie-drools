@@ -1,5 +1,6 @@
 package org.drools.verifier;
 
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -21,44 +22,43 @@ import org.drools.verifier.report.components.Severity;
  */
 public class ConsequenceTest extends TestBase {
 
-	public void testMissingConsequence() throws Exception {
-		StatelessSession session = getStatelessSession(this.getClass()
-				.getResourceAsStream("Consequence.drl"));
+    public void testMissingConsequence() throws Exception {
 
-		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
-				"No action - possibly commented out"));
+        InputStream in = getClass().getResourceAsStream( "Consequence.drl" );
 
-		VerifierResult result = VerifierResultFactory.createVerifierResult();
+        StatelessSession session = getStatelessSession( in );
 
-		Collection<? extends Object> testData = getTestData(this.getClass()
-				.getResourceAsStream("ConsequenceTest.drl"), result
-				.getVerifierData());
+        session.setAgendaFilter( new RuleNameMatchesAgendaFilter( "No action - possibly commented out" ) );
 
-		session.setGlobal("result", result);
+        VerifierResult result = VerifierResultFactory.createVerifierResult();
 
-		session.executeWithResults(testData);
+        Collection< ? extends Object> testData = getTestData( this.getClass().getResourceAsStream( "ConsequenceTest.drl" ),
+                                                              result.getVerifierData() );
 
-		Iterator<VerifierMessageBase> iter = result.getBySeverity(
-				Severity.WARNING).iterator();
+        session.setGlobal( "result",
+                           result );
 
-		Set<String> rulesThatHadErrors = new HashSet<String>();
-		while (iter.hasNext()) {
-			Object o = (Object) iter.next();
-			if (o instanceof VerifierMessage) {
-				VerifierRule rule = (VerifierRule) ((VerifierMessage) o)
-						.getFaulty();
-				rulesThatHadErrors.add(rule.getRuleName());
-			}
-		}
+        session.executeWithResults( testData );
 
-		assertFalse(rulesThatHadErrors.contains("Has a consequence 1"));
-		assertTrue(rulesThatHadErrors.remove("Missing consequence 1"));
-		assertTrue(rulesThatHadErrors.remove("Missing consequence 2"));
+        Iterator<VerifierMessageBase> iter = result.getBySeverity( Severity.WARNING ).iterator();
 
-		if (!rulesThatHadErrors.isEmpty()) {
-			for (String string : rulesThatHadErrors) {
-				fail("Rule " + string + " caused an error.");
-			}
-		}
-	}
+        Set<String> rulesThatHadErrors = new HashSet<String>();
+        while ( iter.hasNext() ) {
+            Object o = (Object) iter.next();
+            if ( o instanceof VerifierMessage ) {
+                VerifierRule rule = (VerifierRule) ((VerifierMessage) o).getFaulty();
+                rulesThatHadErrors.add( rule.getRuleName() );
+            }
+        }
+
+        assertFalse( rulesThatHadErrors.contains( "Has a consequence 1" ) );
+        assertTrue( rulesThatHadErrors.remove( "Missing consequence 1" ) );
+        assertTrue( rulesThatHadErrors.remove( "Missing consequence 2" ) );
+
+        if ( !rulesThatHadErrors.isEmpty() ) {
+            for ( String string : rulesThatHadErrors ) {
+                fail( "Rule " + string + " caused an error." );
+            }
+        }
+    }
 }

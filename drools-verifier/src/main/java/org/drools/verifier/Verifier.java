@@ -20,113 +20,119 @@ import org.drools.verifier.report.html.ComponentsReportModeller;
  */
 public class Verifier {
 
-	static RuleBase verifierKnowledgeBase;
+    static RuleBase        verifierKnowledgeBase;
 
+    private VerifierResult result = VerifierResultFactory.createVerifierResult();
 
-	private VerifierResult result = VerifierResultFactory
-			.createVerifierResult();
+    public void addPackageDescr(PackageDescr descr) {
+        try {
 
-	public void addPackageDescr(PackageDescr descr) {
-		try {
+            PackageDescrFlattener ruleFlattener = new PackageDescrFlattener();
 
-			PackageDescrFlattener ruleFlattener = new PackageDescrFlattener();
+            ruleFlattener.addPackageDescrToData( descr,
+                                                 result.getVerifierData() );
 
-			ruleFlattener.addPackageDescrToData(descr, result
-					.getVerifierData());
+        } catch ( Throwable t ) {
+            t.printStackTrace();
+        }
+    }
 
-		} catch (Throwable t) {
-			t.printStackTrace();
-		}
-	}
+    /**
+     * As the analyzer uses rules itself, this will reload the knowledge base.
+     * @throws Exception
+     */
+    public synchronized void reloadAnalysisKnowledgeBase() throws Exception {
+        verifierKnowledgeBase = createRuleBase();
+    }
 
+    /**
+     * 
+     * This will run the verifier.
+     * 
+     * @return true if everything worked.
+     */
+    public boolean fireAnalysis() {
+        try {
 
-	/**
-	 * As the analyzer uses rules itself, this will reload the knowledge base.
-	 * @throws Exception
-	 */
-	public synchronized void reloadAnalysisKnowledgeBase() throws Exception {
-		verifierKnowledgeBase = createRuleBase();
-	}
+            if ( this.verifierKnowledgeBase == null ) {
+                synchronized ( this.getClass() ) {
+                    verifierKnowledgeBase = createRuleBase();
+                }
+            }
 
-	/**
-	 * This will run the verifier.
-	 */
-	public void fireAnalysis() {
-		try {
+            WorkingMemory workingMemory = verifierKnowledgeBase.newStatefulSession();
 
-			if (this.verifierKnowledgeBase == null) {
-				synchronized (this.getClass()) {
-					verifierKnowledgeBase = createRuleBase();
-				}
-			}
+            Collection< ? extends Object> c = result.getVerifierData().getAll();
 
-			WorkingMemory workingMemory = verifierKnowledgeBase.newStatefulSession();
+            for ( Object o : c ) {
+                workingMemory.insert( o );
+            }
 
-			Collection<? extends Object> c = result.getVerifierData().getAll();
+            // Object that returns the results.
+            workingMemory.setGlobal( "result",
+                                     result );
+            workingMemory.fireAllRules();
 
-			for (Object o : c) {
-				workingMemory.insert(o);
-			}
+        } catch ( Throwable t ) {
+            t.printStackTrace();
 
-			// Object that returns the results.
-			workingMemory.setGlobal("result", result);
-			workingMemory.fireAllRules();
+            return false;
+        }
 
-		} catch (Throwable t) {
-			t.printStackTrace();
-		}
-	}
+        return true;
+    }
 
-	/**
-	 * Returns the verifier results as plain text.
-	 *
-	 * @return Analysis results as plain text.
-	 */
-	public String getResultAsPlainText() {
-		return ReportModeller.writePlainText(result);
-	}
+    /**
+     * Returns the verifier results as plain text.
+     *
+     * @return Analysis results as plain text.
+     */
+    public String getResultAsPlainText() {
+        return ReportModeller.writePlainText( result );
+    }
 
-	/**
-	 * Returns the verifier results as XML.
-	 *
-	 * @return Analysis results as XML
-	 */
-	public String getResultAsXML() {
-		return ReportModeller.writeXML(result);
-	}
+    /**
+     * Returns the verifier results as XML.
+     *
+     * @return Analysis results as XML
+     */
+    public String getResultAsXML() {
+        return ReportModeller.writeXML( result );
+    }
 
-	/**
-	 * Returns the verifier results as HTML.
-	 *
-	 * @return Analysis results as HTML
-	 */
-	public void writeComponentsHTML(String path) {
-		ComponentsReportModeller.writeHTML(path, result);
-	}
+    /**
+     * Returns the verifier results as HTML.
+     *
+     * @return Analysis results as HTML
+     */
+    public void writeComponentsHTML(String path) {
+        ComponentsReportModeller.writeHTML( path,
+                                            result );
+    }
 
-	/**
-	 * Returns the verifier results as <code>AnalysisResult</code> object.
-	 *
-	 * @return Analysis result
-	 */
-	public VerifierResult getResult() {
-		return result;
-	}
+    /**
+     * Returns the verifier results as <code>AnalysisResult</code> object.
+     *
+     * @return Analysis result
+     */
+    public VerifierResult getResult() {
+        return result;
+    }
 
-	private static RuleBase createRuleBase() throws Exception {
+    private static RuleBase createRuleBase() throws Exception {
 
-		RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
 
-		Collection<Package> packages = RuleLoader.loadPackages();
-		for (Package pkg : packages) {
-			try {
-				ruleBase.addPackage(pkg);
-			} catch (Exception e) {
-				throw new Exception("Adding package " + pkg.getName()
-						+ " caused an error.", e);
-			}
-		}
+        Collection<Package> packages = RuleLoader.loadPackages();
+        for ( Package pkg : packages ) {
+            try {
+                ruleBase.addPackage( pkg );
+            } catch ( Exception e ) {
+                throw new Exception( "Adding package " + pkg.getName() + " caused an error.",
+                                     e );
+            }
+        }
 
-		return ruleBase;
-	}
+        return ruleBase;
+    }
 }
