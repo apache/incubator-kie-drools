@@ -4,7 +4,7 @@ import com.sample.DroolsTest.Message;
 
 rule "Correct eval order 1"
 	when
-		Foo( )
+		Foo()
 		eval( func(1, 2) )
 	then
 		// Something
@@ -13,7 +13,7 @@ end
 rule "Wrong eval order 1"
 	when
 		eval( func(1, 2) )
-		Foo( )
+		Foo()
 	then
 		// Something
 end

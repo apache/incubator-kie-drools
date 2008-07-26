@@ -13,66 +13,76 @@ import org.drools.verifier.report.components.Severity;
 
 public class VerifierTest extends TestCase {
 
-	public void testAnalyzer() throws Exception {
-		Verifier anal = new Verifier();
+    public void testAnalyzer() throws Exception {
+        Verifier anal = new Verifier();
 
-		DrlParser p = new DrlParser();
-		InputStreamReader reader = new InputStreamReader(this.getClass().getResourceAsStream("Misc3.drl"));
-		PackageDescr pkg = p.parse(reader);
-		assertFalse(p.hasErrors());
+        DrlParser p = new DrlParser();
+        InputStreamReader reader = new InputStreamReader( this.getClass().getResourceAsStream( "Misc3.drl" ) );
+        PackageDescr pkg = p.parse( reader );
+        assertFalse( p.hasErrors() );
 
-		anal.addPackageDescr(pkg);
-		anal.fireAnalysis();
+        anal.addPackageDescr( pkg );
+        assertTrue( "Firing verifier failed.",
+                    anal.fireAnalysis() );
 
-		VerifierResult result = anal.getResult();
-		assertNotNull(result);
-		assertEquals(0, result.getBySeverity(Severity.ERROR).size());
-		assertEquals(10, result.getBySeverity(Severity.WARNING).size());
-		assertEquals(16, result.getBySeverity(Severity.NOTE).size());
+        VerifierResult result = anal.getResult();
+        assertNotNull( result );
+        assertEquals( 0,
+                      result.getBySeverity( Severity.ERROR ).size() );
+        assertEquals( 10,
+                      result.getBySeverity( Severity.WARNING ).size() );
+        assertEquals( 16,
+                      result.getBySeverity( Severity.NOTE ).size() );
 
+        //check it again
+        anal = new Verifier();
 
-		//check it again
-		anal = new Verifier();
+        p = new DrlParser();
+        reader = new InputStreamReader( this.getClass().getResourceAsStream( "Misc3.drl" ) );
+        pkg = p.parse( reader );
+        assertFalse( p.hasErrors() );
 
-		p = new DrlParser();
-		reader = new InputStreamReader(this.getClass().getResourceAsStream("Misc3.drl"));
-		pkg = p.parse(reader);
-		assertFalse(p.hasErrors());
+        anal.addPackageDescr( pkg );
+        assertTrue( "Firing verifier failed.",
+                    anal.fireAnalysis() );
 
-		anal.addPackageDescr(pkg);
-		anal.fireAnalysis();
+        result = anal.getResult();
+        assertNotNull( result );
+        assertEquals( 0,
+                      result.getBySeverity( Severity.ERROR ).size() );
+        assertEquals( 10,
+                      result.getBySeverity( Severity.WARNING ).size() );
+        assertEquals( 16,
+                      result.getBySeverity( Severity.NOTE ).size() );
 
-		result = anal.getResult();
-		assertNotNull(result);
-		assertEquals(0, result.getBySeverity(Severity.ERROR).size());
-		assertEquals(10, result.getBySeverity(Severity.WARNING).size());
-		assertEquals(16, result.getBySeverity(Severity.NOTE).size());
+    }
 
+    public void testCacheKnowledgeBase() throws Exception {
+        Verifier anal = new Verifier();
+        DrlParser p = new DrlParser();
+        InputStreamReader reader = new InputStreamReader( this.getClass().getResourceAsStream( "Misc3.drl" ) );
+        PackageDescr pkg = p.parse( reader );
+        assertFalse( p.hasErrors() );
 
+        anal.addPackageDescr( pkg );
+        anal.fireAnalysis();
 
+        RuleBase original = Verifier.verifierKnowledgeBase;
 
-	}
+        Verifier anal2 = new Verifier();
 
-	public void testCacheKnowledgeBase() throws Exception {
-		Verifier anal = new Verifier();
-		DrlParser p = new DrlParser();
-		InputStreamReader reader = new InputStreamReader(this.getClass().getResourceAsStream("Misc3.drl"));
-		PackageDescr pkg = p.parse(reader);
-		assertFalse(p.hasErrors());
+        assertSame( original,
+                    Verifier.verifierKnowledgeBase );
 
-		anal.addPackageDescr(pkg);
-		anal.fireAnalysis();
+        try {
+            anal2.reloadAnalysisKnowledgeBase();
+        } catch ( Exception e ) {
+            fail( "Couldn't reload the knowledge base." );
+        }
 
-		RuleBase original = Verifier.verifierKnowledgeBase;
+        assertNotSame( original,
+                       Verifier.verifierKnowledgeBase );
 
-		Verifier anal2 = new Verifier();
-
-		assertSame(original, Verifier.verifierKnowledgeBase);
-
-		anal2.reloadAnalysisKnowledgeBase();
-		assertNotSame(original, Verifier.verifierKnowledgeBase);
-
-
-	}
+    }
 
 }

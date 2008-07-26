@@ -8,6 +8,7 @@ package org.drools.verifier.alwaysFalse
 #list any import classes here.
 import org.drools.verifier.components.Pattern;
 import org.drools.verifier.components.PatternPossibility;
+import org.drools.verifier.components.VerifierRule;
 
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.MessageType;
@@ -36,6 +37,9 @@ rule "Pattern that is always false"
 	when
 		$p :Pattern()
 		
+		# Check that there is at least one pattern possibility.
+		exists PatternPossibility( patternId == $p.id )
+		
 		# All the pattern possibilities for pattern need to be in conflict
 		forall( 
 			$pp :PatternPossibility(
@@ -47,11 +51,13 @@ rule "Pattern that is always false"
 				right memberOf $pp.items
 			)
 		)
+		
+		$r :VerifierRule( id == $p.ruleId )
 	then 
 		# Report an error
 		result.add( new VerifierMessage(
 								Severity.ERROR,
 								MessageType.ALWAYS_FALSE,
 								$p,
-								$p + " can never be satisfied." ) );
+								$p + " in " + $r + " can never be satisfied." ) );
 end

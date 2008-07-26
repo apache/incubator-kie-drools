@@ -10,6 +10,7 @@ package org.drools.verifier.alwaysTrue
 import org.drools.verifier.components.Restriction;
 import org.drools.verifier.components.Pattern;
 import org.drools.verifier.components.PatternPossibility;
+import org.drools.verifier.components.VerifierRule;
 
 import org.drools.verifier.report.components.AlwaysTrue;
 import org.drools.verifier.report.components.Opposites;
@@ -21,6 +22,25 @@ import org.drools.verifier.dao.VerifierResult;
 
 global VerifierResult result;
 
+
+
+rule "Pattern possibility that is always true"
+	when
+		a :Restriction()
+		b :Restriction()
+		$pp :PatternPossibility()
+		
+		Opposites(
+			(
+				left == a && right memberof $pp.items
+			) && (
+				left == b && right memberof $pp.items
+			)
+		)
+	then 
+#		insert( new AlwaysTrue( $pp ));
+end
+/*
 #
 # Finds pattern possibilities that are always true.
 #
@@ -75,6 +95,9 @@ rule "Pattern that is always true"
 	when
 		$p :Pattern()
 
+		# Only report the ones that have restrictions.
+		exists PatternPossibility( patternId == $p.id )
+		
 		# For each restriction in each pattern possibility for current pattern, 
 		# there needs to be an opposite.
 		forall(
@@ -86,10 +109,13 @@ rule "Pattern that is always true"
 				cause == $pp
 			)
 		)
+		
+		$r :VerifierRule( id == $p.ruleId )
 	then 
 		result.add( new VerifierMessage(
 								Severity.NOTE,
 								MessageType.ALWAYS_TRUE,
 								$p,
-								$p + " is always satisfied." ) );
+								$p + " in rule " + $r + " is always satisfied." ) );
 end
+*/

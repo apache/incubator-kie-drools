@@ -69,7 +69,6 @@ rule "Find pattern possibility redundancy"
 					&&
 					right == $r
 				)
-
 			)
 		)
 

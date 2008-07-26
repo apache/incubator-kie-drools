@@ -15,9 +15,7 @@ global VerifierResult result;
 
 rule "No action - possibly commented out"
 	when
-		$c :TextConsequence(
-			( text == null || text matches "" )
-		)
+		$c :TextConsequence( ( text == null || matches "" ) )
 
 		$r :VerifierRule(
 			id == $c.ruleId

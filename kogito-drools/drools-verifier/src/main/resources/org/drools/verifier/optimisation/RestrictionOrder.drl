@@ -145,19 +145,29 @@ rule "Optimise restrictions inside constraint"
 				$r2 :Restriction(
 					parent == $r1.parent,
 					orderNumber < $r1.orderNumber,
-					( operator == Operator.GREATER || == Operator.LESS || == Operator.GREATER_OR_EQUAL || == Operator.LESS_OR_EQUAL || == MatchesEvaluatorsDefinition.NOT_MATCHES || == Operator.NOT_EQUAL )
+					( operator 	== Operator.GREATER || 
+								== Operator.LESS || 
+								== Operator.GREATER_OR_EQUAL || 
+								== Operator.LESS_OR_EQUAL || 
+								== MatchesEvaluatorsDefinition.NOT_MATCHES || 
+								== Operator.NOT_EQUAL )
 				)
 		) or (
 				$r1 :Restriction(
-					( operator == Operator.GREATER || == Operator.LESS )
+					( operator 	== Operator.GREATER || 
+								== Operator.LESS )
 				)
 			and
 				$r2 :Restriction(
 					parent == $r1.parent,
 					orderNumber < $r1.orderNumber,
-					( operator == Operator.GREATER_OR_EQUAL || == Operator.LESS_OR_EQUAL || == MatchesEvaluatorsDefinition.NOT_MATCHES || == Operator.NOT_EQUAL )
+					( operator 	== Operator.GREATER_OR_EQUAL || 
+								== Operator.LESS_OR_EQUAL || 
+								== MatchesEvaluatorsDefinition.NOT_MATCHES || 
+								== Operator.NOT_EQUAL )
 				)
-		) or (
+		) 
+		or (
 				$r1 :Restriction(
 					( operator == Operator.GREATER_OR_EQUAL || == Operator.LESS_OR_EQUAL )
 				)
