@@ -27,88 +27,94 @@ import org.drools.verifier.report.components.Cause;
  */
 abstract public class TestBase extends TestCase {
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
 
-		System.setProperty("drools.dateformat", "dd-MMM-yyyy");
-	}
+        System.setProperty( "drools.dateformat",
+                            "dd-MMM-yyyy" );
+    }
 
-	public StatelessSession getStatelessSession(InputStream stream)
-			throws Exception {
-		// read in the source
-		Reader source = new InputStreamReader(stream);
+    public StatelessSession getStatelessSession(InputStream stream) throws Exception {
+        // read in the source
+        Reader source = new InputStreamReader( stream );
 
-		PackageBuilder builder = new PackageBuilder();
+        PackageBuilder builder = new PackageBuilder();
 
-		builder.addPackageFromDrl(source);
+        builder.addPackageFromDrl( source );
 
-		Package pkg = builder.getPackage();
+        Package pkg = builder.getPackage();
 
-		RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-		ruleBase.addPackage(pkg);
+        assertTrue( "Package was null.",
+                    pkg != null );
 
-		return ruleBase.newStatelessSession();
-	}
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        ruleBase.addPackage( pkg );
 
-	/**
-	 * Returns true if map contains redundancy where ruleName1 is redundant to
-	 * ruleName2.
-	 * 
-	 * @param map
-	 * @param ruleName1
-	 * @param ruleName2
-	 * @return True if redundancy exists.
-	 */
-	protected static boolean mapContains(Map<String, Set<String>> map,
-			String ruleName1, String ruleName2) {
-		if (map.containsKey(ruleName1)) {
-			Set<String> set = map.get(ruleName1);
-			boolean exists = set.remove(ruleName2);
+        return ruleBase.newStatelessSession();
+    }
 
-			// If set is empty remove key from map.
-			if (set.isEmpty()) {
-				map.remove(ruleName1);
-			}
-			return exists;
-		}
-		return false;
-	}
+    /**
+     * Returns true if map contains redundancy where ruleName1 is redundant to
+     * ruleName2.
+     * 
+     * @param map
+     * @param ruleName1
+     * @param ruleName2
+     * @return True if redundancy exists.
+     */
+    protected static boolean mapContains(Map<String, Set<String>> map,
+                                         String ruleName1,
+                                         String ruleName2) {
+        if ( map.containsKey( ruleName1 ) ) {
+            Set<String> set = map.get( ruleName1 );
+            boolean exists = set.remove( ruleName2 );
 
-	/**
-	 * Returns true if map contains redundancy where cause1 is redundant to
-	 * cause2.
-	 * 
-	 * @param map
-	 * @param cause1
-	 * @param cause2
-	 * @return True if redundancy exists.
-	 */
-	protected static boolean causeMapContains(Map<Cause, Set<Cause>> map,
-			Cause cause1, Cause cause2) {
-		if (map.containsKey(cause1)) {
-			Set<Cause> set = map.get(cause1);
-			boolean exists = set.remove(cause2);
+            // If set is empty remove key from map.
+            if ( set.isEmpty() ) {
+                map.remove( ruleName1 );
+            }
+            return exists;
+        }
+        return false;
+    }
 
-			// If set is empty remove key from map.
-			if (set.isEmpty()) {
-				map.remove(cause1);
-			}
-			return exists;
-		}
-		return false;
-	}
+    /**
+     * Returns true if map contains redundancy where cause1 is redundant to
+     * cause2.
+     * 
+     * @param map
+     * @param cause1
+     * @param cause2
+     * @return True if redundancy exists.
+     */
+    protected static boolean causeMapContains(Map<Cause, Set<Cause>> map,
+                                              Cause cause1,
+                                              Cause cause2) {
+        if ( map.containsKey( cause1 ) ) {
+            Set<Cause> set = map.get( cause1 );
+            boolean exists = set.remove( cause2 );
 
-	public Collection<? extends Object> getTestData(InputStream stream,
-			VerifierData data) throws Exception {
-		Reader drlReader = new InputStreamReader(stream);
-		PackageDescr descr = new DrlParser().parse(drlReader);
+            // If set is empty remove key from map.
+            if ( set.isEmpty() ) {
+                map.remove( cause1 );
+            }
+            return exists;
+        }
+        return false;
+    }
 
-		PackageDescrFlattener ruleFlattener = new PackageDescrFlattener();
+    public Collection< ? extends Object> getTestData(InputStream stream,
+                                                     VerifierData data) throws Exception {
+        Reader drlReader = new InputStreamReader( stream );
+        PackageDescr descr = new DrlParser().parse( drlReader );
 
-		ruleFlattener.addPackageDescrToData(descr, data);
+        PackageDescrFlattener ruleFlattener = new PackageDescrFlattener();
 
-		// Rules with relations
-		return data.getAll();
-	}
+        ruleFlattener.addPackageDescrToData( descr,
+                                             data );
+
+        // Rules with relations
+        return data.getAll();
+    }
 }
