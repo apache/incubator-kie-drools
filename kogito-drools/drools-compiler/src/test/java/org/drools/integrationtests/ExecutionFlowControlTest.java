@@ -229,7 +229,8 @@ public class ExecutionFlowControlTest extends TestCase {
         final Cheese brie12 = new Cheese( "brie",
                                           12 );
         workingMemory.insert( brie12 );
-        final AgendaGroup group1 = workingMemory.getAgenda().getAgendaGroup( "group1" );
+        DefaultAgenda agenda = (DefaultAgenda) workingMemory.getAgenda();
+        final AgendaGroup group1 = agenda.getAgendaGroup( "group1" );
         assertEquals( 1,
                       group1.size() );
 
@@ -244,11 +245,11 @@ public class ExecutionFlowControlTest extends TestCase {
         final Cheese cheddar20 = new Cheese( "cheddar",
                                              20 );
         workingMemory.insert( cheddar20 );
-        final AgendaGroup group2 = workingMemory.getAgenda().getAgendaGroup( "group1" );
+        final AgendaGroup group2 = agenda.getAgendaGroup( "group1" );
         assertEquals( 1,
                       group2.size() );
 
-        final RuleFlowGroupImpl rfg = (RuleFlowGroupImpl) workingMemory.getAgenda().getRuleFlowGroup( "ruleflow2" );
+        final RuleFlowGroupImpl rfg = (RuleFlowGroupImpl) agenda.getRuleFlowGroup( "ruleflow2" );
         rfg.setActive( true );
         final Cheese cheddar17 = new Cheese( "cheddar",
                                              17 );
@@ -304,7 +305,7 @@ public class ExecutionFlowControlTest extends TestCase {
         AgendaGroup group2 = agenda.getAgendaGroup( "group2" );
         agenda.setFocus( group2 );
 
-        RuleFlowGroupImpl rfg = (RuleFlowGroupImpl) wm.getAgenda().getRuleFlowGroup( "ruleflow2" );
+        RuleFlowGroupImpl rfg = (RuleFlowGroupImpl) ((DefaultAgenda)wm.getAgenda()).getRuleFlowGroup( "ruleflow2" );
         assertEquals( 3,
                       rfg.size() );
 
@@ -383,19 +384,20 @@ public class ExecutionFlowControlTest extends TestCase {
                                         12 );
         workingMemory.insert( brie );
 
-        final ActivationGroup activationGroup0 = workingMemory.getAgenda().getActivationGroup( "activation-group-0" );
+        DefaultAgenda agenda = (DefaultAgenda) workingMemory.getAgenda();
+        final ActivationGroup activationGroup0 = agenda.getActivationGroup( "activation-group-0" );
         assertEquals( 2,
                       activationGroup0.size() );
 
-        final ActivationGroup activationGroup3 = workingMemory.getAgenda().getActivationGroup( "activation-group-3" );
+        final ActivationGroup activationGroup3 = agenda.getActivationGroup( "activation-group-3" );
         assertEquals( 1,
                       activationGroup3.size() );
 
-        final AgendaGroup agendaGroup3 = workingMemory.getAgenda().getAgendaGroup( "agenda-group-3" );
+        final AgendaGroup agendaGroup3 = agenda.getAgendaGroup( "agenda-group-3" );
         assertEquals( 1,
                       agendaGroup3.size() );
 
-        final AgendaGroup agendaGroupMain = workingMemory.getAgenda().getAgendaGroup( "MAIN" );
+        final AgendaGroup agendaGroupMain = agenda.getAgendaGroup( "MAIN" );
         assertEquals( 3,
                       agendaGroupMain.size() );
 
@@ -723,21 +725,21 @@ public class ExecutionFlowControlTest extends TestCase {
         };
         
         workingMemory.addEventListener( listener );
-     
-        assertEquals( 0 , workingMemory.getAgenda().getRuleFlowGroup( "flowgroup-1" ).size() );
+        DefaultAgenda agenda = (DefaultAgenda) workingMemory.getAgenda(); 
+        assertEquals( 0 , agenda.getRuleFlowGroup( "flowgroup-1" ).size() );
         
         // We need to call fireAllRules here to get the InitialFact into the system, to the eval(true)'s kick in
         workingMemory.fireAllRules();
         
         // Now we have 4 in the RuleFlow, but not yet in the agenda
-        assertEquals( 4 , workingMemory.getAgenda().getRuleFlowGroup( "flowgroup-1" ).size() );
+        assertEquals( 4 , agenda.getRuleFlowGroup( "flowgroup-1" ).size() );
         
         // Check they aren't in the Agenda
-        assertEquals( 0, workingMemory.getAgenda().getAgendaGroup( "MAIN" ).size() );
+        assertEquals( 0, agenda.getAgendaGroup( "MAIN" ).size() );
         
         // Start the process, which shoudl populate the Agenda
         final ProcessInstance processInstance = workingMemory.startProcess( "ruleFlowClear" );
-        assertEquals( 4, workingMemory.getAgenda().getAgendaGroup( "MAIN" ).size() );
+        assertEquals( 4, agenda.getAgendaGroup( "MAIN" ).size() );
         
         
         // Check we have 0 activation cancellation events
@@ -746,8 +748,8 @@ public class ExecutionFlowControlTest extends TestCase {
         workingMemory.getAgenda().clearRuleFlowGroup( "flowgroup-1" );
         
         // Check the AgendaGroup and RuleFlowGroup  are now empty
-        assertEquals( 0, workingMemory.getAgenda().getAgendaGroup( "MAIN" ).size() );
-        assertEquals( 0 , workingMemory.getAgenda().getRuleFlowGroup( "flowgroup-1" ).size() );
+        assertEquals( 0, agenda.getAgendaGroup( "MAIN" ).size() );
+        assertEquals( 0 , agenda.getRuleFlowGroup( "flowgroup-1" ).size() );
         
         // Check we have four activation cancellation events
         assertEquals( 4, activations.size() );              

@@ -26,6 +26,7 @@ import org.drools.DroolsTestCase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.base.SalienceInteger;
+import org.drools.common.DefaultAgenda;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalAgenda;
 import org.drools.common.PropagationContextImpl;
@@ -65,7 +66,7 @@ public class RuleFlowGroupTest extends DroolsTestCase {
     public void testRuleFlowGroup() {
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
-        final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
+        final DefaultAgenda agenda = (DefaultAgenda) workingMemory.getAgenda();
 
         final List list = new ArrayList();
 
@@ -345,7 +346,7 @@ public class RuleFlowGroupTest extends DroolsTestCase {
     public void testRuleFlowGroup2() {
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
-        final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
+        final DefaultAgenda agenda = (DefaultAgenda) workingMemory.getAgenda();
 
         final List list = new ArrayList();
 

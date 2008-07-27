@@ -69,10 +69,14 @@ public class DroolsStreamUtils {
         if (compressed) {
             out = new GZIPOutputStream(out);
         }
+        DroolsObjectOutputStream doos = null;
         try {
-            new DroolsObjectOutputStream(out).writeObject(object);
-            out.flush();
+            doos = new DroolsObjectOutputStream(out);
+            doos.writeObject(object);
         } finally {
+            if( doos != null ) {
+                doos.close();
+            }
             if (compressed) {
                 out.close();
             }

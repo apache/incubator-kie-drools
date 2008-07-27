@@ -21,17 +21,13 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.common.EventSupport;
 import org.drools.RuleBaseConfiguration;
-import org.drools.common.BinaryHeapQueueAgendaGroup;
 import org.drools.common.AgendaItem;
 import org.drools.common.BaseNode;
+import org.drools.common.EventSupport;
 import org.drools.common.InternalAgenda;
-import org.drools.common.InternalAgendaGroup;
-import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleFlowGroup;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.common.LogicalDependency;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.ScheduledAgendaItem;
@@ -39,13 +35,9 @@ import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
-import org.drools.spi.ActivationGroup;
-import org.drools.spi.AgendaGroup;
 import org.drools.spi.Duration;
 import org.drools.spi.PropagationContext;
-import org.drools.spi.RuleFlowGroup;
 import org.drools.util.Iterator;
-import org.drools.util.LinkedList;
 import org.drools.util.LeftTupleList;
 
 /**
@@ -179,7 +171,7 @@ public final class RuleTerminalNode extends BaseNode
      * @param tuple
      *            The <code>Tuple</code> being asserted.
      * @param workingMemory
-     *            The working memory seesion.
+     *            The working memory session.
      * @throws AssertionException
      *             If an error occurs while asserting.
      */
@@ -217,13 +209,6 @@ public final class RuleTerminalNode extends BaseNode
                                                                       this.rule,
                                                                       this.subrule );
             final TerminalNodeMemory memory = (TerminalNodeMemory) workingMemory.getNodeMemory( this );
-            if ( this.rule.getActivationGroup() != null ) {
-                // Lazy cache activationGroup
-                if ( memory.getActivationGroup() == null ) {
-                    memory.setActivationGroup( workingMemory.getAgenda().getActivationGroup( this.rule.getActivationGroup() ) );
-                }
-                memory.getActivationGroup().addActivation( item );
-            }
 
             agenda.scheduleItem( item );
             tuple.setActivation( item );
@@ -241,26 +226,6 @@ public final class RuleTerminalNode extends BaseNode
             // implementations
             // ----------------
             final TerminalNodeMemory memory = (TerminalNodeMemory) workingMemory.getNodeMemory( this );
-            InternalAgendaGroup agendaGroup = memory.getAgendaGroup();
-            if ( agendaGroup == null ) {
-                // @todo: this logic really should be encapsulated inside the Agenda
-                if ( this.rule.getAgendaGroup() == null || this.rule.getAgendaGroup().equals( "" ) || this.rule.getAgendaGroup().equals( AgendaGroup.MAIN ) ) {
-                    // Is the Rule AgendaGroup undefined? If it is use MAIN,
-                    // which is added to the Agenda by default
-                    agendaGroup = (InternalAgendaGroup) agenda.getAgendaGroup( AgendaGroup.MAIN );
-                } else {
-                    // AgendaGroup is defined, so try and get the AgendaGroup
-                    // from the Agenda
-                    agendaGroup = (InternalAgendaGroup) agenda.getAgendaGroup( this.rule.getAgendaGroup() );
-                }
-
-                memory.setAgendaGroup( agendaGroup );
-            }
-
-            // set the focus if rule autoFocus is true
-            if ( this.rule.getAutoFocus() ) {
-                agenda.setFocus( agendaGroup );
-            }
 
             final AgendaItem item = new AgendaItem( context.getPropagationNumber(),
                                                     cloned,
@@ -272,88 +237,10 @@ public final class RuleTerminalNode extends BaseNode
 
             item.setSequenence( this.sequence );
 
-            if ( this.rule.getActivationGroup() != null ) {
-                // Lazy cache activationGroup
-                if ( memory.getActivationGroup() == null ) {
-                    memory.setActivationGroup( workingMemory.getAgenda().getActivationGroup( this.rule.getActivationGroup() ) );
-                }
-                memory.getActivationGroup().addActivation( item );
-            }
-
-            item.setAgendaGroup( agendaGroup );
-            if ( this.rule.getRuleFlowGroup() == null ) {
-                // No RuleFlowNode so add  it directly to  the Agenda
-
-                // do not add the activation if the rule is "lock-on-active" and the AgendaGroup is active
-                // we must check the context to determine if its a new tuple or an exist re-activated tuple as part of the retract
-                if ( context.getType() == PropagationContext.MODIFICATION ) {
-                    if ( this.rule.isLockOnActive() && agendaGroup.isActive() ) {
-                        Activation justifier = context.removeRetractedTuple( this.rule,
-                                                                             tuple );
-                        if ( justifier == null ) {
-                            // This rule is locked and active, do not allow new tuples to activate
-                            return;
-                        } else if ( this.rule.hasLogicalDependency() ) {
-                            copyLogicalDependencies( context,
-                                                     workingMemory,
-                                                     item,
-                                                     justifier );
-                        }
-                    } else if ( this.rule.hasLogicalDependency() ) {
-                        Activation justifier = context.removeRetractedTuple( this.rule,
-                                                                             tuple );
-                        copyLogicalDependencies( context,
-                                                 workingMemory,
-                                                 item,
-                                                 justifier );
-                    }
-                } else if ( this.rule.isLockOnActive() && agendaGroup.isActive() ) {
-                    return;
-                }
-
-                agendaGroup.add( item );
-            } else {
-                //There is  a RuleFlowNode so add it there, instead  of the Agenda
-                RuleFlowGroup rfg = memory.getRuleFlowGroup();
-                // Lazy cache ruleFlowGroup
-                if ( rfg == null ) {
-                    rfg = workingMemory.getAgenda().getRuleFlowGroup( this.rule.getRuleFlowGroup() );
-                    memory.setRuleFlowGroup( rfg );
-                }
-
-                // do not add the activation if the rule is "lock-on-active" and the RuleFlowGroup is active
-                // we must check the context to determine if its a new tuple or an exist re-activated tuple as part of the retract
-                if ( context.getType() == PropagationContext.MODIFICATION ) {
-                    if ( this.rule.isLockOnActive() && rfg.isActive() ) {
-                        Activation justifier = context.removeRetractedTuple( this.rule,
-                                                                             tuple );
-                        if ( justifier == null ) {
-                            // This rule is locked and active, do not allow new tuples to activate
-                            return;
-                        } else if ( this.rule.hasLogicalDependency() ) {
-                            copyLogicalDependencies( context,
-                                                     workingMemory,
-                                                     item,
-                                                     justifier );
-                        }
-                    } else if ( this.rule.hasLogicalDependency() ) {
-                        Activation justifier = context.removeRetractedTuple( this.rule,
-                                                                             tuple );
-                        copyLogicalDependencies( context,
-                                                 workingMemory,
-                                                 item,
-                                                 justifier );
-                    }
-                } else if ( this.rule.isLockOnActive() && rfg.isActive() ) {
-                    return;
-                }
-
-                ((InternalRuleFlowGroup) memory.getRuleFlowGroup()).addActivation( item );
-
-            }
-
             tuple.setActivation( item );
             memory.getTupleMemory().add( tuple );
+            
+            agenda.addActivation( item );
 
             item.setActivated( true );
 
@@ -365,24 +252,6 @@ public final class RuleTerminalNode extends BaseNode
         }
 
         agenda.increaseActiveActivations();
-    }
-
-    private void copyLogicalDependencies(final PropagationContext context,
-                                         final InternalWorkingMemory workingMemory,
-                                         final AgendaItem item,
-                                         Activation justifier) {
-        if ( justifier != null ) {
-            final LinkedList list = justifier.getLogicalDependencies();
-            if ( list != null && !list.isEmpty() ) {
-                for ( LogicalDependency node = (LogicalDependency) list.getFirst(); node != null; node = (LogicalDependency) node.getNext() ) {
-                    final InternalFactHandle handle = (InternalFactHandle) node.getFactHandle();
-                    workingMemory.getTruthMaintenanceSystem().addLogicalDependency( handle,
-                                                                                    item,
-                                                                                    context,
-                                                                                    this.rule );
-                }
-            }
-        }
     }
 
     public void retractLeftTuple(final LeftTuple leftTuple,
@@ -587,11 +456,11 @@ public final class RuleTerminalNode extends BaseNode
         Externalizable {
         private static final long   serialVersionUID = 400L;
 
-        private InternalAgendaGroup agendaGroup;
-
-        private ActivationGroup     activationGroup;
-
-        private RuleFlowGroup       ruleFlowGroup;
+//        private InternalAgendaGroup agendaGroup;
+//
+//        private ActivationGroup     activationGroup;
+//
+//        private RuleFlowGroup       ruleFlowGroup;
 
         private LeftTupleList      tupleMemory;
 
@@ -601,45 +470,45 @@ public final class RuleTerminalNode extends BaseNode
 
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
-            agendaGroup = (InternalAgendaGroup) in.readObject();
-            activationGroup = (ActivationGroup) in.readObject();
-            ruleFlowGroup = (RuleFlowGroup) in.readObject();
+//            agendaGroup = (InternalAgendaGroup) in.readObject();
+//            activationGroup = (ActivationGroup) in.readObject();
+//            ruleFlowGroup = (RuleFlowGroup) in.readObject();
             tupleMemory = (LeftTupleList) in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject( agendaGroup );
-            out.writeObject( activationGroup );
-            out.writeObject( ruleFlowGroup );
+//            out.writeObject( agendaGroup );
+//            out.writeObject( activationGroup );
+//            out.writeObject( ruleFlowGroup );
             out.writeObject( tupleMemory );
         }
 
-        public InternalAgendaGroup getAgendaGroup() {
-            return this.agendaGroup;
-        }
-
-        public void setAgendaGroup(final InternalAgendaGroup agendaGroup) {
-            this.agendaGroup = agendaGroup;
-        }
-
-        public ActivationGroup getActivationGroup() {
-            return this.activationGroup;
-        }
-
-        public void setActivationGroup(final ActivationGroup activationGroup) {
-            this.activationGroup = activationGroup;
-        }
+//        public InternalAgendaGroup getAgendaGroup() {
+//            return this.agendaGroup;
+//        }
+//
+//        public void setAgendaGroup(final InternalAgendaGroup agendaGroup) {
+//            this.agendaGroup = agendaGroup;
+//        }
+//
+//        public ActivationGroup getActivationGroup() {
+//            return this.activationGroup;
+//        }
+//
+//        public void setActivationGroup(final ActivationGroup activationGroup) {
+//            this.activationGroup = activationGroup;
+//        }
 
         public LeftTupleList getTupleMemory() {
             return this.tupleMemory;
         }
 
-        public RuleFlowGroup getRuleFlowGroup() {
-            return this.ruleFlowGroup;
-        }
-
-        public void setRuleFlowGroup(final RuleFlowGroup ruleFlowGroup) {
-            this.ruleFlowGroup = ruleFlowGroup;
-        }
+//        public RuleFlowGroup getRuleFlowGroup() {
+//            return this.ruleFlowGroup;
+//        }
+//
+//        public void setRuleFlowGroup(final RuleFlowGroup ruleFlowGroup) {
+//            this.ruleFlowGroup = ruleFlowGroup;
+//        }
     }
 }

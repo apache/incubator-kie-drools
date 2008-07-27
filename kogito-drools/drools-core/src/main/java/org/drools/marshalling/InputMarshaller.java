@@ -14,6 +14,7 @@ import org.drools.common.BinaryHeapQueueAgendaGroup;
 import org.drools.common.DefaultAgenda;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.EqualityKey;
+import org.drools.common.InternalAgenda;
 import org.drools.common.InternalAgendaGroup;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
@@ -59,7 +60,7 @@ import org.drools.spi.RuleFlowGroup;
 import org.drools.util.ObjectHashSet;
 import org.drools.workflow.instance.NodeInstance;
 import org.drools.workflow.instance.impl.NodeInstanceImpl;
-import org.drools.workflow.instance.node.EventBasedNodeInstance;
+import org.drools.workflow.instance.node.EventNodeInstance;
 import org.drools.workflow.instance.node.JoinInstance;
 import org.drools.workflow.instance.node.MilestoneNodeInstance;
 import org.drools.workflow.instance.node.RuleSetNodeInstance;
@@ -440,7 +441,7 @@ public class InputMarshaller {
 
         if ( stream.readBoolean() ) {
             String activationGroupName = stream.readUTF();
-            wm.getAgenda().getActivationGroup( activationGroupName ).addActivation( activation );
+            ((DefaultAgenda)wm.getAgenda()).getActivationGroup( activationGroupName ).addActivation( activation );
         }
 
         boolean activated = stream.readBoolean();
@@ -450,11 +451,11 @@ public class InputMarshaller {
         if ( rule.getAgendaGroup() == null || rule.getAgendaGroup().equals( "" ) || rule.getAgendaGroup().equals( AgendaGroup.MAIN ) ) {
             // Is the Rule AgendaGroup undefined? If it is use MAIN,
             // which is added to the Agenda by default
-            agendaGroup = (InternalAgendaGroup) wm.getAgenda().getAgendaGroup( AgendaGroup.MAIN );
+            agendaGroup = (InternalAgendaGroup) ((DefaultAgenda)wm.getAgenda()).getAgendaGroup( AgendaGroup.MAIN );
         } else {
             // AgendaGroup is defined, so try and get the AgendaGroup
             // from the Agenda
-            agendaGroup = (InternalAgendaGroup) wm.getAgenda().getAgendaGroup( rule.getAgendaGroup() );
+            agendaGroup = (InternalAgendaGroup) ((DefaultAgenda)wm.getAgenda()).getAgendaGroup( rule.getAgendaGroup() );
         }
 
         activation.setAgendaGroup( agendaGroup );
@@ -463,7 +464,7 @@ public class InputMarshaller {
             if ( rule.getRuleFlowGroup() == null ) {
                 agendaGroup.add( activation );
             } else {
-                InternalRuleFlowGroup rfg = (InternalRuleFlowGroup) wm.getAgenda().getRuleFlowGroup( rule.getRuleFlowGroup() );
+                InternalRuleFlowGroup rfg = (InternalRuleFlowGroup) ((DefaultAgenda)wm.getAgenda()).getRuleFlowGroup( rule.getRuleFlowGroup() );
                 rfg.addActivation( activation );
             }
         }
@@ -636,8 +637,8 @@ public class InputMarshaller {
         nodeInstance.setNodeInstanceContainer( processInstance );
         nodeInstance.setProcessInstance( processInstance );
         nodeInstance.setId( id );
-        if ( nodeInstance instanceof EventBasedNodeInstance ) {
-            ((EventBasedNodeInstance) nodeInstance).addEventListeners();
+        if ( nodeInstance instanceof EventNodeInstance ) {
+            ((EventNodeInstance) nodeInstance).addEventListeners();
         }
         return nodeInstance;
     }
