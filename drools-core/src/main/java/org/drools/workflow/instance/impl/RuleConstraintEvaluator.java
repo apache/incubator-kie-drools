@@ -17,11 +17,8 @@ package org.drools.workflow.instance.impl;
  */
 
 import java.io.Serializable;
-import java.util.Iterator;
 
-import org.drools.common.RuleFlowGroupNode;
-import org.drools.spi.Activation;
-import org.drools.spi.RuleFlowGroup;
+import org.drools.common.InternalAgenda;
 import org.drools.workflow.core.Connection;
 import org.drools.workflow.core.Constraint;
 import org.drools.workflow.instance.WorkflowProcessInstance;
@@ -91,16 +88,10 @@ public class RuleConstraintEvaluator implements Constraint,
                             Connection connection,
                             Constraint constraint) {
         WorkflowProcessInstance processInstance = instance.getProcessInstance();
-        RuleFlowGroup systemRuleFlowGroup = processInstance.getAgenda().getRuleFlowGroup( "DROOLS_SYSTEM" );
-
+        InternalAgenda agenda = (InternalAgenda) processInstance.getAgenda();
         String rule = "RuleFlow-Split-" + processInstance.getProcess().getId() + "-" + instance.getNode().getId() + "-" + connection.getTo().getId();
-        for ( Iterator activations = systemRuleFlowGroup.iterator(); activations.hasNext(); ) {
-            Activation activation = ((RuleFlowGroupNode) activations.next()).getActivation();
-            if ( rule.equals( activation.getRule().getName() ) ) {
-                return true;
-            }
-        }
-        return false;
+
+        return agenda.isRuleActiveInRuleFlowGroup( "DROOLS_SYSTEM", rule );
     }    
 
 }

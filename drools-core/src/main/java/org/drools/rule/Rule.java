@@ -16,11 +16,10 @@ package org.drools.rule;
  * limitations under the License.
  */
 
-import java.io.Serializable;
 import java.io.Externalizable;
-import java.io.ObjectOutput;
 import java.io.IOException;
 import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.Map;
@@ -316,6 +315,9 @@ public class Rule
     }
 
     public String getAgendaGroup() {
+    	if( this.agendaGroup == null || this.agendaGroup.equals( "" ) ) {
+    		return AgendaGroup.MAIN;
+    	}
         return this.agendaGroup;
     }
 

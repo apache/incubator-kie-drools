@@ -33,12 +33,13 @@ public interface Agenda {
      */
     public WorkingMemory getWorkingMemory();
 
-    /**
-     * Sets the Agenda's focus to the specified AgendaGroup
-     * @param agendaGroup
-     * @return
-     */
-    public boolean setFocus(AgendaGroup agendaGroup);
+// NOTE: AgendaGroup should not be exposed
+//    /**
+//     * Sets the Agenda's focus to the specified AgendaGroup
+//     * @param agendaGroup
+//     * @return
+//     */
+//    public boolean setFocus(AgendaGroup agendaGroup);
 
     /**
      * Sets the Agenda's focus to the specified AgendaGroup
@@ -47,11 +48,11 @@ public interface Agenda {
      */    
     public void setFocus(String name);
 
-    public AgendaGroup getFocus();
-
-    public AgendaGroup getAgendaGroup(String name);
-
-    public RuleFlowGroup getRuleFlowGroup(String name);
+//    public AgendaGroup getFocus();
+//
+//    public AgendaGroup getAgendaGroup(String name);
+//
+//    public RuleFlowGroup getRuleFlowGroup(String name);
 
     /**
      * Activates the <code>RuleFlowGroup</code> with the given name.
@@ -73,7 +74,7 @@ public interface Agenda {
 
     public AgendaGroup[] getStack();
 
-    public ActivationGroup getActivationGroup(String name);
+//    public ActivationGroup getActivationGroup(String name);
 
     /**
      * Iterates all the <code>AgendGroup<code>s in the focus stack returning the total number of <code>Activation</code>s
@@ -134,5 +135,13 @@ public interface Agenda {
     public void clearRuleFlowGroup(final String name);
     
     public void clearRuleFlowGroup(final RuleFlowGroup ruleFlowGroup);
+
+    /**
+     * Returns the name of the agenda group that currently
+     * has the focus
+     * 
+     * @return
+     */
+    public String getFocusName();
 
 }

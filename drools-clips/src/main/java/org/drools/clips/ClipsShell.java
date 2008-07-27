@@ -64,7 +64,6 @@ import org.drools.rule.ImportDeclaration;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Namespaceable;
 import org.drools.rule.Package;
-import org.drools.rule.TypeDeclaration;
 import org.drools.spi.GlobalResolver;
 import org.mvel.MVEL;
 import org.mvel.ParserContext;
@@ -329,7 +328,7 @@ public class ClipsShell
 
     public void importHandler(ImportDescr descr) {
         // use the current focus as the default namespace for these imports
-        PackageDescr pkgDescr = createPackageDescr( this.session.getAgenda().getFocus().getName() );
+        PackageDescr pkgDescr = createPackageDescr( this.session.getAgenda().getFocusName() );
         pkgDescr.addImport( descr );
         this.packageBuilder.addPackage( pkgDescr );
     }
@@ -384,7 +383,7 @@ public class ClipsShell
         ParserContext context = new ParserContext();
         
 
-        String namespace = this.session.getAgenda().getFocus().getName();
+        String namespace = this.session.getAgenda().getFocusName();
 
         Package pkg = this.ruleBase.getPackage( namespace );
         if ( pkg == null ) {
@@ -465,7 +464,7 @@ public class ClipsShell
     public void setModuleName(Namespaceable namespaceable) {
         // if the namespace is not set, set it to the current focus module
         if ( isEmpty( namespaceable.getNamespace() ) ) {
-            namespaceable.setNamespace( this.session.getAgenda().getFocus().getName() );
+            namespaceable.setNamespace( this.session.getAgenda().getFocusName() );
         }
     }
 

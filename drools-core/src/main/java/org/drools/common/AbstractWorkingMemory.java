@@ -456,6 +456,30 @@ public abstract class AbstractWorkingMemory
     public void halt() {
         this.halt = true;
     }
+    
+//    /**
+//     * This is a synchronous call that will keep the engine running 
+//     * until halt() is called. If no more activations exist, the engine
+//     * will wait until either halt is called or new activations are
+//     * created. In the later case, it will fire them.
+//     */
+//    public void runUntilHalt() {
+//    	do {
+//    		fireAllRules();
+//    		synchronized( this.agenda ) {
+//    			if( !halt && this.agenda.agendaSize() == 0 ) {
+//    				try {
+//						this.agenda.wait();
+//					} catch (InterruptedException e) {
+//						// set status and continue
+//						Thread.currentThread().interrupted();
+//						break;
+//					}
+//    			}
+//    		}
+//    	} while( !halt );
+//    	
+//    }
 
     public synchronized void fireAllRules() throws FactException {
         fireAllRules( null,

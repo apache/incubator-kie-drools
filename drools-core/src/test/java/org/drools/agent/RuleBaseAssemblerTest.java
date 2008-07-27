@@ -48,7 +48,12 @@ public class RuleBaseAssemblerTest extends TestCase {
 
     public static void writePackage(Package pkg, File p1file) throws IOException,
                                                                      FileNotFoundException {
-        DroolsStreamUtils.streamOut(new FileOutputStream(p1file), pkg);
+        FileOutputStream out = new FileOutputStream(p1file);
+        try {
+            DroolsStreamUtils.streamOut( out, pkg );
+        } finally {
+            out.close();
+        }
     }
 
     public static File getTempDirectory() {

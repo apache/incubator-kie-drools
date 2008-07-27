@@ -16,10 +16,8 @@ package org.drools.workflow.instance.node;
  * limitations under the License.
  */
 
-import java.util.Iterator;
-
 import org.drools.WorkingMemory;
-import org.drools.common.RuleFlowGroupNode;
+import org.drools.common.InternalAgenda;
 import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.ActivationCreatedEvent;
 import org.drools.event.AfterActivationFiredEvent;
@@ -27,8 +25,6 @@ import org.drools.event.AgendaEventListener;
 import org.drools.event.AgendaGroupPoppedEvent;
 import org.drools.event.AgendaGroupPushedEvent;
 import org.drools.event.BeforeActivationFiredEvent;
-import org.drools.spi.Activation;
-import org.drools.spi.RuleFlowGroup;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.MilestoneNode;
 import org.drools.workflow.instance.NodeInstance;
@@ -38,7 +34,7 @@ import org.drools.workflow.instance.NodeInstance;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class MilestoneNodeInstance extends EventBasedNodeInstance implements AgendaEventListener {
+public class MilestoneNodeInstance extends EventNodeInstance implements AgendaEventListener {
 
     private static final long serialVersionUID = 400L;
 
@@ -51,17 +47,14 @@ public class MilestoneNodeInstance extends EventBasedNodeInstance implements Age
             throw new IllegalArgumentException(
                 "A MilestoneNode only accepts default incoming connections!");
         }
-    	RuleFlowGroup systemRuleFlowGroup = getProcessInstance().getAgenda().getRuleFlowGroup("DROOLS_SYSTEM");
-    	String rule = "RuleFlow-Milestone-" + getProcessInstance().getProcess().getId()
-    		+ "-" + getNode().getId();
-    	for (Iterator<RuleFlowGroupNode> activations = systemRuleFlowGroup.iterator(); activations.hasNext(); ) {
-    		Activation activation = activations.next().getActivation();
-    		if (rule.equals(activation.getRule().getName())) {
-    			triggerCompleted();
-        		return;
-    		}
-    	}
-    	addEventListeners();
+        String rule = "RuleFlow-Milestone-" + getProcessInstance().getProcess().getId()
+        + "-" + getNode().getId();
+
+        if( ((InternalAgenda)getProcessInstance().getAgenda()).isRuleActiveInRuleFlowGroup( "DROOLS_SYSTEM", rule ) ) {
+            triggerCompleted();
+        } else {
+            addEventListeners();
+        }
     }
     
     public void addEventListeners() {
