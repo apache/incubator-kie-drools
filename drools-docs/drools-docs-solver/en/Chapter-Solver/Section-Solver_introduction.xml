@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
-]>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
 <section>
   <title>Solver introduction</title>
 
@@ -118,19 +118,22 @@
     module of Drools. The API is far from stable and backward incompatible
     changes occur now and then. A recipe to upgrade and apply those API
     changes between versions will be maintained soon.</para>
+
+    <para>You can download an alfa release of Drools-solver from <ulink
+    url="http://www.jboss.org/drools/downloads.html">the drools download
+    site</ulink>.</para>
   </section>
 
   <section>
     <title>Building drools-solver and running an example</title>
 
-    <para>No releases have been made yet, but you can easily build it from
-    source yourself. Check out drools from subversion and do a maven 2 build
-    with the solver profile:</para>
+    <para>You can also easily build it from source yourself. Check out drools
+    from subversion and do a maven 2 build with the solver profile:</para>
 
-    <programlisting>$ svn checkout http://anonsvn.labs.jboss.com/labs/jbossrules/trunk/ drools
+    <programlisting>$ svn checkout http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/ drools
 ...
 $ cd drools
-$ mvn -Psolver -Dmaven.test.skip clean install
+$ mvn -Dmaven.test.skip clean install
 ...</programlisting>
 
     <para>After that, you can run any example directly from the command line,
