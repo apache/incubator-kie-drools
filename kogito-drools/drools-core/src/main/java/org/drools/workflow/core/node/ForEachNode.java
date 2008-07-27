@@ -46,6 +46,7 @@ public class ForEachNode extends CompositeNode {
         // Split
         ForEachSplitNode split = new ForEachSplitNode();
         split.setName("ForEachSplit");
+        split.setMetaData("hidden", true);
         super.addNode(split);
         super.linkIncomingConnections(
             Node.CONNECTION_DEFAULT_TYPE, 
@@ -53,6 +54,7 @@ public class ForEachNode extends CompositeNode {
         // Composite node
         CompositeContextNode compositeNode = new CompositeContextNode();
         compositeNode.setName("ForEachComposite");
+        compositeNode.setMetaData("hidden", true);
         super.addNode(compositeNode);
         VariableScope variableScope = new VariableScope();
         compositeNode.setContext(VariableScope.VARIABLE_SCOPE, variableScope);
@@ -60,6 +62,7 @@ public class ForEachNode extends CompositeNode {
         // Join
         ForEachJoinNode join = new ForEachJoinNode();
         join.setName("ForEachJoin");
+        join.setMetaData("hidden", true);
         super.addNode(join);
         super.linkOutgoingConnections(
             new CompositeNode.NodeAndType(join, Node.CONNECTION_DEFAULT_TYPE),

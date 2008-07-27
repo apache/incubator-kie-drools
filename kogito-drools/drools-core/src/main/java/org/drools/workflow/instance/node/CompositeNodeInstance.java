@@ -58,7 +58,8 @@ public class CompositeNodeInstance extends NodeInstanceImpl implements NodeInsta
         List<Connection> connections = nodeAndType.getNode().getIncomingConnections(nodeAndType.getType());
         for (Iterator<Connection> iterator = connections.iterator(); iterator.hasNext(); ) {
             Connection connection = iterator.next();
-            if (((CompositeNode.CompositeNodeStart) connection.getFrom()).getInNode().getId() == from.getNodeId()) {
+            if ((connection.getFrom() instanceof CompositeNode.CompositeNodeStart) &&
+            		((CompositeNode.CompositeNodeStart) connection.getFrom()).getInNode().getId() == from.getNodeId()) {
                 NodeInstance nodeInstance = getNodeInstance(connection.getFrom());
                 nodeInstance.trigger(null, nodeAndType.getType());
                 return;

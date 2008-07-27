@@ -328,7 +328,8 @@ public class CompositeNode extends NodeImpl implements NodeContainer {
             this.inNodeId = outNode.getId();
             this.inNode = outNode;
             this.inType = outType;
-        }
+            setMetaData("hidden", true);
+       }
         
         public Node getInNode() {
             if (inNode == null) {
@@ -369,6 +370,7 @@ public class CompositeNode extends NodeImpl implements NodeContainer {
             this.outNodeId = outNode.getId();
             this.outNode = outNode;
             this.outType = outType;
+            setMetaData("hidden", true);
         }
         
         public Node getOutNode() {

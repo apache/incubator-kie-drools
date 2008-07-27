@@ -90,9 +90,17 @@ public abstract class NodeInstanceImpl implements NodeInstance, Serializable {
     }
     
     public final void trigger(NodeInstance from, String type) {
-        ((EventSupport) getProcessInstance().getWorkingMemory()).getRuleFlowEventSupport().fireBeforeRuleFlowNodeTriggered(this, (InternalWorkingMemory) getProcessInstance().getWorkingMemory());
+    	boolean hidden = false;
+    	if (getNode().getMetaData("hidden") != null) {
+    		hidden = true;
+    	}
+    	if (!hidden) {
+    		((EventSupport) getProcessInstance().getWorkingMemory()).getRuleFlowEventSupport().fireBeforeRuleFlowNodeTriggered(this, (InternalWorkingMemory) getProcessInstance().getWorkingMemory());
+    	}
         internalTrigger(from, type);
-        ((EventSupport) getProcessInstance().getWorkingMemory()).getRuleFlowEventSupport().fireAfterRuleFlowNodeTriggered(this, (InternalWorkingMemory) getProcessInstance().getWorkingMemory());
+        if (!hidden) {
+            ((EventSupport) getProcessInstance().getWorkingMemory()).getRuleFlowEventSupport().fireAfterRuleFlowNodeTriggered(this, (InternalWorkingMemory) getProcessInstance().getWorkingMemory());
+        }
     }
     
     public abstract void internalTrigger(NodeInstance from, String type);

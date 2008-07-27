@@ -54,7 +54,7 @@ import org.drools.xml.XmlProcessReader;
 public class ProcessBuilder {
 
     private PackageBuilder packageBuilder;
-    private final List     errors = new ArrayList();
+    private final List<DroolsError>     errors = new ArrayList<DroolsError>();
     private Map<String, ProcessValidator> processValidators = new HashMap<String, ProcessValidator>();;
 
     public ProcessBuilder(PackageBuilder packageBuilder) {
@@ -62,7 +62,7 @@ public class ProcessBuilder {
         this.processValidators.put(RuleFlowProcess.RULEFLOW_TYPE, RuleFlowProcessValidator.getInstance());
     }
 
-    public List getErrors() {
+    public List<DroolsError> getErrors() {
         return errors;
     }
 
