@@ -18,9 +18,12 @@ public class TimerTest extends TestCase {
         AbstractRuleBase ruleBase = (AbstractRuleBase) RuleBaseFactory.newRuleBase();
         InternalWorkingMemory workingMemory = new ReteooWorkingMemory(1, ruleBase);
         RuleFlowProcessInstance processInstance = new RuleFlowProcessInstance() {
-        	public void timerTriggered(Timer timer) {
-        		System.out.println("Timer " + timer.getId() + " triggered");
-        		counter++;
+        	public void signalEvent(String type, Object event) {
+        		if ("timerTriggered".equals(type)) {
+        			Timer timer = (Timer) event;
+            		System.out.println("Timer " + timer.getId() + " triggered");
+            		counter++;
+        		}
         	}
         };
         processInstance.setId(1234);
