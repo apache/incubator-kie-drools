@@ -16,7 +16,7 @@ import org.drools.workflow.core.impl.NodeImpl;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class CompositeNode extends NodeImpl implements NodeContainer {
+public class CompositeNode extends NodeImpl implements NodeContainer, EventNodeInterface {
 
     private static final long serialVersionUID = 400L;
     
@@ -72,6 +72,17 @@ public class CompositeNode extends NodeImpl implements NodeContainer {
         nodeContainer.removeNode(node);
         node.setNodeContainer(null);
     }
+    
+	public boolean acceptsEvent(String type, Object event) {
+		for (Node node: getNodes()) {
+			if (node instanceof EventNodeInterface) {
+				if (((EventNodeInterface) node).acceptsEvent(type, event)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
     
     public void linkIncomingConnections(String inType, long inNodeId, String inNodeType) {
         linkIncomingConnections(inType, new NodeAndType(inNodeId, inNodeType));
@@ -389,5 +400,5 @@ public class CompositeNode extends NodeImpl implements NodeContainer {
         }
         
     }
-    
+
 }

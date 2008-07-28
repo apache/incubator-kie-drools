@@ -8,7 +8,7 @@ import org.drools.workflow.core.Connection;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.impl.NodeImpl;
 
-public class EventNode extends NodeImpl {
+public class EventNode extends NodeImpl implements EventNodeInterface {
 
 	private static final long serialVersionUID = 4L;
 	
@@ -39,7 +39,16 @@ public class EventNode extends NodeImpl {
 		this.filters = filters;
 	}
 		
-    public void validateAddIncomingConnection(final String type, final Connection connection) {
+	public boolean acceptsEvent(String type, Object event) {
+    	for (EventFilter filter: filters) {
+    		if (!filter.acceptsEvent(type, event)) {
+    			return false;
+    		}
+    	}
+    	return true;
+    }
+	
+	public void validateAddIncomingConnection(final String type, final Connection connection) {
         throw new UnsupportedOperationException(
             "An event node does not have an incoming connection!");
     }

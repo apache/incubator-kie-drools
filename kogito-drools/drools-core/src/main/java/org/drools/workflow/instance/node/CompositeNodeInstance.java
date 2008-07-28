@@ -27,6 +27,7 @@ import org.drools.workflow.core.Connection;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.NodeContainer;
 import org.drools.workflow.core.node.CompositeNode;
+import org.drools.workflow.core.node.EventNodeInterface;
 import org.drools.workflow.instance.NodeInstance;
 import org.drools.workflow.instance.NodeInstanceContainer;
 import org.drools.workflow.instance.impl.NodeInstanceFactory;
@@ -38,7 +39,7 @@ import org.drools.workflow.instance.impl.NodeInstanceImpl;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class CompositeNodeInstance extends NodeInstanceImpl implements NodeInstanceContainer {
+public class CompositeNodeInstance extends NodeInstanceImpl implements NodeInstanceContainer, EventNodeInstanceInterface {
 
     private static final long serialVersionUID = 400L;
     
@@ -147,6 +148,17 @@ public class CompositeNodeInstance extends NodeInstanceImpl implements NodeInsta
         }
         return nodeInstance;
     }
+
+	public void triggerEvent(String type, Object event) {
+		for (Node node: getCompositeNode().getNodes()) {
+			if (node instanceof EventNodeInterface) {
+				if (((EventNodeInterface) node).acceptsEvent(type, event)) {
+					EventNodeInstanceInterface eventNodeInstance = (EventNodeInstanceInterface) getNodeInstance(node);
+					eventNodeInstance.triggerEvent(type, event);
+				}
+			}
+		}
+	}
 
     public class CompositeNodeStartInstance extends NodeInstanceImpl {
 

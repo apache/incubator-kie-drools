@@ -24,6 +24,7 @@ import org.drools.workflow.core.Node;
 import org.drools.workflow.core.impl.ConnectionImpl;
 import org.drools.workflow.core.impl.DroolsConsequenceAction;
 import org.drools.workflow.core.node.ActionNode;
+import org.drools.workflow.core.node.CompositeNode;
 import org.drools.workflow.core.node.EndNode;
 import org.drools.workflow.core.node.EventNode;
 import org.drools.workflow.core.node.Join;
@@ -428,6 +429,99 @@ public class EventTest extends TestCase {
         assertEquals(0, myList.size());
         processInstance.signalEvent("myEvent", null);
         assertEquals(2, myList.size());
+        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+    }
+    
+    public void testEvent5() {
+        RuleFlowProcess process = new RuleFlowProcess();
+        process.setId("org.drools.process.event");
+        process.setName("Event Process");
+        
+        List<Variable> variables = new ArrayList<Variable>();
+        Variable variable = new Variable();
+        variable.setName("event");
+        ObjectDataType personDataType = new ObjectDataType();
+        personDataType.setClassName("org.drools.Person");
+        variable.setType(personDataType);
+        variables.add(variable);
+        process.getVariableScope().setVariables(variables);
+
+        StartNode startNode = new StartNode();
+        startNode.setName("Start");
+        startNode.setId(1);
+        process.addNode(startNode);
+        
+        CompositeNode compositeNode = new CompositeNode();
+        compositeNode.setName("CompositeNode");
+        compositeNode.setId(2);
+        process.addNode(compositeNode);
+        new ConnectionImpl(
+            startNode, Node.CONNECTION_DEFAULT_TYPE,
+            compositeNode, Node.CONNECTION_DEFAULT_TYPE
+        );
+        
+        MilestoneNode milestoneNode = new MilestoneNode();
+        milestoneNode.setName("Milestone");
+        milestoneNode.setConstraint("eval(false)");
+        compositeNode.addNode(milestoneNode);
+        compositeNode.linkIncomingConnections(Node.CONNECTION_DEFAULT_TYPE, milestoneNode.getId(), Node.CONNECTION_DEFAULT_TYPE);
+        
+        EventNode eventNode = new EventNode();
+        EventTypeFilter eventFilter = new EventTypeFilter();
+        eventFilter.setType("myEvent");
+        eventNode.addEventFilter(eventFilter);
+        eventNode.setVariableName("event");
+        compositeNode.addNode(eventNode);
+        
+        final List<String> myList = new ArrayList<String>();
+        ActionNode actionNode = new ActionNode();
+        actionNode.setName("Print");
+        DroolsAction action = new DroolsConsequenceAction("java", null);
+        action.setMetaData("Action", new Action() {
+            public void execute(KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory, ActionContext context) throws Exception {
+            	System.out.println("Detected event for person " + ((Person) context.getVariable("event")).getName());
+                myList.add("Executed action");
+            }
+        });
+        actionNode.setAction(action);
+        compositeNode.addNode(actionNode);
+        new ConnectionImpl(
+            eventNode, Node.CONNECTION_DEFAULT_TYPE,
+            actionNode, Node.CONNECTION_DEFAULT_TYPE
+        );
+        
+        Join join = new Join();
+        join.setName("XOR Join");
+        join.setType(Join.TYPE_XOR);
+        compositeNode.addNode(join);
+        new ConnectionImpl(
+            milestoneNode, Node.CONNECTION_DEFAULT_TYPE,
+            join, Node.CONNECTION_DEFAULT_TYPE
+        );
+        new ConnectionImpl(
+            actionNode, Node.CONNECTION_DEFAULT_TYPE,
+            join, Node.CONNECTION_DEFAULT_TYPE
+        );
+        compositeNode.linkOutgoingConnections(join.getId(), Node.CONNECTION_DEFAULT_TYPE, Node.CONNECTION_DEFAULT_TYPE);
+    
+        EndNode endNode = new EndNode();
+        endNode.setName("EndNode");
+        endNode.setId(3);
+        process.addNode(endNode);
+        new ConnectionImpl(
+            compositeNode, Node.CONNECTION_DEFAULT_TYPE,
+            endNode, Node.CONNECTION_DEFAULT_TYPE
+        );
+        
+        AbstractRuleBase ruleBase = (AbstractRuleBase) RuleBaseFactory.newRuleBase();
+        ruleBase.addProcess(process);
+        InternalWorkingMemory workingMemory = new ReteooWorkingMemory(1, ruleBase);
+        ProcessInstance processInstance = workingMemory.startProcess("org.drools.process.event");
+        assertEquals(0, myList.size());
+        Person jack = new Person();
+        jack.setName("Jack");
+        processInstance.signalEvent("myEvent", jack);
+        assertEquals(1, myList.size());
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
     
