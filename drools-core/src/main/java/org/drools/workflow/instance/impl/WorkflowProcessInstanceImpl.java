@@ -29,19 +29,18 @@ import org.drools.Agenda;
 import org.drools.common.EventSupport;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.process.core.event.EventFilter;
 import org.drools.process.instance.EventListener;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.impl.ProcessInstanceImpl;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.NodeContainer;
 import org.drools.workflow.core.WorkflowProcess;
-import org.drools.workflow.core.node.EventNode;
+import org.drools.workflow.core.node.EventNodeInterface;
 import org.drools.workflow.instance.NodeInstance;
 import org.drools.workflow.instance.NodeInstanceContainer;
 import org.drools.workflow.instance.WorkflowProcessInstance;
 import org.drools.workflow.instance.node.EventBasedNodeInstance;
-import org.drools.workflow.instance.node.EventNodeInstance;
+import org.drools.workflow.instance.node.EventNodeInstanceInterface;
 
 /**
  * Default implementation of a RuleFlow process instance.
@@ -194,25 +193,14 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
     		}
     	} else {
     		for (Node node: getWorkflowProcess().getNodes()) {
-    			if (node instanceof EventNode) {
-    				if (acceptsEvent((EventNode) node, type, event)) {
-    					EventNodeInstance eventNodeInstance = (EventNodeInstance) getNodeInstance(node);
-    					eventNodeInstance.setEvent(type, event);
-    					eventNodeInstance.trigger(null, null);
+    			if (node instanceof EventNodeInterface) {
+    				if (((EventNodeInterface) node).acceptsEvent(type, event)) {
+    					EventNodeInstanceInterface eventNodeInstance = (EventNodeInstanceInterface) getNodeInstance(node);
+    					eventNodeInstance.triggerEvent(type, event);
     				}
     			}
     		}
     	}
-    }
-
-    public boolean acceptsEvent(EventNode eventNode, String type, Object event) {
-    	List<EventFilter> eventFilters = eventNode.getEventFilters();
-    	for (EventFilter filter: eventFilters) {
-    		if (!filter.acceptsEvent(type, event)) {
-    			return false;
-    		}
-    	}
-    	return true;
     }
     
     public void addEventListener(String type, EventListener listener) {

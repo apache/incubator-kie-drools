@@ -38,9 +38,11 @@ public class CompositeContextNode extends CompositeNode implements ContextContai
 
     public Context resolveContext(String contextId, Object param) {
         Context context = getDefaultContext(contextId);
-        context = context.resolveContext(param);
         if (context != null) {
-            return context;
+	        context = context.resolveContext(param);
+	        if (context != null) {
+	            return context;
+	        }
         }
         return super.resolveContext(contextId, param);
     }

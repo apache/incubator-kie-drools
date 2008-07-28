@@ -50,13 +50,11 @@ public class SplitNodeBuilder implements ProcessNodeBuilder {
                 ruleConstraint.setDialect( constraint.getDialect() );
                 ruleConstraint.setName( constraint.getName() );
                 ruleConstraint.setPriority( constraint.getPriority() );
-                ruleConstraint.setPriority( constraint.getPriority() );
                 splitNode.setConstraint( outgoingConnection, ruleConstraint );
             } else if ( "code".equals( constraint.getType() ) ) {
                 ReturnValueConstraintEvaluator returnValueConstraint = new ReturnValueConstraintEvaluator();
                 returnValueConstraint.setDialect( constraint.getDialect() );
                 returnValueConstraint.setName( constraint.getName() );
-                returnValueConstraint.setPriority( constraint.getPriority() );
                 returnValueConstraint.setPriority( constraint.getPriority() );
                 splitNode.setConstraint( outgoingConnection, returnValueConstraint );            
                 

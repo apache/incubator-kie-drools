@@ -28,11 +28,11 @@ import org.drools.workflow.instance.impl.NodeInstanceImpl;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class EventNodeInstance extends NodeInstanceImpl {
+public class EventNodeInstance extends NodeInstanceImpl implements EventNodeInstanceInterface {
 
     private static final long serialVersionUID = 400L;
 
-    public void setEvent(String type, Object event) {
+    public void triggerEvent(String type, Object event) {
     	String variableName = getEventNode().getVariableName();
     	if (variableName != null) {
     		VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
@@ -43,6 +43,7 @@ public class EventNodeInstance extends NodeInstanceImpl {
     		}
     		variableScopeInstance.setVariable(variableName, event);
     	}
+    	trigger(null, null);
     }
     
     public void internalTrigger(final NodeInstance from, String type) {
