@@ -178,13 +178,17 @@ public class SuggestionCompletionLoader {
                 this.errors.add( element.getMessage() );
             }
         }
-        // populating information for the model itself
-        this.populateModelInfo( pkgDescr,
-                                jars );
 
-        // populating globals
-        this.populateGlobalInfo( pkgDescr,
-                                 jars );
+        if (pkgDescr != null) { //only if no errors
+
+	        // populating information for the model itself
+	        this.populateModelInfo( pkgDescr,
+	                                jars );
+
+	        // populating globals
+	        this.populateGlobalInfo( pkgDescr,
+	                                 jars );
+        }
 
     }
 
