@@ -4,7 +4,7 @@ import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.workflow.instance.NodeInstance;
 
-public class ActionContext {
+public class ProcessContext {
     
     private NodeInstance nodeInstance;
 

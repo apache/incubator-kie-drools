@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.process.core.event.EventFilter;
+import org.drools.process.core.event.EventTransformer;
 import org.drools.workflow.core.Connection;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.impl.NodeImpl;
@@ -13,6 +14,7 @@ public class EventNode extends NodeImpl implements EventNodeInterface {
 	private static final long serialVersionUID = 4L;
 	
 	private List<EventFilter> filters = new ArrayList<EventFilter>();
+	private EventTransformer transformer;
 	private String variableName;
 
 	public String getVariableName() {
@@ -48,12 +50,15 @@ public class EventNode extends NodeImpl implements EventNodeInterface {
     	return true;
     }
 	
+	public void setEventTransformer(EventTransformer transformer) {
+		this.transformer = transformer;
+	}
+	
+	public EventTransformer getEventTransformer() {
+		return transformer;
+	}
+	
 	public void validateAddIncomingConnection(final String type, final Connection connection) {
-        throw new UnsupportedOperationException(
-            "An event node does not have an incoming connection!");
-    }
-
-    public void validateRemoveIncomingConnection(final String type, final Connection connection) {
         throw new UnsupportedOperationException(
             "An event node does not have an incoming connection!");
     }

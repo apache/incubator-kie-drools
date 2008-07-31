@@ -423,7 +423,7 @@ public class @{invokerClassName} implements org.drools.spi.ReturnValueEvaluator,
 {
     private static final long serialVersionUID  = 400L;
 
-    public Object evaluate(org.drools.WorkingMemory workingMemory) throws Exception {
+    public Object evaluate(org.drools.WorkingMemory workingMemory, org.drools.spi.ProcessContext) throws Exception {
 
         @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
         @end{}

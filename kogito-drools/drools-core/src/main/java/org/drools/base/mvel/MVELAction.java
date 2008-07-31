@@ -10,7 +10,7 @@ import org.drools.WorkingMemory;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
 import org.drools.spi.Action;
-import org.drools.spi.ActionContext;
+import org.drools.spi.ProcessContext;
 import org.drools.spi.KnowledgeHelper;
 import org.mvel.MVEL;
 import org.mvel.compiler.CompiledExpression;
@@ -49,7 +49,7 @@ public class MVELAction
         return "mvel";
     }
     
-    public void execute(final KnowledgeHelper knowledgeHelper, final WorkingMemory workingMemory, ActionContext context) throws Exception {
+    public void execute(final KnowledgeHelper knowledgeHelper, final WorkingMemory workingMemory, ProcessContext context) throws Exception {
         // must clone to avoid concurrency problems
         DroolsMVELFactory factory = (DroolsMVELFactory) this.prototype.clone();
         

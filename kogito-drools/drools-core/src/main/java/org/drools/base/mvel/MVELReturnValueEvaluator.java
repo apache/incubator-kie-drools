@@ -1,18 +1,19 @@
 package org.drools.base.mvel;
 
-import org.drools.WorkingMemory;
-import org.drools.rule.MVELDialectRuntimeData;
-import org.drools.rule.Package;
-import org.drools.spi.ReturnValueEvaluator;
-import org.mvel.MVEL;
-import org.mvel.compiler.CompiledExpression;
-import org.mvel.debug.DebugTools;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
+
+import org.drools.WorkingMemory;
+import org.drools.rule.MVELDialectRuntimeData;
+import org.drools.rule.Package;
+import org.drools.spi.ProcessContext;
+import org.drools.spi.ReturnValueEvaluator;
+import org.mvel.MVEL;
+import org.mvel.compiler.CompiledExpression;
+import org.mvel.debug.DebugTools;
 
 public class MVELReturnValueEvaluator
     implements
@@ -49,7 +50,7 @@ public class MVELReturnValueEvaluator
         return this.id;
     }
 
-    public Object evaluate(final WorkingMemory workingMemory) throws Exception {
+    public Object evaluate(final WorkingMemory workingMemory, ProcessContext context) throws Exception {
         DroolsMVELFactory factory = (DroolsMVELFactory) this.prototype.clone();
         factory.setContext( null,
                             null,

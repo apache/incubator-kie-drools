@@ -17,6 +17,7 @@ package org.drools.workflow.instance.node;
  */
 
 import org.drools.process.core.context.variable.VariableScope;
+import org.drools.process.core.event.EventTransformer;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.EventNode;
@@ -40,6 +41,10 @@ public class EventNodeInstance extends NodeInstanceImpl implements EventNodeInst
     		if (variableScopeInstance == null) {
     			throw new IllegalArgumentException(
 					"Could not find variable for event node: " + variableName);
+    		}
+    		EventTransformer transformer = getEventNode().getEventTransformer();
+    		if (transformer != null) {
+    			event = transformer.transformEvent(event);
     		}
     		variableScopeInstance.setVariable(variableName, event);
     	}

@@ -18,6 +18,7 @@ package org.drools.workflow.instance.impl;
 
 import java.io.Serializable;
 
+import org.drools.spi.ProcessContext;
 import org.drools.spi.ReturnValueEvaluator;
 import org.drools.workflow.core.Connection;
 import org.drools.workflow.core.Constraint;
@@ -94,7 +95,10 @@ public class ReturnValueConstraintEvaluator
                             Constraint constraint) {
         Object value;
         try {
-            value = this.evaluator.evaluate( instance.getProcessInstance().getWorkingMemory() );
+        	ProcessContext context = new ProcessContext();
+        	context.setNodeInstance(instance);
+            value = this.evaluator.evaluate(
+        		instance.getProcessInstance().getWorkingMemory(), context );
         } catch ( Exception e ) {
             throw  new RuntimeException("unable to execute ReturnValueEvaluator", e);
         }
