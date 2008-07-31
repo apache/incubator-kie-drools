@@ -93,14 +93,14 @@ public class DefaultRuleSheetListener
 
     private final PropertiesSheetListener _propertiesListner     = new PropertiesSheetListener();
 
-    private final org.drools.rule.Package defaultPackage;
+	private boolean showPackage;
 
     public DefaultRuleSheetListener() {
-        this( null );
+        this( true );
     }
 
-    public DefaultRuleSheetListener(final org.drools.rule.Package pkg) {
-        this.defaultPackage = pkg;
+    public DefaultRuleSheetListener(boolean showPackage) {
+        this.showPackage = showPackage;
     }
 
     /* (non-Javadoc)
@@ -130,22 +130,25 @@ public class DefaultRuleSheetListener
     }
 
     private Package buildRuleSet() {
-        final String defaultPackageName = this.defaultPackage != null ? this.defaultPackage.getName() : "rule_table";
+        final String defaultPackageName = "rule_table";
         final String rulesetName = getProperties().getProperty( RULESET_TAG,
                                                                 defaultPackageName );
-        final Package ruleset = new Package( rulesetName );
+
+        final Package ruleset = new Package( (showPackage) ? rulesetName : null );
         for ( Rule rule : this._ruleList ) {
             ruleset.addRule( rule );
         }
-        final List<Import> importList = RuleSheetParserUtil.getImportList( getProperties().getProperty( IMPORT_TAG ) );
-        for ( Import import1 : importList ) {
-            ruleset.addImport( import1 );
-        }
-        final List<Global> variableList = RuleSheetParserUtil.getVariableList( getProperties().getProperty( VARIABLES_TAG ) ); // Set the list of variables to
-        // be added to the
-        // application-data tags
-        for ( Global global : variableList ) {
-            ruleset.addVariable( global );
+        if (showPackage) {
+	        final List<Import> importList = RuleSheetParserUtil.getImportList( getProperties().getProperty( IMPORT_TAG ) );
+	        for ( Import import1 : importList ) {
+	            ruleset.addImport( import1 );
+	        }
+	        final List<Global> variableList = RuleSheetParserUtil.getVariableList( getProperties().getProperty( VARIABLES_TAG ) ); // Set the list of variables to
+	        // be added to the
+	        // application-data tags
+	        for ( Global global : variableList ) {
+	            ruleset.addVariable( global );
+	        }
         }
 
         final String functions = getProperties().getProperty( FUNCTIONS_TAG );
