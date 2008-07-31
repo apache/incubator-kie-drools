@@ -44,7 +44,7 @@ public class SpreadsheetCompilerUnitTest extends TestCase {
         assertTrue( drl.indexOf( "rule \"How cool am I_12\"" ) > drl.indexOf( "rule \"How cool am I_11\"" ) );
         assertTrue( drl.indexOf( "import example.model.User;" ) > -1 );
         assertTrue( drl.indexOf( "import example.model.Car;" ) > -1 );
-
+        assertTrue( drl.indexOf("package ") > -1);
         InputStream ins = this.getClass().getResourceAsStream("/data/MultiSheetDST.xls");
 
         drl = converter.compile( false, ins,
@@ -53,8 +53,8 @@ public class SpreadsheetCompilerUnitTest extends TestCase {
         assertNotNull( drl );
 
         assertTrue( drl.indexOf( "rule \"How cool am I_12\"" ) > 0 );
-        assertTrue( drl.indexOf( "import example.model.User;" ) == -1 );
-        assertTrue( drl.indexOf( "import example.model.Car;" ) == -1 );
+        assertTrue( drl.indexOf( "import example.model.User;" ) > -1 );
+        assertTrue( drl.indexOf( "import example.model.Car;" ) > -1 );
         assertTrue( drl.indexOf("package ") == -1);
 
     }

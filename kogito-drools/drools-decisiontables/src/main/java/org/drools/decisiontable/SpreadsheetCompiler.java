@@ -41,19 +41,19 @@ public class SpreadsheetCompiler {
     /**
      * Generates DRL from the input stream containing the spreadsheet.
      *
-     * @param showPackageAndImports
-     *            tells it to print or not print any package/import/global statements in the spreadsheet.
+     * @param showPackage
+     *            tells it to print or not print any package statements in the spreadsheet.
      * @param xlsStream
      *            The stream to the spreadsheet. Uses the first worksheet found
      *            for the decision tables, ignores others.
      * @return DRL xml, ready for use in drools.
      */
-    public String compile(boolean showPackageAndImports,
+    public String compile(boolean showPackage,
                           final InputStream xlsStream,
                           final InputType type) {
         return compile( xlsStream,
                         type,
-                        new DefaultRuleSheetListener( showPackageAndImports ) );
+                        new DefaultRuleSheetListener( showPackage ) );
     }
 
     /**

@@ -138,7 +138,6 @@ public class DefaultRuleSheetListener
         for ( Rule rule : this._ruleList ) {
             ruleset.addRule( rule );
         }
-        if (showPackage) {
 	        final List<Import> importList = RuleSheetParserUtil.getImportList( getProperties().getProperty( IMPORT_TAG ) );
 	        for ( Import import1 : importList ) {
 	            ruleset.addImport( import1 );
@@ -149,7 +148,6 @@ public class DefaultRuleSheetListener
 	        for ( Global global : variableList ) {
 	            ruleset.addVariable( global );
 	        }
-        }
 
         final String functions = getProperties().getProperty( FUNCTIONS_TAG );
         ruleset.addFunctions( functions );
