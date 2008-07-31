@@ -21,7 +21,7 @@ import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.base.SequentialKnowledgeHelper;
 import org.drools.common.InternalRuleBase;
 import org.drools.spi.Action;
-import org.drools.spi.ActionContext;
+import org.drools.spi.ProcessContext;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.ActionNode;
@@ -49,7 +49,7 @@ public class ActionNodeInstance extends NodeInstanceImpl {
 		Action action = (Action) getActionNode().getAction().getMetaData("Action");
 		try {
 		    KnowledgeHelper knowledgeHelper = createKnowledgeHelper();
-		    ActionContext context = new ActionContext();
+		    ProcessContext context = new ProcessContext();
 		    context.setNodeInstance(this);
 	        action.execute(knowledgeHelper, getProcessInstance().getWorkingMemory(), context);		    
 		} catch (Exception e) {

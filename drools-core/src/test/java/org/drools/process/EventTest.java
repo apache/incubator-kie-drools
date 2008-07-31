@@ -17,7 +17,7 @@ import org.drools.process.instance.ProcessInstance;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.spi.Action;
-import org.drools.spi.ActionContext;
+import org.drools.spi.ProcessContext;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.workflow.core.DroolsAction;
 import org.drools.workflow.core.Node;
@@ -75,7 +75,7 @@ public class EventTest extends TestCase {
         actionNode.setName("Print");
         DroolsAction action = new DroolsConsequenceAction("java", null);
         action.setMetaData("Action", new Action() {
-            public void execute(KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory, ActionContext context) throws Exception {
+            public void execute(KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory, ProcessContext context) throws Exception {
             	System.out.println("Detected event for person " + ((Person) context.getVariable("event")).getName());
                 myList.add("Executed action");
             }
@@ -174,7 +174,7 @@ public class EventTest extends TestCase {
         actionNode.setName("Print");
         DroolsAction action = new DroolsConsequenceAction("java", null);
         action.setMetaData("Action", new Action() {
-            public void execute(KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory, ActionContext context) throws Exception {
+            public void execute(KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory, ProcessContext context) throws Exception {
             	System.out.println("Detected event for person " + ((Person) context.getVariable("event")).getName());
                 myList.add("Executed action");
             }
@@ -244,7 +244,7 @@ public class EventTest extends TestCase {
         actionNode.setName("Print");
         DroolsAction action = new DroolsConsequenceAction("java", null);
         action.setMetaData("Action", new Action() {
-            public void execute(KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory, ActionContext context) throws Exception {
+            public void execute(KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory, ProcessContext context) throws Exception {
             	System.out.println("Detected event for person " + ((Person) context.getVariable("event")).getName());
                 myList.add("Executed action");
             }
@@ -269,7 +269,7 @@ public class EventTest extends TestCase {
         actionNode2.setName("Print");
         action = new DroolsConsequenceAction("java", null);
         action.setMetaData("Action", new Action() {
-            public void execute(KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory, ActionContext context) throws Exception {
+            public void execute(KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory, ProcessContext context) throws Exception {
             	System.out.println("Detected other event for person " + ((Person) context.getVariable("event")).getName());
                 myList.add("Executed action");
             }
@@ -360,7 +360,7 @@ public class EventTest extends TestCase {
         actionNode.setName("Print");
         DroolsAction action = new DroolsConsequenceAction("java", null);
         action.setMetaData("Action", new Action() {
-            public void execute(KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory, ActionContext context) throws Exception {
+            public void execute(KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory, ProcessContext context) throws Exception {
                 myList.add("Executed action");
             }
         });
@@ -383,7 +383,7 @@ public class EventTest extends TestCase {
         actionNode2.setName("Print");
         action = new DroolsConsequenceAction("java", null);
         action.setMetaData("Action", new Action() {
-            public void execute(KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory, ActionContext context) throws Exception {
+            public void execute(KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory, ProcessContext context) throws Exception {
                 myList.add("Executed action");
             }
         });
@@ -478,7 +478,7 @@ public class EventTest extends TestCase {
         actionNode.setName("Print");
         DroolsAction action = new DroolsConsequenceAction("java", null);
         action.setMetaData("Action", new Action() {
-            public void execute(KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory, ActionContext context) throws Exception {
+            public void execute(KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory, ProcessContext context) throws Exception {
             	System.out.println("Detected event for person " + ((Person) context.getVariable("event")).getName());
                 myList.add("Executed action");
             }
