@@ -2,13 +2,13 @@ package org.drools.decisiontable;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,7 +32,7 @@ import org.drools.template.parser.DataListener;
 
 /**
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale </a>
- * 
+ *
  * This class handles the input XLS and CSV and extracts the rule DRL, ready for
  * pumping into drools.
  */
@@ -40,25 +40,25 @@ public class SpreadsheetCompiler {
 
     /**
      * Generates DRL from the input stream containing the spreadsheet.
-     * 
-     * @param pkg 
-     *            Uses this package definition as the default definitions for the spreadsheet
+     *
+     * @param showPackageAndImports
+     *            tells it to print or not print any package/import/global statements in the spreadsheet.
      * @param xlsStream
      *            The stream to the spreadsheet. Uses the first worksheet found
      *            for the decision tables, ignores others.
      * @return DRL xml, ready for use in drools.
      */
-    public String compile(final org.drools.rule.Package pkg,
+    public String compile(boolean showPackageAndImports,
                           final InputStream xlsStream,
                           final InputType type) {
         return compile( xlsStream,
                         type,
-                        new DefaultRuleSheetListener( pkg ) );
+                        new DefaultRuleSheetListener( showPackageAndImports ) );
     }
 
     /**
      * Generates DRL from the input stream containing the spreadsheet.
-     * 
+     *
      * @param xlsStream
      *            The stream to the spreadsheet. Uses the first worksheet found
      *            for the decision tables, ignores others.
@@ -80,7 +80,7 @@ public class SpreadsheetCompiler {
      * @param type
      *            The type of the file - InputType.CSV or InputType.XLS
      * @param listener
-     *            
+     *
      * @return DRL xml, ready for use in drools.
      */
     public String compile(final InputStream xlsStream,
@@ -98,7 +98,7 @@ public class SpreadsheetCompiler {
      * Convenience implementation, taking rules from the classpath. It is
      * recommended to use the stream version, as you can then change rules
      * dynamically. (that is a lot of the benefit of rule engines !).
-     * 
+     *
      * @param classPathResource
      *            full class path to the spreadsheet you wish to convert to DRL.
      *            Uses the first worksheet for the decision tables.
@@ -119,7 +119,7 @@ public class SpreadsheetCompiler {
     /**
      * Looks for a named worksheet to find the decision tables on. Only works
      * with XLS format spreadsheets (as they have multiple worksheets).
-     * 
+     *
      * @param stream
      *            The stream of the decision tables (spreadsheet) IN XLS format !!
      * @param worksheetName
