@@ -87,7 +87,7 @@ public class SuggestionCompletionEngine
      * valid values to display in a drop down for a given Type.field combination.
      * @gwt.typeArgs <java.lang.String, java.lang.String[]>
      */
-    public Map 					  dataEnumLists			 = new HashMap();
+    public Map 					  dataEnumLists			 = new HashMap(); //TODO this is a PROBLEM as its not always String[]
 
     /** Operators (from the grammar):
      *      op=(    '=='
