@@ -32,13 +32,13 @@ rule "Pattern possibility that is always true"
 		
 		Opposites(
 			(
-				left == a && right memberof $pp.items
+				left == a && right memberOf $pp.items
 			) && (
-				left == b && right memberof $pp.items
+				left == b && right memberOf $pp.items
 			)
 		)
 	then 
-#		insert( new AlwaysTrue( $pp ));
+		insert( new AlwaysTrue( $pp ));
 end
 /*
 #
@@ -79,7 +79,7 @@ rule "Pattern possibility that is always true"
 	then 
 		insert( new AlwaysTrue( $pp ));
 end
-
+*/
 #
 # Finds patterns that are always true.
 #
@@ -118,4 +118,3 @@ rule "Pattern that is always true"
 								$p,
 								$p + " in rule " + $r + " is always satisfied." ) );
 end
-*/
