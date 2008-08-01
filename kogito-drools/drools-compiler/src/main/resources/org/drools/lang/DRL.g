@@ -161,6 +161,22 @@ tokens {
 		}
 	}
 	
+	private boolean validateNotWithBinding(){
+		if (input.LA(1) == ID && input.LA(2) == ID && input.LA(3) == COLON){
+			return true;
+		}
+		return false;
+	}
+
+	private boolean validateWhenWithParenthesis(){
+		if (input.LA(1) == ID && validateIdentifierKey(DroolsSoftKeywords.WHEN) && input.LA(2) == COLON && input.LA(3) == LEFT_PAREN && !(validateLT(4, DroolsSoftKeywords.OR) || validateLT(4, DroolsSoftKeywords.AND))){
+			return true;
+		} else if (input.LA(1) == ID && validateIdentifierKey(DroolsSoftKeywords.WHEN) && input.LA(2) == LEFT_PAREN && !(validateLT(3, DroolsSoftKeywords.OR) || validateLT(3, DroolsSoftKeywords.AND))){
+			return true;
+		}
+		return false;		
+	}
+
 	private boolean validateRestr() {
 		int lookahead = 2;
 		int countParen = 1;
@@ -454,7 +470,9 @@ rule
 	;
 
 when_part
-	:	when_key COLON? normal_lhs_block
+	: {validateWhenWithParenthesis()}?=>	when_key COLON? normal_lhs_block
+	->	when_key normal_lhs_block
+	|	when_key COLON? normal_lhs_block
 	->	when_key normal_lhs_block
 	;
 
@@ -569,6 +587,7 @@ lhs_and
 lhs_unary
 options{backtrack=true;}
 	:	(	lhs_exist
+		|{validateNotWithBinding()}?=>	lhs_not_binding
 		|	lhs_not
 		|	lhs_eval
 		|	lhs_forall
@@ -586,7 +605,12 @@ lhs_exist
 	        )
 	        -> ^(exists_key lhs_or? lhs_pattern? RIGHT_PAREN?)
 	;
-	
+
+lhs_not_binding
+	:	not_key fact_binding
+	-> ^(not_key ^(VT_PATTERN fact_binding))
+	;
+
 lhs_not	:	not_key
 		( (LEFT_PAREN (or_key|and_key))=> lhs_or //prevent "((" 
 		|	LEFT_PAREN lhs_or RIGHT_PAREN 
