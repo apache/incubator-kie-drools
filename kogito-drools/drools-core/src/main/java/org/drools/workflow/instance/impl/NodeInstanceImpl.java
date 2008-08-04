@@ -137,8 +137,13 @@ public abstract class NodeInstanceImpl implements NodeInstance, Serializable {
         	NodeInstanceContainer nodeInstanceContainer = this.getNodeInstanceContainer();
         	while (contextInstanceContainer == null) {
         		if (nodeInstanceContainer instanceof ContextInstanceContainer) {
-        			contextInstanceContainer = (ContextInstanceContainer) nodeInstanceContainer;
-        		} else if (nodeInstanceContainer instanceof NodeInstance) {
+        			ContextInstanceContainer container = (ContextInstanceContainer) nodeInstanceContainer;
+        			if (container.getContextContainer() == context.getContextContainer()) {
+        				contextInstanceContainer = container;
+        				break;
+        			}
+        		}
+        		if (nodeInstanceContainer instanceof NodeInstance) {
         			nodeInstanceContainer = ((NodeInstance) nodeInstanceContainer).getNodeInstanceContainer();
         		} else {
         			break;

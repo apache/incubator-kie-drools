@@ -397,7 +397,7 @@ public class @{invokerClassName} implements org.drools.spi.Action, java.io.Exter
     }
 
     public void execute(org.drools.spi.KnowledgeHelper knowledgeHelper,
-                        org.drools.WorkingMemory workingMemory, org.drools.spi.ActionContext context ) throws Exception {
+                        org.drools.WorkingMemory workingMemory, org.drools.spi.ProcessContext context ) throws Exception {
 
         @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
         @end{}

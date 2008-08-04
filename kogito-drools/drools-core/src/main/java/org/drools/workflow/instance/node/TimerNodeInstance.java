@@ -29,25 +29,32 @@ public class TimerNodeInstance extends EventBasedNodeInstance implements EventLi
             throw new IllegalArgumentException(
                 "A TimerNode only accepts default incoming connections!");
         }
-        Timer timer = getTimerNode().getTimer();
+        Timer timer = createTimer();
         addEventListeners();
         getProcessInstance().getWorkingMemory().getTimerManager()
             .registerTimer(timer, getProcessInstance());
         timerId = timer.getId();
+    }
+    
+    protected Timer createTimer() {
+    	Timer timerDef = getTimerNode().getTimer(); 
+    	Timer timer = new Timer();
+    	timer.setDelay(timerDef.getDelay());
+    	timer.setPeriod(timerDef.getPeriod());
+    	return timer;
     }
 
     public void signalEvent(String type, Object event) {
     	if ("timerTriggered".equals(type)) {
     		Timer timer = (Timer) event;
             if (timer.getId() == timerId) {
-                triggerCompleted();
+                triggerCompleted(timer.getPeriod() == 0);
             }
     	}
     }
     
-    public void triggerCompleted() {
-        triggerCompleted(Node.CONNECTION_DEFAULT_TYPE,
-            getTimerNode().getTimer().getPeriod() == 0);
+    public void triggerCompleted(boolean remove) {
+        triggerCompleted(Node.CONNECTION_DEFAULT_TYPE, remove);
     }
     
     public void cancel() {
