@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.drools.process.core.Context;
 import org.drools.process.core.ContextContainer;
+import org.drools.process.core.context.AbstractContext;
 import org.drools.process.core.impl.ContextContainerImpl;
 
 /**
@@ -22,6 +23,7 @@ public class CompositeContextNode extends CompositeNode implements ContextContai
     
     public void addContext(Context context) {
         this.contextContainer.addContext(context);
+        ((AbstractContext) context).setContextContainer(this);
     }
     
     public Context getContext(String contextType, long id) {

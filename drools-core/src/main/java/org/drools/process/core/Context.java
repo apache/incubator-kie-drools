@@ -14,4 +14,6 @@ public interface Context {
     
     Context resolveContext(Object param);
     
+    ContextContainer getContextContainer();
+    
 }

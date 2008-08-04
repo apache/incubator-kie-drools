@@ -23,7 +23,11 @@ public class ExceptionScope extends AbstractContext {
     }
     
     public ExceptionHandler getExceptionHandler(String exception) {
-        return this.exceptionHandlers.get(exception);
+        ExceptionHandler result = exceptionHandlers.get(exception);
+        if (result == null) {
+        	result = exceptionHandlers.get(null);
+        }
+        return result;
     }
 
     public void removeExceptionHandler(String exception) {
