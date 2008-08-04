@@ -57,6 +57,7 @@ public class ForEachNode extends CompositeNode {
         compositeNode.setMetaData("hidden", true);
         super.addNode(compositeNode);
         VariableScope variableScope = new VariableScope();
+        variableScope.setContextContainer(compositeNode);
         compositeNode.setContext(VariableScope.VARIABLE_SCOPE, variableScope);
         compositeNode.setDefaultContext(variableScope);
         // Join
