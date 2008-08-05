@@ -96,7 +96,8 @@ public class DataEnumLoaderTest extends TestCase {
     	assertFalse(loader.hasErrors());
 
     	Map data = loader.getData();
-    	String s = (String) data.get("Person.type[sex]");
+    	String[] sl = (String[]) data.get("Person.type[sex]");
+    	String s = sl[0];
     	assertEquals("something @{sex}", s);
     	Map context = new HashMap() {{ put("sex", "cool"); }};
 
@@ -107,7 +108,8 @@ public class DataEnumLoaderTest extends TestCase {
     	loader = new DataEnumLoader("'Person.type[sex, money]' : '@{sex} @{money}'");
     	assertFalse(loader.hasErrors());
 
-    	s = (String) loader.getData().get("Person.type[sex, money]");
+    	sl = (String[]) loader.getData().get("Person.type[sex, money]");
+    	s = sl[0];
     	assertEquals("@{sex} @{money}", s);
 
     }

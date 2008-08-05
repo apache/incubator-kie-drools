@@ -60,9 +60,9 @@ public class DataEnumLoader {
 				} else {
 					addError("The item with " + key + " is not a list or a string, it is a " + list.getClass().getName());
 				}
-				return Collections.EMPTY_MAP;
+				return new HashMap();
 			} else if (list instanceof String) {
-				newMap.put(key, list);
+				newMap.put(key, new String[] {(String)list});
 			} else {
 				List items = (List) list;
 				String[] newItems = new String[items.size()];
