@@ -984,8 +984,8 @@ public class PackageBuilderTest extends DroolsTestCase {
         PackageDescr pkgDescr = new PackageDescr( "org.test" );
         builder.addPackage( pkgDescr );
         DialectCompiletimeRegistry reg = builder.getPackageRegistry( pkgDescr.getName() ).getDialectCompiletimeRegistry();
-        
-        
+
+
         final Field dialectField = builder.getClass().getDeclaredField( "defaultDialect" );
         dialectField.setAccessible( true );
         String dialectName = (String) dialectField.get( builder );
@@ -1008,7 +1008,7 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         dialectName = (String) dialectField.get( builder );
         reg = builder.getPackageRegistry( pkgDescr.getName() ).getDialectCompiletimeRegistry();
-        dialect = reg.getDialect( dialectName );        
+        dialect = reg.getDialect( dialectName );
         compiler = (JavaCompiler) compilerField.get( dialect );
         assertSame( JaninoJavaCompiler.class,
                     compiler.getClass() );
@@ -1022,7 +1022,7 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         dialectName = (String) dialectField.get( builder );
         reg = builder.getPackageRegistry( pkgDescr.getName() ).getDialectCompiletimeRegistry();
-        dialect = reg.getDialect( dialectName );              
+        dialect = reg.getDialect( dialectName );
         compiler = (JavaCompiler) compilerField.get( dialect );
         assertSame( EclipseJavaCompiler.class,
                     compiler.getClass() );
@@ -1304,6 +1304,32 @@ public class PackageBuilderTest extends DroolsTestCase {
         bldr.addPackageFromDrl( new StringReader( "function void doSomething() {\n System.err.println(List.class.toString()); }" ) );
 
         assertFalse( bldr.hasErrors() );
+    }
+
+    public void testSinglePackage() throws Exception {
+        PackageBuilderConfiguration cfg = new PackageBuilderConfiguration();
+        cfg.setAllowMultipleNamespaces(false);
+        PackageBuilder bldr = new PackageBuilder( cfg );
+    	bldr.addPackageFromDrl(new StringReader("package whee\n import org.drools.Cheese"));
+    	assertFalse(bldr.hasErrors());
+    	bldr.addPackageFromDrl(new StringReader("package whee\n import org.drools.Person"));
+    	assertFalse(bldr.hasErrors());
+    	bldr.addPackageFromDrl(new StringReader("package whee2\n import org.drools.Person"));
+    	assertFalse(bldr.hasErrors());
+
+    	assertEquals(1, bldr.getPackages().length);
+
+    	cfg = new PackageBuilderConfiguration();
+    	assertEquals(true, cfg.isAllowMultipleNamespaces());
+    	bldr = new PackageBuilder( cfg );
+    	bldr.addPackageFromDrl(new StringReader("package whee\n import org.drools.Cheese"));
+    	assertFalse(bldr.hasErrors());
+    	bldr.addPackageFromDrl(new StringReader("import org.drools.Person"));
+    	assertFalse(bldr.hasErrors());
+    	bldr.addPackageFromDrl(new StringReader("package whee2\n import org.drools.Person"));
+    	assertFalse(bldr.hasErrors());
+
+    	assertEquals(2, bldr.getPackages().length);
     }
 
     public void testTimeWindowBehavior() throws Exception {
