@@ -174,7 +174,7 @@ tokens {
 		} else if (input.LA(1) == ID && validateIdentifierKey(DroolsSoftKeywords.WHEN) && input.LA(2) == LEFT_PAREN && !(validateLT(3, DroolsSoftKeywords.OR) || validateLT(3, DroolsSoftKeywords.AND))){
 			return true;
 		}
-		return false;		
+		return false;
 	}
 
 	private boolean validateRestr() {
@@ -470,7 +470,7 @@ rule
 	;
 
 when_part
-	: {validateWhenWithParenthesis()}?=>	when_key COLON? normal_lhs_block
+	: {validateWhenWithParenthesis()}?	when_key COLON? normal_lhs_block
 	->	when_key normal_lhs_block
 	|	when_key COLON? normal_lhs_block
 	->	when_key normal_lhs_block
