@@ -2,13 +2,13 @@ package org.drools.compiler;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -46,26 +46,26 @@ import org.drools.xml.SemanticModules;
 import org.mvel.MVEL;
 
 /**
- * This class configures the package compiler. 
+ * This class configures the package compiler.
  * Dialects and their DialectConfigurations  are handled by the DialectRegistry
  * Normally you will not need to look at this class, unless you want to override the defaults.
- * 
- * This class is not thread safe and it also contains state. Once it is created and used 
- * in one or more PackageBuilders it should be considered immutable. Do not modify its 
+ *
+ * This class is not thread safe and it also contains state. Once it is created and used
+ * in one or more PackageBuilders it should be considered immutable. Do not modify its
  * properties while it is being used by a PackageBuilder.
- * 
+ *
  * drools.dialect.default = <String>
  * drools.accumulate.function.<function name> = <qualified class>
  * drools.evaluator.<ident> = <qualified class>
  * drools.dump.dir = <String>
- * 
+ *
  * default dialect is java.
  * Available preconfigured Accumulate functions are:
  * drools.accumulate.function.average = org.drools.base.accumulators.AverageAccumulateFunction
  * drools.accumulate.function.max = org.drools.base.accumulators.MaxAccumulateFunction
  * drools.accumulate.function.min = org.drools.base.accumulators.MinAccumulateFunction
  * drools.accumulate.function.count = org.drools.base.accumulators.CountAccumulateFunction
- * drools.accumulate.function.sum = org.drools.base.accumulators.SumAccumulateFunction 
+ * drools.accumulate.function.sum = org.drools.base.accumulators.SumAccumulateFunction
  */
 public class PackageBuilderConfiguration {
 
@@ -91,7 +91,22 @@ public class PackageBuilderConfiguration {
 
     private File                       dumpDirectory;
 
+    private boolean					   allowMultipleNamespaces = true;
+
+    public boolean isAllowMultipleNamespaces() {
+		return allowMultipleNamespaces;
+	}
+
+
     /**
+     * By default multiple namespaces are allowed. If you set this to "false" it will
+     * make it all happen in the "default" namespace (the first namespace you define).
+     */
+	public void setAllowMultipleNamespaces(boolean allowMultipleNamespaces) {
+		this.allowMultipleNamespaces = allowMultipleNamespaces;
+	}
+
+	/**
      * Constructor that sets the parent class loader for the package being built/compiled
      * @param classLoader
      */
@@ -458,10 +473,10 @@ public class PackageBuilderConfiguration {
      * evaluator ID will be added to the registry. In case there exists
      * an implementation for that ID already, the new implementation will
      * replace the previous one.
-     * 
+     *
      * @param className the name of the class for the implementation definition.
      *                  The class must implement the EvaluatorDefinition interface.
-     * 
+     *
      */
     public void addEvaluatorDefinition(String className) {
         this.evaluatorRegistry.addEvaluatorDefinition( className );
@@ -471,9 +486,9 @@ public class PackageBuilderConfiguration {
      * Adds an evaluator definition class to the registry. In case there exists
      * an implementation for that evaluator ID already, the new implementation will
      * replace the previous one.
-     * 
+     *
      * @param def the evaluator definition to be added.
-     * 
+     *
      */
     public void addEvaluatorDefinition(EvaluatorDefinition def) {
         this.evaluatorRegistry.addEvaluatorDefinition( def );

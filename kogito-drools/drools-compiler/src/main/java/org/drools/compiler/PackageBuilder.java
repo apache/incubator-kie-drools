@@ -73,7 +73,7 @@ import org.xml.sax.SAXException;
  * This is the main compiler class for parsing and compiling rules and
  * assembling or merging them into a binary Package instance. This can be done
  * by merging into existing binary packages, or totally from source.
- * 
+ *
  * If you are using the Java dialect the JavaDialectConfiguration will attempt
  * to validate that the specified compiler is in the classpath, using
  * ClassLoader.loasClass(String). If you intented to just Janino sa the compiler
@@ -87,7 +87,7 @@ public class PackageBuilder {
 
     private Map<String, PackageRegistry> pkgRegistryMap;
 
-    private List                         results;
+    private List<DroolsError>                         results;
 
     private PackageBuilderConfiguration  configuration;
 
@@ -134,12 +134,12 @@ public class PackageBuilder {
 
     /**
      * Pass a specific configuration for the PackageBuilder
-     * 
+     *
      * PackageBuilderConfiguration is not thread safe and it also contains
      * state. Once it is created and used in one or more PackageBuilders it
      * should be considered immutable. Do not modify its properties while it is
      * being used by a PackageBuilder.
-     * 
+     *
      * @param configuration
      */
     public PackageBuilder(final PackageBuilderConfiguration configuration) {
@@ -150,7 +150,7 @@ public class PackageBuilder {
     //    /**
     //     * This allows you to pass in a pre existing package, and a configuration
     //     * (for instance to set the classloader).
-    //     * 
+    //     *
     //     * @param pkg
     //     *            A pre existing package (can be null if none exists)
     //     * @param configuration
@@ -217,7 +217,7 @@ public class PackageBuilder {
         this.configuration = configuration;
 
         // FIXME, we need to get drools to support "default" namespace.
-        //this.defaultNamespace = pkg.getName();        
+        //this.defaultNamespace = pkg.getName();
         this.defaultDialect = this.configuration.getDefaultDialect();
 
         this.pkgRegistryMap = new HashMap<String, PackageRegistry>();
@@ -229,7 +229,7 @@ public class PackageBuilder {
 
     /**
      * Load a rule package from DRL source.
-     * 
+     *
      * @param reader
      * @throws DroolsParserException
      * @throws IOException
@@ -246,7 +246,7 @@ public class PackageBuilder {
 
     /**
      * Load a rule package from XML source.
-     * 
+     *
      * @param reader
      * @throws DroolsParserException
      * @throws IOException
@@ -267,7 +267,7 @@ public class PackageBuilder {
 
     /**
      * Load a rule package from DRL source using the supplied DSL configuration.
-     * 
+     *
      * @param source
      *            The source of the rules.
      * @param dsl
@@ -349,7 +349,12 @@ public class PackageBuilder {
 
         if ( !isEmpty( packageDescr.getNamespace() ) ) {
             // use the default namespace
-            this.defaultNamespace = packageDescr.getNamespace();
+        	if (checkNamespace(packageDescr.getNamespace())) {
+        		this.defaultNamespace = packageDescr.getNamespace();
+        	} else {
+        		//force the default.
+        		packageDescr.setNamespace(this.defaultNamespace);
+        	}
         } else {
             // packagedescr defines a new default namespace
             packageDescr.setNamespace( this.defaultNamespace );
@@ -434,13 +439,23 @@ public class PackageBuilder {
         }
     }
 
-    public boolean isEmpty(String string) {
+    /**
+     * This checks to see if it should all be in the one namespace.
+     */
+    private boolean checkNamespace(String newName) {
+    	if (this.configuration == null) return true;
+    	if (this.defaultNamespace == null) return true;
+    	if (this.defaultNamespace.equals(newName)) return true;
+    	return this.configuration.isAllowMultipleNamespaces();
+	}
+
+	public boolean isEmpty(String string) {
         return (string == null || string.trim().length() == 0);
     }
-    
+
     public void updateResults() {
-        // some of the rules and functions may have been redefined     
-        this.results = getResults( this.results );        
+        // some of the rules and functions may have been redefined
+        this.results = getResults( this.results );
     }
 
     public void compileAll() {
@@ -507,7 +522,7 @@ public class PackageBuilder {
 
         PackageRegistry pkgRegistry = new PackageRegistry( this,
                                                            pkg );
-        
+
         // add default import for this namespace
         pkgRegistry.addImport( packageDescr.getNamespace() + ".*" );
 
@@ -575,7 +590,7 @@ public class PackageBuilder {
         for ( TypeDeclarationDescr typeDescr : packageDescr.getTypeDeclarations() ) {
             // make sure namespace is set on components
             if ( isEmpty( typeDescr.getNamespace() ) ) {
-                // use the default namespace 
+                // use the default namespace
                 typeDescr.setNamespace( defaultRegistry.getPackage().getName() );
                 pkgRegistry = defaultRegistry;
             } else {
@@ -655,8 +670,8 @@ public class PackageBuilder {
     }
 
     /**
-     * 
-     * @param registry 
+     *
+     * @param registry
      * @throws SecurityException
      * @throws IllegalArgumentException
      * @throws InstantiationException
@@ -698,7 +713,7 @@ public class PackageBuilder {
     /**
      * Generates a bean, and adds it to the composite class loader that
      * everything is using.
-     * 
+     *
      */
     private void generateDeclaredBean(TypeDeclarationDescr typeDescr,
                                       TypeDeclaration type,
@@ -808,7 +823,7 @@ public class PackageBuilder {
      *         can report on by calling getErrors or printErrors. If you try to
      *         add an invalid package (or rule) to a RuleBase, you will get a
      *         runtime exception.
-     * 
+     *
      * Compiled packages are serializable.
      */
     public Package getPackage() {
@@ -845,7 +860,7 @@ public class PackageBuilder {
 
     /**
      * Return the PackageBuilderConfiguration for this PackageBuilder session
-     * 
+     *
      * @return The PackageBuilderConfiguration
      */
     public PackageBuilderConfiguration getPackageBuilderConfiguration() {
@@ -863,7 +878,7 @@ public class PackageBuilder {
     /**
      * Return the ClassFieldExtractorCache, this should only be used internally,
      * and is subject to change
-     * 
+     *
      * @return the ClsasFieldExtractorCache
      */
     public ClassFieldAccessorCache getClassFieldExtractorCache() {
@@ -899,7 +914,7 @@ public class PackageBuilder {
     public String getDefaultNamespace() {
         return this.defaultNamespace;
     }
-    
+
     public String getDefaultDialect() {
         return this.defaultDialect;
     }
@@ -926,7 +941,7 @@ public class PackageBuilder {
      * report a compile error of its type, should it happen. This is needed, as
      * the compiling is done as one hit at the end, and we need to be able to
      * work out what rule/ast element caused the error.
-     * 
+     *
      * An error handler it created for each class task that is queued to be
      * compiled. This doesn't mean an error has occurred, it just means it *may*
      * occur in the future and we need to be able to map it back to the AST
@@ -950,7 +965,7 @@ public class PackageBuilder {
         }
 
         /**
-         * 
+         *
          * @return A DroolsError object populated as appropriate, should the
          *         unthinkable happen and this need to be reported.
          */
@@ -1061,9 +1076,9 @@ public class PackageBuilder {
         }
 
     }
-    
 
-    public static class SrcErrorHandler extends ErrorHandler {        
+
+    public static class SrcErrorHandler extends ErrorHandler {
 
         public SrcErrorHandler(final String message) {
             this.message = message;
@@ -1085,10 +1100,10 @@ public class PackageBuilder {
             this.object = object;
             this.message = message;
         }
-        
+
         public Object getObject() {
             return this.object;
-        }        
+        }
 
         public int[] getErrorLines() {
             return this.errorLines;
@@ -1097,7 +1112,7 @@ public class PackageBuilder {
         public String getMessage() {
             return this.message;
         }
-        
+
         public String toString() {
             final StringBuffer buf = new StringBuffer();
             buf.append( this.message );
@@ -1116,7 +1131,7 @@ public class PackageBuilder {
             return buf.toString();
         }
 
-    }    
+    }
 
     private String ucFirst(final String name) {
         return name.toUpperCase().charAt( 0 ) + name.substring( 1 );
