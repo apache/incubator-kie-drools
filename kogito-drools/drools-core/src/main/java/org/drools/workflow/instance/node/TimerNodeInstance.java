@@ -58,8 +58,7 @@ public class TimerNodeInstance extends EventBasedNodeInstance implements EventLi
     }
     
     public void cancel() {
-        getProcessInstance().getWorkingMemory().getTimerManager()
-            .cancelTimer(getTimerNode().getTimer());
+        getProcessInstance().getWorkingMemory().getTimerManager().cancelTimer(timerId);
         super.cancel();
     }
     

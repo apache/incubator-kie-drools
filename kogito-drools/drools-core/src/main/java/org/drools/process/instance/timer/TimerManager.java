@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.drools.WorkingMemory;
 import org.drools.process.core.timer.Timer;
@@ -19,6 +21,7 @@ public class TimerManager {
 
     private WorkingMemory workingMemory;
     private TimerService  timerService;
+    private Map<Long, Timer> timers = new HashMap<Long, Timer>();
 
     public TimerManager(WorkingMemory workingMemory, TimerService timerService) {
         this.workingMemory = workingMemory;
@@ -38,10 +41,14 @@ public class TimerManager {
                                                              new TimerTrigger( timer.getDelay(),
                                                                                timer.getPeriod() ) );
         timer.setJobHandle( jobHandle );
+        timers.put(timerId, timer);
     }
 
-    public void cancelTimer(Timer timer) {
-        timerService.removeJob( timer.getJobHandle() );
+    public void cancelTimer(long timerId) {
+    	Timer timer = timers.get(timerId);
+    	if (timer != null) {
+    		timerService.removeJob( timer.getJobHandle() );
+    	}
     }
     
     public TimerService getTimerService() {
