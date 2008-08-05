@@ -73,6 +73,10 @@ public class CompositeNodeInstance extends NodeInstanceImpl implements NodeInsta
 
     public void triggerCompleted(String outType) {
         triggerCompleted(outType, true);
+        while (!nodeInstances.isEmpty()) {
+            NodeInstance nodeInstance = (NodeInstance) nodeInstances.get(0);
+            nodeInstance.cancel();
+        }
     }
 
     public void cancel() {

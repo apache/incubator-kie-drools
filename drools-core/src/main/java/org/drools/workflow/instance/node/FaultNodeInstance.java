@@ -44,17 +44,25 @@ public class FaultNodeInstance extends NodeInstanceImpl {
             throw new IllegalArgumentException(
                 "A FaultNode only accepts default incoming connections!");
         }
-        FaultNode faultNode = getFaultNode();
-        ExceptionScopeInstance exceptionScopeInstance = (ExceptionScopeInstance)
-            resolveContextInstance(ExceptionScope.EXCEPTION_SCOPE, faultNode.getFaultName());
+        String faultName = getFaultName();
+        ExceptionScopeInstance exceptionScopeInstance = getExceptionScopeInstance(faultName);
         if (exceptionScopeInstance != null) {
-        	handleException(exceptionScopeInstance);
+        	handleException(faultName, exceptionScopeInstance);
         } else {
         	getProcessInstance().setState(ProcessInstance.STATE_ABORTED);
         }
     }
     
-    protected void handleException(ExceptionScopeInstance exceptionScopeInstance) {
+    protected ExceptionScopeInstance getExceptionScopeInstance(String faultName) {
+    	return (ExceptionScopeInstance)
+    		resolveContextInstance(ExceptionScope.EXCEPTION_SCOPE, faultName);
+    }
+    
+    protected String getFaultName() {
+    	return getFaultNode().getFaultName();
+    }
+    
+    protected Object getFaultData() {
     	Object value = null;
     	String faultVariable = getFaultNode().getFaultVariable();
     	if (faultVariable != null) {
@@ -68,7 +76,11 @@ public class FaultNodeInstance extends NodeInstanceImpl {
                 System.err.println("Continuing without setting value.");
             }
     	}
-        exceptionScopeInstance.handleException(getFaultNode().getFaultName(), value);
+    	return value;
+    }
+    
+    protected void handleException(String faultName, ExceptionScopeInstance exceptionScopeInstance) {
+        exceptionScopeInstance.handleException(faultName, getFaultData());
     }
 
 }

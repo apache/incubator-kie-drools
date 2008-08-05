@@ -21,6 +21,7 @@ import java.io.Serializable;
 import org.drools.common.EventSupport;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.process.core.Context;
+import org.drools.process.core.ContextContainer;
 import org.drools.process.instance.ContextInstance;
 import org.drools.process.instance.ContextInstanceContainer;
 import org.drools.workflow.core.Connection;
@@ -128,32 +129,44 @@ public abstract class NodeInstanceImpl implements NodeInstance, Serializable {
         if (context == null) {
             return null;
         }
-        // TODO: find right context instance container and get context instance
-        // TODO: currently, only the process instance acts as a context instance container
-        ContextInstanceContainer contextInstanceContainer = null;
-        if (this instanceof ContextInstanceContainer) {
-        	contextInstanceContainer = (ContextInstanceContainer) this; 
-        } else {
-        	NodeInstanceContainer nodeInstanceContainer = this.getNodeInstanceContainer();
-        	while (contextInstanceContainer == null) {
-        		if (nodeInstanceContainer instanceof ContextInstanceContainer) {
-        			ContextInstanceContainer container = (ContextInstanceContainer) nodeInstanceContainer;
-        			if (container.getContextContainer() == context.getContextContainer()) {
-        				contextInstanceContainer = container;
-        				break;
-        			}
-        		}
-        		if (nodeInstanceContainer instanceof NodeInstance) {
-        			nodeInstanceContainer = ((NodeInstance) nodeInstanceContainer).getNodeInstanceContainer();
-        		} else {
-        			break;
-        		}
-        	}
-        }
+        ContextInstanceContainer contextInstanceContainer
+        	= getContextInstanceContainer(context.getContextContainer());
         if (contextInstanceContainer == null) {
-        	contextInstanceContainer = getProcessInstance();
+        	throw new IllegalArgumentException(
+    			"Could not find context instance container for context");
         }
         return contextInstanceContainer.getContextInstance(context);
+    }
+    
+    private ContextInstanceContainer getContextInstanceContainer(ContextContainer contextContainer) {
+    	ContextInstanceContainer contextInstanceContainer = null; 
+		if (this instanceof ContextInstanceContainer) {
+        	contextInstanceContainer = (ContextInstanceContainer) this;
+        } else {
+        	contextInstanceContainer = getEnclosingContextInstanceContainer(this);
+        }
+        while (contextInstanceContainer != null) {
+    		if (contextInstanceContainer.getContextContainer() == contextContainer) {
+    			return contextInstanceContainer;
+    		}
+    		contextInstanceContainer = getEnclosingContextInstanceContainer(
+				(NodeInstance) contextInstanceContainer);
+    	}
+        return null;
+    }
+    
+    private ContextInstanceContainer getEnclosingContextInstanceContainer(NodeInstance nodeInstance) {
+    	NodeInstanceContainer nodeInstanceContainer = nodeInstance.getNodeInstanceContainer();
+    	while (true) {
+    		if (nodeInstanceContainer instanceof ContextInstanceContainer) {
+    			return (ContextInstanceContainer) nodeInstanceContainer;
+    		}
+    		if (nodeInstanceContainer instanceof NodeInstance) {
+    			nodeInstanceContainer = ((NodeInstance) nodeInstanceContainer).getNodeInstanceContainer();
+    		} else {
+    			return null;
+    		}
+    	}
     }
     
 }
