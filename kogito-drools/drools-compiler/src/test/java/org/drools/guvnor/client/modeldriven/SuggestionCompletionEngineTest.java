@@ -282,7 +282,7 @@ public class SuggestionCompletionEngineTest extends TestCase {
     	final SuggestionCompletionEngine sce = new SuggestionCompletionEngine();
     	sce.dataEnumLists = new HashMap();
     	sce.dataEnumLists.put("Fact.type", new String[] {"sex", "colour"});
-    	sce.dataEnumLists.put("Fact.value[f1, f2]", "select something from database where x=@{f1} and y=@{f2}");
+    	sce.dataEnumLists.put("Fact.value[f1, f2]", new String[] {"select something from database where x=@{f1} and y=@{f2}"});
 
 
 

@@ -352,7 +352,8 @@ public class SuggestionCompletionEngine
 		for (Iterator iterator = dataEnumLists.keySet().iterator(); iterator.hasNext();) {
 			String key = (String) iterator.next();
 			if (key.startsWith(factType + "." + field)) {
-				return (String) dataEnumLists.get(key);
+				String[] qry =  (String[]) dataEnumLists.get(key);
+				return qry[0];
 			}
 		}
 		throw new IllegalStateException();
