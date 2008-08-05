@@ -171,6 +171,8 @@ public class MiscTest extends TestCase {
                       list.get( 3 ) );
     }
 
+
+
     public void testStaticFieldReference() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_StaticField.drl" ) ) );
@@ -1713,6 +1715,15 @@ public class MiscTest extends TestCase {
         assertEquals( pretty,
                       runtime.getMessage() );
 
+    }
+
+
+    public void testWithInvalidRule2() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "invalid_rule2.drl" ) ) );
+        assertTrue(builder.hasErrors());
+        String err = builder.getErrors().toString();
+        System.out.println(err);
     }
 
     public void testErrorLineNumbers() throws Exception {
