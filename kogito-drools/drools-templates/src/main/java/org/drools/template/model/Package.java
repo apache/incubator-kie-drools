@@ -2,13 +2,13 @@ package org.drools.template.model;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,7 +21,7 @@ import java.util.List;
 
 /**
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale </a>
- * 
+ *
  * This is the top of the parse tree. Represents a package of rules once it has
  * been parsed from the spreadsheet. Also is the launching point for dumping out
  * the DRL.
@@ -81,8 +81,10 @@ public class Package
     }
 
     public void renderDRL(final DRLOutput out) {
-        out.writeLine( "package " + this._name.replace( ' ',
-                                                   '_' ) + ";" );
+    	if (_name != null) {
+	        out.writeLine( "package " + this._name.replace( ' ',
+	                                                   '_' ) + ";" );
+    	}
         out.writeLine( "#generated from Decision Table" );
         renderDRL( this._imports,
                    out );
