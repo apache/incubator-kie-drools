@@ -232,8 +232,10 @@ public class ScenarioRunner {
 			}
 			for (Iterator iterator = value.fieldValues.iterator(); iterator.hasNext();) {
 				VerifyField vfl = (VerifyField) iterator.next();
-				vfl.successResult = Boolean.FALSE;
-				vfl.actualResult = "Not found";
+				if (vfl.successResult == null) {
+					vfl.successResult = Boolean.FALSE;
+					vfl.actualResult = "No match";
+				}
 			}
  		}
 	}

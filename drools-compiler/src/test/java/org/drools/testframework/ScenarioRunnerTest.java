@@ -357,8 +357,16 @@ public class ScenarioRunnerTest extends RuleUnit {
         vf.fieldValues.add(new VerifyField("type", "stilton", "=="));
 
         runner.verify(vf);
-
         assertFalse(vf.wasSuccessful());
+        assertEquals(Boolean.FALSE, ((VerifyField)vf.fieldValues.get(0)).successResult);
+
+
+        vf = new VerifyFact("Cell", new ArrayList(), true);
+        vf.fieldValues.add(new VerifyField("value", "43", "=="));
+
+        runner.verify(vf);
+        assertFalse(vf.wasSuccessful());
+        assertEquals(Boolean.FALSE, ((VerifyField)vf.fieldValues.get(0)).successResult);
 
     }
 
