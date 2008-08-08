@@ -17,6 +17,7 @@ package org.drools.jsr94.rules;
  */
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.rules.InvalidRuleSessionException;
@@ -25,7 +26,8 @@ import javax.rules.RuleSession;
 import javax.rules.admin.RuleExecutionSet;
 
 import org.drools.jsr94.rules.admin.RuleExecutionSetImpl;
-import org.drools.jsr94.rules.admin.RuleExecutionSetRepository;
+import org.drools.jsr94.rules.repository.RuleExecutionSetRepository;
+import org.drools.jsr94.rules.repository.RuleExecutionSetRepositoryException;
 
 /**
  * The Drools implementation of the <code>RuleSession</code> interface which is
@@ -122,9 +124,27 @@ abstract class AbstractRuleSessionImpl
      */
     public RuleExecutionSetMetadata getRuleExecutionSetMetadata() {
         String theBindUri = null;
-        for ( final Iterator i = this.repository.getRegistrations().iterator(); i.hasNext(); ) {
+        List registrations = null;
+        
+		try {
+			registrations = this.repository.getRegistrations();
+		} catch (RuleExecutionSetRepositoryException e) {
+			String s = "Error while retrieving rule execution set registrations";
+			throw new RuntimeException(s, e);
+		}
+        
+        for ( final Iterator i = registrations.iterator(); i.hasNext(); ) {
             final String aBindUri = (String) i.next();
-            final RuleExecutionSet aRuleSet = this.repository.getRuleExecutionSet( aBindUri );
+            // FIXME: provide the correct properties
+            RuleExecutionSet aRuleSet = null;
+            
+			try {
+				aRuleSet = this.repository.getRuleExecutionSet( aBindUri, null );
+			} catch (RuleExecutionSetRepositoryException e) {
+				String s = "Error while retrieving rule execution set bound to: " + aBindUri;
+				throw new RuntimeException(s, e);
+			}
+			
             if ( aRuleSet == this.ruleExecutionSet ) {
                 theBindUri = aBindUri;
                 break;

@@ -22,9 +22,11 @@ import java.util.Map;
 import javax.rules.RuleExecutionSetNotFoundException;
 import javax.rules.RuleRuntime;
 import javax.rules.RuleSession;
+import javax.rules.RuleSessionCreateException;
 import javax.rules.RuleSessionTypeUnsupportedException;
 
-import org.drools.jsr94.rules.admin.RuleExecutionSetRepository;
+import org.drools.jsr94.rules.repository.RuleExecutionSetRepository;
+import org.drools.jsr94.rules.repository.RuleExecutionSetRepositoryException;
 
 /**
  * The Drools implementation of the <code>RuleRuntime</code> interface which
@@ -83,8 +85,10 @@ public class RuleRuntimeImpl
      */
     public RuleSession createRuleSession(final String uri,
                                          final Map properties,
-                                         final int ruleSessionType) throws RuleSessionTypeUnsupportedException,
-                                                                   RuleExecutionSetNotFoundException {
+                                         final int ruleSessionType)
+    throws RuleSessionTypeUnsupportedException,
+           RuleSessionCreateException,
+           RuleExecutionSetNotFoundException {
 
         if ( ruleSessionType == RuleRuntime.STATELESS_SESSION_TYPE ) {
             final StatelessRuleSessionImpl session = new StatelessRuleSessionImpl( uri,
@@ -109,6 +113,11 @@ public class RuleRuntimeImpl
      * @return a <code>List</code> of <code>String</code>s (URIs)
      */
     public List getRegistrations() {
-        return this.repository.getRegistrations();
+        try {
+			return this.repository.getRegistrations();
+		} catch (RuleExecutionSetRepositoryException e) {
+			String s = "Error while retrieving list of registrations";
+			throw new RuntimeException(s, e);
+		}
     }
 }

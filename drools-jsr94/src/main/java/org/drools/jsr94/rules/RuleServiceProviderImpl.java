@@ -23,7 +23,8 @@ import javax.rules.RuleServiceProviderManager;
 import javax.rules.admin.RuleAdministrator;
 
 import org.drools.jsr94.rules.admin.RuleAdministratorImpl;
-import org.drools.jsr94.rules.admin.RuleExecutionSetRepository;
+import org.drools.jsr94.rules.repository.RuleExecutionSetRepository;
+import org.drools.jsr94.rules.repository.RuleExecutionSetRepositoryLoader;
 
 /**
  * This class provides access to the <code>RuleRuntime</code> and
@@ -78,7 +79,7 @@ public class RuleServiceProviderImpl extends RuleServiceProvider implements java
     public synchronized RuleExecutionSetRepository getRepository() {
         // Lazy loaded
         if ( this.repository == null ) {
-            this.repository = new RuleExecutionSetRepository();
+            this.repository = createRuleExecutionSetRepository();
         }
         return this.repository;
     }
@@ -110,5 +111,15 @@ public class RuleServiceProviderImpl extends RuleServiceProvider implements java
             this.ruleAdministrator = new RuleAdministratorImpl( getRepository() );
         }
         return this.ruleAdministrator;
+    }
+    
+    /**
+     * Creates the RuleExecutionSetRepository.
+     * 
+     * @return
+     */
+    protected RuleExecutionSetRepository createRuleExecutionSetRepository() {
+    	String defaultFactoryName = "org.drools.jsr94.rules.repository.DefaultRuleExecutionSetRepository";
+    	return RuleExecutionSetRepositoryLoader.loadRuleExecutionSetRepository(defaultFactoryName);
     }
 }
