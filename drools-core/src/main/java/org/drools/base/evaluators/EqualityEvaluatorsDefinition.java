@@ -23,7 +23,6 @@ import java.io.ObjectOutput;
 import java.util.Date;
 
 import org.drools.base.BaseEvaluator;
-import org.drools.base.ShadowProxy;
 import org.drools.base.ValueType;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.VariableRestriction.BooleanVariableContextEntry;
@@ -33,8 +32,8 @@ import org.drools.rule.VariableRestriction.LongVariableContextEntry;
 import org.drools.rule.VariableRestriction.ObjectVariableContextEntry;
 import org.drools.rule.VariableRestriction.VariableContextEntry;
 import org.drools.spi.Evaluator;
-import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.FieldValue;
+import org.drools.spi.InternalReadAccessor;
 import org.drools.util.DateUtils;
 
 /**

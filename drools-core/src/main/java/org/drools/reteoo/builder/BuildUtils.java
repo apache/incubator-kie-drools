@@ -29,14 +29,15 @@ import org.drools.common.DefaultBetaConstraints;
 import org.drools.common.DoubleBetaConstraints;
 import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.QuadroupleBetaConstraints;
+import org.drools.common.RuleBasePartitionId;
 import org.drools.common.SingleBetaConstraints;
 import org.drools.common.TripleBetaConstraints;
 import org.drools.reteoo.EntryPointNode;
+import org.drools.reteoo.LeftTupleSink;
+import org.drools.reteoo.LeftTupleSource;
 import org.drools.reteoo.ObjectSink;
 import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.ObjectTypeNode;
-import org.drools.reteoo.LeftTupleSink;
-import org.drools.reteoo.LeftTupleSource;
 import org.drools.rule.Declaration;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.RuleConditionElement;
@@ -94,6 +95,9 @@ public class BuildUtils {
             EntryPointNode epn = context.getRuleBase().getRete().getEntryPointNode( ((EntryPointNode)candidate).getEntryPoint() );
             if( epn != null ) {
                 node = epn;
+            } else {
+                // all EntryPointNodes belong to the main partition
+                candidate.setPartitionId( RuleBasePartitionId.MAIN_PARTITION );
             }
         } else if( candidate instanceof ObjectTypeNode ) {
             // object type nodes are always shared
@@ -103,7 +107,13 @@ public class BuildUtils {
                 otn = map.get( otn.getObjectType() );
                 if ( otn != null ) {
                     node = otn;
+                } else {
+                    // all OTNs belong to the main partition
+                    candidate.setPartitionId( RuleBasePartitionId.MAIN_PARTITION );
                 }
+            } else {
+                // all OTNs belong to the main partition
+                candidate.setPartitionId( RuleBasePartitionId.MAIN_PARTITION );
             }
         } else if( isSharingEnabledForNode( context, candidate ) ) {
             if ( (context.getTupleSource() != null) && ( candidate instanceof LeftTupleSink ) ) {
@@ -115,8 +125,19 @@ public class BuildUtils {
             }
             if( node != null ) {
                 // shared node found
+                
                 // undo previous id assignment
                 context.releaseId( candidate.getId() );
+
+                // if partitions are enabled
+                if( context.getRuleBase().getConfiguration().isPartitionsEnabled() ) {
+                    // check what partition it belongs to
+                    if( context.getPartitionId() == null ) {
+                        context.setPartitionId( node.getPartitionId() );
+                    } else if( ! context.getPartitionId().equals( node.getPartitionId() ) ) {
+                        assert false : "Needs to implement support for partitions merge";
+                    }
+                }
             }
         }
 
@@ -129,6 +150,8 @@ public class BuildUtils {
             } else {
                 node.attach( context.getWorkingMemories() );
             }
+            // adds the node to the context list to track all added nodes
+            context.getNodes().add( node );
         }
         return node;
 

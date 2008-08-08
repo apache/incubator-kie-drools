@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -43,7 +44,6 @@ import org.drools.event.RuleBaseEventSupport;
 import org.drools.marshalling.Marshaller;
 import org.drools.process.core.Process;
 import org.drools.rule.CompositePackageClassLoader;
-import org.drools.rule.DialectRuntimeData;
 import org.drools.rule.DialectRuntimeRegistry;
 import org.drools.rule.FactType;
 import org.drools.rule.Function;
@@ -116,6 +116,8 @@ abstract public class AbstractRuleBase
 
     private transient Map<Class< ? >, TypeDeclaration> classTypeDeclaration;
 
+    private List<RuleBasePartitionId>                  partitionIDs;
+
     /**
      * Default constructor - for Externalizable. This should never be used by a user, as it
      * will result in an invalid state for the instance.
@@ -159,6 +161,7 @@ abstract public class AbstractRuleBase
         this.statefulSessions = new ObjectHashSet();
 
         this.classTypeDeclaration = new HashMap<Class< ? >, TypeDeclaration>();
+        this.partitionIDs = new ArrayList<RuleBasePartitionId>();
     }
 
     // ------------------------------------------------------------
@@ -428,19 +431,19 @@ abstract public class AbstractRuleBase
 
             this.eventSupport.fireBeforePackageAdded( newPkg );
 
-//            // create new base package if it doesn't exist, as we always merge the newPkg into the existing one, 
-//            // to isolate the base package from further possible changes to newPkg.
-//            if ( pkg == null ) {
-//                // create a new package, use the same parent classloader as the incoming new package
-//                pkg = new Package( newPkg.getName(),
-//                                   new MapBackedClassLoader( newPkg.getPackageScopeClassLoader().getParent() ) );
-//                //newPkg.getPackageScopeClassLoader() );
-//                pkgs.put( pkg.getName(),
-//                          pkg );
-//                // add the dialect registry composite classloader (which uses the above classloader as it's parent)
-//                this.packageClassLoader.addClassLoader( pkg.getDialectRuntimeRegistry().getClassLoader() );
-//            }
-            
+            //            // create new base package if it doesn't exist, as we always merge the newPkg into the existing one, 
+            //            // to isolate the base package from further possible changes to newPkg.
+            //            if ( pkg == null ) {
+            //                // create a new package, use the same parent classloader as the incoming new package
+            //                pkg = new Package( newPkg.getName(),
+            //                                   new MapBackedClassLoader( newPkg.getPackageScopeClassLoader().getParent() ) );
+            //                //newPkg.getPackageScopeClassLoader() );
+            //                pkgs.put( pkg.getName(),
+            //                          pkg );
+            //                // add the dialect registry composite classloader (which uses the above classloader as it's parent)
+            //                this.packageClassLoader.addClassLoader( pkg.getDialectRuntimeRegistry().getClassLoader() );
+            //            }
+
             if ( pkg == null ) {
                 pkg = new Package( newPkg.getName(),
                                    newPkg.getPackageScopeClassLoader() );
@@ -451,8 +454,6 @@ abstract public class AbstractRuleBase
                 pkg.getPackageScopeClassLoader().getStore().putAll( newPkg.getPackageScopeClassLoader().getStore() );
                 this.packageClassLoader.addClassLoader( newPkg.getDialectRuntimeRegistry().getClassLoader() );
             }
-            
-
 
             // now merge the new package into the existing one
             mergePackage( pkg,
@@ -804,6 +805,15 @@ abstract public class AbstractRuleBase
             }
 
         }
+    }
+
+    public RuleBasePartitionId createNewPartitionId() {
+        RuleBasePartitionId p = null;
+        synchronized ( this.partitionIDs ) {
+            p = new RuleBasePartitionId("P-" + this.partitionIDs.size());
+            this.partitionIDs.add( p );
+        }
+        return p;
     }
 
     public void addEventListener(final RuleBaseEventListener listener) {

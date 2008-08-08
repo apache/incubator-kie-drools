@@ -16,19 +16,18 @@
 
 package org.drools.reteoo.builder;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Map;
 
-import org.drools.common.BetaConstraints;
+import org.drools.common.BaseNode;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.RuleBasePartitionId;
+import org.drools.reteoo.LeftTupleSource;
 import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.ReteooBuilder;
-import org.drools.reteoo.ReteooRuleBase;
-import org.drools.reteoo.LeftTupleSource;
+import org.drools.rule.Behavior;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.RuleConditionElement;
 
@@ -40,7 +39,7 @@ import org.drools.rule.RuleConditionElement;
 public class BuildContext {
 
     // tuple source to attach next node to
-    private LeftTupleSource               tupleSource;
+    private LeftTupleSource           tupleSource;
 
     // object source to attach next node to
     private ObjectSource              objectSource;
@@ -68,28 +67,34 @@ public class BuildContext {
 
     // alpha constraints from the last pattern attached
     private List                      alphaConstraints;
-    
+
     // behaviors from the last pattern attached
-    private List                      behaviors;
-    
+    private List<Behavior>            behaviors;
+
     // the current entry point
     private EntryPoint                currentEntryPoint;
-    
+
     private boolean                   tupleMemoryEnabled;
-    
-    private boolean                   objectTypeNodeMemoryEnabled;    
-    
+
+    private boolean                   objectTypeNodeMemoryEnabled;
+
     private boolean                   terminalNodeMemoryEnabled;
-    
+
     /** This one is slightly different as alphaMemory can be adaptive, only turning on for new rule attachments */
     private boolean                   alphaNodeMemoryAllowed;
+
+    /** Stores the list of nodes being added that require partitionIds */
+    private List<BaseNode>            nodes;
+
+    /** Stores the id of the partition this rule will be added to */
+    private RuleBasePartitionId       partitionId;
 
     public BuildContext(final InternalRuleBase rulebase,
                         final ReteooBuilder.IdGenerator idGenerator) {
         this.rulebase = rulebase;
 
         this.idGenerator = idGenerator;
-        
+
         this.workingMemories = null;
 
         this.objectType = null;
@@ -99,12 +104,14 @@ public class BuildContext {
         this.objectSource = null;
 
         this.currentPatternOffset = 0;
-        
+
         this.tupleMemoryEnabled = true;
-        
+
         this.objectTypeNodeMemoryEnabled = true;
-        
+
         this.currentEntryPoint = EntryPoint.DEFAULT;
+        
+        this.nodes = new LinkedList<BaseNode>();
     }
 
     /**
@@ -123,7 +130,7 @@ public class BuildContext {
     }
 
     public void syncObjectTypesWithPatternOffset() {
-        if (this.objectType == null ) {
+        if ( this.objectType == null ) {
             this.objectType = new LinkedList();
         }
         while ( this.objectType.size() > this.currentPatternOffset ) {
@@ -149,9 +156,9 @@ public class BuildContext {
      * @return the objectType
      */
     public LinkedList getObjectType() {
-        if (this.objectType == null ) {
+        if ( this.objectType == null ) {
             this.objectType = new LinkedList();
-        }        
+        }
         return this.objectType;
     }
 
@@ -159,9 +166,9 @@ public class BuildContext {
      * @param objectType the objectType to set
      */
     public void setObjectType(final LinkedList objectType) {
-        if (this.objectType == null ) {
+        if ( this.objectType == null ) {
             this.objectType = new LinkedList();
-        }        
+        }
         this.objectType = objectType;
     }
 
@@ -220,7 +227,7 @@ public class BuildContext {
     /**
      * Method used to undo previous id assignment
      */
-    public void releaseId( int id ) {
+    public void releaseId(int id) {
         this.idGenerator.releaseId( id );
     }
 
@@ -230,8 +237,8 @@ public class BuildContext {
      */
     public void push(final RuleConditionElement rce) {
         if ( this.buildstack == null ) {
-            this.buildstack = new LinkedList();            
-        }        
+            this.buildstack = new LinkedList();
+        }
         this.buildstack.addLast( rce );
     }
 
@@ -241,7 +248,7 @@ public class BuildContext {
      */
     public RuleConditionElement pop() {
         if ( this.buildstack == null ) {
-            this.buildstack = new LinkedList();            
+            this.buildstack = new LinkedList();
         }
         return (RuleConditionElement) this.buildstack.removeLast();
     }
@@ -252,8 +259,8 @@ public class BuildContext {
      */
     public RuleConditionElement peek() {
         if ( this.buildstack == null ) {
-            this.buildstack = new LinkedList();            
-        }        
+            this.buildstack = new LinkedList();
+        }
         return (RuleConditionElement) this.buildstack.getLast();
     }
 
@@ -263,8 +270,8 @@ public class BuildContext {
      */
     public ListIterator stackIterator() {
         if ( this.buildstack == null ) {
-            this.buildstack = new LinkedList();            
-        }        
+            this.buildstack = new LinkedList();
+        }
         return this.buildstack.listIterator();
     }
 
@@ -280,18 +287,19 @@ public class BuildContext {
      */
     public void setBetaconstraints(final List betaconstraints) {
         this.betaconstraints = betaconstraints;
-    }   
-    
+    }
+
     public int getNextSequence(String groupName) {
         //List list = new ArrayList();
-        
-        Integer seq = ( Integer ) this.rulebase.getAgendaGroupRuleTotals().get( groupName );
+
+        Integer seq = (Integer) this.rulebase.getAgendaGroupRuleTotals().get( groupName );
         if ( seq == null ) {
-            seq = new Integer( 0 );            
+            seq = new Integer( 0 );
         }
         Integer newSeq = new Integer( seq.intValue() + 1 );
-        this.rulebase.getAgendaGroupRuleTotals().put( groupName, newSeq );
-        
+        this.rulebase.getAgendaGroupRuleTotals().put( groupName,
+                                                      newSeq );
+
         return newSeq.intValue();
     }
 
@@ -328,12 +336,12 @@ public class BuildContext {
 
     public void setTerminalNodeMemoryEnabled(boolean hasTerminalNodeMemory) {
         this.terminalNodeMemoryEnabled = hasTerminalNodeMemory;
-    }     
-    
+    }
+
     public void setAlphaNodeMemoryAllowed(boolean alphaMemoryAllowed) {
         this.alphaNodeMemoryAllowed = alphaMemoryAllowed;
     }
-    
+
     public boolean isAlphaMemoryAllowed() {
         return this.alphaNodeMemoryAllowed;
     }
@@ -353,17 +361,45 @@ public class BuildContext {
     }
 
     /**
-     * @return the behaviors
+     * @return the behaviours
      */
-    public List getBehaviors() {
+    public List<Behavior> getBehaviors() {
         return behaviors;
     }
 
     /**
-     * @param behaviors the behaviors to set
+     * @param behaviors the behaviours to set
      */
-    public void setBehaviors(List behaviors) {
+    public void setBehaviors(List<Behavior> behaviors) {
         this.behaviors = behaviors;
     }
-        
+
+    /**
+     * @return the nodes
+     */
+    public List<BaseNode> getNodes() {
+        return nodes;
+    }
+
+    /**
+     * @param nodes the nodes to set
+     */
+    public void setNodes(List<BaseNode> nodes) {
+        this.nodes = nodes;
+    }
+
+    /**
+     * @return the partitionId
+     */
+    public RuleBasePartitionId getPartitionId() {
+        return partitionId;
+    }
+
+    /**
+     * @param partitionId the partitionId to set
+     */
+    public void setPartitionId(RuleBasePartitionId partitionId) {
+        this.partitionId = partitionId;
+    }
+
 }

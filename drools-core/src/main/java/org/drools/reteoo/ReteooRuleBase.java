@@ -23,10 +23,8 @@ import java.io.ObjectOutput;
 import java.io.OutputStream;
 import java.util.Iterator;
 
-import org.drools.ClockType;
 import org.drools.FactException;
 import org.drools.FactHandle;
-import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
@@ -90,6 +88,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
         this( id,
               null,
               new ReteooFactHandleFactory() );
+        
     }
 
     /**

@@ -16,13 +16,12 @@
 
 package org.drools.common;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 import org.drools.reteoo.ReteooBuilder;
 import org.drools.reteoo.RuleRemovalContext;
-
-import java.io.Externalizable;
-import java.io.ObjectInput;
-import java.io.IOException;
-import java.io.ObjectOutput;
 
 /**
  * The base class for all Rete nodes.
@@ -34,7 +33,9 @@ import java.io.ObjectOutput;
 public abstract class BaseNode
     implements
     NetworkNode {
+
     protected int id;
+    protected RuleBasePartitionId partitionId;
 
     public BaseNode() {
 
@@ -118,5 +119,23 @@ public abstract class BaseNode
 
     public String toString() {
         return "[" + this.getClass().getSimpleName() + "(" + this.id + ")]";
+    }
+
+    /**
+     * Returns the partition ID for which this node belongs to
+     * 
+     * @return
+     */
+    public RuleBasePartitionId getPartitionId() {
+        return this.partitionId;
+    }
+    
+    /**
+     * Sets the partition this node belongs to
+     * 
+     * @param partitionId
+     */
+    public void setPartitionId( final RuleBasePartitionId partitionId ) {
+        this.partitionId = partitionId;
     }
 }
