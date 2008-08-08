@@ -115,6 +115,11 @@ public class RuleBaseConfiguration
     private ConsequenceExceptionHandler    consequenceExceptionHandler;
     private String                         ruleBaseUpdateHandler;
 
+    // if "true", rulebase builder will try to split 
+    // the rulebase into multiple partitions that can be evaluated
+    // in parallel by using multiple internal threads
+    private boolean                        partitionsEnabled;
+
     private ConflictResolver               conflictResolver;
 
     private static final String            STAR             = "*";
@@ -149,6 +154,7 @@ public class RuleBaseConfiguration
         out.writeObject( conflictResolver );
         out.writeObject( processNodeInstanceFactoryRegistry );
         out.writeBoolean( advancedProcessRuleIntegration );
+        out.writeBoolean( partitionsEnabled );
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -173,6 +179,7 @@ public class RuleBaseConfiguration
         conflictResolver = (ConflictResolver) in.readObject();
         processNodeInstanceFactoryRegistry = (NodeInstanceFactoryRegistry) in.readObject();
         advancedProcessRuleIntegration = in.readBoolean();
+        partitionsEnabled = in.readBoolean();
     }
 
     /**
@@ -258,7 +265,7 @@ public class RuleBaseConfiguration
 
         setRemoveIdentities( Boolean.valueOf( this.chainedProperties.getProperty( "drools.removeIdentities",
                                                                                   "false" ) ).booleanValue() );
-        
+
         setShareAlphaNodes( Boolean.valueOf( this.chainedProperties.getProperty( "drools.shareAlphaNodes",
                                                                                  "true" ) ).booleanValue() );
 
@@ -292,9 +299,12 @@ public class RuleBaseConfiguration
 
         setConflictResolver( RuleBaseConfiguration.determineConflictResolver( this.chainedProperties.getProperty( "drools.conflictResolver",
                                                                                                                   "org.drools.conflict.DepthConflictResolver" ) ) );
-        
+
         setAdvancedProcessRuleIntegration( Boolean.valueOf( this.chainedProperties.getProperty( "drools.advancedProcessRuleIntegration",
-                                                                                      "false" ) ).booleanValue() );
+                                                                                                "false" ) ).booleanValue() );
+
+        setPartitionsEnabled( Boolean.valueOf( this.chainedProperties.getProperty( "drools.enablePartitioning",
+                                                                                    "false" ) ).booleanValue() );
     }
 
     /**
@@ -480,6 +490,30 @@ public class RuleBaseConfiguration
 
     }
 
+    /**
+     * Defines if the RuleBase should try to split the rules into 
+     * multiple independent partitions that can work in parallel 
+     * using multiple threads ("true"), of if the rulebase should
+     * work in classic single partition mode ("false").
+     * 
+     * @param enablePartitioning true for multi-partition or 
+     *                     false for single-partition. Default is false.
+     */
+    public void setPartitionsEnabled(boolean enablePartitioning) {
+        checkCanChange();
+        this.partitionsEnabled = enablePartitioning;
+    }
+    
+    /**
+     * Returns true if the partitioning of the rulebase is enabled
+     * and false otherwise. Default is false.
+     * 
+     * @return
+     */
+    public boolean isPartitionsEnabled() {
+        return this.partitionsEnabled;
+    }
+
     private void initProcessNodeInstanceFactoryRegistry() {
         this.processNodeInstanceFactoryRegistry = new NodeInstanceFactoryRegistry();
 
@@ -560,10 +594,10 @@ public class RuleBaseConfiguration
                                                                                   RuleBaseConfiguration.class ) );
 
         Map<Class< ? extends Process>, ProcessInstanceFactory> map = (Map<Class< ? extends Process>, ProcessInstanceFactory>) MVEL.eval( content,
-                                                                                                                             new HashMap() );
+                                                                                                                                         new HashMap() );
 
         if ( map != null ) {
-            for ( Entry<Class<? extends Process>, ProcessInstanceFactory> entry : map.entrySet() ) {
+            for ( Entry<Class< ? extends Process>, ProcessInstanceFactory> entry : map.entrySet() ) {
                 this.processInstanceFactoryRegistry.register( entry.getKey(),
                                                               entry.getValue() );
             }
@@ -606,30 +640,34 @@ public class RuleBaseConfiguration
         String content = ConfFileUtils.URLContentsToString( ConfFileUtils.getURL( location,
                                                                                   null,
                                                                                   RuleBaseConfiguration.class ) );
-        List<Map<String, Object>> workDefinitionsMap = (List<Map<String, Object>>) MVEL.eval(content, new HashMap());
-        for (Map<String, Object> workDefinitionMap: workDefinitionsMap) {
+        List<Map<String, Object>> workDefinitionsMap = (List<Map<String, Object>>) MVEL.eval( content,
+                                                                                              new HashMap() );
+        for ( Map<String, Object> workDefinitionMap : workDefinitionsMap ) {
             WorkDefinitionExtensionImpl workDefinition = new WorkDefinitionExtensionImpl();
-            workDefinition.setName((String) workDefinitionMap.get("name"));
-            workDefinition.setDisplayName((String) workDefinitionMap.get("displayName"));
-            workDefinition.setIcon((String) workDefinitionMap.get("icon"));
-            workDefinition.setCustomEditor((String) workDefinitionMap.get("customEditor"));
+            workDefinition.setName( (String) workDefinitionMap.get( "name" ) );
+            workDefinition.setDisplayName( (String) workDefinitionMap.get( "displayName" ) );
+            workDefinition.setIcon( (String) workDefinitionMap.get( "icon" ) );
+            workDefinition.setCustomEditor( (String) workDefinitionMap.get( "customEditor" ) );
             Set<ParameterDefinition> parameters = new HashSet<ParameterDefinition>();
-            Map<String, DataType> parameterMap = (Map<String, DataType>) workDefinitionMap.get("parameters");
-            if (parameterMap != null) {
-                for (Map.Entry<String, DataType> entry: parameterMap.entrySet()) {
-                    parameters.add(new ParameterDefinitionImpl(entry.getKey(), entry.getValue()));
+            Map<String, DataType> parameterMap = (Map<String, DataType>) workDefinitionMap.get( "parameters" );
+            if ( parameterMap != null ) {
+                for ( Map.Entry<String, DataType> entry : parameterMap.entrySet() ) {
+                    parameters.add( new ParameterDefinitionImpl( entry.getKey(),
+                                                                 entry.getValue() ) );
                 }
             }
-            workDefinition.setParameters(parameters);
+            workDefinition.setParameters( parameters );
             Set<ParameterDefinition> results = new HashSet<ParameterDefinition>();
-            Map<String, DataType> resultMap = (Map<String, DataType>) workDefinitionMap.get("results");
-            if (resultMap != null) {
-                for (Map.Entry<String, DataType> entry: resultMap.entrySet()) {
-                    results.add(new ParameterDefinitionImpl(entry.getKey(), entry.getValue()));
+            Map<String, DataType> resultMap = (Map<String, DataType>) workDefinitionMap.get( "results" );
+            if ( resultMap != null ) {
+                for ( Map.Entry<String, DataType> entry : resultMap.entrySet() ) {
+                    results.add( new ParameterDefinitionImpl( entry.getKey(),
+                                                              entry.getValue() ) );
                 }
             }
-            workDefinition.setResults(results);
-            this.workDefinitions.put(workDefinition.getName(), workDefinition);
+            workDefinition.setResults( results );
+            this.workDefinitions.put( workDefinition.getName(),
+                                      workDefinition );
         }
     }
 
@@ -670,8 +708,9 @@ public class RuleBaseConfiguration
         String content = ConfFileUtils.URLContentsToString( ConfFileUtils.getURL( factoryLocation,
                                                                                   null,
                                                                                   RuleBaseConfiguration.class ) );
-        
-        Map<Class< ? extends Context>, ContextInstanceFactory> map = (Map<Class< ? extends Context>, ContextInstanceFactory>) MVEL.eval( content, new HashMap() );
+
+        Map<Class< ? extends Context>, ContextInstanceFactory> map = (Map<Class< ? extends Context>, ContextInstanceFactory>) MVEL.eval( content,
+                                                                                                                                         new HashMap() );
 
         if ( map != null ) {
             for ( Entry<Class< ? extends Context>, ContextInstanceFactory> entry : map.entrySet() ) {
@@ -689,8 +728,8 @@ public class RuleBaseConfiguration
     }
 
     private void initProcessInstanceManager() {
-        String className = this.chainedProperties.getProperty(
-            "processInstanceManager", "org.drools.process.instance.impl.DefaultProcessInstanceManager");
+        String className = this.chainedProperties.getProperty( "processInstanceManager",
+                                                               "org.drools.process.instance.impl.DefaultProcessInstanceManager" );
         Class clazz = null;
         try {
             clazz = Thread.currentThread().getContextClassLoader().loadClass( className );
@@ -714,11 +753,11 @@ public class RuleBaseConfiguration
             throw new IllegalArgumentException( "Process instance manager '" + className + "' not found" );
         }
     }
-    
+
     public boolean isAdvancedProcessRuleIntegration() {
         return advancedProcessRuleIntegration;
     }
-    
+
     public void setAdvancedProcessRuleIntegration(boolean advancedProcessRuleIntegration) {
         this.advancedProcessRuleIntegration = advancedProcessRuleIntegration;
     }

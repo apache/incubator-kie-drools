@@ -24,8 +24,6 @@ import org.drools.FactHandle;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.StatefulSession;
-import org.drools.audit.WorkingMemoryInMemoryLogger;
-import org.drools.marshalling.MarshallerReaderContext;
 import org.drools.process.core.Process;
 import org.drools.reteoo.Rete;
 import org.drools.reteoo.ReteooWorkingMemory;
@@ -116,7 +114,7 @@ public interface InternalRuleBase
      * @param clazz
      * @return
      */
-    public boolean isEvent( Class clazz );
+    public boolean isEvent( Class<?> clazz );
 	
 	public int getNodeCount();
 
@@ -127,4 +125,11 @@ public interface InternalRuleBase
 	 * @return
 	 */
     public TypeDeclaration getTypeDeclaration(Class<?> clazz);
+
+    /**
+     * Creates and allocates a new partition ID for this rulebase
+     * 
+     * @return
+     */
+    public RuleBasePartitionId createNewPartitionId();
 }

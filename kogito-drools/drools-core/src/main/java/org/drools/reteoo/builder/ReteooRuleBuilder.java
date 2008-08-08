@@ -18,36 +18,27 @@ package org.drools.reteoo.builder;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.drools.InitialFact;
 import org.drools.RuleIntegrationException;
-import org.drools.base.ClassFieldReader;
 import org.drools.base.ClassObjectType;
-import org.drools.base.DroolsQuery;
-import org.drools.base.FieldFactory;
-import org.drools.base.ValueType;
-import org.drools.base.evaluators.Operator;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalRuleBase;
 import org.drools.reteoo.QueryTerminalNode;
 import org.drools.reteoo.ReteooBuilder;
-import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.reteoo.TerminalNode;
 import org.drools.rule.Accumulate;
 import org.drools.rule.Collect;
 import org.drools.rule.EntryPoint;
-import org.drools.rule.Pattern;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.Forall;
 import org.drools.rule.From;
 import org.drools.rule.GroupElement;
 import org.drools.rule.InvalidPatternException;
-import org.drools.rule.LiteralConstraint;
+import org.drools.rule.Pattern;
 import org.drools.rule.Query;
 import org.drools.rule.Rule;
-import org.drools.spi.FieldValue;
 
 /**
  * @author etirelli
@@ -182,6 +173,25 @@ public class ReteooRuleBuilder {
         }
 
         ((BaseNode) terminal).networkUpdated();
+        
+        // adds the terminal no to the list of nodes created/added by this sub-rule
+        context.getNodes().add((BaseNode) terminal );
+        
+        if( context.getRuleBase().getConfiguration().isPartitionsEnabled() ) {
+            org.drools.common.RuleBasePartitionId partitionId = null;
+            if( context.getPartitionId() != null ) {
+                // it means it shares nodes with an existing partition, so
+                // assign the first id to the newly added nodes
+                partitionId = context.getPartitionId();
+            } else {
+                // nodes are independent of existing nodes, so create a new 
+                // partition ID for them
+                partitionId = context.getRuleBase().createNewPartitionId();
+            }
+            for( BaseNode node : context.getNodes() ) {
+                node.setPartitionId( partitionId );
+            }
+        }
         
         return terminal;
     }
