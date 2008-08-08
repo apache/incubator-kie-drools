@@ -25,6 +25,9 @@ import javax.rules.admin.RuleExecutionSetDeregistrationException;
 import javax.rules.admin.RuleExecutionSetProvider;
 import javax.rules.admin.RuleExecutionSetRegisterException;
 
+import org.drools.jsr94.rules.repository.RuleExecutionSetRepository;
+import org.drools.jsr94.rules.repository.RuleExecutionSetRepositoryException;
+
 /**
  * The Drools implementation of the <code>RuleAdministrator</code> interface
  * which is used by rule execution set administrators to load rule execution
@@ -106,10 +109,11 @@ public class RuleAdministratorImpl
      */
     public void registerRuleExecutionSet(final String bindUri,
                                          final RuleExecutionSet set,
-                                         final Map properties) throws RuleExecutionSetRegisterException {
+                                         final Map properties)
+    throws RuleExecutionSetRegisterException {
+    	
         // Note: an existing RuleExecutionSet is simply replaced
-        this.repository.registerRuleExecutionSet( bindUri,
-                                                  set );
+        repository.registerRuleExecutionSet(bindUri, set, properties);
     }
 
     /**
@@ -125,11 +129,18 @@ public class RuleAdministratorImpl
      *             if an error occurred that prevented unregistration
      */
     public void deregisterRuleExecutionSet(final String bindUri,
-                                           final Map properties) throws RuleExecutionSetDeregistrationException {
-        if ( this.repository.getRuleExecutionSet( bindUri ) == null ) {
-            throw new RuleExecutionSetDeregistrationException( "no execution set bound to: " + bindUri );
-        }
+                                           final Map properties)
+    throws RuleExecutionSetDeregistrationException {
+    	
+        try {
+			if ( this.repository.getRuleExecutionSet(bindUri, properties) == null ) {
+			    throw new RuleExecutionSetDeregistrationException( "no execution set bound to: " + bindUri );
+			}
+		} catch (RuleExecutionSetRepositoryException e) {
+			String s = "Error while retrieving rule execution set bound to: " + bindUri;
+			throw new RuleExecutionSetDeregistrationException(s, e);
+		}
 
-        this.repository.unregisterRuleExecutionSet( bindUri );
+        repository.unregisterRuleExecutionSet(bindUri, properties);
     }
 }

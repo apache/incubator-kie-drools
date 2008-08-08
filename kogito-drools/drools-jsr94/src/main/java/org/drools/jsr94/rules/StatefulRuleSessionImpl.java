@@ -18,7 +18,6 @@ package org.drools.jsr94.rules;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -28,15 +27,15 @@ import javax.rules.InvalidRuleSessionException;
 import javax.rules.ObjectFilter;
 import javax.rules.RuleExecutionSetNotFoundException;
 import javax.rules.RuleRuntime;
+import javax.rules.RuleSessionCreateException;
 import javax.rules.StatefulRuleSession;
 
-import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
-import org.drools.WorkingMemory;
 import org.drools.jsr94.rules.admin.RuleExecutionSetImpl;
-import org.drools.jsr94.rules.admin.RuleExecutionSetRepository;
+import org.drools.jsr94.rules.repository.RuleExecutionSetRepository;
+import org.drools.jsr94.rules.repository.RuleExecutionSetRepositoryException;
 
 /**
  * The Drools implementation of the <code>StatefulRuleSession</code> interface
@@ -85,14 +84,25 @@ public class StatefulRuleSessionImpl extends AbstractRuleSessionImpl
      * 
      * @throws RuleExecutionSetNotFoundException
      *             if there is no rule set under the given URI
+     * @throws RuleSessionCreateException 
      */
     StatefulRuleSessionImpl(final String bindUri,
                             final Map properties,
-                            final RuleExecutionSetRepository repository) throws RuleExecutionSetNotFoundException {
+                            final RuleExecutionSetRepository repository)
+    throws RuleExecutionSetNotFoundException, RuleSessionCreateException {
+    	
         super( repository );
         setProperties( properties );
 
-        final RuleExecutionSetImpl ruleSet = (RuleExecutionSetImpl) repository.getRuleExecutionSet( bindUri );
+        RuleExecutionSetImpl ruleSet = null;
+        
+		try {
+			ruleSet = (RuleExecutionSetImpl)
+			repository.getRuleExecutionSet(bindUri, properties);
+		} catch (RuleExecutionSetRepositoryException e) {
+			String s = "Error while retrieving rule execution set bound to: " + bindUri;
+			throw new RuleSessionCreateException(s, e);
+		}
 
         if ( ruleSet == null ) {
             throw new RuleExecutionSetNotFoundException( "no execution set bound to: " + bindUri );
