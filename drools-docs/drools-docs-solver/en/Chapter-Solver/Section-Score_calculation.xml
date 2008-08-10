@@ -15,18 +15,13 @@
     <para>Here's an example of a constraint implemented as a score rule in
     drools:</para>
 
-    <example>
-      <title>Score rule for multiple queens on the same horizontal
-      line</title>
-
-      <programlisting>rule "multipleQueensHorizontal"
+    <programlisting>rule "multipleQueensHorizontal"
     when
         $q1 : Queen($id : id, $y : y);
         $q2 : Queen(id &gt; $id, y == $y);
     then
         insertLogical(new UnweightedConstraintOccurrence("multipleQueensHorizontal", $q1, $q2));
 end</programlisting>
-    </example>
 
     <para>This score rule will fire once for every 2 queens with the same
     <literal>y</literal>. The <literal>(id &gt; $id)</literal> condition is
