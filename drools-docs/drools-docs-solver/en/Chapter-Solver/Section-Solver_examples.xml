@@ -76,12 +76,6 @@
         <mediaobject>
           <imageobject>
             <imagedata align="center"
-                       fileref="partiallySolvedNQueens04Explained.svg"
-                       format="SVG" />
-          </imageobject>
-
-          <imageobject>
-            <imagedata align="center"
                        fileref="partiallySolvedNQueens04Explained.png"
                        format="PNG" />
           </imageobject>
@@ -103,11 +97,6 @@
         <title>A correct solution for the 4 queens puzzle</title>
 
         <mediaobject>
-          <imageobject>
-            <imagedata align="center" fileref="solvedNQueens04.svg"
-                       format="SVG" />
-          </imageobject>
-
           <imageobject>
             <imagedata align="center" fileref="solvedNQueens04.png"
                        format="PNG" />

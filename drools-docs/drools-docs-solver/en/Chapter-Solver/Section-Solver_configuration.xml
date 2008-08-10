@@ -362,10 +362,6 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="unsolvedNQueens04.svg" format="SVG" />
-        </imageobject>
-
-        <imageobject>
           <imagedata fileref="unsolvedNQueens04.png" format="PNG" />
         </imageobject>
       </mediaobject>
@@ -478,10 +474,6 @@
       solution)</title>
 
       <mediaobject>
-        <imageobject>
-          <imagedata fileref="solvedNQueens04.svg" format="SVG" />
-        </imageobject>
-
         <imageobject>
           <imagedata fileref="solvedNQueens04.png" format="PNG" />
         </imageobject>

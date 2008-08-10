@@ -81,10 +81,6 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="singleMoveNQueens04.svg" format="SVG" />
-        </imageobject>
-
-        <imageobject>
           <imagedata fileref="singleMoveNQueens04.png" format="PNG" />
         </imageobject>
       </mediaobject>
@@ -284,10 +280,6 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="possibleMovesNQueens04.svg" format="SVG" />
-        </imageobject>
-
-        <imageobject>
           <imagedata fileref="possibleMovesNQueens04.png" format="PNG" />
         </imageobject>
       </mediaobject>
@@ -352,10 +344,6 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="decideNextStepNQueens04.svg" format="SVG" />
-        </imageobject>
-
-        <imageobject>
           <imagedata fileref="decideNextStepNQueens04.png" format="PNG" />
         </imageobject>
       </mediaobject>
@@ -376,10 +364,6 @@
       <title>All steps (4 queens example)</title>
 
       <mediaobject>
-        <imageobject>
-          <imagedata fileref="allStepsNQueens04.svg" format="SVG" />
-        </imageobject>
-
         <imageobject>
           <imagedata fileref="allStepsNQueens04.png" format="PNG" />
         </imageobject>
@@ -491,10 +475,6 @@ INFO  Solved in 3 steps and 15 time millis spend.</programlisting>
       <title>Decide the next step at step 0 (4 queens example)</title>
 
       <mediaobject>
-        <imageobject>
-          <imagedata fileref="decideNextStepNQueens04.svg" format="SVG" />
-        </imageobject>
-
         <imageobject>
           <imagedata fileref="decideNextStepNQueens04.png" format="PNG" />
         </imageobject>
