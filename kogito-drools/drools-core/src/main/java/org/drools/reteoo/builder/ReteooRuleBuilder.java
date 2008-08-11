@@ -176,24 +176,32 @@ public class ReteooRuleBuilder {
         
         // adds the terminal no to the list of nodes created/added by this sub-rule
         context.getNodes().add((BaseNode) terminal );
-        
-        if( context.getRuleBase().getConfiguration().isPartitionsEnabled() ) {
-            org.drools.common.RuleBasePartitionId partitionId = null;
-            if( context.getPartitionId() != null ) {
-                // it means it shares nodes with an existing partition, so
-                // assign the first id to the newly added nodes
-                partitionId = context.getPartitionId();
-            } else {
-                // nodes are independent of existing nodes, so create a new 
-                // partition ID for them
-                partitionId = context.getRuleBase().createNewPartitionId();
-            }
-            for( BaseNode node : context.getNodes() ) {
-                node.setPartitionId( partitionId );
-            }
-        }
-        
+
+        // assigns partition IDs to the new nodes
+        assignPartitionId(context);
+
         return terminal;
+    }
+
+    /**
+     * Assigns the current partition ID to the list of created nodes
+     * 
+     * @param context
+     */
+    private void assignPartitionId(BuildContext context) {
+        org.drools.common.RuleBasePartitionId partitionId = null;
+        if( context.getPartitionId() != null ) {
+            // it means it shares nodes with an existing partition, so
+            // assign the first id to the newly added nodes
+            partitionId = context.getPartitionId();
+        } else {
+            // nodes are independent of existing nodes, so create a new
+            // partition ID for them
+            partitionId = context.getRuleBase().createNewPartitionId();
+        }
+        for( BaseNode node : context.getNodes() ) {
+            node.setPartitionId( partitionId );
+        }
     }
 
     /**
@@ -201,7 +209,7 @@ public class ReteooRuleBuilder {
      * 
      * @param context
      * @param subrule
-     * @param query
+     * @param rule
      */
     private void addInitialFactPattern(final BuildContext context,
                                        final GroupElement subrule,
