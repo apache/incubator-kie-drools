@@ -524,7 +524,7 @@ public class MiscTest extends TestCase {
 
     public void testGeneratedBeans1() throws Exception {
         final PackageBuilderConfiguration pbconf = new PackageBuilderConfiguration();
-        pbconf.setDumpDir( new File( "target" ) );
+        //pbconf.setDumpDir( new File( "target" ) );
         final PackageBuilder builder = new PackageBuilder( pbconf );
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_GeneratedBeans.drl" ) ) );
         assertFalse( builder.getErrors().toString(),
@@ -590,6 +590,134 @@ public class MiscTest extends TestCase {
         // reading the field attribute, using the method chain
         assertEquals( "stilton",
                       cheeseFact.getField( "type" ).getFieldAccessor().getValue( cheese ) );
+
+        // creating a stateful session
+        StatefulSession wm = ruleBase.newStatefulSession();
+        Object cg = cheeseFact.newInstance();
+        wm.setGlobal("cg", cg);
+        List result = new ArrayList();
+        wm.setGlobal( "list",
+                      result );
+
+        // inserting fact
+        wm.insert( cheese );
+
+        // firing rules
+        wm.fireAllRules();
+
+        // checking results
+        assertEquals( 1,
+                      result.size() );
+        assertEquals( new Integer( 5 ),
+                      result.get( 0 ) );
+
+        // creating a person that likes the cheese:
+        // Retrieve the generated fact type
+        FactType personFact = ruleBase.getFactType( "org.drools.generatedbeans.Person" );
+
+        // Create a new Fact instance
+        Object person = personFact.newInstance();
+
+        // Set a field value using the more verbose method chain...
+        // should we add short cuts?
+        personFact.getField( "likes" ).getFieldAccessor().setValue( person,
+                                                                    cheese );
+        // demonstrating primitive type support
+        personFact.getField( "age" ).getFieldAccessor().setIntValue( person,
+                                                                     7 );
+
+        // just documenting toString() result:
+        //        assertEquals( "Person( age=7, likes=Cheese( type=stilton ) )",
+        //                      person.toString() );
+
+        // inserting fact
+        wm.insert( person );
+
+        // firing rules
+        wm.fireAllRules();
+
+        // checking results
+        assertEquals( 2,
+                      result.size() );
+        assertEquals( person,
+                      result.get( 1 ) );
+
+    }
+
+    public void testGeneratedBeans2() throws Exception {
+        final PackageBuilderConfiguration pbconf = new PackageBuilderConfiguration();
+        //pbconf.setDumpDir( new File( "target" ) );
+        final PackageBuilder builder = new PackageBuilder( pbconf );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_GeneratedBeans2.drl" ) ) );
+        assertFalse( builder.getErrors().toString(),
+                     builder.hasErrors() );
+
+        Package p = builder.getPackage();
+        assertEquals( 2,
+                      p.getRules().length );
+
+        // disabling shadow proxies, since they don't work yet with generated facts and
+        // we will scrap shadow proxies in drools 5 anyway.
+        RuleBaseConfiguration conf = new RuleBaseConfiguration();
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase( conf );
+        ruleBase.addPackage( p );
+
+        // test rulebase serialization
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
+
+        // Retrieve the generated fact type
+        FactType cheeseFact = ruleBase.getFactType( "org.drools.generatedbeans.Cheese" );
+
+        // Create a new Fact instance
+        Object cheese = cheeseFact.newInstance();
+
+        cheeseFact.set( cheese,
+                        "type",
+                        "stilton" );
+        assertEquals( "stilton",
+                      cheeseFact.get( cheese,
+                                      "type" ) );
+        
+        // testing equals method
+        Object cheese2 = cheeseFact.newInstance();
+        cheeseFact.set( cheese2,
+                        "type",
+                        "stilton" );
+        assertEquals( cheese,
+                      cheese2 );
+        
+
+        FactType personType = ruleBase.getFactType( "org.drools.generatedbeans.Person" );
+
+        Object ps = personType.newInstance();
+        personType.set( ps,
+                        "name",
+                        "mark" );
+        personType.set( ps,
+                        "last",
+                        "proctor" );
+        personType.set( ps,
+                        "age",
+                        42 );
+
+        Object ps2 = personType.newInstance();
+        personType.set( ps2,
+                        "name",
+                        "mark" );
+        personType.set( ps2,
+                        "last",
+                        "proctor" );
+        personType.set( ps2,
+                        "age",
+                        30 );
+        
+        assertEquals( ps, ps2);
+        
+        personType.set( ps2,
+                        "last",
+                        "little" );
+        
+        assertFalse( ps.equals( ps2 ) );
 
         // creating a stateful session
         StatefulSession wm = ruleBase.newStatefulSession();
