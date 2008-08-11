@@ -1,15 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project relativePaths="false" version="4">
   <component name="ChangeListManager">
-    <list default="true" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/drools-process/drools-process-enterprise/drools-process-enterprise.iml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/drools-process/drools-osworkflow/drools-osworkflow.iml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/drools-process/drools-bpel/drools-bpel.iml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/drools-core/drools-core.iml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/drools-process/drools-jpdl/drools-jpdl.iml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Drools.iws" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/drools-repository/src/main/java/org/drools/scm/ScmActionFactory.java" afterPath="$PROJECT_DIR$/drools-repository/src/main/java/org/drools/scm/ScmActionFactory.java" />
-    </list>
+    <list default="true" name="Default" comment="" />
     <ignored path="Drools.iws" />
     <ignored path=".idea/workspace.xml" />
   </component>
@@ -196,13 +188,13 @@
     <subPane>
       <PATH>
         <PATH_ELEMENT>
-          <option name="myItemId" value="Drools" />
+          <option name="myItemId" value="drools" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
         </PATH_ELEMENT>
       </PATH>
       <PATH>
         <PATH_ELEMENT>
-          <option name="myItemId" value="Drools" />
+          <option name="myItemId" value="drools" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
@@ -212,7 +204,7 @@
       </PATH>
       <PATH>
         <PATH_ELEMENT>
-          <option name="myItemId" value="Drools" />
+          <option name="myItemId" value="drools" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
@@ -226,7 +218,7 @@
       </PATH>
       <PATH>
         <PATH_ELEMENT>
-          <option name="myItemId" value="Drools" />
+          <option name="myItemId" value="drools" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
@@ -244,7 +236,7 @@
       </PATH>
       <PATH>
         <PATH_ELEMENT>
-          <option name="myItemId" value="Drools" />
+          <option name="myItemId" value="drools" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
@@ -266,7 +258,7 @@
       </PATH>
       <PATH>
         <PATH_ELEMENT>
-          <option name="myItemId" value="Drools" />
+          <option name="myItemId" value="drools" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
@@ -292,7 +284,7 @@
       </PATH>
       <PATH>
         <PATH_ELEMENT>
-          <option name="myItemId" value="Drools" />
+          <option name="myItemId" value="drools" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
@@ -310,7 +302,7 @@
       </PATH>
       <PATH>
         <PATH_ELEMENT>
-          <option name="myItemId" value="Drools" />
+          <option name="myItemId" value="drools" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
@@ -320,7 +312,7 @@
       </PATH>
       <PATH>
         <PATH_ELEMENT>
-          <option name="myItemId" value="Drools" />
+          <option name="myItemId" value="drools" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
@@ -334,7 +326,7 @@
       </PATH>
       <PATH>
         <PATH_ELEMENT>
-          <option name="myItemId" value="Drools" />
+          <option name="myItemId" value="drools" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
@@ -344,7 +336,7 @@
       </PATH>
       <PATH>
         <PATH_ELEMENT>
-          <option name="myItemId" value="Drools" />
+          <option name="myItemId" value="drools" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
@@ -380,6 +372,7 @@
     <property name="TEMP_MODULE_EXPLODED_DIR_FOR_Main7/web/Web" value="/private/tmp/webExplodedDir30555tmp" />
     <property name="MemberChooser.sorted" value="false" />
     <property name="MemberChooser.showClasses" value="true" />
+    <property name="TEMP_MODULE_EXPLODED_DIR_FOR_drools/web/Web" value="/private/tmp/webExplodedDir53284tmp" />
     <property name="GoToClass.includeLibraries" value="false" />
     <property name="TEMP_MODULE_EXPLODED_DIR_FOR_drools-guvnor/web/Web" value="/private/tmp/webExplodedDir59967tmp" />
     <property name="MemberChooser.copyJavadoc" value="false" />
@@ -412,12 +405,39 @@
         <option name="Make" value="true" />
       </method>
     </tempConfiguration>
-    <configuration default="true" type="Remote" factoryName="Remote">
-      <option name="USE_SOCKET_TRANSPORT" value="true" />
-      <option name="SERVER_MODE" value="false" />
-      <option name="SHMEM_ADDRESS" value="javadebug" />
-      <option name="HOST" value="localhost" />
-      <option name="PORT" value="5005" />
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <module name="" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="HTML_FILE_NAME" />
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <option name="VM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+    </configuration>
+    <configuration default="true" type="JUnit" factoryName="JUnit" enabled="false" merge="false">
+      <module name="" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="ADDITIONAL_CLASS_PATH" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="wholeProject" />
+      </option>
+      <envs />
+      <method>
+        <option name="Make" value="true" />
+      </method>
     </configuration>
     <configuration default="true" type="TestNG" factoryName="TestNG" enabled="false" merge="false">
       <module name="" />
@@ -461,39 +481,12 @@
       <module name="" />
       <envs />
     </configuration>
-    <configuration default="true" type="JUnit" factoryName="JUnit" enabled="false" merge="false">
-      <module name="" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PACKAGE_NAME" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="METHOD_NAME" />
-      <option name="TEST_OBJECT" value="class" />
-      <option name="VM_PARAMETERS" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="ADDITIONAL_CLASS_PATH" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="wholeProject" />
-      </option>
-      <envs />
-      <method>
-        <option name="Make" value="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="Applet" factoryName="Applet">
-      <module name="" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="HTML_FILE_NAME" />
-      <option name="HTML_USED" value="false" />
-      <option name="WIDTH" value="400" />
-      <option name="HEIGHT" value="300" />
-      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
-      <option name="VM_PARAMETERS" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
+    <configuration default="true" type="Remote" factoryName="Remote">
+      <option name="USE_SOCKET_TRANSPORT" value="true" />
+      <option name="SERVER_MODE" value="false" />
+      <option name="SHMEM_ADDRESS" value="javadebug" />
+      <option name="HOST" value="localhost" />
+      <option name="PORT" value="5005" />
     </configuration>
     <list size="1">
       <item index="0" class="java.lang.String" itemvalue="JUnit.All in drools-compiler" />
@@ -515,7 +508,7 @@
     <option name="UPDATE_RUN_STATUS" value="false" />
     <option name="UPDATE_RECURSIVELY" value="true" />
     <option name="MERGE_DRY_RUN" value="false" />
-    <configuration useDefault="true">/Users/christopherbrock/.subversion</configuration>
+    <configuration useDefault="true">$PROJECT_DIR$/../../.subversion</configuration>
   </component>
   <component name="Talios.JiraConfigurationComponent" enableIssueTracking="false" autoRefresh="false" useExternalBrowser="false" refreshTimeout="0" annotateissues="false">
     <servers />
@@ -557,7 +550,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="63" y="48" width="1332" height="813" extended-state="0" />
+    <frame x="60" y="22" width="1332" height="813" extended-state="0" />
     <editor active="false" />
     <layout>
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
@@ -665,68 +658,32 @@
     <entry file="file://$PROJECT_DIR$/drools-process/drools-bpel/src/main/java/org/drools/bpel/instance/BPELEmptyInstance.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="6" column="10" selection-start="154" selection-end="154" vertical-scroll-proportion="0.22588235">
-          <folding>
-            <marker date="1218479435000" expanded="true" signature="147:232" placeholder="/**...*/" />
-            <marker date="1218479435000" expanded="true" signature="418:540" placeholder="{...}" />
-            <marker date="1218479435000" expanded="true" signature="581:673" placeholder="{...}" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/drools-process/drools-bpel/src/main/java/org/drools/bpel/xpath/XPathDialect.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="8" column="27" selection-start="212" selection-end="212" vertical-scroll-proportion="0.30117646">
-          <folding>
-            <marker date="1218417530000" expanded="true" signature="1438:1463" placeholder="{...}" />
-            <marker date="1218417530000" expanded="true" signature="1507:1532" placeholder="{...}" />
-            <marker date="1218417530000" expanded="true" signature="1603:1648" placeholder="{...}" />
-            <marker date="1218417530000" expanded="true" signature="1691:1710" placeholder="{...}" />
-            <marker date="1218417530000" expanded="true" signature="2141:2160" placeholder="{...}" />
-            <marker date="1218417530000" expanded="true" signature="2296:2315" placeholder="{...}" />
-            <marker date="1218417530000" expanded="true" signature="2398:2417" placeholder="{...}" />
-            <marker date="1218417530000" expanded="true" signature="2472:2491" placeholder="{...}" />
-            <marker date="1218417530000" expanded="true" signature="2519:2538" placeholder="{...}" />
-            <marker date="1218417530000" expanded="true" signature="2602:2621" placeholder="{...}" />
-            <marker date="1218417530000" expanded="true" signature="2674:2693" placeholder="{...}" />
-            <marker date="1218417530000" expanded="true" signature="2744:2763" placeholder="{...}" />
-            <marker date="1218417530000" expanded="true" signature="2811:2830" placeholder="{...}" />
-            <marker date="1218417530000" expanded="true" signature="2869:2888" placeholder="{...}" />
-            <marker date="1218417530000" expanded="true" signature="2933:2952" placeholder="{...}" />
-            <marker date="1218417530000" expanded="true" signature="3001:3020" placeholder="{...}" />
-            <marker date="1218417530000" expanded="true" signature="3075:3094" placeholder="{...}" />
-            <marker date="1218417530000" expanded="true" signature="3135:3154" placeholder="{...}" />
-            <marker date="1218417530000" expanded="true" signature="3182:3201" placeholder="{...}" />
-            <marker date="1218417530000" expanded="true" signature="3254:3273" placeholder="{...}" />
-            <marker date="1218417530000" expanded="true" signature="3322:3341" placeholder="{...}" />
-            <marker date="1218417530000" expanded="true" signature="3388:3407" placeholder="{...}" />
-            <marker date="1218417530000" expanded="true" signature="3448:3467" placeholder="{...}" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/drools-process/drools-bpel/src/main/java/org/drools/bpel/xpath/XPathReturnValueEvaluatorBuilder.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="4" column="81" selection-start="92" selection-end="92" vertical-scroll-proportion="0.037647057">
-          <folding>
-            <marker date="1218417530000" expanded="true" signature="1195:3424" placeholder="{...}" />
-            <marker date="1218417530000" expanded="true" signature="1981:2789" placeholder="{...}" />
-            <marker date="1218417530000" expanded="true" signature="2055:2778" placeholder="{...}" />
-            <marker date="1218417530000" expanded="true" signature="2858:2946" placeholder="{...}" />
-            <marker date="1218417530000" expanded="true" signature="2912:2935" placeholder="{...}" />
-            <marker date="1218417530000" expanded="true" signature="3486:3724" placeholder="{...}" />
-            <marker date="1218417530000" expanded="true" signature="3562:3721" placeholder="{...}" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/drools-repository/doc/index.html">
-      <provider editor-type-id="HtmlPreview">
-        <state />
-      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state line="12" column="11" selection-start="238" selection-end="238" vertical-scroll-proportion="0.3265306">
           <folding />
         </state>
+      </provider>
+      <provider editor-type-id="HtmlPreview">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/drools-repository/src/main/java/org/drools/scm/svn/SvnActionFactory.java">
