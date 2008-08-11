@@ -33,8 +33,6 @@ import org.drools.base.ClassFieldAccessor;
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldReader;
 import org.drools.base.ClassFieldWriter;
-import org.drools.base.ClassTypeResolver;
-import org.drools.base.TypeResolver;
 import org.drools.commons.jci.problems.CompilationProblem;
 import org.drools.factmodel.ClassBuilder;
 import org.drools.factmodel.ClassDefinition;
@@ -58,7 +56,6 @@ import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.TypeFieldDescr;
 import org.drools.process.core.Process;
 import org.drools.reteoo.ReteooRuleBase;
-import org.drools.rule.ImportDeclaration;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.rule.TypeDeclaration;
@@ -726,8 +723,12 @@ public class PackageBuilder {
         try {
             for ( TypeFieldDescr field : flds.values() ) {
                 String fullFieldType = pkgRegistry.getTypeResolver().resolveType( field.getPattern().getObjectType() ).getName();
-                def.addField( new FieldDefinition( field.getFieldName(),
-                                                   fullFieldType ) );
+                FieldDefinition fieldDef = new FieldDefinition( field.getFieldName(),
+                                                                fullFieldType );
+                // field is marked as PK
+                boolean isKey = field.getMetaAttributes().containsKey( "key" );
+                fieldDef.setKey( isKey );
+                def.addField( fieldDef );
             }
 
             byte[] d = cb.buildClass( def );
