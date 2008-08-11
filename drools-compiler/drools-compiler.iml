@@ -1,268 +1,239 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<!--
-Licensed to the Apache Software Foundation (ASF) under one
-or more contributor license agreements.  See the NOTICE file
-distributed with this work for additional information
-regarding copyright ownership.  The ASF licenses this file
-to you under the Apache License, Version 2.0 (the
-"License"); you may not use this file except in compliance
-with the License.  You may obtain a copy of the License at
-
-  http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing,
-software distributed under the License is distributed on an
-"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, either express or implied.  See the License for the
-specific language governing permissions and limitations
-under the License.
--->
-<module version="4" relativePaths="false" type="JAVA_MODULE"> 
-  <component name="NewModuleRootManager"> 
-    <exclude-output/>  
-    <orderEntry type="inheritedJdk"/>  
-    <!-- output url="file://$$MODULE_DIR$$/${maven.build.dest}"/ -->  
-    <!-- output-test url="file://$$MODULE_DIR$$/${maven.test.dest}"/ -->  
-    <content url="file://$MODULE_DIR$"> 
-      <!-- sourceFolder url="file://$$MODULE_DIR$$/${pom.build.sourceDirectory}" isTestSource="false"/ -->  
-      <!-- sourceFolder url="file://$$MODULE_DIR$$/${pom.build.testSourceDirectory}" isTestSource="true"/ -->  
-      <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false"/>
-      <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true"/>
-      <sourceFolder url="file://$MODULE_DIR$/src/main/resources" isTestSource="false"/>
-      <sourceFolder url="file://$MODULE_DIR$/src/test/resources" isTestSource="true"/>
-      <excludeFolder url="file://$MODULE_DIR$/target"/>
-    </content>  
-    <orderEntry type="sourceFolder" forTests="false"/>  
-    <!-- Next include each dependency:
-      <orderEntry type="module" module-name="${dep.artifactId}"/>
-      <orderEntry type="module-library">
-        <library name="${dep.artifactId}">
-          <CLASSES>
-            <root url="jar://${lib.path}!/"/>
-          </CLASSES>
-          <JAVADOC/>
-          <SOURCES/>
-        </library>
-      </orderEntry>
-     -->  
-    <output url="file://$MODULE_DIR$/target/classes"/>
-    <output-test url="file://$MODULE_DIR$/target/test-classes"/>
+<module relativePaths="false" type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" inherit-compiler-output="false">
+    <output url="file://$MODULE_DIR$/target/classes" />
+    <exclude-output />
+    <output-test url="file://$MODULE_DIR$/target/test-classes" />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/resources" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test/resources" isTestSource="true" />
+      <excludeFolder url="file://$MODULE_DIR$/target" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar:///Users/christopherbrock/.m2/repository/org/codehaus/plexus/plexus-utils/1.0.4/plexus-utils-1.0.4.jar!/"/>
+          <root url="jar:///Users/christopherbrock/.m2/repository/org/codehaus/plexus/plexus-utils/1.0.4/plexus-utils-1.0.4.jar!/" />
         </CLASSES>
+        <JAVADOC />
         <SOURCES>
-          <root url="jar:///Users/christopherbrock/.m2/repository/org/codehaus/plexus/plexus-utils/1.0.4/plexus-utils-1.0.4-sources.jar!/"/>
+          <root url="jar:///Users/christopherbrock/.m2/repository/org/codehaus/plexus/plexus-utils/1.0.4/plexus-utils-1.0.4-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar:///Users/christopherbrock/.m2/repository/junit/junit/3.8.1/junit-3.8.1.jar!/"/>
+          <root url="jar:///Users/christopherbrock/.m2/repository/junit/junit/3.8.1/junit-3.8.1.jar!/" />
         </CLASSES>
+        <JAVADOC />
         <SOURCES>
-          <root url="jar:///Users/christopherbrock/.m2/repository/junit/junit/3.8.1/junit-3.8.1-sources.jar!/"/>
+          <root url="jar:///Users/christopherbrock/.m2/repository/junit/junit/3.8.1/junit-3.8.1-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar:///Users/christopherbrock/.m2/repository/org/apache/maven/maven-model/2.0/maven-model-2.0.jar!/"/>
+          <root url="jar:///Users/christopherbrock/.m2/repository/org/apache/maven/maven-model/2.0/maven-model-2.0.jar!/" />
         </CLASSES>
+        <JAVADOC />
         <SOURCES>
-          <root url="jar:///Users/christopherbrock/.m2/repository/org/apache/maven/maven-model/2.0/maven-model-2.0-sources.jar!/"/>
+          <root url="jar:///Users/christopherbrock/.m2/repository/org/apache/maven/maven-model/2.0/maven-model-2.0-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar:///Users/christopherbrock/.m2/repository/org/codehaus/plexus/plexus-container-default/1.0-alpha-8/plexus-container-default-1.0-alpha-8.jar!/"/>
+          <root url="jar:///Users/christopherbrock/.m2/repository/org/codehaus/plexus/plexus-container-default/1.0-alpha-8/plexus-container-default-1.0-alpha-8.jar!/" />
         </CLASSES>
+        <JAVADOC />
         <SOURCES>
-          <root url="jar:///Users/christopherbrock/.m2/repository/org/codehaus/plexus/plexus-container-default/1.0-alpha-8/plexus-container-default-1.0-alpha-8-sources.jar!/"/>
+          <root url="jar:///Users/christopherbrock/.m2/repository/org/codehaus/plexus/plexus-container-default/1.0-alpha-8/plexus-container-default-1.0-alpha-8-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar:///Users/christopherbrock/.m2/repository/org/apache/maven/maven-profile/2.0/maven-profile-2.0.jar!/"/>
+          <root url="jar:///Users/christopherbrock/.m2/repository/org/apache/maven/maven-profile/2.0/maven-profile-2.0.jar!/" />
         </CLASSES>
+        <JAVADOC />
         <SOURCES>
-          <root url="jar:///Users/christopherbrock/.m2/repository/org/apache/maven/maven-profile/2.0/maven-profile-2.0-sources.jar!/"/>
+          <root url="jar:///Users/christopherbrock/.m2/repository/org/apache/maven/maven-profile/2.0/maven-profile-2.0-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar:///Users/christopherbrock/.m2/repository/com/thoughtworks/xstream/xstream/1.2.2/xstream-1.2.2.jar!/"/>
+          <root url="jar:///Users/christopherbrock/.m2/repository/com/thoughtworks/xstream/xstream/1.2.2/xstream-1.2.2.jar!/" />
         </CLASSES>
+        <JAVADOC />
         <SOURCES>
-          <root url="jar:///Users/christopherbrock/.m2/repository/com/thoughtworks/xstream/xstream/1.2.2/xstream-1.2.2-sources.jar!/"/>
+          <root url="jar:///Users/christopherbrock/.m2/repository/com/thoughtworks/xstream/xstream/1.2.2/xstream-1.2.2-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar:///Users/christopherbrock/.m2/repository/classworlds/classworlds/1.1-alpha-2/classworlds-1.1-alpha-2.jar!/"/>
+          <root url="jar:///Users/christopherbrock/.m2/repository/classworlds/classworlds/1.1-alpha-2/classworlds-1.1-alpha-2.jar!/" />
         </CLASSES>
-        <SOURCES/>
+        <JAVADOC />
+        <SOURCES />
       </library>
     </orderEntry>
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar:///Users/christopherbrock/.m2/repository/org/antlr/stringtemplate/3.0/stringtemplate-3.0.jar!/"/>
+          <root url="jar:///Users/christopherbrock/.m2/repository/org/antlr/stringtemplate/3.0/stringtemplate-3.0.jar!/" />
         </CLASSES>
-        <SOURCES/>
+        <JAVADOC />
+        <SOURCES />
       </library>
     </orderEntry>
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar:///Users/christopherbrock/.m2/repository/org/apache/maven/maven-repository-metadata/2.0/maven-repository-metadata-2.0.jar!/"/>
+          <root url="jar:///Users/christopherbrock/.m2/repository/org/apache/maven/maven-repository-metadata/2.0/maven-repository-metadata-2.0.jar!/" />
         </CLASSES>
+        <JAVADOC />
         <SOURCES>
-          <root url="jar:///Users/christopherbrock/.m2/repository/org/apache/maven/maven-repository-metadata/2.0/maven-repository-metadata-2.0-sources.jar!/"/>
+          <root url="jar:///Users/christopherbrock/.m2/repository/org/apache/maven/maven-repository-metadata/2.0/maven-repository-metadata-2.0-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar:///Users/christopherbrock/.m2/repository/org/antlr/antlr-runtime/3.0.1/antlr-runtime-3.0.1.jar!/"/>
+          <root url="jar:///Users/christopherbrock/.m2/repository/org/antlr/antlr-runtime/3.0.1/antlr-runtime-3.0.1.jar!/" />
         </CLASSES>
+        <JAVADOC />
         <SOURCES>
-          <root url="jar:///Users/christopherbrock/.m2/repository/org/antlr/antlr-runtime/3.0.1/antlr-runtime-3.0.1-sources.jar!/"/>
+          <root url="jar:///Users/christopherbrock/.m2/repository/org/antlr/antlr-runtime/3.0.1/antlr-runtime-3.0.1-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar:///Users/christopherbrock/.m2/repository/org/antlr/antlr/3.0.1/antlr-3.0.1.jar!/"/>
+          <root url="jar:///Users/christopherbrock/.m2/repository/org/antlr/antlr/3.0.1/antlr-3.0.1.jar!/" />
         </CLASSES>
+        <JAVADOC />
         <SOURCES>
-          <root url="jar:///Users/christopherbrock/.m2/repository/org/antlr/antlr/3.0.1/antlr-3.0.1-sources.jar!/"/>
+          <root url="jar:///Users/christopherbrock/.m2/repository/org/antlr/antlr/3.0.1/antlr-3.0.1-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="drools-core"/>
+    <orderEntry type="module" module-name="drools-core" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar:///Users/christopherbrock/.m2/repository/org/eclipse/jdt/core/3.2.3.v_686_R32x/core-3.2.3.v_686_R32x.jar!/"/>
+          <root url="jar:///Users/christopherbrock/.m2/repository/org/eclipse/jdt/core/3.2.3.v_686_R32x/core-3.2.3.v_686_R32x.jar!/" />
         </CLASSES>
-        <SOURCES/>
+        <JAVADOC />
+        <SOURCES />
       </library>
     </orderEntry>
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar:///Users/christopherbrock/.m2/repository/org/antlr/gunit/1.0.1/gunit-1.0.1.jar!/"/>
+          <root url="jar:///Users/christopherbrock/.m2/repository/org/antlr/gunit/1.0.1/gunit-1.0.1.jar!/" />
         </CLASSES>
+        <JAVADOC />
         <SOURCES>
-          <root url="jar:///Users/christopherbrock/.m2/repository/org/antlr/gunit/1.0.1/gunit-1.0.1-sources.jar!/"/>
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar:///Users/christopherbrock/.m2/repository/org/mvel/mvel/2.0-dp4/mvel-2.0-dp4.jar!/"/>
-        </CLASSES>
-        <SOURCES>
-          <root url="jar:///Users/christopherbrock/.m2/repository/org/mvel/mvel/2.0-dp4/mvel-2.0-dp4-sources.jar!/"/>
+          <root url="jar:///Users/christopherbrock/.m2/repository/org/antlr/gunit/1.0.1/gunit-1.0.1-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar:///Users/christopherbrock/.m2/repository/org/apache/maven/maven-artifact-manager/2.0/maven-artifact-manager-2.0.jar!/"/>
+          <root url="jar:///Users/christopherbrock/.m2/repository/org/mvel/mvel/2.0-dp4/mvel-2.0-dp4.jar!/" />
         </CLASSES>
+        <JAVADOC />
         <SOURCES>
-          <root url="jar:///Users/christopherbrock/.m2/repository/org/apache/maven/maven-artifact-manager/2.0/maven-artifact-manager-2.0-sources.jar!/"/>
+          <root url="jar:///Users/christopherbrock/.m2/repository/org/mvel/mvel/2.0-dp4/mvel-2.0-dp4-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar:///Users/christopherbrock/.m2/repository/janino/janino/2.5.10/janino-2.5.10.jar!/"/>
+          <root url="jar:///Users/christopherbrock/.m2/repository/org/apache/maven/maven-artifact-manager/2.0/maven-artifact-manager-2.0.jar!/" />
         </CLASSES>
-        <SOURCES/>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar:///Users/christopherbrock/.m2/repository/org/apache/maven/wagon/wagon-provider-api/1.0-alpha-5/wagon-provider-api-1.0-alpha-5.jar!/"/>
-        </CLASSES>
+        <JAVADOC />
         <SOURCES>
-          <root url="jar:///Users/christopherbrock/.m2/repository/org/apache/maven/wagon/wagon-provider-api/1.0-alpha-5/wagon-provider-api-1.0-alpha-5-sources.jar!/"/>
+          <root url="jar:///Users/christopherbrock/.m2/repository/org/apache/maven/maven-artifact-manager/2.0/maven-artifact-manager-2.0-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar:///Users/christopherbrock/.m2/repository/org/apache/maven/maven-project/2.0/maven-project-2.0.jar!/"/>
+          <root url="jar:///Users/christopherbrock/.m2/repository/janino/janino/2.5.10/janino-2.5.10.jar!/" />
         </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/christopherbrock/.m2/repository/org/apache/maven/wagon/wagon-provider-api/1.0-alpha-5/wagon-provider-api-1.0-alpha-5.jar!/" />
+        </CLASSES>
+        <JAVADOC />
         <SOURCES>
-          <root url="jar:///Users/christopherbrock/.m2/repository/org/apache/maven/maven-project/2.0/maven-project-2.0-sources.jar!/"/>
+          <root url="jar:///Users/christopherbrock/.m2/repository/org/apache/maven/wagon/wagon-provider-api/1.0-alpha-5/wagon-provider-api-1.0-alpha-5-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar:///Users/christopherbrock/.m2/repository/xpp3/xpp3_min/1.1.3.4.O/xpp3_min-1.1.3.4.O.jar!/"/>
+          <root url="jar:///Users/christopherbrock/.m2/repository/org/apache/maven/maven-project/2.0/maven-project-2.0.jar!/" />
         </CLASSES>
-        <SOURCES/>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar:///Users/christopherbrock/.m2/repository/antlr/antlr/2.7.7/antlr-2.7.7.jar!/"/>
-        </CLASSES>
-        <SOURCES/>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar:///Users/christopherbrock/.m2/repository/org/apache/maven/maven-artifact/2.0/maven-artifact-2.0.jar!/"/>
-        </CLASSES>
+        <JAVADOC />
         <SOURCES>
-          <root url="jar:///Users/christopherbrock/.m2/repository/org/apache/maven/maven-artifact/2.0/maven-artifact-2.0-sources.jar!/"/>
+          <root url="jar:///Users/christopherbrock/.m2/repository/org/apache/maven/maven-project/2.0/maven-project-2.0-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
-  </component>  
-  <component name="ModuleRootManager"/>  
-  <!-- If it's a war project:
-  <component name="WebModuleProperties">
-    <containerElement type="module" name="${dep.artifactId}">
-      <attribute name="method" value="1" />
-      <attribute name="URI" value="/WEB-INF/classes" />
-    </containerElement>
-    <containerElement type="library" level="module" name="${dep.artifactId}">
-      <attribute name="method" value="1" />
-      <attribute name="URI" value="/WEB-INF/lib/${dep.systemPath.name}" />
-    </containerElement>
-    <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/${pom.build.warSourceDirectory}/WEB-INF/web.xml" version="" />
-    <webroots>
-      <root url="file://$MODULE_DIR$/${pom.build.warSourceDirectory}" relative="/" />
-    </webroots>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/christopherbrock/.m2/repository/xpp3/xpp3_min/1.1.3.4.O/xpp3_min-1.1.3.4.O.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/christopherbrock/.m2/repository/antlr/antlr/2.7.7/antlr-2.7.7.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/christopherbrock/.m2/repository/org/apache/maven/maven-artifact/2.0/maven-artifact-2.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar:///Users/christopherbrock/.m2/repository/org/apache/maven/maven-artifact/2.0/maven-artifact-2.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntryProperties />
   </component>
-  --> 
 </module>
+
