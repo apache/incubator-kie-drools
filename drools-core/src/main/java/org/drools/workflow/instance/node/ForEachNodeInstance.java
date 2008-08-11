@@ -1,7 +1,9 @@
 package org.drools.workflow.instance.node;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.drools.process.core.context.variable.VariableScope;
@@ -102,7 +104,22 @@ public class ForEachNodeInstance extends CompositeNodeInstance {
                 throw new IllegalArgumentException(
                     "Could not find collection " + collectionExpression);
             }
-            return (Collection<?>) variableScopeInstance.getVariable(collectionExpression);
+            Object collection = variableScopeInstance.getVariable(collectionExpression);
+            if (collection == null) {
+            	return Collections.EMPTY_LIST;
+            }
+            if (collection instanceof Collection<?>) {
+            	return (Collection<?>) collection;
+            }
+            if (collection.getClass().isArray() ) {
+            	List<Object> list = new ArrayList<Object>();
+            	for (Object o: (Object[]) collection) {
+            		list.add(o);
+            	}
+                return list;
+            }
+            throw new IllegalArgumentException(
+        		"Unexpected collection type: " + collection.getClass());
         }
         
     }

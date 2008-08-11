@@ -32,6 +32,13 @@ public final class ObjectDataType implements DataType {
     private static final long serialVersionUID = 4L;
 
     private String className;
+    
+    public ObjectDataType() {
+    }
+
+    public ObjectDataType(String className) {
+    	setClassName(className);
+    }
 
     public String getClassName() {
         return className;

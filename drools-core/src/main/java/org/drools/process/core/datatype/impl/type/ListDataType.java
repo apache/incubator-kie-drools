@@ -43,6 +43,13 @@ public class ListDataType implements DataType {
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject(dataType);
     }
+    
+    public ListDataType() {
+    }
+
+    public ListDataType(DataType dataType) {
+    	setDataType(dataType);
+    }
 
     public void setDataType(final DataType dataType) {
         this.dataType = dataType;
