@@ -12,7 +12,7 @@ public class InstrumentedDeclarationScopeResolver extends DeclarationScopeResolv
     private Map declarations;
 
     public InstrumentedDeclarationScopeResolver() {
-        super( null );
+        super( new Map[0] );
     }
 
     public void setDeclarations(final Map map) {
