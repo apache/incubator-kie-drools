@@ -139,7 +139,11 @@ public class XmlWorkflowProcessDumper {
     }
     
     private void visitValue(Object value, StringBuffer xmlDump) {
-        xmlDump.append("        <value>" + value + "</value>" + EOL);
+    	if (value instanceof String) {
+    		xmlDump.append("        <value>" + XmlDumper.replaceIllegalChars((String) value) + "</value>" + EOL);
+    	} else {
+    		throw new IllegalArgumentException("Unsupported value type: " + value);
+    	}
     }
     
     private void visitNodes(WorkflowProcess process, StringBuffer xmlDump, boolean includeMeta) {
