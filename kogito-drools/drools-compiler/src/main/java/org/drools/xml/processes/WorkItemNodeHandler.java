@@ -7,6 +7,7 @@ import org.drools.process.core.Work;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.WorkItemNode;
 import org.drools.xml.ExtensibleXmlParser;
+import org.drools.xml.XmlDumper;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
@@ -81,7 +82,11 @@ public class WorkItemNodeHandler extends AbstractNodeHandler {
                 if (value == null) {
                     xmlDump.append("/>" + EOL);
                 } else {
-                    xmlDump.append(">" + value + "</parameter>" + EOL);
+                	if (value instanceof String) {
+                		xmlDump.append(">" + XmlDumper.replaceIllegalChars((String) value) + "</parameter>" + EOL);
+                	} else {
+                		throw new IllegalArgumentException("Unsupported value type: " + value);
+                	}
                 }
             }
             xmlDump.append("      </work>" + EOL);
