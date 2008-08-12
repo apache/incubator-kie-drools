@@ -31,6 +31,7 @@ import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.Package;
 import org.drools.rule.Query;
 import org.drools.rule.Rule;
+import org.drools.rule.RuleConditionElement;
 import org.drools.spi.DeclarationScopeResolver;
 import org.drools.util.DateUtils;
 
@@ -46,7 +47,7 @@ public class RuleBuildContext extends PackageBuildContext {
 
     // a stack for the rule building used
     // for declarations resolution
-    private Stack                       buildStack;
+    private Stack<RuleConditionElement> buildStack;
 
     // current Rule descriptor
     private RuleDescr                   ruleDescr;
@@ -65,7 +66,7 @@ public class RuleBuildContext extends PackageBuildContext {
                             final DialectCompiletimeRegistry dialectCompiletimeRegistry,
                             final Package pkg,
                             final Dialect defaultDialect) {
-        this.buildStack = new Stack();
+        this.buildStack = new Stack<RuleConditionElement>();
         this.declarationResolver = new DeclarationScopeResolver( new Map[]{pkg.getGlobals()},
                                                                  this.buildStack );
         this.ruleDescr = ruleDescr;
@@ -121,7 +122,7 @@ public class RuleBuildContext extends PackageBuildContext {
 
     /**
      * Sets the available declarationResolver instance
-     * @param declarationResolver
+     * @param variables
      */
     public void setDeclarationResolver(final DeclarationScopeResolver variables) {
         this.declarationResolver = variables;
@@ -139,7 +140,7 @@ public class RuleBuildContext extends PackageBuildContext {
         this.patternId = patternId;
     }
 
-    public Stack getBuildStack() {
+    public Stack<RuleConditionElement> getBuildStack() {
         return this.buildStack;
     }
 
