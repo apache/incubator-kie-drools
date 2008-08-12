@@ -18,7 +18,8 @@ package org.drools.process.core.context.variable;
 
 import java.io.Serializable;
 
-import org.drools.process.core.context.variable.Variable;
+import org.drools.process.core.TypeObject;
+import org.drools.process.core.ValueObject;
 import org.drools.process.core.datatype.DataType;
 import org.drools.process.core.datatype.impl.type.UndefinedDataType;
 
@@ -27,13 +28,13 @@ import org.drools.process.core.datatype.impl.type.UndefinedDataType;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class Variable implements Serializable {
+public class Variable implements TypeObject, ValueObject, Serializable {
 
     private static final long serialVersionUID = 400L;
 
-    private String            name;
-    private DataType         type;
-    private Serializable      value;
+    private String name;
+    private DataType type;
+    private Object value;
 
     public Variable() {
         this.type = UndefinedDataType.getInstance();
@@ -58,11 +59,11 @@ public class Variable implements Serializable {
         this.type = type;
     }
 
-    public Serializable getValue() {
+    public Object getValue() {
         return this.value;
     }
 
-    public void setValue(final Serializable value) {
+    public void setValue(final Object value) {
         if ( this.type.verifyDataType( value ) ) {
             this.value = value;
         } else {

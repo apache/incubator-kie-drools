@@ -26,15 +26,15 @@ import org.xml.sax.SAXParseException;
  * 
  */
 public abstract class BaseAbstractHandler {
-    protected Set     validPeers;
-    protected Set     validParents;
+    protected Set<Class<?>>     validPeers;
+    protected Set<Class<?>>     validParents;
     protected boolean allowNesting;
 
-    public Set getValidParents() {
+    public Set<Class<?>> getValidParents() {
         return this.validParents;
     }
 
-    public Set getValidPeers() {
+    public Set<Class<?>> getValidPeers() {
         return this.validPeers;
     }
 

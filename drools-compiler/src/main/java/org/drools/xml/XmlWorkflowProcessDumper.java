@@ -10,6 +10,7 @@ import org.drools.process.core.context.swimlane.SwimlaneContext;
 import org.drools.process.core.context.variable.Variable;
 import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.core.datatype.DataType;
+import org.drools.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.workflow.core.Connection;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.WorkflowProcess;
@@ -116,7 +117,7 @@ public class XmlWorkflowProcessDumper {
                 visitDataType(variable.getType(), xmlDump);
                 Object value = variable.getValue();
                 if (value != null) {
-                    visitValue(variable.getValue(), xmlDump);
+                    visitValue(variable.getValue(), variable.getType(), xmlDump);
                 }
                 xmlDump.append("      </variable>" + EOL);
             }
@@ -134,16 +135,17 @@ public class XmlWorkflowProcessDumper {
         }
     }
     
-    private void visitDataType(DataType dataType, StringBuffer xmlDump) {
-        xmlDump.append("        <type name=\"" + dataType.getClass().getName() + "\" />" + EOL);
+    public static void visitDataType(DataType dataType, StringBuffer xmlDump) {
+        xmlDump.append("        <type name=\"" + dataType.getClass().getName() + "\" ");
+        // TODO make this pluggable so datatypes can write out other properties as well
+        if (dataType instanceof ObjectDataType) {
+        	xmlDump.append("className=\"" + ((ObjectDataType) dataType).getClassName() + "\" ");
+        }
+        xmlDump.append("/>" + EOL);
     }
     
-    private void visitValue(Object value, StringBuffer xmlDump) {
-    	if (value instanceof String) {
-    		xmlDump.append("        <value>" + XmlDumper.replaceIllegalChars((String) value) + "</value>" + EOL);
-    	} else {
-    		throw new IllegalArgumentException("Unsupported value type: " + value);
-    	}
+    public static void visitValue(Object value, DataType dataType, StringBuffer xmlDump) {
+		xmlDump.append("        <value>" + XmlDumper.replaceIllegalChars(dataType.writeValue(value)) + "</value>" + EOL);
     }
     
     private void visitNodes(WorkflowProcess process, StringBuffer xmlDump, boolean includeMeta) {

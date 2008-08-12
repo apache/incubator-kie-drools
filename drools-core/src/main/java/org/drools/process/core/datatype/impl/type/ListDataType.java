@@ -16,13 +16,14 @@ package org.drools.process.core.datatype.impl.type;
  * limitations under the License.
  */
 
-import org.drools.process.core.datatype.DataType;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Iterator;
 import java.util.List;
+
+import org.drools.process.core.TypeObject;
+import org.drools.process.core.datatype.DataType;
 
 /**
  * Representation of a list datatype.
@@ -30,11 +31,15 @@ import java.util.List;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class ListDataType implements DataType {
+public class ListDataType extends ObjectDataType implements TypeObject {
 
     private static final long serialVersionUID = 400L;
 
     private DataType dataType;
+    
+    public ListDataType() {
+    	setClassName("java.util.List");
+    }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         dataType    = (DataType)in.readObject();
@@ -44,18 +49,15 @@ public class ListDataType implements DataType {
         out.writeObject(dataType);
     }
     
-    public ListDataType() {
-    }
-
     public ListDataType(DataType dataType) {
-    	setDataType(dataType);
+    	setType(dataType);
     }
 
-    public void setDataType(final DataType dataType) {
+    public void setType(final DataType dataType) {
         this.dataType = dataType;
     }
 
-    public DataType getDataType() {
+    public DataType getType() {
         return this.dataType;
     }
 
@@ -64,8 +66,8 @@ public class ListDataType implements DataType {
             return true;
         }
         if (value instanceof List) {
-            for (final Iterator<?> it = ((List<?>) value).iterator(); it.hasNext();) {
-                if (!this.dataType.verifyDataType(it.next())) {
+            for (Object o: (List<?>) value) {
+                if (dataType != null && !dataType.verifyDataType(o)) {
                     return false;
                 }
             }

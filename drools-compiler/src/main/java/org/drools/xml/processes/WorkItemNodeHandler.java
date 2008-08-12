@@ -4,10 +4,11 @@ import java.util.Map;
 
 import org.drools.process.core.ParameterDefinition;
 import org.drools.process.core.Work;
+import org.drools.process.core.datatype.DataType;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.WorkItemNode;
 import org.drools.xml.ExtensibleXmlParser;
-import org.drools.xml.XmlDumper;
+import org.drools.xml.XmlWorkflowProcessDumper;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
@@ -29,7 +30,7 @@ public class WorkItemNodeHandler extends AbstractNodeHandler {
         return new WorkItemNode();
     }
 
-    public Class generateNodeFor() {
+    public Class<?> generateNodeFor() {
         return WorkItemNode.class;
     }
 
@@ -76,18 +77,15 @@ public class WorkItemNodeHandler extends AbstractNodeHandler {
         if (work != null) {
             xmlDump.append("      <work name=\"" + work.getName() + "\" >" + EOL);
             for (ParameterDefinition paramDefinition: work.getParameterDefinitions()) {
-                xmlDump.append("        <parameter name=\"" + paramDefinition.getName() + "\" " + 
-                                                  "type=\"" + paramDefinition.getType().getClass().getName() + "\" ");
+            	DataType dataType = paramDefinition.getType();
+                xmlDump.append("        <parameter name=\"" + paramDefinition.getName() + "\" >" + EOL + "  ");
+                XmlWorkflowProcessDumper.visitDataType(dataType, xmlDump);
                 Object value = work.getParameter(paramDefinition.getName());
-                if (value == null) {
-                    xmlDump.append("/>" + EOL);
-                } else {
-                	if (value instanceof String) {
-                		xmlDump.append(">" + XmlDumper.replaceIllegalChars((String) value) + "</parameter>" + EOL);
-                	} else {
-                		throw new IllegalArgumentException("Unsupported value type: " + value);
-                	}
+                if (value != null) {
+                	xmlDump.append("  ");
+                	XmlWorkflowProcessDumper.visitValue(value, dataType, xmlDump);
                 }
+                xmlDump.append("        </parameter>" + EOL); 
             }
             xmlDump.append("      </work>" + EOL);
         }

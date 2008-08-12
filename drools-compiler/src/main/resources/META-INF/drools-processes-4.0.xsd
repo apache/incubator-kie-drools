@@ -69,6 +69,7 @@
 	<xs:element name="type">
 		<xs:complexType>
 			<xs:attribute name="name" type="xs:string" use="required"/>
+			<xs:attribute name="className" type="xs:string" />
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="value">
@@ -269,12 +270,11 @@
 	</xs:element>
 	<xs:element name="parameter">
 		<xs:complexType>
-			<xs:simpleContent>
-				<xs:extension base="xs:string">
-					<xs:attribute name="name" type="xs:string" use="required"/>
-					<xs:attribute name="type" type="xs:string" use="required"/>
-				</xs:extension>
-			</xs:simpleContent>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="drools:type"/>
+				<xs:element ref="drools:value"/>
+			</xs:choice>
+			<xs:attribute name="name" type="xs:string"/>
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="mapping">

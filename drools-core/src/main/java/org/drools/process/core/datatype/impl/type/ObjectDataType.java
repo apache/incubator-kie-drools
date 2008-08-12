@@ -22,12 +22,14 @@ import java.io.ObjectOutput;
 
 import org.drools.process.core.datatype.DataType;
 
+import com.thoughtworks.xstream.XStream;
+
 /**
  * Representation of an object datatype.
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public final class ObjectDataType implements DataType {
+public class ObjectDataType implements DataType {
 
     private static final long serialVersionUID = 4L;
 
@@ -49,9 +51,11 @@ public final class ObjectDataType implements DataType {
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+    	className = in.readUTF();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
+    	out.writeUTF(className);
     }
 
     public boolean verifyDataType(final Object value) {
@@ -66,4 +70,14 @@ public final class ObjectDataType implements DataType {
         }
         return false;
     }
+
+	public Object readValue(String value) {
+		XStream xstream = new XStream();
+		return xstream.fromXML(value);
+	}
+
+	public String writeValue(Object value) {
+		XStream xstream = new XStream();
+		return xstream.toXML(value);
+	}
 }

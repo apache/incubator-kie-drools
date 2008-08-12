@@ -2,8 +2,9 @@ package org.drools.xml.processes;
 
 import java.util.HashSet;
 
-import org.drools.process.core.context.variable.Variable;
+import org.drools.process.core.TypeObject;
 import org.drools.process.core.datatype.DataType;
+import org.drools.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
@@ -16,10 +17,10 @@ public class TypeHandler extends BaseAbstractHandler
     Handler {
     public TypeHandler() {
         if ( (this.validParents == null) && (this.validPeers == null) ) {
-            this.validParents = new HashSet();
-            this.validParents.add( Variable.class );
+            this.validParents = new HashSet<Class<?>>();
+            this.validParents.add( TypeObject.class );
 
-            this.validPeers = new HashSet();         
+            this.validPeers = new HashSet<Class<?>>();         
             this.validPeers.add( null );            
 
             this.allowNesting = false;
@@ -34,12 +35,18 @@ public class TypeHandler extends BaseAbstractHandler
                         final ExtensibleXmlParser parser) throws SAXException {
         parser.startElementBuilder( localName,
                                     attrs );
-        Variable variable = (Variable) parser.getParent();
+        TypeObject typeable = (TypeObject) parser.getParent();
         final String name = attrs.getValue("name");
         emptyAttributeCheck(localName, "name", name, parser);
         DataType dataType = null;
         try {
             dataType = (DataType) Class.forName(name).newInstance();
+            // TODO make this pluggable so datatypes can read in other properties as well
+            if (dataType instanceof ObjectDataType) {
+                final String className = attrs.getValue("className");
+                emptyAttributeCheck(localName, "className", className, parser);
+                ((ObjectDataType) dataType).setClassName(className);
+            }
         } catch (ClassNotFoundException e) {
             throw new SAXParseException(
                 "Could not find datatype " + name, parser.getLocator());
@@ -51,7 +58,7 @@ public class TypeHandler extends BaseAbstractHandler
                 "Could not access datatype " + name, parser.getLocator());
         }
         
-        variable.setType(dataType);
+        typeable.setType(dataType);
         return dataType;
     }    
     
@@ -62,7 +69,7 @@ public class TypeHandler extends BaseAbstractHandler
         return null;
     }
 
-    public Class generateNodeFor() {
+    public Class<?> generateNodeFor() {
         return DataType.class;
     }    
 

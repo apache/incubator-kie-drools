@@ -42,7 +42,7 @@ public class ForEachTest extends TestCase {
         ListDataType listDataType = new ListDataType();
         ObjectDataType personDataType = new ObjectDataType();
         personDataType.setClassName("org.drools.Person");
-        listDataType.setDataType(personDataType);
+        listDataType.setType(personDataType);
         variable.setType(listDataType);
         variables.add(variable);
         process.getVariableScope().setVariables(variables);

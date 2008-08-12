@@ -48,4 +48,13 @@ public final class FloatDataType
             return false;
         }
     }
+
+	public Object readValue(String value) {
+		return new Float(value);
+	}
+
+	public String writeValue(Object value) {
+		Float f = (Float) value;
+		return f == null ? "" : f.toString();
+	}
 }
