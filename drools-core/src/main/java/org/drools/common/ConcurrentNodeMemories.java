@@ -18,89 +18,110 @@
 
 package org.drools.common;
 
-import java.util.concurrent.atomic.AtomicReferenceArray;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.concurrent.atomic.AtomicReferenceArray;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * A concurrent implementation for the node memories interface
  *
  * @author etirelli
  */
-public class ConcurrentNodeMemories
-    implements
-    NodeMemories {
+public class ConcurrentNodeMemories implements NodeMemories {
 
     private static final long serialVersionUID = -2032997426288974117L;
 
     private AtomicReferenceArray<Object> memories;
-    private Lock                         lock;
-    private InternalRuleBase   rulebase;
+    private transient Lock lock;
+    private InternalRuleBase rulebase;
 
+    // required by the Externalizable framework
     public ConcurrentNodeMemories() {
-
     }
 
-    public ConcurrentNodeMemories(InternalRuleBase rulebase) {
+    public ConcurrentNodeMemories( InternalRuleBase rulebase ) {
         this.rulebase = rulebase;
         this.memories = new AtomicReferenceArray<Object>( this.rulebase.getNodeCount() );
         this.lock = new ReentrantLock();
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        lock        = (Lock)in.readObject();
-        rulebase    = (InternalRuleBase)in.readObject();
-        memories    = (AtomicReferenceArray<Object>)in.readObject();
+    /**
+     * @param in
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
+    public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException {
+        rulebase = (InternalRuleBase) in.readObject();
+        memories = (AtomicReferenceArray<Object>) in.readObject();
+        this.lock = new ReentrantLock();
     }
 
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(lock);
-        out.writeObject(rulebase);
-        out.writeObject(memories);
+    /**
+     * @param out
+     * @throws IOException
+     */
+    public void writeExternal( ObjectOutput out ) throws IOException {
+        out.writeObject( rulebase );
+        out.writeObject( memories );
     }
+
     /**
      * @inheritDoc
-     *
      * @see org.drools.common.NodeMemories#clearNodeMemory(org.drools.common.NodeMemory)
      */
-    public void clearNodeMemory(NodeMemory node) {
+    public void clearNodeMemory( NodeMemory node ) {
         this.memories.set( node.getId(), null );
     }
 
     /**
      * @inheritDoc
-     *
      * @see org.drools.common.NodeMemories#getNodeMemory(org.drools.common.NodeMemory)
      */
-    public Object getNodeMemory(NodeMemory node) {
-        if ( node.getId() >= this.memories.length() ) {
+    public Object getNodeMemory( NodeMemory node ) {
+        if( node.getId() >= this.memories.length() ) {
             resize( node );
         }
         Object memory = this.memories.get( node.getId() );
 
-        if ( memory == null ) {
-            memory = node.createMemory( this.rulebase.getConfiguration() );
-
-            if( !this.memories.compareAndSet( node.getId(), null, memory ) ) {
-                memory = this.memories.get( node.getId() );
-            }
+        if( memory == null ) {
+            memory = createNodeMemory( node );
         }
 
         return memory;
     }
 
+    private Object createNodeMemory( NodeMemory node ) {
+        try {
+            this.lock.lock();
+            // need to try again in a synchronized code block to make sure
+            // it was not created yet
+            Object memory = this.memories.get( node.getId() );
+            if( memory == null ) {
+                memory = node.createMemory( this.rulebase.getConfiguration() );
+
+                if( !this.memories.compareAndSet( node.getId(), null, memory ) ) {
+                    memory = this.memories.get( node.getId() );
+                }
+
+            }
+            return memory;
+        } finally {
+            this.lock.unlock();
+
+        }
+    }
+
     /**
      * @param node
      */
-    private void resize(NodeMemory node) {
-        this.lock.lock();
+    private void resize( NodeMemory node ) {
         try {
+            this.lock.lock();
             if( node.getId() >= this.memories.length() ) {
-                int size = Math.max( this.rulebase.getNodeCount(),
-                                     node.getId() + 1 );
+                int size = Math.max( this.rulebase.getNodeCount(), node.getId() + 1 );
                 AtomicReferenceArray<Object> newMem = new AtomicReferenceArray<Object>( size );
                 for( int i = 0; i < this.memories.length(); i++ ) {
                     newMem.set( i, this.memories.get( i ) );
@@ -112,7 +133,7 @@ public class ConcurrentNodeMemories
         }
     }
 
-    public void setRuleBaseReference(InternalRuleBase ruleBase) {
+    public void setRuleBaseReference( InternalRuleBase ruleBase ) {
         this.rulebase = ruleBase;
     }
 
