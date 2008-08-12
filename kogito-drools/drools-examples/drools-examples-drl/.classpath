@@ -1,21 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-  <classpathentry kind="src" path="src/main/java"/>
-  <classpathentry kind="src" path="src/main/resources" excluding="**/*.java"/>
-  <classpathentry kind="src" path="src/main/rules" excluding="**/*.java"/>
-  <classpathentry kind="src" path="src/test/java" output="target/test-classes"/>
-  <classpathentry kind="src" path="src/test/resources" output="target/test-classes" excluding="**/*.java"/>
-  <classpathentry kind="output" path="target/classes"/>
-  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-  <classpathentry kind="var" path="M2_REPO/com/jgoodies/forms/1.0.7/forms-1.0.7.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/drools/drools-templates/5.0.0.SNAPSHOT/drools-templates-5.0.0.SNAPSHOT.jar" sourcepath="M2_REPO/org/drools/drools-templates/5.0.0.SNAPSHOT/drools-templates-5.0.0.SNAPSHOT-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/jexcelapi/jxl/2.4.2/jxl-2.4.2.jar"/>
-  <classpathentry kind="var" path="M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/jdt/core/3.2.3.v_686_R32x/core-3.2.3.v_686_R32x.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/drools/drools-decisiontables/5.0.0.SNAPSHOT/drools-decisiontables-5.0.0.SNAPSHOT.jar" sourcepath="M2_REPO/org/drools/drools-decisiontables/5.0.0.SNAPSHOT/drools-decisiontables-5.0.0.SNAPSHOT-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/foxtrot/foxtrot/2.0/foxtrot-2.0.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/mvel/mvel/2.0-dp4/mvel-2.0-dp4.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/drools/drools-compiler/5.0.0.SNAPSHOT/drools-compiler-5.0.0.SNAPSHOT.jar" sourcepath="M2_REPO/org/drools/drools-compiler/5.0.0.SNAPSHOT/drools-compiler-5.0.0.SNAPSHOT-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/drools/drools-core/5.0.0.SNAPSHOT/drools-core-5.0.0.SNAPSHOT.jar" sourcepath="M2_REPO/org/drools/drools-core/5.0.0.SNAPSHOT/drools-core-5.0.0.SNAPSHOT-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/antlr/antlr-runtime/3.0/antlr-runtime-3.0.jar"/>
-  <classpathentry kind="var" path="M2_REPO/janino/janino/2.5.10/janino-2.5.10.jar"/>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry excluding="**/*.java" kind="src" path="src/main/resources"/>
+	<classpathentry excluding="**/*.java" kind="src" path="src/main/rules"/>
+	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
+	<classpathentry excluding="**/*.java" kind="src" output="target/test-classes" path="src/test/resources"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/foxtrot-2.0.jar"/>
+	<classpathentry kind="lib" path="lib/jgoodies-forms-1.0.4.jar"/>
+	<classpathentry kind="con" path="DROOLS/Drools"/>
+	<classpathentry kind="output" path="target/classes"/>
 </classpath>

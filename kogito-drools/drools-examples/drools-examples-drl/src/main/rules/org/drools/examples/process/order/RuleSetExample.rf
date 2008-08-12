@@ -27,10 +27,20 @@
   <nodes>
     <humanTask id="17" name="Verify Order" x="73" y="505" width="114" height="40" swimlane="SalesRepresentative" >
       <work name="Human Task" >
-        <parameter name="Priority" type="org.drools.process.core.datatype.impl.type.StringDataType" />
-        <parameter name="TaskName" type="org.drools.process.core.datatype.impl.type.StringDataType" >Verify Order</parameter>
-        <parameter name="Comment" type="org.drools.process.core.datatype.impl.type.StringDataType" >#{order} has been shipped, verify that it reaches its destination correctly</parameter>
-        <parameter name="ActorId" type="org.drools.process.core.datatype.impl.type.StringDataType" />
+        <parameter name="Priority" >
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
+        </parameter>
+        <parameter name="TaskName" >
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
+          <value>Verify Order</value>
+        </parameter>
+        <parameter name="Comment" >
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
+          <value>#{order} has been shipped, verify that it reaches its destination correctly</value>
+        </parameter>
+        <parameter name="ActorId" >
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
+        </parameter>
       </work>
     </humanTask>
     <start id="1" name="Start" x="88" y="16" width="80" height="40" />
@@ -48,38 +58,72 @@
     <end id="8" name="End" x="90" y="565" width="80" height="40" />
     <humanTask id="9" name="Correct Order" x="185" y="104" width="96" height="40" swimlane="SalesRepresentative" >
       <work name="Human Task" >
-        <parameter name="Priority" type="org.drools.process.core.datatype.impl.type.StringDataType" />
-        <parameter name="TaskName" type="org.drools.process.core.datatype.impl.type.StringDataType" >Correct Order</parameter>
-        <parameter name="Comment" type="org.drools.process.core.datatype.impl.type.StringDataType" >Invalid #{order}, needs to be corrected (contact customer if necessary)</parameter>
-        <parameter name="ActorId" type="org.drools.process.core.datatype.impl.type.StringDataType" />
+        <parameter name="Priority" >
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
+        </parameter>
+        <parameter name="TaskName" >
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
+          <value>Correct Order</value>
+        </parameter>
+        <parameter name="Comment" >
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
+          <value>Invalid #{order}, needs to be corrected (contact customer if necessary)</value>
+        </parameter>
+        <parameter name="ActorId" >
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
+        </parameter>
       </work>
     </humanTask>
     <humanTask id="10" name="Follow-up Order" x="8" y="204" width="106" height="40" swimlane="SalesRepresentative" >
       <work name="Human Task" >
-        <parameter name="Priority" type="org.drools.process.core.datatype.impl.type.StringDataType" />
-        <parameter name="TaskName" type="org.drools.process.core.datatype.impl.type.StringDataType" >Follow-up Order</parameter>
-        <parameter name="Comment" type="org.drools.process.core.datatype.impl.type.StringDataType" >#{order} is a large order, follow up manually</parameter>
-        <parameter name="ActorId" type="org.drools.process.core.datatype.impl.type.StringDataType" />
+        <parameter name="Priority" >
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
+        </parameter>
+        <parameter name="TaskName" >
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
+          <value>Follow-up Order</value>
+        </parameter>
+        <parameter name="Comment" >
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
+          <value>#{order} is a large order, follow up manually</value>
+        </parameter>
+        <parameter name="ActorId" >
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
+        </parameter>
       </work>
     </humanTask>
     <workItem id="12" name="Email" x="89" y="441" width="80" height="40" >
       <work name="Email" >
-        <parameter name="Text" type="org.drools.process.core.datatype.impl.type.StringDataType" >Dear customer,
+        <parameter name="Text" >
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
+          <value>Dear customer,
 
 #{order} is being shipped.
 You can track your shipment at our website using tracking id #{trackingId}.
 
 John Johnsson,
 Sales departement manager
-MyCompany.com</parameter>
-        <parameter name="To" type="org.drools.process.core.datatype.impl.type.StringDataType" >#{email}</parameter>
-        <parameter name="Subject" type="org.drools.process.core.datatype.impl.type.StringDataType" >#{order}</parameter>
-        <parameter name="From" type="org.drools.process.core.datatype.impl.type.StringDataType" >orders@mycompany.com</parameter>
+MyCompany.com</value>
+        </parameter>
+        <parameter name="To" >
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
+          <value>#{email}</value>
+        </parameter>
+        <parameter name="Subject" >
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
+          <value>#{order}</value>
+        </parameter>
+        <parameter name="From" >
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
+          <value>orders@mycompany.com</value>
+        </parameter>
       </work>
     </workItem>
     <workItem id="13" name="Shipping" x="88" y="376" width="80" height="40" >
       <work name="Shipping" >
-        <parameter name="orderId" type="org.drools.process.core.datatype.impl.type.StringDataType" />
+        <parameter name="orderId" >
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
+        </parameter>
       </work>
       <mapping type="in" from="order" to="order" />
       <mapping type="out" from="trackingId" to="trackingId" />

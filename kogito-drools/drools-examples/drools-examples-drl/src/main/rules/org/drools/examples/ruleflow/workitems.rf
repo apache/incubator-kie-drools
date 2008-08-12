@@ -12,21 +12,39 @@
     <split id="2" name="Split" x="120" y="100" width="80" height="40" type="1" />
     <workItem id="3" name="Log" x="232" y="61" width="80" height="40" >
       <work name="Log" >
-        <parameter name="Message" type="org.drools.process.core.datatype.impl.type.StringDataType" >This is the first log message</parameter>
+        <parameter name="Message" >
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
+          <value>This is the first log message</value>
+        </parameter>
       </work>
     </workItem>
     <workItem id="4" name="Email" x="231" y="139" width="80" height="40" >
       <work name="Email" >
-        <parameter name="From" type="org.drools.process.core.datatype.impl.type.StringDataType" >me@mail.com</parameter>
-        <parameter name="Subject" type="org.drools.process.core.datatype.impl.type.StringDataType" >Urgent!</parameter>
-        <parameter name="To" type="org.drools.process.core.datatype.impl.type.StringDataType" >you@mail.com</parameter>
-        <parameter name="Text" type="org.drools.process.core.datatype.impl.type.StringDataType" >This is an urgent email !</parameter>
+        <parameter name="From" >
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
+          <value>me@mail.com</value>
+        </parameter>
+        <parameter name="Subject" >
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
+          <value>Urgent!</value>
+        </parameter>
+        <parameter name="To" >
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
+          <value>you@mail.com</value>
+        </parameter>
+        <parameter name="Text" >
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
+          <value>This is an urgent email !</value>
+        </parameter>
       </work>
     </workItem>
     <join id="5" name="Join" x="333" y="99" width="80" height="40" type="1" />
     <workItem id="6" name="Log" x="435" y="97" width="80" height="40" >
       <work name="Log" >
-        <parameter name="Message" type="org.drools.process.core.datatype.impl.type.StringDataType" >This is the second log message</parameter>
+        <parameter name="Message" >
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
+          <value>This is the second log message</value>
+        </parameter>
       </work>
     </workItem>
     <end id="7" name="End" x="538" y="95" width="80" height="40" />
