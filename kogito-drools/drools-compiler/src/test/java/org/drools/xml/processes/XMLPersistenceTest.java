@@ -10,12 +10,14 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
+import org.drools.Person;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.process.core.ParameterDefinition;
 import org.drools.process.core.Work;
 import org.drools.process.core.context.swimlane.Swimlane;
 import org.drools.process.core.context.variable.Variable;
 import org.drools.process.core.datatype.impl.type.IntegerDataType;
+import org.drools.process.core.datatype.impl.type.ListDataType;
 import org.drools.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.process.core.datatype.impl.type.StringDataType;
 import org.drools.process.core.event.EventTypeFilter;
@@ -130,6 +132,23 @@ public class XMLPersistenceTest extends TestCase {
         variable.setName("variable2");
         variable.setType(new IntegerDataType());
         variable.setValue(2);
+        variables.add(variable);
+        variable = new Variable();
+        variable.setName("variable3");
+        variable.setType(new ObjectDataType("org.drools.Person"));
+        Person person = new Person();
+        person.setName("John");
+        variable.setValue(person);
+        variables.add(variable);        
+        variable = new Variable();
+        variable.setName("variable3");
+        ListDataType listDataType = new ListDataType();
+        listDataType.setType(new ObjectDataType("java.lang.Integer"));
+        variable.setType(listDataType);
+        List<Integer> list = new ArrayList<Integer>();
+        list.add(10);
+        list.add(20);
+        variable.setValue(list);
         variables.add(variable);
         process.getVariableScope().setVariables(variables);
         

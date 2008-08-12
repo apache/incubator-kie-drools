@@ -1,14 +1,9 @@
 package org.drools.xml.processes;
 
-import java.io.Serializable;
 import java.util.HashSet;
 
-import org.drools.process.core.context.variable.Variable;
+import org.drools.process.core.ValueObject;
 import org.drools.process.core.datatype.DataType;
-import org.drools.process.core.datatype.impl.type.BooleanDataType;
-import org.drools.process.core.datatype.impl.type.FloatDataType;
-import org.drools.process.core.datatype.impl.type.IntegerDataType;
-import org.drools.process.core.datatype.impl.type.StringDataType;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
@@ -18,15 +13,14 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-public class ValueHandler extends BaseAbstractHandler
-    implements
-    Handler {
+public class ValueHandler extends BaseAbstractHandler implements Handler {
+	
     public ValueHandler() {
         if ( (this.validParents == null) && (this.validPeers == null) ) {
-            this.validParents = new HashSet();
-            this.validParents.add( Variable.class );
+            this.validParents = new HashSet<Class<?>>();
+            this.validParents.add( ValueObject.class );
 
-            this.validPeers = new HashSet();         
+            this.validPeers = new HashSet<Class<?>>();         
             this.validPeers.add( null );            
 
             this.allowNesting = false;
@@ -48,7 +42,7 @@ public class ValueHandler extends BaseAbstractHandler
                       final String localName,
                       final ExtensibleXmlParser parser) throws SAXException {
         final Element element = parser.endElementBuilder();
-        Variable variable = (Variable) parser.getParent();
+        ValueObject valueObject = (ValueObject) parser.getParent();
         String text = ((Text)element.getChildNodes().item( 0 )).getWholeText();
         if (text != null) {
             text.trim();
@@ -56,12 +50,12 @@ public class ValueHandler extends BaseAbstractHandler
                 text = null;
             }
         }
-        Serializable value = restoreValue(text, variable.getType(), parser);
-        variable.setValue(value);
+        Object value = restoreValue(text, valueObject.getType(), parser);
+        valueObject.setValue(value);
         return null;
     }
     
-    private Serializable restoreValue(String text, DataType dataType, ExtensibleXmlParser parser) throws SAXException {
+    private Object restoreValue(String text, DataType dataType, ExtensibleXmlParser parser) throws SAXException {
         if (text == null || "".equals(text)) {
             return null;
         }
@@ -69,21 +63,10 @@ public class ValueHandler extends BaseAbstractHandler
             throw new SAXParseException(
                 "Null datatype", parser.getLocator());
         }
-        if (dataType instanceof StringDataType) {
-            return text;
-        } else if (dataType instanceof IntegerDataType) {
-            return new Integer(text);
-        } else if (dataType instanceof FloatDataType) {
-            return new Float(text);
-        } else if (dataType instanceof BooleanDataType) {
-            return new Boolean(text);
-        } else {
-            throw new SAXParseException(
-                "Unknown datatype " + dataType, parser.getLocator());
-        }
+        return dataType.readValue(text);
     }
 
-    public Class generateNodeFor() {
+    public Class<?> generateNodeFor() {
         return null;
     }
 

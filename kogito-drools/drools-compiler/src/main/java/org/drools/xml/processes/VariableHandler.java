@@ -20,10 +20,10 @@ public class VariableHandler extends BaseAbstractHandler
     Handler {
     public VariableHandler() {
         if ( (this.validParents == null) && (this.validPeers == null) ) {
-            this.validParents = new HashSet();
+            this.validParents = new HashSet<Class<?>>();
             this.validParents.add( Process.class );
 
-            this.validPeers = new HashSet();         
+            this.validPeers = new HashSet<Class<?>>();         
             this.validPeers.add( null );            
 
             this.allowNesting = false;
@@ -68,7 +68,7 @@ public class VariableHandler extends BaseAbstractHandler
         return null;
     }
 
-    public Class generateNodeFor() {
+    public Class<?> generateNodeFor() {
         return Variable.class;
     }    
 

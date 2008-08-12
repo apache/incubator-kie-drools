@@ -1,111 +1,75 @@
 package org.drools.xml.processes;
 
-import java.io.Serializable;
 import java.util.HashSet;
 
 import org.drools.process.core.ParameterDefinition;
+import org.drools.process.core.TypeObject;
+import org.drools.process.core.ValueObject;
 import org.drools.process.core.Work;
 import org.drools.process.core.datatype.DataType;
-import org.drools.process.core.datatype.impl.type.BooleanDataType;
-import org.drools.process.core.datatype.impl.type.FloatDataType;
-import org.drools.process.core.datatype.impl.type.IntegerDataType;
-import org.drools.process.core.datatype.impl.type.StringDataType;
 import org.drools.process.core.impl.ParameterDefinitionImpl;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
-import org.w3c.dom.Element;
-import org.w3c.dom.Text;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 
-public class ParameterHandler extends BaseAbstractHandler
-    implements
-    Handler {
+public class ParameterHandler extends BaseAbstractHandler implements Handler {
+	
     public ParameterHandler() {
-        if ( (this.validParents == null) && (this.validPeers == null) ) {
-            this.validParents = new HashSet();
-            this.validParents.add( Work.class );
-
-            this.validPeers = new HashSet();         
-            this.validPeers.add( null );            
-
+        if ((this.validParents == null) && (this.validPeers == null)) {
+            this.validParents = new HashSet<Class<?>>();
+            this.validParents.add(Work.class);
+            this.validPeers = new HashSet<Class<?>>();         
+            this.validPeers.add(null);            
             this.allowNesting = false;
         }
     }
-    
-
     
     public Object start(final String uri,
                         final String localName,
                         final Attributes attrs,
                         final ExtensibleXmlParser parser) throws SAXException {
-        parser.startElementBuilder( localName,
-                                    attrs );
-        return null;
+        parser.startElementBuilder(localName, attrs);
+        final String name = attrs.getValue("name");
+        emptyAttributeCheck(localName, "name", name, parser);
+        Work work = (Work) parser.getParent();
+        ParameterDefinition parameterDefinition = new ParameterDefinitionImpl();
+        parameterDefinition.setName(name);
+        work.addParameterDefinition(parameterDefinition);
+        return new ParameterWrapper(parameterDefinition, work);
     }    
     
     public Object end(final String uri,
                       final String localName,
                       final ExtensibleXmlParser parser) throws SAXException {
-        final Element element = parser.endElementBuilder();
-        Work work = (Work) parser.getParent();
-        final String name = element.getAttribute("name");
-        emptyAttributeCheck(localName, "name", name, parser);
-        final String type = element.getAttribute("type");
-        emptyAttributeCheck(localName, "type", type, parser);
-        DataType dataType = null;
-        try {
-            dataType = (DataType) Class.forName(type).newInstance();
-        } catch (ClassNotFoundException e) {
-            throw new SAXParseException(
-                "Could not find datatype " + name, parser.getLocator());
-        } catch (InstantiationException e) {
-            throw new SAXParseException(
-                "Could not instantiate datatype " + name, parser.getLocator());
-        } catch (IllegalAccessException e) {
-            throw new SAXParseException(
-                "Could not access datatype " + name, parser.getLocator());
-        }
-        String text = ((Text)element.getChildNodes().item( 0 )).getWholeText();
-        if (text != null) {
-            text = text.trim();
-            if ("".equals(text)) {
-                text = null;
-            }
-        }
-        Object value = restoreValue(text, dataType, parser);
-        ParameterDefinition parameterDefinition = new ParameterDefinitionImpl(name, dataType);
-        work.addParameterDefinition(parameterDefinition);
-        work.setParameter(name, value);
+        parser.endElementBuilder();
         return null;
     }
     
-    private Serializable restoreValue(String text, DataType dataType, ExtensibleXmlParser parser) throws SAXException {
-        if (text == null || "".equals(text)) {
-            return null;
-        }
-        if (dataType == null) {
-            throw new SAXParseException(
-                "Null datatype", parser.getLocator());
-        }
-        if (dataType instanceof StringDataType) {
-            return text;
-        } else if (dataType instanceof IntegerDataType) {
-            return new Integer(text);
-        } else if (dataType instanceof FloatDataType) {
-            return new Float(text);
-        } else if (dataType instanceof BooleanDataType) {
-            return new Boolean(text);
-        } else {
-            throw new SAXParseException(
-                "Unknown datatype " + dataType, parser.getLocator());
-        }
+    public Class<?> generateNodeFor() {
+        return ParameterWrapper.class;
     }
-
-    public Class generateNodeFor() {
-        return null;
+    
+    public class ParameterWrapper implements TypeObject, ValueObject {
+    	private Work work;
+    	private ParameterDefinition parameterDefinition;
+    	public ParameterWrapper(ParameterDefinition parameterDefinition, Work work) {
+    		this.work = work;
+    		this.parameterDefinition = parameterDefinition;
+    	}
+		public DataType getType() {
+			return parameterDefinition.getType();
+		}
+		public void setType(DataType type) {
+			parameterDefinition.setType(type);
+		}
+		public Object getValue() {
+			return work.getParameter(parameterDefinition.getName());
+		}
+		public void setValue(Object value) {
+			work.setParameter(parameterDefinition.getName(), value);
+		}
     }
 
 }

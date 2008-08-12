@@ -27,9 +27,7 @@ import java.io.ObjectOutput;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class StringDataType
-    implements
-    DataType {
+public class StringDataType implements DataType {
 
     private static final long serialVersionUID = 400L;
 
@@ -48,4 +46,13 @@ public class StringDataType
             return false;
         }
     }
+
+	public Object readValue(String value) {
+		return value;
+	}
+
+	public String writeValue(Object value) {
+		return (String) value;
+	}
+	
 }

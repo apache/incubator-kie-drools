@@ -48,4 +48,14 @@ public class IntegerDataType
             return false;
         }
     }
+
+	public Object readValue(String value) {
+		return new Integer(value);
+	}
+
+	public String writeValue(Object value) {
+		Integer i = (Integer) value;
+		return i == null ? "" : i.toString();
+	}
+
 }

@@ -36,11 +36,11 @@ public interface Handler {
                String localName,
                ExtensibleXmlParser xmlPackageReader) throws SAXException;
 
-    Set getValidParents();
+    Set<Class<?>> getValidParents();
 
-    Set getValidPeers();
+    Set<Class<?>> getValidPeers();
 
     boolean allowNesting();
 
-    Class generateNodeFor();
+    Class<?> generateNodeFor();
 }

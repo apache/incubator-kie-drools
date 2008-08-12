@@ -29,5 +29,9 @@ public interface DataType extends Externalizable {
      * Returns true if the given value is a valid value of this data type.
      */
     boolean verifyDataType(Object value);
+    
+    String writeValue(Object value);
+    
+    Object readValue(String value);
 
 }
