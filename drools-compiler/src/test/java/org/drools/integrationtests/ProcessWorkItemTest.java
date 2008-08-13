@@ -41,10 +41,20 @@ public class ProcessWorkItemTest extends TestCase {
             "    <start id=\"1\" name=\"Start\" />\n" +
             "    <workItem id=\"2\" name=\"HumanTask\" >\n" +
             "      <work name=\"Human Task\" >\n" +
-            "        <parameter name=\"ActorId\" type=\"org.drools.process.core.datatype.impl.type.StringDataType\" >#{UserName}</parameter>\n" +
-            "        <parameter name=\"TaskName\" type=\"org.drools.process.core.datatype.impl.type.StringDataType\" >Do something</parameter>\n" +
-            "        <parameter name=\"Priority\" type=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
-            "        <parameter name=\"Comment\" type=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        <parameter name=\"ActorId\" >\n" +
+            "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <value>#{UserName}</value>\n" +
+            "        </parameter>\n" +
+            "        <parameter name=\"TaskName\" >\n" +
+            "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <value>Do something</value>\n" +
+            "        </parameter>\n" +
+            "        <parameter name=\"Priority\" >\n" +
+            "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        </parameter>\n" +
+            "        <parameter name=\"Comment\" >\n" +
+            "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        </parameter>\n" +
             "      </work>\n" +
             "    </workItem>\n" +
             "    <end id=\"3\" name=\"End\" />\n" +
