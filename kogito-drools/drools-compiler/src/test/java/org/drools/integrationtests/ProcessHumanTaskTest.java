@@ -37,10 +37,20 @@ public class ProcessHumanTaskTest extends TestCase {
             "    <start id=\"1\" name=\"Start\" />\n" +
             "    <humanTask id=\"2\" name=\"HumanTask\" >\n" +
             "      <work name=\"Human Task\" >\n" +
-            "        <parameter name=\"ActorId\" type=\"org.drools.process.core.datatype.impl.type.StringDataType\" >John Doe</parameter>\n" +
-            "        <parameter name=\"TaskName\" type=\"org.drools.process.core.datatype.impl.type.StringDataType\" >Do something</parameter>\n" +
-            "        <parameter name=\"Priority\" type=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
-            "        <parameter name=\"Comment\" type=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        <parameter name=\"ActorId\" >\n" +
+            "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <value>John Doe</value>\n" +
+            "        </parameter>\n" +
+            "        <parameter name=\"TaskName\" >\n" +
+            "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <value>Do something</value>\n" +
+            "        </parameter>\n" +
+            "        <parameter name=\"Priority\" >\n" +
+            "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        </parameter>\n" +
+            "        <parameter name=\"Comment\" >\n" +
+            "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        </parameter>\n" +
             "      </work>\n" +
             "    </humanTask>\n" +
             "    <end id=\"3\" name=\"End\" />\n" +
@@ -87,18 +97,37 @@ public class ProcessHumanTaskTest extends TestCase {
             "    <start id=\"1\" name=\"Start\" />\n" +
             "    <humanTask id=\"2\" name=\"HumanTask\" swimlane=\"actor1\" >\n" +
             "      <work name=\"Human Task\" >\n" +
-            "        <parameter name=\"ActorId\" type=\"org.drools.process.core.datatype.impl.type.StringDataType\" >John Doe</parameter>\n" +
-            "        <parameter name=\"TaskName\" type=\"org.drools.process.core.datatype.impl.type.StringDataType\" >Do something</parameter>\n" +
-            "        <parameter name=\"Priority\" type=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
-            "        <parameter name=\"Comment\" type=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        <parameter name=\"ActorId\" >\n" +
+            "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <value>John Doe</value>\n" +
+            "        </parameter>\n" +
+            "        <parameter name=\"TaskName\" >\n" +
+            "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <value>Do something</value>\n" +
+            "        </parameter>\n" +
+            "        <parameter name=\"Priority\" >\n" +
+            "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        </parameter>\n" +
+            "        <parameter name=\"Comment\" >\n" +
+            "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        </parameter>\n" +
             "      </work>\n" +
             "    </humanTask>\n" +
             "    <humanTask id=\"3\" name=\"HumanTask\" swimlane=\"actor1\" >\n" +
             "      <work name=\"Human Task\" >\n" +
-            "        <parameter name=\"ActorId\" type=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
-            "        <parameter name=\"TaskName\" type=\"org.drools.process.core.datatype.impl.type.StringDataType\" >Do something else</parameter>\n" +
-            "        <parameter name=\"Priority\" type=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
-            "        <parameter name=\"Comment\" type=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        <parameter name=\"ActorId\" >\n" +
+            "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        </parameter>\n" +
+            "        <parameter name=\"TaskName\" >\n" +
+            "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <value>Do something else</value>\n" +
+            "        </parameter>\n" +
+            "        <parameter name=\"Priority\" >\n" +
+            "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        </parameter>\n" +
+            "        <parameter name=\"Comment\" >\n" +
+            "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        </parameter>\n" +
             "      </work>\n" +
             "    </humanTask>\n" +
             "    <end id=\"4\" name=\"End\" />\n" +
