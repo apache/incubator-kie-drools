@@ -56,7 +56,7 @@ public class DroolsSmooksStatelessSession {
 
         // preserve the previous classloader, While we make Smooks aware of the Drools classloader
         ClassLoader previousClassLoader = Thread.currentThread().getContextClassLoader();
-        Thread.currentThread().setContextClassLoader( ((InternalRuleBase) this.session.getRuleBase()).getCompositePackageClassLoader() );
+        Thread.currentThread().setContextClassLoader( ((InternalRuleBase) this.session.getRuleBase()).getRootClassLoader() );
 
         ExecutionContext executionContext = this.smooks.createExecutionContext();
 

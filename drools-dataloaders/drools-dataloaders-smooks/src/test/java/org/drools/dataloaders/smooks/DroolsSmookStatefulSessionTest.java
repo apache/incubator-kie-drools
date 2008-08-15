@@ -20,7 +20,40 @@ import org.milyn.Smooks;
 import org.milyn.io.StreamUtils;
 
 public class DroolsSmookStatefulSessionTest extends TestCase {
-    public void testSmooksNestedIterable() throws Exception {
+    public void testDirectRoot() throws Exception {
+        PackageBuilder pkgBuilder = new PackageBuilder();       
+        
+        pkgBuilder.addPackageFromDrl( new InputStreamReader( DroolsSmookStatefulSessionTest.class.getResourceAsStream( "test_SmooksDirectRoot.drl" ) ) );
+
+        assertFalse( pkgBuilder.hasErrors() );
+
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        ruleBase.addPackage( pkgBuilder.getPackage() );
+
+        StatefulSession session = ruleBase.newStatefulSession();
+        List list = new ArrayList();
+        session.setGlobal( "list", list );        
+
+        // Instantiate Smooks with the config...
+        Smooks smooks = new Smooks( getClass().getResourceAsStream( "smooks-config.xml" ) );
+
+
+        DroolsSmooksConfiguration conf = new DroolsSmooksConfiguration( "orderItem", null );
+        //
+        DroolsSmooksStatefulSession dataLoader = new DroolsSmooksStatefulSession( session,
+                                           smooks,
+                                           conf );
+        Map<FactHandle, Object> handles = dataLoader.insertFilter( new StreamSource( getClass().getResourceAsStream( "SmooksDirectRoot.xml") ) );
+        //
+        session.fireAllRules();
+        
+        assertEquals(1, handles.size() );
+        assertEquals(1, list.size());
+        
+        assertEquals( "example.OrderItem", list.get( 0 ).getClass().getName() );
+    }    
+    
+    public void testNestedIterable() throws Exception {
         PackageBuilder pkgBuilder = new PackageBuilder();       
         
         pkgBuilder.addPackageFromDrl( new InputStreamReader( DroolsSmookStatefulSessionTest.class.getResourceAsStream( "test_SmooksNestedIterable.drl" ) ) );
@@ -54,44 +87,8 @@ public class DroolsSmookStatefulSessionTest extends TestCase {
         assertEquals( "example.OrderItem", list.get( 1 ).getClass().getName() );
         
         assertNotSame( list.get( 0 ), list.get( 1 ) );
-    }    
-    
-    public void testSmooksDirectRoot() throws Exception {
-        PackageBuilder pkgBuilder = new PackageBuilder();       
-        
-        pkgBuilder.addPackageFromDrl( new InputStreamReader( DroolsSmookStatefulSessionTest.class.getResourceAsStream( "test_SmooksDirectRoot.drl" ) ) );
-
-        assertFalse( pkgBuilder.hasErrors() );
-
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkgBuilder.getPackage() );
-
-        StatefulSession session = ruleBase.newStatefulSession();
-        List list = new ArrayList();
-        session.setGlobal( "list", list );        
-
-        // Instantiate Smooks with the config...
-        Smooks smooks = new Smooks( getClass().getResourceAsStream( "smooks-config.xml" ) );
-
-
-        DroolsSmooksConfiguration conf = new DroolsSmooksConfiguration( "orderItem", null );
-        //
-        DroolsSmooksStatefulSession dataLoader = new DroolsSmooksStatefulSession( session,
-                                           smooks,
-                                           conf );
-        Map<FactHandle, Object> handles = dataLoader.insertFilter( new StreamSource( getClass().getResourceAsStream( "SmooksDirectRoot.xml") ) );
-        //
-        session.fireAllRules();
-        
-        assertEquals(1, handles.size() );
-        assertEquals(1, list.size());
-        
-        assertEquals( "example.OrderItem", list.get( 0 ).getClass().getName() );
-    }
-    
-    
-    
-
+    }        
+            
     private static byte[] readInputMessage(InputStream stream) {
         try {
             return StreamUtils.readStream( stream );
