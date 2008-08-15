@@ -1,6 +1,6 @@
 package org.drools;
 
-import oirg.drools.util.ChainedProperties;
+import org.drools.util.ChainedProperties;
 
 public class KnowledgeSessionFactory {
     private static KnowledgeSessionProvider provider;
