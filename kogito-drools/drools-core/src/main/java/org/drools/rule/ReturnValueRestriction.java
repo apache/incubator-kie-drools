@@ -16,7 +16,10 @@ package org.drools.rule;
  * limitations under the License.
  */
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.io.Externalizable;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -27,42 +30,49 @@ import org.drools.WorkingMemory;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
+import org.drools.spi.AcceptsReadAccessor;
+import org.drools.spi.CompiledInvoker;
 import org.drools.spi.Evaluator;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.ReadAccessor;
 import org.drools.spi.Restriction;
 import org.drools.spi.ReturnValueExpression;
 import org.drools.spi.Tuple;
+import org.drools.spi.Wireable;
 
 public class ReturnValueRestriction
     implements
-    Restriction {
+    Restriction,
+    AcceptsReadAccessor,
+    Wireable {
 
-    private static final long          serialVersionUID       = 400L;
+    private static final long            serialVersionUID       = 400L;
 
-    private ReturnValueExpression      expression;
+    private ReturnValueExpression        expression;
 
-    private Declaration[]        requiredDeclarations;
+    private Declaration[]                requiredDeclarations;
 
-    private String[]             requiredGlobals;
+    private String[]                     requiredGlobals;
 
-    private Declaration[]        previousDeclarations;
+    private Declaration[]                previousDeclarations;
 
-    private Declaration[]        localDeclarations;
+    private Declaration[]                localDeclarations;
 
-    private Evaluator            evaluator;
+    private Evaluator                    evaluator;
 
-    private ReadAccessor       extractor;
+    private InternalReadAccessor         readAccessor;
 
-    private static final Declaration[] noRequiredDeclarations = new Declaration[]{};
+    private static final Declaration[]   noRequiredDeclarations = new Declaration[]{};
 
-    private static final String[]      noRequiredGlobals      = new String[]{};
+    private static final String[]        noRequiredGlobals      = new String[]{};
+
+    private List<ReturnValueRestriction> cloned                 = Collections.<ReturnValueRestriction> emptyList();
 
     public ReturnValueRestriction() {
 
     }
 
-    public ReturnValueRestriction(final ReadAccessor fieldExtractor,
+    public ReturnValueRestriction(final InternalReadAccessor fieldExtractor,
                                   final Declaration[] previousDeclarations,
                                   final Declaration[] localDeclarations,
                                   final String[] requiredGlobals,
@@ -75,14 +85,14 @@ public class ReturnValueRestriction
               evaluator );
     }
 
-    public ReturnValueRestriction(final ReadAccessor fieldExtractor,
+    public ReturnValueRestriction(final InternalReadAccessor fieldExtractor,
                                   final ReturnValueExpression returnValueExpression,
                                   final Declaration[] previousDeclarations,
                                   final Declaration[] localDeclarations,
                                   final String[] requiredGlobals,
                                   final Evaluator evaluator) {
         this.expression = returnValueExpression;
-        this.extractor = fieldExtractor;
+        this.readAccessor = fieldExtractor;
 
         if ( previousDeclarations != null ) {
             this.previousDeclarations = previousDeclarations;
@@ -117,22 +127,33 @@ public class ReturnValueRestriction
                           this.localDeclarations.length );
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        expression  = (ReturnValueExpression)in.readObject();
-        requiredDeclarations  = (Declaration[])in.readObject();
-        previousDeclarations  = (Declaration[])in.readObject();
-        localDeclarations  = ( Declaration[])in.readObject();
-        evaluator  = (Evaluator)in.readObject();
-        extractor  = (ReadAccessor)in.readObject();
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        expression = (ReturnValueExpression) in.readObject();
+        requiredDeclarations = (Declaration[]) in.readObject();
+        previousDeclarations = (Declaration[]) in.readObject();
+        localDeclarations = (Declaration[]) in.readObject();
+        evaluator = (Evaluator) in.readObject();
+        readAccessor = (InternalReadAccessor) in.readObject();
+        this.cloned = (List<ReturnValueRestriction>) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(expression);
-        out.writeObject(requiredDeclarations);
-        out.writeObject(previousDeclarations);
-        out.writeObject(localDeclarations);
-        out.writeObject(evaluator);
-        out.writeObject(extractor);
+        if ( this.expression instanceof CompiledInvoker ) {
+            out.writeObject( null );
+        } else {
+            out.writeObject( this.expression );
+        }
+        out.writeObject( requiredDeclarations );
+        out.writeObject( previousDeclarations );
+        out.writeObject( localDeclarations );
+        out.writeObject( evaluator );
+        out.writeObject( readAccessor );
+        out.writeObject( this.cloned );
+    }
+
+    public void setReadAccessor(InternalReadAccessor readAccessor) {
+        this.readAccessor = readAccessor;
     }
 
     public Declaration[] getRequiredDeclarations() {
@@ -170,6 +191,13 @@ public class ReturnValueRestriction
         }
     }
 
+    public void wire(Object object) {
+        setReturnValueExpression( (ReturnValueExpression) object );
+        for ( ReturnValueRestriction clone : this.cloned ) {
+            clone.wire( object );
+        }
+    }
+
     public void setReturnValueExpression(final ReturnValueExpression expression) {
         this.expression = expression;
     }
@@ -182,21 +210,21 @@ public class ReturnValueRestriction
         return this.evaluator;
     }
 
-    public boolean isAllowed(final InternalReadAccessor extractor,
+    public boolean isAllowed(final InternalReadAccessor readAccessor,
                              final InternalFactHandle handle,
                              final Tuple tuple,
                              final WorkingMemory workingMemory,
                              final ContextEntry context) {
         try {
             return this.evaluator.evaluate( null,
-                                            extractor,
+                                            this.readAccessor,
                                             handle.getObject(),
                                             this.expression.evaluate( handle.getObject(),
                                                                       tuple,
                                                                       this.previousDeclarations,
                                                                       this.localDeclarations,
                                                                       workingMemory,
-                                                                      ((ReturnValueContextEntry)context).dialectContext) );
+                                                                      ((ReturnValueContextEntry) context).dialectContext ) );
         } catch ( final Exception e ) {
             throw new RuntimeDroolsException( e );
         }
@@ -284,9 +312,9 @@ public class ReturnValueRestriction
     }
 
     public ContextEntry createContextEntry() {
-        ReturnValueContextEntry ctx =  new ReturnValueContextEntry( this.extractor,
-                                            this.previousDeclarations,
-                                            this.localDeclarations );
+        ReturnValueContextEntry ctx = new ReturnValueContextEntry( this.readAccessor,
+                                                                   this.previousDeclarations,
+                                                                   this.localDeclarations );
         ctx.dialectContext = this.expression.createContext();
         return ctx;
     }
@@ -302,11 +330,19 @@ public class ReturnValueRestriction
             local[i] = (Declaration) this.localDeclarations[i].clone();
         }
 
-        return new ReturnValueRestriction( this.extractor,
-                                           previous,
-                                           local,
-                                           this.requiredGlobals,
-                                           this.evaluator );
+        ReturnValueRestriction clone = new ReturnValueRestriction( this.readAccessor,
+                                                                   previous,
+                                                                   local,
+                                                                   this.requiredGlobals,
+                                                                   this.evaluator );
+
+        if ( this.cloned == Collections.EMPTY_LIST ) {
+            this.cloned = new ArrayList<ReturnValueRestriction>( 1 );
+        }
+
+        this.cloned.add( clone );
+
+        return clone;
     }
 
     public static class ReturnValueContextEntry
@@ -315,7 +351,7 @@ public class ReturnValueRestriction
 
         private static final long    serialVersionUID = 400L;
 
-        public ReadAccessor        fieldExtractor;
+        public ReadAccessor          fieldExtractor;
         public InternalFactHandle    handle;
         public LeftTuple             leftTuple;
         public InternalWorkingMemory workingMemory;
@@ -337,26 +373,27 @@ public class ReturnValueRestriction
             this.localDeclarations = localDeclarations;
         }
 
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            fieldExtractor  = (ReadAccessor)in.readObject();
-            handle  = (InternalFactHandle)in.readObject();
-            leftTuple  = (LeftTuple)in.readObject();
-            workingMemory  = (InternalWorkingMemory)in.readObject();
-            previousDeclarations  = (Declaration[])in.readObject();
-            localDeclarations  = (Declaration[])in.readObject();
-            entry  = (ContextEntry)in.readObject();
-            dialectContext  = in.readObject();
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
+            fieldExtractor = (ReadAccessor) in.readObject();
+            handle = (InternalFactHandle) in.readObject();
+            leftTuple = (LeftTuple) in.readObject();
+            workingMemory = (InternalWorkingMemory) in.readObject();
+            previousDeclarations = (Declaration[]) in.readObject();
+            localDeclarations = (Declaration[]) in.readObject();
+            entry = (ContextEntry) in.readObject();
+            dialectContext = in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject(fieldExtractor);
-            out.writeObject(handle);
-            out.writeObject(leftTuple);
-            out.writeObject(workingMemory);
-            out.writeObject(previousDeclarations);
-            out.writeObject(localDeclarations);
-            out.writeObject(entry);
-            out.writeObject(dialectContext);
+            out.writeObject( fieldExtractor );
+            out.writeObject( handle );
+            out.writeObject( leftTuple );
+            out.writeObject( workingMemory );
+            out.writeObject( previousDeclarations );
+            out.writeObject( localDeclarations );
+            out.writeObject( entry );
+            out.writeObject( dialectContext );
         }
 
         public ContextEntry getNext() {

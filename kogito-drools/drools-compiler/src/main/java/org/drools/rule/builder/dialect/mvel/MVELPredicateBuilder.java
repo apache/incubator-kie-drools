@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.base.mvel.DroolsMVELFactory;
+import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.base.mvel.MVELPredicateExpression;
 import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.Dialect;
@@ -47,43 +48,30 @@ public class MVELPredicateBuilder
                       final Declaration[] localDeclarations,
                       final PredicateConstraint predicate,
                       final PredicateDescr predicateDescr) {
-        Map previousMap = new HashMap();
-        for ( int i = 0, length = previousDeclarations.length; i < length; i++ ) {
-            previousMap.put( previousDeclarations[i].getIdentifier(),
-                             previousDeclarations[i] );
-        }
+        MVELDialect dialect = (MVELDialect) context.getDialect( context.getDialect().getId() );
 
-        Map localMap = new HashMap();
-        for ( int i = 0, length = localDeclarations.length; i < length; i++ ) {
-            localMap.put( localDeclarations[i].getIdentifier(),
-                          localDeclarations[i] );
-        }
-
-        try {
-            final DroolsMVELFactory factory = new DroolsMVELFactory( previousMap,
-                                                                     localMap,
-                                                                     context.getPkg().getGlobals() );
-            
+        try {            
             Dialect.AnalysisResult analysis = context.getDialect().analyzeExpression( context,
                                                                                       predicateDescr,
                                                                                       predicateDescr.getContent(),
                                                                                       new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
 
-            final Serializable expr = ((MVELDialect) context.getDialect()).compile( (String) predicateDescr.getContent(),
-                                                                                    analysis,
-                                                                                    null,
-                                                                                    null,
-                                                                                    null,
-                                                                                    context );
+            MVELCompilationUnit unit = dialect.getMVELCompilationUnit((String) predicateDescr.getContent(), analysis,  previousDeclarations, localDeclarations, null, context);
 
-            predicate.setPredicateExpression( new MVELPredicateExpression( expr,
-                                                                           factory,
-                                                                           context.getDialect().getId()) );
+            MVELPredicateExpression expr = new MVELPredicateExpression( unit,
+                                                                      context.getDialect().getId());            
+            predicate.setPredicateExpression( expr );
+            
+            MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( context.getDialect().getId() );            
+            data.addCompileable( predicate,
+                                  expr );              
+
+            expr.compile( context.getPackageBuilder().getRootClassLoader() );
         } catch ( final Exception e ) {
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                     predicateDescr,
                                                     e,
-                                                    "Unable to build expression for 'inline-eval' node '" + predicateDescr.getContent() + "'\n" + e.getMessage() ) );
+                                                    "Unable to build expression for 'inline-eval' : " + e.getMessage() + "'" + predicateDescr.getContent() + "'\n" + e.getMessage() ) );
         }
     }
 

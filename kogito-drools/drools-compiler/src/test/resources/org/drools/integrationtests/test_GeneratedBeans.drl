@@ -22,6 +22,7 @@ rule "simple rule"
 end
 
 rule "another"
+    dialect "mvel"
     when
         $cheese : Cheese( type == "stilton" )
      	$person : Person( age== 7, likes == $cheese )

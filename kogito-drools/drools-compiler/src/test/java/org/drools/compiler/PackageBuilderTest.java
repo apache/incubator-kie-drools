@@ -73,6 +73,7 @@ import org.drools.process.core.Process;
 import org.drools.process.core.context.variable.Variable;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.rule.Behavior;
+import org.drools.rule.CompositeClassLoader;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.GroupElement;
@@ -240,10 +241,14 @@ public class PackageBuilderTest extends DroolsTestCase {
                       builder.getErrors().getErrors() );
 
         final Package newPkg = SerializationHelper.serializeObject( pkg );
-
         final Rule newRule = newPkg.getRule( "rule-1" );
 
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
+
+        // It's been serialised so we have to simulate the re-wiring process
+        newPkg.getDialectRuntimeRegistry().onAdd( ruleBase.getRootClassLoader() );
+        newPkg.getDialectRuntimeRegistry().onBeforeExecute();
+        
         ruleBase.getGlobals().put( "map",
                                    Map.class );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -1082,7 +1087,11 @@ public class PackageBuilderTest extends DroolsTestCase {
         assertFalse(builder.hasErrors());
 
         Package bp = builder.getPackage();
-        Class newBean = bp.getDialectRuntimeRegistry().getClassLoader().loadClass("org.test.NewBean");
+        CompositeClassLoader rootClassloader = new CompositeClassLoader( Thread.currentThread().getContextClassLoader() );
+        JavaDialectRuntimeData dialectData = ( JavaDialectRuntimeData ) bp.getDialectRuntimeRegistry().getDialectData( "java" );
+        dialectData.onAdd( bp.getDialectRuntimeRegistry(), rootClassloader );
+        
+        Class newBean = rootClassloader.loadClass("org.test.NewBean");
         assertNotNull(newBean);
     }
 

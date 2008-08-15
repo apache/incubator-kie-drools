@@ -49,9 +49,9 @@ public class JavaActionBuilderTest extends TestCase {
         process.setName( "Process1" );
         process.setPackageName( "pkg1" );
 
-        ProcessBuildContext context = new ProcessBuildContext(conf, pkgBuilder.getPackage(), null, processDescr, dialectRegistry, javaDialect);
+        ProcessBuildContext context = new ProcessBuildContext(pkgBuilder, pkgBuilder.getPackage(), null, processDescr, dialectRegistry, javaDialect);
         
-        context.init( conf, pkg, null, dialectRegistry, javaDialect, null);
+        context.init( pkgBuilder, pkg, null, dialectRegistry, javaDialect, null);
         
         pkgBuilder.addPackageFromDrl( new StringReader("package pkg1;\nglobal java.util.List list;\n") );        
         

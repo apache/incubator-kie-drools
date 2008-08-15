@@ -23,7 +23,7 @@ import java.io.Externalizable;
 
 public interface PredicateExpression
     extends
-    Invoker, Externalizable {
+    Invoker {
 
     public Object createContext();
 

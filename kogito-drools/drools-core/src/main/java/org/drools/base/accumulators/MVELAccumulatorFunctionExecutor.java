@@ -17,6 +17,7 @@
  */
 package org.drools.base.accumulators;
 
+import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -27,6 +28,8 @@ import java.util.Map;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.base.mvel.DroolsMVELFactory;
+import org.drools.base.mvel.MVELCompilationUnit;
+import org.drools.base.mvel.MVELCompileable;
 import org.drools.common.InternalFactHandle;
 import org.drools.rule.Declaration;
 import org.drools.spi.Accumulator;
@@ -40,40 +43,47 @@ import org.mvel.MVEL;
  */
 public class MVELAccumulatorFunctionExecutor
     implements
+    MVELCompileable,
+    Externalizable,
     Accumulator {
 
     private static final long  serialVersionUID = 400L;
 
     private final Object       dummy            = new Object();
+    
+    private MVELCompilationUnit unit;
+    private AccumulateFunction function;
+    
     private DroolsMVELFactory  model;
     private Serializable       expression;
-    private AccumulateFunction function;
+    
 
     public MVELAccumulatorFunctionExecutor() {
 
     }
 
-    public MVELAccumulatorFunctionExecutor(final DroolsMVELFactory factory,
-                                           final Serializable expression,
+    public MVELAccumulatorFunctionExecutor(MVELCompilationUnit unit,
                                            final AccumulateFunction function) {
         super();
-        this.model = factory;
-        this.expression = expression;
+        this.unit = unit;
         this.function = function;
     }
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
-        model = (DroolsMVELFactory) in.readObject();
-        expression = (Serializable) in.readObject();
+        unit = (MVELCompilationUnit) in.readObject();
         function = (AccumulateFunction) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject( model );
-        out.writeObject( expression );
+        out.writeObject( unit );
         out.writeObject( function );
     }
+    
+    public void compile(ClassLoader classLoader) {
+        expression = unit.getCompiledExpression( classLoader );
+        model = unit.getFactory( );
+    }     
 
     /* (non-Javadoc)
      * @see org.drools.spi.Accumulator#createContext()

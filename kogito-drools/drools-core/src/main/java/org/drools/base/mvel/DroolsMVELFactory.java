@@ -76,17 +76,14 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
     public DroolsMVELFactory(final Map previousDeclarations,
                              final Map localDeclarations,
                              final Map globals,
-                             final List[] externals) {
+                             final String[] inputIdentifiers) {
         this.previousDeclarations = previousDeclarations;
         this.localDeclarations = localDeclarations;
         this.globals = globals;
 
-        if ( externals != null && MVELDebugHandler.isDebugMode() ) {
-            for ( int i = 0; i < externals.length; i++ ) {
-                for ( Iterator it = externals[i].iterator(); it.hasNext(); ) {
-                    String identifier = (String) it.next();
-                    isResolveable( identifier );
-                }
+        if ( inputIdentifiers != null && MVELDebugHandler.isDebugMode() ) {
+            for ( int i = 0; i < inputIdentifiers.length; i++ ) {
+                isResolveable( inputIdentifiers[i] );
             }
         }
     }
@@ -258,7 +255,7 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
     }
 
     public void addResolver(String name,
-                             VariableResolver vr) {
+                            VariableResolver vr) {
         if ( this.variableResolvers == null ) {
             this.variableResolvers = new HashMap();
         }

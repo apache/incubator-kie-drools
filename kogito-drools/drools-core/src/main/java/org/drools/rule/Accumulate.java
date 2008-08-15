@@ -16,6 +16,7 @@
 
 package org.drools.rule;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -27,13 +28,16 @@ import org.drools.RuntimeDroolsException;
 import org.drools.WorkingMemory;
 import org.drools.common.InternalFactHandle;
 import org.drools.spi.Accumulator;
+import org.drools.spi.CompiledInvoker;
 import org.drools.spi.Tuple;
+import org.drools.spi.Wireable;
 
 /**
  * A class to represent the Accumulate CE
  */
 public class Accumulate extends ConditionalElement
     implements
+    Wireable,
     PatternSource {
 
     private static final long    serialVersionUID = 400L;
@@ -42,6 +46,8 @@ public class Accumulate extends ConditionalElement
     private RuleConditionElement source;
     private Declaration[]        requiredDeclarations;
     private Declaration[]        innerDeclarations;
+    
+    private List<Accumulate> cloned = Collections.<Accumulate>emptyList();
 
     public Accumulate() {
 
@@ -81,17 +87,30 @@ public class Accumulate extends ConditionalElement
         source = (RuleConditionElement)in.readObject();
         requiredDeclarations = (Declaration[])in.readObject();
         innerDeclarations = (Declaration[])in.readObject();
+        this.cloned = (List<Accumulate>) in.readObject();        
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(accumulator);
-        out.writeObject(source);
-        out.writeObject(requiredDeclarations);
-        out.writeObject(innerDeclarations);
+        if ( this.accumulator instanceof CompiledInvoker ) {
+            out.writeObject(  null );
+        } else {
+            out.writeObject(this.accumulator);   
+        }
+        out.writeObject(this.source);
+        out.writeObject(this.requiredDeclarations);
+        out.writeObject(this.innerDeclarations);
+        out.writeObject( this.cloned );
     }
 
     public Accumulator getAccumulator() {
         return this.accumulator;
+    }
+    
+    public void wire(Object object) {
+        setAccumulator( (Accumulator) object );
+        for ( Accumulate clone : this.cloned ) {
+            clone.wire( object );
+        }        
     }
 
     public void setAccumulator(final Accumulator accumulator) {
@@ -214,10 +233,18 @@ public class Accumulate extends ConditionalElement
     }
 
     public Object clone() {
-        return new Accumulate( this.source,
+        Accumulate clone = new Accumulate( this.source,
                                this.requiredDeclarations,
                                this.innerDeclarations,
                                this.accumulator );
+        
+        if ( this.cloned == Collections.EMPTY_LIST ) {
+            this.cloned = new ArrayList<Accumulate>(1);
+        }
+        
+        this.cloned.add( clone );
+        
+        return clone;
     }
 
     public RuleConditionElement getSource() {

@@ -43,7 +43,7 @@ public class JavaConsequenceBuilderTest extends TestCase {
 
         PackageRegistry pkgRegistry = pkgBuilder.getPackageRegistry( pkg.getName() );
         DialectCompiletimeRegistry reg = pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectCompiletimeRegistry();
-        context = new RuleBuildContext( conf,
+        context = new RuleBuildContext( pkgBuilder,
                                         ruleDescr,
                                         reg,
                                         pkg,                                        

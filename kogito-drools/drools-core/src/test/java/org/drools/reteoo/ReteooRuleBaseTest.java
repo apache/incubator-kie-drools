@@ -21,6 +21,7 @@ import org.drools.RuleBaseFactory;
 import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
+import org.drools.base.ClassFieldAccessorCache;
 
 public class ReteooRuleBaseTest extends DroolsTestCase {
     ReteooRuleBase ruleBase;
@@ -75,18 +76,21 @@ public class ReteooRuleBaseTest extends DroolsTestCase {
 
     public void testAddPackage() throws Exception {
         final org.drools.rule.Package pkg1 = new org.drools.rule.Package( "org.droos.test" );
+        pkg1.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         pkg1.addGlobal( "global1",
                         Object.class );
         pkg1.addGlobal( "global2",
                         Object.class );
 
         final org.drools.rule.Package pkg2 = new org.drools.rule.Package( "org.droos.test" );
+        pkg2.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         pkg2.addGlobal( "global1",
                         Object.class );
         pkg2.addGlobal( "global3",
                         Object.class );
 
         final org.drools.rule.Package pkg3 = new org.drools.rule.Package( "org.droos.test2" );
+        pkg3.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         pkg3.addGlobal( "global3",
                         Object.class );
         pkg3.addGlobal( "global4",
@@ -133,18 +137,21 @@ public class ReteooRuleBaseTest extends DroolsTestCase {
 
     public void testRemovePackage() throws Exception {
         final org.drools.rule.Package pkg1 = new org.drools.rule.Package( "org.droos.test" );
+        pkg1.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         pkg1.addGlobal( "global1",
                         Object.class );
         pkg1.addGlobal( "global2",
                         Object.class );
 
         final org.drools.rule.Package pkg2 = new org.drools.rule.Package( "org.droos.test" );
+        pkg2.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         pkg2.addGlobal( "global1",
                         Object.class );
         pkg2.addGlobal( "global3",
                         Object.class );
 
         final org.drools.rule.Package pkg3 = new org.drools.rule.Package( "org.droos.test2" );
+        pkg3.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         pkg3.addGlobal( "global3",
                         Object.class );
         pkg3.addGlobal( "global4",

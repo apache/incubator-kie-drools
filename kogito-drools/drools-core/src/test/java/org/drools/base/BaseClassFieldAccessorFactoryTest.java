@@ -27,25 +27,27 @@ import org.drools.util.asm.TestInterfaceImpl;
 
 public class BaseClassFieldAccessorFactoryTest extends TestCase {
 
-    private ClassFieldAccessorCache cache;
+    ClassFieldAccessorStore store = new ClassFieldAccessorStore();
 
     protected void setUp() throws Exception {
-        super.setUp();
-        cache = ClassFieldAccessorCache.getInstance();
+        store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
+        store.setEagerWire( true );
     }
 
     public void testIt() throws Exception {
         ClassFieldAccessorFactory factory = new ClassFieldAccessorFactory();
+        
+        ClassFieldAccessorCache.CacheEntry cachEntry = new ClassFieldAccessorCache.CacheEntry( Thread.currentThread().getContextClassLoader()  );
 
         InternalReadAccessor ex = factory.getClassFieldReader( TestBean.class,
-                                                            "name",
-                                                            Thread.currentThread().getContextClassLoader() );
+                                                               "name",
+                                                               cachEntry );
         assertEquals( "michael",
                       ex.getValue( null,
                                    new TestBean() ) );
         ex = factory.getClassFieldReader( TestBean.class,
-                                             "age",
-                                             Thread.currentThread().getContextClassLoader() );
+                                          "age",
+                                          cachEntry );
         assertEquals( 42,
                       ((Number) ex.getValue( null,
                                              new TestBean() )).intValue() );
@@ -53,9 +55,9 @@ public class BaseClassFieldAccessorFactoryTest extends TestCase {
     }
 
     public void testInterface() throws Exception {
-        final InternalReadAccessor ex = cache.getReader( TestInterface.class,
-                                                      "something",
-                                                      getClass().getClassLoader() );
+        final InternalReadAccessor ex = store.getReader( TestInterface.class,
+                                                         "something",
+                                                         getClass().getClassLoader() );
         assertEquals( 0,
                       ex.getIndex() );
         assertEquals( "foo",
@@ -64,9 +66,9 @@ public class BaseClassFieldAccessorFactoryTest extends TestCase {
     }
 
     public void testAbstract() throws Exception {
-        final InternalReadAccessor ex = cache.getReader( TestAbstract.class,
-                                                      "something",
-                                                      getClass().getClassLoader() );
+        final InternalReadAccessor ex = store.getReader( TestAbstract.class,
+                                                         "something",
+                                                         getClass().getClassLoader() );
         assertEquals( 0,
                       ex.getIndex() );
         assertEquals( "foo",
@@ -75,18 +77,18 @@ public class BaseClassFieldAccessorFactoryTest extends TestCase {
     }
 
     public void testInherited() throws Exception {
-        final InternalReadAccessor ex = cache.getReader( BeanInherit.class,
-                                                      "text",
-                                                      getClass().getClassLoader() );
+        final InternalReadAccessor ex = store.getReader( BeanInherit.class,
+                                                         "text",
+                                                         getClass().getClassLoader() );
         assertEquals( "hola",
                       ex.getValue( null,
                                    new BeanInherit() ) );
     }
 
     public void testSelfReference() throws Exception {
-        final InternalReadAccessor ex = cache.getReader( BeanInherit.class,
-                                                      "this",
-                                                      getClass().getClassLoader() );
+        final InternalReadAccessor ex = store.getReader( BeanInherit.class,
+                                                         "this",
+                                                         getClass().getClassLoader() );
         final TestBean bean = new TestBean();
         assertEquals( bean,
                       ex.getValue( null,

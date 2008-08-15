@@ -17,19 +17,25 @@
  */
 package org.drools.base.accumulators;
 
+import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.common.InternalFactHandle;
 import org.drools.rule.Declaration;
+import org.drools.rule.PredicateConstraint;
 import org.drools.spi.Accumulator;
+import org.drools.spi.CompiledInvoker;
 import org.drools.spi.ReturnValueExpression;
 import org.drools.spi.Tuple;
+import org.drools.spi.Wireable;
 
 /**
  * An MVEL accumulator function executor implementation
@@ -38,12 +44,14 @@ import org.drools.spi.Tuple;
  */
 public class JavaAccumulatorFunctionExecutor
     implements
-    Accumulator {
+    Accumulator,
+    Externalizable,
+    Wireable {
 
     private static final long     serialVersionUID = 400L;
 
     private ReturnValueExpression expression;
-    private AccumulateFunction    function;
+    private AccumulateFunction    function;    
 
     public JavaAccumulatorFunctionExecutor() {
 
@@ -61,7 +69,11 @@ public class JavaAccumulatorFunctionExecutor
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject( expression );
+        if ( this.expression instanceof CompiledInvoker ) {
+            out.writeObject(  null );
+        } else {
+            out.writeObject(this.expression);   
+        }
         out.writeObject( function );
     }
 
@@ -142,6 +154,10 @@ public class JavaAccumulatorFunctionExecutor
 
     public ReturnValueExpression getExpression() {
         return expression;
+    }
+    
+    public void wire(Object object) {
+        setExpression( (ReturnValueExpression) object);
     }
 
     public void setExpression(ReturnValueExpression expression) {

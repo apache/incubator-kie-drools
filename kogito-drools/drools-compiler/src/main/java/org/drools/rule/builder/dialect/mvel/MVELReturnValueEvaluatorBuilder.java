@@ -5,7 +5,9 @@ import java.util.Collections;
 import java.util.Set;
 
 import org.drools.base.mvel.DroolsMVELFactory;
+import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.base.mvel.MVELReturnValueEvaluator;
+import org.drools.base.mvel.MVELReturnValueExpression;
 import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.Dialect;
 import org.drools.compiler.ReturnValueDescr;
@@ -29,36 +31,36 @@ public class MVELReturnValueEvaluatorBuilder
         String text = descr.getText();
 
         try {
-            MVELDialect dialect = (MVELDialect)  context.getDialect( "mvel" );
+            MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
 
             Dialect.AnalysisResult analysis = dialect.analyzeBlock( context,
                                                                     descr,
                                                                     dialect.getInterceptors(),
                                                                     text,
                                                                     new Set[]{Collections.EMPTY_SET, context.getPkg().getGlobals().keySet()},
-                                                                    null );
+                                                                    null );         
 
-            final Serializable expr = dialect.compile( text,
-                                                       analysis,
-                                                       dialect.getInterceptors(),
-                                                       null,
-                                                       null,
-                                                       context );
+            MVELCompilationUnit unit = dialect.getMVELCompilationUnit( text,
+                                                                       analysis,
+                                                                       null,
+                                                                       null,
+                                                                       null,
+                                                                       context );  
 
-            final DroolsMVELFactory factory = new DroolsMVELFactory( null,
-                                                                     null,
-                                                                     context.getPkg().getGlobals(),
-                                                                     analysis.getBoundIdentifiers() );
+            MVELReturnValueEvaluator expr = new MVELReturnValueEvaluator( unit,
+                                                                          dialect.getId() );
+            constraintNode.setEvaluator( expr );
             
-            MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
-            factory.setNextFactory( data.getFunctionFactory() );            
+            MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( dialect.getId() );
+            data.addCompileable( constraintNode,
+                                  expr );
             
-            constraintNode.setEvaluator( new MVELReturnValueEvaluator( expr, factory, context.getDialect().getId() ) );
+            expr.compile( context.getPackageBuilder().getRootClassLoader() );
         } catch ( final Exception e ) {
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                           descr,
                                                           null,
-                                                          "Unable to build expression for 'returnValuEvaluator' '" + descr.getText() + "'" ) );
+                                                          "Unable to build expression for 'returnValuEvaluator' : " + e.getMessage() + "'" + descr.getText() + "'" ) );
         }
     }
 

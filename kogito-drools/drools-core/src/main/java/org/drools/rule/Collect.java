@@ -26,6 +26,8 @@ import java.io.ObjectInput;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassObjectType;
+import org.drools.common.InternalRuleBase;
+import org.drools.common.InternalWorkingMemory;
 
 /**
  * @author etirelli
@@ -39,6 +41,8 @@ public class Collect extends ConditionalElement
 
     private Pattern           sourcePattern;
     private Pattern           resultPattern;
+    
+    private Class             cls;
 
     public Collect() {
     }
@@ -73,11 +77,15 @@ public class Collect extends ConditionalElement
         return this.sourcePattern;
     }
 
-    public Collection instantiateResultObject() throws RuntimeDroolsException {
+    public Collection instantiateResultObject(InternalWorkingMemory wm) throws RuntimeDroolsException {
         try {
             // Collect can only be used with a Collection implementation, so
             // FactTemplateObject type is not allowed
-            return (Collection) ((ClassObjectType) this.resultPattern.getObjectType()).getClassType().newInstance();
+            if ( this.cls == null ) {
+                ClassObjectType objType = ((ClassObjectType) this.resultPattern.getObjectType());
+                this.cls = ((InternalRuleBase)wm.getRuleBase()).getRootClassLoader().loadClass( objType.getClassName() );
+            }
+            return (Collection) this.cls.newInstance();
         } catch ( final ClassCastException cce ) {
             throw new RuntimeDroolsException( "Collect CE requires a Collection implementation as return type",
                                               cce );
@@ -87,6 +95,9 @@ public class Collect extends ConditionalElement
         } catch ( final IllegalAccessException e ) {
             throw new RuntimeDroolsException( "Collect CE requires an accessible constructor for the return type",
                                               e );
+        } catch ( final ClassNotFoundException  e) {
+            throw new RuntimeDroolsException( "Collect CE could not resolve return result class '" + ((ClassObjectType) this.resultPattern.getObjectType()).getClassName() + "'",
+                                              e );            
         }
     }
 

@@ -18,6 +18,7 @@
 
 package org.drools.rule;
 
+import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -44,6 +45,7 @@ import org.drools.time.Trigger;
  */
 public class SlidingTimeWindow
     implements
+    Externalizable,
     Behavior {
 
     private long size;

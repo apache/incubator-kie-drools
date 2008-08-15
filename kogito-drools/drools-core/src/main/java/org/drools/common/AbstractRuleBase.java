@@ -22,6 +22,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInput;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,13 +38,15 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.drools.PackageIntegrationException;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
+import org.drools.RuntimeDroolsException;
 import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
+import org.drools.base.ClassFieldAccessorCache;
 import org.drools.event.RuleBaseEventListener;
 import org.drools.event.RuleBaseEventSupport;
 import org.drools.marshalling.Marshaller;
 import org.drools.process.core.Process;
-import org.drools.rule.CompositePackageClassLoader;
+import org.drools.rule.CompositeClassLoader;
 import org.drools.rule.DialectRuntimeRegistry;
 import org.drools.rule.FactType;
 import org.drools.rule.Function;
@@ -83,9 +86,7 @@ abstract public class AbstractRuleBase
 
     protected Map                                      agendaGroupRuleTotals;
 
-    protected transient CompositePackageClassLoader    packageClassLoader;
-
-    protected transient MapBackedClassLoader           classLoader;
+    protected transient CompositeClassLoader           rootClassLoader;
 
     /** The fact handle factory. */
     protected FactHandleFactory                        factHandleFactory;
@@ -117,6 +118,8 @@ abstract public class AbstractRuleBase
     private transient Map<Class< ? >, TypeDeclaration> classTypeDeclaration;
 
     private List<RuleBasePartitionId>                  partitionIDs;
+
+    private ClassFieldAccessorCache classFieldAccessorCache;
 
     /**
      * Default constructor - for Externalizable. This should never be used by a user, as it
@@ -152,9 +155,7 @@ abstract public class AbstractRuleBase
             this.agendaGroupRuleTotals = new HashMap();
         }
 
-        this.packageClassLoader = new CompositePackageClassLoader( this.config.getClassLoader() );
-        this.classLoader = new MapBackedClassLoader( this.config.getClassLoader() );
-        this.packageClassLoader.addClassLoader( this.classLoader );
+        this.rootClassLoader = new CompositeClassLoader( this.config.getClassLoader() );
         this.pkgs = new HashMap<String, Package>();
         this.processes = new HashMap();
         this.globals = new HashMap();
@@ -162,6 +163,8 @@ abstract public class AbstractRuleBase
 
         this.classTypeDeclaration = new HashMap<Class< ? >, TypeDeclaration>();
         this.partitionIDs = new ArrayList<RuleBasePartitionId>();
+        
+        this.classFieldAccessorCache = new ClassFieldAccessorCache( this.rootClassLoader );
     }
 
     // ------------------------------------------------------------
@@ -186,27 +189,20 @@ abstract public class AbstractRuleBase
             droolsStream = new DroolsObjectOutputStream( bytes );
         }
 
-        droolsStream.writeObject( this.pkgs );
         droolsStream.writeObject( this.config );
-        droolsStream.writeObject( this.classLoader.getStore() );
+        droolsStream.writeObject( this.pkgs );
 
         // Rules must be restored by an ObjectInputStream that can resolve using a given ClassLoader to handle seaprately by storing as
         // a byte[]
         droolsStream.writeObject( this.id );
-        droolsStream.writeInt( workingMemoryCounter );
+        droolsStream.writeInt( this.workingMemoryCounter );
         droolsStream.writeObject( this.processes );
         droolsStream.writeObject( this.agendaGroupRuleTotals );
         droolsStream.writeUTF( this.factHandleFactory.getClass().getName() );
         droolsStream.writeObject( this.globals );
-        droolsStream.writeObject( reloadPackageCompilationData );
 
         this.eventSupport.removeEventListener( RuleBaseEventListener.class );
         droolsStream.writeObject( this.eventSupport );
-        droolsStream.writeObject( wms );
-        droolsStream.writeInt( lastAquiredLock );
-        droolsStream.writeObject( lock );
-        droolsStream.writeInt( additionsSinceLock );
-        droolsStream.writeInt( removalsSinceLock );
         if ( !isDrools ) {
             bytes.close();
             out.writeObject( bytes.toByteArray() );
@@ -228,34 +224,35 @@ abstract public class AbstractRuleBase
         if ( isDrools ) {
             droolsStream = (DroolsObjectInput) in;
         } else {
-            byte[] bytes = (byte[]) in.readObject();
+            droolsStream = new DroolsObjectInputStream( (ObjectInputStream) in );
 
-            droolsStream = new DroolsObjectInputStream( new ByteArrayInputStream( bytes ) );
         }
-        this.pkgs = (Map) droolsStream.readObject();
-        this.config = (RuleBaseConfiguration) droolsStream.readObject();
 
-        Map store = (Map) droolsStream.readObject();
-        this.packageClassLoader = new CompositePackageClassLoader( droolsStream.getClassLoader() );
-        droolsStream.setClassLoader( packageClassLoader );
-        this.classLoader = new MapBackedClassLoader( this.packageClassLoader,
-                                                     store );
-        this.packageClassLoader.addClassLoader( this.classLoader );
+        this.rootClassLoader = new CompositeClassLoader( droolsStream.getParentClassLoader() );
+        droolsStream.setClassLoader( this.rootClassLoader  );
+        droolsStream.setRuleBase( this );
+        
+        this.classFieldAccessorCache = new ClassFieldAccessorCache( this.rootClassLoader );
+        
+        this.config = (RuleBaseConfiguration) droolsStream.readObject();
+        this.config.setClassLoader( droolsStream.getParentClassLoader() );
+        
+        this.pkgs = (Map) droolsStream.readObject();
+
 
         for ( final Object object : this.pkgs.values() ) {
-            this.packageClassLoader.addClassLoader( ((Package) object).getDialectRuntimeRegistry().getClassLoader() );
+            ((Package) object).getDialectRuntimeRegistry().onAdd( this.rootClassLoader );
         }
+        
         // PackageCompilationData must be restored before Rules as it has the ClassLoader needed to resolve the generated code references in Rules
         this.id = (String) droolsStream.readObject();
         this.workingMemoryCounter = droolsStream.readInt();
-
-        this.config.setClassLoader( droolsStream.getClassLoader() );
 
         this.processes = (Map) droolsStream.readObject();
         this.agendaGroupRuleTotals = (Map) droolsStream.readObject();
         Class cls = null;
         try {
-            cls = droolsStream.getClassLoader().loadClass( droolsStream.readUTF() );
+            cls = droolsStream.getParentClassLoader().loadClass( droolsStream.readUTF() );
             this.factHandleFactory = (FactHandleFactory) cls.newInstance();
         } catch ( InstantiationException e ) {
             DroolsObjectInputStream.newInvalidClassException( cls,
@@ -263,31 +260,32 @@ abstract public class AbstractRuleBase
         } catch ( IllegalAccessException e ) {
             DroolsObjectInputStream.newInvalidClassException( cls,
                                                               e );
+        }                       
+        
+        for ( final Object object : this.pkgs.values() ) {
+            ((Package) object).getDialectRuntimeRegistry().onBeforeExecute( );
+            ((Package) object).getClassFieldAccessorStore().setClassFieldAccessorCache( this.classFieldAccessorCache );
+            ((Package) object).getClassFieldAccessorStore().wire();
         }
-        this.globals = (Map) droolsStream.readObject();
-        this.reloadPackageCompilationData = (ReloadPackageCompilationData) droolsStream.readObject();
-
+        
+        this.populateTypeDeclarationMaps(); 
+        
+        this.globals = (Map) droolsStream.readObject();                       
+        
         this.eventSupport = (RuleBaseEventSupport) droolsStream.readObject();
         this.eventSupport.setRuleBase( this );
         this.statefulSessions = new ObjectHashSet();
 
-        wms = (InternalWorkingMemory[]) droolsStream.readObject();
-        lastAquiredLock = droolsStream.readInt();
-        lock = (ReentrantLock) droolsStream.readObject();
-        additionsSinceLock = droolsStream.readInt();
-        removalsSinceLock = droolsStream.readInt();
-
         if ( !isDrools ) {
             droolsStream.close();
-        }
-
-        this.populateTypeDeclarationMaps();
+        }                      
     }
 
-    private void populateTypeDeclarationMaps() {
+    private void populateTypeDeclarationMaps() throws ClassNotFoundException {
         this.classTypeDeclaration = new HashMap<Class< ? >, TypeDeclaration>();
         for ( Package pkg : this.pkgs.values() ) {
             for ( TypeDeclaration type : pkg.getTypeDeclarations().values() ) {
+                type.setTypeClass( this.rootClassLoader.loadClass( pkg.getName() + "." + type.getTypeName() ) );
                 this.classTypeDeclaration.put( type.getTypeClass(),
                                                type );
             }
@@ -445,32 +443,48 @@ abstract public class AbstractRuleBase
             //            }
 
             if ( pkg == null ) {
-                pkg = new Package( newPkg.getName(),
-                                   newPkg.getPackageScopeClassLoader() );
+                pkg = new Package( newPkg.getName() );
+                
+                // @TODO we really should have a single root cache
+                pkg.setClassFieldAccessorCache( this.classFieldAccessorCache );
                 pkgs.put( pkg.getName(),
                           pkg );
-                this.packageClassLoader.addClassLoader( pkg.getDialectRuntimeRegistry().getClassLoader() );
-            } else {
-                pkg.getPackageScopeClassLoader().getStore().putAll( newPkg.getPackageScopeClassLoader().getStore() );
-                this.packageClassLoader.addClassLoader( newPkg.getDialectRuntimeRegistry().getClassLoader() );
-            }
+            }       
+            
+            // first merge anything related to classloader re-wiring
+            pkg.getDialectRuntimeRegistry().merge( newPkg.getDialectRuntimeRegistry(), this.rootClassLoader );
+            if ( newPkg.getFunctions() != null ) {
+                for ( Map.Entry<String, Function> entry : newPkg.getFunctions().entrySet() ) {
+                    pkg.addFunction( entry.getValue() );
+                }
+            }            
+            pkg.getClassFieldAccessorStore().merge( newPkg.getClassFieldAccessorStore() );
+            pkg.getDialectRuntimeRegistry().onBeforeExecute();
+            
+            // we have to do this before the merging, as it does some classloader resolving
+            TypeDeclaration lastType = null;
+            try {
+                // Add the type declarations to the RuleBase
+                if ( newPkg.getTypeDeclarations() != null ) {
+                    // add type declarations
+                    for ( TypeDeclaration type : newPkg.getTypeDeclarations().values() ) {
+                        lastType = type;
+                        type.setTypeClass( this.rootClassLoader.loadClass( pkg.getName() + "." + type.getTypeName() ) );
+                        // @TODO should we allow overrides? only if the class is not in use.
+                        if ( !this.classTypeDeclaration.containsKey( type.getTypeClass() ) ) {
+                            // add to rulebase list of type declarations                        
+                            this.classTypeDeclaration.put( type.getTypeClass(),
+                                                           type );
+                        }
+                    }
+                }
+            } catch ( ClassNotFoundException e ) {
+                throw new RuntimeDroolsException( "unable to resolve Type Declaration class '" + lastType.getTypeName() );            
+            }            
 
             // now merge the new package into the existing one
             mergePackage( pkg,
                           newPkg );
-
-            // Add the type declarations to the RuleBase
-            if ( newPkg.getTypeDeclarations() != null ) {
-                // add type declarations
-                for ( TypeDeclaration type : newPkg.getTypeDeclarations().values() ) {
-                    // @TODO should we allow overrides? only if the class is not in use.
-                    if ( !this.classTypeDeclaration.containsKey( type.getTypeClass() ) ) {
-                        // add to rulebase list of type declarations                        
-                        this.classTypeDeclaration.put( type.getTypeClass(),
-                                                       type );
-                    }
-                }
-            }
 
             // add the rules to the RuleBase
             final Rule[] rules = newPkg.getRules();
@@ -511,23 +525,29 @@ abstract public class AbstractRuleBase
         final Map<String, ImportDeclaration> imports = pkg.getImports();
         imports.putAll( newPkg.getImports() );
 
-        // merge globals
-        if ( newPkg.getGlobals() != null && newPkg.getGlobals() != Collections.EMPTY_MAP ) {
-            Map<String, Class> globals = pkg.getGlobals();
-            // Add globals
-            for ( final Map.Entry<String, Class> entry : newPkg.getGlobals().entrySet() ) {
-                final String identifier = entry.getKey();
-                final Class type = entry.getValue();
-                if ( globals.containsKey( identifier ) && !globals.get( identifier ).equals( type ) ) {
-                    throw new PackageIntegrationException( pkg );
-                } else {
-                    pkg.addGlobal( identifier,
-                                   type );
-                    // this isn't a package merge, it's adding to the rulebase, but I've put it here for convienience
-                    this.globals.put( identifier,
-                                      type );
+        String lastType = null;
+        try {
+            // merge globals
+            if ( newPkg.getGlobals() != null && newPkg.getGlobals() != Collections.EMPTY_MAP ) {
+                Map<String, String> globals = pkg.getGlobals();
+                // Add globals
+                for ( final Map.Entry<String, String> entry : newPkg.getGlobals().entrySet() ) {
+                    final String identifier = entry.getKey();
+                    final String type = entry.getValue();
+                    lastType = type;
+                    if ( globals.containsKey( identifier ) && !globals.get( identifier ).equals( type ) ) {
+                        throw new PackageIntegrationException( pkg );
+                    } else {
+                        pkg.addGlobal( identifier,
+                                       this.rootClassLoader.loadClass( type ) );
+                        // this isn't a package merge, it's adding to the rulebase, but I've put it here for convienience
+                        this.globals.put( identifier,
+                                          this.rootClassLoader.loadClass( type ) );
+                    }
                 }
             }
+        } catch ( ClassNotFoundException e ) {
+            throw new RuntimeDroolsException( "Unable to resolve class '" + lastType + "'" );
         }
 
         // merge the type declarations
@@ -541,9 +561,6 @@ abstract public class AbstractRuleBase
                 }
             }
         }
-
-        // merge the contents of the MapBackedClassloader, that is the root of the dialect registry's composite classloader.
-        pkg.getPackageScopeClassLoader().getStore().putAll( newPkg.getPackageScopeClassLoader().getStore() );
 
         //Merge rules into the RuleBase package
         //as this is needed for individual rule removal later on
@@ -567,22 +584,14 @@ abstract public class AbstractRuleBase
                 final Process flow = (Process) iter.next();
                 pkg.addProcess( flow );
             }
-        }
-
-        pkg.getDialectRuntimeRegistry().merge( newPkg.getDialectRuntimeRegistry() );
-
-        if ( newPkg.getFunctions() != null ) {
-            for ( Map.Entry<String, Function> entry : newPkg.getFunctions().entrySet() ) {
-                pkg.addFunction( entry.getValue() );
-            }
-        }
-
-        // this handles re-wiring any dirty Packages, it's done lazily to allow incremental 
-        // additions without incurring the repeated cost.
-        if ( this.reloadPackageCompilationData == null ) {
-            this.reloadPackageCompilationData = new ReloadPackageCompilationData();
-        }
-        this.reloadPackageCompilationData.addDialectDatas( pkg.getDialectRuntimeRegistry() );
+        }     
+        
+//        // this handles re-wiring any dirty Packages, it's done lazily to allow incremental 
+//        // additions without incurring the repeated cost.
+//        if ( this.reloadPackageCompilationData == null ) {
+//            this.reloadPackageCompilationData = new ReloadPackageCompilationData();
+//        }
+//        this.reloadPackageCompilationData.addDialectDatas( pkg.getDialectRuntimeRegistry() );
     }
 
     public TypeDeclaration getTypeDeclaration(Class< ? > clazz) {
@@ -593,9 +602,9 @@ abstract public class AbstractRuleBase
                                      final Rule rule) throws InvalidPatternException {
         this.eventSupport.fireBeforeRuleAdded( pkg,
                                                rule );
-        if ( !rule.isValid() ) {
-            throw new IllegalArgumentException( "The rule called " + rule.getName() + " is not valid. Check for compile errors reported." );
-        }
+//        if ( !rule.isValid() ) {
+//            throw new IllegalArgumentException( "The rule called " + rule.getName() + " is not valid. Check for compile errors reported." );
+//        }
         addRule( rule );
         this.eventSupport.fireAfterRuleAdded( pkg,
                                               rule );
@@ -628,8 +637,6 @@ abstract public class AbstractRuleBase
                                 rules[i] );
                 }
 
-                this.packageClassLoader.removeClassLoader( pkg.getDialectRuntimeRegistry().getClassLoader() );
-
                 // getting the list of referenced globals
                 final Set referencedGlobals = new HashSet();
                 for ( final Iterator it = this.pkgs.values().iterator(); it.hasNext(); ) {
@@ -652,6 +659,8 @@ abstract public class AbstractRuleBase
                 }
                 // removing the package itself from the list
                 this.pkgs.remove( pkg.getName() );
+                
+                pkg.getDialectRuntimeRegistry().onRemove();
 
                 //clear all members of the pkg
                 pkg.clear();
@@ -783,18 +792,8 @@ abstract public class AbstractRuleBase
         return this.config;
     }
 
-    public void addClass(final String className,
-                         final byte[] bytes) {
-        this.classLoader.addClass( className,
-                                   bytes );
-    }
-
-    public CompositePackageClassLoader getCompositePackageClassLoader() {
-        return this.packageClassLoader;
-    }
-
-    public MapBackedClassLoader getMapBackedClassLoader() {
-        return this.classLoader;
+    public CompositeClassLoader getRootClassLoader() {
+        return this.rootClassLoader;
     }
 
     public void executeQueuedActions() {
@@ -874,7 +873,7 @@ abstract public class AbstractRuleBase
 
         public void execute(final InternalRuleBase ruleBase) {
             for ( final DialectRuntimeRegistry registry : this.set ) {
-                registry.reloadDirty();
+                registry.onBeforeExecute();
             }
         }
     }
@@ -883,5 +882,9 @@ abstract public class AbstractRuleBase
         extends
         Externalizable {
         public void execute(InternalRuleBase ruleBase);
+    }
+    
+    public ClassFieldAccessorCache getClassFieldAccessorCache() { 
+        return this.classFieldAccessorCache;
     }
 }

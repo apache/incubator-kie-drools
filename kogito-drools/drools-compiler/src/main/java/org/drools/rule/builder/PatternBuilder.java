@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.drools.RuntimeDroolsException;
+import org.drools.base.ClassFieldReader;
 import org.drools.base.ClassObjectType;
 import org.drools.base.FieldFactory;
 import org.drools.base.ValueType;
@@ -71,11 +72,14 @@ import org.drools.rule.SlidingTimeWindow;
 import org.drools.rule.VariableConstraint;
 import org.drools.rule.VariableRestriction;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
+import org.drools.spi.Acceptor;
+import org.drools.spi.AcceptsReadAccessor;
 import org.drools.spi.Constraint;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.ObjectType;
+import org.drools.spi.PatternExtractor;
 import org.drools.spi.Restriction;
 import org.drools.spi.Constraint.ConstraintType;
 import org.mvel.ParserContext;
@@ -160,12 +164,26 @@ public class PatternBuilder
                                    objectType,
                                    patternDescr.getIdentifier(),
                                    patternDescr.isInternalFact() );
+            if ( objectType instanceof ClassObjectType ) {
+                // make sure PatternExtractor is wired up to correct ClassObjectType and set as a target for rewiring
+                context.getPkg().getClassFieldAccessorStore().getClassObjectType( ((ClassObjectType) objectType),
+                                                                                  (PatternExtractor) pattern.getDeclaration().getExtractor() );
+            }            
         } else {
             pattern = new Pattern( context.getNextPatternId(),
                                    0, // offset is 0 by default
                                    objectType,
                                    null );
         }
+
+        if ( objectType instanceof ClassObjectType ) {
+            // make sure the Pattern is wired up to correct ClassObjectType and set as a target for rewiring
+            context.getPkg().getClassFieldAccessorStore().getClassObjectType( ((ClassObjectType) objectType),
+                                                                              pattern );
+        }
+        
+        //context.getPkg().getClassFieldAccessorStore().get
+
         // adding the newly created pattern to the build stack
         // this is necessary in case of local declaration usage
         context.getBuildStack().push( pattern );
@@ -187,9 +205,9 @@ public class PatternBuilder
 
             pattern.setSource( source );
         }
-        
-        for( BehaviorDescr behaviorDescr : patternDescr.getBehaviors() ) {
-            if( Behavior.BehaviorType.TIME_WINDOW.matches( behaviorDescr.getType() ) ) {
+
+        for ( BehaviorDescr behaviorDescr : patternDescr.getBehaviors() ) {
+            if ( Behavior.BehaviorType.TIME_WINDOW.matches( behaviorDescr.getType() ) ) {
                 SlidingWindowDescr swd = (SlidingWindowDescr) behaviorDescr;
                 SlidingTimeWindow window = new SlidingTimeWindow( swd.getLength() );
                 pattern.addBehavior( window );
@@ -232,8 +250,9 @@ public class PatternBuilder
             if ( container == null ) {
                 pattern.addConstraint( and );
             } else {
-                if( and.getType().equals( Constraint.ConstraintType.UNKNOWN ) ) {
-                    this.setConstraintType( pattern, (MutableTypeConstraint) and );
+                if ( and.getType().equals( Constraint.ConstraintType.UNKNOWN ) ) {
+                    this.setConstraintType( pattern,
+                                            (MutableTypeConstraint) and );
                 }
                 container.addConstraint( and );
             }
@@ -249,8 +268,9 @@ public class PatternBuilder
             if ( container == null ) {
                 pattern.addConstraint( or );
             } else {
-                if( or.getType().equals( Constraint.ConstraintType.UNKNOWN ) ) {
-                    this.setConstraintType( pattern, (MutableTypeConstraint) or );
+                if ( or.getType().equals( Constraint.ConstraintType.UNKNOWN ) ) {
+                    this.setConstraintType( pattern,
+                                            (MutableTypeConstraint) or );
                 }
                 container.addConstraint( or );
             }
@@ -296,11 +316,12 @@ public class PatternBuilder
         }
 
         // if it is not a complex expression, just build a simple field constraint
-        final InternalReadAccessor extractor = getFieldExtractor( context,
-                                                            fieldConstraintDescr,
-                                                            pattern.getObjectType(),
-                                                            fieldName,
-                                                            false );
+        final InternalReadAccessor extractor = getFieldReadAccessor( context,
+                                                                     fieldConstraintDescr,
+                                                                     pattern.getObjectType(),
+                                                                     fieldName,
+                                                                     null,
+                                                                     false );
         if ( extractor == null ) {
             if ( fieldConstraintDescr.getFieldName().startsWith( "this." ) ) {
                 // it may still be MVEL special syntax, like map key syntax, so try eval
@@ -338,12 +359,36 @@ public class PatternBuilder
         } else if ( restriction instanceof LiteralRestriction ) {
             constraint = new LiteralConstraint( extractor,
                                                 (LiteralRestriction) restriction );
+            registerReadAccessor( context,
+                                  pattern.getObjectType(),
+                                  fieldName,
+                                  ( LiteralConstraint ) constraint );            
+            registerReadAccessor( context,
+                                  pattern.getObjectType(),
+                                  fieldName,
+                                  (LiteralRestriction) restriction );
         } else if ( restriction instanceof VariableRestriction ) {
             constraint = new VariableConstraint( extractor,
                                                  (VariableRestriction) restriction );
+            registerReadAccessor( context,
+                                  pattern.getObjectType(),
+                                  fieldName,
+                                  (VariableRestriction) restriction );            
+            registerReadAccessor( context,
+                                  pattern.getObjectType(),
+                                  fieldName,
+                                  (VariableRestriction) restriction );
         } else if ( restriction instanceof ReturnValueRestriction ) {
             constraint = new ReturnValueConstraint( extractor,
                                                     (ReturnValueRestriction) restriction );
+            registerReadAccessor( context,
+                                  pattern.getObjectType(),
+                                  fieldName,
+                                  (ReturnValueConstraint) constraint );            
+            registerReadAccessor( context,
+                                  pattern.getObjectType(),
+                                  fieldName,
+                                  (ReturnValueRestriction) restriction );
         } else {
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                           fieldConstraintDescr,
@@ -354,8 +399,9 @@ public class PatternBuilder
         if ( container == null ) {
             pattern.addConstraint( constraint );
         } else {
-            if( constraint.getType().equals( Constraint.ConstraintType.UNKNOWN ) ) {
-                this.setConstraintType( pattern, (MutableTypeConstraint) constraint );
+            if ( constraint.getType().equals( Constraint.ConstraintType.UNKNOWN ) ) {
+                this.setConstraintType( pattern,
+                                        (MutableTypeConstraint) constraint );
             }
             container.addConstraint( constraint );
         }
@@ -376,7 +422,7 @@ public class PatternBuilder
             }
         }
 
-        ConstraintType type = isAlphaConstraint ? ConstraintType.ALPHA : ConstraintType.BETA; 
+        ConstraintType type = isAlphaConstraint ? ConstraintType.ALPHA : ConstraintType.BETA;
         constraint.setType( type );
     }
 
@@ -395,10 +441,11 @@ public class PatternBuilder
         // analyze field type:
         Class resultType = getFieldReturnType( pattern,
                                                fieldConstraintDescr );
-        
+
         PredicateDescr predicateDescr = new PredicateDescr();
         MVELDumper dumper = new MVELDumper();
-        predicateDescr.setContent( dumper.dump( fieldConstraintDescr, Date.class.isAssignableFrom( resultType ) ) );
+        predicateDescr.setContent( dumper.dump( fieldConstraintDescr,
+                                                Date.class.isAssignableFrom( resultType ) ) );
 
         build( context,
                pattern,
@@ -418,10 +465,11 @@ public class PatternBuilder
     private Class getFieldReturnType(final Pattern pattern,
                                      final FieldConstraintDescr fieldConstraintDescr) {
         String dummyField = "__DUMMY__";
-        String dummyExpr = dummyField+"."+fieldConstraintDescr.getFieldName();
+        String dummyExpr = dummyField + "." + fieldConstraintDescr.getFieldName();
         ExpressionCompiler compiler = new ExpressionCompiler( dummyExpr );
         ParserContext mvelcontext = new ParserContext();
-        mvelcontext.addInput( dummyField, ((ClassObjectType) pattern.getObjectType()).getClassType() );
+        mvelcontext.addInput( dummyField,
+                              ((ClassObjectType) pattern.getObjectType()).getClassType() );
         compiler.compile( mvelcontext );
         Class resultType = compiler.getReturnType();
         return resultType;
@@ -499,17 +547,14 @@ public class PatternBuilder
             return;
         }
 
-        final InternalReadAccessor extractor = getFieldExtractor( context,
-                                                            fieldBindingDescr,
-                                                            pattern.getObjectType(),
-                                                            fieldBindingDescr.getFieldName(),
-                                                            true );
-        if ( extractor == null ) {
-            return;
-        }
+        Declaration declr = pattern.addDeclaration( fieldBindingDescr.getIdentifier() );
 
-        pattern.addDeclaration( fieldBindingDescr.getIdentifier(),
-                                extractor );
+        final InternalReadAccessor extractor = getFieldReadAccessor( context,
+                                                                     fieldBindingDescr,
+                                                                     pattern.getObjectType(),
+                                                                     fieldBindingDescr.getFieldName(),
+                                                                     declr,
+                                                                     true );
     }
 
     private void build(final RuleBuildContext context,
@@ -559,8 +604,9 @@ public class PatternBuilder
         if ( container == null ) {
             pattern.addConstraint( predicateConstraint );
         } else {
-            if( predicateConstraint.getType().equals( Constraint.ConstraintType.UNKNOWN ) ) {
-                this.setConstraintType( pattern, (MutableTypeConstraint) predicateConstraint );
+            if ( predicateConstraint.getType().equals( Constraint.ConstraintType.UNKNOWN ) ) {
+                this.setConstraintType( pattern,
+                                        (MutableTypeConstraint) predicateConstraint );
             }
             container.addConstraint( predicateConstraint );
         }
@@ -617,18 +663,19 @@ public class PatternBuilder
         final FieldBindingDescr implicitBinding = new FieldBindingDescr( identifier,
                                                                          identifier );
 
-        final InternalReadAccessor extractor = getFieldExtractor( context,
-                                                            implicitBinding,
-                                                            pattern.getObjectType(),
-                                                            implicitBinding.getFieldName(),
-                                                            false );
+        final Declaration declaration = new Declaration( identifier,
+                                                         pattern );
+
+        final InternalReadAccessor extractor = getFieldReadAccessor( context,
+                                                                     implicitBinding,
+                                                                     pattern.getObjectType(),
+                                                                     implicitBinding.getFieldName(),
+                                                                     declaration,
+                                                                     false );
+
         if ( extractor == null ) {
             return null;
         }
-
-        final Declaration declaration = new Declaration( identifier,
-                                                         extractor,
-                                                         pattern );
 
         return declaration;
     }
@@ -804,7 +851,7 @@ public class PatternBuilder
             final Class staticClass = context.getDialect().getTypeResolver().resolveType( className );
             field = FieldFactory.getFieldValue( staticClass.getField( fieldName ).get( null ),
                                                 extractor.getValueType() );
-            if( field.isObjectField() ) {
+            if ( field.isObjectField() ) {
                 ((ObjectFieldImpl) field).setEnum( true );
                 ((ObjectFieldImpl) field).setEnumName( staticClass.getName() );
                 ((ObjectFieldImpl) field).setFieldName( fieldName );
@@ -895,25 +942,42 @@ public class PatternBuilder
         return returnValueRestriction;
     }
 
-    private InternalReadAccessor getFieldExtractor(final RuleBuildContext context,
-                                             final BaseDescr descr,
-                                             final ObjectType objectType,
-                                             final String fieldName,
-                                             final boolean reportError) {
-        InternalReadAccessor extractor = null;
+    public static void registerReadAccessor(final RuleBuildContext context,
+                                            final ObjectType objectType,
+                                            final String fieldName,
+                                            final AcceptsReadAccessor target) {
+        if ( !ValueType.FACTTEMPLATE_TYPE.equals( objectType.getValueType() ) ) {
+            InternalReadAccessor reader = context.getPkg().getClassFieldAccessorStore().getReader( ((ClassObjectType) objectType).getClassName(),
+                                                                                                   fieldName,
+                                                                                                   target );
+        }
+    }
 
-        if ( ValueType.FACTTEMPLATE_TYPE.equals(objectType.getValueType()) ) {
-            //@todo use extractor cache            
+    public static InternalReadAccessor getFieldReadAccessor(final RuleBuildContext context,
+                                                            final BaseDescr descr,
+                                                            final ObjectType objectType,
+                                                            final String fieldName,
+                                                            final AcceptsReadAccessor target,
+                                                            final boolean reportError) {
+        InternalReadAccessor reader = null;
+
+        if ( ValueType.FACTTEMPLATE_TYPE.equals( objectType.getValueType() ) ) {
+            //@todo use accessor cache            
             final FactTemplate factTemplate = ((FactTemplateObjectType) objectType).getFactTemplate();
-            extractor = new FactTemplateFieldExtractor( factTemplate,
-                                                        factTemplate.getFieldTemplateIndex( fieldName ) );
+            reader = new FactTemplateFieldExtractor( factTemplate,
+                                                     factTemplate.getFieldTemplateIndex( fieldName ) );
+            if ( target != null ) {
+                target.setReadAccessor( reader );
+            }
         } else {
             try {
-                ClassLoader classloader = context.getPkg().getDialectRuntimeRegistry().getClassLoader();
-                extractor = context.getDialect().getClassFieldExtractorCache().getReader( ((ClassObjectType) objectType).getClassType(),
-                                                                                             fieldName,
-                                                                                             classloader );
-            } catch ( final RuntimeDroolsException e ) {
+                reader = context.getPkg().getClassFieldAccessorStore().getReader( ((ClassObjectType) objectType).getClassName(),
+                                                                                  fieldName,
+                                                                                  target );
+                //                extractor = context.getDialect().getClassFieldExtractorCache().getReader( ((ClassObjectType) objectType).getClassType(),
+                //                                                                                          fieldName,
+                //                                                                                          classloader );
+            } catch ( final Exception e ) {
                 if ( reportError ) {
                     context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                                   descr,
@@ -923,7 +987,7 @@ public class PatternBuilder
             }
         }
 
-        return extractor;
+        return reader;
     }
 
     private Evaluator getEvaluator(final RuleBuildContext context,

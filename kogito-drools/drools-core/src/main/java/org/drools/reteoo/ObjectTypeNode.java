@@ -23,7 +23,10 @@ import java.io.IOException;
 import java.io.ObjectInput;
 
 import org.drools.RuleBaseConfiguration;
+import org.drools.base.ClassObjectType;
+import org.drools.common.AbstractRuleBase;
 import org.drools.common.BaseNode;
+import org.drools.common.DroolsObjectInputStream;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
@@ -111,6 +114,13 @@ public class ObjectTypeNode extends ObjectSource
                                             ClassNotFoundException {
         super.readExternal( in );
         objectType = (ObjectType) in.readObject();
+        
+        // this is here as not all objectTypeNodes used ClassObjectTypes in packages (i.e. rules with those nodes did not exist yet)
+        // and thus have no wiring targets
+        if ( objectType instanceof ClassObjectType ) {
+            objectType = ((AbstractRuleBase) ((DroolsObjectInputStream)in).getRuleBase()).getClassFieldAccessorCache().getClassObjectType( (ClassObjectType ) objectType );
+        }
+        
         skipOnModify = in.readBoolean();
         objectMemoryEnabled = in.readBoolean();
     }
@@ -132,20 +142,20 @@ public class ObjectTypeNode extends ObjectSource
         return this.objectType;
     }
 
-    /**
-     * Tests the provided object to see if this <code>ObjectTypeNode</code> can receive the object
-     * for assertion and retraction propagations.
-     *
-     * @param object
-     * @return
-     *      boolean value indicating whether the <code>ObjectTypeNode</code> can receive the object.
-     */
-    public boolean matches(final Object object) {
-        return this.objectType.matches( object );
-    }
+//    /**
+//     * Tests the provided object to see if this <code>ObjectTypeNode</code> can receive the object
+//     * for assertion and retraction propagations.
+//     *
+//     * @param object
+//     * @return
+//     *      boolean value indicating whether the <code>ObjectTypeNode</code> can receive the object.
+//     */
+//    public boolean matches(final Object object) {
+//        return this.objectType.matches( object );
+//    }
 
-    public boolean isAssignableFrom(final Object object) {
-        return this.objectType.isAssignableFrom( object );
+    public boolean isAssignableFrom(final ObjectType objectType) {
+        return this.objectType.isAssignableFrom( objectType );
     }
 
     /**

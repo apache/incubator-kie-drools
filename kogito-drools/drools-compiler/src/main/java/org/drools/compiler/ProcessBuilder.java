@@ -105,7 +105,7 @@ public class ProcessBuilder {
                 // as the dialects are initialised when the pkg is  first created
                 PackageRegistry pkgRegistry = this.packageBuilder.getPackageRegistry( pkg.getName() );
                 pkgRegistry.compileAll();                
-                pkgRegistry.getDialectRuntimeRegistry().reloadDirty();
+                pkgRegistry.getDialectRuntimeRegistry().onBeforeExecute();
             }
         }
     }
@@ -126,7 +126,7 @@ public class ProcessBuilder {
         Dialect dialect = dialectRegistry.getDialect( "java" );
         dialect.init( processDescr );
 
-        ProcessBuildContext context = new ProcessBuildContext( this.packageBuilder.getPackageBuilderConfiguration(),
+        ProcessBuildContext context = new ProcessBuildContext( this.packageBuilder,
                                                                this.packageBuilder.getPackage(),
                                                                process,
                                                                processDescr,

@@ -36,6 +36,7 @@ import junit.framework.TestCase;
 
 import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldAccessorCache;
+import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.ClassObjectType;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
@@ -92,6 +93,8 @@ public abstract class BaseMannersTest extends TestCase {
 
     //private Evaluator       booleanNotEqualEvaluator;
 
+    ClassFieldAccessorStore store;
+
     protected void setUp() throws Exception {
         //Class shadow = ShadowProxyFactory.getProxy( Context.class );
         this.contextType = new ClassObjectType( Context.class );
@@ -115,12 +118,24 @@ public abstract class BaseMannersTest extends TestCase {
         this.chosenType = new ClassObjectType( Chosen.class );
 
         EqualityEvaluatorsDefinition evals = new EqualityEvaluatorsDefinition();
-        this.integerEqualEvaluator = evals.getEvaluator( ValueType.PINTEGER_TYPE, Operator.EQUAL, null );
-        this.objectEqualEvaluator = evals.getEvaluator( ValueType.OBJECT_TYPE, Operator.EQUAL, null );
-        this.objectNotEqualEvaluator = evals.getEvaluator( ValueType.OBJECT_TYPE, Operator.NOT_EQUAL, null );
-        this.booleanEqualEvaluator = evals.getEvaluator( ValueType.PBOOLEAN_TYPE, Operator.EQUAL, null );
+        this.integerEqualEvaluator = evals.getEvaluator( ValueType.PINTEGER_TYPE,
+                                                         Operator.EQUAL,
+                                                         null );
+        this.objectEqualEvaluator = evals.getEvaluator( ValueType.OBJECT_TYPE,
+                                                        Operator.EQUAL,
+                                                        null );
+        this.objectNotEqualEvaluator = evals.getEvaluator( ValueType.OBJECT_TYPE,
+                                                           Operator.NOT_EQUAL,
+                                                           null );
+        this.booleanEqualEvaluator = evals.getEvaluator( ValueType.PBOOLEAN_TYPE,
+                                                         Operator.EQUAL,
+                                                         null );
 
         this.pkg = new Package( "org.drools.examples.manners" );
+        this.pkg.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
+        store = this.pkg.getClassFieldAccessorStore();
+        store.setEagerWire( true );
+        
         this.pkg.addRule( getAssignFirstSeatRule() );
         this.pkg.addRule( getFindSeating() );
         this.pkg.addRule( getPathDone() );
@@ -237,12 +252,12 @@ public abstract class BaseMannersTest extends TestCase {
 
                     drools.modifyRetract( context );;
                     context.setState( Context.ASSIGN_SEATS );
-//                    drools.update( tuple.get( contextDeclaration ),
-//                            context );
+                    //                    drools.update( tuple.get( contextDeclaration ),
+                    //                            context );
 
                     drools.modifyInsert( context );
 
-//                    System.err.println( "assign first seat :  " + seating + " : " + path );
+                    //                    System.err.println( "assign first seat :  " + seating + " : " + path );
 
                 } catch ( Exception e ) {
                     e.printStackTrace();
@@ -250,7 +265,8 @@ public abstract class BaseMannersTest extends TestCase {
                 }
             }
 
-            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            public void readExternal(ObjectInput in) throws IOException,
+                                                    ClassNotFoundException {
 
             }
 
@@ -533,14 +549,16 @@ public abstract class BaseMannersTest extends TestCase {
                     drools.update( tuple.get( contextDeclaration ),
                                    context );
 
-//                    System.err.println( "find seating : " + seating + " : " + path + " : " + chosen );
+                    //                    System.err.println( "find seating : " + seating + " : " + path + " : " + chosen );
 
                 } catch ( Exception e ) {
                     e.printStackTrace();
                     throw new ConsequenceException( e );
                 }
             }
-            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            public void readExternal(ObjectInput in) throws IOException,
+                                                    ClassNotFoundException {
 
             }
 
@@ -692,7 +710,8 @@ public abstract class BaseMannersTest extends TestCase {
                 }
             }
 
-            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            public void readExternal(ObjectInput in) throws IOException,
+                                                    ClassNotFoundException {
 
             }
 
@@ -793,7 +812,8 @@ public abstract class BaseMannersTest extends TestCase {
                 }
             }
 
-            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            public void readExternal(ObjectInput in) throws IOException,
+                                                    ClassNotFoundException {
 
             }
 
@@ -887,13 +907,14 @@ public abstract class BaseMannersTest extends TestCase {
                     drools.update( tuple.get( contextDeclaration ),
                                    context );
 
-//                    System.err.println( "We Are Done!!!" );
+                    //                    System.err.println( "We Are Done!!!" );
                 } catch ( Exception e ) {
                     throw new ConsequenceException( e );
                 }
             }
 
-            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            public void readExternal(ObjectInput in) throws IOException,
+                                                    ClassNotFoundException {
 
             }
 
@@ -965,7 +986,8 @@ public abstract class BaseMannersTest extends TestCase {
                 }
             }
 
-            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            public void readExternal(ObjectInput in) throws IOException,
+                                                    ClassNotFoundException {
 
             }
 
@@ -1026,7 +1048,8 @@ public abstract class BaseMannersTest extends TestCase {
                 }
             }
 
-            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            public void readExternal(ObjectInput in) throws IOException,
+                                                    ClassNotFoundException {
 
             }
 
@@ -1166,9 +1189,9 @@ public abstract class BaseMannersTest extends TestCase {
                                                           final Evaluator evaluator) throws IntrospectionException {
         final Class clazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
 
-        final InternalReadAccessor extractor = ClassFieldAccessorCache.getInstance().getReader( clazz,
-                                                                                              fieldName,
-                                                                                              getClass().getClassLoader() );
+        final InternalReadAccessor extractor = store.getReader( clazz,
+                                                                fieldName,
+                                                                getClass().getClassLoader() );
 
         final FieldValue field = new LongFieldImpl( fieldValue );
 
@@ -1183,9 +1206,9 @@ public abstract class BaseMannersTest extends TestCase {
                                                           final Evaluator evaluator) throws IntrospectionException {
         final Class clazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
 
-        final InternalReadAccessor extractor = ClassFieldAccessorCache.getInstance().getReader( clazz,
-                                                                                              fieldName,
-                                                                                              getClass().getClassLoader() );
+        final InternalReadAccessor extractor = store.getReader( clazz,
+                                                                fieldName,
+                                                                getClass().getClassLoader() );
 
         final FieldValue field = new BooleanFieldImpl( fieldValue );
 
@@ -1199,12 +1222,11 @@ public abstract class BaseMannersTest extends TestCase {
                                      final String identifier) throws IntrospectionException {
         final Class clazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
 
-        final InternalReadAccessor extractor = ClassFieldAccessorCache.getInstance().getReader( clazz,
-                                                                                              fieldName,
-                                                                                              getClass().getClassLoader() );
+        final InternalReadAccessor extractor = store.getReader( clazz,
+                                                                fieldName,
+                                                                getClass().getClassLoader() );
 
-        pattern.addDeclaration( identifier,
-                                extractor );
+        pattern.addDeclaration( identifier ).setReadAccessor( extractor );
     }
 
     private BetaNodeFieldConstraint getBoundVariableConstraint(final Pattern pattern,
@@ -1213,9 +1235,9 @@ public abstract class BaseMannersTest extends TestCase {
                                                                final Evaluator evaluator) throws IntrospectionException {
         final Class clazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
 
-        final InternalReadAccessor extractor = ClassFieldAccessorCache.getInstance().getReader( clazz,
-                                                                                              fieldName,
-                                                                                              getClass().getClassLoader() );
+        final InternalReadAccessor extractor = store.getReader( clazz,
+                                                                fieldName,
+                                                                getClass().getClassLoader() );
 
         return new VariableConstraint( extractor,
                                        declaration,

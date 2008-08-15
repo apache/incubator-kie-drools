@@ -133,7 +133,7 @@ public class CollectNode extends BetaNode
 
         final CollectMemory memory = (CollectMemory) workingMemory.getNodeMemory( this );
 
-        final Collection result = this.collect.instantiateResultObject();
+        final Collection result = this.collect.instantiateResultObject( workingMemory );
         final InternalFactHandle resultHandle = workingMemory.getFactHandleFactory().newFactHandle( result,
                                                                                                     workingMemory.getObjectTypeConfigurationRegistry().getObjectTypeConf( context.getEntryPoint(),
                                                                                                                                                                           result ),

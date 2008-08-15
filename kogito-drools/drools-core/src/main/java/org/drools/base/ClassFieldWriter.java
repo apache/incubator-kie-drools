@@ -23,6 +23,7 @@ import java.lang.reflect.Method;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.common.DroolsObjectInput;
+import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.WriteAccessor;
 
 /**
@@ -37,95 +38,88 @@ public class ClassFieldWriter
     WriteAccessor {
 
     private static final long       serialVersionUID = 400L;
+    private String                  className;
     private String                  fieldName;
-    private Class< ? >              clazz;
     private transient WriteAccessor writer;
 
     public ClassFieldWriter() {
 
     }
-
-    public ClassFieldWriter(final Class< ? > clazz,
+    
+    public ClassFieldWriter(final String className,
                             final String fieldName) {
-        this( clazz,
-              fieldName,
-              clazz.getClassLoader() );
-    }
-
-    public ClassFieldWriter(final Class< ? > clazz,
-                            final String fieldName,
-                            final ClassLoader classLoader) {
-        this( clazz,
-              fieldName,
-              classLoader,
-              new ClassFieldAccessorFactory() );
-    }
-
-    public ClassFieldWriter(final Class< ? > clazz,
-                            final String fieldName,
-                            final ClassLoader classLoader,
-                            final ClassFieldAccessorFactory factory) {
-        this.clazz = clazz;
+        this.className = className;
         this.fieldName = fieldName;
-        init( findClassLoader( classLoader ),
-              factory );
-    }
+//        this.clazz = clazz;
+//        this.fieldName = fieldName;
+//        init( findClassLoader( classLoader ),
+//              factory );
+    }    
 
-    /**
-     * @param classLoader
-     */
-    private ClassLoader findClassLoader(final ClassLoader classLoader) {
-        ClassLoader loader = classLoader;
-        if ( loader == null ) {
-            loader = Thread.currentThread().getContextClassLoader();
-            if ( loader == null ) {
-                loader = this.getClass().getClassLoader();
-            }
-        }
-        return loader;
-    }
+//    public ClassFieldWriter(final Class< ? > clazz,
+//                            final String fieldName,
+//                            final ClassLoader classLoader,
+//                            final ClassFieldAccessorFactory factory) {
+//        this.clazz = clazz;
+//        this.fieldName = fieldName;
+//        init( findClassLoader( classLoader ),
+//              factory );
+//    }
+
+//    /**
+//     * @param classLoader
+//     */
+//    private ClassLoader findClassLoader(final ClassLoader classLoader) {
+//        ClassLoader loader = classLoader;
+//        if ( loader == null ) {
+//            loader = Thread.currentThread().getContextClassLoader();
+//            if ( loader == null ) {
+//                loader = this.getClass().getClassLoader();
+//            }
+//        }
+//        return loader;
+//    }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        // Call even if there is no default serializable fields.
-        out.writeObject( clazz );
+        out.writeObject( className );
         out.writeObject( fieldName );
     }
 
     public void readExternal(final ObjectInput is) throws ClassNotFoundException,
                                                   IOException {
-        clazz = (Class< ? >) is.readObject();
+        className = (String) is.readObject();
         fieldName = (String) is.readObject();
-        if ( is instanceof DroolsObjectInput ) {
-            DroolsObjectInput droolsInput = (DroolsObjectInput) is;
-            writer = droolsInput.getExtractorFactory().getWriter( clazz,
-                                                                  fieldName,
-                                                                  droolsInput.getClassLoader() );
-        } else writer = ClassFieldAccessorCache.getInstance().getWriter( clazz,
-                                                                         fieldName,
-                                                                         findClassLoader( null ) );
     }
-
-    private void init(final ClassLoader classLoader,
-                      final ClassFieldAccessorFactory factory) {
-        try {
-            this.writer = factory.getClassFieldWriter( this.clazz,
-                                                       this.fieldName,
-                                                       classLoader );
-        } catch ( final Exception e ) {
-            throw new RuntimeDroolsException( e );
-        }
-    }
+//
+//    private void init(final ClassLoader classLoader,
+//                      final ClassFieldAccessorFactory factory) {
+//        try {
+//            this.writer = factory.getClassFieldWriter( this.clazz,
+//                                                       this.fieldName,
+//                                                       classLoader );
+//        } catch ( final Exception e ) {
+//            throw new RuntimeDroolsException( e );
+//        }
+//    }
+    
+    public void setWriteAccessor(WriteAccessor writer) {
+        this.writer = writer;
+    }    
 
     public int getIndex() {
         return this.writer.getIndex();
     }
+    
+    public String getClassName() {
+        return this.className;
+    }    
 
     public String getFieldName() {
         return this.fieldName;
     }
 
     public String toString() {
-        return "[ClassFieldWriter class=" + this.clazz + " field=" + this.fieldName + "]";
+        return "[ClassFieldWriter class=" + this.className + " field=" + this.fieldName + "]";
     }
 
     public int hashCode() {

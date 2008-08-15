@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.base.mvel.MVELAction;
+import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.Dialect;
 import org.drools.lang.descr.ActionDescr;
@@ -78,29 +79,27 @@ public class MVELActionBuilder
                                                                     dialect.getInterceptors(),
                                                                     text,
                                                                     new Set[]{Collections.EMPTY_SET, context.getPkg().getGlobals().keySet()},
-                                                                    null );
-
-            final Serializable expr = dialect.compile( text,
-                                                       analysis,
-                                                       dialect.getInterceptors(),
-                                                       null,
-                                                       null,
-                                                       context );
-
-            final DroolsMVELFactory factory = new DroolsMVELFactory( null,
-                                                                     null,
-                                                                     context.getPkg().getGlobals(),
-                                                                     analysis.getBoundIdentifiers() );
+                                                                    null );                       
             
-            MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
-            factory.setNextFactory( data.getFunctionFactory() );            
+            MVELCompilationUnit unit = dialect.getMVELCompilationUnit( text,
+                                                                       analysis,
+                                                                       null,
+                                                                       null,
+                                                                       null,
+                                                                       context );              
+            MVELAction expr = new MVELAction( unit, context.getDialect().getId() );            
+            action.setMetaData("Action",  expr );
             
-            action.setMetaData("Action", new MVELAction( expr, factory )  );
+            MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( dialect.getId() );            
+            data.addCompileable( action,
+                                  expr );  
+            
+            expr.compile( context.getPackageBuilder().getRootClassLoader() );
         } catch ( final Exception e ) {
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                           actionDescr,
                                                           null,
-                                                          "Unable to build expression for 'action' '" + actionDescr.getText() + "'" ) );
+                                                          "Unable to build expression for 'action' : " + e.getMessage() + " '"+ actionDescr.getText() + "'" ) );
         }
     }
 

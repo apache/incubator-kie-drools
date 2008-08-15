@@ -43,7 +43,7 @@ public class JavaReturnValueConstraintEvaluatorBuilderTest extends TestCase {
         DialectCompiletimeRegistry dialectRegistry = pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectCompiletimeRegistry();
         JavaDialect javaDialect = (JavaDialect) dialectRegistry.getDialect( "java" );
 
-        ProcessBuildContext context = new ProcessBuildContext( conf,
+        ProcessBuildContext context = new ProcessBuildContext( pkgBuilder,
                                                                pkg,
                                                                process,
                                                                processDescr,

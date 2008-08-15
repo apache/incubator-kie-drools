@@ -59,7 +59,7 @@ public class MVELExprAnalyzer {
     public MVELAnalysisResult analyzeExpression(final PackageBuildContext context,
                                                 final String expr,
                                                 final Set[] availableIdentifiers,
-                                                final Map localTypes) throws RecognitionException {
+                                                final Map localTypes) {
         MVELAnalysisResult result = null;
         if ( expr.trim().length() > 0 ) {
             ExpressionCompiler compiler = new ExpressionCompiler( expr );
@@ -111,7 +111,7 @@ public class MVELExprAnalyzer {
      *             If an error occurs in the parser.
      */
     private MVELAnalysisResult analyze(final Set identifiers,
-                                       final Set[] availableIdentifiers) throws RecognitionException {
+                                       final Set[] availableIdentifiers) {
 
         MVELAnalysisResult result = new MVELAnalysisResult();
         result.setIdentifiers( new ArrayList( identifiers ) );

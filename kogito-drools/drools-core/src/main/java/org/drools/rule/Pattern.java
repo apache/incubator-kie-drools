@@ -16,19 +16,20 @@ package org.drools.rule;
  * limitations under the License.
  */
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.io.Externalizable;
-import java.io.ObjectOutput;
-import java.io.ObjectInput;
-import java.io.IOException;
 
+import org.drools.base.ClassObjectType;
+import org.drools.spi.AcceptsClassObjectType;
 import org.drools.spi.Constraint;
-import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PatternExtractor;
 import org.drools.spi.Constraint.ConstraintType;
@@ -36,6 +37,7 @@ import org.drools.spi.Constraint.ConstraintType;
 public class Pattern
     implements
     RuleConditionElement,
+    AcceptsClassObjectType,
     Externalizable {
     /**
      *
@@ -129,6 +131,10 @@ public class Pattern
         out.writeObject( source );
         out.writeInt( offset );
     }
+    
+    public void setClassObjectType(ClassObjectType objectType) {
+        this.objectType = objectType;
+    }
 
     public Object clone() {
         final String identifier = (this.declaration != null) ? this.declaration.getIdentifier() : null;
@@ -145,8 +151,7 @@ public class Pattern
             final Object constr = it.next();
             if ( constr instanceof Declaration ) {
                 final Declaration decl = (Declaration) constr;
-                clone.addDeclaration( decl.getIdentifier(),
-                                      decl.getExtractor() );
+                clone.addDeclaration( decl.getIdentifier() ).setReadAccessor( decl.getExtractor() );
             } else {
                 Constraint constraint = (Constraint) ((Constraint) constr).clone();
 
@@ -177,6 +182,10 @@ public class Pattern
     public ObjectType getObjectType() {
         return this.objectType;
     }
+    
+    public void setObjectType(ObjectType objectType) {
+        this.objectType = objectType;
+    }
 
     public PatternSource getSource() {
         return source;
@@ -200,8 +209,7 @@ public class Pattern
         this.constraints.add( constraint );
     }
 
-    public Declaration addDeclaration(final String identifier,
-                                      final InternalReadAccessor extractor) {
+    public Declaration addDeclaration(final String identifier) {
         if ( this.constraints == Collections.EMPTY_LIST ) {
             this.constraints = new ArrayList( 1 );
         }
@@ -209,7 +217,6 @@ public class Pattern
         Declaration declaration = this.declarations != null ? (Declaration) this.declarations.get( identifier ) : null;
         if ( declaration == null ) {
             declaration = new Declaration( identifier,
-                                           extractor,
                                            this );
             this.constraints.add( declaration );
             if ( this.declarations == null ) {

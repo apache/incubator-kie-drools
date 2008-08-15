@@ -10,6 +10,7 @@ import junit.framework.TestCase;
 import org.drools.Cheese;
 import org.drools.RuleBaseFactory;
 import org.drools.base.ClassFieldAccessorCache;
+import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
 import org.drools.base.evaluators.Operator;
@@ -30,8 +31,11 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
     private BuildContext                 buildContext;
 
     private EqualityEvaluatorsDefinition equals = new EqualityEvaluatorsDefinition();
+    ClassFieldAccessorStore store = new ClassFieldAccessorStore();
 
     protected void setUp() throws Exception {
+        store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
+        store.setEagerWire( true );
         this.ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         this.buildContext = new BuildContext( ruleBase,
                                               ((ReteooRuleBase) ruleBase).getReteooBuilder().getIdGenerator() );
@@ -180,9 +184,9 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
 
     public void testTripleAlpha() {
         final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
-        InternalReadAccessor extractor = ClassFieldAccessorCache.getInstance().getReader( Cheese.class,
-                                                                                        "type",
-                                                                                        this.getClass().getClassLoader() );
+        InternalReadAccessor extractor = store.getReader( Cheese.class,
+                                                          "type",
+                                                          this.getClass().getClassLoader() );
 
         final LiteralConstraint lit = new LiteralConstraint( extractor,
                                                              equals.getEvaluator( ValueType.STRING_TYPE,
@@ -242,9 +246,9 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
 
     public void testTripleAlphaCharacterConstraint() {
         final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
-        InternalReadAccessor extractor = ClassFieldAccessorCache.getInstance().getReader( Cheese.class,
-                                                                                        "charType",
-                                                                                        this.getClass().getClassLoader() );
+        InternalReadAccessor extractor = store.getReader( Cheese.class,
+                                                          "charType",
+                                                          this.getClass().getClassLoader() );
 
         final LiteralConstraint lit = new LiteralConstraint( extractor,
                                                              equals.getEvaluator( extractor.getValueType(),
@@ -320,15 +324,14 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
         assertEquals( 2,
                       ad.hashableSinks.size() );
         assertNull( ad.hashedSinkMap );
-
     }
 
     public void testPropagationWithNullValue() {
 
         final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
-        InternalReadAccessor extractor = ClassFieldAccessorCache.getInstance().getReader( Cheese.class,
-                                                                                        "type",
-                                                                                        this.getClass().getClassLoader() );
+        InternalReadAccessor extractor = store.getReader( Cheese.class,
+                                                          "type",
+                                                          this.getClass().getClassLoader() );
         final LiteralConstraint lit1 = new LiteralConstraint( extractor,
                                                               equals.getEvaluator( ValueType.STRING_TYPE,
                                                                                    Operator.EQUAL ),

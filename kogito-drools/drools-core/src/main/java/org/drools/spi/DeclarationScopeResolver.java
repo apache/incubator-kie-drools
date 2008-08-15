@@ -5,10 +5,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+import org.drools.base.ClassObjectType;
 import org.drools.rule.Pattern;
 import org.drools.rule.Declaration;
 import org.drools.rule.GroupElement;
 import org.drools.rule.RuleConditionElement;
+import org.drools.rule.Package;
 
 /**
  * A class capable of resolving a declaration in the current build context
@@ -19,6 +21,7 @@ public class DeclarationScopeResolver {
     private static final Stack EMPTY_STACK = new Stack();
     private Map[]              maps;
     private Stack              buildStack;
+    private Package            pkg;
 
     public DeclarationScopeResolver(final Map[] maps) {
         this( maps,
@@ -35,45 +38,66 @@ public class DeclarationScopeResolver {
         }
     }
 
-    public Class getType(final String name) {
-        for ( int i = this.buildStack.size() - 1; i >= 0; i-- ) {
-            final Declaration declaration = (Declaration) ((RuleConditionElement) this.buildStack.get( i )).getInnerDeclarations().get( name );
-            if ( declaration != null ) {
-                return declaration.getExtractor().getExtractToClass();
-            }
-        }
-        for ( int i = 0, length = this.maps.length; i < length; i++ ) {
-            final Object object = this.maps[i].get( name );
-            if ( object != null ) {
-                if ( object instanceof Declaration ) {
-                    return ((Declaration) object).getExtractor().getExtractToClass();
-                } else {
-                    return (Class) object;
-                }
-            }
-        }
-        return null;
+    public void setPackage(Package pkg) {
+        this.pkg = pkg;
     }
 
-    public Declaration getDeclaration(final String name) {
+    // @ TODO I don't think this is needed any more, no references to it
+    //  public Class getType(final String name) {
+    //      for ( int i = this.buildStack.size() - 1; i >= 0; i-- ) {
+    //          final Declaration declaration = (Declaration) ((RuleConditionElement) this.buildStack.get( i )).getInnerDeclarations().get( name );
+    //          if ( declaration != null ) {
+    //              return declaration.getExtractor().getExtractToClass();
+    //          }
+    //      }
+    //      for ( int i = 0, length = this.maps.length; i < length; i++ ) {
+    //          final Object object = this.maps[i].get( name );
+    //          if ( object != null ) {
+    //              if ( object instanceof Declaration ) {
+    //                  return ((Declaration) object).getExtractor().getExtractToClass();
+    //              } else {
+    //                  return (Class) object;
+    //              }
+    //          }
+    //      }
+    //      return null;
+    //  }
+
+    public Declaration getDeclaration(final String identifier) {
         // it may be a local bound variable
         for ( int i = this.buildStack.size() - 1; i >= 0; i-- ) {
-            final Declaration declaration = (Declaration) ((RuleConditionElement) this.buildStack.get( i )).getInnerDeclarations().get( name );
+            final Declaration declaration = (Declaration) ((RuleConditionElement) this.buildStack.get( i )).getInnerDeclarations().get( identifier );
             if ( declaration != null ) {
                 return declaration;
             }
         }
         // it may be a global or something
         for ( int i = 0, length = this.maps.length; i < length; i++ ) {
-            if ( this.maps[i].containsKey( (name) ) ) {
-                final GlobalExtractor global = new GlobalExtractor( name,
-                                                              this.maps[i] );
-                final Pattern dummy = new Pattern( 0,
-                                           global.getObjectType() );
-                final Declaration declaration = new Declaration( name,
-                                                           global,
-                                                           dummy );
-                return declaration;
+            if ( this.maps[i].containsKey( (identifier) ) ) {
+                if ( pkg != null ) {
+                    Class cls = (Class) this.maps[i].get( identifier );
+                    ClassObjectType classObjectType = new ClassObjectType( cls );
+                                        
+                    Declaration declaration = null;
+                    final Pattern dummy = new Pattern( 0,
+                                                       classObjectType );
+                    
+                    GlobalExtractor globalExtractor = new GlobalExtractor(identifier, classObjectType);
+                    declaration = new Declaration( identifier,
+                                                   globalExtractor,
+                                                   dummy );
+                    
+                    // make sure dummy and globalExtractor are wired up to correct ClassObjectType
+                    // and set as targets for rewiring
+                    pkg.getClassFieldAccessorStore().getClassObjectType( classObjectType, 
+                                                                         dummy );
+                    pkg.getClassFieldAccessorStore().getClassObjectType( classObjectType, 
+                                                                         globalExtractor );
+                    
+                    return declaration;
+                } else {
+                    throw new UnsupportedOperationException( "This shoudln't happen outside of PackageBuilder" );
+                }
             }
         }
         return null;
@@ -132,22 +156,25 @@ public class DeclarationScopeResolver {
     }
 
     public Pattern findPatternByIndex(int index) {
-        if ( ! this.buildStack.isEmpty() ) {
-            return findPatternInNestedElements( index, (RuleConditionElement) this.buildStack.get( 0 ) );
+        if ( !this.buildStack.isEmpty() ) {
+            return findPatternInNestedElements( index,
+                                                (RuleConditionElement) this.buildStack.get( 0 ) );
         }
         return null;
     }
-    
-    private Pattern findPatternInNestedElements( final int index, final RuleConditionElement rce ) {
-        for( RuleConditionElement element : rce.getNestedElements() ) {
-            if( element instanceof Pattern ) {
+
+    private Pattern findPatternInNestedElements(final int index,
+                                                final RuleConditionElement rce) {
+        for ( RuleConditionElement element : rce.getNestedElements() ) {
+            if ( element instanceof Pattern ) {
                 Pattern p = (Pattern) element;
-                if( p.getIndex() == index ) {
+                if ( p.getIndex() == index ) {
                     return p;
                 }
-            } else if( ! element.isPatternScopeDelimiter() ) {
-                Pattern p = findPatternInNestedElements( index, element );
-                if( p != null ) {
+            } else if ( !element.isPatternScopeDelimiter() ) {
+                Pattern p = findPatternInNestedElements( index,
+                                                         element );
+                if ( p != null ) {
                     return p;
                 }
             }

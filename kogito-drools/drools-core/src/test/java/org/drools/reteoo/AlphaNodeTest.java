@@ -23,6 +23,7 @@ import org.drools.DroolsTestCase;
 import org.drools.FactException;
 import org.drools.RuleBaseFactory;
 import org.drools.base.ClassFieldAccessorCache;
+import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.ClassFieldReader;
 import org.drools.base.FieldFactory;
 import org.drools.base.ValueType;
@@ -40,12 +41,18 @@ import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.PropagationContext;
 
 public class AlphaNodeTest extends DroolsTestCase {
-
-    ClassFieldAccessorCache     cache  = ClassFieldAccessorCache.getInstance();
+    
     EqualityEvaluatorsDefinition equals = new EqualityEvaluatorsDefinition();
 
+    ClassFieldAccessorStore store = new ClassFieldAccessorStore();
+
+    protected void setUp() throws Exception {
+        store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
+        store.setEagerWire( true );
+    }
+
     public void testLiteralConstraintAssertObjectWithoutMemory() throws Exception {
-        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase( );
+        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         BuildContext buildContext = new BuildContext( ruleBase,
                                                       ((ReteooRuleBase) ruleBase).getReteooBuilder().getIdGenerator() );
         ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
@@ -59,9 +66,9 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final MockObjectSource source = new MockObjectSource( buildContext.getNextId() );
 
-        final ClassFieldReader extractor = cache.getReader( Cheese.class,
-                                                                  "type",
-                                                                  getClass().getClassLoader() );
+        final ClassFieldReader extractor = store.getReader( Cheese.class,
+                                                            "type",
+                                                            getClass().getClassLoader() );
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
@@ -91,7 +98,6 @@ public class AlphaNodeTest extends DroolsTestCase {
         // check alpha memory is empty 
         final AlphaMemory memory = (AlphaMemory) workingMemory.getNodeMemory( alphaNode );
 
-
         // object should assert as it passes text
         alphaNode.assertObject( f0,
                                 context,
@@ -99,7 +105,7 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         assertEquals( 1,
                       sink.getAsserted().size() );
-        
+
         Object[] list = (Object[]) sink.getAsserted().get( 0 );
         assertSame( cheddar,
                     workingMemory.getObject( (DefaultFactHandle) list[0] ) );
@@ -126,7 +132,7 @@ public class AlphaNodeTest extends DroolsTestCase {
      *  This just test AlphaNode With a different Constraint type.
      */
     public void testReturnValueConstraintAssertObject() throws Exception {
-        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase( );
+        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         BuildContext buildContext = new BuildContext( ruleBase,
                                                       ((ReteooRuleBase) ruleBase).getReteooBuilder().getIdGenerator() );
         ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
@@ -140,9 +146,9 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final MockObjectSource source = new MockObjectSource( buildContext.getNextId() );
 
-        final InternalReadAccessor extractor = cache.getReader( Cheese.class,
-                                                             "type",
-                                                             getClass().getClassLoader() );
+        final InternalReadAccessor extractor = store.getReader( Cheese.class,
+                                                                "type",
+                                                                getClass().getClassLoader() );
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
@@ -196,7 +202,7 @@ public class AlphaNodeTest extends DroolsTestCase {
     public void testUpdateSinkWithoutMemory() throws FactException,
                                              IntrospectionException {
         // An AlphaNode should try and repropagate from its source
-        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase( );
+        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         BuildContext buildContext = new BuildContext( ruleBase,
                                                       ((ReteooRuleBase) ruleBase).getReteooBuilder().getIdGenerator() );
         ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
@@ -210,9 +216,9 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final MockObjectSource source = new MockObjectSource( buildContext.getNextId() );
 
-        final InternalReadAccessor extractor = cache.getReader( Cheese.class,
-                                                             "type",
-                                                             getClass().getClassLoader() );
+        final InternalReadAccessor extractor = store.getReader( Cheese.class,
+                                                                "type",
+                                                                getClass().getClassLoader() );
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 

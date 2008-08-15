@@ -81,9 +81,11 @@ public class AgendaEventSupportTest extends TestCase {
         final Pattern pattern = new Pattern( 0,
                                              cheeseObjectType );
 
-        final ClassFieldReader extractor = ClassFieldAccessorCache.getInstance().getReader( Cheese.class,
-                                                                                                   "type",
-                                                                                                   getClass().getClassLoader() );
+        pkg.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
+        pkg.getClassFieldAccessorStore().setEagerWire( true );
+        final ClassFieldReader extractor = pkg.getClassFieldAccessorStore().getReader( Cheese.class,
+                                                                                       "type",
+                                                                                       getClass().getClassLoader() );
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
@@ -101,7 +103,9 @@ public class AgendaEventSupportTest extends TestCase {
             public void evaluate(final KnowledgeHelper knowledgeHelper,
                                  final WorkingMemory workingMemory) throws Exception {
             }
-            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            public void readExternal(ObjectInput in) throws IOException,
+                                                    ClassNotFoundException {
 
             }
 

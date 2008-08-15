@@ -14,24 +14,11 @@ import org.drools.common.DroolsObjectInput;
 public class DialectRuntimeRegistry
     implements
     Externalizable {
-    private transient ClassLoader           parentClassLoader;
-    private CompositePackageClassLoader     classLoader;
-
     private Map<String, DialectRuntimeData> dialects;
 
     private Map                             lineMappings;
 
-    /**
-     * Default constructor - for Externalizable. This should never be used by a user, as it
-     * will result in an invalid state for the instance.
-     */
     public DialectRuntimeRegistry() {
-        this( null );
-    }
-
-    public DialectRuntimeRegistry(ClassLoader classLoader) {
-        setParentClassLoader( classLoader );
-        this.classLoader = new CompositePackageClassLoader( this.parentClassLoader );
         this.dialects = new HashMap<String, DialectRuntimeData>();
     }
 
@@ -53,16 +40,25 @@ public class DialectRuntimeRegistry
      */
     public void readExternal(final ObjectInput stream) throws IOException,
                                                       ClassNotFoundException {
-        DroolsObjectInput droolsStream = (DroolsObjectInput) stream;
-
-        setParentClassLoader( droolsStream.getClassLoader() );
-        this.classLoader = new CompositePackageClassLoader( this.parentClassLoader );
-        droolsStream.setDialectRuntimeRegistry( this );
-        droolsStream.setClassLoader( this.classLoader );
-
-        this.dialects = (Map<String, DialectRuntimeData>) droolsStream.readObject();
+        this.dialects = (Map<String, DialectRuntimeData>) stream.readObject();
         this.lineMappings = (Map) stream.readObject();
     }
+
+    public void onAdd(CompositeClassLoader rootClassLoader) {
+        //this.classLoader = rootClassLoader;
+        for ( Iterator it = this.dialects.values().iterator(); it.hasNext(); ) {
+            DialectRuntimeData data = (DialectRuntimeData) it.next();
+            data.onAdd( this,
+                            rootClassLoader );
+        }
+    }
+    
+    public void onRemove() {
+        for ( Iterator it = this.dialects.values().iterator(); it.hasNext(); ) {
+            DialectRuntimeData data = (DialectRuntimeData) it.next();
+            data.onRemove( );
+        }
+    }    
 
     public void setDialectData(String name,
                                DialectRuntimeData data) {
@@ -90,16 +86,19 @@ public class DialectRuntimeRegistry
         return dialect;
     }
 
-    public void merge(DialectRuntimeRegistry newDatas) {
+    public void merge(DialectRuntimeRegistry newDatas,
+                      CompositeClassLoader rootClassLoader) {
         for ( Entry<String, DialectRuntimeData> entry : newDatas.dialects.entrySet() ) {
             DialectRuntimeData data = this.dialects.get( entry.getKey() );
             if ( data == null ) {
-                DialectRuntimeData dialectData = entry.getValue().clone( this );
+                DialectRuntimeData dialectData = entry.getValue().clone( this,
+                                                                         rootClassLoader );
                 //dialectData.setDialectRuntimeRegistry( this );
                 this.dialects.put( entry.getKey(),
                                    dialectData );
             } else {
-                data.merge( null, entry.getValue() );
+                data.merge( this,
+                            entry.getValue() );
             }
         }
 
@@ -110,52 +109,28 @@ public class DialectRuntimeRegistry
         return true;
     }
 
-    public void reloadDirty() {
-        // detect if any dialect is dirty, if so reload() them all
-        boolean isDirty = false;
+    public void onBeforeExecute() {
         for ( Iterator it = this.dialects.values().iterator(); it.hasNext(); ) {
             DialectRuntimeData data = (DialectRuntimeData) it.next();
-            if ( data.isDirty() ) {
-                isDirty = true;
-                break;
-            }
+            data.onBeforeExecute();
         }
-
-        if ( isDirty ) {
-            this.classLoader = new CompositePackageClassLoader( this.parentClassLoader );
-            for ( Iterator it = this.dialects.values().iterator(); it.hasNext(); ) {
-                DialectRuntimeData data = (DialectRuntimeData) it.next();
-                data.reload();
-            }
-        }
-    }
-
-    public ClassLoader getParentClassLoader() {
-        return this.parentClassLoader;
-    }
-
-    public void setParentClassLoader(ClassLoader classLoader) {
-        if ( classLoader == null ) {
-            classLoader = Thread.currentThread().getContextClassLoader();
-            if ( classLoader == null ) {
-                classLoader = getClass().getClassLoader();
-            }
-        }
-        this.parentClassLoader = classLoader;
-    }
-
-    public ClassLoader getClassLoader() {
-        return this.classLoader;
-    }
-
-    public void addClassLoader(ClassLoader classLoader) {
-        this.classLoader.addClassLoader( classLoader );
-    }
-
-    public void removeClassLoader(ClassLoader classLoader) {
-        if ( classLoader != null ) {
-            this.classLoader.removeClassLoader( classLoader );
-        }
+        //        // detect if any dialect is dirty, if so reload() them all
+        //        boolean isDirty = false;
+        //        for ( Iterator it = this.dialects.values().iterator(); it.hasNext(); ) {
+        //            DialectRuntimeData data = (DialectRuntimeData) it.next();
+        //            if ( data.isDirty() ) {
+        //                isDirty = true;
+        //                break;
+        //            }
+        //        }
+        //
+        //        //if ( isDirty ) {
+        //        this.classLoader = new CompositeClassLoader();
+        //        for ( Iterator it = this.dialects.values().iterator(); it.hasNext(); ) {
+        //            DialectRuntimeData data = (DialectRuntimeData) it.next();
+        //            data.reload();
+        //        }
+        //        //}
     }
 
     public void clear() {
@@ -172,4 +147,6 @@ public class DialectRuntimeRegistry
         }
         return this.lineMappings;
     }
+
+
 }

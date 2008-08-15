@@ -28,6 +28,7 @@ import org.drools.QueryResult;
 import org.drools.QueryResults;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
+import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.ClassFieldReader;
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassObjectType;
@@ -49,10 +50,13 @@ public class QueryTerminalNodeTest extends TestCase {
     private BuildContext     buildContext;
     private EntryPointNode   entryPoint;
 
-    ClassFieldAccessorCache cache = ClassFieldAccessorCache.getInstance();
     private EqualityEvaluatorsDefinition equals = new EqualityEvaluatorsDefinition();
 
+    ClassFieldAccessorStore store = new ClassFieldAccessorStore();
+
     protected void setUp() throws Exception {
+        store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
+        store.setEagerWire( true );
         this.ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         this.buildContext = new BuildContext( ruleBase,
                                               ((ReteooRuleBase) ruleBase).getReteooBuilder().getIdGenerator() );
@@ -70,7 +74,7 @@ public class QueryTerminalNodeTest extends TestCase {
                                                                        buildContext );
         queryObjectTypeNode.attach();
 
-        ClassFieldReader extractor = cache.getReader( DroolsQuery.class,
+        ClassFieldReader extractor = store.getReader( DroolsQuery.class,
                                                             "name",
                                                             DroolsQuery.class.getClassLoader() );
 
@@ -99,7 +103,7 @@ public class QueryTerminalNodeTest extends TestCase {
                                                                         buildContext );
         cheeseObjectTypeNode.attach();
 
-        extractor = cache.getReader( Cheese.class,
+        extractor = store.getReader( Cheese.class,
                                         "type",
                                         getClass().getClassLoader() );
 

@@ -16,7 +16,10 @@ package org.drools.rule;
  * limitations under the License.
  */
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.io.Externalizable;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -26,9 +29,11 @@ import org.drools.RuntimeDroolsException;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
+import org.drools.spi.CompiledInvoker;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.PredicateExpression;
 import org.drools.spi.Restriction;
+import org.drools.spi.Wireable;
 
 /**
  * A predicate can be written as a top level constraint or be nested
@@ -39,7 +44,9 @@ import org.drools.spi.Restriction;
  */
 public class PredicateConstraint extends MutableTypeConstraint
     implements
-    Restriction, Externalizable {
+    Restriction,
+    Wireable,
+    Externalizable {
 
     /**
      *
@@ -48,19 +55,21 @@ public class PredicateConstraint extends MutableTypeConstraint
 
     private PredicateExpression        expression;
 
-    private Declaration[]        requiredDeclarations;
+    private Declaration[]              requiredDeclarations;
 
-    private Declaration[]        previousDeclarations;
+    private Declaration[]              previousDeclarations;
 
-    private Declaration[]        localDeclarations;
+    private Declaration[]              localDeclarations;
 
-    private String[]             requiredGlobals;
+    private String[]                   requiredGlobals;
+
+    private List<PredicateConstraint>  cloned             = Collections.<PredicateConstraint> emptyList();
 
     private static final Declaration[] EMPTY_DECLARATIONS = new Declaration[0];
     private static final String[]      EMPTY_GLOBALS      = new String[0];
 
     public PredicateConstraint() {
-        this(null);
+        this( null );
     }
 
     public PredicateConstraint(final PredicateExpression evaluator) {
@@ -116,21 +125,29 @@ public class PredicateConstraint extends MutableTypeConstraint
                           this.localDeclarations.length );
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        super.readExternal(in);
-        expression  = (PredicateExpression)in.readObject();
-        requiredDeclarations  = (Declaration[])in.readObject();
-        previousDeclarations  = (Declaration[])in.readObject();
-        localDeclarations  = (Declaration[])in.readObject();
-        requiredGlobals  = (String[])in.readObject();
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        super.readExternal( in );
+        this.expression = (PredicateExpression) in.readObject();
+        this.requiredDeclarations = (Declaration[]) in.readObject();
+        this.previousDeclarations = (Declaration[]) in.readObject();
+        this.localDeclarations = (Declaration[]) in.readObject();
+        this.requiredGlobals = (String[]) in.readObject();
+        this.cloned = (List<PredicateConstraint>) in.readObject();
     }
+
     public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal(out);
-        out.writeObject(expression);
-        out.writeObject(requiredDeclarations);
-        out.writeObject(previousDeclarations);
-        out.writeObject(localDeclarations);
-        out.writeObject(requiredGlobals);
+        super.writeExternal( out );
+        if ( this.expression instanceof CompiledInvoker ) {
+            out.writeObject( null );
+        } else {
+            out.writeObject( this.expression );
+        }
+        out.writeObject( this.requiredDeclarations );
+        out.writeObject( this.previousDeclarations );
+        out.writeObject( this.localDeclarations );
+        out.writeObject( this.requiredGlobals );
+        out.writeObject( this.cloned );
     }
 
     public Declaration[] getRequiredDeclarations() {
@@ -161,6 +178,13 @@ public class PredicateConstraint extends MutableTypeConstraint
             if ( this.localDeclarations[i].equals( oldDecl ) ) {
                 this.localDeclarations[i] = newDecl;
             }
+        }
+    }
+
+    public void wire(Object object) {
+        setPredicateExpression( (PredicateExpression) object );
+        for ( PredicateConstraint clone : this.cloned ) {
+            clone.wire( object );
         }
     }
 
@@ -239,7 +263,7 @@ public class PredicateConstraint extends MutableTypeConstraint
 
     public boolean isAllowed(final InternalFactHandle handle,
                              final InternalWorkingMemory workingMemory,
-                             final ContextEntry ctx ) {
+                             final ContextEntry ctx) {
         try {
             return this.expression.evaluate( handle.getObject(),
                                              null,
@@ -256,8 +280,8 @@ public class PredicateConstraint extends MutableTypeConstraint
     public boolean isAllowed(InternalReadAccessor extractor,
                              InternalFactHandle handle,
                              InternalWorkingMemory workingMemory,
-                             ContextEntry context ) {
-        throw new UnsupportedOperationException("Method not supported. Please contact development team.");
+                             ContextEntry context) {
+        throw new UnsupportedOperationException( "Method not supported. Please contact development team." );
     }
 
     public boolean isAllowedCachedLeft(final ContextEntry context,
@@ -303,10 +327,19 @@ public class PredicateConstraint extends MutableTypeConstraint
             local[i] = (Declaration) this.localDeclarations[i].clone();
         }
 
-        return new PredicateConstraint( this.expression,
-                                        previous,
-                                        local,
-                                        this.requiredGlobals );
+        PredicateConstraint clone = new PredicateConstraint( this.expression,
+                                                             previous,
+                                                             local,
+                                                             this.requiredGlobals );
+
+        if ( this.cloned == Collections.EMPTY_LIST ) {
+            this.cloned = new ArrayList<PredicateConstraint>( 1 );
+        }
+
+        this.cloned.add( clone );
+
+        return clone;
+
     }
 
     public static class PredicateContextEntry
@@ -326,22 +359,23 @@ public class PredicateConstraint extends MutableTypeConstraint
         public PredicateContextEntry() {
         }
 
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            leftTuple   = (LeftTuple)in.readObject();
-            rightObject   = in.readObject();
-            workingMemory   = (InternalWorkingMemory)in.readObject();
-            dialectContext   = in.readObject();
-            entry   = (ContextEntry)in.readObject();
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
+            leftTuple = (LeftTuple) in.readObject();
+            rightObject = in.readObject();
+            workingMemory = (InternalWorkingMemory) in.readObject();
+            dialectContext = in.readObject();
+            entry = (ContextEntry) in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject(leftTuple);
-            out.writeObject(rightObject);
-            out.writeObject(workingMemory);
-            out.writeObject(dialectContext);
-            out.writeObject(entry);
+            out.writeObject( leftTuple );
+            out.writeObject( rightObject );
+            out.writeObject( workingMemory );
+            out.writeObject( dialectContext );
+            out.writeObject( entry );
         }
-        
+
         public ContextEntry getNext() {
             return this.entry;
         }

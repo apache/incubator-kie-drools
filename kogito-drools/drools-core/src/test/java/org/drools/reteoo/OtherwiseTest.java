@@ -4,6 +4,7 @@ import org.drools.Otherwise;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
+import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassObjectType;
 import org.drools.base.TestBean;
 import org.drools.rule.Pattern;
@@ -28,6 +29,7 @@ public class OtherwiseTest extends TestCase {
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase( RuleBase.RETEOO );
 
         final Package pkg = new Package( "Miss Manners" );
+        pkg.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         final Rule rule1 = getRule( "rule1" );
         pkg.addRule( rule1 );
 
@@ -49,6 +51,7 @@ public class OtherwiseTest extends TestCase {
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase( RuleBase.RETEOO );
 
         final Package pkg = new Package( "Miss Manners" );
+        pkg.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         final Rule rule1 = getRule( "rule1" );
         pkg.addRule( rule1 );
         final Rule rule2 = getRule( "rule2" );
@@ -77,6 +80,7 @@ public class OtherwiseTest extends TestCase {
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase( RuleBase.RETEOO );
 
         final Package pkg = new Package( "Miss Manners" );
+        pkg.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         final Rule rule1 = getRule( "rule1" );
         pkg.addRule( rule1 );
 
@@ -102,6 +106,7 @@ public class OtherwiseTest extends TestCase {
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase( RuleBase.RETEOO );
 
         final Package pkg = new Package( "Miss Manners" );
+        pkg.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         final Rule rule1 = getRule( "rule1" );
         pkg.addRule( rule1 );
         final Rule rule2 = getRule( "rule2" );

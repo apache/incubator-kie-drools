@@ -1,6 +1,7 @@
 package org.drools.base.mvel;
 
 import org.drools.WorkingMemory;
+import org.drools.common.InternalRuleBase;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
 import org.drools.spi.Consequence;
@@ -14,36 +15,47 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class MVELConsequence
     implements
     Consequence,
+    MVELCompileable,
     Externalizable {
     private static final long       serialVersionUID = 400L;
 
-    private Serializable      expr;
+    private MVELCompilationUnit unit;
+    private String id;    
+    
+    private Serializable expr;
     private DroolsMVELFactory prototype;
-    private String id;
+
     
     public MVELConsequence() {
     }    
 
-    public MVELConsequence(final Serializable expr,
-                           final DroolsMVELFactory factory,
+    public MVELConsequence(final MVELCompilationUnit unit,
                            final String id) {
-        this.expr = expr;
-        this.prototype = factory;
+        this.unit = unit;
         this.id = id;
     }
+    
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        expr    = (Serializable)in.readObject();
-        prototype    = (DroolsMVELFactory)in.readObject();
+        unit    = (MVELCompilationUnit)in.readObject();
+        id = in.readUTF();
     }
 
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(expr);
-        out.writeObject(prototype);
+    public void writeExternal(ObjectOutput out) throws IOException {        
+        out.writeObject(unit);        
+        out.writeUTF( id );
+    }
+    
+    public void compile(ClassLoader classLoader) {
+        expr = unit.getCompiledExpression( classLoader );
+        prototype = unit.getFactory( );
     }
 
     public void evaluate(final KnowledgeHelper knowledgeHelper,
@@ -71,7 +83,7 @@ public class MVELConsequence
         pkg = knowledgeHelper.getWorkingMemory().getRuleBase().getPackage( knowledgeHelper.getRule().getPackage() );
         
         ClassLoader tempClassLoader = Thread.currentThread().getContextClassLoader();
-        Thread.currentThread().setContextClassLoader( pkg.getPackageScopeClassLoader() );
+        Thread.currentThread().setContextClassLoader( ((InternalRuleBase) workingMemory.getRuleBase()).getRootClassLoader() );
 
         if ( MVELDebugHandler.isDebugMode() ) {
             if ( MVELDebugHandler.verbose ) {

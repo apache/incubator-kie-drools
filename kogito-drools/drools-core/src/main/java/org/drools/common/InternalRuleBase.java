@@ -27,7 +27,7 @@ import org.drools.StatefulSession;
 import org.drools.process.core.Process;
 import org.drools.reteoo.Rete;
 import org.drools.reteoo.ReteooWorkingMemory;
-import org.drools.rule.CompositePackageClassLoader;
+import org.drools.rule.CompositeClassLoader;
 import org.drools.rule.MapBackedClassLoader;
 import org.drools.rule.Package;
 import org.drools.rule.TypeDeclaration;
@@ -95,12 +95,8 @@ public interface InternalRuleBase
     public void retractObject(FactHandle handle,
                               PropagationContext context,
                               ReteooWorkingMemory workingMemory) throws FactException;
-    
-    public void addClass(String className, byte[] bytes);
-    
-    public CompositePackageClassLoader getCompositePackageClassLoader();
-    
-    public MapBackedClassLoader getMapBackedClassLoader();
+ 
+    public CompositeClassLoader getRootClassLoader();   
     
     public Rete getRete();
     

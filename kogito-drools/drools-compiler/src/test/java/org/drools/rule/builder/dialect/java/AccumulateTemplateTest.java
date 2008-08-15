@@ -10,6 +10,7 @@ import junit.framework.TestCase;
 import org.drools.Cheese;
 import org.drools.Person;
 import org.drools.base.ClassFieldAccessorCache;
+import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.ClassObjectType;
 import org.drools.rule.Declaration;
 import org.drools.spi.PatternExtractor;
@@ -23,11 +24,11 @@ import org.mvel.templates.TemplateRuntime;
 
 public class AccumulateTemplateTest extends TestCase {
 
-    private ClassFieldAccessorCache cache;
+    ClassFieldAccessorStore store = new ClassFieldAccessorStore();
 
     protected void setUp() throws Exception {
-        super.setUp();
-        cache = ClassFieldAccessorCache.getInstance();
+        store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
+        store.setEagerWire( true );
     }
 
     protected void tearDown() throws Exception {
@@ -46,9 +47,9 @@ public class AccumulateTemplateTest extends TestCase {
         final Declaration[] inner = new Declaration[]{new Declaration( "cheese",
                                                                        new PatternExtractor( new ClassObjectType( Cheese.class ) ),
                                                                        null ), new Declaration( "price",
-                                                                                                cache.getReader( Cheese.class,
-                                                                                                                    "price",
-                                                                                                                    getClass().getClassLoader() ),
+                                                                                                store.getReader( Cheese.class,
+                                                                                                                 "price",
+                                                                                                                 getClass().getClassLoader() ),
                                                                                                 null )};
         final String[] globals = new String[]{"aGlobal", "anotherGlobal"};
         final List globalTypes = Arrays.asList( new String[]{"String", "String"} );
@@ -108,8 +109,10 @@ public class AccumulateTemplateTest extends TestCase {
 
         TemplateRegistry registry = getRuleTemplateRegistry();
 
-        Object method = TemplateRuntime.execute(registry.getNamedTemplate("accumulateInnerClass"),
-                null, new MapVariableResolverFactory(map), registry);
+        Object method = TemplateRuntime.execute( registry.getNamedTemplate( "accumulateInnerClass" ),
+                                                 null,
+                                                 new MapVariableResolverFactory( map ),
+                                                 registry );
 
         //System.out.println( method );
     }
@@ -119,20 +122,20 @@ public class AccumulateTemplateTest extends TestCase {
 
         final String[] declarationTypes = new String[]{"String", "int"};
         final Declaration[] declarations = new Declaration[]{new Declaration( "name",
-                                                                              cache.getReader( Person.class,
-                                                                                                  "name",
-                                                                                                  getClass().getClassLoader() ),
+                                                                              store.getReader( Person.class,
+                                                                                               "name",
+                                                                                               getClass().getClassLoader() ),
                                                                               null ), new Declaration( "age",
-                                                                                                       cache.getReader( Person.class,
-                                                                                                                           "age",
-                                                                                                                           getClass().getClassLoader() ),
+                                                                                                       store.getReader( Person.class,
+                                                                                                                        "age",
+                                                                                                                        getClass().getClassLoader() ),
                                                                                                        null )};
         final Declaration[] inner = new Declaration[]{new Declaration( "cheese",
                                                                        new PatternExtractor( new ClassObjectType( Cheese.class ) ),
                                                                        null ), new Declaration( "price",
-                                                                                                cache.getReader( Cheese.class,
-                                                                                                                    "price",
-                                                                                                                    getClass().getClassLoader() ),
+                                                                                                store.getReader( Cheese.class,
+                                                                                                                 "price",
+                                                                                                                 getClass().getClassLoader() ),
                                                                                                 null )};
         final String[] globals = new String[]{"aGlobal", "anotherGlobal"};
         final List globalTypes = Arrays.asList( new String[]{"String", "String"} );
@@ -193,8 +196,11 @@ public class AccumulateTemplateTest extends TestCase {
                  Boolean.FALSE );
 
         TemplateRegistry registry = getInvokerTemplateRegistry();
-        Object method = TemplateRuntime.execute(registry.getNamedTemplate("accumulateInvoker"), null, new MapVariableResolverFactory(map), registry);
-        
+        Object method = TemplateRuntime.execute( registry.getNamedTemplate( "accumulateInvoker" ),
+                                                 null,
+                                                 new MapVariableResolverFactory( map ),
+                                                 registry );
+
         //System.out.println( method );
     }
 
@@ -203,13 +209,13 @@ public class AccumulateTemplateTest extends TestCase {
 
         final String[] declarationTypes = new String[]{"String", "int"};
         final Declaration[] declarations = new Declaration[]{new Declaration( "name",
-                                                                              cache.getReader( Person.class,
-                                                                                                  "name",
-                                                                                                  getClass().getClassLoader() ),
+                                                                              store.getReader( Person.class,
+                                                                                               "name",
+                                                                                               getClass().getClassLoader() ),
                                                                               null ), new Declaration( "age",
-                                                                                                       cache.getReader( Person.class,
-                                                                                                                           "age",
-                                                                                                                           getClass().getClassLoader() ),
+                                                                                                       store.getReader( Person.class,
+                                                                                                                        "age",
+                                                                                                                        getClass().getClassLoader() ),
                                                                                                        null )};
         final Declaration[] inner = new Declaration[]{new Declaration( "$cheese",
                                                                        new PatternExtractor( new ClassObjectType( Cheese.class ) ),
@@ -275,24 +281,33 @@ public class AccumulateTemplateTest extends TestCase {
                  Boolean.TRUE );
 
         TemplateRegistry registry = getInvokerTemplateRegistry();
-        Object method = TemplateRuntime.execute(registry.getNamedTemplate("accumulateInvoker"), null, new MapVariableResolverFactory(map), registry);
+        Object method = TemplateRuntime.execute( registry.getNamedTemplate( "accumulateInvoker" ),
+                                                 null,
+                                                 new MapVariableResolverFactory( map ),
+                                                 registry );
 
         //System.out.println( method );
     }
 
     private TemplateRegistry getRuleTemplateRegistry() {
         TemplateRegistry ruleRegistry = new SimpleTemplateRegistry();
-        CompiledTemplate compiled = TemplateCompiler.compileTemplate(AbstractJavaRuleBuilder.class.getResourceAsStream( "javaRule.mvel" ), null);
-        TemplateRuntime.execute(compiled, null, ruleRegistry);
+        CompiledTemplate compiled = TemplateCompiler.compileTemplate( AbstractJavaRuleBuilder.class.getResourceAsStream( "javaRule.mvel" ),
+                                                                      null );
+        TemplateRuntime.execute( compiled,
+                                 null,
+                                 ruleRegistry );
 
         return ruleRegistry;
     }
 
     private TemplateRegistry getInvokerTemplateRegistry() {
         TemplateRegistry invokerRegistry = new SimpleTemplateRegistry();
-        CompiledTemplate compiled = TemplateCompiler.compileTemplate(AbstractJavaRuleBuilder.class.getResourceAsStream( "javaInvokers.mvel" ), null);
-        TemplateRuntime.execute(compiled, null, invokerRegistry);
-        
+        CompiledTemplate compiled = TemplateCompiler.compileTemplate( AbstractJavaRuleBuilder.class.getResourceAsStream( "javaInvokers.mvel" ),
+                                                                      null );
+        TemplateRuntime.execute( compiled,
+                                 null,
+                                 invokerRegistry );
+
         return invokerRegistry;
     }
 

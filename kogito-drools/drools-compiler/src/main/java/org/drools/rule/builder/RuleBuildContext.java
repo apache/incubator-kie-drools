@@ -17,13 +17,17 @@
 package org.drools.rule.builder;
 
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
+import java.util.Map.Entry;
 
+import org.drools.RuntimeDroolsException;
 import org.drools.compiler.Dialect;
 import org.drools.compiler.DialectCompiletimeRegistry;
+import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.QueryDescr;
@@ -61,14 +65,16 @@ public class RuleBuildContext extends PackageBuildContext {
     /**
      * Default constructor
      */
-    public RuleBuildContext(final PackageBuilderConfiguration configuration,                            
+    public RuleBuildContext(final PackageBuilder pkgBuilder,                                 
                             final RuleDescr ruleDescr,
                             final DialectCompiletimeRegistry dialectCompiletimeRegistry,
                             final Package pkg,
                             final Dialect defaultDialect) {
         this.buildStack = new Stack<RuleConditionElement>();
-        this.declarationResolver = new DeclarationScopeResolver( new Map[]{pkg.getGlobals()},
+
+        this.declarationResolver = new DeclarationScopeResolver( new Map[]{pkgBuilder.getGlobals()},
                                                                  this.buildStack );
+        this.declarationResolver.setPackage( pkg );
         this.ruleDescr = ruleDescr;
 
         if ( ruleDescr instanceof QueryDescr ) {
@@ -83,7 +89,7 @@ public class RuleBuildContext extends PackageBuildContext {
                        ruleDescr,
                        ruleDescr.getAttributes() );
         
-        init(configuration, pkg, ruleDescr, dialectCompiletimeRegistry, defaultDialect, this.rule );
+        init(pkgBuilder, pkg, ruleDescr, dialectCompiletimeRegistry, defaultDialect, this.rule );
         
         if ( this.rule.getDialect() == null ) {
             this.rule.setDialect( getDialect().getId() );

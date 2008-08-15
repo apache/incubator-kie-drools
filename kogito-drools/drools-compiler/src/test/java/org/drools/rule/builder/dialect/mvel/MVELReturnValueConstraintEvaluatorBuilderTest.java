@@ -6,6 +6,7 @@ import junit.framework.TestCase;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
+import org.drools.base.mvel.MVELReturnValueEvaluator;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.PackageBuilder;
@@ -34,7 +35,7 @@ public class MVELReturnValueConstraintEvaluatorBuilderTest extends TestCase {
         MVELDialect mvelDialect = (MVELDialect) dialectRegistry.getDialect( "mvel" );
 
         PackageBuildContext context = new PackageBuildContext();
-        context.init( conf,
+        context.init( pkgBuilder,
                       pkg,
                       null,
                       dialectRegistry,
@@ -61,6 +62,8 @@ public class MVELReturnValueConstraintEvaluatorBuilderTest extends TestCase {
 
         SplitInstance splitInstance = new SplitInstance();
         splitInstance.setProcessInstance( processInstance );
+        
+        ( (MVELReturnValueEvaluator) node.getReturnValueEvaluator()).compile( Thread.currentThread().getContextClassLoader() );
 
         assertTrue( node.evaluate( splitInstance,
                                    null,

@@ -23,6 +23,7 @@ import org.drools.Cheese;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
+import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.ClassFieldReader;
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassObjectType;
@@ -71,13 +72,19 @@ public class RuleBaseEventListenerTest extends TestCase {
         final Pattern pattern = new Pattern( 0,
                                              cheeseObjectType );
 
-        final ClassFieldReader extractor = ClassFieldAccessorCache.getInstance().getReader( Cheese.class,
-                                                                                                   "type",
-                                                                                                   getClass().getClassLoader() );
+        ClassFieldAccessorStore store = new ClassFieldAccessorStore();
+        store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
+        store.setEagerWire( true );
+
+        final ClassFieldReader extractor = store.getReader( Cheese.class,
+                                                            "type",
+                                                            getClass().getClassLoader() );
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
-        final Evaluator evaluator = new EqualityEvaluatorsDefinition().getEvaluator( ValueType.STRING_TYPE, Operator.EQUAL, null );
+        final Evaluator evaluator = new EqualityEvaluatorsDefinition().getEvaluator( ValueType.STRING_TYPE,
+                                                                                     Operator.EQUAL,
+                                                                                     null );
 
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
                                                                     evaluator,
@@ -91,7 +98,9 @@ public class RuleBaseEventListenerTest extends TestCase {
             public void evaluate(final KnowledgeHelper knowledgeHelper,
                                  final WorkingMemory workingMemory) throws Exception {
             }
-            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            public void readExternal(ObjectInput in) throws IOException,
+                                                    ClassNotFoundException {
 
             }
 
@@ -119,7 +128,9 @@ public class RuleBaseEventListenerTest extends TestCase {
             public void evaluate(final KnowledgeHelper knowledgeHelper,
                                  final WorkingMemory workingMemory) throws Exception {
             }
-            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            public void readExternal(ObjectInput in) throws IOException,
+                                                    ClassNotFoundException {
 
             }
 
@@ -242,28 +253,29 @@ public class RuleBaseEventListenerTest extends TestCase {
             this.id = id;
         }
 
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            id  = (String)in.readObject();
-            beforePackageAdded  = in.readInt();
-            afterPackageAdded  = in.readInt();
-            beforePackageRemoved  = in.readInt();
-            afterPackageRemoved  = in.readInt();
-            beforeRuleAdded  = in.readInt();
-            afterRuleAdded  = in.readInt();
-            beforeRuleRemoved  = in.readInt();
-            afterRuleRemoved  = in.readInt();
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
+            id = (String) in.readObject();
+            beforePackageAdded = in.readInt();
+            afterPackageAdded = in.readInt();
+            beforePackageRemoved = in.readInt();
+            afterPackageRemoved = in.readInt();
+            beforeRuleAdded = in.readInt();
+            afterRuleAdded = in.readInt();
+            beforeRuleRemoved = in.readInt();
+            afterRuleRemoved = in.readInt();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject(id);
-            out.writeInt(beforePackageAdded);
-            out.writeInt(afterPackageAdded);
-            out.writeInt(beforePackageRemoved);
-            out.writeInt(afterPackageRemoved);
-            out.writeInt(beforeRuleAdded);
-            out.writeInt(afterRuleAdded);
-            out.writeInt(beforeRuleRemoved);
-            out.writeInt(afterRuleRemoved);
+            out.writeObject( id );
+            out.writeInt( beforePackageAdded );
+            out.writeInt( afterPackageAdded );
+            out.writeInt( beforePackageRemoved );
+            out.writeInt( afterPackageRemoved );
+            out.writeInt( beforeRuleAdded );
+            out.writeInt( afterRuleAdded );
+            out.writeInt( beforeRuleRemoved );
+            out.writeInt( afterRuleRemoved );
         }
 
         public void afterPackageAdded(AfterPackageAddedEvent event) {

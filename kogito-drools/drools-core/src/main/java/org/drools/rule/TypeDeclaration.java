@@ -26,6 +26,7 @@ import java.io.ObjectOutput;
 import org.drools.common.DroolsObjectInputStream;
 import org.drools.factmodel.ClassDefinition;
 import org.drools.facttemplates.FactTemplate;
+import org.drools.spi.AcceptsReadAccessor;
 import org.drools.spi.InternalReadAccessor;
 
 /**
@@ -36,6 +37,7 @@ import org.drools.spi.InternalReadAccessor;
  */
 public class TypeDeclaration
     implements
+    AcceptsReadAccessor,
     Externalizable {
 
     public static final String ATTR_CLASS     = "class";
@@ -78,8 +80,8 @@ public class TypeDeclaration
     private Format                         format;
     private String                         timestampAttribute;
     private String                         durationAttribute;
-    private transient InternalReadAccessor durationExtractor;
-    private Class< ? >                     typeClass;
+    private InternalReadAccessor durationExtractor;
+    private transient Class< ? >                     typeClass;
     private FactTemplate                   typeTemplate;
     private ClassDefinition                typeClassDef;
 
@@ -92,7 +94,7 @@ public class TypeDeclaration
         this.format = Format.POJO;
         this.durationAttribute = null;
         this.timestampAttribute = null;
-        this.typeClass = null;
+        //this.typeClass = null;
         this.typeTemplate = null;
     }
 
@@ -103,17 +105,10 @@ public class TypeDeclaration
         this.format = (Format) in.readObject();
         this.durationAttribute = (String) in.readObject();
         this.timestampAttribute = (String) in.readObject();
-        this.typeClass = (Class< ? >) in.readObject();
+        //this.typeClass = (Class< ? >) in.readObject();
         this.typeTemplate = (FactTemplate) in.readObject();
         this.typeClassDef = (ClassDefinition) in.readObject();
-
-        if ( this.durationAttribute != null ) {
-            // generate the extractor
-            DroolsObjectInputStream dois = (DroolsObjectInputStream) in;
-            this.durationExtractor = dois.getExtractorFactory().getReader( this.typeClass,
-                                                                           this.durationAttribute,
-                                                                           dois.getClassLoader() );
-        }
+        this.durationExtractor = (InternalReadAccessor) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -122,10 +117,15 @@ public class TypeDeclaration
         out.writeObject( format );
         out.writeObject( durationAttribute );
         out.writeObject( timestampAttribute );
-        out.writeObject( typeClass );
+        //out.writeObject( typeClass );
         out.writeObject( typeTemplate );
         out.writeObject( typeClassDef );
+        out.writeObject( durationExtractor );
     }
+    
+    public void setReadAccessor(InternalReadAccessor readAccessor) {
+        this.durationExtractor = readAccessor;
+    }    
 
     /**
      * @return the type

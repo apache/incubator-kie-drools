@@ -16,6 +16,7 @@
 
 package org.drools.rule;
 
+import java.io.Externalizable;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +29,7 @@ import org.drools.spi.RuleComponent;
 public interface RuleConditionElement
     extends
     RuleComponent,
+    Externalizable,
     Cloneable {
 
     /**

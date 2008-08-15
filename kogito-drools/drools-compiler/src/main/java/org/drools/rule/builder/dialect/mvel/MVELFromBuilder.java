@@ -21,12 +21,15 @@ import java.util.Set;
 
 import org.drools.base.dataproviders.MVELDataProvider;
 import org.drools.base.mvel.DroolsMVELFactory;
+import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.Dialect;
 import org.drools.lang.descr.AccessorDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.FromDescr;
+import org.drools.rule.Declaration;
 import org.drools.rule.From;
+import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Pattern;
 import org.drools.rule.RuleConditionElement;
 import org.drools.rule.builder.FromBuilder;
@@ -55,12 +58,8 @@ public class MVELFromBuilder
         final FromDescr fromDescr = (FromDescr) descr;
 
         final AccessorDescr accessor = (AccessorDescr) fromDescr.getDataSource();
-        DataProvider dataProvider = null;
+        From from = null;
         try {
-            final DroolsMVELFactory factory = new DroolsMVELFactory( context.getDeclarationResolver().getDeclarations(),
-                                                                     null,
-                                                                     context.getPkg().getGlobals() );
-
             // This builder is re-usable in other dialects, so specify by name
             MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
 
@@ -70,24 +69,31 @@ public class MVELFromBuilder
                                                                          text,
                                                                          new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
 
-            final Serializable expr = dialect.compile( text,
-                                                       analysis,
-                                                       null,
-                                                       null,
-                                                       null,
-                                                       context );
+            Declaration[] previousDeclarations = (Declaration[]) context.getDeclarationResolver().getDeclarations().values().toArray( new Declaration[context.getDeclarationResolver().getDeclarations().size()] );
+            MVELCompilationUnit unit = dialect.getMVELCompilationUnit( text,
+                                                                       analysis,
+                                                                       previousDeclarations,
+                                                                       null,
+                                                                       null,
+                                                                       context );
 
-            dataProvider = new MVELDataProvider( expr,
-                                                 factory,
-                                                 context.getDialect().getId() );
+            MVELDataProvider dataProvider = new MVELDataProvider( unit,
+                                                                  context.getDialect().getId() );
+            from = new From( dataProvider );
+
+            MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( dialect.getId() );
+            data.addCompileable( from,
+                                  dataProvider );
+            
+            dataProvider.compile( context.getPackageBuilder().getRootClassLoader() );
         } catch ( final Exception e ) {
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                           fromDescr,
                                                           null,
-                                                          "Unable to build expression for 'from' node '" + accessor + "'" ) );
+                                                          "Unable to build expression for 'from' : " + e.getMessage() + " '" + accessor + "'" ) );
             return null;
         }
 
-        return new From( dataProvider );
+        return from;
     }
 }

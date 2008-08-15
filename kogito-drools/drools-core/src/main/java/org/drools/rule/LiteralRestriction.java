@@ -24,6 +24,7 @@ import java.io.ObjectOutput;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
+import org.drools.spi.AcceptsReadAccessor;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
@@ -31,20 +32,24 @@ import org.drools.spi.Restriction;
 
 public class LiteralRestriction
     implements
-    Restriction, Externalizable {
+    Restriction,
+    AcceptsReadAccessor,    
+    Externalizable {
 
     private static final long          serialVersionUID     = 400L;
 
-    private FieldValue           field;
+    private FieldValue                 field;
 
-    private Evaluator            evaluator;
+    private Evaluator                  evaluator;
 
-    private InternalReadAccessor       extractor;
+    private InternalReadAccessor       readAccessor;
 
     private static final Declaration[] requiredDeclarations = new Declaration[0];
 
     public LiteralRestriction() {
-        this(null, null, null);
+        this( null,
+              null,
+              null );
     }
 
     public LiteralRestriction(final FieldValue field,
@@ -52,20 +57,26 @@ public class LiteralRestriction
                               final InternalReadAccessor fieldExtractor) {
         this.field = field;
         this.evaluator = evaluator;
-        this.extractor = fieldExtractor;
+        this.readAccessor = fieldExtractor;
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        field   = (FieldValue)in.readObject();
-        evaluator   = (Evaluator)in.readObject();
-        extractor   = (InternalReadAccessor)in.readObject();
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        field = (FieldValue) in.readObject();
+        evaluator = (Evaluator) in.readObject();
+        readAccessor = (InternalReadAccessor) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(field);
-        out.writeObject(evaluator);
-        out.writeObject(extractor);
+        out.writeObject( field );
+        out.writeObject( evaluator );
+        out.writeObject( readAccessor );
     }
+
+    public void setReadAccessor(InternalReadAccessor readAccessor) {
+        this.readAccessor = readAccessor;
+    }    
+    
     public Evaluator getEvaluator() {
         return this.evaluator;
     }
@@ -74,12 +85,12 @@ public class LiteralRestriction
         return this.field;
     }
 
-    public boolean isAllowed(final InternalReadAccessor extractor,
+    public boolean isAllowed(final InternalReadAccessor readAccessor,
                              final InternalFactHandle handle,
                              final InternalWorkingMemory workingMemoiry,
-                             final ContextEntry context ) {
+                             final ContextEntry context) {
         return this.evaluator.evaluate( null,
-                                        extractor,
+                                        this.readAccessor,
                                         handle.getObject(),
                                         this.field );
     }
@@ -138,23 +149,23 @@ public class LiteralRestriction
     }
 
     public ContextEntry createContextEntry() {
-        return new LiteralContextEntry( this.extractor );
+        return new LiteralContextEntry( this.readAccessor );
     }
 
     public Object clone() {
         return new LiteralRestriction( this.field,
                                        this.evaluator,
-                                       this.extractor );
+                                       this.readAccessor );
     }
 
     private static class LiteralContextEntry
         implements
         ContextEntry {
 
-        private static final long serialVersionUID = 2621864784428098347L;
-        public InternalReadAccessor     extractor;
-        public Object             object;
-        public ContextEntry       next;
+        private static final long   serialVersionUID = 2621864784428098347L;
+        public InternalReadAccessor extractor;
+        public Object               object;
+        public ContextEntry         next;
 
         public LiteralContextEntry() {
         }
@@ -163,16 +174,17 @@ public class LiteralRestriction
             this.extractor = extractor;
         }
 
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            extractor   = (InternalReadAccessor)in.readObject();
-            object      = in.readObject();
-            next        = (ContextEntry)in.readObject();
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
+            extractor = (InternalReadAccessor) in.readObject();
+            object = in.readObject();
+            next = (ContextEntry) in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject(extractor);
-            out.writeObject(object);
-            out.writeObject(next);
+            out.writeObject( extractor );
+            out.writeObject( object );
+            out.writeObject( next );
         }
 
         public InternalReadAccessor getFieldExtractor() {

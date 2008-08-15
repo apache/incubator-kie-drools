@@ -50,6 +50,8 @@ import org.drools.base.extractors.BaseShortClassFieldWriter;
 import org.drools.base.extractors.MVELClassFieldReader;
 import org.drools.base.extractors.SelfReferenceClassFieldReader;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.base.ClassFieldAccessorCache.ByteArrayClassLoader;
+import org.drools.base.ClassFieldAccessorCache.CacheEntry;
 import org.drools.util.asm.ClassFieldInspector;
 
 /**
@@ -69,10 +71,10 @@ public class ClassFieldAccessorFactory {
     private static final String                        SELF_REFERENCE_FIELD = "this";
 
     private static final ProtectionDomain              PROTECTION_DOMAIN;
-
-    private final Map<Class< ? >, ClassFieldInspector> inspectors           = new HashMap<Class< ? >, ClassFieldInspector>();
-
-    private ByteArrayClassLoader                       byteArrayClassLoader;
+//
+//    private final Map<Class< ? >, ClassFieldInspector> inspectors           = new HashMap<Class< ? >, ClassFieldInspector>();
+//
+//    private ByteArrayClassLoader                       byteArrayClassLoader;
 
     static {
         PROTECTION_DOMAIN = AccessController.doPrivileged( new PrivilegedAction<ProtectionDomain>() {
@@ -81,27 +83,35 @@ public class ClassFieldAccessorFactory {
             }
         } );
     }
+    
+    private static ClassFieldAccessorFactory instance = new ClassFieldAccessorFactory();
+    
+    public static ClassFieldAccessorFactory getInstance() {
+        return instance;
+    }
 
     public BaseClassFieldReader getClassFieldReader(final Class< ? > clazz,
-                                                       final String fieldName,
-                                                       final ClassLoader classLoader) {
-        if ( byteArrayClassLoader == null || byteArrayClassLoader.getParent() != classLoader ) {
-            if ( classLoader == null ) {
-                throw new RuntimeDroolsException( "ClassFieldAccessorFactory cannot have a null parent ClassLoader" );
-            }
-            byteArrayClassLoader = new ByteArrayClassLoader( classLoader );
-        }
+                                                    final String fieldName,
+                                                    CacheEntry cache) {
+        ByteArrayClassLoader byteArrayClassLoader = cache.getByteArrayClassLoader();
+        Map<Class< ? >, ClassFieldInspector> inspectors = cache.getInspectors();
+//        if ( byteArrayClassLoader == null || byteArrayClassLoader.getParent() != classLoader ) {
+//            if ( classLoader == null ) {
+//                throw new RuntimeDroolsException( "ClassFieldAccessorFactory cannot have a null parent ClassLoader" );
+//            }
+//            byteArrayClassLoader = new ByteArrayClassLoader( classLoader );
+//        }
         try {
             // if it is a self reference
             if ( SELF_REFERENCE_FIELD.equals( fieldName ) ) {
                 // then just create an instance of the special class field extractor
                 return new SelfReferenceClassFieldReader( clazz,
-                                                             fieldName );
+                                                          fieldName );
             } else if ( fieldName.indexOf( '.' ) > -1 || fieldName.indexOf( '[' ) > -1 ) {
                 // we need MVEL extractor for expressions
                 return new MVELClassFieldReader( clazz,
-                                                    fieldName,
-                                                    classLoader );
+                                                 fieldName,
+                                                 cache );
             } else {
                 // otherwise, bytecode generate a specific extractor
                 ClassFieldInspector inspector = inspectors.get( clazz );
@@ -146,13 +156,10 @@ public class ClassFieldAccessorFactory {
 
     public BaseClassFieldWriter getClassFieldWriter(final Class< ? > clazz,
                                                     final String fieldName,
-                                                    final ClassLoader classLoader) {
-        if ( byteArrayClassLoader == null || byteArrayClassLoader.getParent() != classLoader ) {
-            if ( classLoader == null ) {
-                throw new RuntimeDroolsException( "ClassFieldAccessorFactory cannot have a null parent ClassLoader" );
-            }
-            byteArrayClassLoader = new ByteArrayClassLoader( classLoader );
-        }
+                                                    final CacheEntry cache) {
+        ByteArrayClassLoader byteArrayClassLoader = cache.getByteArrayClassLoader();
+        Map<Class< ? >, ClassFieldInspector> inspectors = cache.getInspectors();
+        
         try {
             // otherwise, bytecode generate a specific extractor
             ClassFieldInspector inspector = inspectors.get( clazz );
@@ -439,7 +446,7 @@ public class ClassFieldAccessorFactory {
             Method overridingMethod;
             try {
                 overridingMethod = superClass.getMethod( getOverridingSetMethodName( fieldType ),
-                                                         new Class[]{Object.class, fieldType.isPrimitive() ? fieldType : Object.class } );
+                                                         new Class[]{Object.class, fieldType.isPrimitive() ? fieldType : Object.class} );
             } catch ( final Exception e ) {
                 throw new RuntimeDroolsException( "This is a bug. Please report back to JBoss Rules team.",
                                                   e );
@@ -627,23 +634,4 @@ public class ClassFieldAccessorFactory {
         return ret;
     }
 
-    /**
-     * Simple classloader
-     * @author Michael Neale
-     */
-    static class ByteArrayClassLoader extends ClassLoader {
-        public ByteArrayClassLoader(final ClassLoader parent) {
-            super( parent );
-        }
-
-        public Class< ? > defineClass(final String name,
-                                      final byte[] bytes,
-                                      final ProtectionDomain domain) {
-            return defineClass( name,
-                                bytes,
-                                0,
-                                bytes.length,
-                                domain );
-        }
-    }
 }

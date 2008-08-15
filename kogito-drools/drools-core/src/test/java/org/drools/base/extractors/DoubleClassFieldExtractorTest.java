@@ -3,24 +3,28 @@ package org.drools.base.extractors;
 import junit.framework.Assert;
 
 import org.drools.base.ClassFieldAccessorCache;
+import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.TestBean;
 import org.drools.spi.InternalReadAccessor;
 
 public class DoubleClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
-    private static final double VALUE     = 7;
+    private static final double VALUE = 7;
 
-    InternalReadAccessor                   extractor = ClassFieldAccessorCache.getInstance().getReader( TestBean.class,
-                                                                                                 "doubleAttr",
-                                                                                                 getClass().getClassLoader() );
-    TestBean                    bean      = new TestBean();
+    InternalReadAccessor        reader;
+    TestBean                    bean  = new TestBean();
 
     protected void setUp() throws Exception {
-        super.setUp();
+        ClassFieldAccessorStore store = new ClassFieldAccessorStore();
+        store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
+        store.setEagerWire( true );
+        this.reader = store.getReader( TestBean.class,
+                                          "doubleAttr",
+                                          getClass().getClassLoader() );
     }
 
     public void testGetBooleanValue() {
         try {
-            this.extractor.getBooleanValue( null,
+            this.reader.getBooleanValue( null,
                                             this.bean );
             fail( "Should have throw an exception" );
         } catch ( final Exception e ) {
@@ -29,18 +33,14 @@ public class DoubleClassFieldExtractorTest extends BaseClassFieldExtractorsTest 
     }
 
     public void testGetByteValue() {
-        try {
             Assert.assertEquals( (byte) DoubleClassFieldExtractorTest.VALUE,
-                                 this.extractor.getByteValue( null,
+                                 this.reader.getByteValue( null,
                                                               this.bean ) );
-        } catch ( final Exception e ) {
-            fail( "Should not throw an exception" );
-        }
     }
 
     public void testGetCharValue() {
         try {
-            this.extractor.getCharValue( null,
+            this.reader.getCharValue( null,
                                          this.bean );
             fail( "Should have throw an exception" );
         } catch ( final Exception e ) {
@@ -49,75 +49,47 @@ public class DoubleClassFieldExtractorTest extends BaseClassFieldExtractorsTest 
     }
 
     public void testGetDoubleValue() {
-        try {
             Assert.assertEquals( DoubleClassFieldExtractorTest.VALUE,
-                                 this.extractor.getDoubleValue( null,
+                                 this.reader.getDoubleValue( null,
                                                                 this.bean ),
                                  0.01 );
-        } catch ( final Exception e ) {
-            fail( "Should not throw an exception" );
-        }
     }
 
     public void testGetFloatValue() {
-        try {
             Assert.assertEquals( DoubleClassFieldExtractorTest.VALUE,
-                                 this.extractor.getFloatValue( null,
+                                 this.reader.getFloatValue( null,
                                                                this.bean ),
                                  0.01 );
-        } catch ( final Exception e ) {
-            fail( "Should not throw an exception" );
-        }
     }
 
     public void testGetIntValue() {
-        try {
             Assert.assertEquals( (int) DoubleClassFieldExtractorTest.VALUE,
-                                 this.extractor.getIntValue( null,
+                                 this.reader.getIntValue( null,
                                                              this.bean ) );
-        } catch ( final Exception e ) {
-            fail( "Should not throw an exception" );
-        }
     }
 
     public void testGetLongValue() {
-        try {
             Assert.assertEquals( (long) DoubleClassFieldExtractorTest.VALUE,
-                                 this.extractor.getLongValue( null,
+                                 this.reader.getLongValue( null,
                                                               this.bean ) );
-        } catch ( final Exception e ) {
-            fail( "Should not throw an exception" );
-        }
     }
 
     public void testGetShortValue() {
-        try {
             Assert.assertEquals( (short) DoubleClassFieldExtractorTest.VALUE,
-                                 this.extractor.getShortValue( null,
+                                 this.reader.getShortValue( null,
                                                                this.bean ) );
-        } catch ( final Exception e ) {
-            fail( "Should not throw an exception" );
-        }
     }
 
     public void testGetValue() {
-        try {
             Assert.assertEquals( new Double( DoubleClassFieldExtractorTest.VALUE ),
-                                 this.extractor.getValue( null,
+                                 this.reader.getValue( null,
                                                           this.bean ) );
-            Assert.assertTrue( this.extractor.getValue( null,
+            Assert.assertTrue( this.reader.getValue( null,
                                                         this.bean ) instanceof Double );
-        } catch ( final Exception e ) {
-            fail( "Should not throw an exception" );
-        }
     }
 
     public void testIsNullValue() {
-        try {
-            Assert.assertFalse( this.extractor.isNullValue( null,
+            Assert.assertFalse( this.reader.isNullValue( null,
                                                             this.bean ) );
-        } catch ( final Exception e ) {
-            fail( "Should not throw an exception" );
-        }
     }
 }

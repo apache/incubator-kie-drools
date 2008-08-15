@@ -6,13 +6,18 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.base.mvel.DroolsMVELFactory;
+import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.base.mvel.MVELConsequence;
 import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.Dialect;
+import org.drools.rule.Declaration;
+import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.builder.ConsequenceBuilder;
+import org.drools.rule.builder.PackageBuildContext;
 import org.drools.rule.builder.RuleBuildContext;
 import org.mvel.Macro;
 import org.mvel.MacroProcessor;
+import org.mvel.compiler.CompiledExpression;
 
 public class MVELConsequenceBuilder
     implements
@@ -78,28 +83,29 @@ public class MVELConsequenceBuilder
                                                                     text,
                                                                     new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()},
                                                                     null );
-
-            final Serializable expr = dialect.compile( text,
-                                                       analysis,
-                                                       dialect.getInterceptors(),
-                                                       null,
-                                                       null,
-                                                       context );
-
-            final DroolsMVELFactory factory = new DroolsMVELFactory( context.getDeclarationResolver().getDeclarations(),
-                                                                     null,
-                                                                     context.getPkg().getGlobals(),
-                                                                     analysis.getBoundIdentifiers() );
             
+            Declaration[] previousDeclarations = (Declaration[]) context.getDeclarationResolver().getDeclarations().values().toArray( new Declaration[context.getDeclarationResolver().getDeclarations().size()] );
+            MVELCompilationUnit unit = dialect.getMVELCompilationUnit( text,
+                                                                       analysis,
+                                                                       previousDeclarations,
+                                                                       null,
+                                                                       null,
+                                                                       context );
 
-            context.getRule().setConsequence( new MVELConsequence( expr,
-                                                                   factory,
-                                                                   dialect.getId() ) );
+            MVELConsequence expr = new MVELConsequence( unit,
+                                                        dialect.getId() );
+            context.getRule().setConsequence( expr );
+            
+            MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( context.getDialect().getId() );            
+            data.addCompileable( context.getRule(),
+                                  expr );
+            
+            expr.compile( context.getPackageBuilder().getRootClassLoader() );
         } catch ( final Exception e ) {
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                    context.getRuleDescr(),
-                                                    null,
-                                                    "Unable to build expression for 'consequence': "+e.getMessage()+" '" + context.getRuleDescr().getConsequence() + "'" ) );
+                                                          context.getRuleDescr(),
+                                                          null,
+                                                          "Unable to build expression for 'consequence': " + e.getMessage() + " '" + context.getRuleDescr().getConsequence() + "'" ) );
         }
     }
 

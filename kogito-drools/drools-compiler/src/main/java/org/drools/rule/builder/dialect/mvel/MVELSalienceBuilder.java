@@ -4,9 +4,12 @@ import java.io.Serializable;
 import java.util.Set;
 
 import org.drools.base.mvel.DroolsMVELFactory;
+import org.drools.base.mvel.MVELCompilationUnit;
+import org.drools.base.mvel.MVELReturnValueEvaluator;
 import org.drools.base.mvel.MVELSalienceExpression;
 import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.Dialect;
+import org.drools.rule.Declaration;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.SalienceBuilder;
@@ -19,14 +22,7 @@ public class MVELSalienceBuilder
         // pushing consequence LHS into the stack for variable resolution
         context.getBuildStack().push( context.getRule().getLhs() );
 
-        try {
-            final DroolsMVELFactory factory = new DroolsMVELFactory( context.getDeclarationResolver().getDeclarations(),
-                                                                     null,
-                                                                     context.getPkg().getGlobals() );
-            
-            MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
-            factory.setNextFactory( data.getFunctionFactory() );            
-
+        try {        
             // This builder is re-usable in other dialects, so specify by name            
             MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
 
@@ -35,22 +31,28 @@ public class MVELSalienceBuilder
                                                                          (String) context.getRuleDescr().getSalience(),
                                                                          new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
 
-            final Serializable expr = dialect.compile( (String) context.getRuleDescr().getSalience(),
-                                                       analysis,
-                                                       null,
-                                                       null,
-                                                       null,
-                                                       context );
+            Declaration[] previousDeclarations = (Declaration[]) context.getDeclarationResolver().getDeclarations().values().toArray( new Declaration[context.getDeclarationResolver().getDeclarations().size()] );
+            MVELCompilationUnit unit = dialect.getMVELCompilationUnit( (String) context.getRuleDescr().getSalience(),
+                                                                       analysis,
+                                                                       previousDeclarations,
+                                                                       null,
+                                                                       null,
+                                                                       context );
 
-            MVELSalienceExpression salience = new MVELSalienceExpression( expr,
-                                                                          factory );
-
-            context.getRule().setSalience( salience );
+            MVELSalienceExpression expr = new MVELSalienceExpression( unit,
+                                                                          dialect.getId() );
+            context.getRule().setSalience( expr );
+            
+            MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData(dialect.getId() );
+            data.addCompileable( context.getRule(),
+                                 expr );          
+            
+            expr.compile( context.getPackageBuilder().getRootClassLoader() );
         } catch ( final Exception e ) {
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                           context.getRuleDescr(),
                                                           null,
-                                                          "Unable to build expression for 'salience' node '" + context.getRuleDescr().getSalience() + "'" ) );
+                                                          "Unable to build expression for 'salience' : " + e.getMessage() + "'" + context.getRuleDescr().getSalience() + "'" ) );
         }
     }
 

@@ -11,7 +11,9 @@ import org.drools.Cheese;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.base.ClassFieldAccessorCache;
+import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.ClassObjectType;
+import org.drools.base.mvel.MVELPredicateExpression;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.PackageBuilder;
@@ -30,9 +32,12 @@ import org.drools.spi.InternalReadAccessor;
 
 public class MVELPredicateBuilderTest extends TestCase {
 
-    private ClassFieldAccessorCache cache = ClassFieldAccessorCache.getInstance();
 
-    public void setUp() {
+    ClassFieldAccessorStore store = new ClassFieldAccessorStore();
+
+    protected void setUp() throws Exception {
+        store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
+        store.setEagerWire( true );
     }
 
     public void testSimpleExpression() {
@@ -44,14 +49,14 @@ public class MVELPredicateBuilderTest extends TestCase {
         PackageRegistry pkgRegistry = pkgBuilder.getPackageRegistry( pkg.getName() );
         MVELDialect mvelDialect = ( MVELDialect ) pkgRegistry.getDialectCompiletimeRegistry().getDialect( "mvel" );
 
-        final InstrumentedBuildContent context = new InstrumentedBuildContent( conf,
+        final InstrumentedBuildContent context = new InstrumentedBuildContent( pkgBuilder,
                                                                                ruleDescr,
                                                                                pkgRegistry.getDialectCompiletimeRegistry(),
                                                                                pkg,                                                                               
                                                                                mvelDialect );
 
         final InstrumentedDeclarationScopeResolver declarationResolver = new InstrumentedDeclarationScopeResolver();
-        final InternalReadAccessor extractor = cache.getReader( Cheese.class,
+        final InternalReadAccessor extractor = store.getReader( Cheese.class,
                                                              "price",
                                                              getClass().getClassLoader() );
 
@@ -97,6 +102,8 @@ public class MVELPredicateBuilderTest extends TestCase {
                        localDeclarations,
                        predicate,
                        predicateDescr );
+        
+        ( (MVELPredicateExpression) predicate.getPredicateExpression()).compile( Thread.currentThread().getContextClassLoader() );
 
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         final InternalWorkingMemory wm = (InternalWorkingMemory) ruleBase.newStatefulSession();

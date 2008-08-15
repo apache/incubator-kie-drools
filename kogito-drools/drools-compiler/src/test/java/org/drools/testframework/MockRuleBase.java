@@ -160,4 +160,9 @@ public class MockRuleBase implements RuleBase {
         // TODO Auto-generated method stub
         return null;
     }
+
+    public void addPackages(Package[] pkgs) {
+        // TODO Auto-generated method stub
+        
+    }
 }

@@ -27,6 +27,7 @@ import org.drools.rule.Declaration;
 public interface Constraint
     extends
     RuleComponent,
+    Externalizable,
     Cloneable {
 
     /**

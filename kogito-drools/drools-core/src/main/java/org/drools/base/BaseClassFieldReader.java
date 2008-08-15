@@ -75,19 +75,19 @@ abstract public class BaseClassFieldReader
         }
     }
 
-    public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
-        index = in.readInt();
-        fieldType = (Class) in.readObject();
-        valueType = (ValueType) in.readObject();
-        if ( valueType != null ) valueType = ValueType.determineValueType( valueType.getClassType() );
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeInt( index );
-        out.writeObject( fieldType );
-        out.writeObject( valueType );
-    }
+//    public void readExternal(ObjectInput in) throws IOException,
+//                                            ClassNotFoundException {
+//        index = in.readInt();
+//        fieldType = (Class) in.readObject();
+//        valueType = (ValueType) in.readObject();
+//        if ( valueType != null ) valueType = ValueType.determineValueType( valueType.getClassType() );
+//    }
+//
+//    public void writeExternal(ObjectOutput out) throws IOException {
+//        out.writeInt( index );
+//        out.writeObject( fieldType );
+//        out.writeObject( valueType );
+//    }
 
     public int getIndex() {
         return this.index;

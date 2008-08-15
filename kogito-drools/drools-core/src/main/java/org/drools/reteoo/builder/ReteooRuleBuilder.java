@@ -137,20 +137,12 @@ public class ReteooRuleBuilder {
         TerminalNode terminal = null;
 
         if ( !(rule instanceof Query) ) {
-            // Check a consequence is set
-            if ( rule.getConsequence() == null ) {
-                throw new InvalidPatternException( "Rule '" + rule.getName() + "' has no Consequence" );
-            }
             terminal = new RuleTerminalNode( context.getNextId(),
                                              context.getTupleSource(),
                                              rule,
                                              subrule,
                                              context );
         } else {
-            // Check there is no consequence
-            if ( rule.getConsequence() != null ) {
-                throw new InvalidPatternException( "Query '" + rule.getName() + "' should have no Consequence" );
-            }
             terminal = new QueryTerminalNode( context.getNextId(),
                                               context.getTupleSource(),
                                               rule,
@@ -206,7 +198,7 @@ public class ReteooRuleBuilder {
     private void addInitialFactPattern(final BuildContext context,
                                        final GroupElement subrule,
                                        final Rule rule) {
-
+        
         // creates a pattern for initial fact
         final Pattern pattern = new Pattern( 0,
                                              new ClassObjectType( InitialFact.class ) );

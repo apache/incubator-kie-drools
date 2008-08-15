@@ -24,9 +24,7 @@ import org.drools.base.ValueType;
 /**
  * A public interface for Read accessors
  */
-public interface ReadAccessor
-    extends
-    Externalizable {
+public interface ReadAccessor {
 
     public Object getValue(Object object);
 

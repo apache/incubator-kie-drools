@@ -23,29 +23,34 @@ import java.io.ObjectOutput;
 
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.spi.AcceptsReadAccessor;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.Constraint;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
+import org.drools.spi.ReadAccessor;
 
 public class LiteralConstraint
     implements
-    AlphaNodeFieldConstraint, Externalizable {
+    AlphaNodeFieldConstraint,
+    AcceptsReadAccessor,
+    Externalizable {
 
-    private static final long        serialVersionUID = 400L;
+    private static final long    serialVersionUID = 400L;
 
-    private InternalReadAccessor     extractor;
-    private LiteralRestriction restriction;
+    private InternalReadAccessor readAccesor;
+    private LiteralRestriction   restriction;
 
     public LiteralConstraint() {
-        this(null, null);
+        this( null,
+              null );
     }
 
     public LiteralConstraint(final InternalReadAccessor extractor,
                              final Evaluator evaluator,
                              final FieldValue field) {
-        this.extractor = extractor;
+        this.readAccesor = extractor;
         this.restriction = new LiteralRestriction( field,
                                                    evaluator,
                                                    extractor );
@@ -53,18 +58,23 @@ public class LiteralConstraint
 
     public LiteralConstraint(final InternalReadAccessor extractor,
                              final LiteralRestriction restriction) {
-        this.extractor = extractor;
+        this.readAccesor = extractor;
         this.restriction = restriction;
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        extractor   = (InternalReadAccessor)in.readObject();
-        restriction = (LiteralRestriction)in.readObject();
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        readAccesor = (InternalReadAccessor) in.readObject();
+        restriction = (LiteralRestriction) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(extractor);
-        out.writeObject(restriction);
+        out.writeObject( readAccesor );
+        out.writeObject( restriction );
+    }
+
+    public void setReadAccessor(InternalReadAccessor readAccessor) {
+        this.readAccesor = readAccessor;
     }
 
     public Evaluator getEvaluator() {
@@ -76,7 +86,7 @@ public class LiteralConstraint
     }
 
     public InternalReadAccessor getFieldExtractor() {
-        return this.extractor;
+        return this.readAccesor;
     }
 
     /**
@@ -96,21 +106,21 @@ public class LiteralConstraint
 
     public boolean isAllowed(final InternalFactHandle handle,
                              final InternalWorkingMemory workingMemory,
-                             final ContextEntry ctx ) {
-        return this.restriction.isAllowed( this.extractor,
+                             final ContextEntry ctx) {
+        return this.restriction.isAllowed( this.readAccesor,
                                            handle,
                                            workingMemory,
                                            ctx );
     }
 
     public String toString() {
-        return "[LiteralConstraint fieldExtractor=" + this.extractor + " evaluator=" + getEvaluator() + " value=" + getField() + "]";
+        return "[LiteralConstraint fieldExtractor=" + this.readAccesor + " evaluator=" + getEvaluator() + " value=" + getField() + "]";
     }
 
     public int hashCode() {
         final int PRIME = 31;
         int result = 1;
-        result = PRIME * result + this.extractor.hashCode();
+        result = PRIME * result + this.readAccesor.hashCode();
         result = PRIME * result + this.restriction.hashCode();
         return result;
     }
@@ -124,11 +134,11 @@ public class LiteralConstraint
         }
         final LiteralConstraint other = (LiteralConstraint) object;
 
-        return this.extractor.equals( other.extractor ) && this.restriction.equals( other.restriction );
+        return this.readAccesor.equals( other.readAccesor ) && this.restriction.equals( other.restriction );
     }
 
     public Object clone() {
-        return new LiteralConstraint( this.extractor,
+        return new LiteralConstraint( this.readAccesor,
                                       this.getEvaluator(),
                                       this.getField() );
     }

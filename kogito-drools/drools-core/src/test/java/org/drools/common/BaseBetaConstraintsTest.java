@@ -7,6 +7,7 @@ import junit.framework.TestCase;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.base.ClassFieldAccessorCache;
+import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.ClassObjectType;
 import org.drools.base.evaluators.ComparableEvaluatorsDefinition;
 import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
@@ -46,9 +47,12 @@ public abstract class BaseBetaConstraintsTest extends TestCase {
                                                     Operator operator,
                                                     String fieldName,
                                                     Class clazz) {
-        InternalReadAccessor extractor = ClassFieldAccessorCache.getInstance().getReader( clazz,
-                                                                                          fieldName,
-                                                                                          getClass().getClassLoader() );
+        ClassFieldAccessorStore store = new ClassFieldAccessorStore();
+        store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
+        store.setEagerWire( true );
+        InternalReadAccessor extractor = store.getReader( clazz,
+                                                          fieldName,
+                                                          getClass().getClassLoader() );
         Declaration declaration = new Declaration( identifier,
                                                    extractor,
                                                    new Pattern( 0,

@@ -1,5 +1,6 @@
 package org.drools.facttemplates;
 
+import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -12,6 +13,7 @@ import org.drools.util.ClassUtils;
 
 public class FactTemplateFieldExtractor
     implements
+    Externalizable,
     org.drools.spi.InternalReadAccessor {
 
     private static final long serialVersionUID = 400L;

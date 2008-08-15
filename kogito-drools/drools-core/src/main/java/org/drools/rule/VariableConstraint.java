@@ -24,11 +24,13 @@ import java.io.ObjectOutput;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
+import org.drools.spi.AcceptsReadAccessor;
 import org.drools.spi.Evaluator;
 import org.drools.spi.InternalReadAccessor;
 
 public class VariableConstraint extends MutableTypeConstraint
     implements
+    AcceptsReadAccessor,    
     Externalizable {
 
     private static final long    serialVersionUID = 400L;
@@ -66,6 +68,10 @@ public class VariableConstraint extends MutableTypeConstraint
         out.writeObject( fieldExtractor );
         out.writeObject( restriction );
     }
+    
+    public void setReadAccessor(InternalReadAccessor readAccessor) {
+        this.fieldExtractor = readAccessor;
+    }     
 
     public Declaration[] getRequiredDeclarations() {
         return this.restriction.getRequiredDeclarations();

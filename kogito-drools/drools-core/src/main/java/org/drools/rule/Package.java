@@ -26,9 +26,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.base.ClassFieldAccessorCache;
+import org.drools.base.ClassFieldAccessorStore;
+import org.drools.base.ClassObjectType;
 import org.drools.common.DroolsObjectInputStream;
 import org.drools.common.DroolsObjectOutputStream;
 import org.drools.facttemplates.FactTemplate;
@@ -71,7 +75,7 @@ public class Package
 
     private Set                            staticImports;
 
-    private Map<String, Class>             globals;
+    private Map<String, String>            globals;
 
     private Map                            factTemplates;
 
@@ -81,6 +85,8 @@ public class Package
     private DialectRuntimeRegistry         dialectRuntimeRegistry;
 
     private Map<String, TypeDeclaration>   typeDeclarations;
+    
+    private ClassFieldAccessorStore       classFieldAccessorStore;
 
     /**
      * This is to indicate the the package has no errors during the
@@ -93,11 +99,6 @@ public class Package
      * valid
      */
     private String                         errorSummary;
-
-    /**
-     * A class loader for package scoped artifacts
-     */
-    private transient MapBackedClassLoader packageScopeClassLoader;
 
     // ------------------------------------------------------------
     // Constructors
@@ -118,18 +119,6 @@ public class Package
      *            The name of this <code>Package</code>.
      */
     public Package(final String name) {
-        this( name,
-              null );
-    }
-
-    /**
-     * Construct.
-     * 
-     * @param name
-     *            The name of this <code>Package</code>.
-     */
-    public Package(final String name,
-                   ClassLoader parentClassLoader) {
         this.name = name;
         this.imports = new HashMap<String, ImportDeclaration>();
         this.typeDeclarations = new HashMap<String, TypeDeclaration>();
@@ -138,54 +127,10 @@ public class Package
         this.ruleFlows = Collections.EMPTY_MAP;
         this.globals = Collections.EMPTY_MAP;
         this.factTemplates = Collections.EMPTY_MAP;
-        this.functions = Collections.EMPTY_MAP;
-
-        // This classloader test should only be here for unit testing, too much
-        // legacy api to want to change by hand at the moment
-        if ( parentClassLoader == null ) {
-            parentClassLoader = Thread.currentThread().getContextClassLoader();
-            if ( parentClassLoader == null ) {
-                parentClassLoader = getClass().getClassLoader();
-            }
-        }
-        this.packageScopeClassLoader = new MapBackedClassLoader( parentClassLoader );
-        this.dialectRuntimeRegistry = new DialectRuntimeRegistry( this.packageScopeClassLoader );
-    }
-
-    /**
-     * Construct.
-     * 
-     * @param name
-     *            The name of this <code>Package</code>.
-     */
-    public Package(final String name,
-                   final MapBackedClassLoader packageClassLoader) {
-        this.name = name;
-        this.imports = new HashMap<String, ImportDeclaration>();
-        this.typeDeclarations = new HashMap<String, TypeDeclaration>();
-        this.staticImports = Collections.EMPTY_SET;
-        this.rules = new LinkedHashMap();
-        this.ruleFlows = Collections.EMPTY_MAP;
-        this.globals = Collections.EMPTY_MAP;
-        this.factTemplates = Collections.EMPTY_MAP;
-        this.functions = Collections.EMPTY_MAP;
-
-        if ( packageClassLoader == null ) {
-            ClassLoader parentClassLoader = null;
-            // This classloader test should only be here for unit testing, too much
-            // legacy api to want to change by hand at the moment
-            if ( parentClassLoader == null ) {
-                parentClassLoader = Thread.currentThread().getContextClassLoader();
-                if ( parentClassLoader == null ) {
-                    parentClassLoader = getClass().getClassLoader();
-                }
-            }
-            this.packageScopeClassLoader = new MapBackedClassLoader( parentClassLoader );
-        } else {
-            this.packageScopeClassLoader = packageClassLoader;
-        }
-        this.dialectRuntimeRegistry = new DialectRuntimeRegistry( this.packageScopeClassLoader );
-    }
+        this.functions = Collections.EMPTY_MAP;     
+        this.dialectRuntimeRegistry = new DialectRuntimeRegistry( );
+        this.classFieldAccessorStore = new ClassFieldAccessorStore();
+    }   
 
     /**
      * Handles the write serialization of the Package. Patterns in Rules may
@@ -210,7 +155,6 @@ public class Package
             bytes = new ByteArrayOutputStream();
             out = new DroolsObjectOutputStream( bytes );
         }
-        out.writeObject( this.packageScopeClassLoader.getStore() );
         out.writeObject( this.dialectRuntimeRegistry );
         out.writeObject( this.typeDeclarations );
         out.writeObject( this.name );
@@ -222,6 +166,7 @@ public class Package
         out.writeObject( this.globals );
         out.writeBoolean( this.valid );
         out.writeObject( this.rules );
+        out.writeObject( this.classFieldAccessorStore );
         // writing the whole stream as a byte array
         if ( !isDroolsStream ) {
             bytes.flush();
@@ -249,13 +194,7 @@ public class Package
         boolean isDroolsStream = stream instanceof DroolsObjectInputStream;
         DroolsObjectInputStream in = isDroolsStream ? (DroolsObjectInputStream) stream : new DroolsObjectInputStream( new ByteArrayInputStream( (byte[]) stream.readObject() ) );
 
-        // creating package scoped classloader
-        Map store = (Map) in.readObject();
-        this.packageScopeClassLoader = new MapBackedClassLoader( in.getClassLoader(),
-                                                                 store );
-
         // setting parent classloader for dialect datas
-        in.setClassLoader( this.packageScopeClassLoader );
         this.dialectRuntimeRegistry = (DialectRuntimeRegistry) in.readObject();
 
         this.typeDeclarations = (Map) in.readObject();
@@ -265,13 +204,10 @@ public class Package
         this.functions = (Map<String, Function>) in.readObject();
         this.factTemplates = (Map) in.readObject();
         this.ruleFlows = (Map) in.readObject();
-        this.globals = (Map<String, Class>) in.readObject();
+        this.globals = (Map<String, String>) in.readObject();
         this.valid = in.readBoolean();
         this.rules = (Map) in.readObject();
-
-        // restoring original parent classloader
-        in.setClassLoader( this.packageScopeClassLoader.getParent() );
-
+        this.classFieldAccessorStore = ( ClassFieldAccessorStore ) in.readObject();
         if ( !isDroolsStream ) {
             in.close();
         }
@@ -355,18 +291,24 @@ public class Package
 
     public void addGlobal(final String identifier,
                           final Class clazz) {
+        addGlobal( identifier,
+                   clazz.getName() );
+    }
+    
+    public void addGlobal(final String identifier,
+                          final String className) {
         if ( this.globals == Collections.EMPTY_MAP ) {
-            this.globals = new HashMap<String, Class>( 1 );
+            this.globals = new HashMap<String, String>( 1 );
         }
         this.globals.put( identifier,
-                          clazz );
-    }
+                          className );
+    }    
 
     public void removeGlobal(final String identifier) {
         this.globals.remove( identifier );
     }
 
-    public Map<String, Class> getGlobals() {
+    public Map<String, String> getGlobals() {
         return this.globals;
     }
 
@@ -612,7 +554,12 @@ public class Package
         return decl != null ? decl.getTypeClassDef() : null;
     }
 
-    public MapBackedClassLoader getPackageScopeClassLoader() {
-        return packageScopeClassLoader;
+    public ClassFieldAccessorStore getClassFieldAccessorStore() {
+        return classFieldAccessorStore;
     }
+
+    public void setClassFieldAccessorCache(ClassFieldAccessorCache classFieldAccessorCache) {
+        this.classFieldAccessorStore.setClassFieldAccessorCache( classFieldAccessorCache );
+    }
+        
 }

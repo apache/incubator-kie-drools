@@ -23,7 +23,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.base.mvel.DroolsMVELFactory;
+import org.drools.base.mvel.MVELCompilationUnit;
+import org.drools.base.mvel.MVELPredicateExpression;
 import org.drools.base.mvel.MVELReturnValueExpression;
+import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.Dialect;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.rule.Declaration;
@@ -47,37 +50,31 @@ public class MVELReturnValueBuilder
                       final ReturnValueRestriction returnValueRestriction,
                       final ReturnValueRestrictionDescr returnValueRestrictionDescr) {
 
-        Map previousMap = new HashMap();
-        for ( int i = 0, length = previousDeclarations.length; i < length; i++ ) {
-            previousMap.put( previousDeclarations[i].getIdentifier(),
-                             previousDeclarations[i] );
-        }
-
-        Map localMap = new HashMap();
-        for ( int i = 0, length = localDeclarations.length; i < length; i++ ) {
-            localMap.put( localDeclarations[i].getIdentifier(),
-                          localDeclarations[i] );
-        }
-
-        final DroolsMVELFactory factory = new DroolsMVELFactory( previousMap,
-                                                                 localMap,
-                                                                 context.getPkg().getGlobals() );
-
-        Dialect.AnalysisResult analysis = context.getDialect().analyzeExpression( context,
-                                                                                  returnValueRestrictionDescr,
-                                                                                  returnValueRestrictionDescr.getContent(),
-                                                                                  new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
-
-        final Serializable expr = ((MVELDialect) context.getDialect()).compile( (String) returnValueRestrictionDescr.getContent(),
-                                                                                analysis,
-                                                                                null,
-                                                                                null,
-                                                                                null,
-                                                                                context );
-
-        returnValueRestriction.setReturnValueExpression( new MVELReturnValueExpression( expr,
-                                                                                        factory,
-                                                                                        context.getDialect().getId()) );
+        try {  
+            MVELDialect dialect = (MVELDialect) context.getDialect( context.getDialect().getId() );
+    
+            Dialect.AnalysisResult analysis = context.getDialect().analyzeExpression( context,
+                                                                                      returnValueRestrictionDescr,
+                                                                                      returnValueRestrictionDescr.getContent(),
+                                                                                      new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
+    
+            MVELCompilationUnit unit = dialect.getMVELCompilationUnit((String) returnValueRestrictionDescr.getContent(), analysis,  previousDeclarations, localDeclarations, null, context);
+    
+            MVELReturnValueExpression expr = new MVELReturnValueExpression( unit,
+                                                                            context.getDialect().getId() );
+            returnValueRestriction.setReturnValueExpression( expr );
+            
+            MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( context.getDialect().getId() );
+            data.addCompileable( returnValueRestriction,
+                                  expr );
+            
+            expr.compile( context.getPackageBuilder().getRootClassLoader() );
+        } catch ( final Exception e ) {
+            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                                                          context.getRuleDescr(),
+                                                          null,
+                                                          "Unable to build expression for 'returnValue' : " + e.getMessage() + "'" + context.getRuleDescr().getSalience() + "'" ) );
+        }            
     }
 
 }

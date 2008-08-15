@@ -32,6 +32,7 @@ import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
 import org.drools.base.ShadowProxy;
+import org.drools.common.AbstractRuleBase;
 import org.drools.common.InternalRuleBase;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.reteoo.builder.PatternBuilder;
@@ -44,18 +45,18 @@ public class ClassObjectTypeConf
     ObjectTypeConf,
     Externalizable {
 
-    private static final long              serialVersionUID = 8218802585428841926L;
+    private static final long          serialVersionUID = 8218802585428841926L;
 
-    private Class< ? >                     cls;
-    private transient InternalRuleBase     ruleBase;
-    private ObjectTypeNode[]               objectTypeNodes;
+    private Class< ? >                 cls;
+    private transient InternalRuleBase ruleBase;
+    private ObjectTypeNode[]           objectTypeNodes;
 
-    protected boolean                      shadowEnabled;
+    protected boolean                  shadowEnabled;
 
-    private ObjectTypeNode                 concreteObjectTypeNode;
-    private EntryPoint                     entryPoint;
-    
-    private TypeDeclaration                typeDecl;
+    private ObjectTypeNode             concreteObjectTypeNode;
+    private EntryPoint                 entryPoint;
+
+    private TypeDeclaration            typeDecl;
 
     public ClassObjectTypeConf() {
 
@@ -70,8 +71,9 @@ public class ClassObjectTypeConf
         this.typeDecl = ruleBase.getTypeDeclaration( clazz );
         final boolean isEvent = typeDecl != null && typeDecl.getRole() == TypeDeclaration.Role.EVENT;
 
-        ObjectType objectType = new ClassObjectType( clazz,
-                                                     isEvent );
+        ObjectType objectType = ((AbstractRuleBase) ruleBase).getClassFieldAccessorCache().getClassObjectType( new ClassObjectType( clazz,
+                                                                                                                                    isEvent ) );
+
         this.concreteObjectTypeNode = (ObjectTypeNode) ruleBase.getRete().getObjectTypeNodes( entryPoint ).get( objectType );
         if ( this.concreteObjectTypeNode == null ) {
             BuildContext context = new BuildContext( ruleBase,
@@ -171,7 +173,7 @@ public class ClassObjectTypeConf
         final List<ObjectTypeNode> cache = new ArrayList<ObjectTypeNode>();
 
         for ( ObjectTypeNode node : ruleBase.getRete().getObjectTypeNodes( this.entryPoint ).values() ) {
-            if ( node.isAssignableFrom( clazz ) ) {
+            if ( node.isAssignableFrom( new ClassObjectType( clazz ) ) ) {
                 cache.add( node );
             }
         }
