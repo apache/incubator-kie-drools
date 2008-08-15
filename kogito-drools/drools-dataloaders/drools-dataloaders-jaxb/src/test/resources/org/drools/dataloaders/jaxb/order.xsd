@@ -1,0 +1,43 @@
+<xsd:schema xmlns:order="http://drools.org/model/order" 
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	        targetNamespace="http://drools.org/model/order"
+	        elementFormDefault="qualified" >
+	        
+        
+	<xsd:element name="order">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="order-item" minOccurs="0" maxOccurs="unbounded">
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="product-id" type="xsd:long" />
+							<xsd:element name="quantity" type="xsd:integer" />
+							<xsd:element name="price" type="xsd:decimal" />
+						</xsd:sequence>	
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>		
+	</xsd:element>
+
+<!--
+	
+	<xsd:element name="order" type="order:OrderType" />
+	
+	<xsd:complexType name="OrderType">
+		<xsd:sequence>
+			<xsd:element name="orderItem" type="order:orderItemType" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+	</xsd:complexType>	
+	
+	        
+	<xsd:complexType name="orderItem">	
+		<xsd:sequence>
+			<xsd:element name="product-id" type="xsd:long" />
+			<xsd:element name="quantity" type="xsd:integer" />
+			<xsd:element name="price" type="xsd:decimal" />
+		</xsd:sequence>
+	</xsd:complexType>	
+-->
+
+</xsd:schema>

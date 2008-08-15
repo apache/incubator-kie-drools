@@ -1,0 +1,29 @@
+package org.drools.xxx
+
+import org.drools.model.order.Order
+import org.drools.model.order.Order.OrderItem
+
+global java.util.List list1;
+global java.util.List list2;
+
+
+rule orderRule
+when
+    $i : Order()
+then
+    list1.add( $i );
+end
+
+rule orderItemRule1
+when
+    $i : OrderItem( price > 6)
+then
+    list1.add( $i );
+end
+
+rule orderItemRule2
+when
+    $i : OrderItem( price < 6)
+then
+    list2.add( $i );
+end

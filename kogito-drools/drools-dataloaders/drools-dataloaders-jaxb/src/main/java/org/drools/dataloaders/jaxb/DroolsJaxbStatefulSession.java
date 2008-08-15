@@ -38,9 +38,19 @@ public class DroolsJaxbStatefulSession {
     private Serializable            getterExpr;
 
     public DroolsJaxbStatefulSession(StatefulSession session,
+                                     Unmarshaller unmarshaller) {
+        this( session,
+              unmarshaller,
+              new DroolsJaxbConfiguration() );
+    }
+
+    public DroolsJaxbStatefulSession(StatefulSession session,
                                      Unmarshaller unmarshaller,
                                      DroolsJaxbConfiguration configuration) {
-
+        this.session = session;
+        this.unmarshaller = unmarshaller;
+        this.configuration = configuration;
+        
         if ( this.configuration.getIterableGetter() != null ) {
             final ParserContext parserContext = new ParserContext();
             parserContext.setStrictTypeEnforcement( false );
@@ -52,8 +62,10 @@ public class DroolsJaxbStatefulSession {
 
     public Map insertUnmarshalled(Reader reader) throws JAXBException {
 
-        JAXBElement elm = (JAXBElement) unmarshaller.unmarshal( reader );
-        Object object = elm.getValue().getClass().getName();
+        Object object = this.unmarshaller.unmarshal( reader );
+        if ( object instanceof JAXBElement ) {
+            object = ((JAXBElement)object).getValue().getClass().getName();
+        }
         Map handles = new HashMap<FactHandle, Object>();
         if ( object == null ) {
             return handles;
