@@ -3,19 +3,23 @@ package org.drools.base.extractors;
 import junit.framework.Assert;
 
 import org.drools.base.ClassFieldAccessorCache;
+import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.TestBean;
 import org.drools.spi.InternalReadAccessor;
 
 public class LongClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     private static final long VALUE     = 5;
 
-    InternalReadAccessor                 extractor = ClassFieldAccessorCache.getInstance().getReader( TestBean.class,
-                                                                                               "longAttr",
-                                                                                               getClass().getClassLoader() );
+    InternalReadAccessor                 extractor;
     TestBean                  bean      = new TestBean();
 
     protected void setUp() throws Exception {
-        super.setUp();
+        ClassFieldAccessorStore store = new ClassFieldAccessorStore();
+        store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
+        store.setEagerWire( true );
+        extractor = store.getReader( TestBean.class,
+                                "longAttr",
+                                getClass().getClassLoader() );
     }
 
     public void testGetBooleanValue() {

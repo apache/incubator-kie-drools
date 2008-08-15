@@ -8,6 +8,7 @@ import junit.framework.TestCase;
 
 import org.drools.Cheese;
 import org.drools.base.ClassFieldAccessorCache;
+import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.ClassObjectType;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
@@ -22,13 +23,19 @@ import org.drools.spi.InternalReadAccessor;
 import org.drools.util.AbstractHashTable.FieldIndex;
 
 public class RightTupleIndexHashTableTest extends TestCase {
-    ClassFieldAccessorCache     cache  = ClassFieldAccessorCache.getInstance();
     EqualityEvaluatorsDefinition equals = new EqualityEvaluatorsDefinition();
 
+    ClassFieldAccessorStore      store  = new ClassFieldAccessorStore();
+
+    protected void setUp() throws Exception {
+        store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
+        store.setEagerWire( true );
+    }
+
     public void testSingleEntry() throws Exception {
-        final InternalReadAccessor extractor = cache.getReader( Cheese.class,
-                                                             "type",
-                                                             getClass().getClassLoader() );
+        final InternalReadAccessor extractor = store.getReader( Cheese.class,
+                                                                "type",
+                                                                getClass().getClassLoader() );
 
         final Pattern pattern = new Pattern( 0,
                                              new ClassObjectType( Cheese.class ) );
@@ -53,7 +60,7 @@ public class RightTupleIndexHashTableTest extends TestCase {
                       map.size() );
         assertNull( map.get( new LeftTuple( cheddarHandle1,
                                             null,
-                                            true) ) );
+                                            true ) ) );
 
         final Cheese stilton1 = new Cheese( "stilton",
                                             35 );
@@ -82,9 +89,9 @@ public class RightTupleIndexHashTableTest extends TestCase {
     }
 
     public void testTwoDifferentEntries() throws Exception {
-        final InternalReadAccessor extractor = cache.getReader( Cheese.class,
-                                                             "type",
-                                                             getClass().getClassLoader() );
+        final InternalReadAccessor extractor = store.getReader( Cheese.class,
+                                                                "type",
+                                                                getClass().getClassLoader() );
 
         final Pattern pattern = new Pattern( 0,
                                              new ClassObjectType( Cheese.class ) );
@@ -146,9 +153,9 @@ public class RightTupleIndexHashTableTest extends TestCase {
     }
 
     public void testTwoEqualEntries() throws Exception {
-        final InternalReadAccessor extractor = cache.getReader( Cheese.class,
-                                                             "type",
-                                                             getClass().getClassLoader() );
+        final InternalReadAccessor extractor = store.getReader( Cheese.class,
+                                                                "type",
+                                                                getClass().getClassLoader() );
 
         final Pattern pattern = new Pattern( 0,
                                              new ClassObjectType( Cheese.class ) );
@@ -209,9 +216,9 @@ public class RightTupleIndexHashTableTest extends TestCase {
     }
 
     public void testTwoDifferentEntriesSameHashCode() throws Exception {
-        final InternalReadAccessor extractor = cache.getReader( TestClass.class,
-                                                             "object",
-                                                             getClass().getClassLoader() );
+        final InternalReadAccessor extractor = store.getReader( TestClass.class,
+                                                                "object",
+                                                                getClass().getClassLoader() );
 
         final Pattern pattern = new Pattern( 0,
                                              new ClassObjectType( TestClass.class ) );
@@ -269,9 +276,9 @@ public class RightTupleIndexHashTableTest extends TestCase {
     }
 
     public void testRemove() throws Exception {
-        final InternalReadAccessor extractor = cache.getReader( Cheese.class,
-                                                             "type",
-                                                             getClass().getClassLoader() );
+        final InternalReadAccessor extractor = store.getReader( Cheese.class,
+                                                                "type",
+                                                                getClass().getClassLoader() );
 
         final Pattern pattern = new Pattern( 0,
                                              new ClassObjectType( Cheese.class ) );
@@ -343,9 +350,9 @@ public class RightTupleIndexHashTableTest extends TestCase {
     }
 
     public void testResize() throws Exception {
-        final InternalReadAccessor extractor = cache.getReader( Cheese.class,
-                                                             "type",
-                                                             getClass().getClassLoader() );
+        final InternalReadAccessor extractor = store.getReader( Cheese.class,
+                                                                "type",
+                                                                getClass().getClassLoader() );
 
         final Pattern pattern = new Pattern( 0,
                                              new ClassObjectType( Cheese.class ) );
@@ -359,7 +366,9 @@ public class RightTupleIndexHashTableTest extends TestCase {
                                                       equals.getEvaluator( ValueType.STRING_TYPE,
                                                                            Operator.EQUAL ) );
 
-        final RightTupleIndexHashTable map = new RightTupleIndexHashTable( 16, 0.75f, new FieldIndex[]{fieldIndex} );
+        final RightTupleIndexHashTable map = new RightTupleIndexHashTable( 16,
+                                                                           0.75f,
+                                                                           new FieldIndex[]{fieldIndex} );
 
         assertEquals( 0,
                       map.size() );
@@ -569,9 +578,9 @@ public class RightTupleIndexHashTableTest extends TestCase {
     }
 
     public void testEmptyIterator() {
-        final InternalReadAccessor extractor = cache.getReader( Cheese.class,
-                                                             "type",
-                                                             getClass().getClassLoader() );
+        final InternalReadAccessor extractor = store.getReader( Cheese.class,
+                                                                "type",
+                                                                getClass().getClassLoader() );
 
         final Pattern pattern = new Pattern( 0,
                                              new ClassObjectType( Cheese.class ) );
@@ -591,8 +600,9 @@ public class RightTupleIndexHashTableTest extends TestCase {
                                            55 );
         final InternalFactHandle stiltonHandle = new DefaultFactHandle( 2,
                                                                         stilton );
-        
-        assertNull( map.getFirst( new LeftTuple( stiltonHandle, null,
+
+        assertNull( map.getFirst( new LeftTuple( stiltonHandle,
+                                                 null,
                                                  true ) ) );
     }
 

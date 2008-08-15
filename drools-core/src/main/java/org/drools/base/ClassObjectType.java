@@ -16,6 +16,8 @@ package org.drools.base;
  * limitations under the License.
  */
 
+import org.drools.RuntimeDroolsException;
+import org.drools.common.DroolsObjectInputStream;
 import org.drools.spi.ObjectType;
 
 import java.io.ObjectInput;
@@ -32,7 +34,8 @@ import java.io.Externalizable;
  */
 public class ClassObjectType
     implements
-    ObjectType, Externalizable {
+    ObjectType,
+    Externalizable {
 
     /**
      *
@@ -40,7 +43,9 @@ public class ClassObjectType
     private static final long serialVersionUID = 400L;
 
     /** Java object class. */
-    protected Class           objectTypeClass;
+    protected Class           cls;
+
+    protected String          clsName;
 
     protected ValueType       valueType;
 
@@ -51,8 +56,8 @@ public class ClassObjectType
     // ------------------------------------------------------------
 
     public ClassObjectType() {
-        this(null);
     }
+
     /**
      * Creates a new class object type with shadow disabled.
      *
@@ -60,7 +65,8 @@ public class ClassObjectType
      *            Java object class.
      */
     public ClassObjectType(final Class objectTypeClass) {
-        this( objectTypeClass, false );
+        this( objectTypeClass,
+              false );
     }
 
     /**
@@ -69,30 +75,44 @@ public class ClassObjectType
      * @param objectTypeClass the class represented by this class object type
      * @param isEvent true if it is an event class, false otherwise
      */
-    public ClassObjectType(final Class objectTypeClass, final boolean isEvent) {
-        this.objectTypeClass = objectTypeClass;
+    public ClassObjectType(final Class objectTypeClass,
+                           final boolean isEvent) {
+        this.cls = objectTypeClass;
         this.isEvent = isEvent;
-        if (objectTypeClass != null)
-            this.valueType = ValueType.determineValueType( objectTypeClass );
+        //if (objectTypeClass != null)
+        this.clsName = this.cls.getName();
+        this.valueType = ValueType.determineValueType( objectTypeClass );
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        objectTypeClass = (Class)in.readObject();
-        valueType       = (ValueType)in.readObject();
-        if (valueType != null)
-            valueType   = ValueType.determineValueType(valueType.getClassType());
-        isEvent         = in.readBoolean();
+    public ClassObjectType(final String className,
+                           final boolean isEvent) {
+        this.isEvent = isEvent;
+        this.clsName = this.cls.getName();
+        //        if (objectTypeClass != null)
+        //
+        //            this.valueType = ValueType.determineValueType( objectTypeClass );        
+    }
+
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        this.clsName = in.readUTF();
+        if ( clsName.equals( "org.drools.InitialFact" ) || clsName.equals( "org.drools.base.DroolsQuery" ) ) {
+            // we handle this one especially as it never gets written to the packagestore for rewiring
+            try {
+                setClassType( getClass().getClassLoader().loadClass( clsName ) );
+            } catch ( ClassNotFoundException e ) {
+                throw new RuntimeDroolsException( "Unable to resolve class '" + clsName + "'" );
+            }
+        }        
+//        this.valueType = (ValueType) in.readObject();
+        this.isEvent = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(objectTypeClass);
-        out.writeObject(valueType);
-        out.writeBoolean(isEvent);
+        out.writeUTF( clsName );
+//        out.writeObject( valueType );
+        out.writeBoolean( isEvent );
     }
-
-    // ------------------------------------------------------------
-    // Instance methods
-    // ------------------------------------------------------------
 
     /**
      * Return the Java object class.
@@ -100,50 +120,59 @@ public class ClassObjectType
      * @return The Java object class.
      */
     public Class getClassType() {
-        return this.objectTypeClass;
+        return this.cls;
+    }
+
+    public String getClassName() {
+        return this.clsName;
+    }
+
+    public void setClassType(Class cls) {
+        this.cls = cls;
+        this.valueType = ValueType.determineValueType( cls );
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // org.drools.spi.ObjectType
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    /**
-     * Determine if the passed <code>Class</code> matches to the object type
-     * defined by this <code>objectType</code> instance.
-     *
-     * @param clazz
-     *            The <code>Class</code> to test.
-     *
-     * @return <code>true</code> if the <code>Class</code> matches this
-     *         object type, else <code>false</code>.
-     */
-    public boolean matchesClass(final Class clazz) {
-        return getClassType().isAssignableFrom( clazz );
-    }
-
-    /**
-     * Determine if the passed <code>Object</code> belongs to the object type
-     * defined by this <code>objectType</code> instance.
-     *
-     * @param object
-     *            The <code>Object</code> to test.
-     *
-     * @return <code>true</code> if the <code>Object</code> matches this
-     *         object type, else <code>false</code>.
-     */
-    public boolean matches(final Object object) {
-        return getClassType().isInstance( object );
-    }
-
-    public boolean isAssignableFrom(Object object) {
-        return this.objectTypeClass.isAssignableFrom( (Class) object );
-    }
+    //    /**
+    //     * Determine if the passed <code>Class</code> matches to the object type
+    //     * defined by this <code>objectType</code> instance.
+    //     *
+    //     * @param clazz
+    //     *            The <code>Class</code> to test.
+    //     *
+    //     * @return <code>true</code> if the <code>Class</code> matches this
+    //     *         object type, else <code>false</code>.
+    //     */
+    //    public boolean matchesClass(final Class clazz) {
+    //        return getClassType().isAssignableFrom( clazz );
+    //    }
+    //
+    //    /**
+    //     * Determine if the passed <code>Object</code> belongs to the object type
+    //     * defined by this <code>objectType</code> instance.
+    //     *
+    //     * @param object
+    //     *            The <code>Object</code> to test.
+    //     *
+    //     * @return <code>true</code> if the <code>Object</code> matches this
+    //     *         object type, else <code>false</code>.
+    //     */
+    //    public boolean matches(final Object object) {
+    //        return getClassType().isInstance( object );
+    //    }
+    //
+    //    public boolean isAssignableFrom(Object object) {
+    //        return this.objectTypeClass.isAssignableFrom( (Class) object );
+    //    }
 
     public boolean isAssignableFrom(ObjectType objectType) {
         if ( !(objectType instanceof ClassObjectType) ) {
             return false;
         } else {
-            return this.objectTypeClass.isAssignableFrom( ((ClassObjectType) objectType).getClassType() );
+            return this.cls.isAssignableFrom( ((ClassObjectType) objectType).getClassType() );
         }
     }
 
@@ -160,7 +189,7 @@ public class ClassObjectType
     }
 
     public String toString() {
-        return "[ClassObjectType "+( this.isEvent ? "event=" : "class=" )+ getClassType().getName() + "]";
+        return "[ClassObjectType " + (this.isEvent ? "event=" : "class=") + getClassType().getName() + "]";
     }
 
     /**
@@ -181,11 +210,11 @@ public class ClassObjectType
             return false;
         }
 
-        return this.objectTypeClass == ((ClassObjectType) object).objectTypeClass;
+        return this.clsName.equals( ((ClassObjectType) object).clsName );
     }
 
     public int hashCode() {
-        return this.objectTypeClass.hashCode();
+        return this.clsName.hashCode();
     }
 
 }

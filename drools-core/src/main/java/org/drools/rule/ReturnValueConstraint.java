@@ -26,17 +26,19 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.ReturnValueRestriction.ReturnValueContextEntry;
+import org.drools.spi.AcceptsReadAccessor;
 import org.drools.spi.Evaluator;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.ReturnValueExpression;
 
 public class ReturnValueConstraint extends MutableTypeConstraint
     implements
+    AcceptsReadAccessor,
     Externalizable {
 
     private static final long      serialVersionUID = 400L;
 
-    private InternalReadAccessor   fieldExtractor;
+    private InternalReadAccessor   readAccessor;
     private ReturnValueRestriction restriction;
 
     public ReturnValueConstraint() {
@@ -46,22 +48,26 @@ public class ReturnValueConstraint extends MutableTypeConstraint
 
     public ReturnValueConstraint(final InternalReadAccessor fieldExtractor,
                                  final ReturnValueRestriction restriction) {
-        this.fieldExtractor = fieldExtractor;
+        this.readAccessor = fieldExtractor;
         this.restriction = restriction;
     }
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         super.readExternal( in );
-        fieldExtractor = (InternalReadAccessor) in.readObject();
+        readAccessor = (InternalReadAccessor) in.readObject();
         restriction = (ReturnValueRestriction) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
-        out.writeObject( fieldExtractor );
+        out.writeObject( readAccessor );
         out.writeObject( restriction );
     }
+    
+    public void setReadAccessor(InternalReadAccessor readAccessor) {
+        this.readAccessor = readAccessor;
+    }    
 
     public Declaration[] getRequiredDeclarations() {
         return this.restriction.getRequiredDeclarations();
@@ -86,13 +92,13 @@ public class ReturnValueConstraint extends MutableTypeConstraint
     }
 
     public String toString() {
-        return "[ReturnValueConstraint fieldExtractor=" + this.fieldExtractor + " evaluator=" + getEvaluator() + " declarations=" + getRequiredDeclarations() + "]";
+        return "[ReturnValueConstraint fieldExtractor=" + this.readAccessor + " evaluator=" + getEvaluator() + " declarations=" + getRequiredDeclarations() + "]";
     }
 
     public int hashCode() {
         final int PRIME = 31;
         int result = 1;
-        result = PRIME * result + this.fieldExtractor.hashCode();
+        result = PRIME * result + this.readAccessor.hashCode();
         result = PRIME * result + this.restriction.hashCode();
         return result;
     }
@@ -108,7 +114,7 @@ public class ReturnValueConstraint extends MutableTypeConstraint
 
         final ReturnValueConstraint other = (ReturnValueConstraint) object;
 
-        return this.fieldExtractor.equals( other.fieldExtractor ) && this.restriction.equals( other.restriction );
+        return this.readAccessor.equals( other.readAccessor ) && this.restriction.equals( other.restriction );
     }
 
     public ContextEntry createContextEntry() {
@@ -119,7 +125,7 @@ public class ReturnValueConstraint extends MutableTypeConstraint
                              final InternalWorkingMemory workingMemory,
                              final ContextEntry context) {
         try {
-            return this.restriction.isAllowed( this.fieldExtractor,
+            return this.restriction.isAllowed( this.readAccessor,
                                                handle,
                                                null,
                                                workingMemory,
@@ -134,7 +140,7 @@ public class ReturnValueConstraint extends MutableTypeConstraint
                                        final InternalFactHandle handle) {
         try {
             final ReturnValueContextEntry ctx = (ReturnValueContextEntry) context;
-            return this.restriction.isAllowed( this.fieldExtractor,
+            return this.restriction.isAllowed( this.readAccessor,
                                                handle,
                                                ctx.getTuple(),
                                                ctx.getWorkingMemory(),
@@ -149,7 +155,7 @@ public class ReturnValueConstraint extends MutableTypeConstraint
                                         final ContextEntry context) {
         try {
             final ReturnValueContextEntry ctx = (ReturnValueContextEntry) context;
-            return this.restriction.isAllowed( this.fieldExtractor,
+            return this.restriction.isAllowed( this.readAccessor,
                                                ctx.getHandle(),
                                                tuple,
                                                ctx.getWorkingMemory(),
@@ -161,7 +167,7 @@ public class ReturnValueConstraint extends MutableTypeConstraint
     }
 
     public Object clone() {
-        return new ReturnValueConstraint( this.fieldExtractor,
+        return new ReturnValueConstraint( this.readAccessor,
                                           (ReturnValueRestriction) this.restriction.clone() );
     }
 

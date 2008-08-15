@@ -120,6 +120,7 @@ public class ValueType
         out.writeObject(classType);
         out.writeInt(simpleType);
     }
+    
     private Object readResolve() throws java.io.ObjectStreamException {
         return determineValueType( this.classType );
     }

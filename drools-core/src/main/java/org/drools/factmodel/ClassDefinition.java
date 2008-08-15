@@ -50,7 +50,7 @@ public class ClassDefinition
     private String                       className;
     private String                       superClass;
     private String[]                     interfaces;
-    private Class< ? >                   definedClass;
+    private transient Class< ? >         definedClass;
 
     private Map<String, FieldDefinition> fields = new LinkedHashMap<String, FieldDefinition>();
 
@@ -93,7 +93,7 @@ public class ClassDefinition
         this.className = (String) in.readObject();
         this.superClass = (String) in.readObject();
         this.interfaces = (String[]) in.readObject();
-        this.definedClass = (Class<?>) in.readObject();
+        //this.definedClass = (Class<?>) in.readObject();
         this.fields = (Map<String, FieldDefinition>) in.readObject();
     }
 
@@ -101,7 +101,7 @@ public class ClassDefinition
         out.writeObject( this.className );
         out.writeObject( this.superClass );
         out.writeObject( this.interfaces );
-        out.writeObject( this.definedClass );
+        //out.writeObject( this.definedClass );
         out.writeObject( this.fields );
     }
 
@@ -161,45 +161,6 @@ public class ClassDefinition
     }
 
     /**
-     * @param beanInfo The beanInfo to set.
-     * @throws NoSuchFieldException
-     * @throws InvocationTargetException
-     * @throws NoSuchMethodException
-     * @throws ClassNotFoundException
-     * @throws IntrospectionException
-     * @throws IOException
-     * @throws IllegalAccessException
-     * @throws InstantiationException
-     * @throws IllegalArgumentException
-     * @throws SecurityException
-     * @throws IntrospectionException
-     */
-    public final void buildFieldAccessors() throws SecurityException,
-                                           IllegalArgumentException,
-                                           InstantiationException,
-                                           IllegalAccessException,
-                                           IOException,
-                                           IntrospectionException,
-                                           ClassNotFoundException,
-                                           NoSuchMethodException,
-                                           InvocationTargetException,
-                                           NoSuchFieldException {
-        ClassFieldAccessorCache cache = ClassFieldAccessorCache.getInstance();
-
-        for ( FieldDefinition attrDef : this.fields.values() ) {
-            ClassFieldReader reader = cache.getReader( this.getDefinedClass(),
-                                                       attrDef.getName(),
-                                                       this.getClass().getClassLoader() );
-            ClassFieldWriter writer = cache.getWriter( this.getDefinedClass(),
-                                                       attrDef.getName(),
-                                                       this.getClass().getClassLoader() );
-            ClassFieldAccessor accessor = new ClassFieldAccessor( reader,
-                                                                  writer );
-            attrDef.setFieldAccessor( accessor );
-        }
-    }
-
-    /**
      * @return Returns the interfaces.
      */
     public final String[] getInterfaces() {
@@ -244,29 +205,37 @@ public class ClassDefinition
         return new ArrayList<FactField>( fields.values() );
     }
 
-	public Object get(Object bean, String field) {
-		return this.getField(field).getFieldAccessor().getValue(bean);
-	}
+    public Object get(Object bean,
+                      String field) {
+        return this.getField( field ).getFieldAccessor().getValue( bean );
+    }
 
-	public void set(Object bean, String field, Object value) {
-		this.getField(field).getFieldAccessor().setValue(bean, value);
-	}
+    public void set(Object bean,
+                    String field,
+                    Object value) {
+        this.getField( field ).getFieldAccessor().setValue( bean,
+                                                            value );
+    }
 
-	public Map<String, Object> getAsMap(Object bean) {
-		Map<String, Object> m = new HashMap<String, Object>(fields.size());
-		for (Iterator<Map.Entry<String, FieldDefinition>> iterator = this.fields.entrySet().iterator(); iterator.hasNext();) {
-			Map.Entry<String, FieldDefinition> ent = iterator.next();
-			Object val = ent.getValue().getFieldAccessor().getValue(bean);
-			m.put(ent.getKey(), val);
-		}
-		return m;
-	}
+    public Map<String, Object> getAsMap(Object bean) {
+        Map<String, Object> m = new HashMap<String, Object>( fields.size() );
+        for ( Iterator<Map.Entry<String, FieldDefinition>> iterator = this.fields.entrySet().iterator(); iterator.hasNext(); ) {
+            Map.Entry<String, FieldDefinition> ent = iterator.next();
+            Object val = ent.getValue().getFieldAccessor().getValue( bean );
+            m.put( ent.getKey(),
+                   val );
+        }
+        return m;
+    }
 
-	public void setFromMap(Object bean, Map<String, Object> data) {
-		for (Iterator<Map.Entry<String, Object>> iterator = data.entrySet().iterator(); iterator.hasNext();) {
-			Map.Entry<String, Object> ent = iterator.next();
-			set(bean, ent.getKey(), ent.getValue());
-		}
-	}
+    public void setFromMap(Object bean,
+                           Map<String, Object> data) {
+        for ( Iterator<Map.Entry<String, Object>> iterator = data.entrySet().iterator(); iterator.hasNext(); ) {
+            Map.Entry<String, Object> ent = iterator.next();
+            set( bean,
+                 ent.getKey(),
+                 ent.getValue() );
+        }
+    }
 
 }

@@ -26,9 +26,11 @@ import java.util.Map;
 
 import org.drools.base.SalienceInteger;
 import org.drools.spi.AgendaGroup;
+import org.drools.spi.CompiledInvoker;
 import org.drools.spi.Consequence;
 import org.drools.spi.Duration;
 import org.drools.spi.Salience;
+import org.drools.spi.Wireable;
 
 /**
  * A <code>Rule</code> contains a set of <code>Test</code>s and a
@@ -45,6 +47,7 @@ import org.drools.spi.Salience;
 public class Rule
     implements
     Externalizable,
+    Wireable,
     Dialectable {
     /**
      *
@@ -117,7 +120,13 @@ public class Rule
         out.writeObject(lhsRoot);
         out.writeObject(dialect);
         out.writeObject(agendaGroup);
-        out.writeObject(consequence);
+        
+        if ( this.consequence instanceof CompiledInvoker ) {
+            out.writeObject(  null );
+        } else {
+            out.writeObject(this.consequence);   
+        } 
+        
         out.writeObject(duration);
         out.writeLong(loadOrder);
         out.writeBoolean(noLoop);
@@ -506,6 +515,14 @@ public class Rule
         }
 
         return specificity;
+    }
+    
+    public void wire(Object object) {
+        if ( object instanceof Salience ) {
+            setSalience( (Salience ) object );
+        } else {
+            setConsequence( (Consequence) object );
+        }
     }
 
     /**

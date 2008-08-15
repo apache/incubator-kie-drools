@@ -31,8 +31,10 @@ import java.util.Set;
 import org.drools.RuleBase;
 import org.drools.base.ClassFieldAccessor;
 import org.drools.base.ClassFieldAccessorCache;
+import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.ClassFieldReader;
 import org.drools.base.ClassFieldWriter;
+import org.drools.common.InternalRuleBase;
 import org.drools.commons.jci.problems.CompilationProblem;
 import org.drools.factmodel.ClassBuilder;
 import org.drools.factmodel.ClassDefinition;
@@ -56,11 +58,15 @@ import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.TypeFieldDescr;
 import org.drools.process.core.Process;
 import org.drools.reteoo.ReteooRuleBase;
+import org.drools.rule.CompositeClassLoader;
+import org.drools.rule.ImportDeclaration;
+import org.drools.rule.JavaDialectRuntimeData;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.rule.TypeDeclaration;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleBuilder;
+import org.drools.rule.builder.dialect.java.JavaDialect;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.xml.XmlPackageReader;
 import org.drools.xml.XmlProcessReader;
@@ -70,7 +76,7 @@ import org.xml.sax.SAXException;
  * This is the main compiler class for parsing and compiling rules and
  * assembling or merging them into a binary Package instance. This can be done
  * by merging into existing binary packages, or totally from source.
- *
+ * 
  * If you are using the Java dialect the JavaDialectConfiguration will attempt
  * to validate that the specified compiler is in the classpath, using
  * ClassLoader.loasClass(String). If you intented to just Janino sa the compiler
@@ -88,8 +94,6 @@ public class PackageBuilder {
 
     private PackageBuilderConfiguration  configuration;
 
-    private ClassFieldAccessorCache      classFieldExtractorCache;
-
     public static final RuleBuilder      ruleBuilder = new RuleBuilder();
 
     /**
@@ -106,6 +110,10 @@ public class PackageBuilder {
      * default dialect
      */
     private final String                 defaultDialect;
+
+    private CompositeClassLoader         rootClassLoader;
+    
+    private Map<String, Class>           globals;
 
     /**
      * Use this when package is starting from scratch.
@@ -131,12 +139,12 @@ public class PackageBuilder {
 
     /**
      * Pass a specific configuration for the PackageBuilder
-     *
+     * 
      * PackageBuilderConfiguration is not thread safe and it also contains
      * state. Once it is created and used in one or more PackageBuilders it
      * should be considered immutable. Do not modify its properties while it is
      * being used by a PackageBuilder.
-     *
+     * 
      * @param configuration
      */
     public PackageBuilder(final PackageBuilderConfiguration configuration) {
@@ -147,7 +155,7 @@ public class PackageBuilder {
     //    /**
     //     * This allows you to pass in a pre existing package, and a configuration
     //     * (for instance to set the classloader).
-    //     *
+    //     * 
     //     * @param pkg
     //     *            A pre existing package (can be null if none exists)
     //     * @param configuration
@@ -192,18 +200,21 @@ public class PackageBuilder {
         }
         this.configuration = configuration;
 
+        this.rootClassLoader = new CompositeClassLoader( this.configuration.getClassLoader() );
+
         this.defaultNamespace = pkg.getName();
         this.defaultDialect = this.configuration.getDefaultDialect();
 
         this.pkgRegistryMap = new HashMap<String, PackageRegistry>();
         this.results = new ArrayList();
-        this.classFieldExtractorCache = ClassFieldAccessorCache.getInstance();
 
         PackageRegistry pkgRegistry = new PackageRegistry( this,
                                                            pkg );
         pkgRegistry.setDialect( this.defaultDialect );
         this.pkgRegistryMap.put( pkg.getName(),
                                  pkgRegistry );
+        
+        globals = new HashMap<String, Class>();
     }
 
     public PackageBuilder(RuleBase ruleBase,
@@ -213,20 +224,27 @@ public class PackageBuilder {
         }
         this.configuration = configuration;
 
+        if ( ruleBase != null ) {
+            this.rootClassLoader = ((InternalRuleBase) ruleBase).getRootClassLoader();
+        } else {
+            this.rootClassLoader = new CompositeClassLoader( this.configuration.getClassLoader() );
+        }
+
         // FIXME, we need to get drools to support "default" namespace.
-        //this.defaultNamespace = pkg.getName();
+        //this.defaultNamespace = pkg.getName();        
         this.defaultDialect = this.configuration.getDefaultDialect();
 
         this.pkgRegistryMap = new HashMap<String, PackageRegistry>();
         this.results = new ArrayList();
-        this.classFieldExtractorCache = ClassFieldAccessorCache.getInstance();
 
         this.ruleBase = (ReteooRuleBase) ruleBase;
+        
+        globals = new HashMap<String, Class>();
     }
 
     /**
      * Load a rule package from DRL source.
-     *
+     * 
      * @param reader
      * @throws DroolsParserException
      * @throws IOException
@@ -236,14 +254,14 @@ public class PackageBuilder {
         final DrlParser parser = new DrlParser();
         final PackageDescr pkg = parser.parse( reader );
         this.results.addAll( parser.getErrors() );
-        if (!parser.hasErrors()){
-        	addPackage( pkg );
+        if ( !parser.hasErrors() ) {
+            addPackage( pkg );
         }
     }
 
     /**
      * Load a rule package from XML source.
-     *
+     * 
      * @param reader
      * @throws DroolsParserException
      * @throws IOException
@@ -264,7 +282,7 @@ public class PackageBuilder {
 
     /**
      * Load a rule package from DRL source using the supplied DSL configuration.
-     *
+     * 
      * @param source
      *            The source of the rules.
      * @param dsl
@@ -279,8 +297,8 @@ public class PackageBuilder {
         final PackageDescr pkg = parser.parse( source,
                                                dsl );
         this.results.addAll( parser.getErrors() );
-        if (!parser.hasErrors()){
-        	addPackage( pkg );
+        if ( !parser.hasErrors() ) {
+            addPackage( pkg );
         }
     }
 
@@ -435,23 +453,24 @@ public class PackageBuilder {
             }
         }
     }
-
+    
     /**
      * This checks to see if it should all be in the one namespace.
      */
     private boolean checkNamespace(String newName) {
-    	if (this.configuration == null) return true;
-    	if (this.defaultNamespace == null) return true;
-    	if (this.defaultNamespace.equals(newName)) return true;
-    	return this.configuration.isAllowMultipleNamespaces();
-	}
-
-	public boolean isEmpty(String string) {
-        return (string == null || string.trim().length() == 0);
+        if (this.configuration == null) return true;
+        if (this.defaultNamespace == null) return true;
+        if (this.defaultNamespace.equals(newName)) return true;
+        return this.configuration.isAllowMultipleNamespaces();
     }
 
+    public boolean isEmpty(String string) {
+        return (string == null || string.trim().length() == 0);
+    }
+    
+
     public void updateResults() {
-        // some of the rules and functions may have been redefined
+        // some of the rules and functions may have been redefined     
         this.results = getResults( this.results );
     }
 
@@ -463,7 +482,7 @@ public class PackageBuilder {
 
     public void reloadAll() {
         for ( PackageRegistry pkgRegistry : this.pkgRegistryMap.values() ) {
-            pkgRegistry.getDialectRuntimeRegistry().reloadDirty();
+            pkgRegistry.getDialectRuntimeRegistry().onBeforeExecute();
         }
     }
 
@@ -507,13 +526,16 @@ public class PackageBuilder {
             pkg = this.ruleBase.getPackage( packageDescr.getName() );
         } else {
             // define a new package
-            pkg = new Package( packageDescr.getName(),
-                               this.configuration.getClassLoader() );
-
+            pkg = new Package( packageDescr.getName() );
+            pkg.setClassFieldAccessorCache( new ClassFieldAccessorCache( this.rootClassLoader ) );
+            
             // if there is a rulebase then add the package.
             if ( this.ruleBase != null ) {
                 this.ruleBase.addPackage( pkg );
                 pkg = this.ruleBase.getPackage( packageDescr.getName() );
+            } else {
+                // the RuleBase will also initialise the 
+                pkg.getDialectRuntimeRegistry().onAdd( this.rootClassLoader );
             }
         }
 
@@ -564,9 +586,11 @@ public class PackageBuilder {
                 clazz = pkgRegistry.getTypeResolver().resolveType( className );
                 pkgRegistry.getPackage().addGlobal( identifier,
                                                     clazz );
+                this.globals.put( identifier, clazz );
             } catch ( final ClassNotFoundException e ) {
                 this.results.add( new GlobalError( identifier,
                                                    global.getLine() ) );
+                e.printStackTrace();
             }
         }
 
@@ -587,7 +611,7 @@ public class PackageBuilder {
         for ( TypeDeclarationDescr typeDescr : packageDescr.getTypeDeclarations() ) {
             // make sure namespace is set on components
             if ( isEmpty( typeDescr.getNamespace() ) ) {
-                // use the default namespace
+                // use the default namespace 
                 typeDescr.setNamespace( defaultRegistry.getPackage().getName() );
                 pkgRegistry = defaultRegistry;
             } else {
@@ -656,10 +680,12 @@ public class PackageBuilder {
             String duration = typeDescr.getMetaAttribute( TypeDeclaration.ATTR_DURATION );
             if ( duration != null ) {
                 type.setDurationAttribute( duration );
-                InternalReadAccessor extractor = ClassFieldAccessorCache.getInstance().getReader( type.getTypeClass(),
-                                                                                                  duration,
-                                                                                                  this.configuration.getClassLoader() );
-                type.setDurationExtractor( extractor );
+                ClassDefinition cd = type.getTypeClassDef();
+                ClassFieldAccessorStore store = pkgRegistry.getPackage().getClassFieldAccessorStore();
+                InternalReadAccessor extractor = store.getReader( type.getTypeName(),
+                                                                  duration,
+                                                                  type );
+                type.setReadAccessor( extractor );
             }
 
             pkgRegistry.getPackage().addTypeDeclaration( type );
@@ -667,8 +693,8 @@ public class PackageBuilder {
     }
 
     /**
-     *
-     * @param registry
+     * 
+     * @param pkgRegistry 
      * @throws SecurityException
      * @throws IllegalArgumentException
      * @throws InstantiationException
@@ -681,36 +707,28 @@ public class PackageBuilder {
      * @throws NoSuchFieldException
      */
     private final void buildFieldAccessors(final TypeDeclaration type,
-                                           PackageRegistry registry) throws SecurityException,
-                                                                    IllegalArgumentException,
-                                                                    InstantiationException,
-                                                                    IllegalAccessException,
-                                                                    IOException,
-                                                                    IntrospectionException,
-                                                                    ClassNotFoundException,
-                                                                    NoSuchMethodException,
-                                                                    InvocationTargetException,
-                                                                    NoSuchFieldException {
-        ClassFieldAccessorCache cache = ClassFieldAccessorCache.getInstance();
+                                           final PackageRegistry pkgRegistry) throws SecurityException,
+                                                                             IllegalArgumentException,
+                                                                             InstantiationException,
+                                                                             IllegalAccessException,
+                                                                             IOException,
+                                                                             IntrospectionException,
+                                                                             ClassNotFoundException,
+                                                                             NoSuchMethodException,
+                                                                             InvocationTargetException,
+                                                                             NoSuchFieldException {
         ClassDefinition cd = type.getTypeClassDef();
-
+        ClassFieldAccessorStore store = pkgRegistry.getPackage().getClassFieldAccessorStore();
         for ( FieldDefinition attrDef : cd.getFieldsDefinitions() ) {
-            ClassFieldReader reader = cache.getReader( cd.getDefinedClass(),
-                                                       attrDef.getName(),
-                                                       registry.getPackage().getDialectRuntimeRegistry().getClassLoader() );
-            ClassFieldWriter writer = cache.getWriter( cd.getDefinedClass(),
-                                                       attrDef.getName(),
-                                                       registry.getPackage().getDialectRuntimeRegistry().getClassLoader() );
-            ClassFieldAccessor accessor = new ClassFieldAccessor( reader,
-                                                                  writer );
-            attrDef.setFieldAccessor( accessor );
+            ClassFieldAccessor accessor = store.getAccessor( cd.getDefinedClass().getName(), attrDef.getName() );
+            attrDef.setReadWriteAccessor( accessor );
         }
     }
 
     /**
      * Generates a bean, and adds it to the composite class loader that
      * everything is using.
-     *
+     * 
      */
     private void generateDeclaredBean(TypeDeclarationDescr typeDescr,
                                       TypeDeclaration type,
@@ -732,8 +750,12 @@ public class PackageBuilder {
             }
 
             byte[] d = cb.buildClass( def );
-            pkgRegistry.getPackage().getPackageScopeClassLoader().addClass( fullName,
-                                                                            d );
+
+            JavaDialectRuntimeData dialect = (JavaDialectRuntimeData) pkgRegistry.getDialectRuntimeRegistry().getDialectData( "java" );
+
+            dialect.write( JavaDialectRuntimeData.convertClassToResourcePath( fullName ),
+                           d );
+
             type.setTypeClassDef( def );
         } catch ( Exception e ) {
             e.printStackTrace();
@@ -798,7 +820,7 @@ public class PackageBuilder {
         PackageRegistry pkgRegistry = this.pkgRegistryMap.get( ruleDescr.getNamespace() );
 
         DialectCompiletimeRegistry ctr = pkgRegistry.getDialectCompiletimeRegistry();
-        RuleBuildContext context = new RuleBuildContext( this.configuration,
+        RuleBuildContext context = new RuleBuildContext( this,
                                                          ruleDescr,
                                                          ctr,
                                                          pkgRegistry.getPackage(),
@@ -824,7 +846,7 @@ public class PackageBuilder {
      *         can report on by calling getErrors or printErrors. If you try to
      *         add an invalid package (or rule) to a RuleBase, you will get a
      *         runtime exception.
-     *
+     * 
      * Compiled packages are serializable.
      */
     public Package getPackage() {
@@ -832,7 +854,6 @@ public class PackageBuilder {
         Package pkg = null;
         if ( pkgRegistry != null ) {
             pkg = pkgRegistry.getPackage();
-            pkgRegistry.getPackage().getDialectRuntimeRegistry().reloadDirty();
         }
         if ( hasErrors() && pkg != null ) {
             pkg.setError( getErrors().toString() );
@@ -844,14 +865,14 @@ public class PackageBuilder {
         Package[] pkgs = new Package[this.pkgRegistryMap.size()];
         int i = 0;
         String errors = null;
-        if (!getErrors().isEmpty()) {
-        	errors = getErrors().toString();
+        if ( !getErrors().isEmpty() ) {
+            errors = getErrors().toString();
         }
         for ( PackageRegistry pkgRegistry : this.pkgRegistryMap.values() ) {
             Package pkg = pkgRegistry.getPackage();
-            pkg.getDialectRuntimeRegistry().reloadDirty();
-            if (errors != null) {
-            	pkg.setError( errors );
+            pkg.getDialectRuntimeRegistry().onBeforeExecute();
+            if ( errors != null ) {
+                pkg.setError( errors );
             }
             pkgs[i++] = pkg;
         }
@@ -861,7 +882,7 @@ public class PackageBuilder {
 
     /**
      * Return the PackageBuilderConfiguration for this PackageBuilder session
-     *
+     * 
      * @return The PackageBuilderConfiguration
      */
     public PackageBuilderConfiguration getPackageBuilderConfiguration() {
@@ -875,15 +896,9 @@ public class PackageBuilder {
     public Map<String, PackageRegistry> getPackageRegistry() {
         return this.pkgRegistryMap;
     }
-
-    /**
-     * Return the ClassFieldExtractorCache, this should only be used internally,
-     * and is subject to change
-     *
-     * @return the ClsasFieldExtractorCache
-     */
-    public ClassFieldAccessorCache getClassFieldExtractorCache() {
-        return this.classFieldExtractorCache;
+    
+    public Map<String, Class> getGlobals() {
+        return this.globals;
     }
 
     /**
@@ -919,6 +934,7 @@ public class PackageBuilder {
     public String getDefaultDialect() {
         return this.defaultDialect;
     }
+
     public static class MissingPackageNameException extends IllegalArgumentException {
         private static final long serialVersionUID = 400L;
 
@@ -942,7 +958,7 @@ public class PackageBuilder {
      * report a compile error of its type, should it happen. This is needed, as
      * the compiling is done as one hit at the end, and we need to be able to
      * work out what rule/ast element caused the error.
-     *
+     * 
      * An error handler it created for each class task that is queued to be
      * compiled. This doesn't mean an error has occurred, it just means it *may*
      * occur in the future and we need to be able to map it back to the AST
@@ -966,7 +982,7 @@ public class PackageBuilder {
         }
 
         /**
-         *
+         * 
          * @return A DroolsError object populated as appropriate, should the
          *         unthinkable happen and this need to be reported.
          */
@@ -987,7 +1003,6 @@ public class PackageBuilder {
             }
         }
     }
-
 
     public static class RuleErrorHandler extends ErrorHandler {
 
@@ -1078,7 +1093,6 @@ public class PackageBuilder {
 
     }
 
-
     public static class SrcErrorHandler extends ErrorHandler {
 
         public SrcErrorHandler(final String message) {
@@ -1097,7 +1111,8 @@ public class PackageBuilder {
         private String message;
         private int[]  errorLines = new int[0];
 
-        public SrcError(Object object, String message) {
+        public SrcError(Object object,
+                        String message) {
             this.object = object;
             this.message = message;
         }
@@ -1131,10 +1146,13 @@ public class PackageBuilder {
             }
             return buf.toString();
         }
-
     }
 
     private String ucFirst(final String name) {
         return name.toUpperCase().charAt( 0 ) + name.substring( 1 );
+    }
+
+    public CompositeClassLoader getRootClassLoader() {
+        return this.rootClassLoader;
     }
 }

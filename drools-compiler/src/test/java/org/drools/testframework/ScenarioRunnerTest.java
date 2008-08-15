@@ -15,6 +15,7 @@ import org.drools.WorkingMemory;
 import org.drools.base.ClassTypeResolver;
 import org.drools.base.TypeResolver;
 import org.drools.base.mvel.DroolsMVELFactory;
+import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.guvnor.client.modeldriven.testing.ExecutionTrace;
 import org.drools.guvnor.client.modeldriven.testing.Expectation;
@@ -854,8 +855,8 @@ public class ScenarioRunnerTest extends RuleUnit {
 
         sc.fixtures.addAll( Arrays.asList( assertions ) );
 
-        WorkingMemory wm = getWorkingMemory( "test_rules3.drl" );
-        ClassLoader cl = wm.getRuleBase().getPackages()[0].getPackageScopeClassLoader();
+        WorkingMemory wm = getWorkingMemory( "test_rules3.drl" );        
+        ClassLoader cl = ((InternalRuleBase) wm.getRuleBase()).getRootClassLoader();
 
         HashSet<String> imports = new HashSet<String>();
         imports.add("foo.bar.*");

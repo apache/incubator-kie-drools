@@ -13,6 +13,7 @@ import org.drools.FactHandle;
 import org.drools.RuleBase;
 import org.drools.base.ClassTypeResolver;
 import org.drools.base.TypeResolver;
+import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.guvnor.client.modeldriven.testing.ExecutionTrace;
 import org.drools.guvnor.client.modeldriven.testing.Expectation;
@@ -74,7 +75,7 @@ public class ScenarioRunner {
 		this.scenario = ScenarioXMLPersistence.getInstance().unmarshal(xml);
 		this.workingMemory = (InternalWorkingMemory) rb.newStatefulSession();
 		Package pk = rb.getPackages()[0];
-        ClassLoader cl = pk.getPackageScopeClassLoader();
+        ClassLoader cl = ((InternalRuleBase) rb).getRootClassLoader();
         HashSet<String> imports = new HashSet<String>();
         imports.add(pk.getName() + ".*");
         imports.addAll(pk.getImports().keySet());

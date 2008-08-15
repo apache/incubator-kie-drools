@@ -878,7 +878,13 @@ public class MiscTest extends TestCase {
         // pre build the package
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackage( packageDescr );
-        final Package pkg = builder.getPackage();
+        
+        if ( builder.hasErrors() ) {
+            System.err.println( builder.getErrors() );
+        }
+        
+        Package pkg = builder.getPackage();
+        pkg = SerializationHelper.serializeObject( pkg );
 
         // add the package to a rulebase
         RuleBase ruleBase = getRuleBase();
@@ -5480,30 +5486,5 @@ public class MiscTest extends TestCase {
 
     }
 
-    public class SubvertedClassLoader extends URLClassLoader {
-
-        private static final long serialVersionUID = 400L;
-
-        public SubvertedClassLoader(final URL[] urls,
-                                    final ClassLoader parentClassLoader) {
-            super( urls,
-                   parentClassLoader );
-        }
-
-        protected synchronized Class loadClass(String name,
-                                               boolean resolve) throws ClassNotFoundException {
-            // First, check if the class has already been loaded
-            Class c = findLoadedClass( name );
-            if ( c == null ) {
-                try {
-                    c = findClass( name );
-                } catch ( ClassNotFoundException e ) {
-                    c = super.loadClass( name,
-                                         resolve );
-                }
-            }
-            return c;
-        }
-    }
 
 }

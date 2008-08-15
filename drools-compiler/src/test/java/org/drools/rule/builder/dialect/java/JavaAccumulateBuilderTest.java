@@ -8,12 +8,15 @@ import org.drools.compiler.Dialect;
 import org.drools.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.compiler.PackageRegistry;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.DescrFactory;
 import org.drools.lang.descr.FieldBindingDescr;
+import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.Accumulate;
+import org.drools.rule.Package;
 import org.drools.rule.builder.RuleBuildContext;
 
 public class JavaAccumulateBuilderTest extends TestCase {
@@ -42,17 +45,21 @@ public class JavaAccumulateBuilderTest extends TestCase {
         accumDescr.setActionCode( "x += $price;" );
         accumDescr.setResultCode( "new Integer( x )" );
         
-        org.drools.rule.Package pkg = new org.drools.rule.Package( "org.drools" );
-        final PackageBuilder pkgBuilder = new PackageBuilder(pkg);
+        //org.drools.rule.Package pkg = new org.drools.rule.Package( "org.drools" );        
+        final PackageBuilder pkgBuilder = new PackageBuilder();
+        pkgBuilder.addPackage( new PackageDescr( "org.drools" ) );
         final PackageBuilderConfiguration conf = pkgBuilder.getPackageBuilderConfiguration();
-        DialectCompiletimeRegistry dialectRegistry = pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectCompiletimeRegistry();
+        PackageRegistry pkgReg = pkgBuilder.getPackageRegistry( "org.drools" );
+        Package pkg = pkgReg.getPackage();
+        DialectCompiletimeRegistry dialectRegistry = pkgReg.getDialectCompiletimeRegistry();
         Dialect dialect = dialectRegistry.getDialect( "java" );
-        
-        
+                
         RuleDescr ruleDescr = new RuleDescr("test rule");
-        RuleBuildContext context = new RuleBuildContext( conf, ruleDescr, dialectRegistry, pkg, dialect);
+        RuleBuildContext context = new RuleBuildContext( pkgBuilder, ruleDescr, dialectRegistry, pkg, dialect);
         
         Accumulate accumulate = (Accumulate) builder.build( context, accumDescr );
+        
+        dialect.compileAll();
         
         assertTrue( context.getErrors().toString(), context.getErrors().isEmpty() );
 //        System.out.println( context.getInvokers() );

@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.drools.RuntimeDroolsException;
+import org.drools.base.ClassObjectType;
 import org.drools.common.BetaConstraints;
 import org.drools.common.TupleStartEqualsConstraint;
 import org.drools.reteoo.CollectNode;
@@ -31,6 +33,7 @@ import org.drools.rule.Collect;
 import org.drools.rule.Pattern;
 import org.drools.rule.RuleConditionElement;
 import org.drools.spi.AlphaNodeFieldConstraint;
+import org.drools.spi.ObjectType;
 
 /**
  * @author etirelli
@@ -55,7 +58,8 @@ public class CollectBuilder
         final List resultBehaviors = context.getBehaviors();
 
         final Pattern sourcePattern = collect.getSourcePattern();
-
+        final Pattern resultPattern = collect.getResultPattern();      
+        
         // get builder for the pattern
         final ReteooComponentBuilder builder = utils.getBuilderFor( sourcePattern );
 

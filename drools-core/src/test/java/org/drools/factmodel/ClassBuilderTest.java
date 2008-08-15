@@ -13,16 +13,18 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.drools.base.ClassFieldAccessorCache;
+import org.drools.base.ClassFieldAccessorStore;
 
 public class ClassBuilderTest extends TestCase {
 
-    private ClassFieldAccessorCache cache;
-    private ClassLoader classLoader;
+    ClassFieldAccessorStore store = new ClassFieldAccessorStore();
+    private ClassLoader     classLoader;
 
     protected void setUp() throws Exception {
         super.setUp();
-        cache = ClassFieldAccessorCache.getInstance();
         classLoader = this.getClass().getClassLoader();
+        store.setClassFieldAccessorCache( new ClassFieldAccessorCache( classLoader ) );
+        store.setEagerWire( true );
     }
 
     protected void tearDown() throws Exception {
@@ -42,20 +44,20 @@ public class ClassBuilderTest extends TestCase {
             FieldDefinition intDef = new FieldDefinition( "intAttr",
                                                           "int" );
 
-
             FieldDefinition stringDef = new FieldDefinition( "stringAttr",
-                                                             "java.lang.String");//"java.lang.String" );
+                                                             "java.lang.String" );//"java.lang.String" );
             classDef.addField( intDef );
             classDef.addField( stringDef );
 
             Class clazz = builder.buildAndLoadClass( classDef );
-            intDef.setFieldAccessor( cache.getAccessor( clazz, intDef.getName(), classLoader ) );
-            stringDef.setFieldAccessor( cache.getAccessor( clazz, stringDef.getName(), classLoader ) );
+            intDef.setReadWriteAccessor( store.getAccessor( clazz,
+                                                        intDef.getName(),
+                                                        classLoader ) );
+            stringDef.setReadWriteAccessor( store.getAccessor( clazz,
+                                                           stringDef.getName(),
+                                                           classLoader ) );
 
-
-            byte[] data = builder.buildClass(classDef);
-
-
+            byte[] data = builder.buildClass( classDef );
 
             Assert.assertSame( "Returned class should be the same",
                                clazz,
@@ -95,16 +97,16 @@ public class ClassBuilderTest extends TestCase {
      * @throws FileNotFoundException
      * @throws IOException
      */
-	private void writeJar(byte[] data) throws FileNotFoundException,
-			IOException {
-		FileOutputStream out  = new FileOutputStream(new File("/Users/michaelneale/edson.jar"));
-		JarOutputStream jout = new JarOutputStream(out);
-		JarEntry je = new JarEntry("br/com/auster/TestClass1.class");
-		jout.putNextEntry(je);
-		jout.write(data);
-		jout.closeEntry();
-		jout.close();
-	}
+    private void writeJar(byte[] data) throws FileNotFoundException,
+                                      IOException {
+        FileOutputStream out = new FileOutputStream( new File( "/Users/michaelneale/edson.jar" ) );
+        JarOutputStream jout = new JarOutputStream( out );
+        JarEntry je = new JarEntry( "br/com/auster/TestClass1.class" );
+        jout.putNextEntry( je );
+        jout.write( data );
+        jout.closeEntry();
+        jout.close();
+    }
 
     public void testEquals() {
         try {
@@ -114,23 +116,23 @@ public class ClassBuilderTest extends TestCase {
                                                             null,
                                                             new String[]{} );
             FieldDefinition long1Def = new FieldDefinition( "longAttr1",
-                                                          "long",
-                                                          true);
+                                                            "long",
+                                                            true );
             FieldDefinition long2Def = new FieldDefinition( "longAttr2",
-                                                          "long",
-                                                          true);
+                                                            "long",
+                                                            true );
             FieldDefinition doubleDef = new FieldDefinition( "doubleAttr",
-                                                            "double",
-                                                            true);
+                                                             "double",
+                                                             true );
             FieldDefinition intDef = new FieldDefinition( "intAttr",
                                                           "int",
-                                                          true);
+                                                          true );
             FieldDefinition strDef = new FieldDefinition( "stringAttr",
                                                           "java.lang.String",
-                                                          true);
+                                                          true );
             FieldDefinition dateDef = new FieldDefinition( "dateAttr",
                                                            "java.util.Date",
-                                                           true);
+                                                           true );
             FieldDefinition str2Def = new FieldDefinition( "stringAttr2",
                                                            "java.lang.String" );
             classDef.addField( long1Def );
@@ -142,15 +144,28 @@ public class ClassBuilderTest extends TestCase {
             classDef.addField( str2Def );
 
             Class clazz = builder.buildAndLoadClass( classDef );
-            long1Def.setFieldAccessor( cache.getAccessor( clazz, long1Def.getName(), classLoader ) );
-            long2Def.setFieldAccessor( cache.getAccessor( clazz, long2Def.getName(), classLoader ) );
-            doubleDef.setFieldAccessor( cache.getAccessor( clazz, doubleDef.getName(), classLoader ) );
-            intDef.setFieldAccessor( cache.getAccessor( clazz, intDef.getName(), classLoader ) );
-            strDef.setFieldAccessor( cache.getAccessor( clazz, strDef.getName(), classLoader ) );
-            dateDef.setFieldAccessor( cache.getAccessor( clazz, dateDef.getName(), classLoader ) );
-            str2Def.setFieldAccessor( cache.getAccessor( clazz, str2Def.getName(), classLoader ) );
-            
-            
+            long1Def.setReadWriteAccessor( store.getAccessor( clazz,
+                                                          long1Def.getName(),
+                                                          classLoader ) );
+            long2Def.setReadWriteAccessor( store.getAccessor( clazz,
+                                                          long2Def.getName(),
+                                                          classLoader ) );
+            doubleDef.setReadWriteAccessor( store.getAccessor( clazz,
+                                                           doubleDef.getName(),
+                                                           classLoader ) );
+            intDef.setReadWriteAccessor( store.getAccessor( clazz,
+                                                        intDef.getName(),
+                                                        classLoader ) );
+            strDef.setReadWriteAccessor( store.getAccessor( clazz,
+                                                        strDef.getName(),
+                                                        classLoader ) );
+            dateDef.setReadWriteAccessor( store.getAccessor( clazz,
+                                                         dateDef.getName(),
+                                                         classLoader ) );
+            str2Def.setReadWriteAccessor( store.getAccessor( clazz,
+                                                         str2Def.getName(),
+                                                         classLoader ) );
+
             Object x = clazz.newInstance();
             Object y = clazz.newInstance();
 
@@ -159,7 +174,7 @@ public class ClassBuilderTest extends TestCase {
             long2Def.setValue( x,
                                new Long( 30 ) );
             doubleDef.setValue( x,
-                               new Double( 50.0 ) );
+                                new Double( 50.0 ) );
             intDef.setValue( x,
                              new Integer( 10 ) );
             strDef.setValue( x,
@@ -218,7 +233,7 @@ public class ClassBuilderTest extends TestCase {
 
         } catch ( Exception e ) {
             e.printStackTrace();
-            Assert.fail("Exception not expected");
+            Assert.fail( "Exception not expected" );
         }
     }
 
@@ -231,29 +246,38 @@ public class ClassBuilderTest extends TestCase {
                                                             new String[]{} );
             FieldDefinition intDef = new FieldDefinition( "intAttr",
                                                           "int",
-                                                          true);
+                                                          true );
             FieldDefinition strDef = new FieldDefinition( "stringAttr",
                                                           "java.lang.String",
-                                                          false);
+                                                          false );
             classDef.addField( intDef );
             classDef.addField( strDef );
 
             Class clazz = builder.buildAndLoadClass( classDef );
-            intDef.setFieldAccessor( cache.getAccessor( clazz, intDef.getName(), classLoader ) );
-            strDef.setFieldAccessor( cache.getAccessor( clazz, strDef.getName(), classLoader ) );
+            intDef.setReadWriteAccessor( store.getAccessor( clazz,
+                                                        intDef.getName(),
+                                                        classLoader ) );
+            strDef.setReadWriteAccessor( store.getAccessor( clazz,
+                                                        strDef.getName(),
+                                                        classLoader ) );
 
             Object x = clazz.newInstance();
 
             intDef.setValue( x,
                              new Integer( 10 ) );
-            strDef.setValue( x, "abc" );
+            strDef.setValue( x,
+                             "abc" );
 
-            Assert.assertEquals("Wrong hashcode calculation", 31+10, x.hashCode());
-            Assert.assertEquals("Wrong hashcode calculation", x.hashCode(), x.hashCode());
+            Assert.assertEquals( "Wrong hashcode calculation",
+                                 31 + 10,
+                                 x.hashCode() );
+            Assert.assertEquals( "Wrong hashcode calculation",
+                                 x.hashCode(),
+                                 x.hashCode() );
 
         } catch ( Exception e ) {
             e.printStackTrace();
-            Assert.fail("Exception not expected");
+            Assert.fail( "Exception not expected" );
         }
     }
 
@@ -265,23 +289,23 @@ public class ClassBuilderTest extends TestCase {
                                                             null,
                                                             new String[]{} );
             FieldDefinition long1Def = new FieldDefinition( "longAttr1",
-                                                          "long",
-                                                          true);
+                                                            "long",
+                                                            true );
             FieldDefinition long2Def = new FieldDefinition( "longAttr2",
-                                                          "long",
-                                                          true);
+                                                            "long",
+                                                            true );
             FieldDefinition doubleDef = new FieldDefinition( "doubleAttr",
-                                                            "double",
-                                                            true);
+                                                             "double",
+                                                             true );
             FieldDefinition intDef = new FieldDefinition( "intAttr",
                                                           "int",
-                                                          true);
+                                                          true );
             FieldDefinition strDef = new FieldDefinition( "stringAttr",
                                                           "java.lang.String",
-                                                          true);
+                                                          true );
             FieldDefinition dateDef = new FieldDefinition( "dateAttr",
                                                            "java.util.Date",
-                                                           true);
+                                                           true );
             FieldDefinition str2Def = new FieldDefinition( "stringAttr2",
                                                            "java.lang.String" );
             classDef.addField( long1Def );
@@ -293,14 +317,28 @@ public class ClassBuilderTest extends TestCase {
             classDef.addField( str2Def );
 
             Class clazz = builder.buildAndLoadClass( classDef );
-            long1Def.setFieldAccessor( cache.getAccessor( clazz, long1Def.getName(), classLoader ) );
-            long2Def.setFieldAccessor( cache.getAccessor( clazz, long2Def.getName(), classLoader ) );
-            doubleDef.setFieldAccessor( cache.getAccessor( clazz, doubleDef.getName(), classLoader ) );
-            intDef.setFieldAccessor( cache.getAccessor( clazz, intDef.getName(), classLoader ) );
-            strDef.setFieldAccessor( cache.getAccessor( clazz, strDef.getName(), classLoader ) );
-            dateDef.setFieldAccessor( cache.getAccessor( clazz, dateDef.getName(), classLoader ) );
-            str2Def.setFieldAccessor( cache.getAccessor( clazz, str2Def.getName(), classLoader ) );
-            
+            long1Def.setReadWriteAccessor( store.getAccessor( clazz,
+                                                          long1Def.getName(),
+                                                          classLoader ) );
+            long2Def.setReadWriteAccessor( store.getAccessor( clazz,
+                                                          long2Def.getName(),
+                                                          classLoader ) );
+            doubleDef.setReadWriteAccessor( store.getAccessor( clazz,
+                                                           doubleDef.getName(),
+                                                           classLoader ) );
+            intDef.setReadWriteAccessor( store.getAccessor( clazz,
+                                                        intDef.getName(),
+                                                        classLoader ) );
+            strDef.setReadWriteAccessor( store.getAccessor( clazz,
+                                                        strDef.getName(),
+                                                        classLoader ) );
+            dateDef.setReadWriteAccessor( store.getAccessor( clazz,
+                                                         dateDef.getName(),
+                                                         classLoader ) );
+            str2Def.setReadWriteAccessor( store.getAccessor( clazz,
+                                                         str2Def.getName(),
+                                                         classLoader ) );
+
             Object x = clazz.newInstance();
 
             long1Def.setValue( x,
@@ -308,7 +346,7 @@ public class ClassBuilderTest extends TestCase {
             long2Def.setValue( x,
                                new Long( 30 ) );
             doubleDef.setValue( x,
-                               new Double( 50.0 ) );
+                                new Double( 50.0 ) );
             intDef.setValue( x,
                              new Integer( 10 ) );
             strDef.setValue( x,
@@ -320,17 +358,17 @@ public class ClassBuilderTest extends TestCase {
 
             String result = x.toString();
 
-            Assert.assertTrue( result.contains( long1Def.getName() ));
-            Assert.assertTrue( result.contains( long2Def.getName() ));
-            Assert.assertTrue( result.contains( doubleDef.getName() ));
-            Assert.assertTrue( result.contains( intDef.getName() ));
-            Assert.assertTrue( result.contains( strDef.getName() ));
-            Assert.assertTrue( result.contains( dateDef.getName() ));
-            Assert.assertTrue( result.contains( str2Def.getName() ));
+            Assert.assertTrue( result.contains( long1Def.getName() ) );
+            Assert.assertTrue( result.contains( long2Def.getName() ) );
+            Assert.assertTrue( result.contains( doubleDef.getName() ) );
+            Assert.assertTrue( result.contains( intDef.getName() ) );
+            Assert.assertTrue( result.contains( strDef.getName() ) );
+            Assert.assertTrue( result.contains( dateDef.getName() ) );
+            Assert.assertTrue( result.contains( str2Def.getName() ) );
 
         } catch ( Exception e ) {
             e.printStackTrace();
-            Assert.fail("Exception not expected");
+            Assert.fail( "Exception not expected" );
         }
 
     }

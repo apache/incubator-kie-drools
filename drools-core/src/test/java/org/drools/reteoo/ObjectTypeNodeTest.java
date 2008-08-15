@@ -205,7 +205,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         assertNotNull( memory );
     }
 
-    public void testMatches() {
+    public void testIsAssignableFrom() {
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator(); 
         final Rete source = new Rete((InternalRuleBase) ruleBase);
@@ -215,18 +215,18 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                                                             new ClassObjectType( String.class ),
                                                             buildContext );
 
-        assertFalse( objectTypeNode.matches( new Object() ) );
-        assertFalse( objectTypeNode.matches( new Integer( 5 ) ) );
-        assertTrue( objectTypeNode.matches( "string" ) );
+        assertFalse( objectTypeNode.isAssignableFrom( new ClassObjectType( new Object().getClass() ) ) );
+        assertFalse( objectTypeNode.isAssignableFrom( new ClassObjectType( new Integer( 5 ).getClass() ) ) );
+        assertTrue( objectTypeNode.isAssignableFrom( new ClassObjectType( "string".getClass() ) ) );
 
         objectTypeNode = new ObjectTypeNode( idGenerator.getNextId(),
                                              this.entryPoint,
                                              new ClassObjectType( Object.class ),
                                              buildContext );
 
-        assertTrue( objectTypeNode.matches( new Object() ) );
-        assertTrue( objectTypeNode.matches( new Integer( 5 ) ) );
-        assertTrue( objectTypeNode.matches( "string" ) );
+        assertTrue( objectTypeNode.isAssignableFrom( new ClassObjectType( new Object().getClass() ) ) );
+        assertTrue( objectTypeNode.isAssignableFrom( new ClassObjectType( new Integer( 5 ).getClass() ) ) );
+        assertTrue( objectTypeNode.isAssignableFrom( new ClassObjectType( "string".getClass() ) ) );
 
     }
 

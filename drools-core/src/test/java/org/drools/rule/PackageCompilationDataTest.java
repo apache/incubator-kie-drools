@@ -10,6 +10,9 @@ import java.security.CodeSource;
 import junit.framework.TestCase;
 
 import org.drools.WorkingMemory;
+import org.drools.base.ClassFieldAccessorCache;
+import org.drools.common.InternalRuleBase;
+import org.drools.reteoo.ReteooRuleBase;
 import org.drools.spi.EvalExpression;
 import org.drools.spi.Tuple;
 
@@ -28,10 +31,20 @@ public class PackageCompilationDataTest extends TestCase {
         }
     }
 
-    public void testCodeSourceUrl() throws IOException {
+    public void testCodeSourceUrl() throws Exception {
         final String className = TestEvalExpression.class.getName();
         
-        final JavaDialectRuntimeData pcData = new JavaDialectRuntimeData( new DialectRuntimeRegistry( getClass().getClassLoader() ) );
+        ReteooRuleBase rb = new ReteooRuleBase( "xxx" );
+        
+        Package pkg = new Package( "org.drools" );
+        pkg.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
+        JavaDialectRuntimeData data = new JavaDialectRuntimeData();
+        data.onAdd( pkg.getDialectRuntimeRegistry(), rb.getRootClassLoader()  );
+        pkg.getDialectRuntimeRegistry().setDialectData( "java", data );
+        
+        rb.addPackage( pkg );
+        
+        final JavaDialectRuntimeData pcData = ( JavaDialectRuntimeData ) pkg.getDialectRuntimeRegistry().getDialectData( "java" );
         
         
         final EvalCondition invoker = new EvalCondition(null);
@@ -41,7 +54,15 @@ public class PackageCompilationDataTest extends TestCase {
             pcData.write(className.replace('.', '/') + ".class", read(is));
         } finally {
             is.close();
-        }
+        }                
+        
+        pcData.onAdd( pkg.getDialectRuntimeRegistry(), rb.getRootClassLoader() );
+        pcData.onBeforeExecute();
+        
+        Class cls = ((InternalRuleBase)rb).getRootClassLoader().loadClass( "org.drools.rule.PackageCompilationDataTest$TestEvalExpression" );
+        
+        System.out.println( cls );
+        
         final CodeSource codeSource = invoker.getEvalExpression().getClass().getProtectionDomain().getCodeSource();
         assertNotNull(codeSource.getLocation());
     }

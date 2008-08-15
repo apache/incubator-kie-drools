@@ -18,53 +18,65 @@ import org.mvel.debug.DebugTools;
 public class MVELReturnValueEvaluator
     implements
     ReturnValueEvaluator,
+    MVELCompileable,
     Externalizable {
-    private static final long       serialVersionUID = 400L;
+    private static final long   serialVersionUID = 400L;
 
-    private Serializable      expr;
-    private DroolsMVELFactory prototype;
-    private String id;
+    private MVELCompilationUnit unit;
+    private String              id;
+
+    private Serializable        expr;
+    private DroolsMVELFactory   prototype;
 
     public MVELReturnValueEvaluator() {
     }
 
-    public MVELReturnValueEvaluator(final Serializable expr,
-                                    final DroolsMVELFactory factory,
+    public MVELReturnValueEvaluator(final MVELCompilationUnit unit,
                                     final String id) {
-        this.expr = expr;
-        this.prototype = factory;
+        this.unit = unit;
         this.id = id;
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        expr    = (Serializable)in.readObject();
-        prototype   = (DroolsMVELFactory)in.readObject();
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        id = in.readUTF();
+        unit = (MVELCompilationUnit) in.readObject();
+        //        expr    = (Serializable)in.readObject();
+        //        prototype   = (DroolsMVELFactory)in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(expr);
-        out.writeObject(prototype);
+        out.writeUTF( id );
+        out.writeObject( unit );
+        //        out.writeObject(expr);
+        //        out.writeObject(prototype);
+    }
+
+    public void compile(ClassLoader classLoader) {
+        expr = unit.getCompiledExpression( classLoader );
+        prototype = unit.getFactory();
     }
 
     public String getDialect() {
         return this.id;
     }
 
-    public Object evaluate(final WorkingMemory workingMemory, ProcessContext context) throws Exception {
+    public Object evaluate(final WorkingMemory workingMemory,
+                           ProcessContext context) throws Exception {
         DroolsMVELFactory factory = (DroolsMVELFactory) this.prototype.clone();
         factory.setContext( null,
                             null,
                             null,
                             workingMemory,
                             null );
-        
+
         // do we have any functions for this namespace?
         Package pkg = workingMemory.getRuleBase().getPackage( "MAIN" );
         if ( pkg != null ) {
-            MVELDialectRuntimeData data = ( MVELDialectRuntimeData ) pkg.getDialectRuntimeRegistry().getDialectData( this.id );
+            MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData( this.id );
             factory.setNextFactory( data.getFunctionFactory() );
         }
-        
+
         CompiledExpression compexpr = (CompiledExpression) this.expr;
 
         //Receive breakpoints from debugger

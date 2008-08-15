@@ -46,12 +46,12 @@ import org.mvel.compiler.ExpressionCompiler;
 public class MVELConsequenceBuilderTest extends TestCase {
 
     public void setUp() {
-    }    
+    }
 
     public void testSimpleExpression() throws Exception {
         PackageDescr pkgDescr = new PackageDescr( "pkg1" );
         PackageBuilder pkgBuilder = new PackageBuilder();
-        pkgBuilder.addPackage( pkgDescr );                
+        pkgBuilder.addPackage( pkgDescr );
 
         final Package pkg = pkgBuilder.getPackageRegistry( "pkg1" ).getPackage();
         final RuleDescr ruleDescr = new RuleDescr( "rule 1" );
@@ -59,15 +59,15 @@ public class MVELConsequenceBuilderTest extends TestCase {
         ruleDescr.setConsequence( "modify (cheese) {price = 5 };\nretract (cheese)" );
 
         final PackageBuilderConfiguration conf = pkgBuilder.getPackageBuilderConfiguration();
-        
-        DialectCompiletimeRegistry dialectRegistry = pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectCompiletimeRegistry();
-        
-        MVELDialect mvelDialect = ( MVELDialect ) dialectRegistry.getDialect( "mvel" );
 
-        final InstrumentedBuildContent context = new InstrumentedBuildContent( conf,
+        DialectCompiletimeRegistry dialectRegistry = pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectCompiletimeRegistry();
+
+        MVELDialect mvelDialect = (MVELDialect) dialectRegistry.getDialect( "mvel" );
+
+        final InstrumentedBuildContent context = new InstrumentedBuildContent( pkgBuilder,
                                                                                ruleDescr,
                                                                                dialectRegistry,
-                                                                               pkg,                                                                               
+                                                                               pkg,
                                                                                mvelDialect );
 
         final InstrumentedDeclarationScopeResolver declarationResolver = new InstrumentedDeclarationScopeResolver();
@@ -99,16 +99,23 @@ public class MVELConsequenceBuilderTest extends TestCase {
         final Cheese cheddar = new Cheese( "cheddar",
                                            10 );
         final InternalFactHandle f0 = (InternalFactHandle) wm.insert( cheddar );
-        final LeftTuple tuple = new LeftTuple( f0, sink, true );
+        final LeftTuple tuple = new LeftTuple( f0,
+                                               sink,
+                                               true );
 
         final AgendaItem item = new AgendaItem( 0,
                                                 tuple,
                                                 10,
-                                                new PropagationContextImpl(1, 1, null, null, null),
+                                                new PropagationContextImpl( 1,
+                                                                            1,
+                                                                            null,
+                                                                            null,
+                                                                            null ),
                                                 context.getRule(),
                                                 null );
         final DefaultKnowledgeHelper kbHelper = new DefaultKnowledgeHelper( wm );
         kbHelper.setActivation( item );
+        ((MVELConsequence) context.getRule().getConsequence()).compile( Thread.currentThread().getContextClassLoader() );
         context.getRule().getConsequence().evaluate( kbHelper,
                                                      wm );
 
@@ -129,17 +136,18 @@ public class MVELConsequenceBuilderTest extends TestCase {
         properties.setProperty( "drools.dialect.default",
                                 "mvel" );
         PackageBuilderConfiguration cfg1 = new PackageBuilderConfiguration( properties );
-        
-        PackageBuilder pkgBuilder = new PackageBuilder( pkg, cfg1 );
+
+        PackageBuilder pkgBuilder = new PackageBuilder( pkg,
+                                                        cfg1 );
         final PackageBuilderConfiguration conf = pkgBuilder.getPackageBuilderConfiguration();
         PackageRegistry pkgRegistry = pkgBuilder.getPackageRegistry( pkg.getName() );
         DialectCompiletimeRegistry dialectRegistry = pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectCompiletimeRegistry();
-        MVELDialect mvelDialect = ( MVELDialect )dialectRegistry.getDialect( pkgRegistry.getDialect() );
+        MVELDialect mvelDialect = (MVELDialect) dialectRegistry.getDialect( pkgRegistry.getDialect() );
 
-        final InstrumentedBuildContent context = new InstrumentedBuildContent( conf,
+        final InstrumentedBuildContent context = new InstrumentedBuildContent( pkgBuilder,
                                                                                ruleDescr,
                                                                                dialectRegistry,
-                                                                               pkg,                                                                               
+                                                                               pkg,
                                                                                mvelDialect );
 
         final InstrumentedDeclarationScopeResolver declarationResolver = new InstrumentedDeclarationScopeResolver();
@@ -169,7 +177,9 @@ public class MVELConsequenceBuilderTest extends TestCase {
         final Cheese cheddar = new Cheese( "cheddar",
                                            10 );
         final InternalFactHandle f0 = (InternalFactHandle) wm.insert( cheddar );
-        final LeftTuple tuple = new LeftTuple( f0, null, true );
+        final LeftTuple tuple = new LeftTuple( f0,
+                                               null,
+                                               true );
 
         final AgendaItem item = new AgendaItem( 0,
                                                 tuple,
@@ -180,11 +190,11 @@ public class MVELConsequenceBuilderTest extends TestCase {
         final DefaultKnowledgeHelper kbHelper = new DefaultKnowledgeHelper( wm );
         kbHelper.setActivation( item );
         try {
-        context.getRule().getConsequence().evaluate( kbHelper,
-                                                     wm );
+            ((MVELConsequence) context.getRule().getConsequence()).compile( Thread.currentThread().getContextClassLoader() );
+            context.getRule().getConsequence().evaluate( kbHelper,
+                                                         wm );
             fail( "should throw an exception, as 'if' is not allowed" );
-        } catch ( Exception e) {
-
+        } catch ( Exception e ) {
         }
 
         assertEquals( 10,
@@ -223,11 +233,11 @@ public class MVELConsequenceBuilderTest extends TestCase {
                       MVELConsequenceBuilder.delimitExpressions( ex ) );
 
     }
-    
+
     public void testMVELDebugSymbols() throws DroolsParserException {
-        
+
         MVELDebugHandler.setDebugMode( true );
-        
+
         try {
             final DrlParser parser = new DrlParser();
             final PackageDescr pkgDescr = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "mvel_rule.drl" ) ) );
@@ -247,10 +257,10 @@ public class MVELConsequenceBuilderTest extends TestCase {
             DialectCompiletimeRegistry dialectRegistry = pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectCompiletimeRegistry();
             Dialect dialect = dialectRegistry.getDialect( "mvel" );
 
-            RuleBuildContext context = new RuleBuildContext( conf,
+            RuleBuildContext context = new RuleBuildContext( pkgBuilder,
                                                              ruleDescr,
                                                              dialectRegistry,
-                                                             pkg,                                                             
+                                                             pkg,
                                                              dialect );
 
             builder.build( context );
@@ -261,6 +271,7 @@ public class MVELConsequenceBuilderTest extends TestCase {
             final Rule rule = context.getRule();
 
             MVELConsequence mvelCons = (MVELConsequence) rule.getConsequence();
+            mvelCons.compile( Thread.currentThread().getContextClassLoader() );
             String s = org.mvel.debug.DebugTools.decompile( mvelCons.getCompExpr() );
 
             int fromIndex = 0;
@@ -274,38 +285,37 @@ public class MVELConsequenceBuilderTest extends TestCase {
         } finally {
             MVELDebugHandler.setDebugMode( false );
         }
-        
+
     }
 
     public void testX() {
-        String expr = "System.out.println( \"a1\" );\n" + 
-                      "System.out.println( \"a2\" );\n" + 
-                      "System.out.println( \"a3\" );\n" + 
-                      "System.out.println( \"a4\" );\n";
-   
-        ExpressionCompiler compiler = new ExpressionCompiler(expr);
-   
+        String expr = "System.out.println( \"a1\" );\n" + "System.out.println( \"a2\" );\n" + "System.out.println( \"a3\" );\n" + "System.out.println( \"a4\" );\n";
+
+        ExpressionCompiler compiler = new ExpressionCompiler( expr );
+
         ParserContext context = new ParserContext();
-        context.addImport("System", System.class);
-        context.setStrictTypeEnforcement(true);
+        context.addImport( "System",
+                           System.class );
+        context.setStrictTypeEnforcement( true );
         //context.setDebugSymbols( true );
         context.setSourceFile( "mysource" );
-   
+
         compiler.setDebugSymbols( true );
-        
-        Serializable compiledExpression = compiler.compile(context);           
-   
+
+        Serializable compiledExpression = compiler.compile( context );
+
         String s = org.mvel.debug.DebugTools.decompile( compiledExpression );
-   
-        System.out.println("s "+s);
-        
-        int fromIndex=0;
+
+        System.out.println( "s " + s );
+
+        int fromIndex = 0;
         int count = 0;
-        while ((fromIndex = s.indexOf( "DEBUG_SYMBOL", fromIndex+1 )) > -1) {
+        while ( (fromIndex = s.indexOf( "DEBUG_SYMBOL",
+                                        fromIndex + 1 )) > -1 ) {
             count++;
         }
-        assertEquals(4, count);      
-   
-      }
-}
+        assertEquals( 4,
+                      count );
 
+    }
+}

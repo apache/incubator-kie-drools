@@ -66,7 +66,7 @@ public class AbstractJavaProcessBuilder {
 
         final List globalTypes = new ArrayList(globals.length);
         for (int i = 0, length = globals.length; i < length; i++) {
-            globalTypes.add(((Class) context.getPkg().getGlobals().get(globals[i])).getName().replace('$',
+            globalTypes.add(context.getPkg().getGlobals().get(globals[i]).replace('$',
                     '.'));
         }
 

@@ -20,8 +20,12 @@ import org.mvel.integration.impl.SimpleValueResolver;
 public class MVELAction
     implements
     Action,
+    MVELCompileable,
     Externalizable {
     private static final long       serialVersionUID = 400L;
+    
+    private MVELCompilationUnit unit;
+    private String id;        
 
     private Serializable      expr;
     private DroolsMVELFactory prototype;
@@ -29,24 +33,33 @@ public class MVELAction
     public MVELAction() {
     }
 
-    public MVELAction(final Serializable expr,
-                      final DroolsMVELFactory factory) {
-        this.expr = expr;
-        this.prototype = factory;
-    }
+    public MVELAction(final MVELCompilationUnit unit,
+                              final String id) {
+        this.unit = unit;
+        this.id = id;
+    }    
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        expr    = (Serializable)in.readObject();
-        prototype   = (DroolsMVELFactory)in.readObject();
+        id = in.readUTF();
+        unit = ( MVELCompilationUnit ) in.readObject();
+//        expr    = (Serializable)in.readObject();
+//        prototype   = (DroolsMVELFactory)in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(expr);
-        out.writeObject(prototype);
+        out.writeUTF( id );
+        out.writeObject( unit );
+//        out.writeObject(expr);
+//        out.writeObject(prototype);
     }
+    
+    public void compile(ClassLoader classLoader) {
+        expr = unit.getCompiledExpression( classLoader );
+        prototype = unit.getFactory( );
+    } 
 
     public String getDialect() {
-        return "mvel";
+        return id;
     }
     
     public void execute(final KnowledgeHelper knowledgeHelper, final WorkingMemory workingMemory, ProcessContext context) throws Exception {
@@ -63,7 +76,7 @@ public class MVELAction
         
         Package pkg = workingMemory.getRuleBase().getPackage( "MAIN" );
         if ( pkg != null ) {
-            MVELDialectRuntimeData data = ( MVELDialectRuntimeData ) pkg.getDialectRuntimeRegistry().getDialectData( "mvel" );
+            MVELDialectRuntimeData data = ( MVELDialectRuntimeData ) pkg.getDialectRuntimeRegistry().getDialectData( id );
             factory.setNextFactory( data.getFunctionFactory() );
         }        
         

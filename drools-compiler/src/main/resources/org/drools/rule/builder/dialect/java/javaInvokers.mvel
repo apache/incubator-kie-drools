@@ -2,7 +2,7 @@
     public java.util.List getMethodBytecode() {
         org.drools.util.asm.MethodComparator.Tracer visit = new org.drools.util.asm.MethodComparator.Tracer("@{methodName}");
 
-        java.io.InputStream is = @{ruleClassName}.class.getClassLoader().getResourceAsStream( "@{package}.@{ruleClassName}".replace( '.', '/' ) + ".class" );
+        java.io.InputStream is = getClass().getClassLoader().getResourceAsStream( "@{package}.@{ruleClassName}".replace( '.', '/' ) + ".class" );
 
         java.io.ByteArrayOutputStream bos = new java.io.ByteArrayOutputStream();
         byte[] data = new byte[1024];
@@ -53,7 +53,7 @@
 @declare{"returnValueInvoker"}
 package @{package};
 
-public class @{invokerClassName} implements org.drools.spi.ReturnValueExpression, org.drools.spi.CompiledInvoker, java.io.Externalizable
+public class @{invokerClassName} implements org.drools.spi.ReturnValueExpression, org.drools.spi.CompiledInvoker
 {
     private static final long serialVersionUID  = 400L;
 
@@ -95,19 +95,13 @@ public class @{invokerClassName} implements org.drools.spi.ReturnValueExpression
     @includeNamed{"getMethodBytecode"}
 
     @includeNamed{"equals"}
-
-    public void writeExternal(java.io.ObjectOutput out) throws java.io.IOException {
-    }
-
-    public void readExternal(java.io.ObjectInput in) throws java.io.IOException, java.lang.ClassNotFoundException {
-    }
 }
 @end{}
 
 @declare{"predicateInvoker"}
 package @{package};
 
-public class @{invokerClassName} implements org.drools.spi.PredicateExpression, org.drools.spi.CompiledInvoker, java.io.Externalizable
+public class @{invokerClassName} implements org.drools.spi.PredicateExpression, org.drools.spi.CompiledInvoker
 {
     private static final long serialVersionUID  = 400L;
 
@@ -144,19 +138,13 @@ public class @{invokerClassName} implements org.drools.spi.PredicateExpression, 
     @includeNamed{"getMethodBytecode"}
 
     @includeNamed{"equals"}
-
-    public void writeExternal(java.io.ObjectOutput out) throws java.io.IOException {
-    }
-
-    public void readExternal(java.io.ObjectInput in) throws java.io.IOException, java.lang.ClassNotFoundException {
-    }
 }
 @end{}
 
 @declare{"evalInvoker"}
 package @{package};
 
-public class @{invokerClassName} implements org.drools.spi.EvalExpression, org.drools.spi.CompiledInvoker, java.io.Externalizable
+public class @{invokerClassName} implements org.drools.spi.EvalExpression, org.drools.spi.CompiledInvoker
 {
     private static final long serialVersionUID  = 400L;
 
@@ -186,13 +174,6 @@ public class @{invokerClassName} implements org.drools.spi.EvalExpression, org.d
     @includeNamed{"getMethodBytecode"}
 
     @includeNamed{"equals"}
-
-
-    public void writeExternal(java.io.ObjectOutput out) throws java.io.IOException {
-    }
-
-    public void readExternal(java.io.ObjectInput in) throws java.io.IOException, java.lang.ClassNotFoundException {
-    }
 }
 @end{}
 
@@ -335,20 +316,13 @@ public class @{invokerClassName} implements org.drools.spi.Accumulator, org.droo
         }
         return Collections.singletonList( bos );
     }
-
-    public void writeExternal(java.io.ObjectOutput out) throws java.io.IOException {
-    }
-
-    public void readExternal(java.io.ObjectInput in) throws java.io.IOException, java.lang.ClassNotFoundException {
-    }
-
 }
 @end{}
 
 @declare{"consequenceInvoker"}
 package @{package};
 
-public class @{invokerClassName} implements org.drools.spi.Consequence, java.io.Externalizable
+public class @{invokerClassName} implements org.drools.spi.Consequence, org.drools.spi.CompiledInvoker
 {
     private static final long serialVersionUID  = 400L;
 
@@ -356,8 +330,7 @@ public class @{invokerClassName} implements org.drools.spi.Consequence, java.io.
                          org.drools.WorkingMemory workingMemory) throws Exception {
 
         org.drools.spi.Tuple tuple = knowledgeHelper.getTuple();
-        org.drools.rule.Rule rule = knowledgeHelper.getRule();
-        org.drools.rule.Declaration[] declarations = rule.getDeclarations();
+        org.drools.rule.Declaration[] declarations = knowledgeHelper.getRule().getDeclarations();
 
         @foreach{type : declarationTypes, declr : declarations, index : indexes, notPattern : notPatterns}
           org.drools.common.InternalFactHandle @{declr.identifier}__Handle__ = ( org.drools.common.InternalFactHandle ) tuple.get( knowledgeHelper.getDeclaration( declarations[@{index}].getIdentifier() ) );
@@ -375,11 +348,10 @@ public class @{invokerClassName} implements org.drools.spi.Consequence, java.io.
 	        @foreach{identifier : globals} @{identifier}
 	        @end{","} );
     }
-    public void writeExternal(java.io.ObjectOutput out) throws java.io.IOException {
-    }
-
-    public void readExternal(java.io.ObjectInput in) throws java.io.IOException, java.lang.ClassNotFoundException {
-    }
+    
+    public java.util.List getMethodBytecode() {
+        return null;
+    }    
 }
 @end{}
 
@@ -387,7 +359,7 @@ public class @{invokerClassName} implements org.drools.spi.Consequence, java.io.
 @declare{"actionInvoker"}
 package @{package};
 
-public class @{invokerClassName} implements org.drools.spi.Action, java.io.Externalizable
+public class @{invokerClassName} implements org.drools.spi.Action, org.drools.spi.CompiledInvoker
 {
     private static final long serialVersionUID  = 400L;
 
@@ -407,19 +379,17 @@ public class @{invokerClassName} implements org.drools.spi.Action, java.io.Exter
 	        @foreach{identifier : globals} @{identifier}
 	        @end{","}, context );
     }
-
-    public void writeExternal(java.io.ObjectOutput out) throws java.io.IOException {
-    }
-
-    public void readExternal(java.io.ObjectInput in) throws java.io.IOException, java.lang.ClassNotFoundException {
-    }
+    
+    public java.util.List getMethodBytecode() {
+        return null;
+    }    
 }
 @end{}
 
 @declare{"returnValueEvaluatorInvoker"}
 package @{package};
 
-public class @{invokerClassName} implements org.drools.spi.ReturnValueEvaluator, java.io.Externalizable
+public class @{invokerClassName} implements org.drools.spi.ReturnValueEvaluator, org.drools.spi.CompiledInvoker
 {
     private static final long serialVersionUID  = 400L;
 
@@ -432,11 +402,9 @@ public class @{invokerClassName} implements org.drools.spi.ReturnValueEvaluator,
 	        @foreach{identifier : globals} @{identifier}
 	        @end{","} );
     }
-
-    public void writeExternal(java.io.ObjectOutput out) throws java.io.IOException {
-    }
-
-    public void readExternal(java.io.ObjectInput in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    
+    public java.util.List getMethodBytecode() {
+        return null;
     }
 }
 @end{}

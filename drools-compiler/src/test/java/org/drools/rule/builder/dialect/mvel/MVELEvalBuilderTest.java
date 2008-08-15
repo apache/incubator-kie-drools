@@ -10,7 +10,9 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldAccessorCache;
+import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.ClassObjectType;
+import org.drools.base.mvel.MVELEvalExpression;
 import org.drools.common.InternalFactHandle;
 import org.drools.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.PackageBuilder;
@@ -27,10 +29,11 @@ import org.drools.spi.InternalReadAccessor;
 
 public class MVELEvalBuilderTest extends TestCase {
 
-    private ClassFieldAccessorCache cache;
+    ClassFieldAccessorStore store = new ClassFieldAccessorStore();
 
-    public void setUp() {
-        cache = ClassFieldAccessorCache.getInstance();
+    protected void setUp() throws Exception {
+        store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
+        store.setEagerWire( true );
     }
 
     public void testSimpleExpression() {
@@ -42,7 +45,7 @@ public class MVELEvalBuilderTest extends TestCase {
         DialectCompiletimeRegistry dialectRegistry = pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectCompiletimeRegistry();
         MVELDialect mvelDialect = ( MVELDialect ) dialectRegistry.getDialect( "mvel" );
 
-        final InstrumentedBuildContent context = new InstrumentedBuildContent( conf,
+        final InstrumentedBuildContent context = new InstrumentedBuildContent( pkgBuilder,
                                                                                ruleDescr,
                                                                                dialectRegistry,
                                                                                pkg,                                                                               
@@ -50,7 +53,7 @@ public class MVELEvalBuilderTest extends TestCase {
 
         final InstrumentedDeclarationScopeResolver declarationResolver = new InstrumentedDeclarationScopeResolver();
 
-        final InternalReadAccessor extractor = cache.getReader( Cheese.class,
+        final InternalReadAccessor extractor = store.getReader( Cheese.class,
                                                              "price",
                                                              getClass().getClassLoader() );
 
@@ -71,6 +74,7 @@ public class MVELEvalBuilderTest extends TestCase {
         final MVELEvalBuilder builder = new MVELEvalBuilder();
         final EvalCondition eval = (EvalCondition) builder.build( context,
                                                                   evalDescr );
+        ((MVELEvalExpression) eval.getEvalExpression()).compile( Thread.currentThread().getContextClassLoader() );
 
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         final WorkingMemory wm = ruleBase.newStatefulSession();

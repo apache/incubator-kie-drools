@@ -16,6 +16,7 @@ package org.drools.rule;
  * limitations under the License.
  */
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -26,23 +27,30 @@ import java.io.Externalizable;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.WorkingMemory;
+import org.drools.spi.CompiledInvoker;
 import org.drools.spi.EvalExpression;
 import org.drools.spi.Tuple;
+import org.drools.spi.Wireable;
 
-public class EvalCondition extends ConditionalElement implements Externalizable {
+public class EvalCondition extends ConditionalElement
+    implements
+    Externalizable,
+    Wireable {
     /**
      *
      */
-    private static final long          serialVersionUID = 400L;
+    private static final long          serialVersionUID   = 400L;
 
     private EvalExpression             expression;
 
-    private Declaration[]        requiredDeclarations;
+    private Declaration[]              requiredDeclarations;
 
     private static final Declaration[] EMPTY_DECLARATIONS = new Declaration[0];
 
+    private List<EvalCondition>        cloned             = Collections.<EvalCondition> emptyList();
+
     public EvalCondition() {
-        this(null);
+        this( null );
     }
 
     public EvalCondition(final Declaration[] requiredDeclarations) {
@@ -62,18 +70,32 @@ public class EvalCondition extends ConditionalElement implements Externalizable 
         }
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        expression  = (EvalExpression)in.readObject();
-        requiredDeclarations    = (Declaration[])in.readObject();
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        expression = (EvalExpression) in.readObject();
+        requiredDeclarations = (Declaration[]) in.readObject();
+        this.cloned = (List<EvalCondition>) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(expression);
-        out.writeObject(requiredDeclarations);
+        if ( this.expression instanceof CompiledInvoker ) {
+            out.writeObject( null );
+        } else {
+            out.writeObject( this.expression );
+        }
+        out.writeObject( requiredDeclarations );
+        out.writeObject( this.cloned );
     }
 
     public EvalExpression getEvalExpression() {
         return this.expression;
+    }
+
+    public void wire(Object object) {
+        setEvalExpression( (EvalExpression) object );
+        for ( EvalCondition clone : this.cloned ) {
+            clone.wire( object );
+        }
     }
 
     public void setEvalExpression(final EvalExpression expression) {
@@ -90,21 +112,29 @@ public class EvalCondition extends ConditionalElement implements Externalizable 
 
     public boolean isAllowed(final Tuple tuple,
                              final WorkingMemory workingMemory,
-                             final Object context ) {
+                             final Object context) {
         try {
             return this.expression.evaluate( tuple,
                                              this.requiredDeclarations,
                                              workingMemory,
                                              context );
         } catch ( final Exception e ) {
-        	throw new RuntimeDroolsException( this.getEvalExpression() + " : " + e, e );
+            throw new RuntimeDroolsException( this.getEvalExpression() + " : " + e,
+                                              e );
         }
     }
 
     public Object clone() {
-        final EvalCondition eval = new EvalCondition( this.expression,
-                                                      (Declaration[]) this.requiredDeclarations.clone() );
-        return eval;
+        final EvalCondition clone = new EvalCondition( this.expression,
+                                                       (Declaration[]) this.requiredDeclarations.clone() );
+
+        if ( this.cloned == Collections.EMPTY_LIST ) {
+            this.cloned = new ArrayList<EvalCondition>( 1 );
+        }
+
+        this.cloned.add( clone );
+
+        return clone;
     }
 
     public int hashCode() {

@@ -10,6 +10,7 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.base.DefaultKnowledgeHelper;
+import org.drools.base.mvel.MVELAction;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.PackageRegistry;
@@ -40,7 +41,7 @@ public class MVELDecisionBuilderTest extends TestCase {
         MVELDialect mvelDialect = ( MVELDialect ) pkgReg.getDialectCompiletimeRegistry().getDialect( "mvel" );
 
         PackageBuildContext context = new PackageBuildContext();
-        context.init( conf, pkg, null, pkgReg.getDialectCompiletimeRegistry(), mvelDialect, null);
+        context.init( pkgBuilder, pkg, null, pkgReg.getDialectCompiletimeRegistry(), mvelDialect, null);
         
         pkgBuilder.addPackageFromDrl( new StringReader("package pkg1;\nglobal java.util.List list;\n") );        
         
@@ -61,6 +62,7 @@ public class MVELDecisionBuilderTest extends TestCase {
         wm.setGlobal( "list", list );        
         
         KnowledgeHelper knowledgeHelper = new DefaultKnowledgeHelper();
+        ((MVELAction) actionNode.getAction().getMetaData("Action")).compile( Thread.currentThread().getContextClassLoader() );
         ((Action)actionNode.getAction().getMetaData("Action")).execute( knowledgeHelper, wm, null );
         
         assertEquals("hello world", list.get(0) );

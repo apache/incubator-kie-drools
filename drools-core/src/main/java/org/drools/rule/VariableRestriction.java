@@ -25,6 +25,7 @@ import org.drools.base.ValueType;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
+import org.drools.spi.AcceptsReadAccessor;
 import org.drools.spi.Evaluator;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.ReadAccessor;
@@ -32,6 +33,7 @@ import org.drools.spi.Restriction;
 
 public class VariableRestriction
     implements
+    AcceptsReadAccessor,
     Restriction {
 
     private static final long    serialVersionUID = 400L;
@@ -42,7 +44,7 @@ public class VariableRestriction
 
     private Evaluator      evaluator;
 
-    private InternalReadAccessor extractor;
+    private InternalReadAccessor readAccessor;
 
     public VariableRestriction() {
     }
@@ -53,23 +55,27 @@ public class VariableRestriction
         this.declaration = declaration;
         this.requiredDeclarations = new Declaration[]{declaration};
         this.evaluator = evaluator;
-        this.extractor = fieldExtractor;
+        this.readAccessor = fieldExtractor;
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject(declaration);
         out.writeObject(requiredDeclarations);
         out.writeObject(evaluator);
-        out.writeObject(extractor);
+        out.writeObject(readAccessor);
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         declaration = (Declaration) in.readObject();
         requiredDeclarations = (Declaration[]) in.readObject();
         evaluator = (Evaluator) in.readObject();
-        extractor = (InternalReadAccessor) in.readObject();
+        readAccessor = (InternalReadAccessor) in.readObject();
     }
 
+    public void setReadAccessor(InternalReadAccessor readAccessor) {
+        this.readAccessor = readAccessor;
+    }    
+    
     public Declaration[] getRequiredDeclarations() {
         return this.requiredDeclarations;
     }
@@ -91,7 +97,7 @@ public class VariableRestriction
                              final InternalWorkingMemory workingMemory,
                              final ContextEntry context ) {
         return this.evaluator.evaluate( workingMemory,
-                                        this.extractor,
+                                        this.readAccessor,
                                         this.evaluator.prepareObject( handle ),
                                         this.declaration.getExtractor(),
                                         this.evaluator.prepareObject( handle ) );
@@ -171,11 +177,11 @@ public class VariableRestriction
 
     public ContextEntry createContextEntry() {
         return this.createContextEntry( this.evaluator,
-                                        this.extractor );
+                                        this.readAccessor );
     }
 
     public Object clone() {
-        return new VariableRestriction( this.extractor,
+        return new VariableRestriction( this.readAccessor,
                                         (Declaration) this.declaration.clone(),
                                         this.evaluator );
     }

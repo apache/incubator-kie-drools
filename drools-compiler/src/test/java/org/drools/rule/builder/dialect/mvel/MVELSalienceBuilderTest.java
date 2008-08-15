@@ -10,6 +10,7 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassObjectType;
+import org.drools.base.mvel.MVELSalienceExpression;
 import org.drools.common.InternalFactHandle;
 import org.drools.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.PackageBuilder;
@@ -35,7 +36,7 @@ public class MVELSalienceBuilderTest extends TestCase {
         DialectCompiletimeRegistry dialectRegistry = pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectCompiletimeRegistry();
         MVELDialect mvelDialect = ( MVELDialect ) dialectRegistry.getDialect( "mvel" );
 
-        final InstrumentedBuildContent context = new InstrumentedBuildContent( conf,
+        final InstrumentedBuildContent context = new InstrumentedBuildContent( pkgBuilder,
                                                                                ruleDescr,
                                                                                dialectRegistry,
                                                                                pkg,                                                                               
@@ -68,6 +69,8 @@ public class MVELSalienceBuilderTest extends TestCase {
 
         SalienceBuilder salienceBuilder = new MVELSalienceBuilder();
         salienceBuilder.build( context );
+        
+        ((MVELSalienceExpression)context.getRule().getSalience()).compile( Thread.currentThread().getContextClassLoader() );
                 
         assertEquals( 25, context.getRule().getSalience().getValue( tuple, wm ) );
       

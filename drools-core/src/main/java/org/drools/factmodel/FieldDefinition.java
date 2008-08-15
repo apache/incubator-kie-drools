@@ -23,6 +23,8 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.drools.base.ClassFieldAccessor;
 import org.drools.rule.FactField;
+import org.drools.spi.AcceptsReadAccessor;
+import org.drools.spi.InternalReadAccessor;
 
 /**
  * Declares a field to be dynamically generated.
@@ -67,6 +69,11 @@ public class FieldDefinition
         this.type = type;
         this.key = key;
     }
+    
+
+    public void setReadWriteAccessor(ClassFieldAccessor accessor) {
+        this.accessor = accessor;
+    }    
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
@@ -170,13 +177,6 @@ public class FieldDefinition
      */
     public ClassFieldAccessor getFieldAccessor() {
         return this.accessor;
-    }
-
-    /**
-     * @param property The property descriptor to set.
-     */
-    public void setFieldAccessor(ClassFieldAccessor accessor) {
-        this.accessor = accessor;
     }
 
     /**

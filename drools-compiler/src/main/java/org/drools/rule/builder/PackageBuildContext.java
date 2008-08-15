@@ -24,6 +24,7 @@ import java.util.Map;
 import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.Dialect;
 import org.drools.compiler.DialectCompiletimeRegistry;
+import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.rule.Dialectable;
@@ -37,13 +38,12 @@ import org.drools.rule.Package;
 public class PackageBuildContext {
 
     // current package
-    private Package                     pkg;        
+    private Package                     pkg;
 
-    // configuration
-    private PackageBuilderConfiguration configuration;
-    
+    private PackageBuilder pkgBuilder;
+
     // the contianer descr
-    private BaseDescr                   parentDescr;    
+    private BaseDescr                   parentDescr;
 
     // errors found when building the current context
     private List                        errors;
@@ -63,26 +63,27 @@ public class PackageBuildContext {
     // a simple counter for generated names
     private int                         counter;
 
-    private DialectCompiletimeRegistry             dialectRegistry;
+    private DialectCompiletimeRegistry  dialectRegistry;
 
-    private Dialect                     dialect;    
-    
+    private Dialect                     dialect;
+
     public PackageBuildContext() {
-        
+
     }
 
     /**
      * Default constructor
      */
-    public void init(final PackageBuilderConfiguration configuration,
-                               final Package pkg,
-                               final BaseDescr parentDescr,
-                               final DialectCompiletimeRegistry dialectRegistry,
-                               final Dialect defaultDialect,
-                               final Dialectable component) {
-        this.configuration = configuration;
-        this.pkg = pkg;
+    public void init(final PackageBuilder pkgBuilder,
+                     final Package pkg,
+                     final BaseDescr parentDescr,
+                     final DialectCompiletimeRegistry dialectRegistry,
+                     final Dialect defaultDialect,
+                     final Dialectable component) {
+        this.pkgBuilder = pkgBuilder;
         
+        this.pkg = pkg;
+
         this.parentDescr = parentDescr;
 
         this.methods = new ArrayList();
@@ -92,14 +93,17 @@ public class PackageBuildContext {
         this.errors = new ArrayList();
 
         this.dialectRegistry = dialectRegistry;
-        
+
         this.dialect = (component != null && component.getDialect() != null) ? this.dialectRegistry.getDialect( component.getDialect() ) : defaultDialect;
-        
+
         if ( dialect == null && (component != null && component.getDialect() != null) ) {
-            this.errors.add( new DescrBuildError(null,parentDescr, component, "Unable to load Dialect '" + component.getDialect() + "'") );
+            this.errors.add( new DescrBuildError( null,
+                                                  parentDescr,
+                                                  component,
+                                                  "Unable to load Dialect '" + component.getDialect() + "'" ) );
         }
     }
-    
+
     public BaseDescr getParentDescr() {
         return this.parentDescr;
     }
@@ -118,7 +122,7 @@ public class PackageBuildContext {
     public Dialect getDialect(String dialectName) {
         return (Dialect) this.dialectRegistry.getDialect( dialectName );
     }
-    
+
     public DialectCompiletimeRegistry getDialectRegistry() {
         return this.dialectRegistry;
     }
@@ -198,9 +202,13 @@ public class PackageBuildContext {
     public int getNextId() {
         return this.counter++;
     }
-    
+
     public PackageBuilderConfiguration getConfiguration() {
-        return configuration;
+        return this.pkgBuilder.getPackageBuilderConfiguration();
+    }
+    
+    public PackageBuilder getPackageBuilder() {
+        return this.pkgBuilder;
     }
 
 }

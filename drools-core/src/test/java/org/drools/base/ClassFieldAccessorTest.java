@@ -30,11 +30,11 @@ import org.drools.util.asm.TestInterfaceImpl;
 
 public class ClassFieldAccessorTest extends TestCase {
 
-    private ClassFieldAccessorCache cache;
+    ClassFieldAccessorStore store = new ClassFieldAccessorStore();
 
     protected void setUp() throws Exception {
-        super.setUp();
-        cache = ClassFieldAccessorCache.getInstance();
+        store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
+        store.setEagerWire( true );
     }
 
     public void testBasic() throws Exception {
@@ -45,21 +45,21 @@ public class ClassFieldAccessorTest extends TestCase {
         obj.setSomething( "no" );
         obj.setObjArray( objArray );
 
-        final ClassFieldReader ext = cache.getReader( TestBean.class,
+        final ClassFieldReader ext = store.getReader( TestBean.class,
                                                       "blah",
                                                       getClass().getClassLoader() );
         assertEquals( false,
                       ((Boolean) ext.getValue( null,
                                                obj )).booleanValue() );
 
-        final ClassFieldReader ext2 = cache.getReader( TestBean.class,
+        final ClassFieldReader ext2 = store.getReader( TestBean.class,
                                                        "fooBar",
                                                        getClass().getClassLoader() );
         assertEquals( "fooBar",
                       ext2.getValue( null,
                                      obj ) );
 
-        final ClassFieldReader ext3 = cache.getReader( TestBean.class,
+        final ClassFieldReader ext3 = store.getReader( TestBean.class,
                                                        "objArray",
                                                        getClass().getClassLoader() );
         assertEquals( objArray,
@@ -71,7 +71,7 @@ public class ClassFieldAccessorTest extends TestCase {
     public void testInterface() throws Exception {
 
         final TestInterface obj = new TestInterfaceImpl();
-        final ClassFieldReader ext = cache.getReader( TestInterface.class,
+        final ClassFieldReader ext = store.getReader( TestInterface.class,
                                                       "something",
                                                       getClass().getClassLoader() );
 
@@ -83,7 +83,7 @@ public class ClassFieldAccessorTest extends TestCase {
 
     public void testAbstract() throws Exception {
 
-        final ClassFieldReader ext = cache.getReader( TestAbstract.class,
+        final ClassFieldReader ext = store.getReader( TestAbstract.class,
                                                       "something",
                                                       getClass().getClassLoader() );
         final TestAbstract obj = new TestAbstractImpl();
@@ -94,7 +94,7 @@ public class ClassFieldAccessorTest extends TestCase {
     }
 
     public void testInherited() throws Exception {
-        final ClassFieldReader ext = cache.getReader( BeanInherit.class,
+        final ClassFieldReader ext = store.getReader( BeanInherit.class,
                                                       "text",
                                                       getClass().getClassLoader() );
         final BeanInherit obj = new BeanInherit();
@@ -106,7 +106,7 @@ public class ClassFieldAccessorTest extends TestCase {
 
     public void testMultipleInterfaces() throws Exception {
         final ConcreteChild obj = new ConcreteChild();
-        final ClassFieldReader ext = cache.getReader( InterfaceChild.class,
+        final ClassFieldReader ext = store.getReader( InterfaceChild.class,
                                                       "foo",
                                                       getClass().getClassLoader() );
         assertEquals( 42,
@@ -115,7 +115,7 @@ public class ClassFieldAccessorTest extends TestCase {
     }
 
     public void testLong() throws Exception {
-        final ClassFieldReader ext = cache.getReader( TestBean.class,
+        final ClassFieldReader ext = store.getReader( TestBean.class,
                                                       "longField",
                                                       getClass().getClassLoader() );
         final TestBean bean = new TestBean();
@@ -133,7 +133,7 @@ public class ClassFieldAccessorTest extends TestCase {
         obj.setObjArray( objArray );
 
         try {
-            final ClassFieldReader ext = cache.getReader( TestBean.class,
+            final ClassFieldReader ext = store.getReader( TestBean.class,
                                                           "xyz",
                                                           getClass().getClassLoader() );
             fail( "A RuntimeDroolsException should have been raised" );
@@ -148,10 +148,10 @@ public class ClassFieldAccessorTest extends TestCase {
 
     public void testBuildFieldAccessor() {
         try {
-            ClassFieldAccessor intAccessor = cache.getAccessor( TestClass.class,
+            ClassFieldAccessor intAccessor = store.getAccessor( TestClass.class,
                                                                 "intAttr",
                                                                 getClass().getClassLoader() );
-            ClassFieldAccessor strAccessor = cache.getAccessor( TestClass.class,
+            ClassFieldAccessor strAccessor = store.getAccessor( TestClass.class,
                                                                 "strAttr",
                                                                 getClass().getClassLoader() );
 
@@ -200,31 +200,31 @@ public class ClassFieldAccessorTest extends TestCase {
 
     public void testNullOnPrimitives() {
         try {
-            ClassFieldAccessor intAccessor = cache.getAccessor( TestClass.class,
+            ClassFieldAccessor intAccessor = store.getAccessor( TestClass.class,
                                                                 "intAttr",
                                                                 getClass().getClassLoader() );
-            ClassFieldAccessor strAccessor = cache.getAccessor( TestClass.class,
+            ClassFieldAccessor strAccessor = store.getAccessor( TestClass.class,
                                                                 "strAttr",
                                                                 getClass().getClassLoader() );
-            ClassFieldAccessor byteAccessor = cache.getAccessor( TestClass.class,
+            ClassFieldAccessor byteAccessor = store.getAccessor( TestClass.class,
                                                                  "byteAttr",
                                                                  getClass().getClassLoader() );
-            ClassFieldAccessor booleanAccessor = cache.getAccessor( TestClass.class,
+            ClassFieldAccessor booleanAccessor = store.getAccessor( TestClass.class,
                                                                     "booleanAttr",
                                                                     getClass().getClassLoader() );
-            ClassFieldAccessor charAccessor = cache.getAccessor( TestClass.class,
+            ClassFieldAccessor charAccessor = store.getAccessor( TestClass.class,
                                                                  "charAttr",
                                                                  getClass().getClassLoader() );
-            ClassFieldAccessor doubleAccessor = cache.getAccessor( TestClass.class,
+            ClassFieldAccessor doubleAccessor = store.getAccessor( TestClass.class,
                                                                    "doubleAttr",
                                                                    getClass().getClassLoader() );
-            ClassFieldAccessor floatAccessor = cache.getAccessor( TestClass.class,
+            ClassFieldAccessor floatAccessor = store.getAccessor( TestClass.class,
                                                                   "floatAttr",
                                                                   getClass().getClassLoader() );
-            ClassFieldAccessor longAccessor = cache.getAccessor( TestClass.class,
+            ClassFieldAccessor longAccessor = store.getAccessor( TestClass.class,
                                                                  "longAttr",
                                                                  getClass().getClassLoader() );
-            ClassFieldAccessor shortAccessor = cache.getAccessor( TestClass.class,
+            ClassFieldAccessor shortAccessor = store.getAccessor( TestClass.class,
                                                                   "shortAttr",
                                                                   getClass().getClassLoader() );
 

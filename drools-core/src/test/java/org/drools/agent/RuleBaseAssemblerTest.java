@@ -11,6 +11,7 @@ import java.io.ObjectOutput;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.util.DroolsStreamUtils;
+import org.drools.base.ClassFieldAccessorCache;
 import org.drools.rule.Package;
 
 import junit.framework.TestCase;
@@ -22,10 +23,13 @@ public class RuleBaseAssemblerTest extends TestCase {
 
     public void testAssemblePackages() throws Exception {
         RuleBase rb = RuleBaseFactory.newRuleBase();
-        rb.addPackage( new Package("goober") );
+        Package pkg = new Package("goober");
+        pkg.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
+        rb.addPackage( pkg );
 
         Package p1 = new Package("p1");
-
+        p1.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
+        
         File f = getTempDirectory();
 
         File p1file = new File(f, "p1.pkg");

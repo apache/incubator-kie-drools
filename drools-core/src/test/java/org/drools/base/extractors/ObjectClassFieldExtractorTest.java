@@ -6,24 +6,28 @@ import java.util.List;
 import junit.framework.Assert;
 
 import org.drools.base.ClassFieldAccessorCache;
+import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.TestBean;
 import org.drools.spi.InternalReadAccessor;
 
 public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
 
-    InternalReadAccessor extractor = ClassFieldAccessorCache.getInstance().getReader( TestBean.class,
-                                                                               "listAttr",
-                                                                               getClass().getClassLoader() );
-    TestBean  bean      = new TestBean();
+    InternalReadAccessor reader;
+    TestBean             bean = new TestBean();
 
     protected void setUp() throws Exception {
-        super.setUp();
+        ClassFieldAccessorStore store = new ClassFieldAccessorStore();
+        store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
+        store.setEagerWire( true );
+        this.reader = store.getReader( TestBean.class,
+                                       "listAttr",
+                                       getClass().getClassLoader() );
     }
 
     public void testGetBooleanValue() {
         try {
-            this.extractor.getBooleanValue( null,
-                                            this.bean );
+            this.reader.getBooleanValue( null,
+                                         this.bean );
             fail( "Should have throw an exception" );
         } catch ( final Exception e ) {
             // success
@@ -32,8 +36,8 @@ public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest 
 
     public void testGetByteValue() {
         try {
-            this.extractor.getByteValue( null,
-                                         this.bean );
+            this.reader.getByteValue( null,
+                                      this.bean );
             fail( "Should have throw an exception" );
         } catch ( final Exception e ) {
             // success
@@ -42,8 +46,8 @@ public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest 
 
     public void testGetCharValue() {
         try {
-            this.extractor.getCharValue( null,
-                                         this.bean );
+            this.reader.getCharValue( null,
+                                      this.bean );
             fail( "Should have throw an exception" );
         } catch ( final Exception e ) {
             // success
@@ -52,8 +56,8 @@ public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest 
 
     public void testGetDoubleValue() {
         try {
-            this.extractor.getDoubleValue( null,
-                                           this.bean );
+            this.reader.getDoubleValue( null,
+                                        this.bean );
             fail( "Should have throw an exception" );
         } catch ( final Exception e ) {
             // success
@@ -62,8 +66,8 @@ public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest 
 
     public void testGetFloatValue() {
         try {
-            this.extractor.getFloatValue( null,
-                                          this.bean );
+            this.reader.getFloatValue( null,
+                                       this.bean );
             fail( "Should have throw an exception" );
         } catch ( final Exception e ) {
             // success
@@ -72,8 +76,8 @@ public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest 
 
     public void testGetIntValue() {
         try {
-            this.extractor.getIntValue( null,
-                                        this.bean );
+            this.reader.getIntValue( null,
+                                     this.bean );
             fail( "Should have throw an exception" );
         } catch ( final Exception e ) {
             // success
@@ -82,8 +86,8 @@ public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest 
 
     public void testGetLongValue() {
         try {
-            this.extractor.getLongValue( null,
-                                         this.bean );
+            this.reader.getLongValue( null,
+                                      this.bean );
             fail( "Should have throw an exception" );
         } catch ( final Exception e ) {
             // success
@@ -92,8 +96,8 @@ public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest 
 
     public void testGetShortValue() {
         try {
-            this.extractor.getShortValue( null,
-                                          this.bean );
+            this.reader.getShortValue( null,
+                                       this.bean );
             fail( "Should have throw an exception" );
         } catch ( final Exception e ) {
             // success
@@ -101,29 +105,26 @@ public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest 
     }
 
     public void testGetValue() {
-        try {
-            Assert.assertEquals( Collections.EMPTY_LIST,
-                                 this.extractor.getValue( null,
-                                                          this.bean ) );
-            Assert.assertTrue( this.extractor.getValue( null,
-                                                        this.bean ) instanceof List );
-        } catch ( final Exception e ) {
-            fail( "Should not throw an exception" );
-        }
+        Assert.assertEquals( Collections.EMPTY_LIST,
+                             this.reader.getValue( null,
+                                                   this.bean ) );
+        Assert.assertTrue( this.reader.getValue( null,
+                                                 this.bean ) instanceof List );
     }
 
     public void testIsNullValue() {
-        try {
-            Assert.assertFalse( this.extractor.isNullValue( null,
-                                                            this.bean ) );
+        Assert.assertFalse( this.reader.isNullValue( null,
+                                                     this.bean ) );
 
-            InternalReadAccessor nullExtractor = ClassFieldAccessorCache.getInstance().getReader( TestBean.class,
-                                                                                           "nullAttr",
-                                                                                           getClass().getClassLoader() );
-            Assert.assertTrue( nullExtractor.isNullValue( null,
-                                                          this.bean ) );
-        } catch ( final Exception e ) {
-            fail( "Should not throw an exception" );
-        }
+        ClassFieldAccessorStore store = new ClassFieldAccessorStore();
+        store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
+        store.setEagerWire( true );
+
+        InternalReadAccessor nullExtractor = store.getReader( TestBean.class,
+                                                              "nullAttr",
+                                                              getClass().getClassLoader() );
+        Assert.assertTrue( nullExtractor.isNullValue( null,
+                                                      this.bean ) );
+
     }
 }

@@ -108,6 +108,8 @@ public interface RuleBase
     Package[] getPackages();
 
     Package getPackage(String name);
+    
+    void addPackages(Package[] pkgs );
 
     void addPackage(Package pkg);
 

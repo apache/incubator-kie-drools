@@ -132,8 +132,6 @@ public class JavaDialect
 
     private PackageRegistry                          packageRegistry;
 
-    private ClassFieldAccessorCache                  classFieldExtractorCache;
-
     public JavaDialect(PackageBuilder builder,
                        PackageRegistry pkgRegistry,
                        Package pkg) {
@@ -142,7 +140,6 @@ public class JavaDialect
         this.packageRegistry = pkgRegistry;
 
         this.configuration = (JavaDialectConfiguration) builder.getPackageBuilderConfiguration().getDialectConfiguration( "java" );
-        this.classFieldExtractorCache = builder.getClassFieldExtractorCache();
 
         this.errorHandlers = new HashMap();
         this.results = new ArrayList();
@@ -155,9 +152,10 @@ public class JavaDialect
 
         // initialie the dialect runtime data if it doesn't already exist
         if ( pkg.getDialectRuntimeRegistry().getDialectData( ID ) == null ) {
-            data = new JavaDialectRuntimeData( this.pkg.getDialectRuntimeRegistry() );
+            data = new JavaDialectRuntimeData( );
             this.pkg.getDialectRuntimeRegistry().setDialectData( ID,
                                                                  data );
+            data.onAdd(  this.pkg.getDialectRuntimeRegistry(), this.packageBuilder.getRootClassLoader() );
         }
 
         this.packageStoreWrapper = new PackageStore( data,
@@ -284,15 +282,6 @@ public class JavaDialect
     }
 
     /**
-     * Returns the cache of field extractors
-     *
-     * @return
-     */
-    public ClassFieldAccessorCache getClassFieldExtractorCache() {
-        return this.classFieldExtractorCache;
-    }
-
-    /**
      * Returns the Knowledge Helper Fixer
      *
      * @return
@@ -401,7 +390,7 @@ public class JavaDialect
         final CompilationResult result = this.compiler.compile( classes,
                                                                 this.src,
                                                                 this.packageStoreWrapper,
-                                                                this.pkg.getDialectRuntimeRegistry().getClassLoader() );
+                                                                this.packageBuilder.getRootClassLoader() );
 
         //this will sort out the errors based on what class/file they happened in
         if ( result.getErrors().length > 0 ) {

@@ -16,10 +16,16 @@ package org.drools.workflow.instance.impl;
  * limitations under the License.
  */
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.io.Serializable;
 
+import org.drools.spi.CompiledInvoker;
 import org.drools.spi.ProcessContext;
 import org.drools.spi.ReturnValueEvaluator;
+import org.drools.spi.Wireable;
 import org.drools.workflow.core.Connection;
 import org.drools.workflow.core.Constraint;
 import org.drools.workflow.instance.node.SplitInstance;
@@ -30,18 +36,25 @@ import org.drools.workflow.instance.node.SplitInstance;
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class ReturnValueConstraintEvaluator
-    implements Constraint, ConstraintEvaluator, Serializable {
+    implements
+    Constraint,
+    ConstraintEvaluator,
+    Wireable,
+    Externalizable {
 
-    private static final long  serialVersionUID = 400L;
+    private static final long serialVersionUID = 400L;
 
-    private String             name;
-    private String             constraint;
-    private int                priority;
-    private String             dialect;
-    private String             type;       
-    
+    private String            name;
+    private String            constraint;
+    private int               priority;
+    private String            dialect;
+    private String            type;
+
+    public ReturnValueConstraintEvaluator() {
+    }
+
     private ReturnValueEvaluator evaluator;
-    
+
     public String getConstraint() {
         return this.constraint;
     }
@@ -85,9 +98,17 @@ public class ReturnValueConstraintEvaluator
     public void setType(String type) {
         this.type = type;
     }
-    
+
+    public void wire(Object object) {
+        setEvaluator( (ReturnValueEvaluator) object );
+    }
+
     public void setEvaluator(ReturnValueEvaluator evaluator) {
         this.evaluator = evaluator;
+    }
+
+    public ReturnValueEvaluator getReturnValueEvaluator() {
+        return this.evaluator;
     }
 
     public boolean evaluate(SplitInstance instance,
@@ -95,17 +116,42 @@ public class ReturnValueConstraintEvaluator
                             Constraint constraint) {
         Object value;
         try {
-        	ProcessContext context = new ProcessContext();
-        	context.setNodeInstance(instance);
-            value = this.evaluator.evaluate(
-        		instance.getProcessInstance().getWorkingMemory(), context );
+            ProcessContext context = new ProcessContext();
+            context.setNodeInstance( instance );
+            value = this.evaluator.evaluate( instance.getProcessInstance().getWorkingMemory(),
+                                             context );
         } catch ( Exception e ) {
-            throw  new RuntimeException("unable to execute ReturnValueEvaluator", e);
+            throw new RuntimeException( "unable to execute ReturnValueEvaluator",
+                                        e );
         }
         if ( !(value instanceof Boolean) ) {
-            throw new RuntimeException("Constraints must return boolean values" );
+            throw new RuntimeException( "Constraints must return boolean values" );
         }
-        return ((Boolean)value).booleanValue();
-    }    
+        return ((Boolean) value).booleanValue();
+    }
+
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        this.evaluator = (ReturnValueEvaluator) in.readObject();
+        this.name = in.readUTF();
+        this.constraint = (String) in.readObject();
+        this.priority = in.readInt();
+        this.dialect = in.readUTF();
+        this.type = (String) in.readObject();
+
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        if ( this.evaluator instanceof CompiledInvoker ) {
+            out.writeObject( null );
+        } else {
+            out.writeObject( this.evaluator );
+        }
+        out.writeUTF( this.name );
+        out.writeObject( this.constraint );
+        out.writeInt( this.priority );
+        out.writeUTF( dialect );
+        out.writeObject( type );
+    }
 
 }

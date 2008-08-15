@@ -50,9 +50,12 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import org.drools.RuntimeDroolsException;
+import org.drools.base.ClassFieldReader;
 import org.drools.base.ShadowProxy;
 import org.drools.base.ValueType;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.spi.AcceptsClassObjectType;
+import org.drools.spi.AcceptsReadAccessor;
 import org.drools.spi.InternalReadAccessor;
 
 /*
@@ -80,6 +83,7 @@ import org.drools.spi.InternalReadAccessor;
 public class Declaration
     implements
     Externalizable,
+    AcceptsReadAccessor,
     Cloneable {
     // ------------------------------------------------------------
     // Instance members
@@ -88,22 +92,42 @@ public class Declaration
     /**
      *
      */
-    private static final long serialVersionUID = 400L;
+    private static final long    serialVersionUID = 400L;
 
     /** The identifier for the variable. */
-    private String      identifier;
+    private String               identifier;
 
-    private InternalReadAccessor   extractor;
+    private InternalReadAccessor readAccessor;
 
-    private Pattern           pattern;
+    private Pattern              pattern;
 
-    private boolean     internalFact;
+    private boolean              internalFact;
 
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
     public Declaration() {
-        this(null, null, null);
+        this( null,
+              null,
+              null );
+    }
+
+    /**
+     * Construct.
+     *
+     * @param identifier
+     *            The name of the variable.
+     * @param objectType
+     *            The type of this variable declaration.
+     * @param order
+     *            The index within a rule.
+     */
+    public Declaration(final String identifier,
+                       final Pattern pattern) {
+        this( identifier,
+              null,
+              pattern,
+              false );
     }
 
     /**
@@ -143,24 +167,30 @@ public class Declaration
                        final Pattern pattern,
                        final boolean internalFact) {
         this.identifier = identifier;
-        this.extractor = extractor;
+        this.readAccessor = extractor;
         this.pattern = pattern;
         this.internalFact = internalFact;
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        identifier  = (String)in.readObject();
-        extractor   = (InternalReadAccessor)in.readObject();
-        pattern     = (Pattern)in.readObject();
-        internalFact    = in.readBoolean();
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        identifier = (String) in.readObject();
+        readAccessor = (InternalReadAccessor) in.readObject();
+        pattern = (Pattern) in.readObject();
+        internalFact = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(identifier);
-        out.writeObject(extractor);
-        out.writeObject(pattern);
-        out.writeBoolean(internalFact);
+        out.writeObject( identifier );
+        out.writeObject( readAccessor );
+        out.writeObject( pattern );
+        out.writeBoolean( internalFact );
     }
+
+    public void setReadAccessor(InternalReadAccessor readAccessor) {
+        this.readAccessor = readAccessor;
+    }
+
     // ------------------------------------------------------------
     // Instance methods
     // ------------------------------------------------------------
@@ -180,7 +210,7 @@ public class Declaration
      * @return The ValueType.
      */
     public ValueType getValueType() {
-        return this.extractor.getValueType();
+        return this.readAccessor.getValueType();
     }
 
     /**
@@ -210,19 +240,19 @@ public class Declaration
      * @return
      */
     public InternalReadAccessor getExtractor() {
-        return this.extractor;
+        return this.readAccessor;
     }
 
     public Object getValue(InternalWorkingMemory workingMemory,
                            final Object object) {
-        return this.extractor.getValue( workingMemory,
-                                        object );
+        return this.readAccessor.getValue( workingMemory,
+                                           object );
     }
 
     public Object getNonShadowedValue(InternalWorkingMemory workingMemory,
                                       final Object object) {
-        Object result = this.extractor.getValue( workingMemory,
-                                                 object );
+        Object result = this.readAccessor.getValue( workingMemory,
+                                                    object );
         if ( this.isInternalFact() && result instanceof Collection ) {
             try {
                 Collection newCol = (Collection) result.getClass().newInstance();
@@ -242,60 +272,60 @@ public class Declaration
 
     public char getCharValue(InternalWorkingMemory workingMemory,
                              final Object object) {
-        return this.extractor.getCharValue( workingMemory,
-                                            object );
+        return this.readAccessor.getCharValue( workingMemory,
+                                               object );
     }
 
     public int getIntValue(InternalWorkingMemory workingMemory,
                            final Object object) {
-        return this.extractor.getIntValue( workingMemory,
-                                           object );
+        return this.readAccessor.getIntValue( workingMemory,
+                                              object );
     }
 
     public byte getByteValue(InternalWorkingMemory workingMemory,
                              final Object object) {
-        return this.extractor.getByteValue( workingMemory,
-                                            object );
+        return this.readAccessor.getByteValue( workingMemory,
+                                               object );
     }
 
     public short getShortValue(InternalWorkingMemory workingMemory,
                                final Object object) {
-        return this.extractor.getShortValue( workingMemory,
-                                             object );
+        return this.readAccessor.getShortValue( workingMemory,
+                                                object );
     }
 
     public long getLongValue(InternalWorkingMemory workingMemory,
                              final Object object) {
-        return this.extractor.getLongValue( workingMemory,
-                                            object );
+        return this.readAccessor.getLongValue( workingMemory,
+                                               object );
     }
 
     public float getFloatValue(InternalWorkingMemory workingMemory,
                                final Object object) {
-        return this.extractor.getFloatValue( workingMemory,
-                                             object );
+        return this.readAccessor.getFloatValue( workingMemory,
+                                                object );
     }
 
     public double getDoubleValue(InternalWorkingMemory workingMemory,
                                  final Object object) {
-        return this.extractor.getDoubleValue( workingMemory,
-                                              object );
+        return this.readAccessor.getDoubleValue( workingMemory,
+                                                 object );
     }
 
     public boolean getBooleanValue(InternalWorkingMemory workingMemory,
                                    final Object object) {
-        return this.extractor.getBooleanValue( workingMemory,
-                                               object );
+        return this.readAccessor.getBooleanValue( workingMemory,
+                                                  object );
     }
 
     public int getHashCode(InternalWorkingMemory workingMemory,
                            final Object object) {
-        return this.extractor.getHashCode( workingMemory,
-                                           object );
+        return this.readAccessor.getHashCode( workingMemory,
+                                              object );
     }
 
     public boolean isGlobal() {
-        return this.extractor.isGlobal();
+        return this.readAccessor.isGlobal();
     }
 
     public Method getNativeReadMethod() {
@@ -308,20 +338,20 @@ public class Declaration
                                                   e );
             }
         }
-        return this.extractor.getNativeReadMethod();
+        return this.readAccessor.getNativeReadMethod();
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     public String toString() {
-        return "[Declaration: type=" + this.extractor.getValueType() + " identifier=" + this.identifier + "]";
+        return "[Declaration: type=" + this.readAccessor.getValueType() + " identifier=" + this.identifier + "]";
     }
 
     public int hashCode() {
         final int PRIME = 31;
         int result = 1;
         result = PRIME * this.pattern.getOffset();
-        result = PRIME * this.extractor.hashCode();
+        result = PRIME * this.readAccessor.hashCode();
         result = PRIME * this.identifier.hashCode();
         return result;
     }
@@ -337,7 +367,7 @@ public class Declaration
 
         final Declaration other = (Declaration) object;
 
-        return this.pattern.getOffset() == other.pattern.getOffset() && this.identifier.equals( other.identifier ) && this.extractor.equals( other.extractor );
+        return this.pattern.getOffset() == other.pattern.getOffset() && this.identifier.equals( other.identifier ) && this.readAccessor.equals( other.readAccessor );
     }
 
     protected boolean isInternalFact() {
@@ -345,7 +375,9 @@ public class Declaration
     }
 
     public Object clone() {
-        return new Declaration( this.identifier, this.extractor, this.pattern );
+        return new Declaration( this.identifier,
+                                this.readAccessor,
+                                this.pattern );
     }
 
 }

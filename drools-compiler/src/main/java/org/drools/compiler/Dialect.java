@@ -48,8 +48,6 @@ public interface Dialect {
 
     TypeResolver getTypeResolver();
 
-    ClassFieldAccessorCache getClassFieldExtractorCache();
-
     SalienceBuilder getSalienceBuilder();
 
     PatternBuilder getPatternBuilder();

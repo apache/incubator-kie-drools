@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.drools.base.mvel.DroolsMVELFactory;
+import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.base.mvel.MVELEvalExpression;
 import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.Dialect;
@@ -66,40 +67,37 @@ public class MVELEvalBuilder
         final EvalDescr evalDescr = (EvalDescr) descr;
 
         try {
-            final DroolsMVELFactory factory = new DroolsMVELFactory( context.getDeclarationResolver().getDeclarations(),
-                                                                     null,
-                                                                     context.getPkg().getGlobals() );   
+            MVELDialect dialect = (MVELDialect) context.getDialect( context.getDialect().getId() );
 
             Dialect.AnalysisResult analysis = context.getDialect().analyzeExpression( context,
                                                                                       evalDescr,
                                                                                       evalDescr.getContent(),
                                                                                       new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
-            final List[] usedIdentifiers = analysis.getBoundIdentifiers();
 
-            final Declaration[] declarations = new Declaration[usedIdentifiers[0].size()];
-            for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {
-                declarations[i] = context.getDeclarationResolver().getDeclaration( (String) usedIdentifiers[0].get( i ) );
-            }
+            Declaration[] previousDeclarations = (Declaration[]) context.getDeclarationResolver().getDeclarations().values().toArray( new Declaration[context.getDeclarationResolver().getDeclarations().size()] );
+            MVELCompilationUnit unit = dialect.getMVELCompilationUnit( (String) evalDescr.getContent(),
+                                                                       analysis,
+                                                                       previousDeclarations,
+                                                                       null,
+                                                                       null,
+                                                                       context );
+            final EvalCondition eval = new EvalCondition( previousDeclarations );
 
-            final EvalCondition eval = new EvalCondition( declarations );
-
-            Serializable expr = ((MVELDialect) context.getDialect()).compile( (String) evalDescr.getContent(),
-                                                                              analysis,
-                                                                              null,
-                                                                              null,
-                                                                              null,
-                                                                              context );
-
-            eval.setEvalExpression( new MVELEvalExpression( expr,
-                                                            factory,
-                                                            context.getDialect().getId() ) );
-
+            MVELEvalExpression expr = new MVELEvalExpression( unit,
+                                                              dialect.getId() );
+            eval.setEvalExpression( expr );            
+            
+            MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( context.getDialect().getId() );
+            data.addCompileable( eval,
+                                  expr );
+            
+            expr.compile( context.getPackageBuilder().getRootClassLoader() );
             return eval;
         } catch ( final Exception e ) {
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                    evalDescr,
-                                                    e,
-                                                    "Unable to build expression for 'eval' node '" + evalDescr.getContent() + "'" ) );
+                                                          evalDescr,
+                                                          e,
+                                                          "Unable to build expression for 'eval':" + e.getMessage() + " '" + evalDescr.getContent() + "'" ) );
             return null;
         }
     }

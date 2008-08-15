@@ -69,13 +69,18 @@ public class RuleBuilderTest extends TestCase {
      */
     public void testBuild() throws Exception {
         final DrlParser parser = new DrlParser();
+        
+        final PackageBuilder pkgBuilder = new PackageBuilder();
+        pkgBuilder.addPackage( new PackageDescr( "org.drools"  ) );
+        Package pkg = pkgBuilder.getPackage();
+        
         final PackageDescr pkgDescr = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "nestedConditionalElements.drl" ) ) );
 
         // just checking there is no parsing errors
         Assert.assertFalse( parser.getErrors().toString(),
                             parser.hasErrors() );
 
-        final Package pkg = new Package( "org.drools" );
+
 
         final RuleDescr ruleDescr = (RuleDescr) pkgDescr.getRules().get( 0 );
         final String ruleClassName = "RuleClassName.java";
@@ -90,13 +95,12 @@ public class RuleBuilderTest extends TestCase {
 
         final RuleBuilder builder = new RuleBuilder( );
 
-        final PackageBuilder pkgBuilder = new PackageBuilder(pkg);
         final PackageBuilderConfiguration conf = pkgBuilder.getPackageBuilderConfiguration();
         
         DialectCompiletimeRegistry dialectRegistry = pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectCompiletimeRegistry();        
         Dialect dialect = dialectRegistry.getDialect( "java" );
 
-        RuleBuildContext context = new RuleBuildContext(conf, ruleDescr, dialectRegistry, pkg, dialect);
+        RuleBuildContext context = new RuleBuildContext(pkgBuilder, ruleDescr, dialectRegistry, pkg, dialect);
 
         builder.build( context );
 

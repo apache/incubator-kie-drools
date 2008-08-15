@@ -16,6 +16,7 @@ package org.drools.base;
  * limitations under the License.
  */
 
+import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -39,82 +40,48 @@ import org.drools.util.ClassUtils;
  */
 public class ClassFieldReader
     implements
+    Externalizable,
     InternalReadAccessor {
     /**
      *
      */
     private static final long              serialVersionUID = 400L;
+    private String                         className;
     private String                         fieldName;
-    private Class< ? >                     clazz;
     private transient InternalReadAccessor reader;
-
+    
+    
     public ClassFieldReader() {
-
+        
     }
-
-    public ClassFieldReader(final Class< ? > clazz,
+    
+    public ClassFieldReader(final String className,
                             final String fieldName) {
-        this( clazz,
-              fieldName,
-              clazz.getClassLoader() );
-    }
-
-    public ClassFieldReader(final Class< ? > clazz,
-                            final String fieldName,
-                            final ClassLoader classLoader) {
-        this( clazz,
-              fieldName,
-              classLoader == null ? clazz.getClassLoader() : classLoader,
-              new ClassFieldAccessorFactory() );
-    }
-
-    public ClassFieldReader(final Class< ? > clazz,
-                            final String fieldName,
-                            final ClassLoader classLoader,
-                            final ClassFieldAccessorFactory factory) {
-        this.clazz = clazz;
+        this.className = className;
         this.fieldName = fieldName;
-        init( classLoader,
-              factory );
-    }
+    }    
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        // Call even if there is no default serializable fields.
-        out.writeObject( clazz.getName() );
+        out.writeObject( className );
         out.writeObject( fieldName );
     }
 
     public void readExternal(final ObjectInput is) throws ClassNotFoundException,
                                                   IOException {
-        String clsName = (String) is.readObject();
+        className = (String) is.readObject();
         fieldName = (String) is.readObject();
-        if ( is instanceof DroolsObjectInput ) {
-            DroolsObjectInput droolsInput = (DroolsObjectInput) is;
-            this.clazz = droolsInput.getClassLoader().loadClass( clsName );
-            reader = droolsInput.getExtractorFactory().getReader( clazz,
-                                                                     fieldName,
-                                                                     droolsInput.getClassLoader() );
-        } else {
-            this.clazz = getClass().getClassLoader() .loadClass( clsName );            
-            reader = ClassFieldAccessorCache.getInstance().getReader( clazz,        
-                                                                            fieldName,
-                                                                            getClass().getClassLoader() );
-        }
     }
 
-    private void init(final ClassLoader classLoader,
-                      final ClassFieldAccessorFactory factory) {
-        try {
-            this.reader = factory.getClassFieldReader( this.clazz,
-                                                          this.fieldName,
-                                                          classLoader );
-        } catch ( final Exception e ) {
-            throw new RuntimeDroolsException( e );
-        }
+    public void setReadAccessor(InternalReadAccessor reader) {
+        this.reader = reader;
     }
 
     public int getIndex() {
         return this.reader.getIndex();
+    }
+    
+    public String getClassName() {
+        return this.className;
     }
 
     public String getFieldName() {
@@ -124,7 +91,7 @@ public class ClassFieldReader
     public Object getValue(InternalWorkingMemory workingMemory,
                            final Object object) {
         return this.reader.getValue( workingMemory,
-                                        object );
+                                     object );
     }
 
     public ValueType getValueType() {
@@ -140,79 +107,83 @@ public class ClassFieldReader
     }
 
     public String toString() {
-        return "[ClassFieldExtractor class=" + this.clazz + " field=" + this.fieldName + "]";
+        return "[ClassFieldExtractor class=" + this.className + " field=" + this.fieldName + "]";
     }
 
     public int hashCode() {
-        return getValueType().hashCode() * 17 + getIndex();
-    }
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((className == null) ? 0 : className.hashCode());
+        result = prime * result + ((fieldName == null) ? 0 : fieldName.hashCode());
+        return result;
+    }       
 
-    public boolean equals(final Object object) {
-        if ( this == object ) {
-            return true;
-        }
-
-        if ( object == null || !(object instanceof ClassFieldReader) ) {
-            return false;
-        }
-
-        final ClassFieldReader other = (ClassFieldReader) object;
-
-        return this.reader.getValueType() == other.getValueType() && this.reader.getIndex() == other.getIndex();
+    public boolean equals(Object obj) {
+        if ( this == obj ) return true;
+        if ( obj == null ) return false;
+        if ( !(obj instanceof ClassFieldReader) ) return false;
+        ClassFieldReader other = (ClassFieldReader) obj;
+        if ( className == null ) {
+            if ( other.className != null ) return false;
+        } else if ( !className.equals( other.className ) ) return false;
+        if ( fieldName == null ) {
+            if ( other.fieldName != null ) return false;
+        } else if ( !fieldName.equals( other.fieldName ) ) return false;
+        return true;
     }
 
     public boolean getBooleanValue(InternalWorkingMemory workingMemory,
                                    final Object object) {
         return this.reader.getBooleanValue( workingMemory,
-                                               object );
+                                            object );
     }
 
     public byte getByteValue(InternalWorkingMemory workingMemory,
                              final Object object) {
         return this.reader.getByteValue( workingMemory,
-                                            object );
+                                         object );
     }
 
     public char getCharValue(InternalWorkingMemory workingMemory,
                              final Object object) {
         return this.reader.getCharValue( workingMemory,
-                                            object );
+                                         object );
     }
 
     public double getDoubleValue(InternalWorkingMemory workingMemory,
                                  final Object object) {
         return this.reader.getDoubleValue( workingMemory,
-                                              object );
+                                           object );
     }
 
     public float getFloatValue(InternalWorkingMemory workingMemory,
                                final Object object) {
         return this.reader.getFloatValue( workingMemory,
-                                             object );
+                                          object );
     }
 
     public int getIntValue(InternalWorkingMemory workingMemory,
                            final Object object) {
         return this.reader.getIntValue( workingMemory,
-                                           object );
+                                        object );
     }
 
     public long getLongValue(InternalWorkingMemory workingMemory,
                              final Object object) {
         return this.reader.getLongValue( workingMemory,
-                                            object );
+                                         object );
     }
 
     public short getShortValue(InternalWorkingMemory workingMemory,
                                final Object object) {
         return this.reader.getShortValue( workingMemory,
-                                             object );
+                                          object );
     }
 
     public boolean isNullValue(InternalWorkingMemory workingMemory,
                                final Object object) {
         return this.reader.isNullValue( workingMemory,
-                                           object );
+                                        object );
     }
 
     public Method getNativeReadMethod() {
@@ -222,7 +193,7 @@ public class ClassFieldReader
     public int getHashCode(InternalWorkingMemory workingMemory,
                            final Object object) {
         return this.reader.getHashCode( workingMemory,
-                                           object );
+                                        object );
     }
 
     public boolean isGlobal() {
@@ -327,6 +298,5 @@ public class ClassFieldReader
     public boolean isNullValue(Object object) {
         return reader.isNullValue( object );
     }
-    
-    
+
 }

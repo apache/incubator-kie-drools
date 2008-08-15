@@ -84,8 +84,8 @@ public class MapBackedClassLoader extends ClassLoader
      * higher priority than normal.
      *
      */
-    protected synchronized Class loadClass(final String name,
-                                           final boolean resolve) throws ClassNotFoundException {
+    public synchronized Class loadClass(final String name,
+                                        final boolean resolve) throws ClassNotFoundException {
         Class clazz = fastFindClass( name );
 
         if ( clazz == null ) {

@@ -19,7 +19,7 @@ public class JavaPredicateBuilder extends AbstractJavaRuleBuilder
                       final Declaration[] localDeclarations,
                       final PredicateConstraint predicateConstraint,
                       final PredicateDescr predicateDescr) {
-        final String className = "returnValue" + context.getNextId();
+        final String className = "predicate" + context.getNextId();
         predicateDescr.setClassMethodName( className );
 
         final Map map = createVariableContext( className,

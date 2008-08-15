@@ -350,11 +350,6 @@ public class PackageBuilderConfigurationTest extends TestCase {
         public Map getBuilders() {
             return null;
         }
-
-        public ClassFieldAccessorCache getClassFieldExtractorCache() {
-            return null;
-        }
-
         public ConsequenceBuilder getConsequenceBuilder() {
             return new MockConsequenceBuilder();
         }

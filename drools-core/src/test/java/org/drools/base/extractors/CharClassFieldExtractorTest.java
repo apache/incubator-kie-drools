@@ -3,22 +3,26 @@ package org.drools.base.extractors;
 import junit.framework.Assert;
 
 import org.drools.base.ClassFieldAccessorCache;
+import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.TestBean;
 import org.drools.spi.InternalReadAccessor;
 
 public class CharClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
-    InternalReadAccessor extractor = ClassFieldAccessorCache.getInstance().getReader( TestBean.class,
-                                                                               "charAttr",
-                                                                               getClass().getClassLoader() );
+    InternalReadAccessor reader;
     TestBean  bean      = new TestBean();
 
     protected void setUp() throws Exception {
-        super.setUp();
+        ClassFieldAccessorStore store = new ClassFieldAccessorStore();
+        store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
+        store.setEagerWire( true );
+        this.reader = store.getReader( TestBean.class,
+                                              "charAttr",
+                                              getClass().getClassLoader() );
     }
 
     public void testGetBooleanValue() {
         try {
-            this.extractor.getBooleanValue( null,
+            this.reader.getBooleanValue( null,
                                             this.bean );
             fail( "Should have throw an exception" );
         } catch ( final Exception e ) {
@@ -27,91 +31,56 @@ public class CharClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     }
 
     public void testGetByteValue() {
-        try {
             Assert.assertEquals( 'a',
-                                 this.extractor.getByteValue( null,
+                                 this.reader.getByteValue( null,
                                                               this.bean ) );
-        } catch ( final Exception e ) {
-            fail( "Should not throw exception" );
-        }
     }
 
     public void testGetCharValue() {
-        try {
             Assert.assertEquals( 'a',
-                                 this.extractor.getCharValue( null,
+                                 this.reader.getCharValue( null,
                                                               this.bean ) );
-        } catch ( final Exception e ) {
-            fail( "Should not throw exception" );
-        }
     }
 
     public void testGetDoubleValue() {
-        try {
             Assert.assertEquals( 'a',
-                                 (int) this.extractor.getDoubleValue( null,
+                                 (int) this.reader.getDoubleValue( null,
                                                                       this.bean ) );
-        } catch ( final Exception e ) {
-            fail( "Should not throw exception" );
-        }
     }
 
     public void testGetFloatValue() {
-        try {
             Assert.assertEquals( 'a',
-                                 (int) this.extractor.getFloatValue( null,
+                                 (int) this.reader.getFloatValue( null,
                                                                      this.bean ) );
-        } catch ( final Exception e ) {
-            fail( "Should not throw exception" );
-        }
     }
 
     public void testGetIntValue() {
-        try {
             Assert.assertEquals( 'a',
-                                 this.extractor.getIntValue( null,
+                                 this.reader.getIntValue( null,
                                                              this.bean ) );
-        } catch ( final Exception e ) {
-            fail( "Should not throw exception" );
-        }
     }
 
     public void testGetLongValue() {
-        try {
             Assert.assertEquals( 'a',
-                                 (int) this.extractor.getLongValue( null,
+                                 (int) this.reader.getLongValue( null,
                                                                     this.bean ) );
-        } catch ( final Exception e ) {
-            fail( "Should not throw exception" );
-        }
     }
 
     public void testGetShortValue() {
-        try {
             Assert.assertEquals( 'a',
-                                 this.extractor.getShortValue( null,
+                                 this.reader.getShortValue( null,
                                                                this.bean ) );
-        } catch ( final Exception e ) {
-            fail( "Should not throw exception" );
-        }
+
     }
 
     public void testGetValue() {
-        try {
             Assert.assertEquals( 'a',
-                                 ((Character) this.extractor.getValue( null,
+                                 ((Character) this.reader.getValue( null,
                                                                        this.bean )).charValue() );
-        } catch ( final Exception e ) {
-            fail( "Should not throw an exception" );
-        }
     }
 
     public void testIsNullValue() {
-        try {
-            Assert.assertFalse( this.extractor.isNullValue( null,
+            Assert.assertFalse( this.reader.isNullValue( null,
                                                             this.bean ) );
-        } catch ( final Exception e ) {
-            fail( "Should not throw an exception" );
-        }
     }
 }

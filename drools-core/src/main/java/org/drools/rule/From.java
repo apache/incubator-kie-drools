@@ -10,15 +10,18 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.spi.DataProvider;
+import org.drools.spi.ReturnValueExpression;
+import org.drools.spi.Wireable;
 
 public class From extends ConditionalElement
     implements
     Externalizable,
+    Wireable,
     PatternSource {
 
     private static final long serialVersionUID = 400L;
 
-    private DataProvider      dataProvider;
+    private DataProvider      dataProvider;      
 
     public From() {
     }
@@ -34,6 +37,10 @@ public class From extends ConditionalElement
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject(dataProvider);
     }
+    
+    public void wire(Object object) {
+        this.dataProvider = ( DataProvider ) dataProvider;
+    }    
 
     public DataProvider getDataProvider() {
         return this.dataProvider;

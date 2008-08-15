@@ -7,15 +7,18 @@ import java.io.ObjectOutput;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
+import org.drools.spi.AcceptsReadAccessor;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.ReadAccessor;
 import org.drools.spi.Restriction;
 
-public class MultiRestrictionFieldConstraint extends MutableTypeConstraint {
+public class MultiRestrictionFieldConstraint extends MutableTypeConstraint
+    implements
+    AcceptsReadAccessor {
 
     private static final long    serialVersionUID = 400L;
 
-    private InternalReadAccessor extractor;
+    private InternalReadAccessor readAccessor;
 
     private Restriction          restrictions;
 
@@ -25,25 +28,29 @@ public class MultiRestrictionFieldConstraint extends MutableTypeConstraint {
 
     public MultiRestrictionFieldConstraint(final InternalReadAccessor extractor,
                                            final Restriction restrictions) {
-        this.extractor = extractor;
+        this.readAccessor = extractor;
         this.restrictions = restrictions;
     }
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         super.readExternal( in );
-        extractor = (InternalReadAccessor) in.readObject();
+        readAccessor = (InternalReadAccessor) in.readObject();
         restrictions = (Restriction) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
-        out.writeObject( extractor );
+        out.writeObject( readAccessor );
         out.writeObject( restrictions );
     }
+    
+    public void setReadAccessor(InternalReadAccessor readAccessor) {
+        this.readAccessor = readAccessor;
+    }        
 
     public ReadAccessor getFieldExtractor() {
-        return this.extractor;
+        return this.readAccessor;
     }
 
     public Declaration[] getRequiredDeclarations() {
@@ -57,13 +64,13 @@ public class MultiRestrictionFieldConstraint extends MutableTypeConstraint {
     }
 
     public String toString() {
-        return "[MultiRestrictionConstraint fieldExtractor=" + this.extractor + " restrictions =" + this.restrictions + "]";
+        return "[MultiRestrictionConstraint fieldExtractor=" + this.readAccessor + " restrictions =" + this.restrictions + "]";
     }
 
     public int hashCode() {
         final int PRIME = 31;
         int result = 1;
-        result = PRIME * this.extractor.hashCode();
+        result = PRIME * this.readAccessor.hashCode();
         result = PRIME * this.restrictions.hashCode();
         return result;
     }
@@ -77,13 +84,13 @@ public class MultiRestrictionFieldConstraint extends MutableTypeConstraint {
         }
         final MultiRestrictionFieldConstraint other = (MultiRestrictionFieldConstraint) object;
 
-        return this.extractor.equals( other.extractor ) && this.restrictions.equals( other.restrictions );
+        return this.readAccessor.equals( other.readAccessor ) && this.restrictions.equals( other.restrictions );
     }
 
     public boolean isAllowed(final InternalFactHandle handle,
                              final InternalWorkingMemory workingMemory,
                              final ContextEntry context) {
-        return this.restrictions.isAllowed( this.extractor,
+        return this.restrictions.isAllowed( this.readAccessor,
                                             handle,
                                             workingMemory,
                                             context );
@@ -106,7 +113,7 @@ public class MultiRestrictionFieldConstraint extends MutableTypeConstraint {
     }
 
     public Object clone() {
-        return new MultiRestrictionFieldConstraint( this.extractor,
+        return new MultiRestrictionFieldConstraint( this.readAccessor,
                                                     (Restriction) this.restrictions.clone() );
     }
 

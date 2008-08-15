@@ -22,6 +22,11 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Method;
 
+import org.drools.spi.AcceptsReadAccessor;
+import org.drools.spi.AcceptsWriteAccessor;
+import org.drools.spi.InternalReadAccessor;
+import org.drools.spi.WriteAccessor;
+
 /**
  * This is a wrapper for a ClassFieldExtractor that provides
  * default values and a simpler interface for non-used parameters
@@ -32,16 +37,20 @@ import java.lang.reflect.Method;
  */
 public class ClassFieldAccessor
     implements
-    FieldAccessor, Externalizable {
+    AcceptsReadAccessor,
+    AcceptsWriteAccessor,
+    FieldAccessor,
+    Externalizable {
 
-    private static final long   serialVersionUID = 400L;
-    private ClassFieldReader reader;
-    private ClassFieldWriter writer;
+    private static final long serialVersionUID = 400L;
+    private ClassFieldReader  reader;
+    private ClassFieldWriter  writer;
 
     public ClassFieldAccessor() {
     }
 
-    public ClassFieldAccessor(final ClassFieldReader reader, final ClassFieldWriter writer ) {
+    public ClassFieldAccessor(final ClassFieldReader reader,
+                              final ClassFieldWriter writer) {
         this.reader = reader;
         this.writer = writer;
     }
@@ -57,6 +66,14 @@ public class ClassFieldAccessor
         this.writer = (ClassFieldWriter) is.readObject();
     }
 
+    public void setReadAccessor(InternalReadAccessor readAccessor) {
+        this.reader = (ClassFieldReader) readAccessor;
+    }
+
+    public void setWriteAccessor(WriteAccessor writeAccessor) {
+        this.writer = (ClassFieldWriter) writeAccessor;
+    }
+
     public int getIndex() {
         return this.reader.getIndex();
     }
@@ -67,7 +84,7 @@ public class ClassFieldAccessor
 
     public Object getValue(final Object object) {
         return this.reader.getValue( null,
-                                        object );
+                                     object );
     }
 
     public ValueType getValueType() {
@@ -86,67 +103,89 @@ public class ClassFieldAccessor
         return this.reader.toString();
     }
 
+    
+    
+//    public int hashCode() {
+//        return this.reader.hashCode();
+//    }
+//
+//    public boolean equals(final Object object) {
+//        if ( this == object ) {
+//            return true;
+//        }
+//
+//        if ( object == null || !(object instanceof ClassFieldAccessor) ) {
+//            return false;
+//        }
+//
+//        final ClassFieldAccessor other = (ClassFieldAccessor) object;
+//
+//        return this.reader.equals( other.reader );
+//    }
+
+    @Override
     public int hashCode() {
-        return this.reader.hashCode();
+        return  reader.getClassName().hashCode() ^ reader.getFieldName().hashCode();
     }
 
-    public boolean equals(final Object object) {
-        if ( this == object ) {
-            return true;
-        }
-
-        if ( object == null || !(object instanceof ClassFieldAccessor) ) {
-            return false;
-        }
-
-        final ClassFieldAccessor other = (ClassFieldAccessor) object;
-
-        return this.reader.equals( other.reader );
+    @Override
+    public boolean equals(Object obj) {
+        if ( this == obj ) return true;
+        if ( obj == null ) return false;
+        if ( !(obj instanceof ClassFieldAccessor) ) return false;
+        ClassFieldAccessor other = (ClassFieldAccessor) obj;
+        if ( reader == null ) {
+            if ( other.reader != null ) return false;
+        } else if ( !reader.getClassName().equals( other.reader.getClassName() ) || !reader.getFieldName().equals( other.reader.getFieldName() ) ) return false;
+        if ( writer == null ) {
+            if ( other.writer != null ) return false;
+        } else if ( !writer.getClassName().equals( other.writer.getClassName() ) || !writer.getFieldName().equals( other.writer.getFieldName() )  ) return false;
+        return true;
     }
 
     public boolean getBooleanValue(final Object object) {
         return this.reader.getBooleanValue( null,
-                                               object );
+                                            object );
     }
 
     public byte getByteValue(final Object object) {
         return this.reader.getByteValue( null,
-                                            object );
+                                         object );
     }
 
     public char getCharValue(final Object object) {
         return this.reader.getCharValue( null,
-                                            object );
+                                         object );
     }
 
     public double getDoubleValue(final Object object) {
         return this.reader.getDoubleValue( null,
-                                              object );
+                                           object );
     }
 
     public float getFloatValue(final Object object) {
         return this.reader.getFloatValue( null,
-                                             object );
+                                          object );
     }
 
     public int getIntValue(final Object object) {
         return this.reader.getIntValue( null,
-                                           object );
+                                        object );
     }
 
     public long getLongValue(final Object object) {
         return this.reader.getLongValue( null,
-                                            object );
+                                         object );
     }
 
     public short getShortValue(final Object object) {
         return this.reader.getShortValue( null,
-                                             object );
+                                          object );
     }
 
     public boolean isNullValue(final Object object) {
         return this.reader.isNullValue( null,
-                                           object );
+                                        object );
     }
 
     public Method getNativeReadMethod() {
@@ -155,7 +194,7 @@ public class ClassFieldAccessor
 
     public int getHashCode(final Object object) {
         return this.reader.getHashCode( null,
-                                           object );
+                                        object );
     }
 
     /**
@@ -281,5 +320,4 @@ public class ClassFieldAccessor
                          value );
     }
 
-    
 }

@@ -369,6 +369,12 @@ public class ReteooRuleBase extends AbstractRuleBase {
         // may start in 0
         return this.reteooBuilder.getIdGenerator().getLastId() + 1;
     }
+    
+    public void addPackages(Package[] pkgs ) {
+        for (Package pkg : pkgs) {
+            addPackage( pkg );
+        }
+    }
 
     public synchronized void addPackage(final Package newPkg) {
         super.addPackage( newPkg );

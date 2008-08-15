@@ -11,9 +11,11 @@ import org.drools.Cheese;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.base.ClassFieldAccessorCache;
+import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.ClassObjectType;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
+import org.drools.base.mvel.MVELReturnValueExpression;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.DialectCompiletimeRegistry;
@@ -32,10 +34,12 @@ import org.drools.spi.InternalReadAccessor;
 
 public class MVELReturnValueBuilderTest extends TestCase {
 
-    private ClassFieldAccessorCache cache;
 
-    public void setUp() {
-        cache = ClassFieldAccessorCache.getInstance();
+    ClassFieldAccessorStore store = new ClassFieldAccessorStore();
+
+    protected void setUp() throws Exception {
+        store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
+        store.setEagerWire( true );
     }
 
     public void testSimpleExpression() {
@@ -47,14 +51,14 @@ public class MVELReturnValueBuilderTest extends TestCase {
         DialectCompiletimeRegistry dialectRegistry = pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectCompiletimeRegistry();
         MVELDialect mvelDialect = (MVELDialect) dialectRegistry.getDialect( "mvel" );
 
-        final InstrumentedBuildContent context = new InstrumentedBuildContent( conf,
+        final InstrumentedBuildContent context = new InstrumentedBuildContent( pkgBuilder,
                                                                                ruleDescr,
                                                                                dialectRegistry,
                                                                                pkg,
                                                                                mvelDialect );
 
         final InstrumentedDeclarationScopeResolver declarationResolver = new InstrumentedDeclarationScopeResolver();
-        final InternalReadAccessor extractor = cache.getReader( Cheese.class,
+        final InternalReadAccessor extractor = store.getReader( Cheese.class,
                                                                 "price",
                                                                 getClass().getClassLoader() );
 
@@ -104,6 +108,8 @@ public class MVELReturnValueBuilderTest extends TestCase {
                        localDeclarations,
                        returnValue,
                        returnValueDescr );
+        
+        ((MVELReturnValueExpression)returnValue.getExpression()).compile( Thread.currentThread().getContextClassLoader() );
 
         ContextEntry retValContext = returnValue.createContextEntry();
 

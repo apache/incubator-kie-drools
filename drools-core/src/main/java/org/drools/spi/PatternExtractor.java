@@ -33,6 +33,7 @@ import org.drools.util.ClassUtils;
 public class PatternExtractor
     implements
     InternalReadAccessor,
+    AcceptsClassObjectType,
     Externalizable {
 
     /**
@@ -57,6 +58,10 @@ public class PatternExtractor
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( objectType );
     }
+    
+    public void setClassObjectType(ClassObjectType objectType) {
+        this.objectType = objectType;
+    }    
 
     public Object getValue(InternalWorkingMemory workingMemory,
                            final Object object) {

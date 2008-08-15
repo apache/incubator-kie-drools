@@ -8,38 +8,44 @@ import org.drools.spi.PredicateExpression;
 import org.drools.spi.Tuple;
 import org.mvel.MVEL;
 
+import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
 
-public class MVELPredicateExpression implements PredicateExpression {
+public class MVELPredicateExpression implements PredicateExpression, MVELCompileable, Externalizable {
     private static final long       serialVersionUID = 400L;
-
+    
+    private MVELCompilationUnit unit;
+    private String id;
+    
     private Serializable      expr;
     private DroolsMVELFactory prototype;
-    private String id;
 
     public MVELPredicateExpression() {
     }
 
-    public MVELPredicateExpression(final Serializable expr,
-                                   final DroolsMVELFactory factory,
+    public MVELPredicateExpression(final MVELCompilationUnit unit,
                                    final String id) {
-        this.expr = expr;
-        this.prototype = factory;
+        this.unit = unit;
         this.id = id;
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        expr    = (Serializable)in.readObject();
-        prototype   = (DroolsMVELFactory)in.readObject();
+        id = in.readUTF();
+        unit = ( MVELCompilationUnit ) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(expr);
-        out.writeObject(prototype);
+        out.writeUTF( id );
+        out.writeObject( unit );
     }
+    
+    public void compile(ClassLoader classLoader) {
+        expr = unit.getCompiledExpression( classLoader );
+        prototype = unit.getFactory( );
+    }      
 
     public Object createContext() {
         return this.prototype.clone();

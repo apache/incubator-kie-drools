@@ -12,6 +12,7 @@ import org.drools.FactHandle;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
+import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.ClassFieldReader;
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassObjectType;
@@ -38,8 +39,14 @@ import org.drools.util.LinkedList;
 import org.drools.util.LinkedListEntry;
 
 public class FromNodeTest extends TestCase {
-    ClassFieldAccessorCache cache = ClassFieldAccessorCache.getInstance();
     EqualityEvaluatorsDefinition equals = new EqualityEvaluatorsDefinition();
+
+    ClassFieldAccessorStore store = new ClassFieldAccessorStore();
+
+    protected void setUp() throws Exception {
+        store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
+        store.setEagerWire( true );
+    }
 
     public void testAlphaNode() {
         final PropagationContext context = new PropagationContextImpl( 0,
@@ -49,7 +56,7 @@ public class FromNodeTest extends TestCase {
                                                                        null );
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
                                                                            (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
-        final ClassFieldReader extractor = cache.getReader( Cheese.class,
+        final ClassFieldReader extractor = store.getReader( Cheese.class,
                                                                   "type",
                                                                   getClass().getClassLoader() );
 
@@ -146,11 +153,11 @@ public class FromNodeTest extends TestCase {
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
                                                                            (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
 
-        final ClassFieldReader priceExtractor = cache.getReader( Cheese.class,
+        final ClassFieldReader priceExtractor = store.getReader( Cheese.class,
                                                                        "price",
                                                                        getClass().getClassLoader() );
 
-        final ClassFieldReader ageExtractor = cache.getReader( Person.class,
+        final ClassFieldReader ageExtractor = store.getReader( Person.class,
                                                                      "age",
                                                                      getClass().getClassLoader() );
 
@@ -256,7 +263,7 @@ public class FromNodeTest extends TestCase {
                                                                        null );
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
                                                                            (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
-        final ClassFieldReader extractor = cache.getReader( Cheese.class,
+        final ClassFieldReader extractor = store.getReader( Cheese.class,
                                                                   "type",
                                                                   getClass().getClassLoader() );
 

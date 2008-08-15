@@ -16,6 +16,9 @@ package org.drools.workflow.core.node;
  * limitations under the License.
  */
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
@@ -70,7 +73,7 @@ public class Split extends NodeImpl {
 
     public Split(final int type) {
         this.type = type;
-    }
+    }    
 
     public void setType(final int type) {
         this.type = type;

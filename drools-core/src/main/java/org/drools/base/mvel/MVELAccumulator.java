@@ -17,6 +17,7 @@
  */
 package org.drools.base.mvel;
 
+import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -40,10 +41,17 @@ import org.mvel.MVEL;
  */
 public class MVELAccumulator
     implements
-    Accumulator {
+    MVELCompileable,
+    Accumulator,
+    Externalizable  {
 
     private static final long serialVersionUID = 400L;
 
+    MVELCompilationUnit initUnit;
+    MVELCompilationUnit actionUnit;
+    MVELCompilationUnit reverseUnit;
+    MVELCompilationUnit resultUnit;
+    
     private DroolsMVELFactory prototype;
     private Serializable      init;
     private Serializable      action;
@@ -53,35 +61,43 @@ public class MVELAccumulator
     public MVELAccumulator() {
     }
 
-    public MVELAccumulator(final DroolsMVELFactory factory,
-                           final Serializable init,
-                           final Serializable action,
-                           final Serializable reverse,
-                           final Serializable result) {
+    public MVELAccumulator(final MVELCompilationUnit initUnit,
+                           final MVELCompilationUnit actionUnit,
+                           final MVELCompilationUnit reverseUnit,
+                           final MVELCompilationUnit resultUnit) {
         super();
-        this.prototype = factory;
-        this.init = init;
-        this.action = action;
-        this.reverse = reverse;
-        this.result = result;
+        this.initUnit = initUnit;
+        this.actionUnit = actionUnit;
+        this.reverseUnit = reverseUnit;
+        this.resultUnit = resultUnit;
     }
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
-        prototype = (DroolsMVELFactory) in.readObject();
-        init = (Serializable) in.readObject();
-        action = (Serializable) in.readObject();
-        reverse = (Serializable) in.readObject();
-        result = (Serializable) in.readObject();
+        initUnit = (MVELCompilationUnit) in.readObject();
+        actionUnit = (MVELCompilationUnit) in.readObject();
+        reverseUnit = (MVELCompilationUnit) in.readObject();
+        resultUnit = (MVELCompilationUnit) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject( prototype );
-        out.writeObject( init );
-        out.writeObject( action );
-        out.writeObject( reverse );
-        out.writeObject( result );
+        out.writeObject( initUnit );
+        out.writeObject( actionUnit );
+        out.writeObject( reverseUnit );
+        out.writeObject( resultUnit );
     }
+    
+    public void compile(ClassLoader classLoader) {
+        init = initUnit.getCompiledExpression( classLoader );
+        action = actionUnit.getCompiledExpression( classLoader );
+        result = resultUnit.getCompiledExpression( classLoader );
+        if ( reverseUnit != null ) {
+            reverse = reverseUnit.getCompiledExpression( classLoader );
+            prototype = reverseUnit.getFactory();
+        } else {
+            prototype = resultUnit.getFactory();
+        }      
+    }        
 
     /* (non-Javadoc)
      * @see org.drools.spi.Accumulator#createContext()

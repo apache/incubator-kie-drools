@@ -25,8 +25,6 @@ import java.io.Externalizable;
  *
  * @version $Id$
  */
-public interface RuleComponent
-    extends
-    Externalizable {
+public interface RuleComponent {
 
 }

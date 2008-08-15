@@ -24,17 +24,23 @@ import junit.framework.TestCase;
 
 import org.drools.Cheese;
 import org.drools.base.ClassFieldAccessorCache;
+import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.ClassObjectType;
 import org.drools.spi.InternalReadAccessor;
 
 public class DeclarationTest extends TestCase {
 
-    ClassFieldAccessorCache cache = ClassFieldAccessorCache.getInstance();
+    ClassFieldAccessorStore store = new ClassFieldAccessorStore();
+
+    protected void setUp() throws Exception {
+        store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
+        store.setEagerWire( true );
+    }
 
     public void testDeclaration() throws IntrospectionException {
-        final InternalReadAccessor extractor = cache.getReader( Cheese.class,
-                                                             "type",
-                                                             getClass().getClassLoader() );
+        final InternalReadAccessor extractor = store.getReader( Cheese.class,
+                                                                "type",
+                                                                getClass().getClassLoader() );
 
         final Pattern pattern = new Pattern( 5,
                                              new ClassObjectType( Cheese.class ) );
@@ -60,9 +66,9 @@ public class DeclarationTest extends TestCase {
     }
 
     public void testGetFieldValue() throws IntrospectionException {
-        final InternalReadAccessor extractor = cache.getReader( Cheese.class,
-                                                             "type",
-                                                             getClass().getClassLoader() );
+        final InternalReadAccessor extractor = store.getReader( Cheese.class,
+                                                                "type",
+                                                                getClass().getClassLoader() );
 
         final Pattern pattern = new Pattern( 5,
                                              new ClassObjectType( Cheese.class ) );

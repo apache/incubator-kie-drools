@@ -5,7 +5,10 @@ import java.io.Externalizable;
 
 public interface DroolsClassLoader {
 
-    InputStream getResourceAsStream(final String name);
+    public InputStream getResourceAsStream(final String name);
 
-    public Class fastFindClass(final String name);
+    public Class<?> fastFindClass(final String name);
+    
+    public Class<?> loadClass(final String name,
+                           final boolean resolve) throws ClassNotFoundException;
 }

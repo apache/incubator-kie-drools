@@ -25,9 +25,11 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.base.AccessorKey;
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ValueType;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.base.ClassFieldAccessorCache.CacheEntry;
 import org.drools.spi.InternalReadAccessor;
 import org.mvel.MVEL;
 import org.mvel.compiler.CompiledExpression;
@@ -48,9 +50,9 @@ public class MVELClassFieldReader extends BaseObjectClassFieldReader {
 
     public MVELClassFieldReader() {
     }
-    public MVELClassFieldReader(Class clazz,
-                                   String fieldName,
-                                   ClassLoader classLoader) {
+    public MVELClassFieldReader(Class cls,
+                                String fieldName,
+                                CacheEntry cache) {
         super( -1, // index
                Object.class, // fieldType
                ValueType.determineValueType( Object.class ) ); // value type
@@ -58,27 +60,28 @@ public class MVELClassFieldReader extends BaseObjectClassFieldReader {
 
         ExpressionCompiler compiler = new ExpressionCompiler( fieldName );
         this.mvelExpression = compiler.compile();
+        
 
         Set inputs = compiler.getParserContextState().getInputs().keySet();
         for( Iterator it = inputs.iterator(); it.hasNext(); ) {
             String basefield = (String) it.next();
-
-            InternalReadAccessor extr = ClassFieldAccessorCache.getInstance().getReader(  clazz, basefield, classLoader );
+                                    
+            InternalReadAccessor extr = cache.getReadAccessor( new AccessorKey( cls.getName(), basefield, AccessorKey.AccessorType.FieldAccessor), cls );
             this.extractors.put( basefield, extr );
         }
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        super.readExternal(in);
-        mvelExpression  = (CompiledExpression)in.readObject();
-        extractors  = (Map)in.readObject();
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal(out);
-        out.writeObject(mvelExpression);
-        out.writeObject(extractors);
-    }
+//    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+//        super.readExternal(in);
+//        mvelExpression  = (CompiledExpression)in.readObject();
+//        extractors  = (Map)in.readObject();
+//    }
+//
+//    public void writeExternal(ObjectOutput out) throws IOException {
+//        super.writeExternal(out);
+//        out.writeObject(mvelExpression);
+//        out.writeObject(extractors);
+//    }
 
     /* (non-Javadoc)
      * @see org.drools.base.extractors.BaseObjectClassFieldExtractor#getValue(java.lang.Object)

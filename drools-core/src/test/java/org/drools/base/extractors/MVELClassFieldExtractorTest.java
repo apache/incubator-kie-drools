@@ -8,19 +8,24 @@ import junit.framework.TestCase;
 import org.drools.Address;
 import org.drools.Person;
 import org.drools.base.ClassFieldAccessorCache;
+import org.drools.base.ClassFieldAccessorStore;
 import org.drools.spi.InternalReadAccessor;
 
 public class MVELClassFieldExtractorTest extends TestCase {
 
-    InternalReadAccessor               extractor = ClassFieldAccessorCache.getInstance().getReader( Person.class,
-                                                                                             "addresses['home'].street",
-                                                                                             getClass().getClassLoader() );
-    private final Person[]  person    = new Person[2];
-    private final Address[] business  = new Address[2];
-    private final Address[] home      = new Address[2];
+    ClassFieldAccessorStore store = new ClassFieldAccessorStore();
+    InternalReadAccessor    extractor;
+    private final Person[]  person   = new Person[2];
+    private final Address[] business = new Address[2];
+    private final Address[] home     = new Address[2];
 
     protected void setUp() throws Exception {
-        super.setUp();
+        store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
+        store.setEagerWire( true );
+
+        extractor = store.getReader( Person.class,
+                                     "addresses['home'].street",
+                                     getClass().getClassLoader() );
         person[0] = new Person( "bob",
                                 30 );
         business[0] = new Address( "Business Street",
@@ -146,9 +151,9 @@ public class MVELClassFieldExtractorTest extends TestCase {
             Assert.assertFalse( this.extractor.isNullValue( null,
                                                             this.person[0] ) );
 
-            InternalReadAccessor nullExtractor = ClassFieldAccessorCache.getInstance().getReader( Person.class,
-                                                                                           "addresses['business'].phone",
-                                                                                           getClass().getClassLoader() );
+            InternalReadAccessor nullExtractor = store.getReader( Person.class,
+                                                                  "addresses['business'].phone",
+                                                                  getClass().getClassLoader() );
             Assert.assertTrue( nullExtractor.isNullValue( null,
                                                           this.person[0] ) );
         } catch ( final Exception e ) {
@@ -191,7 +196,7 @@ public class MVELClassFieldExtractorTest extends TestCase {
                 }
             }
             if ( !errors.isEmpty() ) {
-                System.out.println(errors.toString());
+                System.out.println( errors.toString() );
                 fail( " Errors occured during execution " );
             }
         } catch ( InterruptedException e ) {
