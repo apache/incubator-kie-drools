@@ -1,4 +1,5 @@
 package org.drools.dataloaders.jaxb;
+
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -48,6 +49,7 @@ import org.xml.sax.SAXParseException;
 import com.sun.codemodel.CodeWriter;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JPackage;
+import com.sun.tools.xjc.BadCommandLineException;
 import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.ModelLoader;
 import com.sun.tools.xjc.Options;
@@ -55,11 +57,20 @@ import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.outline.Outline;
 
 public class DroolsJaxbHelper {
-    public static String[] addModel(Reader reader, PackageBuilder pkgBuilder, Options xjcOpts, String systemId) throws IOException {
+    public static String[] addModel(Reader reader,
+                                    PackageBuilder pkgBuilder,
+                                    Options xjcOpts,
+                                    String systemId) throws IOException {
         InputSource source = new InputSource( new CachingRewindableReader( reader ) );
         source.setSystemId( systemId.trim().startsWith( "." ) ? systemId : "." + systemId );
 
         xjcOpts.addGrammar( source );
+        
+        try {
+            xjcOpts.parseArguments( new String[] { "-npa" } );
+        } catch ( BadCommandLineException e ) {
+            throw new IllegalArgumentException("Unable to parse arguments", e);
+        }
 
         ErrorReceiver errorReceiver = new JaxbErrorReceiver4Drools();
 
@@ -77,66 +88,75 @@ public class DroolsJaxbHelper {
         List<String> classNames = new ArrayList<String>();
         for ( Entry<String, byte[]> entry : codeWriter.getMap().entrySet() ) {
             String name = entry.getKey();
-            
-            if ( name.endsWith( "package-info.java" ) ) {
-                // this has no content and causes nullpointer in JDT
-                continue;
-            }                        
-            
+
             String pkgName = null;
             int dotPos = name.lastIndexOf( '.' );
-            pkgName = name.substring( 0, dotPos );     
-            
-            classNames.add( pkgName );
+            pkgName = name.substring( 0,
+                                      dotPos );
+
+            if ( !name.endsWith( "package-info.java" ) ) {
+                classNames.add( pkgName );
+            }
             
             dotPos = pkgName.lastIndexOf( '.' );
             if ( dotPos != -1 ) {
-                pkgName = pkgName.substring( 0, dotPos );
-            } 
-            
+                pkgName = pkgName.substring( 0,
+                                             dotPos );
+            }
+
             PackageRegistry pkgReg = pkgBuilder.getPackageRegistry( pkgName );
             if ( pkgReg == null ) {
                 pkgBuilder.addPackage( new PackageDescr( pkgName ) );
                 pkgReg = pkgBuilder.getPackageRegistry( pkgName );
             }
-            
-            JavaDialect dialect = ( JavaDialect ) pkgReg.getDialectCompiletimeRegistry().getDialect( "java" );
+
+            JavaDialect dialect = (JavaDialect) pkgReg.getDialectCompiletimeRegistry().getDialect( "java" );
             dialects.add( dialect );
-            dialect.addSrc( convertToResource( entry.getKey() ) , entry.getValue() );            
+            dialect.addSrc( convertToResource( entry.getKey() ),
+                            entry.getValue() );
         }
-        
+
         pkgBuilder.compileAll();
-        pkgBuilder.updateResults();  
-        
-        return (String[]) classNames.toArray( new String[ classNames.size() ] );       
+        pkgBuilder.updateResults();
+
+        return (String[]) classNames.toArray( new String[classNames.size()] );
     }
-    
-    public static JAXBContext newInstance(String[] classNames, RuleBase rb) throws JAXBException  {
-        return newInstance(classNames, Collections.<String,Object>emptyMap(), rb );
-    }    
-    
-    public static JAXBContext newInstance(String[] classNames, Map<String,?> properties, RuleBase rb) throws JAXBException {
-        ClassLoader classLoader = ((InternalRuleBase) rb).getCompositePackageClassLoader();
-        
+
+    public static JAXBContext newInstance(String[] classNames,
+                                          RuleBase rb) throws JAXBException {
+        return newInstance( classNames,
+                            Collections.<String, Object> emptyMap(),
+                            rb );
+    }
+
+    public static JAXBContext newInstance(String[] classNames,
+                                          Map<String, ? > properties,
+                                          RuleBase rb) throws JAXBException {
+        ClassLoader classLoader = ((InternalRuleBase) rb).getRootClassLoader();
+
         Class[] classes = new Class[classNames.length];
         int i = 0;
         try {
-            for (i = 0; i < classNames.length; i++ ) {
+            for ( i = 0; i < classNames.length; i++ ) {
                 classes[i] = classLoader.loadClass( classNames[i] );
-                
             }
-        } catch ( ClassNotFoundException e) {
-            throw new JAXBException( "Unable to resolve class '" + classNames[i] + "'", e);
-        }
+        } catch ( ClassNotFoundException e ) {
+            throw new JAXBException( "Unable to resolve class '" + classNames[i] + "'",
+                                     e );
+        }        
 
-        return JAXBContext.newInstance( classes, properties );
+        return JAXBContext.newInstance( classes,
+                                        properties );
     }
-    
+
     private static String convertToResource(String string) {
         int lastDot = string.lastIndexOf( '.' );
-        return string.substring( 0, lastDot ).replace( '.', '/' ) + string.substring( lastDot, string.length() );
-    }     
-    
+        return string.substring( 0,
+                                 lastDot ).replace( '.',
+                                                    '/' ) + string.substring( lastDot,
+                                                                              string.length() );
+    }
+
     public static class MapVfsCodeWriter extends CodeWriter {
 
         private final Map<String, byte[]> map;
@@ -158,7 +178,7 @@ public class DroolsJaxbHelper {
 
             if ( this.currentBaos != null ) {
                 this.currentBaos.close();
-                this.map.put( this.currentPath ,
+                this.map.put( this.currentPath,
                               this.currentBaos.toByteArray() );
             }
 
@@ -175,14 +195,14 @@ public class DroolsJaxbHelper {
         public void close() throws IOException {
             if ( this.currentBaos != null ) {
                 this.currentBaos.close();
-                this.map.put( this.currentPath ,
+                this.map.put( this.currentPath,
                               this.currentBaos.toByteArray() );
             }
         }
 
         public Map<String, byte[]> getMap() {
             return this.map;
-        }     
+        }
 
     }
 
@@ -205,55 +225,61 @@ public class DroolsJaxbHelper {
         public void info(SAXParseException e) {
             e.printStackTrace();
         }
-    }    
-    
+    }
+
     public static class CachingRewindableReader extends Reader {
-        private Reader source;
-        private boolean sourceClosed;
+        private Reader                 source;
+        private boolean                sourceClosed;
         private RewindableStringReader cache;
-        private StringBuilder strBuilder;
-        
+        private StringBuilder          strBuilder;
+
         public CachingRewindableReader(Reader source) {
             this.source = source;
             this.strBuilder = new StringBuilder();
-        }        
+        }
 
         public int read(char[] cbuf,
                         int off,
-                        int len) throws IOException {    
+                        int len) throws IOException {
             int value = 0;
             if ( this.cache == null ) {
-                value = this.source.read( cbuf, off, len );
+                value = this.source.read( cbuf,
+                                          off,
+                                          len );
                 if ( value != -1 ) {
                     // keep appening to the stringBuilder until we are at the end
-                    this.strBuilder.append( cbuf, off, value );
+                    this.strBuilder.append( cbuf,
+                                            off,
+                                            value );
                 } else {
                     // we are at the end, so switch to cache
-                    this.cache = new RewindableStringReader( strBuilder.toString() );                    
+                    this.cache = new RewindableStringReader( strBuilder.toString() );
                 }
-            } else {        
-                value = this.cache.read( cbuf, off, len );
+            } else {
+                value = this.cache.read( cbuf,
+                                         off,
+                                         len );
             }
             return value;
-        }                
-        
+        }
+
         public void close() throws IOException {
-            if ( !sourceClosed  ) {
+            if ( !sourceClosed ) {
                 // close the source, we only do this once.
                 this.source.close();
                 this.sourceClosed = true;
             }
-            
-            if ( cache == null ) {  
+
+            if ( cache == null ) {
                 // switch to cache if we haven't already
                 this.cache = new RewindableStringReader( strBuilder.toString() );
             } else {
                 // reset the cache, so it can be read again.
                 this.cache.reset();
             }
-        }        
+        }
     }
-    
+
     public static class RewindableStringReader extends StringReader {
         public RewindableStringReader(String s) {
             super( s );
@@ -266,5 +292,5 @@ public class DroolsJaxbHelper {
                 e.printStackTrace();
             }
         }
-    }      
+    }
 }
