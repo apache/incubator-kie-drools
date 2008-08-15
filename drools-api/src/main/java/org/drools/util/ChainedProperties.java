@@ -1,7 +1,7 @@
 /**
  *
  */
-package oirg.drools.util;
+package org.drools.util;
 
 import java.io.File;
 import java.io.IOException;
