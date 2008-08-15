@@ -1,5 +1,7 @@
 package org.drools;
 
+import oirg.drools.util.ChainedProperties;
+
 public class KnowledgeSessionFactory {
     private static KnowledgeSessionProvider provider;
     
@@ -8,6 +10,27 @@ public class KnowledgeSessionFactory {
     }
     
     public static StatefulKnowledgeSession newStatefulKnowledgeSession() {
+        if ( provider == null ) {
+            loadProvider();
+        }
         return provider.newStatefulKnowledgeSession();
+    }
+    
+    private static void loadProvider() {
+        try {
+            ChainedProperties properties = new ChainedProperties( "drools-providers.conf" );
+            String className = properties.getProperty( "KnowledgeSessionProvider", null );
+            if ( className != null || className.trim().length() > 0 ) {
+                Class<KnowledgeSessionProvider> cls = ( Class<KnowledgeSessionProvider> ) Class.forName( className ); 
+            }
+        } catch ( Exception e1 ) {
+            try {
+                // we didn't find anything in properties so lets try and us reflection
+                Class<KnowledgeSessionProvider> cls = ( Class<KnowledgeSessionProvider> ) Class.forName( "org.drools.KnowledgeSessionProviderImpl" );
+                provider = cls.newInstance();
+            } catch ( Exception e2 ) {
+                throw new ProviderInitializationException( "Provider was not set and the Factory was unable to load a provider from properties, nor could reflection find org.drools.KnowledgeSessionProviderImpl." );
+            }
+        }
     }
 }
