@@ -403,7 +403,8 @@ public class ClipsShell
                         context.addPackageImport( importName.substring( 0,
                                                                         importName.length() - 2 ) );
                     } else {
-                        Class cls = pkg.getDialectRuntimeRegistry().getClassLoader().loadClass( importName );
+                    	
+                        Class cls = ((InternalRuleBase)ruleBase).getRootClassLoader().loadClass( importName );
                         context.addImport( cls.getSimpleName(),
                                            (Class) cls );
                     }
@@ -418,7 +419,7 @@ public class ClipsShell
         }
 
         ClassLoader tempClassLoader = Thread.currentThread().getContextClassLoader();
-        Thread.currentThread().setContextClassLoader( pkg.getPackageScopeClassLoader() );
+        Thread.currentThread().setContextClassLoader( ((InternalRuleBase)ruleBase).getRootClassLoader() );
         
         ExpressionCompiler expr = new ExpressionCompiler( appendable.toString() );
         Serializable executable = expr.compile( context );

@@ -31,6 +31,7 @@ import org.drools.clips.functions.ReturnFunction;
 import org.drools.clips.functions.RunFunction;
 import org.drools.clips.functions.SetFunction;
 import org.drools.clips.functions.SwitchFunction;
+import org.drools.common.InternalRuleBase;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 
@@ -251,7 +252,7 @@ public class ClipsShellTest extends TestCase {
         this.shell.eval( "(defrule xxx (PersonTemplate (name ?name&bob) (age 30) ) (PersonTemplate  (name ?name) (age 35)) => (printout t xx \" \" (eq 1 1) ) )" );
         this.shell.eval( "(assert (PersonTemplate (name 'mike') (age 34)))" );
 
-        Class personClass = this.shell.getStatefulSession().getRuleBase().getPackage( "MAIN" ).getPackageScopeClassLoader().loadClass( "MAIN.PersonTemplate" );
+        Class personClass = ((InternalRuleBase)this.shell.getStatefulSession().getRuleBase()).getRootClassLoader().loadClass( "MAIN.PersonTemplate" );
         assertNotNull( personClass );
     }
 
@@ -287,7 +288,7 @@ public class ClipsShellTest extends TestCase {
                       pkg.getRules().length );
 
         WorkingMemory wm = shell.getStatefulSession();
-        Class personClass = this.shell.getStatefulSession().getRuleBase().getPackage( "MAIN" ).getPackageScopeClassLoader().loadClass( "MAIN.Person" );
+        Class personClass = ((InternalRuleBase)this.shell.getStatefulSession().getRuleBase()).getRootClassLoader().loadClass( "MAIN.Person" );
 
         Method nameMethod = personClass.getMethod( "setName",
                                                    new Class[]{String.class} );
