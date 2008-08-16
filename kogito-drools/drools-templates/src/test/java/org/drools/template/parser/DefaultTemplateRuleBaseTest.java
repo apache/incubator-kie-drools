@@ -56,8 +56,8 @@ public class DefaultTemplateRuleBaseTest extends TestCase {
 		DefaultTemplateRuleBase ruleBase = new DefaultTemplateRuleBase(tc);
 		Package[] packages = ruleBase.newStatefulSession().getRuleBase().getPackages();
 		assertEquals(1, packages.length);
-		Map<String, Class> globals = packages[0].getGlobals();
-		assertEquals(DefaultGenerator.class, globals.get("generator"));
+		Map<String, String> globals = packages[0].getGlobals();
+		assertEquals(DefaultGenerator.class.getName(), globals.get("generator"));
 		Rule[] rules = packages[0].getRules();
 		assertEquals(1, rules.length);
 		assertEquals("template1", rules[0].getName());
