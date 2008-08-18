@@ -295,6 +295,23 @@ public abstract class AbstractWorkingMemory
         this.entryPointNode = this.ruleBase.getRete().getEntryPointNode( this.entryPoint );
         this.typeConfReg = new ObjectTypeConfigurationRegistry( this.ruleBase );
     }
+    
+    public void reset(int handleId, long handleCounter, long propagationCounter) {
+        this.nodeMemories.clear();
+        this.agenda.clear();
+        this.objectStore.clear();
+        this.handleFactory.clear(handleId, handleCounter);
+        this.tms.clear();
+        this.liaPropagations.clear();
+        this.actionQueue.clear();
+        
+        this.propagationIdCounter = new AtomicLong( propagationCounter );
+
+        // TODO should these be cleared?
+        // we probably neeed to do CEP and Flow timers too        
+        // this.processInstanceManager.clear()
+        // this.workItemManager.clear();        
+    }
 
     public void setWorkingMemoryEventSupport(WorkingMemoryEventSupport workingMemoryEventSupport) {
         this.workingMemoryEventSupport = workingMemoryEventSupport;
@@ -434,19 +451,19 @@ public abstract class AbstractWorkingMemory
     }
 
     public void clearAgenda() {
-        this.agenda.clearAgenda();
+        this.agenda.clearAndCancel();
     }
 
     public void clearAgendaGroup(final String group) {
-        this.agenda.clearAgendaGroup( group );
+        this.agenda.clearAndCancelAgendaGroup( group );
     }
 
     public void clearActivationGroup(final String group) {
-        this.agenda.clearActivationGroup( group );
+        this.agenda.clearAndCancelActivationGroup( group );
     }
 
     public void clearRuleFlowGroup(final String group) {
-        this.agenda.clearRuleFlowGroup( group );
+        this.agenda.clearAndCancelRuleFlowGroup( group );
     }
 
     public RuleBase getRuleBase() {

@@ -5,7 +5,6 @@ import java.io.ObjectOutput;
 import java.io.IOException;
 import java.io.ObjectInput;
 
-import org.drools.spi.AgendaGroup;
 
 public class PriorityQueueAgendaGroupFactory implements AgendaGroupFactory, Externalizable {
     private static final AgendaGroupFactory INSTANCE = new PriorityQueueAgendaGroupFactory();
@@ -20,7 +19,7 @@ public class PriorityQueueAgendaGroupFactory implements AgendaGroupFactory, Exte
         return INSTANCE;
     }
 
-    public AgendaGroup createAgendaGroup(String name, InternalRuleBase ruleBase) {
+    public InternalAgendaGroup createAgendaGroup(String name, InternalRuleBase ruleBase) {
         return new BinaryHeapQueueAgendaGroup( name,
                                     ruleBase );
     }

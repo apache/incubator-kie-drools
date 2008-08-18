@@ -172,6 +172,7 @@ public class RuleFlowGroupImpl
 
     public void clear() {
         this.list.clear();
+        this.active = false;
     }
 
     public int size() {

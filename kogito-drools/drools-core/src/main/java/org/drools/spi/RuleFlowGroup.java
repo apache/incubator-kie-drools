@@ -42,4 +42,6 @@ public interface RuleFlowGroup extends Externalizable {
      * activations when it was activated, it will be deactivated immediately.
      */
     void setAutoDeactivate(boolean autoDeactivate);
+
+    void clear();
 }

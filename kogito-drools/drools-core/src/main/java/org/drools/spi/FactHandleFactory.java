@@ -64,4 +64,6 @@ public interface FactHandleFactory {
     public int getId();
 
     public long getRecency();
+    
+    public void clear(int id, long counter);    
 }

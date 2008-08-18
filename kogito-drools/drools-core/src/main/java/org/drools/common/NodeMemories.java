@@ -25,12 +25,14 @@ import java.io.Externalizable;
  *
  * @author etirelli
  */
-public interface NodeMemories extends Externalizable {
+public interface NodeMemories {
 
     public Object getNodeMemory( NodeMemory node );
 
     public void clearNodeMemory( NodeMemory node );
 
     public void setRuleBaseReference(InternalRuleBase ruleBase);
+    
+    public void clear();
 
 }

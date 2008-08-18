@@ -165,7 +165,7 @@ public class AgendaTest extends DroolsTestCase {
         assertEquals( 1,
                       agenda.getScheduledActivations().length );
 
-        agenda.clearAgenda();
+        agenda.clearAndCancel();
 
         assertEquals( 0,
                       agenda.getFocus().size() );
@@ -250,7 +250,7 @@ public class AgendaTest extends DroolsTestCase {
                       results.get( "fired" ) );
 
         // clear the agenda and the result map
-        agenda.clearAgenda();
+        agenda.clearAndCancel();
         results.clear();
 
         // False filter, activations should always be denied
@@ -587,7 +587,7 @@ public class AgendaTest extends DroolsTestCase {
                       agendaGroup.size() );
 
         // Clear the agenda we we can test again
-        agenda.clearAgenda();
+        agenda.clearAndCancel();
         assertEquals( 0,
                       agendaGroup.size() );
 
@@ -837,7 +837,7 @@ public class AgendaTest extends DroolsTestCase {
         assertEquals( 1,
                       activationGroup3.size() );
 
-        agenda.clearAgendaGroup( "agendaGroup3" );
+        agenda.clearAndCancelAgendaGroup( "agendaGroup3" );
         assertEquals( 3,
                       agenda.agendaSize() );
         assertEquals( 0,
