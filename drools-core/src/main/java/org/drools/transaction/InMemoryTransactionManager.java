@@ -11,7 +11,7 @@ import java.nio.channels.FileChannel;
 import java.util.LinkedList;
 import java.util.List;
 
-import jdbm.RecordManager;
+import javax.transaction.xa.XAResource;
 
 import org.drools.StatefulSession;
 import org.drools.common.InternalRuleBase;
@@ -29,6 +29,6 @@ public class InMemoryTransactionManager {
     byte[] lastSave;  
     
     public XAResource getXAResource() {
-        
+        return null;
     }
 }
