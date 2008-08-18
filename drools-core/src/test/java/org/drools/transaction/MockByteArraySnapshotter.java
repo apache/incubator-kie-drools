@@ -3,6 +3,8 @@
  */
 package org.drools.transaction;
 
+import org.drools.persistence.ByteArraySnapshotter;
+
 public class MockByteArraySnapshotter implements ByteArraySnapshotter {
     public byte[] bytes;
 
@@ -18,7 +20,7 @@ public class MockByteArraySnapshotter implements ByteArraySnapshotter {
         return bytes;
     }
 
-    public void restoreSnapshot(byte[] bytes) {
+    public void loadSnapshot(byte[] bytes) {
         this.bytes = bytes;
     }        
 }

@@ -1,10 +1,10 @@
 /**
  * 
  */
-package org.drools.transaction;
+package org.drools.persistence;
 
 public interface ByteArraySnapshotter {
     public byte[] getSnapshot();
     
-    public void restoreSnapshot(byte[] bytes);       
+    public void loadSnapshot(byte[] bytes);       
 }

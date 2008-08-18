@@ -1,4 +1,4 @@
-package org.drools.transaction;
+package org.drools.persistence;
 
 import javax.transaction.xa.*;
 
