@@ -9,6 +9,8 @@ public interface ObjectStore {
     public abstract int size();
 
     public abstract boolean isEmpty();
+    
+    public void clear();    
 
     public abstract Object getObjectForHandle(InternalFactHandle handle);
 

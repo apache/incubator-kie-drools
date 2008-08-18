@@ -68,6 +68,60 @@ import org.drools.workflow.instance.node.TimerNodeInstance;
 import org.drools.workflow.instance.node.WorkItemNodeInstance;
 
 public class InputMarshaller {
+    /**
+     * Stream the data into an existing session
+     * 
+     * @param session
+     * @param context
+     * @param id
+     * @param executor
+     * @return
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
+    public static ReteooStatefulSession readSession(ReteooStatefulSession session,
+                                                    MarshallerReaderContext context) throws IOException,
+                                                                             ClassNotFoundException {
+        int handleId = context.readInt();
+        long handleCounter = context.readLong();
+        long propagationCounter = context.readLong();                
+        
+        // these are for the InitialFactHandle, on a reset we just ignore
+        context.readInt();
+        context.readLong();           
+        
+        session.reset(handleId, handleCounter, propagationCounter);
+        DefaultAgenda agenda = ( DefaultAgenda ) session.getAgenda();
+        
+        readAgenda( context,
+                    agenda );   
+        
+        context.wm = session;   
+        
+        readFactHandles( context );
+
+        readActionQueue( context );
+
+        if ( context.readBoolean() ) {
+            readTruthMaintenanceSystem( context );
+        }
+
+        readProcessInstances( context );
+
+        readWorkItems( context );        
+        
+        return session;
+    }
+    
+    /**
+     * Create a new session into which to read the stream data
+     * @param context
+     * @param id
+     * @param executor
+     * @return
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     public static ReteooStatefulSession readSession(MarshallerReaderContext context,
                                                     int id,
                                                     ExecutorService executor) throws IOException,

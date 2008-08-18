@@ -87,6 +87,7 @@ public class ArrayAgendaGroup
         this.index = this.array.length-1;
         this.lastIndex = 0;
     }
+    
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         name    = (String)in.readObject();
@@ -114,7 +115,8 @@ public class ArrayAgendaGroup
     }
 
     public void clear() {
-        this.array = new LinkedList[this.array.length];
+        this.lastIndex = 0;
+        this.array = new LinkedList[ this.array.length ];
     }
 
     /* (non-Javadoc)
@@ -206,7 +208,7 @@ public class ArrayAgendaGroup
 
     public String toString() {
         return "AgendaGroup '" + this.name + "'";
-    }
+    }   
 
     public boolean equal(final Object object) {
         if ( (object == null) || !(object instanceof ArrayAgendaGroup) ) {

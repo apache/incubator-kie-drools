@@ -137,7 +137,7 @@ public class ArrayIterator implements java.util.Iterator {
      * If an array has previously been set (using the single-arg constructor
      * or this method) then that array is discarded in favour of this one.
      * Iteration is restarted at the start of the new array.
-     * Although this can be used to reset iteration, the {@link #reset()} method
+     * Although this can be used to reset iteration, the {@link #clear()} method
      * is a more effective choice.
      *
      * @param array the array that the iterator should iterate over.

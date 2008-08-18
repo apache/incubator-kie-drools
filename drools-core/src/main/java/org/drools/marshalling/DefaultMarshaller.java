@@ -12,7 +12,9 @@ import org.drools.concurrent.ExecutorService;
 import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.spi.GlobalResolver;
 
-public class DefaultMarshaller implements Marshaller {
+public class DefaultMarshaller
+    implements
+    Marshaller {
     GlobalResolver                     globalResolver;
     private RuleBaseConfiguration      config;
     PlaceholderResolverStrategyFactory factory;
@@ -20,20 +22,21 @@ public class DefaultMarshaller implements Marshaller {
     public DefaultMarshaller() {
         this( null );
     }
-    
+
     public DefaultMarshaller(RuleBaseConfiguration config) {
-        this( config, null);
-    }    
+        this( config,
+              null );
+    }
 
     public DefaultMarshaller(RuleBaseConfiguration config,
-                      PlaceholderResolverStrategyFactory factory) {
+                             PlaceholderResolverStrategyFactory factory) {
         this.config = (config != null) ? config : new RuleBaseConfiguration();
-        
+
         if ( factory == null ) {
             this.factory = new PlaceholderResolverStrategyFactory();
             ClassPlaceholderResolverStrategyAcceptor acceptor = new ClassPlaceholderResolverStrategyAcceptor( "*.*" );
             IdentityPlaceholderResolverStrategy strategy = new IdentityPlaceholderResolverStrategy( acceptor );
-            this.factory.addStrategy( strategy );            
+            this.factory.addStrategy( strategy );
         } else {
             this.factory = factory;
         }
@@ -48,16 +51,32 @@ public class DefaultMarshaller implements Marshaller {
                                       final ExecutorService executor) throws IOException,
                                                                      ClassNotFoundException {
         MarshallerReaderContext context = new MarshallerReaderContext( stream,
-                                                                         ruleBase,
-                                                                         RuleBaseNodes.getNodeMap( ruleBase ),
-                                                                         factory );
+                                                                       ruleBase,
+                                                                       RuleBaseNodes.getNodeMap( ruleBase ),
+                                                                       factory );
 
         ReteooStatefulSession session = InputMarshaller.readSession( context,
-                                           id,
-                                           executor );
+                                                                     id,
+                                                                     executor );
         context.close();
         return session;
-        
+
+    }
+
+    public ReteooStatefulSession read(final InputStream stream,
+                                      final InternalRuleBase ruleBase,
+                                      ReteooStatefulSession session) throws IOException,
+                                                                    ClassNotFoundException {
+        MarshallerReaderContext context = new MarshallerReaderContext( stream,
+                                                                       ruleBase,
+                                                                       RuleBaseNodes.getNodeMap( ruleBase ),
+                                                                       factory );
+
+        session = InputMarshaller.readSession( session,
+                                               context );
+        context.close();
+        return session;
+
     }
 
     /* (non-Javadoc)
@@ -67,10 +86,10 @@ public class DefaultMarshaller implements Marshaller {
                       final InternalRuleBase ruleBase,
                       final StatefulSession session) throws IOException {
         MarshallerWriteContext context = new MarshallerWriteContext( stream,
-                                                                           ruleBase,
-                                                                           (InternalWorkingMemory) session,
-                                                                           RuleBaseNodes.getNodeMap( ruleBase ),
-                                                                           this.factory );
+                                                                     ruleBase,
+                                                                     (InternalWorkingMemory) session,
+                                                                     RuleBaseNodes.getNodeMap( ruleBase ),
+                                                                     this.factory );
         OutputMarshaller.writeSession( context );
         context.close();
     }

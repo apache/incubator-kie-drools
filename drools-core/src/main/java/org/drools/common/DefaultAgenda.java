@@ -72,36 +72,36 @@ public class DefaultAgenda
     /**
      * 
      */
-    private static final long            serialVersionUID = 400L;
+    private static final long                serialVersionUID = 400L;
 
     /** Working memory of this Agenda. */
-    private InternalWorkingMemory        workingMemory;
+    private InternalWorkingMemory            workingMemory;
 
-    private org.drools.util.LinkedList   scheduledActivations;
+    private org.drools.util.LinkedList       scheduledActivations;
 
     /** Items time-delayed. */
 
-    private Map<String, AgendaGroup>     agendaGroups;
+    private Map<String, InternalAgendaGroup> agendaGroups;
 
-    private Map<String, ActivationGroup> activationGroups;
+    private Map<String, ActivationGroup>     activationGroups;
 
-    private Map<String, RuleFlowGroup>   ruleFlowGroups;
+    private Map<String, RuleFlowGroup>       ruleFlowGroups;
 
-    private LinkedList<AgendaGroup>      focusStack;
+    private LinkedList<AgendaGroup>          focusStack;
 
-    private AgendaGroup                  currentModule;
+    private InternalAgendaGroup              currentModule;
 
-    private AgendaGroup                  main;
+    private InternalAgendaGroup              main;
 
-    private AgendaGroupFactory           agendaGroupFactory;
+    private AgendaGroupFactory               agendaGroupFactory;
 
-    private KnowledgeHelper              knowledgeHelper;
+    private KnowledgeHelper                  knowledgeHelper;
 
-    public int                           activeActivations;
+    public int                               activeActivations;
 
-    public int                           dormantActivations;
+    public int                               dormantActivations;
 
-    private ConsequenceExceptionHandler  consequenceExceptionHandler;
+    private ConsequenceExceptionHandler      consequenceExceptionHandler;
 
     // ------------------------------------------------------------
     // Constructors
@@ -133,7 +133,7 @@ public class DefaultAgenda
     public DefaultAgenda(InternalRuleBase rb,
                          boolean initMain) {
 
-        this.agendaGroups = new HashMap<String, AgendaGroup>();
+        this.agendaGroups = new HashMap<String, InternalAgendaGroup>();
         this.activationGroups = new HashMap<String, ActivationGroup>();
         this.ruleFlowGroups = new HashMap<String, RuleFlowGroup>();
         this.focusStack = new LinkedList<AgendaGroup>();
@@ -164,6 +164,57 @@ public class DefaultAgenda
         }
     }
 
+    //    public void write(WMSerialisationOutContext context) throws IOException {
+    //        BinaryHeapQueueAgendaGroup[] agendaGroups = (BinaryHeapQueueAgendaGroup[]) this.agendaGroups.values().toArray( new AgendaGroup[this.agendaGroups.size()] );
+    //        Arrays.sort( agendaGroups,
+    //                     AgendaGroupSorter.instance );
+    //
+    //        for ( BinaryHeapQueueAgendaGroup group : agendaGroups ) {
+    //            context.writeInt( PersisterEnums.AGENDA_GROUP );
+    //            group.write( context );
+    //        }
+    //        context.writeInt( PersisterEnums.END );
+    //
+    //        for ( ListIterator it = this.focusStack.listIterator( this.focusStack.size() - 1 ); it.hasPrevious(); ) {
+    //            AgendaGroup group = (AgendaGroup) it.previous();
+    //            context.writeInt( PersisterEnums.AGENDA_GROUP );
+    //            context.writeUTF( group.getName() );
+    //        }
+    //        context.writeInt( PersisterEnums.END );
+    //
+    //        RuleFlowGroupImpl[] ruleFlowGroups = (RuleFlowGroupImpl[]) this.ruleFlowGroups.values().toArray( new RuleFlowGroupImpl[this.ruleFlowGroups.size()] );
+    //        Arrays.sort( agendaGroups,
+    //                     AgendaGroupSorter.instance );
+    //
+    //        for ( BinaryHeapQueueAgendaGroup group : agendaGroups ) {
+    //            context.writeInt( PersisterEnums.RULE_FLOW_GROUP );
+    //            group.write( context );
+    //        }
+    //        context.writeInt( PersisterEnums.END );
+    //    }
+
+    //    public static class AgendaGroupSorter
+    //        implements
+    //        Comparator<AgendaGroup> {
+    //        public static final AgendaGroupSorter instance = new AgendaGroupSorter();
+    //
+    //        public int compare(AgendaGroup group1,
+    //                           AgendaGroup group2) {
+    //            return group1.getName().compareTo( group2.getName() );
+    //        }
+    //    }
+    //
+    //    public static class RuleFlowGroupSorter
+    //        implements
+    //        Comparator<AgendaGroup> {
+    //        public static final AgendaGroupSorter instance = new AgendaGroupSorter();
+    //
+    //        public int compare(AgendaGroup group1,
+    //                           AgendaGroup group2) {
+    //            return group1.getName().compareTo( group2.getName() );
+    //        }
+    //    }
+
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         workingMemory = (InternalWorkingMemory) in.readObject();
@@ -172,8 +223,8 @@ public class DefaultAgenda
         activationGroups = (Map) in.readObject();
         ruleFlowGroups = (Map) in.readObject();
         focusStack = (LinkedList) in.readObject();
-        currentModule = (AgendaGroup) in.readObject();
-        main = (AgendaGroup) in.readObject();
+        currentModule = (InternalAgendaGroup) in.readObject();
+        main = (InternalAgendaGroup) in.readObject();
         agendaGroupFactory = (AgendaGroupFactory) in.readObject();
         knowledgeHelper = (KnowledgeHelper) in.readObject();
         activeActivations = in.readInt();
@@ -216,6 +267,7 @@ public class DefaultAgenda
         // FIXME: should not use a static singleton
         Scheduler.getInstance().scheduleAgendaItem( item,
                                                     this );
+
 
         if ( this.scheduledActivations == null ) {
             this.scheduledActivations = new org.drools.util.LinkedList();
@@ -355,7 +407,7 @@ public class DefaultAgenda
 
     public void addAgendaGroup(final AgendaGroup agendaGroup) {
         this.agendaGroups.put( agendaGroup.getName(),
-                               agendaGroup );
+                               (InternalAgendaGroup) agendaGroup );
     }
 
     /*
@@ -435,7 +487,7 @@ public class DefaultAgenda
      * 
      * @see org.drools.common.AgendaI#setCurrentAgendaGroup(org.drools.spi.AgendaGroup)
      */
-    public void setCurrentAgendaGroup(final AgendaGroup agendaGroup) {
+    public void setCurrentAgendaGroup(final InternalAgendaGroup agendaGroup) {
         this.currentModule = agendaGroup;
     }
 
@@ -476,7 +528,7 @@ public class DefaultAgenda
         return (AgendaGroup[]) this.agendaGroups.values().toArray( new AgendaGroup[this.agendaGroups.size()] );
     }
 
-    public Map<String, AgendaGroup> getAgendaGroupsMap() {
+    public Map<String, InternalAgendaGroup> getAgendaGroupsMap() {
         return this.agendaGroups;
     }
 
@@ -593,17 +645,43 @@ public class DefaultAgenda
     public org.drools.util.LinkedList getScheduledActivationsLinkedList() {
         return this.scheduledActivations;
     }
+    
+    public void clear() {
+        // reset focus stack
+        this.focusStack.clear();
+        this.focusStack.add( this.main );
+        
+        // reset scheduled activations
+        if ( this.scheduledActivations != null && !this.scheduledActivations.isEmpty() ) {
+            for ( ScheduledAgendaItem item = (ScheduledAgendaItem) this.scheduledActivations.removeFirst(); item != null; item = (ScheduledAgendaItem) this.scheduledActivations.removeFirst() ) {
+                Scheduler.getInstance().removeAgendaItem( item );
+            }
+        }            
 
-    /*
-     * (non-Javadoc)
-     * 
+        //reset all agenda groups
+        for ( InternalAgendaGroup group : this.agendaGroups.values() ) {
+            group.clear();
+        }
+
+        // reset all ruleflows
+        for ( RuleFlowGroup group : this.ruleFlowGroups.values() ) {
+            group.clear();
+        }
+
+        // reset all activation groups.
+        for ( ActivationGroup group : this.activationGroups.values() ) {
+            group.clear();
+        }
+    }    
+
+    /** (non-Javadoc)
      * @see org.drools.common.AgendaI#clearAgenda()
      */
-    public void clearAgenda() {
+    public void clearAndCancel() {
         // Cancel all items and fire a Cancelled event for each Activation
         for ( final java.util.Iterator agendaGroupIterator = this.agendaGroups.values().iterator(); agendaGroupIterator.hasNext(); ) {
             final AgendaGroup group = (AgendaGroup) agendaGroupIterator.next();
-            clearAgendaGroup( group );
+            clearAndCancelAgendaGroup( group );
         }
 
         final EventSupport eventsupport = (EventSupport) this.workingMemory;
@@ -614,6 +692,17 @@ public class DefaultAgenda
                                                                               this.workingMemory );
             }
         }
+
+        // cancel all ruleflows
+        for ( RuleFlowGroup group : this.ruleFlowGroups.values() ) {
+            clearAndCancelAndCancel( group );
+        }
+
+        // cancel all activation groups.
+        for ( ActivationGroup group : this.activationGroups.values() ) {
+            clearAndCancelActivationGroup( group );
+        }
+
     }
 
     /*
@@ -621,10 +710,10 @@ public class DefaultAgenda
      * 
      * @see org.drools.common.AgendaI#clearAgendaGroup(java.lang.String)
      */
-    public void clearAgendaGroup(final String name) {
+    public void clearAndCancelAgendaGroup(final String name) {
         final AgendaGroup agendaGroup = (AgendaGroup) this.agendaGroups.get( name );
         if ( agendaGroup != null ) {
-            clearAgendaGroup( agendaGroup );
+            clearAndCancelAgendaGroup( agendaGroup );
         }
     }
 
@@ -633,7 +722,7 @@ public class DefaultAgenda
      * 
      * @see org.drools.common.AgendaI#clearAgendaGroup(org.drools.common.AgendaGroupImpl)
      */
-    public void clearAgendaGroup(final AgendaGroup agendaGroup) {
+    public void clearAndCancelAgendaGroup(final AgendaGroup agendaGroup) {
         final EventSupport eventsupport = (EventSupport) this.workingMemory;
 
         final Activation[] queueable = ((InternalAgendaGroup) agendaGroup).getQueue();
@@ -668,10 +757,10 @@ public class DefaultAgenda
      * 
      * @see org.drools.common.AgendaI#clearActivationGroup(java.lang.String)
      */
-    public void clearActivationGroup(final String name) {
+    public void clearAndCancelActivationGroup(final String name) {
         final ActivationGroup activationGroup = (ActivationGroup) this.activationGroups.get( name );
         if ( activationGroup != null ) {
-            clearActivationGroup( activationGroup );
+            clearAndCancelActivationGroup( activationGroup );
         }
     }
 
@@ -680,7 +769,7 @@ public class DefaultAgenda
      * 
      * @see org.drools.common.AgendaI#clearActivationGroup(org.drools.spi.ActivationGroup)
      */
-    public void clearActivationGroup(final ActivationGroup activationGroup) {
+    public void clearAndCancelActivationGroup(final ActivationGroup activationGroup) {
         final EventSupport eventsupport = (EventSupport) this.workingMemory;
 
         for ( final Iterator it = activationGroup.iterator(); it.hasNext(); ) {
@@ -704,14 +793,14 @@ public class DefaultAgenda
         activationGroup.clear();
     }
 
-    public void clearRuleFlowGroup(final String name) {
+    public void clearAndCancelRuleFlowGroup(final String name) {
         final RuleFlowGroup ruleFlowGrlup = (RuleFlowGroup) this.ruleFlowGroups.get( name );
         if ( ruleFlowGrlup != null ) {
-            clearRuleFlowGroup( ruleFlowGrlup );
+            clearAndCancelAndCancel( ruleFlowGrlup );
         }
     }
 
-    public void clearRuleFlowGroup(final RuleFlowGroup ruleFlowGroup) {
+    public void clearAndCancelAndCancel(final RuleFlowGroup ruleFlowGroup) {
         final EventSupport eventsupport = (EventSupport) this.workingMemory;
 
         for ( Iterator it = ruleFlowGroup.iterator(); it.hasNext(); ) {
@@ -791,7 +880,7 @@ public class DefaultAgenda
             // so lets remove the information now, before the consequence fires
             final ActivationGroup activationGroup = activation.getActivationGroupNode().getActivationGroup();
             activationGroup.removeActivation( activation );
-            clearActivationGroup( activationGroup );
+            clearAndCancelActivationGroup( activationGroup );
         }
         activation.setActivated( false );
 

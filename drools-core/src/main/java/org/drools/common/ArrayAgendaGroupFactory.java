@@ -1,6 +1,5 @@
 package org.drools.common;
 
-import org.drools.spi.AgendaGroup;
 
 public class ArrayAgendaGroupFactory implements AgendaGroupFactory {
     private static final AgendaGroupFactory INSTANCE = new ArrayAgendaGroupFactory();
@@ -9,7 +8,7 @@ public class ArrayAgendaGroupFactory implements AgendaGroupFactory {
         return INSTANCE;
     }    
     
-    public AgendaGroup createAgendaGroup(String name, InternalRuleBase ruleBase) {
+    public InternalAgendaGroup createAgendaGroup(String name, InternalRuleBase ruleBase) {
         return new ArrayAgendaGroup( name,
                                      ruleBase );        
     }

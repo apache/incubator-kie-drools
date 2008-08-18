@@ -339,4 +339,9 @@ public class TruthMaintenanceSystem {
         }
         set.add( node );
     }
+    
+    public void clear() {
+        this.justifiedMap.clear();
+        this.assertMap.clear();
+    }
 }

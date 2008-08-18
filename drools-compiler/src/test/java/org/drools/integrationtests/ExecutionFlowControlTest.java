@@ -745,7 +745,7 @@ public class ExecutionFlowControlTest extends TestCase {
         // Check we have 0 activation cancellation events
         assertEquals( 0, activations.size() );
         
-        workingMemory.getAgenda().clearRuleFlowGroup( "flowgroup-1" );
+        workingMemory.getAgenda().clearAndCancelRuleFlowGroup( "flowgroup-1" );
         
         // Check the AgendaGroup and RuleFlowGroup  are now empty
         assertEquals( 0, agenda.getAgendaGroup( "MAIN" ).size() );

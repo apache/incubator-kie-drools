@@ -98,7 +98,7 @@ public interface Agenda {
      * Clears all Activations from the Agenda
      * 
      */
-    public void clearAgenda();
+    public void clearAndCancel();
 
     /**
      * Clears all Activations from an Agenda Group. Any Activations that are also in an Xor Group are removed the
@@ -106,7 +106,7 @@ public interface Agenda {
      * 
      * @param agendaGroup
      */
-    public void clearAgendaGroup(String name);
+    public void clearAndCancelAgendaGroup(String name);
 
     /**
      * Clears all Activations from an Agenda Group. Any Activations that are also in an Xor Group are removed the
@@ -114,7 +114,7 @@ public interface Agenda {
      * 
      * @param agendaGroup
      */
-    public void clearAgendaGroup(AgendaGroup agendaGroup);
+    public void clearAndCancelAgendaGroup(AgendaGroup agendaGroup);
 
     /**
      * Clears all Activations from an Activation-Group. Any Activations that are also in an Agenda Group are removed
@@ -122,7 +122,7 @@ public interface Agenda {
      * 
      * @param activationGroup
      */
-    public void clearActivationGroup(String name);
+    public void clearAndCancelActivationGroup(String name);
 
     /**
      * Clears all Activations from an Activation Group. Any Activations that are also in an Agenda Group are removed
@@ -130,11 +130,11 @@ public interface Agenda {
      * 
      * @param activationGroup
      */
-    public void clearActivationGroup(ActivationGroup activationGroup);
+    public void clearAndCancelActivationGroup(ActivationGroup activationGroup);
     
-    public void clearRuleFlowGroup(final String name);
+    public void clearAndCancelRuleFlowGroup(final String name);
     
-    public void clearRuleFlowGroup(final RuleFlowGroup ruleFlowGroup);
+    public void clearAndCancelAndCancel(final RuleFlowGroup ruleFlowGroup);
 
     /**
      * Returns the name of the agenda group that currently
