@@ -8,8 +8,6 @@ import javax.transaction.xa.XAException;
 import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
 
-import sun.text.CompactShortArray.Iterator;
-
 /**
  * crude nested transaction manager, not written for performance
  * @author mproctor

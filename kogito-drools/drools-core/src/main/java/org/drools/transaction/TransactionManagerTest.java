@@ -1,6 +1,5 @@
 package org.drools.transaction;
 
-import org.drools.transaction.DefaultTransactionManager.ByteArrayAccessor;
 
 import junit.framework.TestCase;
 
@@ -8,11 +7,11 @@ public class TransactionManagerTest extends TestCase {
     
     public void test1() {
         MockByteArrayAccessor accessor = new MockByteArrayAccessor();
-        DefaultTransactionManager tm = new DefaultTransactionManager( accessor );
+        //DefaultTransactionManager tm = new DefaultTransactionManager( accessor );
         
         accessor.bytes = new byte[] { 0, 1, 0, 1 };
         
-        tm.start();
+        //tm.start();
     }
 
     public static class MockByteArrayAccessor implements ByteArraySnapshotter {
