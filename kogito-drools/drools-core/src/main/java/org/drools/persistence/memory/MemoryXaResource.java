@@ -1,4 +1,4 @@
-package org.drools.transaction;
+package org.drools.persistence.memory;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -8,30 +8,28 @@ import javax.transaction.xa.XAException;
 import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
 
-/**
- * crude nested transaction manager, not written for performance
- * @author mproctor
- *
- */
-public class InMemoryXaResource implements XAResource {
-    private ByteArraySnapshotter byteArrayAccessorDelegate;
-    
-    //Map<Xid, Transaction> xidMapping = new HashMap<Xid, Transaction>();
-    Map<Xid, byte[]> data = new HashMap<Xid, byte[]>();
-    LinkedList<Xid> list = new LinkedList<Xid>();
-    
-    byte[] lastSave;        
+import org.drools.persistence.ByteArraySnapshotter;
 
-    public InMemoryXaResource(ByteArraySnapshotter byteArrayAccessorDelegate) {
-        this.byteArrayAccessorDelegate = byteArrayAccessorDelegate;
+public class MemoryXaResource implements XAResource {
+    private MemoryPersistenceManager pm;
+    
+    Map<Xid, byte[]> data = new HashMap<Xid, byte[]>();
+    LinkedList<Xid> list = new LinkedList<Xid>();      
+
+    public MemoryXaResource(MemoryPersistenceManager pm) {
+        this.pm = pm;
+    }
+    
+    public boolean isInTransaction() {
+    	return list.size() > 0;
     }
 
     public void start(Xid xid,
                       int flags) throws XAException {
-        byte[] bytes = byteArrayAccessorDelegate.getSnapshot();
+        byte[] bytes = pm.getSnapshot();
         // The start of the first transaction is recorded as  save point, for HA.
         if ( this.list.isEmpty() ) {
-            this.lastSave = bytes;
+        	pm.setLastSave( bytes );
         }        
         
         this.list.add( xid );
@@ -58,17 +56,17 @@ public class InMemoryXaResource implements XAResource {
             }                        
         }
                         
-        this.byteArrayAccessorDelegate.restoreSnapshot( bytes );
+        pm.loadSnapshot( bytes );
     }    
     
     public void commit(Xid xid,
                        boolean onePhase) throws XAException {
         if ( this.list.getFirst().equals( xid ) && this.list.size() > 1 ) {
             // first one has committed, so move save point to next transaction
-            this.lastSave = this.data.get( this.list.get( 1 ) );                   
+            pm.setLastSave( this.data.get( this.list.get( 1 ) ) );                   
         } else if ( this.list.size() == 1 ) {
             // there will be no more transactions after this is removed, so create a new lastSave point
-            this.lastSave = byteArrayAccessorDelegate.getSnapshot();
+        	pm.setLastSave( pm.getSnapshot() );
         }
         
         this.list.remove( xid );

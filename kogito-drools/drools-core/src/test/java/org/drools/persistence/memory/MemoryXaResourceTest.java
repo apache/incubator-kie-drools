@@ -1,31 +1,38 @@
-package org.drools.transaction;
+package org.drools.persistence.memory;
 
 import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
 
+import org.drools.persistence.DroolsXid;
+import org.drools.persistence.memory.MemoryPersistenceManager;
+import org.drools.persistence.memory.MemoryXaResource;
+import org.drools.transaction.MockByteArraySnapshotter;
+
 import junit.framework.TestCase;
 
-public class InMemoryXaResourceTest extends  TestCase {
+public class MemoryXaResourceTest extends  TestCase {
     private byte[] data1 = new byte[] { 1, 1, 1, 1, 1 };
     private byte[] data2 = new byte[] { 1, 1, 1, 1, 0 };
     private byte[] data3 = new byte[] { 1, 1, 1, 0, 0 };
     
     MockByteArraySnapshotter snapshotter;
+    MemoryPersistenceManager pm;
     
     protected void setUp() throws Exception {
-        this.snapshotter = new MockByteArraySnapshotter();
+    	snapshotter =  new MockByteArraySnapshotter();
+        pm = new MemoryPersistenceManager( snapshotter );
     }
     
     public void testInitFields() {
-        InMemoryXaResource xa = new InMemoryXaResource( snapshotter );
+        MemoryXaResource xa = pm.getXAResource();
         
         // make sure these are initialised correctly
         assertEquals( 0, xa.list.size() );
-        assertNull( xa.lastSave );              
+        assertNull( pm.lastSave );              
     }
     
     public void testSingleTransactionWithRollBack() throws Exception {
-        InMemoryXaResource xa = new InMemoryXaResource( snapshotter );
+        MemoryXaResource xa = pm.getXAResource();
         
         Xid xid = new DroolsXid(100, new byte[]{0x01}, new byte[]{0x01});
 
@@ -33,7 +40,7 @@ public class InMemoryXaResourceTest extends  TestCase {
         snapshotter.bytes = data1;        
         xa.start(xid, XAResource.TMNOFLAGS);
         assertEquals( 1, xa.list.size() ); // we only have one transaction
-        assertSame( xa.data.get( xa.list.get( 0 )), xa.lastSave ); // lastSave is always set to begin of the first transaction
+        assertSame( xa.data.get( xa.list.get( 0 )), pm.lastSave ); // lastSave is always set to begin of the first transaction
         
         snapshotter.bytes = data2;
         xa.rollback(xid);      
@@ -44,7 +51,7 @@ public class InMemoryXaResourceTest extends  TestCase {
     }
     
     public void testSingleTransactionWithCommit() throws Exception {
-        InMemoryXaResource xa = new InMemoryXaResource( snapshotter );
+        MemoryXaResource xa = pm.getXAResource();
         
         Xid xid = new DroolsXid(100, new byte[]{0x01}, new byte[]{0x01});
         
@@ -56,7 +63,7 @@ public class InMemoryXaResourceTest extends  TestCase {
         
         // check levels are empty and that lastsave was updated to be the same as end
         assertEquals( 0, xa.list.size() );
-        assertSame( data2, xa.lastSave );
+        assertSame( data2, pm.lastSave );
         
         // should do nothing as there is nothing to rollback
         xa.rollback(xid);
@@ -67,7 +74,7 @@ public class InMemoryXaResourceTest extends  TestCase {
     }         
     
     public void testMultipleTransactions() throws Exception {
-        InMemoryXaResource xa = new InMemoryXaResource( snapshotter );
+        MemoryXaResource xa = pm.getXAResource();
         
         Xid xid1 = new DroolsXid(100, new byte[]{0x01}, new byte[]{0x01});
         
@@ -78,7 +85,7 @@ public class InMemoryXaResourceTest extends  TestCase {
         snapshotter.bytes = data2;
         xa.start(xid2, XAResource.TMNOFLAGS);        
         assertEquals( 2, xa.list.size() ); // we now have two levels
-        assertSame( xa.data.get( xa.list.get( 0 ) ), xa.lastSave ); // check lastSave is still first transaction
+        assertSame( xa.data.get( xa.list.get( 0 ) ), pm.lastSave ); // check lastSave is still first transaction
         
         Xid xid3 = new DroolsXid(100, new byte[]{0x03}, new byte[]{0x03});
         snapshotter.bytes = data3;
@@ -88,7 +95,7 @@ public class InMemoryXaResourceTest extends  TestCase {
         // commit the first, so the second should become the lastSave point
         xa.commit( xid1, true );
         
-        assertSame( xa.data.get( xid2 ), xa.lastSave ); // xid2 should now be the lastSave point
+        assertSame( xa.data.get( xid2 ), pm.lastSave ); // xid2 should now be the lastSave point
 
         // rollback xid2, should result in rolling back xid3 too
         xa.rollback( xid2  );

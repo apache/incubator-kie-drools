@@ -1,4 +1,4 @@
-package org.drools.transaction;
+package org.drools.persistence;
 
 import javax.transaction.xa.XAException;
 import javax.transaction.xa.XAResource;
@@ -22,16 +22,18 @@ public class Transaction {
         this.xaResource.start( xid, XAResource.TMNOFLAGS );
     }
     
+    public void rollback() throws XAException {
+    	this.xaResource.rollback( xid );
+    }
+    
     public void commit() throws XAException {
         this.xaResource.commit( xid, true );
-    }
+    }        
 
-    @Override
     public int hashCode() {
         return xid.hashCode();
     }
 
-    @Override
     public boolean equals(Object obj) {
         if ( this == obj ) return true;
         if ( obj == null ) return false;
