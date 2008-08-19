@@ -11,11 +11,16 @@ import org.drools.reteoo.ReteooStatefulSession;
 
 public interface Marshaller {
 
-    public abstract ReteooStatefulSession read(final InputStream stream,
-                                               final InternalRuleBase ruleBase,
-                                               final int id,
-                                               final ExecutorService executor) throws IOException,
-                                                                              ClassNotFoundException;
+    public StatefulSession read(final InputStream stream,
+                                final InternalRuleBase ruleBase,
+                                final int id,
+                                final ExecutorService executor) throws IOException,
+                                                               ClassNotFoundException;
+
+    public StatefulSession read(final InputStream stream,
+                                final InternalRuleBase ruleBase,
+                                final StatefulSession session) throws IOException,
+                                                              ClassNotFoundException;
 
     public abstract void write(final OutputStream stream,
                                final InternalRuleBase ruleBase,

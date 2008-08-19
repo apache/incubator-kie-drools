@@ -14,7 +14,7 @@ public class MemoryXaResource implements XAResource {
     private MemoryPersistenceManager pm;
     
     Map<Xid, byte[]> data = new HashMap<Xid, byte[]>();
-    LinkedList<Xid> list = new LinkedList<Xid>();      
+    LinkedList<Xid> list = new LinkedList<Xid>();       
 
     public MemoryXaResource(MemoryPersistenceManager pm) {
         this.pm = pm;
