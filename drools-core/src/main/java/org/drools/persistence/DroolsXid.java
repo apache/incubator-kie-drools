@@ -35,5 +35,4 @@ import javax.transaction.xa.*;
         {
             return gtrid;
         }
-
     }

@@ -16,7 +16,7 @@ public class DefaultMarshaller
     implements
     Marshaller {
     GlobalResolver                     globalResolver;
-    private RuleBaseConfiguration      config;
+    RuleBaseConfiguration              config;
     PlaceholderResolverStrategyFactory factory;
 
     public DefaultMarshaller() {
@@ -63,16 +63,16 @@ public class DefaultMarshaller
 
     }
 
-    public ReteooStatefulSession read(final InputStream stream,
-                                      final InternalRuleBase ruleBase,
-                                      ReteooStatefulSession session) throws IOException,
-                                                                    ClassNotFoundException {
+    public StatefulSession read(final InputStream stream,
+                                final InternalRuleBase ruleBase,
+                                StatefulSession session) throws IOException,
+                                                        ClassNotFoundException {
         MarshallerReaderContext context = new MarshallerReaderContext( stream,
                                                                        ruleBase,
                                                                        RuleBaseNodes.getNodeMap( ruleBase ),
                                                                        factory );
 
-        session = InputMarshaller.readSession( session,
+        session = InputMarshaller.readSession( (ReteooStatefulSession) session,
                                                context );
         context.close();
         return session;
