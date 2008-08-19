@@ -46,7 +46,7 @@ public class DirectoryScannerTest extends TestCase {
 		assertEquals(3, rb.getPackages().length);
 	}
 
-	public void FIXME_testScanDRLFileReplace() throws Exception {
+	public void testScanDRLFileReplace() throws Exception {
 		File dir = RuleBaseAssemblerTest.getTempDirectory();
 
 		Package p1 = new Package("p1");

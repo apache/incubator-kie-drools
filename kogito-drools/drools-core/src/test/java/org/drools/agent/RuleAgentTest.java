@@ -224,7 +224,7 @@ public class RuleAgentTest extends TestCase {
 
     }
     
-    public void FIXME_testPollingFilesRuleBaseRemoveNewInstanceFalse() throws Exception {
+    public void testPollingFilesRuleBaseRemoveNewInstanceFalse() throws Exception {
     	File dir = RuleBaseAssemblerTest.getTempDirectory();
     	
     	Package p1 = new Package("p1");
@@ -248,9 +248,9 @@ public class RuleAgentTest extends TestCase {
     	RuleBase rb = ag.getRuleBase();
     	assertEquals(2, rb.getPackages().length);
     	
-    	
+
     	boolean success = p2f.delete();
-    	assertTrue(success); // <-- does not work on windows
+    	assertTrue(success); 
     	
     	ag.refreshRuleBase();
 
@@ -275,7 +275,7 @@ public class RuleAgentTest extends TestCase {
     	
     }
     
-    public void FIXME_testPollingFilesRuleBaseRemoveNewInstanceTrue() throws Exception {
+    public void testPollingFilesRuleBaseRemoveNewInstanceTrue() throws Exception {
     	File dir = RuleBaseAssemblerTest.getTempDirectory();
     	
     	Package p1 = new Package("p1");
