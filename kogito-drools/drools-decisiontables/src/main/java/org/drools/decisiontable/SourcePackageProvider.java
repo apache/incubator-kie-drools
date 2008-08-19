@@ -29,6 +29,8 @@ public class SourcePackageProvider
         String drl = converter.compile( fin,
                                         InputType.XLS );
 
+        fin.close();
+        
         PackageBuilder b = new PackageBuilder();
         try {
             b.addPackageFromDrl( new StringReader( drl ) );
