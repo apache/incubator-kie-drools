@@ -2,15 +2,14 @@ package org.drools.persistence;
 
 import javax.transaction.xa.XAResource;
 
-
 public interface PersistenceManager {
 
-	XAResource getXAResource();
+    XAResource getXAResource();
 
-	Transaction getTransaction();
+    Transaction getTransaction();
 
-	void save();
+    void save();
 
-	void load();
+    void load();
 
 }

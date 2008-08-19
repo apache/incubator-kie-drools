@@ -7,9 +7,7 @@ import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.transaction.xa.XAException;
-import javax.transaction.xa.XAResource;
-import javax.transaction.xa.Xid;
+import junit.framework.TestCase;
 
 import org.drools.Person;
 import org.drools.RuleBase;
@@ -23,20 +21,12 @@ import org.drools.base.ValueType;
 import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
 import org.drools.base.evaluators.Operator;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.examples.manners.Context;
-import org.drools.examples.manners.Count;
-import org.drools.examples.manners.Guest;
-import org.drools.examples.manners.Path;
-import org.drools.examples.manners.Seating;
-import org.drools.persistence.DroolsXid;
 import org.drools.persistence.StatefulSessionSnapshotter;
 import org.drools.persistence.Transaction;
-import org.drools.persistence.memory.MemoryPersistenceManager;
-import org.drools.persistence.memory.MemoryXaResource;
 import org.drools.rule.Declaration;
 import org.drools.rule.InvalidRuleException;
-import org.drools.rule.Pattern;
 import org.drools.rule.Package;
+import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
 import org.drools.rule.VariableConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
@@ -46,9 +36,6 @@ import org.drools.spi.Evaluator;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.Tuple;
-import org.drools.transaction.MockByteArraySnapshotter;
-
-import junit.framework.TestCase;
 
 public class MemoryPersistenceSessionTest extends TestCase {
     private byte[]          data1 = new byte[]{1, 1, 1, 1, 1};
@@ -60,81 +47,95 @@ public class MemoryPersistenceSessionTest extends TestCase {
     public void testSave() throws Exception {
         RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         Package pkg = new Package( "org.drools.test" );
-        pkg.addGlobal( "list", List.class );
+        pkg.addGlobal( "list",
+                       List.class );
         pkg.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store = pkg.getClassFieldAccessorStore();
         store.setEagerWire( true );
-        
-        pkg.addRule( getFindPersonRule() );        
+
+        pkg.addRule( getFindPersonRule() );
         ruleBase.addPackage( pkg );
-        
 
         StatefulSession session = ruleBase.newStatefulSession();
         List list = new ArrayList();
-        session.setGlobal( "list", list );
-        Person p1 = new Person("boba fet", 500);
+        session.setGlobal( "list",
+                           list );
+        Person p1 = new Person( "boba fet",
+                                500 );
         session.insert( p1 );
-        
+
         MemoryPersistenceManager pm = new MemoryPersistenceManager( new StatefulSessionSnapshotter( session ) );
         pm.save();
-        
-        
-        Person p2 = new Person("boba fet", 500);
-        Person p3 = new Person("boba fet", 500);
+
+        Person p2 = new Person( "boba fet",
+                                500 );
+        Person p3 = new Person( "boba fet",
+                                500 );
         session.insert( p2 );
-        session.insert( p3 );        
+        session.insert( p3 );
         session.insert( new String( "boba fet" ) );
-        assertEquals( 4, ((InternalWorkingMemory)session).getObjectStore().size() );
-        session.fireAllRules();        
-        assertEquals(3, list.size() );        
-        
+        assertEquals( 4,
+                      ((InternalWorkingMemory) session).getObjectStore().size() );
+        session.fireAllRules();
+        assertEquals( 3,
+                      list.size() );
+
         pm.load();
         list.clear();
         session.insert( new String( "boba fet" ) );
-        session.fireAllRules();        
-        assertEquals( 1, list.size() );             
-        assertEquals( 2, ((InternalWorkingMemory)session).getObjectStore().size() );
+        session.fireAllRules();
+        assertEquals( 1,
+                      list.size() );
+        assertEquals( 2,
+                      ((InternalWorkingMemory) session).getObjectStore().size() );
     }
-    
+
     public void testTransactionWithRollback() throws Exception {
         RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         Package pkg = new Package( "org.drools.test" );
-        pkg.addGlobal( "list", List.class );
+        pkg.addGlobal( "list",
+                       List.class );
         pkg.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store = pkg.getClassFieldAccessorStore();
         store.setEagerWire( true );
-        
-        pkg.addRule( getFindPersonRule() );        
+
+        pkg.addRule( getFindPersonRule() );
         ruleBase.addPackage( pkg );
-        
 
         StatefulSession session = ruleBase.newStatefulSession();
         List list = new ArrayList();
-        session.setGlobal( "list", list );
-        Person p1 = new Person("boba fet", 500);
+        session.setGlobal( "list",
+                           list );
+        Person p1 = new Person( "boba fet",
+                                500 );
         session.insert( p1 );
-        
+
         MemoryPersistenceManager pm = new MemoryPersistenceManager( new StatefulSessionSnapshotter( session ) );
         Transaction t = pm.getTransaction();
         t.start();
-        
-        
-        Person p2 = new Person("boba fet", 500);
-        Person p3 = new Person("boba fet", 500);
+
+        Person p2 = new Person( "boba fet",
+                                500 );
+        Person p3 = new Person( "boba fet",
+                                500 );
         session.insert( p2 );
-        session.insert( p3 );        
+        session.insert( p3 );
         session.insert( new String( "boba fet" ) );
-        assertEquals( 4, ((InternalWorkingMemory)session).getObjectStore().size() );
-        session.fireAllRules();        
-        assertEquals(3, list.size() );        
-        
+        assertEquals( 4,
+                      ((InternalWorkingMemory) session).getObjectStore().size() );
+        session.fireAllRules();
+        assertEquals( 3,
+                      list.size() );
+
         t.rollback();
         list.clear();
         session.insert( new String( "boba fet" ) );
-        session.fireAllRules();        
-        assertEquals( 1, list.size() );             
-        assertEquals( 2, ((InternalWorkingMemory)session).getObjectStore().size() );
-    }    
+        session.fireAllRules();
+        assertEquals( 1,
+                      list.size() );
+        assertEquals( 2,
+                      ((InternalWorkingMemory) session).getObjectStore().size() );
+    }
 
     private Rule getFindPersonRule() throws IntrospectionException,
                                     InvalidRuleException {
