@@ -11,8 +11,9 @@ import org.drools.rule.Package;
 
 /**
  * This is used by the agent when a source file is encountered.
+ * 
  * @author michaelneale
- *
+ * 
  */
 public class SourcePackageProvider implements FileLoader {
 
@@ -22,8 +23,12 @@ public class SourcePackageProvider implements FileLoader {
 		PackageBuilder b = new PackageBuilder();
 		try {
 			b.addPackageFromDrl(new InputStreamReader(fin));
+
+			fin.close();
+
 			if (b.hasErrors()) {
-				throw new RuntimeDroolsException("Error building rules from source: " + b.getErrors());
+				throw new RuntimeDroolsException(
+						"Error building rules from source: " + b.getErrors());
 			} else {
 				return b.getPackage();
 			}
@@ -31,10 +36,6 @@ public class SourcePackageProvider implements FileLoader {
 			throw new RuntimeException(e);
 		}
 
-
-
 	}
-
-
 
 }
