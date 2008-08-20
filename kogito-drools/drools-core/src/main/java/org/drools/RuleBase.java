@@ -59,6 +59,8 @@ public interface RuleBase
      * @see org.drools.conflict.DefaultConflictResolver
      *
      * @return A newly initialized <code>WorkingMemory</code>.
+     *
+     * IMPORTANT: when using the stateful session REMEMBER TO CALL <code>dispose()</code> when you are done with the session.
      */
     StatefulSession newStatefulSession();
 
@@ -108,7 +110,7 @@ public interface RuleBase
     Package[] getPackages();
 
     Package getPackage(String name);
-    
+
     void addPackages(Package[] pkgs );
 
     void addPackage(Package pkg);

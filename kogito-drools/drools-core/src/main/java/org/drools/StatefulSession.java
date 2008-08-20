@@ -11,14 +11,15 @@ import org.drools.spi.AgendaFilter;
  * between invocations (accumulating facts/knowledge).
  *
  * Caution should be used when using the async methods (take note of the javadocs for specific methods).
+ *
+ * IMPORTANT: Remember to call dispose() when finished with this session.
  */
 public interface StatefulSession
     extends
     WorkingMemory {
 
     /**
-     * Forces the workingMemory to be derefenced from
-     *
+     * Forces the workingMemory to be disconnected from the rulebase (not calling this may cause resource leaks).
      */
     void dispose();
 
