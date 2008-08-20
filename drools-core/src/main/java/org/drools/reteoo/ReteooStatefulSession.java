@@ -120,6 +120,11 @@ public class ReteooStatefulSession extends ReteooWorkingMemory
         this.executor.shutDown();
     }
 
+    @Override
+    protected void finalize() throws Throwable {
+    	dispose();
+    }
+
     public List getRuleBaseUpdateListeners() {
         if ( this.ruleBaseListeners == null || this.ruleBaseListeners == Collections.EMPTY_LIST ) {
             String listenerName = this.ruleBase.getConfiguration().getRuleBaseUpdateHandler();
@@ -134,11 +139,11 @@ public class ReteooStatefulSession extends ReteooWorkingMemory
         return this.ruleBaseListeners;
     }
 
-    //    public StatefulSession getEntryPoint(String id) {        
+    //    public StatefulSession getEntryPoint(String id) {
     //        EntryPoint ep = new EntryPoint( id );
     //        return new EntryPointInterfaceImpl( ep,
     //                                            this );
-    //    }    
+    //    }
 
     public ExecutorService getExecutorService() {
         return executor;
