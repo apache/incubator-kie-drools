@@ -1,20 +1,11 @@
 package org.drools.lang;
 
 /**
- * Simple holder class identifying a DroolsTree editor type. This is stored in
- * DroolsTree to be used on editor for syntax highlighting.
+ * Enum to identify an editor type (most for syntax highlighting). This
+ * is used on DroolsTree and DroolsToken.
  * 
  * @author porcelli
  */
-public class DroolsEditorType {
-	public static int KEYWORD = 0;
-	public static int CODE_CHUNK = 1;
-	public static int SYMBOL = 2;
-	public static int NUMERIC_CONST = 3;
-	public static int BOOLEAN_CONST = 4;
-	public static int STRING_CONST = 5;
-	public static int NULL_CONST = 6;
-	public static int IDENTIFIER = 7;
-	public static int IDENTIFIER_TYPE = 8;
-	public static int IDENTIFIER_PATTERN = 9;
+public enum DroolsEditorType {
+	KEYWORD, CODE_CHUNK, SYMBOL, NUMERIC_CONST, BOOLEAN_CONST, STRING_CONST, NULL_CONST, IDENTIFIER, IDENTIFIER_TYPE, IDENTIFIER_PATTERN;
 }

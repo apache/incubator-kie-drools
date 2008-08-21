@@ -31,15 +31,17 @@ public class DroolsTreeAdaptor extends CommonTreeAdaptor {
 			tree.setEndCharOffset(((CommonToken) token).getStopIndex());
 
 			if (token.getType() == DRLLexer.END
+					|| token.getType() == DRLLexer.VK_EVAL
 					|| token.getType() == DRLLexer.THEN
-					|| token.getType() == DRLLexer.VK_ACCUMULATE
+					|| token.getType() == DRLLexer.WHEN
+					|| token.getType() == DRLLexer.ACCUMULATE
 					|| token.getType() == DRLLexer.VK_ACTION
 					|| token.getType() == DRLLexer.VK_ACTIVATION_GROUP
 					|| token.getType() == DRLLexer.VK_AGENDA_GROUP
 					|| token.getType() == DRLLexer.VK_AND
 					|| token.getType() == DRLLexer.VK_ATTRIBUTES
 					|| token.getType() == DRLLexer.VK_AUTO_FOCUS
-					|| token.getType() == DRLLexer.VK_COLLECT
+					|| token.getType() == DRLLexer.COLLECT
 					|| token.getType() == DRLLexer.VK_CONTAINS
 					|| token.getType() == DRLLexer.VK_DATE_EFFECTIVE
 					|| token.getType() == DRLLexer.VK_DATE_EXPIRES
@@ -48,16 +50,15 @@ public class DroolsTreeAdaptor extends CommonTreeAdaptor {
 					|| token.getType() == DRLLexer.VK_DURATION
 					|| token.getType() == DRLLexer.VK_ENABLED
 					|| token.getType() == DRLLexer.VK_ENTRY_POINT
-					|| token.getType() == DRLLexer.VK_EVAL
 					|| token.getType() == DRLLexer.VK_EXCLUDES
 					|| token.getType() == DRLLexer.VK_EXISTS
 					|| token.getType() == DRLLexer.VK_FORALL
-					|| token.getType() == DRLLexer.VK_FROM
+					|| token.getType() == DRLLexer.FROM
 					|| token.getType() == DRLLexer.VK_FUNCTION
 					|| token.getType() == DRLLexer.VK_GLOBAL
 					|| token.getType() == DRLLexer.VK_IMPORT
 					|| token.getType() == DRLLexer.VK_IN
-					|| token.getType() == DRLLexer.VK_INIT
+					|| token.getType() == DRLLexer.INIT
 					|| token.getType() == DRLLexer.VK_LOCK_ON_ACTIVE
 					|| token.getType() == DRLLexer.VK_MATCHES
 					|| token.getType() == DRLLexer.VK_MEMBEROF
@@ -66,14 +67,13 @@ public class DroolsTreeAdaptor extends CommonTreeAdaptor {
 					|| token.getType() == DRLLexer.VK_OR
 					|| token.getType() == DRLLexer.VK_PACKAGE
 					|| token.getType() == DRLLexer.VK_QUERY
-					|| token.getType() == DRLLexer.VK_RESULT
+					|| token.getType() == DRLLexer.RESULT
 					|| token.getType() == DRLLexer.VK_REVERSE
 					|| token.getType() == DRLLexer.VK_RULE
 					|| token.getType() == DRLLexer.VK_RULEFLOW_GROUP
 					|| token.getType() == DRLLexer.VK_SALIENCE
 					|| token.getType() == DRLLexer.VK_SOUNDSLIKE
-					|| token.getType() == DRLLexer.VK_TEMPLATE
-					|| token.getType() == DRLLexer.VK_WHEN) {
+					|| token.getType() == DRLLexer.VK_TEMPLATE) {
 				tree.setEditorElementType(DroolsEditorType.KEYWORD);
 			} else if (token.getType() == DRLLexer.FLOAT
 					|| token.getType() == DRLLexer.INT) {

@@ -27,7 +27,7 @@ public class DroolsTree extends CommonTree {
 	 * 
 	 * @see DroolsEditorType
 	 */
-	int editorElementType = -1;
+	DroolsEditorType editorElementType = DroolsEditorType.IDENTIFIER;
 
 	public DroolsTree(DroolsTree node) {
 		super(node);
@@ -86,7 +86,7 @@ public class DroolsTree extends CommonTree {
 	 * @return editor type
 	 * @see DroolsEditorType
 	 */
-	public int getEditorElementType() {
+	public DroolsEditorType getEditorElementType() {
 		return editorElementType;
 	}
 
@@ -97,7 +97,7 @@ public class DroolsTree extends CommonTree {
 	 *            editor type
 	 * @see DroolsEditorType
 	 */
-	public void setEditorElementType(int editorElementType) {
+	public void setEditorElementType(DroolsEditorType editorElementType) {
 		this.editorElementType = editorElementType;
 	}
 }

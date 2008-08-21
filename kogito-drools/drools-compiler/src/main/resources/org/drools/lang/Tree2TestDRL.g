@@ -99,7 +99,7 @@ rule
 	;
 
 when_part
-	:	VK_WHEN lhs_block
+	:	WHEN lhs_block
 	;
 
 rule_attributes
@@ -133,23 +133,23 @@ lhs	:	^(VT_OR_PREFIX lhs+)
 	|	^(VK_NOT lhs)
 	|	^(VK_EVAL VT_PAREN_CHUNK)
 	|	^(VK_FORALL lhs+)
-	|	^(VK_FROM lhs_pattern from_elements)
+	|	^(FROM lhs_pattern from_elements)
 	|	lhs_pattern
 	;
 
 from_elements
-	:	^(VK_ACCUMULATE lhs (accumulate_init_clause|accumulate_id_clause))
-	|	^(VK_COLLECT lhs)
+	:	^(ACCUMULATE lhs (accumulate_init_clause|accumulate_id_clause))
+	|	^(COLLECT lhs)
 	|	^(VK_ENTRY_POINT VT_ENTRYPOINT_ID)
 	|	^(VT_FROM_SOURCE ID VT_PAREN_CHUNK? expression_chain?)
 	;
 
 accumulate_init_clause
 	:	^(VT_ACCUMULATE_INIT_CLAUSE 
-			^(VK_INIT VT_PAREN_CHUNK) 
+			^(INIT VT_PAREN_CHUNK) 
 			^(VK_ACTION VT_PAREN_CHUNK) 
 			accumulate_init_reverse_clause?
-			^(VK_RESULT VT_PAREN_CHUNK))
+			^(RESULT VT_PAREN_CHUNK))
 	;
 
 accumulate_init_reverse_clause

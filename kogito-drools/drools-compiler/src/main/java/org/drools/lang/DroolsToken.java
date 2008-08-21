@@ -5,8 +5,7 @@ import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.Token;
 
 /**
- * An extension of the CommonToken class that keeps the char offset
- * information
+ * An extension of the CommonToken class that keeps the char offset information
  * 
  * @author porcelli
  * 
@@ -14,6 +13,13 @@ import org.antlr.runtime.Token;
 public class DroolsToken extends CommonToken {
 
 	private static final long serialVersionUID = 3635806195731072579L;
+
+	/**
+	 * editor type
+	 * 
+	 * @see DroolsEditorType
+	 */
+	private DroolsEditorType editorType = DroolsEditorType.IDENTIFIER;
 
 	public DroolsToken(int type) {
 		super(type);
@@ -41,5 +47,26 @@ public class DroolsToken extends CommonToken {
 			start = ((CommonToken) oldToken).getStartIndex();
 			stop = ((CommonToken) oldToken).getStopIndex();
 		}
+	}
+
+	/**
+	 * getter of editor type
+	 * 
+	 * @return editor type
+	 * @see DroolsEditorType
+	 */
+	public DroolsEditorType getEditorType() {
+		return editorType;
+	}
+
+	/**
+	 * setter of editor type
+	 * 
+	 * @param editorElementType
+	 *            editor type
+	 * @see DroolsEditorType
+	 */
+	public void setEditorType(DroolsEditorType editorType) {
+		this.editorType = editorType;
 	}
 }

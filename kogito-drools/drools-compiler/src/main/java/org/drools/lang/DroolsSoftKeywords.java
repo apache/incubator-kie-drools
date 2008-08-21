@@ -28,16 +28,15 @@ public class DroolsSoftKeywords {
 	public static final String SALIENCE = "salience";
 	public static final String ENABLED = "enabled";
 	public static final String ATTRIBUTES = "attributes";
-	public static final String WHEN = "when";
 	public static final String RULE = "rule";
 	public static final String TEMPLATE = "template";
 	public static final String QUERY = "query";
 	public static final String DECLARE = "declare";
 	public static final String FUNCTION = "function";
 	public static final String GLOBAL = "global";
-	public static final String EVAL = "eval";
 	public static final String CONTAINS = "contains";
 	public static final String MATCHES = "matches";
+	public static final String EVAL = "eval";
 	public static final String EXCLUDES = "excludes";
 	public static final String SOUNDSLIKE = "soundslike";
 	public static final String MEMBEROF = "memberof";
@@ -47,13 +46,8 @@ public class DroolsSoftKeywords {
 	public static final String AND = "and";
 	public static final String EXISTS = "exists";
 	public static final String FORALL = "forall";
-	public static final String FROM = "from";
 	public static final String ENTRY = "entry";
 	public static final String POINT = "point";
-	public static final String ACCUMULATE = "accumulate";
-	public static final String INIT = "init";
 	public static final String ACTION = "action";
 	public static final String REVERSE = "reverse";
-	public static final String RESULT = "result";
-	public static final String COLLECT = "collect";
 }
