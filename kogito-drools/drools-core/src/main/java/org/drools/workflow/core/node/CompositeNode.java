@@ -73,6 +73,10 @@ public class CompositeNode extends NodeImpl implements NodeContainer, EventNodeI
         node.setNodeContainer(null);
     }
     
+    protected void internalRemoveNode(Node node) {
+    	removeNode(node);
+    }
+    
 	public boolean acceptsEvent(String type, Object event) {
 		for (Node node: getNodes()) {
 			if (node instanceof EventNodeInterface) {
@@ -237,7 +241,7 @@ public class CompositeNode extends NodeImpl implements NodeContainer, EventNodeI
             if (((CompositeNodeStart) inConnection.getFrom()).getInNodeId() == connection.getFrom().getId()) {
                 Node compositeNodeStart = inConnection.getFrom();
                 ((ConnectionImpl) inConnection).terminate();
-                removeNode(compositeNodeStart);
+                internalRemoveNode(compositeNodeStart);
                 return;
             }
         }
@@ -264,7 +268,7 @@ public class CompositeNode extends NodeImpl implements NodeContainer, EventNodeI
             if (((CompositeNodeEnd) outConnection.getTo()).getOutNodeId() == connection.getTo().getId()) {
                 Node compositeNodeEnd = outConnection.getTo();
                 ((ConnectionImpl) outConnection).terminate();
-                removeNode(compositeNodeEnd);
+                internalRemoveNode(compositeNodeEnd);
                 return;
             }
         }

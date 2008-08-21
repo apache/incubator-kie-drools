@@ -106,6 +106,14 @@ public class ForEachNode extends CompositeNode {
     	return getCompositeNode().getNodes();
     }
     
+    public void removeNode(Node node) {
+    	getCompositeNode().removeNode(node);
+    }
+    
+    protected void internalRemoveNode(Node node) {
+    	super.removeNode(node);
+    }
+    
     public void linkIncomingConnections(String inType, long inNodeId, String inNodeType) {
     	getCompositeNode().linkIncomingConnections(inType, inNodeId, inNodeType);
     }
