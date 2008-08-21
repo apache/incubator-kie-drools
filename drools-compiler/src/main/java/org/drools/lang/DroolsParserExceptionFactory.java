@@ -38,12 +38,8 @@ public class DroolsParserExceptionFactory {
 	public final static String PARSER_LOCATION_MESSAGE_COMPLETE = " in %1$s %2$s";
 	public final static String PARSER_LOCATION_MESSAGE_PART = " in %1$s";
 
-	public static final String[] parserLocations = new String[] { "package",
-			"import", "function import", "global", "function", "query",
-			"template", "rule", "rule attribute", "pattern" };
-
 	private String[] tokenNames = null;
-	private Stack<Map<Integer, String>> paraphrases = null;
+	private Stack<Map<DroolsParaphraseTypes, String>> paraphrases = null;
 
 	/**
 	 * DroolsParserErrorMessages constructor.
@@ -54,7 +50,7 @@ public class DroolsParserExceptionFactory {
 	 *            paraphrases parser structure
 	 */
 	public DroolsParserExceptionFactory(String[] tokenNames,
-			Stack<Map<Integer, String>> paraphrases) {
+			Stack<Map<DroolsParaphraseTypes, String>> paraphrases) {
 		this.tokenNames = tokenNames;
 		this.paraphrases = paraphrases;
 	}
@@ -163,8 +159,8 @@ public class DroolsParserExceptionFactory {
 		} else if (e instanceof MismatchedSetException) {
 			MismatchedSetException mse = (MismatchedSetException) e;
 			message = String.format(
-					DroolsParserExceptionFactory.MISMATCHED_SET_MESSAGE, e.line,
-					e.charPositionInLine, getBetterToken(e.token),
+					DroolsParserExceptionFactory.MISMATCHED_SET_MESSAGE,
+					e.line, e.charPositionInLine, getBetterToken(e.token),
 					mse.expecting, formatParserLocation());
 			codeAndMessage.add(message);
 			codeAndMessage.add("ERR 105");
@@ -179,9 +175,9 @@ public class DroolsParserExceptionFactory {
 		} else if (e instanceof FailedPredicateException) {
 			FailedPredicateException fpe = (FailedPredicateException) e;
 			message = String.format(
-					DroolsParserExceptionFactory.FAILED_PREDICATE_MESSAGE, e.line,
-					e.charPositionInLine, fpe.ruleName, fpe.predicateText,
-					formatParserLocation());
+					DroolsParserExceptionFactory.FAILED_PREDICATE_MESSAGE,
+					e.line, e.charPositionInLine, fpe.ruleName,
+					fpe.predicateText, formatParserLocation());
 			codeAndMessage.add(message);
 			codeAndMessage.add("ERR 107");
 		}
@@ -196,19 +192,54 @@ public class DroolsParserExceptionFactory {
 	 */
 	private String formatParserLocation() {
 		StringBuilder sb = new StringBuilder();
-		for (Map<Integer, String> map : paraphrases) {
-			for (Entry<Integer, String> activeEntry : map.entrySet()) {
+		for (Map<DroolsParaphraseTypes, String> map : paraphrases) {
+			for (Entry<DroolsParaphraseTypes, String> activeEntry : map
+					.entrySet()) {
 				if (activeEntry.getValue().length() == 0) {
 					sb.append(String.format(PARSER_LOCATION_MESSAGE_PART,
-							parserLocations[activeEntry.getKey()]));
+							getLocationName(activeEntry.getKey())));
 				} else {
 					sb.append(String.format(PARSER_LOCATION_MESSAGE_COMPLETE,
-							parserLocations[activeEntry.getKey()], activeEntry
+							getLocationName(activeEntry.getKey()), activeEntry
 									.getValue()));
 				}
 			}
 		}
 		return sb.toString();
+	}
+
+	/**
+	 * Returns a string based on Paraphrase Type
+	 * 
+	 * @param type
+	 *            Paraphrase Type
+	 * @return a string representing the
+	 */
+	private String getLocationName(DroolsParaphraseTypes type) {
+		switch (type) {
+		case PACKAGE:
+			return "package";
+		case IMPORT:
+			return "import";
+		case FUNCTION_IMPORT:
+			return "function import";
+		case GLOBAL:
+			return "global";
+		case FUNCTION:
+			return "function";
+		case QUERY:
+			return "query";
+		case TEMPLATE:
+			return "template";
+		case RULE:
+			return "rule";
+		case RULE_ATTRIBUTE:
+			return "rule attribute";
+		case PATTERN:
+			return "pattern";
+		default:
+			return "";
+		}
 	}
 
 	/**

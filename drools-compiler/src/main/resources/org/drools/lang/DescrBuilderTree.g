@@ -134,7 +134,7 @@ rule returns [RuleDescr ruleDescr]
 	;
 
 when_part returns [AndDescr andDescr]
-	:	VK_WHEN lh=lhs_block
+	:	WHEN lh=lhs_block
 	{	$andDescr = $lh.andDescr;	}
 	;
 
@@ -232,18 +232,18 @@ lhs	returns [BaseDescr baseDescr]
 	{	$baseDescr = factory.createEval($start, $pc);	}
 	|	^(start=VK_FORALL (dt=lhs {	lhsList.add($dt.baseDescr);	})+)
 	{	$baseDescr = factory.createForAll($start, lhsList);	}
-	|	^(VK_FROM pn=lhs_pattern fe=from_elements)
+	|	^(FROM pn=lhs_pattern fe=from_elements)
 	{	$baseDescr = factory.setupFrom($pn.baseDescr, $fe.patternSourceDescr);	}
 	|	pn=lhs_pattern
 	{	$baseDescr = $pn.baseDescr;	}
 	;
 
 from_elements returns [PatternSourceDescr patternSourceDescr]
-	:	^(start=VK_ACCUMULATE dt=lhs
+	:	^(start=ACCUMULATE dt=lhs
 	{	$patternSourceDescr = factory.createAccumulate($start, $dt.baseDescr);	} 
 		ret=accumulate_parts[$patternSourceDescr])
 	{	$patternSourceDescr = $ret.accumulateDescr;	}
-	|	^(start=VK_COLLECT dt=lhs)
+	|	^(start=COLLECT dt=lhs)
 	{	$patternSourceDescr = factory.createCollect($start, $dt.baseDescr);	}
 	|	^(start=VK_ENTRY_POINT entryId=VT_ENTRYPOINT_ID)
 	{	$patternSourceDescr = factory.createEntryPoint($start, $entryId);	}
@@ -260,10 +260,10 @@ accumulate_parts[PatternSourceDescr patternSourceDescr] returns [AccumulateDescr
 
 accumulate_init_clause [PatternSourceDescr accumulateParam] returns [AccumulateDescr accumulateDescr] 
 	:	^(VT_ACCUMULATE_INIT_CLAUSE 
-			^(start=VK_INIT pc1=VT_PAREN_CHUNK) 
+			^(start=INIT pc1=VT_PAREN_CHUNK) 
 			^(VK_ACTION pc2=VT_PAREN_CHUNK) 
 			rev=accumulate_init_reverse_clause?
-			^(VK_RESULT pc3=VT_PAREN_CHUNK))
+			^(RESULT pc3=VT_PAREN_CHUNK))
 	{	if (null == rev){
 			$accumulateDescr = factory.setupAccumulateInit($accumulateParam, $start, $pc1, $pc2, $pc3, null);
 		} else {
