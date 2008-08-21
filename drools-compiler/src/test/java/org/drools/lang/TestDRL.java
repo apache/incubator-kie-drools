@@ -757,7 +757,25 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"compilation_unit", expecting, actual);
 	}
 
-	public void testPattern_source84() throws Exception {
+	public void testCompilation_unit84() throws Exception {
+		// test input: "rule \"Test\"\nwhen\n( $r :LiteralRestriction( operator == Operator.EQUAL ) )\n        then\n    end"
+		Object retval = execParser("compilation_unit", "rule \"Test\"\nwhen\n( $r :LiteralRestriction( operator == Operator.EQUAL ) )\n        then\n    end", false);
+		Object actual = examineParserExecResult(10, retval);
+		Object expecting = "(VT_COMPILATION_UNIT (rule \"Test\" when (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT_BINDING $r (VT_FACT (VT_PATTERN_TYPE LiteralRestriction) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT operator)) (== (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT Operator) (VT_ACCESSOR_ELEMENT EQUAL)))))))) then\n    end))";
+
+		assertEquals("testing rule "+"compilation_unit", expecting, actual);
+	}
+
+	public void testCompilation_unit85() throws Exception {
+		// test input: "rule \"Test2\"\nwhen\n( not $r :LiteralRestriction( operator == Operator.EQUAL ) )\n        then\n    end "
+		Object retval = execParser("compilation_unit", "rule \"Test2\"\nwhen\n( not $r :LiteralRestriction( operator == Operator.EQUAL ) )\n        then\n    end ", false);
+		Object actual = examineParserExecResult(10, retval);
+		Object expecting = "(VT_COMPILATION_UNIT (rule \"Test2\" when (VT_AND_IMPLICIT (not (VT_PATTERN (VT_FACT_BINDING $r (VT_FACT (VT_PATTERN_TYPE LiteralRestriction) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT operator)) (== (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT Operator) (VT_ACCESSOR_ELEMENT EQUAL))))))))) then\n    end))";
+
+		assertEquals("testing rule "+"compilation_unit", expecting, actual);
+	}
+
+	public void testPattern_source86() throws Exception {
 		// test input: "StockTick( symbol==\"ACME\") from entry-point StreamA"
 		Object retval = execParser("pattern_source", "StockTick( symbol==\"ACME\") from entry-point StreamA", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -766,7 +784,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"pattern_source", expecting, actual);
 	}
 
-	public void testParen_chunk85() throws Exception {
+	public void testParen_chunk87() throws Exception {
 		// test input: "( foo )"
 		Object retval = execParser("paren_chunk", "( foo )", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -775,7 +793,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"paren_chunk", expecting, actual);
 	}
 
-	public void testParen_chunk86() throws Exception {
+	public void testParen_chunk88() throws Exception {
 		// test input: "(fnord())"
 		Object retval = execParser("paren_chunk", "(fnord())", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -784,7 +802,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"paren_chunk", expecting, actual);
 	}
 
-	public void testParen_chunk87() throws Exception {
+	public void testParen_chunk89() throws Exception {
 		// test input: "( fnord( \"cheese\" ) )"
 		Object retval = execParser("paren_chunk", "( fnord( \"cheese\" ) )", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -793,7 +811,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"paren_chunk", expecting, actual);
 	}
 
-	public void testParen_chunk88() throws Exception {
+	public void testParen_chunk90() throws Exception {
 		// test input: "( %*9dkj)"
 		Object retval = execParser("paren_chunk", "( %*9dkj)", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -802,7 +820,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"paren_chunk", expecting, actual);
 	}
 
-	public void testNormal_lhs_block89() throws Exception {
+	public void testNormal_lhs_block91() throws Exception {
 		// test input: ""
 		Object retval = execParser("normal_lhs_block", "", false);
 		Object actual = examineParserExecResult(8, retval);
@@ -811,7 +829,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block90() throws Exception {
+	public void testNormal_lhs_block92() throws Exception {
 		// test input: "\n     Country( $cities : city )\n     Person( city memberOf $cities )\n    "
 		Object retval = execParser("normal_lhs_block", "\n     Country( $cities : city )\n     Person( city memberOf $cities )\n    ", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -820,7 +838,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block91() throws Exception {
+	public void testNormal_lhs_block93() throws Exception {
 		// test input: "\n     Country( $cities : city )\n     Person( city not memberOf $cities )\n    "
 		Object retval = execParser("normal_lhs_block", "\n     Country( $cities : city )\n     Person( city not memberOf $cities )\n    ", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -829,7 +847,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block92() throws Exception {
+	public void testNormal_lhs_block94() throws Exception {
 		// test input: " Person( age < 42 && location==\"atlanta\") "
 		Object retval = execParser("normal_lhs_block", " Person( age < 42 && location==\"atlanta\") ", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -838,7 +856,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block93() throws Exception {
+	public void testNormal_lhs_block95() throws Exception {
 		// test input: " Person( age < 42 || location==\"atlanta\") "
 		Object retval = execParser("normal_lhs_block", " Person( age < 42 || location==\"atlanta\") ", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -847,7 +865,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block94() throws Exception {
+	public void testNormal_lhs_block96() throws Exception {
 		// test input: "Person( age < 42 && location==\"atlanta\" || age > 20 && location==\"Seatle\" || location == \"Chicago\")"
 		Object retval = execParser("normal_lhs_block", "Person( age < 42 && location==\"atlanta\" || age > 20 && location==\"Seatle\" || location == \"Chicago\")", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -856,7 +874,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block95() throws Exception {
+	public void testNormal_lhs_block97() throws Exception {
 		// test input: "Person( age < 42 && ( location==\"atlanta\" || age > 20 && location==\"Seatle\") || location == \"Chicago\")"
 		Object retval = execParser("normal_lhs_block", "Person( age < 42 && ( location==\"atlanta\" || age > 20 && location==\"Seatle\") || location == \"Chicago\")", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -865,7 +883,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block96() throws Exception {
+	public void testNormal_lhs_block98() throws Exception {
 		// test input: " Person( ( age == 70 && hair == \"black\" ) || ( age == 40 && hair == \"pink\" ) || ( age == 12 && ( hair == \"yellow\" || hair == \"blue\" ) ) ) "
 		Object retval = execParser("normal_lhs_block", " Person( ( age == 70 && hair == \"black\" ) || ( age == 40 && hair == \"pink\" ) || ( age == 12 && ( hair == \"yellow\" || hair == \"blue\" ) ) ) ", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -874,7 +892,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block97() throws Exception {
+	public void testNormal_lhs_block99() throws Exception {
 		// test input: " Person( name matches \"mark\" || matches \"bob\" ) "
 		Object retval = execParser("normal_lhs_block", " Person( name matches \"mark\" || matches \"bob\" ) ", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -883,7 +901,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block98() throws Exception {
+	public void testNormal_lhs_block100() throws Exception {
 		// test input: "\n\tCity( $city : city )\n\tCountry( cities not contains $city )\n\t"
 		Object retval = execParser("normal_lhs_block", "\n\tCity( $city : city )\n\tCountry( cities not contains $city )\n\t", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -892,7 +910,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block99() throws Exception {
+	public void testNormal_lhs_block101() throws Exception {
 		// test input: " Message( text not matches '[abc]*' ) "
 		Object retval = execParser("normal_lhs_block", " Message( text not matches '[abc]*' ) ", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -901,7 +919,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block100() throws Exception {
+	public void testNormal_lhs_block102() throws Exception {
 		// test input: "Foo( bar > 1 || == 1 )"
 		Object retval = execParser("normal_lhs_block", "Foo( bar > 1 || == 1 )", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -910,7 +928,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block101() throws Exception {
+	public void testNormal_lhs_block103() throws Exception {
 		// test input: "\n\t(or\n\tnot Person()\n\t\t(and Cheese()\n\t\t\tMeat()\n\t\t\tWine()))\n\t"
 		Object retval = execParser("normal_lhs_block", "\n\t(or\n\tnot Person()\n\t\t(and Cheese()\n\t\t\tMeat()\n\t\t\tWine()))\n\t", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -919,7 +937,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block102() throws Exception {
+	public void testNormal_lhs_block104() throws Exception {
 		// test input: "Person( ( age ( > 60 && < 70 ) || ( > 50 && < 55 ) && hair == \"black\" ) || ( age == 40 && hair == \"pink\" ) || ( age == 12 && ( hair == \"yellow\" || hair == \"blue\" ) ))"
 		Object retval = execParser("normal_lhs_block", "Person( ( age ( > 60 && < 70 ) || ( > 50 && < 55 ) && hair == \"black\" ) || ( age == 40 && hair == \"pink\" ) || ( age == 12 && ( hair == \"yellow\" || hair == \"blue\" ) ))", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -928,7 +946,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block103() throws Exception {
+	public void testNormal_lhs_block105() throws Exception {
 		// test input: "org   .   drools/*comment*/\t  .Message( text not matches $c#comment\n. property )\n"
 		Object retval = execParser("normal_lhs_block", "org   .   drools/*comment*/\t  .Message( text not matches $c#comment\n. property )\n", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -937,7 +955,16 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block104() throws Exception {
+	public void testNormal_lhs_block106() throws Exception {
+		// test input: " Test( ( text == null || text matches \"\" ) )  "
+		Object retval = execParser("normal_lhs_block", " Test( ( text == null || text matches \"\" ) )  ", false);
+		Object actual = examineParserExecResult(10, retval);
+		Object expecting = "(VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Test) (|| (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT text)) (== null)) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT text)) (matches \"\"))))))";
+
+		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
+	}
+
+	public void testNormal_lhs_block107() throws Exception {
 		// test input: " $id : Something( duration == \"foo\") "
 		Object retval = execParser("normal_lhs_block", " $id : Something( duration == \"foo\") ", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -946,7 +973,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block105() throws Exception {
+	public void testNormal_lhs_block108() throws Exception {
 		// test input: "foo3 : Bar("
 		Object retval = execParser("normal_lhs_block", "foo3 : Bar(", false);
 		Object actual = examineParserExecResult(28, retval);
@@ -955,7 +982,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block106() throws Exception {
+	public void testNormal_lhs_block109() throws Exception {
 		// test input: "\nCheese(name == \"Stilton\", age==2001)\nWine(name == \"Grange\", age == \"1978\", accolades contains \"world champion\")\n"
 		Object retval = execParser("normal_lhs_block", "\nCheese(name == \"Stilton\", age==2001)\nWine(name == \"Grange\", age == \"1978\", accolades contains \"world champion\")\n", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -964,7 +991,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block107() throws Exception {
+	public void testNormal_lhs_block110() throws Exception {
 		// test input: "Foo()"
 		Object retval = execParser("normal_lhs_block", "Foo()", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -973,7 +1000,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block108() throws Exception {
+	public void testNormal_lhs_block111() throws Exception {
 		// test input: "not Cheese(type == \"stilton\")"
 		Object retval = execParser("normal_lhs_block", "not Cheese(type == \"stilton\")", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -982,7 +1009,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block109() throws Exception {
+	public void testNormal_lhs_block112() throws Exception {
 		// test input: "\nPerson(age < 42, location==\"atlanta\") \nor\nPerson(name==\"bob\")\n"
 		Object retval = execParser("normal_lhs_block", "\nPerson(age < 42, location==\"atlanta\") \nor\nPerson(name==\"bob\")\n", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -991,7 +1018,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block110() throws Exception {
+	public void testNormal_lhs_block113() throws Exception {
 		// test input: "\nFoo(bar == false)\nFoo(boo > -42)\nFoo(boo > -42.42)\n"
 		Object retval = execParser("normal_lhs_block", "\nFoo(bar == false)\nFoo(boo > -42)\nFoo(boo > -42.42)\n", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -1000,7 +1027,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block111() throws Exception {
+	public void testNormal_lhs_block114() throws Exception {
 		// test input: "Cheese( )"
 		Object retval = execParser("normal_lhs_block", "Cheese( )", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -1009,7 +1036,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block112() throws Exception {
+	public void testNormal_lhs_block115() throws Exception {
 		// test input: "\nCol1() from something.doIt( foo,bar,42,\"hello\",{ a => \"b\", \"something\" => 42, \"a\" => foo, x => {x=>y}},\"end\", [a, \"b\", 42] )\nCol2()\n"
 		Object retval = execParser("normal_lhs_block", "\nCol1() from something.doIt( foo,bar,42,\"hello\",{ a => \"b\", \"something\" => 42, \"a\" => foo, x => {x=>y}},\"end\", [a, \"b\", 42] )\nCol2()\n", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -1018,7 +1045,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block113() throws Exception {
+	public void testNormal_lhs_block116() throws Exception {
 		// test input: "\nCol1() from doIt( foo,bar,42,\"hello\",{ a => \"b\", \"something\" => 42, \"a\" => foo, x => {x=>y}},\"end\", [a, \"b\", 42] )\nCol2()\n"
 		Object retval = execParser("normal_lhs_block", "\nCol1() from doIt( foo,bar,42,\"hello\",{ a => \"b\", \"something\" => 42, \"a\" => foo, x => {x=>y}},\"end\", [a, \"b\", 42] )\nCol2()\n", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -1027,7 +1054,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block114() throws Exception {
+	public void testNormal_lhs_block117() throws Exception {
 		// test input: "\nCol1() from something.doIt\nCol2()\n"
 		Object retval = execParser("normal_lhs_block", "\nCol1() from something.doIt\nCol2()\n", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -1036,7 +1063,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block115() throws Exception {
+	public void testNormal_lhs_block118() throws Exception {
 		// test input: "\nCol1() from something.doIt[\"key\"]\nCol2()\n"
 		Object retval = execParser("normal_lhs_block", "\nCol1() from something.doIt[\"key\"]\nCol2()\n", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -1045,7 +1072,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block116() throws Exception {
+	public void testNormal_lhs_block119() throws Exception {
 		// test input: "\nCol1() from doIt1( foo,bar,42,\"hello\",{ a => \"b\"}, [a, \"b\", 42] )\n            .doIt2(bar, [a, \"b\", 42]).field[\"key\"]\nCol2()\n"
 		Object retval = execParser("normal_lhs_block", "\nCol1() from doIt1( foo,bar,42,\"hello\",{ a => \"b\"}, [a, \"b\", 42] )\n            .doIt2(bar, [a, \"b\", 42]).field[\"key\"]\nCol2()\n", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -1054,7 +1081,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block117() throws Exception {
+	public void testNormal_lhs_block120() throws Exception {
 		// test input: "\nfoo3 : Bar(a==3)\nfoo4 : Bar(a4:a==4)\nBaz()\n"
 		Object retval = execParser("normal_lhs_block", "\nfoo3 : Bar(a==3)\nfoo4 : Bar(a4:a==4)\nBaz()\n", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -1063,7 +1090,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block118() throws Exception {
+	public void testNormal_lhs_block121() throws Exception {
 		// test input: "\nPerson(age > 30 && < 40)\nVehicle(type == \"sedan\" || == \"wagon\", age < 3)\n"
 		Object retval = execParser("normal_lhs_block", "\nPerson(age > 30 && < 40)\nVehicle(type == \"sedan\" || == \"wagon\", age < 3)\n", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -1072,7 +1099,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block119() throws Exception {
+	public void testNormal_lhs_block122() throws Exception {
 		// test input: "    foo3 : Bar(a==3) ; foo4 : Bar(a4:a==4) ; Baz()"
 		Object retval = execParser("normal_lhs_block", "    foo3 : Bar(a==3) ; foo4 : Bar(a4:a==4) ; Baz()", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -1081,7 +1108,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block120() throws Exception {
+	public void testNormal_lhs_block123() throws Exception {
 		// test input: "\nnot ( Cheese(type == \"stilton\") )\nexists ( Foo() )\n"
 		Object retval = execParser("normal_lhs_block", "\nnot ( Cheese(type == \"stilton\") )\nexists ( Foo() )\n", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -1090,7 +1117,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block121() throws Exception {
+	public void testNormal_lhs_block124() throws Exception {
 		// test input: "\nnot ( Cheese(type == \"stilton\") )\nexists ( Foo() )\n"
 		Object retval = execParser("normal_lhs_block", "\nnot ( Cheese(type == \"stilton\") )\nexists ( Foo() )\n", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -1099,7 +1126,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block122() throws Exception {
+	public void testNormal_lhs_block125() throws Exception {
 		// test input: "\na : (not ( Cheese(type == \"stilton\") ))\nexists ( Foo() )\n"
 		Object retval = execParser("normal_lhs_block", "\na : (not ( Cheese(type == \"stilton\") ))\nexists ( Foo() )\n", false);
 		Object actual = examineParserExecResult(28, retval);
@@ -1108,7 +1135,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block123() throws Exception {
+	public void testNormal_lhs_block126() throws Exception {
 		// test input: " Cheese( t:type == \"cheddar\" ) "
 		Object retval = execParser("normal_lhs_block", " Cheese( t:type == \"cheddar\" ) ", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -1117,7 +1144,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block124() throws Exception {
+	public void testNormal_lhs_block127() throws Exception {
 		// test input: "Cheese( $type:type )"
 		Object retval = execParser("normal_lhs_block", "Cheese( $type:type )", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -1126,7 +1153,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block125() throws Exception {
+	public void testNormal_lhs_block128() throws Exception {
 		// test input: "\n    Cheese($type : type == \"stilton\")\n    $person : Person($name : name == \"bob\", likes == $type)        \n"
 		Object retval = execParser("normal_lhs_block", "\n    Cheese($type : type == \"stilton\")\n    $person : Person($name : name == \"bob\", likes == $type)        \n", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -1135,7 +1162,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block126() throws Exception {
+	public void testNormal_lhs_block129() throws Exception {
 		// test input: "\nPerson(name == \"mark\") or \n( Person(type == \"fan\") and Cheese(type == \"green\") )\n"
 		Object retval = execParser("normal_lhs_block", "\nPerson(name == \"mark\") or \n( Person(type == \"fan\") and Cheese(type == \"green\") )\n", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -1144,7 +1171,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block127() throws Exception {
+	public void testNormal_lhs_block130() throws Exception {
 		// test input: "\nPerson(name == \"mark\") && Cheese(type == \"stilton\")\nPerson(name == \"mark\") || Cheese(type == \"stilton\")\n"
 		Object retval = execParser("normal_lhs_block", "\nPerson(name == \"mark\") && Cheese(type == \"stilton\")\nPerson(name == \"mark\") || Cheese(type == \"stilton\")\n", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -1153,7 +1180,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block128() throws Exception {
+	public void testNormal_lhs_block131() throws Exception {
 		// test input: "\nfoo :  ( Person(name == \"mark\") or Person(type == \"fan\") ) \nCheese(type == \"green\")\n"
 		Object retval = execParser("normal_lhs_block", "\nfoo :  ( Person(name == \"mark\") or Person(type == \"fan\") ) \nCheese(type == \"green\")\n", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -1162,7 +1189,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block129() throws Exception {
+	public void testNormal_lhs_block132() throws Exception {
 		// test input: "\nfoo : ( Person(name == \"mark\") \n\tor \n\tPerson(type == \"fan\") )\n"
 		Object retval = execParser("normal_lhs_block", "\nfoo : ( Person(name == \"mark\") \n\tor \n\tPerson(type == \"fan\") )\n", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -1171,7 +1198,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block130() throws Exception {
+	public void testNormal_lhs_block133() throws Exception {
 		// test input: "\nfoo : ( \n\tPerson(name == \"mark\") or Person(type == \"fan\") \n\t)\n"
 		Object retval = execParser("normal_lhs_block", "\nfoo : ( \n\tPerson(name == \"mark\") or Person(type == \"fan\") \n\t)\n", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -1180,7 +1207,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block131() throws Exception {
+	public void testNormal_lhs_block134() throws Exception {
 		// test input: "\n ( (not Foo(x==\"a\") or Foo(x==\"y\") ) and ( Shoes() or Butt() ) )\n"
 		Object retval = execParser("normal_lhs_block", "\n ( (not Foo(x==\"a\") or Foo(x==\"y\") ) and ( Shoes() or Butt() ) )\n", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -1189,7 +1216,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block132() throws Exception {
+	public void testNormal_lhs_block135() throws Exception {
 		// test input: "\neval(abc(\"foo\") + 5)\nFoo()\neval(qed())\nBar()\n"
 		Object retval = execParser("normal_lhs_block", "\neval(abc(\"foo\") + 5)\nFoo()\neval(qed())\nBar()\n", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -1198,7 +1225,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block133() throws Exception {
+	public void testNormal_lhs_block136() throws Exception {
 		// test input: "\nFoo()\nBar()\neval(abc(\"foo\"))\n"
 		Object retval = execParser("normal_lhs_block", "\nFoo()\nBar()\neval(abc(\"foo\"))\n", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -1207,7 +1234,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block134() throws Exception {
+	public void testNormal_lhs_block137() throws Exception {
 		// test input: "Foo(name== (a + b))"
 		Object retval = execParser("normal_lhs_block", "Foo(name== (a + b))", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -1216,7 +1243,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block135() throws Exception {
+	public void testNormal_lhs_block138() throws Exception {
 		// test input: "Person( $age2:age -> ($age2 == $age1+2 ) )"
 		Object retval = execParser("normal_lhs_block", "Person( $age2:age -> ($age2 == $age1+2 ) )", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -1225,7 +1252,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block136() throws Exception {
+	public void testNormal_lhs_block139() throws Exception {
 		// test input: "Foo(bar == Foo.BAR)"
 		Object retval = execParser("normal_lhs_block", "Foo(bar == Foo.BAR)", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -1234,7 +1261,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block137() throws Exception {
+	public void testNormal_lhs_block140() throws Exception {
 		// test input: "\np: Person( name soundslike \"Michael\" )\n"
 		Object retval = execParser("normal_lhs_block", "\np: Person( name soundslike \"Michael\" )\n", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -1243,7 +1270,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block138() throws Exception {
+	public void testNormal_lhs_block141() throws Exception {
 		// test input: "\nFoo()\nBar()\neval(\n\n\n\n       abc(\n       \n       \"foo\") + \n       5\n       \n       \n       \n        \n       )\n"
 		Object retval = execParser("normal_lhs_block", "\nFoo()\nBar()\neval(\n\n\n\n       abc(\n       \n       \"foo\") + \n       5\n       \n       \n       \n        \n       )\n", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -1252,7 +1279,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block139() throws Exception {
+	public void testNormal_lhs_block142() throws Exception {
 		// test input: "eval(abc();)"
 		Object retval = execParser("normal_lhs_block", "eval(abc();)", false);
 		Object actual = examineParserExecResult(28, retval);
@@ -1261,7 +1288,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block140() throws Exception {
+	public void testNormal_lhs_block143() throws Exception {
 		// test input: "\nFoo(\n  bar == baz, la==laz\n  )\n "
 		Object retval = execParser("normal_lhs_block", "\nFoo(\n  bar == baz, la==laz\n  )\n ", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -1270,7 +1297,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block141() throws Exception {
+	public void testNormal_lhs_block144() throws Exception {
 		// test input: "com.cheeseco.Cheese($type : type == \"stilton\")"
 		Object retval = execParser("normal_lhs_block", "com.cheeseco.Cheese($type : type == \"stilton\")", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -1279,7 +1306,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block142() throws Exception {
+	public void testNormal_lhs_block145() throws Exception {
 		// test input: "\n     Integer() from accumulate( Person( age > 21 ),\n                            init( int x = 0; ),\n                            action( x++; ),\n                            result( new Integer(x) ) );\n"
 		Object retval = execParser("normal_lhs_block", "\n     Integer() from accumulate( Person( age > 21 ),\n                            init( int x = 0; ),\n                            action( x++; ),\n                            result( new Integer(x) ) );\n", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -1288,7 +1315,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block143() throws Exception {
+	public void testNormal_lhs_block146() throws Exception {
 		// test input: "\n $counter:Integer() from accumulate( $person : Person( age > 21 ),\n                                     init( int x = 0; ),\n                                     action( x++; ),\n                                     result( new Integer(x) ) );\n"
 		Object retval = execParser("normal_lhs_block", "\n $counter:Integer() from accumulate( $person : Person( age > 21 ),\n                                     init( int x = 0; ),\n                                     action( x++; ),\n                                     result( new Integer(x) ) );\n", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -1297,7 +1324,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block144() throws Exception {
+	public void testNormal_lhs_block147() throws Exception {
 		// test input: "$personList : ArrayList() from collect( Person( age > 21 ) );"
 		Object retval = execParser("normal_lhs_block", "$personList : ArrayList() from collect( Person( age > 21 ) );", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -1306,7 +1333,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block145() throws Exception {
+	public void testNormal_lhs_block148() throws Exception {
 		// test input: "\n\tnot ( State( $state : state ) and\n          not( Person( status == $state, $likes : likes ) and\n               Cheese( type == $likes ) ) )\n    Person( name == \"Bob\" )\n    ( Cheese( price == 10 ) or Cheese( type == \"brie\" ) )\n"
 		Object retval = execParser("normal_lhs_block", "\n\tnot ( State( $state : state ) and\n          not( Person( status == $state, $likes : likes ) and\n               Cheese( type == $likes ) ) )\n    Person( name == \"Bob\" )\n    ( Cheese( price == 10 ) or Cheese( type == \"brie\" ) )\n", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -1315,7 +1342,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block146() throws Exception {
+	public void testNormal_lhs_block149() throws Exception {
 		// test input: "\n forall( Person( age > 21, $likes : likes )\n         Cheese( type == $likes ) );\n"
 		Object retval = execParser("normal_lhs_block", "\n forall( Person( age > 21, $likes : likes )\n         Cheese( type == $likes ) );\n", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -1324,7 +1351,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block147() throws Exception {
+	public void testNormal_lhs_block150() throws Exception {
 		// test input: "\n  \tPerson(age > 30 && < 40)\n  \tVehicle(type in ( \"sedan\", \"wagon\" ), age < 3)\n\t"
 		Object retval = execParser("normal_lhs_block", "\n  \tPerson(age > 30 && < 40)\n  \tVehicle(type in ( \"sedan\", \"wagon\" ), age < 3)\n\t", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -1333,7 +1360,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block148() throws Exception {
+	public void testNormal_lhs_block151() throws Exception {
 		// test input: "\n  \tPerson(age > 30 && < 40)\n  \tVehicle(type not in ( \"sedan\", \"wagon\" ), age < 3)\n\t"
 		Object retval = execParser("normal_lhs_block", "\n  \tPerson(age > 30 && < 40)\n  \tVehicle(type not in ( \"sedan\", \"wagon\" ), age < 3)\n\t", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -1342,7 +1369,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block149() throws Exception {
+	public void testNormal_lhs_block152() throws Exception {
 		// test input: "\n\t\tPattern1();\n\t\tPattern2() from x.y.z;\n\t\tPattern5();\n\t\tPattern6();\n\t\tPattern7();\n\t\tPattern3();\n\t\tPattern4() from collect( Pattern5() );\n\t\t"
 		Object retval = execParser("normal_lhs_block", "\n\t\tPattern1();\n\t\tPattern2() from x.y.z;\n\t\tPattern5();\n\t\tPattern6();\n\t\tPattern7();\n\t\tPattern3();\n\t\tPattern4() from collect( Pattern5() );\n\t\t", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -1351,7 +1378,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block150() throws Exception {
+	public void testNormal_lhs_block153() throws Exception {
 		// test input: " eval( 3==3 ) "
 		Object retval = execParser("normal_lhs_block", " eval( 3==3 ) ", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -1360,7 +1387,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block151() throws Exception {
+	public void testNormal_lhs_block154() throws Exception {
 		// test input: "\n\t\tInteger() from accumulate( Person( age > 21 ),\n\t\t                           init( int x = 0; ),\n\t\t                           action( x++; ),\n\t\t                           reverse( x--; ),\n\t\t                           result( new Integer(x) ) );\n\t\t"
 		Object retval = execParser("normal_lhs_block", "\n\t\tInteger() from accumulate( Person( age > 21 ),\n\t\t                           init( int x = 0; ),\n\t\t                           action( x++; ),\n\t\t                           reverse( x--; ),\n\t\t                           result( new Integer(x) ) );\n\t\t", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -1369,7 +1396,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block152() throws Exception {
+	public void testNormal_lhs_block155() throws Exception {
 		// test input: "\n\t     Number() from accumulate( Person( $age : age > 21 ),\n\t                               average( $age ) );\n\t\t"
 		Object retval = execParser("normal_lhs_block", "\n\t     Number() from accumulate( Person( $age : age > 21 ),\n\t                               average( $age ) );\n\t\t", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -1378,7 +1405,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block153() throws Exception {
+	public void testNormal_lhs_block156() throws Exception {
 		// test input: "\n\t     #bellow statement makes no sense, but is useful to test parsing recursiveness\n\t     $personList : ArrayList() from collect( $p : Person( age > 21 || age < 10 ) from collect( People() from $town.getPeople() ) );\n\t\t"
 		Object retval = execParser("normal_lhs_block", "\n\t     #bellow statement makes no sense, but is useful to test parsing recursiveness\n\t     $personList : ArrayList() from collect( $p : Person( age > 21 || age < 10 ) from collect( People() from $town.getPeople() ) );\n\t\t", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -1387,7 +1414,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block154() throws Exception {
+	public void testNormal_lhs_block157() throws Exception {
 		// test input: "\n\t     $personList : ArrayList() from accumulate( Person( $age : age > 21 || < 10 ) from collect( People() from $town.getPeople() ),\n\t                                                max( $age ) );\n\t\t"
 		Object retval = execParser("normal_lhs_block", "\n\t     $personList : ArrayList() from accumulate( Person( $age : age > 21 || < 10 ) from collect( People() from $town.getPeople() ),\n\t                                                max( $age ) );\n\t\t", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -1396,7 +1423,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block155() throws Exception {
+	public void testNormal_lhs_block158() throws Exception {
 		// test input: "\n\t    $p : Person( name == \"bob\" )\n\t    $c : Cheese( type == $p.likes ) || Cheese( price == 10 )\n\t    "
 		Object retval = execParser("normal_lhs_block", "\n\t    $p : Person( name == \"bob\" )\n\t    $c : Cheese( type == $p.likes ) || Cheese( price == 10 )\n\t    ", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -1405,7 +1432,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block156() throws Exception {
+	public void testNormal_lhs_block159() throws Exception {
 		// test input: "\n\t\t     $counter:Integer() from accumulate( $person : Person( age > 21 ) and Cheese( type == $person.likes ),\n\t\t                                         init( int x = 0; ),\n\t\t                                         action( x++; ),\n\t\t                                         result( new Integer(x) ) );\n\t\t\t"
 		Object retval = execParser("normal_lhs_block", "\n\t\t     $counter:Integer() from accumulate( $person : Person( age > 21 ) and Cheese( type == $person.likes ),\n\t\t                                         init( int x = 0; ),\n\t\t                                         action( x++; ),\n\t\t                                         result( new Integer(x) ) );\n\t\t\t", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -1414,7 +1441,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block157() throws Exception {
+	public void testNormal_lhs_block160() throws Exception {
 		// test input: "\n\t\t    $a : EventA()\n\t\t    $b : EventB( this `after[1,10] $a )\n\t\t    $c : EventC( this finishes $b )\n\t\t    $d : EventD( this not starts $a )\n\t\t    $e : EventE( this not `before [1, 10] $b )\n\t\t\t"
 		Object retval = execParser("normal_lhs_block", "\n\t\t    $a : EventA()\n\t\t    $b : EventB( this `after[1,10] $a )\n\t\t    $c : EventC( this finishes $b )\n\t\t    $d : EventD( this not starts $a )\n\t\t    $e : EventE( this not `before [1, 10] $b )\n\t\t\t", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -1423,7 +1450,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testNormal_lhs_block158() throws Exception {
+	public void testNormal_lhs_block161() throws Exception {
 		// test input: "StockTick( symbol==\"ACME\") from entry-point StreamA"
 		Object retval = execParser("normal_lhs_block", "StockTick( symbol==\"ACME\") from entry-point StreamA", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -1432,7 +1459,7 @@ public class TestDRL extends TestCase {
 		assertEquals("testing rule "+"normal_lhs_block", expecting, actual);
 	}
 
-	public void testConstraints159() throws Exception {
+	public void testConstraints162() throws Exception {
 		// test input: "eval( $var.equals(\"xyz\") )"
 		Object retval = execParser("constraints", "eval( $var.equals(\"xyz\") )", false);
 		Object actual = examineParserExecResult(10, retval);
@@ -1524,7 +1551,7 @@ public class TestDRL extends TestCase {
 			if ( parser.hasErrors() ) {
 				this.stderr = parser.getErrors().toString();
 				return this.stderr;
-			}			
+			}
 			if ( stdoutVacuum.toString().length()>0 ) {
 				this.stdout = stdoutVacuum.toString();
 			}
