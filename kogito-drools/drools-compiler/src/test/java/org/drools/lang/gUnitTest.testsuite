@@ -1434,6 +1434,28 @@ end>>
 		-> (VT_COMPILATION_UNIT (package (VT_PACKAGE_ID org drools)) (rule "test pluggable operators" when (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT_BINDING $a (VT_FACT (VT_PATTERN_TYPE EventA)))) (VT_PATTERN (VT_FACT_BINDING $b (VT_FACT (VT_PATTERN_TYPE EventB) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT this)) (after [1,10] (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT $a))))))) (VT_PATTERN (VT_FACT_BINDING $c (VT_FACT (VT_PATTERN_TYPE EventC) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT this)) (finishes (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT $b))))))) (VT_PATTERN (VT_FACT_BINDING $d (VT_FACT (VT_PATTERN_TYPE EventD) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT this)) (starts not (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT $a))))))) (VT_PATTERN (VT_FACT_BINDING $e (VT_FACT (VT_PATTERN_TYPE EventE) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT this)) (before not [1, 10] (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT $b)))))))) then
 end))
 
+/**
+ * test parenthesis after when soft keyword
+ */
+ <<rule "Test"
+when
+( $r :LiteralRestriction( operator == Operator.EQUAL ) )
+        then
+    end>>
+    	-> (VT_COMPILATION_UNIT (rule "Test" when (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT_BINDING $r (VT_FACT (VT_PATTERN_TYPE LiteralRestriction) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT operator)) (== (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT Operator) (VT_ACCESSOR_ELEMENT EQUAL)))))))) then
+    end))
+
+/**
+ * test bind inside a not operator
+ */
+ <<rule "Test2"
+when
+( not $r :LiteralRestriction( operator == Operator.EQUAL ) )
+        then
+    end >>
+    	-> (VT_COMPILATION_UNIT (rule "Test2" when (VT_AND_IMPLICIT (not (VT_PATTERN (VT_FACT_BINDING $r (VT_FACT (VT_PATTERN_TYPE LiteralRestriction) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT operator)) (== (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT Operator) (VT_ACCESSOR_ELEMENT EQUAL))))))))) then
+    end))
+
 pattern_source:
 /**
  * test Entry Point
@@ -1566,6 +1588,12 @@ normal_lhs_block:
 . property )
 >>
 		-> (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE org drools Message) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT text)) (matches not (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT $c) (VT_ACCESSOR_ELEMENT property)))))))
+
+/**
+ * test Compatible Restriction
+ */
+<< Test( ( text == null || text matches "" ) )  >>
+	->  (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Test) (|| (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT text)) (== null)) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT text)) (matches ""))))))
 
 /**
  * test General Lhs

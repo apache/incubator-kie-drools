@@ -78,7 +78,7 @@ public class RuleParserTest extends TestCase {
 		super.tearDown();
 	}
 
-	public void test1() throws Exception {
+	public void testCompatibleRestriction() throws Exception {
 		String source = "package com.sample  rule test  when  Test( ( text == null || text2 matches \"\" ) )  then  end";
 		parse("compilation_unit", "compilation_unit", source);
 		assertEquals("com.sample", this.walker.getPackageDescr().getName());
@@ -90,7 +90,7 @@ public class RuleParserTest extends TestCase {
 		assertEquals("text2", ((FieldConstraintDescr) or.getDescrs().get(1)).getFieldName());
 	}
 
-	public void test2() throws Exception {
+	public void testSimpleRestriction() throws Exception {
 		String source = "package com.sample  rule test  when  Test( ( text == null || matches \"\" ) )  then  end";
 		parse("compilation_unit", "compilation_unit", source);
 		assertEquals("com.sample", this.walker.getPackageDescr().getName());
@@ -3025,6 +3025,8 @@ public class RuleParserTest extends TestCase {
 						"org.drools.lang.DescrBuilderTree").getMethod(
 						testTreeRuleName);
 				treeRuleReturn = treeRuleName.invoke(walker);
+			} else {
+				System.out.println(parser.getErrorMessages());
 			}
 
 			if (treeRuleReturn != null) {

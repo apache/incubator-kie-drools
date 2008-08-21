@@ -1224,6 +1224,27 @@ then
 end>>
 		OK
 
+
+/**
+ * test parenthesis after when soft keyword
+ */
+ <<rule "Test"
+when
+( $r :LiteralRestriction( operator == Operator.EQUAL ) )
+        then
+    end>>
+    	OK
+
+/**
+ * test bind inside a not operator
+ */
+ <<rule "Test2"
+when
+( not $r :LiteralRestriction( operator == Operator.EQUAL ) )
+        then
+    end >>
+    	OK
+
 lhs walks pattern_source:
 /**
  * test Entry Point
@@ -1335,6 +1356,12 @@ lhs_block walks normal_lhs_block:
 . property )
 >>
 		OK
+
+/**
+ * test Compatible Restriction
+ */
+<< Test( ( text == null || text matches "" ) )  >>
+	OK
 
 /**
  * test General Lhs
