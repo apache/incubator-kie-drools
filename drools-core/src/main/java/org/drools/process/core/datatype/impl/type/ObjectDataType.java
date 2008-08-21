@@ -59,8 +59,11 @@ public class ObjectDataType implements DataType {
     }
 
     public boolean verifyDataType(final Object value) {
+    	if (value == null) {
+        	return true;
+        }
         try {
-            Class<?> clazz = ObjectDataType.class.forName(className);
+            Class<?> clazz = Class.forName(className);
             if (clazz.isInstance(value)) {
                 return true;
             }

@@ -25,7 +25,8 @@ import org.drools.rule.Package;
 
 public class ProcessMarchallingTest extends TestCase {
 
-    public void test1() throws Exception {
+    @SuppressWarnings("unchecked")
+	public void test1() throws Exception {
         String rule = "package org.test;\n";
         rule += "import org.drools.Person\n";
         rule += "global java.util.List list\n";
@@ -66,7 +67,7 @@ public class ProcessMarchallingTest extends TestCase {
 
         StatefulSession session = ruleBase.newStatefulSession();
 
-        List list = new ArrayList();
+        List<Object> list = new ArrayList<Object>();
         session.setGlobal( "list", list );
 
         Person p = new Person( "bobba fet", 32);
@@ -80,8 +81,8 @@ public class ProcessMarchallingTest extends TestCase {
         
         session.fireAllRules();
 
-        assertEquals( 1, ((List) session.getGlobal("list")).size());
-        assertEquals( p, ((List) session.getGlobal("list")).get(0));
+        assertEquals( 1, ((List<Object>) session.getGlobal("list")).size());
+        assertEquals( p, ((List<Object>) session.getGlobal("list")).get(0));
         assertEquals(0, session.getProcessInstances().size());
     }
     
@@ -104,10 +105,22 @@ public class ProcessMarchallingTest extends TestCase {
     		"    <start id=\"1\" name=\"Start\" />\n" +
     		"    <workItem id=\"2\" name=\"Email\" >\n" +
     		"      <work name=\"Email\" >\n" +
-    		"        <parameter name=\"Subject\" type=\"org.drools.process.core.datatype.impl.type.StringDataType\" >Mail</parameter>\n" +
-    		"        <parameter name=\"Text\" type=\"org.drools.process.core.datatype.impl.type.StringDataType\" >This is an email</parameter>\n" +
-    		"        <parameter name=\"To\" type=\"org.drools.process.core.datatype.impl.type.StringDataType\" >you@mail.com</parameter>\n" +
-    		"        <parameter name=\"From\" type=\"org.drools.process.core.datatype.impl.type.StringDataType\" >me@mail.com</parameter>\n" +
+    		"        <parameter name=\"Subject\" >\n" +
+    		"          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+    		"          <value>Mail</value>\n" +
+    		"        </parameter>\n" +
+    		"        <parameter name=\"Text\" >\n" +
+    		"          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+    		"          <value>This is an email</value>\n" +
+    		"        </parameter>\n" +
+    		"        <parameter name=\"To\" >\n" +
+    		"          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+    		"          <value>you@mail.com</value>\n" +
+    		"        </parameter>\n" +
+    		"        <parameter name=\"From\" >\n" +
+    		"          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+    		"          <value>me@mail.com</value>\n" +
+    		"        </parameter>\n" +
     		"      </work>\n" +
     		"    </workItem>\n" +
     		"    <end id=\"3\" name=\"End\" />\n" +
@@ -175,7 +188,10 @@ public class ProcessMarchallingTest extends TestCase {
             "    <milestone id=\"11\" name=\"Event Wait\" >Person( )</milestone>\n" +
             "    <workItem id=\"12\" name=\"Log\" >\n" +
             "      <work name=\"Log\" >\n" +
-            "        <parameter name=\"Message\" type=\"org.drools.process.core.datatype.impl.type.StringDataType\" >This is a log message</parameter>\n" +
+            "        <parameter name=\"Message\" >\n" +
+            "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <value>This is a log message</value>\n" +
+            "        </parameter>\n" +
             "      </work>\n" +
             "    </workItem>\n" +
             "  </nodes>\n" +
