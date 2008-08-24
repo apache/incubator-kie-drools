@@ -68,12 +68,7 @@ import org.drools.process.instance.ProcessInstanceManager;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.process.instance.timer.TimerManager;
-import org.drools.reteoo.EntryPointNode;
-import org.drools.reteoo.InitialFactHandle;
-import org.drools.reteoo.InitialFactHandleDummyObject;
-import org.drools.reteoo.LIANodePropagation;
-import org.drools.reteoo.LeftTuple;
-import org.drools.reteoo.ObjectTypeConf;
+import org.drools.reteoo.*;
 import org.drools.rule.Declaration;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
@@ -187,6 +182,8 @@ public abstract class AbstractWorkingMemory
     
     protected SessionConfiguration                      config;
 
+    protected Map<RuleBasePartitionId, PartitionTaskManager> partitionManagers;
+
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -278,6 +275,8 @@ public abstract class AbstractWorkingMemory
                               this );
 
         this.entryPoint = EntryPoint.DEFAULT;
+
+        initPartitionManagers();
         initTransient();
     }
 
@@ -289,6 +288,21 @@ public abstract class AbstractWorkingMemory
         this.ruleBase = ruleBase;
         this.nodeMemories.setRuleBaseReference( this.ruleBase );
         initTransient();
+    }
+
+    /**
+     * Creates the actual partition managers and their tasks for multi-thread processing
+     */
+    private void initPartitionManagers() {
+        if( this.ruleBase.getConfiguration().isPartitionsEnabled() ) {
+
+            // the Map MUST be thread safe
+            this.partitionManagers = new ConcurrentHashMap<RuleBasePartitionId, PartitionTaskManager>();
+
+            for( RuleBasePartitionId partitionId : this.ruleBase.getPartitionIds() ) {
+                this.partitionManagers.put( partitionId, new PartitionTaskManager( this ) );
+            }
+        }
     }
 
     private void initTransient() {
@@ -1669,6 +1683,10 @@ public abstract class AbstractWorkingMemory
     
     public SessionClock getSessionClock() {
         return (SessionClock) this.getTimerManager().getTimerService();
+    }
+
+    public PartitionTaskManager getPartitionManager( final RuleBasePartitionId partitionId ) {
+        return partitionManagers.get( partitionId );
     }
 
     //    public static class FactHandleInvalidation implements WorkingMemoryAction {

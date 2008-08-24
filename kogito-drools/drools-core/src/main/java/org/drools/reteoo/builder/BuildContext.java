@@ -112,6 +112,8 @@ public class BuildContext {
         this.currentEntryPoint = EntryPoint.DEFAULT;
         
         this.nodes = new LinkedList<BaseNode>();
+
+        this.partitionId = RuleBasePartitionId.MAIN_PARTITION;
     }
 
     /**

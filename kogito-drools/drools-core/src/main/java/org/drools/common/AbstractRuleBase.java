@@ -815,6 +815,10 @@ abstract public class AbstractRuleBase
         return p;
     }
 
+    public List<RuleBasePartitionId> getPartitionIds() {
+        return this.partitionIDs;
+    }
+
     public void addEventListener(final RuleBaseEventListener listener) {
         // since the event support is thread-safe, no need for locks... right?
         this.eventSupport.addEventListener( listener );

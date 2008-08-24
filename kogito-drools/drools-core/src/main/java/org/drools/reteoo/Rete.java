@@ -25,11 +25,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.common.BaseNode;
-import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalRuleBase;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.common.InternalWorkingMemoryEntryPoint;
+import org.drools.common.*;
 import org.drools.rule.EntryPoint;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
@@ -79,7 +75,7 @@ public class Rete extends ObjectSource
     // ------------------------------------------------------------
 
     public Rete(InternalRuleBase ruleBase) {
-        super( 0 );
+        super( 0, RuleBasePartitionId.MAIN_PARTITION, ruleBase != null ? ruleBase.getConfiguration().isPartitionsEnabled() : false );
         this.entryPoints = new HashMap<EntryPoint, EntryPointNode>();
         this.ruleBase = ruleBase;
     }

@@ -12,6 +12,7 @@ import org.drools.base.evaluators.Operator;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.RuleBasePartitionId;
 import org.drools.rule.LiteralConstraint;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.Evaluator;
@@ -25,9 +26,7 @@ import org.drools.util.LinkedListNode;
 import org.drools.util.ObjectHashMap;
 import org.drools.util.ObjectHashMap.ObjectEntry;
 
-public class CompositeObjectSinkAdapter
-    implements
-    ObjectSinkPropagator {
+public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
 
     //    /** You can override this property via a system property (eg -Ddrools.hashThreshold=4) */
     //    public static final String HASH_THRESHOLD_SYSTEM_PROPERTY = "drools.hashThreshold";
@@ -47,15 +46,17 @@ public class CompositeObjectSinkAdapter
     private int               alphaNodeHashingThreshold;
 
     public CompositeObjectSinkAdapter() {
-        this( 3 );
+        this( null, 3 );
     }
 
-    public CompositeObjectSinkAdapter(final int alphaNodeHashingThreshold) {
+    public CompositeObjectSinkAdapter(final RuleBasePartitionId partitionId, final int alphaNodeHashingThreshold) {
+        super( partitionId );
         this.alphaNodeHashingThreshold = alphaNodeHashingThreshold;
     }
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
+        super.readExternal( in );
         otherSinks = (ObjectSinkNodeList) in.readObject();
         hashableSinks = (ObjectSinkNodeList) in.readObject();
         hashedFieldIndexes = (LinkedList) in.readObject();
@@ -64,13 +65,14 @@ public class CompositeObjectSinkAdapter
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal( out );
         out.writeObject( otherSinks );
         out.writeObject( hashableSinks );
         out.writeObject( hashedFieldIndexes );
         out.writeObject( hashedSinkMap );
         out.writeInt( alphaNodeHashingThreshold );
     }
-    
+
     public ObjectSinkNodeList getOthers() {
         return this.otherSinks;        
     }
@@ -329,9 +331,7 @@ public class CompositeObjectSinkAdapter
                 final ObjectSink sink = (ObjectSink) this.hashedSinkMap.get( hashKey );
                 if ( sink != null ) {
                     // The sink exists so propagate
-                    sink.assertObject( factHandle,
-                                       context,
-                                       workingMemory );
+                    doPropagateAssertObject( factHandle, context, workingMemory, sink );
                 }
             }
         }
@@ -339,21 +339,33 @@ public class CompositeObjectSinkAdapter
         // propagate unhashed
         if ( this.hashableSinks != null ) {
             for ( ObjectSinkNode sink = this.hashableSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
-                sink.assertObject( factHandle,
-                                   context,
-                                   workingMemory );
+                doPropagateAssertObject( factHandle, context, workingMemory, sink );
             }
         }
 
         if ( this.otherSinks != null ) {
             // propagate others
             for ( ObjectSinkNode sink = this.otherSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
-                sink.assertObject( factHandle,
-                                   context,
-                                   workingMemory );
+                doPropagateAssertObject( factHandle, context, workingMemory, sink );
             }
         }
 
+    }
+
+    /**
+     * This is a Hook method for subclasses to override. Please keep it protected unless you know
+     * what you are doing.
+     * 
+     * @param factHandle
+     * @param context
+     * @param workingMemory
+     * @param sink
+     */
+    protected void doPropagateAssertObject( InternalFactHandle factHandle, PropagationContext context,
+                                            InternalWorkingMemory workingMemory, ObjectSink sink ) {
+        sink.assertObject( factHandle,
+                           context,
+                           workingMemory );
     }
 
     public BaseNode getMatchingNode(BaseNode candidate) {

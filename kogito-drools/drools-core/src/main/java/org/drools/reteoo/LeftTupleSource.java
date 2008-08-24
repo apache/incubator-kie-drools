@@ -24,6 +24,7 @@ import java.io.ObjectInput;
 
 import org.drools.common.BaseNode;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.RuleBasePartitionId;
 import org.drools.spi.PropagationContext;
 
 /**
@@ -61,8 +62,8 @@ public abstract class LeftTupleSource extends BaseNode
      *
      * @param id
      */
-    LeftTupleSource(final int id) {
-        super( id );
+    LeftTupleSource(final int id, final RuleBasePartitionId partitionId, final boolean partitionsEnabled ) {
+        super( id, partitionId, partitionsEnabled );
         this.sink = EmptyLeftTupleSinkAdapter.getInstance();
     }
 

@@ -146,7 +146,8 @@ public class ReteooRuleBuilder {
             terminal = new QueryTerminalNode( context.getNextId(),
                                               context.getTupleSource(),
                                               rule,
-                                              subrule );
+                                              subrule,
+                                              context );
         }
         if ( context.getWorkingMemories().length == 0 ) {
             ((BaseNode) terminal).attach();

@@ -98,12 +98,14 @@ public final class RuleTerminalNode extends BaseNode
                             final LeftTupleSource source,
                             final Rule rule,
                             final GroupElement subrule,
-                            final BuildContext buildContext) {
-        super( id );
+                            final BuildContext context) {
+        super( id,
+               context.getPartitionId(),
+               context.getRuleBase().getConfiguration().isPartitionsEnabled() );
         this.rule = rule;
         this.tupleSource = source;
         this.subrule = subrule;
-        this.tupleMemoryEnabled = buildContext.isTerminalNodeMemoryEnabled();
+        this.tupleMemoryEnabled = context.isTerminalNodeMemoryEnabled();
     }
 
     // ------------------------------------------------------------

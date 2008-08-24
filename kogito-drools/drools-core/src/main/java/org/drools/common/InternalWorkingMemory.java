@@ -12,6 +12,7 @@ import org.drools.event.WorkingMemoryEventSupport;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.ProcessInstanceManager;
 import org.drools.reteoo.LIANodePropagation;
+import org.drools.reteoo.PartitionTaskManager;
 import org.drools.rule.Rule;
 import org.drools.rule.TimeMachine;
 import org.drools.spi.Activation;
@@ -99,4 +100,14 @@ public interface InternalWorkingMemory
     public InternalFactHandle getInitialFactHandle();       
     
     public TimerService getTimerService();
+
+    /**
+     * Returns the PartitionTaskManager for the given partition ID
+     * in case the rulebase has partitions enabled
+     *
+     * @param partitionId the ID of the partition for which the task manager is assigned
+     *
+     * @return the PartitionTaskManager
+     */
+    public PartitionTaskManager getPartitionManager( RuleBasePartitionId partitionId );
 }

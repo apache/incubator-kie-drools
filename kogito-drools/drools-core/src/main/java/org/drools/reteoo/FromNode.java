@@ -6,6 +6,7 @@ import java.io.ObjectOutput;
 import java.io.Serializable;
 
 import org.drools.RuleBaseConfiguration;
+import org.drools.reteoo.builder.BuildContext;
 import org.drools.common.BaseNode;
 import org.drools.common.BetaConstraints;
 import org.drools.common.EmptyBetaConstraints;
@@ -48,8 +49,11 @@ public class FromNode extends LeftTupleSource
                     final LeftTupleSource tupleSource,
                     final AlphaNodeFieldConstraint[] constraints,
                     final BetaConstraints binder,
-                    final boolean tupleMemoryEnabled) {
-        super( id );
+                    final boolean tupleMemoryEnabled,
+                    final BuildContext context ) {
+        super( id,
+               context.getPartitionId(),
+               context.getRuleBase().getConfiguration().isPartitionsEnabled() );
         this.dataProvider = dataProvider;
         this.tupleSource = tupleSource;
         this.alphaConstraints = constraints;

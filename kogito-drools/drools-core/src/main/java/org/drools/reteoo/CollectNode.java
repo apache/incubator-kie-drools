@@ -86,6 +86,8 @@ public class CollectNode extends BetaNode
                        final boolean unwrapRight,
                        final BuildContext context) {
         super( id,
+               context.getPartitionId(),
+               context.getRuleBase().getConfiguration().isPartitionsEnabled(),
                leftInput,
                rightInput,
                sourceBinder,

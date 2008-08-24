@@ -16,7 +16,6 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-import java.io.Serializable;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -25,6 +24,7 @@ import java.io.ObjectOutput;
 import org.drools.common.BaseNode;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.RuleBasePartitionId;
 import org.drools.spi.PropagationContext;
 
 /**
@@ -66,8 +66,12 @@ public abstract class ObjectSource extends BaseNode
      *
      * @param id
      */
-    ObjectSource(final int id) {
+    ObjectSource(final int id,
+                 final RuleBasePartitionId partitionId,
+                 final boolean partitionsEnabled) {
         this( id,
+              partitionId,
+              partitionsEnabled,
               null,
               3 );
     }
@@ -78,9 +82,11 @@ public abstract class ObjectSource extends BaseNode
      * @param id
      */
     ObjectSource(final int id,
+                 final RuleBasePartitionId partitionId,
+                 final boolean partitionsEnabled,
                  final ObjectSource objectSource,
                  final int alphaNodeHashingThreshold) {
-        super( id );
+        super( id, partitionId, partitionsEnabled );
         this.source = objectSource;
         this.alphaNodeHashingThreshold = alphaNodeHashingThreshold;
         this.sink = EmptyObjectSinkAdapter.getInstance();
@@ -115,9 +121,25 @@ public abstract class ObjectSource extends BaseNode
      */
     protected void addObjectSink(final ObjectSink objectSink) {
         if ( this.sink instanceof EmptyObjectSinkAdapter ) {
-            this.sink = new SingleObjectSinkAdapter( objectSink );
+            if( this.partitionsEnabled && ! this.getPartitionId().equals( objectSink.getPartitionId() ) ) {
+                // if partitions are enabled and the next node belongs to a different partition,
+                // we need to use the asynchronous propagator
+                this.sink = new AsyncSingleObjectSinkAdapter( this.getPartitionId(), objectSink );
+            } else {
+                // otherwise, we use the lighter synchronous propagator
+                this.sink = new SingleObjectSinkAdapter( this.getPartitionId(), objectSink );
+            }
         } else if ( this.sink instanceof SingleObjectSinkAdapter ) {
-            final CompositeObjectSinkAdapter sinkAdapter = new CompositeObjectSinkAdapter( this.alphaNodeHashingThreshold );
+            final CompositeObjectSinkAdapter sinkAdapter;
+            if( this.partitionsEnabled ) {
+                // a composite propagator may propagate to both nodes in the same partition
+                // as well as in a different partition, so, if partitions are enabled, we
+                // must use the asynchronous version
+                sinkAdapter = new AsyncCompositeObjectSinkAdapter( this.getPartitionId(), this.alphaNodeHashingThreshold );
+            } else {
+                // if partitions are disabled, then it is safe to use the lighter synchronous propagator
+                sinkAdapter = new CompositeObjectSinkAdapter( this.getPartitionId(), this.alphaNodeHashingThreshold );
+            }
             sinkAdapter.addObjectSink( this.sink.getSinks()[0] );
             sinkAdapter.addObjectSink( objectSink );
             this.sink = sinkAdapter;
@@ -143,7 +165,14 @@ public abstract class ObjectSource extends BaseNode
             final CompositeObjectSinkAdapter sinkAdapter = (CompositeObjectSinkAdapter) this.sink;
             sinkAdapter.removeObjectSink( objectSink );
             if ( sinkAdapter.size() == 1 ) {
-                this.sink = new SingleObjectSinkAdapter( sinkAdapter.getSinks()[0] );
+                if( this.partitionsEnabled && ! this.getPartitionId().equals( sinkAdapter.getSinks()[0].getPartitionId() ) ) {
+                    // if partitions are enabled and the next node belongs to a different partition,
+                    // we need to use the asynchronous propagator
+                    this.sink = new AsyncSingleObjectSinkAdapter( this.getPartitionId(), sinkAdapter.getSinks()[0] );
+                } else {
+                    // otherwise, we use the lighter synchronous propagator
+                    this.sink = new SingleObjectSinkAdapter( this.getPartitionId(), sinkAdapter.getSinks()[0] );
+                }
             }
         }
     }

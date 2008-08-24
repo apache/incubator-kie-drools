@@ -3,6 +3,7 @@ package org.drools.reteoo;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.BaseNode;
+import org.drools.common.RuleBasePartitionId;
 import org.drools.spi.PropagationContext;
 
 import java.io.Externalizable;
@@ -10,29 +11,29 @@ import java.io.ObjectOutput;
 import java.io.IOException;
 import java.io.ObjectInput;
 
-public class SingleObjectSinkAdapter
-    implements
-    ObjectSinkPropagator,
-    Externalizable {
+public class SingleObjectSinkAdapter extends AbstractObjectSinkAdapter {
 
     private static final long serialVersionUID = 873985743021L;
 
-    private ObjectSink        sink;
+    protected ObjectSink        sink;
 
     public SingleObjectSinkAdapter() {
-
+        super( null );
     }
 
-    public SingleObjectSinkAdapter(final ObjectSink sink) {
+    public SingleObjectSinkAdapter(final RuleBasePartitionId partitionId, final ObjectSink sink) {
+        super( partitionId );
         this.sink = sink;
     }
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
+        super.readExternal( in );
         sink = (ObjectSink) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal( out );
         out.writeObject( sink );
     }
 
@@ -42,7 +43,6 @@ public class SingleObjectSinkAdapter
         this.sink.assertObject( factHandle,
                                 context,
                                 workingMemory );
-
     }
 
     public BaseNode getMatchingNode(BaseNode candidate) {

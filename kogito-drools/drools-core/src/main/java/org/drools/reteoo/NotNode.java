@@ -69,6 +69,8 @@ public class NotNode extends BetaNode {
                    final Behavior[] behaviors,
                    final BuildContext context) {
         super( id,
+               context.getPartitionId(),
+               context.getRuleBase().getConfiguration().isPartitionsEnabled(),
                leftInput,
                rightInput,
                joinNodeBinder,

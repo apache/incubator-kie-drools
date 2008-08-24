@@ -19,6 +19,7 @@ package org.drools.reteoo;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.RuleBasePartitionId;
 import org.drools.spi.PropagationContext;
 
 import java.io.IOException;
@@ -44,7 +45,7 @@ public class MockObjectSource extends ObjectSource {
     }
 
     public MockObjectSource(final int id) {
-        super( id );
+        super( id, RuleBasePartitionId.MAIN_PARTITION, false);
         this.facts = new ArrayList();
     }
 

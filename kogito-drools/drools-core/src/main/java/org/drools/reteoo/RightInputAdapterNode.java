@@ -17,11 +17,7 @@ package org.drools.reteoo;
  */
 
 import org.drools.RuleBaseConfiguration;
-import org.drools.common.BaseNode;
-import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.common.NodeMemory;
-import org.drools.common.PropagationContextImpl;
+import org.drools.common.*;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.EntryPoint;
 import org.drools.spi.PropagationContext;
@@ -72,7 +68,9 @@ public class RightInputAdapterNode extends ObjectSource
     public RightInputAdapterNode(final int id,
                                  final LeftTupleSource source,
                                  final BuildContext context) {
-        super( id );
+        super( id,
+               context.getPartitionId(),
+               context.getRuleBase().getConfiguration().isPartitionsEnabled() );
         this.tupleSource = source;
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
     }

@@ -36,4 +36,12 @@ public interface NetworkNode
      *      unique int value
      */
     public int getId();
+
+    /**
+     * Returns the partition ID to which this node belongs to
+     *
+     * @return
+     */
+    public RuleBasePartitionId getPartitionId();
+
 }

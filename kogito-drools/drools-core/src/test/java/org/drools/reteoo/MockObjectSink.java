@@ -18,9 +18,13 @@ package org.drools.reteoo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.ObjectOutput;
+import java.io.IOException;
+import java.io.ObjectInput;
 
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.RuleBasePartitionId;
 import org.drools.spi.PropagationContext;
 
 public class MockObjectSink
@@ -103,5 +107,17 @@ public class MockObjectSink
     public int getId() {
         // TODO Auto-generated method stub
         return 0;
+    }
+
+    public RuleBasePartitionId getPartitionId() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public void writeExternal( ObjectOutput out ) throws IOException {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 }

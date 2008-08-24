@@ -17,11 +17,7 @@ package org.drools.reteoo;
  */
 
 import org.drools.RuleBaseConfiguration;
-import org.drools.common.BaseNode;
-import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.common.NodeMemory;
-import org.drools.common.PropagationContextImpl;
+import org.drools.common.*;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.PropagationContext;
 import org.drools.util.FactEntry;
@@ -70,14 +66,13 @@ public class LeftInputAdapterNode extends LeftTupleSource
      *      The unique id of this node in the current Rete network
      * @param source
      *      The parent node, where Facts are propagated from
-     * @param binder
-     *      An optional binder to filter out propagations. This binder will exist when
-     *      a predicate is used in the first pattern, for instance
      */
     public LeftInputAdapterNode(final int id,
                                 final ObjectSource source,
                                 final BuildContext context) {
-        super( id );
+        super( id,
+               context.getPartitionId(),
+               context.getRuleBase().getConfiguration().isPartitionsEnabled() );
         this.objectSource = source;
         this.leftTupleMemoryEnabled = context.isTupleMemoryEnabled();
     }
@@ -272,6 +267,20 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
         public int getId() {
             return 0;
+        }
+
+        public RuleBasePartitionId getPartitionId() {
+            return sink.getPartitionId();
+        }
+
+        public void writeExternal( ObjectOutput out ) throws IOException {
+            // this is a short living adapter class used only during an update operation, and
+            // as so, no need for serialization code
+        }
+
+        public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException {
+            // this is a short living adapter class used only during an update operation, and
+            // as so, no need for serialization code
         }
     }
 

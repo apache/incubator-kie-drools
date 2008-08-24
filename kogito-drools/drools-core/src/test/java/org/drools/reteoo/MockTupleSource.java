@@ -18,6 +18,7 @@ package org.drools.reteoo;
 
 import org.drools.common.BaseNode;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.RuleBasePartitionId;
 import org.drools.spi.PropagationContext;
 
 public class MockTupleSource extends LeftTupleSource {
@@ -32,7 +33,7 @@ public class MockTupleSource extends LeftTupleSource {
     private int               updated;
 
     public MockTupleSource(final int id) {
-        super( id );
+        super( id, RuleBasePartitionId.MAIN_PARTITION, false );
     }
 
     public void attach() {

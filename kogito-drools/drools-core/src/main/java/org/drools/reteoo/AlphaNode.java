@@ -22,11 +22,7 @@ import java.io.Externalizable;
 
 import org.drools.FactException;
 import org.drools.RuleBaseConfiguration;
-import org.drools.common.BaseNode;
-import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.common.NodeMemory;
-import org.drools.common.PropagationContextImpl;
+import org.drools.common.*;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.ContextEntry;
 import org.drools.spi.AlphaNodeFieldConstraint;
@@ -76,13 +72,14 @@ public class AlphaNode extends ObjectSource
      * @param id Node's ID
      * @param constraint Node's constraints
      * @param objectSource Node's object source
-     * @param hasMemory true if node shall be configured with local memory. False otherwise.
      */
     public AlphaNode(final int id,
                      final AlphaNodeFieldConstraint constraint,
                      final ObjectSource objectSource,
                      final BuildContext context) {
         super( id,
+               context.getPartitionId(),
+               context.getRuleBase().getConfiguration().isPartitionsEnabled(),
                objectSource,
                context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold() );
         this.constraint = constraint;
@@ -316,5 +313,19 @@ public class AlphaNode extends ObjectSource
         public int getId() {
             return 0;
         }
+
+        public RuleBasePartitionId getPartitionId() {
+            return this.sink.getPartitionId();
+        }
+
+        public void writeExternal( ObjectOutput out ) throws IOException {
+            // this is a short living adapter class, so no need for serialization
+        }
+
+        public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException {
+            // this is a short living adapter class, so no need for serialization
+        }
+
+
     }
 }
