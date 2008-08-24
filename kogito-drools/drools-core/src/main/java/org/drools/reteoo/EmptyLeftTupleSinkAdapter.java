@@ -3,15 +3,14 @@ package org.drools.reteoo;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.BaseNode;
+import org.drools.common.RuleBasePartitionId;
 import org.drools.spi.PropagationContext;
 
 import java.io.ObjectOutput;
 import java.io.IOException;
 import java.io.ObjectInput;
 
-public class EmptyLeftTupleSinkAdapter
-    implements
-    LeftTupleSinkPropagator {
+public class EmptyLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
 
     private static final EmptyLeftTupleSinkAdapter instance = new EmptyLeftTupleSinkAdapter();
 
@@ -20,6 +19,7 @@ public class EmptyLeftTupleSinkAdapter
     }
 
     public EmptyLeftTupleSinkAdapter() {
+        super( RuleBasePartitionId.MAIN_PARTITION );
         // constructor needed for serialisation
     }
 

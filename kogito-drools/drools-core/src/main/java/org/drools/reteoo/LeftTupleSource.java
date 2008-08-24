@@ -91,9 +91,25 @@ public abstract class LeftTupleSource extends BaseNode
      */
     protected void addTupleSink(final LeftTupleSink tupleSink) {
         if ( this.sink instanceof EmptyLeftTupleSinkAdapter ) {
-            this.sink = new SingleLeftTupleSinkAdapter( tupleSink );
+            if( this.partitionsEnabled && ! this.partitionId.equals( tupleSink.getPartitionId() ) ) {
+                // if partitions are enabled and the next node belongs to a different partition,
+                // we need to use the asynchronous propagator
+                this.sink = new AsyncSingleLeftTupleSinkAdapter( this.getPartitionId(), tupleSink );
+            } else {
+                // otherwise, we use the lighter synchronous propagator
+                this.sink = new SingleLeftTupleSinkAdapter( this.getPartitionId(), tupleSink );
+            }
         } else if ( this.sink instanceof SingleLeftTupleSinkAdapter ) {
-            final CompositeLeftTupleSinkAdapter sinkAdapter = new CompositeLeftTupleSinkAdapter();
+            final CompositeLeftTupleSinkAdapter sinkAdapter;
+            if( this.partitionsEnabled ) {
+                // a composite propagator may propagate to both nodes in the same partition
+                // as well as in a different partition, so, if partitions are enabled, we
+                // must use the asynchronous version
+                sinkAdapter = new AsyncCompositeLeftTupleSinkAdapter( this.getPartitionId() );
+            } else {
+                // if partitions are disabled, then it is safe to use the lighter synchronous propagator
+                sinkAdapter = new CompositeLeftTupleSinkAdapter( this.getPartitionId() );
+            }
             sinkAdapter.addTupleSink( this.sink.getSinks()[0] );
             sinkAdapter.addTupleSink( tupleSink );
             this.sink = sinkAdapter;
@@ -119,7 +135,14 @@ public abstract class LeftTupleSource extends BaseNode
             final CompositeLeftTupleSinkAdapter sinkAdapter = (CompositeLeftTupleSinkAdapter) this.sink;
             sinkAdapter.removeTupleSink( tupleSink );
             if ( sinkAdapter.size() == 1 ) {
-                this.sink = new SingleLeftTupleSinkAdapter( sinkAdapter.getSinks()[0] );
+                if( this.partitionsEnabled && ! this.partitionId.equals( tupleSink.getPartitionId() ) ) {
+                    // if partitions are enabled and the next node belongs to a different partition,
+                    // we need to use the asynchronous propagator
+                    this.sink = new AsyncSingleLeftTupleSinkAdapter( this.getPartitionId(), sinkAdapter.getSinks()[0] );
+                } else {
+                    // otherwise, we use the lighter synchronous propagator
+                    this.sink = new SingleLeftTupleSinkAdapter( this.getPartitionId(), sinkAdapter.getSinks()[0] );
+                }
             }
         }
     }
