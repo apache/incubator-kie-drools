@@ -36,6 +36,7 @@ public abstract class BaseNode
 
     protected int id;
     protected RuleBasePartitionId partitionId;
+    protected boolean partitionsEnabled;
 
     public BaseNode() {
 
@@ -47,17 +48,23 @@ public abstract class BaseNode
      * @param id
      *      The unique id
      */
-    public BaseNode(final int id) {
+    public BaseNode(final int id, final RuleBasePartitionId partitionId, final boolean partitionsEnabled ) {
         super();
         this.id = id;
+        this.partitionId = partitionId;
+        this.partitionsEnabled = partitionsEnabled;
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         id  = in.readInt();
+        partitionId = (RuleBasePartitionId) in.readObject();
+        partitionsEnabled = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeInt(id);
+        out.writeObject( partitionId );
+        out.writeBoolean( partitionsEnabled );
     }
 
     /* (non-Javadoc)

@@ -26,6 +26,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.SingleBetaConstraints;
 import org.drools.reteoo.FromNode.FromMemory;
+import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Declaration;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Pattern;
@@ -42,10 +43,15 @@ public class FromNodeTest extends TestCase {
     EqualityEvaluatorsDefinition equals = new EqualityEvaluatorsDefinition();
 
     ClassFieldAccessorStore store = new ClassFieldAccessorStore();
+    private ReteooRuleBase ruleBase;
+    private BuildContext buildContext;
 
     protected void setUp() throws Exception {
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store.setEagerWire( true );
+
+        ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
+        buildContext = new BuildContext( ruleBase, new ReteooBuilder.IdGenerator() );
     }
 
     public void testAlphaNode() {
@@ -54,8 +60,8 @@ public class FromNodeTest extends TestCase {
                                                                        null,
                                                                        null,
                                                                        null );
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
-                                                                           (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
+        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1, ruleBase );
+
         final ClassFieldReader extractor = store.getReader( Cheese.class,
                                                                   "type",
                                                                   getClass().getClassLoader() );
@@ -79,7 +85,8 @@ public class FromNodeTest extends TestCase {
                                             null,
                                             new AlphaNodeFieldConstraint[]{constraint},
                                             null,
-                                            true );
+                                            true,
+                                            buildContext );
         final MockLeftTupleSink sink = new MockLeftTupleSink( 5 );
         from.addTupleSink( sink );
 
@@ -191,7 +198,8 @@ public class FromNodeTest extends TestCase {
                                             null,
                                             new AlphaNodeFieldConstraint[0],
                                             betaConstraints,
-                                            true );
+                                            true,
+                                            buildContext );
         final MockLeftTupleSink sink = new MockLeftTupleSink( 5 );
         from.addTupleSink( sink );
 
@@ -286,7 +294,8 @@ public class FromNodeTest extends TestCase {
                                             null,
                                             new AlphaNodeFieldConstraint[]{constraint},
                                             null,
-                                            true );
+                                            true,
+                                            buildContext );
         final MockLeftTupleSink sink = new MockLeftTupleSink( 5 );
         from.addTupleSink( sink );
 

@@ -18,6 +18,7 @@ package org.drools.common;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.List;
 
 import org.drools.FactException;
 import org.drools.FactHandle;
@@ -128,4 +129,10 @@ public interface InternalRuleBase
      * @return
      */
     public RuleBasePartitionId createNewPartitionId();
+
+    /**
+     * Return the list of Partition IDs for this rulebase
+     * @return
+     */
+    List<RuleBasePartitionId> getPartitionIds();
 }

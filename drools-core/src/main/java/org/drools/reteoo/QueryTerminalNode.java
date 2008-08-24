@@ -22,10 +22,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 
 import org.drools.RuleBaseConfiguration;
-import org.drools.common.BaseNode;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.common.NodeMemory;
-import org.drools.common.PropagationContextImpl;
+import org.drools.reteoo.builder.BuildContext;
+import org.drools.common.*;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
 import org.drools.spi.PropagationContext;
@@ -70,18 +68,22 @@ public final class QueryTerminalNode extends BaseNode
     }
 
     /**
-     * Construct.
+     * Constructor
      *
-     * @param inputSource
-     *            The parent tuple source.
-     * @param rule
-     *            The rule.
+     * @param id node ID
+     * @param source the tuple source for this node
+     * @param rule the rule this node belongs to
+     * @param subrule the subrule this node belongs to
+     * @param context the current build context
      */
     public QueryTerminalNode(final int id,
                              final LeftTupleSource source,
                              final Rule rule,
-                             final GroupElement subrule) {
-        super( id );
+                             final GroupElement subrule,
+                             final BuildContext context ) {
+        super( id,
+               context.getPartitionId(),
+               context.getRuleBase().getConfiguration().isPartitionsEnabled() );
         this.rule = rule;
         this.subrule = subrule;
         this.tupleSource = source;

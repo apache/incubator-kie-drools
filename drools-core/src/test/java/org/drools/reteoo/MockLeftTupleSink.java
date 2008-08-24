@@ -26,6 +26,7 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
+import org.drools.common.RuleBasePartitionId;
 import org.drools.spi.PropagationContext;
 
 public class MockLeftTupleSink extends LeftTupleSource
@@ -43,11 +44,11 @@ public class MockLeftTupleSink extends LeftTupleSource
     private LeftTupleSinkNode     nextTupleSinkNode;
 
     public MockLeftTupleSink() {
-        super( 0 );
+        super( 0, RuleBasePartitionId.MAIN_PARTITION, false );
     }
 
     public MockLeftTupleSink(final int id) {
-        super( id );
+        super( id, RuleBasePartitionId.MAIN_PARTITION, false );
     }
 
     public void assertLeftTuple(final LeftTuple tuple,

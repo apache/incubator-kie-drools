@@ -91,7 +91,9 @@ public class EvalConditionNode extends LeftTupleSource
                              final LeftTupleSource tupleSource,
                              final EvalCondition eval,
                              final BuildContext context) {
-        super( id );
+        super( id,
+               context.getPartitionId(),
+               context.getRuleBase().getConfiguration().isPartitionsEnabled() );
         this.condition = eval;
         this.tupleSource = tupleSource;
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();

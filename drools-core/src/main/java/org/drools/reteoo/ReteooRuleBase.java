@@ -29,10 +29,7 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
 import org.drools.StatelessSession;
-import org.drools.common.AbstractRuleBase;
-import org.drools.common.DefaultFactHandle;
-import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalWorkingMemory;
+import org.drools.common.*;
 import org.drools.concurrent.CommandExecutor;
 import org.drools.concurrent.ExecutorService;
 import org.drools.event.RuleBaseEventListener;
@@ -138,6 +135,8 @@ public class ReteooRuleBase extends AbstractRuleBase {
 
         // always add the default entry point
         EntryPointNode epn = new EntryPointNode( this.reteooBuilder.getIdGenerator().getNextId(),
+                                                 RuleBasePartitionId.MAIN_PARTITION,
+                                                 this.config.isPartitionsEnabled(),
                                                  this.rete,
                                                  EntryPoint.DEFAULT );
         epn.attach();

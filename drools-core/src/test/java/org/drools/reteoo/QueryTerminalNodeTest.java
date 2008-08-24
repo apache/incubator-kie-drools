@@ -136,7 +136,8 @@ public class QueryTerminalNodeTest extends TestCase {
         final QueryTerminalNode queryNode = new QueryTerminalNode( this.buildContext.getNextId(),
                                                                    joinNode,
                                                                    query,
-                                                                   query.getLhs() );
+                                                                   query.getLhs(),
+                                                                   buildContext );
 
         queryNode.attach();
 

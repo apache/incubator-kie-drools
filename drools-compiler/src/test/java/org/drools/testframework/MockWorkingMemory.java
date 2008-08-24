@@ -18,14 +18,7 @@ import org.drools.FactHandle;
 import org.drools.ObjectFilter;
 import org.drools.QueryResults;
 import org.drools.RuleBase;
-import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalRuleBase;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.common.NodeMemory;
-import org.drools.common.ObjectStore;
-import org.drools.common.ObjectTypeConfigurationRegistry;
-import org.drools.common.TruthMaintenanceSystem;
-import org.drools.common.WorkingMemoryAction;
+import org.drools.common.*;
 import org.drools.concurrent.ExecutorService;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.AgendaEventSupport;
@@ -41,6 +34,7 @@ import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.timer.TimerManager;
 import org.drools.reteoo.LIANodePropagation;
 import org.drools.reteoo.ObjectTypeConf;
+import org.drools.reteoo.PartitionTaskManager;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.rule.TimeMachine;
@@ -56,7 +50,7 @@ import org.drools.time.TimerService;
 import org.drools.util.ObjectHashMap;
 
 public class MockWorkingMemory implements InternalWorkingMemory {
-
+                
 	List<Object> facts = new ArrayList<Object>();
 	AgendaEventListener agendaEventListener;
 	TimeMachine timeMachine = new TimeMachine();
@@ -534,6 +528,10 @@ public class MockWorkingMemory implements InternalWorkingMemory {
     public TimerService getTimerService() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    public PartitionTaskManager getPartitionManager( RuleBasePartitionId partitionId ) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public SessionClock getSessionClock() {

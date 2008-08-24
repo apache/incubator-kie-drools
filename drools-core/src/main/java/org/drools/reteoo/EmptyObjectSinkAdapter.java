@@ -3,34 +3,44 @@ package org.drools.reteoo;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.BaseNode;
+import org.drools.common.RuleBasePartitionId;
 import org.drools.spi.PropagationContext;
 
 import java.io.ObjectOutput;
 import java.io.IOException;
 import java.io.ObjectInput;
 
-public class EmptyObjectSinkAdapter
-    implements
-    ObjectSinkPropagator {
+public class EmptyObjectSinkAdapter extends AbstractObjectSinkAdapter {
 
     private static final long                   serialVersionUID = -631743913176779720L;
 
-    private static final EmptyObjectSinkAdapter instance         = new EmptyObjectSinkAdapter();
+    private static final EmptyObjectSinkAdapter INSTANCE = new EmptyObjectSinkAdapter();
 
     private static final ObjectSink[]           SINK_LIST        = new ObjectSink[0];
 
     public static EmptyObjectSinkAdapter getInstance() {
-        return instance;
+        return INSTANCE;
     }
 
     public EmptyObjectSinkAdapter() {
+        super( null );
+    }
+
+    public EmptyObjectSinkAdapter( RuleBasePartitionId partitionId ) {
+        super( partitionId );
     }
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
+        super.readExternal( in );
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal( out );
+    }
+
+    public RuleBasePartitionId getPartitionId() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public void propagateAssertObject(final InternalFactHandle factHandle,

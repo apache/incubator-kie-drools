@@ -60,6 +60,12 @@ public class ConcurrentNodeMemories implements NodeMemories {
 
     /**
      * @inheritDoc
+     *
+     * The implementation tries to delay locking as much as possible, by running
+     * some potentialy unsafe opperations out of the critical session. In case it
+     * fails the checks, it will move into the critical sessions and re-check everything
+     * before effectively doing any change on data structures. 
+     *
      * @see org.drools.common.NodeMemories#getNodeMemory(org.drools.common.NodeMemory)
      */
     public Object getNodeMemory( NodeMemory node ) {
@@ -75,6 +81,14 @@ public class ConcurrentNodeMemories implements NodeMemories {
         return memory;
     }
 
+
+    /**
+     * Checks if a memory does not exists for the given node and
+     * creates it.
+     * 
+     * @param node
+     * @return
+     */
     private Object createNodeMemory( NodeMemory node ) {
         try {
             this.lock.lock();

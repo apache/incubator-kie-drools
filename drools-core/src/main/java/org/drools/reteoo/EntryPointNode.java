@@ -27,12 +27,7 @@ import java.util.Map;
 
 import org.drools.WorkingMemoryEntryPoint;
 import org.drools.base.ShadowProxy;
-import org.drools.common.BaseNode;
-import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.common.InternalWorkingMemoryEntryPoint;
-import org.drools.common.NodeMemory;
-import org.drools.common.PropagationContextImpl;
+import org.drools.common.*;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.EntryPoint;
 import org.drools.spi.ObjectType;
@@ -87,14 +82,20 @@ public class EntryPointNode extends ObjectSource
                           final ObjectSource objectSource,
                           final BuildContext context) {
         this( id,
+              context.getPartitionId(),
+              context.getRuleBase().getConfiguration().isPartitionsEnabled(),
               objectSource,
               context.getCurrentEntryPoint() ); // irrelevant for this node, since it overrides sink management
     }
 
     public EntryPointNode(final int id,
+                          final RuleBasePartitionId partitionId,
+                          final boolean partitionsEnabled,
                           final ObjectSource objectSource,
                           final EntryPoint entryPoint) {
         super( id,
+               partitionId,
+               partitionsEnabled,
                objectSource,
                999 ); // irrelevant for this node, since it overrides sink management
         this.entryPoint = entryPoint;

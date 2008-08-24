@@ -16,21 +16,14 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-import java.io.Serializable;
 import java.io.Externalizable;
-import java.io.ObjectOutput;
 import java.io.IOException;
 import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.base.ClassObjectType;
-import org.drools.common.AbstractRuleBase;
-import org.drools.common.BaseNode;
-import org.drools.common.DroolsObjectInputStream;
-import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.common.NodeMemory;
-import org.drools.common.PropagationContextImpl;
+import org.drools.common.*;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Declaration;
 import org.drools.rule.EntryPoint;
@@ -38,8 +31,6 @@ import org.drools.rule.EvalCondition;
 import org.drools.spi.Constraint;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
-import org.drools.util.FactEntry;
-import org.drools.util.RightTupleList;
 import org.drools.util.Iterator;
 import org.drools.util.ObjectHashSet;
 import org.drools.util.ObjectHashSet.ObjectEntry;
@@ -104,6 +95,8 @@ public class ObjectTypeNode extends ObjectSource
                           final ObjectType objectType,
                           final BuildContext context) {
         super( id,
+               context.getPartitionId(),
+               context.getRuleBase().getConfiguration().isPartitionsEnabled(),
                source,
                context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold() );
         this.objectType = objectType;

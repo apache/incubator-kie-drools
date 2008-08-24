@@ -20,6 +20,7 @@ import junit.framework.TestCase;
 
 import org.drools.common.BaseNode;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.RuleBasePartitionId;
 import org.drools.spi.PropagationContext;
 
 public class BaseNodeTest extends TestCase {
@@ -44,7 +45,7 @@ public class BaseNodeTest extends TestCase {
         }
 
         public MockBaseNode(final int id) {
-            super( id );
+            super( id, RuleBasePartitionId.MAIN_PARTITION, false );
         }
 
         public void ruleAttached() {

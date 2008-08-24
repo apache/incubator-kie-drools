@@ -30,7 +30,7 @@ public final class RuleBasePartitionId implements Serializable {
 
     private final String                    id;
 
-    public RuleBasePartitionId(String id) {
+    public RuleBasePartitionId( final String id ) {
         this.id = id;
     }
 

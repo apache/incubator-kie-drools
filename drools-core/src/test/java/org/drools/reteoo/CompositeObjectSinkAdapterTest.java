@@ -19,6 +19,7 @@ import org.drools.base.field.ObjectFieldImpl;
 import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.RuleBasePartitionId;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Behavior;
 import org.drools.rule.LiteralConstraint;
@@ -550,6 +551,8 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
                      final LeftTupleSource leftInput,
                      final ObjectSource rightInput) {
             super( id,
+                   RuleBasePartitionId.MAIN_PARTITION,
+                   false,
                    leftInput,
                    rightInput,
                    EmptyBetaConstraints.getInstance(),

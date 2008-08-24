@@ -23,11 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.RuleBaseConfiguration;
-import org.drools.common.BaseNode;
-import org.drools.common.BetaConstraints;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.common.NodeMemory;
-import org.drools.common.PropagationContextImpl;
+import org.drools.common.*;
 import org.drools.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.reteoo.CollectNode.CollectMemory;
 import org.drools.rule.Behavior;
@@ -96,11 +92,15 @@ public abstract class BetaNode extends LeftTupleSource
      *            The right input <code>ObjectSource</code>.
      */
     BetaNode(final int id,
+             final RuleBasePartitionId partitionId,
+             final boolean partitionsEnabled,
              final LeftTupleSource leftInput,
              final ObjectSource rightInput,
              final BetaConstraints constraints,
              final Behavior[] behaviors) {
-        super( id );
+        super( id,
+               partitionId,
+               partitionsEnabled );
         this.leftInput = leftInput;
         this.rightInput = rightInput;
         this.constraints = constraints;
