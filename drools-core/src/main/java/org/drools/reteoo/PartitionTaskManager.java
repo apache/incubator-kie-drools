@@ -312,7 +312,7 @@ public class PartitionTaskManager {
         public abstract void execute( final InternalWorkingMemory workingMemory );
     }
 
-    static class FactAssertAction extends FactAction {
+    public static class FactAssertAction extends FactAction {
         private static final long serialVersionUID = -8478488926430845209L;
 
         FactAssertAction() {
@@ -328,4 +328,67 @@ public class PartitionTaskManager {
         }
     }
 
+    /**
+     * An abstract super class for all leftTuple-related actions
+     */
+    public static abstract class LeftTupleAction implements Action, Externalizable {
+
+        protected LeftTuple          leftTuple;
+        protected PropagationContext context;
+        protected LeftTupleSink      sink;
+
+        public LeftTupleAction() {
+        }
+
+        public LeftTupleAction( final LeftTuple leftTuple, final PropagationContext context,
+                           final LeftTupleSink sink ) {
+            super();
+            this.leftTuple = leftTuple;
+            this.context = context;
+            this.sink = sink;
+        }
+
+        public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException {
+            leftTuple = (LeftTuple) in.readObject();
+            context = (PropagationContext) in.readObject();
+            sink = (LeftTupleSink) in.readObject();
+        }
+
+        public void writeExternal( ObjectOutput out ) throws IOException {
+            out.writeObject( leftTuple );
+            out.writeObject( context );
+            out.writeObject( sink );
+        }
+
+        public abstract void execute( final InternalWorkingMemory workingMemory );
+    }
+
+    public static class LeftTupleAssertAction extends LeftTupleAction {
+
+        public LeftTupleAssertAction() {
+        }
+        
+        public LeftTupleAssertAction( LeftTuple leftTuple, PropagationContext context, LeftTupleSink sink ) {
+            super(leftTuple, context, sink );
+        }
+
+        public void execute( InternalWorkingMemory workingMemory ) {
+            this.sink.assertLeftTuple( leftTuple, context, workingMemory );
+        }
+    }
+
+
+    public static class LeftTupleRetractAction extends LeftTupleAction {
+        
+        public LeftTupleRetractAction() {
+        }
+
+        public LeftTupleRetractAction( LeftTuple leftTuple, PropagationContext context, LeftTupleSink sink ) {
+            super(leftTuple, context, sink );
+        }
+
+        public void execute( InternalWorkingMemory workingMemory ) {
+            this.sink.assertLeftTuple( leftTuple, context, workingMemory );
+        }
+    }
 }

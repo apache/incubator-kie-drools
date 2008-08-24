@@ -23,7 +23,7 @@ public class EmptyObjectSinkAdapter extends AbstractObjectSinkAdapter {
     }
 
     public EmptyObjectSinkAdapter() {
-        super( null );
+        super( RuleBasePartitionId.MAIN_PARTITION );
     }
 
     public EmptyObjectSinkAdapter( RuleBasePartitionId partitionId ) {
