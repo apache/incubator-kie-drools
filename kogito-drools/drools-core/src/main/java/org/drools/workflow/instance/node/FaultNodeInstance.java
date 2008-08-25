@@ -46,6 +46,7 @@ public class FaultNodeInstance extends NodeInstanceImpl {
         }
         String faultName = getFaultName();
         ExceptionScopeInstance exceptionScopeInstance = getExceptionScopeInstance(faultName);
+        getNodeInstanceContainer().removeNodeInstance(this);
         if (exceptionScopeInstance != null) {
         	handleException(faultName, exceptionScopeInstance);
         } else {

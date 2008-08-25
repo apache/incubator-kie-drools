@@ -140,7 +140,7 @@ public class PackageDescr extends BaseDescr implements Namespaceable {
         this.attributes.add( attribute );
     }
 
-    public List getAttributes() {
+    public List<AttributeDescr> getAttributes() {
         return this.attributes;
     }
 
@@ -162,7 +162,7 @@ public class PackageDescr extends BaseDescr implements Namespaceable {
         this.functions.add( function );
     }
 
-    public List getFunctions() {
+    public List<FunctionDescr> getFunctions() {
         return this.functions;
     }
 
@@ -187,7 +187,7 @@ public class PackageDescr extends BaseDescr implements Namespaceable {
         this.rules.add( rule );
     }
 
-    public List getRules() {
+    public List<RuleDescr> getRules() {
         return this.rules;
     }
 

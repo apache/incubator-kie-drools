@@ -59,7 +59,6 @@ import org.drools.event.RuleFlowEventSupport;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.event.WorkingMemoryEventSupport;
 import org.drools.process.core.Process;
-import org.drools.process.core.context.variable.Variable;
 import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.ProcessInstanceFactory;
@@ -68,7 +67,13 @@ import org.drools.process.instance.ProcessInstanceManager;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.process.instance.timer.TimerManager;
-import org.drools.reteoo.*;
+import org.drools.reteoo.EntryPointNode;
+import org.drools.reteoo.InitialFactHandle;
+import org.drools.reteoo.InitialFactHandleDummyObject;
+import org.drools.reteoo.LIANodePropagation;
+import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.ObjectTypeConf;
+import org.drools.reteoo.PartitionTaskManager;
 import org.drools.rule.Declaration;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
@@ -1510,12 +1515,6 @@ public abstract class AbstractWorkingMemory
         // TODO: should be part of processInstanceImpl?
         VariableScope variableScope = (VariableScope) process.getDefaultContext( VariableScope.VARIABLE_SCOPE );
         VariableScopeInstance variableScopeInstance = (VariableScopeInstance) processInstance.getContextInstance( VariableScope.VARIABLE_SCOPE );
-        if ( variableScope != null ) {
-            for ( Variable variable : variableScope.getVariables() ) {
-                variableScopeInstance.setVariable( variable.getName(),
-                                                   variable.getValue() );
-            }
-        }
         // set input parameters
         if ( parameters != null ) {
             if ( variableScope != null ) {

@@ -57,8 +57,7 @@ public class ForEachNode extends CompositeNode {
         compositeNode.setMetaData("hidden", true);
         super.addNode(compositeNode);
         VariableScope variableScope = new VariableScope();
-        variableScope.setContextContainer(compositeNode);
-        compositeNode.setContext(VariableScope.VARIABLE_SCOPE, variableScope);
+        compositeNode.addContext(variableScope);
         compositeNode.setDefaultContext(variableScope);
         // Join
         ForEachJoinNode join = new ForEachJoinNode();
@@ -82,8 +81,8 @@ public class ForEachNode extends CompositeNode {
         return variableName;
     }
     
-    public CompositeNode getCompositeNode() {
-        return (CompositeNode) super.getNode(2); 
+    public CompositeContextNode getCompositeNode() {
+        return (CompositeContextNode) super.getNode(2); 
     }
     
     public void addNode(Node node) {
@@ -145,7 +144,7 @@ public class ForEachNode extends CompositeNode {
         variable.setName(variableName);
         variable.setType(type);
         variables.add(variable);
-        ((VariableScope) getCompositeNode().getContext(VariableScope.VARIABLE_SCOPE)).setVariables(variables);
+        ((VariableScope) getCompositeNode().getDefaultContext(VariableScope.VARIABLE_SCOPE)).setVariables(variables);
     }
     
     public String getCollectionExpression() {

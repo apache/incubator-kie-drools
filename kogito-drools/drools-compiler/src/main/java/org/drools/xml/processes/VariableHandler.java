@@ -4,10 +4,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import org.drools.process.core.Process;
+import org.drools.process.core.ContextContainer;
 import org.drools.process.core.context.variable.Variable;
 import org.drools.process.core.context.variable.VariableScope;
-import org.drools.workflow.core.impl.WorkflowProcessImpl;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
@@ -21,7 +20,7 @@ public class VariableHandler extends BaseAbstractHandler
     public VariableHandler() {
         if ( (this.validParents == null) && (this.validPeers == null) ) {
             this.validParents = new HashSet<Class<?>>();
-            this.validParents.add( Process.class );
+            this.validParents.add( ContextContainer.class );
 
             this.validPeers = new HashSet<Class<?>>();         
             this.validPeers.add( null );            
@@ -38,12 +37,12 @@ public class VariableHandler extends BaseAbstractHandler
                         final ExtensibleXmlParser parser) throws SAXException {
         parser.startElementBuilder( localName,
                                     attrs );
-        WorkflowProcessImpl process = (WorkflowProcessImpl) parser.getParent();
+        ContextContainer contextContainer = (ContextContainer) parser.getParent();
         final String name = attrs.getValue("name");
         emptyAttributeCheck(localName, "name", name, parser);
         
         VariableScope variableScope = (VariableScope) 
-            process.getDefaultContext(VariableScope.VARIABLE_SCOPE);
+            contextContainer.getDefaultContext(VariableScope.VARIABLE_SCOPE);
         Variable variable = new Variable();
         if (variableScope != null) {
             variable.setName(name);

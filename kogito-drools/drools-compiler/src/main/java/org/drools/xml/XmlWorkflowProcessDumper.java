@@ -109,7 +109,7 @@ public class XmlWorkflowProcessDumper {
         }
     }
     
-    private void visitVariables(List<Variable> variables, StringBuffer xmlDump) {
+    public static void visitVariables(List<Variable> variables, StringBuffer xmlDump) {
         if (variables != null && variables.size() > 0) {
             xmlDump.append("    <variables>" + EOL);
             for (Variable variable: variables) {

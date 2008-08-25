@@ -4,15 +4,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.process.core.context.variable.Variable;
+import org.drools.process.core.context.variable.VariableScope;
 import org.drools.workflow.core.Connection;
 import org.drools.workflow.core.Node;
+import org.drools.workflow.core.node.CompositeContextNode;
 import org.drools.workflow.core.node.CompositeNode;
 import org.drools.xml.XmlRuleFlowProcessDumper;
+import org.drools.xml.XmlWorkflowProcessDumper;
 
 public class CompositeNodeHandler extends AbstractNodeHandler {
 
     protected Node createNode() {
-        return new CompositeNode();
+        CompositeContextNode result = new CompositeContextNode();
+        VariableScope variableScope = new VariableScope();
+        result.addContext(variableScope);
+        result.setDefaultContext(variableScope);
+        return result;
     }
 
     public Class generateNodeFor() {
@@ -28,6 +36,12 @@ public class CompositeNodeHandler extends AbstractNodeHandler {
         CompositeNode compositeNode = (CompositeNode) node;
         writeAttributes(compositeNode, xmlDump, includeMeta);
         xmlDump.append(">" + EOL);
+        if (compositeNode instanceof CompositeContextNode) {
+        	List<Variable> variables = ((VariableScope)
+    			((CompositeContextNode) compositeNode)
+    				.getDefaultContext(VariableScope.VARIABLE_SCOPE)).getVariables();
+            XmlWorkflowProcessDumper.visitVariables(variables, xmlDump);
+        }
         List<Node> subNodes = getSubNodes(compositeNode);
         xmlDump.append("      <nodes>" + EOL);
         for (Node subNode: subNodes) {

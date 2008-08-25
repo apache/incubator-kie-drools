@@ -134,7 +134,7 @@ public class RuleDescr extends BaseDescr implements Dialectable, Namespaceable {
         return this.documentation;
     }
 
-    public List getAttributes() {
+    public List<AttributeDescr> getAttributes() {
         return this.attributes;
     }
 

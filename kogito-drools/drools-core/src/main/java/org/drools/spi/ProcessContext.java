@@ -24,4 +24,14 @@ public class ProcessContext {
     	return variableScope.getVariable(variableName);
     }
     
+    public void setVariable(String variableName, Object value) {
+    	VariableScopeInstance variableScope = (VariableScopeInstance) nodeInstance.resolveContextInstance(VariableScope.VARIABLE_SCOPE, variableName);
+    	if (variableScope == null) {
+    		System.err.println("Could not find variable " + variableName);
+    		System.err.println("Continuing without setting value");
+    		return;
+    	}
+    	variableScope.setVariable(variableName, value);
+    }
+    
 }

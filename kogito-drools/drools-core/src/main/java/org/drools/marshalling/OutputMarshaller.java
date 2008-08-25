@@ -26,9 +26,11 @@ import org.drools.common.LogicalDependency;
 import org.drools.common.ObjectStore;
 import org.drools.common.RuleFlowGroupImpl;
 import org.drools.common.WorkingMemoryAction;
+import org.drools.process.core.context.swimlane.SwimlaneContext;
 import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.WorkItem;
+import org.drools.process.instance.context.swimlane.SwimlaneContextInstance;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTupleSink;
@@ -47,6 +49,10 @@ import org.drools.spi.RuleFlowGroup;
 import org.drools.util.ObjectHashMap;
 import org.drools.util.ObjectHashSet;
 import org.drools.workflow.instance.NodeInstance;
+import org.drools.workflow.instance.node.CompositeContextNodeInstance;
+import org.drools.workflow.instance.node.CompositeNodeInstance;
+import org.drools.workflow.instance.node.ForEachNodeInstance;
+import org.drools.workflow.instance.node.HumanTaskNodeInstance;
 import org.drools.workflow.instance.node.JoinInstance;
 import org.drools.workflow.instance.node.MilestoneNodeInstance;
 import org.drools.workflow.instance.node.RuleSetNodeInstance;
@@ -633,6 +639,14 @@ public class OutputMarshaller {
             stream.writeUTF( entry.getKey() );
             stream.writeObject( entry.getValue() );
         }
+        
+        SwimlaneContextInstance swimlaneContextInstance = (SwimlaneContextInstance) processInstance.getContextInstance( SwimlaneContext.SWIMLANE_SCOPE );
+        Map<String, String> swimlaneActors = swimlaneContextInstance.getSwimlaneActors();
+        stream.writeInt( swimlaneActors.size() );
+        for ( Map.Entry<String, String> entry : swimlaneActors.entrySet() ) {
+            stream.writeUTF( entry.getKey() );
+            stream.writeUTF( entry.getValue() );
+        }
 
         for ( NodeInstance nodeInstance : processInstance.getNodeInstances() ) {
             stream.writeShort( PersisterEnums.NODE_INSTANCE );
@@ -649,6 +663,9 @@ public class OutputMarshaller {
         stream.writeLong( nodeInstance.getNodeId() );
         if ( nodeInstance instanceof RuleSetNodeInstance ) {
             stream.writeShort( PersisterEnums.RULE_SET_NODE_INSTANCE );
+        } else if ( nodeInstance instanceof HumanTaskNodeInstance ) {
+            stream.writeShort( PersisterEnums.HUMAN_TASK_NODE_INSTANCE );
+            stream.writeLong( ((HumanTaskNodeInstance) nodeInstance).getWorkItem().getId() );
         } else if ( nodeInstance instanceof WorkItemNodeInstance ) {
             stream.writeShort( PersisterEnums.WORK_ITEM_NODE_INSTANCE );
             stream.writeLong( ((WorkItemNodeInstance) nodeInstance).getWorkItem().getId() );
@@ -668,7 +685,36 @@ public class OutputMarshaller {
                 stream.writeLong( entry.getKey() );
                 stream.writeInt( entry.getValue() );
             }
+        } else if ( nodeInstance instanceof CompositeContextNodeInstance ) {
+            stream.writeShort( PersisterEnums.COMPOSITE_NODE_INSTANCE );
+            CompositeContextNodeInstance compositeNodeInstance = 
+            	(CompositeContextNodeInstance) nodeInstance;
+            VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
+            	compositeNodeInstance.getContextInstance( VariableScope.VARIABLE_SCOPE );
+            Map<String, Object> variables = variableScopeInstance.getVariables();
+            stream.writeInt( variables.size() );
+            for ( Map.Entry<String, Object> entry : variables.entrySet() ) {
+                stream.writeUTF( entry.getKey() );
+                stream.writeObject( entry.getValue() );
+            }
+            for ( NodeInstance subNodeInstance : compositeNodeInstance.getNodeInstances() ) {
+                stream.writeShort( PersisterEnums.NODE_INSTANCE );
+                writeNodeInstance( context, subNodeInstance );
+            }
+            stream.writeShort( PersisterEnums.END );
+        } else if ( nodeInstance instanceof ForEachNodeInstance ) {
+            stream.writeShort( PersisterEnums.FOR_EACH_NODE_INSTANCE );
+            ForEachNodeInstance forEachNodeInstance = (ForEachNodeInstance) nodeInstance;
+            for ( NodeInstance subNodeInstance : forEachNodeInstance.getNodeInstances() ) {
+            	if (subNodeInstance instanceof CompositeContextNodeInstance) {
+            		stream.writeShort( PersisterEnums.NODE_INSTANCE );
+            		writeNodeInstance( context, subNodeInstance );
+            	}
+            }
+            stream.writeShort( PersisterEnums.END );
         } else {
+        	// TODO ForEachNodeInstance
+        	// TODO timer manager
             throw new IllegalArgumentException( "Unknown node instance type: " + nodeInstance );
         }
     }

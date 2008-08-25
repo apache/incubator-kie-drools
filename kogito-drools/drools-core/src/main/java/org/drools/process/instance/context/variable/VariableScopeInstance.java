@@ -4,7 +4,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.process.core.context.variable.Variable;
 import org.drools.process.core.context.variable.VariableScope;
+import org.drools.process.instance.ContextInstanceContainer;
 import org.drools.process.instance.context.AbstractContextInstance;
 
 /**
@@ -35,6 +37,17 @@ public class VariableScopeInstance extends AbstractContextInstance {
                 "The name of a variable may not be null!");
         }
         variables.put(name, value);
+    }
+    
+    public VariableScope getVariableScope() {
+    	return (VariableScope) getContext();
+    }
+    
+    public void setContextInstanceContainer(ContextInstanceContainer contextInstanceContainer) {
+    	super.setContextInstanceContainer(contextInstanceContainer);
+    	for (Variable variable : getVariableScope().getVariables()) {
+            setVariable(variable.getName(), variable.getValue());
+        }
     }
 
 }
