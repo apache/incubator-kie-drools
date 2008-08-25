@@ -329,6 +329,7 @@
 	<xs:element name="composite">
 		<xs:complexType>
 			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="drools:variables"/>
 				<xs:element ref="drools:nodes"/>
 				<xs:element ref="drools:connections"/>
 				<xs:element ref="drools:in-ports"/>

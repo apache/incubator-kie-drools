@@ -35,5 +35,8 @@ public class PersisterEnums {
     public static final short MILESTONE_NODE_INSTANCE   = 23;
     public static final short TIMER_NODE_INSTANCE       = 24;
     public static final short JOIN_NODE_INSTANCE        = 25;
+    public static final short COMPOSITE_NODE_INSTANCE   = 26;
+    public static final short HUMAN_TASK_NODE_INSTANCE  = 27;
+    public static final short FOR_EACH_NODE_INSTANCE    = 28;
 
 }

@@ -19,30 +19,29 @@ public class HumanTaskNodeInstance extends WorkItemNodeInstance {
     
     protected WorkItem createWorkItem(WorkItemNode workItemNode) {
         WorkItem workItem = super.createWorkItem(workItemNode);
-        String actorId = assignWorkItem();
+        String actorId = assignWorkItem(workItem);
         if (actorId != null) {
             ((WorkItemImpl) workItem).setParameter("ActorId", actorId);
         }
         return workItem;
     }
     
-    protected String assignWorkItem() {
+    protected String assignWorkItem(WorkItem workItem) {
         String actorId = null;
-        // if this human task node is part of a swim lane, check whether an actor
-        // has already been assigned to this swim lane
+        // if this human task node is part of a swimlane, check whether an actor
+        // has already been assigned to this swimlane
         String swimlaneName = getHumanTaskNode().getSwimlane();
         SwimlaneContextInstance swimlaneContextInstance = getSwimlaneContextInstance(swimlaneName);
         if (swimlaneContextInstance != null) {
             actorId = swimlaneContextInstance.getActorId(swimlaneName);
         }
+        // if no actor can be assigned based on the swimlane, check whether an
+        // actor is specified for this human task
         if (actorId == null) {
-            // if the actorId has not yet been assigned, check whether assigners are
-            // defined for this human task node
-            // TODO
-        }
-        if (actorId == null) {
-            // if the actorId has not yet been assigned, check whether assigners are
-            // defined for this swim lane
+        	actorId = (String) workItem.getParameter("ActorId");
+        	if (actorId != null) {
+        		swimlaneContextInstance.setActorId(swimlaneName, actorId);
+        	}
         }
         return actorId;
     }

@@ -23,9 +23,11 @@ import org.drools.common.PropagationContextImpl;
 import org.drools.common.RuleFlowGroupImpl;
 import org.drools.common.TruthMaintenanceSystem;
 import org.drools.concurrent.ExecutorService;
+import org.drools.process.core.context.swimlane.SwimlaneContext;
 import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.WorkItem;
+import org.drools.process.instance.context.swimlane.SwimlaneContextInstance;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.process.instance.impl.WorkItemImpl;
 import org.drools.reteoo.BetaMemory;
@@ -58,8 +60,12 @@ import org.drools.spi.PropagationContext;
 import org.drools.spi.RuleFlowGroup;
 import org.drools.util.ObjectHashSet;
 import org.drools.workflow.instance.NodeInstance;
+import org.drools.workflow.instance.NodeInstanceContainer;
 import org.drools.workflow.instance.impl.NodeInstanceImpl;
+import org.drools.workflow.instance.node.CompositeContextNodeInstance;
 import org.drools.workflow.instance.node.EventBasedNodeInstance;
+import org.drools.workflow.instance.node.ForEachNodeInstance;
+import org.drools.workflow.instance.node.HumanTaskNodeInstance;
 import org.drools.workflow.instance.node.JoinInstance;
 import org.drools.workflow.instance.node.MilestoneNodeInstance;
 import org.drools.workflow.instance.node.RuleSetNodeInstance;
@@ -348,7 +354,6 @@ public class InputMarshaller {
     public static void readLeftTuple(LeftTuple parentLeftTuple,
                                      MarshallerReaderContext context) throws IOException {
         ObjectInputStream stream = context.stream;
-        InternalRuleBase ruleBase = context.ruleBase;
         InternalWorkingMemory wm = context.wm;
         Map<Integer, BaseNode> sinks = context.sinks;
 
@@ -547,7 +552,6 @@ public class InputMarshaller {
     public static void readPropagationContext(MarshallerReaderContext context) throws IOException {
         ObjectInputStream stream = context.stream;
         InternalRuleBase ruleBase = context.ruleBase;
-        InternalWorkingMemory wm = context.wm;
 
         int type = stream.readInt();
 
@@ -631,8 +635,19 @@ public class InputMarshaller {
             }
         }
 
+        int nbSwimlanes = stream.readInt();
+        if ( nbSwimlanes > 0 ) {
+            SwimlaneContextInstance swimlaneContextInstance = (SwimlaneContextInstance) processInstance.getContextInstance( SwimlaneContext.SWIMLANE_SCOPE );
+            for ( int i = 0; i < nbSwimlanes; i++ ) {
+                String name = stream.readUTF();
+                String value = stream.readUTF();
+                swimlaneContextInstance.setActorId( name, value );
+            }
+        }
+
         while ( stream.readShort() == PersisterEnums.NODE_INSTANCE ) {
             readNodeInstance( context,
+            		          processInstance,
                               processInstance );
         }
 
@@ -644,6 +659,7 @@ public class InputMarshaller {
     }
 
     public static NodeInstance readNodeInstance(MarshallerReaderContext context,
+    											NodeInstanceContainer nodeInstanceContainer,
                                                 RuleFlowProcessInstance processInstance) throws IOException {
         ObjectInputStream stream = context.stream;
         NodeInstanceImpl nodeInstance = null;
@@ -653,6 +669,10 @@ public class InputMarshaller {
         switch ( nodeType ) {
             case PersisterEnums.RULE_SET_NODE_INSTANCE :
                 nodeInstance = new RuleSetNodeInstance();
+                break;
+            case PersisterEnums.HUMAN_TASK_NODE_INSTANCE :
+                nodeInstance = new HumanTaskNodeInstance();
+                ((HumanTaskNodeInstance) nodeInstance).internalSetWorkItemId( stream.readLong() );
                 break;
             case PersisterEnums.WORK_ITEM_NODE_INSTANCE :
                 nodeInstance = new WorkItemNodeInstance();
@@ -683,11 +703,44 @@ public class InputMarshaller {
                     ((JoinInstance) nodeInstance).internalSetTriggers( triggers );
                 }
                 break;
+            case PersisterEnums.COMPOSITE_NODE_INSTANCE :
+                nodeInstance = new CompositeContextNodeInstance();
+                int nbVariables = stream.readInt();
+                if ( nbVariables > 0 ) {
+                    VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
+                    	processInstance.getContextInstance( VariableScope.VARIABLE_SCOPE );
+                    for ( int i = 0; i < nbVariables; i++ ) {
+                        String name = stream.readUTF();
+                        try {
+                            Object value = stream.readObject();
+                            variableScopeInstance.setVariable( name, value );
+                        } catch ( ClassNotFoundException e ) {
+                            throw new IllegalArgumentException(
+                        		"Could not reload variable " + name );
+                        }
+                    }
+                }
+                while ( stream.readShort() == PersisterEnums.NODE_INSTANCE ) {
+                    readNodeInstance( 
+                		context, 
+                		(CompositeContextNodeInstance) nodeInstance, 
+                		processInstance );
+                }
+                break;
+            case PersisterEnums.FOR_EACH_NODE_INSTANCE :
+                nodeInstance = new ForEachNodeInstance();
+                while ( stream.readShort() == PersisterEnums.NODE_INSTANCE ) {
+                    readNodeInstance( 
+                		context, 
+                		(ForEachNodeInstance) nodeInstance, 
+                		processInstance );
+                }
+                break;
             default :
                 throw new IllegalArgumentException( "Unknown node type: " + nodeType );
         }
         nodeInstance.setNodeId( nodeId );
-        nodeInstance.setNodeInstanceContainer( processInstance );
+        nodeInstance.setNodeInstanceContainer( nodeInstanceContainer );
         nodeInstance.setProcessInstance( processInstance );
         nodeInstance.setId( id );
         if ( nodeInstance instanceof EventBasedNodeInstance ) {
