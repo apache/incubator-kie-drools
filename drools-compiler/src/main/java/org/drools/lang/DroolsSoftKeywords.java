@@ -50,4 +50,5 @@ public class DroolsSoftKeywords {
 	public static final String POINT = "point";
 	public static final String ACTION = "action";
 	public static final String REVERSE = "reverse";
+	public static final String RESULT = "result";
 }

@@ -92,6 +92,7 @@ tokens {
 	VK_FORALL;
 	VK_ACTION;
 	VK_REVERSE;
+	VK_RESULT;
 }
 
 @parser::header {
@@ -121,6 +122,10 @@ tokens {
 		t.setCharPositionInLine(tokenStartCharPositionInLine);
 		emit(t);
 		return t;
+	}
+
+	/** Overrided this method to not output mesages */
+	public void emitErrorMessage(String msg) {
 	}
 }
 
@@ -177,15 +182,7 @@ tokens {
 
 	private void emit(boolean forceEmit, int activeContext){
 		if (isEditorInterfaceEnabled) {
-			if (!forceEmit && activeContext == Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR){
-				if (input.LA(1) == EOF && input.get(input.index() - 1).getType() == WS){
-					getActiveSentence().addContent(activeContext);
-				}
-			} else if (!forceEmit && activeContext == Location.LOCATION_LHS_BEGIN_OF_CONDITION && getLastTokenOnList(getActiveSentence().getContent()).getType() == FROM) {
-				//
-			} else {
 				getActiveSentence().addContent(activeContext);
-			}
 		}
 	}
 	
@@ -363,6 +360,37 @@ tokens {
 		}
 		return sb.toString();
 	}
+	
+	/**
+	 * This methos is a copy from ANTLR base class (BaseRecognizer). 
+	 * We had to copy it just to remove a System.err.println() 
+	 * 
+	 */
+	public void recoverFromMismatchedToken(IntStream input,
+			RecognitionException e, int ttype, BitSet follow)
+			throws RecognitionException {
+		// if next token is what we are looking for then "delete" this token
+		if (input.LA(2) == ttype) {
+			reportError(e);
+			/*
+			 * System.err.println("recoverFromMismatchedToken deleting
+			 * "+input.LT(1)+ " since "+input.LT(2)+" is what we want");
+			 */
+			beginResync();
+			input.consume(); // simply delete extra token
+			endResync();
+			input.consume(); // move past ttype token as if all were ok
+			return;
+		}
+		if (!recoverFromMismatchedElement(input, e, follow)) {
+			throw e;
+		}
+	}
+	
+	/** Overrided this method to not output mesages */
+	public void emitErrorMessage(String msg) {
+	}
+	
 }
 
 compilation_unit
@@ -626,8 +654,8 @@ rule_attributes
 	;
 
 rule_attribute
-@init  { pushParaphrases(DroolsParaphraseTypes.RULE_ATTRIBUTE); }
-@after { paraphrases.pop(); }
+@init  { boolean isFailed = true; pushParaphrases(DroolsParaphraseTypes.RULE_ATTRIBUTE); }
+@after { paraphrases.pop(); isFailed = false; }
 	:	salience 
 	|	no_loop  
 	|	agenda_group  
@@ -641,6 +669,19 @@ rule_attribute
 	|	lock_on_active
 	|	dialect 
 	;
+finally { 
+	if (isEditorInterfaceEnabled && isFailed && input.LA(4) == EOF && input.LA(1) == ID && input.LA(2) == MISC && input.LA(3) == ID && validateLT(1, DroolsSoftKeywords.ACTIVATION) && validateLT(3, DroolsSoftKeywords.GROUP)) {
+		emit(input.LT(1), DroolsEditorType.KEYWORD);
+		emit(input.LT(2), DroolsEditorType.KEYWORD);
+		emit(input.LT(3), DroolsEditorType.KEYWORD);
+		input.consume();
+		input.consume();
+		input.consume();
+	} else if (isEditorInterfaceEnabled && isFailed && input.LA(2) == EOF && input.LA(1) == ID && validateLT(1, DroolsSoftKeywords.DIALECT)) {
+		emit(input.LT(1), DroolsEditorType.KEYWORD);
+		input.consume();
+	}
+}
 
 date_effective
 	:	date_effective_key^ STRING
@@ -864,33 +905,56 @@ accumulate_statement
 
 
 accumulate_init_clause
+@init  { boolean isFailed = true;	}
+@after { isFailed = false;	}
 	:	INIT {	emit($INIT, DroolsEditorType.KEYWORD);	}
 	{	emit(Location.LOCATION_LHS_FROM_ACCUMULATE_INIT);	}
-		pc1=paren_chunk cm1=COMMA? {	emit($cm1, DroolsEditorType.SYMBOL);	} 
+		pc1=accumulate_paren_chunk[Location.LOCATION_LHS_FROM_ACCUMULATE_INIT_INSIDE] cm1=COMMA? {	emit($cm1, DroolsEditorType.SYMBOL);	} 
 	{	emit(Location.LOCATION_LHS_FROM_ACCUMULATE_ACTION);	}
-		action_key pc2=paren_chunk cm2=COMMA? {	emit($cm2, DroolsEditorType.SYMBOL);	} 
+		action_key pc2=accumulate_paren_chunk[Location.LOCATION_LHS_FROM_ACCUMULATE_ACTION_INSIDE] cm2=COMMA? {	emit($cm2, DroolsEditorType.SYMBOL);	} 
 	{	emit(Location.LOCATION_LHS_FROM_ACCUMULATE_REVERSE);	}
 
-	( reverse_key pc3=paren_chunk cm3=COMMA? {	emit($cm3, DroolsEditorType.SYMBOL);	}
-	{	emit(Location.LOCATION_LHS_FROM_ACCUMULATE_RESULT);	} )?
+	( reverse_key pc3=accumulate_paren_chunk[Location.LOCATION_LHS_FROM_ACCUMULATE_REVERSE_INSIDE] cm3=COMMA? {	emit($cm3, DroolsEditorType.SYMBOL);	} )?
 	{	emit(Location.LOCATION_LHS_FROM_ACCUMULATE_RESULT);	}
-		RESULT {	emit($RESULT, DroolsEditorType.KEYWORD);	} pc4=paren_chunk
-	-> ^(VT_ACCUMULATE_INIT_CLAUSE ^(INIT $pc1) ^(action_key $pc2) ^(reverse_key $pc3)? ^(RESULT $pc4))
+		res1=result_key {	emit($res1.start, DroolsEditorType.KEYWORD);	} pc4=accumulate_paren_chunk[Location.LOCATION_LHS_FROM_ACCUMULATE_RESULT_INSIDE]
+	-> ^(VT_ACCUMULATE_INIT_CLAUSE ^(INIT $pc1) ^(action_key $pc2) ^(reverse_key $pc3)? ^(result_key $pc4))
 	;
-finally {
-	if (isEditorInterfaceEnabled && input.LA(1) == EOF) {
-		int lastPosition = getLastIntegerValue(getActiveSentence().getContent());
-		if (lastPosition == Location.LOCATION_LHS_FROM_ACCUMULATE_INIT) {
-			emit(true, Location.LOCATION_LHS_FROM_ACCUMULATE_INIT_INSIDE);
-		} else if (lastPosition == Location.LOCATION_LHS_FROM_ACCUMULATE_ACTION) {
-			emit(true, Location.LOCATION_LHS_FROM_ACCUMULATE_ACTION_INSIDE);
-		} else if (lastPosition == Location.LOCATION_LHS_FROM_ACCUMULATE_REVERSE) {
-			emit(true, Location.LOCATION_LHS_FROM_ACCUMULATE_REVERSE_INSIDE);
-		} else if (lastPosition == Location.LOCATION_LHS_FROM_ACCUMULATE_RESULT) {
-			emit(true, Location.LOCATION_LHS_FROM_ACCUMULATE_RESULT_INSIDE);
+finally { 
+	if (isEditorInterfaceEnabled && isFailed && input.LA(1) == ID && validateLT(1, DroolsSoftKeywords.RESULT)) {
+		emit(input.LT(1), DroolsEditorType.KEYWORD);
+		input.consume();
+		if (input.LA(1) == LEFT_PAREN){
+			input.consume();
+			emit(Location.LOCATION_LHS_FROM_ACCUMULATE_RESULT_INSIDE);
 		}
 	}
 }
+
+accumulate_paren_chunk[int locationType]
+@init{
+	String text = "";
+}	:	pc=accumulate_paren_chunk_data[false,$locationType] {text = $pc.text;} 
+	-> VT_PAREN_CHUNK[$pc.start,text]
+	;
+
+accumulate_paren_chunk_data[boolean isRecursive, int locationType]
+	:	lp1=LEFT_PAREN
+		{	if (!isRecursive) {
+				emit($lp1, DroolsEditorType.SYMBOL);
+				emit($locationType);
+			} else {
+				emit($lp1, DroolsEditorType.CODE_CHUNK);
+			}	
+		}
+			(any=~ ( LEFT_PAREN | RIGHT_PAREN ) { emit($any, DroolsEditorType.CODE_CHUNK); } | accumulate_paren_chunk_data[true,-1] )* 
+		rp1=RIGHT_PAREN
+		{	if (!isRecursive) {
+				emit($rp1, DroolsEditorType.SYMBOL);
+			} else {
+				emit($rp1, DroolsEditorType.CODE_CHUNK);
+			}	
+		}	
+	;
 
 accumulate_id_clause
 	:	ID {	emit($ID, DroolsEditorType.IDENTIFIER);	}
@@ -971,19 +1035,26 @@ fact_binding_expression
 	;
 
 fact
-@init  { pushParaphrases(DroolsParaphraseTypes.PATTERN); }
-@after { paraphrases.pop(); }
+@init  { boolean isFailedOnConstraints = true; pushParaphrases(DroolsParaphraseTypes.PATTERN); }
+@after { paraphrases.pop();	}
 	:	pattern_type 
 		LEFT_PAREN {	emit($LEFT_PAREN, DroolsEditorType.SYMBOL);	} 
 	{	emit(Location.LOCATION_LHS_INSIDE_CONDITION_START);	}
 			constraints? 
-		RIGHT_PAREN {		}
+		RIGHT_PAREN {	isFailedOnConstraints = false;	}
 	{	if ($RIGHT_PAREN.text.equals(")") ){ //WORKAROUND FOR ANTLR BUG!
 			emit($RIGHT_PAREN, DroolsEditorType.SYMBOL);
 			emit(Location.LOCATION_LHS_BEGIN_OF_CONDITION);
 		}	}
 	->	^(VT_FACT pattern_type constraints? RIGHT_PAREN)
 	;
+finally {
+	if (isEditorInterfaceEnabled && isFailedOnConstraints && input.LA(1) == EOF && input.get(input.index() - 1).getType() == WS){
+		if (!(getActiveSentence().getContent().getLast() instanceof Integer) && input.LA(-1) != COLON) {
+			emit(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
+		}
+	}
+}
 
 constraints
 	:	constraint ( COMMA! 
@@ -997,14 +1068,12 @@ constraint
 
 or_constr
 	:	and_constr ( DOUBLE_PIPE^ 
-	{	emit($DOUBLE_PIPE, DroolsEditorType.SYMBOL);
-		emit(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);	} and_constr )* 
+	{	emit($DOUBLE_PIPE, DroolsEditorType.SYMBOL);	} and_constr )* 
 	;
 
 and_constr
 	:	unary_constr ( DOUBLE_AMPER^ 
-	{	emit($DOUBLE_AMPER, DroolsEditorType.SYMBOL);
-		emit(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);	} unary_constr )*
+	{	emit($DOUBLE_AMPER, DroolsEditorType.SYMBOL);;	} unary_constr )*
 	;
 
 unary_constr
@@ -1021,37 +1090,36 @@ finally {
 	if (isEditorInterfaceEnabled && isFailed && input.LA(2) == EOF && input.LA(1) == ID) {
 		emit(input.LT(1), DroolsEditorType.IDENTIFIER);
 		input.consume();
-		emit(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
-	}	}
+		if (input.get(input.index() - 1).getType() == WS)
+			emit(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
+	}
+}
 
 field_constraint
 @init{
 	boolean isArrow = false;
 }	:	label accessor_path 
-	{	emit(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);	}
 		( or_restr_connective | arw=ARROW {	emit($ARROW, DroolsEditorType.SYMBOL);	} paren_chunk {isArrow = true;})?
 		-> {isArrow}? ^(VT_BIND_FIELD label ^(VT_FIELD accessor_path)) ^(VK_EVAL[$arw] paren_chunk)?
 		-> ^(VT_BIND_FIELD label ^(VT_FIELD accessor_path or_restr_connective?))
-	|	accessor_path {	emit(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);	} or_restr_connective
+	|	accessor_path or_restr_connective
 		-> ^(VT_FIELD accessor_path or_restr_connective)
 	;
 
 label
-	:	value=ID {	emit($ID, DroolsEditorType.IDENTIFIER);	} 
+	:	value=ID {	emit($ID, DroolsEditorType.IDENTIFIER_VARIABLE);	} 
 		COLON {	emit($COLON, DroolsEditorType.SYMBOL);	} 
 		-> VT_LABEL[$value]
 	;
 
 or_restr_connective
 	:	and_restr_connective ({(validateRestr())}?=> DOUBLE_PIPE^ 
-	{	emit($DOUBLE_PIPE, DroolsEditorType.SYMBOL);
-		emit(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);	}  and_restr_connective )* 
+	{	emit($DOUBLE_PIPE, DroolsEditorType.SYMBOL);	}  and_restr_connective )* 
 	;
 
 and_restr_connective
 	:	constraint_expression ({(validateRestr())}?=> DOUBLE_AMPER^ 
-	{	emit($DOUBLE_AMPER, DroolsEditorType.SYMBOL);
-		emit(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);	} constraint_expression )*
+	{	emit($DOUBLE_AMPER, DroolsEditorType.SYMBOL);	} constraint_expression )*
 	;
 
 constraint_expression
@@ -1060,7 +1128,6 @@ k=3;
 }	:	compound_operator
 	|	simple_operator
 	|	LEFT_PAREN! {	emit($LEFT_PAREN, DroolsEditorType.SYMBOL);	} 
-	{	emit(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);	}
 			or_restr_connective 
 		RIGHT_PAREN {	emit($RIGHT_PAREN, DroolsEditorType.SYMBOL);	} 
 	;
@@ -1091,7 +1158,8 @@ finally {
 }
 
 simple_operator
-	:	(EQUAL^ {	emit($EQUAL, DroolsEditorType.SYMBOL);	}
+	:	{	emit(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);	}
+		(EQUAL^ {	emit($EQUAL, DroolsEditorType.SYMBOL);	}
 	|	GREATER^ {	emit($GREATER, DroolsEditorType.SYMBOL);	}
 	|	GREATER_EQUAL^ {	emit($GREATER_EQUAL, DroolsEditorType.SYMBOL);	}
 	|	LESS^ {	emit($LESS, DroolsEditorType.SYMBOL);	}
@@ -1117,7 +1185,8 @@ simple_operator
 
 //Simple Syntax Sugar
 compound_operator 
-	:	( in_key^ | not_key in_key^ ) 
+	:	{	emit(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);	}
+	( in_key^ | not_key in_key^ ) 
 	{	emit(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);	}
 		LEFT_PAREN! {	emit($LEFT_PAREN, DroolsEditorType.SYMBOL);	}
 			expression_value ( COMMA! {	emit($COMMA, DroolsEditorType.SYMBOL);	} expression_value )* 
@@ -1135,7 +1204,8 @@ expression_value
 	:	(accessor_path
 	|	literal_constraint 
 	|	paren_chunk)
-	{	emit(Location.LOCATION_LHS_INSIDE_CONDITION_END);	}
+	{	if (isEditorInterfaceEnabled && !(input.LA(1) == EOF && input.get(input.index() - 1).getType() != WS))
+			emit(Location.LOCATION_LHS_INSIDE_CONDITION_END);	}
 	;
 finally { 
 	if (isEditorInterfaceEnabled && input.LA(2) == EOF) {
@@ -1143,8 +1213,6 @@ finally {
 			emit(input.LT(1), DroolsEditorType.SYMBOL);
 			input.consume();
 			emit(true, Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
-		} else if (input.LA(1) == EOF && input.get(input.index() - 1).getType() != WS) {
-			emit(true, Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
 		}
 	}
 }
@@ -1534,6 +1602,13 @@ reverse_key
 		->	VK_REVERSE[$id]
 	;
 
+result_key
+	:	{(validateIdentifierKey(DroolsSoftKeywords.RESULT))}?=>  id=ID
+	{	emit($id, DroolsEditorType.KEYWORD);	}
+		->	VK_RESULT[$id]
+	;
+
+
 WS      :       (	' '
                 |	'\t'
                 |	'\f'
@@ -1617,10 +1692,6 @@ NULL
 
 OVER
 	:	'over'
-	;
-
-RESULT
-	:	'result'
 	;
 
 THEN

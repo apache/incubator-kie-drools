@@ -2757,6 +2757,11 @@ public class DRLContextTest extends TestCase {
 			parser.compilation_unit();
 		} catch (Exception ex) {
 		}
+		
+		DroolsToken token = (DroolsToken) parser
+		.getEditorInterface().get(0).getContent().getLast();
+		assertEquals("group", token.getText().toLowerCase());
+		assertEquals(DroolsEditorType.KEYWORD, token.getEditorType());
 
 		assertEquals(Location.LOCATION_RULE_HEADER, getLastIntegerValue(parser
 				.getEditorInterface().get(0).getContent()));
@@ -2813,6 +2818,11 @@ public class DRLContextTest extends TestCase {
 			parser.compilation_unit();
 		} catch (Exception ex) {
 		}
+		
+		DroolsToken token = (DroolsToken) parser
+		.getEditorInterface().get(0).getContent().getLast();
+		assertEquals("dialect", token.getText().toLowerCase());
+		assertEquals(DroolsEditorType.KEYWORD, token.getEditorType());
 
 		assertEquals(Location.LOCATION_RULE_HEADER, getLastIntegerValue(parser
 				.getEditorInterface().get(0).getContent()));
@@ -2827,6 +2837,11 @@ public class DRLContextTest extends TestCase {
 			parser.compilation_unit();
 		} catch (Exception ex) {
 		}
+
+		DroolsToken token = (DroolsToken) parser
+		.getEditorInterface().get(0).getContent().getLast();
+		assertEquals("dialect", token.getText().toLowerCase());
+		assertEquals(DroolsEditorType.KEYWORD, token.getEditorType());
 
 		assertEquals(Location.LOCATION_RULE_HEADER, getLastIntegerValue(parser
 				.getEditorInterface().get(0).getContent()));
@@ -2894,7 +2909,7 @@ public class DRLContextTest extends TestCase {
 
 	@SuppressWarnings("unchecked")
 	private int getLastIntegerValue(LinkedList list) {
-		// System.out.println(list.toString());
+//		System.out.println(list.toString());
 		int lastIntergerValue = -1;
 		for (Object object : list) {
 			if (object instanceof Integer) {
