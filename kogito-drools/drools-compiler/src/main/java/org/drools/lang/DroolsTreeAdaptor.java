@@ -67,7 +67,7 @@ public class DroolsTreeAdaptor extends CommonTreeAdaptor {
 					|| token.getType() == DRLLexer.VK_OR
 					|| token.getType() == DRLLexer.VK_PACKAGE
 					|| token.getType() == DRLLexer.VK_QUERY
-					|| token.getType() == DRLLexer.RESULT
+					|| token.getType() == DRLLexer.VK_RESULT
 					|| token.getType() == DRLLexer.VK_REVERSE
 					|| token.getType() == DRLLexer.VK_RULE
 					|| token.getType() == DRLLexer.VK_RULEFLOW_GROUP

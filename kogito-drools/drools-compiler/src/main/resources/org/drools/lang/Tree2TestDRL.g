@@ -149,7 +149,7 @@ accumulate_init_clause
 			^(INIT VT_PAREN_CHUNK) 
 			^(VK_ACTION VT_PAREN_CHUNK) 
 			accumulate_init_reverse_clause?
-			^(RESULT VT_PAREN_CHUNK))
+			^(VK_RESULT VT_PAREN_CHUNK))
 	;
 
 accumulate_init_reverse_clause

@@ -263,7 +263,7 @@ accumulate_init_clause [PatternSourceDescr accumulateParam] returns [AccumulateD
 			^(start=INIT pc1=VT_PAREN_CHUNK) 
 			^(VK_ACTION pc2=VT_PAREN_CHUNK) 
 			rev=accumulate_init_reverse_clause?
-			^(RESULT pc3=VT_PAREN_CHUNK))
+			^(VK_RESULT pc3=VT_PAREN_CHUNK))
 	{	if (null == rev){
 			$accumulateDescr = factory.setupAccumulateInit($accumulateParam, $start, $pc1, $pc2, $pc3, null);
 		} else {

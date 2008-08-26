@@ -1,4 +1,4 @@
-// $ANTLR 3.0.1 /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g 2008-08-21 01:35:56
+// $ANTLR 3.0.1 /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g 2008-08-26 16:09:41
 
 	package org.drools.lang;
 
@@ -36,14 +36,14 @@ import java.util.ArrayList;
 
 public class DescrBuilderTree extends TreeParser {
     public static final String[] tokenNames = new String[] {
-        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "VT_COMPILATION_UNIT", "VT_FUNCTION_IMPORT", "VT_FACT", "VT_CONSTRAINTS", "VT_LABEL", "VT_QUERY_ID", "VT_TEMPLATE_ID", "VT_TYPE_DECLARE_ID", "VT_RULE_ID", "VT_ENTRYPOINT_ID", "VT_SLOT_ID", "VT_SLOT", "VT_RULE_ATTRIBUTES", "VT_RHS_CHUNK", "VT_CURLY_CHUNK", "VT_SQUARE_CHUNK", "VT_PAREN_CHUNK", "VT_BEHAVIOR", "VT_AND_IMPLICIT", "VT_AND_PREFIX", "VT_OR_PREFIX", "VT_AND_INFIX", "VT_OR_INFIX", "VT_ACCUMULATE_INIT_CLAUSE", "VT_ACCUMULATE_ID_CLAUSE", "VT_FROM_SOURCE", "VT_EXPRESSION_CHAIN", "VT_PATTERN", "VT_FACT_BINDING", "VT_FACT_OR", "VT_BIND_FIELD", "VT_FIELD", "VT_ACCESSOR_PATH", "VT_ACCESSOR_ELEMENT", "VT_DATA_TYPE", "VT_PATTERN_TYPE", "VT_PACKAGE_ID", "VT_IMPORT_ID", "VT_GLOBAL_ID", "VT_FUNCTION_ID", "VT_PARAM_LIST", "VK_DATE_EFFECTIVE", "VK_DATE_EXPIRES", "VK_LOCK_ON_ACTIVE", "VK_NO_LOOP", "VK_AUTO_FOCUS", "VK_ACTIVATION_GROUP", "VK_AGENDA_GROUP", "VK_RULEFLOW_GROUP", "VK_DURATION", "VK_DIALECT", "VK_SALIENCE", "VK_ENABLED", "VK_ATTRIBUTES", "VK_RULE", "VK_IMPORT", "VK_PACKAGE", "VK_TEMPLATE", "VK_QUERY", "VK_DECLARE", "VK_FUNCTION", "VK_GLOBAL", "VK_EVAL", "VK_CONTAINS", "VK_MATCHES", "VK_EXCLUDES", "VK_SOUNDSLIKE", "VK_MEMBEROF", "VK_ENTRY_POINT", "VK_NOT", "VK_IN", "VK_OR", "VK_AND", "VK_EXISTS", "VK_FORALL", "VK_ACTION", "VK_REVERSE", "SEMICOLON", "ID", "DOT", "DOT_STAR", "END", "STRING", "LEFT_PAREN", "COMMA", "RIGHT_PAREN", "AT", "COLON", "EQUALS", "WHEN", "BOOL", "INT", "DOUBLE_PIPE", "DOUBLE_AMPER", "FROM", "OVER", "ACCUMULATE", "INIT", "RESULT", "COLLECT", "ARROW", "EQUAL", "GREATER", "GREATER_EQUAL", "LESS", "LESS_EQUAL", "NOT_EQUAL", "GRAVE_ACCENT", "FLOAT", "NULL", "LEFT_SQUARE", "RIGHT_SQUARE", "THEN", "LEFT_CURLY", "RIGHT_CURLY", "MISC", "EOL", "WS", "EscapeSequence", "HexDigit", "UnicodeEscape", "OctalEscape", "SH_STYLE_SINGLE_LINE_COMMENT", "C_STYLE_SINGLE_LINE_COMMENT", "MULTI_LINE_COMMENT"
+        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "VT_COMPILATION_UNIT", "VT_FUNCTION_IMPORT", "VT_FACT", "VT_CONSTRAINTS", "VT_LABEL", "VT_QUERY_ID", "VT_TEMPLATE_ID", "VT_TYPE_DECLARE_ID", "VT_RULE_ID", "VT_ENTRYPOINT_ID", "VT_SLOT_ID", "VT_SLOT", "VT_RULE_ATTRIBUTES", "VT_RHS_CHUNK", "VT_CURLY_CHUNK", "VT_SQUARE_CHUNK", "VT_PAREN_CHUNK", "VT_BEHAVIOR", "VT_AND_IMPLICIT", "VT_AND_PREFIX", "VT_OR_PREFIX", "VT_AND_INFIX", "VT_OR_INFIX", "VT_ACCUMULATE_INIT_CLAUSE", "VT_ACCUMULATE_ID_CLAUSE", "VT_FROM_SOURCE", "VT_EXPRESSION_CHAIN", "VT_PATTERN", "VT_FACT_BINDING", "VT_FACT_OR", "VT_BIND_FIELD", "VT_FIELD", "VT_ACCESSOR_PATH", "VT_ACCESSOR_ELEMENT", "VT_DATA_TYPE", "VT_PATTERN_TYPE", "VT_PACKAGE_ID", "VT_IMPORT_ID", "VT_GLOBAL_ID", "VT_FUNCTION_ID", "VT_PARAM_LIST", "VK_DATE_EFFECTIVE", "VK_DATE_EXPIRES", "VK_LOCK_ON_ACTIVE", "VK_NO_LOOP", "VK_AUTO_FOCUS", "VK_ACTIVATION_GROUP", "VK_AGENDA_GROUP", "VK_RULEFLOW_GROUP", "VK_DURATION", "VK_DIALECT", "VK_SALIENCE", "VK_ENABLED", "VK_ATTRIBUTES", "VK_RULE", "VK_IMPORT", "VK_PACKAGE", "VK_TEMPLATE", "VK_QUERY", "VK_DECLARE", "VK_FUNCTION", "VK_GLOBAL", "VK_EVAL", "VK_CONTAINS", "VK_MATCHES", "VK_EXCLUDES", "VK_SOUNDSLIKE", "VK_MEMBEROF", "VK_ENTRY_POINT", "VK_NOT", "VK_IN", "VK_OR", "VK_AND", "VK_EXISTS", "VK_FORALL", "VK_ACTION", "VK_REVERSE", "VK_RESULT", "SEMICOLON", "ID", "DOT", "DOT_STAR", "END", "STRING", "LEFT_PAREN", "COMMA", "RIGHT_PAREN", "AT", "COLON", "EQUALS", "WHEN", "BOOL", "INT", "DOUBLE_PIPE", "DOUBLE_AMPER", "FROM", "OVER", "ACCUMULATE", "INIT", "COLLECT", "ARROW", "EQUAL", "GREATER", "GREATER_EQUAL", "LESS", "LESS_EQUAL", "NOT_EQUAL", "GRAVE_ACCENT", "FLOAT", "NULL", "LEFT_SQUARE", "RIGHT_SQUARE", "THEN", "LEFT_CURLY", "RIGHT_CURLY", "MISC", "EOL", "WS", "EscapeSequence", "HexDigit", "UnicodeEscape", "OctalEscape", "SH_STYLE_SINGLE_LINE_COMMENT", "C_STYLE_SINGLE_LINE_COMMENT", "MULTI_LINE_COMMENT"
     };
-    public static final int COMMA=88;
+    public static final int COMMA=89;
     public static final int VT_PATTERN_TYPE=39;
     public static final int VT_ACCUMULATE_ID_CLAUSE=28;
     public static final int VK_DIALECT=54;
     public static final int VK_FUNCTION=64;
-    public static final int END=85;
+    public static final int END=86;
     public static final int HexDigit=123;
     public static final int VK_ATTRIBUTES=57;
     public static final int VT_EXPRESSION_CHAIN=30;
@@ -52,7 +52,7 @@ public class DescrBuilderTree extends TreeParser {
     public static final int VK_QUERY=62;
     public static final int THEN=116;
     public static final int VK_AUTO_FOCUS=49;
-    public static final int DOT=83;
+    public static final int DOT=84;
     public static final int VK_IMPORT=59;
     public static final int VT_SLOT=15;
     public static final int VT_PACKAGE_ID=40;
@@ -62,20 +62,20 @@ public class DescrBuilderTree extends TreeParser {
     public static final int VK_MATCHES=68;
     public static final int VT_FACT=6;
     public static final int LEFT_CURLY=117;
-    public static final int AT=90;
-    public static final int LEFT_PAREN=87;
-    public static final int DOUBLE_AMPER=97;
+    public static final int AT=91;
+    public static final int LEFT_PAREN=88;
+    public static final int DOUBLE_AMPER=98;
     public static final int VT_QUERY_ID=9;
     public static final int VT_ACCESSOR_PATH=36;
     public static final int VT_LABEL=8;
-    public static final int WHEN=93;
+    public static final int WHEN=94;
     public static final int VT_ENTRYPOINT_ID=13;
     public static final int VK_SOUNDSLIKE=70;
     public static final int VK_SALIENCE=55;
     public static final int VT_FIELD=35;
     public static final int WS=121;
-    public static final int OVER=99;
-    public static final int STRING=86;
+    public static final int OVER=100;
+    public static final int STRING=87;
     public static final int VK_AND=76;
     public static final int VT_ACCESSOR_ELEMENT=37;
     public static final int VT_ACCUMULATE_INIT_CLAUSE=27;
@@ -90,17 +90,18 @@ public class DescrBuilderTree extends TreeParser {
     public static final int VT_COMPILATION_UNIT=4;
     public static final int COLLECT=103;
     public static final int VK_ENABLED=56;
-    public static final int EQUALS=92;
+    public static final int EQUALS=93;
+    public static final int VK_RESULT=81;
     public static final int UnicodeEscape=124;
     public static final int VK_PACKAGE=60;
     public static final int VT_RULE_ID=12;
     public static final int EQUAL=105;
     public static final int VK_NO_LOOP=48;
-    public static final int SEMICOLON=81;
+    public static final int SEMICOLON=82;
     public static final int VK_TEMPLATE=61;
     public static final int VT_AND_IMPLICIT=22;
     public static final int NULL=113;
-    public static final int COLON=91;
+    public static final int COLON=92;
     public static final int MULTI_LINE_COMMENT=128;
     public static final int VT_RULE_ATTRIBUTES=16;
     public static final int RIGHT_SQUARE=115;
@@ -110,32 +111,31 @@ public class DescrBuilderTree extends TreeParser {
     public static final int VK_DATE_EXPIRES=46;
     public static final int ARROW=104;
     public static final int FLOAT=112;
-    public static final int INIT=101;
+    public static final int INIT=102;
     public static final int VT_SLOT_ID=14;
     public static final int VT_CURLY_CHUNK=18;
     public static final int VT_OR_PREFIX=24;
-    public static final int DOUBLE_PIPE=96;
+    public static final int DOUBLE_PIPE=97;
     public static final int LESS=108;
     public static final int VT_TYPE_DECLARE_ID=11;
     public static final int VT_PATTERN=31;
     public static final int VK_DATE_EFFECTIVE=45;
     public static final int EscapeSequence=122;
     public static final int VK_EXISTS=77;
-    public static final int INT=95;
+    public static final int INT=96;
     public static final int VT_BIND_FIELD=34;
     public static final int VK_RULE=58;
     public static final int VK_EVAL=66;
     public static final int GREATER=106;
     public static final int VT_FACT_BINDING=32;
-    public static final int RESULT=102;
-    public static final int ID=82;
-    public static final int FROM=98;
+    public static final int ID=83;
+    public static final int FROM=99;
     public static final int NOT_EQUAL=110;
     public static final int RIGHT_CURLY=118;
     public static final int VK_ENTRY_POINT=72;
     public static final int VT_PARAM_LIST=44;
     public static final int VT_AND_INFIX=25;
-    public static final int BOOL=94;
+    public static final int BOOL=95;
     public static final int VT_FROM_SOURCE=29;
     public static final int VK_CONTAINS=67;
     public static final int VK_LOCK_ON_ACTIVE=47;
@@ -145,11 +145,11 @@ public class DescrBuilderTree extends TreeParser {
     public static final int VK_MEMBEROF=71;
     public static final int GREATER_EQUAL=107;
     public static final int VT_OR_INFIX=26;
-    public static final int DOT_STAR=84;
+    public static final int DOT_STAR=85;
     public static final int VK_OR=75;
     public static final int VT_GLOBAL_ID=42;
     public static final int LESS_EQUAL=109;
-    public static final int ACCUMULATE=100;
+    public static final int ACCUMULATE=101;
     public static final int VK_RULEFLOW_GROUP=52;
     public static final int VT_FUNCTION_ID=43;
     public static final int EOF=-1;
@@ -160,7 +160,7 @@ public class DescrBuilderTree extends TreeParser {
     public static final int OctalEscape=125;
     public static final int VK_ACTION=79;
     public static final int VK_EXCLUDES=69;
-    public static final int RIGHT_PAREN=89;
+    public static final int RIGHT_PAREN=90;
     public static final int VT_TEMPLATE_ID=10;
     public static final int VK_DECLARE=63;
     public static final int C_STYLE_SINGLE_LINE_COMMENT=127;
@@ -2712,7 +2712,7 @@ public class DescrBuilderTree extends TreeParser {
     };
 
     // $ANTLR start accumulate_init_clause
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:261:1: accumulate_init_clause[PatternSourceDescr accumulateParam] returns [AccumulateDescr accumulateDescr] : ^( VT_ACCUMULATE_INIT_CLAUSE ^(start= INIT pc1= VT_PAREN_CHUNK ) ^( VK_ACTION pc2= VT_PAREN_CHUNK ) (rev= accumulate_init_reverse_clause )? ^( RESULT pc3= VT_PAREN_CHUNK ) ) ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:261:1: accumulate_init_clause[PatternSourceDescr accumulateParam] returns [AccumulateDescr accumulateDescr] : ^( VT_ACCUMULATE_INIT_CLAUSE ^(start= INIT pc1= VT_PAREN_CHUNK ) ^( VK_ACTION pc2= VT_PAREN_CHUNK ) (rev= accumulate_init_reverse_clause )? ^( VK_RESULT pc3= VT_PAREN_CHUNK ) ) ;
     public final accumulate_init_clause_return accumulate_init_clause(PatternSourceDescr accumulateParam) throws RecognitionException {
         accumulate_init_clause_return retval = new accumulate_init_clause_return();
         retval.start = input.LT(1);
@@ -2725,8 +2725,8 @@ public class DescrBuilderTree extends TreeParser {
 
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:262:2: ( ^( VT_ACCUMULATE_INIT_CLAUSE ^(start= INIT pc1= VT_PAREN_CHUNK ) ^( VK_ACTION pc2= VT_PAREN_CHUNK ) (rev= accumulate_init_reverse_clause )? ^( RESULT pc3= VT_PAREN_CHUNK ) ) )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:262:4: ^( VT_ACCUMULATE_INIT_CLAUSE ^(start= INIT pc1= VT_PAREN_CHUNK ) ^( VK_ACTION pc2= VT_PAREN_CHUNK ) (rev= accumulate_init_reverse_clause )? ^( RESULT pc3= VT_PAREN_CHUNK ) )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:262:2: ( ^( VT_ACCUMULATE_INIT_CLAUSE ^(start= INIT pc1= VT_PAREN_CHUNK ) ^( VK_ACTION pc2= VT_PAREN_CHUNK ) (rev= accumulate_init_reverse_clause )? ^( VK_RESULT pc3= VT_PAREN_CHUNK ) ) )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:262:4: ^( VT_ACCUMULATE_INIT_CLAUSE ^(start= INIT pc1= VT_PAREN_CHUNK ) ^( VK_ACTION pc2= VT_PAREN_CHUNK ) (rev= accumulate_init_reverse_clause )? ^( VK_RESULT pc3= VT_PAREN_CHUNK ) )
             {
             match(input,VT_ACCUMULATE_INIT_CLAUSE,FOLLOW_VT_ACCUMULATE_INIT_CLAUSE_in_accumulate_init_clause1359); 
 
@@ -2767,7 +2767,7 @@ public class DescrBuilderTree extends TreeParser {
 
             }
 
-            match(input,RESULT,FOLLOW_RESULT_in_accumulate_init_clause1400); 
+            match(input,VK_RESULT,FOLLOW_VK_RESULT_in_accumulate_init_clause1400); 
 
             match(input, Token.DOWN, null); 
             pc3=(DroolsTree)input.LT(1);
@@ -4474,7 +4474,7 @@ public class DescrBuilderTree extends TreeParser {
     public static final BitSet FOLLOW_VK_PACKAGE_in_package_statement71 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_package_id_in_package_statement75 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VT_PACKAGE_ID_in_package_id102 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_ID_in_package_id106 = new BitSet(new long[]{0x0000000000000008L,0x0000000000040000L});
+    public static final BitSet FOLLOW_ID_in_package_id106 = new BitSet(new long[]{0x0000000000000008L,0x0000000000080000L});
     public static final BitSet FOLLOW_rule_attribute_in_statement124 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_function_import_statement_in_statement134 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_import_statement_in_statement144 = new BitSet(new long[]{0x0000000000000002L});
@@ -4490,7 +4490,7 @@ public class DescrBuilderTree extends TreeParser {
     public static final BitSet FOLLOW_VK_FUNCTION_in_function_import_statement254 = new BitSet(new long[]{0x0000020000000000L});
     public static final BitSet FOLLOW_import_name_in_function_import_statement258 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VT_IMPORT_ID_in_import_name277 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_ID_in_import_name281 = new BitSet(new long[]{0x0000000000000008L,0x0000000000140000L});
+    public static final BitSet FOLLOW_ID_in_import_name281 = new BitSet(new long[]{0x0000000000000008L,0x0000000000280000L});
     public static final BitSet FOLLOW_DOT_STAR_in_import_name286 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VK_GLOBAL_in_global309 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_data_type_in_global313 = new BitSet(new long[]{0x0000040000000000L});
@@ -4502,7 +4502,7 @@ public class DescrBuilderTree extends TreeParser {
     public static final BitSet FOLLOW_VT_CURLY_CHUNK_in_function356 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VK_TEMPLATE_in_template381 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_VT_TEMPLATE_ID_in_template385 = new BitSet(new long[]{0x0000000000008000L});
-    public static final BitSet FOLLOW_template_slot_in_template394 = new BitSet(new long[]{0x0000000000008000L,0x0000000000200000L});
+    public static final BitSet FOLLOW_template_slot_in_template394 = new BitSet(new long[]{0x0000000000008000L,0x0000000000400000L});
     public static final BitSet FOLLOW_END_in_template402 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VT_SLOT_in_template_slot422 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_data_type_in_template_slot426 = new BitSet(new long[]{0x0000000000004000L});
@@ -4510,11 +4510,11 @@ public class DescrBuilderTree extends TreeParser {
     public static final BitSet FOLLOW_VK_QUERY_in_query452 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_VT_QUERY_ID_in_query456 = new BitSet(new long[]{0x0000100000400000L});
     public static final BitSet FOLLOW_parameters_in_query460 = new BitSet(new long[]{0x0000000000400000L});
-    public static final BitSet FOLLOW_lhs_block_in_query465 = new BitSet(new long[]{0x0000000000000000L,0x0000000000200000L});
+    public static final BitSet FOLLOW_lhs_block_in_query465 = new BitSet(new long[]{0x0000000000000000L,0x0000000000400000L});
     public static final BitSet FOLLOW_END_in_query469 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VK_RULE_in_rule491 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VT_RULE_ID_in_rule495 = new BitSet(new long[]{0x0000000000030000L,0x0000000020000000L});
-    public static final BitSet FOLLOW_rule_attributes_in_rule499 = new BitSet(new long[]{0x0000000000020000L,0x0000000020000000L});
+    public static final BitSet FOLLOW_VT_RULE_ID_in_rule495 = new BitSet(new long[]{0x0000000000030000L,0x0000000040000000L});
+    public static final BitSet FOLLOW_rule_attributes_in_rule499 = new BitSet(new long[]{0x0000000000020000L,0x0000000040000000L});
     public static final BitSet FOLLOW_when_part_in_rule504 = new BitSet(new long[]{0x0000000000020000L});
     public static final BitSet FOLLOW_VT_RHS_CHUNK_in_rule509 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_WHEN_in_when_part528 = new BitSet(new long[]{0x0000000000400000L});
@@ -4523,24 +4523,24 @@ public class DescrBuilderTree extends TreeParser {
     public static final BitSet FOLLOW_VK_ATTRIBUTES_in_rule_attributes556 = new BitSet(new long[]{0x01FFE00000000000L});
     public static final BitSet FOLLOW_rule_attribute_in_rule_attributes562 = new BitSet(new long[]{0x01FFE00000000008L});
     public static final BitSet FOLLOW_VT_PARAM_LIST_in_parameters586 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_param_definition_in_parameters591 = new BitSet(new long[]{0x0000004000000008L,0x0000000000040000L});
-    public static final BitSet FOLLOW_data_type_in_param_definition613 = new BitSet(new long[]{0x0000000000000000L,0x0000000000040000L});
+    public static final BitSet FOLLOW_param_definition_in_parameters591 = new BitSet(new long[]{0x0000004000000008L,0x0000000000080000L});
+    public static final BitSet FOLLOW_data_type_in_param_definition613 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
     public static final BitSet FOLLOW_argument_in_param_definition618 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_ID_in_argument638 = new BitSet(new long[]{0x0000000000000002L,0x0004000000000000L});
     public static final BitSet FOLLOW_LEFT_SQUARE_in_argument641 = new BitSet(new long[]{0x0000000000000000L,0x0008000000000000L});
     public static final BitSet FOLLOW_RIGHT_SQUARE_in_argument645 = new BitSet(new long[]{0x0000000000000002L,0x0004000000000000L});
     public static final BitSet FOLLOW_VK_DECLARE_in_type_declaration671 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VT_TYPE_DECLARE_ID_in_type_declaration675 = new BitSet(new long[]{0x0000000000000000L,0x0000000004240000L});
-    public static final BitSet FOLLOW_decl_metadata_in_type_declaration684 = new BitSet(new long[]{0x0000000000000000L,0x0000000004240000L});
-    public static final BitSet FOLLOW_decl_field_in_type_declaration697 = new BitSet(new long[]{0x0000000000000000L,0x0000000000240000L});
+    public static final BitSet FOLLOW_VT_TYPE_DECLARE_ID_in_type_declaration675 = new BitSet(new long[]{0x0000000000000000L,0x0000000008480000L});
+    public static final BitSet FOLLOW_decl_metadata_in_type_declaration684 = new BitSet(new long[]{0x0000000000000000L,0x0000000008480000L});
+    public static final BitSet FOLLOW_decl_field_in_type_declaration697 = new BitSet(new long[]{0x0000000000000000L,0x0000000000480000L});
     public static final BitSet FOLLOW_END_in_type_declaration703 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_AT_in_decl_metadata728 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_ID_in_decl_metadata732 = new BitSet(new long[]{0x0000000000100000L});
     public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_decl_metadata736 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_ID_in_decl_field763 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_decl_field_initialization_in_decl_field767 = new BitSet(new long[]{0x0000004000000000L});
-    public static final BitSet FOLLOW_data_type_in_decl_field772 = new BitSet(new long[]{0x0000000000000008L,0x0000000004000000L});
-    public static final BitSet FOLLOW_decl_metadata_in_decl_field777 = new BitSet(new long[]{0x0000000000000008L,0x0000000004000000L});
+    public static final BitSet FOLLOW_data_type_in_decl_field772 = new BitSet(new long[]{0x0000000000000008L,0x0000000008000000L});
+    public static final BitSet FOLLOW_decl_metadata_in_decl_field777 = new BitSet(new long[]{0x0000000000000008L,0x0000000008000000L});
     public static final BitSet FOLLOW_EQUALS_in_decl_field_initialization804 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_decl_field_initialization808 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VK_SALIENCE_in_rule_attribute831 = new BitSet(new long[]{0x0000000000000004L});
@@ -4569,16 +4569,16 @@ public class DescrBuilderTree extends TreeParser {
     public static final BitSet FOLLOW_VK_DIALECT_in_rule_attribute997 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_STRING_in_rule_attribute1001 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VT_AND_IMPLICIT_in_lhs_block1026 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_lhs_in_lhs_block1031 = new BitSet(new long[]{0x0000000087800008L,0x0000000400006204L});
+    public static final BitSet FOLLOW_lhs_in_lhs_block1031 = new BitSet(new long[]{0x0000000087800008L,0x0000000800006204L});
     public static final BitSet FOLLOW_VT_OR_PREFIX_in_lhs1057 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_lhs_in_lhs1062 = new BitSet(new long[]{0x0000000087800008L,0x0000000400006204L});
+    public static final BitSet FOLLOW_lhs_in_lhs1062 = new BitSet(new long[]{0x0000000087800008L,0x0000000800006204L});
     public static final BitSet FOLLOW_VT_OR_INFIX_in_lhs1078 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_lhs_in_lhs1082 = new BitSet(new long[]{0x0000000087800000L,0x0000000400006204L});
+    public static final BitSet FOLLOW_lhs_in_lhs1082 = new BitSet(new long[]{0x0000000087800000L,0x0000000800006204L});
     public static final BitSet FOLLOW_lhs_in_lhs1086 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VT_AND_PREFIX_in_lhs1098 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_lhs_in_lhs1103 = new BitSet(new long[]{0x0000000087800008L,0x0000000400006204L});
+    public static final BitSet FOLLOW_lhs_in_lhs1103 = new BitSet(new long[]{0x0000000087800008L,0x0000000800006204L});
     public static final BitSet FOLLOW_VT_AND_INFIX_in_lhs1119 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_lhs_in_lhs1123 = new BitSet(new long[]{0x0000000087800000L,0x0000000400006204L});
+    public static final BitSet FOLLOW_lhs_in_lhs1123 = new BitSet(new long[]{0x0000000087800000L,0x0000000800006204L});
     public static final BitSet FOLLOW_lhs_in_lhs1127 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VK_EXISTS_in_lhs1139 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_lhs_in_lhs1143 = new BitSet(new long[]{0x0000000000000008L});
@@ -4587,9 +4587,9 @@ public class DescrBuilderTree extends TreeParser {
     public static final BitSet FOLLOW_VK_EVAL_in_lhs1171 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_lhs1175 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VK_FORALL_in_lhs1187 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_lhs_in_lhs1192 = new BitSet(new long[]{0x0000000087800008L,0x0000000400006204L});
+    public static final BitSet FOLLOW_lhs_in_lhs1192 = new BitSet(new long[]{0x0000000087800008L,0x0000000800006204L});
     public static final BitSet FOLLOW_FROM_in_lhs1206 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_lhs_pattern_in_lhs1210 = new BitSet(new long[]{0x0000000020000000L,0x0000009000000100L});
+    public static final BitSet FOLLOW_lhs_pattern_in_lhs1210 = new BitSet(new long[]{0x0000000020000000L,0x000000A000000100L});
     public static final BitSet FOLLOW_from_elements_in_lhs1214 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_lhs_pattern_in_lhs1225 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_ACCUMULATE_in_from_elements1246 = new BitSet(new long[]{0x0000000000000004L});
@@ -4607,8 +4607,8 @@ public class DescrBuilderTree extends TreeParser {
     public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_accumulate_init_clause1372 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VK_ACTION_in_accumulate_init_clause1380 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_accumulate_init_clause1384 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_accumulate_init_reverse_clause_in_accumulate_init_clause1393 = new BitSet(new long[]{0x0000000000000000L,0x0000004000000000L});
-    public static final BitSet FOLLOW_RESULT_in_accumulate_init_clause1400 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_accumulate_init_reverse_clause_in_accumulate_init_clause1393 = new BitSet(new long[]{0x0000000000000000L,0x0000000000020000L});
+    public static final BitSet FOLLOW_VK_RESULT_in_accumulate_init_clause1400 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_accumulate_init_clause1404 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VK_REVERSE_in_accumulate_init_reverse_clause1427 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_accumulate_init_reverse_clause1431 = new BitSet(new long[]{0x0000000000000008L});
@@ -4630,23 +4630,23 @@ public class DescrBuilderTree extends TreeParser {
     public static final BitSet FOLLOW_OVER_in_over_clause1592 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_over_element_in_over_clause1597 = new BitSet(new long[]{0x0000000000200008L});
     public static final BitSet FOLLOW_VT_BEHAVIOR_in_over_element1618 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_ID_in_over_element1620 = new BitSet(new long[]{0x0000000000000000L,0x0000000000040000L});
+    public static final BitSet FOLLOW_ID_in_over_element1620 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
     public static final BitSet FOLLOW_ID_in_over_element1624 = new BitSet(new long[]{0x0000000000100000L});
     public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_over_element1628 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VT_FACT_in_fact_expression1651 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_pattern_type_in_fact_expression1655 = new BitSet(new long[]{0x0000001F00100048L,0x00037E03C04404FCL});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression1660 = new BitSet(new long[]{0x0000001F00100048L,0x00037E03C04404FCL});
+    public static final BitSet FOLLOW_pattern_type_in_fact_expression1655 = new BitSet(new long[]{0x0000001F00100048L,0x00037E07808804FCL});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression1660 = new BitSet(new long[]{0x0000001F00100048L,0x00037E07808804FCL});
     public static final BitSet FOLLOW_VT_FACT_BINDING_in_fact_expression1674 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VT_LABEL_in_fact_expression1678 = new BitSet(new long[]{0x0000001F00100040L,0x00037E03C04404FCL});
+    public static final BitSet FOLLOW_VT_LABEL_in_fact_expression1678 = new BitSet(new long[]{0x0000001F00100040L,0x00037E07808804FCL});
     public static final BitSet FOLLOW_fact_expression_in_fact_expression1682 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VT_FACT_OR_in_fact_expression1694 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression1698 = new BitSet(new long[]{0x0000001F00100040L,0x00037E03C04404FCL});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression1698 = new BitSet(new long[]{0x0000001F00100040L,0x00037E07808804FCL});
     public static final BitSet FOLLOW_fact_expression_in_fact_expression1702 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VT_FIELD_in_fact_expression1713 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_field_element_in_fact_expression1717 = new BitSet(new long[]{0x0000001F00100048L,0x00037E03C04404FCL});
+    public static final BitSet FOLLOW_field_element_in_fact_expression1717 = new BitSet(new long[]{0x0000001F00100048L,0x00037E07808804FCL});
     public static final BitSet FOLLOW_fact_expression_in_fact_expression1721 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VT_BIND_FIELD_in_fact_expression1732 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VT_LABEL_in_fact_expression1736 = new BitSet(new long[]{0x0000001F00100040L,0x00037E03C04404FCL});
+    public static final BitSet FOLLOW_VT_LABEL_in_fact_expression1736 = new BitSet(new long[]{0x0000001F00100040L,0x00037E07808804FCL});
     public static final BitSet FOLLOW_fact_expression_in_fact_expression1740 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VK_EVAL_in_fact_expression1751 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_fact_expression1755 = new BitSet(new long[]{0x0000000000000008L});
@@ -4663,32 +4663,32 @@ public class DescrBuilderTree extends TreeParser {
     public static final BitSet FOLLOW_LESS_EQUAL_in_fact_expression1848 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_fact_expression_in_fact_expression1852 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VK_CONTAINS_in_fact_expression1864 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VK_NOT_in_fact_expression1868 = new BitSet(new long[]{0x0000001F00100040L,0x00037E03C04404FCL});
+    public static final BitSet FOLLOW_VK_NOT_in_fact_expression1868 = new BitSet(new long[]{0x0000001F00100040L,0x00037E07808804FCL});
     public static final BitSet FOLLOW_fact_expression_in_fact_expression1873 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VK_EXCLUDES_in_fact_expression1885 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VK_NOT_in_fact_expression1889 = new BitSet(new long[]{0x0000001F00100040L,0x00037E03C04404FCL});
+    public static final BitSet FOLLOW_VK_NOT_in_fact_expression1889 = new BitSet(new long[]{0x0000001F00100040L,0x00037E07808804FCL});
     public static final BitSet FOLLOW_fact_expression_in_fact_expression1894 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VK_MATCHES_in_fact_expression1906 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VK_NOT_in_fact_expression1910 = new BitSet(new long[]{0x0000001F00100040L,0x00037E03C04404FCL});
+    public static final BitSet FOLLOW_VK_NOT_in_fact_expression1910 = new BitSet(new long[]{0x0000001F00100040L,0x00037E07808804FCL});
     public static final BitSet FOLLOW_fact_expression_in_fact_expression1915 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VK_SOUNDSLIKE_in_fact_expression1927 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VK_NOT_in_fact_expression1931 = new BitSet(new long[]{0x0000001F00100040L,0x00037E03C04404FCL});
+    public static final BitSet FOLLOW_VK_NOT_in_fact_expression1931 = new BitSet(new long[]{0x0000001F00100040L,0x00037E07808804FCL});
     public static final BitSet FOLLOW_fact_expression_in_fact_expression1936 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VK_MEMBEROF_in_fact_expression1948 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VK_NOT_in_fact_expression1952 = new BitSet(new long[]{0x0000001F00100040L,0x00037E03C04404FCL});
+    public static final BitSet FOLLOW_VK_NOT_in_fact_expression1952 = new BitSet(new long[]{0x0000001F00100040L,0x00037E07808804FCL});
     public static final BitSet FOLLOW_fact_expression_in_fact_expression1957 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_ID_in_fact_expression1969 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VK_NOT_in_fact_expression1973 = new BitSet(new long[]{0x0000001F00180040L,0x00037E03C04404FCL});
-    public static final BitSet FOLLOW_VT_SQUARE_CHUNK_in_fact_expression1978 = new BitSet(new long[]{0x0000001F00100040L,0x00037E03C04404FCL});
+    public static final BitSet FOLLOW_VK_NOT_in_fact_expression1973 = new BitSet(new long[]{0x0000001F00180040L,0x00037E07808804FCL});
+    public static final BitSet FOLLOW_VT_SQUARE_CHUNK_in_fact_expression1978 = new BitSet(new long[]{0x0000001F00100040L,0x00037E07808804FCL});
     public static final BitSet FOLLOW_fact_expression_in_fact_expression1983 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VK_IN_in_fact_expression1994 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VK_NOT_in_fact_expression1998 = new BitSet(new long[]{0x0000001F00100040L,0x00037E03C04404FCL});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression2004 = new BitSet(new long[]{0x0000001F00100048L,0x00037E03C04404FCL});
+    public static final BitSet FOLLOW_VK_NOT_in_fact_expression1998 = new BitSet(new long[]{0x0000001F00100040L,0x00037E07808804FCL});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression2004 = new BitSet(new long[]{0x0000001F00100048L,0x00037E07808804FCL});
     public static final BitSet FOLLOW_DOUBLE_PIPE_in_fact_expression2019 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression2023 = new BitSet(new long[]{0x0000001F00100040L,0x00037E03C04404FCL});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression2023 = new BitSet(new long[]{0x0000001F00100040L,0x00037E07808804FCL});
     public static final BitSet FOLLOW_fact_expression_in_fact_expression2027 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_DOUBLE_AMPER_in_fact_expression2037 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression2041 = new BitSet(new long[]{0x0000001F00100040L,0x00037E03C04404FCL});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression2041 = new BitSet(new long[]{0x0000001F00100040L,0x00037E07808804FCL});
     public static final BitSet FOLLOW_fact_expression_in_fact_expression2045 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VT_ACCESSOR_PATH_in_fact_expression2056 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_accessor_element_in_fact_expression2061 = new BitSet(new long[]{0x0000002000000008L});
@@ -4704,11 +4704,11 @@ public class DescrBuilderTree extends TreeParser {
     public static final BitSet FOLLOW_ID_in_accessor_element2181 = new BitSet(new long[]{0x0000000000080008L});
     public static final BitSet FOLLOW_VT_SQUARE_CHUNK_in_accessor_element2185 = new BitSet(new long[]{0x0000000000080008L});
     public static final BitSet FOLLOW_VT_PATTERN_TYPE_in_pattern_type2206 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_ID_in_pattern_type2210 = new BitSet(new long[]{0x0000000000000008L,0x0004000000040000L});
+    public static final BitSet FOLLOW_ID_in_pattern_type2210 = new BitSet(new long[]{0x0000000000000008L,0x0004000000080000L});
     public static final BitSet FOLLOW_LEFT_SQUARE_in_pattern_type2214 = new BitSet(new long[]{0x0000000000000000L,0x0008000000000000L});
     public static final BitSet FOLLOW_RIGHT_SQUARE_in_pattern_type2218 = new BitSet(new long[]{0x0000000000000008L,0x0004000000000000L});
     public static final BitSet FOLLOW_VT_DATA_TYPE_in_data_type2240 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_ID_in_data_type2244 = new BitSet(new long[]{0x0000000000000008L,0x0004000000040000L});
+    public static final BitSet FOLLOW_ID_in_data_type2244 = new BitSet(new long[]{0x0000000000000008L,0x0004000000080000L});
     public static final BitSet FOLLOW_LEFT_SQUARE_in_data_type2248 = new BitSet(new long[]{0x0000000000000000L,0x0008000000000000L});
     public static final BitSet FOLLOW_RIGHT_SQUARE_in_data_type2252 = new BitSet(new long[]{0x0000000000000008L,0x0004000000000000L});
 
