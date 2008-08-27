@@ -56,6 +56,7 @@ public class Location {
     
     public static final int LOCATION_RHS = 1000;
     public static final int LOCATION_RULE_HEADER = 2000;
+    public static final int LOCATION_RULE_HEADER_KEYWORD = 2001;
     
     public static final String LOCATION_PROPERTY_CLASS_NAME = "ClassName";
     public static final String LOCATION_PROPERTY_PROPERTY_NAME = "PropertyName";

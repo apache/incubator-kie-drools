@@ -625,7 +625,7 @@ rule
 	:
 	{	beginSentence(DroolsSentenceType.RULE);	}
 		rule_key rule_id 
-	{	emit(Location.LOCATION_RULE_HEADER);	}		
+	{	emit(Location.LOCATION_RULE_HEADER);	}
 		rule_attributes? when_part? rhs_chunk
 		-> ^(rule_key rule_id rule_attributes? when_part? rhs_chunk)
 	;
@@ -655,9 +655,9 @@ rule_attributes
 
 rule_attribute
 @init  { boolean isFailed = true; pushParaphrases(DroolsParaphraseTypes.RULE_ATTRIBUTE); }
-@after { paraphrases.pop(); isFailed = false; }
+@after { paraphrases.pop(); isFailed = false; emit(Location.LOCATION_RULE_HEADER); }
 	:	salience 
-	|	no_loop  
+	|	no_loop
 	|	agenda_group  
 	|	duration  
 	|	activation_group 
@@ -669,79 +669,108 @@ rule_attribute
 	|	lock_on_active
 	|	dialect 
 	;
-finally { 
-	if (isEditorInterfaceEnabled && isFailed && input.LA(4) == EOF && input.LA(1) == ID && input.LA(2) == MISC && input.LA(3) == ID && validateLT(1, DroolsSoftKeywords.ACTIVATION) && validateLT(3, DroolsSoftKeywords.GROUP)) {
-		emit(input.LT(1), DroolsEditorType.KEYWORD);
-		emit(input.LT(2), DroolsEditorType.KEYWORD);
-		emit(input.LT(3), DroolsEditorType.KEYWORD);
-		input.consume();
-		input.consume();
-		input.consume();
-	} else if (isEditorInterfaceEnabled && isFailed && input.LA(2) == EOF && input.LA(1) == ID && validateLT(1, DroolsSoftKeywords.DIALECT)) {
-		emit(input.LT(1), DroolsEditorType.KEYWORD);
-		input.consume();
+finally {
+	if (isEditorInterfaceEnabled && isFailed) {
+		if (input.LA(6) == EOF && input.LA(1) == ID && input.LA(2) == MISC && input.LA(3) == ID && 
+			input.LA(5) == MISC && input.LA(6) == ID && 
+			validateLT(1, DroolsSoftKeywords.LOCK) && validateLT(3, DroolsSoftKeywords.ON) &&
+			validateLT(5, DroolsSoftKeywords.ACTIVE)){
+			emit(input.LT(1), DroolsEditorType.KEYWORD);
+			emit(input.LT(2), DroolsEditorType.KEYWORD);
+			emit(input.LT(3), DroolsEditorType.KEYWORD);
+			emit(input.LT(4), DroolsEditorType.KEYWORD);
+			emit(input.LT(5), DroolsEditorType.KEYWORD);
+			emit(Location.LOCATION_RULE_HEADER_KEYWORD);
+			input.consume();
+			input.consume();
+			input.consume();
+			input.consume();
+			input.consume();
+		} else if (input.LA(4) == EOF && input.LA(1) == ID && input.LA(2) == MISC && input.LA(3) == ID && 
+			(	(validateLT(1, DroolsSoftKeywords.ACTIVATION) && validateLT(3, DroolsSoftKeywords.GROUP)) ||
+				(validateLT(1, DroolsSoftKeywords.DATE) && validateLT(3, DroolsSoftKeywords.EXPIRES)) ||
+				(validateLT(1, DroolsSoftKeywords.NO) && validateLT(3, DroolsSoftKeywords.LOOP)) ||
+				(validateLT(1, DroolsSoftKeywords.DATE) && validateLT(3, DroolsSoftKeywords.EFFECTIVE)) ||
+				(validateLT(1, DroolsSoftKeywords.AUTO) && validateLT(3, DroolsSoftKeywords.FOCUS)) ||
+				(validateLT(1, DroolsSoftKeywords.ACTIVATION) && validateLT(3, DroolsSoftKeywords.GROUP)) ||
+				(validateLT(1, DroolsSoftKeywords.RULEFLOW) && validateLT(3, DroolsSoftKeywords.GROUP)) ||
+				(validateLT(1, DroolsSoftKeywords.AGENDA) && validateLT(3, DroolsSoftKeywords.GROUP))	)){
+			emit(input.LT(1), DroolsEditorType.KEYWORD);
+			emit(input.LT(2), DroolsEditorType.KEYWORD);
+			emit(input.LT(3), DroolsEditorType.KEYWORD);
+			emit(Location.LOCATION_RULE_HEADER_KEYWORD);
+			input.consume();
+			input.consume();
+			input.consume();
+		} else if (input.LA(2) == EOF && input.LA(1) == ID && 
+				(validateLT(1, DroolsSoftKeywords.DIALECT) || validateLT(1, DroolsSoftKeywords.ENABLED) ||
+				 validateLT(1, DroolsSoftKeywords.SALIENCE) || validateLT(1, DroolsSoftKeywords.DURATION))){
+			emit(input.LT(1), DroolsEditorType.KEYWORD);
+			emit(Location.LOCATION_RULE_HEADER_KEYWORD);
+			input.consume();
+		}
 	}
 }
 
 date_effective
-	:	date_effective_key^ STRING
+	:	date_effective_key^ {	emit(Location.LOCATION_RULE_HEADER_KEYWORD);	} STRING
 	{	emit($STRING, DroolsEditorType.STRING_CONST );	}
 	;
 
 date_expires
-	:	date_expires_key^ STRING
+	:	date_expires_key^ {	emit(Location.LOCATION_RULE_HEADER_KEYWORD);	} STRING
 	{	emit($STRING, DroolsEditorType.STRING_CONST );	}
 	;
 	
 enabled
-	:	enabled_key^ BOOL
+	:	enabled_key^ {	emit(Location.LOCATION_RULE_HEADER_KEYWORD);	} BOOL
 	{	emit($BOOL, DroolsEditorType.BOOLEAN_CONST );	}
 	;	
 
 salience
-	:	salience_key^
+	:	salience_key^ {	emit(Location.LOCATION_RULE_HEADER_KEYWORD);	}
 		( INT 	{	emit($INT, DroolsEditorType.NUMERIC_CONST );	}
 		| paren_chunk
 		)
 	;
 
 no_loop
-	:	no_loop_key^ BOOL?
+	:	no_loop_key^ {	emit(Location.LOCATION_RULE_HEADER_KEYWORD);	} BOOL?
 	{	emit($BOOL, DroolsEditorType.BOOLEAN_CONST );	}
 	;
 
 auto_focus
-	:	auto_focus_key^ BOOL?
+	:	auto_focus_key^ {	emit(Location.LOCATION_RULE_HEADER_KEYWORD);	} BOOL?
 	{	emit($BOOL, DroolsEditorType.BOOLEAN_CONST );	}
 	;	
 	
 activation_group
-	:	activation_group_key^ STRING
+	:	activation_group_key^ {	emit(Location.LOCATION_RULE_HEADER_KEYWORD);	} STRING
 	{	emit($STRING, DroolsEditorType.STRING_CONST );	}
 	;
 
 ruleflow_group
-	:	ruleflow_group_key^ STRING
+	:	ruleflow_group_key^ {	emit(Location.LOCATION_RULE_HEADER_KEYWORD);	} STRING
 	{	emit($STRING, DroolsEditorType.STRING_CONST );	}
 	;
 
 agenda_group
-	:	agenda_group_key^ STRING
+	:	agenda_group_key^ {	emit(Location.LOCATION_RULE_HEADER_KEYWORD);	} STRING
 	{	emit($STRING, DroolsEditorType.STRING_CONST );	}
 	;
 
 duration
-	:	duration_key^ INT
+	:	duration_key^ {	emit(Location.LOCATION_RULE_HEADER_KEYWORD);	} INT
 	{	emit($INT, DroolsEditorType.NUMERIC_CONST );	}
 	;	
 	
 dialect
-	:	dialect_key^ STRING
+	:	dialect_key^ {	emit(Location.LOCATION_RULE_HEADER_KEYWORD);	} STRING
 	{	emit($STRING, DroolsEditorType.STRING_CONST );	}
 	;			
 	
 lock_on_active
-	:	lock_on_active_key^ BOOL?
+	:	lock_on_active_key^ {	emit(Location.LOCATION_RULE_HEADER_KEYWORD);	} BOOL?
 	{	emit($BOOL, DroolsEditorType.BOOLEAN_CONST );	}
 	;
 
@@ -1142,12 +1171,14 @@ catch [ RecognitionException re ] {
 finally {
 	if (isEditorInterfaceEnabled && input.LA(2) == EOF) {
 		if (input.LA(1) == ID) {
+			emit(true, Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
 			emit(input.LT(1), DroolsEditorType.KEYWORD);
 			input.consume();
 			emit(true, Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
 		}
 	} else if (isEditorInterfaceEnabled && input.LA(3) == EOF) {
 		if (input.LA(1) == ID && input.LA(2) == ID && validateLT(1, DroolsSoftKeywords.NOT)) {
+			emit(true, Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
 			emit(input.LT(1), DroolsEditorType.KEYWORD);
 			emit(input.LT(2), DroolsEditorType.KEYWORD);
 			input.consume();
