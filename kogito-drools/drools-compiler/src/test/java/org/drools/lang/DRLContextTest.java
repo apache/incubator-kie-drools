@@ -2757,13 +2757,13 @@ public class DRLContextTest extends TestCase {
 			parser.compilation_unit();
 		} catch (Exception ex) {
 		}
-		
-		DroolsToken token = (DroolsToken) parser
-		.getEditorInterface().get(0).getContent().getLast();
+
+		DroolsToken token = getLastTokenOnList(parser.getEditorInterface().get(
+				0).getContent());
 		assertEquals("group", token.getText().toLowerCase());
 		assertEquals(DroolsEditorType.KEYWORD, token.getEditorType());
 
-		assertEquals(Location.LOCATION_RULE_HEADER, getLastIntegerValue(parser
+		assertEquals(Location.LOCATION_RULE_HEADER_KEYWORD, getLastIntegerValue(parser
 				.getEditorInterface().get(0).getContent()));
 	}
 
@@ -2818,13 +2818,13 @@ public class DRLContextTest extends TestCase {
 			parser.compilation_unit();
 		} catch (Exception ex) {
 		}
-		
-		DroolsToken token = (DroolsToken) parser
-		.getEditorInterface().get(0).getContent().getLast();
+
+		DroolsToken token = getLastTokenOnList(parser.getEditorInterface().get(
+				0).getContent());
 		assertEquals("dialect", token.getText().toLowerCase());
 		assertEquals(DroolsEditorType.KEYWORD, token.getEditorType());
 
-		assertEquals(Location.LOCATION_RULE_HEADER, getLastIntegerValue(parser
+		assertEquals(Location.LOCATION_RULE_HEADER_KEYWORD, getLastIntegerValue(parser
 				.getEditorInterface().get(0).getContent()));
 	}
 
@@ -2838,12 +2838,12 @@ public class DRLContextTest extends TestCase {
 		} catch (Exception ex) {
 		}
 
-		DroolsToken token = (DroolsToken) parser
-		.getEditorInterface().get(0).getContent().getLast();
+		DroolsToken token = getLastTokenOnList(parser.getEditorInterface().get(
+				0).getContent());
 		assertEquals("dialect", token.getText().toLowerCase());
 		assertEquals(DroolsEditorType.KEYWORD, token.getEditorType());
 
-		assertEquals(Location.LOCATION_RULE_HEADER, getLastIntegerValue(parser
+		assertEquals(Location.LOCATION_RULE_HEADER_KEYWORD, getLastIntegerValue(parser
 				.getEditorInterface().get(0).getContent()));
 	}
 
@@ -2909,7 +2909,7 @@ public class DRLContextTest extends TestCase {
 
 	@SuppressWarnings("unchecked")
 	private int getLastIntegerValue(LinkedList list) {
-//		System.out.println(list.toString());
+		System.out.println(list.toString());
 		int lastIntergerValue = -1;
 		for (Object object : list) {
 			if (object instanceof Integer) {
@@ -2917,6 +2917,16 @@ public class DRLContextTest extends TestCase {
 			}
 		}
 		return lastIntergerValue;
+	}
+
+	private DroolsToken getLastTokenOnList(LinkedList list) {
+		DroolsToken lastToken = null;
+		for (Object object : list) {
+			if (object instanceof DroolsToken) {
+				lastToken = (DroolsToken) object;
+			}
+		}
+		return lastToken;
 	}
 
 	/**
