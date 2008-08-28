@@ -1,4 +1,4 @@
-// $ANTLR 3.0.1 /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g 2008-08-26 21:02:45
+// $ANTLR 3.0.1 /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g 2008-08-28 15:09:00
 
 	package org.drools.lang;
 	
@@ -425,7 +425,6 @@ public class DRLParser extends Parser {
     	/** Overrided this method to not output mesages */
     	public void emitErrorMessage(String msg) {
     	}
-    	
 
 
     public static class compilation_unit_return extends ParserRuleReturnScope {
@@ -434,7 +433,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start compilation_unit
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:396:1: compilation_unit : ( package_statement )? ( statement )* EOF -> ^( VT_COMPILATION_UNIT ( package_statement )? ( statement )* ) ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:395:1: compilation_unit : ( package_statement )? ( statement )* EOF -> ^( VT_COMPILATION_UNIT ( package_statement )? ( statement )* ) ;
     public final compilation_unit_return compilation_unit() throws RecognitionException {
         compilation_unit_return retval = new compilation_unit_return();
         retval.start = input.LT(1);
@@ -452,10 +451,10 @@ public class DRLParser extends Parser {
         RewriteRuleSubtreeStream stream_package_statement=new RewriteRuleSubtreeStream(adaptor,"rule package_statement");
         RewriteRuleSubtreeStream stream_statement=new RewriteRuleSubtreeStream(adaptor,"rule statement");
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:397:2: ( ( package_statement )? ( statement )* EOF -> ^( VT_COMPILATION_UNIT ( package_statement )? ( statement )* ) )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:397:4: ( package_statement )? ( statement )* EOF
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:396:2: ( ( package_statement )? ( statement )* EOF -> ^( VT_COMPILATION_UNIT ( package_statement )? ( statement )* ) )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:396:4: ( package_statement )? ( statement )* EOF
             {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:397:4: ( package_statement )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:396:4: ( package_statement )?
             int alt1=2;
             int LA1_0 = input.LA(1);
 
@@ -472,7 +471,7 @@ public class DRLParser extends Parser {
             }
             switch (alt1) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:397:4: package_statement
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:396:4: package_statement
                     {
                     pushFollow(FOLLOW_package_statement_in_compilation_unit388);
                     package_statement1=package_statement();
@@ -485,7 +484,7 @@ public class DRLParser extends Parser {
 
             }
 
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:398:3: ( statement )*
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:397:3: ( statement )*
             loop2:
             do {
                 int alt2=2;
@@ -498,7 +497,7 @@ public class DRLParser extends Parser {
 
                 switch (alt2) {
             	case 1 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:398:3: statement
+            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:397:3: statement
             	    {
             	    pushFollow(FOLLOW_statement_in_compilation_unit393);
             	    statement2=statement();
@@ -530,20 +529,20 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 400:3: -> ^( VT_COMPILATION_UNIT ( package_statement )? ( statement )* )
+            // 399:3: -> ^( VT_COMPILATION_UNIT ( package_statement )? ( statement )* )
             {
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:400:6: ^( VT_COMPILATION_UNIT ( package_statement )? ( statement )* )
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:399:6: ^( VT_COMPILATION_UNIT ( package_statement )? ( statement )* )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(adaptor.create(VT_COMPILATION_UNIT, "VT_COMPILATION_UNIT"), root_1);
 
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:400:28: ( package_statement )?
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:399:28: ( package_statement )?
                 if ( stream_package_statement.hasNext() ) {
                     adaptor.addChild(root_1, stream_package_statement.next());
 
                 }
                 stream_package_statement.reset();
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:400:47: ( statement )*
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:399:47: ( statement )*
                 while ( stream_statement.hasNext() ) {
                     adaptor.addChild(root_1, stream_statement.next());
 
@@ -587,7 +586,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start package_statement
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:408:1: package_statement : package_key package_id ( SEMICOLON )? -> ^( package_key package_id ) ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:407:1: package_statement : package_key package_id ( SEMICOLON )? -> ^( package_key package_id ) ;
     public final package_statement_return package_statement() throws RecognitionException {
         package_statement_return retval = new package_statement_return();
         retval.start = input.LT(1);
@@ -606,8 +605,8 @@ public class DRLParser extends Parser {
         RewriteRuleSubtreeStream stream_package_id=new RewriteRuleSubtreeStream(adaptor,"rule package_id");
          pushParaphrases(DroolsParaphraseTypes.PACKAGE); 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:411:2: ( package_key package_id ( SEMICOLON )? -> ^( package_key package_id ) )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:412:2: package_key package_id ( SEMICOLON )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:410:2: ( package_key package_id ( SEMICOLON )? -> ^( package_key package_id ) )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:411:2: package_key package_id ( SEMICOLON )?
             {
             if ( backtracking==0 ) {
               	beginSentence(DroolsSentenceType.PACKAGE);	
@@ -622,7 +621,7 @@ public class DRLParser extends Parser {
             _fsp--;
             if (failed) return retval;
             if ( backtracking==0 ) stream_package_id.add(package_id5.getTree());
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:414:14: ( SEMICOLON )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:413:14: ( SEMICOLON )?
             int alt3=2;
             int LA3_0 = input.LA(1);
 
@@ -631,7 +630,7 @@ public class DRLParser extends Parser {
             }
             switch (alt3) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:414:14: SEMICOLON
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:413:14: SEMICOLON
                     {
                     SEMICOLON6=(Token)input.LT(1);
                     match(input,SEMICOLON,FOLLOW_SEMICOLON_in_package_statement460); if (failed) return retval;
@@ -658,9 +657,9 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 416:3: -> ^( package_key package_id )
+            // 415:3: -> ^( package_key package_id )
             {
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:416:6: ^( package_key package_id )
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:415:6: ^( package_key package_id )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(stream_package_key.nextNode(), root_1);
@@ -702,7 +701,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start package_id
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:419:1: package_id : id+= ID (id+= DOT id+= ID )* -> ^( VT_PACKAGE_ID ( ID )+ ) ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:418:1: package_id : id+= ID (id+= DOT id+= ID )* -> ^( VT_PACKAGE_ID ( ID )+ ) ;
     public final package_id_return package_id() throws RecognitionException {
         package_id_return retval = new package_id_return();
         retval.start = input.LT(1);
@@ -717,8 +716,8 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_DOT=new RewriteRuleTokenStream(adaptor,"token DOT");
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:420:2: (id+= ID (id+= DOT id+= ID )* -> ^( VT_PACKAGE_ID ( ID )+ ) )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:420:4: id+= ID (id+= DOT id+= ID )*
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:419:2: (id+= ID (id+= DOT id+= ID )* -> ^( VT_PACKAGE_ID ( ID )+ ) )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:419:4: id+= ID (id+= DOT id+= ID )*
             {
             id=(Token)input.LT(1);
             match(input,ID,FOLLOW_ID_in_package_id487); if (failed) return retval;
@@ -727,7 +726,7 @@ public class DRLParser extends Parser {
             if (list_id==null) list_id=new ArrayList();
             list_id.add(id);
 
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:420:11: (id+= DOT id+= ID )*
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:419:11: (id+= DOT id+= ID )*
             loop4:
             do {
                 int alt4=2;
@@ -740,7 +739,7 @@ public class DRLParser extends Parser {
 
                 switch (alt4) {
             	case 1 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:420:13: id+= DOT id+= ID
+            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:419:13: id+= DOT id+= ID
             	    {
             	    id=(Token)input.LT(1);
             	    match(input,DOT,FOLLOW_DOT_in_package_id493); if (failed) return retval;
@@ -781,9 +780,9 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 423:3: -> ^( VT_PACKAGE_ID ( ID )+ )
+            // 422:3: -> ^( VT_PACKAGE_ID ( ID )+ )
             {
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:423:6: ^( VT_PACKAGE_ID ( ID )+ )
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:422:6: ^( VT_PACKAGE_ID ( ID )+ )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(adaptor.create(VT_PACKAGE_ID, "VT_PACKAGE_ID"), root_1);
@@ -829,7 +828,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start statement
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:426:1: statement options {k=2; } : ( rule_attribute | {...}? => function_import_statement | import_statement | global | function | {...}? => template | {...}? => type_declaration | rule | query );
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:425:1: statement options {k=2; } : ( rule_attribute | {...}? => function_import_statement | import_statement | global | function | {...}? => template | {...}? => type_declaration | rule | query );
     public final statement_return statement() throws RecognitionException {
         statement_return retval = new statement_return();
         retval.start = input.LT(1);
@@ -857,7 +856,7 @@ public class DRLParser extends Parser {
 
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:429:3: ( rule_attribute | {...}? => function_import_statement | import_statement | global | function | {...}? => template | {...}? => type_declaration | rule | query )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:428:3: ( rule_attribute | {...}? => function_import_statement | import_statement | global | function | {...}? => template | {...}? => type_declaration | rule | query )
             int alt5=9;
             int LA5_0 = input.LA(1);
 
@@ -897,7 +896,7 @@ public class DRLParser extends Parser {
                     else {
                         if (backtracking>0) {failed=true; return retval;}
                         NoViableAltException nvae =
-                            new NoViableAltException("426:1: statement options {k=2; } : ( rule_attribute | {...}? => function_import_statement | import_statement | global | function | {...}? => template | {...}? => type_declaration | rule | query );", 5, 3, input);
+                            new NoViableAltException("425:1: statement options {k=2; } : ( rule_attribute | {...}? => function_import_statement | import_statement | global | function | {...}? => template | {...}? => type_declaration | rule | query );", 5, 3, input);
 
                         throw nvae;
                     }
@@ -923,7 +922,7 @@ public class DRLParser extends Parser {
                     else {
                         if (backtracking>0) {failed=true; return retval;}
                         NoViableAltException nvae =
-                            new NoViableAltException("426:1: statement options {k=2; } : ( rule_attribute | {...}? => function_import_statement | import_statement | global | function | {...}? => template | {...}? => type_declaration | rule | query );", 5, 5, input);
+                            new NoViableAltException("425:1: statement options {k=2; } : ( rule_attribute | {...}? => function_import_statement | import_statement | global | function | {...}? => template | {...}? => type_declaration | rule | query );", 5, 5, input);
 
                         throw nvae;
                     }
@@ -937,7 +936,7 @@ public class DRLParser extends Parser {
                 else {
                     if (backtracking>0) {failed=true; return retval;}
                     NoViableAltException nvae =
-                        new NoViableAltException("426:1: statement options {k=2; } : ( rule_attribute | {...}? => function_import_statement | import_statement | global | function | {...}? => template | {...}? => type_declaration | rule | query );", 5, 1, input);
+                        new NoViableAltException("425:1: statement options {k=2; } : ( rule_attribute | {...}? => function_import_statement | import_statement | global | function | {...}? => template | {...}? => type_declaration | rule | query );", 5, 1, input);
 
                     throw nvae;
                 }
@@ -945,13 +944,13 @@ public class DRLParser extends Parser {
             else {
                 if (backtracking>0) {failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("426:1: statement options {k=2; } : ( rule_attribute | {...}? => function_import_statement | import_statement | global | function | {...}? => template | {...}? => type_declaration | rule | query );", 5, 0, input);
+                    new NoViableAltException("425:1: statement options {k=2; } : ( rule_attribute | {...}? => function_import_statement | import_statement | global | function | {...}? => template | {...}? => type_declaration | rule | query );", 5, 0, input);
 
                 throw nvae;
             }
             switch (alt5) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:430:2: rule_attribute
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:429:2: rule_attribute
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -967,7 +966,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:432:3: {...}? => function_import_statement
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:431:3: {...}? => function_import_statement
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -984,7 +983,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:433:4: import_statement
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:432:4: import_statement
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -997,7 +996,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:434:4: global
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:433:4: global
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -1010,7 +1009,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 5 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:435:4: function
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:434:4: function
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -1023,7 +1022,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 6 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:436:4: {...}? => template
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:435:4: {...}? => template
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -1040,7 +1039,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 7 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:437:4: {...}? => type_declaration
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:436:4: {...}? => type_declaration
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -1057,7 +1056,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 8 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:438:4: rule
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:437:4: rule
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -1070,7 +1069,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 9 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:439:4: query
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:438:4: query
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -1107,7 +1106,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start import_statement
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:442:1: import_statement : import_key import_name[DroolsParaphraseTypes.IMPORT] ( SEMICOLON )? -> ^( import_key import_name ) ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:441:1: import_statement : import_key import_name[DroolsParaphraseTypes.IMPORT] ( SEMICOLON )? -> ^( import_key import_name ) ;
     public final import_statement_return import_statement() throws RecognitionException {
         import_statement_return retval = new import_statement_return();
         retval.start = input.LT(1);
@@ -1126,8 +1125,8 @@ public class DRLParser extends Parser {
         RewriteRuleSubtreeStream stream_import_name=new RewriteRuleSubtreeStream(adaptor,"rule import_name");
          pushParaphrases(DroolsParaphraseTypes.IMPORT); 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:445:2: ( import_key import_name[DroolsParaphraseTypes.IMPORT] ( SEMICOLON )? -> ^( import_key import_name ) )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:446:2: import_key import_name[DroolsParaphraseTypes.IMPORT] ( SEMICOLON )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:444:2: ( import_key import_name[DroolsParaphraseTypes.IMPORT] ( SEMICOLON )? -> ^( import_key import_name ) )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:445:2: import_key import_name[DroolsParaphraseTypes.IMPORT] ( SEMICOLON )?
             {
             if ( backtracking==0 ) {
               	beginSentence(DroolsSentenceType.IMPORT_STATEMENT);	
@@ -1142,7 +1141,7 @@ public class DRLParser extends Parser {
             _fsp--;
             if (failed) return retval;
             if ( backtracking==0 ) stream_import_name.add(import_name17.getTree());
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:447:56: ( SEMICOLON )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:446:56: ( SEMICOLON )?
             int alt6=2;
             int LA6_0 = input.LA(1);
 
@@ -1151,7 +1150,7 @@ public class DRLParser extends Parser {
             }
             switch (alt6) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:447:56: SEMICOLON
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:446:56: SEMICOLON
                     {
                     SEMICOLON18=(Token)input.LT(1);
                     match(input,SEMICOLON,FOLLOW_SEMICOLON_in_import_statement624); if (failed) return retval;
@@ -1178,9 +1177,9 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 449:3: -> ^( import_key import_name )
+            // 448:3: -> ^( import_key import_name )
             {
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:449:6: ^( import_key import_name )
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:448:6: ^( import_key import_name )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(stream_import_key.nextNode(), root_1);
@@ -1222,7 +1221,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start function_import_statement
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:452:1: function_import_statement : imp= import_key function_key import_name[DroolsParaphraseTypes.FUNCTION_IMPORT] ( SEMICOLON )? -> ^( VT_FUNCTION_IMPORT[$imp.start] function_key import_name ) ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:451:1: function_import_statement : imp= import_key function_key import_name[DroolsParaphraseTypes.FUNCTION_IMPORT] ( SEMICOLON )? -> ^( VT_FUNCTION_IMPORT[$imp.start] function_key import_name ) ;
     public final function_import_statement_return function_import_statement() throws RecognitionException {
         function_import_statement_return retval = new function_import_statement_return();
         retval.start = input.LT(1);
@@ -1244,8 +1243,8 @@ public class DRLParser extends Parser {
         RewriteRuleSubtreeStream stream_import_name=new RewriteRuleSubtreeStream(adaptor,"rule import_name");
          pushParaphrases(DroolsParaphraseTypes.FUNCTION_IMPORT); 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:455:2: (imp= import_key function_key import_name[DroolsParaphraseTypes.FUNCTION_IMPORT] ( SEMICOLON )? -> ^( VT_FUNCTION_IMPORT[$imp.start] function_key import_name ) )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:456:2: imp= import_key function_key import_name[DroolsParaphraseTypes.FUNCTION_IMPORT] ( SEMICOLON )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:454:2: (imp= import_key function_key import_name[DroolsParaphraseTypes.FUNCTION_IMPORT] ( SEMICOLON )? -> ^( VT_FUNCTION_IMPORT[$imp.start] function_key import_name ) )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:455:2: imp= import_key function_key import_name[DroolsParaphraseTypes.FUNCTION_IMPORT] ( SEMICOLON )?
             {
             if ( backtracking==0 ) {
               	beginSentence(DroolsSentenceType.FUNCTION_IMPORT_STATEMENT);	
@@ -1265,7 +1264,7 @@ public class DRLParser extends Parser {
             _fsp--;
             if (failed) return retval;
             if ( backtracking==0 ) stream_import_name.add(import_name20.getTree());
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:457:82: ( SEMICOLON )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:456:82: ( SEMICOLON )?
             int alt7=2;
             int LA7_0 = input.LA(1);
 
@@ -1274,7 +1273,7 @@ public class DRLParser extends Parser {
             }
             switch (alt7) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:457:82: SEMICOLON
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:456:82: SEMICOLON
                     {
                     SEMICOLON21=(Token)input.LT(1);
                     match(input,SEMICOLON,FOLLOW_SEMICOLON_in_function_import_statement674); if (failed) return retval;
@@ -1301,9 +1300,9 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 459:3: -> ^( VT_FUNCTION_IMPORT[$imp.start] function_key import_name )
+            // 458:3: -> ^( VT_FUNCTION_IMPORT[$imp.start] function_key import_name )
             {
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:459:6: ^( VT_FUNCTION_IMPORT[$imp.start] function_key import_name )
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:458:6: ^( VT_FUNCTION_IMPORT[$imp.start] function_key import_name )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(adaptor.create(VT_FUNCTION_IMPORT, ((Token)imp.start)), root_1);
@@ -1346,7 +1345,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start import_name
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:462:1: import_name[DroolsParaphraseTypes importType] : id+= ID (id+= DOT id+= ID )* (id+= DOT_STAR )? -> ^( VT_IMPORT_ID ( ID )+ ( DOT_STAR )? ) ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:461:1: import_name[DroolsParaphraseTypes importType] : id+= ID (id+= DOT id+= ID )* (id+= DOT_STAR )? -> ^( VT_IMPORT_ID ( ID )+ ( DOT_STAR )? ) ;
     public final import_name_return import_name(DroolsParaphraseTypes importType) throws RecognitionException {
         import_name_return retval = new import_name_return();
         retval.start = input.LT(1);
@@ -1362,8 +1361,8 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_DOT=new RewriteRuleTokenStream(adaptor,"token DOT");
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:463:2: (id+= ID (id+= DOT id+= ID )* (id+= DOT_STAR )? -> ^( VT_IMPORT_ID ( ID )+ ( DOT_STAR )? ) )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:463:4: id+= ID (id+= DOT id+= ID )* (id+= DOT_STAR )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:462:2: (id+= ID (id+= DOT id+= ID )* (id+= DOT_STAR )? -> ^( VT_IMPORT_ID ( ID )+ ( DOT_STAR )? ) )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:462:4: id+= ID (id+= DOT id+= ID )* (id+= DOT_STAR )?
             {
             id=(Token)input.LT(1);
             match(input,ID,FOLLOW_ID_in_import_name708); if (failed) return retval;
@@ -1372,7 +1371,7 @@ public class DRLParser extends Parser {
             if (list_id==null) list_id=new ArrayList();
             list_id.add(id);
 
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:463:11: (id+= DOT id+= ID )*
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:462:11: (id+= DOT id+= ID )*
             loop8:
             do {
                 int alt8=2;
@@ -1385,7 +1384,7 @@ public class DRLParser extends Parser {
 
                 switch (alt8) {
             	case 1 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:463:13: id+= DOT id+= ID
+            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:462:13: id+= DOT id+= ID
             	    {
             	    id=(Token)input.LT(1);
             	    match(input,DOT,FOLLOW_DOT_in_import_name714); if (failed) return retval;
@@ -1410,7 +1409,7 @@ public class DRLParser extends Parser {
                 }
             } while (true);
 
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:463:33: (id+= DOT_STAR )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:462:33: (id+= DOT_STAR )?
             int alt9=2;
             int LA9_0 = input.LA(1);
 
@@ -1419,7 +1418,7 @@ public class DRLParser extends Parser {
             }
             switch (alt9) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:463:33: id+= DOT_STAR
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:462:33: id+= DOT_STAR
                     {
                     id=(Token)input.LT(1);
                     match(input,DOT_STAR,FOLLOW_DOT_STAR_in_import_name725); if (failed) return retval;
@@ -1450,9 +1449,9 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 466:3: -> ^( VT_IMPORT_ID ( ID )+ ( DOT_STAR )? )
+            // 465:3: -> ^( VT_IMPORT_ID ( ID )+ ( DOT_STAR )? )
             {
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:466:6: ^( VT_IMPORT_ID ( ID )+ ( DOT_STAR )? )
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:465:6: ^( VT_IMPORT_ID ( ID )+ ( DOT_STAR )? )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(adaptor.create(VT_IMPORT_ID, "VT_IMPORT_ID"), root_1);
@@ -1465,7 +1464,7 @@ public class DRLParser extends Parser {
 
                 }
                 stream_ID.reset();
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:466:25: ( DOT_STAR )?
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:465:25: ( DOT_STAR )?
                 if ( stream_DOT_STAR.hasNext() ) {
                     adaptor.addChild(root_1, stream_DOT_STAR.next());
 
@@ -1504,7 +1503,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start global
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:469:1: global : global_key data_type global_id ( SEMICOLON )? -> ^( global_key data_type global_id ) ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:468:1: global : global_key data_type global_id ( SEMICOLON )? -> ^( global_key data_type global_id ) ;
     public final global_return global() throws RecognitionException {
         global_return retval = new global_return();
         retval.start = input.LT(1);
@@ -1526,8 +1525,8 @@ public class DRLParser extends Parser {
         RewriteRuleSubtreeStream stream_global_key=new RewriteRuleSubtreeStream(adaptor,"rule global_key");
          pushParaphrases(DroolsParaphraseTypes.GLOBAL); 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:472:2: ( global_key data_type global_id ( SEMICOLON )? -> ^( global_key data_type global_id ) )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:473:2: global_key data_type global_id ( SEMICOLON )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:471:2: ( global_key data_type global_id ( SEMICOLON )? -> ^( global_key data_type global_id ) )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:472:2: global_key data_type global_id ( SEMICOLON )?
             {
             if ( backtracking==0 ) {
               	beginSentence(DroolsSentenceType.GLOBAL);	
@@ -1547,7 +1546,7 @@ public class DRLParser extends Parser {
             _fsp--;
             if (failed) return retval;
             if ( backtracking==0 ) stream_global_id.add(global_id24.getTree());
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:474:34: ( SEMICOLON )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:473:34: ( SEMICOLON )?
             int alt10=2;
             int LA10_0 = input.LA(1);
 
@@ -1556,7 +1555,7 @@ public class DRLParser extends Parser {
             }
             switch (alt10) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:474:34: SEMICOLON
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:473:34: SEMICOLON
                     {
                     SEMICOLON25=(Token)input.LT(1);
                     match(input,SEMICOLON,FOLLOW_SEMICOLON_in_global776); if (failed) return retval;
@@ -1583,9 +1582,9 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 476:3: -> ^( global_key data_type global_id )
+            // 475:3: -> ^( global_key data_type global_id )
             {
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:476:6: ^( global_key data_type global_id )
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:475:6: ^( global_key data_type global_id )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(stream_global_key.nextNode(), root_1);
@@ -1628,7 +1627,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start global_id
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:479:1: global_id : id= ID -> VT_GLOBAL_ID[$id] ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:478:1: global_id : id= ID -> VT_GLOBAL_ID[$id] ;
     public final global_id_return global_id() throws RecognitionException {
         global_id_return retval = new global_id_return();
         retval.start = input.LT(1);
@@ -1641,8 +1640,8 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:480:2: (id= ID -> VT_GLOBAL_ID[$id] )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:480:4: id= ID
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:479:2: (id= ID -> VT_GLOBAL_ID[$id] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:479:4: id= ID
             {
             id=(Token)input.LT(1);
             match(input,ID,FOLLOW_ID_in_global_id805); if (failed) return retval;
@@ -1664,7 +1663,7 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 483:3: -> VT_GLOBAL_ID[$id]
+            // 482:3: -> VT_GLOBAL_ID[$id]
             {
                 adaptor.addChild(root_0, adaptor.create(VT_GLOBAL_ID, id));
 
@@ -1697,7 +1696,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start function
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:486:1: function : function_key ( data_type )? function_id parameters curly_chunk -> ^( function_key ( data_type )? function_id parameters curly_chunk ) ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:485:1: function : function_key ( data_type )? function_id parameters curly_chunk -> ^( function_key ( data_type )? function_id parameters curly_chunk ) ;
     public final function_return function() throws RecognitionException {
         function_return retval = new function_return();
         retval.start = input.LT(1);
@@ -1722,8 +1721,8 @@ public class DRLParser extends Parser {
         RewriteRuleSubtreeStream stream_function_id=new RewriteRuleSubtreeStream(adaptor,"rule function_id");
          pushParaphrases(DroolsParaphraseTypes.FUNCTION); 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:489:2: ( function_key ( data_type )? function_id parameters curly_chunk -> ^( function_key ( data_type )? function_id parameters curly_chunk ) )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:490:2: function_key ( data_type )? function_id parameters curly_chunk
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:488:2: ( function_key ( data_type )? function_id parameters curly_chunk -> ^( function_key ( data_type )? function_id parameters curly_chunk ) )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:489:2: function_key ( data_type )? function_id parameters curly_chunk
             {
             if ( backtracking==0 ) {
               	beginSentence(DroolsSentenceType.FUNCTION);	
@@ -1733,7 +1732,7 @@ public class DRLParser extends Parser {
             _fsp--;
             if (failed) return retval;
             if ( backtracking==0 ) stream_function_key.add(function_key26.getTree());
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:491:16: ( data_type )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:490:16: ( data_type )?
             int alt11=2;
             int LA11_0 = input.LA(1);
 
@@ -1746,7 +1745,7 @@ public class DRLParser extends Parser {
             }
             switch (alt11) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:491:16: data_type
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:490:16: data_type
                     {
                     pushFollow(FOLLOW_data_type_in_function844);
                     data_type27=data_type();
@@ -1786,14 +1785,14 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 492:3: -> ^( function_key ( data_type )? function_id parameters curly_chunk )
+            // 491:3: -> ^( function_key ( data_type )? function_id parameters curly_chunk )
             {
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:492:6: ^( function_key ( data_type )? function_id parameters curly_chunk )
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:491:6: ^( function_key ( data_type )? function_id parameters curly_chunk )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(stream_function_key.nextNode(), root_1);
 
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:492:21: ( data_type )?
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:491:21: ( data_type )?
                 if ( stream_data_type.hasNext() ) {
                     adaptor.addChild(root_1, stream_data_type.next());
 
@@ -1838,7 +1837,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start function_id
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:495:1: function_id : id= ID -> VT_FUNCTION_ID[$id] ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:494:1: function_id : id= ID -> VT_FUNCTION_ID[$id] ;
     public final function_id_return function_id() throws RecognitionException {
         function_id_return retval = new function_id_return();
         retval.start = input.LT(1);
@@ -1851,8 +1850,8 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:496:2: (id= ID -> VT_FUNCTION_ID[$id] )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:496:4: id= ID
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:495:2: (id= ID -> VT_FUNCTION_ID[$id] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:495:4: id= ID
             {
             id=(Token)input.LT(1);
             match(input,ID,FOLLOW_ID_in_function_id881); if (failed) return retval;
@@ -1874,7 +1873,7 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 499:3: -> VT_FUNCTION_ID[$id]
+            // 498:3: -> VT_FUNCTION_ID[$id]
             {
                 adaptor.addChild(root_0, adaptor.create(VT_FUNCTION_ID, id));
 
@@ -1907,7 +1906,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start query
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:502:1: query : query_key query_id ( parameters )? normal_lhs_block END ( SEMICOLON )? -> ^( query_key query_id ( parameters )? normal_lhs_block END ) ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:501:1: query : query_key query_id ( parameters )? normal_lhs_block END ( SEMICOLON )? -> ^( query_key query_id ( parameters )? normal_lhs_block END ) ;
     public final query_return query() throws RecognitionException {
         query_return retval = new query_return();
         retval.start = input.LT(1);
@@ -1935,8 +1934,8 @@ public class DRLParser extends Parser {
         RewriteRuleSubtreeStream stream_query_id=new RewriteRuleSubtreeStream(adaptor,"rule query_id");
          pushParaphrases(DroolsParaphraseTypes.QUERY); 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:505:2: ( query_key query_id ( parameters )? normal_lhs_block END ( SEMICOLON )? -> ^( query_key query_id ( parameters )? normal_lhs_block END ) )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:506:2: query_key query_id ( parameters )? normal_lhs_block END ( SEMICOLON )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:504:2: ( query_key query_id ( parameters )? normal_lhs_block END ( SEMICOLON )? -> ^( query_key query_id ( parameters )? normal_lhs_block END ) )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:505:2: query_key query_id ( parameters )? normal_lhs_block END ( SEMICOLON )?
             {
             if ( backtracking==0 ) {
               	beginSentence(DroolsSentenceType.QUERY);	
@@ -1954,12 +1953,12 @@ public class DRLParser extends Parser {
             if ( backtracking==0 ) {
               	emit(Location.LOCATION_RULE_HEADER);	
             }
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:509:3: ( parameters )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:508:3: ( parameters )?
             int alt12=2;
             alt12 = dfa12.predict(input);
             switch (alt12) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:509:3: parameters
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:508:3: parameters
                     {
                     pushFollow(FOLLOW_parameters_in_query928);
                     parameters33=parameters();
@@ -1984,7 +1983,7 @@ public class DRLParser extends Parser {
             match(input,END,FOLLOW_END_in_query942); if (failed) return retval;
             if ( backtracking==0 ) stream_END.add(END35);
 
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:512:7: ( SEMICOLON )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:511:7: ( SEMICOLON )?
             int alt13=2;
             int LA13_0 = input.LA(1);
 
@@ -1993,7 +1992,7 @@ public class DRLParser extends Parser {
             }
             switch (alt13) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:512:7: SEMICOLON
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:511:7: SEMICOLON
                     {
                     SEMICOLON36=(Token)input.LT(1);
                     match(input,SEMICOLON,FOLLOW_SEMICOLON_in_query944); if (failed) return retval;
@@ -2021,15 +2020,15 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 515:3: -> ^( query_key query_id ( parameters )? normal_lhs_block END )
+            // 514:3: -> ^( query_key query_id ( parameters )? normal_lhs_block END )
             {
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:515:6: ^( query_key query_id ( parameters )? normal_lhs_block END )
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:514:6: ^( query_key query_id ( parameters )? normal_lhs_block END )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(stream_query_key.nextNode(), root_1);
 
                 adaptor.addChild(root_1, stream_query_id.next());
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:515:27: ( parameters )?
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:514:27: ( parameters )?
                 if ( stream_parameters.hasNext() ) {
                     adaptor.addChild(root_1, stream_parameters.next());
 
@@ -2073,7 +2072,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start query_id
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:518:1: query_id : (id= ID -> VT_QUERY_ID[$id] | id= STRING -> VT_QUERY_ID[$id] );
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:517:1: query_id : (id= ID -> VT_QUERY_ID[$id] | id= STRING -> VT_QUERY_ID[$id] );
     public final query_id_return query_id() throws RecognitionException {
         query_id_return retval = new query_id_return();
         retval.start = input.LT(1);
@@ -2087,7 +2086,7 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:519:2: (id= ID -> VT_QUERY_ID[$id] | id= STRING -> VT_QUERY_ID[$id] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:518:2: (id= ID -> VT_QUERY_ID[$id] | id= STRING -> VT_QUERY_ID[$id] )
             int alt14=2;
             int LA14_0 = input.LA(1);
 
@@ -2100,13 +2099,13 @@ public class DRLParser extends Parser {
             else {
                 if (backtracking>0) {failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("518:1: query_id : (id= ID -> VT_QUERY_ID[$id] | id= STRING -> VT_QUERY_ID[$id] );", 14, 0, input);
+                    new NoViableAltException("517:1: query_id : (id= ID -> VT_QUERY_ID[$id] | id= STRING -> VT_QUERY_ID[$id] );", 14, 0, input);
 
                 throw nvae;
             }
             switch (alt14) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:519:5: id= ID
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:518:5: id= ID
                     {
                     id=(Token)input.LT(1);
                     match(input,ID,FOLLOW_ID_in_query_id979); if (failed) return retval;
@@ -2128,7 +2127,7 @@ public class DRLParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 521:65: -> VT_QUERY_ID[$id]
+                    // 520:65: -> VT_QUERY_ID[$id]
                     {
                         adaptor.addChild(root_0, adaptor.create(VT_QUERY_ID, id));
 
@@ -2139,7 +2138,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:522:5: id= STRING
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:521:5: id= STRING
                     {
                     id=(Token)input.LT(1);
                     match(input,STRING,FOLLOW_STRING_in_query_id995); if (failed) return retval;
@@ -2161,7 +2160,7 @@ public class DRLParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 524:65: -> VT_QUERY_ID[$id]
+                    // 523:65: -> VT_QUERY_ID[$id]
                     {
                         adaptor.addChild(root_0, adaptor.create(VT_QUERY_ID, id));
 
@@ -2196,7 +2195,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start parameters
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:527:1: parameters : LEFT_PAREN ( param_definition ( COMMA param_definition )* )? RIGHT_PAREN -> ^( VT_PARAM_LIST ( param_definition )* RIGHT_PAREN ) ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:526:1: parameters : LEFT_PAREN ( param_definition ( COMMA param_definition )* )? RIGHT_PAREN -> ^( VT_PARAM_LIST ( param_definition )* RIGHT_PAREN ) ;
     public final parameters_return parameters() throws RecognitionException {
         parameters_return retval = new parameters_return();
         retval.start = input.LT(1);
@@ -2219,8 +2218,8 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_RIGHT_PAREN=new RewriteRuleTokenStream(adaptor,"token RIGHT_PAREN");
         RewriteRuleSubtreeStream stream_param_definition=new RewriteRuleSubtreeStream(adaptor,"rule param_definition");
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:528:2: ( LEFT_PAREN ( param_definition ( COMMA param_definition )* )? RIGHT_PAREN -> ^( VT_PARAM_LIST ( param_definition )* RIGHT_PAREN ) )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:528:4: LEFT_PAREN ( param_definition ( COMMA param_definition )* )? RIGHT_PAREN
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:527:2: ( LEFT_PAREN ( param_definition ( COMMA param_definition )* )? RIGHT_PAREN -> ^( VT_PARAM_LIST ( param_definition )* RIGHT_PAREN ) )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:527:4: LEFT_PAREN ( param_definition ( COMMA param_definition )* )? RIGHT_PAREN
             {
             LEFT_PAREN37=(Token)input.LT(1);
             match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_parameters1014); if (failed) return retval;
@@ -2229,7 +2228,7 @@ public class DRLParser extends Parser {
             if ( backtracking==0 ) {
               	emit(LEFT_PAREN37, DroolsEditorType.SYMBOL);	
             }
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:529:4: ( param_definition ( COMMA param_definition )* )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:528:4: ( param_definition ( COMMA param_definition )* )?
             int alt16=2;
             int LA16_0 = input.LA(1);
 
@@ -2238,14 +2237,14 @@ public class DRLParser extends Parser {
             }
             switch (alt16) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:529:6: param_definition ( COMMA param_definition )*
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:528:6: param_definition ( COMMA param_definition )*
                     {
                     pushFollow(FOLLOW_param_definition_in_parameters1023);
                     param_definition38=param_definition();
                     _fsp--;
                     if (failed) return retval;
                     if ( backtracking==0 ) stream_param_definition.add(param_definition38.getTree());
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:529:23: ( COMMA param_definition )*
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:528:23: ( COMMA param_definition )*
                     loop15:
                     do {
                         int alt15=2;
@@ -2258,7 +2257,7 @@ public class DRLParser extends Parser {
 
                         switch (alt15) {
                     	case 1 :
-                    	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:529:24: COMMA param_definition
+                    	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:528:24: COMMA param_definition
                     	    {
                     	    COMMA39=(Token)input.LT(1);
                     	    match(input,COMMA,FOLLOW_COMMA_in_parameters1026); if (failed) return retval;
@@ -2306,14 +2305,14 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 531:3: -> ^( VT_PARAM_LIST ( param_definition )* RIGHT_PAREN )
+            // 530:3: -> ^( VT_PARAM_LIST ( param_definition )* RIGHT_PAREN )
             {
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:531:6: ^( VT_PARAM_LIST ( param_definition )* RIGHT_PAREN )
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:530:6: ^( VT_PARAM_LIST ( param_definition )* RIGHT_PAREN )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(adaptor.create(VT_PARAM_LIST, "VT_PARAM_LIST"), root_1);
 
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:531:22: ( param_definition )*
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:530:22: ( param_definition )*
                 while ( stream_param_definition.hasNext() ) {
                     adaptor.addChild(root_1, stream_param_definition.next());
 
@@ -2353,7 +2352,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start param_definition
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:534:1: param_definition : ( data_type )? argument ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:533:1: param_definition : ( data_type )? argument ;
     public final param_definition_return param_definition() throws RecognitionException {
         param_definition_return retval = new param_definition_return();
         retval.start = input.LT(1);
@@ -2367,17 +2366,17 @@ public class DRLParser extends Parser {
 
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:535:2: ( ( data_type )? argument )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:535:4: ( data_type )? argument
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:534:2: ( ( data_type )? argument )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:534:4: ( data_type )? argument
             {
             root_0 = (Object)adaptor.nil();
 
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:535:4: ( data_type )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:534:4: ( data_type )?
             int alt17=2;
             alt17 = dfa17.predict(input);
             switch (alt17) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:535:4: data_type
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:534:4: data_type
                     {
                     pushFollow(FOLLOW_data_type_in_param_definition1065);
                     data_type42=data_type();
@@ -2421,7 +2420,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start argument
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:538:1: argument : ID ( dimension_definition )* ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:537:1: argument : ID ( dimension_definition )* ;
     public final argument_return argument() throws RecognitionException {
         argument_return retval = new argument_return();
         retval.start = input.LT(1);
@@ -2435,8 +2434,8 @@ public class DRLParser extends Parser {
         Object ID44_tree=null;
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:539:2: ( ID ( dimension_definition )* )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:539:4: ID ( dimension_definition )*
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:538:2: ( ID ( dimension_definition )* )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:538:4: ID ( dimension_definition )*
             {
             root_0 = (Object)adaptor.nil();
 
@@ -2449,7 +2448,7 @@ public class DRLParser extends Parser {
             if ( backtracking==0 ) {
               	emit(ID44, DroolsEditorType.IDENTIFIER);	
             }
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:540:3: ( dimension_definition )*
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:539:3: ( dimension_definition )*
             loop18:
             do {
                 int alt18=2;
@@ -2462,7 +2461,7 @@ public class DRLParser extends Parser {
 
                 switch (alt18) {
             	case 1 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:540:3: dimension_definition
+            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:539:3: dimension_definition
             	    {
             	    pushFollow(FOLLOW_dimension_definition_in_argument1085);
             	    dimension_definition45=dimension_definition();
@@ -2504,7 +2503,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start type_declaration
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:543:1: type_declaration : declare_key type_declare_id ( decl_metadata )* ( decl_field )* END -> ^( declare_key type_declare_id ( decl_metadata )* ( decl_field )* END ) ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:542:1: type_declaration : declare_key type_declare_id ( decl_metadata )* ( decl_field )* END -> ^( declare_key type_declare_id ( decl_metadata )* ( decl_field )* END ) ;
     public final type_declaration_return type_declaration() throws RecognitionException {
         type_declaration_return retval = new type_declaration_return();
         retval.start = input.LT(1);
@@ -2529,8 +2528,8 @@ public class DRLParser extends Parser {
         RewriteRuleSubtreeStream stream_type_declare_id=new RewriteRuleSubtreeStream(adaptor,"rule type_declare_id");
          pushParaphrases(DroolsParaphraseTypes.TYPE_DECLARE); 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:546:2: ( declare_key type_declare_id ( decl_metadata )* ( decl_field )* END -> ^( declare_key type_declare_id ( decl_metadata )* ( decl_field )* END ) )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:547:2: declare_key type_declare_id ( decl_metadata )* ( decl_field )* END
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:545:2: ( declare_key type_declare_id ( decl_metadata )* ( decl_field )* END -> ^( declare_key type_declare_id ( decl_metadata )* ( decl_field )* END ) )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:546:2: declare_key type_declare_id ( decl_metadata )* ( decl_field )* END
             {
             if ( backtracking==0 ) {
               	beginSentence(DroolsSentenceType.TYPE_DECLARATION);	
@@ -2545,7 +2544,7 @@ public class DRLParser extends Parser {
             _fsp--;
             if (failed) return retval;
             if ( backtracking==0 ) stream_type_declare_id.add(type_declare_id47.getTree());
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:549:3: ( decl_metadata )*
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:548:3: ( decl_metadata )*
             loop19:
             do {
                 int alt19=2;
@@ -2558,7 +2557,7 @@ public class DRLParser extends Parser {
 
                 switch (alt19) {
             	case 1 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:549:3: decl_metadata
+            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:548:3: decl_metadata
             	    {
             	    pushFollow(FOLLOW_decl_metadata_in_type_declaration1120);
             	    decl_metadata48=decl_metadata();
@@ -2574,7 +2573,7 @@ public class DRLParser extends Parser {
                 }
             } while (true);
 
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:550:3: ( decl_field )*
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:549:3: ( decl_field )*
             loop20:
             do {
                 int alt20=2;
@@ -2587,7 +2586,7 @@ public class DRLParser extends Parser {
 
                 switch (alt20) {
             	case 1 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:550:3: decl_field
+            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:549:3: decl_field
             	    {
             	    pushFollow(FOLLOW_decl_field_in_type_declaration1125);
             	    decl_field49=decl_field();
@@ -2622,21 +2621,21 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 553:3: -> ^( declare_key type_declare_id ( decl_metadata )* ( decl_field )* END )
+            // 552:3: -> ^( declare_key type_declare_id ( decl_metadata )* ( decl_field )* END )
             {
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:553:6: ^( declare_key type_declare_id ( decl_metadata )* ( decl_field )* END )
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:552:6: ^( declare_key type_declare_id ( decl_metadata )* ( decl_field )* END )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(stream_declare_key.nextNode(), root_1);
 
                 adaptor.addChild(root_1, stream_type_declare_id.next());
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:553:36: ( decl_metadata )*
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:552:36: ( decl_metadata )*
                 while ( stream_decl_metadata.hasNext() ) {
                     adaptor.addChild(root_1, stream_decl_metadata.next());
 
                 }
                 stream_decl_metadata.reset();
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:553:51: ( decl_field )*
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:552:51: ( decl_field )*
                 while ( stream_decl_field.hasNext() ) {
                     adaptor.addChild(root_1, stream_decl_field.next());
 
@@ -2679,7 +2678,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start type_declare_id
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:556:1: type_declare_id : id= ID -> VT_TYPE_DECLARE_ID[$id] ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:555:1: type_declare_id : id= ID -> VT_TYPE_DECLARE_ID[$id] ;
     public final type_declare_id_return type_declare_id() throws RecognitionException {
         type_declare_id_return retval = new type_declare_id_return();
         retval.start = input.LT(1);
@@ -2692,8 +2691,8 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:557:2: (id= ID -> VT_TYPE_DECLARE_ID[$id] )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:557:5: id= ID
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:556:2: (id= ID -> VT_TYPE_DECLARE_ID[$id] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:556:5: id= ID
             {
             id=(Token)input.LT(1);
             match(input,ID,FOLLOW_ID_in_type_declare_id1165); if (failed) return retval;
@@ -2715,7 +2714,7 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 559:72: -> VT_TYPE_DECLARE_ID[$id]
+            // 558:72: -> VT_TYPE_DECLARE_ID[$id]
             {
                 adaptor.addChild(root_0, adaptor.create(VT_TYPE_DECLARE_ID, id));
 
@@ -2748,7 +2747,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start decl_metadata
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:562:1: decl_metadata : AT ID paren_chunk -> ^( AT ID paren_chunk ) ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:561:1: decl_metadata : AT ID paren_chunk -> ^( AT ID paren_chunk ) ;
     public final decl_metadata_return decl_metadata() throws RecognitionException {
         decl_metadata_return retval = new decl_metadata_return();
         retval.start = input.LT(1);
@@ -2766,8 +2765,8 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
         RewriteRuleSubtreeStream stream_paren_chunk=new RewriteRuleSubtreeStream(adaptor,"rule paren_chunk");
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:563:2: ( AT ID paren_chunk -> ^( AT ID paren_chunk ) )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:563:4: AT ID paren_chunk
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:562:2: ( AT ID paren_chunk -> ^( AT ID paren_chunk ) )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:562:4: AT ID paren_chunk
             {
             AT51=(Token)input.LT(1);
             match(input,AT,FOLLOW_AT_in_decl_metadata1184); if (failed) return retval;
@@ -2800,9 +2799,9 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 568:3: -> ^( AT ID paren_chunk )
+            // 567:3: -> ^( AT ID paren_chunk )
             {
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:568:6: ^( AT ID paren_chunk )
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:567:6: ^( AT ID paren_chunk )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(stream_AT.next(), root_1);
@@ -2842,7 +2841,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start decl_field
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:571:1: decl_field : ID ( decl_field_initialization )? COLON data_type ( decl_metadata )* -> ^( ID ( decl_field_initialization )? data_type ( decl_metadata )* ) ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:570:1: decl_field : ID ( decl_field_initialization )? COLON data_type ( decl_metadata )* -> ^( ID ( decl_field_initialization )? data_type ( decl_metadata )* ) ;
     public final decl_field_return decl_field() throws RecognitionException {
         decl_field_return retval = new decl_field_return();
         retval.start = input.LT(1);
@@ -2866,8 +2865,8 @@ public class DRLParser extends Parser {
         RewriteRuleSubtreeStream stream_decl_field_initialization=new RewriteRuleSubtreeStream(adaptor,"rule decl_field_initialization");
         RewriteRuleSubtreeStream stream_data_type=new RewriteRuleSubtreeStream(adaptor,"rule data_type");
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:572:2: ( ID ( decl_field_initialization )? COLON data_type ( decl_metadata )* -> ^( ID ( decl_field_initialization )? data_type ( decl_metadata )* ) )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:572:4: ID ( decl_field_initialization )? COLON data_type ( decl_metadata )*
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:571:2: ( ID ( decl_field_initialization )? COLON data_type ( decl_metadata )* -> ^( ID ( decl_field_initialization )? data_type ( decl_metadata )* ) )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:571:4: ID ( decl_field_initialization )? COLON data_type ( decl_metadata )*
             {
             ID54=(Token)input.LT(1);
             match(input,ID,FOLLOW_ID_in_decl_field1222); if (failed) return retval;
@@ -2876,7 +2875,7 @@ public class DRLParser extends Parser {
             if ( backtracking==0 ) {
               	emit(ID54, DroolsEditorType.IDENTIFIER);	
             }
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:573:3: ( decl_field_initialization )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:572:3: ( decl_field_initialization )?
             int alt21=2;
             int LA21_0 = input.LA(1);
 
@@ -2885,7 +2884,7 @@ public class DRLParser extends Parser {
             }
             switch (alt21) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:573:3: decl_field_initialization
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:572:3: decl_field_initialization
                     {
                     pushFollow(FOLLOW_decl_field_initialization_in_decl_field1228);
                     decl_field_initialization55=decl_field_initialization();
@@ -2910,7 +2909,7 @@ public class DRLParser extends Parser {
             _fsp--;
             if (failed) return retval;
             if ( backtracking==0 ) stream_data_type.add(data_type57.getTree());
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:576:3: ( decl_metadata )*
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:575:3: ( decl_metadata )*
             loop22:
             do {
                 int alt22=2;
@@ -2923,7 +2922,7 @@ public class DRLParser extends Parser {
 
                 switch (alt22) {
             	case 1 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:576:3: decl_metadata
+            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:575:3: decl_metadata
             	    {
             	    pushFollow(FOLLOW_decl_metadata_in_decl_field1244);
             	    decl_metadata58=decl_metadata();
@@ -2951,21 +2950,21 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 577:3: -> ^( ID ( decl_field_initialization )? data_type ( decl_metadata )* )
+            // 576:3: -> ^( ID ( decl_field_initialization )? data_type ( decl_metadata )* )
             {
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:577:6: ^( ID ( decl_field_initialization )? data_type ( decl_metadata )* )
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:576:6: ^( ID ( decl_field_initialization )? data_type ( decl_metadata )* )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(stream_ID.next(), root_1);
 
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:577:11: ( decl_field_initialization )?
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:576:11: ( decl_field_initialization )?
                 if ( stream_decl_field_initialization.hasNext() ) {
                     adaptor.addChild(root_1, stream_decl_field_initialization.next());
 
                 }
                 stream_decl_field_initialization.reset();
                 adaptor.addChild(root_1, stream_data_type.next());
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:577:48: ( decl_metadata )*
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:576:48: ( decl_metadata )*
                 while ( stream_decl_metadata.hasNext() ) {
                     adaptor.addChild(root_1, stream_decl_metadata.next());
 
@@ -3004,7 +3003,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start decl_field_initialization
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:580:1: decl_field_initialization : EQUALS paren_chunk -> ^( EQUALS paren_chunk ) ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:579:1: decl_field_initialization : EQUALS paren_chunk -> ^( EQUALS paren_chunk ) ;
     public final decl_field_initialization_return decl_field_initialization() throws RecognitionException {
         decl_field_initialization_return retval = new decl_field_initialization_return();
         retval.start = input.LT(1);
@@ -3019,8 +3018,8 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_EQUALS=new RewriteRuleTokenStream(adaptor,"token EQUALS");
         RewriteRuleSubtreeStream stream_paren_chunk=new RewriteRuleSubtreeStream(adaptor,"rule paren_chunk");
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:581:2: ( EQUALS paren_chunk -> ^( EQUALS paren_chunk ) )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:581:4: EQUALS paren_chunk
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:580:2: ( EQUALS paren_chunk -> ^( EQUALS paren_chunk ) )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:580:4: EQUALS paren_chunk
             {
             EQUALS59=(Token)input.LT(1);
             match(input,EQUALS,FOLLOW_EQUALS_in_decl_field_initialization1272); if (failed) return retval;
@@ -3046,9 +3045,9 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 583:2: -> ^( EQUALS paren_chunk )
+            // 582:2: -> ^( EQUALS paren_chunk )
             {
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:583:5: ^( EQUALS paren_chunk )
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:582:5: ^( EQUALS paren_chunk )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(stream_EQUALS.next(), root_1);
@@ -3087,7 +3086,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start template
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:586:1: template : template_key template_id (semi1= SEMICOLON )? ( template_slot )+ END (semi2= SEMICOLON )? -> ^( template_key template_id ( template_slot )+ END ) ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:585:1: template : template_key template_id (semi1= SEMICOLON )? ( template_slot )+ END (semi2= SEMICOLON )? -> ^( template_key template_id ( template_slot )+ END ) ;
     public final template_return template() throws RecognitionException {
         template_return retval = new template_return();
         retval.start = input.LT(1);
@@ -3114,8 +3113,8 @@ public class DRLParser extends Parser {
         RewriteRuleSubtreeStream stream_template_key=new RewriteRuleSubtreeStream(adaptor,"rule template_key");
          pushParaphrases(DroolsParaphraseTypes.TEMPLATE); 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:589:2: ( template_key template_id (semi1= SEMICOLON )? ( template_slot )+ END (semi2= SEMICOLON )? -> ^( template_key template_id ( template_slot )+ END ) )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:590:2: template_key template_id (semi1= SEMICOLON )? ( template_slot )+ END (semi2= SEMICOLON )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:588:2: ( template_key template_id (semi1= SEMICOLON )? ( template_slot )+ END (semi2= SEMICOLON )? -> ^( template_key template_id ( template_slot )+ END ) )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:589:2: template_key template_id (semi1= SEMICOLON )? ( template_slot )+ END (semi2= SEMICOLON )?
             {
             if ( backtracking==0 ) {
               	beginSentence(DroolsSentenceType.TEMPLATE);	
@@ -3130,7 +3129,7 @@ public class DRLParser extends Parser {
             _fsp--;
             if (failed) return retval;
             if ( backtracking==0 ) stream_template_id.add(template_id62.getTree());
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:592:8: (semi1= SEMICOLON )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:591:8: (semi1= SEMICOLON )?
             int alt23=2;
             int LA23_0 = input.LA(1);
 
@@ -3139,7 +3138,7 @@ public class DRLParser extends Parser {
             }
             switch (alt23) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:592:8: semi1= SEMICOLON
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:591:8: semi1= SEMICOLON
                     {
                     semi1=(Token)input.LT(1);
                     match(input,SEMICOLON,FOLLOW_SEMICOLON_in_template1324); if (failed) return retval;
@@ -3154,7 +3153,7 @@ public class DRLParser extends Parser {
             if ( backtracking==0 ) {
               	emit(semi1, DroolsEditorType.SYMBOL);	
             }
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:594:3: ( template_slot )+
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:593:3: ( template_slot )+
             int cnt24=0;
             loop24:
             do {
@@ -3168,7 +3167,7 @@ public class DRLParser extends Parser {
 
                 switch (alt24) {
             	case 1 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:594:3: template_slot
+            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:593:3: template_slot
             	    {
             	    pushFollow(FOLLOW_template_slot_in_template1332);
             	    template_slot63=template_slot();
@@ -3193,7 +3192,7 @@ public class DRLParser extends Parser {
             match(input,END,FOLLOW_END_in_template1337); if (failed) return retval;
             if ( backtracking==0 ) stream_END.add(END64);
 
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:595:12: (semi2= SEMICOLON )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:594:12: (semi2= SEMICOLON )?
             int alt25=2;
             int LA25_0 = input.LA(1);
 
@@ -3202,7 +3201,7 @@ public class DRLParser extends Parser {
             }
             switch (alt25) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:595:12: semi2= SEMICOLON
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:594:12: semi2= SEMICOLON
                     {
                     semi2=(Token)input.LT(1);
                     match(input,SEMICOLON,FOLLOW_SEMICOLON_in_template1341); if (failed) return retval;
@@ -3230,9 +3229,9 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 598:3: -> ^( template_key template_id ( template_slot )+ END )
+            // 597:3: -> ^( template_key template_id ( template_slot )+ END )
             {
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:598:6: ^( template_key template_id ( template_slot )+ END )
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:597:6: ^( template_key template_id ( template_slot )+ END )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(stream_template_key.nextNode(), root_1);
@@ -3283,7 +3282,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start template_id
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:601:1: template_id : (id= ID -> VT_TEMPLATE_ID[$id] | id= STRING -> VT_TEMPLATE_ID[$id] );
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:600:1: template_id : (id= ID -> VT_TEMPLATE_ID[$id] | id= STRING -> VT_TEMPLATE_ID[$id] );
     public final template_id_return template_id() throws RecognitionException {
         template_id_return retval = new template_id_return();
         retval.start = input.LT(1);
@@ -3297,7 +3296,7 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:602:2: (id= ID -> VT_TEMPLATE_ID[$id] | id= STRING -> VT_TEMPLATE_ID[$id] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:601:2: (id= ID -> VT_TEMPLATE_ID[$id] | id= STRING -> VT_TEMPLATE_ID[$id] )
             int alt26=2;
             int LA26_0 = input.LA(1);
 
@@ -3310,13 +3309,13 @@ public class DRLParser extends Parser {
             else {
                 if (backtracking>0) {failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("601:1: template_id : (id= ID -> VT_TEMPLATE_ID[$id] | id= STRING -> VT_TEMPLATE_ID[$id] );", 26, 0, input);
+                    new NoViableAltException("600:1: template_id : (id= ID -> VT_TEMPLATE_ID[$id] | id= STRING -> VT_TEMPLATE_ID[$id] );", 26, 0, input);
 
                 throw nvae;
             }
             switch (alt26) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:602:5: id= ID
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:601:5: id= ID
                     {
                     id=(Token)input.LT(1);
                     match(input,ID,FOLLOW_ID_in_template_id1374); if (failed) return retval;
@@ -3338,7 +3337,7 @@ public class DRLParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 604:68: -> VT_TEMPLATE_ID[$id]
+                    // 603:68: -> VT_TEMPLATE_ID[$id]
                     {
                         adaptor.addChild(root_0, adaptor.create(VT_TEMPLATE_ID, id));
 
@@ -3349,7 +3348,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:605:5: id= STRING
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:604:5: id= STRING
                     {
                     id=(Token)input.LT(1);
                     match(input,STRING,FOLLOW_STRING_in_template_id1390); if (failed) return retval;
@@ -3371,7 +3370,7 @@ public class DRLParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 607:68: -> VT_TEMPLATE_ID[$id]
+                    // 606:68: -> VT_TEMPLATE_ID[$id]
                     {
                         adaptor.addChild(root_0, adaptor.create(VT_TEMPLATE_ID, id));
 
@@ -3406,7 +3405,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start template_slot
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:610:1: template_slot : data_type slot_id ( SEMICOLON )? -> ^( VT_SLOT data_type slot_id ) ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:609:1: template_slot : data_type slot_id ( SEMICOLON )? -> ^( VT_SLOT data_type slot_id ) ;
     public final template_slot_return template_slot() throws RecognitionException {
         template_slot_return retval = new template_slot_return();
         retval.start = input.LT(1);
@@ -3424,8 +3423,8 @@ public class DRLParser extends Parser {
         RewriteRuleSubtreeStream stream_slot_id=new RewriteRuleSubtreeStream(adaptor,"rule slot_id");
         RewriteRuleSubtreeStream stream_data_type=new RewriteRuleSubtreeStream(adaptor,"rule data_type");
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:611:2: ( data_type slot_id ( SEMICOLON )? -> ^( VT_SLOT data_type slot_id ) )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:611:5: data_type slot_id ( SEMICOLON )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:610:2: ( data_type slot_id ( SEMICOLON )? -> ^( VT_SLOT data_type slot_id ) )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:610:5: data_type slot_id ( SEMICOLON )?
             {
             pushFollow(FOLLOW_data_type_in_template_slot1410);
             data_type65=data_type();
@@ -3437,7 +3436,7 @@ public class DRLParser extends Parser {
             _fsp--;
             if (failed) return retval;
             if ( backtracking==0 ) stream_slot_id.add(slot_id66.getTree());
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:611:23: ( SEMICOLON )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:610:23: ( SEMICOLON )?
             int alt27=2;
             int LA27_0 = input.LA(1);
 
@@ -3446,7 +3445,7 @@ public class DRLParser extends Parser {
             }
             switch (alt27) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:611:23: SEMICOLON
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:610:23: SEMICOLON
                     {
                     SEMICOLON67=(Token)input.LT(1);
                     match(input,SEMICOLON,FOLLOW_SEMICOLON_in_template_slot1414); if (failed) return retval;
@@ -3473,9 +3472,9 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 613:3: -> ^( VT_SLOT data_type slot_id )
+            // 612:3: -> ^( VT_SLOT data_type slot_id )
             {
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:613:6: ^( VT_SLOT data_type slot_id )
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:612:6: ^( VT_SLOT data_type slot_id )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(adaptor.create(VT_SLOT, "VT_SLOT"), root_1);
@@ -3515,7 +3514,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start slot_id
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:616:1: slot_id : id= ID -> VT_SLOT_ID[$id] ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:615:1: slot_id : id= ID -> VT_SLOT_ID[$id] ;
     public final slot_id_return slot_id() throws RecognitionException {
         slot_id_return retval = new slot_id_return();
         retval.start = input.LT(1);
@@ -3528,8 +3527,8 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:617:2: (id= ID -> VT_SLOT_ID[$id] )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:617:4: id= ID
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:616:2: (id= ID -> VT_SLOT_ID[$id] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:616:4: id= ID
             {
             id=(Token)input.LT(1);
             match(input,ID,FOLLOW_ID_in_slot_id1443); if (failed) return retval;
@@ -3550,7 +3549,7 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 619:3: -> VT_SLOT_ID[$id]
+            // 618:3: -> VT_SLOT_ID[$id]
             {
                 adaptor.addChild(root_0, adaptor.create(VT_SLOT_ID, id));
 
@@ -3583,7 +3582,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start rule
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:622:1: rule : rule_key rule_id ( rule_attributes )? ( when_part )? rhs_chunk -> ^( rule_key rule_id ( rule_attributes )? ( when_part )? rhs_chunk ) ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:621:1: rule : rule_key rule_id ( rule_attributes )? ( when_part )? rhs_chunk -> ^( rule_key rule_id ( rule_attributes )? ( when_part )? rhs_chunk ) ;
     public final rule_return rule() throws RecognitionException {
         rule_return retval = new rule_return();
         retval.start = input.LT(1);
@@ -3608,8 +3607,8 @@ public class DRLParser extends Parser {
         RewriteRuleSubtreeStream stream_rhs_chunk=new RewriteRuleSubtreeStream(adaptor,"rule rhs_chunk");
          pushParaphrases(DroolsParaphraseTypes.RULE); 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:625:2: ( rule_key rule_id ( rule_attributes )? ( when_part )? rhs_chunk -> ^( rule_key rule_id ( rule_attributes )? ( when_part )? rhs_chunk ) )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:626:2: rule_key rule_id ( rule_attributes )? ( when_part )? rhs_chunk
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:624:2: ( rule_key rule_id ( rule_attributes )? ( when_part )? rhs_chunk -> ^( rule_key rule_id ( rule_attributes )? ( when_part )? rhs_chunk ) )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:625:2: rule_key rule_id ( rule_attributes )? ( when_part )? rhs_chunk
             {
             if ( backtracking==0 ) {
               	beginSentence(DroolsSentenceType.RULE);	
@@ -3627,7 +3626,7 @@ public class DRLParser extends Parser {
             if ( backtracking==0 ) {
               	emit(Location.LOCATION_RULE_HEADER);	
             }
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:629:3: ( rule_attributes )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:628:3: ( rule_attributes )?
             int alt28=2;
             int LA28_0 = input.LA(1);
 
@@ -3636,7 +3635,7 @@ public class DRLParser extends Parser {
             }
             switch (alt28) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:629:3: rule_attributes
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:628:3: rule_attributes
                     {
                     pushFollow(FOLLOW_rule_attributes_in_rule1490);
                     rule_attributes70=rule_attributes();
@@ -3649,7 +3648,7 @@ public class DRLParser extends Parser {
 
             }
 
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:629:20: ( when_part )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:628:20: ( when_part )?
             int alt29=2;
             int LA29_0 = input.LA(1);
 
@@ -3658,7 +3657,7 @@ public class DRLParser extends Parser {
             }
             switch (alt29) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:629:20: when_part
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:628:20: when_part
                     {
                     pushFollow(FOLLOW_when_part_in_rule1493);
                     when_part71=when_part();
@@ -3688,21 +3687,21 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 630:3: -> ^( rule_key rule_id ( rule_attributes )? ( when_part )? rhs_chunk )
+            // 629:3: -> ^( rule_key rule_id ( rule_attributes )? ( when_part )? rhs_chunk )
             {
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:630:6: ^( rule_key rule_id ( rule_attributes )? ( when_part )? rhs_chunk )
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:629:6: ^( rule_key rule_id ( rule_attributes )? ( when_part )? rhs_chunk )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(stream_rule_key.nextNode(), root_1);
 
                 adaptor.addChild(root_1, stream_rule_id.next());
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:630:25: ( rule_attributes )?
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:629:25: ( rule_attributes )?
                 if ( stream_rule_attributes.hasNext() ) {
                     adaptor.addChild(root_1, stream_rule_attributes.next());
 
                 }
                 stream_rule_attributes.reset();
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:630:42: ( when_part )?
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:629:42: ( when_part )?
                 if ( stream_when_part.hasNext() ) {
                     adaptor.addChild(root_1, stream_when_part.next());
 
@@ -3745,7 +3744,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start when_part
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:633:1: when_part : WHEN ( COLON )? normal_lhs_block -> WHEN normal_lhs_block ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:632:1: when_part : WHEN ( COLON )? normal_lhs_block -> WHEN normal_lhs_block ;
     public final when_part_return when_part() throws RecognitionException {
         when_part_return retval = new when_part_return();
         retval.start = input.LT(1);
@@ -3763,8 +3762,8 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_WHEN=new RewriteRuleTokenStream(adaptor,"token WHEN");
         RewriteRuleSubtreeStream stream_normal_lhs_block=new RewriteRuleSubtreeStream(adaptor,"rule normal_lhs_block");
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:634:2: ( WHEN ( COLON )? normal_lhs_block -> WHEN normal_lhs_block )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:634:5: WHEN ( COLON )? normal_lhs_block
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:633:2: ( WHEN ( COLON )? normal_lhs_block -> WHEN normal_lhs_block )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:633:5: WHEN ( COLON )? normal_lhs_block
             {
             WHEN73=(Token)input.LT(1);
             match(input,WHEN,FOLLOW_WHEN_in_when_part1526); if (failed) return retval;
@@ -3773,7 +3772,7 @@ public class DRLParser extends Parser {
             if ( backtracking==0 ) {
               	emit(WHEN73, DroolsEditorType.KEYWORD);	
             }
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:635:3: ( COLON )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:634:3: ( COLON )?
             int alt30=2;
             int LA30_0 = input.LA(1);
 
@@ -3782,7 +3781,7 @@ public class DRLParser extends Parser {
             }
             switch (alt30) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:635:3: COLON
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:634:3: COLON
                     {
                     COLON74=(Token)input.LT(1);
                     match(input,COLON,FOLLOW_COLON_in_when_part1532); if (failed) return retval;
@@ -3817,7 +3816,7 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 638:2: -> WHEN normal_lhs_block
+            // 637:2: -> WHEN normal_lhs_block
             {
                 adaptor.addChild(root_0, stream_WHEN.next());
                 adaptor.addChild(root_0, stream_normal_lhs_block.next());
@@ -3851,7 +3850,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start rule_id
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:641:1: rule_id : (id= ID -> VT_RULE_ID[$id] | id= STRING -> VT_RULE_ID[$id] );
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:640:1: rule_id : (id= ID -> VT_RULE_ID[$id] | id= STRING -> VT_RULE_ID[$id] );
     public final rule_id_return rule_id() throws RecognitionException {
         rule_id_return retval = new rule_id_return();
         retval.start = input.LT(1);
@@ -3865,7 +3864,7 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:642:2: (id= ID -> VT_RULE_ID[$id] | id= STRING -> VT_RULE_ID[$id] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:641:2: (id= ID -> VT_RULE_ID[$id] | id= STRING -> VT_RULE_ID[$id] )
             int alt31=2;
             int LA31_0 = input.LA(1);
 
@@ -3878,13 +3877,13 @@ public class DRLParser extends Parser {
             else {
                 if (backtracking>0) {failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("641:1: rule_id : (id= ID -> VT_RULE_ID[$id] | id= STRING -> VT_RULE_ID[$id] );", 31, 0, input);
+                    new NoViableAltException("640:1: rule_id : (id= ID -> VT_RULE_ID[$id] | id= STRING -> VT_RULE_ID[$id] );", 31, 0, input);
 
                 throw nvae;
             }
             switch (alt31) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:642:5: id= ID
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:641:5: id= ID
                     {
                     id=(Token)input.LT(1);
                     match(input,ID,FOLLOW_ID_in_rule_id1563); if (failed) return retval;
@@ -3906,7 +3905,7 @@ public class DRLParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 644:64: -> VT_RULE_ID[$id]
+                    // 643:64: -> VT_RULE_ID[$id]
                     {
                         adaptor.addChild(root_0, adaptor.create(VT_RULE_ID, id));
 
@@ -3917,7 +3916,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:645:5: id= STRING
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:644:5: id= STRING
                     {
                     id=(Token)input.LT(1);
                     match(input,STRING,FOLLOW_STRING_in_rule_id1579); if (failed) return retval;
@@ -3939,7 +3938,7 @@ public class DRLParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 647:64: -> VT_RULE_ID[$id]
+                    // 646:64: -> VT_RULE_ID[$id]
                     {
                         adaptor.addChild(root_0, adaptor.create(VT_RULE_ID, id));
 
@@ -3974,7 +3973,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start rule_attributes
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:650:1: rule_attributes : ( attributes_key COLON )? rule_attribute ( ( COMMA )? attr= rule_attribute )* -> ^( VT_RULE_ATTRIBUTES ( attributes_key )? ( rule_attribute )+ ) ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:649:1: rule_attributes : ( attributes_key COLON )? rule_attribute ( ( COMMA )? attr= rule_attribute )* -> ^( VT_RULE_ATTRIBUTES ( attributes_key )? ( rule_attribute )+ ) ;
     public final rule_attributes_return rule_attributes() throws RecognitionException {
         rule_attributes_return retval = new rule_attributes_return();
         retval.start = input.LT(1);
@@ -3997,10 +3996,10 @@ public class DRLParser extends Parser {
         RewriteRuleSubtreeStream stream_attributes_key=new RewriteRuleSubtreeStream(adaptor,"rule attributes_key");
         RewriteRuleSubtreeStream stream_rule_attribute=new RewriteRuleSubtreeStream(adaptor,"rule rule_attribute");
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:651:2: ( ( attributes_key COLON )? rule_attribute ( ( COMMA )? attr= rule_attribute )* -> ^( VT_RULE_ATTRIBUTES ( attributes_key )? ( rule_attribute )+ ) )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:651:4: ( attributes_key COLON )? rule_attribute ( ( COMMA )? attr= rule_attribute )*
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:650:2: ( ( attributes_key COLON )? rule_attribute ( ( COMMA )? attr= rule_attribute )* -> ^( VT_RULE_ATTRIBUTES ( attributes_key )? ( rule_attribute )+ ) )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:650:4: ( attributes_key COLON )? rule_attribute ( ( COMMA )? attr= rule_attribute )*
             {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:651:4: ( attributes_key COLON )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:650:4: ( attributes_key COLON )?
             int alt32=2;
             int LA32_0 = input.LA(1);
 
@@ -4013,7 +4012,7 @@ public class DRLParser extends Parser {
             }
             switch (alt32) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:651:6: attributes_key COLON
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:650:6: attributes_key COLON
                     {
                     pushFollow(FOLLOW_attributes_key_in_rule_attributes1600);
                     attributes_key76=attributes_key();
@@ -4038,7 +4037,7 @@ public class DRLParser extends Parser {
             _fsp--;
             if (failed) return retval;
             if ( backtracking==0 ) stream_rule_attribute.add(rule_attribute78.getTree());
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:652:18: ( ( COMMA )? attr= rule_attribute )*
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:651:18: ( ( COMMA )? attr= rule_attribute )*
             loop34:
             do {
                 int alt34=2;
@@ -4054,9 +4053,9 @@ public class DRLParser extends Parser {
 
                 switch (alt34) {
             	case 1 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:652:20: ( COMMA )? attr= rule_attribute
+            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:651:20: ( COMMA )? attr= rule_attribute
             	    {
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:652:20: ( COMMA )?
+            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:651:20: ( COMMA )?
             	    int alt33=2;
             	    int LA33_0 = input.LA(1);
 
@@ -4065,7 +4064,7 @@ public class DRLParser extends Parser {
             	    }
             	    switch (alt33) {
             	        case 1 :
-            	            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:652:20: COMMA
+            	            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:651:20: COMMA
             	            {
             	            COMMA79=(Token)input.LT(1);
             	            match(input,COMMA,FOLLOW_COMMA_in_rule_attributes1616); if (failed) return retval;
@@ -4106,14 +4105,14 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 653:3: -> ^( VT_RULE_ATTRIBUTES ( attributes_key )? ( rule_attribute )+ )
+            // 652:3: -> ^( VT_RULE_ATTRIBUTES ( attributes_key )? ( rule_attribute )+ )
             {
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:653:6: ^( VT_RULE_ATTRIBUTES ( attributes_key )? ( rule_attribute )+ )
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:652:6: ^( VT_RULE_ATTRIBUTES ( attributes_key )? ( rule_attribute )+ )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(adaptor.create(VT_RULE_ATTRIBUTES, "VT_RULE_ATTRIBUTES"), root_1);
 
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:653:27: ( attributes_key )?
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:652:27: ( attributes_key )?
                 if ( stream_attributes_key.hasNext() ) {
                     adaptor.addChild(root_1, stream_attributes_key.next());
 
@@ -4160,7 +4159,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start rule_attribute
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:656:1: rule_attribute : ( salience | no_loop | agenda_group | duration | activation_group | auto_focus | date_effective | date_expires | enabled | ruleflow_group | lock_on_active | dialect );
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:655:1: rule_attribute : ( salience | no_loop | agenda_group | duration | activation_group | auto_focus | date_effective | date_expires | enabled | ruleflow_group | lock_on_active | dialect );
     public final rule_attribute_return rule_attribute() throws RecognitionException {
         rule_attribute_return retval = new rule_attribute_return();
         retval.start = input.LT(1);
@@ -4195,7 +4194,7 @@ public class DRLParser extends Parser {
 
          boolean isFailed = true; pushParaphrases(DroolsParaphraseTypes.RULE_ATTRIBUTE); 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:659:2: ( salience | no_loop | agenda_group | duration | activation_group | auto_focus | date_effective | date_expires | enabled | ruleflow_group | lock_on_active | dialect )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:658:2: ( salience | no_loop | agenda_group | duration | activation_group | auto_focus | date_effective | date_expires | enabled | ruleflow_group | lock_on_active | dialect )
             int alt35=12;
             int LA35_0 = input.LA(1);
 
@@ -4232,7 +4231,7 @@ public class DRLParser extends Parser {
                             else {
                                 if (backtracking>0) {failed=true; return retval;}
                                 NoViableAltException nvae =
-                                    new NoViableAltException("656:1: rule_attribute : ( salience | no_loop | agenda_group | duration | activation_group | auto_focus | date_effective | date_expires | enabled | ruleflow_group | lock_on_active | dialect );", 35, 10, input);
+                                    new NoViableAltException("655:1: rule_attribute : ( salience | no_loop | agenda_group | duration | activation_group | auto_focus | date_effective | date_expires | enabled | ruleflow_group | lock_on_active | dialect );", 35, 10, input);
 
                                 throw nvae;
                             }
@@ -4246,7 +4245,7 @@ public class DRLParser extends Parser {
                         else {
                             if (backtracking>0) {failed=true; return retval;}
                             NoViableAltException nvae =
-                                new NoViableAltException("656:1: rule_attribute : ( salience | no_loop | agenda_group | duration | activation_group | auto_focus | date_effective | date_expires | enabled | ruleflow_group | lock_on_active | dialect );", 35, 7, input);
+                                new NoViableAltException("655:1: rule_attribute : ( salience | no_loop | agenda_group | duration | activation_group | auto_focus | date_effective | date_expires | enabled | ruleflow_group | lock_on_active | dialect );", 35, 7, input);
 
                             throw nvae;
                         }
@@ -4254,7 +4253,7 @@ public class DRLParser extends Parser {
                     else {
                         if (backtracking>0) {failed=true; return retval;}
                         NoViableAltException nvae =
-                            new NoViableAltException("656:1: rule_attribute : ( salience | no_loop | agenda_group | duration | activation_group | auto_focus | date_effective | date_expires | enabled | ruleflow_group | lock_on_active | dialect );", 35, 2, input);
+                            new NoViableAltException("655:1: rule_attribute : ( salience | no_loop | agenda_group | duration | activation_group | auto_focus | date_effective | date_expires | enabled | ruleflow_group | lock_on_active | dialect );", 35, 2, input);
 
                         throw nvae;
                     }
@@ -4277,7 +4276,7 @@ public class DRLParser extends Parser {
                     else {
                         if (backtracking>0) {failed=true; return retval;}
                         NoViableAltException nvae =
-                            new NoViableAltException("656:1: rule_attribute : ( salience | no_loop | agenda_group | duration | activation_group | auto_focus | date_effective | date_expires | enabled | ruleflow_group | lock_on_active | dialect );", 35, 5, input);
+                            new NoViableAltException("655:1: rule_attribute : ( salience | no_loop | agenda_group | duration | activation_group | auto_focus | date_effective | date_expires | enabled | ruleflow_group | lock_on_active | dialect );", 35, 5, input);
 
                         throw nvae;
                     }
@@ -4288,7 +4287,7 @@ public class DRLParser extends Parser {
                 else {
                     if (backtracking>0) {failed=true; return retval;}
                     NoViableAltException nvae =
-                        new NoViableAltException("656:1: rule_attribute : ( salience | no_loop | agenda_group | duration | activation_group | auto_focus | date_effective | date_expires | enabled | ruleflow_group | lock_on_active | dialect );", 35, 1, input);
+                        new NoViableAltException("655:1: rule_attribute : ( salience | no_loop | agenda_group | duration | activation_group | auto_focus | date_effective | date_expires | enabled | ruleflow_group | lock_on_active | dialect );", 35, 1, input);
 
                     throw nvae;
                 }
@@ -4296,13 +4295,13 @@ public class DRLParser extends Parser {
             else {
                 if (backtracking>0) {failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("656:1: rule_attribute : ( salience | no_loop | agenda_group | duration | activation_group | auto_focus | date_effective | date_expires | enabled | ruleflow_group | lock_on_active | dialect );", 35, 0, input);
+                    new NoViableAltException("655:1: rule_attribute : ( salience | no_loop | agenda_group | duration | activation_group | auto_focus | date_effective | date_expires | enabled | ruleflow_group | lock_on_active | dialect );", 35, 0, input);
 
                 throw nvae;
             }
             switch (alt35) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:659:4: salience
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:658:4: salience
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -4315,7 +4314,7 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:660:4: no_loop
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:659:4: no_loop
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -4328,11 +4327,11 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:661:4: agenda_group
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:660:4: agenda_group
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    pushFollow(FOLLOW_agenda_group_in_rule_attribute1675);
+                    pushFollow(FOLLOW_agenda_group_in_rule_attribute1673);
                     agenda_group82=agenda_group();
                     _fsp--;
                     if (failed) return retval;
@@ -4341,11 +4340,11 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:662:4: duration
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:661:4: duration
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    pushFollow(FOLLOW_duration_in_rule_attribute1682);
+                    pushFollow(FOLLOW_duration_in_rule_attribute1680);
                     duration83=duration();
                     _fsp--;
                     if (failed) return retval;
@@ -4354,11 +4353,11 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 5 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:663:4: activation_group
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:662:4: activation_group
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    pushFollow(FOLLOW_activation_group_in_rule_attribute1689);
+                    pushFollow(FOLLOW_activation_group_in_rule_attribute1687);
                     activation_group84=activation_group();
                     _fsp--;
                     if (failed) return retval;
@@ -4367,11 +4366,11 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 6 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:664:4: auto_focus
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:663:4: auto_focus
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    pushFollow(FOLLOW_auto_focus_in_rule_attribute1695);
+                    pushFollow(FOLLOW_auto_focus_in_rule_attribute1693);
                     auto_focus85=auto_focus();
                     _fsp--;
                     if (failed) return retval;
@@ -4380,11 +4379,11 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 7 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:665:4: date_effective
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:664:4: date_effective
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    pushFollow(FOLLOW_date_effective_in_rule_attribute1701);
+                    pushFollow(FOLLOW_date_effective_in_rule_attribute1699);
                     date_effective86=date_effective();
                     _fsp--;
                     if (failed) return retval;
@@ -4393,11 +4392,11 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 8 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:666:4: date_expires
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:665:4: date_expires
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    pushFollow(FOLLOW_date_expires_in_rule_attribute1707);
+                    pushFollow(FOLLOW_date_expires_in_rule_attribute1705);
                     date_expires87=date_expires();
                     _fsp--;
                     if (failed) return retval;
@@ -4406,11 +4405,11 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 9 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:667:4: enabled
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:666:4: enabled
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    pushFollow(FOLLOW_enabled_in_rule_attribute1713);
+                    pushFollow(FOLLOW_enabled_in_rule_attribute1711);
                     enabled88=enabled();
                     _fsp--;
                     if (failed) return retval;
@@ -4419,11 +4418,11 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 10 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:668:4: ruleflow_group
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:667:4: ruleflow_group
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    pushFollow(FOLLOW_ruleflow_group_in_rule_attribute1719);
+                    pushFollow(FOLLOW_ruleflow_group_in_rule_attribute1717);
                     ruleflow_group89=ruleflow_group();
                     _fsp--;
                     if (failed) return retval;
@@ -4432,11 +4431,11 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 11 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:669:4: lock_on_active
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:668:4: lock_on_active
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    pushFollow(FOLLOW_lock_on_active_in_rule_attribute1725);
+                    pushFollow(FOLLOW_lock_on_active_in_rule_attribute1723);
                     lock_on_active90=lock_on_active();
                     _fsp--;
                     if (failed) return retval;
@@ -4445,11 +4444,11 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 12 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:670:4: dialect
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:669:4: dialect
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    pushFollow(FOLLOW_dialect_in_rule_attribute1730);
+                    pushFollow(FOLLOW_dialect_in_rule_attribute1728);
                     dialect91=dialect();
                     _fsp--;
                     if (failed) return retval;
@@ -4527,7 +4526,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start date_effective
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:715:1: date_effective : date_effective_key STRING ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:714:1: date_effective : date_effective_key STRING ;
     public final date_effective_return date_effective() throws RecognitionException {
         date_effective_return retval = new date_effective_return();
         retval.start = input.LT(1);
@@ -4541,12 +4540,12 @@ public class DRLParser extends Parser {
         Object STRING93_tree=null;
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:716:2: ( date_effective_key STRING )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:716:4: date_effective_key STRING
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:715:2: ( date_effective_key STRING )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:715:4: date_effective_key STRING
             {
             root_0 = (Object)adaptor.nil();
 
-            pushFollow(FOLLOW_date_effective_key_in_date_effective1746);
+            pushFollow(FOLLOW_date_effective_key_in_date_effective1744);
             date_effective_key92=date_effective_key();
             _fsp--;
             if (failed) return retval;
@@ -4555,7 +4554,7 @@ public class DRLParser extends Parser {
               	emit(Location.LOCATION_RULE_HEADER_KEYWORD);	
             }
             STRING93=(Token)input.LT(1);
-            match(input,STRING,FOLLOW_STRING_in_date_effective1751); if (failed) return retval;
+            match(input,STRING,FOLLOW_STRING_in_date_effective1749); if (failed) return retval;
             if ( backtracking==0 ) {
             STRING93_tree = (Object)adaptor.create(STRING93);
             adaptor.addChild(root_0, STRING93_tree);
@@ -4589,7 +4588,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start date_expires
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:720:1: date_expires : date_expires_key STRING ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:719:1: date_expires : date_expires_key STRING ;
     public final date_expires_return date_expires() throws RecognitionException {
         date_expires_return retval = new date_expires_return();
         retval.start = input.LT(1);
@@ -4603,12 +4602,12 @@ public class DRLParser extends Parser {
         Object STRING95_tree=null;
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:721:2: ( date_expires_key STRING )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:721:4: date_expires_key STRING
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:720:2: ( date_expires_key STRING )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:720:4: date_expires_key STRING
             {
             root_0 = (Object)adaptor.nil();
 
-            pushFollow(FOLLOW_date_expires_key_in_date_expires1765);
+            pushFollow(FOLLOW_date_expires_key_in_date_expires1763);
             date_expires_key94=date_expires_key();
             _fsp--;
             if (failed) return retval;
@@ -4617,7 +4616,7 @@ public class DRLParser extends Parser {
               	emit(Location.LOCATION_RULE_HEADER_KEYWORD);	
             }
             STRING95=(Token)input.LT(1);
-            match(input,STRING,FOLLOW_STRING_in_date_expires1770); if (failed) return retval;
+            match(input,STRING,FOLLOW_STRING_in_date_expires1768); if (failed) return retval;
             if ( backtracking==0 ) {
             STRING95_tree = (Object)adaptor.create(STRING95);
             adaptor.addChild(root_0, STRING95_tree);
@@ -4651,7 +4650,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start enabled
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:725:1: enabled : enabled_key BOOL ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:724:1: enabled : enabled_key BOOL ;
     public final enabled_return enabled() throws RecognitionException {
         enabled_return retval = new enabled_return();
         retval.start = input.LT(1);
@@ -4665,12 +4664,12 @@ public class DRLParser extends Parser {
         Object BOOL97_tree=null;
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:726:2: ( enabled_key BOOL )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:726:4: enabled_key BOOL
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:725:2: ( enabled_key BOOL )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:725:4: enabled_key BOOL
             {
             root_0 = (Object)adaptor.nil();
 
-            pushFollow(FOLLOW_enabled_key_in_enabled1785);
+            pushFollow(FOLLOW_enabled_key_in_enabled1783);
             enabled_key96=enabled_key();
             _fsp--;
             if (failed) return retval;
@@ -4679,7 +4678,7 @@ public class DRLParser extends Parser {
               	emit(Location.LOCATION_RULE_HEADER_KEYWORD);	
             }
             BOOL97=(Token)input.LT(1);
-            match(input,BOOL,FOLLOW_BOOL_in_enabled1790); if (failed) return retval;
+            match(input,BOOL,FOLLOW_BOOL_in_enabled1788); if (failed) return retval;
             if ( backtracking==0 ) {
             BOOL97_tree = (Object)adaptor.create(BOOL97);
             adaptor.addChild(root_0, BOOL97_tree);
@@ -4713,7 +4712,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start salience
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:730:1: salience : salience_key ( INT | paren_chunk ) ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:729:1: salience : salience_key ( INT | paren_chunk ) ;
     public final salience_return salience() throws RecognitionException {
         salience_return retval = new salience_return();
         retval.start = input.LT(1);
@@ -4729,12 +4728,12 @@ public class DRLParser extends Parser {
         Object INT99_tree=null;
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:731:2: ( salience_key ( INT | paren_chunk ) )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:731:4: salience_key ( INT | paren_chunk )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:730:2: ( salience_key ( INT | paren_chunk ) )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:730:4: salience_key ( INT | paren_chunk )
             {
             root_0 = (Object)adaptor.nil();
 
-            pushFollow(FOLLOW_salience_key_in_salience1805);
+            pushFollow(FOLLOW_salience_key_in_salience1803);
             salience_key98=salience_key();
             _fsp--;
             if (failed) return retval;
@@ -4742,7 +4741,7 @@ public class DRLParser extends Parser {
             if ( backtracking==0 ) {
               	emit(Location.LOCATION_RULE_HEADER_KEYWORD);	
             }
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:732:3: ( INT | paren_chunk )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:731:3: ( INT | paren_chunk )
             int alt36=2;
             int LA36_0 = input.LA(1);
 
@@ -4755,16 +4754,16 @@ public class DRLParser extends Parser {
             else {
                 if (backtracking>0) {failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("732:3: ( INT | paren_chunk )", 36, 0, input);
+                    new NoViableAltException("731:3: ( INT | paren_chunk )", 36, 0, input);
 
                 throw nvae;
             }
             switch (alt36) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:732:5: INT
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:731:5: INT
                     {
                     INT99=(Token)input.LT(1);
-                    match(input,INT,FOLLOW_INT_in_salience1814); if (failed) return retval;
+                    match(input,INT,FOLLOW_INT_in_salience1812); if (failed) return retval;
                     if ( backtracking==0 ) {
                     INT99_tree = (Object)adaptor.create(INT99);
                     adaptor.addChild(root_0, INT99_tree);
@@ -4776,9 +4775,9 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:733:5: paren_chunk
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:732:5: paren_chunk
                     {
-                    pushFollow(FOLLOW_paren_chunk_in_salience1823);
+                    pushFollow(FOLLOW_paren_chunk_in_salience1821);
                     paren_chunk100=paren_chunk();
                     _fsp--;
                     if (failed) return retval;
@@ -4815,7 +4814,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start no_loop
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:737:1: no_loop : no_loop_key ( BOOL )? ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:736:1: no_loop : no_loop_key ( BOOL )? ;
     public final no_loop_return no_loop() throws RecognitionException {
         no_loop_return retval = new no_loop_return();
         retval.start = input.LT(1);
@@ -4829,12 +4828,12 @@ public class DRLParser extends Parser {
         Object BOOL102_tree=null;
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:738:2: ( no_loop_key ( BOOL )? )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:738:4: no_loop_key ( BOOL )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:737:2: ( no_loop_key ( BOOL )? )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:737:4: no_loop_key ( BOOL )?
             {
             root_0 = (Object)adaptor.nil();
 
-            pushFollow(FOLLOW_no_loop_key_in_no_loop1838);
+            pushFollow(FOLLOW_no_loop_key_in_no_loop1836);
             no_loop_key101=no_loop_key();
             _fsp--;
             if (failed) return retval;
@@ -4842,7 +4841,7 @@ public class DRLParser extends Parser {
             if ( backtracking==0 ) {
               	emit(Location.LOCATION_RULE_HEADER_KEYWORD);	
             }
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:738:66: ( BOOL )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:737:66: ( BOOL )?
             int alt37=2;
             int LA37_0 = input.LA(1);
 
@@ -4851,10 +4850,10 @@ public class DRLParser extends Parser {
             }
             switch (alt37) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:738:66: BOOL
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:737:66: BOOL
                     {
                     BOOL102=(Token)input.LT(1);
-                    match(input,BOOL,FOLLOW_BOOL_in_no_loop1843); if (failed) return retval;
+                    match(input,BOOL,FOLLOW_BOOL_in_no_loop1841); if (failed) return retval;
                     if ( backtracking==0 ) {
                     BOOL102_tree = (Object)adaptor.create(BOOL102);
                     adaptor.addChild(root_0, BOOL102_tree);
@@ -4894,7 +4893,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start auto_focus
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:742:1: auto_focus : auto_focus_key ( BOOL )? ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:741:1: auto_focus : auto_focus_key ( BOOL )? ;
     public final auto_focus_return auto_focus() throws RecognitionException {
         auto_focus_return retval = new auto_focus_return();
         retval.start = input.LT(1);
@@ -4908,12 +4907,12 @@ public class DRLParser extends Parser {
         Object BOOL104_tree=null;
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:743:2: ( auto_focus_key ( BOOL )? )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:743:4: auto_focus_key ( BOOL )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:742:2: ( auto_focus_key ( BOOL )? )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:742:4: auto_focus_key ( BOOL )?
             {
             root_0 = (Object)adaptor.nil();
 
-            pushFollow(FOLLOW_auto_focus_key_in_auto_focus1858);
+            pushFollow(FOLLOW_auto_focus_key_in_auto_focus1856);
             auto_focus_key103=auto_focus_key();
             _fsp--;
             if (failed) return retval;
@@ -4921,7 +4920,7 @@ public class DRLParser extends Parser {
             if ( backtracking==0 ) {
               	emit(Location.LOCATION_RULE_HEADER_KEYWORD);	
             }
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:743:69: ( BOOL )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:742:69: ( BOOL )?
             int alt38=2;
             int LA38_0 = input.LA(1);
 
@@ -4930,10 +4929,10 @@ public class DRLParser extends Parser {
             }
             switch (alt38) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:743:69: BOOL
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:742:69: BOOL
                     {
                     BOOL104=(Token)input.LT(1);
-                    match(input,BOOL,FOLLOW_BOOL_in_auto_focus1863); if (failed) return retval;
+                    match(input,BOOL,FOLLOW_BOOL_in_auto_focus1861); if (failed) return retval;
                     if ( backtracking==0 ) {
                     BOOL104_tree = (Object)adaptor.create(BOOL104);
                     adaptor.addChild(root_0, BOOL104_tree);
@@ -4973,7 +4972,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start activation_group
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:747:1: activation_group : activation_group_key STRING ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:746:1: activation_group : activation_group_key STRING ;
     public final activation_group_return activation_group() throws RecognitionException {
         activation_group_return retval = new activation_group_return();
         retval.start = input.LT(1);
@@ -4987,12 +4986,12 @@ public class DRLParser extends Parser {
         Object STRING106_tree=null;
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:748:2: ( activation_group_key STRING )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:748:4: activation_group_key STRING
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:747:2: ( activation_group_key STRING )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:747:4: activation_group_key STRING
             {
             root_0 = (Object)adaptor.nil();
 
-            pushFollow(FOLLOW_activation_group_key_in_activation_group1880);
+            pushFollow(FOLLOW_activation_group_key_in_activation_group1878);
             activation_group_key105=activation_group_key();
             _fsp--;
             if (failed) return retval;
@@ -5001,7 +5000,7 @@ public class DRLParser extends Parser {
               	emit(Location.LOCATION_RULE_HEADER_KEYWORD);	
             }
             STRING106=(Token)input.LT(1);
-            match(input,STRING,FOLLOW_STRING_in_activation_group1885); if (failed) return retval;
+            match(input,STRING,FOLLOW_STRING_in_activation_group1883); if (failed) return retval;
             if ( backtracking==0 ) {
             STRING106_tree = (Object)adaptor.create(STRING106);
             adaptor.addChild(root_0, STRING106_tree);
@@ -5035,7 +5034,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start ruleflow_group
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:752:1: ruleflow_group : ruleflow_group_key STRING ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:751:1: ruleflow_group : ruleflow_group_key STRING ;
     public final ruleflow_group_return ruleflow_group() throws RecognitionException {
         ruleflow_group_return retval = new ruleflow_group_return();
         retval.start = input.LT(1);
@@ -5049,12 +5048,12 @@ public class DRLParser extends Parser {
         Object STRING108_tree=null;
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:753:2: ( ruleflow_group_key STRING )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:753:4: ruleflow_group_key STRING
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:752:2: ( ruleflow_group_key STRING )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:752:4: ruleflow_group_key STRING
             {
             root_0 = (Object)adaptor.nil();
 
-            pushFollow(FOLLOW_ruleflow_group_key_in_ruleflow_group1899);
+            pushFollow(FOLLOW_ruleflow_group_key_in_ruleflow_group1897);
             ruleflow_group_key107=ruleflow_group_key();
             _fsp--;
             if (failed) return retval;
@@ -5063,7 +5062,7 @@ public class DRLParser extends Parser {
               	emit(Location.LOCATION_RULE_HEADER_KEYWORD);	
             }
             STRING108=(Token)input.LT(1);
-            match(input,STRING,FOLLOW_STRING_in_ruleflow_group1904); if (failed) return retval;
+            match(input,STRING,FOLLOW_STRING_in_ruleflow_group1902); if (failed) return retval;
             if ( backtracking==0 ) {
             STRING108_tree = (Object)adaptor.create(STRING108);
             adaptor.addChild(root_0, STRING108_tree);
@@ -5097,7 +5096,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start agenda_group
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:757:1: agenda_group : agenda_group_key STRING ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:756:1: agenda_group : agenda_group_key STRING ;
     public final agenda_group_return agenda_group() throws RecognitionException {
         agenda_group_return retval = new agenda_group_return();
         retval.start = input.LT(1);
@@ -5111,12 +5110,12 @@ public class DRLParser extends Parser {
         Object STRING110_tree=null;
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:758:2: ( agenda_group_key STRING )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:758:4: agenda_group_key STRING
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:757:2: ( agenda_group_key STRING )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:757:4: agenda_group_key STRING
             {
             root_0 = (Object)adaptor.nil();
 
-            pushFollow(FOLLOW_agenda_group_key_in_agenda_group1918);
+            pushFollow(FOLLOW_agenda_group_key_in_agenda_group1916);
             agenda_group_key109=agenda_group_key();
             _fsp--;
             if (failed) return retval;
@@ -5125,7 +5124,7 @@ public class DRLParser extends Parser {
               	emit(Location.LOCATION_RULE_HEADER_KEYWORD);	
             }
             STRING110=(Token)input.LT(1);
-            match(input,STRING,FOLLOW_STRING_in_agenda_group1923); if (failed) return retval;
+            match(input,STRING,FOLLOW_STRING_in_agenda_group1921); if (failed) return retval;
             if ( backtracking==0 ) {
             STRING110_tree = (Object)adaptor.create(STRING110);
             adaptor.addChild(root_0, STRING110_tree);
@@ -5159,7 +5158,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start duration
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:762:1: duration : duration_key INT ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:761:1: duration : duration_key INT ;
     public final duration_return duration() throws RecognitionException {
         duration_return retval = new duration_return();
         retval.start = input.LT(1);
@@ -5173,12 +5172,12 @@ public class DRLParser extends Parser {
         Object INT112_tree=null;
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:763:2: ( duration_key INT )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:763:4: duration_key INT
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:762:2: ( duration_key INT )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:762:4: duration_key INT
             {
             root_0 = (Object)adaptor.nil();
 
-            pushFollow(FOLLOW_duration_key_in_duration1937);
+            pushFollow(FOLLOW_duration_key_in_duration1935);
             duration_key111=duration_key();
             _fsp--;
             if (failed) return retval;
@@ -5187,7 +5186,7 @@ public class DRLParser extends Parser {
               	emit(Location.LOCATION_RULE_HEADER_KEYWORD);	
             }
             INT112=(Token)input.LT(1);
-            match(input,INT,FOLLOW_INT_in_duration1942); if (failed) return retval;
+            match(input,INT,FOLLOW_INT_in_duration1940); if (failed) return retval;
             if ( backtracking==0 ) {
             INT112_tree = (Object)adaptor.create(INT112);
             adaptor.addChild(root_0, INT112_tree);
@@ -5221,7 +5220,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start dialect
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:767:1: dialect : dialect_key STRING ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:766:1: dialect : dialect_key STRING ;
     public final dialect_return dialect() throws RecognitionException {
         dialect_return retval = new dialect_return();
         retval.start = input.LT(1);
@@ -5235,12 +5234,12 @@ public class DRLParser extends Parser {
         Object STRING114_tree=null;
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:768:2: ( dialect_key STRING )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:768:4: dialect_key STRING
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:767:2: ( dialect_key STRING )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:767:4: dialect_key STRING
             {
             root_0 = (Object)adaptor.nil();
 
-            pushFollow(FOLLOW_dialect_key_in_dialect1958);
+            pushFollow(FOLLOW_dialect_key_in_dialect1956);
             dialect_key113=dialect_key();
             _fsp--;
             if (failed) return retval;
@@ -5249,7 +5248,7 @@ public class DRLParser extends Parser {
               	emit(Location.LOCATION_RULE_HEADER_KEYWORD);	
             }
             STRING114=(Token)input.LT(1);
-            match(input,STRING,FOLLOW_STRING_in_dialect1963); if (failed) return retval;
+            match(input,STRING,FOLLOW_STRING_in_dialect1961); if (failed) return retval;
             if ( backtracking==0 ) {
             STRING114_tree = (Object)adaptor.create(STRING114);
             adaptor.addChild(root_0, STRING114_tree);
@@ -5283,7 +5282,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start lock_on_active
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:772:1: lock_on_active : lock_on_active_key ( BOOL )? ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:771:1: lock_on_active : lock_on_active_key ( BOOL )? ;
     public final lock_on_active_return lock_on_active() throws RecognitionException {
         lock_on_active_return retval = new lock_on_active_return();
         retval.start = input.LT(1);
@@ -5297,12 +5296,12 @@ public class DRLParser extends Parser {
         Object BOOL116_tree=null;
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:773:2: ( lock_on_active_key ( BOOL )? )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:773:4: lock_on_active_key ( BOOL )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:772:2: ( lock_on_active_key ( BOOL )? )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:772:4: lock_on_active_key ( BOOL )?
             {
             root_0 = (Object)adaptor.nil();
 
-            pushFollow(FOLLOW_lock_on_active_key_in_lock_on_active1981);
+            pushFollow(FOLLOW_lock_on_active_key_in_lock_on_active1979);
             lock_on_active_key115=lock_on_active_key();
             _fsp--;
             if (failed) return retval;
@@ -5310,7 +5309,7 @@ public class DRLParser extends Parser {
             if ( backtracking==0 ) {
               	emit(Location.LOCATION_RULE_HEADER_KEYWORD);	
             }
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:773:73: ( BOOL )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:772:73: ( BOOL )?
             int alt39=2;
             int LA39_0 = input.LA(1);
 
@@ -5319,10 +5318,10 @@ public class DRLParser extends Parser {
             }
             switch (alt39) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:773:73: BOOL
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:772:73: BOOL
                     {
                     BOOL116=(Token)input.LT(1);
-                    match(input,BOOL,FOLLOW_BOOL_in_lock_on_active1986); if (failed) return retval;
+                    match(input,BOOL,FOLLOW_BOOL_in_lock_on_active1984); if (failed) return retval;
                     if ( backtracking==0 ) {
                     BOOL116_tree = (Object)adaptor.create(BOOL116);
                     adaptor.addChild(root_0, BOOL116_tree);
@@ -5362,7 +5361,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start normal_lhs_block
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:777:1: normal_lhs_block : ( lhs )* -> ^( VT_AND_IMPLICIT ( lhs )* ) ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:776:1: normal_lhs_block : ( lhs )* -> ^( VT_AND_IMPLICIT ( lhs )* ) ;
     public final normal_lhs_block_return normal_lhs_block() throws RecognitionException {
         normal_lhs_block_return retval = new normal_lhs_block_return();
         retval.start = input.LT(1);
@@ -5374,10 +5373,10 @@ public class DRLParser extends Parser {
 
         RewriteRuleSubtreeStream stream_lhs=new RewriteRuleSubtreeStream(adaptor,"rule lhs");
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:778:2: ( ( lhs )* -> ^( VT_AND_IMPLICIT ( lhs )* ) )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:778:4: ( lhs )*
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:777:2: ( ( lhs )* -> ^( VT_AND_IMPLICIT ( lhs )* ) )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:777:4: ( lhs )*
             {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:778:4: ( lhs )*
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:777:4: ( lhs )*
             loop40:
             do {
                 int alt40=2;
@@ -5390,9 +5389,9 @@ public class DRLParser extends Parser {
 
                 switch (alt40) {
             	case 1 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:778:4: lhs
+            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:777:4: lhs
             	    {
-            	    pushFollow(FOLLOW_lhs_in_normal_lhs_block2001);
+            	    pushFollow(FOLLOW_lhs_in_normal_lhs_block1999);
             	    lhs117=lhs();
             	    _fsp--;
             	    if (failed) return retval;
@@ -5418,14 +5417,14 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 779:2: -> ^( VT_AND_IMPLICIT ( lhs )* )
+            // 778:2: -> ^( VT_AND_IMPLICIT ( lhs )* )
             {
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:779:5: ^( VT_AND_IMPLICIT ( lhs )* )
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:778:5: ^( VT_AND_IMPLICIT ( lhs )* )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(adaptor.create(VT_AND_IMPLICIT, "VT_AND_IMPLICIT"), root_1);
 
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:779:23: ( lhs )*
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:778:23: ( lhs )*
                 while ( stream_lhs.hasNext() ) {
                     adaptor.addChild(root_1, stream_lhs.next());
 
@@ -5464,7 +5463,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start lhs
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:782:1: lhs : lhs_or ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:781:1: lhs : lhs_or ;
     public final lhs_return lhs() throws RecognitionException {
         lhs_return retval = new lhs_return();
         retval.start = input.LT(1);
@@ -5476,12 +5475,12 @@ public class DRLParser extends Parser {
 
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:782:5: ( lhs_or )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:782:7: lhs_or
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:781:5: ( lhs_or )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:781:7: lhs_or
             {
             root_0 = (Object)adaptor.nil();
 
-            pushFollow(FOLLOW_lhs_or_in_lhs2022);
+            pushFollow(FOLLOW_lhs_or_in_lhs2020);
             lhs_or118=lhs_or();
             _fsp--;
             if (failed) return retval;
@@ -5512,7 +5511,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start lhs_or
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:785:1: lhs_or : ( ( LEFT_PAREN or_key )=> LEFT_PAREN or= or_key ( lhs_and )+ RIGHT_PAREN -> ^( VT_OR_PREFIX[$or.start] ( lhs_and )+ RIGHT_PAREN ) | ( lhs_and -> lhs_and ) ( ( or_key | DOUBLE_PIPE )=> (value= or_key | pipe= DOUBLE_PIPE ) lhs_and -> ^( VT_OR_INFIX[orToken] $lhs_or lhs_and ) )* );
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:784:1: lhs_or : ( ( LEFT_PAREN or_key )=> LEFT_PAREN or= or_key ( lhs_and )+ RIGHT_PAREN -> ^( VT_OR_PREFIX[$or.start] ( lhs_and )+ RIGHT_PAREN ) | ( lhs_and -> lhs_and ) ( ( or_key | DOUBLE_PIPE )=> (value= or_key | pipe= DOUBLE_PIPE ) lhs_and -> ^( VT_OR_INFIX[orToken] $lhs_or lhs_and ) )* );
     public final lhs_or_return lhs_or() throws RecognitionException {
         lhs_or_return retval = new lhs_or_return();
         retval.start = input.LT(1);
@@ -5545,7 +5544,7 @@ public class DRLParser extends Parser {
         	Token orToken = null;
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:788:3: ( ( LEFT_PAREN or_key )=> LEFT_PAREN or= or_key ( lhs_and )+ RIGHT_PAREN -> ^( VT_OR_PREFIX[$or.start] ( lhs_and )+ RIGHT_PAREN ) | ( lhs_and -> lhs_and ) ( ( or_key | DOUBLE_PIPE )=> (value= or_key | pipe= DOUBLE_PIPE ) lhs_and -> ^( VT_OR_INFIX[orToken] $lhs_or lhs_and ) )* )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:787:3: ( ( LEFT_PAREN or_key )=> LEFT_PAREN or= or_key ( lhs_and )+ RIGHT_PAREN -> ^( VT_OR_PREFIX[$or.start] ( lhs_and )+ RIGHT_PAREN ) | ( lhs_and -> lhs_and ) ( ( or_key | DOUBLE_PIPE )=> (value= or_key | pipe= DOUBLE_PIPE ) lhs_and -> ^( VT_OR_INFIX[orToken] $lhs_or lhs_and ) )* )
             int alt44=2;
             int LA44_0 = input.LA(1);
 
@@ -5574,7 +5573,7 @@ public class DRLParser extends Parser {
                         else {
                             if (backtracking>0) {failed=true; return retval;}
                             NoViableAltException nvae =
-                                new NoViableAltException("785:1: lhs_or : ( ( LEFT_PAREN or_key )=> LEFT_PAREN or= or_key ( lhs_and )+ RIGHT_PAREN -> ^( VT_OR_PREFIX[$or.start] ( lhs_and )+ RIGHT_PAREN ) | ( lhs_and -> lhs_and ) ( ( or_key | DOUBLE_PIPE )=> (value= or_key | pipe= DOUBLE_PIPE ) lhs_and -> ^( VT_OR_INFIX[orToken] $lhs_or lhs_and ) )* );", 44, 4, input);
+                                new NoViableAltException("784:1: lhs_or : ( ( LEFT_PAREN or_key )=> LEFT_PAREN or= or_key ( lhs_and )+ RIGHT_PAREN -> ^( VT_OR_PREFIX[$or.start] ( lhs_and )+ RIGHT_PAREN ) | ( lhs_and -> lhs_and ) ( ( or_key | DOUBLE_PIPE )=> (value= or_key | pipe= DOUBLE_PIPE ) lhs_and -> ^( VT_OR_INFIX[orToken] $lhs_or lhs_and ) )* );", 44, 4, input);
 
                             throw nvae;
                         }
@@ -5593,7 +5592,7 @@ public class DRLParser extends Parser {
                         else {
                             if (backtracking>0) {failed=true; return retval;}
                             NoViableAltException nvae =
-                                new NoViableAltException("785:1: lhs_or : ( ( LEFT_PAREN or_key )=> LEFT_PAREN or= or_key ( lhs_and )+ RIGHT_PAREN -> ^( VT_OR_PREFIX[$or.start] ( lhs_and )+ RIGHT_PAREN ) | ( lhs_and -> lhs_and ) ( ( or_key | DOUBLE_PIPE )=> (value= or_key | pipe= DOUBLE_PIPE ) lhs_and -> ^( VT_OR_INFIX[orToken] $lhs_or lhs_and ) )* );", 44, 5, input);
+                                new NoViableAltException("784:1: lhs_or : ( ( LEFT_PAREN or_key )=> LEFT_PAREN or= or_key ( lhs_and )+ RIGHT_PAREN -> ^( VT_OR_PREFIX[$or.start] ( lhs_and )+ RIGHT_PAREN ) | ( lhs_and -> lhs_and ) ( ( or_key | DOUBLE_PIPE )=> (value= or_key | pipe= DOUBLE_PIPE ) lhs_and -> ^( VT_OR_INFIX[orToken] $lhs_or lhs_and ) )* );", 44, 5, input);
 
                             throw nvae;
                         }
@@ -5602,7 +5601,7 @@ public class DRLParser extends Parser {
                     default:
                         if (backtracking>0) {failed=true; return retval;}
                         NoViableAltException nvae =
-                            new NoViableAltException("785:1: lhs_or : ( ( LEFT_PAREN or_key )=> LEFT_PAREN or= or_key ( lhs_and )+ RIGHT_PAREN -> ^( VT_OR_PREFIX[$or.start] ( lhs_and )+ RIGHT_PAREN ) | ( lhs_and -> lhs_and ) ( ( or_key | DOUBLE_PIPE )=> (value= or_key | pipe= DOUBLE_PIPE ) lhs_and -> ^( VT_OR_INFIX[orToken] $lhs_or lhs_and ) )* );", 44, 3, input);
+                            new NoViableAltException("784:1: lhs_or : ( ( LEFT_PAREN or_key )=> LEFT_PAREN or= or_key ( lhs_and )+ RIGHT_PAREN -> ^( VT_OR_PREFIX[$or.start] ( lhs_and )+ RIGHT_PAREN ) | ( lhs_and -> lhs_and ) ( ( or_key | DOUBLE_PIPE )=> (value= or_key | pipe= DOUBLE_PIPE ) lhs_and -> ^( VT_OR_INFIX[orToken] $lhs_or lhs_and ) )* );", 44, 3, input);
 
                         throw nvae;
                     }
@@ -5614,7 +5613,7 @@ public class DRLParser extends Parser {
                 else {
                     if (backtracking>0) {failed=true; return retval;}
                     NoViableAltException nvae =
-                        new NoViableAltException("785:1: lhs_or : ( ( LEFT_PAREN or_key )=> LEFT_PAREN or= or_key ( lhs_and )+ RIGHT_PAREN -> ^( VT_OR_PREFIX[$or.start] ( lhs_and )+ RIGHT_PAREN ) | ( lhs_and -> lhs_and ) ( ( or_key | DOUBLE_PIPE )=> (value= or_key | pipe= DOUBLE_PIPE ) lhs_and -> ^( VT_OR_INFIX[orToken] $lhs_or lhs_and ) )* );", 44, 1, input);
+                        new NoViableAltException("784:1: lhs_or : ( ( LEFT_PAREN or_key )=> LEFT_PAREN or= or_key ( lhs_and )+ RIGHT_PAREN -> ^( VT_OR_PREFIX[$or.start] ( lhs_and )+ RIGHT_PAREN ) | ( lhs_and -> lhs_and ) ( ( or_key | DOUBLE_PIPE )=> (value= or_key | pipe= DOUBLE_PIPE ) lhs_and -> ^( VT_OR_INFIX[orToken] $lhs_or lhs_and ) )* );", 44, 1, input);
 
                     throw nvae;
                 }
@@ -5625,22 +5624,22 @@ public class DRLParser extends Parser {
             else {
                 if (backtracking>0) {failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("785:1: lhs_or : ( ( LEFT_PAREN or_key )=> LEFT_PAREN or= or_key ( lhs_and )+ RIGHT_PAREN -> ^( VT_OR_PREFIX[$or.start] ( lhs_and )+ RIGHT_PAREN ) | ( lhs_and -> lhs_and ) ( ( or_key | DOUBLE_PIPE )=> (value= or_key | pipe= DOUBLE_PIPE ) lhs_and -> ^( VT_OR_INFIX[orToken] $lhs_or lhs_and ) )* );", 44, 0, input);
+                    new NoViableAltException("784:1: lhs_or : ( ( LEFT_PAREN or_key )=> LEFT_PAREN or= or_key ( lhs_and )+ RIGHT_PAREN -> ^( VT_OR_PREFIX[$or.start] ( lhs_and )+ RIGHT_PAREN ) | ( lhs_and -> lhs_and ) ( ( or_key | DOUBLE_PIPE )=> (value= or_key | pipe= DOUBLE_PIPE ) lhs_and -> ^( VT_OR_INFIX[orToken] $lhs_or lhs_and ) )* );", 44, 0, input);
 
                 throw nvae;
             }
             switch (alt44) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:788:5: ( LEFT_PAREN or_key )=> LEFT_PAREN or= or_key ( lhs_and )+ RIGHT_PAREN
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:787:5: ( LEFT_PAREN or_key )=> LEFT_PAREN or= or_key ( lhs_and )+ RIGHT_PAREN
                     {
                     LEFT_PAREN119=(Token)input.LT(1);
-                    match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_lhs_or2046); if (failed) return retval;
+                    match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_lhs_or2044); if (failed) return retval;
                     if ( backtracking==0 ) stream_LEFT_PAREN.add(LEFT_PAREN119);
 
                     if ( backtracking==0 ) {
                       	emit(LEFT_PAREN119, DroolsEditorType.SYMBOL);	
                     }
-                    pushFollow(FOLLOW_or_key_in_lhs_or2056);
+                    pushFollow(FOLLOW_or_key_in_lhs_or2054);
                     or=or_key();
                     _fsp--;
                     if (failed) return retval;
@@ -5648,7 +5647,7 @@ public class DRLParser extends Parser {
                     if ( backtracking==0 ) {
                       	emit(Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR);	
                     }
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:792:4: ( lhs_and )+
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:791:4: ( lhs_and )+
                     int cnt41=0;
                     loop41:
                     do {
@@ -5662,9 +5661,9 @@ public class DRLParser extends Parser {
 
                         switch (alt41) {
                     	case 1 :
-                    	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:792:4: lhs_and
+                    	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:791:4: lhs_and
                     	    {
-                    	    pushFollow(FOLLOW_lhs_and_in_lhs_or2064);
+                    	    pushFollow(FOLLOW_lhs_and_in_lhs_or2062);
                     	    lhs_and120=lhs_and();
                     	    _fsp--;
                     	    if (failed) return retval;
@@ -5684,7 +5683,7 @@ public class DRLParser extends Parser {
                     } while (true);
 
                     RIGHT_PAREN121=(Token)input.LT(1);
-                    match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_lhs_or2070); if (failed) return retval;
+                    match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_lhs_or2068); if (failed) return retval;
                     if ( backtracking==0 ) stream_RIGHT_PAREN.add(RIGHT_PAREN121);
 
                     if ( backtracking==0 ) {
@@ -5702,9 +5701,9 @@ public class DRLParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 794:3: -> ^( VT_OR_PREFIX[$or.start] ( lhs_and )+ RIGHT_PAREN )
+                    // 793:3: -> ^( VT_OR_PREFIX[$or.start] ( lhs_and )+ RIGHT_PAREN )
                     {
-                        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:794:6: ^( VT_OR_PREFIX[$or.start] ( lhs_and )+ RIGHT_PAREN )
+                        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:793:6: ^( VT_OR_PREFIX[$or.start] ( lhs_and )+ RIGHT_PAREN )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot(adaptor.create(VT_OR_PREFIX, ((Token)or.start)), root_1);
@@ -5729,12 +5728,12 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:795:4: ( lhs_and -> lhs_and ) ( ( or_key | DOUBLE_PIPE )=> (value= or_key | pipe= DOUBLE_PIPE ) lhs_and -> ^( VT_OR_INFIX[orToken] $lhs_or lhs_and ) )*
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:794:4: ( lhs_and -> lhs_and ) ( ( or_key | DOUBLE_PIPE )=> (value= or_key | pipe= DOUBLE_PIPE ) lhs_and -> ^( VT_OR_INFIX[orToken] $lhs_or lhs_and ) )*
                     {
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:795:4: ( lhs_and -> lhs_and )
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:795:5: lhs_and
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:794:4: ( lhs_and -> lhs_and )
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:794:5: lhs_and
                     {
-                    pushFollow(FOLLOW_lhs_and_in_lhs_or2093);
+                    pushFollow(FOLLOW_lhs_and_in_lhs_or2091);
                     lhs_and122=lhs_and();
                     _fsp--;
                     if (failed) return retval;
@@ -5751,7 +5750,7 @@ public class DRLParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 795:13: -> lhs_and
+                    // 794:13: -> lhs_and
                     {
                         adaptor.addChild(root_0, stream_lhs_and.next());
 
@@ -5761,7 +5760,7 @@ public class DRLParser extends Parser {
 
                     }
 
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:796:3: ( ( or_key | DOUBLE_PIPE )=> (value= or_key | pipe= DOUBLE_PIPE ) lhs_and -> ^( VT_OR_INFIX[orToken] $lhs_or lhs_and ) )*
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:795:3: ( ( or_key | DOUBLE_PIPE )=> (value= or_key | pipe= DOUBLE_PIPE ) lhs_and -> ^( VT_OR_INFIX[orToken] $lhs_or lhs_and ) )*
                     loop43:
                     do {
                         int alt43=2;
@@ -5789,9 +5788,9 @@ public class DRLParser extends Parser {
 
                         switch (alt43) {
                     	case 1 :
-                    	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:796:5: ( or_key | DOUBLE_PIPE )=> (value= or_key | pipe= DOUBLE_PIPE ) lhs_and
+                    	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:795:5: ( or_key | DOUBLE_PIPE )=> (value= or_key | pipe= DOUBLE_PIPE ) lhs_and
                     	    {
-                    	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:796:28: (value= or_key | pipe= DOUBLE_PIPE )
+                    	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:795:28: (value= or_key | pipe= DOUBLE_PIPE )
                     	    int alt42=2;
                     	    int LA42_0 = input.LA(1);
 
@@ -5804,15 +5803,15 @@ public class DRLParser extends Parser {
                     	    else {
                     	        if (backtracking>0) {failed=true; return retval;}
                     	        NoViableAltException nvae =
-                    	            new NoViableAltException("796:28: (value= or_key | pipe= DOUBLE_PIPE )", 42, 0, input);
+                    	            new NoViableAltException("795:28: (value= or_key | pipe= DOUBLE_PIPE )", 42, 0, input);
 
                     	        throw nvae;
                     	    }
                     	    switch (alt42) {
                     	        case 1 :
-                    	            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:796:29: value= or_key
+                    	            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:795:29: value= or_key
                     	            {
-                    	            pushFollow(FOLLOW_or_key_in_lhs_or2115);
+                    	            pushFollow(FOLLOW_or_key_in_lhs_or2113);
                     	            value=or_key();
                     	            _fsp--;
                     	            if (failed) return retval;
@@ -5824,10 +5823,10 @@ public class DRLParser extends Parser {
                     	            }
                     	            break;
                     	        case 2 :
-                    	            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:796:69: pipe= DOUBLE_PIPE
+                    	            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:795:69: pipe= DOUBLE_PIPE
                     	            {
                     	            pipe=(Token)input.LT(1);
-                    	            match(input,DOUBLE_PIPE,FOLLOW_DOUBLE_PIPE_in_lhs_or2122); if (failed) return retval;
+                    	            match(input,DOUBLE_PIPE,FOLLOW_DOUBLE_PIPE_in_lhs_or2120); if (failed) return retval;
                     	            if ( backtracking==0 ) stream_DOUBLE_PIPE.add(pipe);
 
                     	            if ( backtracking==0 ) {
@@ -5842,7 +5841,7 @@ public class DRLParser extends Parser {
                     	    if ( backtracking==0 ) {
                     	      	emit(Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR);	
                     	    }
-                    	    pushFollow(FOLLOW_lhs_and_in_lhs_or2133);
+                    	    pushFollow(FOLLOW_lhs_and_in_lhs_or2131);
                     	    lhs_and123=lhs_and();
                     	    _fsp--;
                     	    if (failed) return retval;
@@ -5859,9 +5858,9 @@ public class DRLParser extends Parser {
                     	    RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     	    root_0 = (Object)adaptor.nil();
-                    	    // 799:3: -> ^( VT_OR_INFIX[orToken] $lhs_or lhs_and )
+                    	    // 798:3: -> ^( VT_OR_INFIX[orToken] $lhs_or lhs_and )
                     	    {
-                    	        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:799:6: ^( VT_OR_INFIX[orToken] $lhs_or lhs_and )
+                    	        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:798:6: ^( VT_OR_INFIX[orToken] $lhs_or lhs_and )
                     	        {
                     	        Object root_1 = (Object)adaptor.nil();
                     	        root_1 = (Object)adaptor.becomeRoot(adaptor.create(VT_OR_INFIX, orToken), root_1);
@@ -5912,7 +5911,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start lhs_and
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:802:1: lhs_and : ( ( LEFT_PAREN and_key )=> LEFT_PAREN and= and_key ( lhs_unary )+ RIGHT_PAREN -> ^( VT_AND_PREFIX[$and.start] ( lhs_unary )+ RIGHT_PAREN ) | ( lhs_unary -> lhs_unary ) ( ( and_key | DOUBLE_AMPER )=> (value= and_key | amper= DOUBLE_AMPER ) lhs_unary -> ^( VT_AND_INFIX[andToken] $lhs_and lhs_unary ) )* );
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:801:1: lhs_and : ( ( LEFT_PAREN and_key )=> LEFT_PAREN and= and_key ( lhs_unary )+ RIGHT_PAREN -> ^( VT_AND_PREFIX[$and.start] ( lhs_unary )+ RIGHT_PAREN ) | ( lhs_unary -> lhs_unary ) ( ( and_key | DOUBLE_AMPER )=> (value= and_key | amper= DOUBLE_AMPER ) lhs_unary -> ^( VT_AND_INFIX[andToken] $lhs_and lhs_unary ) )* );
     public final lhs_and_return lhs_and() throws RecognitionException {
         lhs_and_return retval = new lhs_and_return();
         retval.start = input.LT(1);
@@ -5945,7 +5944,7 @@ public class DRLParser extends Parser {
         	Token andToken = null;
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:805:3: ( ( LEFT_PAREN and_key )=> LEFT_PAREN and= and_key ( lhs_unary )+ RIGHT_PAREN -> ^( VT_AND_PREFIX[$and.start] ( lhs_unary )+ RIGHT_PAREN ) | ( lhs_unary -> lhs_unary ) ( ( and_key | DOUBLE_AMPER )=> (value= and_key | amper= DOUBLE_AMPER ) lhs_unary -> ^( VT_AND_INFIX[andToken] $lhs_and lhs_unary ) )* )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:804:3: ( ( LEFT_PAREN and_key )=> LEFT_PAREN and= and_key ( lhs_unary )+ RIGHT_PAREN -> ^( VT_AND_PREFIX[$and.start] ( lhs_unary )+ RIGHT_PAREN ) | ( lhs_unary -> lhs_unary ) ( ( and_key | DOUBLE_AMPER )=> (value= and_key | amper= DOUBLE_AMPER ) lhs_unary -> ^( VT_AND_INFIX[andToken] $lhs_and lhs_unary ) )* )
             int alt48=2;
             int LA48_0 = input.LA(1);
 
@@ -5974,7 +5973,7 @@ public class DRLParser extends Parser {
                         else {
                             if (backtracking>0) {failed=true; return retval;}
                             NoViableAltException nvae =
-                                new NoViableAltException("802:1: lhs_and : ( ( LEFT_PAREN and_key )=> LEFT_PAREN and= and_key ( lhs_unary )+ RIGHT_PAREN -> ^( VT_AND_PREFIX[$and.start] ( lhs_unary )+ RIGHT_PAREN ) | ( lhs_unary -> lhs_unary ) ( ( and_key | DOUBLE_AMPER )=> (value= and_key | amper= DOUBLE_AMPER ) lhs_unary -> ^( VT_AND_INFIX[andToken] $lhs_and lhs_unary ) )* );", 48, 4, input);
+                                new NoViableAltException("801:1: lhs_and : ( ( LEFT_PAREN and_key )=> LEFT_PAREN and= and_key ( lhs_unary )+ RIGHT_PAREN -> ^( VT_AND_PREFIX[$and.start] ( lhs_unary )+ RIGHT_PAREN ) | ( lhs_unary -> lhs_unary ) ( ( and_key | DOUBLE_AMPER )=> (value= and_key | amper= DOUBLE_AMPER ) lhs_unary -> ^( VT_AND_INFIX[andToken] $lhs_and lhs_unary ) )* );", 48, 4, input);
 
                             throw nvae;
                         }
@@ -5993,7 +5992,7 @@ public class DRLParser extends Parser {
                         else {
                             if (backtracking>0) {failed=true; return retval;}
                             NoViableAltException nvae =
-                                new NoViableAltException("802:1: lhs_and : ( ( LEFT_PAREN and_key )=> LEFT_PAREN and= and_key ( lhs_unary )+ RIGHT_PAREN -> ^( VT_AND_PREFIX[$and.start] ( lhs_unary )+ RIGHT_PAREN ) | ( lhs_unary -> lhs_unary ) ( ( and_key | DOUBLE_AMPER )=> (value= and_key | amper= DOUBLE_AMPER ) lhs_unary -> ^( VT_AND_INFIX[andToken] $lhs_and lhs_unary ) )* );", 48, 5, input);
+                                new NoViableAltException("801:1: lhs_and : ( ( LEFT_PAREN and_key )=> LEFT_PAREN and= and_key ( lhs_unary )+ RIGHT_PAREN -> ^( VT_AND_PREFIX[$and.start] ( lhs_unary )+ RIGHT_PAREN ) | ( lhs_unary -> lhs_unary ) ( ( and_key | DOUBLE_AMPER )=> (value= and_key | amper= DOUBLE_AMPER ) lhs_unary -> ^( VT_AND_INFIX[andToken] $lhs_and lhs_unary ) )* );", 48, 5, input);
 
                             throw nvae;
                         }
@@ -6002,7 +6001,7 @@ public class DRLParser extends Parser {
                     default:
                         if (backtracking>0) {failed=true; return retval;}
                         NoViableAltException nvae =
-                            new NoViableAltException("802:1: lhs_and : ( ( LEFT_PAREN and_key )=> LEFT_PAREN and= and_key ( lhs_unary )+ RIGHT_PAREN -> ^( VT_AND_PREFIX[$and.start] ( lhs_unary )+ RIGHT_PAREN ) | ( lhs_unary -> lhs_unary ) ( ( and_key | DOUBLE_AMPER )=> (value= and_key | amper= DOUBLE_AMPER ) lhs_unary -> ^( VT_AND_INFIX[andToken] $lhs_and lhs_unary ) )* );", 48, 3, input);
+                            new NoViableAltException("801:1: lhs_and : ( ( LEFT_PAREN and_key )=> LEFT_PAREN and= and_key ( lhs_unary )+ RIGHT_PAREN -> ^( VT_AND_PREFIX[$and.start] ( lhs_unary )+ RIGHT_PAREN ) | ( lhs_unary -> lhs_unary ) ( ( and_key | DOUBLE_AMPER )=> (value= and_key | amper= DOUBLE_AMPER ) lhs_unary -> ^( VT_AND_INFIX[andToken] $lhs_and lhs_unary ) )* );", 48, 3, input);
 
                         throw nvae;
                     }
@@ -6014,7 +6013,7 @@ public class DRLParser extends Parser {
                 else {
                     if (backtracking>0) {failed=true; return retval;}
                     NoViableAltException nvae =
-                        new NoViableAltException("802:1: lhs_and : ( ( LEFT_PAREN and_key )=> LEFT_PAREN and= and_key ( lhs_unary )+ RIGHT_PAREN -> ^( VT_AND_PREFIX[$and.start] ( lhs_unary )+ RIGHT_PAREN ) | ( lhs_unary -> lhs_unary ) ( ( and_key | DOUBLE_AMPER )=> (value= and_key | amper= DOUBLE_AMPER ) lhs_unary -> ^( VT_AND_INFIX[andToken] $lhs_and lhs_unary ) )* );", 48, 1, input);
+                        new NoViableAltException("801:1: lhs_and : ( ( LEFT_PAREN and_key )=> LEFT_PAREN and= and_key ( lhs_unary )+ RIGHT_PAREN -> ^( VT_AND_PREFIX[$and.start] ( lhs_unary )+ RIGHT_PAREN ) | ( lhs_unary -> lhs_unary ) ( ( and_key | DOUBLE_AMPER )=> (value= and_key | amper= DOUBLE_AMPER ) lhs_unary -> ^( VT_AND_INFIX[andToken] $lhs_and lhs_unary ) )* );", 48, 1, input);
 
                     throw nvae;
                 }
@@ -6025,22 +6024,22 @@ public class DRLParser extends Parser {
             else {
                 if (backtracking>0) {failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("802:1: lhs_and : ( ( LEFT_PAREN and_key )=> LEFT_PAREN and= and_key ( lhs_unary )+ RIGHT_PAREN -> ^( VT_AND_PREFIX[$and.start] ( lhs_unary )+ RIGHT_PAREN ) | ( lhs_unary -> lhs_unary ) ( ( and_key | DOUBLE_AMPER )=> (value= and_key | amper= DOUBLE_AMPER ) lhs_unary -> ^( VT_AND_INFIX[andToken] $lhs_and lhs_unary ) )* );", 48, 0, input);
+                    new NoViableAltException("801:1: lhs_and : ( ( LEFT_PAREN and_key )=> LEFT_PAREN and= and_key ( lhs_unary )+ RIGHT_PAREN -> ^( VT_AND_PREFIX[$and.start] ( lhs_unary )+ RIGHT_PAREN ) | ( lhs_unary -> lhs_unary ) ( ( and_key | DOUBLE_AMPER )=> (value= and_key | amper= DOUBLE_AMPER ) lhs_unary -> ^( VT_AND_INFIX[andToken] $lhs_and lhs_unary ) )* );", 48, 0, input);
 
                 throw nvae;
             }
             switch (alt48) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:805:5: ( LEFT_PAREN and_key )=> LEFT_PAREN and= and_key ( lhs_unary )+ RIGHT_PAREN
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:804:5: ( LEFT_PAREN and_key )=> LEFT_PAREN and= and_key ( lhs_unary )+ RIGHT_PAREN
                     {
                     LEFT_PAREN124=(Token)input.LT(1);
-                    match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_lhs_and2174); if (failed) return retval;
+                    match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_lhs_and2172); if (failed) return retval;
                     if ( backtracking==0 ) stream_LEFT_PAREN.add(LEFT_PAREN124);
 
                     if ( backtracking==0 ) {
                       	emit(LEFT_PAREN124, DroolsEditorType.SYMBOL);	
                     }
-                    pushFollow(FOLLOW_and_key_in_lhs_and2184);
+                    pushFollow(FOLLOW_and_key_in_lhs_and2182);
                     and=and_key();
                     _fsp--;
                     if (failed) return retval;
@@ -6048,7 +6047,7 @@ public class DRLParser extends Parser {
                     if ( backtracking==0 ) {
                       	emit(Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR);	
                     }
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:809:4: ( lhs_unary )+
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:808:4: ( lhs_unary )+
                     int cnt45=0;
                     loop45:
                     do {
@@ -6062,9 +6061,9 @@ public class DRLParser extends Parser {
 
                         switch (alt45) {
                     	case 1 :
-                    	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:809:4: lhs_unary
+                    	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:808:4: lhs_unary
                     	    {
-                    	    pushFollow(FOLLOW_lhs_unary_in_lhs_and2192);
+                    	    pushFollow(FOLLOW_lhs_unary_in_lhs_and2190);
                     	    lhs_unary125=lhs_unary();
                     	    _fsp--;
                     	    if (failed) return retval;
@@ -6084,7 +6083,7 @@ public class DRLParser extends Parser {
                     } while (true);
 
                     RIGHT_PAREN126=(Token)input.LT(1);
-                    match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_lhs_and2198); if (failed) return retval;
+                    match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_lhs_and2196); if (failed) return retval;
                     if ( backtracking==0 ) stream_RIGHT_PAREN.add(RIGHT_PAREN126);
 
                     if ( backtracking==0 ) {
@@ -6102,9 +6101,9 @@ public class DRLParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 811:3: -> ^( VT_AND_PREFIX[$and.start] ( lhs_unary )+ RIGHT_PAREN )
+                    // 810:3: -> ^( VT_AND_PREFIX[$and.start] ( lhs_unary )+ RIGHT_PAREN )
                     {
-                        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:811:6: ^( VT_AND_PREFIX[$and.start] ( lhs_unary )+ RIGHT_PAREN )
+                        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:810:6: ^( VT_AND_PREFIX[$and.start] ( lhs_unary )+ RIGHT_PAREN )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot(adaptor.create(VT_AND_PREFIX, ((Token)and.start)), root_1);
@@ -6129,12 +6128,12 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:812:4: ( lhs_unary -> lhs_unary ) ( ( and_key | DOUBLE_AMPER )=> (value= and_key | amper= DOUBLE_AMPER ) lhs_unary -> ^( VT_AND_INFIX[andToken] $lhs_and lhs_unary ) )*
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:811:4: ( lhs_unary -> lhs_unary ) ( ( and_key | DOUBLE_AMPER )=> (value= and_key | amper= DOUBLE_AMPER ) lhs_unary -> ^( VT_AND_INFIX[andToken] $lhs_and lhs_unary ) )*
                     {
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:812:4: ( lhs_unary -> lhs_unary )
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:812:5: lhs_unary
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:811:4: ( lhs_unary -> lhs_unary )
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:811:5: lhs_unary
                     {
-                    pushFollow(FOLLOW_lhs_unary_in_lhs_and2222);
+                    pushFollow(FOLLOW_lhs_unary_in_lhs_and2220);
                     lhs_unary127=lhs_unary();
                     _fsp--;
                     if (failed) return retval;
@@ -6151,7 +6150,7 @@ public class DRLParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 812:15: -> lhs_unary
+                    // 811:15: -> lhs_unary
                     {
                         adaptor.addChild(root_0, stream_lhs_unary.next());
 
@@ -6161,7 +6160,7 @@ public class DRLParser extends Parser {
 
                     }
 
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:813:3: ( ( and_key | DOUBLE_AMPER )=> (value= and_key | amper= DOUBLE_AMPER ) lhs_unary -> ^( VT_AND_INFIX[andToken] $lhs_and lhs_unary ) )*
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:812:3: ( ( and_key | DOUBLE_AMPER )=> (value= and_key | amper= DOUBLE_AMPER ) lhs_unary -> ^( VT_AND_INFIX[andToken] $lhs_and lhs_unary ) )*
                     loop47:
                     do {
                         int alt47=2;
@@ -6189,9 +6188,9 @@ public class DRLParser extends Parser {
 
                         switch (alt47) {
                     	case 1 :
-                    	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:813:5: ( and_key | DOUBLE_AMPER )=> (value= and_key | amper= DOUBLE_AMPER ) lhs_unary
+                    	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:812:5: ( and_key | DOUBLE_AMPER )=> (value= and_key | amper= DOUBLE_AMPER ) lhs_unary
                     	    {
-                    	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:813:30: (value= and_key | amper= DOUBLE_AMPER )
+                    	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:812:30: (value= and_key | amper= DOUBLE_AMPER )
                     	    int alt46=2;
                     	    int LA46_0 = input.LA(1);
 
@@ -6204,15 +6203,15 @@ public class DRLParser extends Parser {
                     	    else {
                     	        if (backtracking>0) {failed=true; return retval;}
                     	        NoViableAltException nvae =
-                    	            new NoViableAltException("813:30: (value= and_key | amper= DOUBLE_AMPER )", 46, 0, input);
+                    	            new NoViableAltException("812:30: (value= and_key | amper= DOUBLE_AMPER )", 46, 0, input);
 
                     	        throw nvae;
                     	    }
                     	    switch (alt46) {
                     	        case 1 :
-                    	            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:813:31: value= and_key
+                    	            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:812:31: value= and_key
                     	            {
-                    	            pushFollow(FOLLOW_and_key_in_lhs_and2244);
+                    	            pushFollow(FOLLOW_and_key_in_lhs_and2242);
                     	            value=and_key();
                     	            _fsp--;
                     	            if (failed) return retval;
@@ -6224,10 +6223,10 @@ public class DRLParser extends Parser {
                     	            }
                     	            break;
                     	        case 2 :
-                    	            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:813:73: amper= DOUBLE_AMPER
+                    	            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:812:73: amper= DOUBLE_AMPER
                     	            {
                     	            amper=(Token)input.LT(1);
-                    	            match(input,DOUBLE_AMPER,FOLLOW_DOUBLE_AMPER_in_lhs_and2251); if (failed) return retval;
+                    	            match(input,DOUBLE_AMPER,FOLLOW_DOUBLE_AMPER_in_lhs_and2249); if (failed) return retval;
                     	            if ( backtracking==0 ) stream_DOUBLE_AMPER.add(amper);
 
                     	            if ( backtracking==0 ) {
@@ -6242,7 +6241,7 @@ public class DRLParser extends Parser {
                     	    if ( backtracking==0 ) {
                     	      	emit(Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR);	
                     	    }
-                    	    pushFollow(FOLLOW_lhs_unary_in_lhs_and2262);
+                    	    pushFollow(FOLLOW_lhs_unary_in_lhs_and2260);
                     	    lhs_unary128=lhs_unary();
                     	    _fsp--;
                     	    if (failed) return retval;
@@ -6259,9 +6258,9 @@ public class DRLParser extends Parser {
                     	    RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     	    root_0 = (Object)adaptor.nil();
-                    	    // 816:3: -> ^( VT_AND_INFIX[andToken] $lhs_and lhs_unary )
+                    	    // 815:3: -> ^( VT_AND_INFIX[andToken] $lhs_and lhs_unary )
                     	    {
-                    	        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:816:6: ^( VT_AND_INFIX[andToken] $lhs_and lhs_unary )
+                    	        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:815:6: ^( VT_AND_INFIX[andToken] $lhs_and lhs_unary )
                     	        {
                     	        Object root_1 = (Object)adaptor.nil();
                     	        root_1 = (Object)adaptor.becomeRoot(adaptor.create(VT_AND_INFIX, andToken), root_1);
@@ -6312,7 +6311,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start lhs_unary
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:819:1: lhs_unary : ( lhs_exist | {...}? => lhs_not_binding | lhs_not | lhs_eval | lhs_forall | LEFT_PAREN lhs_or RIGHT_PAREN | pattern_source ) ( ( SEMICOLON )=> SEMICOLON )? ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:818:1: lhs_unary : ( lhs_exist | {...}? => lhs_not_binding | lhs_not | lhs_eval | lhs_forall | LEFT_PAREN lhs_or RIGHT_PAREN | pattern_source ) ( ( SEMICOLON )=> SEMICOLON )? ;
     public final lhs_unary_return lhs_unary() throws RecognitionException {
         lhs_unary_return retval = new lhs_unary_return();
         retval.start = input.LT(1);
@@ -6342,12 +6341,12 @@ public class DRLParser extends Parser {
         Object SEMICOLON138_tree=null;
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:820:2: ( ( lhs_exist | {...}? => lhs_not_binding | lhs_not | lhs_eval | lhs_forall | LEFT_PAREN lhs_or RIGHT_PAREN | pattern_source ) ( ( SEMICOLON )=> SEMICOLON )? )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:820:4: ( lhs_exist | {...}? => lhs_not_binding | lhs_not | lhs_eval | lhs_forall | LEFT_PAREN lhs_or RIGHT_PAREN | pattern_source ) ( ( SEMICOLON )=> SEMICOLON )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:819:2: ( ( lhs_exist | {...}? => lhs_not_binding | lhs_not | lhs_eval | lhs_forall | LEFT_PAREN lhs_or RIGHT_PAREN | pattern_source ) ( ( SEMICOLON )=> SEMICOLON )? )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:819:4: ( lhs_exist | {...}? => lhs_not_binding | lhs_not | lhs_eval | lhs_forall | LEFT_PAREN lhs_or RIGHT_PAREN | pattern_source ) ( ( SEMICOLON )=> SEMICOLON )?
             {
             root_0 = (Object)adaptor.nil();
 
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:820:4: ( lhs_exist | {...}? => lhs_not_binding | lhs_not | lhs_eval | lhs_forall | LEFT_PAREN lhs_or RIGHT_PAREN | pattern_source )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:819:4: ( lhs_exist | {...}? => lhs_not_binding | lhs_not | lhs_eval | lhs_forall | LEFT_PAREN lhs_or RIGHT_PAREN | pattern_source )
             int alt49=7;
             int LA49_0 = input.LA(1);
 
@@ -6375,7 +6374,7 @@ public class DRLParser extends Parser {
                 else {
                     if (backtracking>0) {failed=true; return retval;}
                     NoViableAltException nvae =
-                        new NoViableAltException("820:4: ( lhs_exist | {...}? => lhs_not_binding | lhs_not | lhs_eval | lhs_forall | LEFT_PAREN lhs_or RIGHT_PAREN | pattern_source )", 49, 1, input);
+                        new NoViableAltException("819:4: ( lhs_exist | {...}? => lhs_not_binding | lhs_not | lhs_eval | lhs_forall | LEFT_PAREN lhs_or RIGHT_PAREN | pattern_source )", 49, 1, input);
 
                     throw nvae;
                 }
@@ -6386,15 +6385,15 @@ public class DRLParser extends Parser {
             else {
                 if (backtracking>0) {failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("820:4: ( lhs_exist | {...}? => lhs_not_binding | lhs_not | lhs_eval | lhs_forall | LEFT_PAREN lhs_or RIGHT_PAREN | pattern_source )", 49, 0, input);
+                    new NoViableAltException("819:4: ( lhs_exist | {...}? => lhs_not_binding | lhs_not | lhs_eval | lhs_forall | LEFT_PAREN lhs_or RIGHT_PAREN | pattern_source )", 49, 0, input);
 
                 throw nvae;
             }
             switch (alt49) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:820:6: lhs_exist
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:819:6: lhs_exist
                     {
-                    pushFollow(FOLLOW_lhs_exist_in_lhs_unary2293);
+                    pushFollow(FOLLOW_lhs_exist_in_lhs_unary2291);
                     lhs_exist129=lhs_exist();
                     _fsp--;
                     if (failed) return retval;
@@ -6403,13 +6402,13 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:821:4: {...}? => lhs_not_binding
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:820:4: {...}? => lhs_not_binding
                     {
                     if ( !(validateNotWithBinding()) ) {
                         if (backtracking>0) {failed=true; return retval;}
                         throw new FailedPredicateException(input, "lhs_unary", "validateNotWithBinding()");
                     }
-                    pushFollow(FOLLOW_lhs_not_binding_in_lhs_unary2301);
+                    pushFollow(FOLLOW_lhs_not_binding_in_lhs_unary2299);
                     lhs_not_binding130=lhs_not_binding();
                     _fsp--;
                     if (failed) return retval;
@@ -6418,9 +6417,9 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:822:5: lhs_not
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:821:5: lhs_not
                     {
-                    pushFollow(FOLLOW_lhs_not_in_lhs_unary2307);
+                    pushFollow(FOLLOW_lhs_not_in_lhs_unary2305);
                     lhs_not131=lhs_not();
                     _fsp--;
                     if (failed) return retval;
@@ -6429,9 +6428,9 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:823:5: lhs_eval
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:822:5: lhs_eval
                     {
-                    pushFollow(FOLLOW_lhs_eval_in_lhs_unary2313);
+                    pushFollow(FOLLOW_lhs_eval_in_lhs_unary2311);
                     lhs_eval132=lhs_eval();
                     _fsp--;
                     if (failed) return retval;
@@ -6440,9 +6439,9 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 5 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:824:5: lhs_forall
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:823:5: lhs_forall
                     {
-                    pushFollow(FOLLOW_lhs_forall_in_lhs_unary2319);
+                    pushFollow(FOLLOW_lhs_forall_in_lhs_unary2317);
                     lhs_forall133=lhs_forall();
                     _fsp--;
                     if (failed) return retval;
@@ -6451,20 +6450,20 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 6 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:825:5: LEFT_PAREN lhs_or RIGHT_PAREN
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:824:5: LEFT_PAREN lhs_or RIGHT_PAREN
                     {
                     LEFT_PAREN134=(Token)input.LT(1);
-                    match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_lhs_unary2325); if (failed) return retval;
+                    match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_lhs_unary2323); if (failed) return retval;
                     if ( backtracking==0 ) {
                       	emit(LEFT_PAREN134, DroolsEditorType.SYMBOL); emit(Location.LOCATION_LHS_BEGIN_OF_CONDITION );	
                     }
-                    pushFollow(FOLLOW_lhs_or_in_lhs_unary2336);
+                    pushFollow(FOLLOW_lhs_or_in_lhs_unary2334);
                     lhs_or135=lhs_or();
                     _fsp--;
                     if (failed) return retval;
                     if ( backtracking==0 ) adaptor.addChild(root_0, lhs_or135.getTree());
                     RIGHT_PAREN136=(Token)input.LT(1);
-                    match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_lhs_unary2342); if (failed) return retval;
+                    match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_lhs_unary2340); if (failed) return retval;
                     if ( backtracking==0 ) {
                     RIGHT_PAREN136_tree = (Object)adaptor.create(RIGHT_PAREN136);
                     adaptor.addChild(root_0, RIGHT_PAREN136_tree);
@@ -6476,9 +6475,9 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 7 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:828:5: pattern_source
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:827:5: pattern_source
                     {
-                    pushFollow(FOLLOW_pattern_source_in_lhs_unary2350);
+                    pushFollow(FOLLOW_pattern_source_in_lhs_unary2348);
                     pattern_source137=pattern_source();
                     _fsp--;
                     if (failed) return retval;
@@ -6489,7 +6488,7 @@ public class DRLParser extends Parser {
 
             }
 
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:830:3: ( ( SEMICOLON )=> SEMICOLON )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:829:3: ( ( SEMICOLON )=> SEMICOLON )?
             int alt50=2;
             int LA50_0 = input.LA(1);
 
@@ -6502,10 +6501,10 @@ public class DRLParser extends Parser {
             }
             switch (alt50) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:830:4: ( SEMICOLON )=> SEMICOLON
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:829:4: ( SEMICOLON )=> SEMICOLON
                     {
                     SEMICOLON138=(Token)input.LT(1);
-                    match(input,SEMICOLON,FOLLOW_SEMICOLON_in_lhs_unary2364); if (failed) return retval;
+                    match(input,SEMICOLON,FOLLOW_SEMICOLON_in_lhs_unary2362); if (failed) return retval;
                     if ( backtracking==0 ) {
                       	emit(SEMICOLON138, DroolsEditorType.SYMBOL);	
                     }
@@ -6541,7 +6540,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start lhs_exist
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:833:1: lhs_exist : exists_key ( ( LEFT_PAREN ( or_key | and_key ) )=> lhs_or | LEFT_PAREN lhs_or RIGHT_PAREN | lhs_pattern ) -> ^( exists_key ( lhs_or )? ( lhs_pattern )? ( RIGHT_PAREN )? ) ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:832:1: lhs_exist : exists_key ( ( LEFT_PAREN ( or_key | and_key ) )=> lhs_or | LEFT_PAREN lhs_or RIGHT_PAREN | lhs_pattern ) -> ^( exists_key ( lhs_or )? ( lhs_pattern )? ( RIGHT_PAREN )? ) ;
     public final lhs_exist_return lhs_exist() throws RecognitionException {
         lhs_exist_return retval = new lhs_exist_return();
         retval.start = input.LT(1);
@@ -6567,10 +6566,10 @@ public class DRLParser extends Parser {
         RewriteRuleSubtreeStream stream_exists_key=new RewriteRuleSubtreeStream(adaptor,"rule exists_key");
         RewriteRuleSubtreeStream stream_lhs_pattern=new RewriteRuleSubtreeStream(adaptor,"rule lhs_pattern");
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:834:2: ( exists_key ( ( LEFT_PAREN ( or_key | and_key ) )=> lhs_or | LEFT_PAREN lhs_or RIGHT_PAREN | lhs_pattern ) -> ^( exists_key ( lhs_or )? ( lhs_pattern )? ( RIGHT_PAREN )? ) )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:834:4: exists_key ( ( LEFT_PAREN ( or_key | and_key ) )=> lhs_or | LEFT_PAREN lhs_or RIGHT_PAREN | lhs_pattern )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:833:2: ( exists_key ( ( LEFT_PAREN ( or_key | and_key ) )=> lhs_or | LEFT_PAREN lhs_or RIGHT_PAREN | lhs_pattern ) -> ^( exists_key ( lhs_or )? ( lhs_pattern )? ( RIGHT_PAREN )? ) )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:833:4: exists_key ( ( LEFT_PAREN ( or_key | and_key ) )=> lhs_or | LEFT_PAREN lhs_or RIGHT_PAREN | lhs_pattern )
             {
-            pushFollow(FOLLOW_exists_key_in_lhs_exist2380);
+            pushFollow(FOLLOW_exists_key_in_lhs_exist2378);
             exists_key139=exists_key();
             _fsp--;
             if (failed) return retval;
@@ -6578,14 +6577,14 @@ public class DRLParser extends Parser {
             if ( backtracking==0 ) {
               	emit(Location.LOCATION_LHS_BEGIN_OF_CONDITION_EXISTS);	
             }
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:836:10: ( ( LEFT_PAREN ( or_key | and_key ) )=> lhs_or | LEFT_PAREN lhs_or RIGHT_PAREN | lhs_pattern )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:835:10: ( ( LEFT_PAREN ( or_key | and_key ) )=> lhs_or | LEFT_PAREN lhs_or RIGHT_PAREN | lhs_pattern )
             int alt51=3;
             alt51 = dfa51.predict(input);
             switch (alt51) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:836:12: ( LEFT_PAREN ( or_key | and_key ) )=> lhs_or
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:835:12: ( LEFT_PAREN ( or_key | and_key ) )=> lhs_or
                     {
-                    pushFollow(FOLLOW_lhs_or_in_lhs_exist2407);
+                    pushFollow(FOLLOW_lhs_or_in_lhs_exist2405);
                     lhs_or140=lhs_or();
                     _fsp--;
                     if (failed) return retval;
@@ -6594,22 +6593,22 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:837:5: LEFT_PAREN lhs_or RIGHT_PAREN
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:836:5: LEFT_PAREN lhs_or RIGHT_PAREN
                     {
                     LEFT_PAREN141=(Token)input.LT(1);
-                    match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_lhs_exist2414); if (failed) return retval;
+                    match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_lhs_exist2412); if (failed) return retval;
                     if ( backtracking==0 ) stream_LEFT_PAREN.add(LEFT_PAREN141);
 
                     if ( backtracking==0 ) {
                       	emit(LEFT_PAREN141, DroolsEditorType.SYMBOL);	
                     }
-                    pushFollow(FOLLOW_lhs_or_in_lhs_exist2422);
+                    pushFollow(FOLLOW_lhs_or_in_lhs_exist2420);
                     lhs_or142=lhs_or();
                     _fsp--;
                     if (failed) return retval;
                     if ( backtracking==0 ) stream_lhs_or.add(lhs_or142.getTree());
                     RIGHT_PAREN143=(Token)input.LT(1);
-                    match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_lhs_exist2429); if (failed) return retval;
+                    match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_lhs_exist2427); if (failed) return retval;
                     if ( backtracking==0 ) stream_RIGHT_PAREN.add(RIGHT_PAREN143);
 
                     if ( backtracking==0 ) {
@@ -6619,9 +6618,9 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:840:12: lhs_pattern
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:839:12: lhs_pattern
                     {
-                    pushFollow(FOLLOW_lhs_pattern_in_lhs_exist2444);
+                    pushFollow(FOLLOW_lhs_pattern_in_lhs_exist2442);
                     lhs_pattern144=lhs_pattern();
                     _fsp--;
                     if (failed) return retval;
@@ -6644,26 +6643,26 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 842:10: -> ^( exists_key ( lhs_or )? ( lhs_pattern )? ( RIGHT_PAREN )? )
+            // 841:10: -> ^( exists_key ( lhs_or )? ( lhs_pattern )? ( RIGHT_PAREN )? )
             {
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:842:13: ^( exists_key ( lhs_or )? ( lhs_pattern )? ( RIGHT_PAREN )? )
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:841:13: ^( exists_key ( lhs_or )? ( lhs_pattern )? ( RIGHT_PAREN )? )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(stream_exists_key.nextNode(), root_1);
 
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:842:26: ( lhs_or )?
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:841:26: ( lhs_or )?
                 if ( stream_lhs_or.hasNext() ) {
                     adaptor.addChild(root_1, stream_lhs_or.next());
 
                 }
                 stream_lhs_or.reset();
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:842:34: ( lhs_pattern )?
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:841:34: ( lhs_pattern )?
                 if ( stream_lhs_pattern.hasNext() ) {
                     adaptor.addChild(root_1, stream_lhs_pattern.next());
 
                 }
                 stream_lhs_pattern.reset();
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:842:47: ( RIGHT_PAREN )?
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:841:47: ( RIGHT_PAREN )?
                 if ( stream_RIGHT_PAREN.hasNext() ) {
                     adaptor.addChild(root_1, stream_RIGHT_PAREN.next());
 
@@ -6702,7 +6701,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start lhs_not_binding
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:845:1: lhs_not_binding : not_key fact_binding -> ^( not_key ^( VT_PATTERN fact_binding ) ) ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:844:1: lhs_not_binding : not_key fact_binding -> ^( not_key ^( VT_PATTERN fact_binding ) ) ;
     public final lhs_not_binding_return lhs_not_binding() throws RecognitionException {
         lhs_not_binding_return retval = new lhs_not_binding_return();
         retval.start = input.LT(1);
@@ -6717,15 +6716,15 @@ public class DRLParser extends Parser {
         RewriteRuleSubtreeStream stream_fact_binding=new RewriteRuleSubtreeStream(adaptor,"rule fact_binding");
         RewriteRuleSubtreeStream stream_not_key=new RewriteRuleSubtreeStream(adaptor,"rule not_key");
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:846:2: ( not_key fact_binding -> ^( not_key ^( VT_PATTERN fact_binding ) ) )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:846:4: not_key fact_binding
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:845:2: ( not_key fact_binding -> ^( not_key ^( VT_PATTERN fact_binding ) ) )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:845:4: not_key fact_binding
             {
-            pushFollow(FOLLOW_not_key_in_lhs_not_binding2490);
+            pushFollow(FOLLOW_not_key_in_lhs_not_binding2488);
             not_key145=not_key();
             _fsp--;
             if (failed) return retval;
             if ( backtracking==0 ) stream_not_key.add(not_key145.getTree());
-            pushFollow(FOLLOW_fact_binding_in_lhs_not_binding2492);
+            pushFollow(FOLLOW_fact_binding_in_lhs_not_binding2490);
             fact_binding146=fact_binding();
             _fsp--;
             if (failed) return retval;
@@ -6742,14 +6741,14 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 847:2: -> ^( not_key ^( VT_PATTERN fact_binding ) )
+            // 846:2: -> ^( not_key ^( VT_PATTERN fact_binding ) )
             {
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:847:5: ^( not_key ^( VT_PATTERN fact_binding ) )
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:846:5: ^( not_key ^( VT_PATTERN fact_binding ) )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(stream_not_key.nextNode(), root_1);
 
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:847:15: ^( VT_PATTERN fact_binding )
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:846:15: ^( VT_PATTERN fact_binding )
                 {
                 Object root_2 = (Object)adaptor.nil();
                 root_2 = (Object)adaptor.becomeRoot(adaptor.create(VT_PATTERN, "VT_PATTERN"), root_2);
@@ -6791,7 +6790,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start lhs_not
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:850:1: lhs_not : not_key ( ( LEFT_PAREN ( or_key | and_key ) )=> lhs_or | LEFT_PAREN lhs_or RIGHT_PAREN | lhs_pattern ) -> ^( not_key ( lhs_or )? ( lhs_pattern )? ( RIGHT_PAREN )? ) ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:849:1: lhs_not : not_key ( ( LEFT_PAREN ( or_key | and_key ) )=> lhs_or | LEFT_PAREN lhs_or RIGHT_PAREN | lhs_pattern ) -> ^( not_key ( lhs_or )? ( lhs_pattern )? ( RIGHT_PAREN )? ) ;
     public final lhs_not_return lhs_not() throws RecognitionException {
         lhs_not_return retval = new lhs_not_return();
         retval.start = input.LT(1);
@@ -6817,10 +6816,10 @@ public class DRLParser extends Parser {
         RewriteRuleSubtreeStream stream_not_key=new RewriteRuleSubtreeStream(adaptor,"rule not_key");
         RewriteRuleSubtreeStream stream_lhs_pattern=new RewriteRuleSubtreeStream(adaptor,"rule lhs_pattern");
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:850:9: ( not_key ( ( LEFT_PAREN ( or_key | and_key ) )=> lhs_or | LEFT_PAREN lhs_or RIGHT_PAREN | lhs_pattern ) -> ^( not_key ( lhs_or )? ( lhs_pattern )? ( RIGHT_PAREN )? ) )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:850:11: not_key ( ( LEFT_PAREN ( or_key | and_key ) )=> lhs_or | LEFT_PAREN lhs_or RIGHT_PAREN | lhs_pattern )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:849:9: ( not_key ( ( LEFT_PAREN ( or_key | and_key ) )=> lhs_or | LEFT_PAREN lhs_or RIGHT_PAREN | lhs_pattern ) -> ^( not_key ( lhs_or )? ( lhs_pattern )? ( RIGHT_PAREN )? ) )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:849:11: not_key ( ( LEFT_PAREN ( or_key | and_key ) )=> lhs_or | LEFT_PAREN lhs_or RIGHT_PAREN | lhs_pattern )
             {
-            pushFollow(FOLLOW_not_key_in_lhs_not2515);
+            pushFollow(FOLLOW_not_key_in_lhs_not2513);
             not_key147=not_key();
             _fsp--;
             if (failed) return retval;
@@ -6828,17 +6827,17 @@ public class DRLParser extends Parser {
             if ( backtracking==0 ) {
               	emit(Location.LOCATION_LHS_BEGIN_OF_CONDITION_NOT);	
             }
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:852:3: ( ( LEFT_PAREN ( or_key | and_key ) )=> lhs_or | LEFT_PAREN lhs_or RIGHT_PAREN | lhs_pattern )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:851:3: ( ( LEFT_PAREN ( or_key | and_key ) )=> lhs_or | LEFT_PAREN lhs_or RIGHT_PAREN | lhs_pattern )
             int alt52=3;
             alt52 = dfa52.predict(input);
             switch (alt52) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:852:5: ( LEFT_PAREN ( or_key | and_key ) )=> lhs_or
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:851:5: ( LEFT_PAREN ( or_key | and_key ) )=> lhs_or
                     {
                     if ( backtracking==0 ) {
                       	emit(Location.LOCATION_LHS_BEGIN_OF_CONDITION );	
                     }
-                    pushFollow(FOLLOW_lhs_or_in_lhs_not2537);
+                    pushFollow(FOLLOW_lhs_or_in_lhs_not2535);
                     lhs_or148=lhs_or();
                     _fsp--;
                     if (failed) return retval;
@@ -6847,22 +6846,22 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:853:5: LEFT_PAREN lhs_or RIGHT_PAREN
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:852:5: LEFT_PAREN lhs_or RIGHT_PAREN
                     {
                     LEFT_PAREN149=(Token)input.LT(1);
-                    match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_lhs_not2544); if (failed) return retval;
+                    match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_lhs_not2542); if (failed) return retval;
                     if ( backtracking==0 ) stream_LEFT_PAREN.add(LEFT_PAREN149);
 
                     if ( backtracking==0 ) {
                       	emit(LEFT_PAREN149, DroolsEditorType.SYMBOL); emit(Location.LOCATION_LHS_BEGIN_OF_CONDITION );	
                     }
-                    pushFollow(FOLLOW_lhs_or_in_lhs_not2553);
+                    pushFollow(FOLLOW_lhs_or_in_lhs_not2551);
                     lhs_or150=lhs_or();
                     _fsp--;
                     if (failed) return retval;
                     if ( backtracking==0 ) stream_lhs_or.add(lhs_or150.getTree());
                     RIGHT_PAREN151=(Token)input.LT(1);
-                    match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_lhs_not2559); if (failed) return retval;
+                    match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_lhs_not2557); if (failed) return retval;
                     if ( backtracking==0 ) stream_RIGHT_PAREN.add(RIGHT_PAREN151);
 
                     if ( backtracking==0 ) {
@@ -6872,9 +6871,9 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:856:6: lhs_pattern
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:855:6: lhs_pattern
                     {
-                    pushFollow(FOLLOW_lhs_pattern_in_lhs_not2569);
+                    pushFollow(FOLLOW_lhs_pattern_in_lhs_not2567);
                     lhs_pattern152=lhs_pattern();
                     _fsp--;
                     if (failed) return retval;
@@ -6897,26 +6896,26 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 857:10: -> ^( not_key ( lhs_or )? ( lhs_pattern )? ( RIGHT_PAREN )? )
+            // 856:10: -> ^( not_key ( lhs_or )? ( lhs_pattern )? ( RIGHT_PAREN )? )
             {
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:857:13: ^( not_key ( lhs_or )? ( lhs_pattern )? ( RIGHT_PAREN )? )
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:856:13: ^( not_key ( lhs_or )? ( lhs_pattern )? ( RIGHT_PAREN )? )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(stream_not_key.nextNode(), root_1);
 
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:857:23: ( lhs_or )?
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:856:23: ( lhs_or )?
                 if ( stream_lhs_or.hasNext() ) {
                     adaptor.addChild(root_1, stream_lhs_or.next());
 
                 }
                 stream_lhs_or.reset();
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:857:31: ( lhs_pattern )?
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:856:31: ( lhs_pattern )?
                 if ( stream_lhs_pattern.hasNext() ) {
                     adaptor.addChild(root_1, stream_lhs_pattern.next());
 
                 }
                 stream_lhs_pattern.reset();
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:857:44: ( RIGHT_PAREN )?
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:856:44: ( RIGHT_PAREN )?
                 if ( stream_RIGHT_PAREN.hasNext() ) {
                     adaptor.addChild(root_1, stream_RIGHT_PAREN.next());
 
@@ -6955,7 +6954,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start lhs_eval
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:860:1: lhs_eval : ev= eval_key pc= paren_chunk -> ^( eval_key paren_chunk ) ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:859:1: lhs_eval : ev= eval_key pc= paren_chunk -> ^( eval_key paren_chunk ) ;
     public final lhs_eval_return lhs_eval() throws RecognitionException {
         lhs_eval_return retval = new lhs_eval_return();
         retval.start = input.LT(1);
@@ -6970,10 +6969,10 @@ public class DRLParser extends Parser {
         RewriteRuleSubtreeStream stream_eval_key=new RewriteRuleSubtreeStream(adaptor,"rule eval_key");
         RewriteRuleSubtreeStream stream_paren_chunk=new RewriteRuleSubtreeStream(adaptor,"rule paren_chunk");
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:861:2: (ev= eval_key pc= paren_chunk -> ^( eval_key paren_chunk ) )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:861:4: ev= eval_key pc= paren_chunk
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:860:2: (ev= eval_key pc= paren_chunk -> ^( eval_key paren_chunk ) )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:860:4: ev= eval_key pc= paren_chunk
             {
-            pushFollow(FOLLOW_eval_key_in_lhs_eval2608);
+            pushFollow(FOLLOW_eval_key_in_lhs_eval2606);
             ev=eval_key();
             _fsp--;
             if (failed) return retval;
@@ -6981,7 +6980,7 @@ public class DRLParser extends Parser {
             if ( backtracking==0 ) {
               	emit(Location.LOCATION_LHS_INSIDE_EVAL);	
             }
-            pushFollow(FOLLOW_paren_chunk_in_lhs_eval2617);
+            pushFollow(FOLLOW_paren_chunk_in_lhs_eval2615);
             pc=paren_chunk();
             _fsp--;
             if (failed) return retval;
@@ -7005,9 +7004,9 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 867:3: -> ^( eval_key paren_chunk )
+            // 866:3: -> ^( eval_key paren_chunk )
             {
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:867:6: ^( eval_key paren_chunk )
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:866:6: ^( eval_key paren_chunk )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(stream_eval_key.nextNode(), root_1);
@@ -7046,7 +7045,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start lhs_forall
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:870:1: lhs_forall : forall_key LEFT_PAREN ( lhs_pattern )+ RIGHT_PAREN -> ^( forall_key ( lhs_pattern )+ RIGHT_PAREN ) ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:869:1: lhs_forall : forall_key LEFT_PAREN ( lhs_pattern )+ RIGHT_PAREN -> ^( forall_key ( lhs_pattern )+ RIGHT_PAREN ) ;
     public final lhs_forall_return lhs_forall() throws RecognitionException {
         lhs_forall_return retval = new lhs_forall_return();
         retval.start = input.LT(1);
@@ -7067,22 +7066,22 @@ public class DRLParser extends Parser {
         RewriteRuleSubtreeStream stream_forall_key=new RewriteRuleSubtreeStream(adaptor,"rule forall_key");
         RewriteRuleSubtreeStream stream_lhs_pattern=new RewriteRuleSubtreeStream(adaptor,"rule lhs_pattern");
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:871:2: ( forall_key LEFT_PAREN ( lhs_pattern )+ RIGHT_PAREN -> ^( forall_key ( lhs_pattern )+ RIGHT_PAREN ) )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:871:4: forall_key LEFT_PAREN ( lhs_pattern )+ RIGHT_PAREN
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:870:2: ( forall_key LEFT_PAREN ( lhs_pattern )+ RIGHT_PAREN -> ^( forall_key ( lhs_pattern )+ RIGHT_PAREN ) )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:870:4: forall_key LEFT_PAREN ( lhs_pattern )+ RIGHT_PAREN
             {
-            pushFollow(FOLLOW_forall_key_in_lhs_forall2644);
+            pushFollow(FOLLOW_forall_key_in_lhs_forall2642);
             forall_key153=forall_key();
             _fsp--;
             if (failed) return retval;
             if ( backtracking==0 ) stream_forall_key.add(forall_key153.getTree());
             LEFT_PAREN154=(Token)input.LT(1);
-            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_lhs_forall2649); if (failed) return retval;
+            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_lhs_forall2647); if (failed) return retval;
             if ( backtracking==0 ) stream_LEFT_PAREN.add(LEFT_PAREN154);
 
             if ( backtracking==0 ) {
               	emit(LEFT_PAREN154, DroolsEditorType.SYMBOL);	
             }
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:873:4: ( lhs_pattern )+
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:872:4: ( lhs_pattern )+
             int cnt53=0;
             loop53:
             do {
@@ -7096,9 +7095,9 @@ public class DRLParser extends Parser {
 
                 switch (alt53) {
             	case 1 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:873:4: lhs_pattern
+            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:872:4: lhs_pattern
             	    {
-            	    pushFollow(FOLLOW_lhs_pattern_in_lhs_forall2657);
+            	    pushFollow(FOLLOW_lhs_pattern_in_lhs_forall2655);
             	    lhs_pattern155=lhs_pattern();
             	    _fsp--;
             	    if (failed) return retval;
@@ -7118,7 +7117,7 @@ public class DRLParser extends Parser {
             } while (true);
 
             RIGHT_PAREN156=(Token)input.LT(1);
-            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_lhs_forall2663); if (failed) return retval;
+            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_lhs_forall2661); if (failed) return retval;
             if ( backtracking==0 ) stream_RIGHT_PAREN.add(RIGHT_PAREN156);
 
             if ( backtracking==0 ) {
@@ -7136,9 +7135,9 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 875:3: -> ^( forall_key ( lhs_pattern )+ RIGHT_PAREN )
+            // 874:3: -> ^( forall_key ( lhs_pattern )+ RIGHT_PAREN )
             {
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:875:6: ^( forall_key ( lhs_pattern )+ RIGHT_PAREN )
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:874:6: ^( forall_key ( lhs_pattern )+ RIGHT_PAREN )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(stream_forall_key.nextNode(), root_1);
@@ -7185,7 +7184,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start pattern_source
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:878:1: pattern_source : lhs_pattern ( over_clause )? ( FROM ( accumulate_statement | collect_statement | entrypoint_statement | from_source ) )? ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:877:1: pattern_source : lhs_pattern ( over_clause )? ( FROM ( accumulate_statement | collect_statement | entrypoint_statement | from_source ) )? ;
     public final pattern_source_return pattern_source() throws RecognitionException {
         pattern_source_return retval = new pattern_source_return();
         retval.start = input.LT(1);
@@ -7210,17 +7209,17 @@ public class DRLParser extends Parser {
 
          boolean isFailed = true;	
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:881:2: ( lhs_pattern ( over_clause )? ( FROM ( accumulate_statement | collect_statement | entrypoint_statement | from_source ) )? )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:881:4: lhs_pattern ( over_clause )? ( FROM ( accumulate_statement | collect_statement | entrypoint_statement | from_source ) )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:880:2: ( lhs_pattern ( over_clause )? ( FROM ( accumulate_statement | collect_statement | entrypoint_statement | from_source ) )? )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:880:4: lhs_pattern ( over_clause )? ( FROM ( accumulate_statement | collect_statement | entrypoint_statement | from_source ) )?
             {
             root_0 = (Object)adaptor.nil();
 
-            pushFollow(FOLLOW_lhs_pattern_in_pattern_source2699);
+            pushFollow(FOLLOW_lhs_pattern_in_pattern_source2697);
             lhs_pattern157=lhs_pattern();
             _fsp--;
             if (failed) return retval;
             if ( backtracking==0 ) adaptor.addChild(root_0, lhs_pattern157.getTree());
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:882:3: ( over_clause )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:881:3: ( over_clause )?
             int alt54=2;
             int LA54_0 = input.LA(1);
 
@@ -7229,9 +7228,9 @@ public class DRLParser extends Parser {
             }
             switch (alt54) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:882:3: over_clause
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:881:3: over_clause
                     {
-                    pushFollow(FOLLOW_over_clause_in_pattern_source2703);
+                    pushFollow(FOLLOW_over_clause_in_pattern_source2701);
                     over_clause158=over_clause();
                     _fsp--;
                     if (failed) return retval;
@@ -7242,7 +7241,7 @@ public class DRLParser extends Parser {
 
             }
 
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:883:3: ( FROM ( accumulate_statement | collect_statement | entrypoint_statement | from_source ) )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:882:3: ( FROM ( accumulate_statement | collect_statement | entrypoint_statement | from_source ) )?
             int alt56=2;
             int LA56_0 = input.LA(1);
 
@@ -7251,10 +7250,10 @@ public class DRLParser extends Parser {
             }
             switch (alt56) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:884:4: FROM ( accumulate_statement | collect_statement | entrypoint_statement | from_source )
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:883:4: FROM ( accumulate_statement | collect_statement | entrypoint_statement | from_source )
                     {
                     FROM159=(Token)input.LT(1);
-                    match(input,FROM,FOLLOW_FROM_in_pattern_source2713); if (failed) return retval;
+                    match(input,FROM,FOLLOW_FROM_in_pattern_source2711); if (failed) return retval;
                     if ( backtracking==0 ) {
                     FROM159_tree = (Object)adaptor.create(FROM159);
                     root_0 = (Object)adaptor.becomeRoot(FROM159_tree, root_0);
@@ -7263,7 +7262,7 @@ public class DRLParser extends Parser {
                       	emit(FROM159, DroolsEditorType.KEYWORD);
                       			emit(Location.LOCATION_LHS_FROM);	
                     }
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:887:11: ( accumulate_statement | collect_statement | entrypoint_statement | from_source )
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:886:11: ( accumulate_statement | collect_statement | entrypoint_statement | from_source )
                     int alt55=4;
                     switch ( input.LA(1) ) {
                     case ACCUMULATE:
@@ -7289,7 +7288,7 @@ public class DRLParser extends Parser {
                         else {
                             if (backtracking>0) {failed=true; return retval;}
                             NoViableAltException nvae =
-                                new NoViableAltException("887:11: ( accumulate_statement | collect_statement | entrypoint_statement | from_source )", 55, 3, input);
+                                new NoViableAltException("886:11: ( accumulate_statement | collect_statement | entrypoint_statement | from_source )", 55, 3, input);
 
                             throw nvae;
                         }
@@ -7298,16 +7297,16 @@ public class DRLParser extends Parser {
                     default:
                         if (backtracking>0) {failed=true; return retval;}
                         NoViableAltException nvae =
-                            new NoViableAltException("887:11: ( accumulate_statement | collect_statement | entrypoint_statement | from_source )", 55, 0, input);
+                            new NoViableAltException("886:11: ( accumulate_statement | collect_statement | entrypoint_statement | from_source )", 55, 0, input);
 
                         throw nvae;
                     }
 
                     switch (alt55) {
                         case 1 :
-                            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:887:14: accumulate_statement
+                            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:886:14: accumulate_statement
                             {
-                            pushFollow(FOLLOW_accumulate_statement_in_pattern_source2733);
+                            pushFollow(FOLLOW_accumulate_statement_in_pattern_source2731);
                             accumulate_statement160=accumulate_statement();
                             _fsp--;
                             if (failed) return retval;
@@ -7316,9 +7315,9 @@ public class DRLParser extends Parser {
                             }
                             break;
                         case 2 :
-                            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:888:15: collect_statement
+                            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:887:15: collect_statement
                             {
-                            pushFollow(FOLLOW_collect_statement_in_pattern_source2749);
+                            pushFollow(FOLLOW_collect_statement_in_pattern_source2747);
                             collect_statement161=collect_statement();
                             _fsp--;
                             if (failed) return retval;
@@ -7327,9 +7326,9 @@ public class DRLParser extends Parser {
                             }
                             break;
                         case 3 :
-                            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:889:15: entrypoint_statement
+                            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:888:15: entrypoint_statement
                             {
-                            pushFollow(FOLLOW_entrypoint_statement_in_pattern_source2766);
+                            pushFollow(FOLLOW_entrypoint_statement_in_pattern_source2764);
                             entrypoint_statement162=entrypoint_statement();
                             _fsp--;
                             if (failed) return retval;
@@ -7338,9 +7337,9 @@ public class DRLParser extends Parser {
                             }
                             break;
                         case 4 :
-                            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:890:15: from_source
+                            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:889:15: from_source
                             {
-                            pushFollow(FOLLOW_from_source_in_pattern_source2782);
+                            pushFollow(FOLLOW_from_source_in_pattern_source2780);
                             from_source163=from_source();
                             _fsp--;
                             if (failed) return retval;
@@ -7399,7 +7398,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start over_clause
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:908:1: over_clause : OVER over_elements ( COMMA over_elements )* ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:907:1: over_clause : OVER over_elements ( COMMA over_elements )* ;
     public final over_clause_return over_clause() throws RecognitionException {
         over_clause_return retval = new over_clause_return();
         retval.start = input.LT(1);
@@ -7417,13 +7416,13 @@ public class DRLParser extends Parser {
         Object COMMA166_tree=null;
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:909:2: ( OVER over_elements ( COMMA over_elements )* )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:909:4: OVER over_elements ( COMMA over_elements )*
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:908:2: ( OVER over_elements ( COMMA over_elements )* )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:908:4: OVER over_elements ( COMMA over_elements )*
             {
             root_0 = (Object)adaptor.nil();
 
             OVER164=(Token)input.LT(1);
-            match(input,OVER,FOLLOW_OVER_in_over_clause2814); if (failed) return retval;
+            match(input,OVER,FOLLOW_OVER_in_over_clause2812); if (failed) return retval;
             if ( backtracking==0 ) {
             OVER164_tree = (Object)adaptor.create(OVER164);
             root_0 = (Object)adaptor.becomeRoot(OVER164_tree, root_0);
@@ -7431,12 +7430,12 @@ public class DRLParser extends Parser {
             if ( backtracking==0 ) {
               	emit(OVER164, DroolsEditorType.KEYWORD);	
             }
-            pushFollow(FOLLOW_over_elements_in_over_clause2819);
+            pushFollow(FOLLOW_over_elements_in_over_clause2817);
             over_elements165=over_elements();
             _fsp--;
             if (failed) return retval;
             if ( backtracking==0 ) adaptor.addChild(root_0, over_elements165.getTree());
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:910:4: ( COMMA over_elements )*
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:909:4: ( COMMA over_elements )*
             loop57:
             do {
                 int alt57=2;
@@ -7461,14 +7460,14 @@ public class DRLParser extends Parser {
 
                 switch (alt57) {
             	case 1 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:910:5: COMMA over_elements
+            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:909:5: COMMA over_elements
             	    {
             	    COMMA166=(Token)input.LT(1);
-            	    match(input,COMMA,FOLLOW_COMMA_in_over_clause2826); if (failed) return retval;
+            	    match(input,COMMA,FOLLOW_COMMA_in_over_clause2824); if (failed) return retval;
             	    if ( backtracking==0 ) {
             	      	emit(COMMA166, DroolsEditorType.SYMBOL);	
             	    }
-            	    pushFollow(FOLLOW_over_elements_in_over_clause2831);
+            	    pushFollow(FOLLOW_over_elements_in_over_clause2829);
             	    over_elements167=over_elements();
             	    _fsp--;
             	    if (failed) return retval;
@@ -7508,7 +7507,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start over_elements
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:913:1: over_elements : id1= ID COLON id2= ID paren_chunk -> ^( VT_BEHAVIOR $id1 $id2 paren_chunk ) ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:912:1: over_elements : id1= ID COLON id2= ID paren_chunk -> ^( VT_BEHAVIOR $id1 $id2 paren_chunk ) ;
     public final over_elements_return over_elements() throws RecognitionException {
         over_elements_return retval = new over_elements_return();
         retval.start = input.LT(1);
@@ -7528,31 +7527,31 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
         RewriteRuleSubtreeStream stream_paren_chunk=new RewriteRuleSubtreeStream(adaptor,"rule paren_chunk");
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:914:2: (id1= ID COLON id2= ID paren_chunk -> ^( VT_BEHAVIOR $id1 $id2 paren_chunk ) )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:914:4: id1= ID COLON id2= ID paren_chunk
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:913:2: (id1= ID COLON id2= ID paren_chunk -> ^( VT_BEHAVIOR $id1 $id2 paren_chunk ) )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:913:4: id1= ID COLON id2= ID paren_chunk
             {
             id1=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_over_elements2846); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_over_elements2844); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id1);
 
             if ( backtracking==0 ) {
               	emit(id1, DroolsEditorType.IDENTIFIER);	
             }
             COLON168=(Token)input.LT(1);
-            match(input,COLON,FOLLOW_COLON_in_over_elements2853); if (failed) return retval;
+            match(input,COLON,FOLLOW_COLON_in_over_elements2851); if (failed) return retval;
             if ( backtracking==0 ) stream_COLON.add(COLON168);
 
             if ( backtracking==0 ) {
               	emit(COLON168, DroolsEditorType.SYMBOL);	
             }
             id2=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_over_elements2862); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_over_elements2860); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id2);
 
             if ( backtracking==0 ) {
               	emit(id2, DroolsEditorType.IDENTIFIER);	
             }
-            pushFollow(FOLLOW_paren_chunk_in_over_elements2869);
+            pushFollow(FOLLOW_paren_chunk_in_over_elements2867);
             paren_chunk169=paren_chunk();
             _fsp--;
             if (failed) return retval;
@@ -7571,9 +7570,9 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 918:2: -> ^( VT_BEHAVIOR $id1 $id2 paren_chunk )
+            // 917:2: -> ^( VT_BEHAVIOR $id1 $id2 paren_chunk )
             {
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:918:5: ^( VT_BEHAVIOR $id1 $id2 paren_chunk )
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:917:5: ^( VT_BEHAVIOR $id1 $id2 paren_chunk )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(adaptor.create(VT_BEHAVIOR, "VT_BEHAVIOR"), root_1);
@@ -7614,7 +7613,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start accumulate_statement
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:921:1: accumulate_statement : ACCUMULATE LEFT_PAREN lhs_or ( COMMA )? ( accumulate_init_clause | accumulate_id_clause ) RIGHT_PAREN -> ^( ACCUMULATE lhs_or ( accumulate_init_clause )? ( accumulate_id_clause )? RIGHT_PAREN ) ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:920:1: accumulate_statement : ACCUMULATE LEFT_PAREN lhs_or ( COMMA )? ( accumulate_init_clause | accumulate_id_clause ) RIGHT_PAREN -> ^( ACCUMULATE lhs_or ( accumulate_init_clause )? ( accumulate_id_clause )? RIGHT_PAREN ) ;
     public final accumulate_statement_return accumulate_statement() throws RecognitionException {
         accumulate_statement_return retval = new accumulate_statement_return();
         retval.start = input.LT(1);
@@ -7644,11 +7643,11 @@ public class DRLParser extends Parser {
         RewriteRuleSubtreeStream stream_accumulate_init_clause=new RewriteRuleSubtreeStream(adaptor,"rule accumulate_init_clause");
         RewriteRuleSubtreeStream stream_accumulate_id_clause=new RewriteRuleSubtreeStream(adaptor,"rule accumulate_id_clause");
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:922:2: ( ACCUMULATE LEFT_PAREN lhs_or ( COMMA )? ( accumulate_init_clause | accumulate_id_clause ) RIGHT_PAREN -> ^( ACCUMULATE lhs_or ( accumulate_init_clause )? ( accumulate_id_clause )? RIGHT_PAREN ) )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:922:4: ACCUMULATE LEFT_PAREN lhs_or ( COMMA )? ( accumulate_init_clause | accumulate_id_clause ) RIGHT_PAREN
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:921:2: ( ACCUMULATE LEFT_PAREN lhs_or ( COMMA )? ( accumulate_init_clause | accumulate_id_clause ) RIGHT_PAREN -> ^( ACCUMULATE lhs_or ( accumulate_init_clause )? ( accumulate_id_clause )? RIGHT_PAREN ) )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:921:4: ACCUMULATE LEFT_PAREN lhs_or ( COMMA )? ( accumulate_init_clause | accumulate_id_clause ) RIGHT_PAREN
             {
             ACCUMULATE170=(Token)input.LT(1);
-            match(input,ACCUMULATE,FOLLOW_ACCUMULATE_in_accumulate_statement2895); if (failed) return retval;
+            match(input,ACCUMULATE,FOLLOW_ACCUMULATE_in_accumulate_statement2893); if (failed) return retval;
             if ( backtracking==0 ) stream_ACCUMULATE.add(ACCUMULATE170);
 
             if ( backtracking==0 ) {
@@ -7658,18 +7657,18 @@ public class DRLParser extends Parser {
               	emit(Location.LOCATION_LHS_FROM_ACCUMULATE);	
             }
             LEFT_PAREN171=(Token)input.LT(1);
-            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_accumulate_statement2904); if (failed) return retval;
+            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_accumulate_statement2902); if (failed) return retval;
             if ( backtracking==0 ) stream_LEFT_PAREN.add(LEFT_PAREN171);
 
             if ( backtracking==0 ) {
               	emit(LEFT_PAREN171, DroolsEditorType.SYMBOL);	
             }
-            pushFollow(FOLLOW_lhs_or_in_accumulate_statement2912);
+            pushFollow(FOLLOW_lhs_or_in_accumulate_statement2910);
             lhs_or172=lhs_or();
             _fsp--;
             if (failed) return retval;
             if ( backtracking==0 ) stream_lhs_or.add(lhs_or172.getTree());
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:926:3: ( COMMA )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:925:3: ( COMMA )?
             int alt58=2;
             int LA58_0 = input.LA(1);
 
@@ -7678,10 +7677,10 @@ public class DRLParser extends Parser {
             }
             switch (alt58) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:926:3: COMMA
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:925:3: COMMA
                     {
                     COMMA173=(Token)input.LT(1);
-                    match(input,COMMA,FOLLOW_COMMA_in_accumulate_statement2917); if (failed) return retval;
+                    match(input,COMMA,FOLLOW_COMMA_in_accumulate_statement2915); if (failed) return retval;
                     if ( backtracking==0 ) stream_COMMA.add(COMMA173);
 
 
@@ -7693,7 +7692,7 @@ public class DRLParser extends Parser {
             if ( backtracking==0 ) {
               	emit(COMMA173, DroolsEditorType.SYMBOL);	
             }
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:927:3: ( accumulate_init_clause | accumulate_id_clause )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:926:3: ( accumulate_init_clause | accumulate_id_clause )
             int alt59=2;
             int LA59_0 = input.LA(1);
 
@@ -7706,15 +7705,15 @@ public class DRLParser extends Parser {
             else {
                 if (backtracking>0) {failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("927:3: ( accumulate_init_clause | accumulate_id_clause )", 59, 0, input);
+                    new NoViableAltException("926:3: ( accumulate_init_clause | accumulate_id_clause )", 59, 0, input);
 
                 throw nvae;
             }
             switch (alt59) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:927:5: accumulate_init_clause
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:926:5: accumulate_init_clause
                     {
-                    pushFollow(FOLLOW_accumulate_init_clause_in_accumulate_statement2927);
+                    pushFollow(FOLLOW_accumulate_init_clause_in_accumulate_statement2925);
                     accumulate_init_clause174=accumulate_init_clause();
                     _fsp--;
                     if (failed) return retval;
@@ -7723,9 +7722,9 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:928:5: accumulate_id_clause
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:927:5: accumulate_id_clause
                     {
-                    pushFollow(FOLLOW_accumulate_id_clause_in_accumulate_statement2933);
+                    pushFollow(FOLLOW_accumulate_id_clause_in_accumulate_statement2931);
                     accumulate_id_clause175=accumulate_id_clause();
                     _fsp--;
                     if (failed) return retval;
@@ -7737,7 +7736,7 @@ public class DRLParser extends Parser {
             }
 
             RIGHT_PAREN176=(Token)input.LT(1);
-            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_accumulate_statement2941); if (failed) return retval;
+            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_accumulate_statement2939); if (failed) return retval;
             if ( backtracking==0 ) stream_RIGHT_PAREN.add(RIGHT_PAREN176);
 
             if ( backtracking==0 ) {
@@ -7758,21 +7757,21 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 932:3: -> ^( ACCUMULATE lhs_or ( accumulate_init_clause )? ( accumulate_id_clause )? RIGHT_PAREN )
+            // 931:3: -> ^( ACCUMULATE lhs_or ( accumulate_init_clause )? ( accumulate_id_clause )? RIGHT_PAREN )
             {
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:932:6: ^( ACCUMULATE lhs_or ( accumulate_init_clause )? ( accumulate_id_clause )? RIGHT_PAREN )
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:931:6: ^( ACCUMULATE lhs_or ( accumulate_init_clause )? ( accumulate_id_clause )? RIGHT_PAREN )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(stream_ACCUMULATE.next(), root_1);
 
                 adaptor.addChild(root_1, stream_lhs_or.next());
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:932:26: ( accumulate_init_clause )?
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:931:26: ( accumulate_init_clause )?
                 if ( stream_accumulate_init_clause.hasNext() ) {
                     adaptor.addChild(root_1, stream_accumulate_init_clause.next());
 
                 }
                 stream_accumulate_init_clause.reset();
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:932:50: ( accumulate_id_clause )?
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:931:50: ( accumulate_id_clause )?
                 if ( stream_accumulate_id_clause.hasNext() ) {
                     adaptor.addChild(root_1, stream_accumulate_id_clause.next());
 
@@ -7812,7 +7811,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start accumulate_init_clause
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:936:1: accumulate_init_clause : INIT pc1= accumulate_paren_chunk[Location.LOCATION_LHS_FROM_ACCUMULATE_INIT_INSIDE] (cm1= COMMA )? action_key pc2= accumulate_paren_chunk[Location.LOCATION_LHS_FROM_ACCUMULATE_ACTION_INSIDE] (cm2= COMMA )? ( reverse_key pc3= accumulate_paren_chunk[Location.LOCATION_LHS_FROM_ACCUMULATE_REVERSE_INSIDE] (cm3= COMMA )? )? res1= result_key pc4= accumulate_paren_chunk[Location.LOCATION_LHS_FROM_ACCUMULATE_RESULT_INSIDE] -> ^( VT_ACCUMULATE_INIT_CLAUSE ^( INIT $pc1) ^( action_key $pc2) ( ^( reverse_key $pc3) )? ^( result_key $pc4) ) ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:935:1: accumulate_init_clause : INIT pc1= accumulate_paren_chunk[Location.LOCATION_LHS_FROM_ACCUMULATE_INIT_INSIDE] (cm1= COMMA )? action_key pc2= accumulate_paren_chunk[Location.LOCATION_LHS_FROM_ACCUMULATE_ACTION_INSIDE] (cm2= COMMA )? ( reverse_key pc3= accumulate_paren_chunk[Location.LOCATION_LHS_FROM_ACCUMULATE_REVERSE_INSIDE] (cm3= COMMA )? )? res1= result_key pc4= accumulate_paren_chunk[Location.LOCATION_LHS_FROM_ACCUMULATE_RESULT_INSIDE] -> ^( VT_ACCUMULATE_INIT_CLAUSE ^( INIT $pc1) ^( action_key $pc2) ( ^( reverse_key $pc3) )? ^( result_key $pc4) ) ;
     public final accumulate_init_clause_return accumulate_init_clause() throws RecognitionException {
         accumulate_init_clause_return retval = new accumulate_init_clause_return();
         retval.start = input.LT(1);
@@ -7850,11 +7849,11 @@ public class DRLParser extends Parser {
         RewriteRuleSubtreeStream stream_action_key=new RewriteRuleSubtreeStream(adaptor,"rule action_key");
          boolean isFailed = true;	
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:939:2: ( INIT pc1= accumulate_paren_chunk[Location.LOCATION_LHS_FROM_ACCUMULATE_INIT_INSIDE] (cm1= COMMA )? action_key pc2= accumulate_paren_chunk[Location.LOCATION_LHS_FROM_ACCUMULATE_ACTION_INSIDE] (cm2= COMMA )? ( reverse_key pc3= accumulate_paren_chunk[Location.LOCATION_LHS_FROM_ACCUMULATE_REVERSE_INSIDE] (cm3= COMMA )? )? res1= result_key pc4= accumulate_paren_chunk[Location.LOCATION_LHS_FROM_ACCUMULATE_RESULT_INSIDE] -> ^( VT_ACCUMULATE_INIT_CLAUSE ^( INIT $pc1) ^( action_key $pc2) ( ^( reverse_key $pc3) )? ^( result_key $pc4) ) )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:939:4: INIT pc1= accumulate_paren_chunk[Location.LOCATION_LHS_FROM_ACCUMULATE_INIT_INSIDE] (cm1= COMMA )? action_key pc2= accumulate_paren_chunk[Location.LOCATION_LHS_FROM_ACCUMULATE_ACTION_INSIDE] (cm2= COMMA )? ( reverse_key pc3= accumulate_paren_chunk[Location.LOCATION_LHS_FROM_ACCUMULATE_REVERSE_INSIDE] (cm3= COMMA )? )? res1= result_key pc4= accumulate_paren_chunk[Location.LOCATION_LHS_FROM_ACCUMULATE_RESULT_INSIDE]
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:938:2: ( INIT pc1= accumulate_paren_chunk[Location.LOCATION_LHS_FROM_ACCUMULATE_INIT_INSIDE] (cm1= COMMA )? action_key pc2= accumulate_paren_chunk[Location.LOCATION_LHS_FROM_ACCUMULATE_ACTION_INSIDE] (cm2= COMMA )? ( reverse_key pc3= accumulate_paren_chunk[Location.LOCATION_LHS_FROM_ACCUMULATE_REVERSE_INSIDE] (cm3= COMMA )? )? res1= result_key pc4= accumulate_paren_chunk[Location.LOCATION_LHS_FROM_ACCUMULATE_RESULT_INSIDE] -> ^( VT_ACCUMULATE_INIT_CLAUSE ^( INIT $pc1) ^( action_key $pc2) ( ^( reverse_key $pc3) )? ^( result_key $pc4) ) )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:938:4: INIT pc1= accumulate_paren_chunk[Location.LOCATION_LHS_FROM_ACCUMULATE_INIT_INSIDE] (cm1= COMMA )? action_key pc2= accumulate_paren_chunk[Location.LOCATION_LHS_FROM_ACCUMULATE_ACTION_INSIDE] (cm2= COMMA )? ( reverse_key pc3= accumulate_paren_chunk[Location.LOCATION_LHS_FROM_ACCUMULATE_REVERSE_INSIDE] (cm3= COMMA )? )? res1= result_key pc4= accumulate_paren_chunk[Location.LOCATION_LHS_FROM_ACCUMULATE_RESULT_INSIDE]
             {
             INIT177=(Token)input.LT(1);
-            match(input,INIT,FOLLOW_INIT_in_accumulate_init_clause2987); if (failed) return retval;
+            match(input,INIT,FOLLOW_INIT_in_accumulate_init_clause2985); if (failed) return retval;
             if ( backtracking==0 ) stream_INIT.add(INIT177);
 
             if ( backtracking==0 ) {
@@ -7863,12 +7862,12 @@ public class DRLParser extends Parser {
             if ( backtracking==0 ) {
               	emit(Location.LOCATION_LHS_FROM_ACCUMULATE_INIT);	
             }
-            pushFollow(FOLLOW_accumulate_paren_chunk_in_accumulate_init_clause2998);
+            pushFollow(FOLLOW_accumulate_paren_chunk_in_accumulate_init_clause2996);
             pc1=accumulate_paren_chunk(Location.LOCATION_LHS_FROM_ACCUMULATE_INIT_INSIDE);
             _fsp--;
             if (failed) return retval;
             if ( backtracking==0 ) stream_accumulate_paren_chunk.add(pc1.getTree());
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:941:84: (cm1= COMMA )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:940:84: (cm1= COMMA )?
             int alt60=2;
             int LA60_0 = input.LA(1);
 
@@ -7877,10 +7876,10 @@ public class DRLParser extends Parser {
             }
             switch (alt60) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:941:84: cm1= COMMA
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:940:84: cm1= COMMA
                     {
                     cm1=(Token)input.LT(1);
-                    match(input,COMMA,FOLLOW_COMMA_in_accumulate_init_clause3003); if (failed) return retval;
+                    match(input,COMMA,FOLLOW_COMMA_in_accumulate_init_clause3001); if (failed) return retval;
                     if ( backtracking==0 ) stream_COMMA.add(cm1);
 
 
@@ -7895,17 +7894,17 @@ public class DRLParser extends Parser {
             if ( backtracking==0 ) {
               	emit(Location.LOCATION_LHS_FROM_ACCUMULATE_ACTION);	
             }
-            pushFollow(FOLLOW_action_key_in_accumulate_init_clause3014);
+            pushFollow(FOLLOW_action_key_in_accumulate_init_clause3012);
             action_key178=action_key();
             _fsp--;
             if (failed) return retval;
             if ( backtracking==0 ) stream_action_key.add(action_key178.getTree());
-            pushFollow(FOLLOW_accumulate_paren_chunk_in_accumulate_init_clause3018);
+            pushFollow(FOLLOW_accumulate_paren_chunk_in_accumulate_init_clause3016);
             pc2=accumulate_paren_chunk(Location.LOCATION_LHS_FROM_ACCUMULATE_ACTION_INSIDE);
             _fsp--;
             if (failed) return retval;
             if ( backtracking==0 ) stream_accumulate_paren_chunk.add(pc2.getTree());
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:943:97: (cm2= COMMA )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:942:97: (cm2= COMMA )?
             int alt61=2;
             int LA61_0 = input.LA(1);
 
@@ -7914,10 +7913,10 @@ public class DRLParser extends Parser {
             }
             switch (alt61) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:943:97: cm2= COMMA
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:942:97: cm2= COMMA
                     {
                     cm2=(Token)input.LT(1);
-                    match(input,COMMA,FOLLOW_COMMA_in_accumulate_init_clause3023); if (failed) return retval;
+                    match(input,COMMA,FOLLOW_COMMA_in_accumulate_init_clause3021); if (failed) return retval;
                     if ( backtracking==0 ) stream_COMMA.add(cm2);
 
 
@@ -7932,24 +7931,24 @@ public class DRLParser extends Parser {
             if ( backtracking==0 ) {
               	emit(Location.LOCATION_LHS_FROM_ACCUMULATE_REVERSE);	
             }
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:946:2: ( reverse_key pc3= accumulate_paren_chunk[Location.LOCATION_LHS_FROM_ACCUMULATE_REVERSE_INSIDE] (cm3= COMMA )? )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:945:2: ( reverse_key pc3= accumulate_paren_chunk[Location.LOCATION_LHS_FROM_ACCUMULATE_REVERSE_INSIDE] (cm3= COMMA )? )?
             int alt63=2;
             alt63 = dfa63.predict(input);
             switch (alt63) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:946:4: reverse_key pc3= accumulate_paren_chunk[Location.LOCATION_LHS_FROM_ACCUMULATE_REVERSE_INSIDE] (cm3= COMMA )?
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:945:4: reverse_key pc3= accumulate_paren_chunk[Location.LOCATION_LHS_FROM_ACCUMULATE_REVERSE_INSIDE] (cm3= COMMA )?
                     {
-                    pushFollow(FOLLOW_reverse_key_in_accumulate_init_clause3036);
+                    pushFollow(FOLLOW_reverse_key_in_accumulate_init_clause3034);
                     reverse_key179=reverse_key();
                     _fsp--;
                     if (failed) return retval;
                     if ( backtracking==0 ) stream_reverse_key.add(reverse_key179.getTree());
-                    pushFollow(FOLLOW_accumulate_paren_chunk_in_accumulate_init_clause3040);
+                    pushFollow(FOLLOW_accumulate_paren_chunk_in_accumulate_init_clause3038);
                     pc3=accumulate_paren_chunk(Location.LOCATION_LHS_FROM_ACCUMULATE_REVERSE_INSIDE);
                     _fsp--;
                     if (failed) return retval;
                     if ( backtracking==0 ) stream_accumulate_paren_chunk.add(pc3.getTree());
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:946:100: (cm3= COMMA )?
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:945:100: (cm3= COMMA )?
                     int alt62=2;
                     int LA62_0 = input.LA(1);
 
@@ -7958,10 +7957,10 @@ public class DRLParser extends Parser {
                     }
                     switch (alt62) {
                         case 1 :
-                            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:946:100: cm3= COMMA
+                            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:945:100: cm3= COMMA
                             {
                             cm3=(Token)input.LT(1);
-                            match(input,COMMA,FOLLOW_COMMA_in_accumulate_init_clause3045); if (failed) return retval;
+                            match(input,COMMA,FOLLOW_COMMA_in_accumulate_init_clause3043); if (failed) return retval;
                             if ( backtracking==0 ) stream_COMMA.add(cm3);
 
 
@@ -7982,7 +7981,7 @@ public class DRLParser extends Parser {
             if ( backtracking==0 ) {
               	emit(Location.LOCATION_LHS_FROM_ACCUMULATE_RESULT);	
             }
-            pushFollow(FOLLOW_result_key_in_accumulate_init_clause3060);
+            pushFollow(FOLLOW_result_key_in_accumulate_init_clause3058);
             res1=result_key();
             _fsp--;
             if (failed) return retval;
@@ -7990,7 +7989,7 @@ public class DRLParser extends Parser {
             if ( backtracking==0 ) {
               	emit(((Token)res1.start), DroolsEditorType.KEYWORD);	
             }
-            pushFollow(FOLLOW_accumulate_paren_chunk_in_accumulate_init_clause3066);
+            pushFollow(FOLLOW_accumulate_paren_chunk_in_accumulate_init_clause3064);
             pc4=accumulate_paren_chunk(Location.LOCATION_LHS_FROM_ACCUMULATE_RESULT_INSIDE);
             _fsp--;
             if (failed) return retval;
@@ -8011,14 +8010,14 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 949:2: -> ^( VT_ACCUMULATE_INIT_CLAUSE ^( INIT $pc1) ^( action_key $pc2) ( ^( reverse_key $pc3) )? ^( result_key $pc4) )
+            // 948:2: -> ^( VT_ACCUMULATE_INIT_CLAUSE ^( INIT $pc1) ^( action_key $pc2) ( ^( reverse_key $pc3) )? ^( result_key $pc4) )
             {
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:949:5: ^( VT_ACCUMULATE_INIT_CLAUSE ^( INIT $pc1) ^( action_key $pc2) ( ^( reverse_key $pc3) )? ^( result_key $pc4) )
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:948:5: ^( VT_ACCUMULATE_INIT_CLAUSE ^( INIT $pc1) ^( action_key $pc2) ( ^( reverse_key $pc3) )? ^( result_key $pc4) )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(adaptor.create(VT_ACCUMULATE_INIT_CLAUSE, "VT_ACCUMULATE_INIT_CLAUSE"), root_1);
 
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:949:33: ^( INIT $pc1)
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:948:33: ^( INIT $pc1)
                 {
                 Object root_2 = (Object)adaptor.nil();
                 root_2 = (Object)adaptor.becomeRoot(stream_INIT.next(), root_2);
@@ -8027,7 +8026,7 @@ public class DRLParser extends Parser {
 
                 adaptor.addChild(root_1, root_2);
                 }
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:949:46: ^( action_key $pc2)
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:948:46: ^( action_key $pc2)
                 {
                 Object root_2 = (Object)adaptor.nil();
                 root_2 = (Object)adaptor.becomeRoot(stream_action_key.nextNode(), root_2);
@@ -8036,9 +8035,9 @@ public class DRLParser extends Parser {
 
                 adaptor.addChild(root_1, root_2);
                 }
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:949:65: ( ^( reverse_key $pc3) )?
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:948:65: ( ^( reverse_key $pc3) )?
                 if ( stream_pc3.hasNext()||stream_reverse_key.hasNext() ) {
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:949:65: ^( reverse_key $pc3)
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:948:65: ^( reverse_key $pc3)
                     {
                     Object root_2 = (Object)adaptor.nil();
                     root_2 = (Object)adaptor.becomeRoot(stream_reverse_key.nextNode(), root_2);
@@ -8051,7 +8050,7 @@ public class DRLParser extends Parser {
                 }
                 stream_pc3.reset();
                 stream_reverse_key.reset();
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:949:86: ^( result_key $pc4)
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:948:86: ^( result_key $pc4)
                 {
                 Object root_2 = (Object)adaptor.nil();
                 root_2 = (Object)adaptor.becomeRoot(stream_result_key.nextNode(), root_2);
@@ -8106,7 +8105,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start accumulate_paren_chunk
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:962:1: accumulate_paren_chunk[int locationType] : pc= accumulate_paren_chunk_data[false,$locationType] -> VT_PAREN_CHUNK[$pc.start,text] ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:961:1: accumulate_paren_chunk[int locationType] : pc= accumulate_paren_chunk_data[false,$locationType] -> VT_PAREN_CHUNK[$pc.start,text] ;
     public final accumulate_paren_chunk_return accumulate_paren_chunk(int locationType) throws RecognitionException {
         accumulate_paren_chunk_return retval = new accumulate_paren_chunk_return();
         retval.start = input.LT(1);
@@ -8121,10 +8120,10 @@ public class DRLParser extends Parser {
         	String text = "";
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:965:3: (pc= accumulate_paren_chunk_data[false,$locationType] -> VT_PAREN_CHUNK[$pc.start,text] )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:965:5: pc= accumulate_paren_chunk_data[false,$locationType]
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:964:3: (pc= accumulate_paren_chunk_data[false,$locationType] -> VT_PAREN_CHUNK[$pc.start,text] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:964:5: pc= accumulate_paren_chunk_data[false,$locationType]
             {
-            pushFollow(FOLLOW_accumulate_paren_chunk_data_in_accumulate_paren_chunk3124);
+            pushFollow(FOLLOW_accumulate_paren_chunk_data_in_accumulate_paren_chunk3122);
             pc=accumulate_paren_chunk_data(false, locationType);
             _fsp--;
             if (failed) return retval;
@@ -8144,7 +8143,7 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 966:2: -> VT_PAREN_CHUNK[$pc.start,text]
+            // 965:2: -> VT_PAREN_CHUNK[$pc.start,text]
             {
                 adaptor.addChild(root_0, adaptor.create(VT_PAREN_CHUNK, ((Token)pc.start), text));
 
@@ -8177,7 +8176,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start accumulate_paren_chunk_data
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:969:1: accumulate_paren_chunk_data[boolean isRecursive, int locationType] : lp1= LEFT_PAREN (any=~ ( LEFT_PAREN | RIGHT_PAREN ) | accumulate_paren_chunk_data[true,-1] )* rp1= RIGHT_PAREN ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:968:1: accumulate_paren_chunk_data[boolean isRecursive, int locationType] : lp1= LEFT_PAREN (any=~ ( LEFT_PAREN | RIGHT_PAREN ) | accumulate_paren_chunk_data[true,-1] )* rp1= RIGHT_PAREN ;
     public final accumulate_paren_chunk_data_return accumulate_paren_chunk_data(boolean isRecursive, int locationType) throws RecognitionException {
         accumulate_paren_chunk_data_return retval = new accumulate_paren_chunk_data_return();
         retval.start = input.LT(1);
@@ -8195,13 +8194,13 @@ public class DRLParser extends Parser {
         Object rp1_tree=null;
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:970:2: (lp1= LEFT_PAREN (any=~ ( LEFT_PAREN | RIGHT_PAREN ) | accumulate_paren_chunk_data[true,-1] )* rp1= RIGHT_PAREN )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:970:4: lp1= LEFT_PAREN (any=~ ( LEFT_PAREN | RIGHT_PAREN ) | accumulate_paren_chunk_data[true,-1] )* rp1= RIGHT_PAREN
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:969:2: (lp1= LEFT_PAREN (any=~ ( LEFT_PAREN | RIGHT_PAREN ) | accumulate_paren_chunk_data[true,-1] )* rp1= RIGHT_PAREN )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:969:4: lp1= LEFT_PAREN (any=~ ( LEFT_PAREN | RIGHT_PAREN ) | accumulate_paren_chunk_data[true,-1] )* rp1= RIGHT_PAREN
             {
             root_0 = (Object)adaptor.nil();
 
             lp1=(Token)input.LT(1);
-            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_accumulate_paren_chunk_data3148); if (failed) return retval;
+            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_accumulate_paren_chunk_data3146); if (failed) return retval;
             if ( backtracking==0 ) {
             lp1_tree = (Object)adaptor.create(lp1);
             adaptor.addChild(root_0, lp1_tree);
@@ -8215,7 +8214,7 @@ public class DRLParser extends Parser {
               			}	
               		
             }
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:978:4: (any=~ ( LEFT_PAREN | RIGHT_PAREN ) | accumulate_paren_chunk_data[true,-1] )*
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:977:4: (any=~ ( LEFT_PAREN | RIGHT_PAREN ) | accumulate_paren_chunk_data[true,-1] )*
             loop64:
             do {
                 int alt64=3;
@@ -8231,7 +8230,7 @@ public class DRLParser extends Parser {
 
                 switch (alt64) {
             	case 1 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:978:5: any=~ ( LEFT_PAREN | RIGHT_PAREN )
+            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:977:5: any=~ ( LEFT_PAREN | RIGHT_PAREN )
             	    {
             	    any=(Token)input.LT(1);
             	    if ( (input.LA(1)>=VT_COMPILATION_UNIT && input.LA(1)<=STRING)||input.LA(1)==COMMA||(input.LA(1)>=AT && input.LA(1)<=MULTI_LINE_COMMENT) ) {
@@ -8243,7 +8242,7 @@ public class DRLParser extends Parser {
             	        if (backtracking>0) {failed=true; return retval;}
             	        MismatchedSetException mse =
             	            new MismatchedSetException(null,input);
-            	        recoverFromMismatchedSet(input,mse,FOLLOW_set_in_accumulate_paren_chunk_data3160);    throw mse;
+            	        recoverFromMismatchedSet(input,mse,FOLLOW_set_in_accumulate_paren_chunk_data3158);    throw mse;
             	    }
 
             	    if ( backtracking==0 ) {
@@ -8253,9 +8252,9 @@ public class DRLParser extends Parser {
             	    }
             	    break;
             	case 2 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:978:87: accumulate_paren_chunk_data[true,-1]
+            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:977:87: accumulate_paren_chunk_data[true,-1]
             	    {
-            	    pushFollow(FOLLOW_accumulate_paren_chunk_data_in_accumulate_paren_chunk_data3176);
+            	    pushFollow(FOLLOW_accumulate_paren_chunk_data_in_accumulate_paren_chunk_data3174);
             	    accumulate_paren_chunk_data180=accumulate_paren_chunk_data(true, -1);
             	    _fsp--;
             	    if (failed) return retval;
@@ -8270,7 +8269,7 @@ public class DRLParser extends Parser {
             } while (true);
 
             rp1=(Token)input.LT(1);
-            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_accumulate_paren_chunk_data3187); if (failed) return retval;
+            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_accumulate_paren_chunk_data3185); if (failed) return retval;
             if ( backtracking==0 ) {
             rp1_tree = (Object)adaptor.create(rp1);
             adaptor.addChild(root_0, rp1_tree);
@@ -8309,7 +8308,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start accumulate_id_clause
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:988:1: accumulate_id_clause : ID paren_chunk -> ^( VT_ACCUMULATE_ID_CLAUSE ID paren_chunk ) ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:987:1: accumulate_id_clause : ID paren_chunk -> ^( VT_ACCUMULATE_ID_CLAUSE ID paren_chunk ) ;
     public final accumulate_id_clause_return accumulate_id_clause() throws RecognitionException {
         accumulate_id_clause_return retval = new accumulate_id_clause_return();
         retval.start = input.LT(1);
@@ -8324,17 +8323,17 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
         RewriteRuleSubtreeStream stream_paren_chunk=new RewriteRuleSubtreeStream(adaptor,"rule paren_chunk");
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:989:2: ( ID paren_chunk -> ^( VT_ACCUMULATE_ID_CLAUSE ID paren_chunk ) )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:989:4: ID paren_chunk
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:988:2: ( ID paren_chunk -> ^( VT_ACCUMULATE_ID_CLAUSE ID paren_chunk ) )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:988:4: ID paren_chunk
             {
             ID181=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_accumulate_id_clause3203); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_accumulate_id_clause3201); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(ID181);
 
             if ( backtracking==0 ) {
               	emit(ID181, DroolsEditorType.IDENTIFIER);	
             }
-            pushFollow(FOLLOW_paren_chunk_in_accumulate_id_clause3209);
+            pushFollow(FOLLOW_paren_chunk_in_accumulate_id_clause3207);
             paren_chunk182=paren_chunk();
             _fsp--;
             if (failed) return retval;
@@ -8351,9 +8350,9 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 991:2: -> ^( VT_ACCUMULATE_ID_CLAUSE ID paren_chunk )
+            // 990:2: -> ^( VT_ACCUMULATE_ID_CLAUSE ID paren_chunk )
             {
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:991:5: ^( VT_ACCUMULATE_ID_CLAUSE ID paren_chunk )
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:990:5: ^( VT_ACCUMULATE_ID_CLAUSE ID paren_chunk )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(adaptor.create(VT_ACCUMULATE_ID_CLAUSE, "VT_ACCUMULATE_ID_CLAUSE"), root_1);
@@ -8393,7 +8392,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start collect_statement
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:994:1: collect_statement : COLLECT LEFT_PAREN pattern_source RIGHT_PAREN -> ^( COLLECT pattern_source RIGHT_PAREN ) ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:993:1: collect_statement : COLLECT LEFT_PAREN pattern_source RIGHT_PAREN -> ^( COLLECT pattern_source RIGHT_PAREN ) ;
     public final collect_statement_return collect_statement() throws RecognitionException {
         collect_statement_return retval = new collect_statement_return();
         retval.start = input.LT(1);
@@ -8414,11 +8413,11 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_COLLECT=new RewriteRuleTokenStream(adaptor,"token COLLECT");
         RewriteRuleSubtreeStream stream_pattern_source=new RewriteRuleSubtreeStream(adaptor,"rule pattern_source");
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:995:2: ( COLLECT LEFT_PAREN pattern_source RIGHT_PAREN -> ^( COLLECT pattern_source RIGHT_PAREN ) )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:995:4: COLLECT LEFT_PAREN pattern_source RIGHT_PAREN
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:994:2: ( COLLECT LEFT_PAREN pattern_source RIGHT_PAREN -> ^( COLLECT pattern_source RIGHT_PAREN ) )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:994:4: COLLECT LEFT_PAREN pattern_source RIGHT_PAREN
             {
             COLLECT183=(Token)input.LT(1);
-            match(input,COLLECT,FOLLOW_COLLECT_in_collect_statement3231); if (failed) return retval;
+            match(input,COLLECT,FOLLOW_COLLECT_in_collect_statement3229); if (failed) return retval;
             if ( backtracking==0 ) stream_COLLECT.add(COLLECT183);
 
             if ( backtracking==0 ) {
@@ -8428,19 +8427,19 @@ public class DRLParser extends Parser {
               	emit(Location.LOCATION_LHS_FROM_COLLECT);	
             }
             LEFT_PAREN184=(Token)input.LT(1);
-            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_collect_statement3240); if (failed) return retval;
+            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_collect_statement3238); if (failed) return retval;
             if ( backtracking==0 ) stream_LEFT_PAREN.add(LEFT_PAREN184);
 
             if ( backtracking==0 ) {
               	emit(LEFT_PAREN184, DroolsEditorType.SYMBOL);	
             }
-            pushFollow(FOLLOW_pattern_source_in_collect_statement3247);
+            pushFollow(FOLLOW_pattern_source_in_collect_statement3245);
             pattern_source185=pattern_source();
             _fsp--;
             if (failed) return retval;
             if ( backtracking==0 ) stream_pattern_source.add(pattern_source185.getTree());
             RIGHT_PAREN186=(Token)input.LT(1);
-            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_collect_statement3252); if (failed) return retval;
+            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_collect_statement3250); if (failed) return retval;
             if ( backtracking==0 ) stream_RIGHT_PAREN.add(RIGHT_PAREN186);
 
             if ( backtracking==0 ) {
@@ -8461,9 +8460,9 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1001:2: -> ^( COLLECT pattern_source RIGHT_PAREN )
+            // 1000:2: -> ^( COLLECT pattern_source RIGHT_PAREN )
             {
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1001:5: ^( COLLECT pattern_source RIGHT_PAREN )
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1000:5: ^( COLLECT pattern_source RIGHT_PAREN )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(stream_COLLECT.next(), root_1);
@@ -8503,7 +8502,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start entrypoint_statement
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1004:1: entrypoint_statement : entry_point_key entrypoint_id -> ^( entry_point_key entrypoint_id ) ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1003:1: entrypoint_statement : entry_point_key entrypoint_id -> ^( entry_point_key entrypoint_id ) ;
     public final entrypoint_statement_return entrypoint_statement() throws RecognitionException {
         entrypoint_statement_return retval = new entrypoint_statement_return();
         retval.start = input.LT(1);
@@ -8518,10 +8517,10 @@ public class DRLParser extends Parser {
         RewriteRuleSubtreeStream stream_entrypoint_id=new RewriteRuleSubtreeStream(adaptor,"rule entrypoint_id");
         RewriteRuleSubtreeStream stream_entry_point_key=new RewriteRuleSubtreeStream(adaptor,"rule entry_point_key");
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1005:2: ( entry_point_key entrypoint_id -> ^( entry_point_key entrypoint_id ) )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1005:4: entry_point_key entrypoint_id
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1004:2: ( entry_point_key entrypoint_id -> ^( entry_point_key entrypoint_id ) )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1004:4: entry_point_key entrypoint_id
             {
-            pushFollow(FOLLOW_entry_point_key_in_entrypoint_statement3279);
+            pushFollow(FOLLOW_entry_point_key_in_entrypoint_statement3277);
             entry_point_key187=entry_point_key();
             _fsp--;
             if (failed) return retval;
@@ -8529,7 +8528,7 @@ public class DRLParser extends Parser {
             if ( backtracking==0 ) {
               	emit(Location.LOCATION_LHS_FROM_COLLECT);	
             }
-            pushFollow(FOLLOW_entrypoint_id_in_entrypoint_statement3287);
+            pushFollow(FOLLOW_entrypoint_id_in_entrypoint_statement3285);
             entrypoint_id188=entrypoint_id();
             _fsp--;
             if (failed) return retval;
@@ -8549,9 +8548,9 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1009:2: -> ^( entry_point_key entrypoint_id )
+            // 1008:2: -> ^( entry_point_key entrypoint_id )
             {
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1009:5: ^( entry_point_key entrypoint_id )
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1008:5: ^( entry_point_key entrypoint_id )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(stream_entry_point_key.nextNode(), root_1);
@@ -8590,7 +8589,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start entrypoint_id
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1012:1: entrypoint_id : (value= ID -> VT_ENTRYPOINT_ID[$value] | value= STRING -> VT_ENTRYPOINT_ID[$value] );
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1011:1: entrypoint_id : (value= ID -> VT_ENTRYPOINT_ID[$value] | value= STRING -> VT_ENTRYPOINT_ID[$value] );
     public final entrypoint_id_return entrypoint_id() throws RecognitionException {
         entrypoint_id_return retval = new entrypoint_id_return();
         retval.start = input.LT(1);
@@ -8604,7 +8603,7 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1013:2: (value= ID -> VT_ENTRYPOINT_ID[$value] | value= STRING -> VT_ENTRYPOINT_ID[$value] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1012:2: (value= ID -> VT_ENTRYPOINT_ID[$value] | value= STRING -> VT_ENTRYPOINT_ID[$value] )
             int alt65=2;
             int LA65_0 = input.LA(1);
 
@@ -8617,16 +8616,16 @@ public class DRLParser extends Parser {
             else {
                 if (backtracking>0) {failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("1012:1: entrypoint_id : (value= ID -> VT_ENTRYPOINT_ID[$value] | value= STRING -> VT_ENTRYPOINT_ID[$value] );", 65, 0, input);
+                    new NoViableAltException("1011:1: entrypoint_id : (value= ID -> VT_ENTRYPOINT_ID[$value] | value= STRING -> VT_ENTRYPOINT_ID[$value] );", 65, 0, input);
 
                 throw nvae;
             }
             switch (alt65) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1013:5: value= ID
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1012:5: value= ID
                     {
                     value=(Token)input.LT(1);
-                    match(input,ID,FOLLOW_ID_in_entrypoint_id3313); if (failed) return retval;
+                    match(input,ID,FOLLOW_ID_in_entrypoint_id3311); if (failed) return retval;
                     if ( backtracking==0 ) stream_ID.add(value);
 
                     if ( backtracking==0 ) {
@@ -8644,7 +8643,7 @@ public class DRLParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 1014:3: -> VT_ENTRYPOINT_ID[$value]
+                    // 1013:3: -> VT_ENTRYPOINT_ID[$value]
                     {
                         adaptor.addChild(root_0, adaptor.create(VT_ENTRYPOINT_ID, value));
 
@@ -8655,10 +8654,10 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1015:5: value= STRING
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1014:5: value= STRING
                     {
                     value=(Token)input.LT(1);
-                    match(input,STRING,FOLLOW_STRING_in_entrypoint_id3330); if (failed) return retval;
+                    match(input,STRING,FOLLOW_STRING_in_entrypoint_id3328); if (failed) return retval;
                     if ( backtracking==0 ) stream_STRING.add(value);
 
                     if ( backtracking==0 ) {
@@ -8676,7 +8675,7 @@ public class DRLParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 1016:3: -> VT_ENTRYPOINT_ID[$value]
+                    // 1015:3: -> VT_ENTRYPOINT_ID[$value]
                     {
                         adaptor.addChild(root_0, adaptor.create(VT_ENTRYPOINT_ID, value));
 
@@ -8711,7 +8710,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start from_source
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1019:1: from_source : ID ( ( LEFT_PAREN )=>args= paren_chunk )? ( expression_chain )? -> ^( VT_FROM_SOURCE ID ( paren_chunk )? ( expression_chain )? ) ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1018:1: from_source : ID ( ( LEFT_PAREN )=>args= paren_chunk )? ( expression_chain )? -> ^( VT_FROM_SOURCE ID ( paren_chunk )? ( expression_chain )? ) ;
     public final from_source_return from_source() throws RecognitionException {
         from_source_return retval = new from_source_return();
         retval.start = input.LT(1);
@@ -8729,17 +8728,17 @@ public class DRLParser extends Parser {
         RewriteRuleSubtreeStream stream_expression_chain=new RewriteRuleSubtreeStream(adaptor,"rule expression_chain");
         RewriteRuleSubtreeStream stream_paren_chunk=new RewriteRuleSubtreeStream(adaptor,"rule paren_chunk");
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1020:2: ( ID ( ( LEFT_PAREN )=>args= paren_chunk )? ( expression_chain )? -> ^( VT_FROM_SOURCE ID ( paren_chunk )? ( expression_chain )? ) )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1020:4: ID ( ( LEFT_PAREN )=>args= paren_chunk )? ( expression_chain )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1019:2: ( ID ( ( LEFT_PAREN )=>args= paren_chunk )? ( expression_chain )? -> ^( VT_FROM_SOURCE ID ( paren_chunk )? ( expression_chain )? ) )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1019:4: ID ( ( LEFT_PAREN )=>args= paren_chunk )? ( expression_chain )?
             {
             ID189=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_from_source3350); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_from_source3348); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(ID189);
 
             if ( backtracking==0 ) {
               	emit(ID189, DroolsEditorType.IDENTIFIER);	
             }
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1021:3: ( ( LEFT_PAREN )=>args= paren_chunk )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1020:3: ( ( LEFT_PAREN )=>args= paren_chunk )?
             int alt66=2;
             int LA66_0 = input.LA(1);
 
@@ -8769,9 +8768,9 @@ public class DRLParser extends Parser {
             }
             switch (alt66) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1021:5: ( LEFT_PAREN )=>args= paren_chunk
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1020:5: ( LEFT_PAREN )=>args= paren_chunk
                     {
-                    pushFollow(FOLLOW_paren_chunk_in_from_source3365);
+                    pushFollow(FOLLOW_paren_chunk_in_from_source3363);
                     args=paren_chunk();
                     _fsp--;
                     if (failed) return retval;
@@ -8782,7 +8781,7 @@ public class DRLParser extends Parser {
 
             }
 
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1022:3: ( expression_chain )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1021:3: ( expression_chain )?
             int alt67=2;
             int LA67_0 = input.LA(1);
 
@@ -8791,9 +8790,9 @@ public class DRLParser extends Parser {
             }
             switch (alt67) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1022:3: expression_chain
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1021:3: expression_chain
                     {
-                    pushFollow(FOLLOW_expression_chain_in_from_source3372);
+                    pushFollow(FOLLOW_expression_chain_in_from_source3370);
                     expression_chain190=expression_chain();
                     _fsp--;
                     if (failed) return retval;
@@ -8823,21 +8822,21 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1028:2: -> ^( VT_FROM_SOURCE ID ( paren_chunk )? ( expression_chain )? )
+            // 1027:2: -> ^( VT_FROM_SOURCE ID ( paren_chunk )? ( expression_chain )? )
             {
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1028:5: ^( VT_FROM_SOURCE ID ( paren_chunk )? ( expression_chain )? )
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1027:5: ^( VT_FROM_SOURCE ID ( paren_chunk )? ( expression_chain )? )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(adaptor.create(VT_FROM_SOURCE, "VT_FROM_SOURCE"), root_1);
 
                 adaptor.addChild(root_1, stream_ID.next());
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1028:25: ( paren_chunk )?
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1027:25: ( paren_chunk )?
                 if ( stream_paren_chunk.hasNext() ) {
                     adaptor.addChild(root_1, stream_paren_chunk.next());
 
                 }
                 stream_paren_chunk.reset();
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1028:38: ( expression_chain )?
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1027:38: ( expression_chain )?
                 if ( stream_expression_chain.hasNext() ) {
                     adaptor.addChild(root_1, stream_expression_chain.next());
 
@@ -8876,7 +8875,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start expression_chain
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1031:1: expression_chain : DOT ID ( ( LEFT_SQUARE )=> square_chunk | ( LEFT_PAREN )=> paren_chunk )? ( expression_chain )? -> ^( VT_EXPRESSION_CHAIN[$DOT] ID ( square_chunk )? ( paren_chunk )? ( expression_chain )? ) ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1030:1: expression_chain : DOT ID ( ( LEFT_SQUARE )=> square_chunk | ( LEFT_PAREN )=> paren_chunk )? ( expression_chain )? -> ^( VT_EXPRESSION_CHAIN[$DOT] ID ( square_chunk )? ( paren_chunk )? ( expression_chain )? ) ;
     public final expression_chain_return expression_chain() throws RecognitionException {
         expression_chain_return retval = new expression_chain_return();
         retval.start = input.LT(1);
@@ -8900,31 +8899,31 @@ public class DRLParser extends Parser {
         RewriteRuleSubtreeStream stream_expression_chain=new RewriteRuleSubtreeStream(adaptor,"rule expression_chain");
         RewriteRuleSubtreeStream stream_paren_chunk=new RewriteRuleSubtreeStream(adaptor,"rule paren_chunk");
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1032:2: ( DOT ID ( ( LEFT_SQUARE )=> square_chunk | ( LEFT_PAREN )=> paren_chunk )? ( expression_chain )? -> ^( VT_EXPRESSION_CHAIN[$DOT] ID ( square_chunk )? ( paren_chunk )? ( expression_chain )? ) )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1033:3: DOT ID ( ( LEFT_SQUARE )=> square_chunk | ( LEFT_PAREN )=> paren_chunk )? ( expression_chain )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1031:2: ( DOT ID ( ( LEFT_SQUARE )=> square_chunk | ( LEFT_PAREN )=> paren_chunk )? ( expression_chain )? -> ^( VT_EXPRESSION_CHAIN[$DOT] ID ( square_chunk )? ( paren_chunk )? ( expression_chain )? ) )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1032:3: DOT ID ( ( LEFT_SQUARE )=> square_chunk | ( LEFT_PAREN )=> paren_chunk )? ( expression_chain )?
             {
             DOT191=(Token)input.LT(1);
-            match(input,DOT,FOLLOW_DOT_in_expression_chain3405); if (failed) return retval;
+            match(input,DOT,FOLLOW_DOT_in_expression_chain3403); if (failed) return retval;
             if ( backtracking==0 ) stream_DOT.add(DOT191);
 
             if ( backtracking==0 ) {
               	emit(DOT191, DroolsEditorType.IDENTIFIER);	
             }
             ID192=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_expression_chain3412); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_expression_chain3410); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(ID192);
 
             if ( backtracking==0 ) {
               	emit(ID192, DroolsEditorType.IDENTIFIER);	
             }
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1035:4: ( ( LEFT_SQUARE )=> square_chunk | ( LEFT_PAREN )=> paren_chunk )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1034:4: ( ( LEFT_SQUARE )=> square_chunk | ( LEFT_PAREN )=> paren_chunk )?
             int alt68=3;
             alt68 = dfa68.predict(input);
             switch (alt68) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1036:6: ( LEFT_SQUARE )=> square_chunk
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1035:6: ( LEFT_SQUARE )=> square_chunk
                     {
-                    pushFollow(FOLLOW_square_chunk_in_expression_chain3434);
+                    pushFollow(FOLLOW_square_chunk_in_expression_chain3432);
                     square_chunk193=square_chunk();
                     _fsp--;
                     if (failed) return retval;
@@ -8933,9 +8932,9 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1038:6: ( LEFT_PAREN )=> paren_chunk
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1037:6: ( LEFT_PAREN )=> paren_chunk
                     {
-                    pushFollow(FOLLOW_paren_chunk_in_expression_chain3456);
+                    pushFollow(FOLLOW_paren_chunk_in_expression_chain3454);
                     paren_chunk194=paren_chunk();
                     _fsp--;
                     if (failed) return retval;
@@ -8946,7 +8945,7 @@ public class DRLParser extends Parser {
 
             }
 
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1040:4: ( expression_chain )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1039:4: ( expression_chain )?
             int alt69=2;
             int LA69_0 = input.LA(1);
 
@@ -8955,9 +8954,9 @@ public class DRLParser extends Parser {
             }
             switch (alt69) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1040:4: expression_chain
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1039:4: expression_chain
                     {
-                    pushFollow(FOLLOW_expression_chain_in_expression_chain3467);
+                    pushFollow(FOLLOW_expression_chain_in_expression_chain3465);
                     expression_chain195=expression_chain();
                     _fsp--;
                     if (failed) return retval;
@@ -8980,27 +8979,27 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1041:4: -> ^( VT_EXPRESSION_CHAIN[$DOT] ID ( square_chunk )? ( paren_chunk )? ( expression_chain )? )
+            // 1040:4: -> ^( VT_EXPRESSION_CHAIN[$DOT] ID ( square_chunk )? ( paren_chunk )? ( expression_chain )? )
             {
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1041:7: ^( VT_EXPRESSION_CHAIN[$DOT] ID ( square_chunk )? ( paren_chunk )? ( expression_chain )? )
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1040:7: ^( VT_EXPRESSION_CHAIN[$DOT] ID ( square_chunk )? ( paren_chunk )? ( expression_chain )? )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(adaptor.create(VT_EXPRESSION_CHAIN, DOT191), root_1);
 
                 adaptor.addChild(root_1, stream_ID.next());
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1041:38: ( square_chunk )?
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1040:38: ( square_chunk )?
                 if ( stream_square_chunk.hasNext() ) {
                     adaptor.addChild(root_1, stream_square_chunk.next());
 
                 }
                 stream_square_chunk.reset();
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1041:52: ( paren_chunk )?
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1040:52: ( paren_chunk )?
                 if ( stream_paren_chunk.hasNext() ) {
                     adaptor.addChild(root_1, stream_paren_chunk.next());
 
                 }
                 stream_paren_chunk.reset();
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1041:65: ( expression_chain )?
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1040:65: ( expression_chain )?
                 if ( stream_expression_chain.hasNext() ) {
                     adaptor.addChild(root_1, stream_expression_chain.next());
 
@@ -9039,7 +9038,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start lhs_pattern
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1044:1: lhs_pattern : ( fact_binding -> ^( VT_PATTERN fact_binding ) | fact -> ^( VT_PATTERN fact ) );
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1043:1: lhs_pattern : ( fact_binding -> ^( VT_PATTERN fact_binding ) | fact -> ^( VT_PATTERN fact ) );
     public final lhs_pattern_return lhs_pattern() throws RecognitionException {
         lhs_pattern_return retval = new lhs_pattern_return();
         retval.start = input.LT(1);
@@ -9054,7 +9053,7 @@ public class DRLParser extends Parser {
         RewriteRuleSubtreeStream stream_fact_binding=new RewriteRuleSubtreeStream(adaptor,"rule fact_binding");
         RewriteRuleSubtreeStream stream_fact=new RewriteRuleSubtreeStream(adaptor,"rule fact");
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1045:2: ( fact_binding -> ^( VT_PATTERN fact_binding ) | fact -> ^( VT_PATTERN fact ) )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1044:2: ( fact_binding -> ^( VT_PATTERN fact_binding ) | fact -> ^( VT_PATTERN fact ) )
             int alt70=2;
             int LA70_0 = input.LA(1);
 
@@ -9070,7 +9069,7 @@ public class DRLParser extends Parser {
                 else {
                     if (backtracking>0) {failed=true; return retval;}
                     NoViableAltException nvae =
-                        new NoViableAltException("1044:1: lhs_pattern : ( fact_binding -> ^( VT_PATTERN fact_binding ) | fact -> ^( VT_PATTERN fact ) );", 70, 1, input);
+                        new NoViableAltException("1043:1: lhs_pattern : ( fact_binding -> ^( VT_PATTERN fact_binding ) | fact -> ^( VT_PATTERN fact ) );", 70, 1, input);
 
                     throw nvae;
                 }
@@ -9078,15 +9077,15 @@ public class DRLParser extends Parser {
             else {
                 if (backtracking>0) {failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("1044:1: lhs_pattern : ( fact_binding -> ^( VT_PATTERN fact_binding ) | fact -> ^( VT_PATTERN fact ) );", 70, 0, input);
+                    new NoViableAltException("1043:1: lhs_pattern : ( fact_binding -> ^( VT_PATTERN fact_binding ) | fact -> ^( VT_PATTERN fact ) );", 70, 0, input);
 
                 throw nvae;
             }
             switch (alt70) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1045:4: fact_binding
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1044:4: fact_binding
                     {
-                    pushFollow(FOLLOW_fact_binding_in_lhs_pattern3500);
+                    pushFollow(FOLLOW_fact_binding_in_lhs_pattern3498);
                     fact_binding196=fact_binding();
                     _fsp--;
                     if (failed) return retval;
@@ -9103,9 +9102,9 @@ public class DRLParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 1045:17: -> ^( VT_PATTERN fact_binding )
+                    // 1044:17: -> ^( VT_PATTERN fact_binding )
                     {
-                        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1045:20: ^( VT_PATTERN fact_binding )
+                        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1044:20: ^( VT_PATTERN fact_binding )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot(adaptor.create(VT_PATTERN, "VT_PATTERN"), root_1);
@@ -9122,9 +9121,9 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1046:4: fact
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1045:4: fact
                     {
-                    pushFollow(FOLLOW_fact_in_lhs_pattern3513);
+                    pushFollow(FOLLOW_fact_in_lhs_pattern3511);
                     fact197=fact();
                     _fsp--;
                     if (failed) return retval;
@@ -9141,9 +9140,9 @@ public class DRLParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 1046:9: -> ^( VT_PATTERN fact )
+                    // 1045:9: -> ^( VT_PATTERN fact )
                     {
-                        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1046:12: ^( VT_PATTERN fact )
+                        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1045:12: ^( VT_PATTERN fact )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot(adaptor.create(VT_PATTERN, "VT_PATTERN"), root_1);
@@ -9184,7 +9183,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start fact_binding
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1049:1: fact_binding : label ( fact | LEFT_PAREN fact_binding_expression RIGHT_PAREN ) -> ^( VT_FACT_BINDING label ( fact )? ( fact_binding_expression )? ( RIGHT_PAREN )? ) ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1048:1: fact_binding : label ( fact | LEFT_PAREN fact_binding_expression RIGHT_PAREN ) -> ^( VT_FACT_BINDING label ( fact )? ( fact_binding_expression )? ( RIGHT_PAREN )? ) ;
     public final fact_binding_return fact_binding() throws RecognitionException {
         fact_binding_return retval = new fact_binding_return();
         retval.start = input.LT(1);
@@ -9208,15 +9207,15 @@ public class DRLParser extends Parser {
         RewriteRuleSubtreeStream stream_fact_binding_expression=new RewriteRuleSubtreeStream(adaptor,"rule fact_binding_expression");
         RewriteRuleSubtreeStream stream_fact=new RewriteRuleSubtreeStream(adaptor,"rule fact");
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1050:3: ( label ( fact | LEFT_PAREN fact_binding_expression RIGHT_PAREN ) -> ^( VT_FACT_BINDING label ( fact )? ( fact_binding_expression )? ( RIGHT_PAREN )? ) )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1050:5: label ( fact | LEFT_PAREN fact_binding_expression RIGHT_PAREN )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1049:3: ( label ( fact | LEFT_PAREN fact_binding_expression RIGHT_PAREN ) -> ^( VT_FACT_BINDING label ( fact )? ( fact_binding_expression )? ( RIGHT_PAREN )? ) )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1049:5: label ( fact | LEFT_PAREN fact_binding_expression RIGHT_PAREN )
             {
-            pushFollow(FOLLOW_label_in_fact_binding3533);
+            pushFollow(FOLLOW_label_in_fact_binding3531);
             label198=label();
             _fsp--;
             if (failed) return retval;
             if ( backtracking==0 ) stream_label.add(label198.getTree());
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1051:3: ( fact | LEFT_PAREN fact_binding_expression RIGHT_PAREN )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1050:3: ( fact | LEFT_PAREN fact_binding_expression RIGHT_PAREN )
             int alt71=2;
             int LA71_0 = input.LA(1);
 
@@ -9229,15 +9228,15 @@ public class DRLParser extends Parser {
             else {
                 if (backtracking>0) {failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("1051:3: ( fact | LEFT_PAREN fact_binding_expression RIGHT_PAREN )", 71, 0, input);
+                    new NoViableAltException("1050:3: ( fact | LEFT_PAREN fact_binding_expression RIGHT_PAREN )", 71, 0, input);
 
                 throw nvae;
             }
             switch (alt71) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1051:5: fact
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1050:5: fact
                     {
-                    pushFollow(FOLLOW_fact_in_fact_binding3539);
+                    pushFollow(FOLLOW_fact_in_fact_binding3537);
                     fact199=fact();
                     _fsp--;
                     if (failed) return retval;
@@ -9246,22 +9245,22 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1052:6: LEFT_PAREN fact_binding_expression RIGHT_PAREN
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1051:6: LEFT_PAREN fact_binding_expression RIGHT_PAREN
                     {
                     LEFT_PAREN200=(Token)input.LT(1);
-                    match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_fact_binding3546); if (failed) return retval;
+                    match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_fact_binding3544); if (failed) return retval;
                     if ( backtracking==0 ) stream_LEFT_PAREN.add(LEFT_PAREN200);
 
                     if ( backtracking==0 ) {
                       	emit(LEFT_PAREN200, DroolsEditorType.SYMBOL);	
                     }
-                    pushFollow(FOLLOW_fact_binding_expression_in_fact_binding3554);
+                    pushFollow(FOLLOW_fact_binding_expression_in_fact_binding3552);
                     fact_binding_expression201=fact_binding_expression();
                     _fsp--;
                     if (failed) return retval;
                     if ( backtracking==0 ) stream_fact_binding_expression.add(fact_binding_expression201.getTree());
                     RIGHT_PAREN202=(Token)input.LT(1);
-                    match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_fact_binding3562); if (failed) return retval;
+                    match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_fact_binding3560); if (failed) return retval;
                     if ( backtracking==0 ) stream_RIGHT_PAREN.add(RIGHT_PAREN202);
 
                     if ( backtracking==0 ) {
@@ -9285,27 +9284,27 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1056:3: -> ^( VT_FACT_BINDING label ( fact )? ( fact_binding_expression )? ( RIGHT_PAREN )? )
+            // 1055:3: -> ^( VT_FACT_BINDING label ( fact )? ( fact_binding_expression )? ( RIGHT_PAREN )? )
             {
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1056:6: ^( VT_FACT_BINDING label ( fact )? ( fact_binding_expression )? ( RIGHT_PAREN )? )
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1055:6: ^( VT_FACT_BINDING label ( fact )? ( fact_binding_expression )? ( RIGHT_PAREN )? )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(adaptor.create(VT_FACT_BINDING, "VT_FACT_BINDING"), root_1);
 
                 adaptor.addChild(root_1, stream_label.next());
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1056:30: ( fact )?
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1055:30: ( fact )?
                 if ( stream_fact.hasNext() ) {
                     adaptor.addChild(root_1, stream_fact.next());
 
                 }
                 stream_fact.reset();
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1056:36: ( fact_binding_expression )?
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1055:36: ( fact_binding_expression )?
                 if ( stream_fact_binding_expression.hasNext() ) {
                     adaptor.addChild(root_1, stream_fact_binding_expression.next());
 
                 }
                 stream_fact_binding_expression.reset();
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1056:61: ( RIGHT_PAREN )?
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1055:61: ( RIGHT_PAREN )?
                 if ( stream_RIGHT_PAREN.hasNext() ) {
                     adaptor.addChild(root_1, stream_RIGHT_PAREN.next());
 
@@ -9344,7 +9343,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start fact_binding_expression
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1059:1: fact_binding_expression : ( fact -> fact ) ( (value= or_key | pipe= DOUBLE_PIPE ) fact -> ^( VT_FACT_OR[orToken] $fact_binding_expression fact ) )* ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1058:1: fact_binding_expression : ( fact -> fact ) ( (value= or_key | pipe= DOUBLE_PIPE ) fact -> ^( VT_FACT_OR[orToken] $fact_binding_expression fact ) )* ;
     public final fact_binding_expression_return fact_binding_expression() throws RecognitionException {
         fact_binding_expression_return retval = new fact_binding_expression_return();
         retval.start = input.LT(1);
@@ -9367,13 +9366,13 @@ public class DRLParser extends Parser {
         	Token orToken = null;
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1062:3: ( ( fact -> fact ) ( (value= or_key | pipe= DOUBLE_PIPE ) fact -> ^( VT_FACT_OR[orToken] $fact_binding_expression fact ) )* )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1062:5: ( fact -> fact ) ( (value= or_key | pipe= DOUBLE_PIPE ) fact -> ^( VT_FACT_OR[orToken] $fact_binding_expression fact ) )*
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1061:3: ( ( fact -> fact ) ( (value= or_key | pipe= DOUBLE_PIPE ) fact -> ^( VT_FACT_OR[orToken] $fact_binding_expression fact ) )* )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1061:5: ( fact -> fact ) ( (value= or_key | pipe= DOUBLE_PIPE ) fact -> ^( VT_FACT_OR[orToken] $fact_binding_expression fact ) )*
             {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1062:5: ( fact -> fact )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1062:6: fact
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1061:5: ( fact -> fact )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1061:6: fact
             {
-            pushFollow(FOLLOW_fact_in_fact_binding_expression3603);
+            pushFollow(FOLLOW_fact_in_fact_binding_expression3601);
             fact203=fact();
             _fsp--;
             if (failed) return retval;
@@ -9390,7 +9389,7 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1062:11: -> fact
+            // 1061:11: -> fact
             {
                 adaptor.addChild(root_0, stream_fact.next());
 
@@ -9400,7 +9399,7 @@ public class DRLParser extends Parser {
 
             }
 
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1062:20: ( (value= or_key | pipe= DOUBLE_PIPE ) fact -> ^( VT_FACT_OR[orToken] $fact_binding_expression fact ) )*
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1061:20: ( (value= or_key | pipe= DOUBLE_PIPE ) fact -> ^( VT_FACT_OR[orToken] $fact_binding_expression fact ) )*
             loop73:
             do {
                 int alt73=2;
@@ -9416,9 +9415,9 @@ public class DRLParser extends Parser {
 
                 switch (alt73) {
             	case 1 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1062:22: (value= or_key | pipe= DOUBLE_PIPE ) fact
+            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1061:22: (value= or_key | pipe= DOUBLE_PIPE ) fact
             	    {
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1062:22: (value= or_key | pipe= DOUBLE_PIPE )
+            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1061:22: (value= or_key | pipe= DOUBLE_PIPE )
             	    int alt72=2;
             	    int LA72_0 = input.LA(1);
 
@@ -9431,15 +9430,15 @@ public class DRLParser extends Parser {
             	    else {
             	        if (backtracking>0) {failed=true; return retval;}
             	        NoViableAltException nvae =
-            	            new NoViableAltException("1062:22: (value= or_key | pipe= DOUBLE_PIPE )", 72, 0, input);
+            	            new NoViableAltException("1061:22: (value= or_key | pipe= DOUBLE_PIPE )", 72, 0, input);
 
             	        throw nvae;
             	    }
             	    switch (alt72) {
             	        case 1 :
-            	            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1062:23: value= or_key
+            	            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1061:23: value= or_key
             	            {
-            	            pushFollow(FOLLOW_or_key_in_fact_binding_expression3615);
+            	            pushFollow(FOLLOW_or_key_in_fact_binding_expression3613);
             	            value=or_key();
             	            _fsp--;
             	            if (failed) return retval;
@@ -9451,10 +9450,10 @@ public class DRLParser extends Parser {
             	            }
             	            break;
             	        case 2 :
-            	            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1062:62: pipe= DOUBLE_PIPE
+            	            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1061:62: pipe= DOUBLE_PIPE
             	            {
             	            pipe=(Token)input.LT(1);
-            	            match(input,DOUBLE_PIPE,FOLLOW_DOUBLE_PIPE_in_fact_binding_expression3621); if (failed) return retval;
+            	            match(input,DOUBLE_PIPE,FOLLOW_DOUBLE_PIPE_in_fact_binding_expression3619); if (failed) return retval;
             	            if ( backtracking==0 ) stream_DOUBLE_PIPE.add(pipe);
 
             	            if ( backtracking==0 ) {
@@ -9466,7 +9465,7 @@ public class DRLParser extends Parser {
 
             	    }
 
-            	    pushFollow(FOLLOW_fact_in_fact_binding_expression3626);
+            	    pushFollow(FOLLOW_fact_in_fact_binding_expression3624);
             	    fact204=fact();
             	    _fsp--;
             	    if (failed) return retval;
@@ -9483,9 +9482,9 @@ public class DRLParser extends Parser {
             	    RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             	    root_0 = (Object)adaptor.nil();
-            	    // 1063:3: -> ^( VT_FACT_OR[orToken] $fact_binding_expression fact )
+            	    // 1062:3: -> ^( VT_FACT_OR[orToken] $fact_binding_expression fact )
             	    {
-            	        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1063:6: ^( VT_FACT_OR[orToken] $fact_binding_expression fact )
+            	        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1062:6: ^( VT_FACT_OR[orToken] $fact_binding_expression fact )
             	        {
             	        Object root_1 = (Object)adaptor.nil();
             	        root_1 = (Object)adaptor.becomeRoot(adaptor.create(VT_FACT_OR, orToken), root_1);
@@ -9534,7 +9533,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start fact
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1066:1: fact : pattern_type LEFT_PAREN ( constraints )? RIGHT_PAREN -> ^( VT_FACT pattern_type ( constraints )? RIGHT_PAREN ) ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1065:1: fact : pattern_type LEFT_PAREN ( constraints )? RIGHT_PAREN -> ^( VT_FACT pattern_type ( constraints )? RIGHT_PAREN ) ;
     public final fact_return fact() throws RecognitionException {
         fact_return retval = new fact_return();
         retval.start = input.LT(1);
@@ -9556,16 +9555,16 @@ public class DRLParser extends Parser {
         RewriteRuleSubtreeStream stream_constraints=new RewriteRuleSubtreeStream(adaptor,"rule constraints");
          boolean isFailedOnConstraints = true; pushParaphrases(DroolsParaphraseTypes.PATTERN); 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1069:2: ( pattern_type LEFT_PAREN ( constraints )? RIGHT_PAREN -> ^( VT_FACT pattern_type ( constraints )? RIGHT_PAREN ) )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1069:4: pattern_type LEFT_PAREN ( constraints )? RIGHT_PAREN
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1068:2: ( pattern_type LEFT_PAREN ( constraints )? RIGHT_PAREN -> ^( VT_FACT pattern_type ( constraints )? RIGHT_PAREN ) )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1068:4: pattern_type LEFT_PAREN ( constraints )? RIGHT_PAREN
             {
-            pushFollow(FOLLOW_pattern_type_in_fact3666);
+            pushFollow(FOLLOW_pattern_type_in_fact3664);
             pattern_type205=pattern_type();
             _fsp--;
             if (failed) return retval;
             if ( backtracking==0 ) stream_pattern_type.add(pattern_type205.getTree());
             LEFT_PAREN206=(Token)input.LT(1);
-            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_fact3671); if (failed) return retval;
+            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_fact3669); if (failed) return retval;
             if ( backtracking==0 ) stream_LEFT_PAREN.add(LEFT_PAREN206);
 
             if ( backtracking==0 ) {
@@ -9574,7 +9573,7 @@ public class DRLParser extends Parser {
             if ( backtracking==0 ) {
               	emit(Location.LOCATION_LHS_INSIDE_CONDITION_START);	
             }
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1072:4: ( constraints )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1071:4: ( constraints )?
             int alt74=2;
             int LA74_0 = input.LA(1);
 
@@ -9583,9 +9582,9 @@ public class DRLParser extends Parser {
             }
             switch (alt74) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1072:4: constraints
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1071:4: constraints
                     {
-                    pushFollow(FOLLOW_constraints_in_fact3682);
+                    pushFollow(FOLLOW_constraints_in_fact3680);
                     constraints207=constraints();
                     _fsp--;
                     if (failed) return retval;
@@ -9597,7 +9596,7 @@ public class DRLParser extends Parser {
             }
 
             RIGHT_PAREN208=(Token)input.LT(1);
-            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_fact3688); if (failed) return retval;
+            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_fact3686); if (failed) return retval;
             if ( backtracking==0 ) stream_RIGHT_PAREN.add(RIGHT_PAREN208);
 
             if ( backtracking==0 ) {
@@ -9621,15 +9620,15 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1078:2: -> ^( VT_FACT pattern_type ( constraints )? RIGHT_PAREN )
+            // 1077:2: -> ^( VT_FACT pattern_type ( constraints )? RIGHT_PAREN )
             {
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1078:5: ^( VT_FACT pattern_type ( constraints )? RIGHT_PAREN )
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1077:5: ^( VT_FACT pattern_type ( constraints )? RIGHT_PAREN )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(adaptor.create(VT_FACT, "VT_FACT"), root_1);
 
                 adaptor.addChild(root_1, stream_pattern_type.next());
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1078:28: ( constraints )?
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1077:28: ( constraints )?
                 if ( stream_constraints.hasNext() ) {
                     adaptor.addChild(root_1, stream_constraints.next());
 
@@ -9679,7 +9678,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start constraints
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1088:1: constraints : constraint ( COMMA constraint )* ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1087:1: constraints : constraint ( COMMA constraint )* ;
     public final constraints_return constraints() throws RecognitionException {
         constraints_return retval = new constraints_return();
         retval.start = input.LT(1);
@@ -9695,17 +9694,17 @@ public class DRLParser extends Parser {
         Object COMMA210_tree=null;
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1089:2: ( constraint ( COMMA constraint )* )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1089:4: constraint ( COMMA constraint )*
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1088:2: ( constraint ( COMMA constraint )* )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1088:4: constraint ( COMMA constraint )*
             {
             root_0 = (Object)adaptor.nil();
 
-            pushFollow(FOLLOW_constraint_in_constraints3722);
+            pushFollow(FOLLOW_constraint_in_constraints3720);
             constraint209=constraint();
             _fsp--;
             if (failed) return retval;
             if ( backtracking==0 ) adaptor.addChild(root_0, constraint209.getTree());
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1089:15: ( COMMA constraint )*
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1088:15: ( COMMA constraint )*
             loop75:
             do {
                 int alt75=2;
@@ -9718,15 +9717,15 @@ public class DRLParser extends Parser {
 
                 switch (alt75) {
             	case 1 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1089:17: COMMA constraint
+            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1088:17: COMMA constraint
             	    {
             	    COMMA210=(Token)input.LT(1);
-            	    match(input,COMMA,FOLLOW_COMMA_in_constraints3726); if (failed) return retval;
+            	    match(input,COMMA,FOLLOW_COMMA_in_constraints3724); if (failed) return retval;
             	    if ( backtracking==0 ) {
             	      	emit(COMMA210, DroolsEditorType.SYMBOL);
             	      		emit(Location.LOCATION_LHS_INSIDE_CONDITION_START);	
             	    }
-            	    pushFollow(FOLLOW_constraint_in_constraints3733);
+            	    pushFollow(FOLLOW_constraint_in_constraints3731);
             	    constraint211=constraint();
             	    _fsp--;
             	    if (failed) return retval;
@@ -9766,7 +9765,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start constraint
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1094:1: constraint : or_constr ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1093:1: constraint : or_constr ;
     public final constraint_return constraint() throws RecognitionException {
         constraint_return retval = new constraint_return();
         retval.start = input.LT(1);
@@ -9778,12 +9777,12 @@ public class DRLParser extends Parser {
 
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1095:2: ( or_constr )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1095:4: or_constr
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1094:2: ( or_constr )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1094:4: or_constr
             {
             root_0 = (Object)adaptor.nil();
 
-            pushFollow(FOLLOW_or_constr_in_constraint3747);
+            pushFollow(FOLLOW_or_constr_in_constraint3745);
             or_constr212=or_constr();
             _fsp--;
             if (failed) return retval;
@@ -9814,7 +9813,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start or_constr
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1098:1: or_constr : and_constr ( DOUBLE_PIPE and_constr )* ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1097:1: or_constr : and_constr ( DOUBLE_PIPE and_constr )* ;
     public final or_constr_return or_constr() throws RecognitionException {
         or_constr_return retval = new or_constr_return();
         retval.start = input.LT(1);
@@ -9830,17 +9829,17 @@ public class DRLParser extends Parser {
         Object DOUBLE_PIPE214_tree=null;
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1099:2: ( and_constr ( DOUBLE_PIPE and_constr )* )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1099:4: and_constr ( DOUBLE_PIPE and_constr )*
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1098:2: ( and_constr ( DOUBLE_PIPE and_constr )* )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1098:4: and_constr ( DOUBLE_PIPE and_constr )*
             {
             root_0 = (Object)adaptor.nil();
 
-            pushFollow(FOLLOW_and_constr_in_or_constr3758);
+            pushFollow(FOLLOW_and_constr_in_or_constr3756);
             and_constr213=and_constr();
             _fsp--;
             if (failed) return retval;
             if ( backtracking==0 ) adaptor.addChild(root_0, and_constr213.getTree());
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1099:15: ( DOUBLE_PIPE and_constr )*
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1098:15: ( DOUBLE_PIPE and_constr )*
             loop76:
             do {
                 int alt76=2;
@@ -9853,10 +9852,10 @@ public class DRLParser extends Parser {
 
                 switch (alt76) {
             	case 1 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1099:17: DOUBLE_PIPE and_constr
+            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1098:17: DOUBLE_PIPE and_constr
             	    {
             	    DOUBLE_PIPE214=(Token)input.LT(1);
-            	    match(input,DOUBLE_PIPE,FOLLOW_DOUBLE_PIPE_in_or_constr3762); if (failed) return retval;
+            	    match(input,DOUBLE_PIPE,FOLLOW_DOUBLE_PIPE_in_or_constr3760); if (failed) return retval;
             	    if ( backtracking==0 ) {
             	    DOUBLE_PIPE214_tree = (Object)adaptor.create(DOUBLE_PIPE214);
             	    root_0 = (Object)adaptor.becomeRoot(DOUBLE_PIPE214_tree, root_0);
@@ -9864,7 +9863,7 @@ public class DRLParser extends Parser {
             	    if ( backtracking==0 ) {
             	      	emit(DOUBLE_PIPE214, DroolsEditorType.SYMBOL);	
             	    }
-            	    pushFollow(FOLLOW_and_constr_in_or_constr3769);
+            	    pushFollow(FOLLOW_and_constr_in_or_constr3767);
             	    and_constr215=and_constr();
             	    _fsp--;
             	    if (failed) return retval;
@@ -9904,7 +9903,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start and_constr
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1103:1: and_constr : unary_constr ( DOUBLE_AMPER unary_constr )* ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1102:1: and_constr : unary_constr ( DOUBLE_AMPER unary_constr )* ;
     public final and_constr_return and_constr() throws RecognitionException {
         and_constr_return retval = new and_constr_return();
         retval.start = input.LT(1);
@@ -9920,17 +9919,17 @@ public class DRLParser extends Parser {
         Object DOUBLE_AMPER217_tree=null;
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1104:2: ( unary_constr ( DOUBLE_AMPER unary_constr )* )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1104:4: unary_constr ( DOUBLE_AMPER unary_constr )*
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1103:2: ( unary_constr ( DOUBLE_AMPER unary_constr )* )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1103:4: unary_constr ( DOUBLE_AMPER unary_constr )*
             {
             root_0 = (Object)adaptor.nil();
 
-            pushFollow(FOLLOW_unary_constr_in_and_constr3784);
+            pushFollow(FOLLOW_unary_constr_in_and_constr3782);
             unary_constr216=unary_constr();
             _fsp--;
             if (failed) return retval;
             if ( backtracking==0 ) adaptor.addChild(root_0, unary_constr216.getTree());
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1104:17: ( DOUBLE_AMPER unary_constr )*
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1103:17: ( DOUBLE_AMPER unary_constr )*
             loop77:
             do {
                 int alt77=2;
@@ -9943,10 +9942,10 @@ public class DRLParser extends Parser {
 
                 switch (alt77) {
             	case 1 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1104:19: DOUBLE_AMPER unary_constr
+            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1103:19: DOUBLE_AMPER unary_constr
             	    {
             	    DOUBLE_AMPER217=(Token)input.LT(1);
-            	    match(input,DOUBLE_AMPER,FOLLOW_DOUBLE_AMPER_in_and_constr3788); if (failed) return retval;
+            	    match(input,DOUBLE_AMPER,FOLLOW_DOUBLE_AMPER_in_and_constr3786); if (failed) return retval;
             	    if ( backtracking==0 ) {
             	    DOUBLE_AMPER217_tree = (Object)adaptor.create(DOUBLE_AMPER217);
             	    root_0 = (Object)adaptor.becomeRoot(DOUBLE_AMPER217_tree, root_0);
@@ -9954,7 +9953,7 @@ public class DRLParser extends Parser {
             	    if ( backtracking==0 ) {
             	      	emit(DOUBLE_AMPER217, DroolsEditorType.SYMBOL);;	
             	    }
-            	    pushFollow(FOLLOW_unary_constr_in_and_constr3795);
+            	    pushFollow(FOLLOW_unary_constr_in_and_constr3793);
             	    unary_constr218=unary_constr();
             	    _fsp--;
             	    if (failed) return retval;
@@ -9994,7 +9993,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start unary_constr
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1108:1: unary_constr options {k=2; } : ( eval_key paren_chunk | field_constraint | LEFT_PAREN or_constr RIGHT_PAREN );
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1107:1: unary_constr options {k=2; } : ( eval_key paren_chunk | field_constraint | LEFT_PAREN or_constr RIGHT_PAREN );
     public final unary_constr_return unary_constr() throws RecognitionException {
         unary_constr_return retval = new unary_constr_return();
         retval.start = input.LT(1);
@@ -10017,7 +10016,7 @@ public class DRLParser extends Parser {
 
          boolean isFailed = true;	
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1112:2: ( eval_key paren_chunk | field_constraint | LEFT_PAREN or_constr RIGHT_PAREN )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1111:2: ( eval_key paren_chunk | field_constraint | LEFT_PAREN or_constr RIGHT_PAREN )
             int alt78=3;
             int LA78_0 = input.LA(1);
 
@@ -10039,7 +10038,7 @@ public class DRLParser extends Parser {
                     else {
                         if (backtracking>0) {failed=true; return retval;}
                         NoViableAltException nvae =
-                            new NoViableAltException("1108:1: unary_constr options {k=2; } : ( eval_key paren_chunk | field_constraint | LEFT_PAREN or_constr RIGHT_PAREN );", 78, 14, input);
+                            new NoViableAltException("1107:1: unary_constr options {k=2; } : ( eval_key paren_chunk | field_constraint | LEFT_PAREN or_constr RIGHT_PAREN );", 78, 14, input);
 
                         throw nvae;
                     }
@@ -10047,7 +10046,7 @@ public class DRLParser extends Parser {
                 else {
                     if (backtracking>0) {failed=true; return retval;}
                     NoViableAltException nvae =
-                        new NoViableAltException("1108:1: unary_constr options {k=2; } : ( eval_key paren_chunk | field_constraint | LEFT_PAREN or_constr RIGHT_PAREN );", 78, 1, input);
+                        new NoViableAltException("1107:1: unary_constr options {k=2; } : ( eval_key paren_chunk | field_constraint | LEFT_PAREN or_constr RIGHT_PAREN );", 78, 1, input);
 
                     throw nvae;
                 }
@@ -10058,22 +10057,22 @@ public class DRLParser extends Parser {
             else {
                 if (backtracking>0) {failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("1108:1: unary_constr options {k=2; } : ( eval_key paren_chunk | field_constraint | LEFT_PAREN or_constr RIGHT_PAREN );", 78, 0, input);
+                    new NoViableAltException("1107:1: unary_constr options {k=2; } : ( eval_key paren_chunk | field_constraint | LEFT_PAREN or_constr RIGHT_PAREN );", 78, 0, input);
 
                 throw nvae;
             }
             switch (alt78) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1112:4: eval_key paren_chunk
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1111:4: eval_key paren_chunk
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    pushFollow(FOLLOW_eval_key_in_unary_constr3828);
+                    pushFollow(FOLLOW_eval_key_in_unary_constr3826);
                     eval_key219=eval_key();
                     _fsp--;
                     if (failed) return retval;
                     if ( backtracking==0 ) root_0 = (Object)adaptor.becomeRoot(eval_key219.getTree(), root_0);
-                    pushFollow(FOLLOW_paren_chunk_in_unary_constr3831);
+                    pushFollow(FOLLOW_paren_chunk_in_unary_constr3829);
                     paren_chunk220=paren_chunk();
                     _fsp--;
                     if (failed) return retval;
@@ -10082,11 +10081,11 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1113:4: field_constraint
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1112:4: field_constraint
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    pushFollow(FOLLOW_field_constraint_in_unary_constr3836);
+                    pushFollow(FOLLOW_field_constraint_in_unary_constr3834);
                     field_constraint221=field_constraint();
                     _fsp--;
                     if (failed) return retval;
@@ -10095,22 +10094,22 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1114:5: LEFT_PAREN or_constr RIGHT_PAREN
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1113:5: LEFT_PAREN or_constr RIGHT_PAREN
                     {
                     root_0 = (Object)adaptor.nil();
 
                     LEFT_PAREN222=(Token)input.LT(1);
-                    match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_unary_constr3842); if (failed) return retval;
+                    match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_unary_constr3840); if (failed) return retval;
                     if ( backtracking==0 ) {
                       	emit(LEFT_PAREN222, DroolsEditorType.SYMBOL);	
                     }
-                    pushFollow(FOLLOW_or_constr_in_unary_constr3852);
+                    pushFollow(FOLLOW_or_constr_in_unary_constr3850);
                     or_constr223=or_constr();
                     _fsp--;
                     if (failed) return retval;
                     if ( backtracking==0 ) adaptor.addChild(root_0, or_constr223.getTree());
                     RIGHT_PAREN224=(Token)input.LT(1);
-                    match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_unary_constr3857); if (failed) return retval;
+                    match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_unary_constr3855); if (failed) return retval;
                     if ( backtracking==0 ) {
                     RIGHT_PAREN224_tree = (Object)adaptor.create(RIGHT_PAREN224);
                     adaptor.addChild(root_0, RIGHT_PAREN224_tree);
@@ -10157,7 +10156,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start field_constraint
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1127:1: field_constraint : ( label accessor_path ( or_restr_connective | arw= ARROW paren_chunk )? -> {isArrow}? ^( VT_BIND_FIELD label ^( VT_FIELD accessor_path ) ) ( ^( VK_EVAL[$arw] paren_chunk ) )? -> ^( VT_BIND_FIELD label ^( VT_FIELD accessor_path ( or_restr_connective )? ) ) | accessor_path or_restr_connective -> ^( VT_FIELD accessor_path or_restr_connective ) );
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1126:1: field_constraint : ( label accessor_path ( or_restr_connective | arw= ARROW paren_chunk )? -> {isArrow}? ^( VT_BIND_FIELD label ^( VT_FIELD accessor_path ) ) ( ^( VK_EVAL[$arw] paren_chunk ) )? -> ^( VT_BIND_FIELD label ^( VT_FIELD accessor_path ( or_restr_connective )? ) ) | accessor_path or_restr_connective -> ^( VT_FIELD accessor_path or_restr_connective ) );
     public final field_constraint_return field_constraint() throws RecognitionException {
         field_constraint_return retval = new field_constraint_return();
         retval.start = input.LT(1);
@@ -10188,7 +10187,7 @@ public class DRLParser extends Parser {
         	boolean isArrow = false;
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1130:3: ( label accessor_path ( or_restr_connective | arw= ARROW paren_chunk )? -> {isArrow}? ^( VT_BIND_FIELD label ^( VT_FIELD accessor_path ) ) ( ^( VK_EVAL[$arw] paren_chunk ) )? -> ^( VT_BIND_FIELD label ^( VT_FIELD accessor_path ( or_restr_connective )? ) ) | accessor_path or_restr_connective -> ^( VT_FIELD accessor_path or_restr_connective ) )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1129:3: ( label accessor_path ( or_restr_connective | arw= ARROW paren_chunk )? -> {isArrow}? ^( VT_BIND_FIELD label ^( VT_FIELD accessor_path ) ) ( ^( VK_EVAL[$arw] paren_chunk ) )? -> ^( VT_BIND_FIELD label ^( VT_FIELD accessor_path ( or_restr_connective )? ) ) | accessor_path or_restr_connective -> ^( VT_FIELD accessor_path or_restr_connective ) )
             int alt80=2;
             int LA80_0 = input.LA(1);
 
@@ -10204,7 +10203,7 @@ public class DRLParser extends Parser {
                 else {
                     if (backtracking>0) {failed=true; return retval;}
                     NoViableAltException nvae =
-                        new NoViableAltException("1127:1: field_constraint : ( label accessor_path ( or_restr_connective | arw= ARROW paren_chunk )? -> {isArrow}? ^( VT_BIND_FIELD label ^( VT_FIELD accessor_path ) ) ( ^( VK_EVAL[$arw] paren_chunk ) )? -> ^( VT_BIND_FIELD label ^( VT_FIELD accessor_path ( or_restr_connective )? ) ) | accessor_path or_restr_connective -> ^( VT_FIELD accessor_path or_restr_connective ) );", 80, 1, input);
+                        new NoViableAltException("1126:1: field_constraint : ( label accessor_path ( or_restr_connective | arw= ARROW paren_chunk )? -> {isArrow}? ^( VT_BIND_FIELD label ^( VT_FIELD accessor_path ) ) ( ^( VK_EVAL[$arw] paren_chunk ) )? -> ^( VT_BIND_FIELD label ^( VT_FIELD accessor_path ( or_restr_connective )? ) ) | accessor_path or_restr_connective -> ^( VT_FIELD accessor_path or_restr_connective ) );", 80, 1, input);
 
                     throw nvae;
                 }
@@ -10212,25 +10211,25 @@ public class DRLParser extends Parser {
             else {
                 if (backtracking>0) {failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("1127:1: field_constraint : ( label accessor_path ( or_restr_connective | arw= ARROW paren_chunk )? -> {isArrow}? ^( VT_BIND_FIELD label ^( VT_FIELD accessor_path ) ) ( ^( VK_EVAL[$arw] paren_chunk ) )? -> ^( VT_BIND_FIELD label ^( VT_FIELD accessor_path ( or_restr_connective )? ) ) | accessor_path or_restr_connective -> ^( VT_FIELD accessor_path or_restr_connective ) );", 80, 0, input);
+                    new NoViableAltException("1126:1: field_constraint : ( label accessor_path ( or_restr_connective | arw= ARROW paren_chunk )? -> {isArrow}? ^( VT_BIND_FIELD label ^( VT_FIELD accessor_path ) ) ( ^( VK_EVAL[$arw] paren_chunk ) )? -> ^( VT_BIND_FIELD label ^( VT_FIELD accessor_path ( or_restr_connective )? ) ) | accessor_path or_restr_connective -> ^( VT_FIELD accessor_path or_restr_connective ) );", 80, 0, input);
 
                 throw nvae;
             }
             switch (alt80) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1130:5: label accessor_path ( or_restr_connective | arw= ARROW paren_chunk )?
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1129:5: label accessor_path ( or_restr_connective | arw= ARROW paren_chunk )?
                     {
-                    pushFollow(FOLLOW_label_in_field_constraint3877);
+                    pushFollow(FOLLOW_label_in_field_constraint3875);
                     label225=label();
                     _fsp--;
                     if (failed) return retval;
                     if ( backtracking==0 ) stream_label.add(label225.getTree());
-                    pushFollow(FOLLOW_accessor_path_in_field_constraint3879);
+                    pushFollow(FOLLOW_accessor_path_in_field_constraint3877);
                     accessor_path226=accessor_path();
                     _fsp--;
                     if (failed) return retval;
                     if ( backtracking==0 ) stream_accessor_path.add(accessor_path226.getTree());
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1131:3: ( or_restr_connective | arw= ARROW paren_chunk )?
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1130:3: ( or_restr_connective | arw= ARROW paren_chunk )?
                     int alt79=3;
                     int LA79_0 = input.LA(1);
 
@@ -10242,9 +10241,9 @@ public class DRLParser extends Parser {
                     }
                     switch (alt79) {
                         case 1 :
-                            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1131:5: or_restr_connective
+                            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1130:5: or_restr_connective
                             {
-                            pushFollow(FOLLOW_or_restr_connective_in_field_constraint3886);
+                            pushFollow(FOLLOW_or_restr_connective_in_field_constraint3884);
                             or_restr_connective227=or_restr_connective();
                             _fsp--;
                             if (failed) return retval;
@@ -10253,16 +10252,16 @@ public class DRLParser extends Parser {
                             }
                             break;
                         case 2 :
-                            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1131:27: arw= ARROW paren_chunk
+                            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1130:27: arw= ARROW paren_chunk
                             {
                             arw=(Token)input.LT(1);
-                            match(input,ARROW,FOLLOW_ARROW_in_field_constraint3892); if (failed) return retval;
+                            match(input,ARROW,FOLLOW_ARROW_in_field_constraint3890); if (failed) return retval;
                             if ( backtracking==0 ) stream_ARROW.add(arw);
 
                             if ( backtracking==0 ) {
                               	emit(arw, DroolsEditorType.SYMBOL);	
                             }
-                            pushFollow(FOLLOW_paren_chunk_in_field_constraint3896);
+                            pushFollow(FOLLOW_paren_chunk_in_field_constraint3894);
                             paren_chunk228=paren_chunk();
                             _fsp--;
                             if (failed) return retval;
@@ -10288,15 +10287,15 @@ public class DRLParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 1132:3: -> {isArrow}? ^( VT_BIND_FIELD label ^( VT_FIELD accessor_path ) ) ( ^( VK_EVAL[$arw] paren_chunk ) )?
+                    // 1131:3: -> {isArrow}? ^( VT_BIND_FIELD label ^( VT_FIELD accessor_path ) ) ( ^( VK_EVAL[$arw] paren_chunk ) )?
                     if (isArrow) {
-                        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1132:17: ^( VT_BIND_FIELD label ^( VT_FIELD accessor_path ) )
+                        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1131:17: ^( VT_BIND_FIELD label ^( VT_FIELD accessor_path ) )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot(adaptor.create(VT_BIND_FIELD, "VT_BIND_FIELD"), root_1);
 
                         adaptor.addChild(root_1, stream_label.next());
-                        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1132:39: ^( VT_FIELD accessor_path )
+                        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1131:39: ^( VT_FIELD accessor_path )
                         {
                         Object root_2 = (Object)adaptor.nil();
                         root_2 = (Object)adaptor.becomeRoot(adaptor.create(VT_FIELD, "VT_FIELD"), root_2);
@@ -10308,9 +10307,9 @@ public class DRLParser extends Parser {
 
                         adaptor.addChild(root_0, root_1);
                         }
-                        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1132:66: ( ^( VK_EVAL[$arw] paren_chunk ) )?
+                        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1131:66: ( ^( VK_EVAL[$arw] paren_chunk ) )?
                         if ( stream_paren_chunk.hasNext() ) {
-                            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1132:66: ^( VK_EVAL[$arw] paren_chunk )
+                            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1131:66: ^( VK_EVAL[$arw] paren_chunk )
                             {
                             Object root_1 = (Object)adaptor.nil();
                             root_1 = (Object)adaptor.becomeRoot(adaptor.create(VK_EVAL, arw), root_1);
@@ -10324,21 +10323,21 @@ public class DRLParser extends Parser {
                         stream_paren_chunk.reset();
 
                     }
-                    else // 1133:3: -> ^( VT_BIND_FIELD label ^( VT_FIELD accessor_path ( or_restr_connective )? ) )
+                    else // 1132:3: -> ^( VT_BIND_FIELD label ^( VT_FIELD accessor_path ( or_restr_connective )? ) )
                     {
-                        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1133:6: ^( VT_BIND_FIELD label ^( VT_FIELD accessor_path ( or_restr_connective )? ) )
+                        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1132:6: ^( VT_BIND_FIELD label ^( VT_FIELD accessor_path ( or_restr_connective )? ) )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot(adaptor.create(VT_BIND_FIELD, "VT_BIND_FIELD"), root_1);
 
                         adaptor.addChild(root_1, stream_label.next());
-                        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1133:28: ^( VT_FIELD accessor_path ( or_restr_connective )? )
+                        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1132:28: ^( VT_FIELD accessor_path ( or_restr_connective )? )
                         {
                         Object root_2 = (Object)adaptor.nil();
                         root_2 = (Object)adaptor.becomeRoot(adaptor.create(VT_FIELD, "VT_FIELD"), root_2);
 
                         adaptor.addChild(root_2, stream_accessor_path.next());
-                        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1133:53: ( or_restr_connective )?
+                        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1132:53: ( or_restr_connective )?
                         if ( stream_or_restr_connective.hasNext() ) {
                             adaptor.addChild(root_2, stream_or_restr_connective.next());
 
@@ -10358,14 +10357,14 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1134:4: accessor_path or_restr_connective
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1133:4: accessor_path or_restr_connective
                     {
-                    pushFollow(FOLLOW_accessor_path_in_field_constraint3950);
+                    pushFollow(FOLLOW_accessor_path_in_field_constraint3948);
                     accessor_path229=accessor_path();
                     _fsp--;
                     if (failed) return retval;
                     if ( backtracking==0 ) stream_accessor_path.add(accessor_path229.getTree());
-                    pushFollow(FOLLOW_or_restr_connective_in_field_constraint3952);
+                    pushFollow(FOLLOW_or_restr_connective_in_field_constraint3950);
                     or_restr_connective230=or_restr_connective();
                     _fsp--;
                     if (failed) return retval;
@@ -10382,9 +10381,9 @@ public class DRLParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 1135:3: -> ^( VT_FIELD accessor_path or_restr_connective )
+                    // 1134:3: -> ^( VT_FIELD accessor_path or_restr_connective )
                     {
-                        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1135:6: ^( VT_FIELD accessor_path or_restr_connective )
+                        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1134:6: ^( VT_FIELD accessor_path or_restr_connective )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot(adaptor.create(VT_FIELD, "VT_FIELD"), root_1);
@@ -10426,7 +10425,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start label
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1138:1: label : value= ID COLON -> VT_LABEL[$value] ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1137:1: label : value= ID COLON -> VT_LABEL[$value] ;
     public final label_return label() throws RecognitionException {
         label_return retval = new label_return();
         retval.start = input.LT(1);
@@ -10442,18 +10441,18 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1139:2: (value= ID COLON -> VT_LABEL[$value] )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1139:4: value= ID COLON
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1138:2: (value= ID COLON -> VT_LABEL[$value] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1138:4: value= ID COLON
             {
             value=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_label3977); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_label3975); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(value);
 
             if ( backtracking==0 ) {
               	emit(value, DroolsEditorType.IDENTIFIER_VARIABLE);	
             }
             COLON231=(Token)input.LT(1);
-            match(input,COLON,FOLLOW_COLON_in_label3984); if (failed) return retval;
+            match(input,COLON,FOLLOW_COLON_in_label3982); if (failed) return retval;
             if ( backtracking==0 ) stream_COLON.add(COLON231);
 
             if ( backtracking==0 ) {
@@ -10471,7 +10470,7 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1141:3: -> VT_LABEL[$value]
+            // 1140:3: -> VT_LABEL[$value]
             {
                 adaptor.addChild(root_0, adaptor.create(VT_LABEL, value));
 
@@ -10504,7 +10503,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start or_restr_connective
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1144:1: or_restr_connective : and_restr_connective ({...}? => DOUBLE_PIPE and_restr_connective )* ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1143:1: or_restr_connective : and_restr_connective ({...}? => DOUBLE_PIPE and_restr_connective )* ;
     public final or_restr_connective_return or_restr_connective() throws RecognitionException {
         or_restr_connective_return retval = new or_restr_connective_return();
         retval.start = input.LT(1);
@@ -10520,31 +10519,31 @@ public class DRLParser extends Parser {
         Object DOUBLE_PIPE233_tree=null;
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1145:2: ( and_restr_connective ({...}? => DOUBLE_PIPE and_restr_connective )* )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1145:4: and_restr_connective ({...}? => DOUBLE_PIPE and_restr_connective )*
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1144:2: ( and_restr_connective ({...}? => DOUBLE_PIPE and_restr_connective )* )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1144:4: and_restr_connective ({...}? => DOUBLE_PIPE and_restr_connective )*
             {
             root_0 = (Object)adaptor.nil();
 
-            pushFollow(FOLLOW_and_restr_connective_in_or_restr_connective4005);
+            pushFollow(FOLLOW_and_restr_connective_in_or_restr_connective4003);
             and_restr_connective232=and_restr_connective();
             _fsp--;
             if (failed) return retval;
             if ( backtracking==0 ) adaptor.addChild(root_0, and_restr_connective232.getTree());
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1145:25: ({...}? => DOUBLE_PIPE and_restr_connective )*
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1144:25: ({...}? => DOUBLE_PIPE and_restr_connective )*
             loop81:
             do {
                 int alt81=2;
                 alt81 = dfa81.predict(input);
                 switch (alt81) {
             	case 1 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1145:26: {...}? => DOUBLE_PIPE and_restr_connective
+            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1144:26: {...}? => DOUBLE_PIPE and_restr_connective
             	    {
             	    if ( !((validateRestr())) ) {
             	        if (backtracking>0) {failed=true; return retval;}
             	        throw new FailedPredicateException(input, "or_restr_connective", "(validateRestr())");
             	    }
             	    DOUBLE_PIPE233=(Token)input.LT(1);
-            	    match(input,DOUBLE_PIPE,FOLLOW_DOUBLE_PIPE_in_or_restr_connective4011); if (failed) return retval;
+            	    match(input,DOUBLE_PIPE,FOLLOW_DOUBLE_PIPE_in_or_restr_connective4009); if (failed) return retval;
             	    if ( backtracking==0 ) {
             	    DOUBLE_PIPE233_tree = (Object)adaptor.create(DOUBLE_PIPE233);
             	    root_0 = (Object)adaptor.becomeRoot(DOUBLE_PIPE233_tree, root_0);
@@ -10552,7 +10551,7 @@ public class DRLParser extends Parser {
             	    if ( backtracking==0 ) {
             	      	emit(DOUBLE_PIPE233, DroolsEditorType.SYMBOL);	
             	    }
-            	    pushFollow(FOLLOW_and_restr_connective_in_or_restr_connective4019);
+            	    pushFollow(FOLLOW_and_restr_connective_in_or_restr_connective4017);
             	    and_restr_connective234=and_restr_connective();
             	    _fsp--;
             	    if (failed) return retval;
@@ -10592,7 +10591,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start and_restr_connective
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1149:1: and_restr_connective : constraint_expression ({...}? => DOUBLE_AMPER constraint_expression )* ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1148:1: and_restr_connective : constraint_expression ({...}? => DOUBLE_AMPER constraint_expression )* ;
     public final and_restr_connective_return and_restr_connective() throws RecognitionException {
         and_restr_connective_return retval = new and_restr_connective_return();
         retval.start = input.LT(1);
@@ -10608,31 +10607,31 @@ public class DRLParser extends Parser {
         Object DOUBLE_AMPER236_tree=null;
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1150:2: ( constraint_expression ({...}? => DOUBLE_AMPER constraint_expression )* )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1150:4: constraint_expression ({...}? => DOUBLE_AMPER constraint_expression )*
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1149:2: ( constraint_expression ({...}? => DOUBLE_AMPER constraint_expression )* )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1149:4: constraint_expression ({...}? => DOUBLE_AMPER constraint_expression )*
             {
             root_0 = (Object)adaptor.nil();
 
-            pushFollow(FOLLOW_constraint_expression_in_and_restr_connective4034);
+            pushFollow(FOLLOW_constraint_expression_in_and_restr_connective4032);
             constraint_expression235=constraint_expression();
             _fsp--;
             if (failed) return retval;
             if ( backtracking==0 ) adaptor.addChild(root_0, constraint_expression235.getTree());
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1150:26: ({...}? => DOUBLE_AMPER constraint_expression )*
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1149:26: ({...}? => DOUBLE_AMPER constraint_expression )*
             loop82:
             do {
                 int alt82=2;
                 alt82 = dfa82.predict(input);
                 switch (alt82) {
             	case 1 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1150:27: {...}? => DOUBLE_AMPER constraint_expression
+            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1149:27: {...}? => DOUBLE_AMPER constraint_expression
             	    {
             	    if ( !((validateRestr())) ) {
             	        if (backtracking>0) {failed=true; return retval;}
             	        throw new FailedPredicateException(input, "and_restr_connective", "(validateRestr())");
             	    }
             	    DOUBLE_AMPER236=(Token)input.LT(1);
-            	    match(input,DOUBLE_AMPER,FOLLOW_DOUBLE_AMPER_in_and_restr_connective4040); if (failed) return retval;
+            	    match(input,DOUBLE_AMPER,FOLLOW_DOUBLE_AMPER_in_and_restr_connective4038); if (failed) return retval;
             	    if ( backtracking==0 ) {
             	    DOUBLE_AMPER236_tree = (Object)adaptor.create(DOUBLE_AMPER236);
             	    root_0 = (Object)adaptor.becomeRoot(DOUBLE_AMPER236_tree, root_0);
@@ -10640,7 +10639,7 @@ public class DRLParser extends Parser {
             	    if ( backtracking==0 ) {
             	      	emit(DOUBLE_AMPER236, DroolsEditorType.SYMBOL);	
             	    }
-            	    pushFollow(FOLLOW_constraint_expression_in_and_restr_connective4047);
+            	    pushFollow(FOLLOW_constraint_expression_in_and_restr_connective4045);
             	    constraint_expression237=constraint_expression();
             	    _fsp--;
             	    if (failed) return retval;
@@ -10680,7 +10679,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start constraint_expression
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1154:1: constraint_expression options {k=3; } : ( compound_operator | simple_operator | LEFT_PAREN or_restr_connective RIGHT_PAREN );
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1153:1: constraint_expression options {k=3; } : ( compound_operator | simple_operator | LEFT_PAREN or_restr_connective RIGHT_PAREN );
     public final constraint_expression_return constraint_expression() throws RecognitionException {
         constraint_expression_return retval = new constraint_expression_return();
         retval.start = input.LT(1);
@@ -10700,7 +10699,7 @@ public class DRLParser extends Parser {
         Object RIGHT_PAREN242_tree=null;
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1157:3: ( compound_operator | simple_operator | LEFT_PAREN or_restr_connective RIGHT_PAREN )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1156:3: ( compound_operator | simple_operator | LEFT_PAREN or_restr_connective RIGHT_PAREN )
             int alt83=3;
             switch ( input.LA(1) ) {
             case ID:
@@ -10722,7 +10721,7 @@ public class DRLParser extends Parser {
                         else {
                             if (backtracking>0) {failed=true; return retval;}
                             NoViableAltException nvae =
-                                new NoViableAltException("1154:1: constraint_expression options {k=3; } : ( compound_operator | simple_operator | LEFT_PAREN or_restr_connective RIGHT_PAREN );", 83, 18, input);
+                                new NoViableAltException("1153:1: constraint_expression options {k=3; } : ( compound_operator | simple_operator | LEFT_PAREN or_restr_connective RIGHT_PAREN );", 83, 18, input);
 
                             throw nvae;
                         }
@@ -10736,7 +10735,7 @@ public class DRLParser extends Parser {
                     else {
                         if (backtracking>0) {failed=true; return retval;}
                         NoViableAltException nvae =
-                            new NoViableAltException("1154:1: constraint_expression options {k=3; } : ( compound_operator | simple_operator | LEFT_PAREN or_restr_connective RIGHT_PAREN );", 83, 10, input);
+                            new NoViableAltException("1153:1: constraint_expression options {k=3; } : ( compound_operator | simple_operator | LEFT_PAREN or_restr_connective RIGHT_PAREN );", 83, 10, input);
 
                         throw nvae;
                     }
@@ -10759,7 +10758,7 @@ public class DRLParser extends Parser {
                         else {
                             if (backtracking>0) {failed=true; return retval;}
                             NoViableAltException nvae =
-                                new NoViableAltException("1154:1: constraint_expression options {k=3; } : ( compound_operator | simple_operator | LEFT_PAREN or_restr_connective RIGHT_PAREN );", 83, 31, input);
+                                new NoViableAltException("1153:1: constraint_expression options {k=3; } : ( compound_operator | simple_operator | LEFT_PAREN or_restr_connective RIGHT_PAREN );", 83, 31, input);
 
                             throw nvae;
                         }
@@ -10778,7 +10777,7 @@ public class DRLParser extends Parser {
                         else {
                             if (backtracking>0) {failed=true; return retval;}
                             NoViableAltException nvae =
-                                new NoViableAltException("1154:1: constraint_expression options {k=3; } : ( compound_operator | simple_operator | LEFT_PAREN or_restr_connective RIGHT_PAREN );", 83, 32, input);
+                                new NoViableAltException("1153:1: constraint_expression options {k=3; } : ( compound_operator | simple_operator | LEFT_PAREN or_restr_connective RIGHT_PAREN );", 83, 32, input);
 
                             throw nvae;
                         }
@@ -10797,7 +10796,7 @@ public class DRLParser extends Parser {
                         else {
                             if (backtracking>0) {failed=true; return retval;}
                             NoViableAltException nvae =
-                                new NoViableAltException("1154:1: constraint_expression options {k=3; } : ( compound_operator | simple_operator | LEFT_PAREN or_restr_connective RIGHT_PAREN );", 83, 33, input);
+                                new NoViableAltException("1153:1: constraint_expression options {k=3; } : ( compound_operator | simple_operator | LEFT_PAREN or_restr_connective RIGHT_PAREN );", 83, 33, input);
 
                             throw nvae;
                         }
@@ -10816,7 +10815,7 @@ public class DRLParser extends Parser {
                         else {
                             if (backtracking>0) {failed=true; return retval;}
                             NoViableAltException nvae =
-                                new NoViableAltException("1154:1: constraint_expression options {k=3; } : ( compound_operator | simple_operator | LEFT_PAREN or_restr_connective RIGHT_PAREN );", 83, 34, input);
+                                new NoViableAltException("1153:1: constraint_expression options {k=3; } : ( compound_operator | simple_operator | LEFT_PAREN or_restr_connective RIGHT_PAREN );", 83, 34, input);
 
                             throw nvae;
                         }
@@ -10835,7 +10834,7 @@ public class DRLParser extends Parser {
                         else {
                             if (backtracking>0) {failed=true; return retval;}
                             NoViableAltException nvae =
-                                new NoViableAltException("1154:1: constraint_expression options {k=3; } : ( compound_operator | simple_operator | LEFT_PAREN or_restr_connective RIGHT_PAREN );", 83, 35, input);
+                                new NoViableAltException("1153:1: constraint_expression options {k=3; } : ( compound_operator | simple_operator | LEFT_PAREN or_restr_connective RIGHT_PAREN );", 83, 35, input);
 
                             throw nvae;
                         }
@@ -10854,7 +10853,7 @@ public class DRLParser extends Parser {
                         else {
                             if (backtracking>0) {failed=true; return retval;}
                             NoViableAltException nvae =
-                                new NoViableAltException("1154:1: constraint_expression options {k=3; } : ( compound_operator | simple_operator | LEFT_PAREN or_restr_connective RIGHT_PAREN );", 83, 36, input);
+                                new NoViableAltException("1153:1: constraint_expression options {k=3; } : ( compound_operator | simple_operator | LEFT_PAREN or_restr_connective RIGHT_PAREN );", 83, 36, input);
 
                             throw nvae;
                         }
@@ -10873,7 +10872,7 @@ public class DRLParser extends Parser {
                         else {
                             if (backtracking>0) {failed=true; return retval;}
                             NoViableAltException nvae =
-                                new NoViableAltException("1154:1: constraint_expression options {k=3; } : ( compound_operator | simple_operator | LEFT_PAREN or_restr_connective RIGHT_PAREN );", 83, 37, input);
+                                new NoViableAltException("1153:1: constraint_expression options {k=3; } : ( compound_operator | simple_operator | LEFT_PAREN or_restr_connective RIGHT_PAREN );", 83, 37, input);
 
                             throw nvae;
                         }
@@ -11004,7 +11003,7 @@ public class DRLParser extends Parser {
                     default:
                         if (backtracking>0) {failed=true; return retval;}
                         NoViableAltException nvae =
-                            new NoViableAltException("1154:1: constraint_expression options {k=3; } : ( compound_operator | simple_operator | LEFT_PAREN or_restr_connective RIGHT_PAREN );", 83, 16, input);
+                            new NoViableAltException("1153:1: constraint_expression options {k=3; } : ( compound_operator | simple_operator | LEFT_PAREN or_restr_connective RIGHT_PAREN );", 83, 16, input);
 
                         throw nvae;
                     }
@@ -11016,7 +11015,7 @@ public class DRLParser extends Parser {
                 else {
                     if (backtracking>0) {failed=true; return retval;}
                     NoViableAltException nvae =
-                        new NoViableAltException("1154:1: constraint_expression options {k=3; } : ( compound_operator | simple_operator | LEFT_PAREN or_restr_connective RIGHT_PAREN );", 83, 1, input);
+                        new NoViableAltException("1153:1: constraint_expression options {k=3; } : ( compound_operator | simple_operator | LEFT_PAREN or_restr_connective RIGHT_PAREN );", 83, 1, input);
 
                     throw nvae;
                 }
@@ -11041,18 +11040,18 @@ public class DRLParser extends Parser {
             default:
                 if (backtracking>0) {failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("1154:1: constraint_expression options {k=3; } : ( compound_operator | simple_operator | LEFT_PAREN or_restr_connective RIGHT_PAREN );", 83, 0, input);
+                    new NoViableAltException("1153:1: constraint_expression options {k=3; } : ( compound_operator | simple_operator | LEFT_PAREN or_restr_connective RIGHT_PAREN );", 83, 0, input);
 
                 throw nvae;
             }
 
             switch (alt83) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1157:5: compound_operator
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1156:5: compound_operator
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    pushFollow(FOLLOW_compound_operator_in_constraint_expression4069);
+                    pushFollow(FOLLOW_compound_operator_in_constraint_expression4067);
                     compound_operator238=compound_operator();
                     _fsp--;
                     if (failed) return retval;
@@ -11061,11 +11060,11 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1158:4: simple_operator
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1157:4: simple_operator
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    pushFollow(FOLLOW_simple_operator_in_constraint_expression4074);
+                    pushFollow(FOLLOW_simple_operator_in_constraint_expression4072);
                     simple_operator239=simple_operator();
                     _fsp--;
                     if (failed) return retval;
@@ -11074,22 +11073,22 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1159:4: LEFT_PAREN or_restr_connective RIGHT_PAREN
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1158:4: LEFT_PAREN or_restr_connective RIGHT_PAREN
                     {
                     root_0 = (Object)adaptor.nil();
 
                     LEFT_PAREN240=(Token)input.LT(1);
-                    match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_constraint_expression4079); if (failed) return retval;
+                    match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_constraint_expression4077); if (failed) return retval;
                     if ( backtracking==0 ) {
                       	emit(LEFT_PAREN240, DroolsEditorType.SYMBOL);	
                     }
-                    pushFollow(FOLLOW_or_restr_connective_in_constraint_expression4088);
+                    pushFollow(FOLLOW_or_restr_connective_in_constraint_expression4086);
                     or_restr_connective241=or_restr_connective();
                     _fsp--;
                     if (failed) return retval;
                     if ( backtracking==0 ) adaptor.addChild(root_0, or_restr_connective241.getTree());
                     RIGHT_PAREN242=(Token)input.LT(1);
-                    match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_constraint_expression4093); if (failed) return retval;
+                    match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_constraint_expression4091); if (failed) return retval;
                     if ( backtracking==0 ) {
                     RIGHT_PAREN242_tree = (Object)adaptor.create(RIGHT_PAREN242);
                     adaptor.addChild(root_0, RIGHT_PAREN242_tree);
@@ -11121,21 +11120,34 @@ public class DRLParser extends Parser {
         }
         finally {
 
-            	if (isEditorInterfaceEnabled && input.LA(2) == EOF) {
-            		if (input.LA(1) == ID) {
-            			emit(true, Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
-            			emit(input.LT(1), DroolsEditorType.KEYWORD);
-            			input.consume();
-            			emit(true, Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
-            		}
-            	} else if (isEditorInterfaceEnabled && input.LA(3) == EOF) {
-            		if (input.LA(1) == ID && input.LA(2) == ID && validateLT(1, DroolsSoftKeywords.NOT)) {
-            			emit(true, Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
-            			emit(input.LT(1), DroolsEditorType.KEYWORD);
-            			emit(input.LT(2), DroolsEditorType.KEYWORD);
-            			input.consume();
-            			input.consume();
-            			emit(true, Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
+            	if (isEditorInterfaceEnabled && input.LA(2) == EOF && input.LA(1) == ID) {
+            		emit(true, Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
+            		emit(input.LT(1), DroolsEditorType.KEYWORD);
+            		input.consume();
+            		emit(true, Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
+            	} else if (isEditorInterfaceEnabled && input.LA(3) == EOF && input.LA(1) == ID && 
+            				input.LA(2) == ID && validateLT(1, DroolsSoftKeywords.NOT)) {
+            		emit(true, Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
+            		emit(input.LT(1), DroolsEditorType.KEYWORD);
+            		emit(input.LT(2), DroolsEditorType.KEYWORD);
+            		input.consume();
+            		input.consume();
+            		emit(true, Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
+            	} else if (isEditorInterfaceEnabled && input.LA(3) == EOF  && input.LA(1) == ID && validateLT(1, DroolsSoftKeywords.IN)) {
+            		emit(true, Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
+            		emit(input.LT(1), DroolsEditorType.KEYWORD);
+            		emit(input.LT(2), DroolsEditorType.SYMBOL);
+            		input.consume();
+            		input.consume();
+            		emit(true, Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
+            	} else if (isEditorInterfaceEnabled && input.LA(3) == EOF && input.LA(1) == ID) {
+            		emit(true, Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
+            		emit(input.LT(1), DroolsEditorType.KEYWORD);
+            		emit(input.LT(2), DroolsEditorType.IDENTIFIER);
+            		input.consume();
+            		input.consume();
+            		if (input.get(input.index() - 1).getType() == WS){
+            			emit(true, Location.LOCATION_LHS_INSIDE_CONDITION_END);
             		}
             	}
 
@@ -11150,7 +11162,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start simple_operator
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1191:1: simple_operator : ( EQUAL | GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | NOT_EQUAL | not_key ( contains_key | soundslike_key | matches_key | memberof_key | id1= ID | ga1= GRAVE_ACCENT id2= ID square_chunk ) | contains_key | excludes_key | matches_key | soundslike_key | memberof_key | id3= ID | ga2= GRAVE_ACCENT id4= ID square_chunk ) expression_value ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1203:1: simple_operator : ( EQUAL | GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | NOT_EQUAL | not_key ( contains_key | soundslike_key | matches_key | memberof_key | id1= ID | ga1= GRAVE_ACCENT id2= ID square_chunk ) | contains_key | excludes_key | matches_key | soundslike_key | memberof_key | id3= ID | ga2= GRAVE_ACCENT id4= ID square_chunk ) expression_value ;
     public final simple_operator_return simple_operator() throws RecognitionException {
         simple_operator_return retval = new simple_operator_return();
         retval.start = input.LT(1);
@@ -11210,15 +11222,15 @@ public class DRLParser extends Parser {
         Object NOT_EQUAL248_tree=null;
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1192:2: ( ( EQUAL | GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | NOT_EQUAL | not_key ( contains_key | soundslike_key | matches_key | memberof_key | id1= ID | ga1= GRAVE_ACCENT id2= ID square_chunk ) | contains_key | excludes_key | matches_key | soundslike_key | memberof_key | id3= ID | ga2= GRAVE_ACCENT id4= ID square_chunk ) expression_value )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1192:4: ( EQUAL | GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | NOT_EQUAL | not_key ( contains_key | soundslike_key | matches_key | memberof_key | id1= ID | ga1= GRAVE_ACCENT id2= ID square_chunk ) | contains_key | excludes_key | matches_key | soundslike_key | memberof_key | id3= ID | ga2= GRAVE_ACCENT id4= ID square_chunk ) expression_value
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1204:2: ( ( EQUAL | GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | NOT_EQUAL | not_key ( contains_key | soundslike_key | matches_key | memberof_key | id1= ID | ga1= GRAVE_ACCENT id2= ID square_chunk ) | contains_key | excludes_key | matches_key | soundslike_key | memberof_key | id3= ID | ga2= GRAVE_ACCENT id4= ID square_chunk ) expression_value )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1204:4: ( EQUAL | GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | NOT_EQUAL | not_key ( contains_key | soundslike_key | matches_key | memberof_key | id1= ID | ga1= GRAVE_ACCENT id2= ID square_chunk ) | contains_key | excludes_key | matches_key | soundslike_key | memberof_key | id3= ID | ga2= GRAVE_ACCENT id4= ID square_chunk ) expression_value
             {
             root_0 = (Object)adaptor.nil();
 
             if ( backtracking==0 ) {
               	emit(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);	
             }
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1193:3: ( EQUAL | GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | NOT_EQUAL | not_key ( contains_key | soundslike_key | matches_key | memberof_key | id1= ID | ga1= GRAVE_ACCENT id2= ID square_chunk ) | contains_key | excludes_key | matches_key | soundslike_key | memberof_key | id3= ID | ga2= GRAVE_ACCENT id4= ID square_chunk )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1205:3: ( EQUAL | GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | NOT_EQUAL | not_key ( contains_key | soundslike_key | matches_key | memberof_key | id1= ID | ga1= GRAVE_ACCENT id2= ID square_chunk ) | contains_key | excludes_key | matches_key | soundslike_key | memberof_key | id3= ID | ga2= GRAVE_ACCENT id4= ID square_chunk )
             int alt85=14;
             switch ( input.LA(1) ) {
             case EQUAL:
@@ -11279,7 +11291,7 @@ public class DRLParser extends Parser {
                 else {
                     if (backtracking>0) {failed=true; return retval;}
                     NoViableAltException nvae =
-                        new NoViableAltException("1193:3: ( EQUAL | GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | NOT_EQUAL | not_key ( contains_key | soundslike_key | matches_key | memberof_key | id1= ID | ga1= GRAVE_ACCENT id2= ID square_chunk ) | contains_key | excludes_key | matches_key | soundslike_key | memberof_key | id3= ID | ga2= GRAVE_ACCENT id4= ID square_chunk )", 85, 7, input);
+                        new NoViableAltException("1205:3: ( EQUAL | GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | NOT_EQUAL | not_key ( contains_key | soundslike_key | matches_key | memberof_key | id1= ID | ga1= GRAVE_ACCENT id2= ID square_chunk ) | contains_key | excludes_key | matches_key | soundslike_key | memberof_key | id3= ID | ga2= GRAVE_ACCENT id4= ID square_chunk )", 85, 7, input);
 
                     throw nvae;
                 }
@@ -11293,17 +11305,17 @@ public class DRLParser extends Parser {
             default:
                 if (backtracking>0) {failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("1193:3: ( EQUAL | GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | NOT_EQUAL | not_key ( contains_key | soundslike_key | matches_key | memberof_key | id1= ID | ga1= GRAVE_ACCENT id2= ID square_chunk ) | contains_key | excludes_key | matches_key | soundslike_key | memberof_key | id3= ID | ga2= GRAVE_ACCENT id4= ID square_chunk )", 85, 0, input);
+                    new NoViableAltException("1205:3: ( EQUAL | GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | NOT_EQUAL | not_key ( contains_key | soundslike_key | matches_key | memberof_key | id1= ID | ga1= GRAVE_ACCENT id2= ID square_chunk ) | contains_key | excludes_key | matches_key | soundslike_key | memberof_key | id3= ID | ga2= GRAVE_ACCENT id4= ID square_chunk )", 85, 0, input);
 
                 throw nvae;
             }
 
             switch (alt85) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1193:4: EQUAL
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1205:4: EQUAL
                     {
                     EQUAL243=(Token)input.LT(1);
-                    match(input,EQUAL,FOLLOW_EQUAL_in_simple_operator4122); if (failed) return retval;
+                    match(input,EQUAL,FOLLOW_EQUAL_in_simple_operator4120); if (failed) return retval;
                     if ( backtracking==0 ) {
                     EQUAL243_tree = (Object)adaptor.create(EQUAL243);
                     root_0 = (Object)adaptor.becomeRoot(EQUAL243_tree, root_0);
@@ -11315,10 +11327,10 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1194:4: GREATER
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1206:4: GREATER
                     {
                     GREATER244=(Token)input.LT(1);
-                    match(input,GREATER,FOLLOW_GREATER_in_simple_operator4130); if (failed) return retval;
+                    match(input,GREATER,FOLLOW_GREATER_in_simple_operator4128); if (failed) return retval;
                     if ( backtracking==0 ) {
                     GREATER244_tree = (Object)adaptor.create(GREATER244);
                     root_0 = (Object)adaptor.becomeRoot(GREATER244_tree, root_0);
@@ -11330,10 +11342,10 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1195:4: GREATER_EQUAL
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1207:4: GREATER_EQUAL
                     {
                     GREATER_EQUAL245=(Token)input.LT(1);
-                    match(input,GREATER_EQUAL,FOLLOW_GREATER_EQUAL_in_simple_operator4138); if (failed) return retval;
+                    match(input,GREATER_EQUAL,FOLLOW_GREATER_EQUAL_in_simple_operator4136); if (failed) return retval;
                     if ( backtracking==0 ) {
                     GREATER_EQUAL245_tree = (Object)adaptor.create(GREATER_EQUAL245);
                     root_0 = (Object)adaptor.becomeRoot(GREATER_EQUAL245_tree, root_0);
@@ -11345,10 +11357,10 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1196:4: LESS
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1208:4: LESS
                     {
                     LESS246=(Token)input.LT(1);
-                    match(input,LESS,FOLLOW_LESS_in_simple_operator4146); if (failed) return retval;
+                    match(input,LESS,FOLLOW_LESS_in_simple_operator4144); if (failed) return retval;
                     if ( backtracking==0 ) {
                     LESS246_tree = (Object)adaptor.create(LESS246);
                     root_0 = (Object)adaptor.becomeRoot(LESS246_tree, root_0);
@@ -11360,10 +11372,10 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 5 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1197:4: LESS_EQUAL
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1209:4: LESS_EQUAL
                     {
                     LESS_EQUAL247=(Token)input.LT(1);
-                    match(input,LESS_EQUAL,FOLLOW_LESS_EQUAL_in_simple_operator4154); if (failed) return retval;
+                    match(input,LESS_EQUAL,FOLLOW_LESS_EQUAL_in_simple_operator4152); if (failed) return retval;
                     if ( backtracking==0 ) {
                     LESS_EQUAL247_tree = (Object)adaptor.create(LESS_EQUAL247);
                     root_0 = (Object)adaptor.becomeRoot(LESS_EQUAL247_tree, root_0);
@@ -11375,10 +11387,10 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 6 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1198:4: NOT_EQUAL
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1210:4: NOT_EQUAL
                     {
                     NOT_EQUAL248=(Token)input.LT(1);
-                    match(input,NOT_EQUAL,FOLLOW_NOT_EQUAL_in_simple_operator4162); if (failed) return retval;
+                    match(input,NOT_EQUAL,FOLLOW_NOT_EQUAL_in_simple_operator4160); if (failed) return retval;
                     if ( backtracking==0 ) {
                     NOT_EQUAL248_tree = (Object)adaptor.create(NOT_EQUAL248);
                     root_0 = (Object)adaptor.becomeRoot(NOT_EQUAL248_tree, root_0);
@@ -11390,14 +11402,14 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 7 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1199:4: not_key ( contains_key | soundslike_key | matches_key | memberof_key | id1= ID | ga1= GRAVE_ACCENT id2= ID square_chunk )
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1211:4: not_key ( contains_key | soundslike_key | matches_key | memberof_key | id1= ID | ga1= GRAVE_ACCENT id2= ID square_chunk )
                     {
-                    pushFollow(FOLLOW_not_key_in_simple_operator4170);
+                    pushFollow(FOLLOW_not_key_in_simple_operator4168);
                     not_key249=not_key();
                     _fsp--;
                     if (failed) return retval;
                     if ( backtracking==0 ) adaptor.addChild(root_0, not_key249.getTree());
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1200:3: ( contains_key | soundslike_key | matches_key | memberof_key | id1= ID | ga1= GRAVE_ACCENT id2= ID square_chunk )
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1212:3: ( contains_key | soundslike_key | matches_key | memberof_key | id1= ID | ga1= GRAVE_ACCENT id2= ID square_chunk )
                     int alt84=6;
                     int LA84_0 = input.LA(1);
 
@@ -11422,7 +11434,7 @@ public class DRLParser extends Parser {
                         else {
                             if (backtracking>0) {failed=true; return retval;}
                             NoViableAltException nvae =
-                                new NoViableAltException("1200:3: ( contains_key | soundslike_key | matches_key | memberof_key | id1= ID | ga1= GRAVE_ACCENT id2= ID square_chunk )", 84, 1, input);
+                                new NoViableAltException("1212:3: ( contains_key | soundslike_key | matches_key | memberof_key | id1= ID | ga1= GRAVE_ACCENT id2= ID square_chunk )", 84, 1, input);
 
                             throw nvae;
                         }
@@ -11433,15 +11445,15 @@ public class DRLParser extends Parser {
                     else {
                         if (backtracking>0) {failed=true; return retval;}
                         NoViableAltException nvae =
-                            new NoViableAltException("1200:3: ( contains_key | soundslike_key | matches_key | memberof_key | id1= ID | ga1= GRAVE_ACCENT id2= ID square_chunk )", 84, 0, input);
+                            new NoViableAltException("1212:3: ( contains_key | soundslike_key | matches_key | memberof_key | id1= ID | ga1= GRAVE_ACCENT id2= ID square_chunk )", 84, 0, input);
 
                         throw nvae;
                     }
                     switch (alt84) {
                         case 1 :
-                            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1200:5: contains_key
+                            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1212:5: contains_key
                             {
-                            pushFollow(FOLLOW_contains_key_in_simple_operator4177);
+                            pushFollow(FOLLOW_contains_key_in_simple_operator4175);
                             contains_key250=contains_key();
                             _fsp--;
                             if (failed) return retval;
@@ -11450,9 +11462,9 @@ public class DRLParser extends Parser {
                             }
                             break;
                         case 2 :
-                            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1201:5: soundslike_key
+                            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1213:5: soundslike_key
                             {
-                            pushFollow(FOLLOW_soundslike_key_in_simple_operator4184);
+                            pushFollow(FOLLOW_soundslike_key_in_simple_operator4182);
                             soundslike_key251=soundslike_key();
                             _fsp--;
                             if (failed) return retval;
@@ -11461,9 +11473,9 @@ public class DRLParser extends Parser {
                             }
                             break;
                         case 3 :
-                            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1202:5: matches_key
+                            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1214:5: matches_key
                             {
-                            pushFollow(FOLLOW_matches_key_in_simple_operator4191);
+                            pushFollow(FOLLOW_matches_key_in_simple_operator4189);
                             matches_key252=matches_key();
                             _fsp--;
                             if (failed) return retval;
@@ -11472,9 +11484,9 @@ public class DRLParser extends Parser {
                             }
                             break;
                         case 4 :
-                            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1203:5: memberof_key
+                            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1215:5: memberof_key
                             {
-                            pushFollow(FOLLOW_memberof_key_in_simple_operator4198);
+                            pushFollow(FOLLOW_memberof_key_in_simple_operator4196);
                             memberof_key253=memberof_key();
                             _fsp--;
                             if (failed) return retval;
@@ -11483,10 +11495,10 @@ public class DRLParser extends Parser {
                             }
                             break;
                         case 5 :
-                            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1204:5: id1= ID
+                            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1216:5: id1= ID
                             {
                             id1=(Token)input.LT(1);
-                            match(input,ID,FOLLOW_ID_in_simple_operator4207); if (failed) return retval;
+                            match(input,ID,FOLLOW_ID_in_simple_operator4205); if (failed) return retval;
                             if ( backtracking==0 ) {
                             id1_tree = (Object)adaptor.create(id1);
                             root_0 = (Object)adaptor.becomeRoot(id1_tree, root_0);
@@ -11498,15 +11510,15 @@ public class DRLParser extends Parser {
                             }
                             break;
                         case 6 :
-                            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1205:5: ga1= GRAVE_ACCENT id2= ID square_chunk
+                            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1217:5: ga1= GRAVE_ACCENT id2= ID square_chunk
                             {
                             ga1=(Token)input.LT(1);
-                            match(input,GRAVE_ACCENT,FOLLOW_GRAVE_ACCENT_in_simple_operator4218); if (failed) return retval;
+                            match(input,GRAVE_ACCENT,FOLLOW_GRAVE_ACCENT_in_simple_operator4216); if (failed) return retval;
                             if ( backtracking==0 ) {
                               	emit(ga1, DroolsEditorType.SYMBOL);	
                             }
                             id2=(Token)input.LT(1);
-                            match(input,ID,FOLLOW_ID_in_simple_operator4226); if (failed) return retval;
+                            match(input,ID,FOLLOW_ID_in_simple_operator4224); if (failed) return retval;
                             if ( backtracking==0 ) {
                             id2_tree = (Object)adaptor.create(id2);
                             root_0 = (Object)adaptor.becomeRoot(id2_tree, root_0);
@@ -11514,7 +11526,7 @@ public class DRLParser extends Parser {
                             if ( backtracking==0 ) {
                               	emit(id2, DroolsEditorType.IDENTIFIER);	
                             }
-                            pushFollow(FOLLOW_square_chunk_in_simple_operator4232);
+                            pushFollow(FOLLOW_square_chunk_in_simple_operator4230);
                             square_chunk254=square_chunk();
                             _fsp--;
                             if (failed) return retval;
@@ -11529,9 +11541,9 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 8 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1206:4: contains_key
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1218:4: contains_key
                     {
-                    pushFollow(FOLLOW_contains_key_in_simple_operator4238);
+                    pushFollow(FOLLOW_contains_key_in_simple_operator4236);
                     contains_key255=contains_key();
                     _fsp--;
                     if (failed) return retval;
@@ -11540,9 +11552,9 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 9 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1207:4: excludes_key
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1219:4: excludes_key
                     {
-                    pushFollow(FOLLOW_excludes_key_in_simple_operator4244);
+                    pushFollow(FOLLOW_excludes_key_in_simple_operator4242);
                     excludes_key256=excludes_key();
                     _fsp--;
                     if (failed) return retval;
@@ -11551,9 +11563,9 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 10 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1208:4: matches_key
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1220:4: matches_key
                     {
-                    pushFollow(FOLLOW_matches_key_in_simple_operator4250);
+                    pushFollow(FOLLOW_matches_key_in_simple_operator4248);
                     matches_key257=matches_key();
                     _fsp--;
                     if (failed) return retval;
@@ -11562,9 +11574,9 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 11 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1209:4: soundslike_key
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1221:4: soundslike_key
                     {
-                    pushFollow(FOLLOW_soundslike_key_in_simple_operator4256);
+                    pushFollow(FOLLOW_soundslike_key_in_simple_operator4254);
                     soundslike_key258=soundslike_key();
                     _fsp--;
                     if (failed) return retval;
@@ -11573,9 +11585,9 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 12 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1210:4: memberof_key
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1222:4: memberof_key
                     {
-                    pushFollow(FOLLOW_memberof_key_in_simple_operator4262);
+                    pushFollow(FOLLOW_memberof_key_in_simple_operator4260);
                     memberof_key259=memberof_key();
                     _fsp--;
                     if (failed) return retval;
@@ -11584,10 +11596,10 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 13 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1211:4: id3= ID
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1223:4: id3= ID
                     {
                     id3=(Token)input.LT(1);
-                    match(input,ID,FOLLOW_ID_in_simple_operator4270); if (failed) return retval;
+                    match(input,ID,FOLLOW_ID_in_simple_operator4268); if (failed) return retval;
                     if ( backtracking==0 ) {
                     id3_tree = (Object)adaptor.create(id3);
                     root_0 = (Object)adaptor.becomeRoot(id3_tree, root_0);
@@ -11599,15 +11611,15 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 14 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1212:4: ga2= GRAVE_ACCENT id4= ID square_chunk
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1224:4: ga2= GRAVE_ACCENT id4= ID square_chunk
                     {
                     ga2=(Token)input.LT(1);
-                    match(input,GRAVE_ACCENT,FOLLOW_GRAVE_ACCENT_in_simple_operator4280); if (failed) return retval;
+                    match(input,GRAVE_ACCENT,FOLLOW_GRAVE_ACCENT_in_simple_operator4278); if (failed) return retval;
                     if ( backtracking==0 ) {
                       	emit(ga2, DroolsEditorType.SYMBOL);	
                     }
                     id4=(Token)input.LT(1);
-                    match(input,ID,FOLLOW_ID_in_simple_operator4288); if (failed) return retval;
+                    match(input,ID,FOLLOW_ID_in_simple_operator4286); if (failed) return retval;
                     if ( backtracking==0 ) {
                     id4_tree = (Object)adaptor.create(id4);
                     root_0 = (Object)adaptor.becomeRoot(id4_tree, root_0);
@@ -11615,7 +11627,7 @@ public class DRLParser extends Parser {
                     if ( backtracking==0 ) {
                       	emit(id4, DroolsEditorType.IDENTIFIER);	
                     }
-                    pushFollow(FOLLOW_square_chunk_in_simple_operator4294);
+                    pushFollow(FOLLOW_square_chunk_in_simple_operator4292);
                     square_chunk260=square_chunk();
                     _fsp--;
                     if (failed) return retval;
@@ -11629,7 +11641,7 @@ public class DRLParser extends Parser {
             if ( backtracking==0 ) {
               	emit(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);	
             }
-            pushFollow(FOLLOW_expression_value_in_simple_operator4301);
+            pushFollow(FOLLOW_expression_value_in_simple_operator4299);
             expression_value261=expression_value();
             _fsp--;
             if (failed) return retval;
@@ -11660,7 +11672,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start compound_operator
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1218:1: compound_operator : ( in_key | not_key in_key ) LEFT_PAREN expression_value ( COMMA expression_value )* RIGHT_PAREN ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1230:1: compound_operator : ( in_key | not_key in_key ) LEFT_PAREN expression_value ( COMMA expression_value )* RIGHT_PAREN ;
     public final compound_operator_return compound_operator() throws RecognitionException {
         compound_operator_return retval = new compound_operator_return();
         retval.start = input.LT(1);
@@ -11686,15 +11698,15 @@ public class DRLParser extends Parser {
         Object RIGHT_PAREN269_tree=null;
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1219:2: ( ( in_key | not_key in_key ) LEFT_PAREN expression_value ( COMMA expression_value )* RIGHT_PAREN )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1219:4: ( in_key | not_key in_key ) LEFT_PAREN expression_value ( COMMA expression_value )* RIGHT_PAREN
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1231:2: ( ( in_key | not_key in_key ) LEFT_PAREN expression_value ( COMMA expression_value )* RIGHT_PAREN )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1231:4: ( in_key | not_key in_key ) LEFT_PAREN expression_value ( COMMA expression_value )* RIGHT_PAREN
             {
             root_0 = (Object)adaptor.nil();
 
             if ( backtracking==0 ) {
               	emit(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);	
             }
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1220:2: ( in_key | not_key in_key )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1232:2: ( in_key | not_key in_key )
             int alt86=2;
             int LA86_0 = input.LA(1);
 
@@ -11710,7 +11722,7 @@ public class DRLParser extends Parser {
                 else {
                     if (backtracking>0) {failed=true; return retval;}
                     NoViableAltException nvae =
-                        new NoViableAltException("1220:2: ( in_key | not_key in_key )", 86, 1, input);
+                        new NoViableAltException("1232:2: ( in_key | not_key in_key )", 86, 1, input);
 
                     throw nvae;
                 }
@@ -11718,15 +11730,15 @@ public class DRLParser extends Parser {
             else {
                 if (backtracking>0) {failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("1220:2: ( in_key | not_key in_key )", 86, 0, input);
+                    new NoViableAltException("1232:2: ( in_key | not_key in_key )", 86, 0, input);
 
                 throw nvae;
             }
             switch (alt86) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1220:4: in_key
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1232:4: in_key
                     {
-                    pushFollow(FOLLOW_in_key_in_compound_operator4319);
+                    pushFollow(FOLLOW_in_key_in_compound_operator4317);
                     in_key262=in_key();
                     _fsp--;
                     if (failed) return retval;
@@ -11735,14 +11747,14 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1220:14: not_key in_key
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1232:14: not_key in_key
                     {
-                    pushFollow(FOLLOW_not_key_in_compound_operator4324);
+                    pushFollow(FOLLOW_not_key_in_compound_operator4322);
                     not_key263=not_key();
                     _fsp--;
                     if (failed) return retval;
                     if ( backtracking==0 ) adaptor.addChild(root_0, not_key263.getTree());
-                    pushFollow(FOLLOW_in_key_in_compound_operator4326);
+                    pushFollow(FOLLOW_in_key_in_compound_operator4324);
                     in_key264=in_key();
                     _fsp--;
                     if (failed) return retval;
@@ -11757,16 +11769,16 @@ public class DRLParser extends Parser {
               	emit(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);	
             }
             LEFT_PAREN265=(Token)input.LT(1);
-            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_compound_operator4337); if (failed) return retval;
+            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_compound_operator4335); if (failed) return retval;
             if ( backtracking==0 ) {
               	emit(LEFT_PAREN265, DroolsEditorType.SYMBOL);	
             }
-            pushFollow(FOLLOW_expression_value_in_compound_operator4345);
+            pushFollow(FOLLOW_expression_value_in_compound_operator4343);
             expression_value266=expression_value();
             _fsp--;
             if (failed) return retval;
             if ( backtracking==0 ) adaptor.addChild(root_0, expression_value266.getTree());
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1223:21: ( COMMA expression_value )*
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1235:21: ( COMMA expression_value )*
             loop87:
             do {
                 int alt87=2;
@@ -11779,14 +11791,14 @@ public class DRLParser extends Parser {
 
                 switch (alt87) {
             	case 1 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1223:23: COMMA expression_value
+            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1235:23: COMMA expression_value
             	    {
             	    COMMA267=(Token)input.LT(1);
-            	    match(input,COMMA,FOLLOW_COMMA_in_compound_operator4349); if (failed) return retval;
+            	    match(input,COMMA,FOLLOW_COMMA_in_compound_operator4347); if (failed) return retval;
             	    if ( backtracking==0 ) {
             	      	emit(COMMA267, DroolsEditorType.SYMBOL);	
             	    }
-            	    pushFollow(FOLLOW_expression_value_in_compound_operator4354);
+            	    pushFollow(FOLLOW_expression_value_in_compound_operator4352);
             	    expression_value268=expression_value();
             	    _fsp--;
             	    if (failed) return retval;
@@ -11801,7 +11813,7 @@ public class DRLParser extends Parser {
             } while (true);
 
             RIGHT_PAREN269=(Token)input.LT(1);
-            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_compound_operator4362); if (failed) return retval;
+            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_compound_operator4360); if (failed) return retval;
             if ( backtracking==0 ) {
             RIGHT_PAREN269_tree = (Object)adaptor.create(RIGHT_PAREN269);
             adaptor.addChild(root_0, RIGHT_PAREN269_tree);
@@ -11844,7 +11856,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start expression_value
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1234:1: expression_value : ( accessor_path | literal_constraint | paren_chunk ) ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1246:1: expression_value : ( accessor_path | literal_constraint | paren_chunk ) ;
     public final expression_value_return expression_value() throws RecognitionException {
         expression_value_return retval = new expression_value_return();
         retval.start = input.LT(1);
@@ -11860,12 +11872,12 @@ public class DRLParser extends Parser {
 
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1235:2: ( ( accessor_path | literal_constraint | paren_chunk ) )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1235:4: ( accessor_path | literal_constraint | paren_chunk )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1247:2: ( ( accessor_path | literal_constraint | paren_chunk ) )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1247:4: ( accessor_path | literal_constraint | paren_chunk )
             {
             root_0 = (Object)adaptor.nil();
 
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1235:4: ( accessor_path | literal_constraint | paren_chunk )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1247:4: ( accessor_path | literal_constraint | paren_chunk )
             int alt88=3;
             switch ( input.LA(1) ) {
             case ID:
@@ -11890,16 +11902,16 @@ public class DRLParser extends Parser {
             default:
                 if (backtracking>0) {failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("1235:4: ( accessor_path | literal_constraint | paren_chunk )", 88, 0, input);
+                    new NoViableAltException("1247:4: ( accessor_path | literal_constraint | paren_chunk )", 88, 0, input);
 
                 throw nvae;
             }
 
             switch (alt88) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1235:5: accessor_path
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1247:5: accessor_path
                     {
-                    pushFollow(FOLLOW_accessor_path_in_expression_value4383);
+                    pushFollow(FOLLOW_accessor_path_in_expression_value4381);
                     accessor_path270=accessor_path();
                     _fsp--;
                     if (failed) return retval;
@@ -11908,9 +11920,9 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1236:4: literal_constraint
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1248:4: literal_constraint
                     {
-                    pushFollow(FOLLOW_literal_constraint_in_expression_value4388);
+                    pushFollow(FOLLOW_literal_constraint_in_expression_value4386);
                     literal_constraint271=literal_constraint();
                     _fsp--;
                     if (failed) return retval;
@@ -11919,9 +11931,9 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1237:4: paren_chunk
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1249:4: paren_chunk
                     {
-                    pushFollow(FOLLOW_paren_chunk_in_expression_value4394);
+                    pushFollow(FOLLOW_paren_chunk_in_expression_value4392);
                     paren_chunk272=paren_chunk();
                     _fsp--;
                     if (failed) return retval;
@@ -11971,7 +11983,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start literal_constraint
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1251:1: literal_constraint : ( STRING | INT | FLOAT | BOOL | NULL );
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1263:1: literal_constraint : ( STRING | INT | FLOAT | BOOL | NULL );
     public final literal_constraint_return literal_constraint() throws RecognitionException {
         literal_constraint_return retval = new literal_constraint_return();
         retval.start = input.LT(1);
@@ -11991,7 +12003,7 @@ public class DRLParser extends Parser {
         Object NULL277_tree=null;
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1252:2: ( STRING | INT | FLOAT | BOOL | NULL )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1264:2: ( STRING | INT | FLOAT | BOOL | NULL )
             int alt89=5;
             switch ( input.LA(1) ) {
             case STRING:
@@ -12022,19 +12034,19 @@ public class DRLParser extends Parser {
             default:
                 if (backtracking>0) {failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("1251:1: literal_constraint : ( STRING | INT | FLOAT | BOOL | NULL );", 89, 0, input);
+                    new NoViableAltException("1263:1: literal_constraint : ( STRING | INT | FLOAT | BOOL | NULL );", 89, 0, input);
 
                 throw nvae;
             }
 
             switch (alt89) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1252:4: STRING
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1264:4: STRING
                     {
                     root_0 = (Object)adaptor.nil();
 
                     STRING273=(Token)input.LT(1);
-                    match(input,STRING,FOLLOW_STRING_in_literal_constraint4413); if (failed) return retval;
+                    match(input,STRING,FOLLOW_STRING_in_literal_constraint4411); if (failed) return retval;
                     if ( backtracking==0 ) {
                     STRING273_tree = (Object)adaptor.create(STRING273);
                     adaptor.addChild(root_0, STRING273_tree);
@@ -12046,12 +12058,12 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1253:4: INT
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1265:4: INT
                     {
                     root_0 = (Object)adaptor.nil();
 
                     INT274=(Token)input.LT(1);
-                    match(input,INT,FOLLOW_INT_in_literal_constraint4420); if (failed) return retval;
+                    match(input,INT,FOLLOW_INT_in_literal_constraint4418); if (failed) return retval;
                     if ( backtracking==0 ) {
                     INT274_tree = (Object)adaptor.create(INT274);
                     adaptor.addChild(root_0, INT274_tree);
@@ -12063,12 +12075,12 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1254:4: FLOAT
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1266:4: FLOAT
                     {
                     root_0 = (Object)adaptor.nil();
 
                     FLOAT275=(Token)input.LT(1);
-                    match(input,FLOAT,FOLLOW_FLOAT_in_literal_constraint4427); if (failed) return retval;
+                    match(input,FLOAT,FOLLOW_FLOAT_in_literal_constraint4425); if (failed) return retval;
                     if ( backtracking==0 ) {
                     FLOAT275_tree = (Object)adaptor.create(FLOAT275);
                     adaptor.addChild(root_0, FLOAT275_tree);
@@ -12080,12 +12092,12 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1255:4: BOOL
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1267:4: BOOL
                     {
                     root_0 = (Object)adaptor.nil();
 
                     BOOL276=(Token)input.LT(1);
-                    match(input,BOOL,FOLLOW_BOOL_in_literal_constraint4434); if (failed) return retval;
+                    match(input,BOOL,FOLLOW_BOOL_in_literal_constraint4432); if (failed) return retval;
                     if ( backtracking==0 ) {
                     BOOL276_tree = (Object)adaptor.create(BOOL276);
                     adaptor.addChild(root_0, BOOL276_tree);
@@ -12097,12 +12109,12 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 5 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1256:4: NULL
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1268:4: NULL
                     {
                     root_0 = (Object)adaptor.nil();
 
                     NULL277=(Token)input.LT(1);
-                    match(input,NULL,FOLLOW_NULL_in_literal_constraint4441); if (failed) return retval;
+                    match(input,NULL,FOLLOW_NULL_in_literal_constraint4439); if (failed) return retval;
                     if ( backtracking==0 ) {
                     NULL277_tree = (Object)adaptor.create(NULL277);
                     adaptor.addChild(root_0, NULL277_tree);
@@ -12138,7 +12150,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start pattern_type
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1259:1: pattern_type : id+= ID (id+= DOT id+= ID )* ( dimension_definition )* -> ^( VT_PATTERN_TYPE ( ID )+ ( dimension_definition )* ) ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1271:1: pattern_type : id+= ID (id+= DOT id+= ID )* ( dimension_definition )* -> ^( VT_PATTERN_TYPE ( ID )+ ( dimension_definition )* ) ;
     public final pattern_type_return pattern_type() throws RecognitionException {
         pattern_type_return retval = new pattern_type_return();
         retval.start = input.LT(1);
@@ -12155,17 +12167,17 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_DOT=new RewriteRuleTokenStream(adaptor,"token DOT");
         RewriteRuleSubtreeStream stream_dimension_definition=new RewriteRuleSubtreeStream(adaptor,"rule dimension_definition");
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1260:2: (id+= ID (id+= DOT id+= ID )* ( dimension_definition )* -> ^( VT_PATTERN_TYPE ( ID )+ ( dimension_definition )* ) )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1260:4: id+= ID (id+= DOT id+= ID )* ( dimension_definition )*
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1272:2: (id+= ID (id+= DOT id+= ID )* ( dimension_definition )* -> ^( VT_PATTERN_TYPE ( ID )+ ( dimension_definition )* ) )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1272:4: id+= ID (id+= DOT id+= ID )* ( dimension_definition )*
             {
             id=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_pattern_type4456); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_pattern_type4454); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id);
 
             if (list_id==null) list_id=new ArrayList();
             list_id.add(id);
 
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1260:11: (id+= DOT id+= ID )*
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1272:11: (id+= DOT id+= ID )*
             loop90:
             do {
                 int alt90=2;
@@ -12178,17 +12190,17 @@ public class DRLParser extends Parser {
 
                 switch (alt90) {
             	case 1 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1260:13: id+= DOT id+= ID
+            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1272:13: id+= DOT id+= ID
             	    {
             	    id=(Token)input.LT(1);
-            	    match(input,DOT,FOLLOW_DOT_in_pattern_type4462); if (failed) return retval;
+            	    match(input,DOT,FOLLOW_DOT_in_pattern_type4460); if (failed) return retval;
             	    if ( backtracking==0 ) stream_DOT.add(id);
 
             	    if (list_id==null) list_id=new ArrayList();
             	    list_id.add(id);
 
             	    id=(Token)input.LT(1);
-            	    match(input,ID,FOLLOW_ID_in_pattern_type4466); if (failed) return retval;
+            	    match(input,ID,FOLLOW_ID_in_pattern_type4464); if (failed) return retval;
             	    if ( backtracking==0 ) stream_ID.add(id);
 
             	    if (list_id==null) list_id=new ArrayList();
@@ -12207,7 +12219,7 @@ public class DRLParser extends Parser {
               	emit(list_id, DroolsEditorType.IDENTIFIER);
               		setParaphrasesValue(DroolsParaphraseTypes.PATTERN, buildStringFromTokens(list_id));	
             }
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1263:6: ( dimension_definition )*
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1275:6: ( dimension_definition )*
             loop91:
             do {
                 int alt91=2;
@@ -12220,9 +12232,9 @@ public class DRLParser extends Parser {
 
                 switch (alt91) {
             	case 1 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1263:6: dimension_definition
+            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1275:6: dimension_definition
             	    {
-            	    pushFollow(FOLLOW_dimension_definition_in_pattern_type4481);
+            	    pushFollow(FOLLOW_dimension_definition_in_pattern_type4479);
             	    dimension_definition278=dimension_definition();
             	    _fsp--;
             	    if (failed) return retval;
@@ -12248,9 +12260,9 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1264:3: -> ^( VT_PATTERN_TYPE ( ID )+ ( dimension_definition )* )
+            // 1276:3: -> ^( VT_PATTERN_TYPE ( ID )+ ( dimension_definition )* )
             {
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1264:6: ^( VT_PATTERN_TYPE ( ID )+ ( dimension_definition )* )
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1276:6: ^( VT_PATTERN_TYPE ( ID )+ ( dimension_definition )* )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(adaptor.create(VT_PATTERN_TYPE, "VT_PATTERN_TYPE"), root_1);
@@ -12263,7 +12275,7 @@ public class DRLParser extends Parser {
 
                 }
                 stream_ID.reset();
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1264:28: ( dimension_definition )*
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1276:28: ( dimension_definition )*
                 while ( stream_dimension_definition.hasNext() ) {
                     adaptor.addChild(root_1, stream_dimension_definition.next());
 
@@ -12302,7 +12314,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start data_type
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1267:1: data_type : id+= ID (id+= DOT id+= ID )* ( dimension_definition )* -> ^( VT_DATA_TYPE ( ID )+ ( dimension_definition )* ) ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1279:1: data_type : id+= ID (id+= DOT id+= ID )* ( dimension_definition )* -> ^( VT_DATA_TYPE ( ID )+ ( dimension_definition )* ) ;
     public final data_type_return data_type() throws RecognitionException {
         data_type_return retval = new data_type_return();
         retval.start = input.LT(1);
@@ -12319,17 +12331,17 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_DOT=new RewriteRuleTokenStream(adaptor,"token DOT");
         RewriteRuleSubtreeStream stream_dimension_definition=new RewriteRuleSubtreeStream(adaptor,"rule dimension_definition");
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1268:2: (id+= ID (id+= DOT id+= ID )* ( dimension_definition )* -> ^( VT_DATA_TYPE ( ID )+ ( dimension_definition )* ) )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1268:4: id+= ID (id+= DOT id+= ID )* ( dimension_definition )*
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1280:2: (id+= ID (id+= DOT id+= ID )* ( dimension_definition )* -> ^( VT_DATA_TYPE ( ID )+ ( dimension_definition )* ) )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1280:4: id+= ID (id+= DOT id+= ID )* ( dimension_definition )*
             {
             id=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_data_type4509); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_data_type4507); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id);
 
             if (list_id==null) list_id=new ArrayList();
             list_id.add(id);
 
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1268:11: (id+= DOT id+= ID )*
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1280:11: (id+= DOT id+= ID )*
             loop92:
             do {
                 int alt92=2;
@@ -12342,17 +12354,17 @@ public class DRLParser extends Parser {
 
                 switch (alt92) {
             	case 1 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1268:13: id+= DOT id+= ID
+            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1280:13: id+= DOT id+= ID
             	    {
             	    id=(Token)input.LT(1);
-            	    match(input,DOT,FOLLOW_DOT_in_data_type4515); if (failed) return retval;
+            	    match(input,DOT,FOLLOW_DOT_in_data_type4513); if (failed) return retval;
             	    if ( backtracking==0 ) stream_DOT.add(id);
 
             	    if (list_id==null) list_id=new ArrayList();
             	    list_id.add(id);
 
             	    id=(Token)input.LT(1);
-            	    match(input,ID,FOLLOW_ID_in_data_type4519); if (failed) return retval;
+            	    match(input,ID,FOLLOW_ID_in_data_type4517); if (failed) return retval;
             	    if ( backtracking==0 ) stream_ID.add(id);
 
             	    if (list_id==null) list_id=new ArrayList();
@@ -12367,7 +12379,7 @@ public class DRLParser extends Parser {
                 }
             } while (true);
 
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1268:31: ( dimension_definition )*
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1280:31: ( dimension_definition )*
             loop93:
             do {
                 int alt93=2;
@@ -12380,9 +12392,9 @@ public class DRLParser extends Parser {
 
                 switch (alt93) {
             	case 1 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1268:31: dimension_definition
+            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1280:31: dimension_definition
             	    {
-            	    pushFollow(FOLLOW_dimension_definition_in_data_type4524);
+            	    pushFollow(FOLLOW_dimension_definition_in_data_type4522);
             	    dimension_definition279=dimension_definition();
             	    _fsp--;
             	    if (failed) return retval;
@@ -12411,9 +12423,9 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1270:3: -> ^( VT_DATA_TYPE ( ID )+ ( dimension_definition )* )
+            // 1282:3: -> ^( VT_DATA_TYPE ( ID )+ ( dimension_definition )* )
             {
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1270:6: ^( VT_DATA_TYPE ( ID )+ ( dimension_definition )* )
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1282:6: ^( VT_DATA_TYPE ( ID )+ ( dimension_definition )* )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(adaptor.create(VT_DATA_TYPE, "VT_DATA_TYPE"), root_1);
@@ -12426,7 +12438,7 @@ public class DRLParser extends Parser {
 
                 }
                 stream_ID.reset();
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1270:25: ( dimension_definition )*
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1282:25: ( dimension_definition )*
                 while ( stream_dimension_definition.hasNext() ) {
                     adaptor.addChild(root_1, stream_dimension_definition.next());
 
@@ -12465,7 +12477,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start dimension_definition
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1273:1: dimension_definition : LEFT_SQUARE RIGHT_SQUARE ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1285:1: dimension_definition : LEFT_SQUARE RIGHT_SQUARE ;
     public final dimension_definition_return dimension_definition() throws RecognitionException {
         dimension_definition_return retval = new dimension_definition_return();
         retval.start = input.LT(1);
@@ -12479,13 +12491,13 @@ public class DRLParser extends Parser {
         Object RIGHT_SQUARE281_tree=null;
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1274:2: ( LEFT_SQUARE RIGHT_SQUARE )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1274:4: LEFT_SQUARE RIGHT_SQUARE
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1286:2: ( LEFT_SQUARE RIGHT_SQUARE )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1286:4: LEFT_SQUARE RIGHT_SQUARE
             {
             root_0 = (Object)adaptor.nil();
 
             LEFT_SQUARE280=(Token)input.LT(1);
-            match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_dimension_definition4553); if (failed) return retval;
+            match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_dimension_definition4551); if (failed) return retval;
             if ( backtracking==0 ) {
             LEFT_SQUARE280_tree = (Object)adaptor.create(LEFT_SQUARE280);
             adaptor.addChild(root_0, LEFT_SQUARE280_tree);
@@ -12494,7 +12506,7 @@ public class DRLParser extends Parser {
               	emit(LEFT_SQUARE280, DroolsEditorType.SYMBOL);	
             }
             RIGHT_SQUARE281=(Token)input.LT(1);
-            match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_dimension_definition4560); if (failed) return retval;
+            match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_dimension_definition4558); if (failed) return retval;
             if ( backtracking==0 ) {
             RIGHT_SQUARE281_tree = (Object)adaptor.create(RIGHT_SQUARE281);
             adaptor.addChild(root_0, RIGHT_SQUARE281_tree);
@@ -12528,7 +12540,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start accessor_path
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1278:1: accessor_path : accessor_element ( DOT accessor_element )* -> ^( VT_ACCESSOR_PATH ( accessor_element )+ ) ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1290:1: accessor_path : accessor_element ( DOT accessor_element )* -> ^( VT_ACCESSOR_PATH ( accessor_element )+ ) ;
     public final accessor_path_return accessor_path() throws RecognitionException {
         accessor_path_return retval = new accessor_path_return();
         retval.start = input.LT(1);
@@ -12545,15 +12557,15 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_DOT=new RewriteRuleTokenStream(adaptor,"token DOT");
         RewriteRuleSubtreeStream stream_accessor_element=new RewriteRuleSubtreeStream(adaptor,"rule accessor_element");
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1279:2: ( accessor_element ( DOT accessor_element )* -> ^( VT_ACCESSOR_PATH ( accessor_element )+ ) )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1279:4: accessor_element ( DOT accessor_element )*
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1291:2: ( accessor_element ( DOT accessor_element )* -> ^( VT_ACCESSOR_PATH ( accessor_element )+ ) )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1291:4: accessor_element ( DOT accessor_element )*
             {
-            pushFollow(FOLLOW_accessor_element_in_accessor_path4574);
+            pushFollow(FOLLOW_accessor_element_in_accessor_path4572);
             accessor_element282=accessor_element();
             _fsp--;
             if (failed) return retval;
             if ( backtracking==0 ) stream_accessor_element.add(accessor_element282.getTree());
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1279:21: ( DOT accessor_element )*
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1291:21: ( DOT accessor_element )*
             loop94:
             do {
                 int alt94=2;
@@ -12566,16 +12578,16 @@ public class DRLParser extends Parser {
 
                 switch (alt94) {
             	case 1 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1279:23: DOT accessor_element
+            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1291:23: DOT accessor_element
             	    {
             	    DOT283=(Token)input.LT(1);
-            	    match(input,DOT,FOLLOW_DOT_in_accessor_path4578); if (failed) return retval;
+            	    match(input,DOT,FOLLOW_DOT_in_accessor_path4576); if (failed) return retval;
             	    if ( backtracking==0 ) stream_DOT.add(DOT283);
 
             	    if ( backtracking==0 ) {
             	      	emit(DOT283, DroolsEditorType.IDENTIFIER);	
             	    }
-            	    pushFollow(FOLLOW_accessor_element_in_accessor_path4582);
+            	    pushFollow(FOLLOW_accessor_element_in_accessor_path4580);
             	    accessor_element284=accessor_element();
             	    _fsp--;
             	    if (failed) return retval;
@@ -12601,9 +12613,9 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1280:2: -> ^( VT_ACCESSOR_PATH ( accessor_element )+ )
+            // 1292:2: -> ^( VT_ACCESSOR_PATH ( accessor_element )+ )
             {
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1280:5: ^( VT_ACCESSOR_PATH ( accessor_element )+ )
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1292:5: ^( VT_ACCESSOR_PATH ( accessor_element )+ )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(adaptor.create(VT_ACCESSOR_PATH, "VT_ACCESSOR_PATH"), root_1);
@@ -12649,7 +12661,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start accessor_element
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1283:1: accessor_element : ID ( square_chunk )* -> ^( VT_ACCESSOR_ELEMENT ID ( square_chunk )* ) ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1295:1: accessor_element : ID ( square_chunk )* -> ^( VT_ACCESSOR_ELEMENT ID ( square_chunk )* ) ;
     public final accessor_element_return accessor_element() throws RecognitionException {
         accessor_element_return retval = new accessor_element_return();
         retval.start = input.LT(1);
@@ -12664,17 +12676,17 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
         RewriteRuleSubtreeStream stream_square_chunk=new RewriteRuleSubtreeStream(adaptor,"rule square_chunk");
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1284:2: ( ID ( square_chunk )* -> ^( VT_ACCESSOR_ELEMENT ID ( square_chunk )* ) )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1284:4: ID ( square_chunk )*
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1296:2: ( ID ( square_chunk )* -> ^( VT_ACCESSOR_ELEMENT ID ( square_chunk )* ) )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1296:4: ID ( square_chunk )*
             {
             ID285=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_accessor_element4606); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_accessor_element4604); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(ID285);
 
             if ( backtracking==0 ) {
               	emit(ID285, DroolsEditorType.IDENTIFIER);	
             }
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1285:3: ( square_chunk )*
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1297:3: ( square_chunk )*
             loop95:
             do {
                 int alt95=2;
@@ -12687,9 +12699,9 @@ public class DRLParser extends Parser {
 
                 switch (alt95) {
             	case 1 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1285:3: square_chunk
+            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1297:3: square_chunk
             	    {
-            	    pushFollow(FOLLOW_square_chunk_in_accessor_element4612);
+            	    pushFollow(FOLLOW_square_chunk_in_accessor_element4610);
             	    square_chunk286=square_chunk();
             	    _fsp--;
             	    if (failed) return retval;
@@ -12715,15 +12727,15 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1286:2: -> ^( VT_ACCESSOR_ELEMENT ID ( square_chunk )* )
+            // 1298:2: -> ^( VT_ACCESSOR_ELEMENT ID ( square_chunk )* )
             {
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1286:5: ^( VT_ACCESSOR_ELEMENT ID ( square_chunk )* )
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1298:5: ^( VT_ACCESSOR_ELEMENT ID ( square_chunk )* )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(adaptor.create(VT_ACCESSOR_ELEMENT, "VT_ACCESSOR_ELEMENT"), root_1);
 
                 adaptor.addChild(root_1, stream_ID.next());
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1286:30: ( square_chunk )*
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1298:30: ( square_chunk )*
                 while ( stream_square_chunk.hasNext() ) {
                     adaptor.addChild(root_1, stream_square_chunk.next());
 
@@ -12762,7 +12774,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start rhs_chunk
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1289:1: rhs_chunk : rc= rhs_chunk_data -> VT_RHS_CHUNK[$rc.start,text] ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1301:1: rhs_chunk : rc= rhs_chunk_data -> VT_RHS_CHUNK[$rc.start,text] ;
     public final rhs_chunk_return rhs_chunk() throws RecognitionException {
         rhs_chunk_return retval = new rhs_chunk_return();
         retval.start = input.LT(1);
@@ -12777,10 +12789,10 @@ public class DRLParser extends Parser {
         	String text = "";
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1292:3: (rc= rhs_chunk_data -> VT_RHS_CHUNK[$rc.start,text] )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1292:5: rc= rhs_chunk_data
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1304:3: (rc= rhs_chunk_data -> VT_RHS_CHUNK[$rc.start,text] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1304:5: rc= rhs_chunk_data
             {
-            pushFollow(FOLLOW_rhs_chunk_data_in_rhs_chunk4641);
+            pushFollow(FOLLOW_rhs_chunk_data_in_rhs_chunk4639);
             rc=rhs_chunk_data();
             _fsp--;
             if (failed) return retval;
@@ -12800,7 +12812,7 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1293:2: -> VT_RHS_CHUNK[$rc.start,text]
+            // 1305:2: -> VT_RHS_CHUNK[$rc.start,text]
             {
                 adaptor.addChild(root_0, adaptor.create(VT_RHS_CHUNK, ((Token)rc.start), text));
 
@@ -12833,7 +12845,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start rhs_chunk_data
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1296:1: rhs_chunk_data : THEN (any=~ END )* end1= END ( SEMICOLON )? ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1308:1: rhs_chunk_data : THEN (any=~ END )* end1= END ( SEMICOLON )? ;
     public final rhs_chunk_data_return rhs_chunk_data() throws RecognitionException {
         rhs_chunk_data_return retval = new rhs_chunk_data_return();
         retval.start = input.LT(1);
@@ -12851,13 +12863,13 @@ public class DRLParser extends Parser {
         Object SEMICOLON288_tree=null;
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1297:2: ( THEN (any=~ END )* end1= END ( SEMICOLON )? )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1297:4: THEN (any=~ END )* end1= END ( SEMICOLON )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1309:2: ( THEN (any=~ END )* end1= END ( SEMICOLON )? )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1309:4: THEN (any=~ END )* end1= END ( SEMICOLON )?
             {
             root_0 = (Object)adaptor.nil();
 
             THEN287=(Token)input.LT(1);
-            match(input,THEN,FOLLOW_THEN_in_rhs_chunk_data4660); if (failed) return retval;
+            match(input,THEN,FOLLOW_THEN_in_rhs_chunk_data4658); if (failed) return retval;
             if ( backtracking==0 ) {
             THEN287_tree = (Object)adaptor.create(THEN287);
             adaptor.addChild(root_0, THEN287_tree);
@@ -12868,7 +12880,7 @@ public class DRLParser extends Parser {
               			emit(Location.LOCATION_RHS);
               		}	
             }
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1302:4: (any=~ END )*
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1314:4: (any=~ END )*
             loop96:
             do {
                 int alt96=2;
@@ -12881,7 +12893,7 @@ public class DRLParser extends Parser {
 
                 switch (alt96) {
             	case 1 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1302:6: any=~ END
+            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1314:6: any=~ END
             	    {
             	    any=(Token)input.LT(1);
             	    if ( (input.LA(1)>=VT_COMPILATION_UNIT && input.LA(1)<=DOT_STAR)||(input.LA(1)>=STRING && input.LA(1)<=MULTI_LINE_COMMENT) ) {
@@ -12893,7 +12905,7 @@ public class DRLParser extends Parser {
             	        if (backtracking>0) {failed=true; return retval;}
             	        MismatchedSetException mse =
             	            new MismatchedSetException(null,input);
-            	        recoverFromMismatchedSet(input,mse,FOLLOW_set_in_rhs_chunk_data4673);    throw mse;
+            	        recoverFromMismatchedSet(input,mse,FOLLOW_set_in_rhs_chunk_data4671);    throw mse;
             	    }
 
             	    if ( backtracking==0 ) {
@@ -12909,7 +12921,7 @@ public class DRLParser extends Parser {
             } while (true);
 
             end1=(Token)input.LT(1);
-            match(input,END,FOLLOW_END_in_rhs_chunk_data4686); if (failed) return retval;
+            match(input,END,FOLLOW_END_in_rhs_chunk_data4684); if (failed) return retval;
             if ( backtracking==0 ) {
             end1_tree = (Object)adaptor.create(end1);
             adaptor.addChild(root_0, end1_tree);
@@ -12917,7 +12929,7 @@ public class DRLParser extends Parser {
             if ( backtracking==0 ) {
               	emit(end1, DroolsEditorType.KEYWORD);	
             }
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1304:3: ( SEMICOLON )?
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1316:3: ( SEMICOLON )?
             int alt97=2;
             int LA97_0 = input.LA(1);
 
@@ -12926,10 +12938,10 @@ public class DRLParser extends Parser {
             }
             switch (alt97) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1304:3: SEMICOLON
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1316:3: SEMICOLON
                     {
                     SEMICOLON288=(Token)input.LT(1);
-                    match(input,SEMICOLON,FOLLOW_SEMICOLON_in_rhs_chunk_data4692); if (failed) return retval;
+                    match(input,SEMICOLON,FOLLOW_SEMICOLON_in_rhs_chunk_data4690); if (failed) return retval;
                     if ( backtracking==0 ) {
                     SEMICOLON288_tree = (Object)adaptor.create(SEMICOLON288);
                     adaptor.addChild(root_0, SEMICOLON288_tree);
@@ -12969,7 +12981,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start curly_chunk
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1307:1: curly_chunk : cc= curly_chunk_data[false] -> VT_CURLY_CHUNK[$cc.start,text] ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1319:1: curly_chunk : cc= curly_chunk_data[false] -> VT_CURLY_CHUNK[$cc.start,text] ;
     public final curly_chunk_return curly_chunk() throws RecognitionException {
         curly_chunk_return retval = new curly_chunk_return();
         retval.start = input.LT(1);
@@ -12984,10 +12996,10 @@ public class DRLParser extends Parser {
         	String text = "";
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1310:3: (cc= curly_chunk_data[false] -> VT_CURLY_CHUNK[$cc.start,text] )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1310:5: cc= curly_chunk_data[false]
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1322:3: (cc= curly_chunk_data[false] -> VT_CURLY_CHUNK[$cc.start,text] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1322:5: cc= curly_chunk_data[false]
             {
-            pushFollow(FOLLOW_curly_chunk_data_in_curly_chunk4711);
+            pushFollow(FOLLOW_curly_chunk_data_in_curly_chunk4709);
             cc=curly_chunk_data(false);
             _fsp--;
             if (failed) return retval;
@@ -13007,7 +13019,7 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1311:2: -> VT_CURLY_CHUNK[$cc.start,text]
+            // 1323:2: -> VT_CURLY_CHUNK[$cc.start,text]
             {
                 adaptor.addChild(root_0, adaptor.create(VT_CURLY_CHUNK, ((Token)cc.start), text));
 
@@ -13040,7 +13052,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start curly_chunk_data
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1314:1: curly_chunk_data[boolean isRecursive] : lc1= LEFT_CURLY (any=~ ( LEFT_CURLY | RIGHT_CURLY ) | curly_chunk_data[true] )* rc1= RIGHT_CURLY ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1326:1: curly_chunk_data[boolean isRecursive] : lc1= LEFT_CURLY (any=~ ( LEFT_CURLY | RIGHT_CURLY ) | curly_chunk_data[true] )* rc1= RIGHT_CURLY ;
     public final curly_chunk_data_return curly_chunk_data(boolean isRecursive) throws RecognitionException {
         curly_chunk_data_return retval = new curly_chunk_data_return();
         retval.start = input.LT(1);
@@ -13058,13 +13070,13 @@ public class DRLParser extends Parser {
         Object rc1_tree=null;
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1315:2: (lc1= LEFT_CURLY (any=~ ( LEFT_CURLY | RIGHT_CURLY ) | curly_chunk_data[true] )* rc1= RIGHT_CURLY )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1315:4: lc1= LEFT_CURLY (any=~ ( LEFT_CURLY | RIGHT_CURLY ) | curly_chunk_data[true] )* rc1= RIGHT_CURLY
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1327:2: (lc1= LEFT_CURLY (any=~ ( LEFT_CURLY | RIGHT_CURLY ) | curly_chunk_data[true] )* rc1= RIGHT_CURLY )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1327:4: lc1= LEFT_CURLY (any=~ ( LEFT_CURLY | RIGHT_CURLY ) | curly_chunk_data[true] )* rc1= RIGHT_CURLY
             {
             root_0 = (Object)adaptor.nil();
 
             lc1=(Token)input.LT(1);
-            match(input,LEFT_CURLY,FOLLOW_LEFT_CURLY_in_curly_chunk_data4734); if (failed) return retval;
+            match(input,LEFT_CURLY,FOLLOW_LEFT_CURLY_in_curly_chunk_data4732); if (failed) return retval;
             if ( backtracking==0 ) {
             lc1_tree = (Object)adaptor.create(lc1);
             adaptor.addChild(root_0, lc1_tree);
@@ -13077,7 +13089,7 @@ public class DRLParser extends Parser {
               			}	
               		
             }
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1322:4: (any=~ ( LEFT_CURLY | RIGHT_CURLY ) | curly_chunk_data[true] )*
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1334:4: (any=~ ( LEFT_CURLY | RIGHT_CURLY ) | curly_chunk_data[true] )*
             loop98:
             do {
                 int alt98=3;
@@ -13093,7 +13105,7 @@ public class DRLParser extends Parser {
 
                 switch (alt98) {
             	case 1 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1322:5: any=~ ( LEFT_CURLY | RIGHT_CURLY )
+            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1334:5: any=~ ( LEFT_CURLY | RIGHT_CURLY )
             	    {
             	    any=(Token)input.LT(1);
             	    if ( (input.LA(1)>=VT_COMPILATION_UNIT && input.LA(1)<=THEN)||(input.LA(1)>=MISC && input.LA(1)<=MULTI_LINE_COMMENT) ) {
@@ -13105,7 +13117,7 @@ public class DRLParser extends Parser {
             	        if (backtracking>0) {failed=true; return retval;}
             	        MismatchedSetException mse =
             	            new MismatchedSetException(null,input);
-            	        recoverFromMismatchedSet(input,mse,FOLLOW_set_in_curly_chunk_data4746);    throw mse;
+            	        recoverFromMismatchedSet(input,mse,FOLLOW_set_in_curly_chunk_data4744);    throw mse;
             	    }
 
             	    if ( backtracking==0 ) {
@@ -13115,9 +13127,9 @@ public class DRLParser extends Parser {
             	    }
             	    break;
             	case 2 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1322:87: curly_chunk_data[true]
+            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1334:87: curly_chunk_data[true]
             	    {
-            	    pushFollow(FOLLOW_curly_chunk_data_in_curly_chunk_data4762);
+            	    pushFollow(FOLLOW_curly_chunk_data_in_curly_chunk_data4760);
             	    curly_chunk_data289=curly_chunk_data(true);
             	    _fsp--;
             	    if (failed) return retval;
@@ -13132,7 +13144,7 @@ public class DRLParser extends Parser {
             } while (true);
 
             rc1=(Token)input.LT(1);
-            match(input,RIGHT_CURLY,FOLLOW_RIGHT_CURLY_in_curly_chunk_data4773); if (failed) return retval;
+            match(input,RIGHT_CURLY,FOLLOW_RIGHT_CURLY_in_curly_chunk_data4771); if (failed) return retval;
             if ( backtracking==0 ) {
             rc1_tree = (Object)adaptor.create(rc1);
             adaptor.addChild(root_0, rc1_tree);
@@ -13171,7 +13183,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start paren_chunk
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1332:1: paren_chunk : pc= paren_chunk_data[false] -> VT_PAREN_CHUNK[$pc.start,text] ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1344:1: paren_chunk : pc= paren_chunk_data[false] -> VT_PAREN_CHUNK[$pc.start,text] ;
     public final paren_chunk_return paren_chunk() throws RecognitionException {
         paren_chunk_return retval = new paren_chunk_return();
         retval.start = input.LT(1);
@@ -13186,10 +13198,10 @@ public class DRLParser extends Parser {
         	String text = "";
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1335:3: (pc= paren_chunk_data[false] -> VT_PAREN_CHUNK[$pc.start,text] )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1335:5: pc= paren_chunk_data[false]
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1347:3: (pc= paren_chunk_data[false] -> VT_PAREN_CHUNK[$pc.start,text] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1347:5: pc= paren_chunk_data[false]
             {
-            pushFollow(FOLLOW_paren_chunk_data_in_paren_chunk4794);
+            pushFollow(FOLLOW_paren_chunk_data_in_paren_chunk4792);
             pc=paren_chunk_data(false);
             _fsp--;
             if (failed) return retval;
@@ -13209,7 +13221,7 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1336:2: -> VT_PAREN_CHUNK[$pc.start,text]
+            // 1348:2: -> VT_PAREN_CHUNK[$pc.start,text]
             {
                 adaptor.addChild(root_0, adaptor.create(VT_PAREN_CHUNK, ((Token)pc.start), text));
 
@@ -13242,7 +13254,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start paren_chunk_data
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1339:1: paren_chunk_data[boolean isRecursive] : lp1= LEFT_PAREN (any=~ ( LEFT_PAREN | RIGHT_PAREN ) | paren_chunk_data[true] )* rp1= RIGHT_PAREN ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1351:1: paren_chunk_data[boolean isRecursive] : lp1= LEFT_PAREN (any=~ ( LEFT_PAREN | RIGHT_PAREN ) | paren_chunk_data[true] )* rp1= RIGHT_PAREN ;
     public final paren_chunk_data_return paren_chunk_data(boolean isRecursive) throws RecognitionException {
         paren_chunk_data_return retval = new paren_chunk_data_return();
         retval.start = input.LT(1);
@@ -13260,13 +13272,13 @@ public class DRLParser extends Parser {
         Object rp1_tree=null;
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1340:2: (lp1= LEFT_PAREN (any=~ ( LEFT_PAREN | RIGHT_PAREN ) | paren_chunk_data[true] )* rp1= RIGHT_PAREN )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1340:4: lp1= LEFT_PAREN (any=~ ( LEFT_PAREN | RIGHT_PAREN ) | paren_chunk_data[true] )* rp1= RIGHT_PAREN
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1352:2: (lp1= LEFT_PAREN (any=~ ( LEFT_PAREN | RIGHT_PAREN ) | paren_chunk_data[true] )* rp1= RIGHT_PAREN )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1352:4: lp1= LEFT_PAREN (any=~ ( LEFT_PAREN | RIGHT_PAREN ) | paren_chunk_data[true] )* rp1= RIGHT_PAREN
             {
             root_0 = (Object)adaptor.nil();
 
             lp1=(Token)input.LT(1);
-            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_paren_chunk_data4818); if (failed) return retval;
+            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_paren_chunk_data4816); if (failed) return retval;
             if ( backtracking==0 ) {
             lp1_tree = (Object)adaptor.create(lp1);
             adaptor.addChild(root_0, lp1_tree);
@@ -13279,7 +13291,7 @@ public class DRLParser extends Parser {
               			}	
               		
             }
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1347:4: (any=~ ( LEFT_PAREN | RIGHT_PAREN ) | paren_chunk_data[true] )*
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1359:4: (any=~ ( LEFT_PAREN | RIGHT_PAREN ) | paren_chunk_data[true] )*
             loop99:
             do {
                 int alt99=3;
@@ -13295,7 +13307,7 @@ public class DRLParser extends Parser {
 
                 switch (alt99) {
             	case 1 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1347:5: any=~ ( LEFT_PAREN | RIGHT_PAREN )
+            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1359:5: any=~ ( LEFT_PAREN | RIGHT_PAREN )
             	    {
             	    any=(Token)input.LT(1);
             	    if ( (input.LA(1)>=VT_COMPILATION_UNIT && input.LA(1)<=STRING)||input.LA(1)==COMMA||(input.LA(1)>=AT && input.LA(1)<=MULTI_LINE_COMMENT) ) {
@@ -13307,7 +13319,7 @@ public class DRLParser extends Parser {
             	        if (backtracking>0) {failed=true; return retval;}
             	        MismatchedSetException mse =
             	            new MismatchedSetException(null,input);
-            	        recoverFromMismatchedSet(input,mse,FOLLOW_set_in_paren_chunk_data4830);    throw mse;
+            	        recoverFromMismatchedSet(input,mse,FOLLOW_set_in_paren_chunk_data4828);    throw mse;
             	    }
 
             	    if ( backtracking==0 ) {
@@ -13317,9 +13329,9 @@ public class DRLParser extends Parser {
             	    }
             	    break;
             	case 2 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1347:87: paren_chunk_data[true]
+            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1359:87: paren_chunk_data[true]
             	    {
-            	    pushFollow(FOLLOW_paren_chunk_data_in_paren_chunk_data4846);
+            	    pushFollow(FOLLOW_paren_chunk_data_in_paren_chunk_data4844);
             	    paren_chunk_data290=paren_chunk_data(true);
             	    _fsp--;
             	    if (failed) return retval;
@@ -13334,7 +13346,7 @@ public class DRLParser extends Parser {
             } while (true);
 
             rp1=(Token)input.LT(1);
-            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_paren_chunk_data4857); if (failed) return retval;
+            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_paren_chunk_data4855); if (failed) return retval;
             if ( backtracking==0 ) {
             rp1_tree = (Object)adaptor.create(rp1);
             adaptor.addChild(root_0, rp1_tree);
@@ -13373,7 +13385,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start square_chunk
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1357:1: square_chunk : sc= square_chunk_data[false] -> VT_SQUARE_CHUNK[$sc.start,text] ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1369:1: square_chunk : sc= square_chunk_data[false] -> VT_SQUARE_CHUNK[$sc.start,text] ;
     public final square_chunk_return square_chunk() throws RecognitionException {
         square_chunk_return retval = new square_chunk_return();
         retval.start = input.LT(1);
@@ -13388,10 +13400,10 @@ public class DRLParser extends Parser {
         	String text = "";
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1360:3: (sc= square_chunk_data[false] -> VT_SQUARE_CHUNK[$sc.start,text] )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1360:5: sc= square_chunk_data[false]
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1372:3: (sc= square_chunk_data[false] -> VT_SQUARE_CHUNK[$sc.start,text] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1372:5: sc= square_chunk_data[false]
             {
-            pushFollow(FOLLOW_square_chunk_data_in_square_chunk4878);
+            pushFollow(FOLLOW_square_chunk_data_in_square_chunk4876);
             sc=square_chunk_data(false);
             _fsp--;
             if (failed) return retval;
@@ -13411,7 +13423,7 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1361:2: -> VT_SQUARE_CHUNK[$sc.start,text]
+            // 1373:2: -> VT_SQUARE_CHUNK[$sc.start,text]
             {
                 adaptor.addChild(root_0, adaptor.create(VT_SQUARE_CHUNK, ((Token)sc.start), text));
 
@@ -13444,7 +13456,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start square_chunk_data
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1364:1: square_chunk_data[boolean isRecursive] : ls1= LEFT_SQUARE (any=~ ( LEFT_SQUARE | RIGHT_SQUARE ) | square_chunk_data[true] )* rs1= RIGHT_SQUARE ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1376:1: square_chunk_data[boolean isRecursive] : ls1= LEFT_SQUARE (any=~ ( LEFT_SQUARE | RIGHT_SQUARE ) | square_chunk_data[true] )* rs1= RIGHT_SQUARE ;
     public final square_chunk_data_return square_chunk_data(boolean isRecursive) throws RecognitionException {
         square_chunk_data_return retval = new square_chunk_data_return();
         retval.start = input.LT(1);
@@ -13462,13 +13474,13 @@ public class DRLParser extends Parser {
         Object rs1_tree=null;
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1365:2: (ls1= LEFT_SQUARE (any=~ ( LEFT_SQUARE | RIGHT_SQUARE ) | square_chunk_data[true] )* rs1= RIGHT_SQUARE )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1365:4: ls1= LEFT_SQUARE (any=~ ( LEFT_SQUARE | RIGHT_SQUARE ) | square_chunk_data[true] )* rs1= RIGHT_SQUARE
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1377:2: (ls1= LEFT_SQUARE (any=~ ( LEFT_SQUARE | RIGHT_SQUARE ) | square_chunk_data[true] )* rs1= RIGHT_SQUARE )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1377:4: ls1= LEFT_SQUARE (any=~ ( LEFT_SQUARE | RIGHT_SQUARE ) | square_chunk_data[true] )* rs1= RIGHT_SQUARE
             {
             root_0 = (Object)adaptor.nil();
 
             ls1=(Token)input.LT(1);
-            match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_square_chunk_data4901); if (failed) return retval;
+            match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_square_chunk_data4899); if (failed) return retval;
             if ( backtracking==0 ) {
             ls1_tree = (Object)adaptor.create(ls1);
             adaptor.addChild(root_0, ls1_tree);
@@ -13481,7 +13493,7 @@ public class DRLParser extends Parser {
               			}	
               		
             }
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1372:4: (any=~ ( LEFT_SQUARE | RIGHT_SQUARE ) | square_chunk_data[true] )*
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1384:4: (any=~ ( LEFT_SQUARE | RIGHT_SQUARE ) | square_chunk_data[true] )*
             loop100:
             do {
                 int alt100=3;
@@ -13497,7 +13509,7 @@ public class DRLParser extends Parser {
 
                 switch (alt100) {
             	case 1 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1372:5: any=~ ( LEFT_SQUARE | RIGHT_SQUARE )
+            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1384:5: any=~ ( LEFT_SQUARE | RIGHT_SQUARE )
             	    {
             	    any=(Token)input.LT(1);
             	    if ( (input.LA(1)>=VT_COMPILATION_UNIT && input.LA(1)<=NULL)||(input.LA(1)>=THEN && input.LA(1)<=MULTI_LINE_COMMENT) ) {
@@ -13509,7 +13521,7 @@ public class DRLParser extends Parser {
             	        if (backtracking>0) {failed=true; return retval;}
             	        MismatchedSetException mse =
             	            new MismatchedSetException(null,input);
-            	        recoverFromMismatchedSet(input,mse,FOLLOW_set_in_square_chunk_data4913);    throw mse;
+            	        recoverFromMismatchedSet(input,mse,FOLLOW_set_in_square_chunk_data4911);    throw mse;
             	    }
 
             	    if ( backtracking==0 ) {
@@ -13519,9 +13531,9 @@ public class DRLParser extends Parser {
             	    }
             	    break;
             	case 2 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1372:88: square_chunk_data[true]
+            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1384:88: square_chunk_data[true]
             	    {
-            	    pushFollow(FOLLOW_square_chunk_data_in_square_chunk_data4928);
+            	    pushFollow(FOLLOW_square_chunk_data_in_square_chunk_data4926);
             	    square_chunk_data291=square_chunk_data(true);
             	    _fsp--;
             	    if (failed) return retval;
@@ -13536,7 +13548,7 @@ public class DRLParser extends Parser {
             } while (true);
 
             rs1=(Token)input.LT(1);
-            match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_square_chunk_data4939); if (failed) return retval;
+            match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_square_chunk_data4937); if (failed) return retval;
             if ( backtracking==0 ) {
             rs1_tree = (Object)adaptor.create(rs1);
             adaptor.addChild(root_0, rs1_tree);
@@ -13575,7 +13587,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start lock_on_active_key
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1382:1: lock_on_active_key : {...}? =>id1= ID mis1= MISC id2= ID mis2= MISC id3= ID -> VK_LOCK_ON_ACTIVE[$start, text] ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1394:1: lock_on_active_key : {...}? =>id1= ID mis1= MISC id2= ID mis2= MISC id3= ID -> VK_LOCK_ON_ACTIVE[$start, text] ;
     public final lock_on_active_key_return lock_on_active_key() throws RecognitionException {
         lock_on_active_key_return retval = new lock_on_active_key_return();
         retval.start = input.LT(1);
@@ -13600,31 +13612,31 @@ public class DRLParser extends Parser {
         	String text = "";
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1385:3: ({...}? =>id1= ID mis1= MISC id2= ID mis2= MISC id3= ID -> VK_LOCK_ON_ACTIVE[$start, text] )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1385:5: {...}? =>id1= ID mis1= MISC id2= ID mis2= MISC id3= ID
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1397:3: ({...}? =>id1= ID mis1= MISC id2= ID mis2= MISC id3= ID -> VK_LOCK_ON_ACTIVE[$start, text] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1397:5: {...}? =>id1= ID mis1= MISC id2= ID mis2= MISC id3= ID
             {
             if ( !((validateIdentifierKey(DroolsSoftKeywords.LOCK) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.ON) && validateLT(4, "-") && validateLT(5, DroolsSoftKeywords.ACTIVE))) ) {
                 if (backtracking>0) {failed=true; return retval;}
                 throw new FailedPredicateException(input, "lock_on_active_key", "(validateIdentifierKey(DroolsSoftKeywords.LOCK) && validateLT(2, \"-\") && validateLT(3, DroolsSoftKeywords.ON) && validateLT(4, \"-\") && validateLT(5, DroolsSoftKeywords.ACTIVE))");
             }
             id1=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_lock_on_active_key4963); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_lock_on_active_key4961); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id1);
 
             mis1=(Token)input.LT(1);
-            match(input,MISC,FOLLOW_MISC_in_lock_on_active_key4967); if (failed) return retval;
+            match(input,MISC,FOLLOW_MISC_in_lock_on_active_key4965); if (failed) return retval;
             if ( backtracking==0 ) stream_MISC.add(mis1);
 
             id2=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_lock_on_active_key4971); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_lock_on_active_key4969); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id2);
 
             mis2=(Token)input.LT(1);
-            match(input,MISC,FOLLOW_MISC_in_lock_on_active_key4975); if (failed) return retval;
+            match(input,MISC,FOLLOW_MISC_in_lock_on_active_key4973); if (failed) return retval;
             if ( backtracking==0 ) stream_MISC.add(mis2);
 
             id3=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_lock_on_active_key4979); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_lock_on_active_key4977); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id3);
 
             if ( backtracking==0 ) {
@@ -13649,7 +13661,7 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1391:3: -> VK_LOCK_ON_ACTIVE[$start, text]
+            // 1403:3: -> VK_LOCK_ON_ACTIVE[$start, text]
             {
                 adaptor.addChild(root_0, adaptor.create(VK_LOCK_ON_ACTIVE, ((Token)retval.start),  text));
 
@@ -13682,7 +13694,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start date_effective_key
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1394:1: date_effective_key : {...}? =>id1= ID mis1= MISC id2= ID -> VK_DATE_EFFECTIVE[$start, text] ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1406:1: date_effective_key : {...}? =>id1= ID mis1= MISC id2= ID -> VK_DATE_EFFECTIVE[$start, text] ;
     public final date_effective_key_return date_effective_key() throws RecognitionException {
         date_effective_key_return retval = new date_effective_key_return();
         retval.start = input.LT(1);
@@ -13703,23 +13715,23 @@ public class DRLParser extends Parser {
         	String text = "";
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1397:3: ({...}? =>id1= ID mis1= MISC id2= ID -> VK_DATE_EFFECTIVE[$start, text] )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1397:5: {...}? =>id1= ID mis1= MISC id2= ID
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1409:3: ({...}? =>id1= ID mis1= MISC id2= ID -> VK_DATE_EFFECTIVE[$start, text] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1409:5: {...}? =>id1= ID mis1= MISC id2= ID
             {
             if ( !((validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EFFECTIVE))) ) {
                 if (backtracking>0) {failed=true; return retval;}
                 throw new FailedPredicateException(input, "date_effective_key", "(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, \"-\") && validateLT(3, DroolsSoftKeywords.EFFECTIVE))");
             }
             id1=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_date_effective_key5011); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_date_effective_key5009); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id1);
 
             mis1=(Token)input.LT(1);
-            match(input,MISC,FOLLOW_MISC_in_date_effective_key5015); if (failed) return retval;
+            match(input,MISC,FOLLOW_MISC_in_date_effective_key5013); if (failed) return retval;
             if ( backtracking==0 ) stream_MISC.add(mis1);
 
             id2=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_date_effective_key5019); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_date_effective_key5017); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id2);
 
             if ( backtracking==0 ) {
@@ -13742,7 +13754,7 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1401:3: -> VK_DATE_EFFECTIVE[$start, text]
+            // 1413:3: -> VK_DATE_EFFECTIVE[$start, text]
             {
                 adaptor.addChild(root_0, adaptor.create(VK_DATE_EFFECTIVE, ((Token)retval.start),  text));
 
@@ -13775,7 +13787,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start date_expires_key
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1404:1: date_expires_key : {...}? =>id1= ID mis1= MISC id2= ID -> VK_DATE_EXPIRES[$start, text] ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1416:1: date_expires_key : {...}? =>id1= ID mis1= MISC id2= ID -> VK_DATE_EXPIRES[$start, text] ;
     public final date_expires_key_return date_expires_key() throws RecognitionException {
         date_expires_key_return retval = new date_expires_key_return();
         retval.start = input.LT(1);
@@ -13796,23 +13808,23 @@ public class DRLParser extends Parser {
         	String text = "";
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1407:3: ({...}? =>id1= ID mis1= MISC id2= ID -> VK_DATE_EXPIRES[$start, text] )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1407:5: {...}? =>id1= ID mis1= MISC id2= ID
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1419:3: ({...}? =>id1= ID mis1= MISC id2= ID -> VK_DATE_EXPIRES[$start, text] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1419:5: {...}? =>id1= ID mis1= MISC id2= ID
             {
             if ( !((validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EXPIRES))) ) {
                 if (backtracking>0) {failed=true; return retval;}
                 throw new FailedPredicateException(input, "date_expires_key", "(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, \"-\") && validateLT(3, DroolsSoftKeywords.EXPIRES))");
             }
             id1=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_date_expires_key5051); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_date_expires_key5049); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id1);
 
             mis1=(Token)input.LT(1);
-            match(input,MISC,FOLLOW_MISC_in_date_expires_key5055); if (failed) return retval;
+            match(input,MISC,FOLLOW_MISC_in_date_expires_key5053); if (failed) return retval;
             if ( backtracking==0 ) stream_MISC.add(mis1);
 
             id2=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_date_expires_key5059); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_date_expires_key5057); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id2);
 
             if ( backtracking==0 ) {
@@ -13835,7 +13847,7 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1411:3: -> VK_DATE_EXPIRES[$start, text]
+            // 1423:3: -> VK_DATE_EXPIRES[$start, text]
             {
                 adaptor.addChild(root_0, adaptor.create(VK_DATE_EXPIRES, ((Token)retval.start),  text));
 
@@ -13868,7 +13880,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start no_loop_key
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1414:1: no_loop_key : {...}? =>id1= ID mis1= MISC id2= ID -> VK_NO_LOOP[$start, text] ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1426:1: no_loop_key : {...}? =>id1= ID mis1= MISC id2= ID -> VK_NO_LOOP[$start, text] ;
     public final no_loop_key_return no_loop_key() throws RecognitionException {
         no_loop_key_return retval = new no_loop_key_return();
         retval.start = input.LT(1);
@@ -13889,23 +13901,23 @@ public class DRLParser extends Parser {
         	String text = "";
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1417:3: ({...}? =>id1= ID mis1= MISC id2= ID -> VK_NO_LOOP[$start, text] )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1417:5: {...}? =>id1= ID mis1= MISC id2= ID
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1429:3: ({...}? =>id1= ID mis1= MISC id2= ID -> VK_NO_LOOP[$start, text] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1429:5: {...}? =>id1= ID mis1= MISC id2= ID
             {
             if ( !((validateIdentifierKey(DroolsSoftKeywords.NO) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.LOOP))) ) {
                 if (backtracking>0) {failed=true; return retval;}
                 throw new FailedPredicateException(input, "no_loop_key", "(validateIdentifierKey(DroolsSoftKeywords.NO) && validateLT(2, \"-\") && validateLT(3, DroolsSoftKeywords.LOOP))");
             }
             id1=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_no_loop_key5091); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_no_loop_key5089); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id1);
 
             mis1=(Token)input.LT(1);
-            match(input,MISC,FOLLOW_MISC_in_no_loop_key5095); if (failed) return retval;
+            match(input,MISC,FOLLOW_MISC_in_no_loop_key5093); if (failed) return retval;
             if ( backtracking==0 ) stream_MISC.add(mis1);
 
             id2=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_no_loop_key5099); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_no_loop_key5097); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id2);
 
             if ( backtracking==0 ) {
@@ -13928,7 +13940,7 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1421:3: -> VK_NO_LOOP[$start, text]
+            // 1433:3: -> VK_NO_LOOP[$start, text]
             {
                 adaptor.addChild(root_0, adaptor.create(VK_NO_LOOP, ((Token)retval.start),  text));
 
@@ -13961,7 +13973,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start auto_focus_key
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1424:1: auto_focus_key : {...}? =>id1= ID mis1= MISC id2= ID -> VK_AUTO_FOCUS[$start, text] ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1436:1: auto_focus_key : {...}? =>id1= ID mis1= MISC id2= ID -> VK_AUTO_FOCUS[$start, text] ;
     public final auto_focus_key_return auto_focus_key() throws RecognitionException {
         auto_focus_key_return retval = new auto_focus_key_return();
         retval.start = input.LT(1);
@@ -13982,23 +13994,23 @@ public class DRLParser extends Parser {
         	String text = "";
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1427:3: ({...}? =>id1= ID mis1= MISC id2= ID -> VK_AUTO_FOCUS[$start, text] )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1427:5: {...}? =>id1= ID mis1= MISC id2= ID
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1439:3: ({...}? =>id1= ID mis1= MISC id2= ID -> VK_AUTO_FOCUS[$start, text] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1439:5: {...}? =>id1= ID mis1= MISC id2= ID
             {
             if ( !((validateIdentifierKey(DroolsSoftKeywords.AUTO) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.FOCUS))) ) {
                 if (backtracking>0) {failed=true; return retval;}
                 throw new FailedPredicateException(input, "auto_focus_key", "(validateIdentifierKey(DroolsSoftKeywords.AUTO) && validateLT(2, \"-\") && validateLT(3, DroolsSoftKeywords.FOCUS))");
             }
             id1=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_auto_focus_key5131); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_auto_focus_key5129); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id1);
 
             mis1=(Token)input.LT(1);
-            match(input,MISC,FOLLOW_MISC_in_auto_focus_key5135); if (failed) return retval;
+            match(input,MISC,FOLLOW_MISC_in_auto_focus_key5133); if (failed) return retval;
             if ( backtracking==0 ) stream_MISC.add(mis1);
 
             id2=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_auto_focus_key5139); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_auto_focus_key5137); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id2);
 
             if ( backtracking==0 ) {
@@ -14021,7 +14033,7 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1431:3: -> VK_AUTO_FOCUS[$start, text]
+            // 1443:3: -> VK_AUTO_FOCUS[$start, text]
             {
                 adaptor.addChild(root_0, adaptor.create(VK_AUTO_FOCUS, ((Token)retval.start),  text));
 
@@ -14054,7 +14066,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start activation_group_key
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1434:1: activation_group_key : {...}? =>id1= ID mis1= MISC id2= ID -> VK_ACTIVATION_GROUP[$start, text] ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1446:1: activation_group_key : {...}? =>id1= ID mis1= MISC id2= ID -> VK_ACTIVATION_GROUP[$start, text] ;
     public final activation_group_key_return activation_group_key() throws RecognitionException {
         activation_group_key_return retval = new activation_group_key_return();
         retval.start = input.LT(1);
@@ -14075,23 +14087,23 @@ public class DRLParser extends Parser {
         	String text = "";
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1437:3: ({...}? =>id1= ID mis1= MISC id2= ID -> VK_ACTIVATION_GROUP[$start, text] )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1437:5: {...}? =>id1= ID mis1= MISC id2= ID
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1449:3: ({...}? =>id1= ID mis1= MISC id2= ID -> VK_ACTIVATION_GROUP[$start, text] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1449:5: {...}? =>id1= ID mis1= MISC id2= ID
             {
             if ( !((validateIdentifierKey(DroolsSoftKeywords.ACTIVATION) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))) ) {
                 if (backtracking>0) {failed=true; return retval;}
                 throw new FailedPredicateException(input, "activation_group_key", "(validateIdentifierKey(DroolsSoftKeywords.ACTIVATION) && validateLT(2, \"-\") && validateLT(3, DroolsSoftKeywords.GROUP))");
             }
             id1=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_activation_group_key5171); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_activation_group_key5169); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id1);
 
             mis1=(Token)input.LT(1);
-            match(input,MISC,FOLLOW_MISC_in_activation_group_key5175); if (failed) return retval;
+            match(input,MISC,FOLLOW_MISC_in_activation_group_key5173); if (failed) return retval;
             if ( backtracking==0 ) stream_MISC.add(mis1);
 
             id2=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_activation_group_key5179); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_activation_group_key5177); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id2);
 
             if ( backtracking==0 ) {
@@ -14114,7 +14126,7 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1441:3: -> VK_ACTIVATION_GROUP[$start, text]
+            // 1453:3: -> VK_ACTIVATION_GROUP[$start, text]
             {
                 adaptor.addChild(root_0, adaptor.create(VK_ACTIVATION_GROUP, ((Token)retval.start),  text));
 
@@ -14147,7 +14159,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start agenda_group_key
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1444:1: agenda_group_key : {...}? =>id1= ID mis1= MISC id2= ID -> VK_AGENDA_GROUP[$start, text] ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1456:1: agenda_group_key : {...}? =>id1= ID mis1= MISC id2= ID -> VK_AGENDA_GROUP[$start, text] ;
     public final agenda_group_key_return agenda_group_key() throws RecognitionException {
         agenda_group_key_return retval = new agenda_group_key_return();
         retval.start = input.LT(1);
@@ -14168,23 +14180,23 @@ public class DRLParser extends Parser {
         	String text = "";
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1447:3: ({...}? =>id1= ID mis1= MISC id2= ID -> VK_AGENDA_GROUP[$start, text] )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1447:5: {...}? =>id1= ID mis1= MISC id2= ID
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1459:3: ({...}? =>id1= ID mis1= MISC id2= ID -> VK_AGENDA_GROUP[$start, text] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1459:5: {...}? =>id1= ID mis1= MISC id2= ID
             {
             if ( !((validateIdentifierKey(DroolsSoftKeywords.AGENDA) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))) ) {
                 if (backtracking>0) {failed=true; return retval;}
                 throw new FailedPredicateException(input, "agenda_group_key", "(validateIdentifierKey(DroolsSoftKeywords.AGENDA) && validateLT(2, \"-\") && validateLT(3, DroolsSoftKeywords.GROUP))");
             }
             id1=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_agenda_group_key5211); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_agenda_group_key5209); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id1);
 
             mis1=(Token)input.LT(1);
-            match(input,MISC,FOLLOW_MISC_in_agenda_group_key5215); if (failed) return retval;
+            match(input,MISC,FOLLOW_MISC_in_agenda_group_key5213); if (failed) return retval;
             if ( backtracking==0 ) stream_MISC.add(mis1);
 
             id2=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_agenda_group_key5219); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_agenda_group_key5217); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id2);
 
             if ( backtracking==0 ) {
@@ -14207,7 +14219,7 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1451:3: -> VK_AGENDA_GROUP[$start, text]
+            // 1463:3: -> VK_AGENDA_GROUP[$start, text]
             {
                 adaptor.addChild(root_0, adaptor.create(VK_AGENDA_GROUP, ((Token)retval.start),  text));
 
@@ -14240,7 +14252,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start ruleflow_group_key
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1454:1: ruleflow_group_key : {...}? =>id1= ID mis1= MISC id2= ID -> VK_RULEFLOW_GROUP[$start, text] ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1466:1: ruleflow_group_key : {...}? =>id1= ID mis1= MISC id2= ID -> VK_RULEFLOW_GROUP[$start, text] ;
     public final ruleflow_group_key_return ruleflow_group_key() throws RecognitionException {
         ruleflow_group_key_return retval = new ruleflow_group_key_return();
         retval.start = input.LT(1);
@@ -14261,23 +14273,23 @@ public class DRLParser extends Parser {
         	String text = "";
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1457:3: ({...}? =>id1= ID mis1= MISC id2= ID -> VK_RULEFLOW_GROUP[$start, text] )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1457:5: {...}? =>id1= ID mis1= MISC id2= ID
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1469:3: ({...}? =>id1= ID mis1= MISC id2= ID -> VK_RULEFLOW_GROUP[$start, text] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1469:5: {...}? =>id1= ID mis1= MISC id2= ID
             {
             if ( !((validateIdentifierKey(DroolsSoftKeywords.RULEFLOW) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))) ) {
                 if (backtracking>0) {failed=true; return retval;}
                 throw new FailedPredicateException(input, "ruleflow_group_key", "(validateIdentifierKey(DroolsSoftKeywords.RULEFLOW) && validateLT(2, \"-\") && validateLT(3, DroolsSoftKeywords.GROUP))");
             }
             id1=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_ruleflow_group_key5251); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_ruleflow_group_key5249); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id1);
 
             mis1=(Token)input.LT(1);
-            match(input,MISC,FOLLOW_MISC_in_ruleflow_group_key5255); if (failed) return retval;
+            match(input,MISC,FOLLOW_MISC_in_ruleflow_group_key5253); if (failed) return retval;
             if ( backtracking==0 ) stream_MISC.add(mis1);
 
             id2=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_ruleflow_group_key5259); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_ruleflow_group_key5257); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id2);
 
             if ( backtracking==0 ) {
@@ -14300,7 +14312,7 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1461:3: -> VK_RULEFLOW_GROUP[$start, text]
+            // 1473:3: -> VK_RULEFLOW_GROUP[$start, text]
             {
                 adaptor.addChild(root_0, adaptor.create(VK_RULEFLOW_GROUP, ((Token)retval.start),  text));
 
@@ -14333,7 +14345,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start entry_point_key
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1464:1: entry_point_key : {...}? =>id1= ID mis1= MISC id2= ID -> VK_ENTRY_POINT[$start, text] ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1476:1: entry_point_key : {...}? =>id1= ID mis1= MISC id2= ID -> VK_ENTRY_POINT[$start, text] ;
     public final entry_point_key_return entry_point_key() throws RecognitionException {
         entry_point_key_return retval = new entry_point_key_return();
         retval.start = input.LT(1);
@@ -14354,23 +14366,23 @@ public class DRLParser extends Parser {
         	String text = "";
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1467:3: ({...}? =>id1= ID mis1= MISC id2= ID -> VK_ENTRY_POINT[$start, text] )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1467:5: {...}? =>id1= ID mis1= MISC id2= ID
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1479:3: ({...}? =>id1= ID mis1= MISC id2= ID -> VK_ENTRY_POINT[$start, text] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1479:5: {...}? =>id1= ID mis1= MISC id2= ID
             {
             if ( !((validateIdentifierKey(DroolsSoftKeywords.ENTRY) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.POINT))) ) {
                 if (backtracking>0) {failed=true; return retval;}
                 throw new FailedPredicateException(input, "entry_point_key", "(validateIdentifierKey(DroolsSoftKeywords.ENTRY) && validateLT(2, \"-\") && validateLT(3, DroolsSoftKeywords.POINT))");
             }
             id1=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_entry_point_key5291); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_entry_point_key5289); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id1);
 
             mis1=(Token)input.LT(1);
-            match(input,MISC,FOLLOW_MISC_in_entry_point_key5295); if (failed) return retval;
+            match(input,MISC,FOLLOW_MISC_in_entry_point_key5293); if (failed) return retval;
             if ( backtracking==0 ) stream_MISC.add(mis1);
 
             id2=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_entry_point_key5299); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_entry_point_key5297); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id2);
 
             if ( backtracking==0 ) {
@@ -14393,7 +14405,7 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1471:3: -> VK_ENTRY_POINT[$start, text]
+            // 1483:3: -> VK_ENTRY_POINT[$start, text]
             {
                 adaptor.addChild(root_0, adaptor.create(VK_ENTRY_POINT, ((Token)retval.start),  text));
 
@@ -14426,7 +14438,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start duration_key
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1474:1: duration_key : {...}? =>id= ID -> VK_DURATION[$id] ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1486:1: duration_key : {...}? =>id= ID -> VK_DURATION[$id] ;
     public final duration_key_return duration_key() throws RecognitionException {
         duration_key_return retval = new duration_key_return();
         retval.start = input.LT(1);
@@ -14439,15 +14451,15 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1475:2: ({...}? =>id= ID -> VK_DURATION[$id] )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1475:4: {...}? =>id= ID
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1487:2: ({...}? =>id= ID -> VK_DURATION[$id] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1487:4: {...}? =>id= ID
             {
             if ( !((validateIdentifierKey(DroolsSoftKeywords.DURATION))) ) {
                 if (backtracking>0) {failed=true; return retval;}
                 throw new FailedPredicateException(input, "duration_key", "(validateIdentifierKey(DroolsSoftKeywords.DURATION))");
             }
             id=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_duration_key5328); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_duration_key5326); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id);
 
             if ( backtracking==0 ) {
@@ -14465,7 +14477,7 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1477:3: -> VK_DURATION[$id]
+            // 1489:3: -> VK_DURATION[$id]
             {
                 adaptor.addChild(root_0, adaptor.create(VK_DURATION, id));
 
@@ -14498,7 +14510,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start package_key
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1480:1: package_key : {...}? =>id= ID -> VK_PACKAGE[$id] ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1492:1: package_key : {...}? =>id= ID -> VK_PACKAGE[$id] ;
     public final package_key_return package_key() throws RecognitionException {
         package_key_return retval = new package_key_return();
         retval.start = input.LT(1);
@@ -14511,15 +14523,15 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1481:2: ({...}? =>id= ID -> VK_PACKAGE[$id] )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1481:4: {...}? =>id= ID
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1493:2: ({...}? =>id= ID -> VK_PACKAGE[$id] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1493:4: {...}? =>id= ID
             {
             if ( !((validateIdentifierKey(DroolsSoftKeywords.PACKAGE))) ) {
                 if (backtracking>0) {failed=true; return retval;}
                 throw new FailedPredicateException(input, "package_key", "(validateIdentifierKey(DroolsSoftKeywords.PACKAGE))");
             }
             id=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_package_key5355); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_package_key5353); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id);
 
             if ( backtracking==0 ) {
@@ -14537,7 +14549,7 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1483:3: -> VK_PACKAGE[$id]
+            // 1495:3: -> VK_PACKAGE[$id]
             {
                 adaptor.addChild(root_0, adaptor.create(VK_PACKAGE, id));
 
@@ -14570,7 +14582,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start import_key
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1486:1: import_key : {...}? =>id= ID -> VK_IMPORT[$id] ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1498:1: import_key : {...}? =>id= ID -> VK_IMPORT[$id] ;
     public final import_key_return import_key() throws RecognitionException {
         import_key_return retval = new import_key_return();
         retval.start = input.LT(1);
@@ -14583,15 +14595,15 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1487:2: ({...}? =>id= ID -> VK_IMPORT[$id] )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1487:4: {...}? =>id= ID
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1499:2: ({...}? =>id= ID -> VK_IMPORT[$id] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1499:4: {...}? =>id= ID
             {
             if ( !((validateIdentifierKey(DroolsSoftKeywords.IMPORT))) ) {
                 if (backtracking>0) {failed=true; return retval;}
                 throw new FailedPredicateException(input, "import_key", "(validateIdentifierKey(DroolsSoftKeywords.IMPORT))");
             }
             id=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_import_key5382); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_import_key5380); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id);
 
             if ( backtracking==0 ) {
@@ -14609,7 +14621,7 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1489:3: -> VK_IMPORT[$id]
+            // 1501:3: -> VK_IMPORT[$id]
             {
                 adaptor.addChild(root_0, adaptor.create(VK_IMPORT, id));
 
@@ -14642,7 +14654,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start dialect_key
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1492:1: dialect_key : {...}? =>id= ID -> VK_DIALECT[$id] ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1504:1: dialect_key : {...}? =>id= ID -> VK_DIALECT[$id] ;
     public final dialect_key_return dialect_key() throws RecognitionException {
         dialect_key_return retval = new dialect_key_return();
         retval.start = input.LT(1);
@@ -14655,15 +14667,15 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1493:2: ({...}? =>id= ID -> VK_DIALECT[$id] )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1493:4: {...}? =>id= ID
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1505:2: ({...}? =>id= ID -> VK_DIALECT[$id] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1505:4: {...}? =>id= ID
             {
             if ( !((validateIdentifierKey(DroolsSoftKeywords.DIALECT))) ) {
                 if (backtracking>0) {failed=true; return retval;}
                 throw new FailedPredicateException(input, "dialect_key", "(validateIdentifierKey(DroolsSoftKeywords.DIALECT))");
             }
             id=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_dialect_key5409); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_dialect_key5407); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id);
 
             if ( backtracking==0 ) {
@@ -14681,7 +14693,7 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1495:3: -> VK_DIALECT[$id]
+            // 1507:3: -> VK_DIALECT[$id]
             {
                 adaptor.addChild(root_0, adaptor.create(VK_DIALECT, id));
 
@@ -14714,7 +14726,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start salience_key
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1498:1: salience_key : {...}? =>id= ID -> VK_SALIENCE[$id] ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1510:1: salience_key : {...}? =>id= ID -> VK_SALIENCE[$id] ;
     public final salience_key_return salience_key() throws RecognitionException {
         salience_key_return retval = new salience_key_return();
         retval.start = input.LT(1);
@@ -14727,15 +14739,15 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1499:2: ({...}? =>id= ID -> VK_SALIENCE[$id] )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1499:4: {...}? =>id= ID
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1511:2: ({...}? =>id= ID -> VK_SALIENCE[$id] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1511:4: {...}? =>id= ID
             {
             if ( !((validateIdentifierKey(DroolsSoftKeywords.SALIENCE))) ) {
                 if (backtracking>0) {failed=true; return retval;}
                 throw new FailedPredicateException(input, "salience_key", "(validateIdentifierKey(DroolsSoftKeywords.SALIENCE))");
             }
             id=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_salience_key5436); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_salience_key5434); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id);
 
             if ( backtracking==0 ) {
@@ -14753,7 +14765,7 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1501:3: -> VK_SALIENCE[$id]
+            // 1513:3: -> VK_SALIENCE[$id]
             {
                 adaptor.addChild(root_0, adaptor.create(VK_SALIENCE, id));
 
@@ -14786,7 +14798,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start enabled_key
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1504:1: enabled_key : {...}? =>id= ID -> VK_ENABLED[$id] ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1516:1: enabled_key : {...}? =>id= ID -> VK_ENABLED[$id] ;
     public final enabled_key_return enabled_key() throws RecognitionException {
         enabled_key_return retval = new enabled_key_return();
         retval.start = input.LT(1);
@@ -14799,15 +14811,15 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1505:2: ({...}? =>id= ID -> VK_ENABLED[$id] )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1505:4: {...}? =>id= ID
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1517:2: ({...}? =>id= ID -> VK_ENABLED[$id] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1517:4: {...}? =>id= ID
             {
             if ( !((validateIdentifierKey(DroolsSoftKeywords.ENABLED))) ) {
                 if (backtracking>0) {failed=true; return retval;}
                 throw new FailedPredicateException(input, "enabled_key", "(validateIdentifierKey(DroolsSoftKeywords.ENABLED))");
             }
             id=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_enabled_key5463); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_enabled_key5461); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id);
 
             if ( backtracking==0 ) {
@@ -14825,7 +14837,7 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1507:3: -> VK_ENABLED[$id]
+            // 1519:3: -> VK_ENABLED[$id]
             {
                 adaptor.addChild(root_0, adaptor.create(VK_ENABLED, id));
 
@@ -14858,7 +14870,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start attributes_key
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1510:1: attributes_key : {...}? =>id= ID -> VK_ATTRIBUTES[$id] ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1522:1: attributes_key : {...}? =>id= ID -> VK_ATTRIBUTES[$id] ;
     public final attributes_key_return attributes_key() throws RecognitionException {
         attributes_key_return retval = new attributes_key_return();
         retval.start = input.LT(1);
@@ -14871,15 +14883,15 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1511:2: ({...}? =>id= ID -> VK_ATTRIBUTES[$id] )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1511:4: {...}? =>id= ID
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1523:2: ({...}? =>id= ID -> VK_ATTRIBUTES[$id] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1523:4: {...}? =>id= ID
             {
             if ( !((validateIdentifierKey(DroolsSoftKeywords.ATTRIBUTES))) ) {
                 if (backtracking>0) {failed=true; return retval;}
                 throw new FailedPredicateException(input, "attributes_key", "(validateIdentifierKey(DroolsSoftKeywords.ATTRIBUTES))");
             }
             id=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_attributes_key5490); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_attributes_key5488); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id);
 
             if ( backtracking==0 ) {
@@ -14897,7 +14909,7 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1513:3: -> VK_ATTRIBUTES[$id]
+            // 1525:3: -> VK_ATTRIBUTES[$id]
             {
                 adaptor.addChild(root_0, adaptor.create(VK_ATTRIBUTES, id));
 
@@ -14930,7 +14942,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start rule_key
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1516:1: rule_key : {...}? =>id= ID -> VK_RULE[$id] ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1528:1: rule_key : {...}? =>id= ID -> VK_RULE[$id] ;
     public final rule_key_return rule_key() throws RecognitionException {
         rule_key_return retval = new rule_key_return();
         retval.start = input.LT(1);
@@ -14943,15 +14955,15 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1517:2: ({...}? =>id= ID -> VK_RULE[$id] )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1517:4: {...}? =>id= ID
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1529:2: ({...}? =>id= ID -> VK_RULE[$id] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1529:4: {...}? =>id= ID
             {
             if ( !((validateIdentifierKey(DroolsSoftKeywords.RULE))) ) {
                 if (backtracking>0) {failed=true; return retval;}
                 throw new FailedPredicateException(input, "rule_key", "(validateIdentifierKey(DroolsSoftKeywords.RULE))");
             }
             id=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_rule_key5517); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_rule_key5515); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id);
 
             if ( backtracking==0 ) {
@@ -14969,7 +14981,7 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1519:3: -> VK_RULE[$id]
+            // 1531:3: -> VK_RULE[$id]
             {
                 adaptor.addChild(root_0, adaptor.create(VK_RULE, id));
 
@@ -15002,7 +15014,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start template_key
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1522:1: template_key : {...}? =>id= ID -> VK_TEMPLATE[$id] ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1534:1: template_key : {...}? =>id= ID -> VK_TEMPLATE[$id] ;
     public final template_key_return template_key() throws RecognitionException {
         template_key_return retval = new template_key_return();
         retval.start = input.LT(1);
@@ -15015,15 +15027,15 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1523:2: ({...}? =>id= ID -> VK_TEMPLATE[$id] )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1523:4: {...}? =>id= ID
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1535:2: ({...}? =>id= ID -> VK_TEMPLATE[$id] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1535:4: {...}? =>id= ID
             {
             if ( !((validateIdentifierKey(DroolsSoftKeywords.TEMPLATE))) ) {
                 if (backtracking>0) {failed=true; return retval;}
                 throw new FailedPredicateException(input, "template_key", "(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE))");
             }
             id=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_template_key5544); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_template_key5542); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id);
 
             if ( backtracking==0 ) {
@@ -15041,7 +15053,7 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1525:3: -> VK_TEMPLATE[$id]
+            // 1537:3: -> VK_TEMPLATE[$id]
             {
                 adaptor.addChild(root_0, adaptor.create(VK_TEMPLATE, id));
 
@@ -15074,7 +15086,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start query_key
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1528:1: query_key : {...}? =>id= ID -> VK_QUERY[$id] ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1540:1: query_key : {...}? =>id= ID -> VK_QUERY[$id] ;
     public final query_key_return query_key() throws RecognitionException {
         query_key_return retval = new query_key_return();
         retval.start = input.LT(1);
@@ -15087,15 +15099,15 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1529:2: ({...}? =>id= ID -> VK_QUERY[$id] )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1529:4: {...}? =>id= ID
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1541:2: ({...}? =>id= ID -> VK_QUERY[$id] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1541:4: {...}? =>id= ID
             {
             if ( !((validateIdentifierKey(DroolsSoftKeywords.QUERY))) ) {
                 if (backtracking>0) {failed=true; return retval;}
                 throw new FailedPredicateException(input, "query_key", "(validateIdentifierKey(DroolsSoftKeywords.QUERY))");
             }
             id=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_query_key5571); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_query_key5569); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id);
 
             if ( backtracking==0 ) {
@@ -15113,7 +15125,7 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1531:3: -> VK_QUERY[$id]
+            // 1543:3: -> VK_QUERY[$id]
             {
                 adaptor.addChild(root_0, adaptor.create(VK_QUERY, id));
 
@@ -15146,7 +15158,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start declare_key
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1534:1: declare_key : {...}? =>id= ID -> VK_DECLARE[$id] ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1546:1: declare_key : {...}? =>id= ID -> VK_DECLARE[$id] ;
     public final declare_key_return declare_key() throws RecognitionException {
         declare_key_return retval = new declare_key_return();
         retval.start = input.LT(1);
@@ -15159,15 +15171,15 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1535:2: ({...}? =>id= ID -> VK_DECLARE[$id] )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1535:4: {...}? =>id= ID
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1547:2: ({...}? =>id= ID -> VK_DECLARE[$id] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1547:4: {...}? =>id= ID
             {
             if ( !((validateIdentifierKey(DroolsSoftKeywords.DECLARE))) ) {
                 if (backtracking>0) {failed=true; return retval;}
                 throw new FailedPredicateException(input, "declare_key", "(validateIdentifierKey(DroolsSoftKeywords.DECLARE))");
             }
             id=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_declare_key5598); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_declare_key5596); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id);
 
             if ( backtracking==0 ) {
@@ -15185,7 +15197,7 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1537:3: -> VK_DECLARE[$id]
+            // 1549:3: -> VK_DECLARE[$id]
             {
                 adaptor.addChild(root_0, adaptor.create(VK_DECLARE, id));
 
@@ -15218,7 +15230,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start function_key
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1540:1: function_key : {...}? =>id= ID -> VK_FUNCTION[$id] ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1552:1: function_key : {...}? =>id= ID -> VK_FUNCTION[$id] ;
     public final function_key_return function_key() throws RecognitionException {
         function_key_return retval = new function_key_return();
         retval.start = input.LT(1);
@@ -15231,15 +15243,15 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1541:2: ({...}? =>id= ID -> VK_FUNCTION[$id] )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1541:4: {...}? =>id= ID
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1553:2: ({...}? =>id= ID -> VK_FUNCTION[$id] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1553:4: {...}? =>id= ID
             {
             if ( !((validateIdentifierKey(DroolsSoftKeywords.FUNCTION))) ) {
                 if (backtracking>0) {failed=true; return retval;}
                 throw new FailedPredicateException(input, "function_key", "(validateIdentifierKey(DroolsSoftKeywords.FUNCTION))");
             }
             id=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_function_key5625); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_function_key5623); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id);
 
             if ( backtracking==0 ) {
@@ -15257,7 +15269,7 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1543:3: -> VK_FUNCTION[$id]
+            // 1555:3: -> VK_FUNCTION[$id]
             {
                 adaptor.addChild(root_0, adaptor.create(VK_FUNCTION, id));
 
@@ -15290,7 +15302,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start global_key
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1546:1: global_key : {...}? =>id= ID -> VK_GLOBAL[$id] ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1558:1: global_key : {...}? =>id= ID -> VK_GLOBAL[$id] ;
     public final global_key_return global_key() throws RecognitionException {
         global_key_return retval = new global_key_return();
         retval.start = input.LT(1);
@@ -15303,15 +15315,15 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1547:2: ({...}? =>id= ID -> VK_GLOBAL[$id] )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1547:4: {...}? =>id= ID
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1559:2: ({...}? =>id= ID -> VK_GLOBAL[$id] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1559:4: {...}? =>id= ID
             {
             if ( !((validateIdentifierKey(DroolsSoftKeywords.GLOBAL))) ) {
                 if (backtracking>0) {failed=true; return retval;}
                 throw new FailedPredicateException(input, "global_key", "(validateIdentifierKey(DroolsSoftKeywords.GLOBAL))");
             }
             id=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_global_key5652); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_global_key5650); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id);
 
             if ( backtracking==0 ) {
@@ -15329,7 +15341,7 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1549:3: -> VK_GLOBAL[$id]
+            // 1561:3: -> VK_GLOBAL[$id]
             {
                 adaptor.addChild(root_0, adaptor.create(VK_GLOBAL, id));
 
@@ -15362,7 +15374,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start eval_key
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1552:1: eval_key : {...}? =>id= ID -> VK_EVAL[$id] ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1564:1: eval_key : {...}? =>id= ID -> VK_EVAL[$id] ;
     public final eval_key_return eval_key() throws RecognitionException {
         eval_key_return retval = new eval_key_return();
         retval.start = input.LT(1);
@@ -15375,15 +15387,15 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1553:2: ({...}? =>id= ID -> VK_EVAL[$id] )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1553:4: {...}? =>id= ID
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1565:2: ({...}? =>id= ID -> VK_EVAL[$id] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1565:4: {...}? =>id= ID
             {
             if ( !((validateIdentifierKey(DroolsSoftKeywords.EVAL))) ) {
                 if (backtracking>0) {failed=true; return retval;}
                 throw new FailedPredicateException(input, "eval_key", "(validateIdentifierKey(DroolsSoftKeywords.EVAL))");
             }
             id=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_eval_key5679); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_eval_key5677); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id);
 
             if ( backtracking==0 ) {
@@ -15401,7 +15413,7 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1555:3: -> VK_EVAL[$id]
+            // 1567:3: -> VK_EVAL[$id]
             {
                 adaptor.addChild(root_0, adaptor.create(VK_EVAL, id));
 
@@ -15434,7 +15446,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start contains_key
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1558:1: contains_key : {...}? =>id= ID -> VK_CONTAINS[$id] ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1570:1: contains_key : {...}? =>id= ID -> VK_CONTAINS[$id] ;
     public final contains_key_return contains_key() throws RecognitionException {
         contains_key_return retval = new contains_key_return();
         retval.start = input.LT(1);
@@ -15447,15 +15459,15 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1559:2: ({...}? =>id= ID -> VK_CONTAINS[$id] )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1559:4: {...}? =>id= ID
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1571:2: ({...}? =>id= ID -> VK_CONTAINS[$id] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1571:4: {...}? =>id= ID
             {
             if ( !((validateIdentifierKey(DroolsSoftKeywords.CONTAINS))) ) {
                 if (backtracking>0) {failed=true; return retval;}
                 throw new FailedPredicateException(input, "contains_key", "(validateIdentifierKey(DroolsSoftKeywords.CONTAINS))");
             }
             id=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_contains_key5706); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_contains_key5704); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id);
 
             if ( backtracking==0 ) {
@@ -15473,7 +15485,7 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1561:3: -> VK_CONTAINS[$id]
+            // 1573:3: -> VK_CONTAINS[$id]
             {
                 adaptor.addChild(root_0, adaptor.create(VK_CONTAINS, id));
 
@@ -15506,7 +15518,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start matches_key
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1564:1: matches_key : {...}? =>id= ID -> VK_MATCHES[$id] ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1576:1: matches_key : {...}? =>id= ID -> VK_MATCHES[$id] ;
     public final matches_key_return matches_key() throws RecognitionException {
         matches_key_return retval = new matches_key_return();
         retval.start = input.LT(1);
@@ -15519,15 +15531,15 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1565:2: ({...}? =>id= ID -> VK_MATCHES[$id] )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1565:4: {...}? =>id= ID
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1577:2: ({...}? =>id= ID -> VK_MATCHES[$id] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1577:4: {...}? =>id= ID
             {
             if ( !((validateIdentifierKey(DroolsSoftKeywords.MATCHES))) ) {
                 if (backtracking>0) {failed=true; return retval;}
                 throw new FailedPredicateException(input, "matches_key", "(validateIdentifierKey(DroolsSoftKeywords.MATCHES))");
             }
             id=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_matches_key5733); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_matches_key5731); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id);
 
             if ( backtracking==0 ) {
@@ -15545,7 +15557,7 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1567:3: -> VK_MATCHES[$id]
+            // 1579:3: -> VK_MATCHES[$id]
             {
                 adaptor.addChild(root_0, adaptor.create(VK_MATCHES, id));
 
@@ -15578,7 +15590,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start excludes_key
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1570:1: excludes_key : {...}? =>id= ID -> VK_EXCLUDES[$id] ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1582:1: excludes_key : {...}? =>id= ID -> VK_EXCLUDES[$id] ;
     public final excludes_key_return excludes_key() throws RecognitionException {
         excludes_key_return retval = new excludes_key_return();
         retval.start = input.LT(1);
@@ -15591,15 +15603,15 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1571:2: ({...}? =>id= ID -> VK_EXCLUDES[$id] )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1571:4: {...}? =>id= ID
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1583:2: ({...}? =>id= ID -> VK_EXCLUDES[$id] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1583:4: {...}? =>id= ID
             {
             if ( !((validateIdentifierKey(DroolsSoftKeywords.EXCLUDES))) ) {
                 if (backtracking>0) {failed=true; return retval;}
                 throw new FailedPredicateException(input, "excludes_key", "(validateIdentifierKey(DroolsSoftKeywords.EXCLUDES))");
             }
             id=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_excludes_key5760); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_excludes_key5758); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id);
 
             if ( backtracking==0 ) {
@@ -15617,7 +15629,7 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1573:3: -> VK_EXCLUDES[$id]
+            // 1585:3: -> VK_EXCLUDES[$id]
             {
                 adaptor.addChild(root_0, adaptor.create(VK_EXCLUDES, id));
 
@@ -15650,7 +15662,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start soundslike_key
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1576:1: soundslike_key : {...}? =>id= ID -> VK_SOUNDSLIKE[$id] ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1588:1: soundslike_key : {...}? =>id= ID -> VK_SOUNDSLIKE[$id] ;
     public final soundslike_key_return soundslike_key() throws RecognitionException {
         soundslike_key_return retval = new soundslike_key_return();
         retval.start = input.LT(1);
@@ -15663,15 +15675,15 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1577:2: ({...}? =>id= ID -> VK_SOUNDSLIKE[$id] )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1577:4: {...}? =>id= ID
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1589:2: ({...}? =>id= ID -> VK_SOUNDSLIKE[$id] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1589:4: {...}? =>id= ID
             {
             if ( !((validateIdentifierKey(DroolsSoftKeywords.SOUNDSLIKE))) ) {
                 if (backtracking>0) {failed=true; return retval;}
                 throw new FailedPredicateException(input, "soundslike_key", "(validateIdentifierKey(DroolsSoftKeywords.SOUNDSLIKE))");
             }
             id=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_soundslike_key5787); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_soundslike_key5785); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id);
 
             if ( backtracking==0 ) {
@@ -15689,7 +15701,7 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1579:3: -> VK_SOUNDSLIKE[$id]
+            // 1591:3: -> VK_SOUNDSLIKE[$id]
             {
                 adaptor.addChild(root_0, adaptor.create(VK_SOUNDSLIKE, id));
 
@@ -15722,7 +15734,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start memberof_key
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1582:1: memberof_key : {...}? =>id= ID -> VK_MEMBEROF[$id] ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1594:1: memberof_key : {...}? =>id= ID -> VK_MEMBEROF[$id] ;
     public final memberof_key_return memberof_key() throws RecognitionException {
         memberof_key_return retval = new memberof_key_return();
         retval.start = input.LT(1);
@@ -15735,15 +15747,15 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1583:2: ({...}? =>id= ID -> VK_MEMBEROF[$id] )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1583:4: {...}? =>id= ID
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1595:2: ({...}? =>id= ID -> VK_MEMBEROF[$id] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1595:4: {...}? =>id= ID
             {
             if ( !((validateIdentifierKey(DroolsSoftKeywords.MEMBEROF))) ) {
                 if (backtracking>0) {failed=true; return retval;}
                 throw new FailedPredicateException(input, "memberof_key", "(validateIdentifierKey(DroolsSoftKeywords.MEMBEROF))");
             }
             id=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_memberof_key5814); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_memberof_key5812); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id);
 
             if ( backtracking==0 ) {
@@ -15761,7 +15773,7 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1585:3: -> VK_MEMBEROF[$id]
+            // 1597:3: -> VK_MEMBEROF[$id]
             {
                 adaptor.addChild(root_0, adaptor.create(VK_MEMBEROF, id));
 
@@ -15794,7 +15806,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start not_key
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1588:1: not_key : {...}? =>id= ID -> VK_NOT[$id] ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1600:1: not_key : {...}? =>id= ID -> VK_NOT[$id] ;
     public final not_key_return not_key() throws RecognitionException {
         not_key_return retval = new not_key_return();
         retval.start = input.LT(1);
@@ -15807,15 +15819,15 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1589:2: ({...}? =>id= ID -> VK_NOT[$id] )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1589:4: {...}? =>id= ID
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1601:2: ({...}? =>id= ID -> VK_NOT[$id] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1601:4: {...}? =>id= ID
             {
             if ( !((validateIdentifierKey(DroolsSoftKeywords.NOT))) ) {
                 if (backtracking>0) {failed=true; return retval;}
                 throw new FailedPredicateException(input, "not_key", "(validateIdentifierKey(DroolsSoftKeywords.NOT))");
             }
             id=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_not_key5841); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_not_key5839); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id);
 
             if ( backtracking==0 ) {
@@ -15833,7 +15845,7 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1591:3: -> VK_NOT[$id]
+            // 1603:3: -> VK_NOT[$id]
             {
                 adaptor.addChild(root_0, adaptor.create(VK_NOT, id));
 
@@ -15866,7 +15878,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start in_key
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1594:1: in_key : {...}? =>id= ID -> VK_IN[$id] ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1606:1: in_key : {...}? =>id= ID -> VK_IN[$id] ;
     public final in_key_return in_key() throws RecognitionException {
         in_key_return retval = new in_key_return();
         retval.start = input.LT(1);
@@ -15879,15 +15891,15 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1595:2: ({...}? =>id= ID -> VK_IN[$id] )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1595:4: {...}? =>id= ID
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1607:2: ({...}? =>id= ID -> VK_IN[$id] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1607:4: {...}? =>id= ID
             {
             if ( !((validateIdentifierKey(DroolsSoftKeywords.IN))) ) {
                 if (backtracking>0) {failed=true; return retval;}
                 throw new FailedPredicateException(input, "in_key", "(validateIdentifierKey(DroolsSoftKeywords.IN))");
             }
             id=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_in_key5868); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_in_key5866); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id);
 
             if ( backtracking==0 ) {
@@ -15905,7 +15917,7 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1597:3: -> VK_IN[$id]
+            // 1609:3: -> VK_IN[$id]
             {
                 adaptor.addChild(root_0, adaptor.create(VK_IN, id));
 
@@ -15938,7 +15950,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start or_key
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1600:1: or_key : {...}? =>id= ID -> VK_OR[$id] ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1612:1: or_key : {...}? =>id= ID -> VK_OR[$id] ;
     public final or_key_return or_key() throws RecognitionException {
         or_key_return retval = new or_key_return();
         retval.start = input.LT(1);
@@ -15951,15 +15963,15 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1601:2: ({...}? =>id= ID -> VK_OR[$id] )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1601:4: {...}? =>id= ID
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1613:2: ({...}? =>id= ID -> VK_OR[$id] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1613:4: {...}? =>id= ID
             {
             if ( !((validateIdentifierKey(DroolsSoftKeywords.OR))) ) {
                 if (backtracking>0) {failed=true; return retval;}
                 throw new FailedPredicateException(input, "or_key", "(validateIdentifierKey(DroolsSoftKeywords.OR))");
             }
             id=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_or_key5895); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_or_key5893); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id);
 
             if ( backtracking==0 ) {
@@ -15977,7 +15989,7 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1603:3: -> VK_OR[$id]
+            // 1615:3: -> VK_OR[$id]
             {
                 adaptor.addChild(root_0, adaptor.create(VK_OR, id));
 
@@ -16010,7 +16022,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start and_key
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1606:1: and_key : {...}? =>id= ID -> VK_AND[$id] ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1618:1: and_key : {...}? =>id= ID -> VK_AND[$id] ;
     public final and_key_return and_key() throws RecognitionException {
         and_key_return retval = new and_key_return();
         retval.start = input.LT(1);
@@ -16023,15 +16035,15 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1607:2: ({...}? =>id= ID -> VK_AND[$id] )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1607:4: {...}? =>id= ID
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1619:2: ({...}? =>id= ID -> VK_AND[$id] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1619:4: {...}? =>id= ID
             {
             if ( !((validateIdentifierKey(DroolsSoftKeywords.AND))) ) {
                 if (backtracking>0) {failed=true; return retval;}
                 throw new FailedPredicateException(input, "and_key", "(validateIdentifierKey(DroolsSoftKeywords.AND))");
             }
             id=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_and_key5922); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_and_key5920); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id);
 
             if ( backtracking==0 ) {
@@ -16049,7 +16061,7 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1609:3: -> VK_AND[$id]
+            // 1621:3: -> VK_AND[$id]
             {
                 adaptor.addChild(root_0, adaptor.create(VK_AND, id));
 
@@ -16082,7 +16094,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start exists_key
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1612:1: exists_key : {...}? =>id= ID -> VK_EXISTS[$id] ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1624:1: exists_key : {...}? =>id= ID -> VK_EXISTS[$id] ;
     public final exists_key_return exists_key() throws RecognitionException {
         exists_key_return retval = new exists_key_return();
         retval.start = input.LT(1);
@@ -16095,15 +16107,15 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1613:2: ({...}? =>id= ID -> VK_EXISTS[$id] )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1613:4: {...}? =>id= ID
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1625:2: ({...}? =>id= ID -> VK_EXISTS[$id] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1625:4: {...}? =>id= ID
             {
             if ( !((validateIdentifierKey(DroolsSoftKeywords.EXISTS))) ) {
                 if (backtracking>0) {failed=true; return retval;}
                 throw new FailedPredicateException(input, "exists_key", "(validateIdentifierKey(DroolsSoftKeywords.EXISTS))");
             }
             id=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_exists_key5949); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_exists_key5947); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id);
 
             if ( backtracking==0 ) {
@@ -16121,7 +16133,7 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1615:3: -> VK_EXISTS[$id]
+            // 1627:3: -> VK_EXISTS[$id]
             {
                 adaptor.addChild(root_0, adaptor.create(VK_EXISTS, id));
 
@@ -16154,7 +16166,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start forall_key
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1618:1: forall_key : {...}? =>id= ID -> VK_FORALL[$id] ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1630:1: forall_key : {...}? =>id= ID -> VK_FORALL[$id] ;
     public final forall_key_return forall_key() throws RecognitionException {
         forall_key_return retval = new forall_key_return();
         retval.start = input.LT(1);
@@ -16167,15 +16179,15 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1619:2: ({...}? =>id= ID -> VK_FORALL[$id] )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1619:4: {...}? =>id= ID
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1631:2: ({...}? =>id= ID -> VK_FORALL[$id] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1631:4: {...}? =>id= ID
             {
             if ( !((validateIdentifierKey(DroolsSoftKeywords.FORALL))) ) {
                 if (backtracking>0) {failed=true; return retval;}
                 throw new FailedPredicateException(input, "forall_key", "(validateIdentifierKey(DroolsSoftKeywords.FORALL))");
             }
             id=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_forall_key5976); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_forall_key5974); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id);
 
             if ( backtracking==0 ) {
@@ -16193,7 +16205,7 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1621:3: -> VK_FORALL[$id]
+            // 1633:3: -> VK_FORALL[$id]
             {
                 adaptor.addChild(root_0, adaptor.create(VK_FORALL, id));
 
@@ -16226,7 +16238,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start action_key
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1624:1: action_key : {...}? =>id= ID -> VK_ACTION[$id] ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1636:1: action_key : {...}? =>id= ID -> VK_ACTION[$id] ;
     public final action_key_return action_key() throws RecognitionException {
         action_key_return retval = new action_key_return();
         retval.start = input.LT(1);
@@ -16239,15 +16251,15 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1625:2: ({...}? =>id= ID -> VK_ACTION[$id] )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1625:4: {...}? =>id= ID
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1637:2: ({...}? =>id= ID -> VK_ACTION[$id] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1637:4: {...}? =>id= ID
             {
             if ( !((validateIdentifierKey(DroolsSoftKeywords.ACTION))) ) {
                 if (backtracking>0) {failed=true; return retval;}
                 throw new FailedPredicateException(input, "action_key", "(validateIdentifierKey(DroolsSoftKeywords.ACTION))");
             }
             id=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_action_key6003); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_action_key6001); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id);
 
             if ( backtracking==0 ) {
@@ -16265,7 +16277,7 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1627:3: -> VK_ACTION[$id]
+            // 1639:3: -> VK_ACTION[$id]
             {
                 adaptor.addChild(root_0, adaptor.create(VK_ACTION, id));
 
@@ -16298,7 +16310,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start reverse_key
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1630:1: reverse_key : {...}? =>id= ID -> VK_REVERSE[$id] ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1642:1: reverse_key : {...}? =>id= ID -> VK_REVERSE[$id] ;
     public final reverse_key_return reverse_key() throws RecognitionException {
         reverse_key_return retval = new reverse_key_return();
         retval.start = input.LT(1);
@@ -16311,15 +16323,15 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1631:2: ({...}? =>id= ID -> VK_REVERSE[$id] )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1631:4: {...}? =>id= ID
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1643:2: ({...}? =>id= ID -> VK_REVERSE[$id] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1643:4: {...}? =>id= ID
             {
             if ( !((validateIdentifierKey(DroolsSoftKeywords.REVERSE))) ) {
                 if (backtracking>0) {failed=true; return retval;}
                 throw new FailedPredicateException(input, "reverse_key", "(validateIdentifierKey(DroolsSoftKeywords.REVERSE))");
             }
             id=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_reverse_key6030); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_reverse_key6028); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id);
 
             if ( backtracking==0 ) {
@@ -16337,7 +16349,7 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1633:3: -> VK_REVERSE[$id]
+            // 1645:3: -> VK_REVERSE[$id]
             {
                 adaptor.addChild(root_0, adaptor.create(VK_REVERSE, id));
 
@@ -16370,7 +16382,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start result_key
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1636:1: result_key : {...}? =>id= ID -> VK_RESULT[$id] ;
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1648:1: result_key : {...}? =>id= ID -> VK_RESULT[$id] ;
     public final result_key_return result_key() throws RecognitionException {
         result_key_return retval = new result_key_return();
         retval.start = input.LT(1);
@@ -16383,15 +16395,15 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1637:2: ({...}? =>id= ID -> VK_RESULT[$id] )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1637:4: {...}? =>id= ID
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1649:2: ({...}? =>id= ID -> VK_RESULT[$id] )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1649:4: {...}? =>id= ID
             {
             if ( !((validateIdentifierKey(DroolsSoftKeywords.RESULT))) ) {
                 if (backtracking>0) {failed=true; return retval;}
                 throw new FailedPredicateException(input, "result_key", "(validateIdentifierKey(DroolsSoftKeywords.RESULT))");
             }
             id=(Token)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_result_key6057); if (failed) return retval;
+            match(input,ID,FOLLOW_ID_in_result_key6055); if (failed) return retval;
             if ( backtracking==0 ) stream_ID.add(id);
 
             if ( backtracking==0 ) {
@@ -16409,7 +16421,7 @@ public class DRLParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 1639:3: -> VK_RESULT[$id]
+            // 1651:3: -> VK_RESULT[$id]
             {
                 adaptor.addChild(root_0, adaptor.create(VK_RESULT, id));
 
@@ -16438,11 +16450,11 @@ public class DRLParser extends Parser {
 
     // $ANTLR start synpred1
     public final void synpred1_fragment() throws RecognitionException {   
-        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:788:5: ( LEFT_PAREN or_key )
-        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:788:6: LEFT_PAREN or_key
+        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:787:5: ( LEFT_PAREN or_key )
+        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:787:6: LEFT_PAREN or_key
         {
-        match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_synpred12037); if (failed) return ;
-        pushFollow(FOLLOW_or_key_in_synpred12039);
+        match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_synpred12035); if (failed) return ;
+        pushFollow(FOLLOW_or_key_in_synpred12037);
         or_key();
         _fsp--;
         if (failed) return ;
@@ -16453,7 +16465,7 @@ public class DRLParser extends Parser {
 
     // $ANTLR start synpred2
     public final void synpred2_fragment() throws RecognitionException {   
-        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:796:5: ( or_key | DOUBLE_PIPE )
+        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:795:5: ( or_key | DOUBLE_PIPE )
         int alt101=2;
         int LA101_0 = input.LA(1);
 
@@ -16466,15 +16478,15 @@ public class DRLParser extends Parser {
         else {
             if (backtracking>0) {failed=true; return ;}
             NoViableAltException nvae =
-                new NoViableAltException("796:5: synpred2 : ( or_key | DOUBLE_PIPE );", 101, 0, input);
+                new NoViableAltException("795:5: synpred2 : ( or_key | DOUBLE_PIPE );", 101, 0, input);
 
             throw nvae;
         }
         switch (alt101) {
             case 1 :
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:796:6: or_key
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:795:6: or_key
                 {
-                pushFollow(FOLLOW_or_key_in_synpred22106);
+                pushFollow(FOLLOW_or_key_in_synpred22104);
                 or_key();
                 _fsp--;
                 if (failed) return ;
@@ -16482,9 +16494,9 @@ public class DRLParser extends Parser {
                 }
                 break;
             case 2 :
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:796:13: DOUBLE_PIPE
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:795:13: DOUBLE_PIPE
                 {
-                match(input,DOUBLE_PIPE,FOLLOW_DOUBLE_PIPE_in_synpred22108); if (failed) return ;
+                match(input,DOUBLE_PIPE,FOLLOW_DOUBLE_PIPE_in_synpred22106); if (failed) return ;
 
                 }
                 break;
@@ -16494,11 +16506,11 @@ public class DRLParser extends Parser {
 
     // $ANTLR start synpred3
     public final void synpred3_fragment() throws RecognitionException {   
-        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:805:5: ( LEFT_PAREN and_key )
-        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:805:6: LEFT_PAREN and_key
+        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:804:5: ( LEFT_PAREN and_key )
+        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:804:6: LEFT_PAREN and_key
         {
-        match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_synpred32165); if (failed) return ;
-        pushFollow(FOLLOW_and_key_in_synpred32167);
+        match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_synpred32163); if (failed) return ;
+        pushFollow(FOLLOW_and_key_in_synpred32165);
         and_key();
         _fsp--;
         if (failed) return ;
@@ -16509,7 +16521,7 @@ public class DRLParser extends Parser {
 
     // $ANTLR start synpred4
     public final void synpred4_fragment() throws RecognitionException {   
-        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:813:5: ( and_key | DOUBLE_AMPER )
+        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:812:5: ( and_key | DOUBLE_AMPER )
         int alt102=2;
         int LA102_0 = input.LA(1);
 
@@ -16522,15 +16534,15 @@ public class DRLParser extends Parser {
         else {
             if (backtracking>0) {failed=true; return ;}
             NoViableAltException nvae =
-                new NoViableAltException("813:5: synpred4 : ( and_key | DOUBLE_AMPER );", 102, 0, input);
+                new NoViableAltException("812:5: synpred4 : ( and_key | DOUBLE_AMPER );", 102, 0, input);
 
             throw nvae;
         }
         switch (alt102) {
             case 1 :
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:813:6: and_key
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:812:6: and_key
                 {
-                pushFollow(FOLLOW_and_key_in_synpred42235);
+                pushFollow(FOLLOW_and_key_in_synpred42233);
                 and_key();
                 _fsp--;
                 if (failed) return ;
@@ -16538,9 +16550,9 @@ public class DRLParser extends Parser {
                 }
                 break;
             case 2 :
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:813:14: DOUBLE_AMPER
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:812:14: DOUBLE_AMPER
                 {
-                match(input,DOUBLE_AMPER,FOLLOW_DOUBLE_AMPER_in_synpred42237); if (failed) return ;
+                match(input,DOUBLE_AMPER,FOLLOW_DOUBLE_AMPER_in_synpred42235); if (failed) return ;
 
                 }
                 break;
@@ -16550,10 +16562,10 @@ public class DRLParser extends Parser {
 
     // $ANTLR start synpred5
     public final void synpred5_fragment() throws RecognitionException {   
-        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:830:4: ( SEMICOLON )
-        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:830:5: SEMICOLON
+        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:829:4: ( SEMICOLON )
+        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:829:5: SEMICOLON
         {
-        match(input,SEMICOLON,FOLLOW_SEMICOLON_in_synpred52360); if (failed) return ;
+        match(input,SEMICOLON,FOLLOW_SEMICOLON_in_synpred52358); if (failed) return ;
 
         }
     }
@@ -16561,11 +16573,11 @@ public class DRLParser extends Parser {
 
     // $ANTLR start synpred6
     public final void synpred6_fragment() throws RecognitionException {   
-        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:836:12: ( LEFT_PAREN ( or_key | and_key ) )
-        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:836:13: LEFT_PAREN ( or_key | and_key )
+        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:835:12: ( LEFT_PAREN ( or_key | and_key ) )
+        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:835:13: LEFT_PAREN ( or_key | and_key )
         {
-        match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_synpred62397); if (failed) return ;
-        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:836:24: ( or_key | and_key )
+        match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_synpred62395); if (failed) return ;
+        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:835:24: ( or_key | and_key )
         int alt103=2;
         int LA103_0 = input.LA(1);
 
@@ -16581,7 +16593,7 @@ public class DRLParser extends Parser {
             else {
                 if (backtracking>0) {failed=true; return ;}
                 NoViableAltException nvae =
-                    new NoViableAltException("836:24: ( or_key | and_key )", 103, 1, input);
+                    new NoViableAltException("835:24: ( or_key | and_key )", 103, 1, input);
 
                 throw nvae;
             }
@@ -16589,15 +16601,15 @@ public class DRLParser extends Parser {
         else {
             if (backtracking>0) {failed=true; return ;}
             NoViableAltException nvae =
-                new NoViableAltException("836:24: ( or_key | and_key )", 103, 0, input);
+                new NoViableAltException("835:24: ( or_key | and_key )", 103, 0, input);
 
             throw nvae;
         }
         switch (alt103) {
             case 1 :
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:836:25: or_key
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:835:25: or_key
                 {
-                pushFollow(FOLLOW_or_key_in_synpred62400);
+                pushFollow(FOLLOW_or_key_in_synpred62398);
                 or_key();
                 _fsp--;
                 if (failed) return ;
@@ -16605,9 +16617,9 @@ public class DRLParser extends Parser {
                 }
                 break;
             case 2 :
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:836:32: and_key
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:835:32: and_key
                 {
-                pushFollow(FOLLOW_and_key_in_synpred62402);
+                pushFollow(FOLLOW_and_key_in_synpred62400);
                 and_key();
                 _fsp--;
                 if (failed) return ;
@@ -16624,11 +16636,11 @@ public class DRLParser extends Parser {
 
     // $ANTLR start synpred7
     public final void synpred7_fragment() throws RecognitionException {   
-        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:852:5: ( LEFT_PAREN ( or_key | and_key ) )
-        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:852:6: LEFT_PAREN ( or_key | and_key )
+        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:851:5: ( LEFT_PAREN ( or_key | and_key ) )
+        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:851:6: LEFT_PAREN ( or_key | and_key )
         {
-        match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_synpred72525); if (failed) return ;
-        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:852:17: ( or_key | and_key )
+        match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_synpred72523); if (failed) return ;
+        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:851:17: ( or_key | and_key )
         int alt104=2;
         int LA104_0 = input.LA(1);
 
@@ -16644,7 +16656,7 @@ public class DRLParser extends Parser {
             else {
                 if (backtracking>0) {failed=true; return ;}
                 NoViableAltException nvae =
-                    new NoViableAltException("852:17: ( or_key | and_key )", 104, 1, input);
+                    new NoViableAltException("851:17: ( or_key | and_key )", 104, 1, input);
 
                 throw nvae;
             }
@@ -16652,15 +16664,15 @@ public class DRLParser extends Parser {
         else {
             if (backtracking>0) {failed=true; return ;}
             NoViableAltException nvae =
-                new NoViableAltException("852:17: ( or_key | and_key )", 104, 0, input);
+                new NoViableAltException("851:17: ( or_key | and_key )", 104, 0, input);
 
             throw nvae;
         }
         switch (alt104) {
             case 1 :
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:852:18: or_key
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:851:18: or_key
                 {
-                pushFollow(FOLLOW_or_key_in_synpred72528);
+                pushFollow(FOLLOW_or_key_in_synpred72526);
                 or_key();
                 _fsp--;
                 if (failed) return ;
@@ -16668,9 +16680,9 @@ public class DRLParser extends Parser {
                 }
                 break;
             case 2 :
-                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:852:25: and_key
+                // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:851:25: and_key
                 {
-                pushFollow(FOLLOW_and_key_in_synpred72530);
+                pushFollow(FOLLOW_and_key_in_synpred72528);
                 and_key();
                 _fsp--;
                 if (failed) return ;
@@ -16687,10 +16699,10 @@ public class DRLParser extends Parser {
 
     // $ANTLR start synpred8
     public final void synpred8_fragment() throws RecognitionException {   
-        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1021:5: ( LEFT_PAREN )
-        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1021:6: LEFT_PAREN
+        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1020:5: ( LEFT_PAREN )
+        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1020:6: LEFT_PAREN
         {
-        match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_synpred83359); if (failed) return ;
+        match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_synpred83357); if (failed) return ;
 
         }
     }
@@ -16698,10 +16710,10 @@ public class DRLParser extends Parser {
 
     // $ANTLR start synpred9
     public final void synpred9_fragment() throws RecognitionException {   
-        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1036:6: ( LEFT_SQUARE )
-        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1036:8: LEFT_SQUARE
+        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1035:6: ( LEFT_SQUARE )
+        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1035:8: LEFT_SQUARE
         {
-        match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_synpred93428); if (failed) return ;
+        match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_synpred93426); if (failed) return ;
 
         }
     }
@@ -16709,10 +16721,10 @@ public class DRLParser extends Parser {
 
     // $ANTLR start synpred10
     public final void synpred10_fragment() throws RecognitionException {   
-        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1038:6: ( LEFT_PAREN )
-        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1038:8: LEFT_PAREN
+        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1037:6: ( LEFT_PAREN )
+        // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1037:8: LEFT_PAREN
         {
-        match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_synpred103450); if (failed) return ;
+        match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_synpred103448); if (failed) return ;
 
         }
     }
@@ -16929,7 +16941,7 @@ public class DRLParser extends Parser {
             this.transition = DFA12_transition;
         }
         public String getDescription() {
-            return "509:3: ( parameters )?";
+            return "508:3: ( parameters )?";
         }
     }
     static final String DFA17_eotS =
@@ -16983,7 +16995,7 @@ public class DRLParser extends Parser {
             this.transition = DFA17_transition;
         }
         public String getDescription() {
-            return "535:4: ( data_type )?";
+            return "534:4: ( data_type )?";
         }
     }
     static final String DFA51_eotS =
@@ -17190,7 +17202,7 @@ public class DRLParser extends Parser {
             this.transition = DFA51_transition;
         }
         public String getDescription() {
-            return "836:10: ( ( LEFT_PAREN ( or_key | and_key ) )=> lhs_or | LEFT_PAREN lhs_or RIGHT_PAREN | lhs_pattern )";
+            return "835:10: ( ( LEFT_PAREN ( or_key | and_key ) )=> lhs_or | LEFT_PAREN lhs_or RIGHT_PAREN | lhs_pattern )";
         }
         public int specialStateTransition(int s, IntStream input) throws NoViableAltException {
         	int _s = s;
@@ -17578,7 +17590,7 @@ public class DRLParser extends Parser {
             this.transition = DFA52_transition;
         }
         public String getDescription() {
-            return "852:3: ( ( LEFT_PAREN ( or_key | and_key ) )=> lhs_or | LEFT_PAREN lhs_or RIGHT_PAREN | lhs_pattern )";
+            return "851:3: ( ( LEFT_PAREN ( or_key | and_key ) )=> lhs_or | LEFT_PAREN lhs_or RIGHT_PAREN | lhs_pattern )";
         }
         public int specialStateTransition(int s, IntStream input) throws NoViableAltException {
         	int _s = s;
@@ -17818,7 +17830,7 @@ public class DRLParser extends Parser {
             this.transition = DFA63_transition;
         }
         public String getDescription() {
-            return "946:2: ( reverse_key pc3= accumulate_paren_chunk[Location.LOCATION_LHS_FROM_ACCUMULATE_REVERSE_INSIDE] (cm3= COMMA )? )?";
+            return "945:2: ( reverse_key pc3= accumulate_paren_chunk[Location.LOCATION_LHS_FROM_ACCUMULATE_REVERSE_INSIDE] (cm3= COMMA )? )?";
         }
         public int specialStateTransition(int s, IntStream input) throws NoViableAltException {
         	int _s = s;
@@ -18007,7 +18019,7 @@ public class DRLParser extends Parser {
             this.transition = DFA68_transition;
         }
         public String getDescription() {
-            return "1035:4: ( ( LEFT_SQUARE )=> square_chunk | ( LEFT_PAREN )=> paren_chunk )?";
+            return "1034:4: ( ( LEFT_SQUARE )=> square_chunk | ( LEFT_PAREN )=> paren_chunk )?";
         }
         public int specialStateTransition(int s, IntStream input) throws NoViableAltException {
         	int _s = s;
@@ -18342,7 +18354,7 @@ public class DRLParser extends Parser {
             this.transition = DFA81_transition;
         }
         public String getDescription() {
-            return "()* loopback of 1145:25: ({...}? => DOUBLE_PIPE and_restr_connective )*";
+            return "()* loopback of 1144:25: ({...}? => DOUBLE_PIPE and_restr_connective )*";
         }
         public int specialStateTransition(int s, IntStream input) throws NoViableAltException {
         	int _s = s;
@@ -18690,7 +18702,7 @@ public class DRLParser extends Parser {
             this.transition = DFA82_transition;
         }
         public String getDescription() {
-            return "()* loopback of 1150:26: ({...}? => DOUBLE_AMPER constraint_expression )*";
+            return "()* loopback of 1149:26: ({...}? => DOUBLE_AMPER constraint_expression )*";
         }
         public int specialStateTransition(int s, IntStream input) throws NoViableAltException {
         	int _s = s;
@@ -19047,346 +19059,346 @@ public class DRLParser extends Parser {
     public static final BitSet FOLLOW_rule_attribute_in_rule_attributes1623 = new BitSet(new long[]{0x0000000000000002L,0x0000000002080000L});
     public static final BitSet FOLLOW_salience_in_rule_attribute1662 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_no_loop_in_rule_attribute1668 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_agenda_group_in_rule_attribute1675 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_duration_in_rule_attribute1682 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_activation_group_in_rule_attribute1689 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_auto_focus_in_rule_attribute1695 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_date_effective_in_rule_attribute1701 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_date_expires_in_rule_attribute1707 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_enabled_in_rule_attribute1713 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleflow_group_in_rule_attribute1719 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_lock_on_active_in_rule_attribute1725 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_dialect_in_rule_attribute1730 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_date_effective_key_in_date_effective1746 = new BitSet(new long[]{0x0000000000000000L,0x0000000000800000L});
-    public static final BitSet FOLLOW_STRING_in_date_effective1751 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_date_expires_key_in_date_expires1765 = new BitSet(new long[]{0x0000000000000000L,0x0000000000800000L});
-    public static final BitSet FOLLOW_STRING_in_date_expires1770 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_enabled_key_in_enabled1785 = new BitSet(new long[]{0x0000000000000000L,0x0000000080000000L});
-    public static final BitSet FOLLOW_BOOL_in_enabled1790 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_salience_key_in_salience1805 = new BitSet(new long[]{0x0000000000000000L,0x0000000101000000L});
-    public static final BitSet FOLLOW_INT_in_salience1814 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_paren_chunk_in_salience1823 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_no_loop_key_in_no_loop1838 = new BitSet(new long[]{0x0000000000000002L,0x0000000080000000L});
-    public static final BitSet FOLLOW_BOOL_in_no_loop1843 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_auto_focus_key_in_auto_focus1858 = new BitSet(new long[]{0x0000000000000002L,0x0000000080000000L});
-    public static final BitSet FOLLOW_BOOL_in_auto_focus1863 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_activation_group_key_in_activation_group1880 = new BitSet(new long[]{0x0000000000000000L,0x0000000000800000L});
-    public static final BitSet FOLLOW_STRING_in_activation_group1885 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleflow_group_key_in_ruleflow_group1899 = new BitSet(new long[]{0x0000000000000000L,0x0000000000800000L});
-    public static final BitSet FOLLOW_STRING_in_ruleflow_group1904 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_agenda_group_key_in_agenda_group1918 = new BitSet(new long[]{0x0000000000000000L,0x0000000000800000L});
-    public static final BitSet FOLLOW_STRING_in_agenda_group1923 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_duration_key_in_duration1937 = new BitSet(new long[]{0x0000000000000000L,0x0000000100000000L});
-    public static final BitSet FOLLOW_INT_in_duration1942 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_dialect_key_in_dialect1958 = new BitSet(new long[]{0x0000000000000000L,0x0000000000800000L});
-    public static final BitSet FOLLOW_STRING_in_dialect1963 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_lock_on_active_key_in_lock_on_active1981 = new BitSet(new long[]{0x0000000000000002L,0x0000000080000000L});
-    public static final BitSet FOLLOW_BOOL_in_lock_on_active1986 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_lhs_in_normal_lhs_block2001 = new BitSet(new long[]{0x0000000000000002L,0x0000000001080000L});
-    public static final BitSet FOLLOW_lhs_or_in_lhs2022 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_lhs_or2046 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
-    public static final BitSet FOLLOW_or_key_in_lhs_or2056 = new BitSet(new long[]{0x0000000000000000L,0x0000000001080000L});
-    public static final BitSet FOLLOW_lhs_and_in_lhs_or2064 = new BitSet(new long[]{0x0000000000000000L,0x0000000005080000L});
-    public static final BitSet FOLLOW_RIGHT_PAREN_in_lhs_or2070 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_lhs_and_in_lhs_or2093 = new BitSet(new long[]{0x0000000000000002L,0x0000000200080000L});
-    public static final BitSet FOLLOW_or_key_in_lhs_or2115 = new BitSet(new long[]{0x0000000000000000L,0x0000000001080000L});
-    public static final BitSet FOLLOW_DOUBLE_PIPE_in_lhs_or2122 = new BitSet(new long[]{0x0000000000000000L,0x0000000001080000L});
-    public static final BitSet FOLLOW_lhs_and_in_lhs_or2133 = new BitSet(new long[]{0x0000000000000002L,0x0000000200080000L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_lhs_and2174 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
-    public static final BitSet FOLLOW_and_key_in_lhs_and2184 = new BitSet(new long[]{0x0000000000000000L,0x0000000001080000L});
-    public static final BitSet FOLLOW_lhs_unary_in_lhs_and2192 = new BitSet(new long[]{0x0000000000000000L,0x0000000005080000L});
-    public static final BitSet FOLLOW_RIGHT_PAREN_in_lhs_and2198 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_lhs_unary_in_lhs_and2222 = new BitSet(new long[]{0x0000000000000002L,0x0000000400080000L});
-    public static final BitSet FOLLOW_and_key_in_lhs_and2244 = new BitSet(new long[]{0x0000000000000000L,0x0000000001080000L});
-    public static final BitSet FOLLOW_DOUBLE_AMPER_in_lhs_and2251 = new BitSet(new long[]{0x0000000000000000L,0x0000000001080000L});
-    public static final BitSet FOLLOW_lhs_unary_in_lhs_and2262 = new BitSet(new long[]{0x0000000000000002L,0x0000000400080000L});
-    public static final BitSet FOLLOW_lhs_exist_in_lhs_unary2293 = new BitSet(new long[]{0x0000000000000002L,0x0000000000040000L});
-    public static final BitSet FOLLOW_lhs_not_binding_in_lhs_unary2301 = new BitSet(new long[]{0x0000000000000002L,0x0000000000040000L});
-    public static final BitSet FOLLOW_lhs_not_in_lhs_unary2307 = new BitSet(new long[]{0x0000000000000002L,0x0000000000040000L});
-    public static final BitSet FOLLOW_lhs_eval_in_lhs_unary2313 = new BitSet(new long[]{0x0000000000000002L,0x0000000000040000L});
-    public static final BitSet FOLLOW_lhs_forall_in_lhs_unary2319 = new BitSet(new long[]{0x0000000000000002L,0x0000000000040000L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_lhs_unary2325 = new BitSet(new long[]{0x0000000000000000L,0x0000000001080000L});
-    public static final BitSet FOLLOW_lhs_or_in_lhs_unary2336 = new BitSet(new long[]{0x0000000000000000L,0x0000000004000000L});
-    public static final BitSet FOLLOW_RIGHT_PAREN_in_lhs_unary2342 = new BitSet(new long[]{0x0000000000000002L,0x0000000000040000L});
-    public static final BitSet FOLLOW_pattern_source_in_lhs_unary2350 = new BitSet(new long[]{0x0000000000000002L,0x0000000000040000L});
-    public static final BitSet FOLLOW_SEMICOLON_in_lhs_unary2364 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_exists_key_in_lhs_exist2380 = new BitSet(new long[]{0x0000000000000000L,0x0000000001080000L});
-    public static final BitSet FOLLOW_lhs_or_in_lhs_exist2407 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_lhs_exist2414 = new BitSet(new long[]{0x0000000000000000L,0x0000000001080000L});
-    public static final BitSet FOLLOW_lhs_or_in_lhs_exist2422 = new BitSet(new long[]{0x0000000000000000L,0x0000000004000000L});
-    public static final BitSet FOLLOW_RIGHT_PAREN_in_lhs_exist2429 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_lhs_pattern_in_lhs_exist2444 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_not_key_in_lhs_not_binding2490 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
-    public static final BitSet FOLLOW_fact_binding_in_lhs_not_binding2492 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_not_key_in_lhs_not2515 = new BitSet(new long[]{0x0000000000000000L,0x0000000001080000L});
-    public static final BitSet FOLLOW_lhs_or_in_lhs_not2537 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_lhs_not2544 = new BitSet(new long[]{0x0000000000000000L,0x0000000001080000L});
-    public static final BitSet FOLLOW_lhs_or_in_lhs_not2553 = new BitSet(new long[]{0x0000000000000000L,0x0000000004000000L});
-    public static final BitSet FOLLOW_RIGHT_PAREN_in_lhs_not2559 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_lhs_pattern_in_lhs_not2569 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_eval_key_in_lhs_eval2608 = new BitSet(new long[]{0x0000000000000000L,0x0000000001000000L});
-    public static final BitSet FOLLOW_paren_chunk_in_lhs_eval2617 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_forall_key_in_lhs_forall2644 = new BitSet(new long[]{0x0000000000000000L,0x0000000001000000L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_lhs_forall2649 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
-    public static final BitSet FOLLOW_lhs_pattern_in_lhs_forall2657 = new BitSet(new long[]{0x0000000000000000L,0x0000000004080000L});
-    public static final BitSet FOLLOW_RIGHT_PAREN_in_lhs_forall2663 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_lhs_pattern_in_pattern_source2699 = new BitSet(new long[]{0x0000000000000002L,0x0000001800000000L});
-    public static final BitSet FOLLOW_over_clause_in_pattern_source2703 = new BitSet(new long[]{0x0000000000000002L,0x0000000800000000L});
-    public static final BitSet FOLLOW_FROM_in_pattern_source2713 = new BitSet(new long[]{0x0000000000000000L,0x000000A000080000L});
-    public static final BitSet FOLLOW_accumulate_statement_in_pattern_source2733 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_collect_statement_in_pattern_source2749 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_entrypoint_statement_in_pattern_source2766 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_from_source_in_pattern_source2782 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_OVER_in_over_clause2814 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
-    public static final BitSet FOLLOW_over_elements_in_over_clause2819 = new BitSet(new long[]{0x0000000000000002L,0x0000000002000000L});
-    public static final BitSet FOLLOW_COMMA_in_over_clause2826 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
-    public static final BitSet FOLLOW_over_elements_in_over_clause2831 = new BitSet(new long[]{0x0000000000000002L,0x0000000002000000L});
-    public static final BitSet FOLLOW_ID_in_over_elements2846 = new BitSet(new long[]{0x0000000000000000L,0x0000000010000000L});
-    public static final BitSet FOLLOW_COLON_in_over_elements2853 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
-    public static final BitSet FOLLOW_ID_in_over_elements2862 = new BitSet(new long[]{0x0000000000000000L,0x0000000001000000L});
-    public static final BitSet FOLLOW_paren_chunk_in_over_elements2869 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ACCUMULATE_in_accumulate_statement2895 = new BitSet(new long[]{0x0000000000000000L,0x0000000001000000L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_accumulate_statement2904 = new BitSet(new long[]{0x0000000000000000L,0x0000000001080000L});
-    public static final BitSet FOLLOW_lhs_or_in_accumulate_statement2912 = new BitSet(new long[]{0x0000000000000000L,0x0000004002080000L});
-    public static final BitSet FOLLOW_COMMA_in_accumulate_statement2917 = new BitSet(new long[]{0x0000000000000000L,0x0000004000080000L});
-    public static final BitSet FOLLOW_accumulate_init_clause_in_accumulate_statement2927 = new BitSet(new long[]{0x0000000000000000L,0x0000000004000000L});
-    public static final BitSet FOLLOW_accumulate_id_clause_in_accumulate_statement2933 = new BitSet(new long[]{0x0000000000000000L,0x0000000004000000L});
-    public static final BitSet FOLLOW_RIGHT_PAREN_in_accumulate_statement2941 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_INIT_in_accumulate_init_clause2987 = new BitSet(new long[]{0x0000000000000000L,0x0000000001000000L});
-    public static final BitSet FOLLOW_accumulate_paren_chunk_in_accumulate_init_clause2998 = new BitSet(new long[]{0x0000000000000000L,0x0000000002080000L});
-    public static final BitSet FOLLOW_COMMA_in_accumulate_init_clause3003 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
-    public static final BitSet FOLLOW_action_key_in_accumulate_init_clause3014 = new BitSet(new long[]{0x0000000000000000L,0x0000000001000000L});
-    public static final BitSet FOLLOW_accumulate_paren_chunk_in_accumulate_init_clause3018 = new BitSet(new long[]{0x0000000000000000L,0x0000000002080000L});
-    public static final BitSet FOLLOW_COMMA_in_accumulate_init_clause3023 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
-    public static final BitSet FOLLOW_reverse_key_in_accumulate_init_clause3036 = new BitSet(new long[]{0x0000000000000000L,0x0000000001000000L});
-    public static final BitSet FOLLOW_accumulate_paren_chunk_in_accumulate_init_clause3040 = new BitSet(new long[]{0x0000000000000000L,0x0000000002080000L});
-    public static final BitSet FOLLOW_COMMA_in_accumulate_init_clause3045 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
-    public static final BitSet FOLLOW_result_key_in_accumulate_init_clause3060 = new BitSet(new long[]{0x0000000000000000L,0x0000000001000000L});
-    public static final BitSet FOLLOW_accumulate_paren_chunk_in_accumulate_init_clause3066 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_accumulate_paren_chunk_data_in_accumulate_paren_chunk3124 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_accumulate_paren_chunk_data3148 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000001L});
-    public static final BitSet FOLLOW_set_in_accumulate_paren_chunk_data3160 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000001L});
-    public static final BitSet FOLLOW_accumulate_paren_chunk_data_in_accumulate_paren_chunk_data3176 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000001L});
-    public static final BitSet FOLLOW_RIGHT_PAREN_in_accumulate_paren_chunk_data3187 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_accumulate_id_clause3203 = new BitSet(new long[]{0x0000000000000000L,0x0000000001000000L});
-    public static final BitSet FOLLOW_paren_chunk_in_accumulate_id_clause3209 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_COLLECT_in_collect_statement3231 = new BitSet(new long[]{0x0000000000000000L,0x0000000001000000L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_collect_statement3240 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
-    public static final BitSet FOLLOW_pattern_source_in_collect_statement3247 = new BitSet(new long[]{0x0000000000000000L,0x0000000004000000L});
-    public static final BitSet FOLLOW_RIGHT_PAREN_in_collect_statement3252 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_entry_point_key_in_entrypoint_statement3279 = new BitSet(new long[]{0x0000000000000000L,0x0000000000880000L});
-    public static final BitSet FOLLOW_entrypoint_id_in_entrypoint_statement3287 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_entrypoint_id3313 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_STRING_in_entrypoint_id3330 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_from_source3350 = new BitSet(new long[]{0x0000000000000002L,0x0000000001100000L});
-    public static final BitSet FOLLOW_paren_chunk_in_from_source3365 = new BitSet(new long[]{0x0000000000000002L,0x0000000000100000L});
-    public static final BitSet FOLLOW_expression_chain_in_from_source3372 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_DOT_in_expression_chain3405 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
-    public static final BitSet FOLLOW_ID_in_expression_chain3412 = new BitSet(new long[]{0x0000000000000002L,0x0004000001100000L});
-    public static final BitSet FOLLOW_square_chunk_in_expression_chain3434 = new BitSet(new long[]{0x0000000000000002L,0x0000000000100000L});
-    public static final BitSet FOLLOW_paren_chunk_in_expression_chain3456 = new BitSet(new long[]{0x0000000000000002L,0x0000000000100000L});
-    public static final BitSet FOLLOW_expression_chain_in_expression_chain3467 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_fact_binding_in_lhs_pattern3500 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_fact_in_lhs_pattern3513 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_label_in_fact_binding3533 = new BitSet(new long[]{0x0000000000000000L,0x0000000001080000L});
-    public static final BitSet FOLLOW_fact_in_fact_binding3539 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_fact_binding3546 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
-    public static final BitSet FOLLOW_fact_binding_expression_in_fact_binding3554 = new BitSet(new long[]{0x0000000000000000L,0x0000000004000000L});
-    public static final BitSet FOLLOW_RIGHT_PAREN_in_fact_binding3562 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_fact_in_fact_binding_expression3603 = new BitSet(new long[]{0x0000000000000002L,0x0000000200080000L});
-    public static final BitSet FOLLOW_or_key_in_fact_binding_expression3615 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
-    public static final BitSet FOLLOW_DOUBLE_PIPE_in_fact_binding_expression3621 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
-    public static final BitSet FOLLOW_fact_in_fact_binding_expression3626 = new BitSet(new long[]{0x0000000000000002L,0x0000000200080000L});
-    public static final BitSet FOLLOW_pattern_type_in_fact3666 = new BitSet(new long[]{0x0000000000000000L,0x0000000001000000L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_fact3671 = new BitSet(new long[]{0x0000000000000000L,0x0000000005080000L});
-    public static final BitSet FOLLOW_constraints_in_fact3682 = new BitSet(new long[]{0x0000000000000000L,0x0000000004000000L});
-    public static final BitSet FOLLOW_RIGHT_PAREN_in_fact3688 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_constraint_in_constraints3722 = new BitSet(new long[]{0x0000000000000002L,0x0000000002000000L});
-    public static final BitSet FOLLOW_COMMA_in_constraints3726 = new BitSet(new long[]{0x0000000000000000L,0x0000000001080000L});
-    public static final BitSet FOLLOW_constraint_in_constraints3733 = new BitSet(new long[]{0x0000000000000002L,0x0000000002000000L});
-    public static final BitSet FOLLOW_or_constr_in_constraint3747 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_and_constr_in_or_constr3758 = new BitSet(new long[]{0x0000000000000002L,0x0000000200000000L});
-    public static final BitSet FOLLOW_DOUBLE_PIPE_in_or_constr3762 = new BitSet(new long[]{0x0000000000000000L,0x0000000001080000L});
-    public static final BitSet FOLLOW_and_constr_in_or_constr3769 = new BitSet(new long[]{0x0000000000000002L,0x0000000200000000L});
-    public static final BitSet FOLLOW_unary_constr_in_and_constr3784 = new BitSet(new long[]{0x0000000000000002L,0x0000000400000000L});
-    public static final BitSet FOLLOW_DOUBLE_AMPER_in_and_constr3788 = new BitSet(new long[]{0x0000000000000000L,0x0000000001080000L});
-    public static final BitSet FOLLOW_unary_constr_in_and_constr3795 = new BitSet(new long[]{0x0000000000000002L,0x0000000400000000L});
-    public static final BitSet FOLLOW_eval_key_in_unary_constr3828 = new BitSet(new long[]{0x0000000000000000L,0x0000000001000000L});
-    public static final BitSet FOLLOW_paren_chunk_in_unary_constr3831 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_field_constraint_in_unary_constr3836 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_unary_constr3842 = new BitSet(new long[]{0x0000000000000000L,0x0000000001080000L});
-    public static final BitSet FOLLOW_or_constr_in_unary_constr3852 = new BitSet(new long[]{0x0000000000000000L,0x0000000004000000L});
-    public static final BitSet FOLLOW_RIGHT_PAREN_in_unary_constr3857 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_label_in_field_constraint3877 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
-    public static final BitSet FOLLOW_accessor_path_in_field_constraint3879 = new BitSet(new long[]{0x0000000000000002L,0x0000FF0001080000L});
-    public static final BitSet FOLLOW_or_restr_connective_in_field_constraint3886 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ARROW_in_field_constraint3892 = new BitSet(new long[]{0x0000000000000000L,0x0000000001000000L});
-    public static final BitSet FOLLOW_paren_chunk_in_field_constraint3896 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_accessor_path_in_field_constraint3950 = new BitSet(new long[]{0x0000000000000000L,0x0000FE0001080000L});
-    public static final BitSet FOLLOW_or_restr_connective_in_field_constraint3952 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_label3977 = new BitSet(new long[]{0x0000000000000000L,0x0000000010000000L});
-    public static final BitSet FOLLOW_COLON_in_label3984 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_and_restr_connective_in_or_restr_connective4005 = new BitSet(new long[]{0x0000000000000002L,0x0000000200000000L});
-    public static final BitSet FOLLOW_DOUBLE_PIPE_in_or_restr_connective4011 = new BitSet(new long[]{0x0000000000000000L,0x0000FE0001080000L});
-    public static final BitSet FOLLOW_and_restr_connective_in_or_restr_connective4019 = new BitSet(new long[]{0x0000000000000002L,0x0000000200000000L});
-    public static final BitSet FOLLOW_constraint_expression_in_and_restr_connective4034 = new BitSet(new long[]{0x0000000000000002L,0x0000000400000000L});
-    public static final BitSet FOLLOW_DOUBLE_AMPER_in_and_restr_connective4040 = new BitSet(new long[]{0x0000000000000000L,0x0000FE0001080000L});
-    public static final BitSet FOLLOW_constraint_expression_in_and_restr_connective4047 = new BitSet(new long[]{0x0000000000000002L,0x0000000400000000L});
-    public static final BitSet FOLLOW_compound_operator_in_constraint_expression4069 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_simple_operator_in_constraint_expression4074 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_constraint_expression4079 = new BitSet(new long[]{0x0000000000000000L,0x0000FE0001080000L});
-    public static final BitSet FOLLOW_or_restr_connective_in_constraint_expression4088 = new BitSet(new long[]{0x0000000000000000L,0x0000000004000000L});
-    public static final BitSet FOLLOW_RIGHT_PAREN_in_constraint_expression4093 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_EQUAL_in_simple_operator4122 = new BitSet(new long[]{0x0000000000000000L,0x0003000181880000L});
-    public static final BitSet FOLLOW_GREATER_in_simple_operator4130 = new BitSet(new long[]{0x0000000000000000L,0x0003000181880000L});
-    public static final BitSet FOLLOW_GREATER_EQUAL_in_simple_operator4138 = new BitSet(new long[]{0x0000000000000000L,0x0003000181880000L});
-    public static final BitSet FOLLOW_LESS_in_simple_operator4146 = new BitSet(new long[]{0x0000000000000000L,0x0003000181880000L});
-    public static final BitSet FOLLOW_LESS_EQUAL_in_simple_operator4154 = new BitSet(new long[]{0x0000000000000000L,0x0003000181880000L});
-    public static final BitSet FOLLOW_NOT_EQUAL_in_simple_operator4162 = new BitSet(new long[]{0x0000000000000000L,0x0003000181880000L});
-    public static final BitSet FOLLOW_not_key_in_simple_operator4170 = new BitSet(new long[]{0x0000000000000000L,0x0000800000080000L});
-    public static final BitSet FOLLOW_contains_key_in_simple_operator4177 = new BitSet(new long[]{0x0000000000000000L,0x0003000181880000L});
-    public static final BitSet FOLLOW_soundslike_key_in_simple_operator4184 = new BitSet(new long[]{0x0000000000000000L,0x0003000181880000L});
-    public static final BitSet FOLLOW_matches_key_in_simple_operator4191 = new BitSet(new long[]{0x0000000000000000L,0x0003000181880000L});
-    public static final BitSet FOLLOW_memberof_key_in_simple_operator4198 = new BitSet(new long[]{0x0000000000000000L,0x0003000181880000L});
-    public static final BitSet FOLLOW_ID_in_simple_operator4207 = new BitSet(new long[]{0x0000000000000000L,0x0003000181880000L});
-    public static final BitSet FOLLOW_GRAVE_ACCENT_in_simple_operator4218 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
-    public static final BitSet FOLLOW_ID_in_simple_operator4226 = new BitSet(new long[]{0x0000000000000000L,0x0004000000000000L});
-    public static final BitSet FOLLOW_square_chunk_in_simple_operator4232 = new BitSet(new long[]{0x0000000000000000L,0x0003000181880000L});
-    public static final BitSet FOLLOW_contains_key_in_simple_operator4238 = new BitSet(new long[]{0x0000000000000000L,0x0003000181880000L});
-    public static final BitSet FOLLOW_excludes_key_in_simple_operator4244 = new BitSet(new long[]{0x0000000000000000L,0x0003000181880000L});
-    public static final BitSet FOLLOW_matches_key_in_simple_operator4250 = new BitSet(new long[]{0x0000000000000000L,0x0003000181880000L});
-    public static final BitSet FOLLOW_soundslike_key_in_simple_operator4256 = new BitSet(new long[]{0x0000000000000000L,0x0003000181880000L});
-    public static final BitSet FOLLOW_memberof_key_in_simple_operator4262 = new BitSet(new long[]{0x0000000000000000L,0x0003000181880000L});
-    public static final BitSet FOLLOW_ID_in_simple_operator4270 = new BitSet(new long[]{0x0000000000000000L,0x0003000181880000L});
-    public static final BitSet FOLLOW_GRAVE_ACCENT_in_simple_operator4280 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
-    public static final BitSet FOLLOW_ID_in_simple_operator4288 = new BitSet(new long[]{0x0000000000000000L,0x0004000000000000L});
-    public static final BitSet FOLLOW_square_chunk_in_simple_operator4294 = new BitSet(new long[]{0x0000000000000000L,0x0003000181880000L});
-    public static final BitSet FOLLOW_expression_value_in_simple_operator4301 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_in_key_in_compound_operator4319 = new BitSet(new long[]{0x0000000000000000L,0x0000000001000000L});
-    public static final BitSet FOLLOW_not_key_in_compound_operator4324 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
-    public static final BitSet FOLLOW_in_key_in_compound_operator4326 = new BitSet(new long[]{0x0000000000000000L,0x0000000001000000L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_compound_operator4337 = new BitSet(new long[]{0x0000000000000000L,0x0003000181880000L});
-    public static final BitSet FOLLOW_expression_value_in_compound_operator4345 = new BitSet(new long[]{0x0000000000000000L,0x0000000006000000L});
-    public static final BitSet FOLLOW_COMMA_in_compound_operator4349 = new BitSet(new long[]{0x0000000000000000L,0x0003000181880000L});
-    public static final BitSet FOLLOW_expression_value_in_compound_operator4354 = new BitSet(new long[]{0x0000000000000000L,0x0000000006000000L});
-    public static final BitSet FOLLOW_RIGHT_PAREN_in_compound_operator4362 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_accessor_path_in_expression_value4383 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_literal_constraint_in_expression_value4388 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_paren_chunk_in_expression_value4394 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_STRING_in_literal_constraint4413 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_INT_in_literal_constraint4420 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_FLOAT_in_literal_constraint4427 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_BOOL_in_literal_constraint4434 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_NULL_in_literal_constraint4441 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_pattern_type4456 = new BitSet(new long[]{0x0000000000000002L,0x0004000000100000L});
-    public static final BitSet FOLLOW_DOT_in_pattern_type4462 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
-    public static final BitSet FOLLOW_ID_in_pattern_type4466 = new BitSet(new long[]{0x0000000000000002L,0x0004000000100000L});
-    public static final BitSet FOLLOW_dimension_definition_in_pattern_type4481 = new BitSet(new long[]{0x0000000000000002L,0x0004000000000000L});
-    public static final BitSet FOLLOW_ID_in_data_type4509 = new BitSet(new long[]{0x0000000000000002L,0x0004000000100000L});
-    public static final BitSet FOLLOW_DOT_in_data_type4515 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
-    public static final BitSet FOLLOW_ID_in_data_type4519 = new BitSet(new long[]{0x0000000000000002L,0x0004000000100000L});
-    public static final BitSet FOLLOW_dimension_definition_in_data_type4524 = new BitSet(new long[]{0x0000000000000002L,0x0004000000000000L});
-    public static final BitSet FOLLOW_LEFT_SQUARE_in_dimension_definition4553 = new BitSet(new long[]{0x0000000000000000L,0x0008000000000000L});
-    public static final BitSet FOLLOW_RIGHT_SQUARE_in_dimension_definition4560 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_accessor_element_in_accessor_path4574 = new BitSet(new long[]{0x0000000000000002L,0x0000000000100000L});
-    public static final BitSet FOLLOW_DOT_in_accessor_path4578 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
-    public static final BitSet FOLLOW_accessor_element_in_accessor_path4582 = new BitSet(new long[]{0x0000000000000002L,0x0000000000100000L});
-    public static final BitSet FOLLOW_ID_in_accessor_element4606 = new BitSet(new long[]{0x0000000000000002L,0x0004000000000000L});
-    public static final BitSet FOLLOW_square_chunk_in_accessor_element4612 = new BitSet(new long[]{0x0000000000000002L,0x0004000000000000L});
-    public static final BitSet FOLLOW_rhs_chunk_data_in_rhs_chunk4641 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_THEN_in_rhs_chunk_data4660 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000001L});
-    public static final BitSet FOLLOW_set_in_rhs_chunk_data4673 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000001L});
-    public static final BitSet FOLLOW_END_in_rhs_chunk_data4686 = new BitSet(new long[]{0x0000000000000002L,0x0000000000040000L});
-    public static final BitSet FOLLOW_SEMICOLON_in_rhs_chunk_data4692 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_curly_chunk_data_in_curly_chunk4711 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_CURLY_in_curly_chunk_data4734 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000001L});
-    public static final BitSet FOLLOW_set_in_curly_chunk_data4746 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000001L});
-    public static final BitSet FOLLOW_curly_chunk_data_in_curly_chunk_data4762 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000001L});
-    public static final BitSet FOLLOW_RIGHT_CURLY_in_curly_chunk_data4773 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_paren_chunk_data_in_paren_chunk4794 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_paren_chunk_data4818 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000001L});
-    public static final BitSet FOLLOW_set_in_paren_chunk_data4830 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000001L});
-    public static final BitSet FOLLOW_paren_chunk_data_in_paren_chunk_data4846 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000001L});
-    public static final BitSet FOLLOW_RIGHT_PAREN_in_paren_chunk_data4857 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_square_chunk_data_in_square_chunk4878 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_SQUARE_in_square_chunk_data4901 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000001L});
-    public static final BitSet FOLLOW_set_in_square_chunk_data4913 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000001L});
-    public static final BitSet FOLLOW_square_chunk_data_in_square_chunk_data4928 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000001L});
-    public static final BitSet FOLLOW_RIGHT_SQUARE_in_square_chunk_data4939 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_lock_on_active_key4963 = new BitSet(new long[]{0x0000000000000000L,0x0080000000000000L});
-    public static final BitSet FOLLOW_MISC_in_lock_on_active_key4967 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
-    public static final BitSet FOLLOW_ID_in_lock_on_active_key4971 = new BitSet(new long[]{0x0000000000000000L,0x0080000000000000L});
-    public static final BitSet FOLLOW_MISC_in_lock_on_active_key4975 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
-    public static final BitSet FOLLOW_ID_in_lock_on_active_key4979 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_date_effective_key5011 = new BitSet(new long[]{0x0000000000000000L,0x0080000000000000L});
-    public static final BitSet FOLLOW_MISC_in_date_effective_key5015 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
-    public static final BitSet FOLLOW_ID_in_date_effective_key5019 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_date_expires_key5051 = new BitSet(new long[]{0x0000000000000000L,0x0080000000000000L});
-    public static final BitSet FOLLOW_MISC_in_date_expires_key5055 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
-    public static final BitSet FOLLOW_ID_in_date_expires_key5059 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_no_loop_key5091 = new BitSet(new long[]{0x0000000000000000L,0x0080000000000000L});
-    public static final BitSet FOLLOW_MISC_in_no_loop_key5095 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
-    public static final BitSet FOLLOW_ID_in_no_loop_key5099 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_auto_focus_key5131 = new BitSet(new long[]{0x0000000000000000L,0x0080000000000000L});
-    public static final BitSet FOLLOW_MISC_in_auto_focus_key5135 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
-    public static final BitSet FOLLOW_ID_in_auto_focus_key5139 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_activation_group_key5171 = new BitSet(new long[]{0x0000000000000000L,0x0080000000000000L});
-    public static final BitSet FOLLOW_MISC_in_activation_group_key5175 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
-    public static final BitSet FOLLOW_ID_in_activation_group_key5179 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_agenda_group_key5211 = new BitSet(new long[]{0x0000000000000000L,0x0080000000000000L});
-    public static final BitSet FOLLOW_MISC_in_agenda_group_key5215 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
-    public static final BitSet FOLLOW_ID_in_agenda_group_key5219 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_ruleflow_group_key5251 = new BitSet(new long[]{0x0000000000000000L,0x0080000000000000L});
-    public static final BitSet FOLLOW_MISC_in_ruleflow_group_key5255 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
-    public static final BitSet FOLLOW_ID_in_ruleflow_group_key5259 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_entry_point_key5291 = new BitSet(new long[]{0x0000000000000000L,0x0080000000000000L});
-    public static final BitSet FOLLOW_MISC_in_entry_point_key5295 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
-    public static final BitSet FOLLOW_ID_in_entry_point_key5299 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_duration_key5328 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_package_key5355 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_import_key5382 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_dialect_key5409 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_salience_key5436 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_enabled_key5463 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_attributes_key5490 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_rule_key5517 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_template_key5544 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_query_key5571 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_declare_key5598 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_function_key5625 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_global_key5652 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_eval_key5679 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_contains_key5706 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_matches_key5733 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_excludes_key5760 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_soundslike_key5787 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_memberof_key5814 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_not_key5841 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_in_key5868 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_or_key5895 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_and_key5922 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_exists_key5949 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_forall_key5976 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_action_key6003 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_reverse_key6030 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_result_key6057 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_synpred12037 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
-    public static final BitSet FOLLOW_or_key_in_synpred12039 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_or_key_in_synpred22106 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_DOUBLE_PIPE_in_synpred22108 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_synpred32165 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
-    public static final BitSet FOLLOW_and_key_in_synpred32167 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_and_key_in_synpred42235 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_DOUBLE_AMPER_in_synpred42237 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_SEMICOLON_in_synpred52360 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_synpred62397 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
-    public static final BitSet FOLLOW_or_key_in_synpred62400 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_and_key_in_synpred62402 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_synpred72525 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
-    public static final BitSet FOLLOW_or_key_in_synpred72528 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_and_key_in_synpred72530 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_synpred83359 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_SQUARE_in_synpred93428 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_synpred103450 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_agenda_group_in_rule_attribute1673 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_duration_in_rule_attribute1680 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_activation_group_in_rule_attribute1687 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_auto_focus_in_rule_attribute1693 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_date_effective_in_rule_attribute1699 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_date_expires_in_rule_attribute1705 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_enabled_in_rule_attribute1711 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleflow_group_in_rule_attribute1717 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_lock_on_active_in_rule_attribute1723 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_dialect_in_rule_attribute1728 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_date_effective_key_in_date_effective1744 = new BitSet(new long[]{0x0000000000000000L,0x0000000000800000L});
+    public static final BitSet FOLLOW_STRING_in_date_effective1749 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_date_expires_key_in_date_expires1763 = new BitSet(new long[]{0x0000000000000000L,0x0000000000800000L});
+    public static final BitSet FOLLOW_STRING_in_date_expires1768 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_enabled_key_in_enabled1783 = new BitSet(new long[]{0x0000000000000000L,0x0000000080000000L});
+    public static final BitSet FOLLOW_BOOL_in_enabled1788 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_salience_key_in_salience1803 = new BitSet(new long[]{0x0000000000000000L,0x0000000101000000L});
+    public static final BitSet FOLLOW_INT_in_salience1812 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_paren_chunk_in_salience1821 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_no_loop_key_in_no_loop1836 = new BitSet(new long[]{0x0000000000000002L,0x0000000080000000L});
+    public static final BitSet FOLLOW_BOOL_in_no_loop1841 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_auto_focus_key_in_auto_focus1856 = new BitSet(new long[]{0x0000000000000002L,0x0000000080000000L});
+    public static final BitSet FOLLOW_BOOL_in_auto_focus1861 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_activation_group_key_in_activation_group1878 = new BitSet(new long[]{0x0000000000000000L,0x0000000000800000L});
+    public static final BitSet FOLLOW_STRING_in_activation_group1883 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleflow_group_key_in_ruleflow_group1897 = new BitSet(new long[]{0x0000000000000000L,0x0000000000800000L});
+    public static final BitSet FOLLOW_STRING_in_ruleflow_group1902 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_agenda_group_key_in_agenda_group1916 = new BitSet(new long[]{0x0000000000000000L,0x0000000000800000L});
+    public static final BitSet FOLLOW_STRING_in_agenda_group1921 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_duration_key_in_duration1935 = new BitSet(new long[]{0x0000000000000000L,0x0000000100000000L});
+    public static final BitSet FOLLOW_INT_in_duration1940 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_dialect_key_in_dialect1956 = new BitSet(new long[]{0x0000000000000000L,0x0000000000800000L});
+    public static final BitSet FOLLOW_STRING_in_dialect1961 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_lock_on_active_key_in_lock_on_active1979 = new BitSet(new long[]{0x0000000000000002L,0x0000000080000000L});
+    public static final BitSet FOLLOW_BOOL_in_lock_on_active1984 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_lhs_in_normal_lhs_block1999 = new BitSet(new long[]{0x0000000000000002L,0x0000000001080000L});
+    public static final BitSet FOLLOW_lhs_or_in_lhs2020 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_lhs_or2044 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
+    public static final BitSet FOLLOW_or_key_in_lhs_or2054 = new BitSet(new long[]{0x0000000000000000L,0x0000000001080000L});
+    public static final BitSet FOLLOW_lhs_and_in_lhs_or2062 = new BitSet(new long[]{0x0000000000000000L,0x0000000005080000L});
+    public static final BitSet FOLLOW_RIGHT_PAREN_in_lhs_or2068 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_lhs_and_in_lhs_or2091 = new BitSet(new long[]{0x0000000000000002L,0x0000000200080000L});
+    public static final BitSet FOLLOW_or_key_in_lhs_or2113 = new BitSet(new long[]{0x0000000000000000L,0x0000000001080000L});
+    public static final BitSet FOLLOW_DOUBLE_PIPE_in_lhs_or2120 = new BitSet(new long[]{0x0000000000000000L,0x0000000001080000L});
+    public static final BitSet FOLLOW_lhs_and_in_lhs_or2131 = new BitSet(new long[]{0x0000000000000002L,0x0000000200080000L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_lhs_and2172 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
+    public static final BitSet FOLLOW_and_key_in_lhs_and2182 = new BitSet(new long[]{0x0000000000000000L,0x0000000001080000L});
+    public static final BitSet FOLLOW_lhs_unary_in_lhs_and2190 = new BitSet(new long[]{0x0000000000000000L,0x0000000005080000L});
+    public static final BitSet FOLLOW_RIGHT_PAREN_in_lhs_and2196 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_lhs_unary_in_lhs_and2220 = new BitSet(new long[]{0x0000000000000002L,0x0000000400080000L});
+    public static final BitSet FOLLOW_and_key_in_lhs_and2242 = new BitSet(new long[]{0x0000000000000000L,0x0000000001080000L});
+    public static final BitSet FOLLOW_DOUBLE_AMPER_in_lhs_and2249 = new BitSet(new long[]{0x0000000000000000L,0x0000000001080000L});
+    public static final BitSet FOLLOW_lhs_unary_in_lhs_and2260 = new BitSet(new long[]{0x0000000000000002L,0x0000000400080000L});
+    public static final BitSet FOLLOW_lhs_exist_in_lhs_unary2291 = new BitSet(new long[]{0x0000000000000002L,0x0000000000040000L});
+    public static final BitSet FOLLOW_lhs_not_binding_in_lhs_unary2299 = new BitSet(new long[]{0x0000000000000002L,0x0000000000040000L});
+    public static final BitSet FOLLOW_lhs_not_in_lhs_unary2305 = new BitSet(new long[]{0x0000000000000002L,0x0000000000040000L});
+    public static final BitSet FOLLOW_lhs_eval_in_lhs_unary2311 = new BitSet(new long[]{0x0000000000000002L,0x0000000000040000L});
+    public static final BitSet FOLLOW_lhs_forall_in_lhs_unary2317 = new BitSet(new long[]{0x0000000000000002L,0x0000000000040000L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_lhs_unary2323 = new BitSet(new long[]{0x0000000000000000L,0x0000000001080000L});
+    public static final BitSet FOLLOW_lhs_or_in_lhs_unary2334 = new BitSet(new long[]{0x0000000000000000L,0x0000000004000000L});
+    public static final BitSet FOLLOW_RIGHT_PAREN_in_lhs_unary2340 = new BitSet(new long[]{0x0000000000000002L,0x0000000000040000L});
+    public static final BitSet FOLLOW_pattern_source_in_lhs_unary2348 = new BitSet(new long[]{0x0000000000000002L,0x0000000000040000L});
+    public static final BitSet FOLLOW_SEMICOLON_in_lhs_unary2362 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_exists_key_in_lhs_exist2378 = new BitSet(new long[]{0x0000000000000000L,0x0000000001080000L});
+    public static final BitSet FOLLOW_lhs_or_in_lhs_exist2405 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_lhs_exist2412 = new BitSet(new long[]{0x0000000000000000L,0x0000000001080000L});
+    public static final BitSet FOLLOW_lhs_or_in_lhs_exist2420 = new BitSet(new long[]{0x0000000000000000L,0x0000000004000000L});
+    public static final BitSet FOLLOW_RIGHT_PAREN_in_lhs_exist2427 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_lhs_pattern_in_lhs_exist2442 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_not_key_in_lhs_not_binding2488 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
+    public static final BitSet FOLLOW_fact_binding_in_lhs_not_binding2490 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_not_key_in_lhs_not2513 = new BitSet(new long[]{0x0000000000000000L,0x0000000001080000L});
+    public static final BitSet FOLLOW_lhs_or_in_lhs_not2535 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_lhs_not2542 = new BitSet(new long[]{0x0000000000000000L,0x0000000001080000L});
+    public static final BitSet FOLLOW_lhs_or_in_lhs_not2551 = new BitSet(new long[]{0x0000000000000000L,0x0000000004000000L});
+    public static final BitSet FOLLOW_RIGHT_PAREN_in_lhs_not2557 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_lhs_pattern_in_lhs_not2567 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_eval_key_in_lhs_eval2606 = new BitSet(new long[]{0x0000000000000000L,0x0000000001000000L});
+    public static final BitSet FOLLOW_paren_chunk_in_lhs_eval2615 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_forall_key_in_lhs_forall2642 = new BitSet(new long[]{0x0000000000000000L,0x0000000001000000L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_lhs_forall2647 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
+    public static final BitSet FOLLOW_lhs_pattern_in_lhs_forall2655 = new BitSet(new long[]{0x0000000000000000L,0x0000000004080000L});
+    public static final BitSet FOLLOW_RIGHT_PAREN_in_lhs_forall2661 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_lhs_pattern_in_pattern_source2697 = new BitSet(new long[]{0x0000000000000002L,0x0000001800000000L});
+    public static final BitSet FOLLOW_over_clause_in_pattern_source2701 = new BitSet(new long[]{0x0000000000000002L,0x0000000800000000L});
+    public static final BitSet FOLLOW_FROM_in_pattern_source2711 = new BitSet(new long[]{0x0000000000000000L,0x000000A000080000L});
+    public static final BitSet FOLLOW_accumulate_statement_in_pattern_source2731 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_collect_statement_in_pattern_source2747 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_entrypoint_statement_in_pattern_source2764 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_from_source_in_pattern_source2780 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_OVER_in_over_clause2812 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
+    public static final BitSet FOLLOW_over_elements_in_over_clause2817 = new BitSet(new long[]{0x0000000000000002L,0x0000000002000000L});
+    public static final BitSet FOLLOW_COMMA_in_over_clause2824 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
+    public static final BitSet FOLLOW_over_elements_in_over_clause2829 = new BitSet(new long[]{0x0000000000000002L,0x0000000002000000L});
+    public static final BitSet FOLLOW_ID_in_over_elements2844 = new BitSet(new long[]{0x0000000000000000L,0x0000000010000000L});
+    public static final BitSet FOLLOW_COLON_in_over_elements2851 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
+    public static final BitSet FOLLOW_ID_in_over_elements2860 = new BitSet(new long[]{0x0000000000000000L,0x0000000001000000L});
+    public static final BitSet FOLLOW_paren_chunk_in_over_elements2867 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ACCUMULATE_in_accumulate_statement2893 = new BitSet(new long[]{0x0000000000000000L,0x0000000001000000L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_accumulate_statement2902 = new BitSet(new long[]{0x0000000000000000L,0x0000000001080000L});
+    public static final BitSet FOLLOW_lhs_or_in_accumulate_statement2910 = new BitSet(new long[]{0x0000000000000000L,0x0000004002080000L});
+    public static final BitSet FOLLOW_COMMA_in_accumulate_statement2915 = new BitSet(new long[]{0x0000000000000000L,0x0000004000080000L});
+    public static final BitSet FOLLOW_accumulate_init_clause_in_accumulate_statement2925 = new BitSet(new long[]{0x0000000000000000L,0x0000000004000000L});
+    public static final BitSet FOLLOW_accumulate_id_clause_in_accumulate_statement2931 = new BitSet(new long[]{0x0000000000000000L,0x0000000004000000L});
+    public static final BitSet FOLLOW_RIGHT_PAREN_in_accumulate_statement2939 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_INIT_in_accumulate_init_clause2985 = new BitSet(new long[]{0x0000000000000000L,0x0000000001000000L});
+    public static final BitSet FOLLOW_accumulate_paren_chunk_in_accumulate_init_clause2996 = new BitSet(new long[]{0x0000000000000000L,0x0000000002080000L});
+    public static final BitSet FOLLOW_COMMA_in_accumulate_init_clause3001 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
+    public static final BitSet FOLLOW_action_key_in_accumulate_init_clause3012 = new BitSet(new long[]{0x0000000000000000L,0x0000000001000000L});
+    public static final BitSet FOLLOW_accumulate_paren_chunk_in_accumulate_init_clause3016 = new BitSet(new long[]{0x0000000000000000L,0x0000000002080000L});
+    public static final BitSet FOLLOW_COMMA_in_accumulate_init_clause3021 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
+    public static final BitSet FOLLOW_reverse_key_in_accumulate_init_clause3034 = new BitSet(new long[]{0x0000000000000000L,0x0000000001000000L});
+    public static final BitSet FOLLOW_accumulate_paren_chunk_in_accumulate_init_clause3038 = new BitSet(new long[]{0x0000000000000000L,0x0000000002080000L});
+    public static final BitSet FOLLOW_COMMA_in_accumulate_init_clause3043 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
+    public static final BitSet FOLLOW_result_key_in_accumulate_init_clause3058 = new BitSet(new long[]{0x0000000000000000L,0x0000000001000000L});
+    public static final BitSet FOLLOW_accumulate_paren_chunk_in_accumulate_init_clause3064 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_accumulate_paren_chunk_data_in_accumulate_paren_chunk3122 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_accumulate_paren_chunk_data3146 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000001L});
+    public static final BitSet FOLLOW_set_in_accumulate_paren_chunk_data3158 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000001L});
+    public static final BitSet FOLLOW_accumulate_paren_chunk_data_in_accumulate_paren_chunk_data3174 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000001L});
+    public static final BitSet FOLLOW_RIGHT_PAREN_in_accumulate_paren_chunk_data3185 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_accumulate_id_clause3201 = new BitSet(new long[]{0x0000000000000000L,0x0000000001000000L});
+    public static final BitSet FOLLOW_paren_chunk_in_accumulate_id_clause3207 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_COLLECT_in_collect_statement3229 = new BitSet(new long[]{0x0000000000000000L,0x0000000001000000L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_collect_statement3238 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
+    public static final BitSet FOLLOW_pattern_source_in_collect_statement3245 = new BitSet(new long[]{0x0000000000000000L,0x0000000004000000L});
+    public static final BitSet FOLLOW_RIGHT_PAREN_in_collect_statement3250 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_entry_point_key_in_entrypoint_statement3277 = new BitSet(new long[]{0x0000000000000000L,0x0000000000880000L});
+    public static final BitSet FOLLOW_entrypoint_id_in_entrypoint_statement3285 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_entrypoint_id3311 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_STRING_in_entrypoint_id3328 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_from_source3348 = new BitSet(new long[]{0x0000000000000002L,0x0000000001100000L});
+    public static final BitSet FOLLOW_paren_chunk_in_from_source3363 = new BitSet(new long[]{0x0000000000000002L,0x0000000000100000L});
+    public static final BitSet FOLLOW_expression_chain_in_from_source3370 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_DOT_in_expression_chain3403 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
+    public static final BitSet FOLLOW_ID_in_expression_chain3410 = new BitSet(new long[]{0x0000000000000002L,0x0004000001100000L});
+    public static final BitSet FOLLOW_square_chunk_in_expression_chain3432 = new BitSet(new long[]{0x0000000000000002L,0x0000000000100000L});
+    public static final BitSet FOLLOW_paren_chunk_in_expression_chain3454 = new BitSet(new long[]{0x0000000000000002L,0x0000000000100000L});
+    public static final BitSet FOLLOW_expression_chain_in_expression_chain3465 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_fact_binding_in_lhs_pattern3498 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_fact_in_lhs_pattern3511 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_label_in_fact_binding3531 = new BitSet(new long[]{0x0000000000000000L,0x0000000001080000L});
+    public static final BitSet FOLLOW_fact_in_fact_binding3537 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_fact_binding3544 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
+    public static final BitSet FOLLOW_fact_binding_expression_in_fact_binding3552 = new BitSet(new long[]{0x0000000000000000L,0x0000000004000000L});
+    public static final BitSet FOLLOW_RIGHT_PAREN_in_fact_binding3560 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_fact_in_fact_binding_expression3601 = new BitSet(new long[]{0x0000000000000002L,0x0000000200080000L});
+    public static final BitSet FOLLOW_or_key_in_fact_binding_expression3613 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
+    public static final BitSet FOLLOW_DOUBLE_PIPE_in_fact_binding_expression3619 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
+    public static final BitSet FOLLOW_fact_in_fact_binding_expression3624 = new BitSet(new long[]{0x0000000000000002L,0x0000000200080000L});
+    public static final BitSet FOLLOW_pattern_type_in_fact3664 = new BitSet(new long[]{0x0000000000000000L,0x0000000001000000L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_fact3669 = new BitSet(new long[]{0x0000000000000000L,0x0000000005080000L});
+    public static final BitSet FOLLOW_constraints_in_fact3680 = new BitSet(new long[]{0x0000000000000000L,0x0000000004000000L});
+    public static final BitSet FOLLOW_RIGHT_PAREN_in_fact3686 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_constraint_in_constraints3720 = new BitSet(new long[]{0x0000000000000002L,0x0000000002000000L});
+    public static final BitSet FOLLOW_COMMA_in_constraints3724 = new BitSet(new long[]{0x0000000000000000L,0x0000000001080000L});
+    public static final BitSet FOLLOW_constraint_in_constraints3731 = new BitSet(new long[]{0x0000000000000002L,0x0000000002000000L});
+    public static final BitSet FOLLOW_or_constr_in_constraint3745 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_and_constr_in_or_constr3756 = new BitSet(new long[]{0x0000000000000002L,0x0000000200000000L});
+    public static final BitSet FOLLOW_DOUBLE_PIPE_in_or_constr3760 = new BitSet(new long[]{0x0000000000000000L,0x0000000001080000L});
+    public static final BitSet FOLLOW_and_constr_in_or_constr3767 = new BitSet(new long[]{0x0000000000000002L,0x0000000200000000L});
+    public static final BitSet FOLLOW_unary_constr_in_and_constr3782 = new BitSet(new long[]{0x0000000000000002L,0x0000000400000000L});
+    public static final BitSet FOLLOW_DOUBLE_AMPER_in_and_constr3786 = new BitSet(new long[]{0x0000000000000000L,0x0000000001080000L});
+    public static final BitSet FOLLOW_unary_constr_in_and_constr3793 = new BitSet(new long[]{0x0000000000000002L,0x0000000400000000L});
+    public static final BitSet FOLLOW_eval_key_in_unary_constr3826 = new BitSet(new long[]{0x0000000000000000L,0x0000000001000000L});
+    public static final BitSet FOLLOW_paren_chunk_in_unary_constr3829 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_field_constraint_in_unary_constr3834 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_unary_constr3840 = new BitSet(new long[]{0x0000000000000000L,0x0000000001080000L});
+    public static final BitSet FOLLOW_or_constr_in_unary_constr3850 = new BitSet(new long[]{0x0000000000000000L,0x0000000004000000L});
+    public static final BitSet FOLLOW_RIGHT_PAREN_in_unary_constr3855 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_label_in_field_constraint3875 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
+    public static final BitSet FOLLOW_accessor_path_in_field_constraint3877 = new BitSet(new long[]{0x0000000000000002L,0x0000FF0001080000L});
+    public static final BitSet FOLLOW_or_restr_connective_in_field_constraint3884 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ARROW_in_field_constraint3890 = new BitSet(new long[]{0x0000000000000000L,0x0000000001000000L});
+    public static final BitSet FOLLOW_paren_chunk_in_field_constraint3894 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_accessor_path_in_field_constraint3948 = new BitSet(new long[]{0x0000000000000000L,0x0000FE0001080000L});
+    public static final BitSet FOLLOW_or_restr_connective_in_field_constraint3950 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_label3975 = new BitSet(new long[]{0x0000000000000000L,0x0000000010000000L});
+    public static final BitSet FOLLOW_COLON_in_label3982 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_and_restr_connective_in_or_restr_connective4003 = new BitSet(new long[]{0x0000000000000002L,0x0000000200000000L});
+    public static final BitSet FOLLOW_DOUBLE_PIPE_in_or_restr_connective4009 = new BitSet(new long[]{0x0000000000000000L,0x0000FE0001080000L});
+    public static final BitSet FOLLOW_and_restr_connective_in_or_restr_connective4017 = new BitSet(new long[]{0x0000000000000002L,0x0000000200000000L});
+    public static final BitSet FOLLOW_constraint_expression_in_and_restr_connective4032 = new BitSet(new long[]{0x0000000000000002L,0x0000000400000000L});
+    public static final BitSet FOLLOW_DOUBLE_AMPER_in_and_restr_connective4038 = new BitSet(new long[]{0x0000000000000000L,0x0000FE0001080000L});
+    public static final BitSet FOLLOW_constraint_expression_in_and_restr_connective4045 = new BitSet(new long[]{0x0000000000000002L,0x0000000400000000L});
+    public static final BitSet FOLLOW_compound_operator_in_constraint_expression4067 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_simple_operator_in_constraint_expression4072 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_constraint_expression4077 = new BitSet(new long[]{0x0000000000000000L,0x0000FE0001080000L});
+    public static final BitSet FOLLOW_or_restr_connective_in_constraint_expression4086 = new BitSet(new long[]{0x0000000000000000L,0x0000000004000000L});
+    public static final BitSet FOLLOW_RIGHT_PAREN_in_constraint_expression4091 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_EQUAL_in_simple_operator4120 = new BitSet(new long[]{0x0000000000000000L,0x0003000181880000L});
+    public static final BitSet FOLLOW_GREATER_in_simple_operator4128 = new BitSet(new long[]{0x0000000000000000L,0x0003000181880000L});
+    public static final BitSet FOLLOW_GREATER_EQUAL_in_simple_operator4136 = new BitSet(new long[]{0x0000000000000000L,0x0003000181880000L});
+    public static final BitSet FOLLOW_LESS_in_simple_operator4144 = new BitSet(new long[]{0x0000000000000000L,0x0003000181880000L});
+    public static final BitSet FOLLOW_LESS_EQUAL_in_simple_operator4152 = new BitSet(new long[]{0x0000000000000000L,0x0003000181880000L});
+    public static final BitSet FOLLOW_NOT_EQUAL_in_simple_operator4160 = new BitSet(new long[]{0x0000000000000000L,0x0003000181880000L});
+    public static final BitSet FOLLOW_not_key_in_simple_operator4168 = new BitSet(new long[]{0x0000000000000000L,0x0000800000080000L});
+    public static final BitSet FOLLOW_contains_key_in_simple_operator4175 = new BitSet(new long[]{0x0000000000000000L,0x0003000181880000L});
+    public static final BitSet FOLLOW_soundslike_key_in_simple_operator4182 = new BitSet(new long[]{0x0000000000000000L,0x0003000181880000L});
+    public static final BitSet FOLLOW_matches_key_in_simple_operator4189 = new BitSet(new long[]{0x0000000000000000L,0x0003000181880000L});
+    public static final BitSet FOLLOW_memberof_key_in_simple_operator4196 = new BitSet(new long[]{0x0000000000000000L,0x0003000181880000L});
+    public static final BitSet FOLLOW_ID_in_simple_operator4205 = new BitSet(new long[]{0x0000000000000000L,0x0003000181880000L});
+    public static final BitSet FOLLOW_GRAVE_ACCENT_in_simple_operator4216 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
+    public static final BitSet FOLLOW_ID_in_simple_operator4224 = new BitSet(new long[]{0x0000000000000000L,0x0004000000000000L});
+    public static final BitSet FOLLOW_square_chunk_in_simple_operator4230 = new BitSet(new long[]{0x0000000000000000L,0x0003000181880000L});
+    public static final BitSet FOLLOW_contains_key_in_simple_operator4236 = new BitSet(new long[]{0x0000000000000000L,0x0003000181880000L});
+    public static final BitSet FOLLOW_excludes_key_in_simple_operator4242 = new BitSet(new long[]{0x0000000000000000L,0x0003000181880000L});
+    public static final BitSet FOLLOW_matches_key_in_simple_operator4248 = new BitSet(new long[]{0x0000000000000000L,0x0003000181880000L});
+    public static final BitSet FOLLOW_soundslike_key_in_simple_operator4254 = new BitSet(new long[]{0x0000000000000000L,0x0003000181880000L});
+    public static final BitSet FOLLOW_memberof_key_in_simple_operator4260 = new BitSet(new long[]{0x0000000000000000L,0x0003000181880000L});
+    public static final BitSet FOLLOW_ID_in_simple_operator4268 = new BitSet(new long[]{0x0000000000000000L,0x0003000181880000L});
+    public static final BitSet FOLLOW_GRAVE_ACCENT_in_simple_operator4278 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
+    public static final BitSet FOLLOW_ID_in_simple_operator4286 = new BitSet(new long[]{0x0000000000000000L,0x0004000000000000L});
+    public static final BitSet FOLLOW_square_chunk_in_simple_operator4292 = new BitSet(new long[]{0x0000000000000000L,0x0003000181880000L});
+    public static final BitSet FOLLOW_expression_value_in_simple_operator4299 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_in_key_in_compound_operator4317 = new BitSet(new long[]{0x0000000000000000L,0x0000000001000000L});
+    public static final BitSet FOLLOW_not_key_in_compound_operator4322 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
+    public static final BitSet FOLLOW_in_key_in_compound_operator4324 = new BitSet(new long[]{0x0000000000000000L,0x0000000001000000L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_compound_operator4335 = new BitSet(new long[]{0x0000000000000000L,0x0003000181880000L});
+    public static final BitSet FOLLOW_expression_value_in_compound_operator4343 = new BitSet(new long[]{0x0000000000000000L,0x0000000006000000L});
+    public static final BitSet FOLLOW_COMMA_in_compound_operator4347 = new BitSet(new long[]{0x0000000000000000L,0x0003000181880000L});
+    public static final BitSet FOLLOW_expression_value_in_compound_operator4352 = new BitSet(new long[]{0x0000000000000000L,0x0000000006000000L});
+    public static final BitSet FOLLOW_RIGHT_PAREN_in_compound_operator4360 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_accessor_path_in_expression_value4381 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_literal_constraint_in_expression_value4386 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_paren_chunk_in_expression_value4392 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_STRING_in_literal_constraint4411 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_INT_in_literal_constraint4418 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_FLOAT_in_literal_constraint4425 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_BOOL_in_literal_constraint4432 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_NULL_in_literal_constraint4439 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_pattern_type4454 = new BitSet(new long[]{0x0000000000000002L,0x0004000000100000L});
+    public static final BitSet FOLLOW_DOT_in_pattern_type4460 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
+    public static final BitSet FOLLOW_ID_in_pattern_type4464 = new BitSet(new long[]{0x0000000000000002L,0x0004000000100000L});
+    public static final BitSet FOLLOW_dimension_definition_in_pattern_type4479 = new BitSet(new long[]{0x0000000000000002L,0x0004000000000000L});
+    public static final BitSet FOLLOW_ID_in_data_type4507 = new BitSet(new long[]{0x0000000000000002L,0x0004000000100000L});
+    public static final BitSet FOLLOW_DOT_in_data_type4513 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
+    public static final BitSet FOLLOW_ID_in_data_type4517 = new BitSet(new long[]{0x0000000000000002L,0x0004000000100000L});
+    public static final BitSet FOLLOW_dimension_definition_in_data_type4522 = new BitSet(new long[]{0x0000000000000002L,0x0004000000000000L});
+    public static final BitSet FOLLOW_LEFT_SQUARE_in_dimension_definition4551 = new BitSet(new long[]{0x0000000000000000L,0x0008000000000000L});
+    public static final BitSet FOLLOW_RIGHT_SQUARE_in_dimension_definition4558 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_accessor_element_in_accessor_path4572 = new BitSet(new long[]{0x0000000000000002L,0x0000000000100000L});
+    public static final BitSet FOLLOW_DOT_in_accessor_path4576 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
+    public static final BitSet FOLLOW_accessor_element_in_accessor_path4580 = new BitSet(new long[]{0x0000000000000002L,0x0000000000100000L});
+    public static final BitSet FOLLOW_ID_in_accessor_element4604 = new BitSet(new long[]{0x0000000000000002L,0x0004000000000000L});
+    public static final BitSet FOLLOW_square_chunk_in_accessor_element4610 = new BitSet(new long[]{0x0000000000000002L,0x0004000000000000L});
+    public static final BitSet FOLLOW_rhs_chunk_data_in_rhs_chunk4639 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_THEN_in_rhs_chunk_data4658 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000001L});
+    public static final BitSet FOLLOW_set_in_rhs_chunk_data4671 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000001L});
+    public static final BitSet FOLLOW_END_in_rhs_chunk_data4684 = new BitSet(new long[]{0x0000000000000002L,0x0000000000040000L});
+    public static final BitSet FOLLOW_SEMICOLON_in_rhs_chunk_data4690 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_curly_chunk_data_in_curly_chunk4709 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_CURLY_in_curly_chunk_data4732 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000001L});
+    public static final BitSet FOLLOW_set_in_curly_chunk_data4744 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000001L});
+    public static final BitSet FOLLOW_curly_chunk_data_in_curly_chunk_data4760 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000001L});
+    public static final BitSet FOLLOW_RIGHT_CURLY_in_curly_chunk_data4771 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_paren_chunk_data_in_paren_chunk4792 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_paren_chunk_data4816 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000001L});
+    public static final BitSet FOLLOW_set_in_paren_chunk_data4828 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000001L});
+    public static final BitSet FOLLOW_paren_chunk_data_in_paren_chunk_data4844 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000001L});
+    public static final BitSet FOLLOW_RIGHT_PAREN_in_paren_chunk_data4855 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_square_chunk_data_in_square_chunk4876 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_SQUARE_in_square_chunk_data4899 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000001L});
+    public static final BitSet FOLLOW_set_in_square_chunk_data4911 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000001L});
+    public static final BitSet FOLLOW_square_chunk_data_in_square_chunk_data4926 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000001L});
+    public static final BitSet FOLLOW_RIGHT_SQUARE_in_square_chunk_data4937 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_lock_on_active_key4961 = new BitSet(new long[]{0x0000000000000000L,0x0080000000000000L});
+    public static final BitSet FOLLOW_MISC_in_lock_on_active_key4965 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
+    public static final BitSet FOLLOW_ID_in_lock_on_active_key4969 = new BitSet(new long[]{0x0000000000000000L,0x0080000000000000L});
+    public static final BitSet FOLLOW_MISC_in_lock_on_active_key4973 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
+    public static final BitSet FOLLOW_ID_in_lock_on_active_key4977 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_date_effective_key5009 = new BitSet(new long[]{0x0000000000000000L,0x0080000000000000L});
+    public static final BitSet FOLLOW_MISC_in_date_effective_key5013 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
+    public static final BitSet FOLLOW_ID_in_date_effective_key5017 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_date_expires_key5049 = new BitSet(new long[]{0x0000000000000000L,0x0080000000000000L});
+    public static final BitSet FOLLOW_MISC_in_date_expires_key5053 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
+    public static final BitSet FOLLOW_ID_in_date_expires_key5057 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_no_loop_key5089 = new BitSet(new long[]{0x0000000000000000L,0x0080000000000000L});
+    public static final BitSet FOLLOW_MISC_in_no_loop_key5093 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
+    public static final BitSet FOLLOW_ID_in_no_loop_key5097 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_auto_focus_key5129 = new BitSet(new long[]{0x0000000000000000L,0x0080000000000000L});
+    public static final BitSet FOLLOW_MISC_in_auto_focus_key5133 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
+    public static final BitSet FOLLOW_ID_in_auto_focus_key5137 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_activation_group_key5169 = new BitSet(new long[]{0x0000000000000000L,0x0080000000000000L});
+    public static final BitSet FOLLOW_MISC_in_activation_group_key5173 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
+    public static final BitSet FOLLOW_ID_in_activation_group_key5177 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_agenda_group_key5209 = new BitSet(new long[]{0x0000000000000000L,0x0080000000000000L});
+    public static final BitSet FOLLOW_MISC_in_agenda_group_key5213 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
+    public static final BitSet FOLLOW_ID_in_agenda_group_key5217 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_ruleflow_group_key5249 = new BitSet(new long[]{0x0000000000000000L,0x0080000000000000L});
+    public static final BitSet FOLLOW_MISC_in_ruleflow_group_key5253 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
+    public static final BitSet FOLLOW_ID_in_ruleflow_group_key5257 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_entry_point_key5289 = new BitSet(new long[]{0x0000000000000000L,0x0080000000000000L});
+    public static final BitSet FOLLOW_MISC_in_entry_point_key5293 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
+    public static final BitSet FOLLOW_ID_in_entry_point_key5297 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_duration_key5326 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_package_key5353 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_import_key5380 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_dialect_key5407 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_salience_key5434 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_enabled_key5461 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_attributes_key5488 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_rule_key5515 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_template_key5542 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_query_key5569 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_declare_key5596 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_function_key5623 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_global_key5650 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_eval_key5677 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_contains_key5704 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_matches_key5731 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_excludes_key5758 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_soundslike_key5785 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_memberof_key5812 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_not_key5839 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_in_key5866 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_or_key5893 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_and_key5920 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_exists_key5947 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_forall_key5974 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_action_key6001 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_reverse_key6028 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_result_key6055 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_synpred12035 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
+    public static final BitSet FOLLOW_or_key_in_synpred12037 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_or_key_in_synpred22104 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_DOUBLE_PIPE_in_synpred22106 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_synpred32163 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
+    public static final BitSet FOLLOW_and_key_in_synpred32165 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_and_key_in_synpred42233 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_DOUBLE_AMPER_in_synpred42235 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_SEMICOLON_in_synpred52358 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_synpred62395 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
+    public static final BitSet FOLLOW_or_key_in_synpred62398 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_and_key_in_synpred62400 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_synpred72523 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
+    public static final BitSet FOLLOW_or_key_in_synpred72526 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_and_key_in_synpred72528 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_synpred83357 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_SQUARE_in_synpred93426 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_synpred103448 = new BitSet(new long[]{0x0000000000000002L});
 
 }
