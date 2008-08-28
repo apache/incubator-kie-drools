@@ -390,7 +390,6 @@ tokens {
 	/** Overrided this method to not output mesages */
 	public void emitErrorMessage(String msg) {
 	}
-	
 }
 
 compilation_unit
@@ -1169,21 +1168,34 @@ catch [ RecognitionException re ] {
 	}
 }
 finally {
-	if (isEditorInterfaceEnabled && input.LA(2) == EOF) {
-		if (input.LA(1) == ID) {
-			emit(true, Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
-			emit(input.LT(1), DroolsEditorType.KEYWORD);
-			input.consume();
-			emit(true, Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
-		}
-	} else if (isEditorInterfaceEnabled && input.LA(3) == EOF) {
-		if (input.LA(1) == ID && input.LA(2) == ID && validateLT(1, DroolsSoftKeywords.NOT)) {
-			emit(true, Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
-			emit(input.LT(1), DroolsEditorType.KEYWORD);
-			emit(input.LT(2), DroolsEditorType.KEYWORD);
-			input.consume();
-			input.consume();
-			emit(true, Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
+	if (isEditorInterfaceEnabled && input.LA(2) == EOF && input.LA(1) == ID) {
+		emit(true, Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
+		emit(input.LT(1), DroolsEditorType.KEYWORD);
+		input.consume();
+		emit(true, Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
+	} else if (isEditorInterfaceEnabled && input.LA(3) == EOF && input.LA(1) == ID && 
+				input.LA(2) == ID && validateLT(1, DroolsSoftKeywords.NOT)) {
+		emit(true, Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
+		emit(input.LT(1), DroolsEditorType.KEYWORD);
+		emit(input.LT(2), DroolsEditorType.KEYWORD);
+		input.consume();
+		input.consume();
+		emit(true, Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
+	} else if (isEditorInterfaceEnabled && input.LA(3) == EOF  && input.LA(1) == ID && validateLT(1, DroolsSoftKeywords.IN)) {
+		emit(true, Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
+		emit(input.LT(1), DroolsEditorType.KEYWORD);
+		emit(input.LT(2), DroolsEditorType.SYMBOL);
+		input.consume();
+		input.consume();
+		emit(true, Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
+	} else if (isEditorInterfaceEnabled && input.LA(3) == EOF && input.LA(1) == ID) {
+		emit(true, Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
+		emit(input.LT(1), DroolsEditorType.KEYWORD);
+		emit(input.LT(2), DroolsEditorType.IDENTIFIER);
+		input.consume();
+		input.consume();
+		if (input.get(input.index() - 1).getType() == WS){
+			emit(true, Location.LOCATION_LHS_INSIDE_CONDITION_END);
 		}
 	}
 }

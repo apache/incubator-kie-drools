@@ -11,6 +11,51 @@ import org.drools.compiler.DroolsParserException;
 
 public class DRLContextTest extends TestCase {
 
+	public void testCheckLHSLocationDetermination_OPERATORS_AND_COMPLEMENT1()
+			throws DroolsParserException, RecognitionException {
+		String input = "rule MyRule when Class ( property memberOf collection ";
+		DRLParser parser = getParser(input);
+		parser.enableEditorInterface();
+		try {
+			parser.compilation_unit();
+		} catch (Exception ex) {
+		}
+
+		assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_END,
+				getLastIntegerValue(parser.getEditorInterface().get(0)
+						.getContent()));
+	}
+
+	public void testCheckLHSLocationDetermination_OPERATORS_AND_COMPLEMENT2()
+			throws DroolsParserException, RecognitionException {
+		String input = "rule MyRule when Class ( property not memberOf collection";
+		DRLParser parser = getParser(input);
+		parser.enableEditorInterface();
+		try {
+			parser.compilation_unit();
+		} catch (Exception ex) {
+		}
+
+		assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT,
+				getLastIntegerValue(parser.getEditorInterface().get(0)
+						.getContent()));
+	}
+
+	public void testCheckLHSLocationDetermination_COMPOSITE_OPERATOR1()
+			throws DroolsParserException, RecognitionException {
+		String input = "rule MyRule when Class ( property in ( ";
+		DRLParser parser = getParser(input);
+		parser.enableEditorInterface();
+		try {
+			parser.compilation_unit();
+		} catch (Exception ex) {
+		}
+
+		assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT,
+				getLastIntegerValue(parser.getEditorInterface().get(0)
+						.getContent()));
+	}
+
 	public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION1()
 			throws DroolsParserException, RecognitionException {
 		String input = "rule MyRule \n" + "	when \n" + "		";
@@ -240,6 +285,12 @@ public class DRLContextTest extends TestCase {
 			parser.compilation_unit();
 		} catch (Exception ex) {
 		}
+
+		DroolsToken token = (DroolsToken) parser.getEditorInterface().get(0)
+				.getContent().get(8);
+
+		assertEquals(DroolsEditorType.IDENTIFIER_VARIABLE, token
+				.getEditorType());
 
 		assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
 				getLastIntegerValue(parser.getEditorInterface().get(0)
@@ -1136,6 +1187,11 @@ public class DRLContextTest extends TestCase {
 			parser.compilation_unit();
 		} catch (Exception ex) {
 		}
+
+		DroolsToken token = (DroolsToken) parser.getEditorInterface().get(0)
+				.getContent().get(5);
+		assertEquals(DroolsEditorType.IDENTIFIER_VARIABLE, token
+				.getEditorType());
 
 		assertEquals(Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR,
 				getLastIntegerValue(parser.getEditorInterface().get(0)
@@ -2763,8 +2819,9 @@ public class DRLContextTest extends TestCase {
 		assertEquals("group", token.getText().toLowerCase());
 		assertEquals(DroolsEditorType.KEYWORD, token.getEditorType());
 
-		assertEquals(Location.LOCATION_RULE_HEADER_KEYWORD, getLastIntegerValue(parser
-				.getEditorInterface().get(0).getContent()));
+		assertEquals(Location.LOCATION_RULE_HEADER_KEYWORD,
+				getLastIntegerValue(parser.getEditorInterface().get(0)
+						.getContent()));
 	}
 
 	public void testCheckRuleHeaderLocationDetermination3() {
@@ -2824,8 +2881,9 @@ public class DRLContextTest extends TestCase {
 		assertEquals("dialect", token.getText().toLowerCase());
 		assertEquals(DroolsEditorType.KEYWORD, token.getEditorType());
 
-		assertEquals(Location.LOCATION_RULE_HEADER_KEYWORD, getLastIntegerValue(parser
-				.getEditorInterface().get(0).getContent()));
+		assertEquals(Location.LOCATION_RULE_HEADER_KEYWORD,
+				getLastIntegerValue(parser.getEditorInterface().get(0)
+						.getContent()));
 	}
 
 	public void testCheckRuleHeaderLocationDetermination_dialect4() {
@@ -2843,8 +2901,9 @@ public class DRLContextTest extends TestCase {
 		assertEquals("dialect", token.getText().toLowerCase());
 		assertEquals(DroolsEditorType.KEYWORD, token.getEditorType());
 
-		assertEquals(Location.LOCATION_RULE_HEADER_KEYWORD, getLastIntegerValue(parser
-				.getEditorInterface().get(0).getContent()));
+		assertEquals(Location.LOCATION_RULE_HEADER_KEYWORD,
+				getLastIntegerValue(parser.getEditorInterface().get(0)
+						.getContent()));
 	}
 
 	// TODO: add tests for dialect defined at package header level
@@ -2919,6 +2978,7 @@ public class DRLContextTest extends TestCase {
 		return lastIntergerValue;
 	}
 
+	@SuppressWarnings("unchecked")
 	private DroolsToken getLastTokenOnList(LinkedList list) {
 		DroolsToken lastToken = null;
 		for (Object object : list) {
