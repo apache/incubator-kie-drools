@@ -117,6 +117,7 @@ public class ReteooStatefulSession extends ReteooWorkingMemory
         for ( Iterator it = this.__ruleBaseEventListeners.iterator(); it.hasNext(); ) {
             this.ruleBase.removeEventListener( (RuleBaseEventListener) it.next() );
         }
+        this.stopPartitionManagers();
         this.executor.shutDown();
     }
 

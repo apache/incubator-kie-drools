@@ -246,6 +246,8 @@ public class ReteooRuleBase extends AbstractRuleBase {
                 }
             }
 
+            session.startPartitionManagers();
+
             session.queueWorkingMemoryAction( new WorkingMemoryReteAssertAction( session.getInitialFactHandle(),
                                                                                  false,
                                                                                  true,

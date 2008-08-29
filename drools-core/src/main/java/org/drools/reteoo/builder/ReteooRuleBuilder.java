@@ -161,33 +161,33 @@ public class ReteooRuleBuilder {
         context.getNodes().add((BaseNode) terminal );
 
         // assigns partition IDs to the new nodes
-        assignPartitionId(context);
+        //assignPartitionId(context);
 
         return terminal;
     }
 
-    /**
-     * Assigns the current partition ID to the list of created nodes
-     * 
-     * @param context
-     */
-    private void assignPartitionId(BuildContext context) {
-        if( context.getRuleBase().getConfiguration().isPartitionsEnabled() ) {
-            org.drools.common.RuleBasePartitionId partitionId = null;
-            if( context.getPartitionId() != null ) {
-                // it means it shares nodes with an existing partition, so
-                // assign the first id to the newly added nodes
-                partitionId = context.getPartitionId();
-            } else {
-                // nodes are independent of existing nodes, so create a new
-                // partition ID for them
-                partitionId = context.getRuleBase().createNewPartitionId();
-            }
-            for( BaseNode node : context.getNodes() ) {
-                node.setPartitionId( partitionId );
-            }
-        }
-    }
+//    /**
+//     * Assigns the current partition ID to the list of created nodes
+//     *
+//     * @param context
+//     */
+//    private void assignPartitionId(BuildContext context) {
+//        if( context.getRuleBase().getConfiguration().isPartitionsEnabled() ) {
+//            org.drools.common.RuleBasePartitionId partitionId = null;
+//            if( context.getPartitionId() != null ) {
+//                // it means it shares nodes with an existing partition, so
+//                // assign the first id to the newly added nodes
+//                partitionId = context.getPartitionId();
+//            } else {
+//                // nodes are independent of existing nodes, so create a new
+//                // partition ID for them
+//                partitionId = context.getRuleBase().createNewPartitionId();
+//            }
+//            for( BaseNode node : context.getNodes() ) {
+//                node.setPartitionId( partitionId );
+//            }
+//        }
+//    }
 
     /**
      * Adds a query pattern to the given subrule

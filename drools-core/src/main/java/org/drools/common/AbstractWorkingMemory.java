@@ -310,6 +310,28 @@ public abstract class AbstractWorkingMemory
         }
     }
 
+
+    /**
+     *  This method is called to start the multiple partition threads when running in multi-thread
+     *  mode 
+     */
+    public void startPartitionManagers() {
+        if( this.ruleBase.getConfiguration().isPartitionsEnabled() ) {
+            for( PartitionTaskManager task : this.partitionManagers.values() ) {
+                task.startService();
+            }
+        }
+    }
+
+    public void stopPartitionManagers() {
+        if(this.ruleBase.getConfiguration().isPartitionsEnabled()) {
+            for( PartitionTaskManager task : this.partitionManagers.values() ) {
+                // what to do here? should we simply wait for a timeout and give up?
+                task.stopServiceAndWait();
+            }
+        }
+    }
+
     private void initTransient() {
         this.entryPointNode = this.ruleBase.getRete().getEntryPointNode( this.entryPoint );
         this.typeConfReg = new ObjectTypeConfigurationRegistry( this.ruleBase );

@@ -200,6 +200,7 @@ abstract public class AbstractRuleBase
         droolsStream.writeObject( this.agendaGroupRuleTotals );
         droolsStream.writeUTF( this.factHandleFactory.getClass().getName() );
         droolsStream.writeObject( this.globals );
+        droolsStream.writeObject( this.partitionIDs );
 
         this.eventSupport.removeEventListener( RuleBaseEventListener.class );
         droolsStream.writeObject( this.eventSupport );
@@ -270,7 +271,8 @@ abstract public class AbstractRuleBase
         
         this.populateTypeDeclarationMaps(); 
         
-        this.globals = (Map) droolsStream.readObject();                       
+        this.globals = (Map) droolsStream.readObject();
+        this.partitionIDs = (List<RuleBasePartitionId>) droolsStream.readObject();
         
         this.eventSupport = (RuleBaseEventSupport) droolsStream.readObject();
         this.eventSupport.setRuleBase( this );

@@ -1,0 +1,18 @@
+package org.drools;
+
+global java.util.List results;
+
+rule "rule 1"
+    salience 10
+when
+    $p : Person( name == "bob" )
+then
+    results.add( $p );
+end
+
+rule "rule 2"
+when
+    $c : Cheese( type == "cheddar" )
+then
+    results.add( $c );
+end

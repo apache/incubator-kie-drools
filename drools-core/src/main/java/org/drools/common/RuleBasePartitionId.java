@@ -66,4 +66,8 @@ public final class RuleBasePartitionId implements Serializable {
         } else if ( !id.equals( other.id ) ) return false;
         return true;
     }
+
+    public String toString() {
+        return "Partition::"+this.id;    
+    }
 }
