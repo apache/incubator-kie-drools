@@ -113,7 +113,7 @@ public class BuildContext {
         
         this.nodes = new LinkedList<BaseNode>();
 
-        this.partitionId = RuleBasePartitionId.MAIN_PARTITION;
+        this.partitionId = null;
     }
 
     /**

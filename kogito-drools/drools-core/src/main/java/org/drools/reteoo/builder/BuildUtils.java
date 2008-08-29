@@ -90,15 +90,15 @@ public class BuildUtils {
     public BaseNode attachNode(final BuildContext context,
                                final BaseNode candidate) {
         BaseNode node = null;
+        RuleBasePartitionId partition = null;
         if( candidate instanceof EntryPointNode ) {
             // entry point nodes are always shared
             EntryPointNode epn = context.getRuleBase().getRete().getEntryPointNode( ((EntryPointNode)candidate).getEntryPoint() );
             if( epn != null ) {
                 node = epn;
-            } else {
-                // all EntryPointNodes belong to the main partition
-                candidate.setPartitionId( RuleBasePartitionId.MAIN_PARTITION );
             }
+            // all EntryPointNodes belong to the main partition
+            partition = RuleBasePartitionId.MAIN_PARTITION;
         } else if( candidate instanceof ObjectTypeNode ) {
             // object type nodes are always shared
             ObjectTypeNode otn = (ObjectTypeNode) candidate;
@@ -107,14 +107,10 @@ public class BuildUtils {
                 otn = map.get( otn.getObjectType() );
                 if ( otn != null ) {
                     node = otn;
-                } else {
-                    // all OTNs belong to the main partition
-                    candidate.setPartitionId( RuleBasePartitionId.MAIN_PARTITION );
                 }
-            } else {
-                // all OTNs belong to the main partition
-                candidate.setPartitionId( RuleBasePartitionId.MAIN_PARTITION );
             }
+            // all EntryPointNodes belong to the main partition
+            partition = RuleBasePartitionId.MAIN_PARTITION;
         } else if( isSharingEnabledForNode( context, candidate ) ) {
             if ( (context.getTupleSource() != null) && ( candidate instanceof LeftTupleSink ) ) {
                 node    = context.getTupleSource().getSinkPropagator().getMatchingNode(candidate);
@@ -125,19 +121,8 @@ public class BuildUtils {
             }
             if( node != null ) {
                 // shared node found
-                
                 // undo previous id assignment
                 context.releaseId( candidate.getId() );
-
-                // if partitions are enabled
-                if( context.getRuleBase().getConfiguration().isPartitionsEnabled() ) {
-                    // check what partition it belongs to
-                    if( context.getPartitionId() == null ) {
-                        context.setPartitionId( node.getPartitionId() );
-                    } else if( ! context.getPartitionId().equals( node.getPartitionId() ) ) {
-                        assert false : "Needs to implement support for partitions merge";
-                    }
-                }
             }
         }
 
@@ -145,6 +130,19 @@ public class BuildUtils {
         if ( node == null ) {
             // only attach() if it is a new node
             node = candidate;
+
+            // new node, so it must be labeled
+            if( partition == null ) {
+                // if it does not has a predefined label
+                if( context.getPartitionId() == null ) {
+                    // if no label in current context, create one
+                    context.setPartitionId( context.getRuleBase().createNewPartitionId() );
+                }
+                partition = context.getPartitionId();
+            }
+            // set node whit the actual partition label
+            node.setPartitionId( partition );
+
             if ( context.getWorkingMemories().length == 0 ) {
                 node.attach();
             } else {

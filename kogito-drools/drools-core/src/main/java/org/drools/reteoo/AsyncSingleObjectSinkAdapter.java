@@ -28,12 +28,17 @@ import org.drools.spi.PropagationContext;
  * @author: <a href="mailto:tirelli@post.com">Edson Tirelli</a>
  */
 public class AsyncSingleObjectSinkAdapter extends SingleObjectSinkAdapter {
+
+    public AsyncSingleObjectSinkAdapter() {
+        super();
+    }
+
     public AsyncSingleObjectSinkAdapter( RuleBasePartitionId partitionId, ObjectSink objectSink ) {
         super( partitionId, objectSink );
     }
 
     public void propagateAssertObject( InternalFactHandle factHandle, PropagationContext context, InternalWorkingMemory workingMemory ) {
-        PartitionTaskManager manager = workingMemory.getPartitionManager( this.partitionId );
+        PartitionTaskManager manager = workingMemory.getPartitionManager( this.sink.getPartitionId() );
         manager.enqueue( new PartitionTaskManager.FactAssertAction(factHandle, context, this.sink ) );
     }
 }
