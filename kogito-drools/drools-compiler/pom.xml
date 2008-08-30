@@ -24,11 +24,11 @@
     <!-- External dependencies -->
     <dependency>
       <groupId>org.antlr</groupId>
-      <artifactId>antlr-runtime</artifactId>     
+      <artifactId>antlr-runtime</artifactId>           
     </dependency>
     <dependency>
       <groupId>org.antlr</groupId>
-      <artifactId>gunit</artifactId>
+      <artifactId>gunit</artifactId>             
     </dependency>
     <dependency>
       <groupId>org.eclipse.jdt</groupId>
@@ -44,11 +44,6 @@
       <optional>true</optional>
     </dependency>      
     
-    <dependency>
-      <groupId>com.thoughtworks.xstream</groupId>
-      <artifactId>xstream</artifactId>
-      <optional>true</optional>
-    </dependency>
     <!--
     <dependency>
       <groupId>javax.mail</groupId>
