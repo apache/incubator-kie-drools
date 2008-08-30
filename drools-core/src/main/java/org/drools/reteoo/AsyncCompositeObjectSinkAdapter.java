@@ -29,6 +29,9 @@ import org.drools.spi.PropagationContext;
  */
 public class AsyncCompositeObjectSinkAdapter extends CompositeObjectSinkAdapter {
 
+    public AsyncCompositeObjectSinkAdapter() {
+    }
+
     public AsyncCompositeObjectSinkAdapter( RuleBasePartitionId partitionId, int alphaNodeHashingThreshold ) {
         super(partitionId, alphaNodeHashingThreshold );
     }
@@ -42,7 +45,7 @@ public class AsyncCompositeObjectSinkAdapter extends CompositeObjectSinkAdapter 
             sink.assertObject( factHandle, context, workingMemory );
         } else {
             // different partition, so use asynchronous propagation
-            PartitionTaskManager manager = workingMemory.getPartitionManager( this.partitionId );
+            PartitionTaskManager manager = workingMemory.getPartitionManager( sink.getPartitionId() );
             manager.enqueue( new PartitionTaskManager.FactAssertAction(factHandle, context, sink ) );
         }
     }
