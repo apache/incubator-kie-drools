@@ -4,14 +4,15 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
 
 import org.drools.InitialFact;
@@ -50,7 +51,6 @@ import org.drools.util.ObjectHashMap;
 import org.drools.util.ObjectHashSet;
 import org.drools.workflow.instance.NodeInstance;
 import org.drools.workflow.instance.node.CompositeContextNodeInstance;
-import org.drools.workflow.instance.node.CompositeNodeInstance;
 import org.drools.workflow.instance.node.ForEachNodeInstance;
 import org.drools.workflow.instance.node.HumanTaskNodeInstance;
 import org.drools.workflow.instance.node.JoinInstance;
@@ -614,8 +614,12 @@ public class OutputMarshaller {
 
     public static void writeProcessInstances(MarshallerWriteContext context) throws IOException {
         ObjectOutputStream stream = context.stream;
-
-        Collection<ProcessInstance> processInstances = context.wm.getProcessInstances();
+        List<ProcessInstance> processInstances = new ArrayList<ProcessInstance>(context.wm.getProcessInstances());
+        Collections.sort(processInstances, new Comparator<ProcessInstance>() {
+			public int compare(ProcessInstance o1, ProcessInstance o2) {
+				return (int) (o1.getId() - o2.getId());
+			}
+        });
         for ( ProcessInstance processInstance : processInstances ) {
             stream.writeShort( PersisterEnums.PROCESS_INSTANCE );
             writeProcessInstance( context,
@@ -634,10 +638,16 @@ public class OutputMarshaller {
 
         VariableScopeInstance variableScopeInstance = (VariableScopeInstance) processInstance.getContextInstance( VariableScope.VARIABLE_SCOPE );
         Map<String, Object> variables = variableScopeInstance.getVariables();
-        stream.writeInt( variables.size() );
-        for ( Map.Entry<String, Object> entry : variables.entrySet() ) {
-            stream.writeUTF( entry.getKey() );
-            stream.writeObject( entry.getValue() );
+        List<String> keys = new ArrayList<String>(variables.keySet());
+        Collections.sort(keys, new Comparator<String>() {
+			public int compare(String o1, String o2) {
+				return o1.compareTo(o2);
+			}
+        });
+        stream.writeInt( keys.size() );
+        for ( String key : keys ) {
+            stream.writeUTF( key );
+            stream.writeObject( variables.get(key) );
         }
         
         SwimlaneContextInstance swimlaneContextInstance = (SwimlaneContextInstance) processInstance.getContextInstance( SwimlaneContext.SWIMLANE_SCOPE );
@@ -648,7 +658,13 @@ public class OutputMarshaller {
             stream.writeUTF( entry.getValue() );
         }
 
-        for ( NodeInstance nodeInstance : processInstance.getNodeInstances() ) {
+        List<NodeInstance> nodeInstances = new ArrayList<NodeInstance>(processInstance.getNodeInstances());
+        Collections.sort(nodeInstances, new Comparator<NodeInstance>() {
+			public int compare(NodeInstance o1, NodeInstance o2) {
+				return (int) (o1.getId() - o2.getId());
+			}
+        });
+        for ( NodeInstance nodeInstance : nodeInstances ) {
             stream.writeShort( PersisterEnums.NODE_INSTANCE );
             writeNodeInstance( context,
                                nodeInstance );
@@ -681,9 +697,15 @@ public class OutputMarshaller {
             stream.writeShort( PersisterEnums.JOIN_NODE_INSTANCE );
             Map<Long, Integer> triggers = ((JoinInstance) nodeInstance).getTriggers();
             stream.writeInt( triggers.size() );
-            for ( Map.Entry<Long, Integer> entry : triggers.entrySet() ) {
-                stream.writeLong( entry.getKey() );
-                stream.writeInt( entry.getValue() );
+            List<Long> keys = new ArrayList<Long>(triggers.keySet());
+            Collections.sort(keys, new Comparator<Long>(){
+				public int compare(Long o1, Long o2) {
+					return o1.compareTo(o2);
+				}
+            });
+            for ( Long key : keys ) {
+                stream.writeLong( key );
+                stream.writeInt( triggers.get(key) );
             }
         } else if ( nodeInstance instanceof CompositeContextNodeInstance ) {
             stream.writeShort( PersisterEnums.COMPOSITE_NODE_INSTANCE );
@@ -692,12 +714,24 @@ public class OutputMarshaller {
             VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
             	compositeNodeInstance.getContextInstance( VariableScope.VARIABLE_SCOPE );
             Map<String, Object> variables = variableScopeInstance.getVariables();
-            stream.writeInt( variables.size() );
-            for ( Map.Entry<String, Object> entry : variables.entrySet() ) {
-                stream.writeUTF( entry.getKey() );
-                stream.writeObject( entry.getValue() );
+            List<String> keys = new ArrayList<String>(variables.keySet());
+            Collections.sort(keys, new Comparator<String>() {
+    			public int compare(String o1, String o2) {
+    				return o1.compareTo(o2);
+    			}
+            });
+            stream.writeInt( keys.size() );
+            for ( String key : keys ) {
+                stream.writeUTF( key );
+                stream.writeObject( variables.get(key) );
             }
-            for ( NodeInstance subNodeInstance : compositeNodeInstance.getNodeInstances() ) {
+            List<NodeInstance> nodeInstances = new ArrayList<NodeInstance>(compositeNodeInstance.getNodeInstances());
+            Collections.sort(nodeInstances, new Comparator<NodeInstance>() {
+    			public int compare(NodeInstance o1, NodeInstance o2) {
+    				return (int) (o1.getId() - o2.getId());
+    			}
+            });
+            for ( NodeInstance subNodeInstance : nodeInstances ) {
                 stream.writeShort( PersisterEnums.NODE_INSTANCE );
                 writeNodeInstance( context, subNodeInstance );
             }
@@ -705,7 +739,13 @@ public class OutputMarshaller {
         } else if ( nodeInstance instanceof ForEachNodeInstance ) {
             stream.writeShort( PersisterEnums.FOR_EACH_NODE_INSTANCE );
             ForEachNodeInstance forEachNodeInstance = (ForEachNodeInstance) nodeInstance;
-            for ( NodeInstance subNodeInstance : forEachNodeInstance.getNodeInstances() ) {
+            List<NodeInstance> nodeInstances = new ArrayList<NodeInstance>(forEachNodeInstance.getNodeInstances());
+            Collections.sort(nodeInstances, new Comparator<NodeInstance>() {
+    			public int compare(NodeInstance o1, NodeInstance o2) {
+    				return (int) (o1.getId() - o2.getId());
+    			}
+            });
+            for ( NodeInstance subNodeInstance : nodeInstances ) {
             	if (subNodeInstance instanceof CompositeContextNodeInstance) {
             		stream.writeShort( PersisterEnums.NODE_INSTANCE );
             		writeNodeInstance( context, subNodeInstance );
@@ -722,7 +762,12 @@ public class OutputMarshaller {
     public static void writeWorkItems(MarshallerWriteContext context) throws IOException {
         ObjectOutputStream stream = context.stream;
 
-        Set<WorkItem> workItems = context.wm.getWorkItemManager().getWorkItems();
+        List<WorkItem> workItems = new ArrayList<WorkItem>(context.wm.getWorkItemManager().getWorkItems());
+        Collections.sort(workItems, new Comparator<WorkItem>() {
+			public int compare(WorkItem o1, WorkItem o2) {
+				return (int) (o2.getId() - o1.getId());
+			}
+        });
         for ( WorkItem workItem : workItems ) {
             stream.writeShort( PersisterEnums.WORK_ITEM );
             writeWorkItem( context,
@@ -738,6 +783,12 @@ public class OutputMarshaller {
         stream.writeLong( workItem.getProcessInstanceId() );
         stream.writeUTF( workItem.getName() );
         stream.writeInt( workItem.getState() );
+        Map<String, Object> parameters = workItem.getParameters();
+        stream.writeInt(parameters.size());
+        for (Map.Entry<String, Object> entry: parameters.entrySet()) {
+        	stream.writeUTF(entry.getKey());
+        	stream.writeObject(entry.getValue());
+        }
     }
 
 }

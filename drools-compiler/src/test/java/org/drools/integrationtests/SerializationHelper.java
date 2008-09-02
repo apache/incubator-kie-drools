@@ -73,7 +73,7 @@ public class SerializationHelper {
         // bytes should be the same.
         if ( !areByteArraysEqual( b1,
                                   b2 ) ) {
-            assert false : "byte streams for serialisation test are not equal";
+            throw new IllegalArgumentException("byte streams for serialisation test are not equal");
         }
 
         session2.setGlobalResolver( session.getGlobalResolver() );
