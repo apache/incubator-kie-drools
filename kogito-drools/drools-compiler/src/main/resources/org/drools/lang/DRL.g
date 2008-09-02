@@ -403,6 +403,35 @@ compilation_unit
 	}
 	catch [ RewriteEmptyStreamException e ] {
 	}
+finally {
+	if (isEditorInterfaceEnabled && retval.tree == null) {
+		retval.tree = root_0;
+		root_0 = (Object) adaptor.nil();
+		Object root_1 = (Object) adaptor.nil();
+		root_1 = (Object) adaptor.becomeRoot(adaptor.create(
+				VT_COMPILATION_UNIT, "VT_COMPILATION_UNIT"), root_1);
+		if (stream_package_statement.hasNext()) {
+			adaptor.addChild(root_1, stream_package_statement.next());
+		}
+		while (stream_statement.hasNext()) {
+			adaptor.addChild(root_1, stream_statement.next());
+		}
+		adaptor.addChild(root_0, root_1);
+		retval.stop = input.LT(-1);
+		retval.tree = (Object) adaptor.rulePostProcessing(root_0);
+		adaptor.setTokenBoundaries(retval.tree, retval.start,
+				retval.stop);
+	}
+	if (isEditorInterfaceEnabled && hasErrors()) {
+		DroolsTree rootNode = (DroolsTree) retval.tree;
+		for (int i = 0; i < rootNode.getChildCount(); i++) {
+			DroolsTree childNode = (DroolsTree) rootNode.getChild(i);
+			if (childNode.getStartCharOffset() >= errors.get(0).getOffset()) {
+				rootNode.deleteChild(i);
+			}
+		}
+	}
+}
 
 package_statement
 @init  { pushParaphrases(DroolsParaphraseTypes.PACKAGE); }

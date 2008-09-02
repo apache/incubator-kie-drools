@@ -2943,6 +2943,22 @@ public class RuleParserTest extends TestCase {
 		assertEquals("StreamA", entry.getEntryId());
 	}
 
+	public void testEntryPoint2() throws Exception {
+		final String text = "StockTick( symbol==\"ACME\") from entry-point \"StreamA\"";
+
+		PatternDescr pattern = (PatternDescr) parse("pattern_source", "lhs",
+				text);
+
+		assertEquals(1, pattern.getDescrs().size());
+		FieldConstraintDescr fcd = (FieldConstraintDescr) pattern.getDescrs()
+				.get(0);
+		assertEquals("symbol", fcd.getFieldName());
+
+		assertNotNull(pattern.getSource());
+		EntryPointDescr entry = (EntryPointDescr) pattern.getSource();
+		assertEquals("StreamA", entry.getEntryId());
+	}
+
 	public void testNesting() throws Exception {
 		parseResource("compilation_unit", "compilation_unit",
 				"not_pluggable_operator.drl");
