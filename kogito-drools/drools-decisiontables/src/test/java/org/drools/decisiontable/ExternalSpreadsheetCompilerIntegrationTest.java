@@ -44,6 +44,7 @@ public class ExternalSpreadsheetCompilerIntegrationTest extends TestCase
         final ExternalSpreadsheetCompiler converter = new ExternalSpreadsheetCompiler();
         final String drl = converter.compile("/data/IntegrationExampleTest.xls", "/templates/test_integration.drl", 18, 3);
         //COMPILE
+        System.out.println( drl );
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new StringReader( drl ) );
 

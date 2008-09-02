@@ -70,7 +70,8 @@ public class DataProviderCompilerIntegrationTest extends TestCase {
                              "Party 1",
                              "USD",
                              null,
-                             "750" ) );
+                             "750",
+                             "dummy") );
         rows.add( createRow( "15",
                              "STANDARD",
                              "FLAT",
@@ -81,7 +82,8 @@ public class DataProviderCompilerIntegrationTest extends TestCase {
                              null,
                              "YEN",
                              null,
-                             "1600" ) );
+                             "1600",
+                             "dummy" ) );
         rows.add( createRow( "12",
                              "STANDARD",
                              "FLAT",
@@ -92,7 +94,8 @@ public class DataProviderCompilerIntegrationTest extends TestCase {
                              null,
                              "YEN",
                              null,
-                             "40" ) );
+                             "40",
+                             "dummy" ) );
         rows.add( createRow( "62",
                              "STANDARD",
                              "FLAT",
@@ -103,7 +106,8 @@ public class DataProviderCompilerIntegrationTest extends TestCase {
                              null,
                              "YEN",
                              "< 30000",
-                             "45" ) );
+                             "45",
+                             "dummy" ) );
         TestDataProvider tdp = new TestDataProvider( rows );
         final DataProviderCompiler converter = new DataProviderCompiler();
         final String drl = converter.compile( tdp,
@@ -123,8 +127,9 @@ public class DataProviderCompilerIntegrationTest extends TestCase {
                                String cell8,
                                String cell9,
                                String cell10,
-                               String cell11) {
-        String[] row = new String[11];
+                               String cell11,
+                               String cell12) {
+        String[] row = new String[12];
         row[0] = cell1;
         row[1] = cell2;
         row[2] = cell3;
@@ -136,6 +141,7 @@ public class DataProviderCompilerIntegrationTest extends TestCase {
         row[8] = cell9;
         row[9] = cell10;
         row[10] = cell11;
+        row[11] = cell12;
         return row;
     }
 
