@@ -694,7 +694,7 @@ public class DescrFactory {
 		entryPoint.setEndLocation(getLineLocation(entryId),
 				getColumnLocation(entryId));
 		entryPoint.setEndCharacter(getEndOffsetLocation(entryId));
-		entryPoint.setEntryId(entryId.getText());
+		entryPoint.setEntryId(getCleanId(entryId));
 		return entryPoint;
 	}
 
