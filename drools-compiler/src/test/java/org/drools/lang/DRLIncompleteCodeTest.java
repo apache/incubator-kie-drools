@@ -168,6 +168,23 @@ public class DRLIncompleteCodeTest extends TestCase {
 		assertEquals("MyRule", ((RuleDescr) descr.getRules().get(0)).getName());
 	}
 
+	public void testIncompleteCode12() throws DroolsParserException, RecognitionException {
+		String input = 
+			"package a.b.c " +
+			"import a.b.c.* " +
+			"rule MyRule" +
+			"  when " +
+			"    m: Message(  ) " +
+			"    " +
+			"  then" +
+			"end ";
+		DrlParser parser = new DrlParser();
+		PackageDescr descr = parser.parse(true, input);
+		assertNotNull(descr);
+		assertEquals("a.b.c", descr.getNamespace());
+		assertEquals("a.b.c.*", ((ImportDescr) descr.getImports().get(0)).getTarget());
+	}
+	
 	@SuppressWarnings("unchecked")
 	private int getLastIntegerValue(LinkedList list) {
 		System.out.println(list.toString());
