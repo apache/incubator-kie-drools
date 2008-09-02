@@ -171,4 +171,14 @@ public class SubProcessNodeInstance extends EventBasedNodeInstance implements Ru
         // Do nothing
     }
 
+	public void afterRuleFlowNodeLeft(RuleFlowNodeTriggeredEvent event,
+			WorkingMemory workingMemory) {
+        // Do nothing
+	}
+
+	public void beforeRuleFlowNodeLeft(RuleFlowNodeTriggeredEvent event,
+			WorkingMemory workingMemory) {
+        // Do nothing
+	}
+
 }

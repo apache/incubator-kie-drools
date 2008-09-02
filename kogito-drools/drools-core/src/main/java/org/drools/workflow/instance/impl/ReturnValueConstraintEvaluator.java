@@ -20,7 +20,6 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.Serializable;
 
 import org.drools.spi.CompiledInvoker;
 import org.drools.spi.ProcessContext;
@@ -154,4 +153,12 @@ public class ReturnValueConstraintEvaluator
         out.writeObject( type );
     }
 
+    public void setMetaData(String name, Object value) {
+    	// Do nothing
+    }
+    
+    public Object getMetaData(String name) {
+        return null;
+    }
+    
 }

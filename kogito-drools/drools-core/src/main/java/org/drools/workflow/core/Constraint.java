@@ -93,5 +93,9 @@ public interface Constraint {
      * @param type  the dialect of the constraint
      */
     void setDialect(String dialect);
+    
+    void setMetaData(String name, Object value);
+    
+    Object getMetaData(String name);
 
 }

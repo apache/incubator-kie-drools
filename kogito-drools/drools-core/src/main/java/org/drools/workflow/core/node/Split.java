@@ -16,9 +16,6 @@ package org.drools.workflow.core.node;
  * limitations under the License.
  */
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
@@ -157,13 +154,23 @@ public class Split extends NodeImpl {
 
     public void removeOutgoingConnection(final String type, final Connection connection) {
         super.removeOutgoingConnection(type, connection);
-        ConnectionRef ref = new ConnectionRef(connection.getTo().getId(), connection.getToType());
-        this.constraints.remove(ref);
+        removeConstraint(connection);
+    }
+    
+    public void removeConstraint(Connection connection) {
+    	ConnectionRef ref = new ConnectionRef(connection.getTo().getId(), connection.getToType());
+        internalRemoveConstraint(ref);
+    }
+    
+    public void internalRemoveConstraint(ConnectionRef ref) {
+    	this.constraints.remove(ref);
     }
     
     public static class ConnectionRef implements Serializable {
         
-        private String toType;
+        private static final long serialVersionUID = 4L;
+		
+		private String toType;
         private long nodeId;
         
         public ConnectionRef(long nodeId, String toType) {

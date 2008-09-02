@@ -17,6 +17,8 @@ package org.drools.workflow.core.impl;
  */
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.drools.workflow.core.Constraint;
 
@@ -28,6 +30,8 @@ import org.drools.workflow.core.Constraint;
 public class ConstraintImpl implements Constraint, Serializable {
 
     private static final long  serialVersionUID = 400L;
+
+    private Map<String, Object> metaData = new HashMap<String, Object>();
 
     private String             name;
     private String             constraint;
@@ -79,4 +83,12 @@ public class ConstraintImpl implements Constraint, Serializable {
         this.type = type;
     }
 
+    public void setMetaData(String name, Object value) {
+        this.metaData.put(name, value);
+    }
+    
+    public Object getMetaData(String name) {
+        return this.metaData.get(name);
+    }
+    
 }

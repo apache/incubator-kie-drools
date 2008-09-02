@@ -5,13 +5,14 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
+import java.util.List;
 
 import org.drools.WorkingMemory;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
 import org.drools.spi.Action;
-import org.drools.spi.ProcessContext;
 import org.drools.spi.KnowledgeHelper;
+import org.drools.spi.ProcessContext;
 import org.mvel.MVEL;
 import org.mvel.compiler.CompiledExpression;
 import org.mvel.debug.DebugTools;
@@ -29,6 +30,7 @@ public class MVELAction
 
     private Serializable      expr;
     private DroolsMVELFactory prototype;
+    private List<String> variableNames;
 
     public MVELAction() {
     }
@@ -37,11 +39,16 @@ public class MVELAction
                               final String id) {
         this.unit = unit;
         this.id = id;
-    }    
+    }
+    
+    public void setVariableNames(List<String> variableNames) {
+    	this.variableNames = variableNames;
+    }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         id = in.readUTF();
         unit = ( MVELCompilationUnit ) in.readObject();
+        variableNames = (List<String>) in.readObject();
 //        expr    = (Serializable)in.readObject();
 //        prototype   = (DroolsMVELFactory)in.readObject();
     }
@@ -49,6 +56,7 @@ public class MVELAction
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeUTF( id );
         out.writeObject( unit );
+        out.writeObject(variableNames);
 //        out.writeObject(expr);
 //        out.writeObject(prototype);
     }
@@ -67,6 +75,12 @@ public class MVELAction
         DroolsMVELFactory factory = (DroolsMVELFactory) this.prototype.clone();
         
         factory.addResolver("context", new SimpleValueResolver(context));
+        if (variableNames != null) {
+        	for (String variableName: variableNames) {
+        		factory.addResolver(
+    				variableName, new SimpleValueResolver(context.getVariable(variableName)));
+        	}
+        }
         
         factory.setContext( null,
                             knowledgeHelper,

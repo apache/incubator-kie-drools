@@ -16,6 +16,8 @@ package org.drools.workflow.instance.node;
  * limitations under the License.
  */
 
+import org.drools.common.EventSupport;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.EndNode;
@@ -42,7 +44,17 @@ public class EndNodeInstance extends NodeInstanceImpl {
         }
         getNodeInstanceContainer().removeNodeInstance(this);
         if (getEndNode().isTerminate()) {
+        	boolean hidden = false;
+        	if (getNode().getMetaData("hidden") != null) {
+        		hidden = true;
+        	}
+        	if (!hidden) {
+        		((EventSupport) getProcessInstance().getWorkingMemory()).getRuleFlowEventSupport().fireBeforeRuleFlowNodeLeft(this, (InternalWorkingMemory) getProcessInstance().getWorkingMemory());
+        	}
         	getProcessInstance().setState( ProcessInstance.STATE_COMPLETED );
+            if (!hidden) {
+                ((EventSupport) getProcessInstance().getWorkingMemory()).getRuleFlowEventSupport().fireAfterRuleFlowNodeLeft(this, (InternalWorkingMemory) getProcessInstance().getWorkingMemory());
+            }
         }
     }
 

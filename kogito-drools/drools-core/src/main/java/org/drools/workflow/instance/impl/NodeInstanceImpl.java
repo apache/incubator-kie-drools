@@ -116,8 +116,18 @@ public abstract class NodeInstanceImpl implements NodeInstance, Serializable {
     }
     
     protected void triggerConnection(Connection connection) {
+    	boolean hidden = false;
+    	if (getNode().getMetaData("hidden") != null) {
+    		hidden = true;
+    	}
+    	if (!hidden) {
+    		((EventSupport) getProcessInstance().getWorkingMemory()).getRuleFlowEventSupport().fireBeforeRuleFlowNodeLeft(this, (InternalWorkingMemory) getProcessInstance().getWorkingMemory());
+    	}
         getNodeInstanceContainer().getNodeInstance(connection.getTo())
-            .trigger(this, connection.getToType());
+        	.trigger(this, connection.getToType());
+        if (!hidden) {
+            ((EventSupport) getProcessInstance().getWorkingMemory()).getRuleFlowEventSupport().fireAfterRuleFlowNodeLeft(this, (InternalWorkingMemory) getProcessInstance().getWorkingMemory());
+        }
     }
     
     public Context resolveContext(String contextId, Object param) {

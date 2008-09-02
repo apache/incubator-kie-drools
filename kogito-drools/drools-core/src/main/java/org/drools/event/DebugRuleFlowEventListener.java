@@ -60,4 +60,14 @@ public class DebugRuleFlowEventListener
         System.err.println(event);
     }
 
+	public void afterRuleFlowNodeLeft(final RuleFlowNodeTriggeredEvent event,
+			                          final WorkingMemory workingMemory) {
+        System.err.println(event);
+	}
+
+	public void beforeRuleFlowNodeLeft(final RuleFlowNodeTriggeredEvent event,
+			                           final WorkingMemory workingMemory) {
+        System.err.println(event);
+	}
+
 }

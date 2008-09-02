@@ -56,4 +56,14 @@ public class DefaultRuleFlowEventListener
         // intentionally left blank
     }
 
+	public void afterRuleFlowNodeLeft(final RuleFlowNodeTriggeredEvent event,
+                                      final WorkingMemory workingMemory) {
+        // intentionally left blank
+	}
+
+	public void beforeRuleFlowNodeLeft(final RuleFlowNodeTriggeredEvent event,
+			                           final WorkingMemory workingMemory) {
+        // intentionally left blank
+	}
+
 }

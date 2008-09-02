@@ -421,6 +421,14 @@ public abstract class WorkingMemoryLogger
                 event.getProcessInstance().getId()) );
     }
 
+    public void beforeRuleFlowNodeLeft(RuleFlowNodeTriggeredEvent event,
+    										WorkingMemory workingMemory) {
+    }
+
+    public void afterRuleFlowNodeLeft(RuleFlowNodeTriggeredEvent event,
+    								  WorkingMemory workingMemory) {
+    }
+
     public void afterPackageAdded(AfterPackageAddedEvent event) {
         filterLogEvent( new RuleBaseLogEvent( LogEvent.AFTER_PACKAGE_ADDED,
                                               event.getPackage().getName(),

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
+import java.util.List;
 
 import org.drools.WorkingMemory;
 import org.drools.rule.MVELDialectRuntimeData;
@@ -14,6 +15,7 @@ import org.drools.spi.ReturnValueEvaluator;
 import org.mvel.MVEL;
 import org.mvel.compiler.CompiledExpression;
 import org.mvel.debug.DebugTools;
+import org.mvel.integration.impl.SimpleValueResolver;
 
 public class MVELReturnValueEvaluator
     implements
@@ -27,6 +29,7 @@ public class MVELReturnValueEvaluator
 
     private Serializable        expr;
     private DroolsMVELFactory   prototype;
+    private List<String>        variableNames;
 
     public MVELReturnValueEvaluator() {
     }
@@ -37,10 +40,15 @@ public class MVELReturnValueEvaluator
         this.id = id;
     }
 
+    public void setVariableNames(List<String> variableNames) {
+    	this.variableNames = variableNames;
+    }
+
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         id = in.readUTF();
         unit = (MVELCompilationUnit) in.readObject();
+        variableNames = (List<String>) in.readObject();
         //        expr    = (Serializable)in.readObject();
         //        prototype   = (DroolsMVELFactory)in.readObject();
     }
@@ -48,6 +56,7 @@ public class MVELReturnValueEvaluator
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeUTF( id );
         out.writeObject( unit );
+        out.writeObject(variableNames);
         //        out.writeObject(expr);
         //        out.writeObject(prototype);
     }
@@ -64,12 +73,20 @@ public class MVELReturnValueEvaluator
     public Object evaluate(final WorkingMemory workingMemory,
                            ProcessContext context) throws Exception {
         DroolsMVELFactory factory = (DroolsMVELFactory) this.prototype.clone();
+        
+        if (variableNames != null) {
+        	for (String variableName: variableNames) {
+        		factory.addResolver(
+    				variableName, new SimpleValueResolver(context.getVariable(variableName)));
+        	}
+        }
+        
         factory.setContext( null,
                             null,
                             null,
                             workingMemory,
                             null );
-
+        
         // do we have any functions for this namespace?
         Package pkg = workingMemory.getRuleBase().getPackage( "MAIN" );
         if ( pkg != null ) {

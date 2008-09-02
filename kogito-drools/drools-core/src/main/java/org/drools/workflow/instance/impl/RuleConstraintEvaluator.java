@@ -92,6 +92,14 @@ public class RuleConstraintEvaluator implements Constraint,
         String rule = "RuleFlow-Split-" + processInstance.getProcess().getId() + "-" + instance.getNode().getId() + "-" + connection.getTo().getId();
 
         return agenda.isRuleActiveInRuleFlowGroup( "DROOLS_SYSTEM", rule );
-    }    
+    }
+
+	public Object getMetaData(String name) {
+		return null;
+	}
+
+	public void setMetaData(String name, Object value) {
+		// Do nothing
+	}    
 
 }
