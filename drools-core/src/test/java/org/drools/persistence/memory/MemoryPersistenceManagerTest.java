@@ -1,117 +1,120 @@
 package org.drools.persistence.memory;
 
-import javax.transaction.xa.XAException;
-import javax.transaction.xa.XAResource;
-import javax.transaction.xa.Xid;
+import java.util.HashMap;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.drools.persistence.DroolsXid;
-import org.drools.transaction.MockByteArraySnapshotter;
+import org.drools.RuleBase;
+import org.drools.RuleBaseFactory;
+import org.drools.StatefulSession;
+import org.drools.WorkingMemory;
+import org.drools.persistence.Persister;
+import org.drools.persistence.session.MemoryPersisterManager;
+import org.drools.process.core.Work;
+import org.drools.process.core.impl.WorkImpl;
+import org.drools.process.instance.ProcessInstance;
+import org.drools.process.instance.WorkItem;
+import org.drools.process.instance.WorkItemHandler;
+import org.drools.process.instance.WorkItemManager;
+import org.drools.rule.Package;
+import org.drools.ruleflow.core.RuleFlowProcess;
+import org.drools.spi.Action;
+import org.drools.spi.KnowledgeHelper;
+import org.drools.spi.ProcessContext;
+import org.drools.workflow.core.Node;
+import org.drools.workflow.core.impl.ConnectionImpl;
+import org.drools.workflow.core.impl.DroolsConsequenceAction;
+import org.drools.workflow.core.node.ActionNode;
+import org.drools.workflow.core.node.EndNode;
+import org.drools.workflow.core.node.StartNode;
+import org.drools.workflow.core.node.WorkItemNode;
 
 public class MemoryPersistenceManagerTest extends TestCase {
-    private byte[]           data1 = new byte[]{1, 1, 1, 1, 1};
-    private byte[]           data2 = new byte[]{1, 1, 1, 1, 0};
-    private byte[]           data3 = new byte[]{1, 1, 1, 0, 0};
+	
+	private Map<Long, WorkItem> workItems = new HashMap<Long, WorkItem>();
 
-    MockByteArraySnapshotter snapshotter;
-    MemoryPersistenceManager pm;
+	public void testProcessPersistence() {
+		MemoryPersisterManager manager = new MemoryPersisterManager();
+		
+		RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+		Package pkg = new Package("org.drools.test");
+		pkg.addProcess(getProcess());
+		ruleBase.addPackage(pkg);
+		StatefulSession session = ruleBase.newStatefulSession();
+		
+		Persister<StatefulSession> persister = manager.getSessionPersister(session);
+		session.getWorkItemManager().registerWorkItemHandler("MyWork", new WorkItemHandler() {
+			public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+				MemoryPersistenceManagerTest.this.workItems.put(workItem.getProcessInstanceId(), workItem);
+			}
+			public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
+			}
+        });
+        ProcessInstance processInstance = session.startProcess("org.drools.test.TestProcess");
+        long processInstanceId = processInstance.getId();
+		persister.setUniqueId(processInstanceId + "");
+		persister.save();
+		
+		persister = manager.getSessionPersister(processInstanceId + "", ruleBase);
+		session = persister.getObject();
+		processInstance = session.getProcessInstance(processInstanceId); 
+        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+		
+		session.getWorkItemManager().completeWorkItem(
+			workItems.get(processInstanceId).getId(), null);
+        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        persister.save();
+        
+        persister = manager.getSessionPersister(processInstanceId + "", ruleBase);
+		session = persister.getObject();
+		processInstance = session.getProcessInstance(processInstanceId); 
+        assertNull(processInstance);
+	}
 
-    protected void setUp() throws Exception {
-        snapshotter = new MockByteArraySnapshotter();
-        pm = new MemoryPersistenceManager( snapshotter );
-    }
+	private RuleFlowProcess getProcess() {
+		RuleFlowProcess process = new RuleFlowProcess();
+		process.setId("org.drools.test.TestProcess");
+		process.setName("TestProcess");
+		process.setPackageName("org.drools.test");
+		StartNode start = new StartNode();
+		start.setId(1);
+		start.setName("Start");
+		process.addNode(start);
+		ActionNode actionNode = new ActionNode();
+		actionNode.setId(2);
+		actionNode.setName("Action");
+		DroolsConsequenceAction action = new DroolsConsequenceAction();
+		action.setMetaData("Action", new Action() {
+			public void execute(KnowledgeHelper knowledgeHelper,
+					WorkingMemory workingMemory, ProcessContext context)
+					throws Exception {
+				System.out.println("Executed action");
+			}
+		});
+		actionNode.setAction(action);
+		process.addNode(actionNode);
+		new ConnectionImpl(
+			start, Node.CONNECTION_DEFAULT_TYPE,
+			actionNode, Node.CONNECTION_DEFAULT_TYPE);
+		WorkItemNode workItemNode = new WorkItemNode();
+		workItemNode.setId(3);
+		workItemNode.setName("WorkItem");
+		Work work = new WorkImpl();
+		work.setName("MyWork");
+		workItemNode.setWork(work);
+		process.addNode(workItemNode);
+		new ConnectionImpl(
+			actionNode, Node.CONNECTION_DEFAULT_TYPE,
+			workItemNode, Node.CONNECTION_DEFAULT_TYPE);
+		EndNode end = new EndNode();
+		end.setId(4);
+		end.setName("End");
+		process.addNode(end);
+		new ConnectionImpl(
+			workItemNode, Node.CONNECTION_DEFAULT_TYPE, 
+			end, Node.CONNECTION_DEFAULT_TYPE);
+		return process;
+	}
 
-    public void testSave() {
-        snapshotter.loadSnapshot( data1 );
-        pm.save();
-        assertTrue( assertEquals( data1,
-                                  snapshotter.bytes ) );
-
-        snapshotter.loadSnapshot( data2 );
-        assertTrue( assertEquals( data2,
-                                  snapshotter.bytes ) );
-
-        pm.load();
-        assertTrue( assertEquals( data1,
-                                  snapshotter.bytes ) );
-    }
-
-    public void testSaveInOpenTransaction() throws XAException {
-        snapshotter.loadSnapshot( data1 );
-
-        XAResource xa = pm.getXAResource();
-        Xid xid = new DroolsXid( 100,
-                                 new byte[]{0x01},
-                                 new byte[]{0x01} );
-        xa.start( xid,
-                  XAResource.TMNOFLAGS );
-
-        try {
-            pm.save();
-            fail( "save should fail as the session currently has an open transaction" );
-        } catch ( Exception e ) {
-            // success
-        }
-    }
-
-    public void testLoadInOpenTransaction() throws XAException {
-        snapshotter.loadSnapshot( data1 );
-        pm.save();
-
-        XAResource xa = pm.getXAResource();
-        Xid xid = new DroolsXid( 100,
-                                 new byte[]{0x01},
-                                 new byte[]{0x01} );
-        xa.start( xid,
-                  XAResource.TMNOFLAGS );
-
-        try {
-            pm.load();
-            fail( "load should fail as the session currently has an open transaction" );
-        } catch ( Exception e ) {
-            // success
-        }
-    }
-
-    public void testLoadSaveAfterTransaction() throws Exception {
-        snapshotter.loadSnapshot( data1 );
-        XAResource xa = pm.getXAResource();
-        Xid xid = new DroolsXid( 100,
-                                 new byte[]{0x01},
-                                 new byte[]{0x01} );
-        xa.start( xid,
-                  XAResource.TMNOFLAGS );
-
-        snapshotter.loadSnapshot( data2 );
-        xa.commit( xid,
-                   true );
-
-        pm.save();
-        assertTrue( assertEquals( data2,
-                                  snapshotter.bytes ) );
-
-        snapshotter.loadSnapshot( data3 );
-        assertTrue( assertEquals( data3,
-                                  snapshotter.bytes ) );
-
-        pm.load();
-        assertTrue( assertEquals( data2,
-                                  snapshotter.bytes ) );
-    }
-
-    public boolean assertEquals(byte[] bytes1,
-                                byte[] bytes2) {
-        if ( bytes1.length != bytes2.length ) {
-            return false;
-        }
-
-        for ( int i = 0; i < bytes1.length; i++ ) {
-            if ( bytes1[i] != bytes2[i] ) {
-                return false;
-            }
-        }
-
-        return true;
-    }
 }

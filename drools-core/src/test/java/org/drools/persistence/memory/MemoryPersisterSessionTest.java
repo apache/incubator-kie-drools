@@ -21,8 +21,8 @@ import org.drools.base.ValueType;
 import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
 import org.drools.base.evaluators.Operator;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.persistence.StatefulSessionSnapshotter;
 import org.drools.persistence.Transaction;
+import org.drools.persistence.session.StatefulSessionSnapshotter;
 import org.drools.rule.Declaration;
 import org.drools.rule.InvalidRuleException;
 import org.drools.rule.Package;
@@ -37,7 +37,7 @@ import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.Tuple;
 
-public class MemoryPersistenceSessionTest extends TestCase {
+public class MemoryPersisterSessionTest extends TestCase {
     private byte[]          data1 = new byte[]{1, 1, 1, 1, 1};
     private byte[]          data2 = new byte[]{1, 1, 1, 1, 0};
     private byte[]          data3 = new byte[]{1, 1, 1, 0, 0};
@@ -64,7 +64,7 @@ public class MemoryPersistenceSessionTest extends TestCase {
                                 500 );
         session.insert( p1 );
 
-        MemoryPersistenceManager pm = new MemoryPersistenceManager( new StatefulSessionSnapshotter( session ) );
+        MemoryPersister pm = new MemoryPersister( new StatefulSessionSnapshotter( session ) );
         pm.save();
 
         Person p2 = new Person( "boba fet",
@@ -110,7 +110,7 @@ public class MemoryPersistenceSessionTest extends TestCase {
                                 500 );
         session.insert( p1 );
 
-        MemoryPersistenceManager pm = new MemoryPersistenceManager( new StatefulSessionSnapshotter( session ) );
+        MemoryPersister pm = new MemoryPersister( new StatefulSessionSnapshotter( session ) );
         Transaction t = pm.getTransaction();
         t.start();
 
