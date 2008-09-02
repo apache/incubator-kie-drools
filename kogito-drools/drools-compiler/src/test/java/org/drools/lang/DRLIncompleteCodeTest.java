@@ -180,7 +180,11 @@ public class DRLIncompleteCodeTest extends TestCase {
 			"end ";
 		DrlParser parser = new DrlParser();
 		PackageDescr descr = parser.parse(true, input);
-		assertNull(descr);
+		assertNotNull(descr);
+
+		assertEquals("a.b.c", descr.getNamespace());
+		assertEquals("a.b.c.*", ((ImportDescr) descr.getImports().get(0))
+				.getTarget());
 	}
 	
 	@SuppressWarnings("unchecked")
