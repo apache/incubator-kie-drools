@@ -38,7 +38,7 @@ public class ConnectionImpl implements Connection, Serializable {
     private String toType;
     private Map<String, Object> metaData = new HashMap<String, Object>();
     
-    ConnectionImpl() {
+    public ConnectionImpl() {
     }
 
     /**
@@ -67,6 +67,10 @@ public class ConnectionImpl implements Connection, Serializable {
         this.fromType = fromType;
         this.to = to;
         this.toType = toType;
+        connect();
+    }
+    
+    public void connect() {
         this.from.addOutgoingConnection(fromType, this);
         this.to.addIncomingConnection(toType, this);
     }
@@ -96,7 +100,23 @@ public class ConnectionImpl implements Connection, Serializable {
         return this.toType;
     }
 
-    public void setMetaData(String name, Object value) {
+    public void setFrom(Node from) {
+		this.from = from;
+	}
+
+	public void setTo(Node to) {
+		this.to = to;
+	}
+
+	public void setFromType(String fromType) {
+		this.fromType = fromType;
+	}
+
+	public void setToType(String toType) {
+		this.toType = toType;
+	}
+
+	public void setMetaData(String name, Object value) {
         this.metaData.put(name, value);
     }
     

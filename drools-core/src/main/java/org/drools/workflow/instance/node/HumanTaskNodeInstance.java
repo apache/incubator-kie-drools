@@ -39,7 +39,7 @@ public class HumanTaskNodeInstance extends WorkItemNodeInstance {
         // actor is specified for this human task
         if (actorId == null) {
         	actorId = (String) workItem.getParameter("ActorId");
-        	if (actorId != null) {
+        	if (actorId != null && swimlaneContextInstance != null) {
         		swimlaneContextInstance.setActorId(swimlaneName, actorId);
         	}
         }
@@ -67,13 +67,9 @@ public class HumanTaskNodeInstance extends WorkItemNodeInstance {
         String swimlaneName = getHumanTaskNode().getSwimlane();
         SwimlaneContextInstance swimlaneContextInstance = getSwimlaneContextInstance(swimlaneName);
         if (swimlaneContextInstance != null) {
-            String oldActorId = swimlaneContextInstance.getActorId(swimlaneName);
-            // only assign if swimlane has not already been assigned to an actor
-            if (oldActorId == null) {
-                String newActorId = (String) workItem.getResult("ActorId");
-                if (newActorId != null) {
-                    swimlaneContextInstance.setActorId(swimlaneName, newActorId);
-                }
+            String newActorId = (String) workItem.getResult("ActorId");
+            if (newActorId != null) {
+                swimlaneContextInstance.setActorId(swimlaneName, newActorId);
             }
         }
         super.triggerCompleted(workItem);

@@ -57,4 +57,10 @@ public interface RuleFlowEventListener
     void afterRuleFlowNodeTriggered(RuleFlowNodeTriggeredEvent event,
                                     WorkingMemory workingMemory);
 
+    void beforeRuleFlowNodeLeft(RuleFlowNodeTriggeredEvent event,
+            			        WorkingMemory workingMemory);
+
+    void afterRuleFlowNodeLeft(RuleFlowNodeTriggeredEvent event,
+    						   WorkingMemory workingMemory);
+
 }

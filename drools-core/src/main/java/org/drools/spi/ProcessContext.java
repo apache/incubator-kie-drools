@@ -19,7 +19,8 @@ public class ProcessContext {
     public Object getVariable(String variableName) {
     	VariableScopeInstance variableScope = (VariableScopeInstance) nodeInstance.resolveContextInstance(VariableScope.VARIABLE_SCOPE, variableName);
     	if (variableScope == null) {
-    		return null;
+    		return ((VariableScopeInstance) nodeInstance.getProcessInstance()
+				.getContextInstance(VariableScope.VARIABLE_SCOPE)).getVariable(variableName);
     	}
     	return variableScope.getVariable(variableName);
     }

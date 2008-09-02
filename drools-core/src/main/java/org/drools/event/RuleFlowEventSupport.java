@@ -209,6 +209,34 @@ public class RuleFlowEventSupport implements Externalizable {
         }
     }
 
+    public void fireBeforeRuleFlowNodeLeft(
+            final NodeInstance ruleFlowNodeInstance,
+            final InternalWorkingMemory workingMemory) {
+        if (this.listeners.isEmpty()) {
+            return;
+        }
+
+        final RuleFlowNodeTriggeredEvent event = new RuleFlowNodeTriggeredEvent( ruleFlowNodeInstance );
+
+        for ( RuleFlowEventListener listener: listeners ) {
+            listener.beforeRuleFlowNodeLeft( event, workingMemory );
+        }
+    }
+
+    public void fireAfterRuleFlowNodeLeft(
+            final NodeInstance ruleFlowNodeInstance,
+            final InternalWorkingMemory workingMemory) {
+        if (this.listeners.isEmpty()) {
+            return;
+        }
+
+        final RuleFlowNodeTriggeredEvent event = new RuleFlowNodeTriggeredEvent( ruleFlowNodeInstance );
+
+        for ( RuleFlowEventListener listener: listeners ) {
+            listener.afterRuleFlowNodeLeft( event, workingMemory );
+        }
+    }
+
     public void reset() {
         this.listeners.clear();
     }
