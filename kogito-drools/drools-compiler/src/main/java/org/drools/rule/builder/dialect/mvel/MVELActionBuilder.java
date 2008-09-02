@@ -87,7 +87,8 @@ public class MVELActionBuilder
                                                                        null,
                                                                        null,
                                                                        context );              
-            MVELAction expr = new MVELAction( unit, context.getDialect().getId() );            
+            MVELAction expr = new MVELAction( unit, context.getDialect().getId() );   
+            expr.setVariableNames(analysis.getNotBoundedIdentifiers());
             action.setMetaData("Action",  expr );
             
             MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( dialect.getId() );            

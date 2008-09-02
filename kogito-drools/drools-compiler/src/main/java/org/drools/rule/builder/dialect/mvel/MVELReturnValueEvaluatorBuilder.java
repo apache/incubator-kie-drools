@@ -55,6 +55,7 @@ public class MVELReturnValueEvaluatorBuilder
             data.addCompileable( constraintNode,
                                   expr );
             
+            expr.setVariableNames(analysis.getNotBoundedIdentifiers());
             expr.compile( context.getPackageBuilder().getRootClassLoader() );
         } catch ( final Exception e ) {
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
