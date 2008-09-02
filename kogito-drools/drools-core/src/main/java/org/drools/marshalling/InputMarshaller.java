@@ -705,36 +705,9 @@ public class InputMarshaller {
                 break;
             case PersisterEnums.COMPOSITE_NODE_INSTANCE :
                 nodeInstance = new CompositeContextNodeInstance();
-                int nbVariables = stream.readInt();
-                if ( nbVariables > 0 ) {
-                    VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
-                    	processInstance.getContextInstance( VariableScope.VARIABLE_SCOPE );
-                    for ( int i = 0; i < nbVariables; i++ ) {
-                        String name = stream.readUTF();
-                        try {
-                            Object value = stream.readObject();
-                            variableScopeInstance.setVariable( name, value );
-                        } catch ( ClassNotFoundException e ) {
-                            throw new IllegalArgumentException(
-                        		"Could not reload variable " + name );
-                        }
-                    }
-                }
-                while ( stream.readShort() == PersisterEnums.NODE_INSTANCE ) {
-                    readNodeInstance( 
-                		context, 
-                		(CompositeContextNodeInstance) nodeInstance, 
-                		processInstance );
-                }
                 break;
             case PersisterEnums.FOR_EACH_NODE_INSTANCE :
                 nodeInstance = new ForEachNodeInstance();
-                while ( stream.readShort() == PersisterEnums.NODE_INSTANCE ) {
-                    readNodeInstance( 
-                		context, 
-                		(ForEachNodeInstance) nodeInstance, 
-                		processInstance );
-                }
                 break;
             default :
                 throw new IllegalArgumentException( "Unknown node type: " + nodeType );
@@ -743,6 +716,41 @@ public class InputMarshaller {
         nodeInstance.setNodeInstanceContainer( nodeInstanceContainer );
         nodeInstance.setProcessInstance( processInstance );
         nodeInstance.setId( id );
+        switch ( nodeType ) {
+	        case PersisterEnums.COMPOSITE_NODE_INSTANCE :
+	            int nbVariables = stream.readInt();
+	            if ( nbVariables > 0 ) {
+	            	VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
+	                	((CompositeContextNodeInstance) nodeInstance).getContextInstance(VariableScope.VARIABLE_SCOPE);
+	                for ( int i = 0; i < nbVariables; i++ ) {
+	                    String name = stream.readUTF();
+	                    try {
+	                        Object value = stream.readObject();
+	                        variableScopeInstance.setVariable( name, value );
+	                    } catch ( ClassNotFoundException e ) {
+	                        throw new IllegalArgumentException(
+	                    		"Could not reload variable " + name );
+	                    }
+	                }
+	            }
+	            while ( stream.readShort() == PersisterEnums.NODE_INSTANCE ) {
+	                readNodeInstance( 
+	            		context, 
+	            		(CompositeContextNodeInstance) nodeInstance, 
+	            		processInstance );
+	            }
+	            break;
+	        case PersisterEnums.FOR_EACH_NODE_INSTANCE :
+	            while ( stream.readShort() == PersisterEnums.NODE_INSTANCE ) {
+	                readNodeInstance( 
+	            		context, 
+	            		(ForEachNodeInstance) nodeInstance, 
+	            		processInstance );
+	            }
+	            break;
+	        default :
+	            // do nothing
+	        }
         if ( nodeInstance instanceof EventBasedNodeInstance ) {
             ((EventBasedNodeInstance) nodeInstance).addEventListeners();
         }
@@ -765,6 +773,18 @@ public class InputMarshaller {
         workItem.setProcessInstanceId( stream.readLong() );
         workItem.setName( stream.readUTF() );
         workItem.setState( stream.readInt() );
+        
+        int nbParameters = stream.readInt();
+        
+        for ( int i = 0; i < nbParameters; i++ ) {
+        	String name = stream.readUTF();
+        	try {
+        		Object value = stream.readObject();
+            	workItem.setParameter(name, value);
+        	} catch (ClassNotFoundException e) {
+        		throw new IllegalArgumentException( "Could not reload parameter " + name );
+        	}
+        }
 
         wm.getWorkItemManager().internalAddWorkItem( workItem );
         return workItem;
