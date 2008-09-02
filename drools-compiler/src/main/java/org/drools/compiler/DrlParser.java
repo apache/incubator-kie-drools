@@ -50,6 +50,7 @@ public class DrlParser {
 	private final List results = new ArrayList();
 	private List<DroolsSentence> editorSentences = null;
 	private Location location = new Location(Location.LOCATION_UNKNOWN);
+	DescrBuilderTree walker = null;
 
 	public DrlParser() {
 	}
@@ -206,7 +207,7 @@ public class DrlParser {
 			}
 		} catch (Exception e) {
 			if (isEditor) {
-				return null;
+				return walker.getPackageDescr();
 			} else {
 				throw new DroolsParserException(
 						"Unknown error while parsing. This is a bug. Please contact the Development team.",
@@ -221,7 +222,7 @@ public class DrlParser {
 		// AST nodes have payload that point into token stream
 		nodes.setTokenStream(tokenStream);
 		// Create a tree walker attached to the nodes stream
-		DescrBuilderTree walker = new DescrBuilderTree(nodes);
+		walker = new DescrBuilderTree(nodes);
 		walker.compilation_unit();
 		return walker.getPackageDescr();
 	}
