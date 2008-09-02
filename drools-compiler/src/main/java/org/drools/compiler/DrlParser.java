@@ -205,9 +205,13 @@ public class DrlParser {
 				return null;
 			}
 		} catch (Exception e) {
-			throw new DroolsParserException(
-					"Unknown error while parsing. This is a bug. Please contact the Development team.",
-					e);
+			if (isEditor) {
+				return null;
+			} else {
+				throw new DroolsParserException(
+						"Unknown error while parsing. This is a bug. Please contact the Development team.",
+						e);
+			}
 		}
 	}
 

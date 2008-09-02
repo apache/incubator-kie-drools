@@ -180,14 +180,12 @@ public class DRLIncompleteCodeTest extends TestCase {
 			"end ";
 		DrlParser parser = new DrlParser();
 		PackageDescr descr = parser.parse(true, input);
-		assertNotNull(descr);
-		assertEquals("a.b.c", descr.getNamespace());
-		assertEquals("a.b.c.*", ((ImportDescr) descr.getImports().get(0)).getTarget());
+		assertNull(descr);
 	}
 	
 	@SuppressWarnings("unchecked")
 	private int getLastIntegerValue(LinkedList list) {
-		System.out.println(list.toString());
+//		System.out.println(list.toString());
 		int lastIntergerValue = -1;
 		for (Object object : list) {
 			if (object instanceof Integer) {
