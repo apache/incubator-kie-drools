@@ -29,50 +29,62 @@ import junit.framework.TestCase;
  *         itself is correct).
  */
 public class ExternalSpreadsheetCompilerUnitTest extends TestCase {
-	public void testLoadFromClassPath() {
-		final ExternalSpreadsheetCompiler converter = new ExternalSpreadsheetCompiler();
-		final String drl = converter.compile("/data/MultiSheetDST.xls",
-				"/templates/test_template1.drl", 11, 2);
-		assertNotNull(drl);
-		
-//		System.out.println(drl);
+    public void testLoadFromClassPath() {
+        final ExternalSpreadsheetCompiler converter = new ExternalSpreadsheetCompiler();
+        final String drl = converter.compile( "/data/MultiSheetDST.xls",
+                                              "/templates/test_template1.drl",
+                                              11,
+                                              2 );
+        assertNotNull( drl );
 
-		assertTrue(drl.indexOf("rule \"How cool is Shaun 12\"") > 0);
-		assertTrue(drl.indexOf("rule \"How cool is Kumar 11\"") > 0);
-		assertTrue(drl.indexOf("import example.model.User;") > -1);
-		assertTrue(drl.indexOf("import example.model.Car;") > -1);
-	}
+        //		System.out.println(drl);
 
-	public void testLoadSpecificWorksheet() {
-		final ExternalSpreadsheetCompiler converter = new ExternalSpreadsheetCompiler();
-		final String drl = converter.compile("/data/MultiSheetDST.xls",
-				"Another Sheet", "/templates/test_template1.drl", 11, 2);
-//		System.out.println(drl);
-		assertNotNull(drl);
-	}
+        assertTrue( drl.indexOf( "rule \"How cool is Shaun 12\"" ) > 0 );
+        assertTrue( drl.indexOf( "rule \"How cool is Kumar 11\"" ) > 0 );
+        assertTrue( drl.indexOf( "import example.model.User;" ) > -1 );
+        assertTrue( drl.indexOf( "import example.model.Car;" ) > -1 );
+    }
 
-	public void testLoadCsv() {
-		final ExternalSpreadsheetCompiler converter = new ExternalSpreadsheetCompiler();
-		final String drl = converter.compile("/data/ComplexWorkbook.csv",
-				"/templates/test_template2.drl", InputType.CSV, 10, 2);
-		assertNotNull(drl);
+    public void testLoadSpecificWorksheet() {
+        final ExternalSpreadsheetCompiler converter = new ExternalSpreadsheetCompiler();
+        final String drl = converter.compile( "/data/MultiSheetDST.xls",
+                                              "Another Sheet",
+                                              "/templates/test_template1.drl",
+                                              11,
+                                              2 );
+        //		System.out.println(drl);
+        assertNotNull( drl );
+    }
 
+    public void testLoadCsv() {
+        final ExternalSpreadsheetCompiler converter = new ExternalSpreadsheetCompiler();
+        final String drl = converter.compile( "/data/ComplexWorkbook.csv",
+                                              "/templates/test_template2.drl",
+                                              InputType.CSV,
+                                              10,
+                                              2 );
+        assertNotNull( drl );
 
-		assertTrue(drl.indexOf("myObject.setIsValid(1, 2)") > 0);
-		assertTrue(drl.indexOf("myObject.size () > 2") > 0);
+        assertTrue( drl.indexOf( "myObject.setIsValid(1, 2)" ) > 0 );
+        assertTrue( drl.indexOf( "myObject.size () > 2" ) > 0 );
 
-		assertTrue(drl
-				.indexOf("Foo(myObject.getColour().equals(red),\n\t\tmyObject.size () > 1") > 0);
-	}
+        assertTrue( drl.indexOf( "Foo(myObject.getColour().equals(red),\n\t\tmyObject.size () > 1" ) > 0 );
+    }
 
     public void testLoadBasicWithMergedCells() {
         final ExternalSpreadsheetCompiler converter = new ExternalSpreadsheetCompiler();
-        final String drl = converter.compile( "/data/BasicWorkbook.xls", "/templates/test_template3.drl",
-                                              InputType.XLS, 10, 2 );
+        final String drl = converter.compile( "/data/BasicWorkbook.xls",
+                                              "/templates/test_template3.drl",
+                                              InputType.XLS,
+                                              10,
+                                              2 );
 
-        final String drl1 = converter.compile( "/data/BasicWorkbook.xls", "/templates/test_template3.drl",
-        		InputType.XLS, 21, 2 );
-        
+        final String drl1 = converter.compile( "/data/BasicWorkbook.xls",
+                                               "/templates/test_template3.drl",
+                                               InputType.XLS,
+                                               21,
+                                               2 );
+
         assertNotNull( drl );
 
         Pattern p = Pattern.compile( ".*setIsValid\\(Y\\).*setIsValid\\(Y\\).*setIsValid\\(Y\\).*",
@@ -91,6 +103,26 @@ public class ExternalSpreadsheetCompilerUnitTest extends TestCase {
 
         assertTrue( drl.indexOf( "Foo(myObject.getColour().equals(red), myObject.size() > 1)" ) < drl.indexOf( "b: Bar()\n\t\teval(myObject.size() < 3)" ) );
 
+    }
+
+    public void testLoadBasicWithExtraCells() {
+        final ExternalSpreadsheetCompiler compiler = new ExternalSpreadsheetCompiler();
+        final String drl = compiler.compile( "/data/BasicWorkbook.xls",
+                                             "/templates/test_template4.drl",
+                                             InputType.XLS,
+                                             10,
+                                             2 );
+        assertNotNull( drl );
+
+        assertTrue( drl.indexOf( "This is a function block" ) > -1 );
+        assertTrue( drl.indexOf( "global Class1 obj1;" ) > -1 );
+        assertTrue( drl.indexOf( "myObject.getColour().equals(blue)" ) > -1 );
+        assertTrue( drl.indexOf( "Foo(myObject.getColour().equals(red), myObject.size() > 1)" ) > -1 );
+
+        assertTrue( drl.indexOf( "b: Bar()\n\t\teval(myObject.size() < 3)" ) > -1 );
+        assertTrue( drl.indexOf( "b: Bar()\n\t\teval(myObject.size() < 9)" ) > -1 );
+
+        assertTrue( drl.indexOf( "Foo(myObject.getColour().equals(red), myObject.size() > 1)" ) < drl.indexOf( "b: Bar()\n\t\teval(myObject.size() < 3)" ) );
     }
 
 }
