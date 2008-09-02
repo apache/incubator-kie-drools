@@ -14,11 +14,11 @@ public class MemoryXaResourceTest extends TestCase {
     private byte[]           data3 = new byte[]{1, 1, 1, 0, 0};
 
     MockByteArraySnapshotter snapshotter;
-    MemoryPersistenceManager pm;
+    MemoryPersister pm;
 
     protected void setUp() throws Exception {
         snapshotter = new MockByteArraySnapshotter();
-        pm = new MemoryPersistenceManager( snapshotter );
+        pm = new MemoryPersister( snapshotter );
     }
 
     public void testInitFields() {
@@ -27,7 +27,7 @@ public class MemoryXaResourceTest extends TestCase {
         // make sure these are initialised correctly
         assertEquals( 0,
                       xa.list.size() );
-        assertNull( pm.lastSave );
+        assertNull( pm.lastSave.getData( null ) );
     }
 
     public void testSingleTransactionWithRollBack() throws Exception {
@@ -43,7 +43,7 @@ public class MemoryXaResourceTest extends TestCase {
         assertEquals( 1,
                       xa.list.size() ); // we only have one transaction
         assertSame( xa.data.get( xa.list.get( 0 ) ),
-                    pm.lastSave ); // lastSave is always set to begin of the first transaction
+                    pm.lastSave.getData(null) ); // lastSave is always set to begin of the first transaction
 
         snapshotter.bytes = data2;
         xa.rollback( xid );
@@ -73,7 +73,7 @@ public class MemoryXaResourceTest extends TestCase {
         assertEquals( 0,
                       xa.list.size() );
         assertSame( data2,
-                    pm.lastSave );
+                    pm.lastSave.getData(null) );
 
         // should do nothing as there is nothing to rollback
         xa.rollback( xid );
@@ -104,7 +104,7 @@ public class MemoryXaResourceTest extends TestCase {
         assertEquals( 2,
                       xa.list.size() ); // we now have two levels
         assertSame( xa.data.get( xa.list.get( 0 ) ),
-                    pm.lastSave ); // check lastSave is still first transaction
+                    pm.lastSave.getData(null) ); // check lastSave is still first transaction
 
         Xid xid3 = new DroolsXid( 100,
                                   new byte[]{0x03},
@@ -120,7 +120,7 @@ public class MemoryXaResourceTest extends TestCase {
                    true );
 
         assertSame( xa.data.get( xid2 ),
-                    pm.lastSave ); // xid2 should now be the lastSave point
+                    pm.lastSave.getData(null) ); // xid2 should now be the lastSave point
 
         // rollback xid2, should result in rolling back xid3 too
         xa.rollback( xid2 );

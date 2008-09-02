@@ -11,12 +11,12 @@ import javax.transaction.xa.Xid;
 import org.drools.persistence.ByteArraySnapshotter;
 
 public class MemoryXaResource implements XAResource {
-    private MemoryPersistenceManager pm;
+    private MemoryPersister pm;
     
     Map<Xid, byte[]> data = new HashMap<Xid, byte[]>();
     LinkedList<Xid> list = new LinkedList<Xid>();       
 
-    public MemoryXaResource(MemoryPersistenceManager pm) {
+    public MemoryXaResource(MemoryPersister pm) {
         this.pm = pm;
     }
     

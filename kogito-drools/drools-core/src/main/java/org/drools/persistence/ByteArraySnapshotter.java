@@ -3,8 +3,12 @@
  */
 package org.drools.persistence;
 
-public interface ByteArraySnapshotter {
-    public byte[] getSnapshot();
+public interface ByteArraySnapshotter<T> {
+	
+    byte[] getSnapshot();
 
-    public void loadSnapshot(byte[] bytes);
+    void loadSnapshot(byte[] bytes);
+    
+    T getObject();
+    
 }

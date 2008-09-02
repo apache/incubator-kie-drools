@@ -7,19 +7,23 @@ import javax.transaction.xa.Xid;
 
 import org.drools.persistence.ByteArraySnapshotter;
 import org.drools.persistence.DroolsXid;
-import org.drools.persistence.PersistenceManager;
+import org.drools.persistence.Persister;
 import org.drools.persistence.Transaction;
 
-public class MemoryPersistenceManager
-    implements
-    ByteArraySnapshotter,
-    PersistenceManager {
-    ByteArraySnapshotter  snapshotter;
-    byte[]                lastSave;
-    MemoryXaResource      xaResource;
+public class MemoryPersister<T> implements ByteArraySnapshotter<T>,	Persister<T> {
+	
+	ByteArraySnapshotter<T> snapshotter;
+	MemoryObject lastSave;
+	MemoryXaResource xaResource;
+	String id;
 
-    public MemoryPersistenceManager(ByteArraySnapshotter snapshotter) {
+    public MemoryPersister(ByteArraySnapshotter<T> snapshotter) {
+        this(snapshotter, new DefaultMemoryObject());
+    }
+
+    public MemoryPersister(ByteArraySnapshotter<T> snapshotter, MemoryObject memoryObject) {
         this.snapshotter = snapshotter;
+        this.lastSave = memoryObject;
     }
 
     public MemoryXaResource getXAResource() {
@@ -38,14 +42,14 @@ public class MemoryPersistenceManager
         if ( xaResource != null && xaResource.isInTransaction() ) {
             throw new RuntimeException( "You cannot call a persistence save point while a transaction is open" );
         }
-        lastSave = getSnapshot();
+        lastSave.setData( getSnapshot(), id );
     }
 
     public void load() {
         if ( xaResource != null && xaResource.isInTransaction() ) {
             throw new RuntimeException( "You cannot call a persistence save point while a transaction is open" );
         }
-        loadSnapshot( lastSave );
+        loadSnapshot( lastSave.getData(id) );
     }
 
     public boolean isInTransaction() {
@@ -53,11 +57,11 @@ public class MemoryPersistenceManager
     }
 
     public void setLastSave(byte[] lastSave) {
-        this.lastSave = lastSave;
+        this.lastSave.setData( lastSave, id );
     }
 
     public byte[] getLastSave() {
-        return lastSave;
+        return lastSave.getData(id);
     }
 
     public byte[] getSnapshot() {
@@ -66,6 +70,10 @@ public class MemoryPersistenceManager
 
     public void loadSnapshot(byte[] bytes) {
         this.snapshotter.loadSnapshot( bytes );
+    }
+    
+    public T getObject() {
+    	return this.snapshotter.getObject();
     }
 
     byte[]      localIP     = null;
@@ -120,4 +128,12 @@ public class MemoryPersistenceManager
                               bqual );
 
     }
+
+	public String getUniqueId() {
+		return id;
+	}
+
+	public void setUniqueId(String id) {
+		this.id = id;
+	}
 }
