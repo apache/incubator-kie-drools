@@ -16,7 +16,6 @@ package org.drools.integrationtests;
  * limitations under the License.
  */
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInput;
@@ -25,8 +24,6 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -128,12 +125,15 @@ public class MiscTest extends TestCase {
 
     protected RuleBase getRuleBase() throws Exception {
 
+        RuleBaseConfiguration config = new RuleBaseConfiguration();
+        //config.setPartitionsEnabled( true );
         return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
-                                            null );
+                                            config );
     }
 
     protected RuleBase getRuleBase(final RuleBaseConfiguration config) throws Exception {
 
+        //config.setPartitionsEnabled( true );
         return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
                                             config );
     }

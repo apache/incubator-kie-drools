@@ -64,8 +64,7 @@ public class CepEspTest extends TestCase {
         return ruleBase;
     }
 
-    //FIXME current parser does not support declare statement
-    public void FIXME_testEventAssertion() throws Exception {
+    public void testEventAssertion() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_SimpleEventAssertion.drl" ) );
         RuleBase ruleBase = loadRuleBase( reader );
@@ -120,8 +119,7 @@ public class CepEspTest extends TestCase {
 
     }
 
-    //FIXME current parser does not support declare statement
-    public void FIXME_testEventAssertionWithDuration() throws Exception {
+    public void testEventAssertionWithDuration() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_SimpleEventAssertionWithDuration.drl" ) );
         final RuleBase ruleBase = loadRuleBase( reader );
@@ -193,7 +191,7 @@ public class CepEspTest extends TestCase {
     }
 
     //FIXME current parser does not support declare statement
-    public void FIXME_testTimeRelationalOperators() throws Exception {
+    public void testTimeRelationalOperators() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_TimeRelationalOperators.drl" ) );
         final RuleBase ruleBase = loadRuleBase( reader );
