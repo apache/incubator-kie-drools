@@ -481,7 +481,7 @@ abstract public class AbstractRuleBase
                     }
                 }
             } catch ( ClassNotFoundException e ) {
-                throw new RuntimeDroolsException( "unable to resolve Type Declaration class '" + lastType.getTypeName() );            
+                throw new RuntimeDroolsException( "unable to resolve Type Declaration class '" + lastType.getTypeName()+"'" );            
             }            
 
             // now merge the new package into the existing one

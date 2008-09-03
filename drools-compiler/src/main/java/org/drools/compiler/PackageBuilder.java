@@ -682,7 +682,7 @@ public class PackageBuilder {
                 type.setDurationAttribute( duration );
                 ClassDefinition cd = type.getTypeClassDef();
                 ClassFieldAccessorStore store = pkgRegistry.getPackage().getClassFieldAccessorStore();
-                InternalReadAccessor extractor = store.getReader( type.getTypeName(),
+                InternalReadAccessor extractor = store.getReader( type.getTypeClass().getName(),
                                                                   duration,
                                                                   type );
                 type.setReadAccessor( extractor );
