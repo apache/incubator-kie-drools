@@ -92,6 +92,10 @@ public class Split extends NodeImpl {
         throw new UnsupportedOperationException( "Constraints are " + "only supported with XOR or OR split types, not with: " + getType() );
     }
 
+    public Constraint internalGetConstraint(final ConnectionRef ref) {
+        return this.constraints.get(ref);
+    }
+
     public void setConstraint(final Connection connection,
                               final Constraint constraint) {
         if ( this.type == TYPE_OR || this.type == TYPE_XOR ) {
