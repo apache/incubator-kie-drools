@@ -2,13 +2,13 @@ package org.drools.util;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,7 +25,10 @@ import org.drools.Visitor;
  * Java Tip 98: Reflect on the Visitor design pattern. Implement visitors in
  * Java, using reflection.
  * http://www.javaworld.com/javaworld/javatips/jw-javatip98.html
- * 
+ *
+ * Michael Neale says: I really hate this code. Not really a helpful use
+ * of reflection, always annoys me.
+ *
  * @author Jeremy Blosser
  */
 public abstract class ReflectiveVisitor
