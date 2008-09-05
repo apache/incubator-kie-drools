@@ -11,6 +11,7 @@ import org.drools.guvnor.client.modeldriven.brl.CompositeFieldConstraint;
 import org.drools.guvnor.client.modeldriven.brl.ConnectiveConstraint;
 import org.drools.guvnor.client.modeldriven.brl.DSLSentence;
 import org.drools.guvnor.client.modeldriven.brl.FactPattern;
+import org.drools.guvnor.client.modeldriven.brl.FreeFormLine;
 import org.drools.guvnor.client.modeldriven.brl.RuleAttribute;
 import org.drools.guvnor.client.modeldriven.brl.RuleModel;
 import org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint;
@@ -20,9 +21,9 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 
 /**
  * This class persists the rule model to XML and back.
- * 
+ *
  * This is the 'brl' xml format (Business Rule Language).
- * 
+ *
  * @author Michael Neale
  */
 public class BRXMLPersistence implements BRLPersistence {
@@ -59,11 +60,12 @@ public class BRXMLPersistence implements BRLPersistence {
         this.xt.alias( "fieldConstraint",
                   SingleFieldConstraint.class );
 
-        this.xt.alias( "compositeConstraint", 
+        this.xt.alias( "compositeConstraint",
                        CompositeFieldConstraint.class );
-        
+
         this.xt.alias( "assertLogical",
                   ActionInsertLogicalFact.class );
+        this.xt.alias("freeForm", FreeFormLine.class);
 
     }
 

@@ -13,6 +13,9 @@ import org.drools.guvnor.client.modeldriven.brl.CompositeFieldConstraint;
 import org.drools.guvnor.client.modeldriven.brl.ConnectiveConstraint;
 import org.drools.guvnor.client.modeldriven.brl.DSLSentence;
 import org.drools.guvnor.client.modeldriven.brl.FactPattern;
+import org.drools.guvnor.client.modeldriven.brl.FreeFormLine;
+import org.drools.guvnor.client.modeldriven.brl.IAction;
+import org.drools.guvnor.client.modeldriven.brl.IPattern;
 import org.drools.guvnor.client.modeldriven.brl.ISingleFieldConstraint;
 import org.drools.guvnor.client.modeldriven.brl.RuleAttribute;
 import org.drools.guvnor.client.modeldriven.brl.RuleModel;
@@ -36,6 +39,26 @@ public class BRDRLPersistenceTest extends TestCase {
 
 		assertNotNull(drl);
 		assertEquals(expected, drl);
+	}
+
+	public void testFreeForm() {
+        RuleModel m = new RuleModel();
+        m.name = "with composite";
+        m.lhs = new IPattern[1];
+        m.rhs = new IAction[1];
+
+        FreeFormLine fl = new FreeFormLine();
+        fl.text = "Person()";
+        m.lhs[0] = fl;
+
+        FreeFormLine fr = new FreeFormLine();
+        fr.text = "fun()";
+        m.rhs[0] = fr;
+
+        String drl = p.marshal(m);
+        assertNotNull(drl);
+        assertTrue(drl.indexOf("Person()") > 0);
+        assertTrue(drl.indexOf("fun()") > drl.indexOf("Person()"));
 	}
 
 	public void testBasics() {

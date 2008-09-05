@@ -14,6 +14,7 @@ import org.drools.guvnor.client.modeldriven.brl.ConnectiveConstraint;
 import org.drools.guvnor.client.modeldriven.brl.DSLSentence;
 import org.drools.guvnor.client.modeldriven.brl.FactPattern;
 import org.drools.guvnor.client.modeldriven.brl.FieldConstraint;
+import org.drools.guvnor.client.modeldriven.brl.FreeFormLine;
 import org.drools.guvnor.client.modeldriven.brl.IAction;
 import org.drools.guvnor.client.modeldriven.brl.IPattern;
 import org.drools.guvnor.client.modeldriven.brl.ISingleFieldConstraint;
@@ -147,6 +148,16 @@ public class BRDRLPersistence
             }
             generateFactPattern( pattern );
             buf.append( "\n" );
+        }
+
+        public void visitFreeFormLine(FreeFormLine ffl) {
+
+        	this.buf.append("\t\t");
+        	if (isDSLEnhanced) {
+        		buf.append(">");
+        	}
+        	this.buf.append(ffl.text);
+        	this.buf.append("\n");
         }
 
         public void visitCompositeFactPattern(CompositeFactPattern pattern) {
@@ -354,6 +365,16 @@ public class BRDRLPersistence
         public void visitActionInsertLogicalFact(final ActionInsertLogicalFact action) {
             this.generateInsertCall( action,
                                      true );
+        }
+
+        public void visitFreeFormLine(FreeFormLine ffl) {
+
+        	this.buf.append("\t\t");
+        	if (isDSLEnhanced) {
+        		buf.append(">");
+        	}
+        	this.buf.append(ffl.text);
+        	this.buf.append("\n");
         }
 
         private void generateInsertCall(final ActionInsertFact action,
