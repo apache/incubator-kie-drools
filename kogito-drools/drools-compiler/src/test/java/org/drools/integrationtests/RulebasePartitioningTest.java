@@ -41,7 +41,7 @@ public class RulebasePartitioningTest extends TestCase {
                                             config );
     }
     
-    public void emptyTest() {
+    public void testEmptyTest() {
         // add this so that it passes
     }
 
