@@ -24,7 +24,7 @@ import java.io.ObjectOutput;
  * @author Michael Neale
  */
 public class OtherwiseTest extends TestCase {
-
+    
     public void testOneRuleFiringNoOtherwise() throws Exception {
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase( RuleBase.RETEOO );
 

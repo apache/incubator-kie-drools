@@ -78,7 +78,7 @@ final class Scheduler {
      * @param workingMemory
      *            The working memory session.
      */
-    void scheduleAgendaItem(final ScheduledAgendaItem item, DefaultAgenda agenda) {
+    void scheduleAgendaItem(final ScheduledAgendaItem item, InternalAgenda agenda) {
         DuractionJob job = new DuractionJob();        
         DuractionJobContext ctx = new DuractionJobContext( item, agenda );
         TimerTrigger trigger = new TimerTrigger( item.getRule().getDuration().getDuration( item.getTuple() ), 0);
@@ -94,7 +94,7 @@ final class Scheduler {
     
     public static class DuractionJob implements Job {
         public void execute(JobContext ctx) {
-            DefaultAgenda agenda = ( DefaultAgenda ) ((DuractionJobContext)ctx).getAgenda();
+            InternalAgenda agenda = ( InternalAgenda ) ((DuractionJobContext)ctx).getAgenda();
             ScheduledAgendaItem item  = ((DuractionJobContext)ctx).getScheduledAgendaItem();
             
             agenda.fireActivation( item );

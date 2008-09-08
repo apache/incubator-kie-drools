@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.drools.WorkingMemory;
 import org.drools.base.DefaultKnowledgeHelper;
@@ -103,6 +104,8 @@ public class DefaultAgenda
 
     private ConsequenceExceptionHandler      consequenceExceptionHandler;
 
+    protected volatile AtomicBoolean         halt = new AtomicBoolean(false);
+    
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -268,7 +271,6 @@ public class DefaultAgenda
         Scheduler.getInstance().scheduleAgendaItem( item,
                                                     this );
 
-
         if ( this.scheduledActivations == null ) {
             this.scheduledActivations = new org.drools.util.LinkedList();
         }
@@ -378,6 +380,11 @@ public class DefaultAgenda
             rfg.addActivation( activation );
 
         }
+        
+        // making sure we re-evaluate agenda in case we are waiting for activations
+        synchronized( this.halt ) {
+            this.halt.notifyAll();
+        }
 
     }
 
@@ -456,14 +463,14 @@ public class DefaultAgenda
      */
     public AgendaGroup getNextFocus() {
         InternalAgendaGroup agendaGroup = null;
-        // Iterate untill we find a populate AgendaModule or we reach the MAIN,
+        // Iterate until we find a populate AgendaModule or we reach the MAIN,
         // default, AgendaGroup
         while ( true ) {
             agendaGroup = (InternalAgendaGroup) this.focusStack.getLast();
 
             final boolean empty = agendaGroup.isEmpty();
 
-            // No populated queus found so pop the focusStack and repeat
+            // No populated queues found so pop the focusStack and repeat
             if ( empty && (this.focusStack.size() > 1) ) {
                 agendaGroup.setActive( false );
                 this.focusStack.removeLast();
@@ -645,18 +652,18 @@ public class DefaultAgenda
     public org.drools.util.LinkedList getScheduledActivationsLinkedList() {
         return this.scheduledActivations;
     }
-    
+
     public void clear() {
         // reset focus stack
         this.focusStack.clear();
         this.focusStack.add( this.main );
-        
+
         // reset scheduled activations
         if ( this.scheduledActivations != null && !this.scheduledActivations.isEmpty() ) {
             for ( ScheduledAgendaItem item = (ScheduledAgendaItem) this.scheduledActivations.removeFirst(); item != null; item = (ScheduledAgendaItem) this.scheduledActivations.removeFirst() ) {
                 Scheduler.getInstance().removeAgendaItem( item );
             }
-        }            
+        }
 
         //reset all agenda groups
         for ( InternalAgendaGroup group : this.agendaGroups.values() ) {
@@ -672,7 +679,7 @@ public class DefaultAgenda
         for ( ActivationGroup group : this.activationGroups.values() ) {
             group.clear();
         }
-    }    
+    }
 
     /** (non-Javadoc)
      * @see org.drools.common.AgendaI#clearAgenda()
@@ -934,10 +941,10 @@ public class DefaultAgenda
      */
     public boolean isRuleActiveInRuleFlowGroup(String ruleflowGroupName,
                                                String ruleName) {
-        
+
         RuleFlowGroup systemRuleFlowGroup = this.getRuleFlowGroup( ruleflowGroupName );
 
-        for ( Iterator< RuleFlowGroupNode > activations = systemRuleFlowGroup.iterator(); activations.hasNext(); ) {
+        for ( Iterator<RuleFlowGroupNode> activations = systemRuleFlowGroup.iterator(); activations.hasNext(); ) {
             Activation activation = activations.next().getActivation();
             if ( ruleName.equals( activation.getRule().getName() ) ) {
                 return true;
@@ -947,7 +954,7 @@ public class DefaultAgenda
     }
 
     public void addRuleFlowGroupListener(String ruleFlowGroup,
-                                         RuleFlowGroupListener listener ) {
+                                         RuleFlowGroupListener listener) {
         InternalRuleFlowGroup rfg = (InternalRuleFlowGroup) this.getRuleFlowGroup( ruleFlowGroup );
         rfg.addRuleFlowGroupListener( listener );
     }
@@ -962,4 +969,51 @@ public class DefaultAgenda
         return this.getFocus().getName();
     }
 
+    public void fireUntilHalt() {
+        fireUntilHalt( null );
+    }
+
+    public void fireUntilHalt( final AgendaFilter agendaFilter ) {
+            this.halt.set( false );
+            while ( continueFiring( -1 ) ) {
+                boolean fired = fireNextItem( agendaFilter );
+                if( !fired ) {
+                    try {
+                        synchronized( this.halt ) {
+                            this.halt.wait();
+                        }
+                    } catch ( InterruptedException e ) {
+                        this.halt.set( true );
+                    }
+                } else {
+                    this.workingMemory.executeQueuedActions();
+                }
+            }
+    }
+    
+    public void fireAllRules(AgendaFilter agendaFilter,
+                             int fireLimit) {
+        this.halt.set( false );
+        while ( continueFiring( fireLimit ) && fireNextItem( agendaFilter ) ) {
+            fireLimit = updateFireLimit( fireLimit );
+            this.workingMemory.executeQueuedActions();
+        }
+    }
+
+    private final boolean continueFiring(final int fireLimit) {
+        return (!halt.get()) && (fireLimit != 0);
+    }
+
+    private final int updateFireLimit(final int fireLimit) {
+        return fireLimit > 0 ? fireLimit - 1 : fireLimit;
+    }
+
+    public void halt() {
+        this.halt.set( true );
+        synchronized( this.halt ) {
+            this.halt.notifyAll();
+        }
+    }
+
+    
 }
