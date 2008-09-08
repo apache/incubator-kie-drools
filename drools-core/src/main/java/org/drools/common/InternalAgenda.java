@@ -72,4 +72,42 @@ public interface InternalAgenda
     public void removeRuleFlowGroupListener(String ruleFlowGroup,
                                             RuleFlowGroupListener listener);
 
+    public void clear();
+
+    public void setWorkingMemory(final InternalWorkingMemory workingMemory);
+
+    /**
+     * Fires all activations currently in agenda that match the given agendaFilter
+     * until the fireLimit is reached or no more activations exist.
+     * 
+     * @param agendaFilter the filter on which activations may fire.
+     * @param fireLimit the maximum number of activations that may fire. If -1, then it will
+     *                  fire until no more activations exist.
+     */
+    public void fireAllRules(AgendaFilter agendaFilter,
+                             int fireLimit);
+
+    /**
+     * Stop agenda from firing any other rule. It will finish the current rule
+     * execution though.
+     */
+    public void halt();
+
+    /**
+     * Keeps firing activations until a halt is called. If in a given moment, there is 
+     * no activation to fire, it will wait for an activation to be added to an active 
+     * agenda group or rule flow group.
+     */
+    public void fireUntilHalt();
+    
+    /**
+     * Keeps firing activations until a halt is called. If in a given moment, there is 
+     * no activation to fire, it will wait for an activation to be added to an active 
+     * agenda group or rule flow group.
+     * 
+     * @param agendaFilter filters the activations that may fire
+     */
+    public void fireUntilHalt(AgendaFilter agendaFilter);
+    
+    
 }

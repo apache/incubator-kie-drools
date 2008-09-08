@@ -187,24 +187,10 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
     Iterator iterateFactHandles(ObjectFilter filter);
 
     /**
-     * Returns the AgendaGroup which has the current WorkingMemory focus. The AgendaGroup interface is subject to change.
-     * @return
-     *     the AgendaGroup
-     */
-    public AgendaGroup getFocus();
-
-    /**
      * Set the focus to the specified AgendaGroup
      * @param focus
      */
     void setFocus(String focus);
-
-    /**
-     * Set the focus to the specified AgendaGroup
-     * @param focus
-     */
-    void setFocus(AgendaGroup focus);
-
 
     /**
      * Retrieve the QueryResults of the specified query.

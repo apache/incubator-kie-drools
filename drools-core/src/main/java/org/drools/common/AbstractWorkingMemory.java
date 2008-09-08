@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -80,7 +81,6 @@ import org.drools.rule.Rule;
 import org.drools.rule.TimeMachine;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
-import org.drools.spi.AgendaGroup;
 import org.drools.spi.AsyncExceptionHandler;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.GlobalResolver;
@@ -142,7 +142,7 @@ public abstract class AbstractWorkingMemory
     protected TruthMaintenanceSystem                    tms;
 
     /** Rule-firing agenda. */
-    protected DefaultAgenda                             agenda;
+    protected InternalAgenda                            agenda;
 
     protected Queue<WorkingMemoryAction>                actionQueue;
 
@@ -164,10 +164,8 @@ public abstract class AbstractWorkingMemory
     private List                                        liaPropagations;
 
     /** Flag to determine if a rule is currently being fired. */
-    protected volatile boolean                          firing;
+    protected volatile AtomicBoolean                    firing;
 
-    protected volatile boolean                          halt;
-    
     private ProcessInstanceManager                      processInstanceManager;
 
     private WorkItemManager                             workItemManager;
@@ -280,6 +278,7 @@ public abstract class AbstractWorkingMemory
                               this );
 
         this.entryPoint = EntryPoint.DEFAULT;
+        this.firing = new AtomicBoolean( false );
 
         initPartitionManagers();
         initTransient();
@@ -512,7 +511,7 @@ public abstract class AbstractWorkingMemory
     }
 
     public void halt() {
-        this.halt = true;
+        this.agenda.halt();
     }
     
 //    /**
@@ -560,99 +559,62 @@ public abstract class AbstractWorkingMemory
         // the firing for any other assertObject(..) that get
         // nested inside, avoiding concurrent-modification
         // exceptions, depending on code paths of the actions.
-        this.halt = false;
-
         if ( isSequential() ) {
             for ( Iterator it = this.liaPropagations.iterator(); it.hasNext(); ) {
                 ((LIANodePropagation) it.next()).doPropagation( this );
             }
         }
 
+        // do we need to call this in advance?
         executeQueuedActions();
 
-        boolean noneFired = true;
-
-        if ( !this.firing ) {
-            try {
-                this.firing = true;
-
-                while ( continueFiring( fireLimit ) && this.agenda.fireNextItem( agendaFilter ) ) {
-                    fireLimit = updateFireLimit( fireLimit );
-                    noneFired = false;
-                    executeQueuedActions();
-                }
-            } finally {
-                this.firing = false;
-                // @todo (mproctor) disabling Otherwise management for now, not
-                // happy with the current implementation
-                // if ( noneFired ) {
-                // doOtherwise( agendaFilter,
-                // fireLimit );
-                // }
-
+        try {
+            if( this.firing.compareAndSet( false, true ) ) {
+                this.agenda.fireAllRules( agendaFilter, fireLimit );
             }
+        } finally {
+            this.firing.set( false );
         }
-    }
-
-    private final boolean continueFiring(final int fireLimit) {
-        return (!halt) && (fireLimit != 0);
-    }
-
-    private final int updateFireLimit(final int fireLimit) {
-        return fireLimit > 0 ? fireLimit - 1 : fireLimit;
     }
 
     /**
-     * This does the "otherwise" phase of processing. If no items are fired,
-     * then it will assert a temporary "Otherwise" fact and allow any rules to
-     * fire to handle "otherwise" cases.
+     * Keeps firing activations until a halt is called. If in a given moment, there is 
+     * no activation to fire, it will wait for an activation to be added to an active 
+     * agenda group or rule flow group.
+     * 
+     * @throws IllegalStateException if this method is called when running in sequential mode
      */
-    private void doOtherwise(final AgendaFilter agendaFilter,
-                             int fireLimit) {
-        final FactHandle handle = this.insert( new Otherwise() );
-        if ( !this.actionQueue.isEmpty() ) {
-            executeQueuedActions();
-        }
-
-        while ( continueFiring( fireLimit ) && this.agenda.fireNextItem( agendaFilter ) ) {
-            fireLimit = updateFireLimit( fireLimit );
-        }
-
-        this.retract( handle );
+    public synchronized void fireUntilHalt() {
+        fireUntilHalt( null );
     }
-
-    //
-    // MN: The following is the traditional fireAllRules (without otherwise).
-    // Purely kept here as this implementation of otherwise is still
-    // experimental.
-    //
-    // public synchronized void fireAllRules(final AgendaFilter agendaFilter)
-    // throws FactException {
-    // // If we're already firing a rule, then it'll pick up
-    // // the firing for any other assertObject(..) that get
-    // // nested inside, avoiding concurrent-modification
-    // // exceptions, depending on code paths of the actions.
-    //
-    // if ( !this.factQueue.isEmpty() ) {
-    // propagateQueuedActions();
-    // }
-    //
-    // if ( !this.firing ) {
-    // try {
-    // this.firing = true;
-    //
-    // while ( this.agenda.fireNextItem( agendaFilter ) ) {
-    // ;
-    // }
-    // } finally {
-    // this.firing = false;
-    // }
-    // }
-    // }
+    
+    /**
+     * Keeps firing activations until a halt is called. If in a given moment, there is 
+     * no activation to fire, it will wait for an activation to be added to an active 
+     * agenda group or rule flow group.
+     * 
+     * @param agendaFilter filters the activations that may fire
+     * 
+     * @throws IllegalStateException if this method is called when running in sequential mode
+     */
+    public synchronized void fireUntilHalt(final AgendaFilter agendaFilter) {
+        if( isSequential() ) {
+            throw new IllegalStateException("fireUntilHalt() can not be called in sequential mode.");
+        }
+        
+        executeQueuedActions();
+        try {
+            if( this.firing.compareAndSet( false, true ) ) {
+                this.agenda.fireUntilHalt( agendaFilter );
+            }
+        } finally {
+            this.firing.set( false );
+        }
+    }
 
     /**
      * Returns the fact Object for the given <code>FactHandle</code>. It
-     * actually attemps to return the value from the handle, before retrieving
+     * actually attempts to return the value from the handle, before retrieving
      * it from objects map.
      * 
      * @see WorkingMemory
@@ -718,15 +680,7 @@ public abstract class AbstractWorkingMemory
 
     public abstract QueryResults getQueryResults(String query);
 
-    public AgendaGroup getFocus() {
-        return this.agenda.getFocus();
-    }
-
     public void setFocus(final String focus) {
-        this.agenda.setFocus( focus );
-    }
-
-    public void setFocus(final AgendaGroup focus) {
         this.agenda.setFocus( focus );
     }
 

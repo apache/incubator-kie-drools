@@ -28,6 +28,7 @@ import org.drools.SessionConfiguration;
 import org.drools.base.DroolsQuery;
 import org.drools.common.AbstractWorkingMemory;
 import org.drools.common.DefaultAgenda;
+import org.drools.common.InternalAgenda;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
@@ -86,7 +87,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
                                final InitialFactHandle initialFactHandle,
                                final long propagationContext,
                                final SessionConfiguration config,
-                               final DefaultAgenda agenda) {
+                               final InternalAgenda agenda) {
         super( id,
                ruleBase,
                handleFactory,

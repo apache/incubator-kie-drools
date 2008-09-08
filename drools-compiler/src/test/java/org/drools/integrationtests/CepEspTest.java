@@ -190,7 +190,6 @@ public class CepEspTest extends TestCase {
 
     }
 
-    //FIXME current parser does not support declare statement
     public void testTimeRelationalOperators() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_TimeRelationalOperators.drl" ) );
