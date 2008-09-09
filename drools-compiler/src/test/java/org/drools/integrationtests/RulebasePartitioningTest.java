@@ -41,11 +41,7 @@ public class RulebasePartitioningTest extends TestCase {
                                             config );
     }
     
-    public void testEmptyTest() {
-        // add this so that it passes
-    }
-
-    public void FIXME_testRulebasePartitions1() throws Exception {
+    public void testRulebasePartitions1() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_rulebasePartitions1.drl" ) ) );
         final org.drools.rule.Package pkg = builder.getPackage();
