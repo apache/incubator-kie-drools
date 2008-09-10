@@ -190,6 +190,10 @@ public class WorkItemNodeInstance extends EventBasedNodeInstance implements Even
     	} 
     }
 
+    public String[] getEventTypes() {
+    	return new String[] { "workItemCompleted" };
+    }
+    
     public void workItemAborted(WorkItem workItem) {
         if ( getWorkItem().getId() == workItem.getId() ) {
             removeEventListeners();

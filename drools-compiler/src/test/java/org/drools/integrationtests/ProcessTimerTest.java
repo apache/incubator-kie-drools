@@ -1,5 +1,7 @@
 package org.drools.integrationtests;
 
+import static org.drools.integrationtests.SerializationHelper.getSerialisedStatefulSession;
+
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -7,16 +9,17 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.drools.Message;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
-import org.drools.WorkingMemory;
+import org.drools.StatefulSession;
 import org.drools.compiler.PackageBuilder;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.rule.Package;
 
 public class ProcessTimerTest extends TestCase {
 	
-	public void testSimpleProcess() {
+	public void testSimpleProcess() throws Exception {
 		PackageBuilder builder = new PackageBuilder();
 		Reader source = new StringReader(
 			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -56,18 +59,24 @@ public class ProcessTimerTest extends TestCase {
 			"\n" +
 			"</process>");
 		builder.addRuleFlow(source);
+		
 		Package pkg = builder.getPackage();
 		RuleBase ruleBase = RuleBaseFactory.newRuleBase();
 		ruleBase.addPackage( pkg );
-		WorkingMemory workingMemory = ruleBase.newStatefulSession();
-		List myList = new ArrayList();
-		workingMemory.setGlobal("myList", myList);
+		StatefulSession session = ruleBase.newStatefulSession();
+		List<Message> myList = new ArrayList<Message>();
+		session.setGlobal("myList", myList);
         ProcessInstance processInstance =
-    		workingMemory.startProcess("org.drools.timer");
+        	session.startProcess("org.drools.timer");
         assertEquals(0, myList.size());
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        assertEquals(1, session.getTimerManager().getTimers().size());
         
+        session = getSerialisedStatefulSession( session );
+        assertEquals(1, session.getTimerManager().getTimers().size());
+
         // test that the delay works
+        System.out.println("Sleep1");
         try {
             Thread.sleep(600);
         } catch (InterruptedException e) {
@@ -76,11 +85,13 @@ public class ProcessTimerTest extends TestCase {
         assertEquals(0, myList.size());
         
         // test that the period works
+        System.out.println("Sleep2");
         try {
         	Thread.sleep(1300);
         } catch (InterruptedException e) {
         	// do nothing
         }
+        session.fireAllRules();
         assertEquals(5, myList.size());
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
 	}

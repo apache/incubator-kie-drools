@@ -8,7 +8,6 @@ import org.drools.WorkingMemory;
 public class CompleteWorkItemCommand implements Command {
 	
 	private long workItemId;
-	private long processInstanceId;
 	private Map<String, Object> results = new HashMap<String, Object>();
 	
 	public long getWorkItemId() {
@@ -17,14 +16,6 @@ public class CompleteWorkItemCommand implements Command {
 
 	public void setWorkItemId(long workItemId) {
 		this.workItemId = workItemId;
-	}
-
-	public long getProcessInstanceId() {
-		return processInstanceId;
-	}
-
-	public void setProcessInstanceId(long processInstanceId) {
-		this.processInstanceId = processInstanceId;
 	}
 
 	public Map<String, Object> getResults() {

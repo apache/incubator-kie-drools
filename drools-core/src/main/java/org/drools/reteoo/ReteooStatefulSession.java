@@ -111,13 +111,7 @@ public class ReteooStatefulSession extends ReteooWorkingMemory
 
     public void dispose() {
         this.ruleBase.disposeStatefulSession( this );
-        this.workingMemoryEventSupport.reset();
-        this.agendaEventSupport.reset();
-        this.workflowEventSupport.reset();
-        for ( Iterator it = this.__ruleBaseEventListeners.iterator(); it.hasNext(); ) {
-            this.ruleBase.removeEventListener( (RuleBaseEventListener) it.next() );
-        }
-        this.stopPartitionManagers();
+    	super.dispose();
         this.executor.shutDown();
     }
 

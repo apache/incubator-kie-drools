@@ -9,7 +9,11 @@ public interface ProcessInstanceManager {
     Collection<ProcessInstance> getProcessInstances();
 
     void addProcessInstance(ProcessInstance processInstance);
+    
+    void internalAddProcessInstance(ProcessInstance processInstance);
 
     void removeProcessInstance(ProcessInstance processInstance);
+
+    void internalRemoveProcessInstance(ProcessInstance processInstance);
 
 }

@@ -14,10 +14,12 @@ public class DefaultProcessInstanceManager implements ProcessInstanceManager {
     private int processCounter = 0;
 
     public void addProcessInstance(ProcessInstance processInstance) {
-        if (processInstance.getId() == 0) {
-            processInstance.setId(++processCounter);
-        }
-        processInstances.put(processInstance.getId(), processInstance);
+        processInstance.setId(++processCounter);
+        internalAddProcessInstance(processInstance);
+    }
+    
+    public void internalAddProcessInstance(ProcessInstance processInstance) {
+    	processInstances.put(processInstance.getId(), processInstance);
     }
 
     public Collection<ProcessInstance> getProcessInstances() {
@@ -29,6 +31,10 @@ public class DefaultProcessInstanceManager implements ProcessInstanceManager {
     }
 
     public void removeProcessInstance(ProcessInstance processInstance) {
+        internalRemoveProcessInstance(processInstance);
+    }
+
+    public void internalRemoveProcessInstance(ProcessInstance processInstance) {
         processInstances.remove(processInstance.getId());
     }
 }

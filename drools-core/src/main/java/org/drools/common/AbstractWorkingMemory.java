@@ -65,6 +65,7 @@ import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.ProcessInstanceFactory;
 import org.drools.process.instance.ProcessInstanceFactoryRegistry;
 import org.drools.process.instance.ProcessInstanceManager;
+import org.drools.process.instance.WorkItemHandler;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.process.instance.timer.TimerManager;
@@ -247,7 +248,8 @@ public abstract class AbstractWorkingMemory
         this.__ruleBaseEventListeners = new LinkedList();
         this.lock = new ReentrantLock();
         this.liaPropagations = Collections.EMPTY_LIST;
-        this.processInstanceManager = conf.getProcessInstanceManager();
+        this.processInstanceManager = conf.getProcessInstanceManagerFactory()
+        	.createProcessInstanceManager(this);
         this.timeMachine = new TimeMachine();
         
         TimerService timerService = TimerServiceFactory.getTimerService( this.config.getClockType() );
@@ -1486,7 +1488,7 @@ public abstract class AbstractWorkingMemory
         ProcessInstance processInstance = getProcessInstance(process);
         processInstance.setWorkingMemory( this );
         processInstance.setProcess( process );
-        addProcessInstance( processInstance );
+        processInstanceManager.addProcessInstance(processInstance);
         // set variable default values
         // TODO: should be part of processInstanceImpl?
         VariableScope variableScope = (VariableScope) process.getDefaultContext( VariableScope.VARIABLE_SCOPE );
@@ -1539,17 +1541,20 @@ public abstract class AbstractWorkingMemory
         return processInstanceManager.getProcessInstance(id);
     }
 
-    public void addProcessInstance(ProcessInstance processInstance) {
-        processInstanceManager.addProcessInstance(processInstance);
-    }
-
     public void removeProcessInstance(ProcessInstance processInstance) {
         processInstanceManager.removeProcessInstance(processInstance);
     }
 
     public WorkItemManager getWorkItemManager() {
         if ( workItemManager == null ) {
-            workItemManager = new WorkItemManager( this );
+            workItemManager = ruleBase.getConfiguration().getWorkItemManagerFactory().createWorkItemManager(this);
+            Map<String, WorkItemHandler> workItemHandlers = 
+            	((InternalRuleBase) getRuleBase()).getConfiguration().getWorkItemHandlers();
+            if (workItemHandlers != null) {
+            	for (Map.Entry<String, WorkItemHandler> entry: workItemHandlers.entrySet()) {
+            		workItemManager.registerWorkItemHandler(entry.getKey(), entry.getValue());
+            	}
+            }
         }
         return workItemManager;
     }
@@ -1691,5 +1696,16 @@ public abstract class AbstractWorkingMemory
     //        }
     //        
     //    }
+    
+    public void dispose() {
+        this.workingMemoryEventSupport.reset();
+        this.agendaEventSupport.reset();
+        this.workflowEventSupport.reset();
+        for ( Iterator it = this.__ruleBaseEventListeners.iterator(); it.hasNext(); ) {
+            this.ruleBase.removeEventListener( (RuleBaseEventListener) it.next() );
+        }
+        this.stopPartitionManagers();
+        this.timerManager.dispose();
+    }
 
 }
