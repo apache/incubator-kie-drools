@@ -22,6 +22,7 @@ import org.drools.Cheese;
 import org.drools.FactA;
 import org.drools.FactB;
 import org.drools.FactC;
+import org.drools.Message;
 import org.drools.Person;
 import org.drools.Primitives;
 import org.drools.RuleBase;
@@ -30,7 +31,6 @@ import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassObjectType;
-import org.drools.base.MapGlobalResolver;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
@@ -39,6 +39,7 @@ import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.marshalling.DefaultMarshaller;
 import org.drools.marshalling.Marshaller;
 import org.drools.marshalling.RuleBaseNodes;
+import org.drools.process.instance.ProcessInstance;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.rule.MapBackedClassLoader;
@@ -1907,8 +1908,66 @@ public class MarshallingTest extends TestCase {
                       list.get( 2 ) );
     }
     
-    
-    protected RuleBase getRuleBase() throws Exception {
+	public void testAccumulate() throws Exception {
+		PackageBuilder builder = new PackageBuilder();
+		Reader source = new StringReader(
+			"package org.drools\n" +
+			"\n" +
+			"import org.drools.Message\n" +
+			"\n" +
+			"rule MyRule\n" +
+			"  when\n" +
+			"    Number( intValue >= 5 ) from accumulate ( m: Message( ), count( m ) )\n" +
+			"  then\n" +
+			"    System.out.println(\"Found messages\");\n" +
+			"end");
+		builder.addPackageFromDrl(source);
+		Package pkg = builder.getPackage();
+		RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+		ruleBase.addPackage( pkg );
+		StatefulSession session = ruleBase.newStatefulSession();
+        
+		session.insert(new Message());
+		session = getSerialisedStatefulSession( session );
+		session.insert(new Message());
+		session.insert(new Message());
+		session.insert(new Message());
+		session.insert(new Message());
+		
+        assertEquals(1, session.getAgenda().getActivations().length);
+	}
+
+	public void testAccumulate2() throws Exception {
+		PackageBuilder builder = new PackageBuilder();
+		Reader source = new StringReader(
+			"package org.drools\n" +
+			"\n" +
+			"import org.drools.Message\n" +
+			"\n" +
+			"rule MyRule\n" +
+			"  when\n" +
+			"    Number( intValue >= 5 ) from accumulate ( m: Message( ), count( m ) )\n" +
+			"  then\n" +
+			"    System.out.println(\"Found messages\");\n" +
+			"end");
+		builder.addPackageFromDrl(source);
+		Package pkg = builder.getPackage();
+		RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+		ruleBase.addPackage( pkg );
+		StatefulSession session = ruleBase.newStatefulSession();
+        session.fireAllRules();
+        
+        session = getSerialisedStatefulSession( session );
+		session.insert(new Message());
+		session.insert(new Message());
+		session.insert(new Message());
+		session.insert(new Message());
+		session.insert(new Message());
+		
+        assertEquals(1, session.getAgenda().getActivations().length);
+	}
+
+	protected RuleBase getRuleBase() throws Exception {
 
         return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
                                             null );
