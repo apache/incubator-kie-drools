@@ -53,6 +53,10 @@ public class TimerNodeInstance extends EventBasedNodeInstance implements EventLi
     	}
     }
     
+    public String[] getEventTypes() {
+    	return new String[] { "timerTriggered" };
+    }
+    
     public void triggerCompleted(boolean remove) {
         triggerCompleted(Node.CONNECTION_DEFAULT_TYPE, remove);
     }

@@ -2,6 +2,7 @@ package org.drools.marshalling;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
@@ -25,11 +26,13 @@ import org.drools.common.TruthMaintenanceSystem;
 import org.drools.concurrent.ExecutorService;
 import org.drools.process.core.context.swimlane.SwimlaneContext;
 import org.drools.process.core.context.variable.VariableScope;
+import org.drools.process.core.timer.Timer;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.context.swimlane.SwimlaneContextInstance;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.process.instance.impl.WorkItemImpl;
+import org.drools.process.instance.timer.TimerManager;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.BetaNode;
 import org.drools.reteoo.EntryPointNode;
@@ -63,7 +66,6 @@ import org.drools.workflow.instance.NodeInstance;
 import org.drools.workflow.instance.NodeInstanceContainer;
 import org.drools.workflow.instance.impl.NodeInstanceImpl;
 import org.drools.workflow.instance.node.CompositeContextNodeInstance;
-import org.drools.workflow.instance.node.EventBasedNodeInstance;
 import org.drools.workflow.instance.node.ForEachNodeInstance;
 import org.drools.workflow.instance.node.HumanTaskNodeInstance;
 import org.drools.workflow.instance.node.JoinInstance;
@@ -114,7 +116,9 @@ public class InputMarshaller {
 
         readProcessInstances( context );
 
-        readWorkItems( context );        
+        readWorkItems( context );
+        
+        readTimers( context );
         
         return session;
     }
@@ -173,6 +177,8 @@ public class InputMarshaller {
         readProcessInstances( context );
 
         readWorkItems( context );
+        
+        readTimers( context );
 
         return session;
     }
@@ -653,7 +659,7 @@ public class InputMarshaller {
 
         processInstance.internalSetNodeInstanceCounter( nodeInstanceCounter );
         if (wm != null) {
-        	wm.addProcessInstance( processInstance );
+        	processInstance.reconnect();
         }
         return processInstance;
     }
@@ -751,23 +757,21 @@ public class InputMarshaller {
 	        default :
 	            // do nothing
 	        }
-        if ( nodeInstance instanceof EventBasedNodeInstance ) {
-            ((EventBasedNodeInstance) nodeInstance).addEventListeners();
-        }
         return nodeInstance;
     }
 
     public static void readWorkItems(MarshallerReaderContext context) throws IOException {
-        ObjectInputStream stream = context.stream;
+    	InternalWorkingMemory wm = context.wm;
+    	ObjectInputStream stream = context.stream;
         while ( stream.readShort() == PersisterEnums.WORK_ITEM ) {
-            readWorkItem( context );
+            WorkItem workItem = readWorkItem( context );
+            wm.getWorkItemManager().internalAddWorkItem( workItem );
         }
     }
 
     public static WorkItem readWorkItem(MarshallerReaderContext context) throws IOException {
         ObjectInputStream stream = context.stream;
-        InternalWorkingMemory wm = context.wm;
-
+        
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setId( stream.readLong() );
         workItem.setProcessInstanceId( stream.readLong() );
@@ -786,8 +790,35 @@ public class InputMarshaller {
         	}
         }
 
-        wm.getWorkItemManager().internalAddWorkItem( workItem );
         return workItem;
+    }
+
+    public static void readTimers(MarshallerReaderContext context) throws IOException {
+    	InternalWorkingMemory wm = context.wm;
+    	ObjectInputStream stream = context.stream;
+    	
+    	TimerManager timerManager = wm.getTimerManager();
+    	timerManager.internalSetTimerId( stream.readLong() );
+    	
+        while ( stream.readShort() == PersisterEnums.TIMER ) {
+            Timer timer = readTimer( context );
+            timerManager.internalAddTimer( timer );
+        }
+    }
+
+    public static Timer readTimer(MarshallerReaderContext context) throws IOException {
+        ObjectInputStream stream = context.stream;
+        
+        Timer timer = new Timer();
+        timer.setId( stream.readLong() );
+        timer.setDelay( stream.readLong() );
+        timer.setPeriod( stream.readLong() );
+        timer.setProcessInstanceId( stream.readLong() );
+        timer.setActivated( new Date(stream.readLong()) );
+        if (stream.readBoolean()) {
+        	timer.setLastTriggered( new Date(stream.readLong()) );
+        }
+        return timer;
     }
 
 }

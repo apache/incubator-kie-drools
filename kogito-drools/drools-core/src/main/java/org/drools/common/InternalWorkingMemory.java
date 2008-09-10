@@ -85,8 +85,6 @@ public interface InternalWorkingMemory
 
 	public void setTimeMachine(TimeMachine tm);
 	
-    public void addProcessInstance(ProcessInstance processInstance);
-    
     public void removeProcessInstance(ProcessInstance processInstance);
     
     public ProcessInstanceManager getProcessInstanceManager();

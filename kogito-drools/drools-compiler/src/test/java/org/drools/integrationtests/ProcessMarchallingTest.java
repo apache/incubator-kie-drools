@@ -2,6 +2,8 @@ package org.drools.integrationtests;
 
 import static org.drools.integrationtests.SerializationHelper.getSerialisedStatefulSession;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,6 +17,8 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.compiler.PackageBuilder;
+import org.drools.marshalling.DefaultMarshaller;
+import org.drools.marshalling.Marshaller;
 import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemHandler;
@@ -428,6 +432,94 @@ public class ProcessMarchallingTest extends TestCase {
         	session.getWorkItemManager().completeWorkItem(workItem.getId(), null);
         }
         
+        assertEquals(0, session.getProcessInstances().size());
+    }
+    
+    public void test5() throws Exception {
+        String process = 
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+        	"<process xmlns=\"http://drools.org/drools-4.0/process\"\n" +
+            "  xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+            "  xs:schemaLocation=\"http://drools.org/drools-4.0/process drools-processes-4.0.xsd\"\n" +
+            "  type=\"RuleFlow\" name=\"ruleflow\" id=\"com.sample.ruleflow\" package-name=\"com.sample\" >\n" +
+            "\n" +
+            "    <header>\n" +
+    		"    </header>\n" +
+    		"\n" +
+    		"    <nodes>\n" +
+    		"      <start id=\"1\" name=\"Start\" />\n" +
+    		"      <timer id=\"4\" name=\"Timer\" delay=\"200\" />\n" +
+    		"      <end id=\"3\" name=\"End\" />\n" +
+    		"    </nodes>\n" +
+    		"\n" +
+    		"    <connections>\n" +
+    		"      <connection from=\"1\" to=\"4\" />\n" +
+    		"      <connection from=\"4\" to=\"3\" />\n" +
+    		"    </connections>\n" +
+            "\n" +
+            "</process>\n";
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addProcessFromXml( new StringReader( process ));
+        final Package pkg = builder.getPackage();
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        ruleBase.addPackage(pkg);
+
+        StatefulSession session = ruleBase.newStatefulSession();
+        session.startProcess("com.sample.ruleflow", null);
+
+        assertEquals(1, session.getProcessInstances().size());
+        
+        session = getSerialisedStatefulSession( session );
+        Thread.sleep(400);
+
+        assertEquals(0, session.getProcessInstances().size());
+    }
+    
+    public void test6() throws Exception {
+        String process = 
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+        	"<process xmlns=\"http://drools.org/drools-4.0/process\"\n" +
+            "  xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+            "  xs:schemaLocation=\"http://drools.org/drools-4.0/process drools-processes-4.0.xsd\"\n" +
+            "  type=\"RuleFlow\" name=\"ruleflow\" id=\"com.sample.ruleflow\" package-name=\"com.sample\" >\n" +
+            "\n" +
+            "    <header>\n" +
+    		"    </header>\n" +
+    		"\n" +
+    		"    <nodes>\n" +
+    		"      <start id=\"1\" name=\"Start\" />\n" +
+    		"      <timer id=\"4\" name=\"Timer\" delay=\"200\" />\n" +
+    		"      <end id=\"3\" name=\"End\" />\n" +
+    		"    </nodes>\n" +
+    		"\n" +
+    		"    <connections>\n" +
+    		"      <connection from=\"1\" to=\"4\" />\n" +
+    		"      <connection from=\"4\" to=\"3\" />\n" +
+    		"    </connections>\n" +
+            "\n" +
+            "</process>\n";
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addProcessFromXml( new StringReader( process ));
+        final Package pkg = builder.getPackage();
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        ruleBase.addPackage(pkg);
+
+        StatefulSession session = ruleBase.newStatefulSession();
+        session.startProcess("com.sample.ruleflow", null);
+        assertEquals(1, session.getProcessInstances().size());
+        
+        Marshaller marshaller = new DefaultMarshaller();
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ruleBase.writeStatefulSession(session, baos, marshaller);
+        byte[] b1 = baos.toByteArray();
+        session.dispose();
+        Thread.sleep(400);
+        
+        ByteArrayInputStream bais = new ByteArrayInputStream( b1 );
+        session = ruleBase.readStatefulSession(bais, true, marshaller);
+        Thread.sleep(100);
+
         assertEquals(0, session.getProcessInstances().size());
     }
     

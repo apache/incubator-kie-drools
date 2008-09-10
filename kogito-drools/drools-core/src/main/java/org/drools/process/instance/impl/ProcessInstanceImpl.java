@@ -169,15 +169,19 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
     protected abstract void internalStart();
     
     public void disconnect() {
-        workingMemory.removeProcessInstance(this);
+        workingMemory.getProcessInstanceManager().internalRemoveProcessInstance(this);
         process = null;
         workingMemory = null;
     }
     
     public void reconnect() {
-        workingMemory.addProcessInstance(this);
+        workingMemory.getProcessInstanceManager().internalAddProcessInstance(this);
     }
 
+    public String[] getEventTypes() {
+    	return null;
+    }
+    
     public String toString() {
         final StringBuffer b = new StringBuffer( "ProcessInstance " );
         b.append( getId() );

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -29,10 +30,12 @@ import org.drools.common.RuleFlowGroupImpl;
 import org.drools.common.WorkingMemoryAction;
 import org.drools.process.core.context.swimlane.SwimlaneContext;
 import org.drools.process.core.context.variable.VariableScope;
+import org.drools.process.core.timer.Timer;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.context.swimlane.SwimlaneContextInstance;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
+import org.drools.process.instance.timer.TimerManager;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTupleSink;
 import org.drools.reteoo.NodeTypeEnums;
@@ -94,6 +97,8 @@ public class OutputMarshaller {
         writeProcessInstances( context );
 
         writeWorkItems( context );
+        
+        writeTimers( context );
     }
 
     public static void writeAgenda(MarshallerWriteContext context) throws IOException {
@@ -789,6 +794,41 @@ public class OutputMarshaller {
         	stream.writeUTF(entry.getKey());
         	stream.writeObject(entry.getValue());
         }
+    }
+
+    public static void writeTimers(MarshallerWriteContext context) throws IOException {
+        ObjectOutputStream stream = context.stream;
+
+        TimerManager timerManager = context.wm.getTimerManager();
+        stream.writeLong( timerManager.internalGetTimerId() );
+
+        List<Timer> timers = new ArrayList<Timer>(timerManager.getTimers());
+        Collections.sort(timers, new Comparator<Timer>() {
+			public int compare(Timer o1, Timer o2) {
+				return (int) (o2.getId() - o1.getId());
+			}
+        });
+        for ( Timer timer: timers ) {
+            stream.writeShort( PersisterEnums.TIMER );
+            writeTimer( context, timer );
+        }
+        stream.writeShort( PersisterEnums.END );
+    }
+
+    public static void writeTimer(MarshallerWriteContext context, Timer timer) throws IOException {
+    	ObjectOutputStream stream = context.stream;
+    	stream.writeLong( timer.getId() );
+    	stream.writeLong( timer.getDelay() );
+    	stream.writeLong( timer.getPeriod() );
+    	stream.writeLong( timer.getProcessInstanceId() );
+    	stream.writeLong( timer.getActivated().getTime() );
+    	Date lastTriggered = timer.getLastTriggered();
+    	if (lastTriggered != null) {
+    		stream.writeBoolean(true);
+    		stream.writeLong( timer.getLastTriggered().getTime() );
+    	} else {
+    		stream.writeBoolean(false);
+    	}
     }
 
 }

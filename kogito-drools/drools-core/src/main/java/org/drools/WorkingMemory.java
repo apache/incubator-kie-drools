@@ -300,5 +300,7 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      * @return
      */
     public SessionClock getSessionClock();
+    
+    public void dispose();
 
 }

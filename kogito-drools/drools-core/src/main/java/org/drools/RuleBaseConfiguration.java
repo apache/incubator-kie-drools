@@ -40,7 +40,9 @@ import org.drools.process.core.impl.ParameterDefinitionImpl;
 import org.drools.process.core.impl.WorkDefinitionExtensionImpl;
 import org.drools.process.instance.ProcessInstanceFactory;
 import org.drools.process.instance.ProcessInstanceFactoryRegistry;
-import org.drools.process.instance.ProcessInstanceManager;
+import org.drools.process.instance.ProcessInstanceManagerFactory;
+import org.drools.process.instance.WorkItemHandler;
+import org.drools.process.instance.WorkItemManagerFactory;
 import org.drools.process.instance.impl.ContextInstanceFactory;
 import org.drools.process.instance.impl.ContextInstanceFactoryRegistry;
 import org.drools.spi.ConflictResolver;
@@ -125,11 +127,13 @@ public class RuleBaseConfiguration
     private static final String            STAR             = "*";
     private ContextInstanceFactoryRegistry processContextInstanceFactoryRegistry;
     private Map<String, WorkDefinition>    workDefinitions;
+    private Map<String, WorkItemHandler>   workItemHandlers;
     private boolean                        advancedProcessRuleIntegration;
 
     private ProcessInstanceFactoryRegistry processInstanceFactoryRegistry;
     private NodeInstanceFactoryRegistry    processNodeInstanceFactoryRegistry;
-    private ProcessInstanceManager         processInstanceManager;
+    private ProcessInstanceManagerFactory  processInstanceManagerFactory;
+    private WorkItemManagerFactory         workItemManagerFactory;
 
     private transient ClassLoader          classLoader;
 
@@ -671,6 +675,47 @@ public class RuleBaseConfiguration
         }
     }
 
+    public Map<String, WorkItemHandler> getWorkItemHandlers() {
+        if ( this.workItemHandlers == null ) {
+            initWorkItemHandlers();
+        }
+        return this.workItemHandlers;
+
+    }
+
+    private void initWorkItemHandlers() {
+        this.workItemHandlers = new HashMap<String, WorkItemHandler>();
+
+        // split on each space
+        String locations[] = this.chainedProperties.getProperty( "drools.workItemHandlers",
+                                                                 "" ).split( "\\s" );
+
+        // load each SemanticModule
+        for ( String factoryLocation : locations ) {
+            // trim leading/trailing spaces and quotes
+            factoryLocation = factoryLocation.trim();
+            if ( factoryLocation.startsWith( "\"" ) ) {
+                factoryLocation = factoryLocation.substring( 1 );
+            }
+            if ( factoryLocation.endsWith( "\"" ) ) {
+                factoryLocation = factoryLocation.substring( 0,
+                                                             factoryLocation.length() - 1 );
+            }
+            if ( !factoryLocation.equals( "" ) ) {
+                loadWorkItemHandlers( factoryLocation );
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+	private void loadWorkItemHandlers(String location) {
+        String content = ConfFileUtils.URLContentsToString( ConfFileUtils.getURL( location,
+                                                                                  null,
+                                                                                  RuleBaseConfiguration.class ) );
+        Map<String, WorkItemHandler> workItemHandlers = (Map<String, WorkItemHandler>) MVEL.eval( content, new HashMap() );
+        this.workItemHandlers.putAll(workItemHandlers);
+    }
+
     public ContextInstanceFactoryRegistry getProcessContextInstanceFactoryRegistry() {
         if ( this.processContextInstanceFactoryRegistry == null ) {
             initProcessContextInstanceFactoryRegistry();
@@ -720,37 +765,77 @@ public class RuleBaseConfiguration
         }
     }
 
-    public ProcessInstanceManager getProcessInstanceManager() {
-        if ( this.processInstanceManager == null ) {
-            initProcessInstanceManager();
+    public ProcessInstanceManagerFactory getProcessInstanceManagerFactory() {
+        if ( this.processInstanceManagerFactory == null ) {
+            initProcessInstanceManagerFactory();
         }
-        return this.processInstanceManager;
+        return this.processInstanceManagerFactory;
     }
 
-    private void initProcessInstanceManager() {
-        String className = this.chainedProperties.getProperty( "processInstanceManager",
-                                                               "org.drools.process.instance.impl.DefaultProcessInstanceManager" );
-        Class clazz = null;
+    @SuppressWarnings("unchecked")
+	private void initProcessInstanceManagerFactory() {
+        String className = this.chainedProperties.getProperty( "processInstanceManagerFactory",
+                                                               "org.drools.process.instance.impl.DefaultProcessInstanceManagerFactory" );
+        Class<ProcessInstanceManagerFactory> clazz = null;
         try {
-            clazz = Thread.currentThread().getContextClassLoader().loadClass( className );
+            clazz = (Class<ProcessInstanceManagerFactory>)
+            	Thread.currentThread().getContextClassLoader().loadClass( className );
         } catch ( ClassNotFoundException e ) {
         }
 
         if ( clazz == null ) {
             try {
-                clazz = RuleBaseConfiguration.class.getClassLoader().loadClass( className );
+                clazz = (Class<ProcessInstanceManagerFactory>)
+                	RuleBaseConfiguration.class.getClassLoader().loadClass( className );
             } catch ( ClassNotFoundException e ) {
             }
         }
 
         if ( clazz != null ) {
             try {
-                this.processInstanceManager = (ProcessInstanceManager) clazz.newInstance();
+                this.processInstanceManagerFactory = clazz.newInstance();
             } catch ( Exception e ) {
-                throw new IllegalArgumentException( "Unable to instantiate process instance manager '" + className + "'" );
+                throw new IllegalArgumentException( "Unable to instantiate process instance manager factory '" + className + "'" );
             }
         } else {
-            throw new IllegalArgumentException( "Process instance manager '" + className + "' not found" );
+            throw new IllegalArgumentException( "Process instance manager factory '" + className + "' not found" );
+        }
+    }
+
+    public WorkItemManagerFactory getWorkItemManagerFactory() {
+        if ( this.workItemManagerFactory == null ) {
+            initWorkItemManagerFactory();
+        }
+        return this.workItemManagerFactory;
+    }
+
+    @SuppressWarnings("unchecked")
+	private void initWorkItemManagerFactory() {
+        String className = this.chainedProperties.getProperty( "workItemManagerFactory",
+                                                               "org.drools.process.instance.impl.DefaultWorkItemManagerFactory" );
+        Class<WorkItemManagerFactory> clazz = null;
+        try {
+            clazz = (Class<WorkItemManagerFactory>)
+            	Thread.currentThread().getContextClassLoader().loadClass( className );
+        } catch ( ClassNotFoundException e ) {
+        }
+
+        if ( clazz == null ) {
+            try {
+                clazz = (Class<WorkItemManagerFactory>)
+                	RuleBaseConfiguration.class.getClassLoader().loadClass( className );
+            } catch ( ClassNotFoundException e ) {
+            }
+        }
+
+        if ( clazz != null ) {
+            try {
+                this.workItemManagerFactory = clazz.newInstance();
+            } catch ( Exception e ) {
+                throw new IllegalArgumentException( "Unable to instantiate work item manager factory '" + className + "'", e );
+            }
+        } else {
+            throw new IllegalArgumentException( "Work item manager factory '" + className + "' not found" );
         }
     }
 

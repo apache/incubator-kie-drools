@@ -3,6 +3,7 @@ package org.drools.process.instance.timer;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +32,9 @@ public class TimerManager {
     public void registerTimer(final Timer timer,
                               ProcessInstance processInstance) {
         timer.setId( ++timerId );
-
+        timer.setProcessInstanceId(processInstance.getId());
+        timer.setActivated(new Date());
+        
         ProcessJobContext ctx = new ProcessJobContext( timer,
                                                        processInstance.getId(),
                                                        this.workingMemory );
@@ -44,6 +47,34 @@ public class TimerManager {
         timers.put(timerId, timer);
     }
 
+    public void internalAddTimer(final Timer timer) {
+		ProcessJobContext ctx = new ProcessJobContext(
+			timer, timer.getProcessInstanceId(), this.workingMemory);
+
+		long delay;
+		Date lastTriggered = timer.getLastTriggered();
+		if (lastTriggered == null) {
+			Date activated = timer.getActivated();
+			Date now = new Date();
+			long timespan = now.getTime() - activated.getTime();
+			delay = timer.getDelay() - timespan;
+			if (delay < 0) {
+				delay = 0;
+			}
+		} else {
+			Date now = new Date();
+			long timespan = now.getTime() - lastTriggered.getTime();
+			delay = timespan - timer.getPeriod();
+			if (delay < 0) {
+				delay = 0;
+			}
+		}
+		JobHandle jobHandle = this.timerService.scheduleJob(
+			ProcessJob.instance, ctx, new TimerTrigger(delay, timer.getPeriod()));
+		timer.setJobHandle(jobHandle);
+		timers.put(timerId, timer);
+	}
+
     public void cancelTimer(long timerId) {
     	Timer timer = timers.get(timerId);
     	if (timer != null) {
@@ -51,8 +82,26 @@ public class TimerManager {
     	}
     }
     
+    public void dispose() {
+    	for (Timer timer: timers.values()) {
+    		timerService.removeJob( timer.getJobHandle() );
+    	}
+    }
+    
     public TimerService getTimerService() {
         return this.timerService;
+    }
+    
+    public Collection<Timer> getTimers() {
+    	return timers.values();
+    }
+    
+    public long internalGetTimerId() {
+    	return timerId;
+    }
+    
+    public void internalSetTimerId(long timerId) {
+    	this.timerId = timerId;
     }
 
     public static class ProcessJob
@@ -69,6 +118,8 @@ public class TimerManager {
             if ( processInstanceId == null ) {
                 throw new IllegalArgumentException( "Could not find process instance for timer " );
             }
+            
+            ctx.getTimer().setLastTriggered(new Date());
 
             ProcessInstance processInstance = workingMemory.getProcessInstance( processInstanceId );
             // process instance may have finished already

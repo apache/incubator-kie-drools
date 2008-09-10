@@ -2,13 +2,15 @@ package org.drools;
 
 import java.util.Properties;
 
+import junit.framework.TestCase;
+
 import org.drools.RuleBaseConfiguration.AssertBehaviour;
 import org.drools.RuleBaseConfiguration.LogicalOverride;
 import org.drools.RuleBaseConfiguration.SequentialAgenda;
 import org.drools.common.ArrayAgendaGroupFactory;
 import org.drools.common.PriorityQueueAgendaGroupFactory;
-
-import junit.framework.TestCase;
+import org.drools.process.instance.impl.demo.SystemOutWorkItemHandler;
+import org.drools.process.instance.impl.demo.UIWorkItemHandler;
 
 public class RuleBaseConfigurationTest extends TestCase {
 
@@ -95,6 +97,15 @@ public class RuleBaseConfigurationTest extends TestCase {
         assertTrue( cfg.isSequential() );
         assertEquals( SequentialAgenda.DYNAMIC, cfg.getSequentialAgenda() );
         assertTrue( cfg.getAgendaGroupFactory() instanceof PriorityQueueAgendaGroupFactory );
-    }    
+    }
+    
+    public void testWorkItemHandlers() {
+    	Properties properties = new Properties();
+        properties.setProperty( "drools.workItemHandlers", "WorkItemHandlers1.conf WorkItemHandlers2.conf" );
+        RuleBaseConfiguration cfg = new RuleBaseConfiguration(properties);
+        assertEquals(cfg.getWorkItemHandlers().size(), 3);
+        assertEquals(cfg.getWorkItemHandlers().get("MyWork").getClass(), SystemOutWorkItemHandler.class);
+        assertEquals(cfg.getWorkItemHandlers().get("UIWork").getClass(), UIWorkItemHandler.class);
+    }
 
 }

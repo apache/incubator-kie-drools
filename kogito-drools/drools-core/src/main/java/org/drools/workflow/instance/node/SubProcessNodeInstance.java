@@ -19,14 +19,8 @@ package org.drools.workflow.instance.node;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.WorkingMemory;
-import org.drools.event.RuleFlowCompletedEvent;
-import org.drools.event.RuleFlowEventListener;
-import org.drools.event.RuleFlowGroupActivatedEvent;
-import org.drools.event.RuleFlowGroupDeactivatedEvent;
-import org.drools.event.RuleFlowNodeTriggeredEvent;
-import org.drools.event.RuleFlowStartedEvent;
 import org.drools.process.core.context.variable.VariableScope;
+import org.drools.process.instance.EventListener;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.workflow.core.Node;
@@ -38,7 +32,7 @@ import org.drools.workflow.instance.NodeInstance;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class SubProcessNodeInstance extends EventBasedNodeInstance implements RuleFlowEventListener {
+public class SubProcessNodeInstance extends EventBasedNodeInstance implements EventListener {
 
     private static final long serialVersionUID = 400L;
     
@@ -71,8 +65,8 @@ public class SubProcessNodeInstance extends EventBasedNodeInstance implements Ru
     	        || processInstance.getState() == ProcessInstance.STATE_COMPLETED) {
     		triggerCompleted();
     	} else {
-    	    addEventListeners();
     		this.processInstanceId = processInstance.getId();
+    	    addEventListeners();
     	}
     }
     
@@ -96,89 +90,38 @@ public class SubProcessNodeInstance extends EventBasedNodeInstance implements Ru
 
     public void addEventListeners() {
         super.addEventListeners();
-        getProcessInstance().getWorkingMemory().addEventListener(this);
+        getProcessInstance().addEventListener("processInstanceCompleted:" + processInstanceId, this);
     }
 
     public void removeEventListeners() {
         super.removeEventListeners();
-        getProcessInstance().getWorkingMemory().removeEventListener(this);
+        getProcessInstance().removeEventListener("processInstanceCompleted:" + processInstanceId, this);
     }
 
-    public void afterRuleFlowCompleted(RuleFlowCompletedEvent event,
-            WorkingMemory workingMemory) {
-        ProcessInstance processInstance = event.getProcessInstance();
-        if ( processInstance.getId() == processInstanceId ) {
-            removeEventListeners();
-            VariableScopeInstance subProcessVariableScopeInstance = (VariableScopeInstance)
-                processInstance.getContextInstance(VariableScope.VARIABLE_SCOPE);
-            for (Map.Entry<String, String> mapping: getSubProcessNode().getOutMappings().entrySet()) {
-                VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
-                    resolveContextInstance(VariableScope.VARIABLE_SCOPE, mapping.getValue());
-                if (variableScopeInstance != null) {
-                    variableScopeInstance.setVariable(mapping.getValue(), subProcessVariableScopeInstance.getVariable(mapping.getKey()));
-                } else {
-                    System.err.println("Could not find variable scope for variable " + mapping.getValue());
-                    System.err.println("when trying to complete SubProcess node " + getSubProcessNode().getName());
-                    System.err.println("Continuing without setting variable.");
-                }
+	public void signalEvent(String type, Object event) {
+		processInstanceCompleted((ProcessInstance) event);
+	}
+    
+    public String[] getEventTypes() {
+    	return new String[] { "processInstanceCompleted:" + processInstanceId };
+    }
+    
+    public void processInstanceCompleted(ProcessInstance processInstance) {
+        removeEventListeners();
+        VariableScopeInstance subProcessVariableScopeInstance = (VariableScopeInstance)
+            processInstance.getContextInstance(VariableScope.VARIABLE_SCOPE);
+        for (Map.Entry<String, String> mapping: getSubProcessNode().getOutMappings().entrySet()) {
+            VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
+                resolveContextInstance(VariableScope.VARIABLE_SCOPE, mapping.getValue());
+            if (variableScopeInstance != null) {
+                variableScopeInstance.setVariable(mapping.getValue(), subProcessVariableScopeInstance.getVariable(mapping.getKey()));
+            } else {
+                System.err.println("Could not find variable scope for variable " + mapping.getValue());
+                System.err.println("when trying to complete SubProcess node " + getSubProcessNode().getName());
+                System.err.println("Continuing without setting variable.");
             }
-            triggerCompleted();
         }
+        triggerCompleted();
     }
-
-    public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
-            WorkingMemory workingMemory) {
-        // Do nothing
-    }
-
-    public void afterRuleFlowGroupDeactivated(
-            RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
-        // Do nothing
-    }
-
-    public void afterRuleFlowNodeTriggered(RuleFlowNodeTriggeredEvent event,
-            WorkingMemory workingMemory) {
-        // Do nothing
-    }
-
-    public void afterRuleFlowStarted(RuleFlowStartedEvent event,
-            WorkingMemory workingMemory) {
-        // Do nothing
-    }
-
-    public void beforeRuleFlowCompleted(RuleFlowCompletedEvent event,
-            WorkingMemory workingMemory) {
-        // Do nothing
-    }
-
-    public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
-            WorkingMemory workingMemory) {
-        // Do nothing
-    }
-
-    public void beforeRuleFlowGroupDeactivated(
-            RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
-        // Do nothing
-    }
-
-    public void beforeRuleFlowNodeTriggered(RuleFlowNodeTriggeredEvent event,
-            WorkingMemory workingMemory) {
-        // Do nothing
-    }
-
-    public void beforeRuleFlowStarted(RuleFlowStartedEvent event,
-            WorkingMemory workingMemory) {
-        // Do nothing
-    }
-
-	public void afterRuleFlowNodeLeft(RuleFlowNodeTriggeredEvent event,
-			WorkingMemory workingMemory) {
-        // Do nothing
-	}
-
-	public void beforeRuleFlowNodeLeft(RuleFlowNodeTriggeredEvent event,
-			WorkingMemory workingMemory) {
-        // Do nothing
-	}
 
 }

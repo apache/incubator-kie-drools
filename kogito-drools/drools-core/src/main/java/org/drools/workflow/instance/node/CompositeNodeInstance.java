@@ -39,7 +39,7 @@ import org.drools.workflow.instance.impl.NodeInstanceImpl;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class CompositeNodeInstance extends NodeInstanceImpl implements NodeInstanceContainer, EventNodeInstanceInterface {
+public class CompositeNodeInstance extends NodeInstanceImpl implements NodeInstanceContainer, EventNodeInstanceInterface, EventBasedNodeInstanceInterface {
 
     private static final long serialVersionUID = 400L;
     
@@ -201,5 +201,21 @@ public class CompositeNodeInstance extends NodeInstanceImpl implements NodeInsta
         }
         
     }
+
+	public void addEventListeners() {
+		for (NodeInstance nodeInstance: nodeInstances) {
+            if (nodeInstance instanceof EventBasedNodeInstanceInterface) {
+                ((EventBasedNodeInstanceInterface) nodeInstance).addEventListeners();
+            }
+        }
+	}
+
+	public void removeEventListeners() {
+		for (NodeInstance nodeInstance: nodeInstances) {
+            if (nodeInstance instanceof EventBasedNodeInstanceInterface) {
+                ((EventBasedNodeInstanceInterface) nodeInstance).removeEventListeners();
+            }
+        }
+	}
 
 }

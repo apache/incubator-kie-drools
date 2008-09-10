@@ -27,7 +27,7 @@ public class TimerTest extends TestCase {
         	}
         };
         processInstance.setId(1234);
-        workingMemory.addProcessInstance(processInstance);
+        workingMemory.getProcessInstanceManager().internalAddProcessInstance(processInstance);
         TimerManager timerManager = workingMemory.getTimerManager();
         Timer timer = new Timer();
         timerManager.registerTimer(timer, processInstance);

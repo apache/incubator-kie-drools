@@ -4,7 +4,7 @@ import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.EventBasedNode;
 import org.drools.workflow.instance.impl.ExtendedNodeInstanceImpl;
 
-public abstract class EventBasedNodeInstance extends ExtendedNodeInstanceImpl {
+public abstract class EventBasedNodeInstance extends ExtendedNodeInstanceImpl implements EventBasedNodeInstanceInterface {
 
     public EventBasedNode getEventNode() {
         return (EventBasedNode) getNode();

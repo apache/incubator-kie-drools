@@ -26,9 +26,13 @@ import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.drools.Agenda;
+import org.drools.WorkingMemory;
 import org.drools.common.EventSupport;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.event.DefaultRuleFlowEventListener;
+import org.drools.event.RuleFlowCompletedEvent;
+import org.drools.event.RuleFlowEventListener;
 import org.drools.process.instance.EventListener;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.impl.ProcessInstanceImpl;
@@ -40,6 +44,7 @@ import org.drools.workflow.instance.NodeInstance;
 import org.drools.workflow.instance.NodeInstanceContainer;
 import org.drools.workflow.instance.WorkflowProcessInstance;
 import org.drools.workflow.instance.node.EventBasedNodeInstance;
+import org.drools.workflow.instance.node.EventBasedNodeInstanceInterface;
 import org.drools.workflow.instance.node.EventNodeInstanceInterface;
 
 /**
@@ -55,6 +60,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
     private final List<NodeInstance> nodeInstances = new ArrayList<NodeInstance>();;
     private long nodeInstanceCounter = 0;
     private Map<String, List<EventListener>> eventListeners = new HashMap<String, List<EventListener>>();
+    private transient RuleFlowEventListener processInstanceEventListener;
 
     public NodeContainer getNodeContainer() {
         return getWorkflowProcess();
@@ -136,6 +142,11 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
     public WorkflowProcess getWorkflowProcess() {
         return (WorkflowProcess) getProcess();
     }
+    
+    public void start() {
+    	addEventListeners();
+    	super.start();
+    }
 
     public void setState(final int state) {
         super.setState( state );
@@ -150,6 +161,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
                 NodeInstance nodeInstance = (NodeInstance) nodeInstances.get( 0 );
                 nodeInstance.cancel();
             }
+            removeEventListeners();
             workingMemory.removeProcessInstance( this );
             ((EventSupport) workingMemory).getRuleFlowEventSupport()
                 .fireAfterRuleFlowProcessCompleted( this, workingMemory );
@@ -157,6 +169,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
     }
 
     public void disconnect() {
+        removeEventListeners();
         for (NodeInstance nodeInstance: nodeInstances) {
             if (nodeInstance instanceof EventBasedNodeInstance) {
                 ((EventBasedNodeInstance) nodeInstance).removeEventListeners();
@@ -168,10 +181,11 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
     public void reconnect() {
         super.reconnect();
         for (NodeInstance nodeInstance: nodeInstances) {
-            if (nodeInstance instanceof EventBasedNodeInstance) {
-                ((EventBasedNodeInstance) nodeInstance).addEventListeners();
+            if (nodeInstance instanceof EventBasedNodeInstanceInterface) {
+                ((EventBasedNodeInstanceInterface) nodeInstance).addEventListeners();
             }
         }
+        addEventListeners();
     }
     
     public String toString() {
@@ -217,6 +231,32 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
     	if (listeners != null) {
     		listeners.remove(listener);
     	}
+    }
+    
+	private void addEventListeners() {
+		// TODO enable ruleflow event listener only when there is a sub-process node instance
+		// actively waiting for the completion of a process instance ?
+    	processInstanceEventListener = new DefaultRuleFlowEventListener() {
+    		public void afterRuleFlowCompleted(RuleFlowCompletedEvent event, WorkingMemory workingMemory) {
+    			ProcessInstance processInstance = event.getProcessInstance();
+    			String type = "processInstanceCompleted:" + processInstance.getId();
+    			List<EventListener> listeners = eventListeners.get(type);
+    	    	if (listeners != null) {
+    	    		for (EventListener listener: listeners) {
+    	    			listener.signalEvent(type, processInstance);
+    	    		}
+    	    	}
+    		}
+    	};
+        getWorkingMemory().addEventListener(processInstanceEventListener);
+    }
+    
+    private void removeEventListeners() {
+    	getWorkingMemory().removeEventListener(processInstanceEventListener);
+    }
+    
+    public String[] getEventTypes() {
+    	return eventListeners.keySet().toArray(new String[eventListeners.size()]);
     }
     
 }

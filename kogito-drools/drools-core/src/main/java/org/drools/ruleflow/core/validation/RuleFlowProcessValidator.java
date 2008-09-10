@@ -371,7 +371,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
 
     private void processNode(final Node node, final Map<Node, Boolean> nodes) {
         if (!nodes.containsKey(node) ) {
-            throw new IllegalStateException("A process node is connected with a node that does not belong to the process.");
+            throw new IllegalStateException("A process node is connected with a node that does not belong to the process: " + node.getName());
         }
         final Boolean prevValue = (Boolean) nodes.put(node, Boolean.TRUE);
         if (prevValue == Boolean.FALSE) {
