@@ -10,13 +10,15 @@
     </imports>
     <variables>
       <variable name="order" >
-        <type name="org.drools.process.core.datatype.impl.type.UndefinedDataType" />
+        <type name="org.drools.process.core.datatype.impl.type.ObjectDataType" className="org.drools.examples.process.order.Order" />
       </variable>
       <variable name="trackingId" >
         <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
+        <value></value>
       </variable>
       <variable name="email" >
         <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
+        <value></value>
       </variable>
     </variables>
     <swimlanes>
@@ -25,11 +27,8 @@
   </header>
 
   <nodes>
-    <humanTask id="17" name="Verify Order" x="73" y="505" width="114" height="40" swimlane="SalesRepresentative" >
+    <humanTask id="17" name="Verify Order" x="150" y="503" width="114" height="40" swimlane="SalesRepresentative" >
       <work name="Human Task" >
-        <parameter name="Priority" >
-          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
-        </parameter>
         <parameter name="TaskName" >
           <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
           <value>Verify Order</value>
@@ -38,29 +37,26 @@
           <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
           <value>#{order} has been shipped, verify that it reaches its destination correctly</value>
         </parameter>
+        <parameter name="Priority" >
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
+        </parameter>
         <parameter name="ActorId" >
           <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
       </work>
     </humanTask>
-    <start id="1" name="Start" x="88" y="16" width="80" height="40" />
-    <join id="16" name="" x="117" y="73" width="21" height="18" type="2" />
-    <ruleSet id="2" name="Validate Order" x="88" y="104" width="80" height="40" ruleFlowGroup="validate" />
-    <split id="5" name="XOR" x="116" y="160" width="26" height="23" type="2" >
-      <constraints>
-        <constraint toNodeId="10" toType="DROOLS_DEFAULT" name="large order" priority="2" type="rule" dialect="mvel" >Order( price &gt; 1000 )</constraint>
-        <constraint toNodeId="9" toType="DROOLS_DEFAULT" name="invalid order" priority="1" type="rule" dialect="mvel" >Order( errorList != null )</constraint>
-        <constraint toNodeId="6" toType="DROOLS_DEFAULT" name="default" priority="3" type="rule" dialect="mvel" >eval(true)</constraint>
-      </constraints>
-    </split>
-    <join id="6" name="" x="119" y="262" width="20" height="23" type="2" />
-    <ruleSet id="7" name="Calculate Discount" x="74" y="312" width="108" height="40" ruleFlowGroup="discount" />
-    <end id="8" name="End" x="90" y="565" width="80" height="40" />
-    <humanTask id="9" name="Correct Order" x="185" y="104" width="96" height="40" swimlane="SalesRepresentative" >
-      <work name="Human Task" >
-        <parameter name="Priority" >
+    <ruleSet id="2" name="Validate Order" x="151" y="102" width="109" height="40" ruleFlowGroup="validate" />
+    <workItem id="13" name="Shipping" x="165" y="374" width="80" height="40" >
+      <work name="Shipping" >
+        <parameter name="orderId" >
           <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
+      </work>
+      <mapping type="in" from="order" to="order" />
+      <mapping type="out" from="trackingId" to="trackingId" />
+    </workItem>
+    <humanTask id="9" name="Correct Order" x="282" y="102" width="128" height="40" swimlane="SalesRepresentative" >
+      <work name="Human Task" >
         <parameter name="TaskName" >
           <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
           <value>Correct Order</value>
@@ -69,16 +65,20 @@
           <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
           <value>Invalid #{order}, needs to be corrected (contact customer if necessary)</value>
         </parameter>
+        <parameter name="Priority" >
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
+        </parameter>
         <parameter name="ActorId" >
           <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
       </work>
     </humanTask>
-    <humanTask id="10" name="Follow-up Order" x="8" y="204" width="106" height="40" swimlane="SalesRepresentative" >
+    <end id="8" name="End" x="167" y="563" width="80" height="40" />
+    <join id="6" name="" x="196" y="260" width="20" height="23" type="2" />
+    <join id="16" name="" x="194" y="71" width="21" height="18" type="2" />
+    <start id="1" name="Start" x="165" y="14" width="80" height="40" />
+    <humanTask id="10" name="Follow-up Order" x="43" y="202" width="135" height="40" swimlane="SalesRepresentative" >
       <work name="Human Task" >
-        <parameter name="Priority" >
-          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
-        </parameter>
         <parameter name="TaskName" >
           <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
           <value>Follow-up Order</value>
@@ -87,13 +87,25 @@
           <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
           <value>#{order} is a large order, follow up manually</value>
         </parameter>
+        <parameter name="Priority" >
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
+        </parameter>
         <parameter name="ActorId" >
           <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
       </work>
     </humanTask>
-    <workItem id="12" name="Email" x="89" y="441" width="80" height="40" >
+    <ruleSet id="7" name="Calculate Discount" x="139" y="310" width="131" height="40" ruleFlowGroup="discount" />
+    <workItem id="12" name="Email" x="166" y="439" width="80" height="40" >
       <work name="Email" >
+        <parameter name="To" >
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
+          <value>#{email}</value>
+        </parameter>
+        <parameter name="From" >
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
+          <value>orders@mycompany.com</value>
+        </parameter>
         <parameter name="Text" >
           <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
           <value>Dear customer,
@@ -105,45 +117,35 @@ John Johnsson,
 Sales departement manager
 MyCompany.com</value>
         </parameter>
-        <parameter name="To" >
-          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
-          <value>#{email}</value>
-        </parameter>
         <parameter name="Subject" >
           <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
           <value>#{order}</value>
         </parameter>
-        <parameter name="From" >
-          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
-          <value>orders@mycompany.com</value>
-        </parameter>
       </work>
     </workItem>
-    <workItem id="13" name="Shipping" x="88" y="376" width="80" height="40" >
-      <work name="Shipping" >
-        <parameter name="orderId" >
-          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
-        </parameter>
-      </work>
-      <mapping type="in" from="order" to="order" />
-      <mapping type="out" from="trackingId" to="trackingId" />
-    </workItem>
+    <split id="5" name="XOR" x="191" y="158" width="32" height="23" type="2" >
+      <constraints>
+        <constraint toNodeId="10" toType="DROOLS_DEFAULT" name="large order" priority="2" type="rule" dialect="mvel" >Order( price &gt; 1000 )</constraint>
+        <constraint toNodeId="9" toType="DROOLS_DEFAULT" name="invalid order" priority="1" type="rule" dialect="mvel" >Order( errorList != null )</constraint>
+        <constraint toNodeId="6" toType="DROOLS_DEFAULT" name="default" priority="3" type="rule" dialect="mvel" >eval(true)</constraint>
+      </constraints>
+    </split>
   </nodes>
 
   <connections>
     <connection from="12" to="17" />
-    <connection from="1" to="16" />
-    <connection from="9" to="16" bendpoints="[233,81]" />
     <connection from="16" to="2" />
-    <connection from="2" to="5" />
-    <connection from="10" to="6" bendpoints="[60,273]" />
-    <connection from="5" to="6" />
-    <connection from="6" to="7" />
-    <connection from="17" to="8" />
-    <connection from="5" to="9" bendpoints="[232,171]" />
-    <connection from="5" to="10" bendpoints="[60,171]" />
-    <connection from="13" to="12" />
     <connection from="7" to="13" />
+    <connection from="5" to="9" bendpoints="[308,169]" />
+    <connection from="17" to="8" />
+    <connection from="10" to="6" bendpoints="[137,271]" />
+    <connection from="5" to="6" />
+    <connection from="1" to="16" />
+    <connection from="9" to="16" bendpoints="[307,79]" />
+    <connection from="5" to="10" bendpoints="[138,169]" />
+    <connection from="6" to="7" />
+    <connection from="13" to="12" />
+    <connection from="2" to="5" />
   </connections>
 
 </process>
