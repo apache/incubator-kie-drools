@@ -1,12 +1,11 @@
 package org.drools.rule.builder.dialect.mvel;
 
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.base.mvel.MVELAction;
 import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.compiler.DescrBuildError;
@@ -15,6 +14,7 @@ import org.drools.lang.descr.ActionDescr;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.builder.ActionBuilder;
 import org.drools.rule.builder.PackageBuildContext;
+import org.drools.spi.ProcessContext;
 import org.drools.workflow.core.DroolsAction;
 import org.mvel.Macro;
 import org.mvel.MacroProcessor;
@@ -74,18 +74,22 @@ public class MVELActionBuilder
         try {
             MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
 
+            Set<String> variables = new HashSet<String>();
+            variables.add("context");
             Dialect.AnalysisResult analysis = dialect.analyzeBlock( context,
                                                                     actionDescr,
                                                                     dialect.getInterceptors(),
                                                                     text,
-                                                                    new Set[]{Collections.EMPTY_SET, context.getPkg().getGlobals().keySet()},
+                                                                    new Set[]{variables, context.getPkg().getGlobals().keySet()},
                                                                     null );                       
             
+            Map<String, Class> variableClasses = new HashMap<String, Class>();
+            variableClasses.put("context", ProcessContext.class);
             MVELCompilationUnit unit = dialect.getMVELCompilationUnit( text,
                                                                        analysis,
                                                                        null,
                                                                        null,
-                                                                       null,
+                                                                       variableClasses,
                                                                        context );              
             MVELAction expr = new MVELAction( unit, context.getDialect().getId() );   
             expr.setVariableNames(analysis.getNotBoundedIdentifiers());
