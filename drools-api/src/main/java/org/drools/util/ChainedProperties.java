@@ -1,31 +1,24 @@
-/**
- *
- */
 package org.drools.util;
 
+import java.io.Externalizable;
 import java.io.File;
 import java.io.IOException;
-import java.io.Serializable;
-import java.io.Externalizable;
-import java.io.ObjectOutput;
 import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-public class ChainedProperties
-    implements
-    Externalizable {
-    private List props;
-    private List defaultProps;
+public class ChainedProperties implements Externalizable {
+	
+    private List<Properties> props;
+    private List<Properties> defaultProps;
 
     public ChainedProperties() {
-
     }
 
     public ChainedProperties(String confFileName) {
@@ -50,8 +43,8 @@ public class ChainedProperties
             }
         }
 
-        this.props = new ArrayList();
-        this.defaultProps = new ArrayList();
+        this.props = new ArrayList<Properties>();
+        this.defaultProps = new ArrayList<Properties>();
 
         // Properties added in precedence order
 
@@ -133,9 +126,10 @@ public class ChainedProperties
         }
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        props   = (List)in.readObject();
-        defaultProps    = (List)in.readObject();
+    @SuppressWarnings("unchecked")
+	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        props = (List<Properties>) in.readObject();
+        defaultProps = (List<Properties>) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -143,9 +137,8 @@ public class ChainedProperties
         out.writeObject(defaultProps);
     }
 
-    private Enumeration getResources(String name,
-                                     ClassLoader classLoader) {
-        Enumeration enumeration = null;
+    private Enumeration<URL> getResources(String name, ClassLoader classLoader) {
+        Enumeration<URL> enumeration = null;
         try {
             enumeration = classLoader.getResources( name );
         } catch ( IOException e ) {
@@ -161,16 +154,14 @@ public class ChainedProperties
     public String getProperty(String key,
                               String defaultValue) {
         String value = null;
-        for ( Iterator it = this.props.iterator(); it.hasNext(); ) {
-            Properties props = (Properties) it.next();
+        for ( Properties props: this.props ) {
             value = props.getProperty( key );
             if ( value != null ) {
                 break;
             }
         }
         if ( value == null ) {
-            for ( Iterator it = this.defaultProps.iterator(); it.hasNext(); ) {
-                Properties props = (Properties) it.next();
+            for ( Properties props: this.defaultProps ) {
                 value = props.getProperty( key );
                 if ( value != null ) {
                     break;
@@ -180,19 +171,17 @@ public class ChainedProperties
         return (value != null) ? value : defaultValue;
     }
 
-    public void mapStartsWith(Map map,
+    public void mapStartsWith(Map<String, String> map,
                               String startsWith,
                               boolean includeSubProperties) {
-        for ( Iterator it = this.props.iterator(); it.hasNext(); ) {
-            Properties props = (Properties) it.next();
+        for ( Properties props: this.props ) {
             mapStartsWith( map,
                            props,
                            startsWith,
                            includeSubProperties );
         }
 
-        for ( Iterator it = this.defaultProps.iterator(); it.hasNext(); ) {
-            Properties props = (Properties) it.next();
+        for ( Properties props: this.defaultProps ) {
             mapStartsWith( map,
                            props,
                            startsWith,
@@ -200,11 +189,11 @@ public class ChainedProperties
         }
     }
 
-    private void mapStartsWith(Map map,
+    private void mapStartsWith(Map<String, String> map,
                                Properties properties,
                                String startsWith,
                                boolean includeSubProperties) {
-        Enumeration enumeration = properties.propertyNames();
+        Enumeration<?> enumeration = properties.propertyNames();
         while ( enumeration.hasMoreElements() ) {
             String key = (String) enumeration.nextElement();
             if ( key.startsWith( startsWith ) ) {
@@ -222,8 +211,8 @@ public class ChainedProperties
         }
     }
 
-    private void loadProperties(Enumeration enumeration,
-                                List chain) {
+    private void loadProperties(Enumeration<URL> enumeration,
+                                List<Properties> chain) {
         if ( enumeration == null ) {
             return;
         }
@@ -236,7 +225,7 @@ public class ChainedProperties
     }
 
     private void loadProperties(String fileName,
-                                List chain) {
+                                List<Properties> chain) {
         if ( fileName != null ) {
             File file = new File( fileName );
             if ( file != null && file.exists() ) {
@@ -253,7 +242,7 @@ public class ChainedProperties
     }
 
     private void loadProperties(URL confURL,
-                                List chain) {
+                                List<Properties> chain) {
         if ( confURL == null ) {
             return;
         }

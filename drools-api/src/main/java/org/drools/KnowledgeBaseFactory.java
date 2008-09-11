@@ -16,11 +16,12 @@ public class KnowledgeBaseFactory {
         return provider.newKnowledgeBase();
     }
     
-    private static void loadProvider() {
+    @SuppressWarnings("unchecked")
+	private static void loadProvider() {
         try {
             ChainedProperties properties = new ChainedProperties( "drools-providers.conf" );
             String className = properties.getProperty( "KnowledgeSessionProvider", null );
-            if ( className != null || className.trim().length() > 0 ) {
+            if ( className != null && className.trim().length() > 0 ) {
                 Class<KnowledgeBaseProvider> cls = ( Class<KnowledgeBaseProvider> ) Class.forName( className );
                 setKnowledgeBaseProvider( cls.newInstance() );
             }
