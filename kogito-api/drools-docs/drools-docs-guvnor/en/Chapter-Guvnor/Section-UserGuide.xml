@@ -787,7 +787,7 @@
       </section>
 
       <section>
-        <title>Advanced enumaration concepts</title>
+        <title>Advanced enumeration concepts</title>
 
         <para>There are a few other advanced things you can do with data
         enumerations.</para>
@@ -803,7 +803,7 @@
         <programlisting>
  'Vehicle.engineType' : ['Petrol', 'Diesel']
  'Vehicle.fuelType[engineType=Petrol]' : ['ULP', 'PULP' ]
- 'Vehicle.fuelType[engineType=Diesel]' : ['BIO', 'NORMAL' ]	  
+ 'Vehicle.fuelType[engineType=Diesel]' : ['BIO', 'NORMAL' ]  
 </programlisting>
 
         <para>This shows how it is possible to make the choices dependent on
@@ -860,7 +860,9 @@ public class SampleDataSource2 {
         This means you can use the field values from the GUI to drive a
         database query, and drill down into data etc. When the drop down is
         loaded, or the rule loaded, it will refresh the list based on the
-        fields.</para>
+        fields. 'depenentField1' and 'dependentField2' are names of fields on
+        the 'Fact' type - these are used to calculate the list of values which
+        will be shown in a drop down if values for the "field".</para>
       </section>
     </section>
 
@@ -1256,7 +1258,7 @@ public class SampleDataSource2 {
 
     <para>You can use categories to isolate rules and assets from non
     technical users. Only assets which have a category assigned will appear in
-    the "rules" feature.</para>
+    the "categories" view.</para>
 
     <para>The initial setup of the BRMS will need to be done by a
     developer/technical person who will set the foundations for all the rules.
