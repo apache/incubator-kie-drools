@@ -19,6 +19,7 @@ package org.drools.event.process;
 import org.drools.process.instance.ProcessInstance;
 
 public interface ProcessEvent {
-    public ProcessInstance getProcessInstance();
+	
+	ProcessInstance getProcessInstance();
 
 }
