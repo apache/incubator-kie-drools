@@ -24,7 +24,6 @@ import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.timer.TimerManager;
 import org.drools.spi.AgendaFilter;
-import org.drools.spi.AgendaGroup;
 import org.drools.spi.AsyncExceptionHandler;
 import org.drools.spi.GlobalResolver;
 import org.drools.time.SessionClock;
@@ -301,6 +300,4 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      */
     public SessionClock getSessionClock();
     
-    public void dispose();
-
 }
