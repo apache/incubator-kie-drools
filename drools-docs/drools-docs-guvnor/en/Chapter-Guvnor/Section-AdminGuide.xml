@@ -185,7 +185,7 @@
   </section>
 
   <section>
-    <title>Security</title>
+    <title>Security - Authentication and basic access</title>
 
     <para>Please note that giving someone access to the BRMS indicates a level of trust.
     Being able to editing and build rules is providing a great deal of power to a user. Thus you should not open up the BRMS to your entire organisation - but instead to a select few. Use https (http with TLS/SSL) whereever possible (even internally in a companies network this is a good idea). Use this power wisely - this not a "run of the mill" application that provides read/write access to a database, but something much more power. Just imagine you are spider man - with great power comes great responsibility (of course even more so for super man).</para>
@@ -283,6 +283,91 @@
       Refer to JBoss AS documentation (or documentation for your existing
       application server).</para>
     </section>
+  </section>
+
+  <section>
+    <title>Fine grained permissions and security</title> 
+    <para>
+      The above section talks about establishing identity and access for users. This section talks about granting specific permissions to these users (to control data visibility and access). This can be used to partition data, or to control access for "non power users" which can limit the damage they can do. 
+    </para>
+
+      <figure>
+        <title>Administer user permissions</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="AdminPermissions.png" format="PNG"
+                       scalefit="1" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>
+
+
+A common need and desire of the web interface of Guvnor is to be able to have users of different technical abilities interact with it. Another need is to be able to allocate people different sets of data to "own".
+
+      </para>
+
+      <para>
+
+Typically users identities are managed in a centralised directory - application servers can integrate with these directories (eg active directory, LDAP) so users to guvnor can be authenticated without having to create another duplicate identity. It is also possible (thanks to JAAS) to define what users have the "admin" role for Guvnor (note that an Admin user of Guvnor doesn't have to really be a system administrator). Further to this, guvnor augments this identity with data specific permissions, which are managed in Guvnor itself.
+
+      </para>
+
+      <figure>
+        <title>User listing</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="AdminPermissionsList.png" format="PNG"
+                       scalefit="1" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>Note that the above users identities are not stored in Guvnor, only their permission mappings are which are specific to Guvnor.</para>
+
+      <para>There are really 2 system wide roles: Users who are Administrators and users who are not. Easy ! Administrators can see and do anything. Out of the box, the permission system is turned off, and every user is an administrator (this is pretty much how things used to work). There is also a system setting in components.xml that can turn the permissions system on and off (so people can manually override if needs be). A administrator can also give other users admin rights, regardless of their roles in the external directory service.</para>
+
+      <figure>
+        <title>Editing</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="AdminPermissionEdit.png" format="PNG"
+                       scalefit="1" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>
+There are several types of permissions:
+
+Per package:
+Package Administrator ("owns" a package - can deploy etc, but has no administrative rights to the system). Package developer - this permissions allows users to create new items, edit etc - but only at the package level (not deploy). They can also run and create tests. Package readonly - well this one is pretty obvious.
+
+Per Category:
+This is the "interesting" one - as assets (rules) can be tagged with multiple categories, you can use these to assign permissions to an "analyst" type of user. A user can be assigned multiple categories. A user can then edit and view any asset that is tagged in that category (regardless of package). A user that only has category permissions will not be shown any package views or details, and will only see the simple categories view. This allows administrators and managers to control exactly what these users can and can't see. Note that per category permissions can also be set as "read only" so a user can view all the assets in a category, but not make changes to them.
+      </para>
+
+      <figure>
+        <title>The analyst view</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="AdminAnalyst.png" format="PNG"
+                       scalefit="1" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>
+The per category "analist" permissions are quite useful - you can also augment their permissions with a specific package (so on top of their category rights, they can see and play with a particular package - which may be used as a "practice" area, or test area for instance).
+
+The above provides a few ways to manage permissions in a coarse or fine grained way, as suits the different types of users.
+      </para>
+
   </section>
 
   <section>
