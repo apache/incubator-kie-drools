@@ -44,6 +44,7 @@ import org.drools.workflow.core.node.Split;
 import org.drools.workflow.core.node.StartNode;
 import org.drools.workflow.core.node.SubProcessNode;
 import org.drools.workflow.core.node.WorkItemNode;
+import org.drools.workflow.core.node.CompositeNode.NodeAndType;
 import org.mvel.ErrorDetail;
 import org.mvel.ParserContext;
 import org.mvel.compiler.ExpressionCompiler;
@@ -313,17 +314,25 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                 validateNodes(forEachNode.getNodes(), errors, process);
             } else if (node instanceof CompositeNode) {
                 final CompositeNode compositeNode = (CompositeNode) node;
-                for (String inType: compositeNode.getLinkedIncomingNodes().keySet()) {
-                    if (compositeNode.getIncomingConnections(inType).size() == 0) {
+                for (Map.Entry<String, NodeAndType> inType: compositeNode.getLinkedIncomingNodes().entrySet()) {
+                    if (compositeNode.getIncomingConnections(inType.getKey()).size() == 0) {
                         errors.add(new ProcessValidationErrorImpl(process,
-                            "Composite node '" + node.getName() + "' [" + node.getId() + "] has no incoming connection for type " + inType));
+                            "Composite node '" + node.getName() + "' [" + node.getId() + "] has no incoming connection for type " + inType.getKey()));
                     }
+                	if (inType.getValue().getNode() == null) {
+                        errors.add(new ProcessValidationErrorImpl(process,
+                            "Composite node '" + node.getName() + "' [" + node.getId() + "] has invalid linked incoming node for type " + inType.getKey()));
+                	}
                 }
-                for (String outType: compositeNode.getLinkedOutgoingNodes().keySet()) {
-                    if (compositeNode.getOutgoingConnections(outType).size() == 0) {
+                for (Map.Entry<String, NodeAndType> outType: compositeNode.getLinkedOutgoingNodes().entrySet()) {
+                    if (compositeNode.getOutgoingConnections(outType.getKey()).size() == 0) {
                         errors.add(new ProcessValidationErrorImpl(process,
-                            "Composite node '" + node.getName() + "' [" + node.getId() + "] has no outgoing connection for type " + outType));
+                            "Composite node '" + node.getName() + "' [" + node.getId() + "] has no outgoing connection for type " + outType.getKey()));
                     }
+                	if (outType.getValue().getNode() == null) {
+                        errors.add(new ProcessValidationErrorImpl(process,
+                            "Composite node '" + node.getName() + "' [" + node.getId() + "] has invalid linked outgoing node for type " + outType.getKey()));
+                	}
                 }
                 validateNodes(compositeNode.getNodes(), errors, process);
             } else if (node instanceof EventNode) {

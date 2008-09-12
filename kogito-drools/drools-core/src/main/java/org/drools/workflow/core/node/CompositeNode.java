@@ -107,9 +107,11 @@ public class CompositeNode extends NodeImpl implements NodeContainer, EventNodeI
 	        for (Connection connection: connections) {
 	        	CompositeNodeStart start = new CompositeNodeStart(connection.getFrom(), inType);
 		        internalAddNode(start);
-		        new ConnectionImpl(
-		            start, Node.CONNECTION_DEFAULT_TYPE, 
-		            inNode.getNode(), inNode.getType());
+		        if (inNode.getNode() != null) {
+			        new ConnectionImpl(
+			            start, Node.CONNECTION_DEFAULT_TYPE, 
+			            inNode.getNode(), inNode.getType());
+		        }
 	        }
         }
     }
@@ -133,9 +135,11 @@ public class CompositeNode extends NodeImpl implements NodeContainer, EventNodeI
 	        for (Connection connection: connections) {
 		        CompositeNodeEnd end = new CompositeNodeEnd(connection.getTo(), outType);
 		        internalAddNode(end);
-		        new ConnectionImpl(
-		            outNode.getNode(), outNode.getType(), 
-		            end, Node.CONNECTION_DEFAULT_TYPE);
+		        if (outNode.getNode() != null) {
+			        new ConnectionImpl(
+			            outNode.getNode(), outNode.getType(), 
+			            end, Node.CONNECTION_DEFAULT_TYPE);
+		        }
 	        }
         }
     }
@@ -172,7 +176,10 @@ public class CompositeNode extends NodeImpl implements NodeContainer, EventNodeI
     		}
     	} else {
 	        if (nodeAndType != null) {
-	        	((NodeImpl) nodeAndType.getNode()).validateAddIncomingConnection(nodeAndType.getType(), connection);
+	        	NodeImpl node = (NodeImpl) nodeAndType.getNode();
+	        	if (node != null) {
+	        		node.validateAddIncomingConnection(nodeAndType.getType(), connection);
+	        	}
 	        }
     	}
     }
@@ -186,9 +193,12 @@ public class CompositeNode extends NodeImpl implements NodeContainer, EventNodeI
 	        if (inNode != null) {
 		        CompositeNodeStart start = new CompositeNodeStart(connection.getFrom(), type);
 		        internalAddNode(start);
-		        new ConnectionImpl(
-		            start, Node.CONNECTION_DEFAULT_TYPE, 
-		            inNode.getNode(), inNode.getType());
+		        NodeImpl node = (NodeImpl) inNode.getNode();
+	        	if (node != null) {
+			        new ConnectionImpl(
+			            start, Node.CONNECTION_DEFAULT_TYPE, 
+			            inNode.getNode(), inNode.getType());
+	        	}
 	        }
     	}
     }
@@ -201,7 +211,10 @@ public class CompositeNode extends NodeImpl implements NodeContainer, EventNodeI
     		}
     	} else {
     		if (nodeAndType != null) {
-	        	((NodeImpl) nodeAndType.getNode()).validateAddOutgoingConnection(nodeAndType.getType(), connection);
+    	        NodeImpl node = (NodeImpl) nodeAndType.getNode();
+	        	if (node != null) {
+	        		((NodeImpl) nodeAndType.getNode()).validateAddOutgoingConnection(nodeAndType.getType(), connection);
+	        	}
 	        }
     	}
 	}
@@ -215,9 +228,12 @@ public class CompositeNode extends NodeImpl implements NodeContainer, EventNodeI
 	        if (outNode != null) {
 		        CompositeNodeEnd end = new CompositeNodeEnd(connection.getTo(), type);
 		        internalAddNode(end);
-		        new ConnectionImpl(
-		            outNode.getNode(), outNode.getType(), 
-		            end, Node.CONNECTION_DEFAULT_TYPE);
+		        NodeImpl node = (NodeImpl) outNode.getNode();
+	        	if (node != null) {
+	        		new ConnectionImpl(
+        				outNode.getNode(), outNode.getType(), 
+        				end, Node.CONNECTION_DEFAULT_TYPE);
+	        	}
 	        }
     	}
     }
@@ -303,7 +319,11 @@ public class CompositeNode extends NodeImpl implements NodeContainer, EventNodeI
         
         public Node getNode() {
             if (node == null) {
-                node = nodeContainer.getNode(nodeId);
+                try {
+                	node = nodeContainer.getNode(nodeId);
+                } catch (IllegalArgumentException e) {
+                	// unknown node id, returning null
+                }
             }
             return node;
         }
