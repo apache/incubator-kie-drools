@@ -52,6 +52,8 @@ import org.drools.reteoo.RightTupleSink;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.reteoo.AccumulateNode.AccumulateMemory;
+import org.drools.reteoo.CollectNode.CollectContext;
+import org.drools.reteoo.CollectNode.CollectMemory;
 import org.drools.reteoo.EvalConditionNode.EvalMemory;
 import org.drools.reteoo.RuleTerminalNode.TerminalNodeMemory;
 import org.drools.rule.EntryPoint;
@@ -358,6 +360,10 @@ public class InputMarshaller {
                 memory = ((AccumulateMemory) context.wm.getNodeMemory( (BetaNode) sink )).betaMemory;
                 break;
             }
+            case NodeTypeEnums.CollectNode : {
+                memory = ((CollectMemory) context.wm.getNodeMemory( (BetaNode) sink )).betaMemory;
+                break;
+            }
             default : {
                 memory = (BetaMemory) context.wm.getNodeMemory( (BetaNode) sink );
                 break;
@@ -514,6 +520,56 @@ public class InputMarshaller {
                             LeftTupleSink childSink = (LeftTupleSink) sinks.get( stream.readInt() );
                             LeftTuple childLeftTuple = new LeftTuple( parentLeftTuple,
                                                                       accctx.result,
+                                                                      childSink,
+                                                                      true );
+                            readLeftTuple( childLeftTuple,
+                                           context );
+                            break;
+                        }
+                        default : {
+                            throw new RuntimeDroolsException( "Marshalling error. This is a bug. Please contact the development team." );
+                        }
+                    }
+                }
+                break;
+            }
+            case NodeTypeEnums.CollectNode : {
+                // accumulate nodes generate new facts on-demand and need special procedures when de-serializing from persistent storage
+                CollectMemory memory = (CollectMemory) context.wm.getNodeMemory( (BetaNode) sink );
+                memory.betaMemory.getLeftTupleMemory().add( parentLeftTuple );
+
+                CollectContext colctx = new CollectContext();
+                memory.betaMemory.getCreatedHandles().put( parentLeftTuple,
+                                                           colctx,
+                                                           false );
+                // first we de-serialize the generated fact handle
+                InternalFactHandle handle = readFactHandle( context );
+                colctx.resultTuple = new RightTuple( handle,
+                                                     (RightTupleSink) sink );
+
+                // then we de-serialize the boolean propagated flag
+                colctx.propagated = stream.readBoolean();
+
+                // then we de-serialize all the propagated tuples
+                short head = -1;
+                while ( (head = stream.readShort()) != PersisterEnums.END ) {
+                    switch ( head ) {
+                        case PersisterEnums.RIGHT_TUPLE : {
+                            int factHandleId = stream.readInt();
+                            RightTupleKey key = new RightTupleKey( factHandleId,
+                                                                   sink );
+                            RightTuple rightTuple = context.rightTuples.get( key );
+                            // just wiring up the match record
+                            new LeftTuple( parentLeftTuple,
+                                           rightTuple,
+                                           sink,
+                                           true );
+                            break;
+                        }
+                        case PersisterEnums.LEFT_TUPLE : {
+                            LeftTupleSink childSink = (LeftTupleSink) sinks.get( stream.readInt() );
+                            LeftTuple childLeftTuple = new LeftTuple( parentLeftTuple,
+                                                                      colctx.resultTuple,
                                                                       childSink,
                                                                       true );
                             readLeftTuple( childLeftTuple,

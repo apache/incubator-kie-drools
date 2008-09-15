@@ -46,6 +46,8 @@ import org.drools.reteoo.RightTuple;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.reteoo.AccumulateNode.AccumulateMemory;
+import org.drools.reteoo.CollectNode.CollectContext;
+import org.drools.reteoo.CollectNode.CollectMemory;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.ruleflow.instance.RuleFlowProcessInstance;
@@ -471,7 +473,7 @@ public class OutputMarshaller {
             case NodeTypeEnums.AccumulateNode : {
                 context.out.println( "AccumulateNode" );
                 // accumulate nodes generate new facts on-demand and need special procedures when serializing to persistent storage
-                AccumulateMemory memory = (AccumulateMemory) context.wm.getNodeMemory( (BetaNode) leftTuple.getLeftTupleSink() );
+                AccumulateMemory memory = (AccumulateMemory) context.wm.getNodeMemory( (BetaNode) sink );
                 AccumulateContext accctx = (AccumulateContext) memory.betaMemory.getCreatedHandles().get( leftTuple );
                 // first we serialize the generated fact handle
                 writeFactHandle( context,
@@ -502,6 +504,40 @@ public class OutputMarshaller {
                 }
                 stream.writeShort( PersisterEnums.END );
                 context.out.println( "AccumulateNode   ---   END" );
+                break;
+            }
+            case NodeTypeEnums.CollectNode : {
+                context.out.println( "CollectNode" );
+                // collect nodes generate new facts on-demand and need special procedures when serializing to persistent storage
+                CollectMemory memory = (CollectMemory) context.wm.getNodeMemory( (BetaNode) sink );
+                CollectContext colctx = (CollectContext) memory.betaMemory.getCreatedHandles().get( leftTuple );
+                // first we serialize the generated fact handle
+                writeFactHandle( context,
+                                 stream,
+                                 context.resolverStrategyFactory,
+                                 colctx.resultTuple.getFactHandle() );
+                // then we serialize the boolean propagated flag
+                stream.writeBoolean( colctx.propagated );
+
+                // then we serialize all the propagated tuples
+                for ( LeftTuple childLeftTuple = getLeftTuple( leftTuple.getBetaChildren() ); childLeftTuple != null; childLeftTuple = (LeftTuple) childLeftTuple.getLeftParentPrevious() ) {
+                    if( leftTuple.getLeftTupleSink().getId() == childLeftTuple.getLeftTupleSink().getId()) {
+                        // this is a matching record, so, associate the right tuples
+                        context.out.println( "RightTuple(match) int:" + childLeftTuple.getLeftTupleSink().getId() + " int:" + childLeftTuple.getRightParent().getFactHandle().getId() );
+                        stream.writeShort( PersisterEnums.RIGHT_TUPLE );
+                        stream.writeInt( childLeftTuple.getRightParent().getFactHandle().getId() );
+                    } else {
+                        // this is a propagation record
+                        context.out.println( "RightTuple(propagation) int:" + childLeftTuple.getLeftTupleSink().getId() + " int:" + childLeftTuple.getRightParent().getFactHandle().getId() );
+                        stream.writeShort( PersisterEnums.LEFT_TUPLE );
+                        stream.writeInt( childLeftTuple.getLeftTupleSink().getId() );
+                        writeLeftTuple( childLeftTuple,
+                                        context,
+                                        recurse );
+                    }
+                }
+                stream.writeShort( PersisterEnums.END );
+                context.out.println( "CollectNode   ---   END" );
                 break;
             }
             case NodeTypeEnums.RuleTerminalNode : {
