@@ -18,46 +18,47 @@ import org.drools.rule.Declaration;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.Tuple;
 import org.mvel.DataConversion;
+import org.mvel.CompileException;
 import org.mvel.integration.VariableResolver;
 import org.mvel.integration.impl.BaseVariableResolverFactory;
 import org.mvel.integration.impl.LocalVariableResolverFactory;
 import org.mvel.integration.impl.StaticMethodImportResolverFactory;
 
 public class DroolsMVELFactory extends BaseVariableResolverFactory
-    implements
-    DroolsGlobalVariableMVELFactory,
-    DroolsLocalVariableMVELFactory,
-    LocalVariableResolverFactory,
-    Externalizable,
-    Cloneable {
+        implements
+        DroolsGlobalVariableMVELFactory,
+        DroolsLocalVariableMVELFactory,
+        LocalVariableResolverFactory,
+        Externalizable,
+        Cloneable {
 
     private static final long serialVersionUID = 400L;
 
     /**
      * Holds the instance of the variables.
      */
-    private Object[]          tupleObjects;
+    private Object[] tupleObjects;
 
-    private KnowledgeHelper   knowledgeHelper;
+    private KnowledgeHelper knowledgeHelper;
 
-    private Object            object;
+    private Object object;
 
-    private Map               localDeclarations;
+    private Map localDeclarations;
 
-    private Map               previousDeclarations;
+    private Map previousDeclarations;
 
-    private Map               globals;
+    private Map globals;
 
-    private WorkingMemory     workingMemory;
+    private WorkingMemory workingMemory;
 
-    private Map               localVariables;
+    private Map localVariables;
 
     static {
         //for handling dates as string literals
-        DataConversion.addConversionHandler( Date.class,
-                                             new MVELDateCoercion() );
-        DataConversion.addConversionHandler( Calendar.class,
-                                             new MVELCalendarCoercion() );
+        DataConversion.addConversionHandler(Date.class,
+                new MVELDateCoercion());
+        DataConversion.addConversionHandler(Calendar.class,
+                new MVELCalendarCoercion());
     }
 
     public DroolsMVELFactory() {
@@ -67,10 +68,10 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
     public DroolsMVELFactory(final Map previousDeclarations,
                              final Map localDeclarations,
                              final Map globals) {
-        this( previousDeclarations,
-              localDeclarations,
-              globals,
-              null );
+        this(previousDeclarations,
+                localDeclarations,
+                globals,
+                null);
     }
 
     public DroolsMVELFactory(final Map previousDeclarations,
@@ -81,15 +82,15 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
         this.localDeclarations = localDeclarations;
         this.globals = globals;
 
-        if ( inputIdentifiers != null && MVELDebugHandler.isDebugMode() ) {
-            for ( int i = 0; i < inputIdentifiers.length; i++ ) {
-                isResolveable( inputIdentifiers[i] );
+        if (inputIdentifiers != null && MVELDebugHandler.isDebugMode()) {
+            for (int i = 0; i < inputIdentifiers.length; i++) {
+                isResolveable(inputIdentifiers[i]);
             }
         }
     }
 
     public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
+            ClassNotFoundException {
         tupleObjects = (Object[]) in.readObject();
         knowledgeHelper = (KnowledgeHelper) in.readObject();
         object = in.readObject();
@@ -101,36 +102,37 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject( tupleObjects );
-        out.writeObject( knowledgeHelper );
-        out.writeObject( object );
-        out.writeObject( localDeclarations );
-        out.writeObject( previousDeclarations );
-        out.writeObject( globals );
-        out.writeObject( workingMemory );
-        out.writeObject( localVariables );
+        out.writeObject(tupleObjects);
+        out.writeObject(knowledgeHelper);
+        out.writeObject(object);
+        out.writeObject(localDeclarations);
+        out.writeObject(previousDeclarations);
+        out.writeObject(globals);
+        out.writeObject(workingMemory);
+        out.writeObject(localVariables);
     }
 
     public static void addStaticImport(StaticMethodImportResolverFactory factory,
                                        String staticImportEntry,
                                        ClassLoader classLoader) {
-        int index = staticImportEntry.lastIndexOf( '.' );
-        String className = staticImportEntry.substring( 0,
-                                                        index );
-        String methodName = staticImportEntry.substring( index + 1 );
+        int index = staticImportEntry.lastIndexOf('.');
+        String className = staticImportEntry.substring(0,
+                index);
+        String methodName = staticImportEntry.substring(index + 1);
 
         try {
-            Class cls = classLoader.loadClass( className );
+            Class cls = classLoader.loadClass(className);
             Method[] methods = cls.getDeclaredMethods();
-            for ( int i = 0; i < methods.length; i++ ) {
-                if ( methods[i].getName().equals( methodName ) ) {
-                    factory.createVariable( methodName,
-                                            methods[i] );
+            for (int i = 0; i < methods.length; i++) {
+                if (methods[i].getName().equals(methodName)) {
+                    factory.createVariable(methodName,
+                            methods[i]);
                     break;
                 }
             }
-        } catch ( ClassNotFoundException e ) {
-            throw new RuntimeException( "Unable to dynamically load method '" + staticImportEntry + "'" );
+        }
+        catch (ClassNotFoundException e) {
+            throw new RuntimeException("Unable to dynamically load method '" + staticImportEntry + "'");
         }
 
     }
@@ -152,19 +154,21 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
                            final Object object,
                            final WorkingMemory workingMemory,
                            final Map variables) {
-        if ( tuple != null ) {
+        if (tuple != null) {
             this.tupleObjects = ((LeftTuple) tuple).toObjectArray();
         }
         this.knowledgeHelper = knowledgeHelper;
         this.object = object;
         this.workingMemory = workingMemory;
-        if ( variables == null ) {
-            if ( this.localVariables == null ) {
+        if (variables == null) {
+            if (this.localVariables == null) {
                 this.localVariables = new HashMap();
-            } else {
+            }
+            else {
                 this.localVariables.clear();
             }
-        } else {
+        }
+        else {
             this.localVariables = variables;
         }
     }
@@ -179,102 +183,116 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
     }
 
     public Object getValue(final String identifier) {
-        return this.workingMemory.getGlobal( identifier );
+        return this.workingMemory.getGlobal(identifier);
     }
 
     public Object getLocalValue(final String identifier) {
-        return this.localVariables.get( identifier );
+        return this.localVariables.get(identifier);
     }
 
     public void setLocalValue(final String identifier,
                               final Object value) {
-        if ( this.localVariables == null ) {
+        if (this.localVariables == null) {
             this.localVariables = new HashMap();
         }
-        this.localVariables.put( identifier,
-                                 value );
+        this.localVariables.put(identifier,
+                value);
     }
 
-    public VariableResolver createVariable(String name,
-                                           Object value) {
-        VariableResolver vr = getVariableResolver( name );
-        if ( vr == null ) {
-            addResolver( name,
-                         vr = new LocalVariableResolver( this,
-                                                         name ) );
+    public VariableResolver createVariable(String name, Object value) {
+        try {
+            VariableResolver vr = getVariableResolver(name);
+            vr.setValue(value);
+            return vr;
         }
-
-        vr.setValue( value );
-        return vr;
+        catch (CompileException e) {
+            return addResolver(name, new LocalVariableResolver(this, name), value);
+        }
     }
 
     public VariableResolver createVariable(String name,
                                            Object value,
                                            Class type) {
-        VariableResolver vr = getVariableResolver( name );
-        if ( vr == null ) {
-            addResolver( name,
-                         vr = new LocalVariableResolver( this,
-                                                         name,
-                                                         type ) );
-        }
 
-        vr.setValue( value );
-        return vr;
+        try {
+            VariableResolver vr = getVariableResolver(name);
+            vr.setValue(value);
+            return vr;
+        }
+        catch (CompileException e) {
+            return addResolver(name, new LocalVariableResolver(this, name, type), value);
+        }
     }
 
     public boolean isResolveable(String name) {
-        if ( DroolsMVELKnowledgeHelper.DROOLS.equals( name ) ) {
-            addResolver( DroolsMVELKnowledgeHelper.DROOLS,
-                         new DroolsMVELKnowledgeHelper( this ) );
+        if (DroolsMVELKnowledgeHelper.DROOLS.equals(name)) {
+            addResolver(DroolsMVELKnowledgeHelper.DROOLS,
+                    new DroolsMVELKnowledgeHelper(this));
             return true;
 
-        } else if ( this.variableResolvers != null && this.variableResolvers.containsKey( name ) ) {
+        }
+        else if (this.variableResolvers != null && this.variableResolvers.containsKey(name)) {
             return true;
-        } else if ( this.previousDeclarations != null && this.previousDeclarations.containsKey( name ) ) {
-            addResolver( name,
-                         new DroolsMVELPreviousDeclarationVariable( (Declaration) this.previousDeclarations.get( name ),
-                                                                    this ) );
+        }
+        else if (this.previousDeclarations != null && this.previousDeclarations.containsKey(name)) {
+            addResolver(name,
+                    new DroolsMVELPreviousDeclarationVariable((Declaration) this.previousDeclarations.get(name),
+                            this));
             return true;
-        } else if ( this.localDeclarations != null && this.localDeclarations.containsKey( name ) ) {
-            addResolver( name,
-                         new DroolsMVELLocalDeclarationVariable( (Declaration) this.localDeclarations.get( name ),
-                                                                 this ) );
+        }
+        else if (this.localDeclarations != null && this.localDeclarations.containsKey(name)) {
+            addResolver(name,
+                    new DroolsMVELLocalDeclarationVariable((Declaration) this.localDeclarations.get(name),
+                            this));
             return true;
-        } else if ( this.workingMemory.getGlobal( name ) != null ) {
-            addResolver( name,
-                         new DroolsMVELGlobalVariable( name,
-                                                       (Class) this.globals.get( name ),
-                                                       this ) );
+        }
+        else if (this.workingMemory.getGlobal(name) != null) {
+            addResolver(name,
+                    new DroolsMVELGlobalVariable(name,
+                            (Class) this.globals.get(name),
+                            this));
             return true;
-        } else if ( nextFactory != null ) {
-            return nextFactory.isResolveable( name );
+        }
+        else if (nextFactory != null) {
+            return nextFactory.isResolveable(name);
         }
 
         return false;
     }
 
-    public void addResolver(String name,
-                            VariableResolver vr) {
-        if ( this.variableResolvers == null ) {
+    public VariableResolver addResolver(String name,
+                                        VariableResolver vr,
+                                        Object value) {
+        if (this.variableResolvers == null) {
             this.variableResolvers = new HashMap();
         }
-        this.variableResolvers.put( name,
-                                    vr );
+        this.variableResolvers.put(name, vr);
+        vr.setValue(value);
+        return vr;
+    }
+
+    public VariableResolver addResolver(String name,
+                                        VariableResolver vr) {
+        if (this.variableResolvers == null) {
+            this.variableResolvers = new HashMap();
+        }
+        this.variableResolvers.put(name, vr);
+        return vr;
     }
 
     public boolean isTarget(String name) {
-        if ( this.variableResolvers != null ) {
-            return this.variableResolvers.containsKey( name );
-        } else {
+        if (this.variableResolvers != null) {
+            return this.variableResolvers.containsKey(name);
+        }
+        else {
             return false;
         }
     }
 
     public Object clone() {
-        return new DroolsMVELFactory( this.previousDeclarations,
-                                      this.localDeclarations,
-                                      this.globals );
+        return new DroolsMVELFactory(this.previousDeclarations,
+                this.localDeclarations,
+                this.globals);
     }
 
     /**
