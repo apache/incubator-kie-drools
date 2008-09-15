@@ -20,7 +20,6 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -543,12 +542,22 @@ public class CollectNode extends BetaNode
         }
     }
 
-    private static class CollectContext
+    public static class CollectContext
         implements
-        Serializable {
+        Externalizable {
         private static final long serialVersionUID = -3076306175989410574L;
         public RightTuple         resultTuple;
         public boolean            propagated;
+        
+        public void readExternal(ObjectInput in) throws IOException,
+                                                  ClassNotFoundException {
+            resultTuple = (RightTuple) in.readObject();
+            propagated = in.readBoolean();
+        }
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject( resultTuple );
+            out.writeBoolean( propagated );
+        }
 
     }
 

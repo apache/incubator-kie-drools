@@ -51,8 +51,8 @@ public class FirstOrderLogicTest extends TestCase {
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Collect.drl" ) );
         RuleBase ruleBase = loadRuleBase( reader );
 
-        final WorkingMemory wm = ruleBase.newStatefulSession();
-        final List results = new ArrayList();
+        StatefulSession wm = ruleBase.newStatefulSession();
+        List results = new ArrayList();
 
         wm.setGlobal( "results",
                       results );
@@ -67,15 +67,23 @@ public class FirstOrderLogicTest extends TestCase {
                                5 ) );
         wm.insert( new Cheese( "provolone",
                                150 ) );
+        wm = SerializationHelper.getSerialisedStatefulSession( wm );
+        results = (List) wm.getGlobal( "results" );
+        
         wm.insert( new Cheese( "provolone",
                                20 ) );
         wm.insert( new Person( "Bob",
                                "stilton" ) );
         wm.insert( new Person( "Mark",
                                "provolone" ) );
+        wm = SerializationHelper.getSerialisedStatefulSession( wm );
+        results = (List) wm.getGlobal( "results" );
 
         wm.fireAllRules();
 
+        wm = SerializationHelper.getSerialisedStatefulSession( wm );
+        results = (List) wm.getGlobal( "results" );
+        
         Assert.assertEquals( 1,
                              results.size() );
         Assert.assertEquals( 3,
@@ -92,24 +100,33 @@ public class FirstOrderLogicTest extends TestCase {
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase    = SerializationHelper.serializeObject(ruleBase);
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        StatefulSession workingMemory = ruleBase.newStatefulSession();
 
-        final List list = new ArrayList();
+        List results = new ArrayList();
         workingMemory.setGlobal( "results",
-                                 list );
+                                 results );
 
+        workingMemory = SerializationHelper.getSerialisedStatefulSession( workingMemory );
+        results = (List) workingMemory.getGlobal( "results" );
+        
         workingMemory.insert( new Cheese( "stilton",
                                           10 ) );
+        workingMemory = SerializationHelper.getSerialisedStatefulSession( workingMemory );
+        results = (List) workingMemory.getGlobal( "results" );
+        
         workingMemory.insert( new Cheese( "brie",
                                           15 ) );
 
         workingMemory.fireAllRules();
 
+        workingMemory = SerializationHelper.getSerialisedStatefulSession( workingMemory );
+        results = (List) workingMemory.getGlobal( "results" );
+        
         assertEquals( 1,
-                      list.size() );
+                      results.size() );
 
         assertEquals( 2,
-                      ((List) list.get( 0 )).size() );
+                      ((List) results.get( 0 )).size() );
     }
 
     public void testCollectModify() throws Exception {
@@ -117,8 +134,8 @@ public class FirstOrderLogicTest extends TestCase {
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Collect.drl" ) );
         RuleBase ruleBase = loadRuleBase( reader );
 
-        final WorkingMemory wm = ruleBase.newStatefulSession();
-        final List results = new ArrayList();
+        StatefulSession wm = ruleBase.newStatefulSession();
+        List results = new ArrayList();
 
         wm.setGlobal( "results",
                       results );
@@ -154,6 +171,7 @@ public class FirstOrderLogicTest extends TestCase {
         cheese[index].setPrice( 9 );
         wm.update( cheeseHandles[index],
                    cheese[index] );
+        
         wm.fireAllRules();
 
         Assert.assertEquals( ++fireCount,
