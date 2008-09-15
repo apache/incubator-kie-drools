@@ -126,7 +126,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         }
     }
     
-    protected DroolsAction extractAction(Element xmlNode) {
+    public static DroolsAction extractAction(Element xmlNode) {
     	String actionType = xmlNode.getAttribute("type");
     	if ("expression".equals(actionType)) {
     		String consequence = xmlNode.getTextContent();
@@ -175,7 +175,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
     	}
     }
     
-    protected void writeAction(final DroolsAction action, final StringBuffer xmlDump) {
+    public static void writeAction(final DroolsAction action, final StringBuffer xmlDump) {
     	if (action instanceof DroolsConsequenceAction) {
     		DroolsConsequenceAction consequenceAction = (DroolsConsequenceAction) action;
     		xmlDump.append("        <action type=\"expression\" ");

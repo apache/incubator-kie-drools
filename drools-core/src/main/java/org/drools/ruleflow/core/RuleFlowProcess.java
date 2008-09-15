@@ -1,5 +1,6 @@
 package org.drools.ruleflow.core;
 
+import org.drools.process.core.context.exception.ExceptionScope;
 import org.drools.process.core.context.swimlane.SwimlaneContext;
 import org.drools.process.core.context.variable.VariableScope;
 import org.drools.workflow.core.Node;
@@ -16,12 +17,16 @@ public class RuleFlowProcess extends WorkflowProcessImpl {
     
     public RuleFlowProcess() {
         setType(RULEFLOW_TYPE);
+        // TODO create contexts on request ?
         VariableScope variableScope = new VariableScope();
         addContext(variableScope);
         setDefaultContext(variableScope);
         SwimlaneContext swimLaneContext = new SwimlaneContext();
         addContext(swimLaneContext);
         setDefaultContext(swimLaneContext);
+        ExceptionScope exceptionScope = new ExceptionScope();
+        addContext(exceptionScope);
+        setDefaultContext(exceptionScope);
     }
     
     public VariableScope getVariableScope() {
@@ -30,6 +35,10 @@ public class RuleFlowProcess extends WorkflowProcessImpl {
     
     public SwimlaneContext getSwimlaneContext() {
         return (SwimlaneContext) getDefaultContext(SwimlaneContext.SWIMLANE_SCOPE);
+    }
+
+    public ExceptionScope getExceptionScope() {
+        return (ExceptionScope) getDefaultContext(ExceptionScope.EXCEPTION_SCOPE);
     }
 
     protected NodeContainer createNodeContainer() {

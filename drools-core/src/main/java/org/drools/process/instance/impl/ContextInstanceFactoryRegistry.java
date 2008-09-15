@@ -7,7 +7,7 @@ import org.drools.process.core.Context;
 import org.drools.process.core.context.exception.ExceptionScope;
 import org.drools.process.core.context.swimlane.SwimlaneContext;
 import org.drools.process.core.context.variable.VariableScope;
-import org.drools.process.instance.context.exception.ExceptionScopeInstance;
+import org.drools.process.instance.context.exception.DefaultExceptionScopeInstance;
 import org.drools.process.instance.context.swimlane.SwimlaneContextInstance;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.process.instance.impl.factory.ReuseContextInstanceFactory;
@@ -26,7 +26,7 @@ public class ContextInstanceFactoryRegistry {
         register(VariableScope.class, new ReuseContextInstanceFactory(
                  VariableScopeInstance.class));
         register(ExceptionScope.class, new ReuseContextInstanceFactory(
-                 ExceptionScopeInstance.class));
+                 DefaultExceptionScopeInstance.class));
         register(SwimlaneContext.class, new ReuseContextInstanceFactory(
                  SwimlaneContextInstance.class));
     }

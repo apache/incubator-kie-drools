@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.process.core.context.exception.ExceptionScope;
 import org.drools.process.core.context.variable.Variable;
 import org.drools.process.core.context.variable.VariableScope;
 import org.drools.workflow.core.Connection;
@@ -23,7 +24,7 @@ public class CompositeNodeHandler extends AbstractNodeHandler {
         return result;
     }
 
-    public Class generateNodeFor() {
+    public Class<?> generateNodeFor() {
         return CompositeNode.class;
     }
     
@@ -37,10 +38,18 @@ public class CompositeNodeHandler extends AbstractNodeHandler {
         writeAttributes(compositeNode, xmlDump, includeMeta);
         xmlDump.append(">" + EOL);
         if (compositeNode instanceof CompositeContextNode) {
-        	List<Variable> variables = ((VariableScope)
-    			((CompositeContextNode) compositeNode)
-    				.getDefaultContext(VariableScope.VARIABLE_SCOPE)).getVariables();
-            XmlWorkflowProcessDumper.visitVariables(variables, xmlDump);
+        	VariableScope variableScope = (VariableScope)
+				((CompositeContextNode) compositeNode).getDefaultContext(VariableScope.VARIABLE_SCOPE);
+        	if (variableScope != null) {
+        		List<Variable> variables = variableScope.getVariables();
+        		XmlWorkflowProcessDumper.visitVariables(variables, xmlDump);
+        	}
+        	ExceptionScope exceptionScope = (ExceptionScope)
+				((CompositeContextNode) compositeNode).getDefaultContext(ExceptionScope.EXCEPTION_SCOPE);
+	    	if (exceptionScope != null) {
+	    		XmlWorkflowProcessDumper.visitExceptionHandlers(
+    				exceptionScope.getExceptionHandlers(), xmlDump);
+	    	}
         }
         List<Node> subNodes = getSubNodes(compositeNode);
         xmlDump.append("      <nodes>" + EOL);

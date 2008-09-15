@@ -148,7 +148,7 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
         if (conf == null) {
             throw new IllegalArgumentException("Illegal context type (registry not found): " + context.getClass());
         }
-        ContextInstance contextInstance = (ContextInstance) conf.getContextInstance(context, this);
+        ContextInstance contextInstance = (ContextInstance) conf.getContextInstance(context, this, this);
         if (contextInstance == null) {
             throw new IllegalArgumentException("Illegal context type (instance not found): " + context.getClass());
         }

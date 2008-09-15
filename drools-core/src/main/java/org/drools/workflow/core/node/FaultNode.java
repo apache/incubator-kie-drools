@@ -1,5 +1,7 @@
 package org.drools.workflow.core.node;
 
+import org.drools.workflow.core.Connection;
+
 
 /*
  * Copyright 2005 JBoss Inc
@@ -45,5 +47,10 @@ public class FaultNode extends SequenceNode {
 	public void setFaultName(String faultName) {
 		this.faultName = faultName;
 	}
+	
+	public void validateAddOutgoingConnection(final String type, final Connection connection) {
+        throw new UnsupportedOperationException(
+            "A fault node does not have an outgoing connection!");
+    }
 
 }

@@ -3,6 +3,7 @@ package org.drools.workflow.instance.context;
 import org.drools.process.core.Context;
 import org.drools.process.instance.ContextInstance;
 import org.drools.process.instance.ContextInstanceContainer;
+import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.context.AbstractContextInstance;
 import org.drools.process.instance.impl.ContextInstanceFactory;
 import org.drools.workflow.instance.NodeInstanceContainer;
@@ -15,7 +16,7 @@ public class WorkflowReuseContextInstanceFactory implements ContextInstanceFacto
         this.cls = cls;
     }
 
-	public ContextInstance getContextInstance(Context context, ContextInstanceContainer contextInstanceContainer) {    	
+	public ContextInstance getContextInstance(Context context, ContextInstanceContainer contextInstanceContainer, ProcessInstance processInstance) {    	
         ContextInstance result = contextInstanceContainer.getContextInstance( context.getType(), context.getId() );
         if (result != null) {
             return result;
@@ -24,6 +25,7 @@ public class WorkflowReuseContextInstanceFactory implements ContextInstanceFacto
             AbstractContextInstance contextInstance = (AbstractContextInstance) cls.newInstance();
             contextInstance.setContextId(context.getId());
             contextInstance.setContextInstanceContainer(contextInstanceContainer);
+            contextInstance.setProcessInstance(processInstance);
             contextInstanceContainer.addContextInstance(context.getType(), contextInstance);
             NodeInstanceContainer nodeInstanceContainer = null;
             if (contextInstanceContainer instanceof NodeInstanceContainer) {
