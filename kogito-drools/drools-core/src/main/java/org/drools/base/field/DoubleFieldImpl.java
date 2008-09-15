@@ -10,6 +10,7 @@ import java.io.Externalizable;
 import java.io.ObjectInput;
 import java.io.IOException;
 import java.io.ObjectOutput;
+import java.io.Serializable;
 
 public class DoubleFieldImpl
     implements
@@ -33,7 +34,7 @@ public class DoubleFieldImpl
         out.writeDouble(value);
     }
 
-    public Object getValue() {
+    public Serializable getValue() {
         return new Double( this.value );
     }
 

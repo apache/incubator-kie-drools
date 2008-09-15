@@ -189,7 +189,7 @@ public class @{invokerClassName} implements org.drools.spi.Accumulator, org.droo
 {
     private static final long serialVersionUID  = 400L;
 
-    public Object createContext() {
+    public java.io.Serializable createContext() {
         return new @{ruleClassName}.@{className}();
     }
 

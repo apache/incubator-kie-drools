@@ -17,9 +17,11 @@
  */
 package org.drools.base.accumulators;
 
+import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.io.Serializable;
 
 /**
  * An implementation of an accumulator capable of calculating maximum values
@@ -29,8 +31,18 @@ import java.io.ObjectOutput;
  */
 public class MaxAccumulateFunction implements AccumulateFunction {
 
-    protected static class MaxData {
+    protected static class MaxData implements Externalizable {
         public double max = Double.MIN_VALUE;
+        
+        public MaxData() {}
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            max   = in.readDouble();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeDouble(max);
+        }
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
@@ -43,14 +55,14 @@ public class MaxAccumulateFunction implements AccumulateFunction {
     /* (non-Javadoc)
      * @see org.drools.base.accumulators.AccumulateFunction#createContext()
      */
-    public Object createContext() {
+    public Serializable createContext() {
         return new MaxData();
     }
 
     /* (non-Javadoc)
      * @see org.drools.base.accumulators.AccumulateFunction#init(java.lang.Object)
      */
-    public void init(Object context) throws Exception {
+    public void init(Serializable context) throws Exception {
         MaxData data = (MaxData) context;
         data.max = Double.MIN_VALUE;
     }
@@ -58,7 +70,7 @@ public class MaxAccumulateFunction implements AccumulateFunction {
     /* (non-Javadoc)
      * @see org.drools.base.accumulators.AccumulateFunction#accumulate(java.lang.Object, java.lang.Object)
      */
-    public void accumulate(Object context,
+    public void accumulate(Serializable context,
                            Object value) {
         MaxData data = (MaxData) context;
         data.max = Math.max( data.max, ((Number)value).doubleValue() );
@@ -67,14 +79,14 @@ public class MaxAccumulateFunction implements AccumulateFunction {
     /* (non-Javadoc)
      * @see org.drools.base.accumulators.AccumulateFunction#reverse(java.lang.Object, java.lang.Object)
      */
-    public void reverse(Object context,
+    public void reverse(Serializable context,
                         Object value) throws Exception {
     }
 
     /* (non-Javadoc)
      * @see org.drools.base.accumulators.AccumulateFunction#getResult(java.lang.Object)
      */
-    public Object getResult(Object context) throws Exception {
+    public Object getResult(Serializable context) throws Exception {
         MaxData data = (MaxData) context;
         return new Double( data.max );
     }

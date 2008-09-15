@@ -16,6 +16,8 @@
 
 package org.drools.spi;
 
+import java.io.Serializable;
+
 import org.drools.WorkingMemory;
 import org.drools.common.InternalFactHandle;
 import org.drools.rule.Declaration;
@@ -46,7 +48,7 @@ public interface Accumulator
      * 
      * @return
      */
-    public Object createContext();
+    public Serializable createContext();
 
     /**
      * Executes the initialization block of code

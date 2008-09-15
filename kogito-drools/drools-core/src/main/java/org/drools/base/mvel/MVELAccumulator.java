@@ -43,15 +43,15 @@ public class MVELAccumulator
     implements
     MVELCompileable,
     Accumulator,
-    Externalizable  {
+    Externalizable {
 
     private static final long serialVersionUID = 400L;
 
-    MVELCompilationUnit initUnit;
-    MVELCompilationUnit actionUnit;
-    MVELCompilationUnit reverseUnit;
-    MVELCompilationUnit resultUnit;
-    
+    MVELCompilationUnit       initUnit;
+    MVELCompilationUnit       actionUnit;
+    MVELCompilationUnit       reverseUnit;
+    MVELCompilationUnit       resultUnit;
+
     private DroolsMVELFactory prototype;
     private Serializable      init;
     private Serializable      action;
@@ -86,7 +86,7 @@ public class MVELAccumulator
         out.writeObject( reverseUnit );
         out.writeObject( resultUnit );
     }
-    
+
     public void compile(ClassLoader classLoader) {
         init = initUnit.getCompiledExpression( classLoader );
         action = actionUnit.getCompiledExpression( classLoader );
@@ -96,16 +96,16 @@ public class MVELAccumulator
             prototype = reverseUnit.getFactory();
         } else {
             prototype = resultUnit.getFactory();
-        }      
-    }        
+        }
+    }
 
     /* (non-Javadoc)
      * @see org.drools.spi.Accumulator#createContext()
      */
-    public Object createContext() {
-        Map<InternalFactHandle, Map<String, Object>> shadow = null;
+    public Serializable createContext() {
+        Map<Integer, Map<String, Object>> shadow = null;
         if ( this.reverse != null ) {
-            shadow = new HashMap<InternalFactHandle, Map<String, Object>>();
+            shadow = new HashMap<Integer, Map<String, Object>>();
         }
         return new MVELAccumulatorContext( new HashMap(),
                                            shadow );
@@ -168,15 +168,15 @@ public class MVELAccumulator
                               DroolsMVELFactory factory,
                               InternalFactHandle handle) {
         DroolsMVELShadowFactory shad = (DroolsMVELShadowFactory) factory;
-        Map<String, Object> varsMap = ((MVELAccumulatorContext) context).shadow.get( handle );
+        Map<String, Object> varsMap = ((MVELAccumulatorContext) context).shadow.get( Integer.valueOf( handle.getId() ) );
         if ( varsMap == null ) {
             varsMap = new HashMap<String, Object>();
-            ((MVELAccumulatorContext) context).shadow.put( handle,
+            ((MVELAccumulatorContext) context).shadow.put( Integer.valueOf( handle.getId() ),
                                                            varsMap );
         }
         for ( String var : shad.getShadowVariables() ) {
             varsMap.put( var,
-                      shad.getVariableResolver( var ).getValue() );
+                         shad.getVariableResolver( var ).getValue() );
         }
     }
 
@@ -196,7 +196,7 @@ public class MVELAccumulator
 
         // set shadow values overriding actual values
         // ALSO, since reverse() is called, we know the factory is a shadow factory
-        ((DroolsMVELShadowFactory) factory).setShadowValues( ((MVELAccumulatorContext) context).shadow.get( handle ) );
+        ((DroolsMVELShadowFactory) factory).setShadowValues( ((MVELAccumulatorContext) context).shadow.get( Integer.valueOf( handle.getId() ) ) );
 
         MVEL.executeExpression( this.reverse,
                                 null,
@@ -204,7 +204,7 @@ public class MVELAccumulator
 
         // cleaning up shadow values map
         ((DroolsMVELShadowFactory) factory).setShadowValues( null );
-        ((MVELAccumulatorContext) context).shadow.remove( handle );
+        ((MVELAccumulatorContext) context).shadow.remove( Integer.valueOf( handle.getId() ) );
     }
 
     /* (non-Javadoc)
@@ -240,13 +240,13 @@ public class MVELAccumulator
         implements
         Serializable {
 
-        private static final long                                 serialVersionUID = -308602705153011537L;
+        private static final long                      serialVersionUID = -308602705153011537L;
 
-        public final Map                                          variables;
-        public final Map<InternalFactHandle, Map<String, Object>> shadow;
+        public final Map                               variables;
+        public final Map<Integer, Map<String, Object>> shadow;
 
         public MVELAccumulatorContext(final Map variables,
-                                      final Map<InternalFactHandle, Map<String, Object>> shadow) {
+                                      final Map<Integer, Map<String, Object>> shadow) {
             this.variables = variables;
             this.shadow = shadow;
         }

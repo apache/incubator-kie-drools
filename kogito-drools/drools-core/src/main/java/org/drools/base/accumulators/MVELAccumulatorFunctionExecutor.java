@@ -25,7 +25,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.base.mvel.MVELCompilationUnit;
@@ -47,16 +46,15 @@ public class MVELAccumulatorFunctionExecutor
     Externalizable,
     Accumulator {
 
-    private static final long  serialVersionUID = 400L;
+    private static final long   serialVersionUID = 400L;
 
-    private final Object       dummy            = new Object();
-    
+    private final Object        dummy            = new Object();
+
     private MVELCompilationUnit unit;
-    private AccumulateFunction function;
-    
-    private DroolsMVELFactory  model;
-    private Serializable       expression;
-    
+    private AccumulateFunction  function;
+
+    private DroolsMVELFactory   model;
+    private Serializable        expression;
 
     public MVELAccumulatorFunctionExecutor() {
 
@@ -79,20 +77,20 @@ public class MVELAccumulatorFunctionExecutor
         out.writeObject( unit );
         out.writeObject( function );
     }
-    
+
     public void compile(ClassLoader classLoader) {
         expression = unit.getCompiledExpression( classLoader );
-        model = unit.getFactory( );
-    }     
+        model = unit.getFactory();
+    }
 
     /* (non-Javadoc)
      * @see org.drools.spi.Accumulator#createContext()
      */
-    public Object createContext() {
+    public Serializable createContext() {
         MVELAccumulatorFunctionContext context = new MVELAccumulatorFunctionContext();
         context.context = this.function.createContext();
         if ( this.function.supportsReverse() ) {
-            context.reverseSupport = new HashMap<FactHandle, Object>();
+            context.reverseSupport = new HashMap<Integer, Serializable>();
         }
         return context;
     }
@@ -124,11 +122,11 @@ public class MVELAccumulatorFunctionExecutor
                             handle.getObject(),
                             workingMemory,
                             null );
-        final Object value = MVEL.executeExpression( this.expression,
-                                                     this.dummy,
-                                                     factory );
+        final Serializable value = (Serializable) MVEL.executeExpression( this.expression,
+                                                                          this.dummy,
+                                                                          factory );
         if ( this.function.supportsReverse() ) {
-            ((MVELAccumulatorFunctionContext) context).reverseSupport.put( handle,
+            ((MVELAccumulatorFunctionContext) context).reverseSupport.put( Integer.valueOf( handle.getId() ),
                                                                            value );
         }
         this.function.accumulate( ((MVELAccumulatorFunctionContext) context).context,
@@ -142,7 +140,7 @@ public class MVELAccumulatorFunctionExecutor
                         Declaration[] declarations,
                         Declaration[] innerDeclarations,
                         WorkingMemory workingMemory) throws Exception {
-        final Object value = ((MVELAccumulatorFunctionContext) context).reverseSupport.remove( handle );
+        final Object value = ((MVELAccumulatorFunctionContext) context).reverseSupport.remove( Integer.valueOf( handle.getId() ) );
         this.function.reverse( ((MVELAccumulatorFunctionContext) context).context,
                                value );
     }
@@ -166,9 +164,22 @@ public class MVELAccumulatorFunctionExecutor
         return this.model.clone();
     }
 
-    private static class MVELAccumulatorFunctionContext {
-        public Object                         context;
-        public Map<FactHandle, Object>        reverseSupport;
+    private static class MVELAccumulatorFunctionContext
+        implements
+        Externalizable {
+        public Serializable               context;
+        public Map<Integer, Serializable> reverseSupport;
+
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
+            context = (Serializable) in.readObject();
+            reverseSupport = (Map<Integer, Serializable>) in.readObject();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject( context );
+            out.writeObject( reverseSupport );
+        }
     }
 
 }

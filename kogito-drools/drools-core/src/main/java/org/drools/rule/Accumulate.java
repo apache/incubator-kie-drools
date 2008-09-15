@@ -23,6 +23,7 @@ import java.util.Map;
 import java.io.ObjectOutput;
 import java.io.IOException;
 import java.io.ObjectInput;
+import java.io.Serializable;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.WorkingMemory;
@@ -117,7 +118,7 @@ public class Accumulate extends ConditionalElement
         this.accumulator = accumulator;
     }
 
-    public Object createContext() {
+    public Serializable createContext() {
         return this.accumulator.createContext();
     }
 

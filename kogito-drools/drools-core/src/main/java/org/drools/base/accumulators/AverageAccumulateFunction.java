@@ -21,6 +21,7 @@ import java.io.ObjectOutput;
 import java.io.ObjectInput;
 import java.io.IOException;
 import java.io.Externalizable;
+import java.io.Serializable;
 
 /**
  * An implementation of an accumulator capable of calculating average values
@@ -41,6 +42,8 @@ public class AverageAccumulateFunction implements AccumulateFunction {
     public static class AverageData implements Externalizable {
         public int    count = 0;
         public double total = 0;
+        
+        public AverageData() {}
 
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
             count   = in.readInt();
@@ -57,14 +60,14 @@ public class AverageAccumulateFunction implements AccumulateFunction {
     /* (non-Javadoc)
      * @see org.drools.base.accumulators.AccumulateFunction#createContext()
      */
-    public Object createContext() {
+    public Serializable createContext() {
         return new AverageData();
     }
 
     /* (non-Javadoc)
      * @see org.drools.base.accumulators.AccumulateFunction#init(java.lang.Object)
      */
-    public void init(Object context) throws Exception {
+    public void init(Serializable context) throws Exception {
         AverageData data = (AverageData) context;
         data.count = 0;
         data.total = 0;
@@ -73,7 +76,7 @@ public class AverageAccumulateFunction implements AccumulateFunction {
     /* (non-Javadoc)
      * @see org.drools.base.accumulators.AccumulateFunction#accumulate(java.lang.Object, java.lang.Object)
      */
-    public void accumulate(Object context,
+    public void accumulate(Serializable context,
                            Object value) {
         AverageData data = (AverageData) context;
         data.count++;
@@ -83,7 +86,7 @@ public class AverageAccumulateFunction implements AccumulateFunction {
     /* (non-Javadoc)
      * @see org.drools.base.accumulators.AccumulateFunction#reverse(java.lang.Object, java.lang.Object)
      */
-    public void reverse(Object context,
+    public void reverse(Serializable context,
                         Object value) throws Exception {
         AverageData data = (AverageData) context;
         data.count--;
@@ -93,7 +96,7 @@ public class AverageAccumulateFunction implements AccumulateFunction {
     /* (non-Javadoc)
      * @see org.drools.base.accumulators.AccumulateFunction#getResult(java.lang.Object)
      */
-    public Object getResult(Object context) throws Exception {
+    public Object getResult(Serializable context) throws Exception {
         AverageData data = (AverageData) context;
         return new Double( data.count == 0 ? 0 : data.total / data.count );
     }

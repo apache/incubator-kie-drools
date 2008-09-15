@@ -20,6 +20,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
@@ -64,7 +65,7 @@ public class ObjectFieldImpl
         enumName = (String) in.readObject();
         fieldName = (String) in.readObject();
         if ( !isEnum || enumName == null || fieldName == null ) {
-            value = in.readObject();
+            value = (Serializable) in.readObject();
         } else {
             resolveEnumValue();
         }
@@ -83,7 +84,7 @@ public class ObjectFieldImpl
     private void resolveEnumValue() {
         try {
             final Class<?> staticClass = Class.forName( enumName );
-            value = staticClass.getField( fieldName ).get( null );
+            value = (Serializable) staticClass.getField( fieldName ).get( null );
         } catch ( final Exception e ) {
             throw new RuntimeDroolsException("Error deserializing enum value "+enumName+"."+fieldName+" : "+e.getMessage());
         }

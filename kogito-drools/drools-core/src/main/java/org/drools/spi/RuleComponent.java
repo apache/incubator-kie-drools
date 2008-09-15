@@ -16,7 +16,6 @@ package org.drools.spi;
  * limitations under the License.
  */
 
-import java.io.Externalizable;
 
 /**
  * Semantic component marker.

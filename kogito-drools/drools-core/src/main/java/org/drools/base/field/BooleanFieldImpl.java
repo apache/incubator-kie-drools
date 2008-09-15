@@ -26,6 +26,7 @@ import java.io.Externalizable;
 import java.io.ObjectInput;
 import java.io.IOException;
 import java.io.ObjectOutput;
+import java.io.Serializable;
 
 /**
  * @author etirelli
@@ -54,7 +55,7 @@ public class BooleanFieldImpl
         out.writeBoolean(value);
     }
 
-    public Object getValue() {
+    public Serializable getValue() {
         return this.value ? Boolean.TRUE : Boolean.FALSE;
     }
 
