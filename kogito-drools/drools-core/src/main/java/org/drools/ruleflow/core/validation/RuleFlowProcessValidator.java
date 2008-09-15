@@ -36,6 +36,7 @@ import org.drools.workflow.core.node.ActionNode;
 import org.drools.workflow.core.node.CompositeNode;
 import org.drools.workflow.core.node.EndNode;
 import org.drools.workflow.core.node.EventNode;
+import org.drools.workflow.core.node.FaultNode;
 import org.drools.workflow.core.node.ForEachNode;
 import org.drools.workflow.core.node.Join;
 import org.drools.workflow.core.node.MilestoneNode;
@@ -345,6 +346,17 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                     errors.add(new ProcessValidationErrorImpl(process,
                         "Event node '" + node.getName() + "' [" + node.getId() + "] has no outgoing connection"));
                 }
+            } else if (node instanceof FaultNode) {
+            	endNodeFound = true;
+                final FaultNode faultNode = (FaultNode) node;
+            	if (faultNode.getFrom() == null) {
+                    errors.add(new ProcessValidationErrorImpl(process,
+                        "Fault node '" + node.getName() + "' [" + node.getId() + "] has no incoming connection."));
+                }
+            	if (faultNode.getFaultName() == null) {
+            		errors.add(new ProcessValidationErrorImpl(process,
+                        "Fault node '" + node.getName() + "' [" + node.getId() + "] has no fault name."));
+            	}
             } 
         }
 

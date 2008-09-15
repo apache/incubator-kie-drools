@@ -5,6 +5,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.process.core.context.exception.ActionExceptionHandler;
+import org.drools.process.core.context.exception.ExceptionHandler;
+import org.drools.process.core.context.exception.ExceptionScope;
 import org.drools.process.core.context.swimlane.Swimlane;
 import org.drools.process.core.context.swimlane.SwimlaneContext;
 import org.drools.process.core.context.variable.Variable;
@@ -12,6 +15,7 @@ import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.core.datatype.DataType;
 import org.drools.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.workflow.core.Connection;
+import org.drools.workflow.core.DroolsAction;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.WorkflowProcess;
 import org.drools.workflow.core.impl.NodeImpl;
@@ -86,6 +90,10 @@ public class XmlWorkflowProcessDumper {
         if (swimlaneContext != null) {
             visitSwimlanes(swimlaneContext.getSwimlanes(), xmlDump);
         }
+        ExceptionScope exceptionScope = (ExceptionScope) process.getDefaultContext(ExceptionScope.EXCEPTION_SCOPE);
+        if (exceptionScope != null) {
+            visitExceptionHandlers(exceptionScope.getExceptionHandlers(), xmlDump);
+        }
         xmlDump.append("  </header>" + EOL + EOL);
     }
     
@@ -132,6 +140,33 @@ public class XmlWorkflowProcessDumper {
                 xmlDump.append("      <swimlane name=\"" + swimlane.getName() + "\" />" + EOL);
             }
             xmlDump.append("    </swimlanes>" + EOL);
+        }
+    }
+    
+    public static void visitExceptionHandlers(Map<String, ExceptionHandler> exceptionHandlers, StringBuffer xmlDump) {
+        if (exceptionHandlers != null && exceptionHandlers.size() > 0) {
+            xmlDump.append("    <exceptionHandlers>" + EOL);
+            for (Map.Entry<String, ExceptionHandler> entry: exceptionHandlers.entrySet()) {
+            	ExceptionHandler exceptionHandler = entry.getValue();
+            	if (exceptionHandler instanceof ActionExceptionHandler) {
+            		ActionExceptionHandler actionExceptionHandler = (ActionExceptionHandler) exceptionHandler;
+            		xmlDump.append("      <exceptionHandler faultName=\"" + entry.getKey() + "\" type=\"action\" ");
+            		String faultVariable = exceptionHandler.getFaultVariable();
+            		if (faultVariable != null && faultVariable.length() > 0) {
+            			xmlDump.append("faultVariable=\"" + faultVariable + "\" ");
+            		}
+        			xmlDump.append(">" + EOL);
+        			DroolsAction action = actionExceptionHandler.getAction();
+        			if (action != null) {
+        				AbstractNodeHandler.writeAction(action, xmlDump);
+        			}
+        			xmlDump.append("      </exceptionHandler>" + EOL);
+            	} else {
+            		throw new IllegalArgumentException(
+        				"Unknown exception handler type: " + exceptionHandler);
+            	}
+            }
+            xmlDump.append("    </exceptionHandlers>" + EOL);
         }
     }
     

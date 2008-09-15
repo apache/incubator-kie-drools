@@ -25,13 +25,18 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.lang.descr.ActionDescr;
 import org.drools.lang.descr.ProcessDescr;
 import org.drools.process.builder.ProcessNodeBuilder;
 import org.drools.process.builder.ProcessNodeBuilderRegistry;
+import org.drools.process.core.Context;
+import org.drools.process.core.ContextContainer;
 import org.drools.process.core.Process;
+import org.drools.process.core.context.exception.ActionExceptionHandler;
+import org.drools.process.core.context.exception.ExceptionHandler;
+import org.drools.process.core.context.exception.ExceptionScope;
 import org.drools.process.core.validation.ProcessValidationError;
 import org.drools.process.core.validation.ProcessValidator;
-import org.drools.rule.Package;
 import org.drools.rule.builder.ProcessBuildContext;
 import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.ruleflow.core.validation.RuleFlowProcessValidator;
@@ -40,6 +45,7 @@ import org.drools.workflow.core.Constraint;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.NodeContainer;
 import org.drools.workflow.core.WorkflowProcess;
+import org.drools.workflow.core.impl.DroolsConsequenceAction;
 import org.drools.workflow.core.impl.WorkflowProcessImpl;
 import org.drools.workflow.core.node.MilestoneNode;
 import org.drools.workflow.core.node.Split;
@@ -95,52 +101,59 @@ public class ProcessBuilder {
                 // should never occur
                 e.printStackTrace( System.err );
             }
-            buildNodes( process );
+            
+            ProcessDescr processDescr = new ProcessDescr();
+            processDescr.setName(process.getPackageName());
+            PackageRegistry pkgRegistry = this.packageBuilder.getPackageRegistry( this.packageBuilder.getPackage().getName() );
+            DialectCompiletimeRegistry dialectRegistry = pkgRegistry.getDialectCompiletimeRegistry();           
+            Dialect dialect = dialectRegistry.getDialect( "java" );
+            dialect.init(processDescr);
+
+            ProcessBuildContext buildContext = new ProcessBuildContext(
+        		this.packageBuilder,
+                this.packageBuilder.getPackage(),
+                process,
+                processDescr,
+                dialectRegistry,
+                dialect);
+
+            buildContexts( process, buildContext );
+            if (process instanceof WorkflowProcess) {
+            	buildNodes( (WorkflowProcess) process, buildContext );
+            }
             this.packageBuilder.getPackage().addProcess( process );
 
-            Package pkg = this.packageBuilder.getPackage();
-            if ( pkg != null ) {
-                // FIXME, we should never have a null package                
-                // we can only do this is this.pkg != null, as otherwise the dialects won't be properly initialised
-                // as the dialects are initialised when the pkg is  first created
-                PackageRegistry pkgRegistry = this.packageBuilder.getPackageRegistry( pkg.getName() );
-                pkgRegistry.compileAll();                
-                pkgRegistry.getDialectRuntimeRegistry().onBeforeExecute();
-            }
+            pkgRegistry.compileAll();                
+            pkgRegistry.getDialectRuntimeRegistry().onBeforeExecute();
         }
     }
 
+    public void buildContexts(ContextContainer contextContainer, ProcessBuildContext buildContext) {
+    	List<Context> exceptionScopes = contextContainer.getContexts(ExceptionScope.EXCEPTION_SCOPE);
+    	if (exceptionScopes != null) {
+    		for (Context context: exceptionScopes) {
+    			ExceptionScope exceptionScope = (ExceptionScope) context;
+    			for (ExceptionHandler exceptionHandler: exceptionScope.getExceptionHandlers().values()) {
+    				if (exceptionHandler instanceof ActionExceptionHandler) {
+    					DroolsConsequenceAction action = (DroolsConsequenceAction) 
+    						((ActionExceptionHandler) exceptionHandler).getAction();
+    					ActionDescr actionDescr = new ActionDescr();
+    			        actionDescr.setText( action.getConsequence() );   
+    			        Dialect dialect = buildContext.getDialectRegistry().getDialect( action.getDialect() );            
+    			        dialect.getActionBuilder().build( buildContext, action, actionDescr );
+    				}
+    			}
+    		}
+    	}
+    }
     
-
-    public void buildNodes(Process process) {
-        ProcessNodeBuilderRegistry nodeBuilderRegistry = packageBuilder.getPackageBuilderConfiguration().getProcessNodeBuilderRegistry();
-
-        WorkflowProcess rfp = (WorkflowProcess) process;
-
-        ProcessDescr processDescr = new ProcessDescr();
-        processDescr.setName( rfp.getPackageName() );
-
-        PackageRegistry pkgRegistry = this.packageBuilder.getPackageRegistry( this.packageBuilder.getPackage().getName() );
-        DialectCompiletimeRegistry dialectRegistry = pkgRegistry.getDialectCompiletimeRegistry();           
-        
-        Dialect dialect = dialectRegistry.getDialect( "java" );
-        dialect.init( processDescr );
-
-        ProcessBuildContext context = new ProcessBuildContext( this.packageBuilder,
-                                                               this.packageBuilder.getPackage(),
-                                                               process,
-                                                               processDescr,
-                                                               dialectRegistry,
-                                                               dialect );
-
-        processNodes(rfp.getNodes(), process, processDescr, context, nodeBuilderRegistry);
-
+    public void buildNodes(WorkflowProcess process, ProcessBuildContext context) {
+    	ProcessNodeBuilderRegistry nodeBuilderRegistry = packageBuilder.getPackageBuilderConfiguration().getProcessNodeBuilderRegistry();
+        processNodes(process.getNodes(), process, context.getProcessDescr(), context, nodeBuilderRegistry);
         if ( !context.getErrors().isEmpty() ) {
             this.errors.addAll( context.getErrors() );
         }
-        
-        pkgRegistry.addProcess( context );
-
+        context.getDialectRegistry().addProcess( context );
     }
     
     private void processNodes(
@@ -157,6 +170,9 @@ public class ProcessBuilder {
             }
             if (node instanceof NodeContainer) {
                 processNodes(((NodeContainer) node).getNodes(), process, processDescr, context, nodeBuilderRegistry);
+            }
+            if (node instanceof ContextContainer) {
+            	buildContexts((ContextContainer) node, context); 
             }
         }
     }
@@ -183,16 +199,15 @@ public class ProcessBuilder {
         if ( process instanceof WorkflowProcessImpl ) {
             WorkflowProcessImpl ruleFlow = (WorkflowProcessImpl) process;
             builder.append( "package " + ruleFlow.getPackageName() + "\n" );
-            List imports = ruleFlow.getImports();
+            List<String> imports = ruleFlow.getImports();
             if ( imports != null ) {
-                for ( Iterator iterator = imports.iterator(); iterator.hasNext(); ) {
-                    builder.append( "import " + iterator.next() + ";\n" );
+                for ( String importString: imports ) {
+                    builder.append( "import " + importString + ";\n" );
                 }
             }
-            Map globals = ruleFlow.getGlobals();
+            Map<String, String> globals = ruleFlow.getGlobals();
             if ( globals != null ) {
-                for ( Iterator iterator = globals.entrySet().iterator(); iterator.hasNext(); ) {
-                    Map.Entry entry = (Map.Entry) iterator.next();
+                for ( Map.Entry<String, String> entry: globals.entrySet()) {
                     builder.append( "global " + entry.getValue() + " " + entry.getKey() + ";\n" );
                 }
             }

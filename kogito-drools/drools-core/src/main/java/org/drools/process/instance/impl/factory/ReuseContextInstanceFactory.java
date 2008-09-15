@@ -3,6 +3,7 @@ package org.drools.process.instance.impl.factory;
 import org.drools.process.core.Context;
 import org.drools.process.instance.ContextInstance;
 import org.drools.process.instance.ContextInstanceContainer;
+import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.context.AbstractContextInstance;
 import org.drools.process.instance.impl.ContextInstanceFactory;
 
@@ -14,7 +15,7 @@ public class ReuseContextInstanceFactory implements ContextInstanceFactory {
         this.cls = cls;
     }
 
-	public ContextInstance getContextInstance(Context context, ContextInstanceContainer contextInstanceContainer) {    	
+	public ContextInstance getContextInstance(Context context, ContextInstanceContainer contextInstanceContainer, ProcessInstance processInstance) {    	
         ContextInstance result = contextInstanceContainer.getContextInstance( context.getType(), context.getId() );
         if (result != null) {
             return result;
@@ -23,6 +24,7 @@ public class ReuseContextInstanceFactory implements ContextInstanceFactory {
             AbstractContextInstance contextInstance = (AbstractContextInstance) cls.newInstance();
             contextInstance.setContextId(context.getId());
             contextInstance.setContextInstanceContainer(contextInstanceContainer);
+            contextInstance.setProcessInstance(processInstance);
             contextInstanceContainer.addContextInstance(context.getType(), contextInstance);
             return contextInstance;
         } catch (Exception e) {

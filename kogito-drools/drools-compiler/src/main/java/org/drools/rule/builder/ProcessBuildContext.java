@@ -3,16 +3,16 @@ package org.drools.rule.builder;
 import org.drools.compiler.Dialect;
 import org.drools.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.PackageBuilder;
-import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.ProcessDescr;
-
 import org.drools.process.core.Process;
 import org.drools.rule.Package;
 
 public class ProcessBuildContext extends PackageBuildContext {
+	
     private Process      process;
     private ProcessDescr processDescr;
+    private DialectCompiletimeRegistry dialectRegistry;
 
     public ProcessBuildContext(final PackageBuilder pkgBuilder,
                                final Package pkg,
@@ -22,6 +22,7 @@ public class ProcessBuildContext extends PackageBuildContext {
                                final Dialect defaultDialect) {
         this.process = process;
         this.processDescr = (ProcessDescr) processDescr;
+        this.dialectRegistry = dialectRegistry;
         init( pkgBuilder,
               pkg,
               processDescr,
@@ -45,6 +46,10 @@ public class ProcessBuildContext extends PackageBuildContext {
 
     public void setProcess(Process process) {
         this.process = process;
+    }
+    
+    public DialectCompiletimeRegistry getDialectRegistry() {
+    	return dialectRegistry;
     }
 
 }

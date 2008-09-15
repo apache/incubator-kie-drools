@@ -154,12 +154,12 @@ public class CompositeNodeInstance extends NodeInstanceImpl implements NodeInsta
         return nodeInstance;
     }
 
-	public void triggerEvent(String type, Object event) {
+	public void signalEvent(String type, Object event) {
 		for (Node node: getCompositeNode().getNodes()) {
 			if (node instanceof EventNodeInterface) {
 				if (((EventNodeInterface) node).acceptsEvent(type, event)) {
 					EventNodeInstanceInterface eventNodeInstance = (EventNodeInstanceInterface) getNodeInstance(node);
-					eventNodeInstance.triggerEvent(type, event);
+					eventNodeInstance.signalEvent(type, event);
 				}
 			}
 		}

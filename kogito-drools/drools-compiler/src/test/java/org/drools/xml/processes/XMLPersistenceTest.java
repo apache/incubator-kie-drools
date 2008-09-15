@@ -14,8 +14,11 @@ import org.drools.Person;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.process.core.ParameterDefinition;
 import org.drools.process.core.Work;
+import org.drools.process.core.context.exception.ActionExceptionHandler;
+import org.drools.process.core.context.exception.ExceptionScope;
 import org.drools.process.core.context.swimlane.Swimlane;
 import org.drools.process.core.context.variable.Variable;
+import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.core.datatype.impl.type.IntegerDataType;
 import org.drools.process.core.datatype.impl.type.ListDataType;
 import org.drools.process.core.datatype.impl.type.ObjectDataType;
@@ -32,8 +35,10 @@ import org.drools.workflow.core.impl.ConnectionImpl;
 import org.drools.workflow.core.impl.ConstraintImpl;
 import org.drools.workflow.core.impl.DroolsConsequenceAction;
 import org.drools.workflow.core.node.ActionNode;
+import org.drools.workflow.core.node.CompositeContextNode;
 import org.drools.workflow.core.node.EndNode;
 import org.drools.workflow.core.node.EventNode;
+import org.drools.workflow.core.node.FaultNode;
 import org.drools.workflow.core.node.ForEachNode;
 import org.drools.workflow.core.node.HumanTaskNode;
 import org.drools.workflow.core.node.Join;
@@ -70,7 +75,9 @@ public class XMLPersistenceTest extends TestCase {
         process.addNode(new TimerNode());
         process.addNode(new HumanTaskNode());
         process.addNode(new ForEachNode());
+        process.addNode(new CompositeContextNode());
         process.addNode(new EventNode());
+        process.addNode(new FaultNode());
         
         String xml = XmlRuleFlowProcessDumper.INSTANCE.dump(process, false);
         if (xml == null) {
@@ -87,7 +94,7 @@ public class XMLPersistenceTest extends TestCase {
             throw new IllegalArgumentException("Failed to reload process!");
         }
         
-        assertEquals(13, process.getNodes().length);
+        assertEquals(15, process.getNodes().length);
         
 //        System.out.println("************************************");
         
@@ -141,7 +148,7 @@ public class XMLPersistenceTest extends TestCase {
         variable.setValue(person);
         variables.add(variable);        
         variable = new Variable();
-        variable.setName("variable3");
+        variable.setName("variable4");
         ListDataType listDataType = new ListDataType();
         listDataType.setType(new ObjectDataType("java.lang.Integer"));
         variable.setType(listDataType);
@@ -159,6 +166,17 @@ public class XMLPersistenceTest extends TestCase {
         swimlane.setName("actor2");
         process.getSwimlaneContext().addSwimlane(swimlane);
         
+        ActionExceptionHandler exceptionHandler = new ActionExceptionHandler();
+        exceptionHandler.setFaultVariable("faultVariable");
+        DroolsConsequenceAction action = new DroolsConsequenceAction("dialect", "consequence");
+        exceptionHandler.setAction(action);
+        process.getExceptionScope().setExceptionHandler("myFault", exceptionHandler);
+        exceptionHandler = new ActionExceptionHandler();
+        exceptionHandler.setFaultVariable("faultVariable2");
+        action = new DroolsConsequenceAction("dialect2", "consequence2");
+        exceptionHandler.setAction(action);
+        process.getExceptionScope().setExceptionHandler("myFault2", exceptionHandler);
+        
         StartNode startNode = new StartNode();
         startNode.setName("start");
         startNode.setMetaData("x", 1);
@@ -173,7 +191,7 @@ public class XMLPersistenceTest extends TestCase {
         actionNode.setMetaData("y", 2);
         actionNode.setMetaData("width", 3);
         actionNode.setMetaData("height", 4);
-        DroolsConsequenceAction action = new DroolsConsequenceAction("dialect", "consequence");
+        action = new DroolsConsequenceAction("dialect", "consequence");
         actionNode.setAction(action);
         process.addNode(actionNode);
         
@@ -185,6 +203,16 @@ public class XMLPersistenceTest extends TestCase {
         ruleSetNode.setMetaData("height", 4);
         ruleSetNode.setRuleFlowGroup("ruleFlowGroup");
         process.addNode(ruleSetNode);
+        
+        FaultNode faultNode = new FaultNode();
+        faultNode.setName("action");
+        faultNode.setMetaData("x", 1);
+        faultNode.setMetaData("y", 2);
+        faultNode.setMetaData("width", 3);
+        faultNode.setMetaData("height", 4);
+        faultNode.setFaultName("faultName");
+        faultNode.setFaultVariable("faultVariable");
+        process.addNode(faultNode);
         
         Split split = new Split();
         split.setName("split");
@@ -263,6 +291,7 @@ public class XMLPersistenceTest extends TestCase {
         connection.setMetaData("bendpoints", "[10,10]");
 
         WorkItemNode workItemNode = new WorkItemNode();
+        workItemNode.setName("WorkItem");
         Work work = new WorkImpl();
         work.setName("workname");
         Set<ParameterDefinition> parameterDefinitions = new HashSet<ParameterDefinition>();
@@ -282,6 +311,7 @@ public class XMLPersistenceTest extends TestCase {
         connection.setMetaData("bendpoints", "[]");
         
         HumanTaskNode humanTaskNode = new HumanTaskNode();
+        humanTaskNode.setName("Human Task");
         work = humanTaskNode.getWork();
         parameterDefinitions = new HashSet<ParameterDefinition>();
         parameterDefinition = new ParameterDefinitionImpl("TaskName", new StringDataType());
@@ -313,6 +343,7 @@ public class XMLPersistenceTest extends TestCase {
         new ConnectionImpl(humanTaskNode, Node.CONNECTION_DEFAULT_TYPE, timerNode, Node.CONNECTION_DEFAULT_TYPE);
         
         ForEachNode forEachNode = new ForEachNode();
+        forEachNode.setName("ForEach");
         forEachNode.setCollectionExpression("collection");
         forEachNode.setVariable("variableName", new ObjectDataType());
         forEachNode.setWaitForCompletion(false);
@@ -326,6 +357,35 @@ public class XMLPersistenceTest extends TestCase {
         process.addNode(forEachNode);
         new ConnectionImpl(timerNode, Node.CONNECTION_DEFAULT_TYPE, forEachNode, Node.CONNECTION_DEFAULT_TYPE);
         
+        CompositeContextNode compositeNode = new CompositeContextNode();
+        compositeNode.setName("Composite");
+        VariableScope variableScope = new VariableScope();
+        compositeNode.addContext(variableScope);
+        compositeNode.setDefaultContext(variableScope);
+        variableScope.setVariables(variables);
+        ExceptionScope exceptionScope = new ExceptionScope();
+        compositeNode.addContext(exceptionScope);
+        compositeNode.setDefaultContext(exceptionScope);
+        exceptionHandler = new ActionExceptionHandler();
+        exceptionHandler.setFaultVariable("faultVariable");
+        action = new DroolsConsequenceAction("dialect", "consequence");
+        exceptionHandler.setAction(action);
+        exceptionScope.setExceptionHandler("MyFault", exceptionHandler);
+        exceptionHandler = new ActionExceptionHandler();
+        exceptionHandler.setFaultVariable("faultVariable2");
+        action = new DroolsConsequenceAction("dialect2", "consequence2");
+        exceptionHandler.setAction(action);
+        exceptionScope.setExceptionHandler("MyFault2", exceptionHandler);
+        subActionNode1 = new ActionNode();
+        compositeNode.addNode(subActionNode1);
+        subActionNode2 = new ActionNode();
+        compositeNode.addNode(subActionNode2);
+        new ConnectionImpl(subActionNode1, Node.CONNECTION_DEFAULT_TYPE, subActionNode2, Node.CONNECTION_DEFAULT_TYPE);
+        compositeNode.linkIncomingConnections(Node.CONNECTION_DEFAULT_TYPE, subActionNode1.getId(), Node.CONNECTION_DEFAULT_TYPE);
+        compositeNode.linkOutgoingConnections(subActionNode2.getId(), Node.CONNECTION_DEFAULT_TYPE, Node.CONNECTION_DEFAULT_TYPE);
+        process.addNode(compositeNode);
+        new ConnectionImpl(forEachNode, Node.CONNECTION_DEFAULT_TYPE, compositeNode, Node.CONNECTION_DEFAULT_TYPE);
+        
         EndNode endNode = new EndNode();
         endNode.setName("end");
         endNode.setTerminate(false);
@@ -334,7 +394,7 @@ public class XMLPersistenceTest extends TestCase {
         endNode.setMetaData("width", 3);
         endNode.setMetaData("height", 4);
         process.addNode(endNode);
-        new ConnectionImpl(forEachNode, Node.CONNECTION_DEFAULT_TYPE, endNode, Node.CONNECTION_DEFAULT_TYPE);
+        new ConnectionImpl(compositeNode, Node.CONNECTION_DEFAULT_TYPE, endNode, Node.CONNECTION_DEFAULT_TYPE);
         
         String xml = XmlRuleFlowProcessDumper.INSTANCE.dump(process, true);
         if (xml == null) {
@@ -350,7 +410,13 @@ public class XMLPersistenceTest extends TestCase {
             throw new IllegalArgumentException("Failed to reload process!");
         }
         
-        assertEquals(13, process.getNodes().length);
+        assertEquals(15, process.getNodes().length);
+        
+        assertEquals(2, process.getImports().size());
+        assertEquals(2, process.getGlobals().size());
+        assertEquals(4, process.getVariableScope().getVariables().size());
+        assertEquals(2, process.getSwimlaneContext().getSwimlanes().size());
+        assertEquals(2, process.getExceptionScope().getExceptionHandlers().size());
         
 //        System.out.println("************************************");
         

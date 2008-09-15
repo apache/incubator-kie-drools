@@ -106,6 +106,17 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
         return null;
     }
 
+    public List<NodeInstance> getNodeInstances(final long nodeId) {
+    	List<NodeInstance> result = new ArrayList<NodeInstance>();
+        for ( final Iterator<NodeInstance> iterator = this.nodeInstances.iterator(); iterator.hasNext(); ) {
+            final NodeInstance nodeInstance = iterator.next();
+            if ( nodeInstance.getNodeId() == nodeId ) {
+                result.add(nodeInstance);
+            }
+        }
+        return result;
+    }
+
     public NodeInstance getNodeInstance(final Node node) {
         NodeInstanceFactoryRegistry nodeRegistry =
             ((InternalRuleBase) getWorkingMemory().getRuleBase())
@@ -209,8 +220,15 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
     		for (Node node: getWorkflowProcess().getNodes()) {
     			if (node instanceof EventNodeInterface) {
     				if (((EventNodeInterface) node).acceptsEvent(type, event)) {
-    					EventNodeInstanceInterface eventNodeInstance = (EventNodeInstanceInterface) getNodeInstance(node);
-    					eventNodeInstance.triggerEvent(type, event);
+    					List<NodeInstance> nodeInstances = getNodeInstances(node.getId());
+    					if (nodeInstances != null && !nodeInstances.isEmpty()) {
+    						for (NodeInstance nodeInstance: nodeInstances) {
+    							((EventNodeInstanceInterface) nodeInstance).signalEvent(type, event);
+    						}
+    					} else {
+	    					EventNodeInstanceInterface eventNodeInstance = (EventNodeInstanceInterface) getNodeInstance(node);
+	    					eventNodeInstance.signalEvent(type, event);
+    					}
     				}
     			}
     		}

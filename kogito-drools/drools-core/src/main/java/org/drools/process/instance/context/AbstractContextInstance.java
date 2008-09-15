@@ -5,11 +5,13 @@ import java.io.Serializable;
 import org.drools.process.core.Context;
 import org.drools.process.instance.ContextInstance;
 import org.drools.process.instance.ContextInstanceContainer;
+import org.drools.process.instance.ProcessInstance;
 
 public abstract class AbstractContextInstance implements ContextInstance, Serializable {
 
     private long contextId;
     private ContextInstanceContainer contextInstanceContainer;
+    private ProcessInstance processInstance;
     
     public long getContextId() {
         return contextId;
@@ -30,5 +32,13 @@ public abstract class AbstractContextInstance implements ContextInstance, Serial
     public Context getContext() {
         return getContextInstanceContainer().getContextContainer().getContext(getContextType(), getContextId());
     }
+
+	public ProcessInstance getProcessInstance() {
+		return processInstance;
+	}
+
+	public void setProcessInstance(ProcessInstance processInstance) {
+		this.processInstance = processInstance;
+	}
     
 }

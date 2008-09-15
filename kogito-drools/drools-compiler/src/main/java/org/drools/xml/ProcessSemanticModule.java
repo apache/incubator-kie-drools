@@ -7,6 +7,8 @@ import org.drools.xml.processes.ConstraintHandler;
 import org.drools.xml.processes.EndNodeHandler;
 import org.drools.xml.processes.EventFilterHandler;
 import org.drools.xml.processes.EventNodeHandler;
+import org.drools.xml.processes.ExceptionHandlerHandler;
+import org.drools.xml.processes.FaultNodeHandler;
 import org.drools.xml.processes.ForEachNodeHandler;
 import org.drools.xml.processes.GlobalHandler;
 import org.drools.xml.processes.HumanTaskNodeHandler;
@@ -92,5 +94,9 @@ public class ProcessSemanticModule extends DefaultSemanticModule implements Sema
                 		   new EventNodeHandler() );        
         addHandler( "eventFilter",
                 		   new EventFilterHandler() );        
+        addHandler( "fault",
+     		   			   new FaultNodeHandler() );        
+        addHandler( "exceptionHandler",
+	   			   		   new ExceptionHandlerHandler() );        
     }
 }

@@ -16,4 +16,6 @@ public interface ContextInstance {
     
     Context getContext();
     
+    ProcessInstance getProcessInstance();
+    
 }

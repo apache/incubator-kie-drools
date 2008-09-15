@@ -33,7 +33,7 @@ public class EventNodeInstance extends NodeInstanceImpl implements EventNodeInst
 
     private static final long serialVersionUID = 400L;
 
-    public void triggerEvent(String type, Object event) {
+    public void signalEvent(String type, Object event) {
     	String variableName = getEventNode().getVariableName();
     	if (variableName != null) {
     		VariableScopeInstance variableScopeInstance = (VariableScopeInstance)

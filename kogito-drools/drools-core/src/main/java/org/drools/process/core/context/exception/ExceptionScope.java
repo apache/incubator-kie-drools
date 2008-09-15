@@ -37,6 +37,13 @@ public class ExceptionScope extends AbstractContext {
     public Map<String, ExceptionHandler> getExceptionHandlers() {
         return exceptionHandlers;
     }
+    
+    public void setExceptionHandlers(Map<String, ExceptionHandler> exceptionHandlers) {
+    	if (exceptionHandlers == null) {
+    		throw new IllegalArgumentException( "Exception handlers are null" );
+    	}
+    	this.exceptionHandlers = exceptionHandlers;
+    }
 
     public Context resolveContext(Object param) {
         if (param instanceof String) {

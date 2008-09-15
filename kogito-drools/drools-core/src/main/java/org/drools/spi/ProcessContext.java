@@ -1,13 +1,29 @@
 package org.drools.spi;
 
 import org.drools.process.core.context.variable.VariableScope;
+import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.workflow.instance.NodeInstance;
 
 public class ProcessContext {
     
+	private ProcessInstance processInstance;
     private NodeInstance nodeInstance;
 
+    public ProcessInstance getProcessInstance() {
+    	if (processInstance != null) {
+    		return processInstance;
+    	}
+    	if (nodeInstance != null) {
+    		return nodeInstance.getProcessInstance();
+    	}
+    	return null;
+    }
+
+    public void setProcessInstance(ProcessInstance processInstance) {
+        this.processInstance = processInstance;
+    }
+    
     public NodeInstance getNodeInstance() {
         return nodeInstance;
     }
@@ -17,16 +33,30 @@ public class ProcessContext {
     }
     
     public Object getVariable(String variableName) {
-    	VariableScopeInstance variableScope = (VariableScopeInstance) nodeInstance.resolveContextInstance(VariableScope.VARIABLE_SCOPE, variableName);
+    	VariableScopeInstance variableScope = null;
+    	if (nodeInstance != null) {
+	    	variableScope = (VariableScopeInstance) nodeInstance.resolveContextInstance(VariableScope.VARIABLE_SCOPE, variableName);
+    	}
     	if (variableScope == null) {
-    		return ((VariableScopeInstance) nodeInstance.getProcessInstance()
-				.getContextInstance(VariableScope.VARIABLE_SCOPE)).getVariable(variableName);
+    		variableScope = (VariableScopeInstance)
+    			getProcessInstance().getContextInstance(VariableScope.VARIABLE_SCOPE);
     	}
     	return variableScope.getVariable(variableName);
     }
     
     public void setVariable(String variableName, Object value) {
-    	VariableScopeInstance variableScope = (VariableScopeInstance) nodeInstance.resolveContextInstance(VariableScope.VARIABLE_SCOPE, variableName);
+    	VariableScopeInstance variableScope = null;
+    	if (nodeInstance != null) {
+    		variableScope = (VariableScopeInstance)
+    			nodeInstance.resolveContextInstance(VariableScope.VARIABLE_SCOPE, variableName);
+    	}
+    	if (variableScope == null) {
+    		variableScope = (VariableScopeInstance)
+    			getProcessInstance().getContextInstance(VariableScope.VARIABLE_SCOPE);
+    		if (variableScope.getVariableScope().findVariable(variableName) == null) {
+    			variableScope = null;
+    		}
+    	}
     	if (variableScope == null) {
     		System.err.println("Could not find variable " + variableName);
     		System.err.println("Continuing without setting value");
