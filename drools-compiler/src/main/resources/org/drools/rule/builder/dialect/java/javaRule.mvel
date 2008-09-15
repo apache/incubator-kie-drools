@@ -27,7 +27,7 @@ public static class @{className} implements java.io.Serializable {
     private static final long    serialVersionUID = 400L;
 
     @if{supportsReverse == "true"}
-    private java.util.Map reverseMap = new java.util.HashMap<org.drools.common.InternalFactHandle, ReverseSnapshot>(); 
+    private java.util.Map reverseMap = new java.util.HashMap<Integer, ReverseSnapshot>(); 
     @end{}
     
     @foreach{type : attributesTypes, attr : attributes} private @{type} @{attr};
@@ -51,7 +51,7 @@ public static class @{className} implements java.io.Serializable {
                            @foreach{declr : innerDeclarations}@{declr.extractor.extractToClassName} @{declr.identifier}@end{","}
                            ) throws Exception {
         @if{supportsReverse == "true"}
-        this.reverseMap.put( handle,
+        this.reverseMap.put( Integer.valueOf( handle.getId() ),
                              new ReverseSnapshot(
                                @foreach{declr : declarations}@{declr.identifier}@end{","}@if{innerDeclarations != empty && declarations != empty},@end{}
                                @foreach{declr : innerDeclarations}@{declr.identifier}@end{","}
@@ -66,7 +66,7 @@ public static class @{className} implements java.io.Serializable {
                            @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} @end{","}
                            ) throws Exception {
         @if{supportsReverse == "true"}
-        ReverseSnapshot snapshot = (ReverseSnapshot) this.reverseMap.remove( handle );
+        ReverseSnapshot snapshot = (ReverseSnapshot) this.reverseMap.remove( Integer.valueOf( handle.getId() ) );
         @foreach{type : declarationTypes, declr : declarations}@{type} @{declr.identifier} = snapshot.@{declr.identifier};@end{}
         @foreach{declr : innerDeclarations}@{declr.extractor.extractToClassName} @{declr.identifier} = snapshot.@{declr.identifier};@end{}
         @end{}

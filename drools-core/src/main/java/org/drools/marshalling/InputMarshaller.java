@@ -2,11 +2,13 @@ package org.drools.marshalling;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
 
+import org.drools.RuntimeDroolsException;
 import org.drools.SessionConfiguration;
 import org.drools.base.ClassObjectType;
 import org.drools.common.AgendaItem;
@@ -48,6 +50,8 @@ import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.reteoo.RightTuple;
 import org.drools.reteoo.RightTupleSink;
 import org.drools.reteoo.RuleTerminalNode;
+import org.drools.reteoo.AccumulateNode.AccumulateContext;
+import org.drools.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.reteoo.EvalConditionNode.EvalMemory;
 import org.drools.reteoo.RuleTerminalNode.TerminalNodeMemory;
 import org.drools.rule.EntryPoint;
@@ -89,23 +93,25 @@ public class InputMarshaller {
      */
     public static ReteooStatefulSession readSession(ReteooStatefulSession session,
                                                     MarshallerReaderContext context) throws IOException,
-                                                                             ClassNotFoundException {
+                                                                                    ClassNotFoundException {
         int handleId = context.readInt();
         long handleCounter = context.readLong();
-        long propagationCounter = context.readLong();                
-        
+        long propagationCounter = context.readLong();
+
         // these are for the InitialFactHandle, on a reset we just ignore
         context.readInt();
-        context.readLong();           
-        
-        session.reset(handleId, handleCounter, propagationCounter);
-        DefaultAgenda agenda = ( DefaultAgenda ) session.getAgenda();
-        
+        context.readLong();
+
+        session.reset( handleId,
+                       handleCounter,
+                       propagationCounter );
+        DefaultAgenda agenda = (DefaultAgenda) session.getAgenda();
+
         readAgenda( context,
-                    agenda );   
-        
-        context.wm = session;   
-        
+                    agenda );
+
+        context.wm = session;
+
         readFactHandles( context );
 
         readActionQueue( context );
@@ -117,12 +123,12 @@ public class InputMarshaller {
         readProcessInstances( context );
 
         readWorkItems( context );
-        
+
         readTimers( context );
-        
+
         return session;
     }
-    
+
     /**
      * Create a new session into which to read the stream data
      * @param context
@@ -177,7 +183,7 @@ public class InputMarshaller {
         readProcessInstances( context );
 
         readWorkItems( context );
-        
+
         readTimers( context );
 
         return session;
@@ -264,24 +270,14 @@ public class InputMarshaller {
         // load the handles
         InternalFactHandle[] handles = new InternalFactHandle[size];
         for ( int i = 0; i < size; i++ ) {
-            int id = stream.readInt();
-            long recency = stream.readLong();
+            InternalFactHandle handle = readFactHandle( context );
 
-            int strategyIndex = stream.readInt();
-            PlaceholderResolverStrategy strategy = resolverStrategyFactory.getStrategy( strategyIndex );
-            ObjectPlaceholder placeHolder = strategy.read( stream );
-
-            Object object = placeHolder.resolveObject();
-
-            InternalFactHandle handle = new DefaultFactHandle( id,
-                                                               object,
-                                                               recency );
-            context.handles.put( id,
+            context.handles.put( handle.getId(),
                                  handle );
             handles[i] = handle;
 
             context.wm.getObjectStore().addHandle( handle,
-                                                   object );
+                                                   handle.getObject() );
 
             readRightTuples( handle,
                              context );
@@ -317,6 +313,24 @@ public class InputMarshaller {
         readActivations( context );
     }
 
+    public static InternalFactHandle readFactHandle(MarshallerReaderContext context) throws IOException,
+                                                                                    ClassNotFoundException {
+        int id = context.stream.readInt();
+        long recency = context.stream.readLong();
+
+        int strategyIndex = context.stream.readInt();
+        PlaceholderResolverStrategy strategy = context.resolverStrategyFactory.getStrategy( strategyIndex );
+        ObjectPlaceholder placeHolder = strategy.read( context.stream );
+
+        Object object = placeHolder.resolveObject();
+
+        InternalFactHandle handle = new DefaultFactHandle( id,
+                                                           object,
+                                                           recency );
+        return handle;
+
+    }
+
     public static void readRightTuples(InternalFactHandle factHandle,
                                        MarshallerReaderContext context) throws IOException {
         ObjectInputStream stream = context.stream;
@@ -332,18 +346,28 @@ public class InputMarshaller {
 
         RightTupleSink sink = (RightTupleSink) context.sinks.get( stream.readInt() );
 
-        BetaMemory memory = (BetaMemory) context.wm.getNodeMemory( (BetaNode) sink );
-
         RightTuple rightTuple = new RightTuple( factHandle,
                                                 sink );
         context.rightTuples.put( new RightTupleKey( factHandle.getId(),
                                                     sink ),
                                  rightTuple );
 
+        BetaMemory memory = null;
+        switch ( sink.getType() ) {
+            case NodeTypeEnums.AccumulateNode : {
+                memory = ((AccumulateMemory) context.wm.getNodeMemory( (BetaNode) sink )).betaMemory;
+                break;
+            }
+            default : {
+                memory = (BetaMemory) context.wm.getNodeMemory( (BetaNode) sink );
+                break;
+            }
+        }
         memory.getRightTupleMemory().add( rightTuple );
     }
 
-    public static void readLeftTuples(MarshallerReaderContext context) throws IOException {
+    public static void readLeftTuples(MarshallerReaderContext context) throws IOException,
+                                                                      ClassNotFoundException {
         ObjectInputStream stream = context.stream;
 
         while ( stream.readShort() == PersisterEnums.LEFT_TUPLE ) {
@@ -358,7 +382,8 @@ public class InputMarshaller {
     }
 
     public static void readLeftTuple(LeftTuple parentLeftTuple,
-                                     MarshallerReaderContext context) throws IOException {
+                                     MarshallerReaderContext context) throws IOException,
+                                                                     ClassNotFoundException {
         ObjectInputStream stream = context.stream;
         InternalWorkingMemory wm = context.wm;
         Map<Integer, BaseNode> sinks = context.sinks;
@@ -450,6 +475,58 @@ public class InputMarshaller {
                 }
                 break;
             }
+            case NodeTypeEnums.AccumulateNode : {
+                // accumulate nodes generate new facts on-demand and need special procedures when de-serializing from persistent storage
+                AccumulateMemory memory = (AccumulateMemory) context.wm.getNodeMemory( (BetaNode) sink );
+                memory.betaMemory.getLeftTupleMemory().add( parentLeftTuple );
+
+                AccumulateContext accctx = new AccumulateContext();
+                memory.betaMemory.getCreatedHandles().put( parentLeftTuple,
+                                                           accctx,
+                                                           false );
+                // first we de-serialize the generated fact handle
+                InternalFactHandle handle = readFactHandle( context );
+                accctx.result = new RightTuple( handle,
+                                                (RightTupleSink) sink );
+
+                // then we de-serialize the associated accumulation context
+                accctx.context = (Serializable) stream.readObject();
+                // then we de-serialize the boolean propagated flag
+                accctx.propagated = stream.readBoolean();
+
+                // then we de-serialize all the propagated tuples
+                short head = -1;
+                while ( (head = stream.readShort()) != PersisterEnums.END ) {
+                    switch ( head ) {
+                        case PersisterEnums.RIGHT_TUPLE : {
+                            int factHandleId = stream.readInt();
+                            RightTupleKey key = new RightTupleKey( factHandleId,
+                                                                   sink );
+                            RightTuple rightTuple = context.rightTuples.get( key );
+                            // just wiring up the match record
+                            new LeftTuple( parentLeftTuple,
+                                           rightTuple,
+                                           sink,
+                                           true );
+                            break;
+                        }
+                        case PersisterEnums.LEFT_TUPLE : {
+                            LeftTupleSink childSink = (LeftTupleSink) sinks.get( stream.readInt() );
+                            LeftTuple childLeftTuple = new LeftTuple( parentLeftTuple,
+                                                                      accctx.result,
+                                                                      childSink,
+                                                                      true );
+                            readLeftTuple( childLeftTuple,
+                                           context );
+                            break;
+                        }
+                        default : {
+                            throw new RuntimeDroolsException( "Marshalling error. This is a bug. Please contact the development team." );
+                        }
+                    }
+                }
+                break;
+            }
             case NodeTypeEnums.RuleTerminalNode : {
                 RuleTerminalNode ruleTerminalNode = (RuleTerminalNode) sink;
                 TerminalNodeMemory memory = (TerminalNodeMemory) wm.getNodeMemory( ruleTerminalNode );
@@ -505,7 +582,7 @@ public class InputMarshaller {
 
         if ( stream.readBoolean() ) {
             String activationGroupName = stream.readUTF();
-            ((DefaultAgenda)wm.getAgenda()).getActivationGroup( activationGroupName ).addActivation( activation );
+            ((DefaultAgenda) wm.getAgenda()).getActivationGroup( activationGroupName ).addActivation( activation );
         }
 
         boolean activated = stream.readBoolean();
@@ -515,11 +592,11 @@ public class InputMarshaller {
         if ( rule.getAgendaGroup() == null || rule.getAgendaGroup().equals( "" ) || rule.getAgendaGroup().equals( AgendaGroup.MAIN ) ) {
             // Is the Rule AgendaGroup undefined? If it is use MAIN,
             // which is added to the Agenda by default
-            agendaGroup = (InternalAgendaGroup) ((DefaultAgenda)wm.getAgenda()).getAgendaGroup( AgendaGroup.MAIN );
+            agendaGroup = (InternalAgendaGroup) ((DefaultAgenda) wm.getAgenda()).getAgendaGroup( AgendaGroup.MAIN );
         } else {
             // AgendaGroup is defined, so try and get the AgendaGroup
             // from the Agenda
-            agendaGroup = (InternalAgendaGroup) ((DefaultAgenda)wm.getAgenda()).getAgendaGroup( rule.getAgendaGroup() );
+            agendaGroup = (InternalAgendaGroup) ((DefaultAgenda) wm.getAgenda()).getAgendaGroup( rule.getAgendaGroup() );
         }
 
         activation.setAgendaGroup( agendaGroup );
@@ -528,7 +605,7 @@ public class InputMarshaller {
             if ( rule.getRuleFlowGroup() == null ) {
                 agendaGroup.add( activation );
             } else {
-                InternalRuleFlowGroup rfg = (InternalRuleFlowGroup) ((DefaultAgenda)wm.getAgenda()).getRuleFlowGroup( rule.getRuleFlowGroup() );
+                InternalRuleFlowGroup rfg = (InternalRuleFlowGroup) ((DefaultAgenda) wm.getAgenda()).getRuleFlowGroup( rule.getRuleFlowGroup() );
                 rfg.addActivation( activation );
             }
         }
@@ -619,8 +696,8 @@ public class InputMarshaller {
         processInstance.setId( stream.readLong() );
         String processId = stream.readUTF();
         processInstance.setProcessId( processId );
-        if (ruleBase != null) {
-        	processInstance.setProcess( ruleBase.getProcess( processId ) );
+        if ( ruleBase != null ) {
+            processInstance.setProcess( ruleBase.getProcess( processId ) );
         }
         processInstance.setState( stream.readInt() );
         long nodeInstanceCounter = stream.readLong();
@@ -647,25 +724,26 @@ public class InputMarshaller {
             for ( int i = 0; i < nbSwimlanes; i++ ) {
                 String name = stream.readUTF();
                 String value = stream.readUTF();
-                swimlaneContextInstance.setActorId( name, value );
+                swimlaneContextInstance.setActorId( name,
+                                                    value );
             }
         }
 
         while ( stream.readShort() == PersisterEnums.NODE_INSTANCE ) {
             readNodeInstance( context,
-            		          processInstance,
+                              processInstance,
                               processInstance );
         }
 
         processInstance.internalSetNodeInstanceCounter( nodeInstanceCounter );
-        if (wm != null) {
-        	processInstance.reconnect();
+        if ( wm != null ) {
+            processInstance.reconnect();
         }
         return processInstance;
     }
 
     public static NodeInstance readNodeInstance(MarshallerReaderContext context,
-    											NodeInstanceContainer nodeInstanceContainer,
+                                                NodeInstanceContainer nodeInstanceContainer,
                                                 RuleFlowProcessInstance processInstance) throws IOException {
         ObjectInputStream stream = context.stream;
         NodeInstanceImpl nodeInstance = null;
@@ -723,46 +801,43 @@ public class InputMarshaller {
         nodeInstance.setProcessInstance( processInstance );
         nodeInstance.setId( id );
         switch ( nodeType ) {
-	        case PersisterEnums.COMPOSITE_NODE_INSTANCE :
-	            int nbVariables = stream.readInt();
-	            if ( nbVariables > 0 ) {
-	            	VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
-	                	((CompositeContextNodeInstance) nodeInstance).getContextInstance(VariableScope.VARIABLE_SCOPE);
-	                for ( int i = 0; i < nbVariables; i++ ) {
-	                    String name = stream.readUTF();
-	                    try {
-	                        Object value = stream.readObject();
-	                        variableScopeInstance.setVariable( name, value );
-	                    } catch ( ClassNotFoundException e ) {
-	                        throw new IllegalArgumentException(
-	                    		"Could not reload variable " + name );
-	                    }
-	                }
-	            }
-	            while ( stream.readShort() == PersisterEnums.NODE_INSTANCE ) {
-	                readNodeInstance( 
-	            		context, 
-	            		(CompositeContextNodeInstance) nodeInstance, 
-	            		processInstance );
-	            }
-	            break;
-	        case PersisterEnums.FOR_EACH_NODE_INSTANCE :
-	            while ( stream.readShort() == PersisterEnums.NODE_INSTANCE ) {
-	                readNodeInstance( 
-	            		context, 
-	            		(ForEachNodeInstance) nodeInstance, 
-	            		processInstance );
-	            }
-	            break;
-	        default :
-	            // do nothing
-	        }
+            case PersisterEnums.COMPOSITE_NODE_INSTANCE :
+                int nbVariables = stream.readInt();
+                if ( nbVariables > 0 ) {
+                    VariableScopeInstance variableScopeInstance = (VariableScopeInstance) ((CompositeContextNodeInstance) nodeInstance).getContextInstance( VariableScope.VARIABLE_SCOPE );
+                    for ( int i = 0; i < nbVariables; i++ ) {
+                        String name = stream.readUTF();
+                        try {
+                            Object value = stream.readObject();
+                            variableScopeInstance.setVariable( name,
+                                                               value );
+                        } catch ( ClassNotFoundException e ) {
+                            throw new IllegalArgumentException( "Could not reload variable " + name );
+                        }
+                    }
+                }
+                while ( stream.readShort() == PersisterEnums.NODE_INSTANCE ) {
+                    readNodeInstance( context,
+                                      (CompositeContextNodeInstance) nodeInstance,
+                                      processInstance );
+                }
+                break;
+            case PersisterEnums.FOR_EACH_NODE_INSTANCE :
+                while ( stream.readShort() == PersisterEnums.NODE_INSTANCE ) {
+                    readNodeInstance( context,
+                                      (ForEachNodeInstance) nodeInstance,
+                                      processInstance );
+                }
+                break;
+            default :
+                // do nothing
+        }
         return nodeInstance;
     }
 
     public static void readWorkItems(MarshallerReaderContext context) throws IOException {
-    	InternalWorkingMemory wm = context.wm;
-    	ObjectInputStream stream = context.stream;
+        InternalWorkingMemory wm = context.wm;
+        ObjectInputStream stream = context.stream;
         while ( stream.readShort() == PersisterEnums.WORK_ITEM ) {
             WorkItem workItem = readWorkItem( context );
             wm.getWorkItemManager().internalAddWorkItem( workItem );
@@ -771,35 +846,36 @@ public class InputMarshaller {
 
     public static WorkItem readWorkItem(MarshallerReaderContext context) throws IOException {
         ObjectInputStream stream = context.stream;
-        
+
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setId( stream.readLong() );
         workItem.setProcessInstanceId( stream.readLong() );
         workItem.setName( stream.readUTF() );
         workItem.setState( stream.readInt() );
-        
+
         int nbParameters = stream.readInt();
-        
+
         for ( int i = 0; i < nbParameters; i++ ) {
-        	String name = stream.readUTF();
-        	try {
-        		Object value = stream.readObject();
-            	workItem.setParameter(name, value);
-        	} catch (ClassNotFoundException e) {
-        		throw new IllegalArgumentException( "Could not reload parameter " + name );
-        	}
+            String name = stream.readUTF();
+            try {
+                Object value = stream.readObject();
+                workItem.setParameter( name,
+                                       value );
+            } catch ( ClassNotFoundException e ) {
+                throw new IllegalArgumentException( "Could not reload parameter " + name );
+            }
         }
 
         return workItem;
     }
 
     public static void readTimers(MarshallerReaderContext context) throws IOException {
-    	InternalWorkingMemory wm = context.wm;
-    	ObjectInputStream stream = context.stream;
-    	
-    	TimerManager timerManager = wm.getTimerManager();
-    	timerManager.internalSetTimerId( stream.readLong() );
-    	
+        InternalWorkingMemory wm = context.wm;
+        ObjectInputStream stream = context.stream;
+
+        TimerManager timerManager = wm.getTimerManager();
+        timerManager.internalSetTimerId( stream.readLong() );
+
         while ( stream.readShort() == PersisterEnums.TIMER ) {
             Timer timer = readTimer( context );
             timerManager.internalAddTimer( timer );
@@ -808,15 +884,15 @@ public class InputMarshaller {
 
     public static Timer readTimer(MarshallerReaderContext context) throws IOException {
         ObjectInputStream stream = context.stream;
-        
+
         Timer timer = new Timer();
         timer.setId( stream.readLong() );
         timer.setDelay( stream.readLong() );
         timer.setPeriod( stream.readLong() );
         timer.setProcessInstanceId( stream.readLong() );
-        timer.setActivated( new Date(stream.readLong()) );
-        if (stream.readBoolean()) {
-        	timer.setLastTriggered( new Date(stream.readLong()) );
+        timer.setActivated( new Date( stream.readLong() ) );
+        if ( stream.readBoolean() ) {
+            timer.setLastTriggered( new Date( stream.readLong() ) );
         }
         return timer;
     }

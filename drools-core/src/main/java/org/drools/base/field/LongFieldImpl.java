@@ -10,6 +10,7 @@ import java.io.Externalizable;
 import java.io.ObjectInput;
 import java.io.IOException;
 import java.io.ObjectOutput;
+import java.io.Serializable;
 
 public class LongFieldImpl
     implements
@@ -34,7 +35,7 @@ public class LongFieldImpl
         out.writeLong(value);
     }
 
-    public Object getValue() {
+    public Serializable getValue() {
         return new Long( this.value );
     }
 

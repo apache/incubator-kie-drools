@@ -17,9 +17,11 @@
  */
 package org.drools.base.accumulators;
 
+import java.io.Externalizable;
 import java.io.ObjectOutput;
 import java.io.ObjectInput;
 import java.io.IOException;
+import java.io.Serializable;
 
 /**
  * An implementation of an accumulator capable of calculating minimun values
@@ -37,46 +39,56 @@ public class MinAccumulateFunction implements AccumulateFunction {
 
     }
 
-    protected static class MaxData {
+    protected static class MinData implements Externalizable {
         public double min = Double.MAX_VALUE;
+        
+        public MinData() {}
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            min   = in.readDouble();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeDouble(min);
+        }
     }
 
     /* (non-Javadoc)
      * @see org.drools.base.accumulators.AccumulateFunction#createContext()
      */
-    public Object createContext() {
-        return new MaxData();
+    public Serializable createContext() {
+        return new MinData();
     }
 
     /* (non-Javadoc)
      * @see org.drools.base.accumulators.AccumulateFunction#init(java.lang.Object)
      */
-    public void init(Object context) throws Exception {
-        MaxData data = (MaxData) context;
+    public void init(Serializable context) throws Exception {
+        MinData data = (MinData) context;
         data.min = Double.MAX_VALUE;
     }
 
     /* (non-Javadoc)
      * @see org.drools.base.accumulators.AccumulateFunction#accumulate(java.lang.Object, java.lang.Object)
      */
-    public void accumulate(Object context,
+    public void accumulate(Serializable context,
                            Object value) {
-        MaxData data = (MaxData) context;
+        MinData data = (MinData) context;
         data.min = Math.min( data.min, ((Number)value).doubleValue() );
     }
 
     /* (non-Javadoc)
      * @see org.drools.base.accumulators.AccumulateFunction#reverse(java.lang.Object, java.lang.Object)
      */
-    public void reverse(Object context,
+    public void reverse(Serializable context,
                         Object value) throws Exception {
     }
 
     /* (non-Javadoc)
      * @see org.drools.base.accumulators.AccumulateFunction#getResult(java.lang.Object)
      */
-    public Object getResult(Object context) throws Exception {
-        MaxData data = (MaxData) context;
+    public Object getResult(Serializable context) throws Exception {
+        MinData data = (MinData) context;
         return new Double( data.min );
     }
 

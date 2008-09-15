@@ -18,6 +18,7 @@
 package org.drools.base.accumulators;
 
 import java.io.Externalizable;
+import java.io.Serializable;
 
 /**
  * An interface for accumulate external function implementations
@@ -31,21 +32,21 @@ public interface AccumulateFunction extends Externalizable {
      * Creates and returns a new context object
      * @return
      */
-    public Object createContext();
+    public Serializable createContext();
 
     /**
      * Initializes the accumulator
      * @param context
      * @throws Exception
      */
-    public void init(Object context) throws Exception;
+    public void init(Serializable context) throws Exception;
 
     /**
      * Executes the accumulation action
      * @param context
      * @param value
      */
-    public void accumulate(Object context,
+    public void accumulate(Serializable context,
                            Object value);
 
     /**
@@ -54,7 +55,7 @@ public interface AccumulateFunction extends Externalizable {
      * @param value
      * @throws Exception
      */
-    public void reverse(Object context,
+    public void reverse(Serializable context,
                         Object value) throws Exception;
 
     /**
@@ -64,7 +65,7 @@ public interface AccumulateFunction extends Externalizable {
      * @return
      * @throws Exception
      */
-    public Object getResult(Object context) throws Exception;
+    public Object getResult(Serializable context) throws Exception;
 
     /**
      * True if the function supports reverse. False otherwise.

@@ -21,16 +21,13 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.Collections;
+import java.io.Serializable;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.common.InternalFactHandle;
 import org.drools.rule.Declaration;
-import org.drools.rule.PredicateConstraint;
 import org.drools.spi.Accumulator;
 import org.drools.spi.CompiledInvoker;
 import org.drools.spi.ReturnValueExpression;
@@ -51,7 +48,7 @@ public class JavaAccumulatorFunctionExecutor
     private static final long     serialVersionUID = 400L;
 
     private ReturnValueExpression expression;
-    private AccumulateFunction    function;    
+    private AccumulateFunction    function;
 
     public JavaAccumulatorFunctionExecutor() {
 
@@ -70,9 +67,9 @@ public class JavaAccumulatorFunctionExecutor
 
     public void writeExternal(ObjectOutput out) throws IOException {
         if ( this.expression instanceof CompiledInvoker ) {
-            out.writeObject(  null );
+            out.writeObject( null );
         } else {
-            out.writeObject(this.expression);   
+            out.writeObject( this.expression );
         }
         out.writeObject( function );
     }
@@ -80,11 +77,11 @@ public class JavaAccumulatorFunctionExecutor
     /* (non-Javadoc)
      * @see org.drools.spi.Accumulator#createContext()
      */
-    public Object createContext() {
+    public Serializable createContext() {
         JavaAccumulatorFunctionContext context = new JavaAccumulatorFunctionContext();
         context.context = this.function.createContext();
         if ( this.function.supportsReverse() ) {
-            context.reverseSupport = new HashMap<FactHandle, Object>();
+            context.reverseSupport = new HashMap<Integer, Serializable>();
         }
         return context;
     }
@@ -110,14 +107,14 @@ public class JavaAccumulatorFunctionExecutor
                            Declaration[] declarations,
                            Declaration[] innerDeclarations,
                            WorkingMemory workingMemory) throws Exception {
-        final Object value = this.expression.evaluate( handle.getObject(),
-                                                       leftTuple,
-                                                       declarations,
-                                                       innerDeclarations,
-                                                       workingMemory,
-                                                       workingMemoryContext ).getValue();
+        final Serializable value = (Serializable) this.expression.evaluate( handle.getObject(),
+                                                                            leftTuple,
+                                                                            declarations,
+                                                                            innerDeclarations,
+                                                                            workingMemory,
+                                                                            workingMemoryContext ).getValue();
         if ( this.function.supportsReverse() ) {
-            ((JavaAccumulatorFunctionContext) context).reverseSupport.put( handle,
+            ((JavaAccumulatorFunctionContext) context).reverseSupport.put( Integer.valueOf( handle.getId() ),
                                                                            value );
         }
         this.function.accumulate( ((JavaAccumulatorFunctionContext) context).context,
@@ -155,9 +152,9 @@ public class JavaAccumulatorFunctionExecutor
     public ReturnValueExpression getExpression() {
         return expression;
     }
-    
+
     public void wire(Object object) {
-        setExpression( (ReturnValueExpression) object);
+        setExpression( (ReturnValueExpression) object );
     }
 
     public void setExpression(ReturnValueExpression expression) {
@@ -169,9 +166,25 @@ public class JavaAccumulatorFunctionExecutor
         return null;
     }
 
-    private static class JavaAccumulatorFunctionContext {
-        public Object                  context;
-        public Map<FactHandle, Object> reverseSupport;
+    private static class JavaAccumulatorFunctionContext
+        implements
+        Externalizable {
+        public Serializable               context;
+        public Map<Integer, Serializable> reverseSupport;
+
+        public JavaAccumulatorFunctionContext() {
+        }
+
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
+            context = (Externalizable) in.readObject();
+            reverseSupport = (Map<Integer, Serializable>) in.readObject();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject( context );
+            out.writeObject( reverseSupport );
+        }
     }
 
 }

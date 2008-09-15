@@ -36,6 +36,7 @@ import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.context.swimlane.SwimlaneContextInstance;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.process.instance.timer.TimerManager;
+import org.drools.reteoo.BetaNode;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTupleSink;
 import org.drools.reteoo.NodeTypeEnums;
@@ -43,6 +44,8 @@ import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.reteoo.RightTuple;
 import org.drools.reteoo.RuleTerminalNode;
+import org.drools.reteoo.AccumulateNode.AccumulateContext;
+import org.drools.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.ruleflow.instance.RuleFlowProcessInstance;
@@ -97,7 +100,7 @@ public class OutputMarshaller {
         writeProcessInstances( context );
 
         writeWorkItems( context );
-        
+
         writeTimers( context );
     }
 
@@ -232,20 +235,10 @@ public class OutputMarshaller {
         for ( InternalFactHandle handle : orderFacts( wm.getObjectStore() ) ) {
             //stream.writeShort( PersisterEnums.FACT_HANDLE );
             //InternalFactHandle handle = (InternalFactHandle) it.next();
-            stream.writeInt( handle.getId() );
-            stream.writeLong( handle.getRecency() );
-
-            context.out.println( "Object : int:" + handle.getId() + " long:" + handle.getRecency() );
-            context.out.println( handle.getObject() );
-
-            Object object = handle.getObject();
-
-            PlaceholderResolverStrategy strategy = resolverStrategyFactory.getStrategy( handle.getObject() );
-
-            stream.writeInt( strategy.getIndex() );
-
-            strategy.write( stream,
-                            object );
+            writeFactHandle( context,
+                             stream,
+                             resolverStrategyFactory,
+                             handle );
 
             writeRightTuples( handle,
                               context );
@@ -258,6 +251,26 @@ public class OutputMarshaller {
         writePropagationContexts( context );
 
         writeActivations( context );
+    }
+
+    private static void writeFactHandle(MarshallerWriteContext context,
+                                        ObjectOutputStream stream,
+                                        PlaceholderResolverStrategyFactory resolverStrategyFactory,
+                                        InternalFactHandle handle) throws IOException {
+        stream.writeInt( handle.getId() );
+        stream.writeLong( handle.getRecency() );
+
+        context.out.println( "Object : int:" + handle.getId() + " long:" + handle.getRecency() );
+        context.out.println( handle.getObject() );
+
+        Object object = handle.getObject();
+
+        PlaceholderResolverStrategy strategy = resolverStrategyFactory.getStrategy( object );
+
+        stream.writeInt( strategy.getIndex() );
+
+        strategy.write( stream,
+                        object );
     }
 
     public static InternalFactHandle[] orderFacts(ObjectStore objectStore) {
@@ -353,11 +366,6 @@ public class OutputMarshaller {
         InternalWorkingMemory wm = context.wm;
         stream.writeInt( rightTuple.getRightTupleSink().getId() );
         context.out.println( "RightTuple int:" + rightTuple.getRightTupleSink().getId() );
-    }
-
-    public void xxx(RightTuple rightTuple,
-                    MarshallerWriteContext context) {
-
     }
 
     public static void writeLeftTuples(MarshallerWriteContext context) throws IOException {
@@ -458,6 +466,42 @@ public class OutputMarshaller {
                     }
                     stream.writeShort( PersisterEnums.END );
                 }
+                break;
+            }
+            case NodeTypeEnums.AccumulateNode : {
+                context.out.println( "AccumulateNode" );
+                // accumulate nodes generate new facts on-demand and need special procedures when serializing to persistent storage
+                AccumulateMemory memory = (AccumulateMemory) context.wm.getNodeMemory( (BetaNode) leftTuple.getLeftTupleSink() );
+                AccumulateContext accctx = (AccumulateContext) memory.betaMemory.getCreatedHandles().get( leftTuple );
+                // first we serialize the generated fact handle
+                writeFactHandle( context,
+                                 stream,
+                                 context.resolverStrategyFactory,
+                                 accctx.result.getFactHandle() );
+                // then we serialize the associated accumulation context
+                stream.writeObject( accctx.context );
+                // then we serialize the boolean propagated flag
+                stream.writeBoolean( accctx.propagated );
+
+                // then we serialize all the propagated tuples
+                for ( LeftTuple childLeftTuple = getLeftTuple( leftTuple.getBetaChildren() ); childLeftTuple != null; childLeftTuple = (LeftTuple) childLeftTuple.getLeftParentPrevious() ) {
+                    if( leftTuple.getLeftTupleSink().getId() == childLeftTuple.getLeftTupleSink().getId()) {
+                        // this is a matching record, so, associate the right tuples
+                        context.out.println( "RightTuple(match) int:" + childLeftTuple.getLeftTupleSink().getId() + " int:" + childLeftTuple.getRightParent().getFactHandle().getId() );
+                        stream.writeShort( PersisterEnums.RIGHT_TUPLE );
+                        stream.writeInt( childLeftTuple.getRightParent().getFactHandle().getId() );
+                    } else {
+                        // this is a propagation record
+                        context.out.println( "RightTuple(propagation) int:" + childLeftTuple.getLeftTupleSink().getId() + " int:" + childLeftTuple.getRightParent().getFactHandle().getId() );
+                        stream.writeShort( PersisterEnums.LEFT_TUPLE );
+                        stream.writeInt( childLeftTuple.getLeftTupleSink().getId() );
+                        writeLeftTuple( childLeftTuple,
+                                        context,
+                                        recurse );
+                    }
+                }
+                stream.writeShort( PersisterEnums.END );
+                context.out.println( "AccumulateNode   ---   END" );
                 break;
             }
             case NodeTypeEnums.RuleTerminalNode : {
@@ -619,12 +663,14 @@ public class OutputMarshaller {
 
     public static void writeProcessInstances(MarshallerWriteContext context) throws IOException {
         ObjectOutputStream stream = context.stream;
-        List<ProcessInstance> processInstances = new ArrayList<ProcessInstance>(context.wm.getProcessInstances());
-        Collections.sort(processInstances, new Comparator<ProcessInstance>() {
-			public int compare(ProcessInstance o1, ProcessInstance o2) {
-				return (int) (o1.getId() - o2.getId());
-			}
-        });
+        List<ProcessInstance> processInstances = new ArrayList<ProcessInstance>( context.wm.getProcessInstances() );
+        Collections.sort( processInstances,
+                          new Comparator<ProcessInstance>() {
+                              public int compare(ProcessInstance o1,
+                                                 ProcessInstance o2) {
+                                  return (int) (o1.getId() - o2.getId());
+                              }
+                          } );
         for ( ProcessInstance processInstance : processInstances ) {
             stream.writeShort( PersisterEnums.PROCESS_INSTANCE );
             writeProcessInstance( context,
@@ -643,18 +689,20 @@ public class OutputMarshaller {
 
         VariableScopeInstance variableScopeInstance = (VariableScopeInstance) processInstance.getContextInstance( VariableScope.VARIABLE_SCOPE );
         Map<String, Object> variables = variableScopeInstance.getVariables();
-        List<String> keys = new ArrayList<String>(variables.keySet());
-        Collections.sort(keys, new Comparator<String>() {
-			public int compare(String o1, String o2) {
-				return o1.compareTo(o2);
-			}
-        });
+        List<String> keys = new ArrayList<String>( variables.keySet() );
+        Collections.sort( keys,
+                          new Comparator<String>() {
+                              public int compare(String o1,
+                                                 String o2) {
+                                  return o1.compareTo( o2 );
+                              }
+                          } );
         stream.writeInt( keys.size() );
         for ( String key : keys ) {
             stream.writeUTF( key );
-            stream.writeObject( variables.get(key) );
+            stream.writeObject( variables.get( key ) );
         }
-        
+
         SwimlaneContextInstance swimlaneContextInstance = (SwimlaneContextInstance) processInstance.getContextInstance( SwimlaneContext.SWIMLANE_SCOPE );
         Map<String, String> swimlaneActors = swimlaneContextInstance.getSwimlaneActors();
         stream.writeInt( swimlaneActors.size() );
@@ -663,12 +711,14 @@ public class OutputMarshaller {
             stream.writeUTF( entry.getValue() );
         }
 
-        List<NodeInstance> nodeInstances = new ArrayList<NodeInstance>(processInstance.getNodeInstances());
-        Collections.sort(nodeInstances, new Comparator<NodeInstance>() {
-			public int compare(NodeInstance o1, NodeInstance o2) {
-				return (int) (o1.getId() - o2.getId());
-			}
-        });
+        List<NodeInstance> nodeInstances = new ArrayList<NodeInstance>( processInstance.getNodeInstances() );
+        Collections.sort( nodeInstances,
+                          new Comparator<NodeInstance>() {
+                              public int compare(NodeInstance o1,
+                                                 NodeInstance o2) {
+                                  return (int) (o1.getId() - o2.getId());
+                              }
+                          } );
         for ( NodeInstance nodeInstance : nodeInstances ) {
             stream.writeShort( PersisterEnums.NODE_INSTANCE );
             writeNodeInstance( context,
@@ -702,64 +752,72 @@ public class OutputMarshaller {
             stream.writeShort( PersisterEnums.JOIN_NODE_INSTANCE );
             Map<Long, Integer> triggers = ((JoinInstance) nodeInstance).getTriggers();
             stream.writeInt( triggers.size() );
-            List<Long> keys = new ArrayList<Long>(triggers.keySet());
-            Collections.sort(keys, new Comparator<Long>(){
-				public int compare(Long o1, Long o2) {
-					return o1.compareTo(o2);
-				}
-            });
+            List<Long> keys = new ArrayList<Long>( triggers.keySet() );
+            Collections.sort( keys,
+                              new Comparator<Long>() {
+                                  public int compare(Long o1,
+                                                     Long o2) {
+                                      return o1.compareTo( o2 );
+                                  }
+                              } );
             for ( Long key : keys ) {
                 stream.writeLong( key );
-                stream.writeInt( triggers.get(key) );
+                stream.writeInt( triggers.get( key ) );
             }
         } else if ( nodeInstance instanceof CompositeContextNodeInstance ) {
             stream.writeShort( PersisterEnums.COMPOSITE_NODE_INSTANCE );
-            CompositeContextNodeInstance compositeNodeInstance = 
-            	(CompositeContextNodeInstance) nodeInstance;
-            VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
-            	compositeNodeInstance.getContextInstance( VariableScope.VARIABLE_SCOPE );
+            CompositeContextNodeInstance compositeNodeInstance = (CompositeContextNodeInstance) nodeInstance;
+            VariableScopeInstance variableScopeInstance = (VariableScopeInstance) compositeNodeInstance.getContextInstance( VariableScope.VARIABLE_SCOPE );
             Map<String, Object> variables = variableScopeInstance.getVariables();
-            List<String> keys = new ArrayList<String>(variables.keySet());
-            Collections.sort(keys, new Comparator<String>() {
-    			public int compare(String o1, String o2) {
-    				return o1.compareTo(o2);
-    			}
-            });
+            List<String> keys = new ArrayList<String>( variables.keySet() );
+            Collections.sort( keys,
+                              new Comparator<String>() {
+                                  public int compare(String o1,
+                                                     String o2) {
+                                      return o1.compareTo( o2 );
+                                  }
+                              } );
             stream.writeInt( keys.size() );
             for ( String key : keys ) {
                 stream.writeUTF( key );
-                stream.writeObject( variables.get(key) );
+                stream.writeObject( variables.get( key ) );
             }
-            List<NodeInstance> nodeInstances = new ArrayList<NodeInstance>(compositeNodeInstance.getNodeInstances());
-            Collections.sort(nodeInstances, new Comparator<NodeInstance>() {
-    			public int compare(NodeInstance o1, NodeInstance o2) {
-    				return (int) (o1.getId() - o2.getId());
-    			}
-            });
+            List<NodeInstance> nodeInstances = new ArrayList<NodeInstance>( compositeNodeInstance.getNodeInstances() );
+            Collections.sort( nodeInstances,
+                              new Comparator<NodeInstance>() {
+                                  public int compare(NodeInstance o1,
+                                                     NodeInstance o2) {
+                                      return (int) (o1.getId() - o2.getId());
+                                  }
+                              } );
             for ( NodeInstance subNodeInstance : nodeInstances ) {
                 stream.writeShort( PersisterEnums.NODE_INSTANCE );
-                writeNodeInstance( context, subNodeInstance );
+                writeNodeInstance( context,
+                                   subNodeInstance );
             }
             stream.writeShort( PersisterEnums.END );
         } else if ( nodeInstance instanceof ForEachNodeInstance ) {
             stream.writeShort( PersisterEnums.FOR_EACH_NODE_INSTANCE );
             ForEachNodeInstance forEachNodeInstance = (ForEachNodeInstance) nodeInstance;
-            List<NodeInstance> nodeInstances = new ArrayList<NodeInstance>(forEachNodeInstance.getNodeInstances());
-            Collections.sort(nodeInstances, new Comparator<NodeInstance>() {
-    			public int compare(NodeInstance o1, NodeInstance o2) {
-    				return (int) (o1.getId() - o2.getId());
-    			}
-            });
+            List<NodeInstance> nodeInstances = new ArrayList<NodeInstance>( forEachNodeInstance.getNodeInstances() );
+            Collections.sort( nodeInstances,
+                              new Comparator<NodeInstance>() {
+                                  public int compare(NodeInstance o1,
+                                                     NodeInstance o2) {
+                                      return (int) (o1.getId() - o2.getId());
+                                  }
+                              } );
             for ( NodeInstance subNodeInstance : nodeInstances ) {
-            	if (subNodeInstance instanceof CompositeContextNodeInstance) {
-            		stream.writeShort( PersisterEnums.NODE_INSTANCE );
-            		writeNodeInstance( context, subNodeInstance );
-            	}
+                if ( subNodeInstance instanceof CompositeContextNodeInstance ) {
+                    stream.writeShort( PersisterEnums.NODE_INSTANCE );
+                    writeNodeInstance( context,
+                                       subNodeInstance );
+                }
             }
             stream.writeShort( PersisterEnums.END );
         } else {
-        	// TODO ForEachNodeInstance
-        	// TODO timer manager
+            // TODO ForEachNodeInstance
+            // TODO timer manager
             throw new IllegalArgumentException( "Unknown node instance type: " + nodeInstance );
         }
     }
@@ -767,12 +825,14 @@ public class OutputMarshaller {
     public static void writeWorkItems(MarshallerWriteContext context) throws IOException {
         ObjectOutputStream stream = context.stream;
 
-        List<WorkItem> workItems = new ArrayList<WorkItem>(context.wm.getWorkItemManager().getWorkItems());
-        Collections.sort(workItems, new Comparator<WorkItem>() {
-			public int compare(WorkItem o1, WorkItem o2) {
-				return (int) (o2.getId() - o1.getId());
-			}
-        });
+        List<WorkItem> workItems = new ArrayList<WorkItem>( context.wm.getWorkItemManager().getWorkItems() );
+        Collections.sort( workItems,
+                          new Comparator<WorkItem>() {
+                              public int compare(WorkItem o1,
+                                                 WorkItem o2) {
+                                  return (int) (o2.getId() - o1.getId());
+                              }
+                          } );
         for ( WorkItem workItem : workItems ) {
             stream.writeShort( PersisterEnums.WORK_ITEM );
             writeWorkItem( context,
@@ -789,10 +849,10 @@ public class OutputMarshaller {
         stream.writeUTF( workItem.getName() );
         stream.writeInt( workItem.getState() );
         Map<String, Object> parameters = workItem.getParameters();
-        stream.writeInt(parameters.size());
-        for (Map.Entry<String, Object> entry: parameters.entrySet()) {
-        	stream.writeUTF(entry.getKey());
-        	stream.writeObject(entry.getValue());
+        stream.writeInt( parameters.size() );
+        for ( Map.Entry<String, Object> entry : parameters.entrySet() ) {
+            stream.writeUTF( entry.getKey() );
+            stream.writeObject( entry.getValue() );
         }
     }
 
@@ -802,33 +862,37 @@ public class OutputMarshaller {
         TimerManager timerManager = context.wm.getTimerManager();
         stream.writeLong( timerManager.internalGetTimerId() );
 
-        List<Timer> timers = new ArrayList<Timer>(timerManager.getTimers());
-        Collections.sort(timers, new Comparator<Timer>() {
-			public int compare(Timer o1, Timer o2) {
-				return (int) (o2.getId() - o1.getId());
-			}
-        });
-        for ( Timer timer: timers ) {
+        List<Timer> timers = new ArrayList<Timer>( timerManager.getTimers() );
+        Collections.sort( timers,
+                          new Comparator<Timer>() {
+                              public int compare(Timer o1,
+                                                 Timer o2) {
+                                  return (int) (o2.getId() - o1.getId());
+                              }
+                          } );
+        for ( Timer timer : timers ) {
             stream.writeShort( PersisterEnums.TIMER );
-            writeTimer( context, timer );
+            writeTimer( context,
+                        timer );
         }
         stream.writeShort( PersisterEnums.END );
     }
 
-    public static void writeTimer(MarshallerWriteContext context, Timer timer) throws IOException {
-    	ObjectOutputStream stream = context.stream;
-    	stream.writeLong( timer.getId() );
-    	stream.writeLong( timer.getDelay() );
-    	stream.writeLong( timer.getPeriod() );
-    	stream.writeLong( timer.getProcessInstanceId() );
-    	stream.writeLong( timer.getActivated().getTime() );
-    	Date lastTriggered = timer.getLastTriggered();
-    	if (lastTriggered != null) {
-    		stream.writeBoolean(true);
-    		stream.writeLong( timer.getLastTriggered().getTime() );
-    	} else {
-    		stream.writeBoolean(false);
-    	}
+    public static void writeTimer(MarshallerWriteContext context,
+                                  Timer timer) throws IOException {
+        ObjectOutputStream stream = context.stream;
+        stream.writeLong( timer.getId() );
+        stream.writeLong( timer.getDelay() );
+        stream.writeLong( timer.getPeriod() );
+        stream.writeLong( timer.getProcessInstanceId() );
+        stream.writeLong( timer.getActivated().getTime() );
+        Date lastTriggered = timer.getLastTriggered();
+        if ( lastTriggered != null ) {
+            stream.writeBoolean( true );
+            stream.writeLong( timer.getLastTriggered().getTime() );
+        } else {
+            stream.writeBoolean( false );
+        }
     }
 
 }

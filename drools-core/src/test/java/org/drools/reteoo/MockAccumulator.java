@@ -15,12 +15,13 @@
  */
 package org.drools.reteoo;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.io.ObjectOutput;
-import java.io.ObjectInput;
-import java.io.IOException;
 
 import org.drools.WorkingMemory;
 import org.drools.common.InternalFactHandle;
@@ -36,7 +37,7 @@ import org.drools.spi.Tuple;
  */
 public class MockAccumulator
     implements
-    Accumulator {
+    Accumulator, Serializable {
 
     private static final long serialVersionUID = 400L;
 
@@ -67,7 +68,7 @@ public class MockAccumulator
         return this.workingMemory;
     }
 
-    public Object createContext() {
+    public Serializable createContext() {
         return this;
     }
 

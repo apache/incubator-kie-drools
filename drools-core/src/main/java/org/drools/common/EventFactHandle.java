@@ -2,10 +2,6 @@ package org.drools.common;
 
 import org.drools.FactHandle;
 
-import java.io.ObjectOutput;
-import java.io.ObjectInput;
-import java.io.IOException;
-
 public class EventFactHandle extends DefaultFactHandle {
 
     private static final long serialVersionUID = 5997141759543399455L;

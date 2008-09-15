@@ -20,6 +20,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.io.Serializable;
 import java.util.Arrays;
 
 import org.drools.RuleBaseConfiguration;
@@ -632,13 +633,13 @@ public class AccumulateNode extends BetaNode {
     public static class AccumulateContext
         implements
         Externalizable {
-        public Object     context;
-        public RightTuple result;
-        public boolean    propagated;
+        public Serializable context;
+        public RightTuple   result;
+        public boolean      propagated;
 
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
-            context = in.readObject();
+            context = (Serializable) in.readObject();
             result = (RightTuple) in.readObject();
             propagated = in.readBoolean();
         }

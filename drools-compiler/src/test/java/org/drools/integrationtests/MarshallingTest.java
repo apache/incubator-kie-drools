@@ -39,7 +39,6 @@ import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.marshalling.DefaultMarshaller;
 import org.drools.marshalling.Marshaller;
 import org.drools.marshalling.RuleBaseNodes;
-import org.drools.process.instance.ProcessInstance;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.rule.MapBackedClassLoader;
@@ -137,10 +136,11 @@ public class MarshallingTest extends TestCase {
         ruleBase = (RuleBase) map.get( "x" );
 
         ruleBase.addPackage( pkg );
-        
-        session = SerializationHelper.getSerialisedStatefulSession( session, ruleBase );  
+
+        session = SerializationHelper.getSerialisedStatefulSession( session,
+                                                                    ruleBase );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
-              
+
         session.setGlobal( "list",
                            new ArrayList() );
 
@@ -210,12 +210,13 @@ public class MarshallingTest extends TestCase {
         StatefulSession session = ruleBase.newStatefulSession();
 
         // serialise the working memory before population
-        session = SerializationHelper.getSerialisedStatefulSession( session, ruleBase );
+        session = SerializationHelper.getSerialisedStatefulSession( session,
+                                                                    ruleBase );
 
         ruleBase.addPackage( pkg );
 
         session.setGlobal( "list",
-                                 new ArrayList() );
+                           new ArrayList() );
 
         final Person bob = new Person( "bob" );
         session.insert( bob );
@@ -276,7 +277,7 @@ public class MarshallingTest extends TestCase {
         ruleBase.addPackage( pkg );
 
         session.setGlobal( "list",
-                                 new ArrayList() );
+                           new ArrayList() );
 
         final Person bob = new Person( "bob" );
         session.insert( bob );
@@ -289,7 +290,8 @@ public class MarshallingTest extends TestCase {
         ruleBase = (RuleBase) map.get( "x" );
 
         // now try serialising with a fully populated wm from a serialised rulebase
-        session = SerializationHelper.getSerialisedStatefulSession( session, ruleBase );
+        session = SerializationHelper.getSerialisedStatefulSession( session,
+                                                                    ruleBase );
 
         final Rule[] rules = ruleBase.getPackages()[0].getRules();
 
@@ -313,7 +315,8 @@ public class MarshallingTest extends TestCase {
         assertEquals( 2,
                       session.getAgenda().agendaSize() );
 
-        session = SerializationHelper.getSerialisedStatefulSession( session, ruleBase );
+        session = SerializationHelper.getSerialisedStatefulSession( session,
+                                                                    ruleBase );
         session.fireAllRules();
 
         final List list = (List) session.getGlobal( "list" );
@@ -357,7 +360,8 @@ public class MarshallingTest extends TestCase {
                       list.get( 0 ) );
 
         // now recreate the rulebase, deserialize the session and test it
-        session = SerializationHelper.getSerialisedStatefulSession( session, ruleBase );
+        session = SerializationHelper.getSerialisedStatefulSession( session,
+                                                                    ruleBase );
         list = (List) session.getGlobal( "list" );
 
         assertNotNull( list );
@@ -415,7 +419,7 @@ public class MarshallingTest extends TestCase {
         StatefulSession session = ruleBase.newStatefulSession();
 
         session.setGlobal( "list",
-                                 new ArrayList() );
+                           new ArrayList() );
 
         final Primitives p = new Primitives();
         p.setBytePrimitive( (byte) 1 );
@@ -423,7 +427,8 @@ public class MarshallingTest extends TestCase {
         p.setIntPrimitive( (int) 3 );
         session.insert( p );
 
-        session = SerializationHelper.getSerialisedStatefulSession( session, ruleBase );
+        session = SerializationHelper.getSerialisedStatefulSession( session,
+                                                                    ruleBase );
 
         assertEquals( 1,
                       IteratorToList.convert( session.iterateObjects() ).size() );
@@ -433,7 +438,8 @@ public class MarshallingTest extends TestCase {
         assertEquals( 3,
                       session.getAgenda().agendaSize() );
 
-        session = SerializationHelper.getSerialisedStatefulSession( session, ruleBase );
+        session = SerializationHelper.getSerialisedStatefulSession( session,
+                                                                    ruleBase );
         session.fireAllRules();
 
         final List list = (List) session.getGlobal( "list" );
@@ -488,14 +494,17 @@ public class MarshallingTest extends TestCase {
         // serialize session and rulebase out
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Marshaller marshaller = new DefaultMarshaller();
-        ruleBase.writeStatefulSession( session, baos, marshaller );
+        ruleBase.writeStatefulSession( session,
+                                       baos,
+                                       marshaller );
         GlobalResolver resolver = session.getGlobalResolver();
         byte[] serializedRulebase = DroolsStreamUtils.streamOut( ruleBase );
         session.dispose();
 
         // now deserialize the rulebase, deserialize the session and test it
         ruleBase = (RuleBase) DroolsStreamUtils.streamIn( serializedRulebase );
-        session = ruleBase.readStatefulSession( new ByteArrayInputStream( baos.toByteArray() ), marshaller );
+        session = ruleBase.readStatefulSession( new ByteArrayInputStream( baos.toByteArray() ),
+                                                marshaller );
         session.setGlobalResolver( resolver );
 
         // dynamically add a new package
@@ -524,7 +533,8 @@ public class MarshallingTest extends TestCase {
 
         serializedRulebase = null;
 
-        session = SerializationHelper.getSerialisedStatefulSession( session, ruleBase );
+        session = SerializationHelper.getSerialisedStatefulSession( session,
+                                                                    ruleBase );
         serializedRulebase = DroolsStreamUtils.streamOut( ruleBase );
 
         // dispose session
@@ -562,8 +572,10 @@ public class MarshallingTest extends TestCase {
 
         GlobalResolver resolver = session.getGlobalResolver();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        Marshaller marshaller = new DefaultMarshaller();        
-        ruleBase.writeStatefulSession( session, baos, marshaller );
+        Marshaller marshaller = new DefaultMarshaller();
+        ruleBase.writeStatefulSession( session,
+                                       baos,
+                                       marshaller );
         byte[] serializedRulebase = DroolsStreamUtils.streamOut( ruleBase );
 
         session.dispose();
@@ -575,7 +587,8 @@ public class MarshallingTest extends TestCase {
 
         // now recreate the rulebase, deserialize the session and test it
         ruleBase = (RuleBase) DroolsStreamUtils.streamIn( serializedRulebase );
-        session = ruleBase.readStatefulSession( new ByteArrayInputStream( baos.toByteArray() ), marshaller );
+        session = ruleBase.readStatefulSession( new ByteArrayInputStream( baos.toByteArray() ),
+                                                marshaller );
         session.setGlobalResolver( resolver );
         results = (List) session.getGlobal( "results" );
 
@@ -604,7 +617,8 @@ public class MarshallingTest extends TestCase {
 
         serializedRulebase = null;
 
-        session = SerializationHelper.getSerialisedStatefulSession( session, ruleBase );
+        session = SerializationHelper.getSerialisedStatefulSession( session,
+                                                                    ruleBase );
         serializedRulebase = DroolsStreamUtils.streamOut( ruleBase );
 
         session.dispose();
@@ -634,8 +648,10 @@ public class MarshallingTest extends TestCase {
 
         GlobalResolver resolver = session.getGlobalResolver();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        Marshaller marshaller = new DefaultMarshaller();          
-        ruleBase.writeStatefulSession( session, baos, marshaller );
+        Marshaller marshaller = new DefaultMarshaller();
+        ruleBase.writeStatefulSession( session,
+                                       baos,
+                                       marshaller );
         byte[] serializedRulebase = DroolsStreamUtils.streamOut( ruleBase );
 
         session.dispose();
@@ -647,7 +663,8 @@ public class MarshallingTest extends TestCase {
 
         // now recreate the rulebase, deserialize the session and test it
         ruleBase = (RuleBase) DroolsStreamUtils.streamIn( serializedRulebase );
-        session = ruleBase.readStatefulSession( new ByteArrayInputStream( baos.toByteArray() ), marshaller );
+        session = ruleBase.readStatefulSession( new ByteArrayInputStream( baos.toByteArray() ),
+                                                marshaller );
         session.setGlobalResolver( resolver );
         results = (List) session.getGlobal( "results" );
 
@@ -681,14 +698,17 @@ public class MarshallingTest extends TestCase {
         resolver = session.getGlobalResolver();
         baos = new ByteArrayOutputStream();
         marshaller = new DefaultMarshaller();
-        ruleBase.writeStatefulSession( session, baos, marshaller );        
+        ruleBase.writeStatefulSession( session,
+                                       baos,
+                                       marshaller );
         serializedRulebase = DroolsStreamUtils.streamOut( ruleBase );
 
         session.dispose();
 
         // now recreate the rulebase, deserialize the session and test it
-        ruleBase = (RuleBase) DroolsStreamUtils.streamIn( serializedRulebase ); 
-        session = ruleBase.readStatefulSession( new ByteArrayInputStream( baos.toByteArray() ), marshaller );
+        ruleBase = (RuleBase) DroolsStreamUtils.streamIn( serializedRulebase );
+        session = ruleBase.readStatefulSession( new ByteArrayInputStream( baos.toByteArray() ),
+                                                marshaller );
         session.setGlobalResolver( resolver );
         results = (List) session.getGlobal( "results" );
 
@@ -728,13 +748,16 @@ public class MarshallingTest extends TestCase {
         resolver = session.getGlobalResolver();
         baos = new ByteArrayOutputStream();
         marshaller = new DefaultMarshaller();
-        ruleBase.writeStatefulSession( session, baos, marshaller );
+        ruleBase.writeStatefulSession( session,
+                                       baos,
+                                       marshaller );
         serializedRulebase = DroolsStreamUtils.streamOut( ruleBase );
         session.dispose();
 
         // now recreate the rulebase, deserialize the session and test it
         ruleBase = (RuleBase) DroolsStreamUtils.streamIn( serializedRulebase );
-        session = ruleBase.readStatefulSession( new ByteArrayInputStream( baos.toByteArray() ), marshaller );
+        session = ruleBase.readStatefulSession( new ByteArrayInputStream( baos.toByteArray() ),
+                                                marshaller );
         session.setGlobalResolver( resolver );
         results = (List) session.getGlobal( "results" );
 
@@ -766,12 +789,13 @@ public class MarshallingTest extends TestCase {
 
         serializedRulebase = null;
 
-        session = SerializationHelper.getSerialisedStatefulSession( session, ruleBase );
+        session = SerializationHelper.getSerialisedStatefulSession( session,
+                                                                    ruleBase );
         serializedRulebase = DroolsStreamUtils.streamOut( ruleBase );
 
         session.dispose();
     }
-    
+
     /*
      * I have tried both the scenarios
      * 1. Remove a rule from a pkg.
@@ -784,7 +808,7 @@ public class MarshallingTest extends TestCase {
     public void testSerializeAddRemove_NoClassDefFoundError() throws Exception {
 
         //Create a rulebase, a session, and test it
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase( );
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1_0.drl" ) ) );
         Package pkg = SerializationHelper.serializeObject( builder.getPackage() );
@@ -803,7 +827,9 @@ public class MarshallingTest extends TestCase {
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Marshaller marshaller = new DefaultMarshaller();
-        ruleBase.writeStatefulSession( session, baos, marshaller );
+        ruleBase.writeStatefulSession( session,
+                                       baos,
+                                       marshaller );
         byte[] serializedRulebase = DroolsStreamUtils.streamOut( ruleBase );
 
         session.dispose();
@@ -815,9 +841,11 @@ public class MarshallingTest extends TestCase {
 
         // now recreate the rulebase, deserialize the session and test it
         ruleBase = (RuleBase) DroolsStreamUtils.streamIn( serializedRulebase );
-        session = ruleBase.readStatefulSession( new ByteArrayInputStream( baos.toByteArray() ), marshaller );
+        session = ruleBase.readStatefulSession( new ByteArrayInputStream( baos.toByteArray() ),
+                                                marshaller );
         results.clear();
-        session.setGlobal( "results", results );
+        session.setGlobal( "results",
+                           results );
 
         builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic3_0.drl" ) ) );
@@ -825,10 +853,14 @@ public class MarshallingTest extends TestCase {
 
         ruleBase.addPackage( pkg );
 
-        InternalFactHandle stilton2 = (InternalFactHandle) session.insert( new Cheese( "stilton", 20 ) );
-        InternalFactHandle brie2 = (InternalFactHandle) session.insert( new Cheese( "brie", 20 ) );
-        InternalFactHandle bob1 = (InternalFactHandle) session.insert( new Person( "bob", 20 ) );
-        InternalFactHandle bob2 = (InternalFactHandle) session.insert( new Person( "bob", 30 ) );
+        InternalFactHandle stilton2 = (InternalFactHandle) session.insert( new Cheese( "stilton",
+                                                                                       20 ) );
+        InternalFactHandle brie2 = (InternalFactHandle) session.insert( new Cheese( "brie",
+                                                                                    20 ) );
+        InternalFactHandle bob1 = (InternalFactHandle) session.insert( new Person( "bob",
+                                                                                   20 ) );
+        InternalFactHandle bob2 = (InternalFactHandle) session.insert( new Person( "bob",
+                                                                                   30 ) );
         session.fireAllRules();
 
         assertEquals( 3,
@@ -844,24 +876,33 @@ public class MarshallingTest extends TestCase {
 
         baos = new ByteArrayOutputStream();
         marshaller = new DefaultMarshaller();
-        ruleBase.writeStatefulSession( session, baos, marshaller );
+        ruleBase.writeStatefulSession( session,
+                                       baos,
+                                       marshaller );
         serializedRulebase = DroolsStreamUtils.streamOut( ruleBase );
 
         session.dispose();
 
         // now recreate the rulebase, deserialize the session and test it
         ruleBase = (RuleBase) DroolsStreamUtils.streamIn( serializedRulebase );
-        session = ruleBase.readStatefulSession( new ByteArrayInputStream( baos.toByteArray() ), marshaller );
+        session = ruleBase.readStatefulSession( new ByteArrayInputStream( baos.toByteArray() ),
+                                                marshaller );
         results.clear();
-        session.setGlobal( "results", results );
+        session.setGlobal( "results",
+                           results );
 
         // CASE 1: remove rule
-        ruleBase.removeRule("org.drools.test", "like stilton");
+        ruleBase.removeRule( "org.drools.test",
+                             "like stilton" );
 
-        InternalFactHandle stilton3 = (InternalFactHandle) session.insert( new Cheese( "stilton", 20 ) );
-        InternalFactHandle brie3 = (InternalFactHandle) session.insert( new Cheese( "brie", 20 ) );
-        InternalFactHandle bob3 = (InternalFactHandle) session.insert( new Person( "bob", 20 ) );
-        InternalFactHandle bob4 = (InternalFactHandle) session.insert( new Person( "bob", 30 ) );
+        InternalFactHandle stilton3 = (InternalFactHandle) session.insert( new Cheese( "stilton",
+                                                                                       20 ) );
+        InternalFactHandle brie3 = (InternalFactHandle) session.insert( new Cheese( "brie",
+                                                                                    20 ) );
+        InternalFactHandle bob3 = (InternalFactHandle) session.insert( new Person( "bob",
+                                                                                   20 ) );
+        InternalFactHandle bob4 = (InternalFactHandle) session.insert( new Person( "bob",
+                                                                                   30 ) );
         session.fireAllRules();
 
         assertEquals( 2,
@@ -871,20 +912,25 @@ public class MarshallingTest extends TestCase {
         assertEquals( bob3.getObject(),
                       results.get( 1 ) );
 
-
         // now recreate the rulebase, deserialize the session and test it
         ruleBase = (RuleBase) DroolsStreamUtils.streamIn( serializedRulebase );
-        session = ruleBase.readStatefulSession( new ByteArrayInputStream( baos.toByteArray() ), marshaller );
+        session = ruleBase.readStatefulSession( new ByteArrayInputStream( baos.toByteArray() ),
+                                                marshaller );
         results.clear();
-        session.setGlobal( "results", results );
+        session.setGlobal( "results",
+                           results );
 
         // CASE 2: remove pkg
-        ruleBase.removePackage("org.drools.test");
+        ruleBase.removePackage( "org.drools.test" );
 
-        InternalFactHandle stilton4 = (InternalFactHandle) session.insert( new Cheese( "stilton", 20 ) );
-        InternalFactHandle brie4 = (InternalFactHandle) session.insert( new Cheese( "brie", 20 ) );
-        InternalFactHandle bob5 = (InternalFactHandle) session.insert( new Person( "bob", 20 ) );
-        InternalFactHandle bob6 = (InternalFactHandle) session.insert( new Person( "bob", 30 ) );
+        InternalFactHandle stilton4 = (InternalFactHandle) session.insert( new Cheese( "stilton",
+                                                                                       20 ) );
+        InternalFactHandle brie4 = (InternalFactHandle) session.insert( new Cheese( "brie",
+                                                                                    20 ) );
+        InternalFactHandle bob5 = (InternalFactHandle) session.insert( new Person( "bob",
+                                                                                   20 ) );
+        InternalFactHandle bob6 = (InternalFactHandle) session.insert( new Person( "bob",
+                                                                                   30 ) );
         session.fireAllRules();
 
         assertEquals( 2,
@@ -898,38 +944,47 @@ public class MarshallingTest extends TestCase {
         serializedRulebase = null;
         baos = new ByteArrayOutputStream();
         marshaller = new DefaultMarshaller();
-        ruleBase.writeStatefulSession( session, baos,marshaller  );
+        ruleBase.writeStatefulSession( session,
+                                       baos,
+                                       marshaller );
         serializedRulebase = DroolsStreamUtils.streamOut( ruleBase );
 
         session.dispose();
         // Deserialize the rulebase and the session 
         ruleBase = (RuleBase) DroolsStreamUtils.streamIn( serializedRulebase );
-        session = ruleBase.readStatefulSession( new ByteArrayInputStream( baos.toByteArray() ), marshaller );    //  throws java.lang.ClassNotFoundException Exception
+        session = ruleBase.readStatefulSession( new ByteArrayInputStream( baos.toByteArray() ),
+                                                marshaller ); //  throws java.lang.ClassNotFoundException Exception
         results.clear();
-        session.setGlobal( "results", results );
-             
-        InternalFactHandle stilton5 = (InternalFactHandle) session.insert( new Cheese( "stilton", 30 ) );
-        InternalFactHandle brie5 = (InternalFactHandle) session.insert( new Cheese( "brie", 30 ) );
-        InternalFactHandle bob7 = (InternalFactHandle) session.insert( new Person( "bob", 30 ) );
-        InternalFactHandle bob8 = (InternalFactHandle) session.insert( new Person( "bob", 40 ) );
+        session.setGlobal( "results",
+                           results );
+
+        InternalFactHandle stilton5 = (InternalFactHandle) session.insert( new Cheese( "stilton",
+                                                                                       30 ) );
+        InternalFactHandle brie5 = (InternalFactHandle) session.insert( new Cheese( "brie",
+                                                                                    30 ) );
+        InternalFactHandle bob7 = (InternalFactHandle) session.insert( new Person( "bob",
+                                                                                   30 ) );
+        InternalFactHandle bob8 = (InternalFactHandle) session.insert( new Person( "bob",
+                                                                                   40 ) );
         session.fireAllRules();
- 
+
         assertEquals( 2,
                       results.size() );
         assertEquals( bob8.getObject(),
                       results.get( 0 ) );
         assertEquals( bob7.getObject(),
                       results.get( 1 ) );
-       
+
         serializedSession = null;
         serializedRulebase = null;
-       
-        session = SerializationHelper.getSerialisedStatefulSession( session, ruleBase );
+
+        session = SerializationHelper.getSerialisedStatefulSession( session,
+                                                                    ruleBase );
         serializedRulebase = DroolsStreamUtils.streamOut( ruleBase );
-       
-        session.dispose();        
-       
-    }    
+
+        session.dispose();
+
+    }
 
     /**
      * In this case we are dealing with facts which are not on the systems classpath.
@@ -1369,7 +1424,7 @@ public class MarshallingTest extends TestCase {
         rule1 += "    not Cheese( price >= 5 )\n";
         rule1 += "then\n";
         rule1 += "    list.add( new Integer( 5 ) );\n";
-        rule1 += "end\n";     
+        rule1 += "end\n";
 
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new StringReader( header + rule1 ) );
@@ -1438,22 +1493,22 @@ public class MarshallingTest extends TestCase {
         session.fireAllRules();
         assertEquals( 4,
                       list.size() );
-        
+
         // now remove a person, should be no change
         session.retract( session.getFactHandle( bobba ) );
         session = getSerialisedStatefulSession( session );
         session.fireAllRules();
         assertEquals( 4,
-                      list.size() );     
-        
+                      list.size() );
+
         //removal remaining cheese, should increase by one, as one person left
         session.retract( session.getFactHandle( brie ) );
         session = getSerialisedStatefulSession( session );
         session.fireAllRules();
         assertEquals( 5,
-                      list.size() );        
+                      list.size() );
     }
-    
+
     public void testExists() throws Exception {
         String header = "package org.drools.test;\n";
         header += "import java.util.List;\n";
@@ -1468,7 +1523,7 @@ public class MarshallingTest extends TestCase {
         rule1 += "    exists Cheese( price >= 5 )\n";
         rule1 += "then\n";
         rule1 += "    list.add( new Integer( 5 ) );\n";
-        rule1 += "end\n";     
+        rule1 += "end\n";
 
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new StringReader( header + rule1 ) );
@@ -1537,28 +1592,28 @@ public class MarshallingTest extends TestCase {
         session.fireAllRules();
         assertEquals( 4,
                       list.size() );
-        
+
         // now remove a person, should be no change
         session.retract( session.getFactHandle( bobba ) );
         session = getSerialisedStatefulSession( session );
         session.fireAllRules();
         assertEquals( 4,
-                      list.size() );     
-        
+                      list.size() );
+
         //removal remaining cheese, no
         session.retract( session.getFactHandle( brie ) );
         session = getSerialisedStatefulSession( session );
         session.fireAllRules();
         assertEquals( 4,
-                      list.size() );    
-        
+                      list.size() );
+
         // put one cheese back in, with one person should increase by one
         session = getSerialisedStatefulSession( session );
         session.insert( stilton );
         session.fireAllRules();
         assertEquals( 5,
-                      list.size() );        
-    }    
+                      list.size() );
+    }
 
     public void testTruthMaintenance() throws Exception {
         String header = "package org.drools.test;\n";
@@ -1907,67 +1962,66 @@ public class MarshallingTest extends TestCase {
         assertEquals( "rule1",
                       list.get( 2 ) );
     }
-    
-	public void testAccumulate() throws Exception {
-		PackageBuilder builder = new PackageBuilder();
-		Reader source = new StringReader(
-			"package org.drools\n" +
-			"\n" +
-			"import org.drools.Message\n" +
-			"\n" +
-			"rule MyRule\n" +
-			"  when\n" +
-			"    Number( intValue >= 5 ) from accumulate ( m: Message( ), count( m ) )\n" +
-			"  then\n" +
-			"    System.out.println(\"Found messages\");\n" +
-			"end");
-		builder.addPackageFromDrl(source);
-		Package pkg = builder.getPackage();
-		RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-		ruleBase.addPackage( pkg );
-		StatefulSession session = ruleBase.newStatefulSession();
-        
-		session.insert(new Message());
-		session = getSerialisedStatefulSession( session );
-		session.insert(new Message());
-		session.insert(new Message());
-		session.insert(new Message());
-		session.insert(new Message());
-		
-        assertEquals(1, session.getAgenda().getActivations().length);
-	}
 
-	public void testAccumulate2() throws Exception {
-		PackageBuilder builder = new PackageBuilder();
-		Reader source = new StringReader(
-			"package org.drools\n" +
-			"\n" +
-			"import org.drools.Message\n" +
-			"\n" +
-			"rule MyRule\n" +
-			"  when\n" +
-			"    Number( intValue >= 5 ) from accumulate ( m: Message( ), count( m ) )\n" +
-			"  then\n" +
-			"    System.out.println(\"Found messages\");\n" +
-			"end");
-		builder.addPackageFromDrl(source);
-		Package pkg = builder.getPackage();
-		RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-		ruleBase.addPackage( pkg );
-		StatefulSession session = ruleBase.newStatefulSession();
-        session.fireAllRules();
-        
+    public void testAccumulate() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        Reader source = new StringReader( "package org.drools\n" + "\n" + "import org.drools.Message\n" + "global java.util.List results\n" + "\n" + "rule MyRule\n" + "  when\n"
+                                          + "    $n : Number( intValue >= 2 ) from accumulate ( m: Message( ), count( m ) )\n" + "  then\n" + "    results.add($n);\n" + "end" );
+        builder.addPackageFromDrl( source );
+        Package pkg = builder.getPackage();
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        ruleBase.addPackage( pkg );
+        StatefulSession session = ruleBase.newStatefulSession();
+        session.setGlobal( "results",
+                           new ArrayList() );
+
         session = getSerialisedStatefulSession( session );
-		session.insert(new Message());
-		session.insert(new Message());
-		session.insert(new Message());
-		session.insert(new Message());
-		session.insert(new Message());
-		
-        assertEquals(1, session.getAgenda().getActivations().length);
-	}
+        session.insert( new Message() );
+        session = getSerialisedStatefulSession( session );
+        List results = (List) session.getGlobal( "results" );
 
-	protected RuleBase getRuleBase() throws Exception {
+        session.insert( new Message() );
+        session.insert( new Message() );
+        session.fireAllRules();
+        assertEquals( 3,
+                      ((Number) results.get( 0 )).intValue() );
+
+        session = getSerialisedStatefulSession( session );
+
+        session.insert( new Message() );
+        session.insert( new Message() );
+        session = getSerialisedStatefulSession( session );
+
+        assertEquals( 1,
+                      session.getAgenda().getActivations().length );
+        session.fireAllRules();
+        assertEquals( 5,
+                      ((Number) results.get( 1 )).intValue() );
+    }
+
+    public void testAccumulate2() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        Reader source = new StringReader( "package org.drools\n" + "\n" + "import org.drools.Message\n" + "\n" + "rule MyRule\n" + "  when\n" + "    Number( intValue >= 5 ) from accumulate ( m: Message( ), count( m ) )\n" + "  then\n"
+                                          + "    System.out.println(\"Found messages\");\n" + "end" );
+        builder.addPackageFromDrl( source );
+        Package pkg = builder.getPackage();
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        ruleBase.addPackage( pkg );
+        StatefulSession session = ruleBase.newStatefulSession();
+        session.fireAllRules();
+
+        session = getSerialisedStatefulSession( session );
+        session.insert( new Message() );
+        session.insert( new Message() );
+        session.insert( new Message() );
+        session.insert( new Message() );
+        session.insert( new Message() );
+
+        assertEquals( 1,
+                      session.getAgenda().getActivations().length );
+    }
+
+    protected RuleBase getRuleBase() throws Exception {
 
         return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
                                             null );

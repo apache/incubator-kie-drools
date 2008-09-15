@@ -42,4 +42,9 @@ public class MockRightTupleSink
     public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException {
         //To change body of implemented methods use File | Settings | File Templates.
     }
+
+    public short getType() {
+        // TODO Auto-generated method stub
+        return NodeTypeEnums.JoinNode;
+    }
 }
