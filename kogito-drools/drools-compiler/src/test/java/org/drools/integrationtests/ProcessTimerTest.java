@@ -19,9 +19,7 @@ import org.drools.rule.Package;
 
 public class ProcessTimerTest extends TestCase {
 	
-    public void testDummy() {}
-    
-	public void FIXME_testSimpleProcess() throws Exception {
+	public void testSimpleProcess() throws Exception {
 		PackageBuilder builder = new PackageBuilder();
 		Reader source = new StringReader(
 			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -75,6 +73,9 @@ public class ProcessTimerTest extends TestCase {
         assertEquals(1, session.getTimerManager().getTimers().size());
         
         session = getSerialisedStatefulSession( session );
+        myList = (List<Message>) session.getGlobal( "myList" );
+        processInstance = session.getProcessInstance( processInstance.getId() );
+        
         assertEquals(1, session.getTimerManager().getTimers().size());
 
         // test that the delay works
