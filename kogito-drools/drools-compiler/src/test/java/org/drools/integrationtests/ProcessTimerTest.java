@@ -46,7 +46,7 @@ public class ProcessTimerTest extends TestCase {
 			"myList.add( new Message() );\n" +
 			"insert( new Message() );\n" +
 			"</action>\n" +
-			"    </actionNode>/n" + 
+			"    </actionNode>\n" + 
 			"    <milestone id=\"5\" name=\"Wait\" >Number( intValue &gt;= 5 ) from accumulate ( m: Message( ), count( m ) )</milestone>\n" +
 			"  </nodes>\n" +
 			"\n" +
