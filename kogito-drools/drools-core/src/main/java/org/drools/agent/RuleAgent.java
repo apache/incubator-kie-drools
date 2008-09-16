@@ -75,39 +75,39 @@ public class RuleAgent {
      * Following are property keys to be used in the property
      * config file.
      */
-    public static final String NEW_INSTANCE      = "newInstance";
-    public static final String FILES             = "file";
-    public static final String DIRECTORY         = "dir";
-    public static final String URLS              = "url";
-    public static final String POLL_INTERVAL     = "poll";
-    public static final String CONFIG_NAME       = "name"; //name is optional
+    public static final String    NEW_INSTANCE      = "newInstance";
+    public static final String    FILES             = "file";
+    public static final String    DIRECTORY         = "dir";
+    public static final String    URLS              = "url";
+    public static final String    POLL_INTERVAL     = "poll";
+    public static final String    CONFIG_NAME       = "name";              //name is optional
 
     //this is needed for cold starting when BRMS is down (ie only for URL).
-    public static final String LOCAL_URL_CACHE = "localCacheDir";
+    public static final String    LOCAL_URL_CACHE   = "localCacheDir";
 
     /**
      * Here is where we have a map of providers to the key that appears on the configuration.
      */
-    public static Map          PACKAGE_PROVIDERS = new HashMap() {
-                                                     {
-                                                         put( FILES,
-                                                              FileScanner.class );
-                                                         put( DIRECTORY,
-                                                              DirectoryScanner.class );
-                                                         put ( URLS,
-                                                               URLScanner.class );
-                                                     }
-                                                 };
+    public static Map             PACKAGE_PROVIDERS = new HashMap() {
+                                                        {
+                                                            put( FILES,
+                                                                 FileScanner.class );
+                                                            put( DIRECTORY,
+                                                                 DirectoryScanner.class );
+                                                            put( URLS,
+                                                                 URLScanner.class );
+                                                        }
+                                                    };
 
     /**
      * This is true if the rulebase is created anew each time.
      */
-    private boolean                    newInstance;
+    private boolean               newInstance;
 
     /**
      * The rule base that is being managed.
      */
-    private RuleBase           ruleBase;
+    private RuleBase              ruleBase;
 
     /**
      * the configuration for the RuleBase
@@ -117,68 +117,74 @@ public class RuleAgent {
     /**
      * The timer that is used to monitor for changes and deal with them.
      */
-    private Timer              timer;
+    private Timer                 timer;
 
     /**
      * The providers that actually do the work.
      */
-    List                       providers;
+    List                          providers;
 
     /**
      * This keeps the packages around that have been loaded.
      */
-    Map                        packages = new HashMap();
+    Map                           packages          = new HashMap();
 
     /**
      * For logging events (important for stuff that happens in the background).
      */
-    AgentEventListener          listener = getDefaultListener();
+    AgentEventListener            listener          = getDefaultListener();
 
     /**
      * Polling interval value, in seconds, used in the Timer.
      */
-    private int secondsToRefresh;
-
-
+    private int                   secondsToRefresh;
 
     /**
      * Properties configured to load up packages into a rulebase (and monitor them
      * for changes).
      */
     public static RuleAgent newRuleAgent(Properties config) {
-        return newRuleAgent(config, null, null);
+        return newRuleAgent( config,
+                             null,
+                             null );
     }
 
     /**
      * Properties configured to load up packages into a rulebase with the provided
      * configuration (and monitor them for changes).
      */
-    public static RuleAgent newRuleAgent(Properties config, RuleBaseConfiguration ruleBaseConf) {
-        return newRuleAgent(config, null, ruleBaseConf);
+    public static RuleAgent newRuleAgent(Properties config,
+                                         RuleBaseConfiguration ruleBaseConf) {
+        return newRuleAgent( config,
+                             null,
+                             ruleBaseConf );
     }
 
     /**
      * This allows an optional listener to be passed in.
      * The default one prints some stuff out to System.err only when really needed.
      */
-    public static RuleAgent newRuleAgent(Properties config, AgentEventListener listener) {
-        return newRuleAgent(config, listener, null);
+    public static RuleAgent newRuleAgent(Properties config,
+                                         AgentEventListener listener) {
+        return newRuleAgent( config,
+                             listener,
+                             null );
     }
 
     /**
      * This allows an optional listener to be passed in.
      * The default one prints some stuff out to System.err only when really needed.
      */
-    public static RuleAgent newRuleAgent(Properties config, AgentEventListener listener, RuleBaseConfiguration ruleBaseConf) {
-        RuleAgent agent = new RuleAgent(ruleBaseConf);
+    public static RuleAgent newRuleAgent(Properties config,
+                                         AgentEventListener listener,
+                                         RuleBaseConfiguration ruleBaseConf) {
+        RuleAgent agent = new RuleAgent( ruleBaseConf );
         if ( listener != null ) {
             agent.listener = listener;
         }
-        agent.init(config);
+        agent.init( config );
         return agent;
     }
-
-
 
     void init(Properties config) {
 
@@ -186,12 +192,12 @@ public class RuleAgent {
                                                                    "false" ) ).booleanValue();
         int secondsToRefresh = Integer.parseInt( config.getProperty( POLL_INTERVAL,
                                                                      "-1" ) );
-        final String name = config.getProperty( CONFIG_NAME, "default" );
+        final String name = config.getProperty( CONFIG_NAME,
+                                                "default" );
 
         listener.setAgentName( name );
 
-        listener.info( "Configuring with newInstance=" + newInstance + ", secondsToRefresh="
-                       + secondsToRefresh);
+        listener.info( "Configuring with newInstance=" + newInstance + ", secondsToRefresh=" + secondsToRefresh );
 
         List provs = new ArrayList();
 
@@ -205,8 +211,8 @@ public class RuleAgent {
             }
         }
 
-
-        configure( newInstance,  provs,
+        configure( newInstance,
+                   provs,
                    secondsToRefresh );
     }
 
@@ -220,22 +226,30 @@ public class RuleAgent {
     /**
      * Pass in the name and full path to a config file that is on the classpath.
      */
-    public static RuleAgent newRuleAgent(String propsFileName, RuleBaseConfiguration ruleBaseConfiguration) {
-        return newRuleAgent( loadFromProperties( propsFileName ), ruleBaseConfiguration );
+    public static RuleAgent newRuleAgent(String propsFileName,
+                                         RuleBaseConfiguration ruleBaseConfiguration) {
+        return newRuleAgent( loadFromProperties( propsFileName ),
+                             ruleBaseConfiguration );
     }
 
     /**
      * This takes in an optional listener. Listener must not be null in this case.
      */
-    public static RuleAgent newRuleAgent(String propsFileName, AgentEventListener listener) {
-        return newRuleAgent( loadFromProperties( propsFileName ), listener );
+    public static RuleAgent newRuleAgent(String propsFileName,
+                                         AgentEventListener listener) {
+        return newRuleAgent( loadFromProperties( propsFileName ),
+                             listener );
     }
 
     /**
      * This takes in an optional listener and RuleBaseConfiguration. Listener must not be null in this case.
      */
-    public static RuleAgent newRuleAgent(String propsFileName, AgentEventListener listener, RuleBaseConfiguration ruleBaseConfiguration) {
-        return newRuleAgent( loadFromProperties( propsFileName ), listener, ruleBaseConfiguration );
+    public static RuleAgent newRuleAgent(String propsFileName,
+                                         AgentEventListener listener,
+                                         RuleBaseConfiguration ruleBaseConfiguration) {
+        return newRuleAgent( loadFromProperties( propsFileName ),
+                             listener,
+                             ruleBaseConfiguration );
     }
 
     static Properties loadFromProperties(String propsFileName) {
@@ -261,7 +275,7 @@ public class RuleAgent {
         }
         Class clz = (Class) PACKAGE_PROVIDERS.get( key );
         try {
-            PackageProvider prov = (PackageProvider) clz.newInstance( );
+            PackageProvider prov = (PackageProvider) clz.newInstance();
             prov.setAgentListener( listener );
             prov.configure( config );
             return prov;
@@ -280,7 +294,6 @@ public class RuleAgent {
         this.newInstance = newInstance;
         this.providers = provs;
 
-
         //run it the first time for each.
         refreshRuleBase();
 
@@ -291,55 +304,62 @@ public class RuleAgent {
     }
 
     public void refreshRuleBase() {
-    	
+
         List<Package> changedPackages = new ArrayList<Package>();
         List<String> removedPackages = new ArrayList<String>();
 
         for ( Iterator iter = providers.iterator(); iter.hasNext(); ) {
             PackageProvider prov = (PackageProvider) iter.next();
             PackageChangeInfo info = checkForChanges( prov );
-            Collection<Package> changes = info.getChangedPackages(); 
-            Collection<String> removed = info.getRemovedPackages(); 
-            if (changes != null && changes.size() > 0) {
+            Collection<Package> changes = info.getChangedPackages();
+            Collection<String> removed = info.getRemovedPackages();
+            if ( changes != null && changes.size() > 0 ) {
                 changedPackages.addAll( changes );
-            } 
-            if (removed != null && removed.size() > 0) {
+            }
+            if ( removed != null && removed.size() > 0 ) {
                 removedPackages.addAll( removed );
             }
         }
 
         // Update changes.
-        if (changedPackages.size() > 0 || removedPackages.size() > 0) {
+        if ( changedPackages.size() > 0 || removedPackages.size() > 0 ) {
             listener.info( "Applying changes to the rulebase." );
             //we have a change
-            if (this.newInstance) {
+            if ( this.newInstance ) {
                 listener.info( "Creating a new rulebase as per settings." );
                 //blow away old
                 this.ruleBase = RuleBaseFactory.newRuleBase( this.ruleBaseConf );
 
                 // Remove removed packages.
-                for (String name : removedPackages) {
-            		this.packages.remove( name );
-				}
+                for ( String name : removedPackages ) {
+                    this.packages.remove( name );
+                }
                 //need to store ALL packages
                 for ( Package element : changedPackages ) {
-                    this.packages.put( element.getName(), element ); //replace
+                    this.packages.put( element.getName(),
+                                       element ); //replace
                 }
                 //get packages from full name
-                PackageProvider.applyChanges( this.ruleBase, false, this.packages.values(), this.listener );
+                PackageProvider.applyChanges( this.ruleBase,
+                                              false,
+                                              this.packages.values(),
+                                              this.listener );
             } else {
-                PackageProvider.applyChanges( this.ruleBase, true, changedPackages, removedPackages, this.listener );
+                PackageProvider.applyChanges( this.ruleBase,
+                                              true,
+                                              changedPackages,
+                                              removedPackages,
+                                              this.listener );
             }
         }
-
 
     }
 
     private synchronized PackageChangeInfo checkForChanges(PackageProvider prov) {
         listener.debug( "SCANNING FOR CHANGE " + prov.toString() );
-        if (this.ruleBase == null) ruleBase = RuleBaseFactory.newRuleBase( this.ruleBaseConf );
+        if ( this.ruleBase == null ) ruleBase = RuleBaseFactory.newRuleBase( this.ruleBaseConf );
         PackageChangeInfo info = prov.loadPackageChanges();
-        return info ;
+        return info;
     }
 
     /**
@@ -357,18 +377,16 @@ public class RuleAgent {
             char c = cs[i];
             switch ( c ) {
                 case '\"' :
-                    if (inquotes) {
+                    if ( inquotes ) {
                         items.add( current );
                         current = "";
                     }
                     inquotes = !inquotes;
                     break;
 
-
                 default :
-                    if (!inquotes &&
-                            (c == ' ' || c == '\n' || c == '\r' || c == '\t')) {
-                        if (current.trim() != "") {
+                    if ( !inquotes && (c == ' ' || c == '\n' || c == '\r' || c == '\t') ) {
+                        if ( current.trim() != "" ) {
                             items.add( current );
                             current = "";
                         }
@@ -378,7 +396,7 @@ public class RuleAgent {
                     break;
             }
         }
-        if (current.trim() != "") {
+        if ( current.trim() != "" ) {
             items.add( current );
         }
 
@@ -448,7 +466,7 @@ public class RuleAgent {
                                     listener.debug( "Checking for updates." );
                                     refreshRuleBase();
 
-                                } catch (Exception e) {
+                                } catch ( Exception e ) {
                                     //don't want to stop execution here.
                                     listener.exception( e );
                                 }
@@ -482,16 +500,16 @@ public class RuleAgent {
             }
 
             public void exception(Exception e) {
-                System.err.println("RuleAgent(" + name + ") EXCEPTION (" + time() + "): " + e.getMessage() + ". Stack trace should follow.");
+                System.err.println( "RuleAgent(" + name + ") EXCEPTION (" + time() + "): " + e.getMessage() + ". Stack trace should follow." );
                 e.printStackTrace( System.err );
             }
 
             public void info(String message) {
-                System.err.println("RuleAgent(" + name + ") INFO (" + time() + "): " + message);
+                System.err.println( "RuleAgent(" + name + ") INFO (" + time() + "): " + message );
             }
 
             public void warning(String message) {
-                System.err.println("RuleAgent(" + name + ") WARNING (" + time() + "): " + message);
+                System.err.println( "RuleAgent(" + name + ") WARNING (" + time() + "): " + message );
             }
 
             public void debug(String message) {
