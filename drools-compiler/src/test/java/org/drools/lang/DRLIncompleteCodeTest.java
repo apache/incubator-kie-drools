@@ -187,6 +187,22 @@ public class DRLIncompleteCodeTest extends TestCase {
 				.getTarget());
 	}
 	
+
+	public void testIncompleteCode13() throws DroolsParserException, RecognitionException {
+		String input = 
+			"package com.sample " +
+			"import com.sample.DroolsTest.Message; " +
+			"rule \"Hello World\"" +
+			"  when " +
+			"  then" +
+			"     \\\" " +
+			"end ";
+		DrlParser parser = new DrlParser();
+		PackageDescr descr = parser.parse(true, input);
+		assertNull(descr);
+	}
+	
+	
 	@SuppressWarnings("unchecked")
 	private int getLastIntegerValue(LinkedList list) {
 //		System.out.println(list.toString());

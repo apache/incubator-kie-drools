@@ -207,6 +207,9 @@ public class DrlParser {
 			}
 		} catch (Exception e) {
 			if (isEditor) {
+				if (walker == null){
+					return null;
+				}
 				return walker.getPackageDescr();
 			} else {
 				throw new DroolsParserException(
