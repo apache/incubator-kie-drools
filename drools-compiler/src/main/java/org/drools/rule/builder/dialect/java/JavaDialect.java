@@ -388,7 +388,6 @@ public class JavaDialect
         if ( result.getErrors().length > 0 ) {
             for ( int i = 0; i < result.getErrors().length; i++ ) {
                 final CompilationProblem err = result.getErrors()[i];
-                System.out.println(err);
                 final ErrorHandler handler = (ErrorHandler) this.errorHandlers.get( err.getFileName() );
                 if ( handler instanceof RuleErrorHandler ) {
                     final RuleErrorHandler rh = (RuleErrorHandler) handler;

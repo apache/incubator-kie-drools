@@ -129,7 +129,7 @@ public class JavaAccumulatorFunctionExecutor
                         Declaration[] innerDeclarations,
                         WorkingMemory workingMemory) throws Exception {
 
-        final Object value = ((JavaAccumulatorFunctionContext) context).reverseSupport.remove( handle );
+        final Object value = ((JavaAccumulatorFunctionContext) context).reverseSupport.remove( Integer.valueOf( handle.getId() ) );
         this.function.reverse( ((JavaAccumulatorFunctionContext) context).context,
                                value );
     }
