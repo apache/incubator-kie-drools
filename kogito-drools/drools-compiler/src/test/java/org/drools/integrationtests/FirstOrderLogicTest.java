@@ -199,6 +199,47 @@ public class FirstOrderLogicTest extends TestCase {
                              results.size() );
     }
 
+    public void testCollectResultConstraints() throws Exception {
+
+        // read in the source
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CollectResultConstraints.drl" ) );
+        RuleBase ruleBase = loadRuleBase( reader );
+
+        StatefulSession wm = ruleBase.newStatefulSession();
+        List results = new ArrayList();
+
+        wm.setGlobal( "results",
+                      results );
+
+        wm.insert( new Cheese( "stilton",
+                               10 ) );
+        wm = SerializationHelper.getSerialisedStatefulSession( wm );
+        results = (List) wm.getGlobal( "results" );
+        
+        wm.fireAllRules();
+
+        Assert.assertEquals( 1,
+                             results.size() );
+        Assert.assertEquals( 1,
+                             ((Collection) results.get( 0 )).size() );
+        
+        wm.insert( new Cheese( "stilton",
+                               7 ) );
+        wm.insert( new Cheese( "stilton",
+                               8 ) );
+        wm.fireAllRules();
+
+        wm = SerializationHelper.getSerialisedStatefulSession( wm );
+        results = (List) wm.getGlobal( "results" );
+        
+        Assert.assertEquals( 1,
+                             results.size() );
+        Assert.assertEquals( 1,
+                             ((Collection) results.get( 0 )).size() );
+        Assert.assertEquals( ArrayList.class.getName(),
+                             results.get( 0 ).getClass().getName() );
+    }
+
     public void testExistsWithBinding() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ExistsWithBindings.drl" ) ) );
