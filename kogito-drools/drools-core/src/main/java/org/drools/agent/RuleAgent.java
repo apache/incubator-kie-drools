@@ -3,7 +3,6 @@ package org.drools.agent;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -12,7 +11,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.StringTokenizer;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -182,11 +180,29 @@ public class RuleAgent {
         if ( listener != null ) {
             agent.listener = listener;
         }
-        agent.init( config );
+
+        if ( ruleBaseConf == null ) {
+            agent.init( config,
+                        true );
+        } else {
+            agent.init( config );
+        }
+
         return agent;
     }
 
     void init(Properties config) {
+        init( config,
+              false );
+    }
+
+    /**
+     * 
+     * @param config
+     * @param lookForRuleBaseConfigurations true if config contains rule base configuration data that should be used.
+     */
+    void init(Properties config,
+              boolean lookForRuleBaseConfigurations) {
 
         boolean newInstance = Boolean.valueOf( config.getProperty( NEW_INSTANCE,
                                                                    "false" ) ).booleanValue();
@@ -201,14 +217,30 @@ public class RuleAgent {
 
         List provs = new ArrayList();
 
+        Properties droolsProperties = new Properties();
+
         for ( Iterator iter = config.keySet().iterator(); iter.hasNext(); ) {
             String key = (String) iter.next();
-            PackageProvider prov = getProvider( key,
-                                                config );
-            if ( prov != null ) {
-                listener.info( "Configuring package provider : " + prov.toString() );
-                provs.add( prov );
+
+            if ( ruleBaseConf != null && key.startsWith( "drools." ) ) {
+
+                droolsProperties.setProperty( key,
+                                              config.getProperty( key ) );
+
+            } else {
+
+                PackageProvider prov = getProvider( key,
+                                                    config );
+                if ( prov != null ) {
+                    listener.info( "Configuring package provider : " + prov.toString() );
+                    provs.add( prov );
+                }
             }
+        }
+
+        // If there is no ruleBase and config file had rule base properties, set properties.
+        if ( lookForRuleBaseConfigurations && !droolsProperties.isEmpty() ) {
+            ruleBaseConf = new RuleBaseConfiguration( droolsProperties );
         }
 
         configure( newInstance,
@@ -524,4 +556,7 @@ public class RuleAgent {
         };
     }
 
+    RuleBaseConfiguration getRuleBaseConfiguration() {
+        return ruleBaseConf;
+    }
 }
