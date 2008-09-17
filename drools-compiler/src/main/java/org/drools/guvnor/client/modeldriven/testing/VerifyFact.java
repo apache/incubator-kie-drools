@@ -10,10 +10,7 @@ import java.util.List;
  */
 public class VerifyFact implements Expectation {
 
-    /**
-     * @gwt.typeArgs <org.drools.guvnor.client.modeldriven.testing.VerifyField >
-     */
-    public List fieldValues = new ArrayList();
+    public List<VerifyField> fieldValues = new ArrayList<VerifyField>();
     public String name;
     public String description;
 

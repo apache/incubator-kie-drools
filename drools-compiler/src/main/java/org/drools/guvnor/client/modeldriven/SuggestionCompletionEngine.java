@@ -55,9 +55,8 @@ public class SuggestionCompletionEngine
     /**
      * A map of types to the fields. key is type, value is (String[] of fields)
      *
-     * @gwt.typeArgs <java.lang.String, java.lang.String[]>
      */
-    public Map                    fieldsForType;
+    public Map<String, String[]>                    fieldsForType;
 
     /**
      * A map of the Fields to their types, needed for operator completions,
@@ -65,29 +64,25 @@ public class SuggestionCompletionEngine
      * This is in the format of: { 'Type.field' => 'typename' }.
      * Should not be the exact type, perhaps just a high level interface, eg "Comparable".
      *
-     * @gwt.typeArgs <java.lang.String, java.lang.String>
      */
-    public Map                    fieldTypes;
+    public Map<String, String>                    fieldTypes;
 
     /**
      * Contains a map of globals (name is key) and their type (value).
-     * @gwt.typeArgs <java.lang.String, java.lang.String>
      */
-    public Map                    globalTypes            = new HashMap();
+    public Map<String, String>                    globalTypes            = new HashMap();
 
     /** A map of types to the modifying methods they expose. key is type,
       * value is (Sting[] of modifying methods)
       *
-      * @gwt.typeArgs <java.lang.String, java.lang.String>
     **/
-    public Map                    modifiers;
+    public Map<String, String>                    modifiers;
 
     /**
      * Contains a map of { TypeName.field : String[] } - where a list is
      * valid values to display in a drop down for a given Type.field combination.
-     * @gwt.typeArgs <java.lang.String, java.lang.String[]>
      */
-    public Map 					  dataEnumLists			 = new HashMap(); //TODO this is a PROBLEM as its not always String[]
+    public Map<String, String[]> 					  dataEnumLists			 = new HashMap(); //TODO this is a PROBLEM as its not always String[]
 
     /** Operators (from the grammar):
      *      op=(    '=='

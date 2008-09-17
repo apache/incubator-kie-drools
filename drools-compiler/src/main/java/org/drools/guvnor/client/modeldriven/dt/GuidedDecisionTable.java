@@ -25,20 +25,11 @@ public class GuidedDecisionTable implements PortableObject {
 	 */
 	public String tableName;
 
-	/**
-	 * @gwt.typeArgs <org.drools.guvnor.client.modeldriven.dt.AttributeCol>
-	 */
-	public List attributeCols = new ArrayList();
+	public List<AttributeCol> attributeCols = new ArrayList<AttributeCol>();
 
-	/**
-	 * @gwt.typeArgs <org.drools.guvnor.client.modeldriven.dt.ConditionCol>
-	 */
-	public List conditionCols = new ArrayList();
+	public List<ConditionCol> conditionCols = new ArrayList<ConditionCol>();
 
-	/**
-	 * @gwt.typeArgs <org.drools.guvnor.client.modeldriven.dt.ActionCol>
-	 */
-	public List actionCols = new ArrayList();
+	public List<ActionCol> actionCols = new ArrayList<ActionCol>();
 
 	/**
 	 * First column is always row number.
