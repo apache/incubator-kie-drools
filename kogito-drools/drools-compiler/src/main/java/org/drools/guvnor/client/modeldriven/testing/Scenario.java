@@ -24,17 +24,15 @@ public class Scenario implements PortableObject {
 
 	/**
 	 * global data which must be setup before hand.
-	 * @gwt.typeArgs <org.drools.guvnor.client.modeldriven.testing.FactData >
 	 */
-	public List globals = new ArrayList();
+	public List<FactData> globals = new ArrayList<FactData>();
 
 	/**
 	 * Fixtures are parts of the test. They may be assertions, globals, data, execution runs etc.
 	 * Anything really.
 	 *
-	 * @gwt.typeArgs <org.drools.guvnor.client.modeldriven.testing.Fixture >
 	 */
-	public List fixtures = new ArrayList();
+	public List<Fixture> fixtures = new ArrayList<Fixture>();
 
 	/**
 	 * This is the date the last time the scenario was run (and what the results apply to).
@@ -43,9 +41,8 @@ public class Scenario implements PortableObject {
 
 	/**
 	 * the rules to include or exclude
-	 * @gwt.typeArgs <java.lang.String>
 	 */
-	public List rules = new ArrayList();
+	public List<String> rules = new ArrayList<String>();
 
 	/**
 	 * true if only the rules in the list should be allowed to fire. Otherwise

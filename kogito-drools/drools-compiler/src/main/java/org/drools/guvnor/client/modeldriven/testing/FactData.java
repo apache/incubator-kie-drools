@@ -15,10 +15,7 @@ public class FactData implements Fixture {
      */
     public String name;
 
-    /**
-     * @gwt.typeArgs <org.drools.guvnor.client.modeldriven.testing.FactData >
-     */
-    public List fieldData = new ArrayList();
+    public List<FieldData> fieldData = new ArrayList<FieldData>();
 
     /**
      * If its a modify, obviously we are modifying existing data in working memory.
@@ -26,7 +23,7 @@ public class FactData implements Fixture {
     public boolean isModify;
 
     public FactData() {}
-    public FactData(String type, String name, List fieldData, boolean modify) {
+    public FactData(String type, String name, List<FieldData> fieldData, boolean modify) {
 
         this.type = type;
         this.name = name;
