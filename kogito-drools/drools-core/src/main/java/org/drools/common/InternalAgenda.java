@@ -83,8 +83,10 @@ public interface InternalAgenda
      * @param agendaFilter the filter on which activations may fire.
      * @param fireLimit the maximum number of activations that may fire. If -1, then it will
      *                  fire until no more activations exist.
+     *                  
+     * @return the number of rules that were actually fired                 
      */
-    public void fireAllRules(AgendaFilter agendaFilter,
+    public int fireAllRules(AgendaFilter agendaFilter,
                              int fireLimit);
 
     /**

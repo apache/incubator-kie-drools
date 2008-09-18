@@ -95,7 +95,7 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      * @throws FactException
      *             If a RuntimeException error occurs.
      */
-    void fireAllRules() throws FactException;
+    int fireAllRules() throws FactException;
 
     /**
      * Fire all items on the agenda until empty, using the given AgendaFiler
@@ -103,7 +103,7 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      * @throws FactException
      *             If a RuntimeException error occurs.
      */
-    void fireAllRules(AgendaFilter agendaFilter) throws FactException;
+    int fireAllRules(AgendaFilter agendaFilter) throws FactException;
 
     /**
      * Fire all items on the agenda until empty or at most 'fireLimit' rules have fired
@@ -111,7 +111,7 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      * @throws FactException
      *             If a RuntimeException error occurs.
      */
-    void fireAllRules( int fireLimit ) throws FactException;
+    int fireAllRules( int fireLimit ) throws FactException;
 
     /**
      * Fire all items on the agenda using the given AgendaFiler
@@ -120,7 +120,7 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      * @throws FactException
      *             If a RuntimeException error occurs.
      */
-    void fireAllRules(final AgendaFilter agendaFilter, int fireLimit ) throws FactException;
+    int fireAllRules(final AgendaFilter agendaFilter, int fireLimit ) throws FactException;
 
     /**
      * Retrieve the object associated with a <code>FactHandle</code>.
@@ -151,7 +151,7 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      * @return
      *     the Iterator
      */
-    Iterator iterateObjects();
+    Iterator<?> iterateObjects();
 
     /**
      *  Returns an Iterator for the Objects in the Working Memory. This Iterator will filter out
@@ -163,7 +163,7 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      * @return
      *     the Iterator
      */
-    Iterator iterateObjects(ObjectFilter filter);
+    Iterator<?> iterateObjects(ObjectFilter filter);
 
     /**
      * Returns an Iterator for the FactHandles in the Working Memory. This Iterator is not thread safe.
@@ -171,7 +171,7 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      * @return
      *     the Iterator
      */
-    Iterator iterateFactHandles();
+    Iterator<?> iterateFactHandles();
 
     /**
      *  Returns an Iterator for the Objects in the Working Memory. This Iterator will filter out
@@ -183,7 +183,7 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      * @return
      *     the Iterator
      */
-    Iterator iterateFactHandles(ObjectFilter filter);
+    Iterator<?> iterateFactHandles(ObjectFilter filter);
 
     /**
      * Set the focus to the specified AgendaGroup

@@ -991,13 +991,16 @@ public class DefaultAgenda
             }
     }
     
-    public void fireAllRules(AgendaFilter agendaFilter,
+    public int fireAllRules(AgendaFilter agendaFilter,
                              int fireLimit) {
         this.halt.set( false );
+        int fireCount = 0;
         while ( continueFiring( fireLimit ) && fireNextItem( agendaFilter ) ) {
+        	fireCount++;
             fireLimit = updateFireLimit( fireLimit );
             this.workingMemory.executeQueuedActions();
         }
+        return fireCount;
     }
 
     private final boolean continueFiring(final int fireLimit) {

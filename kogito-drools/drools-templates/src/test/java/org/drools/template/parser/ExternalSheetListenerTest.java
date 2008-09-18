@@ -150,13 +150,13 @@ public class ExternalSheetListenerTest extends TestCase {
 
 				}
 
-				public void fireAllRules() throws FactException {
-
+				public int fireAllRules() throws FactException {
+					return 0;
 				}
 
-				public void fireAllRules(AgendaFilter arg0)
+				public int fireAllRules(AgendaFilter arg0)
 						throws FactException {
-
+					return 0;
 				}
 
 				public Agenda getAgenda() {
@@ -316,15 +316,14 @@ public class ExternalSheetListenerTest extends TestCase {
 
                 }
 
-                public void fireAllRules(int fireLimit) throws FactException {
-                    
-
+                public int fireAllRules(int fireLimit) throws FactException {
+                	return 0;
                 }
 
-                public void fireAllRules(AgendaFilter agendaFilter,
+                public int fireAllRules(AgendaFilter agendaFilter,
                                          int fireLimit) throws FactException {
-                    
-
+                	
+                	return 0;
                 }
 
 				public GlobalResolver getGlobalResolver() {
