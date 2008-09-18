@@ -160,7 +160,7 @@ public class ProcessActionTest extends TestCase {
         assertEquals(2, list.size());
         assertEquals("SomeText", list.get(0));
         assertEquals("MyActionNode", list.get(1));
-        Iterator<Object> iterator = workingMemory.iterateObjects(new ObjectFilter() {
+        Iterator<?> iterator = workingMemory.iterateObjects(new ObjectFilter() {
 			public boolean accept(Object object) {
 				return object instanceof Message;
 			}
@@ -238,7 +238,7 @@ public class ProcessActionTest extends TestCase {
         assertEquals(2, list.size());
         assertEquals("SomeText", list.get(0));
         assertEquals("MyActionNode", list.get(1));
-        Iterator<Object> iterator = workingMemory.iterateObjects(new ObjectFilter() {
+        Iterator<?> iterator = workingMemory.iterateObjects(new ObjectFilter() {
 			public boolean accept(Object object) {
 				return object instanceof Message;
 			}
