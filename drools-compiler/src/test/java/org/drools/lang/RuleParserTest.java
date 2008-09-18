@@ -69,6 +69,7 @@ import org.drools.lang.descr.VariableRestrictionDescr;
 public class RuleParserTest extends TestCase {
 
     private DescrBuilderTree walker;
+    DRLParser parser;
 
     protected void setUp() throws Exception {
         super.setUp();
@@ -78,6 +79,27 @@ public class RuleParserTest extends TestCase {
     protected void tearDown() throws Exception {
         this.walker = null;
         super.tearDown();
+    }
+
+    public void testFromComplexAcessor() throws Exception {
+        String source = "rule \"Invalid customer id\" ruleflow-group \"validate\" lock-on-active true \n"+
+        	" when \n" +
+        	" o: Order( ) \n" +
+        	" not( Customer( ) from customerService.getCustomer(o.getCustomerId()) ) \n"  +
+        	" then \n" +
+        	" System.err.println(\"Invalid customer id found!\"); \n"  +
+        	" o.addError(\"Invalid customer id\"); \n"  +
+        	"end \n";
+        parse( "compilation_unit",
+               "compilation_unit",
+               source );
+
+        RuleDescr rule = (RuleDescr) this.walker.getPackageDescr().getRules().get( 0 );
+        assertEquals( "Invalid customer id",
+                      rule.getName() );
+
+        assertFalse( parser.hasErrors() );
+
     }
 
     public void testCompatibleRestriction() throws Exception {
@@ -436,6 +458,7 @@ public class RuleParserTest extends TestCase {
         PatternDescr pattern = (PatternDescr) parse( "lhs_pattern",
                                                      "lhs_pattern",
                                                      text );
+        assertNotNull(pattern);
     }
 
     public void testLiteralBoolAndNegativeNumbersRule() throws Exception {
@@ -3727,7 +3750,7 @@ public class RuleParserTest extends TestCase {
         try {
             DRLLexer lexer = new DRLLexer( charStream );
             CommonTokenStream tokens = new CommonTokenStream( lexer );
-            DRLParser parser = new DRLParser( tokens );
+            parser = new DRLParser( tokens );
             parser.setTreeAdaptor( new DroolsTreeAdaptor() );
             /** Use Reflection to get rule method from parser */
             Method ruleName = Class.forName( "org.drools.lang.DRLParser" ).getMethod( testRuleName );
