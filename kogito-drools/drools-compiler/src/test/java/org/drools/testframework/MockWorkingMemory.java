@@ -191,25 +191,26 @@ public class MockWorkingMemory implements InternalWorkingMemory {
 
 	}
 
-	public void fireAllRules() throws FactException {
+	public int fireAllRules() throws FactException {
 		// TODO Auto-generated method stub
+		return 0;
 
 	}
 
-	public void fireAllRules(AgendaFilter agendaFilter) throws FactException {
+	public int fireAllRules(AgendaFilter agendaFilter) throws FactException {
 		// TODO Auto-generated method stub
-
+		return 0;
 	}
 
-	public void fireAllRules(int fireLimit) throws FactException {
+	public int fireAllRules(int fireLimit) throws FactException {
 		// TODO Auto-generated method stub
-
+		return 0;
 	}
 
-	public void fireAllRules(AgendaFilter agendaFilter, int fireLimit)
+	public int fireAllRules(AgendaFilter agendaFilter, int fireLimit)
 			throws FactException {
 		// TODO Auto-generated method stub
-
+		return 0;
 	}
 
 	public Agenda getAgenda() {

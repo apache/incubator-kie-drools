@@ -1061,9 +1061,9 @@ expression_chain
 	 DOT {	emit($DOT, DroolsEditorType.IDENTIFIER);	} 
 	 ID {	emit($ID, DroolsEditorType.IDENTIFIER);	}
 	  (
-	    {input.LA(1) == LEFT_SQUARE}?=> square_chunk
+	    ( LEFT_SQUARE ) => square_chunk
 	    |
-	    {input.LA(1) == LEFT_PAREN}?=> paren_chunk
+	    ( LEFT_PAREN ) => paren_chunk
 	  )?
 	  expression_chain?
 	  -> ^(VT_EXPRESSION_CHAIN[$DOT] ID square_chunk? paren_chunk? expression_chain?)
