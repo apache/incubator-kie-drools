@@ -40,7 +40,9 @@
       <action type="expression" dialect="mvel" >System.out.println("Scheduling follow-up of patient.");</action>
     </actionNode>
     <end id="14" name="End" x="386" y="528" width="80" height="40" />
-    <milestone id="15" name="Wait for Diagnose" x="293" y="101" width="124" height="40" >Diagnose( )</milestone>
+    <milestone id="15" name="Wait for Diagnose" x="293" y="101" width="124" height="40" >
+      <constraint type="rule" dialect="mvel" >Diagnose( )</constraint>
+    </milestone>
   </nodes>
 
   <connections>
