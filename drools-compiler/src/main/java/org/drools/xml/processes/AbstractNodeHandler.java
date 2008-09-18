@@ -3,7 +3,9 @@ package org.drools.xml.processes;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
+import org.drools.process.core.timer.Timer;
 import org.drools.workflow.core.DroolsAction;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.NodeContainer;
@@ -19,8 +21,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
-        Handler {
+public abstract class AbstractNodeHandler extends BaseAbstractHandler implements Handler {
 
     protected final static String EOL = System.getProperty( "line.separator" );
 
@@ -31,12 +32,12 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
     }
     
     protected void initValidParents() {
-        this.validParents = new HashSet();
+        this.validParents = new HashSet<Class<?>>();
         this.validParents.add(NodeContainer.class);
     }
     
     protected void initValidPeers() {
-        this.validPeers = new HashSet();
+        this.validPeers = new HashSet<Class<?>>();
         this.validPeers.add(null);
         this.validPeers.add(Node.class);
     }
@@ -196,6 +197,23 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
     	} else {
     		throw new IllegalArgumentException(
 				"Unknown action " + action);
+    	}
+    }
+    
+    public void writeTimers(final Map<Timer, DroolsAction> timers, final StringBuffer xmlDump) {
+    	if (timers != null && !timers.isEmpty()) {
+    		xmlDump.append("      <timers>" + EOL);
+    		for (Map.Entry<Timer, DroolsAction> entry: timers.entrySet()) {
+    			Timer timer = entry.getKey();
+    			xmlDump.append("        <timer id=\"" + timer.getId() + "\" delay=\"" + timer.getDelay() + "\" ");
+                if (timer.getPeriod() > 0) {
+                    xmlDump.append("period=\"" + timer.getPeriod() + "\" ");
+                }
+                xmlDump.append(">" + EOL);
+                writeAction(entry.getValue(), xmlDump);
+                xmlDump.append("        </timer>" + EOL);
+    		}
+    		xmlDump.append("      </timers>" + EOL);
     	}
     }
     

@@ -25,14 +25,18 @@ public class ExtendedNodeBuilder
         	List<DroolsAction> actions = extendedNode.getActions(type);
         	if (actions != null) {
 	        	for (DroolsAction droolsAction: actions) {
-	                DroolsConsequenceAction action = (DroolsConsequenceAction) droolsAction;
-	                ActionDescr actionDescr = new ActionDescr();
-	                actionDescr.setText( action.getConsequence() );   
-	                Dialect dialect = context.getDialectRegistry().getDialect( action.getDialect() );            
-	                dialect.getActionBuilder().build( context, action, actionDescr );
+	                buildAction(droolsAction, context);
 	        	}
         	}
         }
+    }
+    
+    protected void buildAction(DroolsAction droolsAction, ProcessBuildContext context) {
+    	DroolsConsequenceAction action = (DroolsConsequenceAction) droolsAction;
+        ActionDescr actionDescr = new ActionDescr();
+        actionDescr.setText( action.getConsequence() );   
+        Dialect dialect = context.getDialectRegistry().getDialect( action.getDialect() );            
+        dialect.getActionBuilder().build( context, action, actionDescr );
     }
 
 }

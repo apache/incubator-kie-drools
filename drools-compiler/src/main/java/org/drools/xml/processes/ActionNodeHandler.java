@@ -27,7 +27,8 @@ public class ActionNodeHandler extends AbstractNodeHandler {
         }
     }
 
-    public Class generateNodeFor() {
+    @SuppressWarnings("unchecked")
+	public Class generateNodeFor() {
         return ActionNode.class;
     }
 

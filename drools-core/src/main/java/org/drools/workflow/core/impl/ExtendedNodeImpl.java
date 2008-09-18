@@ -7,6 +7,9 @@ import java.util.Map;
 import org.drools.workflow.core.DroolsAction;
 
 public class ExtendedNodeImpl extends NodeImpl {
+	
+	// TODO: not all sequence nodes need entry/exit actions or timers,
+	// could this be added in a more modular way ?
 
 	public static final String EVENT_NODE_ENTER = "onEntry";
 	public static final String EVENT_NODE_EXIT = "onExit";
@@ -30,5 +33,5 @@ public class ExtendedNodeImpl extends NodeImpl {
 	public String[] getActionTypes() {
 		return EVENT_TYPES;
 	}
-
+	
 }

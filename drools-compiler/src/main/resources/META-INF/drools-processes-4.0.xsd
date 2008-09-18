@@ -121,13 +121,30 @@
 				<xs:element ref="drools:milestone"/>
 				<xs:element ref="drools:subProcess"/>
 				<xs:element ref="drools:workItem"/>
-				<xs:element ref="drools:timer"/>
+				<xs:element ref="drools:timerNode"/>
 				<xs:element ref="drools:humanTask"/>
 				<xs:element ref="drools:composite"/>
 				<xs:element ref="drools:forEach"/>
 				<xs:element ref="drools:eventNode"/>
 				<xs:element ref="drools:fault"/>
 			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="timers">
+		<xs:complexType>
+			<xs:sequence minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="drools:timer"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="timer">
+		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="1">
+				<xs:element ref="drools:action"/>
+			</xs:choice>
+			<xs:attribute name="id" type="xs:string" use="required"/>
+			<xs:attribute name="delay" type="xs:string"/>
+			<xs:attribute name="period" type="xs:string"/>
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="start">
@@ -177,6 +194,9 @@
 	</xs:element>
 	<xs:element name="ruleSet">
 		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="drools:timers"/>
+			</xs:choice>
 			<xs:attribute name="id" type="xs:string" use="required"/>
 			<xs:attribute name="name" type="xs:string"/>
 			<xs:attribute name="x" type="xs:string"/>
@@ -211,7 +231,7 @@
 		<xs:complexType>
 			<xs:simpleContent>
 				<xs:extension base="xs:string">
-					<xs:attribute name="toNodeId" type="xs:string" use="required"/>
+					<xs:attribute name="toNodeId" type="xs:string"/>
 					<xs:attribute name="toType" type="xs:string"/>
 					<xs:attribute name="name" type="xs:string"/>
 					<xs:attribute name="priority" type="xs:string"/>
@@ -234,22 +254,25 @@
 	</xs:element>
 	<xs:element name="milestone">
 		<xs:complexType>
-			<xs:simpleContent>
-				<xs:extension base="xs:string">
-					<xs:attribute name="id" type="xs:string" use="required"/>
-					<xs:attribute name="name" type="xs:string"/>
-					<xs:attribute name="x" type="xs:string"/>
-					<xs:attribute name="y" type="xs:string"/>
-					<xs:attribute name="width" type="xs:string"/>
-					<xs:attribute name="height" type="xs:string"/>
-				</xs:extension>
-			</xs:simpleContent>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="drools:constraint"/>
+				<xs:element ref="drools:timers"/>
+			</xs:choice>
+			<xs:attribute name="id" type="xs:string" use="required"/>
+			<xs:attribute name="name" type="xs:string"/>
+			<xs:attribute name="x" type="xs:string"/>
+			<xs:attribute name="y" type="xs:string"/>
+			<xs:attribute name="width" type="xs:string"/>
+			<xs:attribute name="height" type="xs:string"/>
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="subProcess">
 		<xs:complexType>
 			<xs:choice minOccurs="0" maxOccurs="unbounded">
 				<xs:element ref="drools:mapping"/>
+				<xs:element ref="drools:timers"/>
+				<xs:element ref="drools:onEntry"/>
+				<xs:element ref="drools:onExit"/>
 			</xs:choice>
 			<xs:attribute name="id" type="xs:string" use="required"/>
 			<xs:attribute name="name" type="xs:string"/>
@@ -265,6 +288,7 @@
 	<xs:element name="workItem">
 		<xs:complexType>
 			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="drools:timers"/>
 				<xs:element ref="drools:work"/>
 				<xs:element ref="drools:mapping"/>
 				<xs:element ref="drools:onEntry"/>
@@ -317,7 +341,7 @@
 			</xs:choice>
 		</xs:complexType>
 	</xs:element>
-	<xs:element name="timer">
+	<xs:element name="timerNode">
 		<xs:complexType>
 			<xs:attribute name="id" type="xs:string" use="required"/>
 			<xs:attribute name="name" type="xs:string"/>
@@ -334,6 +358,8 @@
 			<xs:choice minOccurs="0" maxOccurs="unbounded">
 				<xs:element ref="drools:work"/>
 				<xs:element ref="drools:mapping"/>
+				<xs:element ref="drools:onEntry"/>
+				<xs:element ref="drools:onExit"/>
 			</xs:choice>
 			<xs:attribute name="id" type="xs:string" use="required"/>
 			<xs:attribute name="name" type="xs:string"/>

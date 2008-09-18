@@ -43,6 +43,7 @@ public class MilestoneNodeInstance extends EventBasedNodeInstance implements Age
     }
 
     public void internalTrigger(final NodeInstance from, String type) {
+    	super.internalTrigger(from, type);
         if (!Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
             throw new IllegalArgumentException(
                 "A MilestoneNode only accepts default incoming connections!");
@@ -53,12 +54,16 @@ public class MilestoneNodeInstance extends EventBasedNodeInstance implements Age
         if( ((InternalAgenda)getProcessInstance().getAgenda()).isRuleActiveInRuleFlowGroup( "DROOLS_SYSTEM", rule ) ) {
             triggerCompleted();
         } else {
-            addEventListeners();
+            addActivationListener();
         }
     }
     
     public void addEventListeners() {
         super.addEventListeners();
+        addActivationListener();
+    }
+    
+    private void addActivationListener() {
         getProcessInstance().getWorkingMemory().addEventListener(this);
     }
 

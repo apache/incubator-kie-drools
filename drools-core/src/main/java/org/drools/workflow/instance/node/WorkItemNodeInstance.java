@@ -80,7 +80,7 @@ public class WorkItemNodeInstance extends EventBasedNodeInstance implements Even
         WorkItemNode workItemNode = getWorkItemNode();
         createWorkItem(workItemNode);
 		if (workItemNode.isWaitForCompletion()) {
-		    addEventListeners();
+		    addWorkItemListener();
         }
 		if (isInversionOfControl()) {
 		    getProcessInstance().getWorkingMemory().update(getProcessInstance().getWorkingMemory().getFactHandle(this), this);
@@ -172,6 +172,10 @@ public class WorkItemNodeInstance extends EventBasedNodeInstance implements Even
     
     public void addEventListeners() {
         super.addEventListeners();
+        addWorkItemListener();
+    }
+    
+    private void addWorkItemListener() {
         getProcessInstance().addEventListener("workItemCompleted", this);
         getProcessInstance().addEventListener("workItemAborted", this);
     }
@@ -187,7 +191,9 @@ public class WorkItemNodeInstance extends EventBasedNodeInstance implements Even
     		workItemCompleted((WorkItem) event);
     	} else if ("workItemAborted".equals(type)) {
     		workItemAborted((WorkItem) event);
-    	} 
+    	} else {
+    		super.signalEvent(type, event);
+    	}
     }
 
     public String[] getEventTypes() {

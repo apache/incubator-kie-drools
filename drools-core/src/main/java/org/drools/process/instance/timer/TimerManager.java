@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.WorkingMemory;
-import org.drools.process.core.timer.Timer;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.time.Job;
 import org.drools.time.JobContext;
@@ -17,19 +16,24 @@ import org.drools.time.JobHandle;
 import org.drools.time.TimerService;
 import org.drools.time.Trigger;
 
+/**
+ * 
+ * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
+ */
 public class TimerManager {
     private long          timerId = 0;
 
     private WorkingMemory workingMemory;
     private TimerService  timerService;
-    private Map<Long, Timer> timers = new HashMap<Long, Timer>();
+    private Map<Long, TimerInstance> timers = new HashMap<Long, TimerInstance>();
+    private Job processJob = new ProcessJob();
 
     public TimerManager(WorkingMemory workingMemory, TimerService timerService) {
         this.workingMemory = workingMemory;
         this.timerService = timerService;
     }
 
-    public void registerTimer(final Timer timer,
+    public void registerTimer(final TimerInstance timer,
                               ProcessInstance processInstance) {
         timer.setId( ++timerId );
         timer.setProcessInstanceId(processInstance.getId());
@@ -39,15 +43,15 @@ public class TimerManager {
                                                        processInstance.getId(),
                                                        this.workingMemory );
 
-        JobHandle jobHandle = this.timerService.scheduleJob( ProcessJob.instance,
+        JobHandle jobHandle = this.timerService.scheduleJob( processJob,
                                                              ctx,
                                                              new TimerTrigger( timer.getDelay(),
                                                                                timer.getPeriod() ) );
         timer.setJobHandle( jobHandle );
-        timers.put(timerId, timer);
+        timers.put(timer.getId(), timer);
     }
 
-    public void internalAddTimer(final Timer timer) {
+    public void internalAddTimer(final TimerInstance timer) {
 		ProcessJobContext ctx = new ProcessJobContext(
 			timer, timer.getProcessInstanceId(), this.workingMemory);
 
@@ -70,20 +74,20 @@ public class TimerManager {
 			}
 		}
 		JobHandle jobHandle = this.timerService.scheduleJob(
-			ProcessJob.instance, ctx, new TimerTrigger(delay, timer.getPeriod()));
+			processJob, ctx, new TimerTrigger(delay, timer.getPeriod()));
 		timer.setJobHandle(jobHandle);
-		timers.put(timerId, timer);
+		timers.put(timer.getId(), timer);
 	}
 
     public void cancelTimer(long timerId) {
-    	Timer timer = timers.get(timerId);
+    	TimerInstance timer = timers.remove(timerId);
     	if (timer != null) {
     		timerService.removeJob( timer.getJobHandle() );
     	}
     }
     
     public void dispose() {
-    	for (Timer timer: timers.values()) {
+    	for (TimerInstance timer: timers.values()) {
     		timerService.removeJob( timer.getJobHandle() );
     	}
     }
@@ -92,7 +96,7 @@ public class TimerManager {
         return this.timerService;
     }
     
-    public Collection<Timer> getTimers() {
+    public Collection<TimerInstance> getTimers() {
     	return timers.values();
     }
     
@@ -104,11 +108,8 @@ public class TimerManager {
     	this.timerId = timerId;
     }
 
-    public static class ProcessJob
-        implements
-        Job {
-        public final static ProcessJob instance = new ProcessJob();
-
+    public class ProcessJob implements Job {
+    	
         public void execute(JobContext c) {
             ProcessJobContext ctx = (ProcessJobContext) c;
 
@@ -125,6 +126,10 @@ public class TimerManager {
             // process instance may have finished already
             if ( processInstance != null ) {
                 processInstance.signalEvent( "timerTriggered", ctx.getTimer() );
+            }
+            
+            if (ctx.getTimer().getPeriod() == 0) {
+            	TimerManager.this.timers.remove(ctx.getTimer().getId());
             }
         }
 
@@ -160,8 +165,7 @@ public class TimerManager {
             return date;
         }
 
-        public void readExternal(ObjectInput in) throws IOException,
-                                                ClassNotFoundException {
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
             this.delay = in.readLong();
             this.period = in.readLong();
             this.count = in.readInt();
@@ -171,7 +175,6 @@ public class TimerManager {
             out.writeLong( this.delay );
             out.writeLong( this.period );
             out.writeInt(  this.count );
-            
         }
 
     }
@@ -181,11 +184,11 @@ public class TimerManager {
         JobContext {
         private Long          processInstanceId;
         private WorkingMemory workingMemory;
-        private Timer         timer;
+        private TimerInstance timer;
 
         private JobHandle     jobHandle;
 
-        public ProcessJobContext(final Timer timer,
+        public ProcessJobContext(final TimerInstance timer,
                                  final Long processInstanceId,
                                  final WorkingMemory workingMemory) {
             this.timer = timer;
@@ -209,7 +212,7 @@ public class TimerManager {
             this.jobHandle = jobHandle;
         }
 
-        public Timer getTimer() {
+        public TimerInstance getTimer() {
             return timer;
         }
 

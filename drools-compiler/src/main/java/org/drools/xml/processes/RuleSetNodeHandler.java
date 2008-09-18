@@ -21,7 +21,8 @@ public class RuleSetNodeHandler extends AbstractNodeHandler {
         ruleSetNode.setRuleFlowGroup(ruleFlowGroup);
     }
 
-    public Class generateNodeFor() {
+    @SuppressWarnings("unchecked")
+	public Class generateNodeFor() {
         return RuleSetNode.class;
     }
 
@@ -32,7 +33,13 @@ public class RuleSetNodeHandler extends AbstractNodeHandler {
         if (ruleFlowGroup != null) {
             xmlDump.append("ruleFlowGroup=\"" + ruleFlowGroup + "\" ");
         }
-        endNode(xmlDump);
+        if (ruleSetNode.getTimers() != null) {
+            xmlDump.append(">\n");
+            writeTimers(ruleSetNode.getTimers(), xmlDump);
+            endNode("ruleSet", xmlDump);
+        } else {
+            endNode(xmlDump);
+        }
 	}
 
 }

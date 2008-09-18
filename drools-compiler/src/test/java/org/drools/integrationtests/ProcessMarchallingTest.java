@@ -185,13 +185,15 @@ public class ProcessMarchallingTest extends TestCase {
             "    <subProcess id=\"6\" name=\"SubProcess\" processId=\"com.sample.subflow\" />\n" +
             "    <actionNode id=\"7\" name=\"Action\" >\n" +
             "      <action type=\"expression\" dialect=\"mvel\" >System.out.println(\"Executing action 1\");</action>\n" +
-            "	 </actionNode>/n" +
+            "	 </actionNode>\n" +
             "    <join id=\"8\" name=\"AND\" type=\"1\" />\n" +
             "    <actionNode id=\"9\" name=\"Action\" >\n" +
             "      <action type=\"expression\" dialect=\"mvel\" >System.out.println(\"Executing action 2\");</action>\n" +
             "    </actionNode>\n" +
             "    <ruleSet id=\"10\" name=\"RuleSet\" ruleFlowGroup=\"flowgroup\" />\n" +
-            "    <milestone id=\"11\" name=\"Event Wait\" >Person( )</milestone>\n" +
+            "    <milestone id=\"11\" name=\"Event Wait\" >\n" +
+            "      <constraint type=\"rule\" dialect=\"mvel\" >Person( )</constraint>\n" +
+			"    </milestone>\n" +
             "    <workItem id=\"12\" name=\"Log\" >\n" +
             "      <work name=\"Log\" >\n" +
             "        <parameter name=\"Message\" >\n" +
@@ -294,7 +296,9 @@ public class ProcessMarchallingTest extends TestCase {
             "\n" +
             "  <nodes>\n" +
             "    <start id=\"1\" name=\"Start\" />\n" +
-            "    <milestone id=\"2\" name=\"Event Wait\" >Person( )</milestone>\n" +
+			"    <milestone id=\"2\" name=\"Event Wait\" >\n" +
+			"      <constraint type=\"rule\" dialect=\"mvel\" >Person( )</constraint>\n" +
+			"    </milestone>\n" +
             "    <end id=\"3\" name=\"End\" />\n" +
             "  </nodes>\n" +
             "\n" +
@@ -448,7 +452,7 @@ public class ProcessMarchallingTest extends TestCase {
     		"\n" +
     		"    <nodes>\n" +
     		"      <start id=\"1\" name=\"Start\" />\n" +
-    		"      <timer id=\"4\" name=\"Timer\" delay=\"200\" />\n" +
+    		"      <timerNode id=\"4\" name=\"Timer\" delay=\"200\" />\n" +
     		"      <end id=\"3\" name=\"End\" />\n" +
     		"    </nodes>\n" +
     		"\n" +
@@ -488,7 +492,7 @@ public class ProcessMarchallingTest extends TestCase {
     		"\n" +
     		"    <nodes>\n" +
     		"      <start id=\"1\" name=\"Start\" />\n" +
-    		"      <timer id=\"4\" name=\"Timer\" delay=\"200\" />\n" +
+    		"      <timerNode id=\"4\" name=\"Timer\" delay=\"200\" />\n" +
     		"      <end id=\"3\" name=\"End\" />\n" +
     		"    </nodes>\n" +
     		"\n" +

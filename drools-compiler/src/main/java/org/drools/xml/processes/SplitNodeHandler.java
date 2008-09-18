@@ -27,7 +27,8 @@ public class SplitNodeHandler extends AbstractNodeHandler {
         }
     }
 
-    public Class generateNodeFor() {
+    @SuppressWarnings("unchecked")
+	public Class generateNodeFor() {
         return Split.class;
     }
 

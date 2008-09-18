@@ -19,6 +19,8 @@ package org.drools.workflow.instance.node;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.common.InternalRuleBase;
+import org.drools.process.core.Process;
 import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.instance.EventListener;
 import org.drools.process.instance.ProcessInstance;
@@ -43,6 +45,7 @@ public class SubProcessNodeInstance extends EventBasedNodeInstance implements Ev
     }
 
     public void internalTrigger(final NodeInstance from, String type) {
+    	super.internalTrigger(from, type);
         if (!Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
             throw new IllegalArgumentException(
                 "A SubProcess node only accepts default incoming connections!");
@@ -59,15 +62,23 @@ public class SubProcessNodeInstance extends EventBasedNodeInstance implements Ev
                 System.err.println("Continuing without setting parameter.");
             }
         }
-    	ProcessInstance processInstance = 
-    		getProcessInstance().getWorkingMemory().startProcess(getSubProcessNode().getProcessId(), parameters);
-    	if (!getSubProcessNode().isWaitForCompletion()
-    	        || processInstance.getState() == ProcessInstance.STATE_COMPLETED) {
-    		triggerCompleted();
-    	} else {
-    		this.processInstanceId = processInstance.getId();
-    	    addEventListeners();
-    	}
+        String processId = getSubProcessNode().getProcessId();
+        Process process = ((InternalRuleBase) getProcessInstance().getWorkingMemory().getRuleBase()).getProcess(processId);
+        if (process == null) {
+        	System.err.println("Could not find process " + processId);
+        	System.err.println("Aborting process");
+        	getProcessInstance().setState(ProcessInstance.STATE_ABORTED);
+        } else {
+	    	ProcessInstance processInstance = 
+	    		getProcessInstance().getWorkingMemory().startProcess(processId, parameters);
+	    	if (!getSubProcessNode().isWaitForCompletion()
+	    	        || processInstance.getState() == ProcessInstance.STATE_COMPLETED) {
+	    		triggerCompleted();
+	    	} else {
+	    		this.processInstanceId = processInstance.getId();
+	    	    addProcessListener();
+	    	}
+        }
     }
     
     public void cancel() {
@@ -90,6 +101,10 @@ public class SubProcessNodeInstance extends EventBasedNodeInstance implements Ev
 
     public void addEventListeners() {
         super.addEventListeners();
+        addProcessListener();
+    }
+    
+    private void addProcessListener() {
         getProcessInstance().addEventListener("processInstanceCompleted:" + processInstanceId, this);
     }
 
@@ -99,7 +114,11 @@ public class SubProcessNodeInstance extends EventBasedNodeInstance implements Ev
     }
 
 	public void signalEvent(String type, Object event) {
-		processInstanceCompleted((ProcessInstance) event);
+		if (("processInstanceCompleted:" + processInstanceId).equals(type)) {
+			processInstanceCompleted((ProcessInstance) event);
+		} else {
+			super.signalEvent(type, event);
+		}
 	}
     
     public String[] getEventTypes() {

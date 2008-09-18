@@ -1,9 +1,11 @@
 package org.drools.process.instance.timer;
 
-import org.drools.process.core.timer.Timer;
-
+/**
+ * 
+ * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
+ */
 public interface TimerListener {
     
-    void timerTriggered(Timer timer);
+    void timerTriggered(TimerInstance timer);
     
 }

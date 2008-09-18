@@ -30,7 +30,8 @@ public class SubProcessNodeHandler extends AbstractNodeHandler {
         }
     }
 
-    public Class generateNodeFor() {
+    @SuppressWarnings("unchecked")
+	public Class generateNodeFor() {
         return SubProcessNode.class;
     }
 
@@ -65,6 +66,7 @@ public class SubProcessNodeHandler extends AbstractNodeHandler {
         for (String eventType: subProcessNode.getActionTypes()) {
         	writeActions(eventType, subProcessNode.getActions(eventType), xmlDump);
         }
+        writeTimers(subProcessNode.getTimers(), xmlDump);
         endNode("subProcess", xmlDump);
 	}
 

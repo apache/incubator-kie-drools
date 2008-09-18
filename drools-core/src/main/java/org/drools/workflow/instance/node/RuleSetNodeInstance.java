@@ -42,12 +42,16 @@ public class RuleSetNodeInstance extends EventBasedNodeInstance
         if ( !Node.CONNECTION_DEFAULT_TYPE.equals( type ) ) {
             throw new IllegalArgumentException( "A RuleSetNode only accepts default incoming connections!" );
         }
-        addEventListeners();
+        addRuleSetListener();
         getProcessInstance().getAgenda().activateRuleFlowGroup( getRuleSetNode().getRuleFlowGroup() );
     }
 
     public void addEventListeners() {
         super.addEventListeners();
+        addRuleSetListener();
+    }
+    
+    private void addRuleSetListener() {
         ((InternalAgenda) getProcessInstance().getWorkingMemory().getAgenda()).addRuleFlowGroupListener( getRuleSetNode().getRuleFlowGroup(),
                                                                                                          this );
     }

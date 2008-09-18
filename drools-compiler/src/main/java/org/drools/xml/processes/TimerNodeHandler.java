@@ -35,13 +35,14 @@ public class TimerNodeHandler extends AbstractNodeHandler {
         }
     }
 
-    public Class generateNodeFor() {
+    @SuppressWarnings("unchecked")
+	public Class generateNodeFor() {
         return TimerNode.class;
     }
 
 	public void writeNode(Node node, StringBuffer xmlDump, boolean includeMeta) {
 		TimerNode timerNode = (TimerNode) node;
-		writeNode("timer", timerNode, xmlDump, includeMeta);
+		writeNode("timerNode", timerNode, xmlDump, includeMeta);
         Timer timer = timerNode.getTimer();
         if (timer != null) {
             xmlDump.append("delay=\"" + timer.getDelay() + "\" ");

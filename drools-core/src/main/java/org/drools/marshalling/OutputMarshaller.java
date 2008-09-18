@@ -1,9 +1,7 @@
 package org.drools.marshalling;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,11 +28,11 @@ import org.drools.common.RuleFlowGroupImpl;
 import org.drools.common.WorkingMemoryAction;
 import org.drools.process.core.context.swimlane.SwimlaneContext;
 import org.drools.process.core.context.variable.VariableScope;
-import org.drools.process.core.timer.Timer;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.context.swimlane.SwimlaneContextInstance;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
+import org.drools.process.instance.timer.TimerInstance;
 import org.drools.process.instance.timer.TimerManager;
 import org.drools.reteoo.BetaNode;
 import org.drools.reteoo.LeftTuple;
@@ -70,13 +68,11 @@ import org.drools.workflow.instance.node.WorkItemNodeInstance;
 
 public class OutputMarshaller {
     public static void writeSession(MarshallerWriteContext context) throws IOException {
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-        PrintWriter out = new PrintWriter( buffer );
         ReteooWorkingMemory wm = (ReteooWorkingMemory) context.wm;
 
         context.writeInt( wm.getFactHandleFactory().getId() );
         context.writeLong( wm.getFactHandleFactory().getRecency() );
-        out.println( "FactHandleFactory int:" + wm.getFactHandleFactory().getId() + " long:" + wm.getFactHandleFactory().getRecency() );
+        context.out.println( "FactHandleFactory int:" + wm.getFactHandleFactory().getId() + " long:" + wm.getFactHandleFactory().getRecency() );
 
         InternalFactHandle handle = context.wm.getInitialFactHandle();
         context.writeInt( handle.getId() );
@@ -84,7 +80,7 @@ public class OutputMarshaller {
         context.out.println( "InitialFact int:" + handle.getId() + " long:" + handle.getRecency() );
 
         context.writeLong( wm.getPropagationIdCounter() );
-        out.println( "PropagationCounter long:" + wm.getPropagationIdCounter() );
+        context.out.println( "PropagationCounter long:" + wm.getPropagationIdCounter() );
 
         writeAgenda( context );
 
@@ -781,6 +777,16 @@ public class OutputMarshaller {
             stream.writeLong( ((SubProcessNodeInstance) nodeInstance).getProcessInstanceId() );
         } else if ( nodeInstance instanceof MilestoneNodeInstance ) {
             stream.writeShort( PersisterEnums.MILESTONE_NODE_INSTANCE );
+            List<Long> timerInstances = 
+            	((MilestoneNodeInstance) nodeInstance).getTimerInstances();
+            if (timerInstances != null) {
+            	stream.writeInt(timerInstances.size());
+            	for (Long id: timerInstances) {
+            		stream.writeLong(id);
+            	}
+            } else {
+            	stream.writeInt(0);
+            }
         } else if ( nodeInstance instanceof TimerNodeInstance ) {
             stream.writeShort( PersisterEnums.TIMER_NODE_INSTANCE );
             stream.writeLong( ((TimerNodeInstance) nodeInstance).getTimerId() );
@@ -896,17 +902,18 @@ public class OutputMarshaller {
         ObjectOutputStream stream = context.stream;
 
         TimerManager timerManager = context.wm.getTimerManager();
-        stream.writeLong( timerManager.internalGetTimerId() );
-
-        List<Timer> timers = new ArrayList<Timer>( timerManager.getTimers() );
+        long timerId = timerManager.internalGetTimerId();
+        stream.writeLong( timerId );
+        
+        List<TimerInstance> timers = new ArrayList<TimerInstance>( timerManager.getTimers() );
         Collections.sort( timers,
-                          new Comparator<Timer>() {
-                              public int compare(Timer o1,
-                                                 Timer o2) {
+                          new Comparator<TimerInstance>() {
+                              public int compare(TimerInstance o1,
+                                                 TimerInstance o2) {
                                   return (int) (o2.getId() - o1.getId());
                               }
                           } );
-        for ( Timer timer : timers ) {
+        for ( TimerInstance timer : timers ) {
             stream.writeShort( PersisterEnums.TIMER );
             writeTimer( context,
                         timer );
@@ -915,9 +922,10 @@ public class OutputMarshaller {
     }
 
     public static void writeTimer(MarshallerWriteContext context,
-                                  Timer timer) throws IOException {
+                                  TimerInstance timer) throws IOException {
         ObjectOutputStream stream = context.stream;
         stream.writeLong( timer.getId() );
+        stream.writeLong( timer.getTimerId() );
         stream.writeLong( timer.getDelay() );
         stream.writeLong( timer.getPeriod() );
         stream.writeLong( timer.getProcessInstanceId() );
