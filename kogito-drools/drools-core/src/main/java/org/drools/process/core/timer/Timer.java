@@ -1,19 +1,14 @@
 package org.drools.process.core.timer;
 
-import java.util.Date;
-
-import org.drools.time.JobHandle;
-
+/**
+ * 
+ * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
+ */
 public class Timer {
 
     private long id;
     private long delay;
     private long period;
-    // TODO separate in Timer and TimerInstance
-    private JobHandle jobHandle;
-    private Date activated;
-    private Date lastTriggered;
-    private long processInstanceId;
     
     public long getId() {
         return id;
@@ -38,37 +33,23 @@ public class Timer {
     public void setPeriod(long period) {
         this.period = period;
     }
-
-    public JobHandle getJobHandle() {
-        return jobHandle;
-    }
-
-    public void setJobHandle(JobHandle jobHandle) {
-        this.jobHandle = jobHandle;
-    }
     
-    public Date getActivated() {
-		return activated;
-	}
-
-	public void setActivated(Date activated) {
-		this.activated = activated;
-	}
-
-	public void setLastTriggered(Date lastTriggered) {
-    	this.lastTriggered = lastTriggered;
+    public String toString() {
+    	String result =  "Timer";
+    	if (delay != 0 || period != 0) {
+    		result += "[";
+    		if (delay != 0) {
+    			result += "delay=" + delay;
+    			if (period != 0) {
+    				result += ", ";
+    			}
+    		}
+    		if (period != 0) {
+    			result += "period=" + period;
+    		}
+    		result += "]";
+    	}
+    	return result;
     }
-    
-    public Date getLastTriggered() {
-    	return lastTriggered;
-    }
 
-	public long getProcessInstanceId() {
-		return processInstanceId;
-	}
-
-	public void setProcessInstanceId(long processInstanceId) {
-		this.processInstanceId = processInstanceId;
-	}
-    
 }

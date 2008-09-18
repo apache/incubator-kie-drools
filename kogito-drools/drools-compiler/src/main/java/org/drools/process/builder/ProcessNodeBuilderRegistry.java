@@ -7,6 +7,7 @@ import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.ActionNode;
 import org.drools.workflow.core.node.EndNode;
 import org.drools.workflow.core.node.FaultNode;
+import org.drools.workflow.core.node.HumanTaskNode;
 import org.drools.workflow.core.node.MilestoneNode;
 import org.drools.workflow.core.node.RuleSetNode;
 import org.drools.workflow.core.node.Split;
@@ -26,13 +27,15 @@ public class ProcessNodeBuilderRegistry {
         register( EndNode.class,
                   new ExtendedNodeBuilder() );
         register( MilestoneNode.class,
-                  new ExtendedNodeBuilder() );
+                  new EventBasedNodeBuilder() );
         register( RuleSetNode.class,
-                  new ExtendedNodeBuilder() );
+                  new EventBasedNodeBuilder() );
         register( SubProcessNode.class,
-                  new ExtendedNodeBuilder() );
+                  new EventBasedNodeBuilder() );
+        register( HumanTaskNode.class,
+                  new EventBasedNodeBuilder() );
         register( WorkItemNode.class,
-                  new ExtendedNodeBuilder() );
+                  new EventBasedNodeBuilder() );
         register( FaultNode.class,
                   new ExtendedNodeBuilder() );
         register( TimerNode.class,

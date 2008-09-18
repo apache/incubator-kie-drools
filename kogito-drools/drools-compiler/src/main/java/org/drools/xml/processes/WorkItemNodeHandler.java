@@ -46,6 +46,7 @@ public class WorkItemNodeHandler extends AbstractNodeHandler {
         for (String eventType: workItemNode.getActionTypes()) {
         	writeActions(eventType, workItemNode.getActions(eventType), xmlDump);
         }
+        writeTimers(workItemNode.getTimers(), xmlDump);
         endNode("workItem", xmlDump);
 	}
 	

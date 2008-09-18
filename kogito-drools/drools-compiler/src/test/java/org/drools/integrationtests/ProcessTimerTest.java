@@ -13,12 +13,14 @@ import org.drools.Message;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
+import org.drools.compiler.DroolsError;
 import org.drools.compiler.PackageBuilder;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.rule.Package;
 
 public class ProcessTimerTest extends TestCase {
 	
+	@SuppressWarnings("unchecked")
 	public void testSimpleProcess() throws Exception {
 		PackageBuilder builder = new PackageBuilder();
 		Reader source = new StringReader(
@@ -40,14 +42,16 @@ public class ProcessTimerTest extends TestCase {
 			"  <nodes>\n" +
 			"    <start id=\"1\" name=\"Start\" />\n" +
 			"    <end id=\"2\" name=\"End\" />\n" +
-			"    <timer id=\"3\" name=\"Timer\" delay=\"800\"  period=\"200\" />\n" +
+			"    <timerNode id=\"3\" name=\"Timer\" delay=\"800\" period=\"200\" />\n" +
 			"    <actionNode id=\"4\" name=\"Action\" >\n" +
 			"      <action type=\"expression\" dialect=\"java\" >System.out.println(\"Triggered\");\n" +
 			"myList.add( new Message() );\n" +
 			"insert( new Message() );\n" +
 			"</action>\n" +
 			"    </actionNode>\n" + 
-			"    <milestone id=\"5\" name=\"Wait\" >Number( intValue &gt;= 5 ) from accumulate ( m: Message( ), count( m ) )</milestone>\n" +
+			"    <milestone id=\"5\" name=\"Wait\" >\n" +
+			"      <constraint type=\"rule\" dialect=\"mvel\" >Number( intValue &gt;= 5 ) from accumulate ( m: Message( ), count( m ) )</constraint>\n" +
+			"    </milestone>\n" +
 			"  </nodes>\n" +
 			"\n" +
 			"  <connections>\n" +
@@ -59,6 +63,12 @@ public class ProcessTimerTest extends TestCase {
 			"\n" +
 			"</process>");
 		builder.addRuleFlow(source);
+		if (!builder.getErrors().isEmpty()) {
+			for (DroolsError error: builder.getErrors().getErrors()) {
+				System.err.println(error);
+			}
+			fail("Could not build process");
+		}
 		
 		Package pkg = builder.getPackage();
 		RuleBase ruleBase = RuleBaseFactory.newRuleBase();
@@ -79,7 +89,6 @@ public class ProcessTimerTest extends TestCase {
         assertEquals(1, session.getTimerManager().getTimers().size());
 
         // test that the delay works
-        System.out.println("Sleep1");
         try {
             Thread.sleep(600);
         } catch (InterruptedException e) {
@@ -88,7 +97,6 @@ public class ProcessTimerTest extends TestCase {
         assertEquals(0, myList.size());
         
         // test that the period works
-        System.out.println("Sleep2");
         try {
         	Thread.sleep(1300);
         } catch (InterruptedException e) {
@@ -99,4 +107,253 @@ public class ProcessTimerTest extends TestCase {
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
 	}
 
+	@SuppressWarnings("unchecked")
+	public void testOnEntryTimerExecuted() throws Exception {
+		PackageBuilder builder = new PackageBuilder();
+		Reader source = new StringReader(
+			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+			"<process xmlns=\"http://drools.org/drools-4.0/process\"\n" +
+			"         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+			"         xs:schemaLocation=\"http://drools.org/drools-4.0/process drools-processes-4.0.xsd\"\n" +
+			"         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.timer\" package-name=\"org.drools\" version=\"1\" >\n" +
+			"\n" +
+			"  <header>\n" +
+			"    <globals>\n" +
+			"      <global identifier=\"myList\" type=\"java.util.List\" />\n" +
+			"    </globals>\n" +
+			"  </header>\n" +
+			"\n" +
+			"  <nodes>\n" +
+			"    <start id=\"1\" name=\"Start\" />\n" +
+			"    <milestone id=\"2\" name=\"Wait\" >\n" +
+			"      <timer id=\"1\" delay=\"300\" >\n" +
+			"        <action type=\"expression\" dialect=\"java\" >myList.add(\"Executing timer\");</action>\n" +
+			"      </timer>\n" +
+			"      <constraint type=\"rule\" dialect=\"mvel\" >eval(false)</constraint>\n" +
+			"    </milestone>\n" +
+			"    <end id=\"3\" name=\"End\" />\n" +
+			"  </nodes>\n" +
+			"\n" +
+			"  <connections>\n" +
+			"    <connection from=\"1\" to=\"2\" />\n" +
+			"    <connection from=\"2\" to=\"3\" />\n" +
+			"  </connections>\n" +
+			"\n" +
+			"</process>");
+		builder.addRuleFlow(source);
+		
+		Package pkg = builder.getPackage();
+		RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+		ruleBase.addPackage( pkg );
+		StatefulSession session = ruleBase.newStatefulSession();
+		List<String> myList = new ArrayList<String>();
+		session.setGlobal("myList", myList);
+        ProcessInstance processInstance =
+        	session.startProcess("org.drools.timer");
+        assertEquals(0, myList.size());
+        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        assertEquals(1, session.getTimerManager().getTimers().size());
+        
+        session = getSerialisedStatefulSession( session );
+        myList = (List<String>) session.getGlobal( "myList" );
+        processInstance = session.getProcessInstance( processInstance.getId() );
+        
+        assertEquals(1, session.getTimerManager().getTimers().size());
+
+        try {
+            Thread.sleep(400);
+        } catch (InterruptedException e) {
+            // do nothing
+        }
+        assertEquals(1, myList.size());
+	}
+
+	@SuppressWarnings("unchecked")
+	public void testOnEntryTimerExecutedMultipleTimes() throws Exception {
+		PackageBuilder builder = new PackageBuilder();
+		Reader source = new StringReader(
+			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+			"<process xmlns=\"http://drools.org/drools-4.0/process\"\n" +
+			"         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+			"         xs:schemaLocation=\"http://drools.org/drools-4.0/process drools-processes-4.0.xsd\"\n" +
+			"         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.timer\" package-name=\"org.drools\" version=\"1\" >\n" +
+			"\n" +
+			"  <header>\n" +
+			"    <globals>\n" +
+			"      <global identifier=\"myList\" type=\"java.util.List\" />\n" +
+			"    </globals>\n" +
+			"  </header>\n" +
+			"\n" +
+			"  <nodes>\n" +
+			"    <start id=\"1\" name=\"Start\" />\n" +
+			"    <milestone id=\"2\" name=\"Wait\" >\n" +
+			"      <timer id=\"1\" delay=\"300\" period =\"200\" >\n" +
+			"        <action type=\"expression\" dialect=\"java\" >myList.add(\"Executing timer\");</action>\n" +
+			"      </timer>\n" +
+			"      <constraint type=\"rule\" dialect=\"mvel\" >eval(false)</constraint>\n" +
+			"    </milestone>\n" +
+			"    <end id=\"3\" name=\"End\" />\n" +
+			"  </nodes>\n" +
+			"\n" +
+			"  <connections>\n" +
+			"    <connection from=\"1\" to=\"2\" />\n" +
+			"    <connection from=\"2\" to=\"3\" />\n" +
+			"  </connections>\n" +
+			"\n" +
+			"</process>");
+		builder.addRuleFlow(source);
+		
+		Package pkg = builder.getPackage();
+		RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+		ruleBase.addPackage( pkg );
+		StatefulSession session = ruleBase.newStatefulSession();
+		List<String> myList = new ArrayList<String>();
+		session.setGlobal("myList", myList);
+        ProcessInstance processInstance =
+        	session.startProcess("org.drools.timer");
+        assertEquals(0, myList.size());
+        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        assertEquals(1, session.getTimerManager().getTimers().size());
+        
+        session = getSerialisedStatefulSession( session );
+        myList = (List<String>) session.getGlobal( "myList" );
+        processInstance = session.getProcessInstance( processInstance.getId() );
+        
+        assertEquals(1, session.getTimerManager().getTimers().size());
+
+        try {
+            Thread.sleep(600);
+        } catch (InterruptedException e) {
+            // do nothing
+        }
+        assertEquals(2, myList.size());
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void testMultipleTimers() throws Exception {
+		PackageBuilder builder = new PackageBuilder();
+		Reader source = new StringReader(
+			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+			"<process xmlns=\"http://drools.org/drools-4.0/process\"\n" +
+			"         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+			"         xs:schemaLocation=\"http://drools.org/drools-4.0/process drools-processes-4.0.xsd\"\n" +
+			"         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.timer\" package-name=\"org.drools\" version=\"1\" >\n" +
+			"\n" +
+			"  <header>\n" +
+			"    <globals>\n" +
+			"      <global identifier=\"myList\" type=\"java.util.List\" />\n" +
+			"    </globals>\n" +
+			"  </header>\n" +
+			"\n" +
+			"  <nodes>\n" +
+			"    <start id=\"1\" name=\"Start\" />\n" +
+			"    <milestone id=\"2\" name=\"Wait\" >\n" +
+			"      <timer id=\"1\" delay=\"600\" >\n" +
+			"        <action type=\"expression\" dialect=\"java\" >myList.add(\"Executing timer1\");</action>\n" +
+			"      </timer>\n" +
+			"      <timer id=\"2\" delay=\"200\" >\n" +
+			"        <action type=\"expression\" dialect=\"java\" >myList.add(\"Executing timer2\");</action>\n" +
+			"      </timer>\n" +
+			"      <constraint type=\"rule\" dialect=\"mvel\" >eval(false)</constraint>\n" +
+			"    </milestone>\n" +
+			"    <end id=\"3\" name=\"End\" />\n" +
+			"  </nodes>\n" +
+			"\n" +
+			"  <connections>\n" +
+			"    <connection from=\"1\" to=\"2\" />\n" +
+			"    <connection from=\"2\" to=\"3\" />\n" +
+			"  </connections>\n" +
+			"\n" +
+			"</process>");
+		builder.addRuleFlow(source);
+		
+		Package pkg = builder.getPackage();
+		RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+		ruleBase.addPackage( pkg );
+		StatefulSession session = ruleBase.newStatefulSession();
+		List<String> myList = new ArrayList<String>();
+		session.setGlobal("myList", myList);
+        ProcessInstance processInstance =
+        	session.startProcess("org.drools.timer");
+        assertEquals(0, myList.size());
+        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        assertEquals(2, session.getTimerManager().getTimers().size());
+        
+        session = getSerialisedStatefulSession( session );
+        myList = (List<String>) session.getGlobal( "myList" );
+        assertEquals(2, session.getTimerManager().getTimers().size());
+
+        try {
+            Thread.sleep(300);
+        } catch (InterruptedException e) {
+            // do nothing
+        }
+        assertEquals(1, myList.size());
+        assertEquals("Executing timer2", myList.get(0));
+        
+        session = getSerialisedStatefulSession( session );
+        myList = (List<String>) session.getGlobal( "myList" );
+        
+        try {
+            Thread.sleep(400);
+        } catch (InterruptedException e) {
+            // do nothing
+        }
+        assertEquals(2, myList.size());
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void testOnEntryTimerCancelled() throws Exception {
+		PackageBuilder builder = new PackageBuilder();
+		Reader source = new StringReader(
+			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+			"<process xmlns=\"http://drools.org/drools-4.0/process\"\n" +
+			"         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+			"         xs:schemaLocation=\"http://drools.org/drools-4.0/process drools-processes-4.0.xsd\"\n" +
+			"         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.timer\" package-name=\"org.drools\" version=\"1\" >\n" +
+			"\n" +
+			"  <header>\n" +
+			"    <globals>\n" +
+			"      <global identifier=\"myList\" type=\"java.util.List\" />\n" +
+			"    </globals>\n" +
+			"  </header>\n" +
+			"\n" +
+			"  <nodes>\n" +
+			"    <start id=\"1\" name=\"Start\" />\n" +
+			"    <milestone id=\"2\" name=\"Wait\" >\n" +
+			"      <timer id=\"1\" delay=\"2000\" >\n" +
+			"        <action type=\"expression\" dialect=\"java\" >myList.add(\"Executing timer\");</action>\n" +
+			"      </timer>\n" +
+			"      <constraint type=\"rule\" dialect=\"mvel\" >org.drools.Message( )</constraint>\n" +
+			"    </milestone>\n" +
+			"    <end id=\"3\" name=\"End\" />\n" +
+			"  </nodes>\n" +
+			"\n" +
+			"  <connections>\n" +
+			"    <connection from=\"1\" to=\"2\" />\n" +
+			"    <connection from=\"2\" to=\"3\" />\n" +
+			"  </connections>\n" +
+			"\n" +
+			"</process>");
+		builder.addRuleFlow(source);
+		
+		Package pkg = builder.getPackage();
+		RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+		ruleBase.addPackage( pkg );
+		StatefulSession session = ruleBase.newStatefulSession();
+		List<String> myList = new ArrayList<String>();
+		session.setGlobal("myList", myList);
+        ProcessInstance processInstance =
+        	session.startProcess("org.drools.timer");
+        assertEquals(0, myList.size());
+        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        assertEquals(1, session.getTimerManager().getTimers().size());
+        
+        session = getSerialisedStatefulSession( session );
+        myList = (List<String>) session.getGlobal( "myList" );
+        session.insert(new Message());
+        assertEquals(0, myList.size());
+        assertEquals(0, session.getTimerManager().getTimers().size());
+	}
+	
 }

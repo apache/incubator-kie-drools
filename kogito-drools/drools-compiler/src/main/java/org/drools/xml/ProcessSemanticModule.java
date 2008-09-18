@@ -25,6 +25,7 @@ import org.drools.xml.processes.SplitNodeHandler;
 import org.drools.xml.processes.StartNodeHandler;
 import org.drools.xml.processes.SubProcessNodeHandler;
 import org.drools.xml.processes.SwimlaneHandler;
+import org.drools.xml.processes.TimerHandler;
 import org.drools.xml.processes.TimerNodeHandler;
 import org.drools.xml.processes.TypeHandler;
 import org.drools.xml.processes.ValueHandler;
@@ -56,7 +57,7 @@ public class ProcessSemanticModule extends DefaultSemanticModule implements Sema
                            new JoinNodeHandler() );
         addHandler( "milestone",
                            new MilestoneNodeHandler() );
-        addHandler( "timer",
+        addHandler( "timerNode",
                            new TimerNodeHandler() );
         addHandler( "humanTask",
                            new HumanTaskNodeHandler() );
@@ -98,5 +99,7 @@ public class ProcessSemanticModule extends DefaultSemanticModule implements Sema
      		   			   new FaultNodeHandler() );        
         addHandler( "exceptionHandler",
 	   			   		   new ExceptionHandlerHandler() );        
+        addHandler( "timer",
+                		   new TimerHandler() );
     }
 }

@@ -2,6 +2,7 @@ package org.drools.workflow.instance.node;
 
 import org.drools.process.core.timer.Timer;
 import org.drools.process.instance.EventListener;
+import org.drools.process.instance.timer.TimerInstance;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.TimerNode;
 import org.drools.workflow.instance.NodeInstance;
@@ -29,24 +30,27 @@ public class TimerNodeInstance extends EventBasedNodeInstance implements EventLi
             throw new IllegalArgumentException(
                 "A TimerNode only accepts default incoming connections!");
         }
-        Timer timer = createTimer();
-        addEventListeners();
+        TimerInstance timer = createTimerInstance();
+        if (getTimerInstances() == null) {
+        	addTimerListener();
+        }
         getProcessInstance().getWorkingMemory().getTimerManager()
             .registerTimer(timer, getProcessInstance());
         timerId = timer.getId();
     }
     
-    protected Timer createTimer() {
-    	Timer timerDef = getTimerNode().getTimer(); 
-    	Timer timer = new Timer();
-    	timer.setDelay(timerDef.getDelay());
-    	timer.setPeriod(timerDef.getPeriod());
-    	return timer;
+    protected TimerInstance createTimerInstance() {
+    	Timer timer = getTimerNode().getTimer(); 
+    	TimerInstance timerInstance = new TimerInstance();
+    	timerInstance.setDelay(timer.getDelay());
+    	timerInstance.setPeriod(timer.getPeriod());
+    	timerInstance.setTimerId(timer.getId());
+    	return timerInstance;
     }
 
     public void signalEvent(String type, Object event) {
     	if ("timerTriggered".equals(type)) {
-    		Timer timer = (Timer) event;
+    		TimerInstance timer = (TimerInstance) event;
             if (timer.getId() == timerId) {
                 triggerCompleted(timer.getPeriod() == 0);
             }
@@ -68,7 +72,9 @@ public class TimerNodeInstance extends EventBasedNodeInstance implements EventLi
     
     public void addEventListeners() {
         super.addEventListeners();
-        getProcessInstance().addEventListener("timerTriggered", this);
+        if (getTimerInstances() == null) {
+        	getProcessInstance().addEventListener("timerTriggered", this);
+        }
     }
     
     public void removeEventListeners() {
