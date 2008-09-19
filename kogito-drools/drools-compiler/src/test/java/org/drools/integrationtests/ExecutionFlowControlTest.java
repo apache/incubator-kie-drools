@@ -4,9 +4,11 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.drools.Alarm;
+import org.drools.Cell;
 import org.drools.Cheese;
 import org.drools.FactHandle;
 import org.drools.Message;
+import org.drools.Neighbor;
 import org.drools.Person;
 import org.drools.PersonInterface;
 import org.drools.RuleBase;
@@ -14,6 +16,7 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
+import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.common.DefaultAgenda;
 import org.drools.common.InternalWorkingMemoryActions;
 import org.drools.common.RuleFlowGroupImpl;
@@ -317,6 +320,148 @@ public class ExecutionFlowControlTest extends TestCase {
                          brie );
         assertEquals( 2,
                       group2.size() );
+    }
+
+    public void testLockOnActiveWithModify2() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LockOnActiveWithModify.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        final StatefulSession session = ruleBase.newStatefulSession();
+//        WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( session );
+//        logger.setFileName( "conway" );
+
+        // populating working memory
+        final int size = 3;
+        
+        Cell[][] cells = new Cell[size][];
+        FactHandle[][] handles = new FactHandle[size][];
+        for( int row = 0; row < size; row++ ) {
+            cells[row] = new Cell[size];
+            handles[row] = new FactHandle[size];
+            for( int col = 0; col < size; col++ ) {
+                cells[row][col] = new Cell(Cell.DEAD, row, col);
+                handles[row][col] = session.insert( cells[row][col] );
+                if( row >= 1 && col >=1 ) {
+                    // northwest
+                    session.insert( new Neighbor( cells[row-1][col-1], cells[row][col] ) );
+                    session.insert( new Neighbor( cells[row][col], cells[row-1][col-1] ) );
+                }
+                if( row >= 1 ) {
+                    // north
+                    session.insert( new Neighbor( cells[row-1][col], cells[row][col] ) );
+                    session.insert( new Neighbor( cells[row][col], cells[row-1][col] ) );
+                }
+                if( row >= 1 && col < (size-1) ) {
+                    // northeast
+                    session.insert( new Neighbor( cells[row-1][col+1], cells[row][col] ) );
+                    session.insert( new Neighbor( cells[row][col], cells[row-1][col+1] ) );
+                }
+                if( col >= 1 ) {
+                    // west
+                    session.insert( new Neighbor( cells[row][col-1], cells[row][col] ) );
+                    session.insert( new Neighbor( cells[row][col], cells[row][col-1] ) );
+                }
+            }
+        }
+
+        session.clearAgendaGroup( "calculate" );
+        
+        // now, start playing
+        int fired = session.fireAllRules(100);
+        assertEquals( 0, fired );
+
+        session.setFocus( "calculate" );
+        fired = session.fireAllRules(100);
+//        logger.writeToDisk();
+        assertEquals( 0, fired );
+        assertEquals( "MAIN", session.getAgenda().getFocusName() );
+        
+        // on the fifth day God created the birds and sea creatures
+        session.modifyRetract( handles[0][0] );
+        cells[0][0].setState( Cell.LIVE );
+        session.modifyInsert( handles[0][0], cells[0][0] );
+        session.setFocus( "birth" );
+        session.setFocus( "calculate" );
+        fired = session.fireAllRules(100);
+        
+//        logger.writeToDisk();
+        int[][] expected = new int[][]{{0,1,0},{1,1,0},{0,0,0}};
+        assertEqualsMatrix( size,
+                            cells,
+                            expected );
+        assertEquals( "MAIN", session.getAgenda().getFocusName() );
+        
+        // on the sixth day God created the animals that walk over the land and the Man
+        session.modifyRetract( handles[1][1] );
+        cells[1][1].setState( Cell.LIVE );
+        session.modifyInsert( handles[1][1], cells[1][1] );
+        session.setFocus( "calculate" );
+        session.fireAllRules(100);
+//        logger.writeToDisk();
+        
+        expected = new int[][]{{1,2,1},{2,1,1},{1,1,1}};
+        assertEqualsMatrix( size,
+                            cells,
+                            expected );
+        assertEquals( "MAIN", session.getAgenda().getFocusName() );
+        
+        session.setFocus( "birth" );
+        session.fireAllRules(100);
+        expected = new int[][]{{1,2,1},{2,1,1},{1,1,1}};
+        assertEqualsMatrix( size,
+                            cells,
+                            expected );
+        assertEquals( "MAIN", session.getAgenda().getFocusName() );
+
+        session.setFocus( "calculate" );
+        session.fireAllRules(100);
+//        logger.writeToDisk();
+//        printMatrix( cells );
+        
+        expected = new int[][]{{3,3,2},{3,3,2},{2,2,1}};
+        assertEqualsMatrix( size,
+                            cells,
+                            expected );
+        assertEquals( "MAIN", session.getAgenda().getFocusName() );
+
+        // on the seventh day, while God rested, man start killing them all
+        session.modifyRetract( handles[0][0] );
+        cells[0][0].setState( Cell.DEAD );
+        session.modifyInsert( handles[0][0], cells[0][0] );
+        session.setFocus( "calculate" );
+        session.fireAllRules(100);
+        
+        expected = new int[][]{{3,2,2},{2,2,2},{2,2,1}};
+        assertEqualsMatrix( size,
+                            cells,
+                            expected );
+        assertEquals( "MAIN", session.getAgenda().getFocusName() );
+        
+    }
+
+//    private void printMatrix(Cell[][] cells) {
+//        System.out.println("----------");
+//        for( int row = 0; row < cells.length; row++) {
+//            for( int col = 0; col < cells[row].length; col++ ) {
+//                System.out.print( cells[row][col].getValue() + ((cells[row][col].getState()==Cell.LIVE)?"L  ":".  ") );
+//            }
+//            System.out.println();
+//        }
+//        System.out.println("----------");
+//    }
+
+    private void assertEqualsMatrix(final int size,
+                                    Cell[][] cells,
+                                    int[][] expected) {
+        for( int row = 0; row < size; row++) {
+            for( int col = 0; col < size; col++ ) {
+                assertEquals( "Wrong value at "+row+","+col+": ", expected[row][col], cells[row][col].getValue() );
+            }
+        }
     }
 
     public void testAgendaGroups() throws Exception {

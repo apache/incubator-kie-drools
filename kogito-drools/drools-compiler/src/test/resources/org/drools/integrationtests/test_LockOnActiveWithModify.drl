@@ -1,0 +1,33 @@
+package org.drools;
+
+rule "calculate live"
+	agenda-group "calculate"
+	lock-on-active true
+    when
+    	$c : Cell( state == Cell.LIVE )
+    	     Neighbor( cell == $c, $n : neighbor )
+    then
+		modify( $n ) {
+		    setValue( $n.getValue() + 1 )
+		}
+end  
+
+rule "calculate dead"
+	agenda-group "calculate"
+	lock-on-active true
+    when
+    	$c : Cell( state == Cell.DEAD )
+    	     Neighbor( cell == $c, $n : neighbor )
+    then
+		modify( $n ) {
+		    setValue( $n.getValue() - 1 )
+		}
+end  
+
+rule "and there was life"
+   agenda-group "birth"
+   when
+       $c : Cell( state == Cell.DEAD, value == 2 )
+   then
+       modify( $c ) { setState( Cell.LIVE ) }
+end

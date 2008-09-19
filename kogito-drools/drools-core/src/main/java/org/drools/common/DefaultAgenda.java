@@ -104,8 +104,8 @@ public class DefaultAgenda
 
     private ConsequenceExceptionHandler      consequenceExceptionHandler;
 
-    protected volatile AtomicBoolean         halt = new AtomicBoolean(false);
-    
+    protected volatile AtomicBoolean         halt             = new AtomicBoolean( false );
+
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -296,7 +296,7 @@ public class DefaultAgenda
     /**
      * @inheritDoc
      */
-    public void addActivation(final AgendaItem activation) {
+    public boolean addActivation(final AgendaItem activation) {
         // set the focus if rule autoFocus is true
         if ( activation.getRule().getAutoFocus() ) {
             this.setFocus( activation.getRule().getAgendaGroup() );
@@ -323,7 +323,7 @@ public class DefaultAgenda
                     if ( justifier == null ) {
                         // This rule is locked and active, do not allow new
                         // tuples to activate
-                        return;
+                        return false;
                     } else if ( activation.getRule().hasLogicalDependency() ) {
                         copyLogicalDependencies( activation.getPropagationContext(),
                                                  workingMemory,
@@ -339,7 +339,7 @@ public class DefaultAgenda
                                              justifier );
                 }
             } else if ( activation.getRule().isLockOnActive() && agendaGroup.isActive() ) {
-                return;
+                return false;
             }
 
             agendaGroup.add( activation );
@@ -358,7 +358,7 @@ public class DefaultAgenda
                     if ( justifier == null ) {
                         // This rule is locked and active, do not allow new
                         // tuples to activate
-                        return;
+                        return false;
                     } else if ( activation.getRule().hasLogicalDependency() ) {
                         copyLogicalDependencies( activation.getPropagationContext(),
                                                  workingMemory,
@@ -374,17 +374,18 @@ public class DefaultAgenda
                                              justifier );
                 }
             } else if ( activation.getRule().isLockOnActive() && rfg.isActive() ) {
-                return;
+                return false;
             }
 
             rfg.addActivation( activation );
 
         }
-        
+
         // making sure we re-evaluate agenda in case we are waiting for activations
-        synchronized( this.halt ) {
+        synchronized ( this.halt ) {
             this.halt.notifyAll();
         }
+        return true;
 
     }
 
@@ -973,30 +974,30 @@ public class DefaultAgenda
         fireUntilHalt( null );
     }
 
-    public void fireUntilHalt( final AgendaFilter agendaFilter ) {
-            this.halt.set( false );
-            while ( continueFiring( -1 ) ) {
-                boolean fired = fireNextItem( agendaFilter );
-                if( !fired ) {
-                    try {
-                        synchronized( this.halt ) {
-                            this.halt.wait();
-                        }
-                    } catch ( InterruptedException e ) {
-                        this.halt.set( true );
+    public void fireUntilHalt(final AgendaFilter agendaFilter) {
+        this.halt.set( false );
+        while ( continueFiring( -1 ) ) {
+            boolean fired = fireNextItem( agendaFilter );
+            if ( !fired ) {
+                try {
+                    synchronized ( this.halt ) {
+                        this.halt.wait();
                     }
-                } else {
-                    this.workingMemory.executeQueuedActions();
+                } catch ( InterruptedException e ) {
+                    this.halt.set( true );
                 }
+            } else {
+                this.workingMemory.executeQueuedActions();
             }
+        }
     }
-    
+
     public int fireAllRules(AgendaFilter agendaFilter,
-                             int fireLimit) {
+                            int fireLimit) {
         this.halt.set( false );
         int fireCount = 0;
         while ( continueFiring( fireLimit ) && fireNextItem( agendaFilter ) ) {
-        	fireCount++;
+            fireCount++;
             fireLimit = updateFireLimit( fireLimit );
             this.workingMemory.executeQueuedActions();
         }
@@ -1013,10 +1014,9 @@ public class DefaultAgenda
 
     public void halt() {
         this.halt.set( true );
-        synchronized( this.halt ) {
+        synchronized ( this.halt ) {
             this.halt.notifyAll();
         }
     }
 
-    
 }

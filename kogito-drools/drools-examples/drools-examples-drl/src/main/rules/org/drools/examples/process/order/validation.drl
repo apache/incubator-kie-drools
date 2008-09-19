@@ -21,7 +21,7 @@ rule "Invalid item id" ruleflow-group "validate" lock-on-active true
 	    System.err.println("Invalid item id found!");
 		o.addError("Invalid item id " + i.getItemId());
 end
-
+ 
 rule "Minimal age" ruleflow-group "validate" lock-on-active true
 	when
 		o: Order( )

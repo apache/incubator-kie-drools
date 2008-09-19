@@ -26,8 +26,10 @@ public interface InternalAgenda
      * asynchronously) or be executed immediately.
      * 
      * @param activation
+     * 
+     * @return true if the activation was really added, and not ignored in cases of lock-on-active or no-loop
      */
-    public void addActivation(final AgendaItem activation);
+    public boolean addActivation(final AgendaItem activation);
 
     public void addAgendaGroup(final AgendaGroup agendaGroup);
 

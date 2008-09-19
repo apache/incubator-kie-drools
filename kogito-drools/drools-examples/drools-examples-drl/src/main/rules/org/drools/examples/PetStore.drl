@@ -6,7 +6,7 @@ import org.drools.examples.PetStore.Purchase
 import org.drools.examples.PetStore.Product
 import java.util.ArrayList
 import javax.swing.JOptionPane;
-
+ 
 import javax.swing.JFrame 
         
 global JFrame frame 
