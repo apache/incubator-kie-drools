@@ -285,7 +285,10 @@ public class ClassFieldAccessorCache {
         
     public CacheEntry getCacheEntry(Class cls) {
         // System classloader classes return null on some JVMs
-        ClassLoader cl = cls.getClassLoader() != null ? cls.getClassLoader() : ClassLoader.getSystemClassLoader();
+        ClassLoader cl = cls.getClassLoader() != null ? 
+        		         cls.getClassLoader() : ( this.classLoader != null ) ? 
+        		        		                  this.classLoader : 
+        		        		                  ClassLoader.getSystemClassLoader();
 
         CacheEntry cache = this.cacheByClassLoader.get( cl );
         if ( cache == null ) {

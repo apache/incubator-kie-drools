@@ -58,8 +58,8 @@ public class AgendaGroupDelegate implements ConwayRuleDelegate {
         session.setFocus( "rest" );
         session.setFocus( "evaluate" );
         session.setFocus( "calculate" );        
-        session.fireAllRules();
-        return session.getAgenda().getAgendaGroup( "calculate" ).size() != 0;
+        return session.fireAllRules() != 0;
+        //return session.getAgenda().getAgendaGroup( "calculate" ).size() != 0;
     }
 
     /* (non-Javadoc)

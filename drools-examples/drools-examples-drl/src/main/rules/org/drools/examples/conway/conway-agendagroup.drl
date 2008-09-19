@@ -45,7 +45,7 @@ end
 rule "register west"
 	agenda-group "register neighbor"
 when
-	$cell: Cell( $row : row >= 0, $col : col > 0 )			
+	$cell: Cell( $row : row, $col : col > 0 )			
 	$west : Cell( row  == $row, col == ( $col - 1 ) )						
 then		
 	insert( new Neighbor( $cell, $west ) );
@@ -127,7 +127,7 @@ when
 then
 	modify( $neighbor ) {setLiveNeighbors( $neighbor.getLiveNeighbors() - 1 ), setPhase( Phase.EVALUATE )}
 end	
-
+ 
 rule "Kill All"
 	agenda-group "kill all"	
 	no-loop

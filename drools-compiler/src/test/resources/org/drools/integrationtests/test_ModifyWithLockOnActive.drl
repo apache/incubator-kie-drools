@@ -1,0 +1,22 @@
+package org.drools;
+
+global java.util.List results;
+
+rule "eat food"
+   agenda-group "feeding"
+   lock-on-active
+when
+    $p: Person( age >= 15 )
+then
+    modify( $p ) { setStatus("not hungry") }
+    results.add( $p );
+end
+
+rule "happy birthday"
+   agenda-group "feeding"
+   lock-on-active
+when
+    $p: Person( name == "Michael" )
+then
+    modify( $p ) { setAge(15) }
+end

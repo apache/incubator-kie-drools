@@ -60,8 +60,8 @@ public class RuleFlowDelegate implements ConwayRuleDelegate {
         // System.out.println( "next generation" );
         
         session.startProcess( "generation" );
-        session.fireAllRules();
-        return session.getAgenda().getRuleFlowGroup( "calculate" ).size() != 0;
+        return session.fireAllRules() != 0;
+        //return session.getAgenda().getRuleFlowGroup( "calculate" ).size() != 0;
     }
 
     /* (non-Javadoc)

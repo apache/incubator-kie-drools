@@ -242,12 +242,12 @@ public final class RuleTerminalNode extends BaseNode
             tuple.setActivation( item );
             memory.getTupleMemory().add( tuple );
             
-            agenda.addActivation( item );
+            boolean added = agenda.addActivation( item );
 
-            item.setActivated( true );
+            item.setActivated( added );
 
             // We only want to fire an event on a truly new Activation and not on an Activation as a result of a modify
-            if ( fireActivationCreated ) {
+            if ( added && fireActivationCreated ) {
                 ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCreated( item,
                                                                                               workingMemory );
             }

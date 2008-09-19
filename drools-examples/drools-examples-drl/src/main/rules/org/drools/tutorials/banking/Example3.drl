@@ -1,6 +1,6 @@
 package org.drools.tutorials.banking
 
-
+ 
 rule "Rule 01"   
     when
         $number : Number( )
@@ -8,4 +8,4 @@ rule "Rule 01"
     then
         System.out.println("Number found with value: " + $number.intValue() ); 
         retract( $number );
-end
+end 

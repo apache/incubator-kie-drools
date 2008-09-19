@@ -1,5 +1,5 @@
 package org.drools.examples
-
+ 
 dialect "mvel"
 
 import org.drools.examples.ShoppingExample.Customer
@@ -16,13 +16,13 @@ rule "Purchase notification"
 	then
 	    System.out.println( "Customer " + $c.name + " just purchased " + $p.product.name );
 end	 
-
+ 
 rule "Discount removed notification"
 	when
 	    $c : Customer()
 		not Discount( customer == $c )
 	then
-		$c.discount = 0 ;
+		$c.discount = 0;
 		System.out.println( "Customer " + $c.name + " now has a discount of " + $c.discount );
 end
 

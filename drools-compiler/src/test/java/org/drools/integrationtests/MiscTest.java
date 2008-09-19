@@ -5486,5 +5486,33 @@ public class MiscTest extends TestCase {
 
     }
 
+    public void testModifyWithLockOnActive() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ModifyWithLockOnActive.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        StatefulSession session = ruleBase.newStatefulSession();
+
+        final List results = new ArrayList();
+        session.setGlobal( "results",
+                           results );
+
+        final Person bob = new Person( "Bob", 15 );
+        final Person mark = new Person( "Mark", 16 );
+        final Person michael = new Person( "Michael", 14);
+        session.insert( bob );
+        session.insert( mark );
+        session.insert( michael );
+        session.setFocus( "feeding" );
+        session.fireAllRules( 5 );
+
+        assertEquals( 2,
+                      ((List) session.getGlobal( "results" )).size() );
+
+    }
+
 
 }

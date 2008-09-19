@@ -1,5 +1,5 @@
 package org.drools.tutorials.banking
-
+   
 rule "Rule 01"   
     when
         Number( $intValue : intValue )
