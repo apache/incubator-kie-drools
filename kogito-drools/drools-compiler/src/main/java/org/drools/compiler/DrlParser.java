@@ -47,6 +47,7 @@ import org.drools.lang.dsl.DefaultExpanderResolver;
  */
 public class DrlParser {
 
+	private static final String GENERIC_ERROR_MESSAGE = "Unknown error while parsing. This is a bug. Please contact the Development team.";
 	private final List results = new ArrayList();
 	private List<DroolsSentence> editorSentences = null;
 	private Location location = new Location(Location.LOCATION_UNKNOWN);
@@ -206,6 +207,9 @@ public class DrlParser {
 				return null;
 			}
 		} catch (Exception e) {
+			final ParserError err = new ParserError(GENERIC_ERROR_MESSAGE,
+					-1, 0);
+			this.results.add(err);
 			if (isEditor) {
 				if (walker == null){
 					return null;
@@ -213,7 +217,7 @@ public class DrlParser {
 				return walker.getPackageDescr();
 			} else {
 				throw new DroolsParserException(
-						"Unknown error while parsing. This is a bug. Please contact the Development team.",
+						GENERIC_ERROR_MESSAGE,
 						e);
 			}
 		}
