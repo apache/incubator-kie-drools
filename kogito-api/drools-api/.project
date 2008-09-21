@@ -1,5 +1,5 @@
 <projectDescription>
-  <name>drools-core</name>
+  <name>drools-api</name>
   <comment>A rule production system</comment>
   <projects/>
   <buildSpec>
