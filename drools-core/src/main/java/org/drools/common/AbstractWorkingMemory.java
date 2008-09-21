@@ -40,7 +40,6 @@ import org.drools.Agenda;
 import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.ObjectFilter;
-import org.drools.Otherwise;
 import org.drools.QueryResults;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
