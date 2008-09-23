@@ -136,7 +136,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
         // always add the default entry point
         EntryPointNode epn = new EntryPointNode( this.reteooBuilder.getIdGenerator().getNextId(),
                                                  RuleBasePartitionId.MAIN_PARTITION,
-                                                 this.config.isPartitionsEnabled(),
+                                                 this.config.isMultithreadEvaluation(),
                                                  this.rete,
                                                  EntryPoint.DEFAULT );
         epn.attach();

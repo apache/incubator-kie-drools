@@ -120,7 +120,7 @@ public class RuleBaseConfiguration
     // if "true", rulebase builder will try to split 
     // the rulebase into multiple partitions that can be evaluated
     // in parallel by using multiple internal threads
-    private boolean                        partitionsEnabled;
+    private boolean                        multithread;
 
     private ConflictResolver               conflictResolver;
 
@@ -158,7 +158,7 @@ public class RuleBaseConfiguration
         out.writeObject( conflictResolver );
         out.writeObject( processNodeInstanceFactoryRegistry );
         out.writeBoolean( advancedProcessRuleIntegration );
-        out.writeBoolean( partitionsEnabled );
+        out.writeBoolean( multithread );
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -183,7 +183,7 @@ public class RuleBaseConfiguration
         conflictResolver = (ConflictResolver) in.readObject();
         processNodeInstanceFactoryRegistry = (NodeInstanceFactoryRegistry) in.readObject();
         advancedProcessRuleIntegration = in.readBoolean();
-        partitionsEnabled = in.readBoolean();
+        multithread = in.readBoolean();
     }
 
     /**
@@ -307,7 +307,7 @@ public class RuleBaseConfiguration
         setAdvancedProcessRuleIntegration( Boolean.valueOf( this.chainedProperties.getProperty( "drools.advancedProcessRuleIntegration",
                                                                                                 "false" ) ).booleanValue() );
 
-        setPartitionsEnabled( Boolean.valueOf( this.chainedProperties.getProperty( "drools.enablePartitioning",
+        setMultithreadEvaluation( Boolean.valueOf( this.chainedProperties.getProperty( "drools.multithreadEvaluation",
                                                                                     "false" ) ).booleanValue() );
     }
 
@@ -495,17 +495,16 @@ public class RuleBaseConfiguration
     }
 
     /**
-     * Defines if the RuleBase should try to split the rules into 
-     * multiple independent partitions that can work in parallel 
-     * using multiple threads ("true"), of if the rulebase should
-     * work in classic single partition mode ("false").
+     * Defines if the RuleBase should be executed using a pool of
+     * threads for evaluating the rules ("true"), or if the rulebase 
+     * should work in classic single thread mode ("false").
      * 
-     * @param enablePartitioning true for multi-partition or 
-     *                     false for single-partition. Default is false.
+     * @param enableMultithread true for multi-thread or 
+     *                     false for single-thread. Default is false.
      */
-    public void setPartitionsEnabled(boolean enablePartitioning) {
+    public void setMultithreadEvaluation(boolean enableMultithread) {
         checkCanChange();
-        this.partitionsEnabled = enablePartitioning;
+        this.multithread = enableMultithread;
     }
     
     /**
@@ -514,8 +513,8 @@ public class RuleBaseConfiguration
      * 
      * @return
      */
-    public boolean isPartitionsEnabled() {
-        return this.partitionsEnabled;
+    public boolean isMultithreadEvaluation() {
+        return this.multithread;
     }
 
     private void initProcessNodeInstanceFactoryRegistry() {

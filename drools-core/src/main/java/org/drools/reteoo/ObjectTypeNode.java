@@ -96,7 +96,7 @@ public class ObjectTypeNode extends ObjectSource
                           final BuildContext context) {
         super( id,
                context.getPartitionId(),
-               context.getRuleBase().getConfiguration().isPartitionsEnabled(),
+               context.getRuleBase().getConfiguration().isMultithreadEvaluation(),
                source,
                context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold() );
         this.objectType = objectType;

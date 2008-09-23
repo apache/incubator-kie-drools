@@ -303,7 +303,7 @@ public abstract class AbstractWorkingMemory
      * processing
      */
     private void initPartitionManagers() {
-        if ( this.ruleBase.getConfiguration().isPartitionsEnabled() ) {
+        if ( this.ruleBase.getConfiguration().isMultithreadEvaluation() ) {
 
             // the Map MUST be thread safe
             this.partitionManagers = new ConcurrentHashMap<RuleBasePartitionId, PartitionTaskManager>();
@@ -320,7 +320,7 @@ public abstract class AbstractWorkingMemory
      * running in multi-thread mode
      */
     public void startPartitionManagers() {
-        if ( this.ruleBase.getConfiguration().isPartitionsEnabled() ) {
+        if ( this.ruleBase.getConfiguration().isMultithreadEvaluation() ) {
             for ( PartitionTaskManager task : this.partitionManagers.values() ) {
                 task.startService();
             }
@@ -328,7 +328,7 @@ public abstract class AbstractWorkingMemory
     }
 
     public void stopPartitionManagers() {
-        if ( this.ruleBase.getConfiguration().isPartitionsEnabled() ) {
+        if ( this.ruleBase.getConfiguration().isMultithreadEvaluation() ) {
             for ( PartitionTaskManager task : this.partitionManagers.values() ) {
                 // what to do here? should we simply wait for a timeout and give
                 // up?
