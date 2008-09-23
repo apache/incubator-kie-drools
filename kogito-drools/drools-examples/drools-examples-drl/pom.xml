@@ -14,7 +14,7 @@
   -->
   <artifactId>drools-examples-drl</artifactId>
   <packaging>jar</packaging>
-  <name>Drools :: examples</name>
+  <name>Drools :: Examples DRL</name>
 
   <dependencies>
     <!-- Internal dependencies -->
