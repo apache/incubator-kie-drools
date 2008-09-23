@@ -29,6 +29,7 @@
     <dependency>
       <groupId>org.antlr</groupId>
       <artifactId>gunit</artifactId>             
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jdt</groupId>
