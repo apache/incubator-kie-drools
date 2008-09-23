@@ -62,10 +62,13 @@
 
       <para>The supported server side platforms are mentioned in the
       installation guide. For browsers - the major ones are supported, this
-      includes Firefox (1.5 and up), IE7 and up, Opera, Safari, Google Chrome etc. The
-      preferred browser for most platforms is firefox, it is widely available
-      and free, if you have any choice at all, Firefox is the preferred
-      platform, followed by safari on mac. IE6 users can experience some poor perforamnce, and as this is a dangerously insecure browser IE7 or a superior browser (such as Google Chrome, Firefox, Safari) is recommended.</para>
+      includes Firefox (1.5 and up), IE7 and up, Opera, Safari, Google Chrome
+      etc. The preferred browser for most platforms is firefox, it is widely
+      available and free, if you have any choice at all, Firefox is the
+      preferred platform, followed by safari on mac. IE6 users can experience
+      some poor perforamnce, and as this is a dangerously insecure browser IE7
+      or a superior browser (such as Google Chrome, Firefox, Safari) is
+      recommended.</para>
     </section>
 
     <section>
@@ -676,25 +679,28 @@
       </section>
 
       <section>
-	<title>Guided decision tables (web based)</title>
-	<para>The guided decision table feature allows decision tables to be edited in place on the web. This works similar to the guided editor by introspecting what facts and fields are available to guide the creation of a decision table.</para>
+        <title>Guided decision tables (web based)</title>
 
-	        <figure>
+        <para>The guided decision table feature allows decision tables to be
+        edited in place on the web. This works similar to the guided editor by
+        introspecting what facts and fields are available to guide the
+        creation of a decision table.</para>
+
+        <figure>
           <title>Decision table</title>
 
           <mediaobject>
             <imageobject>
-              <imagedata align="center" fileref="WebDT.png"
-                         format="PNG" scalefit="1" />
+              <imagedata align="center" fileref="WebDT.png" format="PNG"
+                         scalefit="1" />
             </imageobject>
           </mediaobject>
         </figure>
 
-	<para>
-	  At the top right there is a button which shows the configuration area of the guided decision table: 
-	</para>
+        <para>At the top right there is a button which shows the configuration
+        area of the guided decision table:</para>
 
-	        <figure>
+        <figure>
           <title>Decision table config</title>
 
           <mediaobject>
@@ -705,14 +711,11 @@
           </mediaobject>
         </figure>
 
-	<para>
-	  It is in this section where condition and action columns are configured. "Attribute columns" are for setting attributes on a per rule (row) basis, such as salience. 
-
-Web based decision tables are compiled into DRL like all other rule assets. 
-
-	</para>
-
-	</section>
+        <para>It is in this section where condition and action columns are
+        configured. "Attribute columns" are for setting attributes on a per
+        rule (row) basis, such as salience. Web based decision tables are
+        compiled into DRL like all other rule assets.</para>
+      </section>
 
       <section>
         <title>Rule flows</title>
@@ -1283,6 +1286,12 @@ public class SampleDataSource2 {
     <para>Note that the namespace of the declared type is the package
     namespace where it was declared (in the above case
     "org.drools.generatedbeans").</para>
+
+    <para>Why would you chose declared types over jar files: generally this
+    reinforces the fact that the model "belongs" to the rulebase, rather then
+    the application, and allows the model to have a lifecycle separate from
+    the application. It also removed the hassle of keeping jar files in sync
+    between rules and the applications that use the rules. </para>
   </section>
 
   <section>
