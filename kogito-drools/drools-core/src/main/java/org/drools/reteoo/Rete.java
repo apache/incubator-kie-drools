@@ -75,7 +75,7 @@ public class Rete extends ObjectSource
     // ------------------------------------------------------------
 
     public Rete(InternalRuleBase ruleBase) {
-        super( 0, RuleBasePartitionId.MAIN_PARTITION, ruleBase != null ? ruleBase.getConfiguration().isPartitionsEnabled() : false );
+        super( 0, RuleBasePartitionId.MAIN_PARTITION, ruleBase != null ? ruleBase.getConfiguration().isMultithreadEvaluation() : false );
         this.entryPoints = new HashMap<EntryPoint, EntryPointNode>();
         this.ruleBase = ruleBase;
     }

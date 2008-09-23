@@ -101,7 +101,7 @@ public final class RuleTerminalNode extends BaseNode
                             final BuildContext context) {
         super( id,
                context.getPartitionId(),
-               context.getRuleBase().getConfiguration().isPartitionsEnabled() );
+               context.getRuleBase().getConfiguration().isMultithreadEvaluation() );
         this.rule = rule;
         this.tupleSource = source;
         this.subrule = subrule;

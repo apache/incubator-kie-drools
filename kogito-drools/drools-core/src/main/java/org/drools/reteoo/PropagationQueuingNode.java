@@ -65,7 +65,7 @@ public class PropagationQueuingNode extends ObjectSource implements ObjectSinkNo
                                    final BuildContext context ) {
         super( id,
                context.getPartitionId(),
-               context.getRuleBase().getConfiguration().isPartitionsEnabled(),
+               context.getRuleBase().getConfiguration().isMultithreadEvaluation(),
                objectSource,
                context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold() );
         this.action = new PropagateAction( this );

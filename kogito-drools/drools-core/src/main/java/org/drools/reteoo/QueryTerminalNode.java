@@ -83,7 +83,7 @@ public final class QueryTerminalNode extends BaseNode
                              final BuildContext context ) {
         super( id,
                context.getPartitionId(),
-               context.getRuleBase().getConfiguration().isPartitionsEnabled() );
+               context.getRuleBase().getConfiguration().isMultithreadEvaluation() );
         this.rule = rule;
         this.subrule = subrule;
         this.tupleSource = source;

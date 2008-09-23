@@ -53,7 +53,7 @@ public class FromNode extends LeftTupleSource
                     final BuildContext context ) {
         super( id,
                context.getPartitionId(),
-               context.getRuleBase().getConfiguration().isPartitionsEnabled() );
+               context.getRuleBase().getConfiguration().isMultithreadEvaluation() );
         this.dataProvider = dataProvider;
         this.tupleSource = tupleSource;
         this.alphaConstraints = constraints;

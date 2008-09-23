@@ -83,7 +83,7 @@ public class EntryPointNode extends ObjectSource
                           final BuildContext context) {
         this( id,
               context.getPartitionId(),
-              context.getRuleBase().getConfiguration().isPartitionsEnabled(),
+              context.getRuleBase().getConfiguration().isMultithreadEvaluation(),
               objectSource,
               context.getCurrentEntryPoint() ); // irrelevant for this node, since it overrides sink management
     }

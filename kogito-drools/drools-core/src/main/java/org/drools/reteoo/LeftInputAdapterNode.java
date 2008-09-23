@@ -72,7 +72,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
                                 final BuildContext context) {
         super( id,
                context.getPartitionId(),
-               context.getRuleBase().getConfiguration().isPartitionsEnabled() );
+               context.getRuleBase().getConfiguration().isMultithreadEvaluation() );
         this.objectSource = source;
         this.leftTupleMemoryEnabled = context.isTupleMemoryEnabled();
     }

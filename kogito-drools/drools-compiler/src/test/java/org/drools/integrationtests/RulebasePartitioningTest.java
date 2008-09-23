@@ -47,7 +47,7 @@ public class RulebasePartitioningTest extends TestCase {
         final org.drools.rule.Package pkg = builder.getPackage();
 
         RuleBaseConfiguration config = new RuleBaseConfiguration();
-        config.setPartitionsEnabled( true );
+        config.setMultithreadEvaluation( true );
 
         RuleBase ruleBase = getRuleBase( config );
         ruleBase.addPackage( pkg );

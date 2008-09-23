@@ -71,7 +71,7 @@ public class JoinNode extends BetaNode {
                     final BuildContext context) {
         super( id,
                context.getPartitionId(),
-               context.getRuleBase().getConfiguration().isPartitionsEnabled(),
+               context.getRuleBase().getConfiguration().isMultithreadEvaluation(),
                leftInput,
                rightInput,
                binder,
