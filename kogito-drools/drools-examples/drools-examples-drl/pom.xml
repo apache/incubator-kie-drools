@@ -12,7 +12,7 @@
     TODO make this packing pom and make 2 submodules: example-waltz and example-manners
     (and possibly example-common too)
   -->
-  <artifactId>drools-examples</artifactId>
+  <artifactId>drools-examples-drl</artifactId>
   <packaging>jar</packaging>
   <name>Drools :: examples</name>
 
