@@ -18,7 +18,7 @@
 package org.drools.commons.jci.compilers;
 
 import org.codehaus.janino.Location;
-import org.codehaus.janino.Scanner.LocatedException;
+import org.codehaus.janino.util.LocatedException;
 import org.drools.commons.jci.problems.CompilationProblem;
 
 /**
