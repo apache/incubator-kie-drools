@@ -12,7 +12,7 @@
   
     <artifactId>drools-docs-introduction</artifactId>
     <packaging>jdocbook</packaging>
-    <name>Drools :: Documentation :: Drools Introduction</name>
+    <name>Drools_Documentation_Drools_Introduction</name>
     <description>Introduction Documentation</description>
 
 </project>
