@@ -12,6 +12,6 @@
   
     <artifactId>drools-docs-guvnor</artifactId>
     <packaging>jdocbook</packaging>
-    <name>Drools :: Documentation :: Drools Guvnor</name>
+    <name>Drools_Documentation_Drools_Guvnor</name>
     <description>Drools Guvnor Documentation</description>
 </project>

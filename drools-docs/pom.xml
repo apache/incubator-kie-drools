@@ -97,11 +97,11 @@
                     </cssResource>-->
                     
                     <formats>
-                        <!--<format>
+                        <format>
                             <formatName>pdf</formatName>
-                            <stylesheetResource>classpath:/xslt/org/jboss/main-pdf.xsl</stylesheetResource>
+                            <stylesheetResource>classpath:/xslt/org/jboss/pdf.xsl</stylesheetResource>
                             <finalName>${pom.name}.pdf</finalName>
-                        </format>-->
+                        </format>
                         <format>
                             <formatName>html</formatName>
                             <stylesheetResource>classpath:/xslt/org/jboss/xhtml.xsl</stylesheetResource>
