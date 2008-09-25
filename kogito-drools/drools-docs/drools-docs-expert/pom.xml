@@ -12,7 +12,7 @@
   
     <artifactId>drools-docs-expert</artifactId>
     <packaging>jdocbook</packaging>
-    <name>Drools :: Documentation :: Drools Expert</name>
+    <name>Drools_Documentation_Drools_Expert</name>
     <description>Drools Expert Documentation</description>
  
 </project>

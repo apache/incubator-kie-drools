@@ -13,6 +13,6 @@
     <artifactId>drools-docs-solver</artifactId>
 
     <packaging>jdocbook</packaging>
-    <name>Drools :: Documentation :: Drools Solver</name>
+    <name>Drools_Documentation_Drools_Solver</name>
     <description>Drools Solver Documentation</description>
 </project>
