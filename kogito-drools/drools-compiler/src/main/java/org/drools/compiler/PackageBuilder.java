@@ -90,7 +90,7 @@ public class PackageBuilder {
 
     private Map<String, PackageRegistry> pkgRegistryMap;
 
-    private List<DroolsError>                         results;
+    private List<DroolsError>            results;
 
     private PackageBuilderConfiguration  configuration;
 
@@ -112,7 +112,7 @@ public class PackageBuilder {
     private final String                 defaultDialect;
 
     private CompositeClassLoader         rootClassLoader;
-    
+
     private Map<String, Class>           globals;
 
     /**
@@ -213,7 +213,7 @@ public class PackageBuilder {
         pkgRegistry.setDialect( this.defaultDialect );
         this.pkgRegistryMap.put( pkg.getName(),
                                  pkgRegistry );
-        
+
         globals = new HashMap<String, Class>();
     }
 
@@ -238,7 +238,7 @@ public class PackageBuilder {
         this.results = new ArrayList();
 
         this.ruleBase = (ReteooRuleBase) ruleBase;
-        
+
         globals = new HashMap<String, Class>();
     }
 
@@ -364,12 +364,12 @@ public class PackageBuilder {
 
         if ( !isEmpty( packageDescr.getNamespace() ) ) {
             // use the default namespace
-        	if (checkNamespace(packageDescr.getNamespace())) {
-        		this.defaultNamespace = packageDescr.getNamespace();
-        	} else {
-        		//force the default.
-        		packageDescr.setNamespace(this.defaultNamespace);
-        	}
+            if ( checkNamespace( packageDescr.getNamespace() ) ) {
+                this.defaultNamespace = packageDescr.getNamespace();
+            } else {
+                //force the default.
+                packageDescr.setNamespace( this.defaultNamespace );
+            }
         } else {
             // packagedescr defines a new default namespace
             packageDescr.setNamespace( this.defaultNamespace );
@@ -453,21 +453,20 @@ public class PackageBuilder {
             }
         }
     }
-    
+
     /**
      * This checks to see if it should all be in the one namespace.
      */
     private boolean checkNamespace(String newName) {
-        if (this.configuration == null) return true;
-        if (this.defaultNamespace == null) return true;
-        if (this.defaultNamespace.equals(newName)) return true;
+        if ( this.configuration == null ) return true;
+        if ( this.defaultNamespace == null ) return true;
+        if ( this.defaultNamespace.equals( newName ) ) return true;
         return this.configuration.isAllowMultipleNamespaces();
     }
 
     public boolean isEmpty(String string) {
         return (string == null || string.trim().length() == 0);
     }
-    
 
     public void updateResults() {
         // some of the rules and functions may have been redefined     
@@ -528,7 +527,7 @@ public class PackageBuilder {
             // define a new package
             pkg = new Package( packageDescr.getName() );
             pkg.setClassFieldAccessorCache( new ClassFieldAccessorCache( this.rootClassLoader ) );
-            
+
             // if there is a rulebase then add the package.
             if ( this.ruleBase != null ) {
                 this.ruleBase.addPackage( pkg );
@@ -586,7 +585,8 @@ public class PackageBuilder {
                 clazz = pkgRegistry.getTypeResolver().resolveType( className );
                 pkgRegistry.getPackage().addGlobal( identifier,
                                                     clazz );
-                this.globals.put( identifier, clazz );
+                this.globals.put( identifier,
+                                  clazz );
             } catch ( final ClassNotFoundException e ) {
                 this.results.add( new GlobalError( identifier,
                                                    global.getLine() ) );
@@ -720,7 +720,8 @@ public class PackageBuilder {
         ClassDefinition cd = type.getTypeClassDef();
         ClassFieldAccessorStore store = pkgRegistry.getPackage().getClassFieldAccessorStore();
         for ( FieldDefinition attrDef : cd.getFieldsDefinitions() ) {
-            ClassFieldAccessor accessor = store.getAccessor( cd.getDefinedClass().getName(), attrDef.getName() );
+            ClassFieldAccessor accessor = store.getAccessor( cd.getDefinedClass().getName(),
+                                                             attrDef.getName() );
             attrDef.setReadWriteAccessor( accessor );
         }
     }
@@ -896,7 +897,7 @@ public class PackageBuilder {
     public Map<String, PackageRegistry> getPackageRegistry() {
         return this.pkgRegistryMap;
     }
-    
+
     public Map<String, Class> getGlobals() {
         return this.globals;
     }
