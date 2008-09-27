@@ -7,6 +7,8 @@ import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -18,6 +20,7 @@ import org.drools.RuntimeDroolsException;
 import org.drools.base.ModifyInterceptor;
 import org.drools.rule.Declaration;
 import org.drools.spi.KnowledgeHelper;
+import org.mvel.DataConversion;
 import org.mvel.Macro;
 import org.mvel.ParserContext;
 import org.mvel.compiler.AbstractParser;
@@ -53,6 +56,14 @@ public class MVELCompilationUnit
         interceptors.put( "Modify",
                           new ModifyInterceptor() );
     }
+    
+    static {
+        //for handling dates as string literals
+        DataConversion.addConversionHandler( Date.class,
+                                             new MVELDateCoercion() );
+        DataConversion.addConversionHandler( Calendar.class,
+                                             new MVELCalendarCoercion() );
+    }    
 
     private static final Map<String, Class> primitivesMap = new HashMap<String, Class>();
     static {

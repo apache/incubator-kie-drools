@@ -43,14 +43,6 @@ public class DroolsProcessMVELFactory extends BaseVariableResolverFactory
 
     private Map               localVariables;
 
-    static {
-        //for handling dates as string literals
-        DataConversion.addConversionHandler( Date.class,
-                                             new MVELDateCoercion() );
-        DataConversion.addConversionHandler( Calendar.class,
-                                             new MVELCalendarCoercion() );
-    }
-
     public DroolsProcessMVELFactory() {
 
     }
