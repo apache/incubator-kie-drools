@@ -6,26 +6,15 @@
   <classpathentry kind="output" path="target/classes"/>
   <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
   <classpathentry kind="var" path="M2_REPO/jexcelapi/jxl/2.4.2/jxl-2.4.2.jar"/>
-  <classpathentry kind="var" path="M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar" sourcepath="M2_REPO/junit/junit/3.8.1/junit-3.8.1-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar"/>
   <classpathentry kind="src" path="/drools-compiler"/>
   <classpathentry kind="src" path="/drools-core"/>
-  <classpathentry kind="var" path="M2_REPO/org/mvel/mvel/2.0-dp4/mvel-2.0-dp4.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/mvel/mvel/2.0M2/mvel-2.0M2.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/antlr/antlr-runtime/3.0.1/antlr-runtime-3.0.1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/antlr/stringtemplate/3.1-b1/stringtemplate-3.1-b1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/antlr/gunit/1.0.1/gunit-1.0.1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/apache/maven/maven-project/2.0/maven-project-2.0.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/apache/maven/maven-profile/2.0/maven-profile-2.0.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/apache/maven/maven-model/2.0/maven-model-2.0.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/codehaus/plexus/plexus-utils/1.0.4/plexus-utils-1.0.4.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/codehaus/plexus/plexus-container-default/1.0-alpha-8/plexus-container-default-1.0-alpha-8.jar"/>
-  <classpathentry kind="var" path="M2_REPO/classworlds/classworlds/1.1-alpha-2/classworlds-1.1-alpha-2.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/apache/maven/maven-artifact-manager/2.0/maven-artifact-manager-2.0.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/apache/maven/maven-repository-metadata/2.0/maven-repository-metadata-2.0.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/apache/maven/maven-artifact/2.0/maven-artifact-2.0.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/apache/maven/wagon/wagon-provider-api/1.0-alpha-5/wagon-provider-api-1.0-alpha-5.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/antlr/antlr/3.0.1/antlr-3.0.1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/antlr/antlr/2.7.7/antlr-2.7.7.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/jdt/core/3.2.3.v_686_R32x/core-3.2.3.v_686_R32x.jar"/>
-  <classpathentry kind="var" path="M2_REPO/janino/janino/2.5.10/janino-2.5.10.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/jdt/core/3.4.2.v_883_R34x/core-3.4.2.v_883_R34x.jar"/>
+  <classpathentry kind="var" path="M2_REPO/janino/janino/2.5.15/janino-2.5.15.jar"/>
   <classpathentry kind="src" path="/drools-templates"/>
+  <classpathentry kind="var" path="M2_REPO/org/jmock/jmock/2.5.0.1/jmock-2.5.0.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/hamcrest/hamcrest-library/1.1/hamcrest-library-1.1.jar"/>
 </classpath>
