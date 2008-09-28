@@ -58,7 +58,7 @@ public interface Evaluator
 
     /**
      * There are evaluators that operate on fact attributes and
-     * there are evaluators that operato on fact handle attributes
+     * there are evaluators that operate on fact handle attributes
      * (metadata). 
      * 
      * This method allows the evaluator to prepare the object
@@ -70,35 +70,134 @@ public interface Evaluator
     public Object prepareObject( InternalFactHandle handle );
     
     /**
-     * This method will extract the value from the object1 using the 
-     * extractor and compare it with the object2.
-     * @param workingMemory 
-     * @param extractor 
-     *        The extractor used to get the source value from the object
-     * @param object1
-     *        The source object to evaluate
-     * @param object2
-     *        The actual value to compare to
+     * Evaluates the expression using the provided parameters.
      * 
-     * @return Returns true if evaluation is successfull. false otherwise.
+     * This method is used when evaluating alpha-constraints,
+     * i.e., a fact attribute against a constant value. 
+     * For instance:
+     * 
+     * Person( name == "Bob" )
+     * 
+     * So, it uses a constant value "Bob" that is sent into
+     * the method as the FieldValue (value), and compares it
+     * to the value of the name field, read by using the 
+     * extractor on the fact instance (object1).
+     *  
+     * @param workingMemory
+     *        The current working memory 
+     * @param extractor 
+     *        The extractor used to get the field value from the object
+     * @param object
+     *        The source object to evaluate, i.e., the fact
+     * @param value
+     *        The actual value to compare to, i.e., the constant value.
+     * 
+     * @return Returns true if evaluation is successful. false otherwise.
      */
     public boolean evaluate(InternalWorkingMemory workingMemory,
                             InternalReadAccessor extractor,
-                            Object object1,
+                            Object object,
                             FieldValue value);
 
+    /**
+     * Evaluates the expression using the provided parameters.
+     * 
+     * This method is used for internal indexing and hashing, 
+     * when drools needs to extract and evaluate both left and
+     * right values at once.
+     *  
+     * For instance:
+     * 
+     * Person( name == $someName )
+     * 
+     * This method will be used to extract and evaluate both
+     * the "name" attribute and the "$someName" variable at once.
+     *  
+     * @param workingMemory
+     *        The current working memory
+     * @param leftExtractor
+     *        The extractor to read the left value. In the above example,
+     *        the "$someName" variable value.
+     * @param left
+     *        The source object from where the value of the variable is 
+     *        extracted.
+     * @param rightExtractor
+     *        The extractor to read the right value. In the above example,
+     *        the "name" attribute value. 
+     * @param right
+     *        The right object from where to extract the value. In the
+     *        above example, that is the "Person" instance from where to 
+     *        extract the "name" attribute.
+     * 
+     * @return Returns true if evaluation is successful. false otherwise.
+     */
     public boolean evaluate(InternalWorkingMemory workingMemory,
                             InternalReadAccessor leftExtractor,
                             Object left,
                             InternalReadAccessor rightExtractor,
                             Object right);
 
+    /**
+     * Evaluates the expression using the provided parameters.
+     * 
+     * This method is used when evaluating left-activated 
+     * beta-constraints, i.e., a fact attribute against a variable 
+     * value, that is activated from the left.
+     *  
+     * For instance:
+     * 
+     * Person( name == $someName )
+     * 
+     * This method will be used when a new $someName variable is 
+     * bound. So it will cache the value of $someName and will 
+     * iterate over the right memory (Person instances) evaluating
+     * each occurrence.
+     *  
+     * @param workingMemory
+     *        The current working memory 
+     * @param context 
+     *        The previously cached context, including the left value 
+     *        and the extractor for the right value.
+     * @param right
+     *        The right object, from where to extract the value. In the
+     *        above example, that is the "Person" instance from where to 
+     *        extract the "name" attribute.
+     * 
+     * @return Returns true if evaluation is successful. false otherwise.
+     */
     public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                       VariableContextEntry context,
-                                      Object object1);
+                                      Object right);
 
+    /**
+     * Evaluates the expression using the provided parameters.
+     * 
+     * This method is used when evaluating right-activated 
+     * beta-constraints, i.e., a fact attribute against a variable 
+     * value, that is activated from the right.
+     *  
+     * For instance:
+     * 
+     * Person( name == $someName )
+     * 
+     * This method will be used when a new Person instance is evaluated.
+     * So it will cache the value of the "Person" instance and will 
+     * iterate over the left memory comparing it to each "$someName" bound
+     * values.
+     *  
+     * @param workingMemory
+     *        The current working memory 
+     * @param context 
+     *        The previously cached context, including the right value 
+     *        and the extractor for the left value.
+     * @param left
+     *        The left object, from where to extract the bound variable. 
+     *        In the above example, that is the "$someName" variable value.
+     * 
+     * @return Returns true if evaluation is successful. false otherwise.
+     */
     public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                        VariableContextEntry context,
-                                       Object object2);
+                                       Object left);
 
 }
