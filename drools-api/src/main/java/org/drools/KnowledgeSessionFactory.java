@@ -16,7 +16,7 @@ public class KnowledgeSessionFactory {
         return provider.newStatefulKnowledgeSession();
     }
     
-    @SuppressWarnings("unchecked")
+    	
 	private static void loadProvider() {
         try {
             ChainedProperties properties = new ChainedProperties( "drools-providers.conf" );
