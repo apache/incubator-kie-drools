@@ -6,7 +6,7 @@
     <title>Building the Source</title>
 
     <para>Now that we have the source the next step is to build and install
-    the source. Since version 3.1 Drools uses <indexterm>  Maven 2 </indexterm> to build the system. There are two profiles
+    the source. Since version 3.1 Drools uses <indexterm><primary>Maven 2</primary></indexterm> to build the system. There are two profiles
     available which enable the associated modules "documentation" and
     "Eclipse"; this enables quicker building of the core modules for
     developers. The Eclipse profile will download Eclipse into the
