@@ -163,7 +163,7 @@
       </itemizedlist></para>
 
     <para>If rules are a new technology for your project teams, the overhead
-    in getting going must be factored in. Its not a trivial technology, but
+    in getting going must be factored in. It is not a trivial technology, but
     this document tries to make it easier to understand.</para>
 
     <para>Typically in a modern OO application you would use a rule engine to
@@ -243,7 +243,7 @@
     in the past (where there are control tables that store meta-data that
     changes your applications behavior) - these can work well when the
     control can remain very limited. However, they can quickly grow out of
-    control if extended to much (such that only the original creators can
+    control if extended too much (such that only the original creators can
     change the applications behavior) or they cause the application to
     stagnate as they are too inflexible.</para>
   </section>

@@ -19,13 +19,13 @@
   normally part of a procedural execution flow, where at a specific point in
   time it checks the condition. Where as "when" indicates it's not tied to a
   specific evaluation sequence or point in time, at any time during the life
-  time of the engine "when" this occurs, do that. Rule</para>
+  time of the engine "when" this occurs, do that Rule.</para>
 
   <para>A rule must have a name, and be a unique name for the rule package. If
   you define a rule twice in the same DRL it produce an error while loading.
   If you add a DRL that has includes a rule name already in the package, it
   will replace the previous rule. If a rule name is to have spaces, then it
-  will need to be in double quotes (its best to always use double
+  will need to be in double quotes (it is best to always use double
   quotes).</para>
 
   <para>Attributes are optional, and are described below (they are best kept
@@ -104,8 +104,7 @@ end</programlisting>
 				<para>default value : false</para>
 		
 				<para>type : Boolean</para>
-		
-				<para>when a ruleflow-group becomes active or an agenda-group receives the focus any rules that ahve lock-on-active set to try cannot place activations onto the agenda, the rules are matched and the resulting activations discarded. This is a stronger version of no-loop. It's ideally for calculation rules where you have a number of rules that will modify a fact and you don't want any rule re-matching and firing. In summary fire these currently active rules and only these rules, no matter how the data changes, do not allow any more activations for the rules with the attribute set to true. When the ruleflow-group is no longer active or agenda-group loses the focus those rules with lock-on-active set to true can once again add activations onto the agenda.</para>
+		<para>when a ruleflow-group becomes active or an agenda-group receives the focus any rules that have lock-on-active set to try cannot place activations onto the agenda, the rules are matched and the resulting activations discarded. This is a stronger version of no-loop. It's ideally for calculation rules where you have a number of rules that will modify a fact and you don't want any rule re-matching and firing. In summary fire these currently active rules and only these rules, no matter how the data changes, do not allow any more activations for the rules with the attribute set to true. When the ruleflow-group is no longer active or agenda-group loses the focus those rules with lock-on-active set to true can once again add activations onto the agenda.</para>
 			</listitem>
 		</varlistentry>
 	
@@ -189,7 +188,7 @@ end</programlisting>
 		</varlistentry>
 	
 		<varlistentry>	
-			<term>date-exptires</term>
+			<term>date-expires</term>
 	
 			<listitem>
 				<para>default value : N/A</para>
@@ -1023,7 +1022,7 @@ Person( eval( girlAge == boyAge + 2 ), sex = 'M' )
         Working Memory is not aware of any of the nested values, and do not
         know when they change; they should be considered immutable while any
         of their parent references are inserted into the Working Memory. If
-        you wish to modify a nested value you should remove he parent objects
+        you wish to modify a nested value you should remove the parent objects
         first and re-assert afterwards. If you only have a single parent at
         the root of the graph, when in the MVEL dialect, you can use the
         'modify' keyword and its block setters to write the nested accessor

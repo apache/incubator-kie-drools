@@ -247,7 +247,7 @@ public void cheddarCheese(Cheese cheese) {
     <para>So in Java we can say that a simple proposition is of the form
     'variable' 'operator' 'value' - where we often refer to 'value' as being a
     literal value - a proposition can be thought as a field constraint.
-    Further to this propositions can be combined with conjunctive and
+    Further to this proposition can be combined with conjunctive and
     disjunctive connectives, which is the logic theorists way of saying
     '&amp;&amp;' and '||'. The following shows two open propositional
     statements connected together with a single disjunctive connective.</para>
@@ -313,7 +313,7 @@ public void cheddarCheese(Cheese cheese) {
     private String name;
     private String studentName;
     private int score;
-    
+     ...
     }
     </programlisting>
 
@@ -325,7 +325,7 @@ public void cheddarCheese(Cheese cheese) {
     
     List failedStudents = new ArrayList();
     
-    for ( Iterator studentIter = students.iterator(); studentIter.hasNext() {
+    for ( Iterator studentIter = students.iterator(); studentIter.hasNext();) {
         Student student = ( Student ) studentIter.next();
         for ( Iterator it = student.getModules.iterator(); it.hasNext(); ) {
             Module module = ( Module ) it.next();

@@ -497,7 +497,7 @@ String outputDRL = write.marshall(read.unmarshal(brl));
     <title>Domain Specific Languages</title>
 
     <para>Domain Specific Languages (dsl) allow you to create a language that
-    allows your rules to look like, rules ! Most often the domain specific
+    allows your rules to look like... rules ! Most often the domain specific
     language reads like natural language. Typically you would look at how a
     business analyst would describe the rule, in their own words, and then map
     this to your object model via rule constructs. A side benefit of this is
