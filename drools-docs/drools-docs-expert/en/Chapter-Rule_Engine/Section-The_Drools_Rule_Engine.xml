@@ -361,9 +361,9 @@ RuleBase ruleBase = RuleBaseFactory.newRuleBase( conf );</programlisting>
         thus causing new work to be needed. 
       -->
 
-      <para>When an Object is insert it returns a FactHandle. This FactHandle
+      <para>When an Object is inserted it returns a FactHandle. This FactHandle
       is the token used to represent your insert Object inside the
-      WorkingMemory, it is also how you will interact with the Working Memory
+      WorkingMemory, it will be used when interacting with the Working Memory
       when you wish to retract or modify an object.</para>
 
       <programlisting>Cheese stilton = new Cheese("stilton");
@@ -405,7 +405,7 @@ session.retract( stiltonHandle );            </programlisting>
       <title>Update</title>
 
       <para>The Rule Engine must be notified of modified Facts, so that it can
-      be re-process. Modification internally is actually a retract and then an
+      be re-processed. Modification internally is actually a retract and then an
       insert; so it clears the WorkingMemory and then starts again. Use the
       modifyObject method to notify the Working Memory of changed objects, for
       objects that are not able to notify the Working Memory themselves.
@@ -653,7 +653,7 @@ public void setState(final String newState) {
       external source). For instance, if a new working memory is created, and
       no facts are asserted, calling the fireAllRules will cause the Initial
       Fact to propagate, possibly activating rules (otherwise, nothing would
-      happen as there are no other facts to start with).</para>
+      happen as there is no other fact to start with).</para>
     </section>
   </section>
 
@@ -949,7 +949,7 @@ List list = ( List ) result.getGlobal( "list" );</programlisting>
 
     <para>If we logically insert an object when there is an equal STATED
     object it will fail and return null. If we STATE an object that has an
-    exist equal object that is JUSTIFIED we override the Fact - how this
+    existing equal object that is JUSTIFIED we override the Fact - how this
     override works depends on the configuration setting
     "WM_BEHAVIOR_PRESERVE". When the property is set to discard we use the
     existing handle and replace the existing instance with the new Object -

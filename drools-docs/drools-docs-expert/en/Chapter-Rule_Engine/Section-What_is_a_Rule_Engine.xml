@@ -101,8 +101,7 @@ then
         <primary>Rete</primary>
       </indexterm> Rete algorithm, <indexterm>
         <primary>Leaps</primary>
-      </indexterm> Leaps use to be supported but was removed due to poor
-    maintenance. The Drools <indexterm>
+      </indexterm> Leaps used to be provided but was retired as it became unmaintaned. The Drools <indexterm>
         <primary>Rete</primary>
       </indexterm> Rete implementation is called ReteOO, signifying that
     Drools has an enhanced and optimized implementation of the Rete algorithm
