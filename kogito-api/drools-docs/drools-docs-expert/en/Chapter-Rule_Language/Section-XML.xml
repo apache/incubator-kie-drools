@@ -293,7 +293,7 @@
     <para>The Eval element allows the execution of a valid snippet of Java
     code - as long as it evaluates to a boolean (do not end it with a
     semi-colon, as it is just a fragment) - this can include calling a
-    function. The Eval is less efficient then then columns, as the rule engine
+    function. The Eval is less efficient than the columns, as the rule engine
     has to evaluate it each time, but it is a "catch all" feature for when you
     can express what you need to do with Column constraints.</para>
   </section>

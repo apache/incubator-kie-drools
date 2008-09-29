@@ -86,7 +86,7 @@
   checks.</para>
 
   <para>There are two two-input nodes; JoinNode and NotNode - both are
-  types of BetaNodes. BetaNodes are use to compare 2 objects, and their
+  types of BetaNodes. BetaNodes are used to compare 2 objects, and their
   fields, to each other. The objects may be the same or different types. By
   convention we refer to the two inputs as left and right. The left input for
   a BetaNode is generally a list of objects; in Drools this is a Tuple. The

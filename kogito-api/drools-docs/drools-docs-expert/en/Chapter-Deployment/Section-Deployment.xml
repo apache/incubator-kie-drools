@@ -203,7 +203,7 @@ name=MyConfig</programlisting>
     <section>
       <title>Out of process rule building</title>
 
-      <para>In this case, rules are build into their binary process outside of
+      <para>In this case, rules are built into their binary process outside of
       the runtime system (for example in a deployment server). The chief
       advantage of deploying from an outside process is that the runtime
       system can have minimal dependencies (just one jar). It also means that
