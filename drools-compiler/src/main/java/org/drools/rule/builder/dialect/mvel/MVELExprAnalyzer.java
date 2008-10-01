@@ -70,6 +70,7 @@ public class MVELExprAnalyzer {
             final ParserContext parserContext = new ParserContext( dialect.getImports(),
                                                                    null,
                                                                    "xxx" ); //context.getPkg().getName() + "." + context.getRuleDescr().getClassName() );
+            parserContext.getParserConfiguration().setClassLoader( context.getPackageBuilder().getRootClassLoader() );
 
             if ( dialect.getPackgeImports() != null && !dialect.getPackgeImports().isEmpty() ) {
 	            for ( Iterator it = dialect.getPackgeImports().values().iterator(); it.hasNext(); ) {
@@ -81,9 +82,9 @@ public class MVELExprAnalyzer {
             parserContext.setStrictTypeEnforcement( false );
 
             parserContext.setInterceptors( dialect.getInterceptors() );
-
+            
             compiler.compile( parserContext );
-
+            
             result = analyze( compiler.getParserContextState().getInputs().keySet(),
                               availableIdentifiers );
 
