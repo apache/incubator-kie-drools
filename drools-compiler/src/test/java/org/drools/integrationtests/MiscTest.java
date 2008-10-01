@@ -642,6 +642,44 @@ public class MiscTest extends TestCase {
         assertEquals( person,
                       result.get( 1 ) );
 
+
+    }
+
+
+    public void testGeneratedBeansMVEL() throws Exception {
+        final PackageBuilderConfiguration pbconf = new PackageBuilderConfiguration();
+        //pbconf.setDumpDir( new File( "target" ) );
+        final PackageBuilder builder = new PackageBuilder( pbconf );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_GeneratedBeansMVEL.drl" ) ) );
+        assertFalse( builder.getErrors().toString(),
+                     builder.hasErrors() );
+
+        Package p = builder.getPackage();
+
+        // disabling shadow proxies, since they don't work yet with generated facts and
+        // we will scrap shadow proxies in drools 5 anyway.
+        RuleBaseConfiguration conf = new RuleBaseConfiguration();
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase( conf );
+        ruleBase.addPackage( p );
+
+        // test rulebase serialization
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
+
+        // Retrieve the generated fact type
+        FactType pf = ruleBase.getFactType( "mortgages.Applicant" );
+        FactType af = ruleBase.getFactType( "mortgages.LoanApplication" );
+
+        Object person = pf.newInstance();
+        pf.set(person, "creditRating", "OK");
+
+        Object application = af.newInstance();
+        StatefulSession sess = ruleBase.newStatefulSession();
+        sess.insert(person);
+        sess.insert(application);
+
+        sess.fireAllRules();
+
+
     }
 
     public void testGeneratedBeans2() throws Exception {
@@ -677,7 +715,7 @@ public class MiscTest extends TestCase {
         assertEquals( "stilton",
                       cheeseFact.get( cheese,
                                       "type" ) );
-        
+
         // testing equals method
         Object cheese2 = cheeseFact.newInstance();
         cheeseFact.set( cheese2,
@@ -685,7 +723,7 @@ public class MiscTest extends TestCase {
                         "stilton" );
         assertEquals( cheese,
                       cheese2 );
-        
+
 
         FactType personType = ruleBase.getFactType( "org.drools.generatedbeans.Person" );
 
@@ -710,13 +748,13 @@ public class MiscTest extends TestCase {
         personType.set( ps2,
                         "age",
                         30 );
-        
+
         assertEquals( ps, ps2);
-        
+
         personType.set( ps2,
                         "last",
                         "little" );
-        
+
         assertFalse( ps.equals( ps2 ) );
 
         // creating a stateful session
@@ -878,11 +916,11 @@ public class MiscTest extends TestCase {
         // pre build the package
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackage( packageDescr );
-        
+
         if ( builder.hasErrors() ) {
             System.err.println( builder.getErrors() );
         }
-        
+
         Package pkg = builder.getPackage();
         pkg = SerializationHelper.serializeObject( pkg );
 
