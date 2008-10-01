@@ -230,6 +230,7 @@ public class MVELCompilationUnit
         final ParserContext parserContext = new ParserContext( resolvedImports,
                                                                null,
                                                                "xxx" );// context.getPkg().getName()+"."+context.
+        parserContext.getParserConfiguration().setClassLoader( classLoader );
 
         for ( String pkgImport : this.pkgImports ) {
             parserContext.addPackageImport( pkgImport );
