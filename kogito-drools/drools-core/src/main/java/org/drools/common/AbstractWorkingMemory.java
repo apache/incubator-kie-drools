@@ -31,8 +31,10 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -187,6 +189,8 @@ public abstract class AbstractWorkingMemory
 
     protected Map<RuleBasePartitionId, PartitionTaskManager> partitionManagers;
 
+    protected transient AtomicReference<java.util.concurrent.ExecutorService> threadPool = new AtomicReference<java.util.concurrent.ExecutorService>();
+
     private Map<InternalFactHandle, PropagationContext>      modifyContexts;
 
     // ------------------------------------------------------------
@@ -321,20 +325,29 @@ public abstract class AbstractWorkingMemory
      */
     public void startPartitionManagers() {
         if ( this.ruleBase.getConfiguration().isMultithreadEvaluation() ) {
-            for ( PartitionTaskManager task : this.partitionManagers.values() ) {
-                task.startService();
+            int maxThreads = (this.ruleBase.getConfiguration().getMaxThreads() > 0) ? this.ruleBase.getConfiguration().getMaxThreads() : this.ruleBase.getPartitionIds().size();
+            if( this.threadPool.compareAndSet( null, Executors.newFixedThreadPool( maxThreads ) ) ) {
+                for ( PartitionTaskManager task : this.partitionManagers.values() ) {
+                    task.setPool( this.threadPool.get() );
+                }
             }
         }
     }
 
     public void stopPartitionManagers() {
         if ( this.ruleBase.getConfiguration().isMultithreadEvaluation() ) {
-            for ( PartitionTaskManager task : this.partitionManagers.values() ) {
-                // what to do here? should we simply wait for a timeout and give
-                // up?
-                task.stopServiceAndWait();
+            java.util.concurrent.ExecutorService service = this.threadPool.get();
+            if( this.threadPool.compareAndSet( service, null ) ) {
+                service.shutdown();
+                for ( PartitionTaskManager task : this.partitionManagers.values() ) {
+                    task.setPool( null );
+                }
             }
         }
+    }
+    
+    public boolean isPartitionManagersActive() {
+        return this.threadPool.get() != null;
     }
 
     private void initTransient() {
