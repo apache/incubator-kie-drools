@@ -69,6 +69,15 @@ import org.drools.workflow.instance.node.WorkItemNodeInstance;
 public class OutputMarshaller {
     public static void writeSession(MarshallerWriteContext context) throws IOException {
         ReteooWorkingMemory wm = (ReteooWorkingMemory) context.wm;
+        
+        final boolean multithread = wm.isPartitionManagersActive(); 
+        // is multi-thread active?
+        if( multithread ) {
+            context.writeBoolean( true );
+            wm.stopPartitionManagers();
+        } else {
+            context.writeBoolean( false );
+        }
 
         context.writeInt( wm.getFactHandleFactory().getId() );
         context.writeLong( wm.getFactHandleFactory().getRecency() );
@@ -100,6 +109,10 @@ public class OutputMarshaller {
         writeWorkItems( context );
 
         writeTimers( context );
+        
+        if( multithread ) {
+            wm.startPartitionManagers();
+        }
     }
 
     public static void writeAgenda(MarshallerWriteContext context) throws IOException {

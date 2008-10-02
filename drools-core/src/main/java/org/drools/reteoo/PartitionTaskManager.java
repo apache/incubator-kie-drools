@@ -16,120 +16,50 @@
 
 package org.drools.reteoo;
 
-import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.spi.PropagationContext;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.atomic.AtomicReference;
+
+import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.spi.PropagationContext;
 
 /**
- * A class to control the worker thread for each rulebase partition.
- * It contains an internal Single Thread Pool that ensures thread
- * respawn and a task that ensures no more than a single thread is
- * executing it concurrently.
+ * A class to control the tasks for a given rulebase partition.
+ * It requires a thread pool that is created in the working 
+ * memory and injected in here.
  *
  * @author <a href="mailto:tirelli@post.com">Edson Tirelli</a>
  */
 public class PartitionTaskManager {
 
-    private ExecutorService pool = null;
     private PartitionTask task = null;
+    private AtomicReference<ExecutorService> pool = new AtomicReference<ExecutorService>();
 
     public PartitionTaskManager( final InternalWorkingMemory workingMemory ) {
         this.task = new PartitionTask( workingMemory );
     }
 
     /**
-     * Starts the service
+     * Sets the thread pool to be used by this partition
+     * @param pool
      */
-    public synchronized void startService() {
-        if( !isRunning() ) {
-            // I'm not sure we should create and destroy the pool every service start/stop,
-            // but for now, lets do that. Later we can reevaluate if that is needed.
-            this.pool = Executors.newSingleThreadExecutor();
-            this.pool.execute( this.task );
-        }
-    }
-
-    /**
-     * Nicely requests the service to stop. This method will not wait
-     * for the service to finish.
-     */
-    public synchronized boolean stopService() {
-        boolean result = true;
-        if( isRunning() ) {
-            this.task.shutdown();
-            // I'm not sure we should create and destroy the pool every service start/stop,
-            // but for now, lets do that. Later we can reevaluate if that is needed.
-            this.pool.shutdown();
-            this.pool = null;
-        }
-        return result;
-    }
-
-    /**
-     * Nicely requests the service to stop. This method will wait up to
-     * the given timeout for the service to finish and will return.
-     *
-     * @return true in case the services finished, false otherwise
-     */
-    public synchronized boolean stopService( final long timeout, final TimeUnit unit ) {
-        boolean result = true;
-        if( isRunning() ) {
-            this.task.shutdown();
-            // I'm not sure we should create and destroy the pool every service start/stop,
-            // but for now, lets do that. Later we can reevaluate if that is needed.
-            this.pool.shutdown();
-            try {
-                result = this.pool.awaitTermination( timeout, unit );
-            } catch( InterruptedException e ) {
-                result = false;
+    public void setPool(ExecutorService pool) {
+        if( pool != null && this.pool.compareAndSet( null, pool ) ) {
+            int size = this.task.queue.size();
+            for( int i = 0; i < size; i++ ) {
+                this.pool.get().execute( this.task );
             }
-            this.pool = null;
+        } else {
+            this.pool.set( pool );
         }
-        return result;
     }
 
-    /**
-     * Nicely requests the service to stop. This method will wait until
-     * the service finishes or an InterruptedException is generated
-     * and will return.
-     *
-     * @return true in case the services finished, false otherwise
-     */
-    public synchronized boolean stopServiceAndWait() {
-        boolean result = true;
-        if( isRunning() ) {
-            this.task.shutdown();
-            // I'm not sure we should create and destroy the pool every service start/stop,
-            // but for now, lets do that. Later we can reevaluate if that is needed.
-            this.pool.shutdown();
-            try {
-                while( !this.pool.awaitTermination( 10, TimeUnit.SECONDS ) ) {
-                    ;
-                }
-                result = this.pool.isTerminated();
-            } catch( InterruptedException e ) {
-                result = false;
-            }
-            this.pool = null;
-        }
-        return result;
-    }
-
-    /**
-     * Checks if the task is running.
-     *
-     * @return true if the task is running. false otherwise.
-     */
-    public synchronized boolean isRunning() {
-        return pool != null && !pool.isTerminated();
-    }
 
     /**
      * Adds the given action to the processing queue
@@ -138,30 +68,27 @@ public class PartitionTaskManager {
      * @return true if the action was successfully added to the processing queue. false otherwise.
      */
     public boolean enqueue( final Action action ) {
-        return this.task.enqueue( action );
+        boolean result = this.task.enqueue( action );
+        assert result : "result must be true";
+        ExecutorService service = this.pool.get(); 
+        if(  service != null ) {
+            service.execute( this.task );
+        } 
+        return result;
     }
 
     /**
      * A worker task that keeps processing the nodes queue.
-     * The task uses a blocking queue and keeps processing
-     * nodes while there are nodes in the queue and it is not
-     * shutdown. If the queue is emptied, the class will wait
-     * until a new node is added.
+     * The task uses a non-blocking queue and is re-submitted
+     * for execution for each element that is added to the queue.
      */
     public static class PartitionTask implements Runnable {
 
         // the queue with the nodes that need to be processed
-        private BlockingQueue<Action> queue;
+        private Queue<Action> queue;
 
         // the working memory reference
         private InternalWorkingMemory workingMemory;
-
-        // a flag to nicely shutdown the thread
-        private volatile AtomicBoolean shutdown;
-
-        // the actual thread that is running
-        private Thread runner;
-
 
         /**
          * Constructor
@@ -169,10 +96,8 @@ public class PartitionTaskManager {
          * @param workingMemory the working memory reference that is used for node processing
          */
         public PartitionTask( final InternalWorkingMemory workingMemory ) {
-            this.queue = new LinkedBlockingQueue<Action>();
-            this.shutdown = new AtomicBoolean( false );
+            this.queue = new ConcurrentLinkedQueue<Action>();
             this.workingMemory = workingMemory;
-            this.runner = null;
         }
 
         /**
@@ -181,47 +106,9 @@ public class PartitionTaskManager {
          * @see Runnable
          */
         public void run() {
-            // this task can not be shared among multiple threads
-            if( checkAndSetRunning() ) {
-                return;
-            }
-
-            while( !shutdown.get() ) {
-                try {
-                    // this is a blocking call
-                    if( Thread.currentThread().isInterrupted() ) {
-                        cancel();
-                        break;
-                    }
-                    Action action = queue.take();
-                    action.execute( workingMemory );
-
-                } catch( InterruptedException e ) {
-                    cancel();
-                }
-            }
-        }
-
-        /**
-         * Requests this task to shutdown
-         */
-        public void shutdown() {
-            synchronized( this ) {
-                if( this.runner != null ) {
-                    this.runner.interrupt();
-                }
-            }
-            this.cancel();
-        }
-
-        /**
-         * Returns true if this task is currently executing
-         *
-         * @return true if the task is currently executing
-         */
-        public boolean isRunning() {
-            synchronized( this ) {
-                return !shutdown.get() && this.runner != null;
+            Action action = queue.poll();
+            if( action != null ) {
+                action.execute( workingMemory );
             }
         }
 
@@ -233,41 +120,8 @@ public class PartitionTaskManager {
          * @return true if the node was successfully added to the queue. false otherwise.
          */
         public boolean enqueue( final Action action ) {
-            return this.queue.offer( action );
+            return this.queue.add( action );
         }
-
-        /**
-         * Cancels current execution and cleans up used resources
-         */
-        private void cancel() {
-            // if the blocking call was interrupted, then check for the cancelation flag
-            shutdown.set( true );
-            // cleaning up cache reference
-            synchronized( this ) {
-                this.runner = null;
-            }
-        }
-
-        /**
-         * Checks if the task is already running in a different thread. If it is not
-         * running yet, caches current thread reference.
-         *
-         * @return true if the task is already running in a different thread. false otherwise.
-         */
-        private boolean checkAndSetRunning() {
-            synchronized( this ) {
-                if( this.runner == null && !Thread.currentThread().isInterrupted() ) {
-                    // if it is not running yet, cache the thread reference
-                    this.runner = Thread.currentThread();
-                    this.shutdown.set( false );
-                } else {
-                    // there can be only one thread executing each instance of PartitionTask
-                    return true;
-                }
-            }
-            return false;
-        }
-
     }
 
     /**

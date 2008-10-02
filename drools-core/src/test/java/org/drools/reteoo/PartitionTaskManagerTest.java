@@ -15,16 +15,15 @@
  */
 package org.drools.reteoo;
 
-import java.util.concurrent.TimeUnit;
-import java.io.ObjectOutput;
-import java.io.IOException;
-import java.io.ObjectInput;
-
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.common.InternalWorkingMemory;
+import org.jmock.Expectations;
+import org.jmock.Mockery;
+import org.jmock.lib.concurrent.DeterministicScheduler;
 
 /**
  * Test case for PartitionTaskManager
@@ -32,14 +31,14 @@ import org.drools.common.InternalWorkingMemory;
  * @author <a href="mailto:tirelli@post.com">Edson Tirelli</a>
  */
 public class PartitionTaskManagerTest extends TestCase {
-    private MockAction action;
+    Mockery context = new Mockery();
     private PartitionTaskManager manager;
+    private InternalWorkingMemory workingMemory;
 
     @Override
     public void setUp() {
         RuleBase rulebase = RuleBaseFactory.newRuleBase();
-        InternalWorkingMemory workingMemory = (InternalWorkingMemory) rulebase.newStatefulSession();
-        action = new MockAction();
+        workingMemory = (InternalWorkingMemory) rulebase.newStatefulSession();
         manager = new PartitionTaskManager( workingMemory );
     }
 
@@ -48,61 +47,79 @@ public class PartitionTaskManagerTest extends TestCase {
 
     }
 
-    public void testStartStopService() throws InterruptedException {
-        assertFalse( manager.isRunning() );
-        manager.startService();
-        Thread.sleep( 1000 );
-        assertTrue( manager.isRunning() );
-        manager.stopService();
-        Thread.sleep( 1000 );
-        assertFalse( manager.isRunning() );
+    public void testEnqueueBeforeSettingExecutor() throws InterruptedException {
+        final PartitionTaskManager.Action action = context.mock( PartitionTaskManager.Action.class );
+        // set expectations for the scenario
+        context.checking( new Expectations() {{
+            oneOf( action ).execute( workingMemory );
+        }});
+
+        manager.enqueue( action );
+
+        // this is a jmock helper class that implements the ExecutorService interface
+        DeterministicScheduler pool = new DeterministicScheduler();
+        // set the pool
+        manager.setPool( pool );
+
+        // executes all pending actions using current thread
+        pool.runUntilIdle();
+
+        // check expectations
+        context.assertIsSatisfied();
     }
 
-    public void testNodeCallbacks() throws InterruptedException {
-        // should be possible to enqueue before starting the service,
-        // even if that should never happen
+    public void testFireCorrectly() throws InterruptedException {
+        // creates a mock action
+        final PartitionTaskManager.Action action = context.mock( PartitionTaskManager.Action.class );
+        
+        // this is a jmock helper class that implements the ExecutorService interface
+        DeterministicScheduler pool = new DeterministicScheduler();
+        // set the pool
+        manager.setPool( pool );
+        
+        // set expectations for the scenario
+        context.checking( new Expectations() {{
+            oneOf( action ).execute( workingMemory );
+        }});
+        
+        // fire scenario
         manager.enqueue( action );
-        manager.startService();
-        manager.enqueue( action );
-        // give the engine some time
-        Thread.sleep( 1000 ); 
-        assertTrue( manager.stopService( 10, TimeUnit.SECONDS ) );
-        assertEquals( 2, action.getCallbackCounter() );
-        // should be possible to enqueue after the stop,
-        // but callback must not be executed
-        manager.enqueue( action );
-        manager.enqueue( action );
-        manager.enqueue( action );
-        // making sure the service is not processing the nodes
-        Thread.sleep( 1000 );
-        assertEquals( 2, action.getCallbackCounter() );
-        // restarting service
-        manager.startService();
-        // making sure the service had time to process the nodes
-        Thread.sleep( 1000 );
-        assertTrue( manager.stopService( 10, TimeUnit.SECONDS ) );
-        assertEquals( 5, action.getCallbackCounter() );
+        
+        // executes all pending actions using current thread
+        pool.runUntilIdle();
+        
+        // check expectations
+        context.assertIsSatisfied();
     }
 
-    public static class MockAction implements PartitionTaskManager.Action {
-        private volatile long callbackCounter = 0;
+    public void testActionCallbacks() throws InterruptedException {
+        // creates a mock action
+        final PartitionTaskManager.Action action = context.mock( PartitionTaskManager.Action.class );
+        // this is a jmock helper class that implements the ExecutorService interface
+        DeterministicScheduler pool = new DeterministicScheduler();
+        
+        // set expectations for the scenario
+        context.checking( new Expectations() {{
+            exactly(5).of( action ).execute( workingMemory );
+        }});
+        
+        // enqueue before pool
+        manager.enqueue( action );
+        manager.enqueue( action );
 
-        public synchronized long getCallbackCounter() {
-            return this.callbackCounter;
-        }
-
-        public void execute( InternalWorkingMemory workingMemory ) {
-            synchronized( this ) {
-                callbackCounter++;
-            }
-        }
-
-        public void writeExternal( ObjectOutput out ) throws IOException {
-            //To change body of implemented methods use File | Settings | File Templates.
-        }
-
-        public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException {
-            //To change body of implemented methods use File | Settings | File Templates.
-        }
+        // set the pool
+        manager.setPool( pool );
+        
+        // enqueue after setting the pool
+        manager.enqueue( action );
+        manager.enqueue( action );
+        manager.enqueue( action );
+        
+        // executes all pending actions using current thread
+        pool.runUntilIdle();
+        
+        // check expectations
+        context.assertIsSatisfied();
     }
+
 }

@@ -121,6 +121,7 @@ public class RuleBaseConfiguration
     // the rulebase into multiple partitions that can be evaluated
     // in parallel by using multiple internal threads
     private boolean                        multithread;
+    private int  	                       maxThreads;
 
     private ConflictResolver               conflictResolver;
 
@@ -159,6 +160,7 @@ public class RuleBaseConfiguration
         out.writeObject( processNodeInstanceFactoryRegistry );
         out.writeBoolean( advancedProcessRuleIntegration );
         out.writeBoolean( multithread );
+        out.writeInt( maxThreads );
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -184,6 +186,7 @@ public class RuleBaseConfiguration
         processNodeInstanceFactoryRegistry = (NodeInstanceFactoryRegistry) in.readObject();
         advancedProcessRuleIntegration = in.readBoolean();
         multithread = in.readBoolean();
+        maxThreads = in.readInt();
     }
 
     /**
@@ -308,7 +311,10 @@ public class RuleBaseConfiguration
                                                                                                 "false" ) ).booleanValue() );
 
         setMultithreadEvaluation( Boolean.valueOf( this.chainedProperties.getProperty( "drools.multithreadEvaluation",
-                                                                                    "false" ) ).booleanValue() );
+                                                                                       "false" ) ).booleanValue() );
+
+         setMaxThreads( Integer.parseInt( this.chainedProperties.getProperty( "drools.maxThreads",
+                                                                              "-1" ) ) );
     }
 
     /**
@@ -515,6 +521,30 @@ public class RuleBaseConfiguration
      */
     public boolean isMultithreadEvaluation() {
         return this.multithread;
+    }
+    
+    /**
+     * If multi-thread evaluation is enabled, this parameter configures the 
+     * maximum number of threads each session can use for concurrent Rete
+     * propagation. 
+     * 
+     * @param maxThreads the maximum number of threads to use. If 0 or a 
+     *                   negative number is set, the engine will use number
+     *                   of threads equal to the number of partitions in the
+     *                   rule base. Default number of threads is 0. 
+     */
+    public void setMaxThreads( final int maxThreads ) {
+    	this.maxThreads = maxThreads;
+    }
+    
+    /**
+     * Returns the configured number of maximum threads to use for concurrent
+     * propagation when multi-thread evaluation is enabled. Default is zero.
+     * 
+     * @return
+     */
+    public int getMaxThreads() {
+    	return this.maxThreads;
     }
 
     private void initProcessNodeInstanceFactoryRegistry() {

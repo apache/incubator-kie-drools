@@ -98,6 +98,7 @@ public class InputMarshaller {
     public static ReteooStatefulSession readSession(ReteooStatefulSession session,
                                                     MarshallerReaderContext context) throws IOException,
                                                                                     ClassNotFoundException {
+        boolean multithread = context.readBoolean();
         int handleId = context.readInt();
         long handleCounter = context.readLong();
         long propagationCounter = context.readLong();
@@ -129,6 +130,10 @@ public class InputMarshaller {
         readWorkItems( context );
 
         readTimers( context );
+        
+        if( multithread ) {
+            session.startPartitionManagers();
+        }
 
         return session;
     }
@@ -146,6 +151,9 @@ public class InputMarshaller {
                                                     int id,
                                                     ExecutorService executor) throws IOException,
                                                                              ClassNotFoundException {
+
+        boolean multithread = context.readBoolean();
+        
         FactHandleFactory handleFactory = context.ruleBase.newFactHandleFactory( context.readInt(),
                                                                                  context.readLong() );
 
@@ -189,6 +197,10 @@ public class InputMarshaller {
         readWorkItems( context );
 
         readTimers( context );
+
+        if( multithread ) {
+            session.startPartitionManagers();
+        }
 
         return session;
     }
