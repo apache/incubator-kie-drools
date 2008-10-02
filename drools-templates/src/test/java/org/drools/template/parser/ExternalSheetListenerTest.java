@@ -408,6 +408,16 @@ public class ExternalSheetListenerTest extends TestCase {
                 public SessionClock getSessionClock() {
                     return null;
                 }
+
+				public void fireUntilHalt() {
+					// TODO Auto-generated method stub
+					
+				}
+
+				public void fireUntilHalt(AgendaFilter agendaFilter) {
+					// TODO Auto-generated method stub
+					
+				}
 			};
 		}
 	}
