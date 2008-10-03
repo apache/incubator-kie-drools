@@ -11,8 +11,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -21,7 +19,6 @@ import org.drools.base.ModifyInterceptor;
 import org.drools.rule.Declaration;
 import org.drools.spi.KnowledgeHelper;
 import org.mvel.DataConversion;
-import org.mvel.Macro;
 import org.mvel.ParserContext;
 import org.mvel.compiler.AbstractParser;
 import org.mvel.compiler.ExpressionCompiler;
