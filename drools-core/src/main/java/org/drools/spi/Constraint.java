@@ -1,10 +1,9 @@
 package org.drools.spi;
 
-import java.io.Serializable;
 import java.io.Externalizable;
-import java.io.ObjectOutput;
 import java.io.IOException;
 import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 import org.drools.rule.Declaration;
 
@@ -39,8 +38,12 @@ public interface Constraint
     Declaration[] getRequiredDeclarations();
 
     /**
-     * A constraint may be required to replace an old
-     * declaration object by a new updated one
+     * When a rule contains multiple logical branches, i.e., makes 
+     * use of 'OR' CE, it is required to clone patterns and declarations
+     * for each logical branch. Since this is done at ReteOO build
+     * type, when constraints were already created, eventually
+     * some constraints need to update their references to the
+     * declarations.
      *
      * @param oldDecl
      * @param newDecl

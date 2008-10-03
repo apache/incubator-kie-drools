@@ -1,5 +1,11 @@
 package org.drools.base.mvel;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
+
 import org.drools.WorkingMemory;
 import org.drools.common.InternalRuleBase;
 import org.drools.rule.MVELDialectRuntimeData;
@@ -9,15 +15,6 @@ import org.drools.spi.KnowledgeHelper;
 import org.mvel.MVEL;
 import org.mvel.compiler.CompiledExpression;
 import org.mvel.debug.DebugTools;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
 
 public class MVELConsequence
     implements

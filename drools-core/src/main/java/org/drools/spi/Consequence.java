@@ -40,4 +40,5 @@ public interface Consequence
      */
     void evaluate(KnowledgeHelper knowledgeHelper,
                   WorkingMemory workingMemory) throws Exception;
+    
 }

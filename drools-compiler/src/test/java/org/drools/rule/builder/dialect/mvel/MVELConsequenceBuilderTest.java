@@ -33,6 +33,7 @@ import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.MockLeftTupleSink;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.rule.Declaration;
+import org.drools.rule.GroupElement;
 import org.drools.rule.Package;
 import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
@@ -75,16 +76,14 @@ public class MVELConsequenceBuilderTest extends TestCase {
         final ObjectType cheeseObjeectType = new ClassObjectType( Cheese.class );
 
         final Pattern pattern = new Pattern( 0,
-                                             cheeseObjeectType );
+                                             cheeseObjeectType,
+                                             "cheese" );
 
-        final PatternExtractor extractor = new PatternExtractor( cheeseObjeectType );
-
-        final Declaration declaration = new Declaration( "cheese",
-                                                         extractor,
-                                                         pattern );
+        final GroupElement subrule = new GroupElement( GroupElement.AND );
+        subrule.addChild( pattern );
         final Map map = new HashMap();
         map.put( "cheese",
-                 declaration );
+                 pattern.getDeclaration() );
         declarationResolver.setDeclarations( map );
         context.setDeclarationResolver( declarationResolver );
 
@@ -112,7 +111,7 @@ public class MVELConsequenceBuilderTest extends TestCase {
                                                                             null,
                                                                             null ),
                                                 context.getRule(),
-                                                null );
+                                                subrule );
         final DefaultKnowledgeHelper kbHelper = new DefaultKnowledgeHelper( wm );
         kbHelper.setActivation( item );
         ((MVELConsequence) context.getRule().getConsequence()).compile( Thread.currentThread().getContextClassLoader() );

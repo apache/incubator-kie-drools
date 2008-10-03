@@ -678,8 +678,6 @@ public class MiscTest extends TestCase {
         sess.insert(application);
 
         sess.fireAllRules();
-
-
     }
 
     public void testGeneratedBeans2() throws Exception {

@@ -45,7 +45,11 @@ public class DroolsMVELPreviousDeclarationVariable
     }
 
     public Object getValue() {
-        return this.declaration.getValue( (InternalWorkingMemory) this.factory.getWorkingMemory(), this.factory.getValue( this.declaration ) );
+        Declaration decl = this.declaration;
+        if( this.factory.getKnowledgeHelper() != null ) {
+            decl = this.factory.getKnowledgeHelper().getDeclaration( this.declaration.getIdentifier() );
+        }
+        return decl.getValue( (InternalWorkingMemory) this.factory.getWorkingMemory(), this.factory.getValue( decl ) );
     }    
 
     public void setValue(final Object value) {
