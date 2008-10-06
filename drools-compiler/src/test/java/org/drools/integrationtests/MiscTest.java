@@ -271,6 +271,37 @@ public class MiscTest extends TestCase {
                       c.getPrice() );
     }
 
+    public void testMVELRewrite() throws Exception {
+
+        // read in the source
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_MVELrewrite.drl" ) );
+        RuleBase ruleBase = loadRuleBase( reader );
+
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        StatefulSession session = ruleBase.newStatefulSession();
+
+        session = SerializationHelper.getSerialisedStatefulSession( session,
+                                                                    ruleBase );
+        List results = new ArrayList();
+        session.setGlobal( "results", results );
+        
+        Cheese brie = new Cheese( "brie",
+                                  2 );
+        Cheese stilton = new Cheese( "stilton",
+                                  2 );
+        Cheesery cheesery = new Cheesery();
+        cheesery.addCheese( brie );
+        cheesery.addCheese( stilton );
+
+        session.insert( cheesery );
+        session.fireAllRules();
+        
+        assertEquals( 1,
+                      results.size() );
+        assertEquals( cheesery,
+                      results.get( 0 ) );
+    }
+
     public void testGlobals() throws Exception {
 
         final PackageBuilder builder = new PackageBuilder();

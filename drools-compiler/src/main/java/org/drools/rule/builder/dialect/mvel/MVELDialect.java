@@ -166,10 +166,11 @@ public class MVELDialect
         setLanguageLevel( this.configuration.getLangLevel() );
         this.strictMode = this.configuration.isStrict();
 
-        MVEL.setThreadSafe( true );
-
         this.imports = new HashMap();
         this.packageImports = new HashMap();
+        
+        // setting MVEL option directly
+        MVEL.COMPILER_OPT_ALLOW_NAKED_METH_CALL = true;        
 
         this.interceptors = new HashMap( 1 );
         this.interceptors.put( "Modify",
