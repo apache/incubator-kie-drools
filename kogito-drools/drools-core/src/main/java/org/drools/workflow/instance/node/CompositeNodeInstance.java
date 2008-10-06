@@ -23,13 +23,16 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.drools.common.InternalRuleBase;
+import org.drools.process.instance.EventListener;
 import org.drools.workflow.core.Connection;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.NodeContainer;
 import org.drools.workflow.core.node.CompositeNode;
+import org.drools.workflow.core.node.EventNode;
 import org.drools.workflow.core.node.EventNodeInterface;
 import org.drools.workflow.instance.NodeInstance;
 import org.drools.workflow.instance.NodeInstanceContainer;
+import org.drools.workflow.instance.WorkflowProcessInstance;
 import org.drools.workflow.instance.impl.NodeInstanceFactory;
 import org.drools.workflow.instance.impl.NodeInstanceFactoryRegistry;
 import org.drools.workflow.instance.impl.NodeInstanceImpl;
@@ -45,6 +48,27 @@ public class CompositeNodeInstance extends NodeInstanceImpl implements NodeInsta
     
     private final List<NodeInstance> nodeInstances = new ArrayList<NodeInstance>();;
     private long nodeInstanceCounter = 0;
+    
+    public void setProcessInstance(WorkflowProcessInstance processInstance) {
+    	super.setProcessInstance(processInstance);
+    	registerExternalEventNodeListeners();
+    }
+    
+    private void registerExternalEventNodeListeners() {
+    	for (Node node: getCompositeNode().getNodes()) {
+			if (node instanceof EventNode) {
+				if ("external".equals(((EventNode) node).getScope())) {
+					getProcessInstance().addEventListener(((EventNode) node).getType(), new EventListener() {
+						public String[] getEventTypes() {
+							return null;
+						}
+						public void signalEvent(String type, Object event) {
+						}
+					}, true);
+				}
+			}
+    	}
+    }
     
     protected CompositeNode getCompositeNode() {
         return (CompositeNode) getNode();

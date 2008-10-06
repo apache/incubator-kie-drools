@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.WorkItemManager;
+import org.drools.process.instance.event.SignalManager;
 import org.drools.process.instance.timer.TimerManager;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AsyncExceptionHandler;
@@ -278,6 +279,8 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
     public WorkItemManager getWorkItemManager();
 
     public TimerManager getTimerManager();
+    
+    public SignalManager getSignalManager();
     
     /**
      * Stops rule firing after the currect rule finishes executing

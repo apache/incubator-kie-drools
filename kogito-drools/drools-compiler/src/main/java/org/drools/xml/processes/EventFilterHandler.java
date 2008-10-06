@@ -5,6 +5,7 @@ import java.util.HashSet;
 import org.drools.process.core.event.EventFilter;
 import org.drools.process.core.event.EventTypeFilter;
 import org.drools.workflow.core.node.EventNode;
+import org.drools.workflow.core.node.EventTrigger;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
@@ -16,10 +17,11 @@ public class EventFilterHandler extends BaseAbstractHandler implements Handler {
     
     public EventFilterHandler() {
         if ((this.validParents == null) && (this.validPeers == null)) {
-            this.validParents = new HashSet();
+            this.validParents = new HashSet<Class<?>>();
             this.validParents.add(EventNode.class);
+            this.validParents.add(EventTrigger.class);
 
-            this.validPeers = new HashSet();
+            this.validPeers = new HashSet<Class<?>>();
             this.validPeers.add(null);
 
             this.allowNesting = false;
@@ -39,7 +41,7 @@ public class EventFilterHandler extends BaseAbstractHandler implements Handler {
                       final String localName,
                       final ExtensibleXmlParser parser) throws SAXException {
         final Element element = parser.endElementBuilder();
-        EventNode eventNode = (EventNode) parser.getParent();
+        Object parent = parser.getParent();
         final String type = element.getAttribute("type");
         emptyAttributeCheck(localName, "type", type, parser);
         if ("eventType".equals(type)) {
@@ -47,7 +49,11 @@ public class EventFilterHandler extends BaseAbstractHandler implements Handler {
             emptyAttributeCheck(localName, "eventType", eventType, parser);
             EventTypeFilter eventTypeFilter = new EventTypeFilter();
             eventTypeFilter.setType(eventType);
-            eventNode.addEventFilter(eventTypeFilter);
+            if (parent instanceof EventNode) {
+            	((EventNode) parent).addEventFilter(eventTypeFilter);
+            } else if (parent instanceof EventTrigger) {
+            	((EventTrigger) parent).addEventFilter(eventTypeFilter);
+            }
         } else {
         	throw new IllegalArgumentException(
     			"Unknown event filter type: " + type);
@@ -55,7 +61,8 @@ public class EventFilterHandler extends BaseAbstractHandler implements Handler {
         return null;
     }
 
-    public Class generateNodeFor() {
+    @SuppressWarnings("unchecked")
+	public Class generateNodeFor() {
         return EventFilter.class;
     }    
 

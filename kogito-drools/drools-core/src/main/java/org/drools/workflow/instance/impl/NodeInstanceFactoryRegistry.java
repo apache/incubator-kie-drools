@@ -89,6 +89,14 @@ public class NodeInstanceFactoryRegistry {
     }
 
     public NodeInstanceFactory getProcessNodeInstanceFactory(Node node) {
-        return this.registry.get( node.getClass() );
+    	Class<?> clazz = node.getClass();
+        while (clazz != null) {
+        	NodeInstanceFactory result = this.registry.get( clazz );
+        	if (result != null) {
+        		return result;
+        	}
+        	clazz = clazz.getSuperclass();
+        }
+        return null;
     }
 }

@@ -43,6 +43,7 @@ import org.drools.process.instance.ProcessInstanceFactoryRegistry;
 import org.drools.process.instance.ProcessInstanceManagerFactory;
 import org.drools.process.instance.WorkItemHandler;
 import org.drools.process.instance.WorkItemManagerFactory;
+import org.drools.process.instance.event.SignalManagerFactory;
 import org.drools.process.instance.impl.ContextInstanceFactory;
 import org.drools.process.instance.impl.ContextInstanceFactoryRegistry;
 import org.drools.spi.ConflictResolver;
@@ -134,6 +135,7 @@ public class RuleBaseConfiguration
     private ProcessInstanceFactoryRegistry processInstanceFactoryRegistry;
     private NodeInstanceFactoryRegistry    processNodeInstanceFactoryRegistry;
     private ProcessInstanceManagerFactory  processInstanceManagerFactory;
+    private SignalManagerFactory           processSignalManagerFactory;
     private WorkItemManagerFactory         workItemManagerFactory;
 
     private transient ClassLoader          classLoader;
@@ -828,6 +830,43 @@ public class RuleBaseConfiguration
             }
         } else {
             throw new IllegalArgumentException( "Process instance manager factory '" + className + "' not found" );
+        }
+    }
+
+    public SignalManagerFactory getSignalManagerFactory() {
+        if ( this.processSignalManagerFactory == null ) {
+            initSignalManagerFactory();
+        }
+        return this.processSignalManagerFactory;
+    }
+
+    @SuppressWarnings("unchecked")
+	private void initSignalManagerFactory() {
+        String className = this.chainedProperties.getProperty( "processSignalManagerFactory",
+                                                               "org.drools.process.instance.event.DefaultSignalManagerFactory" );
+        Class<SignalManagerFactory> clazz = null;
+        try {
+            clazz = (Class<SignalManagerFactory>)
+            	Thread.currentThread().getContextClassLoader().loadClass( className );
+        } catch ( ClassNotFoundException e ) {
+        }
+
+        if ( clazz == null ) {
+            try {
+                clazz = (Class<SignalManagerFactory>)
+                	RuleBaseConfiguration.class.getClassLoader().loadClass( className );
+            } catch ( ClassNotFoundException e ) {
+            }
+        }
+
+        if ( clazz != null ) {
+            try {
+                this.processSignalManagerFactory = clazz.newInstance();
+            } catch ( Exception e ) {
+                throw new IllegalArgumentException( "Unable to instantiate signal manager factory '" + className + "'" );
+            }
+        } else {
+            throw new IllegalArgumentException( "Signal manager factory '" + className + "' not found" );
         }
     }
 

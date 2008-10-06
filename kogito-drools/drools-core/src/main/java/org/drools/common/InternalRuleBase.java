@@ -105,6 +105,8 @@ public interface InternalRuleBase
     
     public Process getProcess(String id);
     
+    public Process[] getProcesses();
+    
     /**
      * Returns true if clazz represents an Event class. False otherwise.
      *  

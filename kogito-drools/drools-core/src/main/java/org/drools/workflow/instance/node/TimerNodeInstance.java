@@ -73,13 +73,13 @@ public class TimerNodeInstance extends EventBasedNodeInstance implements EventLi
     public void addEventListeners() {
         super.addEventListeners();
         if (getTimerInstances() == null) {
-        	getProcessInstance().addEventListener("timerTriggered", this);
+        	getProcessInstance().addEventListener("timerTriggered", this, false);
         }
     }
     
     public void removeEventListeners() {
         super.removeEventListeners();
-        getProcessInstance().removeEventListener("timerTriggered", this);
+        getProcessInstance().removeEventListener("timerTriggered", this, false);
     }
 
 }

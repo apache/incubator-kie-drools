@@ -11,7 +11,6 @@ import org.drools.process.instance.timer.TimerManager;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.workflow.core.DroolsAction;
 import org.drools.workflow.core.Node;
-import org.drools.workflow.core.impl.ExtendedNodeImpl;
 import org.drools.workflow.core.node.EventBasedNode;
 import org.drools.workflow.instance.NodeInstance;
 import org.drools.workflow.instance.impl.ExtendedNodeInstanceImpl;
@@ -84,11 +83,11 @@ public abstract class EventBasedNodeInstance extends ExtendedNodeInstanceImpl im
     }
     
     protected void addTimerListener() {
-    	getProcessInstance().addEventListener("timerTriggered", this);
+    	getProcessInstance().addEventListener("timerTriggered", this, false);
     }
     
     public void removeEventListeners() {
-        getProcessInstance().removeEventListener("timerTriggered", this);
+        getProcessInstance().removeEventListener("timerTriggered", this, false);
     }
 
 	protected void triggerCompleted(String type, boolean remove) {

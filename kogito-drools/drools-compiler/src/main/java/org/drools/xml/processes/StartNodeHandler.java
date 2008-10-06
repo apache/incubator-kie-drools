@@ -1,9 +1,16 @@
 package org.drools.xml.processes;
 
-import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 
+import org.drools.process.core.event.EventFilter;
+import org.drools.process.core.event.EventTypeFilter;
 import org.drools.workflow.core.Node;
+import org.drools.workflow.core.node.ConstraintTrigger;
+import org.drools.workflow.core.node.EventTrigger;
 import org.drools.workflow.core.node.StartNode;
+import org.drools.workflow.core.node.Trigger;
+import org.drools.xml.XmlDumper;
 
 public class StartNodeHandler extends AbstractNodeHandler {
     
@@ -11,14 +18,57 @@ public class StartNodeHandler extends AbstractNodeHandler {
         return new StartNode();
     }
     
-    public Class generateNodeFor() {
+    @SuppressWarnings("unchecked")
+	public Class generateNodeFor() {
         return StartNode.class;
     }
 
 	public void writeNode(Node node, StringBuffer xmlDump, boolean includeMeta) {
 		StartNode startNode = (StartNode) node;
 		writeNode("start", startNode, xmlDump, includeMeta);
-        endNode(xmlDump);
+		List<Trigger> triggers = startNode.getTriggers();
+		if (triggers == null || triggers.isEmpty()) {
+			endNode(xmlDump);
+		} else {
+			xmlDump.append(">" + EOL);
+			xmlDump.append("        <triggers>" + EOL);
+			for (Trigger trigger: triggers) {
+				if (trigger instanceof ConstraintTrigger) {
+					xmlDump.append("         <trigger type=\"constraint\" >" + EOL);
+					xmlDump.append("           <constraint type=\"rule\" dialect=\"mvel\" >"
+						+ ((ConstraintTrigger) trigger).getConstraint() + "</constraint>" + EOL);
+					Map<String, String> inMappings = trigger.getInMappings();
+			    	if (inMappings != null && !inMappings.isEmpty()) {
+			    		for (Map.Entry<String, String> entry: inMappings.entrySet()) {
+				    		xmlDump.append("          <mapping type=\"in\" from=\""
+			    				+ XmlDumper.replaceIllegalChars(entry.getKey())
+			    				+ "\" to=\"" + entry.getValue() + "\" />" + EOL);
+				    	}
+			    	}
+					xmlDump.append("         </trigger>" + EOL);
+				} else if (trigger instanceof EventTrigger) {
+					xmlDump.append("         <trigger type=\"event\" >" + EOL);
+			        xmlDump.append("           <eventFilters>" + EOL);
+					for (EventFilter filter: ((EventTrigger) trigger).getEventFilters()) {
+			        	if (filter instanceof EventTypeFilter) {
+			        		xmlDump.append("             <eventFilter "
+			                    + "type=\"eventType\" "
+			                    + "eventType=\"" + ((EventTypeFilter) filter).getType() + "\" />" + EOL);
+			        	} else {
+			        		throw new IllegalArgumentException(
+			    				"Unknown filter type: " + filter);
+			        	}
+			        }
+			        xmlDump.append("           </eventFilters>" + EOL);
+					xmlDump.append("         </trigger>" + EOL);
+				} else {
+					throw new IllegalArgumentException(
+						"Unknown trigger type " + trigger);
+				}
+			}
+			xmlDump.append("        </triggers>" + EOL);
+			endNode("start", xmlDump);
+		}
 	}
 
 }

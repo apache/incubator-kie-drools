@@ -126,9 +126,11 @@ public class ProcessTimerTest extends TestCase {
 			"  <nodes>\n" +
 			"    <start id=\"1\" name=\"Start\" />\n" +
 			"    <milestone id=\"2\" name=\"Wait\" >\n" +
-			"      <timer id=\"1\" delay=\"300\" >\n" +
-			"        <action type=\"expression\" dialect=\"java\" >myList.add(\"Executing timer\");</action>\n" +
-			"      </timer>\n" +
+			"      <timers>\n" +
+			"        <timer id=\"1\" delay=\"300\" >\n" +
+			"          <action type=\"expression\" dialect=\"java\" >myList.add(\"Executing timer\");</action>\n" +
+			"        </timer>\n" +
+			"      </timers>\n" +
 			"      <constraint type=\"rule\" dialect=\"mvel\" >eval(false)</constraint>\n" +
 			"    </milestone>\n" +
 			"    <end id=\"3\" name=\"End\" />\n" +
@@ -187,9 +189,11 @@ public class ProcessTimerTest extends TestCase {
 			"  <nodes>\n" +
 			"    <start id=\"1\" name=\"Start\" />\n" +
 			"    <milestone id=\"2\" name=\"Wait\" >\n" +
-			"      <timer id=\"1\" delay=\"300\" period =\"200\" >\n" +
-			"        <action type=\"expression\" dialect=\"java\" >myList.add(\"Executing timer\");</action>\n" +
-			"      </timer>\n" +
+			"      <timers>\n" +
+			"        <timer id=\"1\" delay=\"300\" period =\"200\" >\n" +
+			"          <action type=\"expression\" dialect=\"java\" >myList.add(\"Executing timer\");</action>\n" +
+			"        </timer>\n" +
+			"      </timers>\n" +
 			"      <constraint type=\"rule\" dialect=\"mvel\" >eval(false)</constraint>\n" +
 			"    </milestone>\n" +
 			"    <end id=\"3\" name=\"End\" />\n" +
@@ -248,12 +252,14 @@ public class ProcessTimerTest extends TestCase {
 			"  <nodes>\n" +
 			"    <start id=\"1\" name=\"Start\" />\n" +
 			"    <milestone id=\"2\" name=\"Wait\" >\n" +
-			"      <timer id=\"1\" delay=\"600\" >\n" +
-			"        <action type=\"expression\" dialect=\"java\" >myList.add(\"Executing timer1\");</action>\n" +
-			"      </timer>\n" +
-			"      <timer id=\"2\" delay=\"200\" >\n" +
-			"        <action type=\"expression\" dialect=\"java\" >myList.add(\"Executing timer2\");</action>\n" +
-			"      </timer>\n" +
+			"      <timers>\n" +
+			"        <timer id=\"1\" delay=\"600\" >\n" +
+			"          <action type=\"expression\" dialect=\"java\" >myList.add(\"Executing timer1\");</action>\n" +
+			"        </timer>\n" +
+			"        <timer id=\"2\" delay=\"200\" >\n" +
+			"          <action type=\"expression\" dialect=\"java\" >myList.add(\"Executing timer2\");</action>\n" +
+			"        </timer>\n" +
+			"      </timers>\n" +
 			"      <constraint type=\"rule\" dialect=\"mvel\" >eval(false)</constraint>\n" +
 			"    </milestone>\n" +
 			"    <end id=\"3\" name=\"End\" />\n" +
@@ -321,9 +327,11 @@ public class ProcessTimerTest extends TestCase {
 			"  <nodes>\n" +
 			"    <start id=\"1\" name=\"Start\" />\n" +
 			"    <milestone id=\"2\" name=\"Wait\" >\n" +
-			"      <timer id=\"1\" delay=\"2000\" >\n" +
-			"        <action type=\"expression\" dialect=\"java\" >myList.add(\"Executing timer\");</action>\n" +
-			"      </timer>\n" +
+			"      <timers>\n" +
+			"        <timer id=\"1\" delay=\"2000\" >\n" +
+			"          <action type=\"expression\" dialect=\"java\" >myList.add(\"Executing timer\");</action>\n" +
+			"        </timer>\n" +
+			"      </timers>\n" +
 			"      <constraint type=\"rule\" dialect=\"mvel\" >org.drools.Message( )</constraint>\n" +
 			"    </milestone>\n" +
 			"    <end id=\"3\" name=\"End\" />\n" +

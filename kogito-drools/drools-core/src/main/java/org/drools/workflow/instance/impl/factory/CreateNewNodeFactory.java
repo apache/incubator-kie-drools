@@ -23,6 +23,7 @@ public class CreateNewNodeFactory implements NodeInstanceFactory {
             nodeInstance.setProcessInstance(processInstance);
             return nodeInstance;
         } catch (Exception e) {
+        	e.printStackTrace();
             throw new RuntimeException("Unable to instantiate node: '"
                 + this.cls.getName() + "':" + e.getMessage());
         }

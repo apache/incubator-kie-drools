@@ -16,6 +16,9 @@ package org.drools.workflow.core.node;
  * limitations under the License.
  */
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.workflow.core.Connection;
 
 /**
@@ -26,7 +29,30 @@ import org.drools.workflow.core.Connection;
 public class StartNode extends SequenceNode {
 
     private static final long serialVersionUID = 400L;
+    
+    private List<Trigger> triggers;
 
+	public void addTrigger(Trigger trigger) {
+		if (triggers == null) {
+			triggers = new ArrayList<Trigger>();
+		}
+		triggers.add(trigger);
+	}
+	
+	public void removeTrigger(Trigger trigger) {
+		if (triggers != null) {
+			triggers.remove(trigger);
+		}
+	}
+	
+	public List<Trigger> getTriggers() {
+		return triggers;
+	}
+		
+	public void setTriggers(List<Trigger> triggers) {
+		this.triggers = triggers;
+	}
+		
     public void validateAddIncomingConnection(final String type, final Connection connection) {
         throw new UnsupportedOperationException(
             "A start node does not have an incoming connection!");
@@ -36,5 +62,5 @@ public class StartNode extends SequenceNode {
         throw new UnsupportedOperationException(
             "A start node does not have an incoming connection!");
     }
-
+    
 }

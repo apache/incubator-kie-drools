@@ -24,6 +24,7 @@ import org.drools.event.RuleFlowEventListener;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.WorkItemManager;
+import org.drools.process.instance.event.SignalManager;
 import org.drools.process.instance.timer.TimerManager;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
@@ -408,6 +409,11 @@ public class ExternalSheetListenerTest extends TestCase {
                 public SessionClock getSessionClock() {
                     return null;
                 }
+
+				public SignalManager getSignalManager() {
+					// TODO Auto-generated method stub
+					return null;
+				}
 
 				public void fireUntilHalt() {
 					// TODO Auto-generated method stub

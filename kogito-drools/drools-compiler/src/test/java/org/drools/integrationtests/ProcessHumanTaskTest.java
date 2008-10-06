@@ -2,10 +2,10 @@ package org.drools.integrationtests;
 
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
+import junit.framework.TestCase;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
@@ -16,8 +16,6 @@ import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemHandler;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.rule.Package;
-
-import junit.framework.TestCase;
 
 public class ProcessHumanTaskTest extends TestCase {
     

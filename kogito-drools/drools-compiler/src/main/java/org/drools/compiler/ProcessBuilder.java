@@ -21,7 +21,6 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -47,8 +46,11 @@ import org.drools.workflow.core.NodeContainer;
 import org.drools.workflow.core.WorkflowProcess;
 import org.drools.workflow.core.impl.DroolsConsequenceAction;
 import org.drools.workflow.core.impl.WorkflowProcessImpl;
+import org.drools.workflow.core.node.ConstraintTrigger;
 import org.drools.workflow.core.node.MilestoneNode;
 import org.drools.workflow.core.node.Split;
+import org.drools.workflow.core.node.StartNode;
+import org.drools.workflow.core.node.Trigger;
 import org.drools.xml.XmlProcessReader;
 
 /**
@@ -60,7 +62,7 @@ import org.drools.xml.XmlProcessReader;
 public class ProcessBuilder {
 
     private PackageBuilder packageBuilder;
-    private final List<DroolsError>     errors = new ArrayList<DroolsError>();
+    private final List<DroolsError> errors = new ArrayList<DroolsError>();
     private Map<String, ProcessValidator> processValidators = new HashMap<String, ProcessValidator>();;
 
     public ProcessBuilder(PackageBuilder packageBuilder) {
@@ -147,7 +149,8 @@ public class ProcessBuilder {
     	}
     }
     
-    public void buildNodes(WorkflowProcess process, ProcessBuildContext context) {
+    @SuppressWarnings("unchecked")
+	public void buildNodes(WorkflowProcess process, ProcessBuildContext context) {
     	ProcessNodeBuilderRegistry nodeBuilderRegistry = packageBuilder.getPackageBuilderConfiguration().getProcessNodeBuilderRegistry();
         processNodes(process.getNodes(), process, context.getProcessDescr(), context, nodeBuilderRegistry);
         if ( !context.getErrors().isEmpty() ) {
@@ -217,8 +220,7 @@ public class ProcessBuilder {
                 if ( nodes[i] instanceof Split ) {
                     Split split = (Split) nodes[i];
                     if ( split.getType() == Split.TYPE_XOR || split.getType() == Split.TYPE_OR ) {
-                        for ( Iterator iterator = split.getDefaultOutgoingConnections().iterator(); iterator.hasNext(); ) {
-                            Connection connection = (Connection) iterator.next();
+                        for ( Connection connection: split.getDefaultOutgoingConnections() ) {
                             Constraint constraint = split.getConstraint( connection );
                             if ( "rule".equals( constraint.getType() ) ) {
                                 builder.append( createSplitRule( process,
@@ -231,6 +233,17 @@ public class ProcessBuilder {
                     MilestoneNode milestone = (MilestoneNode) nodes[i];
                     builder.append( createMilestoneRule( process,
                                                          milestone ) );
+                } else if ( nodes[i] instanceof StartNode ) {
+                	StartNode startNode = (StartNode) nodes[i];
+                	List<Trigger> triggers = startNode.getTriggers();
+                	if (triggers != null) {
+                		for (Trigger trigger: triggers) {
+                			if (trigger instanceof ConstraintTrigger) {
+                				builder.append( createStartConstraintRule( process,
+            						(ConstraintTrigger) trigger ));
+                			}
+                		}
+                	}
                 }
             }
         }
@@ -248,4 +261,29 @@ public class ProcessBuilder {
                                        MilestoneNode milestone) {
         return "rule \"RuleFlow-Milestone-" + process.getId() + "-" + milestone.getId() + "\" \n" + "      ruleflow-group \"DROOLS_SYSTEM\" \n" + "    when \n" + "      " + milestone.getConstraint() + "\n" + "    then \n" + "end \n\n";
     }
+    
+    private String createStartConstraintRule(Process process,
+    										 ConstraintTrigger trigger) {
+    	String result =
+    		"rule \"RuleFlow-Start-" + process.getId() + "\" \n" +
+    		"    when\n" +
+			"        " + trigger.getConstraint() + "\n" +
+			"    then\n";
+    	Map<String, String> inMappings = trigger.getInMappings();
+    	if (inMappings != null && !inMappings.isEmpty()) {
+    		result += "        java.util.Map params = new java.util.HashMap();\n";
+    		for (Map.Entry<String, String> entry: inMappings.entrySet()) {
+	    		result += "        params.put(\"" + entry.getKey() + "\", " + entry.getValue() + ");\n";
+	    	}
+	    	result += 
+				"        drools.getWorkingMemory().startProcess(\"" + process.getId() + "\", params);\n" +
+			   	"end\n\n";
+    	} else {
+    		result += 
+				"        drools.getWorkingMemory().startProcess(\"" + process.getId() + "\");\n" +
+			   	"end\n\n";
+    	}
+		return result;
+    }
+    
 }

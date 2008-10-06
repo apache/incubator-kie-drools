@@ -22,7 +22,7 @@ package org.drools.workflow.core.node;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class MilestoneNode extends EventBasedNode {
+public class MilestoneNode extends EventBasedNode implements Constrainable {
 
 	private static final long serialVersionUID = 8552568488755348247L;
 

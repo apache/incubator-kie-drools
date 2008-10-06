@@ -4,7 +4,7 @@ import java.util.HashSet;
 
 import org.drools.workflow.core.Constraint;
 import org.drools.workflow.core.impl.ConstraintImpl;
-import org.drools.workflow.core.node.MilestoneNode;
+import org.drools.workflow.core.node.Constrainable;
 import org.drools.workflow.core.node.Split;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
@@ -20,7 +20,7 @@ public class ConstraintHandler extends BaseAbstractHandler implements Handler {
         if ((this.validParents == null) && (this.validPeers == null)) {
             this.validParents = new HashSet<Class<?>>();
             this.validParents.add(Split.class);
-            this.validParents.add(MilestoneNode.class);
+            this.validParents.add(Constrainable.class);
 
             this.validPeers = new HashSet<Class<?>>();
             this.validPeers.add(null);
@@ -43,6 +43,7 @@ public class ConstraintHandler extends BaseAbstractHandler implements Handler {
                       final ExtensibleXmlParser parser) throws SAXException {
         final Element element = parser.endElementBuilder();
         Object parent = parser.getParent();
+        // TODO use Constraintable interface
         if (parent instanceof Split) {
 	        Split splitNode = (Split) parser.getParent();
 	        
@@ -74,8 +75,8 @@ public class ConstraintHandler extends BaseAbstractHandler implements Handler {
 	        }
 	        constraint.setConstraint(text);
 	        splitNode.internalSetConstraint(connectionRef, constraint);
-        } else if (parent instanceof MilestoneNode) {
-        	MilestoneNode milestoneNode = (MilestoneNode) parent;
+        } else if (parent instanceof Constrainable) {
+        	Constrainable constrainable = (Constrainable) parent;
 	        String text = ((Text)element.getChildNodes().item( 0 )).getWholeText();
 	        if (text != null) {
 	            text = text.trim();
@@ -83,7 +84,7 @@ public class ConstraintHandler extends BaseAbstractHandler implements Handler {
 	                text = null;
 	            }
 	        }
-	        milestoneNode.setConstraint(text);
+	        constrainable.setConstraint(text);
         } else {
         	throw new SAXException("Invalid parent node " + parent);
         }

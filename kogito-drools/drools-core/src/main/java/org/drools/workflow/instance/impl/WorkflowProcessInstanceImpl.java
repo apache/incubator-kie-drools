@@ -26,25 +26,23 @@ import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.drools.Agenda;
-import org.drools.WorkingMemory;
 import org.drools.common.EventSupport;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.event.DefaultRuleFlowEventListener;
-import org.drools.event.RuleFlowCompletedEvent;
-import org.drools.event.RuleFlowEventListener;
 import org.drools.process.instance.EventListener;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.impl.ProcessInstanceImpl;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.NodeContainer;
 import org.drools.workflow.core.WorkflowProcess;
+import org.drools.workflow.core.node.EventNode;
 import org.drools.workflow.core.node.EventNodeInterface;
 import org.drools.workflow.instance.NodeInstance;
 import org.drools.workflow.instance.NodeInstanceContainer;
 import org.drools.workflow.instance.WorkflowProcessInstance;
 import org.drools.workflow.instance.node.EventBasedNodeInstance;
 import org.drools.workflow.instance.node.EventBasedNodeInstanceInterface;
+import org.drools.workflow.instance.node.EventNodeInstance;
 import org.drools.workflow.instance.node.EventNodeInstanceInterface;
 
 /**
@@ -60,7 +58,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
     private final List<NodeInstance> nodeInstances = new ArrayList<NodeInstance>();;
     private long nodeInstanceCounter = 0;
     private Map<String, List<EventListener>> eventListeners = new HashMap<String, List<EventListener>>();
-    private transient RuleFlowEventListener processInstanceEventListener;
+    private Map<String, List<EventListener>> externalEventListeners = new HashMap<String, List<EventListener>>();
 
     public NodeContainer getNodeContainer() {
         return getWorkflowProcess();
@@ -154,11 +152,6 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
         return (WorkflowProcess) getProcess();
     }
     
-    public void start() {
-    	addEventListeners();
-    	super.start();
-    }
-
     public void setState(final int state) {
         super.setState( state );
         // TODO move most of this to ProcessInstanceImpl
@@ -176,6 +169,9 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
             workingMemory.removeProcessInstance( this );
             ((EventSupport) workingMemory).getRuleFlowEventSupport()
                 .fireAfterRuleFlowProcessCompleted( this, workingMemory );
+            
+			String type = "processInstanceCompleted:" + getId();
+			workingMemory.getSignalManager().signalEvent(type, this);
         }
     }
 
@@ -210,71 +206,100 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
         return sb.toString();
     }
     
+    public void start() {
+    	registerExternalEventNodeListeners();
+    	super.start();
+    }
+    
+    private void registerExternalEventNodeListeners() {
+    	for (Node node: getWorkflowProcess().getNodes()) {
+			if (node instanceof EventNode) {
+				if ("external".equals(((EventNode) node).getScope())) {
+					addEventListener(((EventNode) node).getType(), new EventListener() {
+						public String[] getEventTypes() {
+							return null;
+						}
+						public void signalEvent(String type, Object event) {
+						}
+					}, true);
+				}
+			}
+    	}
+    }
+    
     public void signalEvent(String type, Object event) {
     	List<EventListener> listeners = eventListeners.get(type);
     	if (listeners != null) {
     		for (EventListener listener: listeners) {
     			listener.signalEvent(type, event);
     		}
-    	} else {
-    		for (Node node: getWorkflowProcess().getNodes()) {
-    			if (node instanceof EventNodeInterface) {
-    				if (((EventNodeInterface) node).acceptsEvent(type, event)) {
+    	}
+    	listeners = externalEventListeners.get(type);
+    	if (listeners != null) {
+    		for (EventListener listener: listeners) {
+    			listener.signalEvent(type, event);
+    		}
+    	}
+    	for (Node node: getWorkflowProcess().getNodes()) {
+			if (node instanceof EventNodeInterface) {
+				if (((EventNodeInterface) node).acceptsEvent(type, event)) {
+					if (node instanceof EventNode) {
+    					EventNodeInstance eventNodeInstance = (EventNodeInstance) getNodeInstance(node);
+    					eventNodeInstance.signalEvent(type, event);
+					} else {
     					List<NodeInstance> nodeInstances = getNodeInstances(node.getId());
     					if (nodeInstances != null && !nodeInstances.isEmpty()) {
     						for (NodeInstance nodeInstance: nodeInstances) {
     							((EventNodeInstanceInterface) nodeInstance).signalEvent(type, event);
     						}
-    					} else {
-	    					EventNodeInstanceInterface eventNodeInstance = (EventNodeInstanceInterface) getNodeInstance(node);
-	    					eventNodeInstance.signalEvent(type, event);
     					}
-    				}
+					}
+				}
+			}
+		}
+	}
+    
+    public void addEventListener(String type, EventListener listener, boolean external) {
+    	Map<String, List<EventListener>> eventListeners =
+    		external ? this.externalEventListeners : this.eventListeners;
+    	List<EventListener> listeners = eventListeners.get(type);
+    	if (listeners == null) {
+    		listeners = new CopyOnWriteArrayList<EventListener>();
+    		eventListeners.put(type, listeners);
+    		if (external) {
+    			getWorkingMemory().getSignalManager().addEventListener(type, this);
+    		}
+    	}
+        listeners.add(listener);
+    }
+    
+    public void removeEventListener(String type, EventListener listener, boolean external) {
+    	Map<String, List<EventListener>> eventListeners =
+    		external ? this.externalEventListeners : this.eventListeners;
+    	List<EventListener> listeners = eventListeners.get(type);
+    	if (listeners != null) {
+    		listeners.remove(listener);
+    		if (listeners.isEmpty()) {
+    			eventListeners.remove(type);
+    			if (external) {
+    				getWorkingMemory().getSignalManager().removeEventListener(type, this);
     			}
     		}
     	}
     }
     
-    public void addEventListener(String type, EventListener listener) {
-    	List<EventListener> listeners = eventListeners.get(type);
-    	if (listeners == null) {
-    		listeners = new CopyOnWriteArrayList<EventListener>();
-    		eventListeners.put(type, listeners);
-    	}
-        listeners.add(listener);
-    }
-    
-    public void removeEventListener(String type, EventListener listener) {
-    	List<EventListener> listeners = eventListeners.get(type);
-    	if (listeners != null) {
-    		listeners.remove(listener);
-    	}
-    }
-    
 	private void addEventListeners() {
-		// TODO enable ruleflow event listener only when there is a sub-process node instance
-		// actively waiting for the completion of a process instance ?
-    	processInstanceEventListener = new DefaultRuleFlowEventListener() {
-    		public void afterRuleFlowCompleted(RuleFlowCompletedEvent event, WorkingMemory workingMemory) {
-    			ProcessInstance processInstance = event.getProcessInstance();
-    			String type = "processInstanceCompleted:" + processInstance.getId();
-    			List<EventListener> listeners = eventListeners.get(type);
-    	    	if (listeners != null) {
-    	    		for (EventListener listener: listeners) {
-    	    			listener.signalEvent(type, processInstance);
-    	    		}
-    	    	}
-    		}
-    	};
-        getWorkingMemory().addEventListener(processInstanceEventListener);
+		registerExternalEventNodeListeners();
     }
     
     private void removeEventListeners() {
-    	getWorkingMemory().removeEventListener(processInstanceEventListener);
+    	for (String type: externalEventListeners.keySet()) {
+			getWorkingMemory().getSignalManager().removeEventListener(type, this);
+		}
     }
     
     public String[] getEventTypes() {
-    	return eventListeners.keySet().toArray(new String[eventListeners.size()]);
+    	return externalEventListeners.keySet().toArray(new String[externalEventListeners.size()]);
     }
     
 }
