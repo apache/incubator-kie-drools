@@ -181,7 +181,7 @@ public class ProcessBuilder {
     }
 
     public void addProcessFromFile(final Reader reader) throws Exception {
-        PackageBuilderConfiguration configuration = new PackageBuilderConfiguration();
+        PackageBuilderConfiguration configuration = packageBuilder.getPackageBuilderConfiguration();
         XmlProcessReader xmlReader = new XmlProcessReader( configuration.getSemanticModules() );
         
         final ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
