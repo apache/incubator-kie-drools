@@ -14,7 +14,8 @@ public class EventNodeHandler extends AbstractNodeHandler {
         return new EventNode();
     }
     
-    public Class generateNodeFor() {
+    @SuppressWarnings("unchecked")
+	public Class generateNodeFor() {
         return EventNode.class;
     }
 
@@ -27,6 +28,10 @@ public class EventNodeHandler extends AbstractNodeHandler {
         if (variableName != null && variableName.length() != 0 ) {
             eventNode.setVariableName(variableName);
         }
+        String scope = element.getAttribute("scope");
+        if (scope != null && scope.length() != 0 ) {
+            eventNode.setScope(scope);
+        }
     }
     
     public void writeNode(Node node, StringBuffer xmlDump, boolean includeMeta) {
@@ -35,6 +40,10 @@ public class EventNodeHandler extends AbstractNodeHandler {
 		String variableName = eventNode.getVariableName();
         if (variableName != null && variableName.length() != 0) {
             xmlDump.append("variableName=\"" + variableName + "\" ");
+        }
+        String scope = eventNode.getScope();
+        if (scope != null && scope.length() != 0) {
+            xmlDump.append("scope=\"" + scope + "\" ");
         }
         xmlDump.append(">" + EOL);
         xmlDump.append("      <eventFilters>" + EOL);

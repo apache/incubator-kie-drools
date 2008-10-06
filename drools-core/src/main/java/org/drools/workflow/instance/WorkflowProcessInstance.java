@@ -31,8 +31,8 @@ public interface WorkflowProcessInstance extends ProcessInstance, NodeInstanceCo
 
     WorkflowProcess getWorkflowProcess();
     
-    void addEventListener(String type, EventListener eventListener);
+    void addEventListener(String type, EventListener eventListener, boolean external);
     
-    void removeEventListener(String type, EventListener eventListener);
+    void removeEventListener(String type, EventListener eventListener, boolean external);
 
 }

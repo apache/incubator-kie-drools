@@ -240,56 +240,64 @@ public class CompositeNode extends NodeImpl implements NodeContainer, EventNodeI
     
     public void validateRemoveIncomingConnection(final String type, final Connection connection) {
         CompositeNode.NodeAndType nodeAndType = internalGetLinkedIncomingNode(type);
-        for (Connection inConnection: nodeAndType.getNode().getIncomingConnections(nodeAndType.getType())) {
-            if (((CompositeNodeStart) inConnection.getFrom()).getInNodeId() == connection.getFrom().getId()) {
-                ((NodeImpl) nodeAndType.getNode()).validateRemoveIncomingConnection(nodeAndType.getType(), inConnection);
-                return;
-            }
+        if (nodeAndType != null) {
+	        for (Connection inConnection: nodeAndType.getNode().getIncomingConnections(nodeAndType.getType())) {
+	            if (((CompositeNodeStart) inConnection.getFrom()).getInNodeId() == connection.getFrom().getId()) {
+	                ((NodeImpl) nodeAndType.getNode()).validateRemoveIncomingConnection(nodeAndType.getType(), inConnection);
+	                return;
+	            }
+	        }
+	        throw new IllegalArgumentException(
+	        	"Could not find internal incoming connection for node");
         }
-        throw new IllegalArgumentException(
-            "Could not find internal incoming connection for node");
     }
     
     public void removeIncomingConnection(String type, Connection connection) {
         super.removeIncomingConnection(type, connection);
         CompositeNode.NodeAndType nodeAndType = internalGetLinkedIncomingNode(type);
-        for (Connection inConnection: nodeAndType.getNode().getIncomingConnections(nodeAndType.getType())) {
-            if (((CompositeNodeStart) inConnection.getFrom()).getInNodeId() == connection.getFrom().getId()) {
-                Node compositeNodeStart = inConnection.getFrom();
-                ((ConnectionImpl) inConnection).terminate();
-                internalRemoveNode(compositeNodeStart);
-                return;
-            }
+        if (nodeAndType != null) {
+	        for (Connection inConnection: nodeAndType.getNode().getIncomingConnections(nodeAndType.getType())) {
+	            if (((CompositeNodeStart) inConnection.getFrom()).getInNodeId() == connection.getFrom().getId()) {
+	                Node compositeNodeStart = inConnection.getFrom();
+	                ((ConnectionImpl) inConnection).terminate();
+	                internalRemoveNode(compositeNodeStart);
+	                return;
+	            }
+	        }
+	        throw new IllegalArgumentException(
+	        	"Could not find internal incoming connection for node");
         }
-        throw new IllegalArgumentException(
-            "Could not find internal incoming connection for node");
     }
     
     public void validateRemoveOutgoingConnection(final String type, final Connection connection) {
         CompositeNode.NodeAndType nodeAndType = internalGetLinkedOutgoingNode(type);
-        for (Connection outConnection: nodeAndType.getNode().getOutgoingConnections(nodeAndType.getType())) {
-            if (((CompositeNodeEnd) outConnection.getTo()).getOutNodeId() == connection.getTo().getId()) {
-                ((NodeImpl) nodeAndType.getNode()).validateRemoveOutgoingConnection(nodeAndType.getType(), outConnection);
-                return;
-            }
+        if (nodeAndType != null) {
+	        for (Connection outConnection: nodeAndType.getNode().getOutgoingConnections(nodeAndType.getType())) {
+	            if (((CompositeNodeEnd) outConnection.getTo()).getOutNodeId() == connection.getTo().getId()) {
+	                ((NodeImpl) nodeAndType.getNode()).validateRemoveOutgoingConnection(nodeAndType.getType(), outConnection);
+	                return;
+	            }
+	        }
+	        throw new IllegalArgumentException(
+	            "Could not find internal outgoing connection for node");
         }
-        throw new IllegalArgumentException(
-            "Could not find internal outgoing connection for node");
     }
     
     public void removeOutgoingConnection(String type, Connection connection) {
         super.removeOutgoingConnection(type, connection);
         CompositeNode.NodeAndType nodeAndType = internalGetLinkedOutgoingNode(type);
-        for (Connection outConnection: nodeAndType.getNode().getOutgoingConnections(nodeAndType.getType())) {
-            if (((CompositeNodeEnd) outConnection.getTo()).getOutNodeId() == connection.getTo().getId()) {
-                Node compositeNodeEnd = outConnection.getTo();
-                ((ConnectionImpl) outConnection).terminate();
-                internalRemoveNode(compositeNodeEnd);
-                return;
-            }
+        if (nodeAndType != null) {
+	        for (Connection outConnection: nodeAndType.getNode().getOutgoingConnections(nodeAndType.getType())) {
+	            if (((CompositeNodeEnd) outConnection.getTo()).getOutNodeId() == connection.getTo().getId()) {
+	                Node compositeNodeEnd = outConnection.getTo();
+	                ((ConnectionImpl) outConnection).terminate();
+	                internalRemoveNode(compositeNodeEnd);
+	                return;
+	            }
+	        }
+	        throw new IllegalArgumentException(
+	            "Could not find internal outgoing connection for node");
         }
-        throw new IllegalArgumentException(
-            "Could not find internal outgoing connection for node");
     }
     
     public class NodeAndType {

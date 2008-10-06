@@ -149,12 +149,32 @@
 	</xs:element>
 	<xs:element name="start">
 		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="1">
+				<xs:element ref="drools:triggers"/>
+			</xs:choice>
 			<xs:attribute name="id" type="xs:string" use="required"/>
 			<xs:attribute name="name" type="xs:string"/>
 			<xs:attribute name="x" type="xs:string"/>
 			<xs:attribute name="y" type="xs:string"/>
 			<xs:attribute name="width" type="xs:string"/>
 			<xs:attribute name="height" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="triggers">
+		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="drools:trigger"/>
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="trigger">
+		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="drools:constraint"/>
+				<xs:element ref="drools:eventFilters"/>
+				<xs:element ref="drools:mapping"/>
+			</xs:choice>
+			<xs:attribute name="type" type="xs:string" use="required"/>
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="end">
@@ -448,6 +468,7 @@
 			<xs:attribute name="width" type="xs:string"/>
 			<xs:attribute name="height" type="xs:string"/>
 			<xs:attribute name="variableName" type="xs:string"/>
+			<xs:attribute name="scope" type="xs:string"/>
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="eventFilters">

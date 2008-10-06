@@ -62,6 +62,9 @@ import org.drools.event.WorkingMemoryEventListener;
 import org.drools.event.WorkingMemoryEventSupport;
 import org.drools.process.core.Process;
 import org.drools.process.core.context.variable.VariableScope;
+import org.drools.process.core.event.EventFilter;
+import org.drools.process.core.event.EventTypeFilter;
+import org.drools.process.instance.EventListener;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.ProcessInstanceFactory;
 import org.drools.process.instance.ProcessInstanceFactoryRegistry;
@@ -69,6 +72,7 @@ import org.drools.process.instance.ProcessInstanceManager;
 import org.drools.process.instance.WorkItemHandler;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
+import org.drools.process.instance.event.SignalManager;
 import org.drools.process.instance.timer.TimerManager;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.InitialFactHandle;
@@ -81,6 +85,7 @@ import org.drools.rule.Declaration;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.rule.TimeMachine;
+import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AsyncExceptionHandler;
@@ -90,6 +95,9 @@ import org.drools.spi.PropagationContext;
 import org.drools.time.SessionClock;
 import org.drools.time.TimerService;
 import org.drools.time.TimerServiceFactory;
+import org.drools.workflow.core.node.EventTrigger;
+import org.drools.workflow.core.node.StartNode;
+import org.drools.workflow.core.node.Trigger;
 
 /**
  * Implementation of <code>WorkingMemory</code>.
@@ -173,6 +181,8 @@ public abstract class AbstractWorkingMemory
     private WorkItemManager                                  workItemManager;
 
     private TimerManager                                     timerManager;
+
+    private SignalManager									 signalManager;
 
     private TimeMachine                                      timeMachine;
 
@@ -259,6 +269,7 @@ public abstract class AbstractWorkingMemory
         TimerService timerService = TimerServiceFactory.getTimerService( this.config.getClockType() );
         this.timerManager = new TimerManager( this,
                                               timerService );
+        this.signalManager = conf.getSignalManagerFactory().createSignalManager( this );
 
         this.nodeMemories = new ConcurrentNodeMemories( this.ruleBase );
 
@@ -288,6 +299,7 @@ public abstract class AbstractWorkingMemory
         this.firing = new AtomicBoolean( false );
         this.modifyContexts = new HashMap<InternalFactHandle, PropagationContext>();
 
+		initProcessEventListeners();
         initPartitionManagers();
         initTransient();
     }
@@ -1571,6 +1583,66 @@ public abstract class AbstractWorkingMemory
         }
         return workItemManager;
     }
+
+    public SignalManager getSignalManager() {
+    	return signalManager;
+    }
+
+	private void initProcessEventListeners() {
+		for (Process process: ruleBase.getProcesses()) {
+			if (process instanceof RuleFlowProcess) {
+				StartNode startNode = ((RuleFlowProcess) process).getStart();
+				List<Trigger> triggers = startNode.getTriggers();
+				if (triggers != null) {
+					for (Trigger trigger: triggers) {
+						if (trigger instanceof EventTrigger) {
+							final List<EventFilter> filters = ((EventTrigger) trigger).getEventFilters();
+							String type = null;
+							for (EventFilter filter: filters) {
+								if (filter instanceof EventTypeFilter) {
+									type = ((EventTypeFilter) filter).getType();
+								}
+							}
+							getSignalManager().addEventListener(type, new StartProcessEventListener(process.getId(), filters, trigger.getInMappings()));
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	private class StartProcessEventListener implements EventListener {
+		private String processId;
+		private List<EventFilter> eventFilters;
+		private Map<String, String> inMappings;
+		public StartProcessEventListener(String processId, List<EventFilter> eventFilters, Map<String, String> inMappings) {
+			this.processId = processId;
+			this.eventFilters = eventFilters;
+			this.inMappings = inMappings;
+		}
+		public String[] getEventTypes() {
+			return null;
+		}
+		public void signalEvent(String type, Object event) {
+			for (EventFilter filter: eventFilters) {
+				if (!filter.acceptsEvent(type, event)) {
+					return;
+				}
+			}
+			Map<String, Object> params = null;
+			if (inMappings != null && !inMappings.isEmpty()) {
+				 params = new HashMap<String, Object>();
+				 for (Map.Entry<String, String> entry: inMappings.entrySet()) {
+					 if ("event".equals(entry.getValue())) {
+						 params.put(entry.getKey(), event);
+					 } else {
+						 params.put(entry.getKey(), entry.getValue());
+					 }
+				 }
+			}
+			startProcess(processId, params);
+		}
+	}
 
     public TimerManager getTimerManager() {
         return timerManager;

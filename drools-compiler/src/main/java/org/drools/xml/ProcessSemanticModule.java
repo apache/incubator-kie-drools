@@ -27,6 +27,7 @@ import org.drools.xml.processes.SubProcessNodeHandler;
 import org.drools.xml.processes.SwimlaneHandler;
 import org.drools.xml.processes.TimerHandler;
 import org.drools.xml.processes.TimerNodeHandler;
+import org.drools.xml.processes.TriggerHandler;
 import org.drools.xml.processes.TypeHandler;
 import org.drools.xml.processes.ValueHandler;
 import org.drools.xml.processes.VariableHandler;
@@ -101,5 +102,7 @@ public class ProcessSemanticModule extends DefaultSemanticModule implements Sema
 	   			   		   new ExceptionHandlerHandler() );        
         addHandler( "timer",
                 		   new TimerHandler() );
+        addHandler( "trigger",
+     		               new TriggerHandler() );
     }
 }

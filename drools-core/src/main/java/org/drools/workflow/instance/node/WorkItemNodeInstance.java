@@ -176,14 +176,14 @@ public class WorkItemNodeInstance extends EventBasedNodeInstance implements Even
     }
     
     private void addWorkItemListener() {
-        getProcessInstance().addEventListener("workItemCompleted", this);
-        getProcessInstance().addEventListener("workItemAborted", this);
+        getProcessInstance().addEventListener("workItemCompleted", this, false);
+        getProcessInstance().addEventListener("workItemAborted", this, false);
     }
     
     public void removeEventListeners() {
         super.removeEventListeners();
-        getProcessInstance().removeEventListener("workItemCompleted", this);
-        getProcessInstance().removeEventListener("workItemAborted", this);
+        getProcessInstance().removeEventListener("workItemCompleted", this, false);
+        getProcessInstance().removeEventListener("workItemAborted", this, false);
     }
     
     public void signalEvent(String type, Object event) {

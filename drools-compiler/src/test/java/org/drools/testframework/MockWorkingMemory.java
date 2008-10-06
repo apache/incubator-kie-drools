@@ -1,5 +1,8 @@
 package org.drools.testframework;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -7,18 +10,23 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 
 import org.drools.Agenda;
-import org.drools.WorkingMemoryEntryPoint;
 import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.ObjectFilter;
 import org.drools.QueryResults;
 import org.drools.RuleBase;
-import org.drools.common.*;
+import org.drools.WorkingMemoryEntryPoint;
+import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalRuleBase;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.common.NodeMemory;
+import org.drools.common.ObjectStore;
+import org.drools.common.ObjectTypeConfigurationRegistry;
+import org.drools.common.RuleBasePartitionId;
+import org.drools.common.TruthMaintenanceSystem;
+import org.drools.common.WorkingMemoryAction;
 import org.drools.concurrent.ExecutorService;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.AgendaEventSupport;
@@ -31,6 +39,7 @@ import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.ProcessInstanceFactory;
 import org.drools.process.instance.ProcessInstanceManager;
 import org.drools.process.instance.WorkItemManager;
+import org.drools.process.instance.event.SignalManager;
 import org.drools.process.instance.timer.TimerManager;
 import org.drools.reteoo.LIANodePropagation;
 import org.drools.reteoo.ObjectTypeConf;
@@ -548,6 +557,11 @@ public class MockWorkingMemory implements InternalWorkingMemory {
 	public void dispose() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public SignalManager getSignalManager() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

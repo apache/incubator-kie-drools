@@ -23,6 +23,13 @@ public class HumanTaskNode extends WorkItemNode {
         parameterDefinitions.add(new ParameterDefinitionImpl("ActorId", new StringDataType()));
         parameterDefinitions.add(new ParameterDefinitionImpl("Priority", new StringDataType()));
         parameterDefinitions.add(new ParameterDefinitionImpl("Comment", new StringDataType()));
+        parameterDefinitions.add(new ParameterDefinitionImpl("Skippable", new StringDataType()));
+        // TODO: initiator
+        // TODO: attachments
+        // TODO: deadlines
+        // TODO: delegates
+        // TODO: recipients
+        // TODO: ...
         work.setParameterDefinitions(parameterDefinitions);
         setWork(work);
     }
