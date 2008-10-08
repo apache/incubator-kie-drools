@@ -9,7 +9,7 @@ public interface WorkEditor {
     
     void setWork(Work work);
     
-    void show();
+    boolean show();
     
     Work getWork();
 
