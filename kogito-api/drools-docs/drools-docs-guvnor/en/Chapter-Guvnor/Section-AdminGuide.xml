@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-	<section xml:base="../" >
+<section xml:base="../">
   <title>Administration guide</title>
 
   <para>This chapter covers installation and administration issues of the
@@ -107,6 +107,7 @@
       configuration file (Seam is the framework used) which allows various
       parts of the system to be customized. When you have located the
       components.xml file, you should see something like the following:</para>
+
       <programlisting>&lt;component name="repositoryConfiguration"&gt;
  &lt;!--
   *** This is for configuring the "home" directory for the repository storage. the directory must exist. ***
@@ -187,8 +188,15 @@
   <section>
     <title>Security - Authentication and basic access</title>
 
-    <para>Please note that giving someone access to the BRMS indicates a level of trust.
-    Being able to editing and build rules is providing a great deal of power to a user. Thus you should not open up the BRMS to your entire organisation - but instead to a select few. Use https (http with TLS/SSL) whereever possible (even internally in a companies network this is a good idea). Use this power wisely - this not a "run of the mill" application that provides read/write access to a database, but something much more power. Just imagine you are spider man - with great power comes great responsibility (of course even more so for super man).</para>
+    <para>Please note that giving someone access to the BRMS indicates a level
+    of trust. Being able to editing and build rules is providing a great deal
+    of power to a user. Thus you should not open up the BRMS to your entire
+    organisation - but instead to a select few. Use https (http with TLS/SSL)
+    whereever possible (even internally in a companies network this is a good
+    idea). Use this power wisely - this not a "run of the mill" application
+    that provides read/write access to a database, but something much more
+    power. Just imagine you are spider man - with great power comes great
+    responsibility (of course even more so for super man).</para>
 
     <para>Security is configured by using the components.xml file in the war
     file. To customize this, you will need to unzip the war file, and locate
@@ -286,88 +294,117 @@
   </section>
 
   <section>
-    <title>Fine grained permissions and security</title> 
-    <para>
-      The above section talks about establishing identity and access for users. This section talks about granting specific permissions to these users (to control data visibility and access). This can be used to partition data, or to control access for "non power users" which can limit the damage they can do. 
-    </para>
+    <title>Fine grained permissions and security</title>
 
-      <figure>
-        <title>Administer user permissions</title>
+    <para>The above section talks about establishing identity and access for
+    users. This section talks about granting specific permissions to these
+    users (to control data visibility and access). This can be used to
+    partition data, or to control access for "non power users" which can limit
+    the damage they can do.</para>
 
-        <mediaobject>
-          <imageobject>
-            <imagedata align="center" fileref="AdminPermissions.png" format="PNG"
-                       scalefit="1" />
-          </imageobject>
-        </mediaobject>
-      </figure>
+    <figure>
+      <title>Administer user permissions</title>
 
-      <para>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="AdminPermissions.png"
+                     format="PNG" scalefit="1" />
+        </imageobject>
+      </mediaobject>
+    </figure>
 
+    <para>A common need and desire of the web interface of Guvnor is to be
+    able to have users of different technical abilities interact with it.
+    Another need is to be able to allocate people different sets of data to
+    "own".</para>
 
-A common need and desire of the web interface of Guvnor is to be able to have users of different technical abilities interact with it. Another need is to be able to allocate people different sets of data to "own".
+    <para>Typically users identities are managed in a centralised directory -
+    application servers can integrate with these directories (eg active
+    directory, LDAP) so users to guvnor can be authenticated without having to
+    create another duplicate identity. It is also possible (thanks to JAAS) to
+    define what users have the "admin" role for Guvnor (note that an Admin
+    user of Guvnor doesn't have to really be a system administrator). Further
+    to this, guvnor augments this identity with data specific permissions,
+    which are managed in Guvnor itself.</para>
 
-      </para>
+    <figure>
+      <title>User listing</title>
 
-      <para>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="AdminPermissionsList.png"
+                     format="PNG" scalefit="1" />
+        </imageobject>
+      </mediaobject>
+    </figure>
 
-Typically users identities are managed in a centralised directory - application servers can integrate with these directories (eg active directory, LDAP) so users to guvnor can be authenticated without having to create another duplicate identity. It is also possible (thanks to JAAS) to define what users have the "admin" role for Guvnor (note that an Admin user of Guvnor doesn't have to really be a system administrator). Further to this, guvnor augments this identity with data specific permissions, which are managed in Guvnor itself.
+    <para>Note that the above users identities are not stored in Guvnor, only
+    their permission mappings are which are specific to Guvnor.</para>
 
-      </para>
+    <para>There are really 2 system wide roles: Users who are Administrators
+    and users who are not. Easy ! Administrators can see and do anything. Out
+    of the box, the permission system is turned off, and every user is an
+    administrator (this is pretty much how things used to work). There is also
+    a system setting in components.xml that can turn the permissions system on
+    and off (so people can manually override if needs be). A administrator can
+    also give other users admin rights, regardless of their roles in the
+    external directory service.</para>
 
-      <figure>
-        <title>User listing</title>
+    <figure>
+      <title>Editing</title>
 
-        <mediaobject>
-          <imageobject>
-            <imagedata align="center" fileref="AdminPermissionsList.png" format="PNG"
-                       scalefit="1" />
-          </imageobject>
-        </mediaobject>
-      </figure>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="AdminPermissionEdit.png"
+                     format="PNG" scalefit="1" />
+        </imageobject>
+      </mediaobject>
+    </figure>
 
-      <para>Note that the above users identities are not stored in Guvnor, only their permission mappings are which are specific to Guvnor.</para>
+    <para>There are several types of permissions: Per package: Package
+    Administrator ("owns" a package - can deploy etc, but has no
+    administrative rights to the system). Package developer - this permissions
+    allows users to create new items, edit etc - but only at the package level
+    (not deploy). They can also run and create tests. Package readonly - well
+    this one is pretty obvious. Per Category: This is the "interesting" one -
+    as assets (rules) can be tagged with multiple categories, you can use
+    these to assign permissions to an "analyst" type of user. A user can be
+    assigned multiple categories. A user can then edit and view any asset that
+    is tagged in that category (regardless of package). A user that only has
+    category permissions will not be shown any package views or details, and
+    will only see the simple categories view. This allows administrators and
+    managers to control exactly what these users can and can't see. Note that
+    per category permissions can also be set as "read only" so a user can view
+    all the assets in a category, but not make changes to them.</para>
 
-      <para>There are really 2 system wide roles: Users who are Administrators and users who are not. Easy ! Administrators can see and do anything. Out of the box, the permission system is turned off, and every user is an administrator (this is pretty much how things used to work). There is also a system setting in components.xml that can turn the permissions system on and off (so people can manually override if needs be). A administrator can also give other users admin rights, regardless of their roles in the external directory service.</para>
+    <figure>
+      <title>The analyst view</title>
 
-      <figure>
-        <title>Editing</title>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="AdminAnalyst.png" format="PNG"
+                     scalefit="1" />
+        </imageobject>
+      </mediaobject>
+    </figure>
 
-        <mediaobject>
-          <imageobject>
-            <imagedata align="center" fileref="AdminPermissionEdit.png" format="PNG"
-                       scalefit="1" />
-          </imageobject>
-        </mediaobject>
-      </figure>
+    <para>The per category "analist" permissions are quite useful - you can
+    also augment their permissions with a specific package (so on top of their
+    category rights, they can see and play with a particular package - which
+    may be used as a "practice" area, or test area for instance). The above
+    provides a few ways to manage permissions in a coarse or fine grained way,
+    as suits the different types of users.</para>
 
-      <para>
-There are several types of permissions:
+    <section>
+      <title>Enabling fine grained authorization</title>
 
-Per package:
-Package Administrator ("owns" a package - can deploy etc, but has no administrative rights to the system). Package developer - this permissions allows users to create new items, edit etc - but only at the package level (not deploy). They can also run and create tests. Package readonly - well this one is pretty obvious.
+      <para>By default authorization is not enabled. To enable it, edit the
+      components.xml file in the WEB-INF directory:</para>
 
-Per Category:
-This is the "interesting" one - as assets (rules) can be tagged with multiple categories, you can use these to assign permissions to an "analyst" type of user. A user can be assigned multiple categories. A user can then edit and view any asset that is tagged in that category (regardless of package). A user that only has category permissions will not be shown any package views or details, and will only see the simple categories view. This allows administrators and managers to control exactly what these users can and can't see. Note that per category permissions can also be set as "read only" so a user can view all the assets in a category, but not make changes to them.
-      </para>
-
-      <figure>
-        <title>The analyst view</title>
-
-        <mediaobject>
-          <imageobject>
-            <imagedata align="center" fileref="AdminAnalyst.png" format="PNG"
-                       scalefit="1" />
-          </imageobject>
-        </mediaobject>
-      </figure>
-
-      <para>
-The per category "analist" permissions are quite useful - you can also augment their permissions with a specific package (so on top of their category rights, they can see and play with a particular package - which may be used as a "practice" area, or test area for instance).
-
-The above provides a few ways to manage permissions in a coarse or fine grained way, as suits the different types of users.
-      </para>
-
+      <programlisting>
+    &lt;security:role-based-permission-resolver enable-role-based-authorization="true"/&gt;	  
+</programlisting>
+    </section>
   </section>
 
   <section>
@@ -405,13 +442,24 @@ The above provides a few ways to manage permissions in a coarse or fine grained 
 
     <section>
       <title>Customised selectors for package building</title>
-      <para>When building packages (from the "Packages" feature) you have the option to specify the name of a "selector". This selector will filter the list of rules that are built into the package. What you enter in the selector text box, is the name of a selector as configured on the server.</para>
 
-      <para>
-	To configure a selector, you will need to "explode" the war file for the BRMS, and locate the selectors.properties file (note you can also put your own selectors.properties file in the system classpath if you like). 
-	In this file, you will find details on how you can configure a custom selector. The options are to use a drl file, or the name of a class that you have written (and which is available on the classpath). Classes must implement the AssetSelector interface. DRL files can also be used (there is an example one in the selectors.properties file). Each selector you configure has a unique name in this properties file - and this is the name that you can use when building packages. 
-      </para>
-     </section>
+      <para>When building packages (from the "Packages" feature) you have the
+      option to specify the name of a "selector". This selector will filter
+      the list of rules that are built into the package. What you enter in the
+      selector text box, is the name of a selector as configured on the
+      server.</para>
+
+      <para>To configure a selector, you will need to "explode" the war file
+      for the BRMS, and locate the selectors.properties file (note you can
+      also put your own selectors.properties file in the system classpath if
+      you like). In this file, you will find details on how you can configure
+      a custom selector. The options are to use a drl file, or the name of a
+      class that you have written (and which is available on the classpath).
+      Classes must implement the AssetSelector interface. DRL files can also
+      be used (there is an example one in the selectors.properties file). Each
+      selector you configure has a unique name in this properties file - and
+      this is the name that you can use when building packages.</para>
+    </section>
 
     <section>
       <title>Adding your own logos or styles to the BRMS web GUI</title>
@@ -422,7 +470,9 @@ The above provides a few ways to manage permissions in a coarse or fine grained 
       of them forgetting are too terrible con contemplate).</para>
 
       <para>To achieve, this, you can "explode" the deployment war file, and
-      locate the JBRMS.html file.</para> <programlisting>
+      locate the JBRMS.html file.</para>
+
+      <programlisting>
 &lt;html&gt;
 &lt;head&gt;
   &lt;meta name='gwt:module' content='org.drools.brms.JBRMS'&gt;
@@ -437,20 +487,22 @@ The above provides a few ways to manage permissions in a coarse or fine grained 
   &lt;script language='javascript' src='gwt.js'&gt;&lt;/script&gt;
   &lt;iframe id='__gwt_historyFrame' style='width:0;height:0;border:0'&gt;&lt;/iframe&gt;
 &lt;/body&gt;
-&lt;/html&gt;</programlisting><para> The above is the contents of the JBRMS.html
-      file - it is fairly empty (as most of the work is done by the GWT - the
-      GUI is built dynamically in the browser). The parts you can customise
-      are the style sheet - you can either edit the JBRMS.css (or better yet,
-      take a copy, and change the style to be what you need), the "shortcut
-      icon" (its what shows in the address bar in the browser etc - also
-      change the "icon" link to be the same so it works in IE), and the header
-      logo. The rest should be left as is, to allow the GWT components to be
-      loaded and attached to the page. This html page is loaded only once by
-      the browser when the user accesses the BRMS web GUI.</para>
+&lt;/html&gt;</programlisting>
+
+      <para>The above is the contents of the JBRMS.html file - it is fairly
+      empty (as most of the work is done by the GWT - the GUI is built
+      dynamically in the browser). The parts you can customise are the style
+      sheet - you can either edit the JBRMS.css (or better yet, take a copy,
+      and change the style to be what you need), the "shortcut icon" (its what
+      shows in the address bar in the browser etc - also change the "icon"
+      link to be the same so it works in IE), and the header logo. The rest
+      should be left as is, to allow the GWT components to be loaded and
+      attached to the page. This html page is loaded only once by the browser
+      when the user accesses the BRMS web GUI.</para>
 
       <para>The best way to customize is to take a copy of the JBRMS.html -
       and then edit. You can also change the URL by editing the web.xml via
-      the normal means. </para>
+      the normal means.</para>
     </section>
 
     <section>
