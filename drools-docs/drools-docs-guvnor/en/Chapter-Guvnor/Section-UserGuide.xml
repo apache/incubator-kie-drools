@@ -1212,6 +1212,14 @@ public class SampleDataSource2 {
   </section>
 
   <section>
+    <title>Creating a business user view</title>
+    <para>
+      In most cases not all users will want to see all the functionality described here. You could have a subset of users who you only want to let view or edit certain sets of rules, without getting confused by all the other stuff. 
+In this case you can use fine grained authorization (see the Admin Guide on how to initialize this). By setting permissions on a per category basis, users that only have category permissions will see a limited subset of functionality, and only items that are tagged with those categories. 
+    </para>
+  </section>
+
+  <section>
     <title>The fact model (object model)</title>
 
     <para>For any rule base application, a fact model is needed to drive the
