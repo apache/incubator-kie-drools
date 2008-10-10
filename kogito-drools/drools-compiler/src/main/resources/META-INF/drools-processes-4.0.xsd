@@ -378,6 +378,7 @@
 			<xs:choice minOccurs="0" maxOccurs="unbounded">
 				<xs:element ref="drools:work"/>
 				<xs:element ref="drools:mapping"/>
+				<xs:element ref="drools:timers"/>
 				<xs:element ref="drools:onEntry"/>
 				<xs:element ref="drools:onExit"/>
 			</xs:choice>
