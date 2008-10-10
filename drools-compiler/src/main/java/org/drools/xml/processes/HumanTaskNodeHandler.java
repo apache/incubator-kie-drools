@@ -25,7 +25,7 @@ public class HumanTaskNodeHandler extends WorkItemNodeHandler {
         return new HumanTaskNode();
     }
 
-    public Class generateNodeFor() {
+    public Class<?> generateNodeFor() {
         return HumanTaskNode.class;
     }
 
@@ -38,6 +38,10 @@ public class HumanTaskNodeHandler extends WorkItemNodeHandler {
         visitWork(work, xmlDump, includeMeta);
         visitInMappings(workItemNode.getInMappings(), xmlDump);
         visitOutMappings(workItemNode.getOutMappings(), xmlDump);
+        for (String eventType: workItemNode.getActionTypes()) {
+        	writeActions(eventType, workItemNode.getActions(eventType), xmlDump);
+        }
+        writeTimers(workItemNode.getTimers(), xmlDump);
         endNode("humanTask", xmlDump);
     }
     
