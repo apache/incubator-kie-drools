@@ -21,7 +21,7 @@ import org.drools.time.Trigger;
 public class JDKTimerServiceTest extends TestCase {
     
     public void testSingleExecutionJob() throws Exception {
-        TimerService timeService = TimerServiceFactory.getTimerService( ClockType.REAL_TIME ); 
+        TimerService timeService = TimerServiceFactory.getTimerService( ClockType.REALTIME_CLOCK ); 
         Trigger trigger = new DelayedTrigger( 100 );
         HelloWorldJobContext ctx = new HelloWorldJobContext( "hello world", timeService);
         timeService.scheduleJob( new HelloWorldJob(), ctx,  trigger);        
@@ -30,7 +30,7 @@ public class JDKTimerServiceTest extends TestCase {
     }    
     
     public void testRepeatedExecutionJob() throws Exception {
-        TimerService timeService = TimerServiceFactory.getTimerService( ClockType.REAL_TIME ); 
+        TimerService timeService = TimerServiceFactory.getTimerService( ClockType.REALTIME_CLOCK ); 
         Trigger trigger = new DelayedTrigger(  new long[] { 100, 100, 100} );
         HelloWorldJobContext ctx = new HelloWorldJobContext( "hello world", timeService);
         timeService.scheduleJob( new HelloWorldJob(), ctx,  trigger);        
@@ -41,7 +41,7 @@ public class JDKTimerServiceTest extends TestCase {
         
     
 	public void testRepeatedExecutionJobWithRemove() throws Exception {
-	    TimerService timeService = TimerServiceFactory.getTimerService( ClockType.REAL_TIME );
+	    TimerService timeService = TimerServiceFactory.getTimerService( ClockType.REALTIME_CLOCK );
 		Trigger trigger = new DelayedTrigger( new long[] { 100, 100, 100, 100, 100 } );
 		HelloWorldJobContext ctx = new HelloWorldJobContext( "hello world", timeService);
 		ctx.setLimit( 3 );

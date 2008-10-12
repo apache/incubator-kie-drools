@@ -8,7 +8,7 @@ public class TimerServiceFactory {
     
     public static TimerService getTimerService( ClockType type ) {
         switch( type ) {
-            case REAL_TIME:
+            case REALTIME_CLOCK:
                 return new JDKTimerService();
             case PSEUDO_CLOCK:
                 return new PseudoClockScheduler();

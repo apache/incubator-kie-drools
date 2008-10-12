@@ -28,32 +28,44 @@ import org.drools.time.impl.PseudoClockScheduler;
  */
 public enum ClockType {
 
-    REAL_TIME {
-        public SessionClock createInstance() {
+    REALTIME_CLOCK("realtime") {
+        public JDKTimerService createInstance() {
             return new JDKTimerService();
         }
     },
 
     /**
-     * A Pseudo clock is a clock that is completely controled by the
+     * A Pseudo clock is a clock that is completely controlled by the
      * client application. It is usually used during simulations or tests
      */
-    PSEUDO_CLOCK {
-        public SessionClock createInstance() {
+    PSEUDO_CLOCK("pseudo") {
+        public PseudoClockScheduler createInstance() {
             return new PseudoClockScheduler();
         }
     };
 
     public abstract SessionClock createInstance();
     
+    private String string;
+    ClockType( String string ) {
+        this.string = string;
+    }
+    
+    public String toString() {
+        return this.string;
+    }
+    
+    public String getId() {
+        return this.string;
+    }
+    
     public static ClockType resolveClockType( String id ) {
-        ClockType clock = REAL_TIME;
-        if( "pseudo".equalsIgnoreCase( id ) ) {
-            clock = PSEUDO_CLOCK;
-        } else if( "realtime".equalsIgnoreCase( id ) ) {
-            clock = REAL_TIME;
+        if( PSEUDO_CLOCK.getId().equalsIgnoreCase( id ) ) {
+            return PSEUDO_CLOCK;
+        } else if( REALTIME_CLOCK.getId().equalsIgnoreCase( id ) ) {
+            return REALTIME_CLOCK;
         }
-        return clock;
+        throw new IllegalArgumentException( "Illegal enum value '" + id + "' for ClockType" );
     }
 
 }
