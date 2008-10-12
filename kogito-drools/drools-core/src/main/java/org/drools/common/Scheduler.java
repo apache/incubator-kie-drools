@@ -67,7 +67,7 @@ final class Scheduler {
      */
     private Scheduler() {
         // FIXME: must use the session timer service
-        this.timerService = TimerServiceFactory.getTimerService( ClockType.REAL_TIME );
+        this.timerService = TimerServiceFactory.getTimerService( ClockType.REALTIME_CLOCK );
     }
 
     /**

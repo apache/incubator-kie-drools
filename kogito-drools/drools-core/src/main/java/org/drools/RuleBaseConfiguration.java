@@ -118,11 +118,13 @@ public class RuleBaseConfiguration
     private ConsequenceExceptionHandler    consequenceExceptionHandler;
     private String                         ruleBaseUpdateHandler;
 
+    private EventProcessingMode            eventProcessingMode;
+
     // if "true", rulebase builder will try to split 
     // the rulebase into multiple partitions that can be evaluated
     // in parallel by using multiple internal threads
     private boolean                        multithread;
-    private int  	                       maxThreads;
+    private int                            maxThreads;
 
     private ConflictResolver               conflictResolver;
 
@@ -163,6 +165,7 @@ public class RuleBaseConfiguration
         out.writeBoolean( advancedProcessRuleIntegration );
         out.writeBoolean( multithread );
         out.writeInt( maxThreads );
+        out.writeObject( eventProcessingMode );
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -189,6 +192,7 @@ public class RuleBaseConfiguration
         advancedProcessRuleIntegration = in.readBoolean();
         multithread = in.readBoolean();
         maxThreads = in.readInt();
+        eventProcessingMode = (EventProcessingMode) in.readObject();
     }
 
     /**
@@ -315,8 +319,10 @@ public class RuleBaseConfiguration
         setMultithreadEvaluation( Boolean.valueOf( this.chainedProperties.getProperty( "drools.multithreadEvaluation",
                                                                                        "false" ) ).booleanValue() );
 
-         setMaxThreads( Integer.parseInt( this.chainedProperties.getProperty( "drools.maxThreads",
-                                                                              "-1" ) ) );
+        setMaxThreads( Integer.parseInt( this.chainedProperties.getProperty( "drools.maxThreads",
+                                                                             "-1" ) ) );
+        setEventProcessingMode( EventProcessingMode.determineAssertBehaviour( this.chainedProperties.getProperty( "drools.eventProcessingMode",
+                                                                                                                  "cloud" ) ) );
     }
 
     /**
@@ -402,6 +408,15 @@ public class RuleBaseConfiguration
     public void setAssertBehaviour(final AssertBehaviour assertBehaviour) {
         checkCanChange(); // throws an exception if a change isn't possible;
         this.assertBehaviour = assertBehaviour;
+    }
+
+    public EventProcessingMode getEventProcessingMode() {
+        return this.eventProcessingMode;
+    }
+
+    public void setEventProcessingMode(final EventProcessingMode mode) {
+        checkCanChange(); // throws an exception if a change isn't possible;
+        this.eventProcessingMode = mode;
     }
 
     public int getCompositeKeyDepth() {
@@ -514,7 +529,7 @@ public class RuleBaseConfiguration
         checkCanChange();
         this.multithread = enableMultithread;
     }
-    
+
     /**
      * Returns true if the partitioning of the rulebase is enabled
      * and false otherwise. Default is false.
@@ -524,7 +539,7 @@ public class RuleBaseConfiguration
     public boolean isMultithreadEvaluation() {
         return this.multithread;
     }
-    
+
     /**
      * If multi-thread evaluation is enabled, this parameter configures the 
      * maximum number of threads each session can use for concurrent Rete
@@ -535,10 +550,10 @@ public class RuleBaseConfiguration
      *                   of threads equal to the number of partitions in the
      *                   rule base. Default number of threads is 0. 
      */
-    public void setMaxThreads( final int maxThreads ) {
-    	this.maxThreads = maxThreads;
+    public void setMaxThreads(final int maxThreads) {
+        this.maxThreads = maxThreads;
     }
-    
+
     /**
      * Returns the configured number of maximum threads to use for concurrent
      * propagation when multi-thread evaluation is enabled. Default is zero.
@@ -546,7 +561,7 @@ public class RuleBaseConfiguration
      * @return
      */
     public int getMaxThreads() {
-    	return this.maxThreads;
+        return this.maxThreads;
     }
 
     private void initProcessNodeInstanceFactoryRegistry() {
@@ -745,12 +760,13 @@ public class RuleBaseConfiguration
     }
 
     @SuppressWarnings("unchecked")
-	private void loadWorkItemHandlers(String location) {
+    private void loadWorkItemHandlers(String location) {
         String content = ConfFileUtils.URLContentsToString( ConfFileUtils.getURL( location,
                                                                                   null,
                                                                                   RuleBaseConfiguration.class ) );
-        Map<String, WorkItemHandler> workItemHandlers = (Map<String, WorkItemHandler>) MVEL.eval( content, new HashMap() );
-        this.workItemHandlers.putAll(workItemHandlers);
+        Map<String, WorkItemHandler> workItemHandlers = (Map<String, WorkItemHandler>) MVEL.eval( content,
+                                                                                                  new HashMap() );
+        this.workItemHandlers.putAll( workItemHandlers );
     }
 
     public ContextInstanceFactoryRegistry getProcessContextInstanceFactoryRegistry() {
@@ -810,20 +826,18 @@ public class RuleBaseConfiguration
     }
 
     @SuppressWarnings("unchecked")
-	private void initProcessInstanceManagerFactory() {
+    private void initProcessInstanceManagerFactory() {
         String className = this.chainedProperties.getProperty( "processInstanceManagerFactory",
                                                                "org.drools.process.instance.impl.DefaultProcessInstanceManagerFactory" );
         Class<ProcessInstanceManagerFactory> clazz = null;
         try {
-            clazz = (Class<ProcessInstanceManagerFactory>)
-            	Thread.currentThread().getContextClassLoader().loadClass( className );
+            clazz = (Class<ProcessInstanceManagerFactory>) Thread.currentThread().getContextClassLoader().loadClass( className );
         } catch ( ClassNotFoundException e ) {
         }
 
         if ( clazz == null ) {
             try {
-                clazz = (Class<ProcessInstanceManagerFactory>)
-                	RuleBaseConfiguration.class.getClassLoader().loadClass( className );
+                clazz = (Class<ProcessInstanceManagerFactory>) RuleBaseConfiguration.class.getClassLoader().loadClass( className );
             } catch ( ClassNotFoundException e ) {
             }
         }
@@ -847,20 +861,18 @@ public class RuleBaseConfiguration
     }
 
     @SuppressWarnings("unchecked")
-	private void initSignalManagerFactory() {
+    private void initSignalManagerFactory() {
         String className = this.chainedProperties.getProperty( "processSignalManagerFactory",
                                                                "org.drools.process.instance.event.DefaultSignalManagerFactory" );
         Class<SignalManagerFactory> clazz = null;
         try {
-            clazz = (Class<SignalManagerFactory>)
-            	Thread.currentThread().getContextClassLoader().loadClass( className );
+            clazz = (Class<SignalManagerFactory>) Thread.currentThread().getContextClassLoader().loadClass( className );
         } catch ( ClassNotFoundException e ) {
         }
 
         if ( clazz == null ) {
             try {
-                clazz = (Class<SignalManagerFactory>)
-                	RuleBaseConfiguration.class.getClassLoader().loadClass( className );
+                clazz = (Class<SignalManagerFactory>) RuleBaseConfiguration.class.getClassLoader().loadClass( className );
             } catch ( ClassNotFoundException e ) {
             }
         }
@@ -884,20 +896,18 @@ public class RuleBaseConfiguration
     }
 
     @SuppressWarnings("unchecked")
-	private void initWorkItemManagerFactory() {
+    private void initWorkItemManagerFactory() {
         String className = this.chainedProperties.getProperty( "workItemManagerFactory",
                                                                "org.drools.process.instance.impl.DefaultWorkItemManagerFactory" );
         Class<WorkItemManagerFactory> clazz = null;
         try {
-            clazz = (Class<WorkItemManagerFactory>)
-            	Thread.currentThread().getContextClassLoader().loadClass( className );
+            clazz = (Class<WorkItemManagerFactory>) Thread.currentThread().getContextClassLoader().loadClass( className );
         } catch ( ClassNotFoundException e ) {
         }
 
         if ( clazz == null ) {
             try {
-                clazz = (Class<WorkItemManagerFactory>)
-                	RuleBaseConfiguration.class.getClassLoader().loadClass( className );
+                clazz = (Class<WorkItemManagerFactory>) RuleBaseConfiguration.class.getClassLoader().loadClass( className );
             } catch ( ClassNotFoundException e ) {
             }
         }
@@ -906,7 +916,8 @@ public class RuleBaseConfiguration
             try {
                 this.workItemManagerFactory = clazz.newInstance();
             } catch ( Exception e ) {
-                throw new IllegalArgumentException( "Unable to instantiate work item manager factory '" + className + "'", e );
+                throw new IllegalArgumentException( "Unable to instantiate work item manager factory '" + className + "'",
+                                                    e );
             }
         } else {
             throw new IllegalArgumentException( "Work item manager factory '" + className + "' not found" );
@@ -1184,6 +1195,51 @@ public class RuleBaseConfiguration
 
         public String toString() {
             return "SequentialAgenda : " + ((this.value == 0) ? "sequential" : "dynamic");
+        }
+    }
+
+    /**
+     * An enum for the valid event processing modes.
+     * 
+     * When the rulebase is compiled in the CLOUD (default) event processing mode,
+     * it behaves just like a regular rulebase.
+     * 
+     * When the rulebase is compiled in the STREAM event processing mode, additional
+     * assumptions are made. These assumptions allow the engine to perform a few optimisations
+     * like:
+     * 
+     * <li> reasoning over absence of events (NOT CE), automatically adds an appropriate duration attribute
+     * to the rule in order to avoid early rule firing. </li>
+     * <li> memory management techniques may be employed when an event no longer can match other events
+     * due to session clock continuous increment. </li>
+     * 
+     * @author etirelli
+     *
+     */
+    public static enum EventProcessingMode {
+
+        CLOUD("cloud"), STREAM("stream");
+
+        private String string;
+        EventProcessingMode( String mode ) {
+            this.string = mode;
+        }
+        
+        public String getId() {
+            return string;
+        }
+        
+        public String toString() {
+            return string;
+        }
+        
+        public static EventProcessingMode determineAssertBehaviour(String mode) {
+            if( STREAM.getId().equalsIgnoreCase( mode ) ) {
+                return STREAM;
+            } else if( CLOUD.getId().equalsIgnoreCase( mode ) ) {
+                return CLOUD;
+            }
+            throw new IllegalArgumentException( "Illegal enum value '" + mode + "' for EventProcessingMode" );
         }
     }
 
