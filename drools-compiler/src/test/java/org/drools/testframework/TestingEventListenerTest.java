@@ -27,16 +27,16 @@ public class TestingEventListenerTest extends RuleUnit {
         assertEquals(new Integer(1), (Integer) ls.firingCounts.get("rule1"));
         assertEquals(new Integer(1), (Integer) ls.firingCounts.get("rule2"));
 
-        assertEquals(new Integer(1), (Integer) ls.firingCounts.get("rule3"));
-        assertTrue(ls.firingCounts.containsKey("rule3"));
+        //assertEquals(new Integer(1), (Integer) ls.firingCounts.get("rule3"));
+        assertFalse(ls.firingCounts.containsKey("rule3"));
         assertFalse(ls.firingCounts.containsKey("rule4"));
 
         session.insert(new Cheese());
         session.fireAllRules(ls.getAgendaFilter(set, true));
         assertEquals(new Integer(2), (Integer) ls.firingCounts.get("rule1"));
         assertEquals(new Integer(2), (Integer) ls.firingCounts.get("rule2"));
-        assertEquals(new Integer(2), (Integer) ls.firingCounts.get("rule3"));
-        assertEquals(6, ls.totalFires);
+        assertFalse(ls.firingCounts.containsKey("rule3"));
+        assertEquals(4, ls.totalFires);
 
 	}
 
@@ -56,11 +56,12 @@ public class TestingEventListenerTest extends RuleUnit {
         session.insert(new Cheese());
         session.fireAllRules(ls.getAgendaFilter(set, false));
 
-        assertEquals(new Integer(1), (Integer) ls.firingCounts.get("rule1"));
-        assertEquals(new Integer(1), (Integer) ls.firingCounts.get("rule2"));
+        //assertEquals(new Integer(1), (Integer) ls.firingCounts.get("rule1"));
+        //assertEquals(new Integer(1), (Integer) ls.firingCounts.get("rule2"));
 
-        assertEquals(new Integer(1), (Integer) ls.firingCounts.get("rule3"));
-        assertTrue(ls.firingCounts.containsKey("rule3"));
+        assertEquals(new Integer(1), (Integer) ls.firingCounts.get("rule2"));
+        assertEquals(new Integer(1), (Integer) ls.firingCounts.get("rule1"));
+        assertFalse(ls.firingCounts.containsKey("rule3"));
         assertFalse(ls.firingCounts.containsKey("rule4"));
 
 
