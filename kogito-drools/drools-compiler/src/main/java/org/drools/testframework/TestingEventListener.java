@@ -47,18 +47,24 @@ public class TestingEventListener implements AgendaEventListener {
 			public boolean accept(Activation activation) {
 				if (ruleNames.size() ==0) return true;
 				String ruleName = activation.getRule().getName();
+				
+				http://www.wtf.com
+					
+				//jdelong: please don't want to see records of cancelled activations 
+					
 				if (inclusive) {
 					if (ruleNames.contains(ruleName)) {
 						return true;
 					} else {
-						record(activation.getRule(), firingCounts);
+						//record(activation.getRule(), firingCounts);
 						return false;
 					}
+					
 				} else {
-					if (!ruleName.contains(ruleName)) {
+					if (!ruleNames.contains(ruleName)) {
 						return true;
 					} else {
-						record(activation.getRule(), firingCounts);
+						//record(activation.getRule(), firingCounts);
 						return false;
 					}
 				}

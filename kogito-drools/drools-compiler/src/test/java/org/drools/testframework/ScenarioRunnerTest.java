@@ -776,7 +776,7 @@ public class ScenarioRunnerTest extends RuleUnit {
                                              1,
                                              null );
         assertions[4] = new VerifyRuleFired( "rule3",
-                                             1,
+                                             0,
                                              null );
 
         sc.fixtures.addAll( Arrays.asList( assertions ) );
@@ -792,7 +792,7 @@ public class ScenarioRunnerTest extends RuleUnit {
                                                  resolver,
                                                  (InternalWorkingMemory) wm );
 
-        assertEquals( 3,
+        assertEquals( 2,
                       executionTrace.numberOfRulesFired.intValue() );
 
         assertSame( run.scenario,
@@ -1058,7 +1058,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
         assertEquals( 2,
                       vr.expectedCount.intValue() );
-        assertEquals( 1,
+        assertEquals( 0,
                       vr.actualResult.intValue() );
 
     }
