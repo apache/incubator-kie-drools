@@ -43,7 +43,9 @@ public class RuleBuilder {
      */
     public void build(final RuleBuildContext context) {
         RuleDescr ruleDescr = context.getRuleDescr();
-
+        
+        context.getRule().getMetaAttributes().putAll(ruleDescr.getMetaAttributes());
+        
         final RuleConditionBuilder builder = (RuleConditionBuilder) context.getDialect().getBuilder( ruleDescr.getLhs().getClass() );
         if ( builder != null ) {
             Pattern prefixPattern = null;

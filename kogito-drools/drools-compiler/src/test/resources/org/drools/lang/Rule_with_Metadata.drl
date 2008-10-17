@@ -1,0 +1,10 @@
+package org.drools;
+
+rule test_rule
+	@fooAttribute(barValue)
+	@fooAtt2(barVal2)
+	when
+		foo()
+	then
+		
+end
