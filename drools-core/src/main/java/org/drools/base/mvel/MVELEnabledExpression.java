@@ -9,13 +9,13 @@ import java.io.Serializable;
 import org.drools.WorkingMemory;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
-import org.drools.spi.Salience;
+import org.drools.spi.Enabled;
 import org.drools.spi.Tuple;
 import org.mvel.MVEL;
 
-public class MVELSalienceExpression
+public class MVELEnabledExpression
     implements
-    Salience,
+    Enabled,
     MVELCompileable,
     Externalizable {
 
@@ -27,11 +27,11 @@ public class MVELSalienceExpression
     private Serializable        expr;
     private DroolsMVELFactory   prototype;
 
-    public MVELSalienceExpression() {
+    public MVELEnabledExpression() {
     }
 
-    public MVELSalienceExpression(final MVELCompilationUnit unit,
-                                  final String id) {
+    public MVELEnabledExpression(final MVELCompilationUnit unit,
+                                 final String id) {
         this.unit = unit;
         this.id = id;
     }
@@ -52,8 +52,9 @@ public class MVELSalienceExpression
         prototype = unit.getFactory();
     }
 
-    public int getValue(final Tuple tuple,
-                        final WorkingMemory workingMemory) {
+    public boolean getValue(final Tuple tuple,
+                            final WorkingMemory workingMemory) {
+        // it must be cloned for multi-thread safety
         DroolsMVELFactory factory = (DroolsMVELFactory) this.prototype.clone();
         factory.setContext( tuple,
                             null,
@@ -68,8 +69,8 @@ public class MVELSalienceExpression
             factory.setNextFactory( data.getFunctionFactory() );
         }
 
-        return ((Number) MVEL.executeExpression( this.expr,
-                                                 factory )).intValue();
+        return ((Boolean) MVEL.executeExpression( this.expr,
+                                                  factory )).booleanValue();
     }
 
 }
