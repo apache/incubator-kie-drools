@@ -4,16 +4,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.TypeResolver;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.ProcessDescr;
 import org.drools.lang.descr.RuleDescr;
-import org.drools.rule.Package;
 import org.drools.rule.builder.AccumulateBuilder;
 import org.drools.rule.builder.ActionBuilder;
 import org.drools.rule.builder.ConsequenceBuilder;
+import org.drools.rule.builder.EnabledBuilder;
 import org.drools.rule.builder.EntryPointBuilder;
 import org.drools.rule.builder.FromBuilder;
 import org.drools.rule.builder.PackageBuildContext;
@@ -49,6 +48,8 @@ public interface Dialect {
     TypeResolver getTypeResolver();
 
     SalienceBuilder getSalienceBuilder();
+
+    EnabledBuilder getEnabledBuilder();
 
     PatternBuilder getPatternBuilder();
 

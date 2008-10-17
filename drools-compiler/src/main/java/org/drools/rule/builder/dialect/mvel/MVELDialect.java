@@ -8,23 +8,17 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import org.drools.RuntimeDroolsException;
-import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ModifyInterceptor;
 import org.drools.base.TypeResolver;
 import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.base.mvel.MVELDebugHandler;
-import org.drools.common.InternalRuleBase;
 import org.drools.commons.jci.readers.MemoryResourceReader;
 import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.Dialect;
@@ -48,8 +42,6 @@ import org.drools.lang.descr.ProcessDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.Declaration;
-import org.drools.rule.DialectRuntimeRegistry;
-import org.drools.rule.JavaDialectRuntimeData;
 import org.drools.rule.LineMappings;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
@@ -57,6 +49,7 @@ import org.drools.rule.builder.AccumulateBuilder;
 import org.drools.rule.builder.ActionBuilder;
 import org.drools.rule.builder.CollectBuilder;
 import org.drools.rule.builder.ConsequenceBuilder;
+import org.drools.rule.builder.EnabledBuilder;
 import org.drools.rule.builder.EntryPointBuilder;
 import org.drools.rule.builder.ForallBuilder;
 import org.drools.rule.builder.FromBuilder;
@@ -82,7 +75,6 @@ import org.mvel.ParserContext;
 import org.mvel.compiler.AbstractParser;
 import org.mvel.compiler.CompiledExpression;
 import org.mvel.compiler.ExpressionCompiler;
-import org.mvel.optimizers.OptimizerFactory;
 import org.mvel.util.CompilerTools;
 import org.mvel.util.ParseTools;
 
@@ -99,6 +91,7 @@ public class MVELDialect
     protected static final QueryBuilder                    QUERY_BUILDER                  = new QueryBuilder();
     protected static final MVELAccumulateBuilder           ACCUMULATE_BUILDER             = new MVELAccumulateBuilder();
     protected static final SalienceBuilder                 SALIENCE_BUILDER               = new MVELSalienceBuilder();
+    protected static final EnabledBuilder                  ENABLED_BUILDER                = new MVELEnabledBuilder();
     protected static final MVELEvalBuilder                 EVAL_BUILDER                   = new MVELEvalBuilder();
     protected static final MVELPredicateBuilder            PREDICATE_BUILDER              = new MVELPredicateBuilder();
     protected static final MVELReturnValueBuilder          RETURN_VALUE_BUILDER           = new MVELReturnValueBuilder();
@@ -779,6 +772,10 @@ public class MVELDialect
 
     public SalienceBuilder getSalienceBuilder() {
         return this.SALIENCE_BUILDER;
+    }
+
+    public EnabledBuilder getEnabledBuilder() {
+        return this.ENABLED_BUILDER;
     }
 
     public List getResults() {

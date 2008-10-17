@@ -25,6 +25,7 @@ import java.util.Stack;
 import java.util.Map.Entry;
 
 import org.drools.RuntimeDroolsException;
+import org.drools.base.EnabledBoolean;
 import org.drools.compiler.Dialect;
 import org.drools.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.PackageBuilder;
@@ -197,10 +198,10 @@ public class RuleBuildContext extends PackageBuildContext {
                 rule.setDuration( Long.parseLong( attributeDescr.getValue() ) );
                 rule.setAgendaGroup( "" );
             } else if ( name.equals( "enabled" ) ) {
-                if ( attributeDescr.getValue() == null ) {
-                    rule.setEnabled( true );
-                } else {
-                    rule.setEnabled( Boolean.valueOf( attributeDescr.getValue() ).booleanValue() );
+                if ( attributeDescr.getValue() == null || "true".equalsIgnoreCase( attributeDescr.getValue() )  ) {
+                    rule.setEnabled( EnabledBoolean.ENABLED_TRUE );
+                } else if( "false".equalsIgnoreCase( attributeDescr.getValue() ) ) {
+                    rule.setEnabled( EnabledBoolean.ENABLED_FALSE );
                 }
             } else if ( name.equals( "date-effective" ) ) {
                 final Calendar cal = Calendar.getInstance();

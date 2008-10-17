@@ -1761,6 +1761,28 @@ public class RuleParserTest extends TestCase {
 		assertEquals("true", at.getValue());
 	}
 
+    public void testEnabledExpression() throws Exception {
+        final RuleDescr rule = (RuleDescr) parseResource("rule", "rule",
+                "rule_enabled_expression.drl");
+        assertEquals("simple_rule", rule.getName());
+        assertEqualsIgnoreWhitespace("bar();", (String) rule.getConsequence());
+
+        final List attrs = rule.getAttributes();
+        assertEquals(3, attrs.size());
+
+        AttributeDescr at = (AttributeDescr) attrs.get(0);
+        assertEquals("enabled", at.getName());
+        assertEquals("( 1 + 1 == 2 )", at.getValue());
+
+        at = (AttributeDescr) attrs.get(1);
+        assertEquals("salience", at.getName());
+        assertEquals("( 1+2 )", at.getValue());
+        
+        at = (AttributeDescr) attrs.get(2);
+        assertEquals("lock-on-active", at.getName());
+        assertEquals("true", at.getValue());
+    }
+
 	public void testAttributes_alternateSyntax() throws Exception {
 		final RuleDescr rule = (RuleDescr) parseResource("rule", "rule",
 				"rule_attributes_alt.drl");

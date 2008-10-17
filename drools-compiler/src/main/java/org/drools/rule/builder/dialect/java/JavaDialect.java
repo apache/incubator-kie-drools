@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.TypeResolver;
 import org.drools.commons.jci.compilers.CompilationResult;
 import org.drools.commons.jci.compilers.JavaCompiler;
@@ -58,6 +57,7 @@ import org.drools.rule.builder.AccumulateBuilder;
 import org.drools.rule.builder.ActionBuilder;
 import org.drools.rule.builder.CollectBuilder;
 import org.drools.rule.builder.ConsequenceBuilder;
+import org.drools.rule.builder.EnabledBuilder;
 import org.drools.rule.builder.EntryPointBuilder;
 import org.drools.rule.builder.ForallBuilder;
 import org.drools.rule.builder.FromBuilder;
@@ -75,6 +75,7 @@ import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleClassBuilder;
 import org.drools.rule.builder.RuleConditionBuilder;
 import org.drools.rule.builder.SalienceBuilder;
+import org.drools.rule.builder.dialect.mvel.MVELEnabledBuilder;
 import org.drools.rule.builder.dialect.mvel.MVELFromBuilder;
 import org.drools.rule.builder.dialect.mvel.MVELSalienceBuilder;
 import org.drools.util.StringUtils;
@@ -91,6 +92,7 @@ public class JavaDialect
     private static final PatternBuilder              PATTERN_BUILDER               = new PatternBuilder();
     private static final QueryBuilder                QUERY_BUILDER                 = new QueryBuilder();
     private static final SalienceBuilder             SALIENCE_BUILDER              = new MVELSalienceBuilder();
+    private static final EnabledBuilder              ENABLED_BUILDER               = new MVELEnabledBuilder();
     private static final JavaAccumulateBuilder       ACCUMULATE_BUILDER            = new JavaAccumulateBuilder();
     private static final JavaEvalBuilder             EVAL_BUILDER                  = new JavaEvalBuilder();
     private static final JavaPredicateBuilder        PREDICATE_BUILDER             = new JavaPredicateBuilder();
@@ -311,6 +313,10 @@ public class JavaDialect
 
     public SalienceBuilder getSalienceBuilder() {
         return SALIENCE_BUILDER;
+    }
+
+    public EnabledBuilder getEnabledBuilder() {
+        return ENABLED_BUILDER;
     }
 
     public AccumulateBuilder getAccumulateBuilder() {

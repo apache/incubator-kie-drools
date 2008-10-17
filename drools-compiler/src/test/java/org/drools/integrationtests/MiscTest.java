@@ -246,6 +246,36 @@ public class MiscTest extends TestCase {
 
 
     }
+    
+    public void yyytestEnabledExpression() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_enabledExpression.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        StatefulSession session = ruleBase.newStatefulSession();
+        List results = new ArrayList();
+        session.setGlobal( "results",
+                           results );
+
+        session.insert( new Person("Michael") );
+
+        session = SerializationHelper.getSerialisedStatefulSession( session,
+                                                                    ruleBase );
+        results = (List) session.getGlobal( "results" );
+
+        session.fireAllRules();
+        assertEquals( 3,
+                      results.size() );
+        assertTrue( results.contains( "1" ) );
+        assertTrue( results.contains( "2" ) );
+        assertTrue( results.contains( "3" ) );
+
+
+    }
+
     public void testPrimitiveArray() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_primitiveArray.drl" ) ) );

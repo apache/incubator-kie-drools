@@ -790,7 +790,7 @@ public class TruthMaintenanceTest extends TestCase {
         assertEquals( 0, IteratorToList.convert( workingMemory.iterateObjects() ).size() );
     }
 
-    public void disabled_testLogicalInsertionsModifySameRuleGivesDifferentLogicalInsertion() throws Exception {
+    public void FIXME_testLogicalInsertionsModifySameRuleGivesDifferentLogicalInsertion() throws Exception {
         // TODO JBRULES-1804
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalInsertionsModifySameRuleGivesDifferentLogicalInsertion.drl" ) ) );

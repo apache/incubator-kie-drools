@@ -1494,8 +1494,8 @@ public class DescrFactory {
 	 */
 	private String getCleanId(DroolsTree id) {
 		String cleanedId = id.getText();
-		if (cleanedId.startsWith("\"") || cleanedId.startsWith("'")) {
-			cleanedId = cleanedId.substring(1, cleanedId.length() - 1);
+		if (cleanedId.startsWith("\"") || cleanedId.startsWith("'") ) {
+			cleanedId = cleanedId.substring(1, cleanedId.length() - 1).trim();
 		}
 		return cleanedId;
 	}

@@ -199,7 +199,7 @@ rule_attribute returns [AttributeDescr attributeDescr]
 	|	^(attrName=VK_AUTO_FOCUS value=BOOL?) 
 	|	^(attrName=VK_DATE_EFFECTIVE value=STRING) 
 	|	^(attrName=VK_DATE_EXPIRES value=STRING) 
-	|	^(attrName=VK_ENABLED value=BOOL) 
+	|	^(attrName=VK_ENABLED (value=BOOL|value=VT_PAREN_CHUNK)) 
 	|	^(attrName=VK_RULEFLOW_GROUP value=STRING) 
 	|	^(attrName=VK_LOCK_ON_ACTIVE value=BOOL?)
 	|	^(attrName=VK_DIALECT value=STRING))

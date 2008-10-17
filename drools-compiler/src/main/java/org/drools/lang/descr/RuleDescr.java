@@ -28,25 +28,27 @@ import java.util.Map;
 import org.drools.rule.Dialectable;
 import org.drools.rule.Namespaceable;
 
-public class RuleDescr extends BaseDescr implements Dialectable, Namespaceable {
+public class RuleDescr extends BaseDescr
+    implements
+    Dialectable,
+    Namespaceable {
 
-    private static final long serialVersionUID = 400L;
-    private String            namespace;    
-    private String            name;
-    private String            dialect;
-    private String            documentation;
-    private Map<String, String> metaAttributes;
+    private static final long    serialVersionUID = 400L;
+    private String               namespace;
+    private String               name;
+    private String               dialect;
+    private String               documentation;
+    private Map<String, String>  metaAttributes;
 
-    private AndDescr          lhs;
-    private Object            consequence;
-    private int               consequenceLine;
-    private int               consequencePattern;
-    private int               offset;
-    private List              attributes       = Collections.EMPTY_LIST;
-    private String            salience;
+    private AndDescr             lhs;
+    private Object               consequence;
+    private int                  consequenceLine;
+    private int                  consequencePattern;
+    private int                  offset;
+    private List<AttributeDescr> attributes       = Collections.EMPTY_LIST;
+    private String               salience;
 
-    private String            className;
-
+    private String               className;
 
     public RuleDescr() {
     }
@@ -56,7 +58,6 @@ public class RuleDescr extends BaseDescr implements Dialectable, Namespaceable {
               "" );
     }
 
-
     public RuleDescr(final String ruleName,
                      final String documentation) {
         this.name = ruleName;
@@ -64,46 +65,46 @@ public class RuleDescr extends BaseDescr implements Dialectable, Namespaceable {
         this.metaAttributes = new HashMap<String, String>();
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        super.readExternal(in);
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        super.readExternal( in );
         namespace = (String) in.readObject();
-        name    = (String)in.readObject();
-        dialect    = (String)in.readObject();
-        documentation    = (String)in.readObject();
-        consequence    = in.readObject();
-        lhs    = (AndDescr)in.readObject();
-        consequenceLine    = in.readInt();
-        consequencePattern    = in.readInt();
-        offset    = in.readInt();
-        attributes    = (List)in.readObject();
-        salience    = (String)in.readObject();
-        className    = (String)in.readObject();
+        name = (String) in.readObject();
+        dialect = (String) in.readObject();
+        documentation = (String) in.readObject();
+        consequence = in.readObject();
+        lhs = (AndDescr) in.readObject();
+        consequenceLine = in.readInt();
+        consequencePattern = in.readInt();
+        offset = in.readInt();
+        attributes = (List<AttributeDescr>) in.readObject();
+        salience = (String) in.readObject();
+        className = (String) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal(out);
+        super.writeExternal( out );
         out.writeObject( namespace );
-        out.writeObject(name);
-        out.writeObject(dialect);
-        out.writeObject(documentation);
-        out.writeObject(consequence);
-        out.writeObject(lhs);
-        out.writeInt(consequenceLine);
-        out.writeInt(consequencePattern);
-        out.writeInt(offset);
-        out.writeObject(attributes);
-        out.writeObject(salience);
-        out.writeObject(className);
+        out.writeObject( name );
+        out.writeObject( dialect );
+        out.writeObject( documentation );
+        out.writeObject( consequence );
+        out.writeObject( lhs );
+        out.writeInt( consequenceLine );
+        out.writeInt( consequencePattern );
+        out.writeInt( offset );
+        out.writeObject( attributes );
+        out.writeObject( salience );
+        out.writeObject( className );
     }
-    
+
     public void setNamespace(String namespace) {
         this.namespace = namespace;
     }
-    
+
     public String getNamespace() {
         return this.namespace;
     }
-    
 
     public String getName() {
         return this.name;
@@ -116,7 +117,6 @@ public class RuleDescr extends BaseDescr implements Dialectable, Namespaceable {
     public void setDialect(String dialect) {
         this.dialect = dialect;
     }
-    
 
     public String getSalience() {
         return salience;
@@ -137,17 +137,19 @@ public class RuleDescr extends BaseDescr implements Dialectable, Namespaceable {
     public String getDocumentation() {
         return this.documentation;
     }
-    
+
     /**
      * Adds a new attribute
      * @param attr
      * @param value
      */
-    public void addMetaAttribute( String attr, String value ) {
-        if( this.metaAttributes == null ) {
+    public void addMetaAttribute(String attr,
+                                 String value) {
+        if ( this.metaAttributes == null ) {
             this.metaAttributes = new HashMap<String, String>();
         }
-        this.metaAttributes.put( attr, value );
+        this.metaAttributes.put( attr,
+                                 value );
     }
 
     /**
@@ -155,7 +157,7 @@ public class RuleDescr extends BaseDescr implements Dialectable, Namespaceable {
      * @param attr
      * @return
      */
-    public String getMetaAttribute( String attr ) {
+    public String getMetaAttribute(String attr) {
         return this.metaAttributes != null ? this.metaAttributes.get( attr ) : null;
     }
 
@@ -172,7 +174,7 @@ public class RuleDescr extends BaseDescr implements Dialectable, Namespaceable {
     }
 
     public void addAttribute(final AttributeDescr attribute) {
-        if( attribute != null ) {
+        if ( attribute != null ) {
             if ( this.attributes == Collections.EMPTY_LIST ) {
                 this.attributes = new ArrayList();
             }
@@ -186,8 +188,8 @@ public class RuleDescr extends BaseDescr implements Dialectable, Namespaceable {
         }
     }
 
-    public void setAttributes(final List attributes) {
-        this.attributes = new ArrayList( attributes );
+    public void setAttributes(final List<AttributeDescr> attributes) {
+        this.attributes = new ArrayList<AttributeDescr>( attributes );
     }
 
     public AndDescr getLhs() {
@@ -228,4 +230,14 @@ public class RuleDescr extends BaseDescr implements Dialectable, Namespaceable {
         return this.consequencePattern;
     }
 
+    public String getEnabled() {
+        String enabled = "true";
+        for( AttributeDescr attr : this.attributes ) {
+            if( "enabled".equals( attr.getName() ) ) {
+                enabled = attr.getValue();
+                break;
+            }
+        }
+        return enabled;
+    }
 }

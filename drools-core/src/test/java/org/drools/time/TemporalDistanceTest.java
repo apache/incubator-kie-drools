@@ -28,6 +28,25 @@ public class TemporalDistanceTest  extends TestCase {
         assertEqualsMatrix( expected, result );
     }
 
+    public void testTemporalDistance2() {
+        Interval[][] matrix = new Interval[][] {
+                { new Interval(0,0), new Interval(5,10), new Interval(65, MAX), new Interval(30,40), new Interval(50,55) },
+                { new Interval(-10,-5), new Interval(0,0), new Interval(60, MAX), new Interval(20,35), new Interval(40,50) },
+                { new Interval(MIN,-65), new Interval(MIN,-60), new Interval(0, 0), new Interval(MIN, -25), new Interval(MIN, -10) },
+                { new Interval(-40,-30), new Interval(-35,-20), new Interval(25, MAX), new Interval(0, 0), new Interval(15,20) },
+                { new Interval(-55,-50), new Interval(-50,-40), new Interval(10,MAX), new Interval(-20,-15), new Interval(0,0) }
+        };
+        Interval[][] expected = new Interval[][] {
+              { new Interval(0,0), new Interval(5,10), new Interval(65, MAX), new Interval(30,40), new Interval(50,55) },
+              { new Interval(-10,-5), new Interval(0,0), new Interval(60, MAX), new Interval(20,35), new Interval(40,50) },
+              { new Interval(MIN,-65), new Interval(MIN,-60), new Interval(0, 0), new Interval(MIN, -25), new Interval(MIN, -10) },
+              { new Interval(-40,-30), new Interval(-35,-20), new Interval(25, MAX), new Interval(0, 0), new Interval(15,20) },
+              { new Interval(-55,-50), new Interval(-50,-40), new Interval(10,MAX), new Interval(-20,-15), new Interval(0,0) }
+        };
+        Interval[][] result = TimeUtils.calculateTemporalDistance( matrix );
+        assertEqualsMatrix( expected, result );
+    }
+
     public void assertEqualsMatrix( Interval[][] expected, Interval[][] matrix ) {
         for( int i = 0; i < matrix.length; i++ ) {
             for( int j = 0; j < matrix[i].length; j++ ) {
