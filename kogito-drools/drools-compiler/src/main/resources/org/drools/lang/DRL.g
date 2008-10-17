@@ -654,8 +654,8 @@ rule
 	{	beginSentence(DroolsSentenceType.RULE);	}
 		rule_key rule_id 
 	{	emit(Location.LOCATION_RULE_HEADER);	}
-		rule_attributes? decl_metadata* when_part? rhs_chunk
-		-> ^(rule_key rule_id rule_attributes? decl_metadata* when_part? rhs_chunk)
+		decl_metadata* rule_attributes? when_part? rhs_chunk
+		-> ^(rule_key rule_id decl_metadata* rule_attributes? when_part? rhs_chunk)
 	;
 
 when_part
