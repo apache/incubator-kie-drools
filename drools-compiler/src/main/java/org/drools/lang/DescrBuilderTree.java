@@ -1,4 +1,4 @@
-// $ANTLR 3.0.1 src/main/resources/org/drools/lang/DescrBuilderTree.g 2008-10-17 12:12:29
+// $ANTLR 3.0.1 src/main/resources/org/drools/lang/DescrBuilderTree.g 2008-10-17 17:15:55
 
 	package org.drools.lang;
 
@@ -1067,7 +1067,7 @@ public class DescrBuilderTree extends TreeParser {
     };
 
     // $ANTLR start rule
-    // src/main/resources/org/drools/lang/DescrBuilderTree.g:131:1: rule returns [RuleDescr ruleDescr] : ^(start= VK_RULE id= VT_RULE_ID (ra= rule_attributes )? (dm= decl_metadata )* (wn= when_part )? content= VT_RHS_CHUNK ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:131:1: rule returns [RuleDescr ruleDescr] : ^(start= VK_RULE id= VT_RULE_ID (dm= decl_metadata )* (ra= rule_attributes )? (wn= when_part )? content= VT_RHS_CHUNK ) ;
     public final rule_return rule() throws RecognitionException {
         rule_return retval = new rule_return();
         retval.start = input.LT(1);
@@ -1075,17 +1075,17 @@ public class DescrBuilderTree extends TreeParser {
         DroolsTree start=null;
         DroolsTree id=null;
         DroolsTree content=null;
-        List ra = null;
-
         Map dm = null;
+
+        List ra = null;
 
         AndDescr wn = null;
 
 
         	List<Map> declMetadaList = new LinkedList<Map>();
         try {
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:133:2: ( ^(start= VK_RULE id= VT_RULE_ID (ra= rule_attributes )? (dm= decl_metadata )* (wn= when_part )? content= VT_RHS_CHUNK ) )
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:133:4: ^(start= VK_RULE id= VT_RULE_ID (ra= rule_attributes )? (dm= decl_metadata )* (wn= when_part )? content= VT_RHS_CHUNK )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:133:2: ( ^(start= VK_RULE id= VT_RULE_ID (dm= decl_metadata )* (ra= rule_attributes )? (wn= when_part )? content= VT_RHS_CHUNK ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:133:4: ^(start= VK_RULE id= VT_RULE_ID (dm= decl_metadata )* (ra= rule_attributes )? (wn= when_part )? content= VT_RHS_CHUNK )
             {
             start=(DroolsTree)input.LT(1);
             match(input,VK_RULE,FOLLOW_VK_RULE_in_rule496); 
@@ -1093,43 +1093,22 @@ public class DescrBuilderTree extends TreeParser {
             match(input, Token.DOWN, null); 
             id=(DroolsTree)input.LT(1);
             match(input,VT_RULE_ID,FOLLOW_VT_RULE_ID_in_rule500); 
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:133:36: (ra= rule_attributes )?
-            int alt10=2;
-            int LA10_0 = input.LA(1);
-
-            if ( (LA10_0==VT_RULE_ATTRIBUTES) ) {
-                alt10=1;
-            }
-            switch (alt10) {
-                case 1 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:133:36: ra= rule_attributes
-                    {
-                    pushFollow(FOLLOW_rule_attributes_in_rule504);
-                    ra=rule_attributes();
-                    _fsp--;
-
-
-                    }
-                    break;
-
-            }
-
             // src/main/resources/org/drools/lang/DescrBuilderTree.g:134:3: (dm= decl_metadata )*
-            loop11:
+            loop10:
             do {
-                int alt11=2;
-                int LA11_0 = input.LA(1);
+                int alt10=2;
+                int LA10_0 = input.LA(1);
 
-                if ( (LA11_0==AT) ) {
-                    alt11=1;
+                if ( (LA10_0==AT) ) {
+                    alt10=1;
                 }
 
 
-                switch (alt11) {
+                switch (alt10) {
             	case 1 :
             	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:134:4: dm= decl_metadata
             	    {
-            	    pushFollow(FOLLOW_decl_metadata_in_rule513);
+            	    pushFollow(FOLLOW_decl_metadata_in_rule509);
             	    dm=decl_metadata();
             	    _fsp--;
 
@@ -1139,11 +1118,32 @@ public class DescrBuilderTree extends TreeParser {
             	    break;
 
             	default :
-            	    break loop11;
+            	    break loop10;
                 }
             } while (true);
 
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:135:6: (wn= when_part )?
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:135:6: (ra= rule_attributes )?
+            int alt11=2;
+            int LA11_0 = input.LA(1);
+
+            if ( (LA11_0==VT_RULE_ATTRIBUTES) ) {
+                alt11=1;
+            }
+            switch (alt11) {
+                case 1 :
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:135:6: ra= rule_attributes
+                    {
+                    pushFollow(FOLLOW_rule_attributes_in_rule520);
+                    ra=rule_attributes();
+                    _fsp--;
+
+
+                    }
+                    break;
+
+            }
+
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:136:6: (wn= when_part )?
             int alt12=2;
             int LA12_0 = input.LA(1);
 
@@ -1152,9 +1152,9 @@ public class DescrBuilderTree extends TreeParser {
             }
             switch (alt12) {
                 case 1 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:135:6: wn= when_part
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:136:6: wn= when_part
                     {
-                    pushFollow(FOLLOW_when_part_in_rule525);
+                    pushFollow(FOLLOW_when_part_in_rule529);
                     wn=when_part();
                     _fsp--;
 
@@ -1165,7 +1165,7 @@ public class DescrBuilderTree extends TreeParser {
             }
 
             content=(DroolsTree)input.LT(1);
-            match(input,VT_RHS_CHUNK,FOLLOW_VT_RHS_CHUNK_in_rule530); 
+            match(input,VT_RHS_CHUNK,FOLLOW_VT_RHS_CHUNK_in_rule534); 
 
             match(input, Token.UP, null); 
             	retval.ruleDescr = factory.createRule(start, id, ra, wn, content, declMetadaList);	
@@ -1185,7 +1185,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start when_part
-    // src/main/resources/org/drools/lang/DescrBuilderTree.g:139:1: when_part returns [AndDescr andDescr] : WHEN lh= lhs_block ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:140:1: when_part returns [AndDescr andDescr] : WHEN lh= lhs_block ;
     public final AndDescr when_part() throws RecognitionException {
         AndDescr andDescr = null;
 
@@ -1193,11 +1193,11 @@ public class DescrBuilderTree extends TreeParser {
 
 
         try {
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:140:2: ( WHEN lh= lhs_block )
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:140:4: WHEN lh= lhs_block
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:141:2: ( WHEN lh= lhs_block )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:141:4: WHEN lh= lhs_block
             {
-            match(input,WHEN,FOLLOW_WHEN_in_when_part549); 
-            pushFollow(FOLLOW_lhs_block_in_when_part553);
+            match(input,WHEN,FOLLOW_WHEN_in_when_part553); 
+            pushFollow(FOLLOW_lhs_block_in_when_part557);
             lh=lhs_block();
             _fsp--;
 
@@ -1218,7 +1218,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start rule_attributes
-    // src/main/resources/org/drools/lang/DescrBuilderTree.g:144:1: rule_attributes returns [List attrList] : ^( VT_RULE_ATTRIBUTES ( VK_ATTRIBUTES )? (rl= rule_attribute )+ ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:145:1: rule_attributes returns [List attrList] : ^( VT_RULE_ATTRIBUTES ( VK_ATTRIBUTES )? (rl= rule_attribute )+ ) ;
     public final List rule_attributes() throws RecognitionException {
         List attrList = null;
 
@@ -1229,13 +1229,13 @@ public class DescrBuilderTree extends TreeParser {
         	attrList = new LinkedList<AttributeDescr>();
 
         try {
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:147:3: ( ^( VT_RULE_ATTRIBUTES ( VK_ATTRIBUTES )? (rl= rule_attribute )+ ) )
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:147:5: ^( VT_RULE_ATTRIBUTES ( VK_ATTRIBUTES )? (rl= rule_attribute )+ )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:148:3: ( ^( VT_RULE_ATTRIBUTES ( VK_ATTRIBUTES )? (rl= rule_attribute )+ ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:148:5: ^( VT_RULE_ATTRIBUTES ( VK_ATTRIBUTES )? (rl= rule_attribute )+ )
             {
-            match(input,VT_RULE_ATTRIBUTES,FOLLOW_VT_RULE_ATTRIBUTES_in_rule_attributes575); 
+            match(input,VT_RULE_ATTRIBUTES,FOLLOW_VT_RULE_ATTRIBUTES_in_rule_attributes579); 
 
             match(input, Token.DOWN, null); 
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:147:26: ( VK_ATTRIBUTES )?
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:148:26: ( VK_ATTRIBUTES )?
             int alt13=2;
             int LA13_0 = input.LA(1);
 
@@ -1244,16 +1244,16 @@ public class DescrBuilderTree extends TreeParser {
             }
             switch (alt13) {
                 case 1 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:147:26: VK_ATTRIBUTES
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:148:26: VK_ATTRIBUTES
                     {
-                    match(input,VK_ATTRIBUTES,FOLLOW_VK_ATTRIBUTES_in_rule_attributes577); 
+                    match(input,VK_ATTRIBUTES,FOLLOW_VK_ATTRIBUTES_in_rule_attributes581); 
 
                     }
                     break;
 
             }
 
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:147:41: (rl= rule_attribute )+
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:148:41: (rl= rule_attribute )+
             int cnt14=0;
             loop14:
             do {
@@ -1267,9 +1267,9 @@ public class DescrBuilderTree extends TreeParser {
 
                 switch (alt14) {
             	case 1 :
-            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:147:42: rl= rule_attribute
+            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:148:42: rl= rule_attribute
             	    {
-            	    pushFollow(FOLLOW_rule_attribute_in_rule_attributes583);
+            	    pushFollow(FOLLOW_rule_attribute_in_rule_attributes587);
             	    rl=rule_attribute();
             	    _fsp--;
 
@@ -1305,7 +1305,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start parameters
-    // src/main/resources/org/drools/lang/DescrBuilderTree.g:150:1: parameters returns [List paramList] : ^( VT_PARAM_LIST (p= param_definition )* ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:151:1: parameters returns [List paramList] : ^( VT_PARAM_LIST (p= param_definition )* ) ;
     public final List parameters() throws RecognitionException {
         List paramList = null;
 
@@ -1316,14 +1316,14 @@ public class DescrBuilderTree extends TreeParser {
         	paramList = new LinkedList<Map<BaseDescr, BaseDescr>>();
 
         try {
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:153:3: ( ^( VT_PARAM_LIST (p= param_definition )* ) )
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:153:5: ^( VT_PARAM_LIST (p= param_definition )* )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:154:3: ( ^( VT_PARAM_LIST (p= param_definition )* ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:154:5: ^( VT_PARAM_LIST (p= param_definition )* )
             {
-            match(input,VT_PARAM_LIST,FOLLOW_VT_PARAM_LIST_in_parameters607); 
+            match(input,VT_PARAM_LIST,FOLLOW_VT_PARAM_LIST_in_parameters611); 
 
             if ( input.LA(1)==Token.DOWN ) {
                 match(input, Token.DOWN, null); 
-                // src/main/resources/org/drools/lang/DescrBuilderTree.g:153:21: (p= param_definition )*
+                // src/main/resources/org/drools/lang/DescrBuilderTree.g:154:21: (p= param_definition )*
                 loop15:
                 do {
                     int alt15=2;
@@ -1336,9 +1336,9 @@ public class DescrBuilderTree extends TreeParser {
 
                     switch (alt15) {
                 	case 1 :
-                	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:153:22: p= param_definition
+                	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:154:22: p= param_definition
                 	    {
-                	    pushFollow(FOLLOW_param_definition_in_parameters612);
+                	    pushFollow(FOLLOW_param_definition_in_parameters616);
                 	    p=param_definition();
                 	    _fsp--;
 
@@ -1371,7 +1371,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start param_definition
-    // src/main/resources/org/drools/lang/DescrBuilderTree.g:156:1: param_definition returns [Map param] : (dt= data_type )? a= argument ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:157:1: param_definition returns [Map param] : (dt= data_type )? a= argument ;
     public final Map param_definition() throws RecognitionException {
         Map param = null;
 
@@ -1381,10 +1381,10 @@ public class DescrBuilderTree extends TreeParser {
 
 
         try {
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:157:2: ( (dt= data_type )? a= argument )
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:157:4: (dt= data_type )? a= argument
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:158:2: ( (dt= data_type )? a= argument )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:158:4: (dt= data_type )? a= argument
             {
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:157:6: (dt= data_type )?
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:158:6: (dt= data_type )?
             int alt16=2;
             int LA16_0 = input.LA(1);
 
@@ -1393,9 +1393,9 @@ public class DescrBuilderTree extends TreeParser {
             }
             switch (alt16) {
                 case 1 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:157:6: dt= data_type
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:158:6: dt= data_type
                     {
-                    pushFollow(FOLLOW_data_type_in_param_definition634);
+                    pushFollow(FOLLOW_data_type_in_param_definition638);
                     dt=data_type();
                     _fsp--;
 
@@ -1405,7 +1405,7 @@ public class DescrBuilderTree extends TreeParser {
 
             }
 
-            pushFollow(FOLLOW_argument_in_param_definition639);
+            pushFollow(FOLLOW_argument_in_param_definition643);
             a=argument();
             _fsp--;
 
@@ -1427,7 +1427,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start argument
-    // src/main/resources/org/drools/lang/DescrBuilderTree.g:162:1: argument returns [BaseDescr arg] : id= ID ( LEFT_SQUARE rightList+= RIGHT_SQUARE )* ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:163:1: argument returns [BaseDescr arg] : id= ID ( LEFT_SQUARE rightList+= RIGHT_SQUARE )* ;
     public final BaseDescr argument() throws RecognitionException {
         BaseDescr arg = null;
 
@@ -1436,12 +1436,12 @@ public class DescrBuilderTree extends TreeParser {
         List list_rightList=null;
 
         try {
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:163:2: (id= ID ( LEFT_SQUARE rightList+= RIGHT_SQUARE )* )
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:163:4: id= ID ( LEFT_SQUARE rightList+= RIGHT_SQUARE )*
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:164:2: (id= ID ( LEFT_SQUARE rightList+= RIGHT_SQUARE )* )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:164:4: id= ID ( LEFT_SQUARE rightList+= RIGHT_SQUARE )*
             {
             id=(DroolsTree)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_argument659); 
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:163:10: ( LEFT_SQUARE rightList+= RIGHT_SQUARE )*
+            match(input,ID,FOLLOW_ID_in_argument663); 
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:164:10: ( LEFT_SQUARE rightList+= RIGHT_SQUARE )*
             loop17:
             do {
                 int alt17=2;
@@ -1454,11 +1454,11 @@ public class DescrBuilderTree extends TreeParser {
 
                 switch (alt17) {
             	case 1 :
-            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:163:11: LEFT_SQUARE rightList+= RIGHT_SQUARE
+            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:164:11: LEFT_SQUARE rightList+= RIGHT_SQUARE
             	    {
-            	    match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_argument662); 
+            	    match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_argument666); 
             	    rightList=(DroolsTree)input.LT(1);
-            	    match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_argument666); 
+            	    match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_argument670); 
             	    if (list_rightList==null) list_rightList=new ArrayList();
             	    list_rightList.add(rightList);
 
@@ -1488,7 +1488,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start type_declaration
-    // src/main/resources/org/drools/lang/DescrBuilderTree.g:167:1: type_declaration returns [TypeDeclarationDescr declaration] : ^( VK_DECLARE id= VT_TYPE_DECLARE_ID (dm= decl_metadata )* (df= decl_field )* END ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:168:1: type_declaration returns [TypeDeclarationDescr declaration] : ^( VK_DECLARE id= VT_TYPE_DECLARE_ID (dm= decl_metadata )* (df= decl_field )* END ) ;
     public final TypeDeclarationDescr type_declaration() throws RecognitionException {
         TypeDeclarationDescr declaration = null;
 
@@ -1501,15 +1501,15 @@ public class DescrBuilderTree extends TreeParser {
         	List<Map> declMetadaList = new LinkedList<Map>();
         		List<TypeFieldDescr> declFieldList = new LinkedList<TypeFieldDescr>(); 
         try {
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:170:2: ( ^( VK_DECLARE id= VT_TYPE_DECLARE_ID (dm= decl_metadata )* (df= decl_field )* END ) )
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:170:4: ^( VK_DECLARE id= VT_TYPE_DECLARE_ID (dm= decl_metadata )* (df= decl_field )* END )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:171:2: ( ^( VK_DECLARE id= VT_TYPE_DECLARE_ID (dm= decl_metadata )* (df= decl_field )* END ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:171:4: ^( VK_DECLARE id= VT_TYPE_DECLARE_ID (dm= decl_metadata )* (df= decl_field )* END )
             {
-            match(input,VK_DECLARE,FOLLOW_VK_DECLARE_in_type_declaration692); 
+            match(input,VK_DECLARE,FOLLOW_VK_DECLARE_in_type_declaration696); 
 
             match(input, Token.DOWN, null); 
             id=(DroolsTree)input.LT(1);
-            match(input,VT_TYPE_DECLARE_ID,FOLLOW_VT_TYPE_DECLARE_ID_in_type_declaration696); 
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:171:4: (dm= decl_metadata )*
+            match(input,VT_TYPE_DECLARE_ID,FOLLOW_VT_TYPE_DECLARE_ID_in_type_declaration700); 
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:172:4: (dm= decl_metadata )*
             loop18:
             do {
                 int alt18=2;
@@ -1522,9 +1522,9 @@ public class DescrBuilderTree extends TreeParser {
 
                 switch (alt18) {
             	case 1 :
-            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:171:5: dm= decl_metadata
+            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:172:5: dm= decl_metadata
             	    {
-            	    pushFollow(FOLLOW_decl_metadata_in_type_declaration705);
+            	    pushFollow(FOLLOW_decl_metadata_in_type_declaration709);
             	    dm=decl_metadata();
             	    _fsp--;
 
@@ -1538,7 +1538,7 @@ public class DescrBuilderTree extends TreeParser {
                 }
             } while (true);
 
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:172:4: (df= decl_field )*
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:173:4: (df= decl_field )*
             loop19:
             do {
                 int alt19=2;
@@ -1551,9 +1551,9 @@ public class DescrBuilderTree extends TreeParser {
 
                 switch (alt19) {
             	case 1 :
-            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:172:5: df= decl_field
+            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:173:5: df= decl_field
             	    {
-            	    pushFollow(FOLLOW_decl_field_in_type_declaration718);
+            	    pushFollow(FOLLOW_decl_field_in_type_declaration722);
             	    df=decl_field();
             	    _fsp--;
 
@@ -1567,7 +1567,7 @@ public class DescrBuilderTree extends TreeParser {
                 }
             } while (true);
 
-            match(input,END,FOLLOW_END_in_type_declaration724); 
+            match(input,END,FOLLOW_END_in_type_declaration728); 
 
             match(input, Token.UP, null); 
             	declaration = factory.createTypeDeclr(id, declMetadaList, declFieldList);	
@@ -1587,7 +1587,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start decl_metadata
-    // src/main/resources/org/drools/lang/DescrBuilderTree.g:176:1: decl_metadata returns [Map attData] : ^( AT att= ID pc= VT_PAREN_CHUNK ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:177:1: decl_metadata returns [Map attData] : ^( AT att= ID pc= VT_PAREN_CHUNK ) ;
     public final Map decl_metadata() throws RecognitionException {
         Map attData = null;
 
@@ -1596,16 +1596,16 @@ public class DescrBuilderTree extends TreeParser {
 
         attData = new HashMap();
         try {
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:178:2: ( ^( AT att= ID pc= VT_PAREN_CHUNK ) )
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:178:4: ^( AT att= ID pc= VT_PAREN_CHUNK )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:179:2: ( ^( AT att= ID pc= VT_PAREN_CHUNK ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:179:4: ^( AT att= ID pc= VT_PAREN_CHUNK )
             {
-            match(input,AT,FOLLOW_AT_in_decl_metadata749); 
+            match(input,AT,FOLLOW_AT_in_decl_metadata753); 
 
             match(input, Token.DOWN, null); 
             att=(DroolsTree)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_decl_metadata753); 
+            match(input,ID,FOLLOW_ID_in_decl_metadata757); 
             pc=(DroolsTree)input.LT(1);
-            match(input,VT_PAREN_CHUNK,FOLLOW_VT_PAREN_CHUNK_in_decl_metadata757); 
+            match(input,VT_PAREN_CHUNK,FOLLOW_VT_PAREN_CHUNK_in_decl_metadata761); 
 
             match(input, Token.UP, null); 
             	attData.put(att, pc);	
@@ -1625,7 +1625,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start decl_field
-    // src/main/resources/org/drools/lang/DescrBuilderTree.g:182:1: decl_field returns [TypeFieldDescr fieldDescr] : ^(id= ID (init= decl_field_initialization )? dt= data_type (dm= decl_metadata )* ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:183:1: decl_field returns [TypeFieldDescr fieldDescr] : ^(id= ID (init= decl_field_initialization )? dt= data_type (dm= decl_metadata )* ) ;
     public final TypeFieldDescr decl_field() throws RecognitionException {
         TypeFieldDescr fieldDescr = null;
 
@@ -1639,14 +1639,14 @@ public class DescrBuilderTree extends TreeParser {
 
         List<Map> declMetadaList = new LinkedList<Map>(); 
         try {
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:184:2: ( ^(id= ID (init= decl_field_initialization )? dt= data_type (dm= decl_metadata )* ) )
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:184:4: ^(id= ID (init= decl_field_initialization )? dt= data_type (dm= decl_metadata )* )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:185:2: ( ^(id= ID (init= decl_field_initialization )? dt= data_type (dm= decl_metadata )* ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:185:4: ^(id= ID (init= decl_field_initialization )? dt= data_type (dm= decl_metadata )* )
             {
             id=(DroolsTree)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_decl_field784); 
+            match(input,ID,FOLLOW_ID_in_decl_field788); 
 
             match(input, Token.DOWN, null); 
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:184:16: (init= decl_field_initialization )?
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:185:16: (init= decl_field_initialization )?
             int alt20=2;
             int LA20_0 = input.LA(1);
 
@@ -1655,9 +1655,9 @@ public class DescrBuilderTree extends TreeParser {
             }
             switch (alt20) {
                 case 1 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:184:16: init= decl_field_initialization
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:185:16: init= decl_field_initialization
                     {
-                    pushFollow(FOLLOW_decl_field_initialization_in_decl_field788);
+                    pushFollow(FOLLOW_decl_field_initialization_in_decl_field792);
                     init=decl_field_initialization();
                     _fsp--;
 
@@ -1667,11 +1667,11 @@ public class DescrBuilderTree extends TreeParser {
 
             }
 
-            pushFollow(FOLLOW_data_type_in_decl_field793);
+            pushFollow(FOLLOW_data_type_in_decl_field797);
             dt=data_type();
             _fsp--;
 
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:184:57: (dm= decl_metadata )*
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:185:57: (dm= decl_metadata )*
             loop21:
             do {
                 int alt21=2;
@@ -1684,9 +1684,9 @@ public class DescrBuilderTree extends TreeParser {
 
                 switch (alt21) {
             	case 1 :
-            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:184:58: dm= decl_metadata
+            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:185:58: dm= decl_metadata
             	    {
-            	    pushFollow(FOLLOW_decl_metadata_in_decl_field798);
+            	    pushFollow(FOLLOW_decl_metadata_in_decl_field802);
             	    dm=decl_metadata();
             	    _fsp--;
 
@@ -1719,21 +1719,21 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start decl_field_initialization
-    // src/main/resources/org/drools/lang/DescrBuilderTree.g:188:1: decl_field_initialization returns [String expr] : ^( EQUALS pc= VT_PAREN_CHUNK ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:189:1: decl_field_initialization returns [String expr] : ^( EQUALS pc= VT_PAREN_CHUNK ) ;
     public final String decl_field_initialization() throws RecognitionException {
         String expr = null;
 
         DroolsTree pc=null;
 
         try {
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:189:2: ( ^( EQUALS pc= VT_PAREN_CHUNK ) )
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:189:4: ^( EQUALS pc= VT_PAREN_CHUNK )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:190:2: ( ^( EQUALS pc= VT_PAREN_CHUNK ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:190:4: ^( EQUALS pc= VT_PAREN_CHUNK )
             {
-            match(input,EQUALS,FOLLOW_EQUALS_in_decl_field_initialization825); 
+            match(input,EQUALS,FOLLOW_EQUALS_in_decl_field_initialization829); 
 
             match(input, Token.DOWN, null); 
             pc=(DroolsTree)input.LT(1);
-            match(input,VT_PAREN_CHUNK,FOLLOW_VT_PAREN_CHUNK_in_decl_field_initialization829); 
+            match(input,VT_PAREN_CHUNK,FOLLOW_VT_PAREN_CHUNK_in_decl_field_initialization833); 
 
             match(input, Token.UP, null); 
             	expr = pc.getText().substring(1, pc.getText().length() -1 ).trim();	
@@ -1753,7 +1753,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start rule_attribute
-    // src/main/resources/org/drools/lang/DescrBuilderTree.g:193:1: rule_attribute returns [AttributeDescr attributeDescr] : ( ^(attrName= VK_SALIENCE (value= INT | value= VT_PAREN_CHUNK ) ) | ^(attrName= VK_NO_LOOP (value= BOOL )? ) | ^(attrName= VK_AGENDA_GROUP value= STRING ) | ^(attrName= VK_DURATION value= INT ) | ^(attrName= VK_ACTIVATION_GROUP value= STRING ) | ^(attrName= VK_AUTO_FOCUS (value= BOOL )? ) | ^(attrName= VK_DATE_EFFECTIVE value= STRING ) | ^(attrName= VK_DATE_EXPIRES value= STRING ) | ^(attrName= VK_ENABLED (value= BOOL | value= VT_PAREN_CHUNK ) ) | ^(attrName= VK_RULEFLOW_GROUP value= STRING ) | ^(attrName= VK_LOCK_ON_ACTIVE (value= BOOL )? ) | ^(attrName= VK_DIALECT value= STRING ) ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:194:1: rule_attribute returns [AttributeDescr attributeDescr] : ( ^(attrName= VK_SALIENCE (value= INT | value= VT_PAREN_CHUNK ) ) | ^(attrName= VK_NO_LOOP (value= BOOL )? ) | ^(attrName= VK_AGENDA_GROUP value= STRING ) | ^(attrName= VK_DURATION value= INT ) | ^(attrName= VK_ACTIVATION_GROUP value= STRING ) | ^(attrName= VK_AUTO_FOCUS (value= BOOL )? ) | ^(attrName= VK_DATE_EFFECTIVE value= STRING ) | ^(attrName= VK_DATE_EXPIRES value= STRING ) | ^(attrName= VK_ENABLED (value= BOOL | value= VT_PAREN_CHUNK ) ) | ^(attrName= VK_RULEFLOW_GROUP value= STRING ) | ^(attrName= VK_LOCK_ON_ACTIVE (value= BOOL )? ) | ^(attrName= VK_DIALECT value= STRING ) ) ;
     public final AttributeDescr rule_attribute() throws RecognitionException {
         AttributeDescr attributeDescr = null;
 
@@ -1761,10 +1761,10 @@ public class DescrBuilderTree extends TreeParser {
         DroolsTree value=null;
 
         try {
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:194:2: ( ( ^(attrName= VK_SALIENCE (value= INT | value= VT_PAREN_CHUNK ) ) | ^(attrName= VK_NO_LOOP (value= BOOL )? ) | ^(attrName= VK_AGENDA_GROUP value= STRING ) | ^(attrName= VK_DURATION value= INT ) | ^(attrName= VK_ACTIVATION_GROUP value= STRING ) | ^(attrName= VK_AUTO_FOCUS (value= BOOL )? ) | ^(attrName= VK_DATE_EFFECTIVE value= STRING ) | ^(attrName= VK_DATE_EXPIRES value= STRING ) | ^(attrName= VK_ENABLED (value= BOOL | value= VT_PAREN_CHUNK ) ) | ^(attrName= VK_RULEFLOW_GROUP value= STRING ) | ^(attrName= VK_LOCK_ON_ACTIVE (value= BOOL )? ) | ^(attrName= VK_DIALECT value= STRING ) ) )
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:194:4: ( ^(attrName= VK_SALIENCE (value= INT | value= VT_PAREN_CHUNK ) ) | ^(attrName= VK_NO_LOOP (value= BOOL )? ) | ^(attrName= VK_AGENDA_GROUP value= STRING ) | ^(attrName= VK_DURATION value= INT ) | ^(attrName= VK_ACTIVATION_GROUP value= STRING ) | ^(attrName= VK_AUTO_FOCUS (value= BOOL )? ) | ^(attrName= VK_DATE_EFFECTIVE value= STRING ) | ^(attrName= VK_DATE_EXPIRES value= STRING ) | ^(attrName= VK_ENABLED (value= BOOL | value= VT_PAREN_CHUNK ) ) | ^(attrName= VK_RULEFLOW_GROUP value= STRING ) | ^(attrName= VK_LOCK_ON_ACTIVE (value= BOOL )? ) | ^(attrName= VK_DIALECT value= STRING ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:195:2: ( ( ^(attrName= VK_SALIENCE (value= INT | value= VT_PAREN_CHUNK ) ) | ^(attrName= VK_NO_LOOP (value= BOOL )? ) | ^(attrName= VK_AGENDA_GROUP value= STRING ) | ^(attrName= VK_DURATION value= INT ) | ^(attrName= VK_ACTIVATION_GROUP value= STRING ) | ^(attrName= VK_AUTO_FOCUS (value= BOOL )? ) | ^(attrName= VK_DATE_EFFECTIVE value= STRING ) | ^(attrName= VK_DATE_EXPIRES value= STRING ) | ^(attrName= VK_ENABLED (value= BOOL | value= VT_PAREN_CHUNK ) ) | ^(attrName= VK_RULEFLOW_GROUP value= STRING ) | ^(attrName= VK_LOCK_ON_ACTIVE (value= BOOL )? ) | ^(attrName= VK_DIALECT value= STRING ) ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:195:4: ( ^(attrName= VK_SALIENCE (value= INT | value= VT_PAREN_CHUNK ) ) | ^(attrName= VK_NO_LOOP (value= BOOL )? ) | ^(attrName= VK_AGENDA_GROUP value= STRING ) | ^(attrName= VK_DURATION value= INT ) | ^(attrName= VK_ACTIVATION_GROUP value= STRING ) | ^(attrName= VK_AUTO_FOCUS (value= BOOL )? ) | ^(attrName= VK_DATE_EFFECTIVE value= STRING ) | ^(attrName= VK_DATE_EXPIRES value= STRING ) | ^(attrName= VK_ENABLED (value= BOOL | value= VT_PAREN_CHUNK ) ) | ^(attrName= VK_RULEFLOW_GROUP value= STRING ) | ^(attrName= VK_LOCK_ON_ACTIVE (value= BOOL )? ) | ^(attrName= VK_DIALECT value= STRING ) )
             {
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:194:4: ( ^(attrName= VK_SALIENCE (value= INT | value= VT_PAREN_CHUNK ) ) | ^(attrName= VK_NO_LOOP (value= BOOL )? ) | ^(attrName= VK_AGENDA_GROUP value= STRING ) | ^(attrName= VK_DURATION value= INT ) | ^(attrName= VK_ACTIVATION_GROUP value= STRING ) | ^(attrName= VK_AUTO_FOCUS (value= BOOL )? ) | ^(attrName= VK_DATE_EFFECTIVE value= STRING ) | ^(attrName= VK_DATE_EXPIRES value= STRING ) | ^(attrName= VK_ENABLED (value= BOOL | value= VT_PAREN_CHUNK ) ) | ^(attrName= VK_RULEFLOW_GROUP value= STRING ) | ^(attrName= VK_LOCK_ON_ACTIVE (value= BOOL )? ) | ^(attrName= VK_DIALECT value= STRING ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:195:4: ( ^(attrName= VK_SALIENCE (value= INT | value= VT_PAREN_CHUNK ) ) | ^(attrName= VK_NO_LOOP (value= BOOL )? ) | ^(attrName= VK_AGENDA_GROUP value= STRING ) | ^(attrName= VK_DURATION value= INT ) | ^(attrName= VK_ACTIVATION_GROUP value= STRING ) | ^(attrName= VK_AUTO_FOCUS (value= BOOL )? ) | ^(attrName= VK_DATE_EFFECTIVE value= STRING ) | ^(attrName= VK_DATE_EXPIRES value= STRING ) | ^(attrName= VK_ENABLED (value= BOOL | value= VT_PAREN_CHUNK ) ) | ^(attrName= VK_RULEFLOW_GROUP value= STRING ) | ^(attrName= VK_LOCK_ON_ACTIVE (value= BOOL )? ) | ^(attrName= VK_DIALECT value= STRING ) )
             int alt27=12;
             switch ( input.LA(1) ) {
             case VK_SALIENCE:
@@ -1829,20 +1829,20 @@ public class DescrBuilderTree extends TreeParser {
                 break;
             default:
                 NoViableAltException nvae =
-                    new NoViableAltException("194:4: ( ^(attrName= VK_SALIENCE (value= INT | value= VT_PAREN_CHUNK ) ) | ^(attrName= VK_NO_LOOP (value= BOOL )? ) | ^(attrName= VK_AGENDA_GROUP value= STRING ) | ^(attrName= VK_DURATION value= INT ) | ^(attrName= VK_ACTIVATION_GROUP value= STRING ) | ^(attrName= VK_AUTO_FOCUS (value= BOOL )? ) | ^(attrName= VK_DATE_EFFECTIVE value= STRING ) | ^(attrName= VK_DATE_EXPIRES value= STRING ) | ^(attrName= VK_ENABLED (value= BOOL | value= VT_PAREN_CHUNK ) ) | ^(attrName= VK_RULEFLOW_GROUP value= STRING ) | ^(attrName= VK_LOCK_ON_ACTIVE (value= BOOL )? ) | ^(attrName= VK_DIALECT value= STRING ) )", 27, 0, input);
+                    new NoViableAltException("195:4: ( ^(attrName= VK_SALIENCE (value= INT | value= VT_PAREN_CHUNK ) ) | ^(attrName= VK_NO_LOOP (value= BOOL )? ) | ^(attrName= VK_AGENDA_GROUP value= STRING ) | ^(attrName= VK_DURATION value= INT ) | ^(attrName= VK_ACTIVATION_GROUP value= STRING ) | ^(attrName= VK_AUTO_FOCUS (value= BOOL )? ) | ^(attrName= VK_DATE_EFFECTIVE value= STRING ) | ^(attrName= VK_DATE_EXPIRES value= STRING ) | ^(attrName= VK_ENABLED (value= BOOL | value= VT_PAREN_CHUNK ) ) | ^(attrName= VK_RULEFLOW_GROUP value= STRING ) | ^(attrName= VK_LOCK_ON_ACTIVE (value= BOOL )? ) | ^(attrName= VK_DIALECT value= STRING ) )", 27, 0, input);
 
                 throw nvae;
             }
 
             switch (alt27) {
                 case 1 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:194:5: ^(attrName= VK_SALIENCE (value= INT | value= VT_PAREN_CHUNK ) )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:195:5: ^(attrName= VK_SALIENCE (value= INT | value= VT_PAREN_CHUNK ) )
                     {
                     attrName=(DroolsTree)input.LT(1);
-                    match(input,VK_SALIENCE,FOLLOW_VK_SALIENCE_in_rule_attribute852); 
+                    match(input,VK_SALIENCE,FOLLOW_VK_SALIENCE_in_rule_attribute856); 
 
                     match(input, Token.DOWN, null); 
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:194:28: (value= INT | value= VT_PAREN_CHUNK )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:195:28: (value= INT | value= VT_PAREN_CHUNK )
                     int alt22=2;
                     int LA22_0 = input.LA(1);
 
@@ -1854,24 +1854,24 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     else {
                         NoViableAltException nvae =
-                            new NoViableAltException("194:28: (value= INT | value= VT_PAREN_CHUNK )", 22, 0, input);
+                            new NoViableAltException("195:28: (value= INT | value= VT_PAREN_CHUNK )", 22, 0, input);
 
                         throw nvae;
                     }
                     switch (alt22) {
                         case 1 :
-                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:194:29: value= INT
+                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:195:29: value= INT
                             {
                             value=(DroolsTree)input.LT(1);
-                            match(input,INT,FOLLOW_INT_in_rule_attribute857); 
+                            match(input,INT,FOLLOW_INT_in_rule_attribute861); 
 
                             }
                             break;
                         case 2 :
-                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:194:39: value= VT_PAREN_CHUNK
+                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:195:39: value= VT_PAREN_CHUNK
                             {
                             value=(DroolsTree)input.LT(1);
-                            match(input,VT_PAREN_CHUNK,FOLLOW_VT_PAREN_CHUNK_in_rule_attribute861); 
+                            match(input,VT_PAREN_CHUNK,FOLLOW_VT_PAREN_CHUNK_in_rule_attribute865); 
 
                             }
                             break;
@@ -1884,14 +1884,14 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 2 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:195:4: ^(attrName= VK_NO_LOOP (value= BOOL )? )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:196:4: ^(attrName= VK_NO_LOOP (value= BOOL )? )
                     {
                     attrName=(DroolsTree)input.LT(1);
-                    match(input,VK_NO_LOOP,FOLLOW_VK_NO_LOOP_in_rule_attribute872); 
+                    match(input,VK_NO_LOOP,FOLLOW_VK_NO_LOOP_in_rule_attribute876); 
 
                     if ( input.LA(1)==Token.DOWN ) {
                         match(input, Token.DOWN, null); 
-                        // src/main/resources/org/drools/lang/DescrBuilderTree.g:195:31: (value= BOOL )?
+                        // src/main/resources/org/drools/lang/DescrBuilderTree.g:196:31: (value= BOOL )?
                         int alt23=2;
                         int LA23_0 = input.LA(1);
 
@@ -1900,10 +1900,10 @@ public class DescrBuilderTree extends TreeParser {
                         }
                         switch (alt23) {
                             case 1 :
-                                // src/main/resources/org/drools/lang/DescrBuilderTree.g:195:31: value= BOOL
+                                // src/main/resources/org/drools/lang/DescrBuilderTree.g:196:31: value= BOOL
                                 {
                                 value=(DroolsTree)input.LT(1);
-                                match(input,BOOL,FOLLOW_BOOL_in_rule_attribute876); 
+                                match(input,BOOL,FOLLOW_BOOL_in_rule_attribute880); 
 
                                 }
                                 break;
@@ -1917,56 +1917,56 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 3 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:196:4: ^(attrName= VK_AGENDA_GROUP value= STRING )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:197:4: ^(attrName= VK_AGENDA_GROUP value= STRING )
                     {
                     attrName=(DroolsTree)input.LT(1);
-                    match(input,VK_AGENDA_GROUP,FOLLOW_VK_AGENDA_GROUP_in_rule_attribute888); 
+                    match(input,VK_AGENDA_GROUP,FOLLOW_VK_AGENDA_GROUP_in_rule_attribute892); 
 
                     match(input, Token.DOWN, null); 
                     value=(DroolsTree)input.LT(1);
-                    match(input,STRING,FOLLOW_STRING_in_rule_attribute892); 
+                    match(input,STRING,FOLLOW_STRING_in_rule_attribute896); 
 
                     match(input, Token.UP, null); 
 
                     }
                     break;
                 case 4 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:197:4: ^(attrName= VK_DURATION value= INT )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:198:4: ^(attrName= VK_DURATION value= INT )
                     {
                     attrName=(DroolsTree)input.LT(1);
-                    match(input,VK_DURATION,FOLLOW_VK_DURATION_in_rule_attribute903); 
+                    match(input,VK_DURATION,FOLLOW_VK_DURATION_in_rule_attribute907); 
 
                     match(input, Token.DOWN, null); 
                     value=(DroolsTree)input.LT(1);
-                    match(input,INT,FOLLOW_INT_in_rule_attribute907); 
+                    match(input,INT,FOLLOW_INT_in_rule_attribute911); 
 
                     match(input, Token.UP, null); 
 
                     }
                     break;
                 case 5 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:198:4: ^(attrName= VK_ACTIVATION_GROUP value= STRING )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:199:4: ^(attrName= VK_ACTIVATION_GROUP value= STRING )
                     {
                     attrName=(DroolsTree)input.LT(1);
-                    match(input,VK_ACTIVATION_GROUP,FOLLOW_VK_ACTIVATION_GROUP_in_rule_attribute919); 
+                    match(input,VK_ACTIVATION_GROUP,FOLLOW_VK_ACTIVATION_GROUP_in_rule_attribute923); 
 
                     match(input, Token.DOWN, null); 
                     value=(DroolsTree)input.LT(1);
-                    match(input,STRING,FOLLOW_STRING_in_rule_attribute923); 
+                    match(input,STRING,FOLLOW_STRING_in_rule_attribute927); 
 
                     match(input, Token.UP, null); 
 
                     }
                     break;
                 case 6 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:199:4: ^(attrName= VK_AUTO_FOCUS (value= BOOL )? )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:200:4: ^(attrName= VK_AUTO_FOCUS (value= BOOL )? )
                     {
                     attrName=(DroolsTree)input.LT(1);
-                    match(input,VK_AUTO_FOCUS,FOLLOW_VK_AUTO_FOCUS_in_rule_attribute933); 
+                    match(input,VK_AUTO_FOCUS,FOLLOW_VK_AUTO_FOCUS_in_rule_attribute937); 
 
                     if ( input.LA(1)==Token.DOWN ) {
                         match(input, Token.DOWN, null); 
-                        // src/main/resources/org/drools/lang/DescrBuilderTree.g:199:34: (value= BOOL )?
+                        // src/main/resources/org/drools/lang/DescrBuilderTree.g:200:34: (value= BOOL )?
                         int alt24=2;
                         int LA24_0 = input.LA(1);
 
@@ -1975,10 +1975,10 @@ public class DescrBuilderTree extends TreeParser {
                         }
                         switch (alt24) {
                             case 1 :
-                                // src/main/resources/org/drools/lang/DescrBuilderTree.g:199:34: value= BOOL
+                                // src/main/resources/org/drools/lang/DescrBuilderTree.g:200:34: value= BOOL
                                 {
                                 value=(DroolsTree)input.LT(1);
-                                match(input,BOOL,FOLLOW_BOOL_in_rule_attribute937); 
+                                match(input,BOOL,FOLLOW_BOOL_in_rule_attribute941); 
 
                                 }
                                 break;
@@ -1992,41 +1992,41 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 7 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:200:4: ^(attrName= VK_DATE_EFFECTIVE value= STRING )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:201:4: ^(attrName= VK_DATE_EFFECTIVE value= STRING )
                     {
                     attrName=(DroolsTree)input.LT(1);
-                    match(input,VK_DATE_EFFECTIVE,FOLLOW_VK_DATE_EFFECTIVE_in_rule_attribute948); 
+                    match(input,VK_DATE_EFFECTIVE,FOLLOW_VK_DATE_EFFECTIVE_in_rule_attribute952); 
 
                     match(input, Token.DOWN, null); 
                     value=(DroolsTree)input.LT(1);
-                    match(input,STRING,FOLLOW_STRING_in_rule_attribute952); 
+                    match(input,STRING,FOLLOW_STRING_in_rule_attribute956); 
 
                     match(input, Token.UP, null); 
 
                     }
                     break;
                 case 8 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:201:4: ^(attrName= VK_DATE_EXPIRES value= STRING )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:202:4: ^(attrName= VK_DATE_EXPIRES value= STRING )
                     {
                     attrName=(DroolsTree)input.LT(1);
-                    match(input,VK_DATE_EXPIRES,FOLLOW_VK_DATE_EXPIRES_in_rule_attribute962); 
+                    match(input,VK_DATE_EXPIRES,FOLLOW_VK_DATE_EXPIRES_in_rule_attribute966); 
 
                     match(input, Token.DOWN, null); 
                     value=(DroolsTree)input.LT(1);
-                    match(input,STRING,FOLLOW_STRING_in_rule_attribute966); 
+                    match(input,STRING,FOLLOW_STRING_in_rule_attribute970); 
 
                     match(input, Token.UP, null); 
 
                     }
                     break;
                 case 9 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:202:4: ^(attrName= VK_ENABLED (value= BOOL | value= VT_PAREN_CHUNK ) )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:203:4: ^(attrName= VK_ENABLED (value= BOOL | value= VT_PAREN_CHUNK ) )
                     {
                     attrName=(DroolsTree)input.LT(1);
-                    match(input,VK_ENABLED,FOLLOW_VK_ENABLED_in_rule_attribute976); 
+                    match(input,VK_ENABLED,FOLLOW_VK_ENABLED_in_rule_attribute980); 
 
                     match(input, Token.DOWN, null); 
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:202:26: (value= BOOL | value= VT_PAREN_CHUNK )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:203:26: (value= BOOL | value= VT_PAREN_CHUNK )
                     int alt25=2;
                     int LA25_0 = input.LA(1);
 
@@ -2038,24 +2038,24 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     else {
                         NoViableAltException nvae =
-                            new NoViableAltException("202:26: (value= BOOL | value= VT_PAREN_CHUNK )", 25, 0, input);
+                            new NoViableAltException("203:26: (value= BOOL | value= VT_PAREN_CHUNK )", 25, 0, input);
 
                         throw nvae;
                     }
                     switch (alt25) {
                         case 1 :
-                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:202:27: value= BOOL
+                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:203:27: value= BOOL
                             {
                             value=(DroolsTree)input.LT(1);
-                            match(input,BOOL,FOLLOW_BOOL_in_rule_attribute981); 
+                            match(input,BOOL,FOLLOW_BOOL_in_rule_attribute985); 
 
                             }
                             break;
                         case 2 :
-                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:202:38: value= VT_PAREN_CHUNK
+                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:203:38: value= VT_PAREN_CHUNK
                             {
                             value=(DroolsTree)input.LT(1);
-                            match(input,VT_PAREN_CHUNK,FOLLOW_VT_PAREN_CHUNK_in_rule_attribute985); 
+                            match(input,VT_PAREN_CHUNK,FOLLOW_VT_PAREN_CHUNK_in_rule_attribute989); 
 
                             }
                             break;
@@ -2068,28 +2068,28 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 10 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:203:4: ^(attrName= VK_RULEFLOW_GROUP value= STRING )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:204:4: ^(attrName= VK_RULEFLOW_GROUP value= STRING )
                     {
                     attrName=(DroolsTree)input.LT(1);
-                    match(input,VK_RULEFLOW_GROUP,FOLLOW_VK_RULEFLOW_GROUP_in_rule_attribute996); 
+                    match(input,VK_RULEFLOW_GROUP,FOLLOW_VK_RULEFLOW_GROUP_in_rule_attribute1000); 
 
                     match(input, Token.DOWN, null); 
                     value=(DroolsTree)input.LT(1);
-                    match(input,STRING,FOLLOW_STRING_in_rule_attribute1000); 
+                    match(input,STRING,FOLLOW_STRING_in_rule_attribute1004); 
 
                     match(input, Token.UP, null); 
 
                     }
                     break;
                 case 11 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:204:4: ^(attrName= VK_LOCK_ON_ACTIVE (value= BOOL )? )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:205:4: ^(attrName= VK_LOCK_ON_ACTIVE (value= BOOL )? )
                     {
                     attrName=(DroolsTree)input.LT(1);
-                    match(input,VK_LOCK_ON_ACTIVE,FOLLOW_VK_LOCK_ON_ACTIVE_in_rule_attribute1010); 
+                    match(input,VK_LOCK_ON_ACTIVE,FOLLOW_VK_LOCK_ON_ACTIVE_in_rule_attribute1014); 
 
                     if ( input.LA(1)==Token.DOWN ) {
                         match(input, Token.DOWN, null); 
-                        // src/main/resources/org/drools/lang/DescrBuilderTree.g:204:38: (value= BOOL )?
+                        // src/main/resources/org/drools/lang/DescrBuilderTree.g:205:38: (value= BOOL )?
                         int alt26=2;
                         int LA26_0 = input.LA(1);
 
@@ -2098,10 +2098,10 @@ public class DescrBuilderTree extends TreeParser {
                         }
                         switch (alt26) {
                             case 1 :
-                                // src/main/resources/org/drools/lang/DescrBuilderTree.g:204:38: value= BOOL
+                                // src/main/resources/org/drools/lang/DescrBuilderTree.g:205:38: value= BOOL
                                 {
                                 value=(DroolsTree)input.LT(1);
-                                match(input,BOOL,FOLLOW_BOOL_in_rule_attribute1014); 
+                                match(input,BOOL,FOLLOW_BOOL_in_rule_attribute1018); 
 
                                 }
                                 break;
@@ -2115,14 +2115,14 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 12 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:205:4: ^(attrName= VK_DIALECT value= STRING )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:206:4: ^(attrName= VK_DIALECT value= STRING )
                     {
                     attrName=(DroolsTree)input.LT(1);
-                    match(input,VK_DIALECT,FOLLOW_VK_DIALECT_in_rule_attribute1024); 
+                    match(input,VK_DIALECT,FOLLOW_VK_DIALECT_in_rule_attribute1028); 
 
                     match(input, Token.DOWN, null); 
                     value=(DroolsTree)input.LT(1);
-                    match(input,STRING,FOLLOW_STRING_in_rule_attribute1028); 
+                    match(input,STRING,FOLLOW_STRING_in_rule_attribute1032); 
 
                     match(input, Token.UP, null); 
 
@@ -2148,7 +2148,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start lhs_block
-    // src/main/resources/org/drools/lang/DescrBuilderTree.g:209:1: lhs_block returns [AndDescr andDescr] : ^( VT_AND_IMPLICIT (dt= lhs )* ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:210:1: lhs_block returns [AndDescr andDescr] : ^( VT_AND_IMPLICIT (dt= lhs )* ) ;
     public final AndDescr lhs_block() throws RecognitionException {
         AndDescr andDescr = null;
 
@@ -2159,14 +2159,14 @@ public class DescrBuilderTree extends TreeParser {
         	andDescr = new AndDescr();
 
         try {
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:212:3: ( ^( VT_AND_IMPLICIT (dt= lhs )* ) )
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:212:5: ^( VT_AND_IMPLICIT (dt= lhs )* )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:213:3: ( ^( VT_AND_IMPLICIT (dt= lhs )* ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:213:5: ^( VT_AND_IMPLICIT (dt= lhs )* )
             {
-            match(input,VT_AND_IMPLICIT,FOLLOW_VT_AND_IMPLICIT_in_lhs_block1053); 
+            match(input,VT_AND_IMPLICIT,FOLLOW_VT_AND_IMPLICIT_in_lhs_block1057); 
 
             if ( input.LA(1)==Token.DOWN ) {
                 match(input, Token.DOWN, null); 
-                // src/main/resources/org/drools/lang/DescrBuilderTree.g:212:23: (dt= lhs )*
+                // src/main/resources/org/drools/lang/DescrBuilderTree.g:213:23: (dt= lhs )*
                 loop28:
                 do {
                     int alt28=2;
@@ -2179,9 +2179,9 @@ public class DescrBuilderTree extends TreeParser {
 
                     switch (alt28) {
                 	case 1 :
-                	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:212:24: dt= lhs
+                	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:213:24: dt= lhs
                 	    {
-                	    pushFollow(FOLLOW_lhs_in_lhs_block1058);
+                	    pushFollow(FOLLOW_lhs_in_lhs_block1062);
                 	    dt=lhs();
                 	    _fsp--;
 
@@ -2217,7 +2217,7 @@ public class DescrBuilderTree extends TreeParser {
     };
 
     // $ANTLR start lhs
-    // src/main/resources/org/drools/lang/DescrBuilderTree.g:215:1: lhs returns [BaseDescr baseDescr] : ( ^(start= VT_OR_PREFIX (dt= lhs )+ ) | ^(start= VT_OR_INFIX dt1= lhs dt2= lhs ) | ^(start= VT_AND_PREFIX (dt= lhs )+ ) | ^(start= VT_AND_INFIX dt1= lhs dt2= lhs ) | ^(start= VK_EXISTS dt= lhs ) | ^(start= VK_NOT dt= lhs ) | ^(start= VK_EVAL pc= VT_PAREN_CHUNK ) | ^(start= VK_FORALL (dt= lhs )+ ) | ^( FROM pn= lhs_pattern fe= from_elements ) | pn= lhs_pattern );
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:216:1: lhs returns [BaseDescr baseDescr] : ( ^(start= VT_OR_PREFIX (dt= lhs )+ ) | ^(start= VT_OR_INFIX dt1= lhs dt2= lhs ) | ^(start= VT_AND_PREFIX (dt= lhs )+ ) | ^(start= VT_AND_INFIX dt1= lhs dt2= lhs ) | ^(start= VK_EXISTS dt= lhs ) | ^(start= VK_NOT dt= lhs ) | ^(start= VK_EVAL pc= VT_PAREN_CHUNK ) | ^(start= VK_FORALL (dt= lhs )+ ) | ^( FROM pn= lhs_pattern fe= from_elements ) | pn= lhs_pattern );
     public final lhs_return lhs() throws RecognitionException {
         lhs_return retval = new lhs_return();
         retval.start = input.LT(1);
@@ -2239,7 +2239,7 @@ public class DescrBuilderTree extends TreeParser {
         	List<BaseDescr> lhsList = new LinkedList<BaseDescr>();
 
         try {
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:218:3: ( ^(start= VT_OR_PREFIX (dt= lhs )+ ) | ^(start= VT_OR_INFIX dt1= lhs dt2= lhs ) | ^(start= VT_AND_PREFIX (dt= lhs )+ ) | ^(start= VT_AND_INFIX dt1= lhs dt2= lhs ) | ^(start= VK_EXISTS dt= lhs ) | ^(start= VK_NOT dt= lhs ) | ^(start= VK_EVAL pc= VT_PAREN_CHUNK ) | ^(start= VK_FORALL (dt= lhs )+ ) | ^( FROM pn= lhs_pattern fe= from_elements ) | pn= lhs_pattern )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:219:3: ( ^(start= VT_OR_PREFIX (dt= lhs )+ ) | ^(start= VT_OR_INFIX dt1= lhs dt2= lhs ) | ^(start= VT_AND_PREFIX (dt= lhs )+ ) | ^(start= VT_AND_INFIX dt1= lhs dt2= lhs ) | ^(start= VK_EXISTS dt= lhs ) | ^(start= VK_NOT dt= lhs ) | ^(start= VK_EVAL pc= VT_PAREN_CHUNK ) | ^(start= VK_FORALL (dt= lhs )+ ) | ^( FROM pn= lhs_pattern fe= from_elements ) | pn= lhs_pattern )
             int alt32=10;
             switch ( input.LA(1) ) {
             case VT_OR_PREFIX:
@@ -2294,20 +2294,20 @@ public class DescrBuilderTree extends TreeParser {
                 break;
             default:
                 NoViableAltException nvae =
-                    new NoViableAltException("215:1: lhs returns [BaseDescr baseDescr] : ( ^(start= VT_OR_PREFIX (dt= lhs )+ ) | ^(start= VT_OR_INFIX dt1= lhs dt2= lhs ) | ^(start= VT_AND_PREFIX (dt= lhs )+ ) | ^(start= VT_AND_INFIX dt1= lhs dt2= lhs ) | ^(start= VK_EXISTS dt= lhs ) | ^(start= VK_NOT dt= lhs ) | ^(start= VK_EVAL pc= VT_PAREN_CHUNK ) | ^(start= VK_FORALL (dt= lhs )+ ) | ^( FROM pn= lhs_pattern fe= from_elements ) | pn= lhs_pattern );", 32, 0, input);
+                    new NoViableAltException("216:1: lhs returns [BaseDescr baseDescr] : ( ^(start= VT_OR_PREFIX (dt= lhs )+ ) | ^(start= VT_OR_INFIX dt1= lhs dt2= lhs ) | ^(start= VT_AND_PREFIX (dt= lhs )+ ) | ^(start= VT_AND_INFIX dt1= lhs dt2= lhs ) | ^(start= VK_EXISTS dt= lhs ) | ^(start= VK_NOT dt= lhs ) | ^(start= VK_EVAL pc= VT_PAREN_CHUNK ) | ^(start= VK_FORALL (dt= lhs )+ ) | ^( FROM pn= lhs_pattern fe= from_elements ) | pn= lhs_pattern );", 32, 0, input);
 
                 throw nvae;
             }
 
             switch (alt32) {
                 case 1 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:218:5: ^(start= VT_OR_PREFIX (dt= lhs )+ )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:219:5: ^(start= VT_OR_PREFIX (dt= lhs )+ )
                     {
                     start=(DroolsTree)input.LT(1);
-                    match(input,VT_OR_PREFIX,FOLLOW_VT_OR_PREFIX_in_lhs1084); 
+                    match(input,VT_OR_PREFIX,FOLLOW_VT_OR_PREFIX_in_lhs1088); 
 
                     match(input, Token.DOWN, null); 
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:218:26: (dt= lhs )+
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:219:26: (dt= lhs )+
                     int cnt29=0;
                     loop29:
                     do {
@@ -2321,9 +2321,9 @@ public class DescrBuilderTree extends TreeParser {
 
                         switch (alt29) {
                     	case 1 :
-                    	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:218:27: dt= lhs
+                    	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:219:27: dt= lhs
                     	    {
-                    	    pushFollow(FOLLOW_lhs_in_lhs1089);
+                    	    pushFollow(FOLLOW_lhs_in_lhs1093);
                     	    dt=lhs();
                     	    _fsp--;
 
@@ -2348,17 +2348,17 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 2 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:220:4: ^(start= VT_OR_INFIX dt1= lhs dt2= lhs )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:221:4: ^(start= VT_OR_INFIX dt1= lhs dt2= lhs )
                     {
                     start=(DroolsTree)input.LT(1);
-                    match(input,VT_OR_INFIX,FOLLOW_VT_OR_INFIX_in_lhs1105); 
+                    match(input,VT_OR_INFIX,FOLLOW_VT_OR_INFIX_in_lhs1109); 
 
                     match(input, Token.DOWN, null); 
-                    pushFollow(FOLLOW_lhs_in_lhs1109);
+                    pushFollow(FOLLOW_lhs_in_lhs1113);
                     dt1=lhs();
                     _fsp--;
 
-                    pushFollow(FOLLOW_lhs_in_lhs1113);
+                    pushFollow(FOLLOW_lhs_in_lhs1117);
                     dt2=lhs();
                     _fsp--;
 
@@ -2371,13 +2371,13 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 3 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:224:4: ^(start= VT_AND_PREFIX (dt= lhs )+ )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:225:4: ^(start= VT_AND_PREFIX (dt= lhs )+ )
                     {
                     start=(DroolsTree)input.LT(1);
-                    match(input,VT_AND_PREFIX,FOLLOW_VT_AND_PREFIX_in_lhs1125); 
+                    match(input,VT_AND_PREFIX,FOLLOW_VT_AND_PREFIX_in_lhs1129); 
 
                     match(input, Token.DOWN, null); 
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:224:26: (dt= lhs )+
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:225:26: (dt= lhs )+
                     int cnt30=0;
                     loop30:
                     do {
@@ -2391,9 +2391,9 @@ public class DescrBuilderTree extends TreeParser {
 
                         switch (alt30) {
                     	case 1 :
-                    	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:224:27: dt= lhs
+                    	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:225:27: dt= lhs
                     	    {
-                    	    pushFollow(FOLLOW_lhs_in_lhs1130);
+                    	    pushFollow(FOLLOW_lhs_in_lhs1134);
                     	    dt=lhs();
                     	    _fsp--;
 
@@ -2418,17 +2418,17 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 4 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:226:4: ^(start= VT_AND_INFIX dt1= lhs dt2= lhs )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:227:4: ^(start= VT_AND_INFIX dt1= lhs dt2= lhs )
                     {
                     start=(DroolsTree)input.LT(1);
-                    match(input,VT_AND_INFIX,FOLLOW_VT_AND_INFIX_in_lhs1146); 
+                    match(input,VT_AND_INFIX,FOLLOW_VT_AND_INFIX_in_lhs1150); 
 
                     match(input, Token.DOWN, null); 
-                    pushFollow(FOLLOW_lhs_in_lhs1150);
+                    pushFollow(FOLLOW_lhs_in_lhs1154);
                     dt1=lhs();
                     _fsp--;
 
-                    pushFollow(FOLLOW_lhs_in_lhs1154);
+                    pushFollow(FOLLOW_lhs_in_lhs1158);
                     dt2=lhs();
                     _fsp--;
 
@@ -2441,13 +2441,13 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 5 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:230:4: ^(start= VK_EXISTS dt= lhs )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:231:4: ^(start= VK_EXISTS dt= lhs )
                     {
                     start=(DroolsTree)input.LT(1);
-                    match(input,VK_EXISTS,FOLLOW_VK_EXISTS_in_lhs1166); 
+                    match(input,VK_EXISTS,FOLLOW_VK_EXISTS_in_lhs1170); 
 
                     match(input, Token.DOWN, null); 
-                    pushFollow(FOLLOW_lhs_in_lhs1170);
+                    pushFollow(FOLLOW_lhs_in_lhs1174);
                     dt=lhs();
                     _fsp--;
 
@@ -2458,13 +2458,13 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 6 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:232:4: ^(start= VK_NOT dt= lhs )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:233:4: ^(start= VK_NOT dt= lhs )
                     {
                     start=(DroolsTree)input.LT(1);
-                    match(input,VK_NOT,FOLLOW_VK_NOT_in_lhs1182); 
+                    match(input,VK_NOT,FOLLOW_VK_NOT_in_lhs1186); 
 
                     match(input, Token.DOWN, null); 
-                    pushFollow(FOLLOW_lhs_in_lhs1186);
+                    pushFollow(FOLLOW_lhs_in_lhs1190);
                     dt=lhs();
                     _fsp--;
 
@@ -2475,14 +2475,14 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 7 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:234:4: ^(start= VK_EVAL pc= VT_PAREN_CHUNK )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:235:4: ^(start= VK_EVAL pc= VT_PAREN_CHUNK )
                     {
                     start=(DroolsTree)input.LT(1);
-                    match(input,VK_EVAL,FOLLOW_VK_EVAL_in_lhs1198); 
+                    match(input,VK_EVAL,FOLLOW_VK_EVAL_in_lhs1202); 
 
                     match(input, Token.DOWN, null); 
                     pc=(DroolsTree)input.LT(1);
-                    match(input,VT_PAREN_CHUNK,FOLLOW_VT_PAREN_CHUNK_in_lhs1202); 
+                    match(input,VT_PAREN_CHUNK,FOLLOW_VT_PAREN_CHUNK_in_lhs1206); 
 
                     match(input, Token.UP, null); 
                     	retval.baseDescr = factory.createEval(start, pc);	
@@ -2490,13 +2490,13 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 8 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:236:4: ^(start= VK_FORALL (dt= lhs )+ )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:237:4: ^(start= VK_FORALL (dt= lhs )+ )
                     {
                     start=(DroolsTree)input.LT(1);
-                    match(input,VK_FORALL,FOLLOW_VK_FORALL_in_lhs1214); 
+                    match(input,VK_FORALL,FOLLOW_VK_FORALL_in_lhs1218); 
 
                     match(input, Token.DOWN, null); 
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:236:22: (dt= lhs )+
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:237:22: (dt= lhs )+
                     int cnt31=0;
                     loop31:
                     do {
@@ -2510,9 +2510,9 @@ public class DescrBuilderTree extends TreeParser {
 
                         switch (alt31) {
                     	case 1 :
-                    	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:236:23: dt= lhs
+                    	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:237:23: dt= lhs
                     	    {
-                    	    pushFollow(FOLLOW_lhs_in_lhs1219);
+                    	    pushFollow(FOLLOW_lhs_in_lhs1223);
                     	    dt=lhs();
                     	    _fsp--;
 
@@ -2537,16 +2537,16 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 9 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:238:4: ^( FROM pn= lhs_pattern fe= from_elements )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:239:4: ^( FROM pn= lhs_pattern fe= from_elements )
                     {
-                    match(input,FROM,FOLLOW_FROM_in_lhs1233); 
+                    match(input,FROM,FOLLOW_FROM_in_lhs1237); 
 
                     match(input, Token.DOWN, null); 
-                    pushFollow(FOLLOW_lhs_pattern_in_lhs1237);
+                    pushFollow(FOLLOW_lhs_pattern_in_lhs1241);
                     pn=lhs_pattern();
                     _fsp--;
 
-                    pushFollow(FOLLOW_from_elements_in_lhs1241);
+                    pushFollow(FOLLOW_from_elements_in_lhs1245);
                     fe=from_elements();
                     _fsp--;
 
@@ -2557,9 +2557,9 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 10 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:240:4: pn= lhs_pattern
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:241:4: pn= lhs_pattern
                     {
-                    pushFollow(FOLLOW_lhs_pattern_in_lhs1252);
+                    pushFollow(FOLLOW_lhs_pattern_in_lhs1256);
                     pn=lhs_pattern();
                     _fsp--;
 
@@ -2585,7 +2585,7 @@ public class DescrBuilderTree extends TreeParser {
     };
 
     // $ANTLR start from_elements
-    // src/main/resources/org/drools/lang/DescrBuilderTree.g:244:1: from_elements returns [PatternSourceDescr patternSourceDescr] : ( ^(start= ACCUMULATE dt= lhs ret= accumulate_parts[$patternSourceDescr] ) | ^(start= COLLECT dt= lhs ) | ^(start= VK_ENTRY_POINT entryId= VT_ENTRYPOINT_ID ) | fs= from_source_clause );
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:245:1: from_elements returns [PatternSourceDescr patternSourceDescr] : ( ^(start= ACCUMULATE dt= lhs ret= accumulate_parts[$patternSourceDescr] ) | ^(start= COLLECT dt= lhs ) | ^(start= VK_ENTRY_POINT entryId= VT_ENTRYPOINT_ID ) | fs= from_source_clause );
     public final from_elements_return from_elements() throws RecognitionException {
         from_elements_return retval = new from_elements_return();
         retval.start = input.LT(1);
@@ -2600,7 +2600,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
         try {
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:245:2: ( ^(start= ACCUMULATE dt= lhs ret= accumulate_parts[$patternSourceDescr] ) | ^(start= COLLECT dt= lhs ) | ^(start= VK_ENTRY_POINT entryId= VT_ENTRYPOINT_ID ) | fs= from_source_clause )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:246:2: ( ^(start= ACCUMULATE dt= lhs ret= accumulate_parts[$patternSourceDescr] ) | ^(start= COLLECT dt= lhs ) | ^(start= VK_ENTRY_POINT entryId= VT_ENTRYPOINT_ID ) | fs= from_source_clause )
             int alt33=4;
             switch ( input.LA(1) ) {
             case ACCUMULATE:
@@ -2625,25 +2625,25 @@ public class DescrBuilderTree extends TreeParser {
                 break;
             default:
                 NoViableAltException nvae =
-                    new NoViableAltException("244:1: from_elements returns [PatternSourceDescr patternSourceDescr] : ( ^(start= ACCUMULATE dt= lhs ret= accumulate_parts[$patternSourceDescr] ) | ^(start= COLLECT dt= lhs ) | ^(start= VK_ENTRY_POINT entryId= VT_ENTRYPOINT_ID ) | fs= from_source_clause );", 33, 0, input);
+                    new NoViableAltException("245:1: from_elements returns [PatternSourceDescr patternSourceDescr] : ( ^(start= ACCUMULATE dt= lhs ret= accumulate_parts[$patternSourceDescr] ) | ^(start= COLLECT dt= lhs ) | ^(start= VK_ENTRY_POINT entryId= VT_ENTRYPOINT_ID ) | fs= from_source_clause );", 33, 0, input);
 
                 throw nvae;
             }
 
             switch (alt33) {
                 case 1 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:245:4: ^(start= ACCUMULATE dt= lhs ret= accumulate_parts[$patternSourceDescr] )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:246:4: ^(start= ACCUMULATE dt= lhs ret= accumulate_parts[$patternSourceDescr] )
                     {
                     start=(DroolsTree)input.LT(1);
-                    match(input,ACCUMULATE,FOLLOW_ACCUMULATE_in_from_elements1273); 
+                    match(input,ACCUMULATE,FOLLOW_ACCUMULATE_in_from_elements1277); 
 
                     match(input, Token.DOWN, null); 
-                    pushFollow(FOLLOW_lhs_in_from_elements1277);
+                    pushFollow(FOLLOW_lhs_in_from_elements1281);
                     dt=lhs();
                     _fsp--;
 
                     	retval.patternSourceDescr = factory.createAccumulate(start, dt.baseDescr);	
-                    pushFollow(FOLLOW_accumulate_parts_in_from_elements1287);
+                    pushFollow(FOLLOW_accumulate_parts_in_from_elements1291);
                     ret=accumulate_parts(retval.patternSourceDescr);
                     _fsp--;
 
@@ -2654,13 +2654,13 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 2 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:249:4: ^(start= COLLECT dt= lhs )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:250:4: ^(start= COLLECT dt= lhs )
                     {
                     start=(DroolsTree)input.LT(1);
-                    match(input,COLLECT,FOLLOW_COLLECT_in_from_elements1300); 
+                    match(input,COLLECT,FOLLOW_COLLECT_in_from_elements1304); 
 
                     match(input, Token.DOWN, null); 
-                    pushFollow(FOLLOW_lhs_in_from_elements1304);
+                    pushFollow(FOLLOW_lhs_in_from_elements1308);
                     dt=lhs();
                     _fsp--;
 
@@ -2671,14 +2671,14 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 3 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:251:4: ^(start= VK_ENTRY_POINT entryId= VT_ENTRYPOINT_ID )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:252:4: ^(start= VK_ENTRY_POINT entryId= VT_ENTRYPOINT_ID )
                     {
                     start=(DroolsTree)input.LT(1);
-                    match(input,VK_ENTRY_POINT,FOLLOW_VK_ENTRY_POINT_in_from_elements1316); 
+                    match(input,VK_ENTRY_POINT,FOLLOW_VK_ENTRY_POINT_in_from_elements1320); 
 
                     match(input, Token.DOWN, null); 
                     entryId=(DroolsTree)input.LT(1);
-                    match(input,VT_ENTRYPOINT_ID,FOLLOW_VT_ENTRYPOINT_ID_in_from_elements1320); 
+                    match(input,VT_ENTRYPOINT_ID,FOLLOW_VT_ENTRYPOINT_ID_in_from_elements1324); 
 
                     match(input, Token.UP, null); 
                     	retval.patternSourceDescr = factory.createEntryPoint(start, entryId);	
@@ -2686,9 +2686,9 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 4 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:253:4: fs= from_source_clause
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:254:4: fs= from_source_clause
                     {
-                    pushFollow(FOLLOW_from_source_clause_in_from_elements1331);
+                    pushFollow(FOLLOW_from_source_clause_in_from_elements1335);
                     fs=from_source_clause();
                     _fsp--;
 
@@ -2711,7 +2711,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start accumulate_parts
-    // src/main/resources/org/drools/lang/DescrBuilderTree.g:257:1: accumulate_parts[PatternSourceDescr patternSourceDescr] returns [AccumulateDescr accumulateDescr] : (ac1= accumulate_init_clause[$patternSourceDescr] | ac2= accumulate_id_clause[$patternSourceDescr] );
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:258:1: accumulate_parts[PatternSourceDescr patternSourceDescr] returns [AccumulateDescr accumulateDescr] : (ac1= accumulate_init_clause[$patternSourceDescr] | ac2= accumulate_id_clause[$patternSourceDescr] );
     public final AccumulateDescr accumulate_parts(PatternSourceDescr patternSourceDescr) throws RecognitionException {
         AccumulateDescr accumulateDescr = null;
 
@@ -2721,7 +2721,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
         try {
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:258:2: (ac1= accumulate_init_clause[$patternSourceDescr] | ac2= accumulate_id_clause[$patternSourceDescr] )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:259:2: (ac1= accumulate_init_clause[$patternSourceDescr] | ac2= accumulate_id_clause[$patternSourceDescr] )
             int alt34=2;
             int LA34_0 = input.LA(1);
 
@@ -2733,15 +2733,15 @@ public class DescrBuilderTree extends TreeParser {
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("257:1: accumulate_parts[PatternSourceDescr patternSourceDescr] returns [AccumulateDescr accumulateDescr] : (ac1= accumulate_init_clause[$patternSourceDescr] | ac2= accumulate_id_clause[$patternSourceDescr] );", 34, 0, input);
+                    new NoViableAltException("258:1: accumulate_parts[PatternSourceDescr patternSourceDescr] returns [AccumulateDescr accumulateDescr] : (ac1= accumulate_init_clause[$patternSourceDescr] | ac2= accumulate_id_clause[$patternSourceDescr] );", 34, 0, input);
 
                 throw nvae;
             }
             switch (alt34) {
                 case 1 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:258:4: ac1= accumulate_init_clause[$patternSourceDescr]
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:259:4: ac1= accumulate_init_clause[$patternSourceDescr]
                     {
-                    pushFollow(FOLLOW_accumulate_init_clause_in_accumulate_parts1352);
+                    pushFollow(FOLLOW_accumulate_init_clause_in_accumulate_parts1356);
                     ac1=accumulate_init_clause(patternSourceDescr);
                     _fsp--;
 
@@ -2750,9 +2750,9 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 2 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:260:4: ac2= accumulate_id_clause[$patternSourceDescr]
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:261:4: ac2= accumulate_id_clause[$patternSourceDescr]
                     {
-                    pushFollow(FOLLOW_accumulate_id_clause_in_accumulate_parts1363);
+                    pushFollow(FOLLOW_accumulate_id_clause_in_accumulate_parts1367);
                     ac2=accumulate_id_clause(patternSourceDescr);
                     _fsp--;
 
@@ -2778,7 +2778,7 @@ public class DescrBuilderTree extends TreeParser {
     };
 
     // $ANTLR start accumulate_init_clause
-    // src/main/resources/org/drools/lang/DescrBuilderTree.g:264:1: accumulate_init_clause[PatternSourceDescr accumulateParam] returns [AccumulateDescr accumulateDescr] : ^( VT_ACCUMULATE_INIT_CLAUSE ^(start= INIT pc1= VT_PAREN_CHUNK ) ^( VK_ACTION pc2= VT_PAREN_CHUNK ) (rev= accumulate_init_reverse_clause )? ^( VK_RESULT pc3= VT_PAREN_CHUNK ) ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:265:1: accumulate_init_clause[PatternSourceDescr accumulateParam] returns [AccumulateDescr accumulateDescr] : ^( VT_ACCUMULATE_INIT_CLAUSE ^(start= INIT pc1= VT_PAREN_CHUNK ) ^( VK_ACTION pc2= VT_PAREN_CHUNK ) (rev= accumulate_init_reverse_clause )? ^( VK_RESULT pc3= VT_PAREN_CHUNK ) ) ;
     public final accumulate_init_clause_return accumulate_init_clause(PatternSourceDescr accumulateParam) throws RecognitionException {
         accumulate_init_clause_return retval = new accumulate_init_clause_return();
         retval.start = input.LT(1);
@@ -2791,28 +2791,28 @@ public class DescrBuilderTree extends TreeParser {
 
 
         try {
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:265:2: ( ^( VT_ACCUMULATE_INIT_CLAUSE ^(start= INIT pc1= VT_PAREN_CHUNK ) ^( VK_ACTION pc2= VT_PAREN_CHUNK ) (rev= accumulate_init_reverse_clause )? ^( VK_RESULT pc3= VT_PAREN_CHUNK ) ) )
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:265:4: ^( VT_ACCUMULATE_INIT_CLAUSE ^(start= INIT pc1= VT_PAREN_CHUNK ) ^( VK_ACTION pc2= VT_PAREN_CHUNK ) (rev= accumulate_init_reverse_clause )? ^( VK_RESULT pc3= VT_PAREN_CHUNK ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:266:2: ( ^( VT_ACCUMULATE_INIT_CLAUSE ^(start= INIT pc1= VT_PAREN_CHUNK ) ^( VK_ACTION pc2= VT_PAREN_CHUNK ) (rev= accumulate_init_reverse_clause )? ^( VK_RESULT pc3= VT_PAREN_CHUNK ) ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:266:4: ^( VT_ACCUMULATE_INIT_CLAUSE ^(start= INIT pc1= VT_PAREN_CHUNK ) ^( VK_ACTION pc2= VT_PAREN_CHUNK ) (rev= accumulate_init_reverse_clause )? ^( VK_RESULT pc3= VT_PAREN_CHUNK ) )
             {
-            match(input,VT_ACCUMULATE_INIT_CLAUSE,FOLLOW_VT_ACCUMULATE_INIT_CLAUSE_in_accumulate_init_clause1386); 
+            match(input,VT_ACCUMULATE_INIT_CLAUSE,FOLLOW_VT_ACCUMULATE_INIT_CLAUSE_in_accumulate_init_clause1390); 
 
             match(input, Token.DOWN, null); 
             start=(DroolsTree)input.LT(1);
-            match(input,INIT,FOLLOW_INIT_in_accumulate_init_clause1395); 
+            match(input,INIT,FOLLOW_INIT_in_accumulate_init_clause1399); 
 
             match(input, Token.DOWN, null); 
             pc1=(DroolsTree)input.LT(1);
-            match(input,VT_PAREN_CHUNK,FOLLOW_VT_PAREN_CHUNK_in_accumulate_init_clause1399); 
+            match(input,VT_PAREN_CHUNK,FOLLOW_VT_PAREN_CHUNK_in_accumulate_init_clause1403); 
 
             match(input, Token.UP, null); 
-            match(input,VK_ACTION,FOLLOW_VK_ACTION_in_accumulate_init_clause1407); 
+            match(input,VK_ACTION,FOLLOW_VK_ACTION_in_accumulate_init_clause1411); 
 
             match(input, Token.DOWN, null); 
             pc2=(DroolsTree)input.LT(1);
-            match(input,VT_PAREN_CHUNK,FOLLOW_VT_PAREN_CHUNK_in_accumulate_init_clause1411); 
+            match(input,VT_PAREN_CHUNK,FOLLOW_VT_PAREN_CHUNK_in_accumulate_init_clause1415); 
 
             match(input, Token.UP, null); 
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:268:7: (rev= accumulate_init_reverse_clause )?
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:269:7: (rev= accumulate_init_reverse_clause )?
             int alt35=2;
             int LA35_0 = input.LA(1);
 
@@ -2821,9 +2821,9 @@ public class DescrBuilderTree extends TreeParser {
             }
             switch (alt35) {
                 case 1 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:268:7: rev= accumulate_init_reverse_clause
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:269:7: rev= accumulate_init_reverse_clause
                     {
-                    pushFollow(FOLLOW_accumulate_init_reverse_clause_in_accumulate_init_clause1420);
+                    pushFollow(FOLLOW_accumulate_init_reverse_clause_in_accumulate_init_clause1424);
                     rev=accumulate_init_reverse_clause();
                     _fsp--;
 
@@ -2833,11 +2833,11 @@ public class DescrBuilderTree extends TreeParser {
 
             }
 
-            match(input,VK_RESULT,FOLLOW_VK_RESULT_in_accumulate_init_clause1427); 
+            match(input,VK_RESULT,FOLLOW_VK_RESULT_in_accumulate_init_clause1431); 
 
             match(input, Token.DOWN, null); 
             pc3=(DroolsTree)input.LT(1);
-            match(input,VT_PAREN_CHUNK,FOLLOW_VT_PAREN_CHUNK_in_accumulate_init_clause1431); 
+            match(input,VT_PAREN_CHUNK,FOLLOW_VT_PAREN_CHUNK_in_accumulate_init_clause1435); 
 
             match(input, Token.UP, null); 
 
@@ -2867,7 +2867,7 @@ public class DescrBuilderTree extends TreeParser {
     };
 
     // $ANTLR start accumulate_init_reverse_clause
-    // src/main/resources/org/drools/lang/DescrBuilderTree.g:277:1: accumulate_init_reverse_clause returns [DroolsTree vkReverse, DroolsTree vkReverseChunk] : ^(vk= VK_REVERSE pc= VT_PAREN_CHUNK ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:278:1: accumulate_init_reverse_clause returns [DroolsTree vkReverse, DroolsTree vkReverseChunk] : ^(vk= VK_REVERSE pc= VT_PAREN_CHUNK ) ;
     public final accumulate_init_reverse_clause_return accumulate_init_reverse_clause() throws RecognitionException {
         accumulate_init_reverse_clause_return retval = new accumulate_init_reverse_clause_return();
         retval.start = input.LT(1);
@@ -2876,15 +2876,15 @@ public class DescrBuilderTree extends TreeParser {
         DroolsTree pc=null;
 
         try {
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:278:2: ( ^(vk= VK_REVERSE pc= VT_PAREN_CHUNK ) )
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:278:4: ^(vk= VK_REVERSE pc= VT_PAREN_CHUNK )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:279:2: ( ^(vk= VK_REVERSE pc= VT_PAREN_CHUNK ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:279:4: ^(vk= VK_REVERSE pc= VT_PAREN_CHUNK )
             {
             vk=(DroolsTree)input.LT(1);
-            match(input,VK_REVERSE,FOLLOW_VK_REVERSE_in_accumulate_init_reverse_clause1454); 
+            match(input,VK_REVERSE,FOLLOW_VK_REVERSE_in_accumulate_init_reverse_clause1458); 
 
             match(input, Token.DOWN, null); 
             pc=(DroolsTree)input.LT(1);
-            match(input,VT_PAREN_CHUNK,FOLLOW_VT_PAREN_CHUNK_in_accumulate_init_reverse_clause1458); 
+            match(input,VT_PAREN_CHUNK,FOLLOW_VT_PAREN_CHUNK_in_accumulate_init_reverse_clause1462); 
 
             match(input, Token.UP, null); 
             	retval.vkReverse = vk;
@@ -2905,7 +2905,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start accumulate_id_clause
-    // src/main/resources/org/drools/lang/DescrBuilderTree.g:283:1: accumulate_id_clause[PatternSourceDescr accumulateParam] returns [AccumulateDescr accumulateDescr] : ^( VT_ACCUMULATE_ID_CLAUSE id= ID pc= VT_PAREN_CHUNK ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:284:1: accumulate_id_clause[PatternSourceDescr accumulateParam] returns [AccumulateDescr accumulateDescr] : ^( VT_ACCUMULATE_ID_CLAUSE id= ID pc= VT_PAREN_CHUNK ) ;
     public final AccumulateDescr accumulate_id_clause(PatternSourceDescr accumulateParam) throws RecognitionException {
         AccumulateDescr accumulateDescr = null;
 
@@ -2913,16 +2913,16 @@ public class DescrBuilderTree extends TreeParser {
         DroolsTree pc=null;
 
         try {
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:284:2: ( ^( VT_ACCUMULATE_ID_CLAUSE id= ID pc= VT_PAREN_CHUNK ) )
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:284:4: ^( VT_ACCUMULATE_ID_CLAUSE id= ID pc= VT_PAREN_CHUNK )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:285:2: ( ^( VT_ACCUMULATE_ID_CLAUSE id= ID pc= VT_PAREN_CHUNK ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:285:4: ^( VT_ACCUMULATE_ID_CLAUSE id= ID pc= VT_PAREN_CHUNK )
             {
-            match(input,VT_ACCUMULATE_ID_CLAUSE,FOLLOW_VT_ACCUMULATE_ID_CLAUSE_in_accumulate_id_clause1480); 
+            match(input,VT_ACCUMULATE_ID_CLAUSE,FOLLOW_VT_ACCUMULATE_ID_CLAUSE_in_accumulate_id_clause1484); 
 
             match(input, Token.DOWN, null); 
             id=(DroolsTree)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_accumulate_id_clause1484); 
+            match(input,ID,FOLLOW_ID_in_accumulate_id_clause1488); 
             pc=(DroolsTree)input.LT(1);
-            match(input,VT_PAREN_CHUNK,FOLLOW_VT_PAREN_CHUNK_in_accumulate_id_clause1488); 
+            match(input,VT_PAREN_CHUNK,FOLLOW_VT_PAREN_CHUNK_in_accumulate_id_clause1492); 
 
             match(input, Token.UP, null); 
             	accumulateDescr = factory.setupAccumulateId(accumulateParam, id, pc);	
@@ -2951,7 +2951,7 @@ public class DescrBuilderTree extends TreeParser {
     };
 
     // $ANTLR start from_source_clause
-    // src/main/resources/org/drools/lang/DescrBuilderTree.g:288:1: from_source_clause returns [FromDescr fromDescr, AccessorDescr retAccessorDescr] : ^( VT_FROM_SOURCE id= ID (pc= VT_PAREN_CHUNK )? ( expression_chain )? ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:289:1: from_source_clause returns [FromDescr fromDescr, AccessorDescr retAccessorDescr] : ^( VT_FROM_SOURCE id= ID (pc= VT_PAREN_CHUNK )? ( expression_chain )? ) ;
     public final from_source_clause_return from_source_clause() throws RecognitionException {
         from_source_clause_stack.push(new from_source_clause_scope());
         from_source_clause_return retval = new from_source_clause_return();
@@ -2961,15 +2961,15 @@ public class DescrBuilderTree extends TreeParser {
         DroolsTree pc=null;
 
         try {
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:291:3: ( ^( VT_FROM_SOURCE id= ID (pc= VT_PAREN_CHUNK )? ( expression_chain )? ) )
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:291:5: ^( VT_FROM_SOURCE id= ID (pc= VT_PAREN_CHUNK )? ( expression_chain )? )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:292:3: ( ^( VT_FROM_SOURCE id= ID (pc= VT_PAREN_CHUNK )? ( expression_chain )? ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:292:5: ^( VT_FROM_SOURCE id= ID (pc= VT_PAREN_CHUNK )? ( expression_chain )? )
             {
-            match(input,VT_FROM_SOURCE,FOLLOW_VT_FROM_SOURCE_in_from_source_clause1510); 
+            match(input,VT_FROM_SOURCE,FOLLOW_VT_FROM_SOURCE_in_from_source_clause1514); 
 
             match(input, Token.DOWN, null); 
             id=(DroolsTree)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_from_source_clause1514); 
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:291:30: (pc= VT_PAREN_CHUNK )?
+            match(input,ID,FOLLOW_ID_in_from_source_clause1518); 
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:292:30: (pc= VT_PAREN_CHUNK )?
             int alt36=2;
             int LA36_0 = input.LA(1);
 
@@ -2978,10 +2978,10 @@ public class DescrBuilderTree extends TreeParser {
             }
             switch (alt36) {
                 case 1 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:291:30: pc= VT_PAREN_CHUNK
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:292:30: pc= VT_PAREN_CHUNK
                     {
                     pc=(DroolsTree)input.LT(1);
-                    match(input,VT_PAREN_CHUNK,FOLLOW_VT_PAREN_CHUNK_in_from_source_clause1518); 
+                    match(input,VT_PAREN_CHUNK,FOLLOW_VT_PAREN_CHUNK_in_from_source_clause1522); 
 
                     }
                     break;
@@ -2990,7 +2990,7 @@ public class DescrBuilderTree extends TreeParser {
 
             	((from_source_clause_scope)from_source_clause_stack.peek()).accessorDescr = factory.createAccessor(id, pc);	
             		retval.retAccessorDescr = ((from_source_clause_scope)from_source_clause_stack.peek()).accessorDescr;	
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:294:3: ( expression_chain )?
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:295:3: ( expression_chain )?
             int alt37=2;
             int LA37_0 = input.LA(1);
 
@@ -2999,9 +2999,9 @@ public class DescrBuilderTree extends TreeParser {
             }
             switch (alt37) {
                 case 1 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:294:3: expression_chain
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:295:3: expression_chain
                     {
-                    pushFollow(FOLLOW_expression_chain_in_from_source_clause1527);
+                    pushFollow(FOLLOW_expression_chain_in_from_source_clause1531);
                     expression_chain();
                     _fsp--;
 
@@ -3033,7 +3033,7 @@ public class DescrBuilderTree extends TreeParser {
     };
 
     // $ANTLR start expression_chain
-    // src/main/resources/org/drools/lang/DescrBuilderTree.g:298:1: expression_chain : ^(start= VT_EXPRESSION_CHAIN id= ID (sc= VT_SQUARE_CHUNK )? (pc= VT_PAREN_CHUNK )? ( expression_chain )? ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:299:1: expression_chain : ^(start= VT_EXPRESSION_CHAIN id= ID (sc= VT_SQUARE_CHUNK )? (pc= VT_PAREN_CHUNK )? ( expression_chain )? ) ;
     public final expression_chain_return expression_chain() throws RecognitionException {
         expression_chain_return retval = new expression_chain_return();
         retval.start = input.LT(1);
@@ -3044,16 +3044,16 @@ public class DescrBuilderTree extends TreeParser {
         DroolsTree pc=null;
 
         try {
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:299:2: ( ^(start= VT_EXPRESSION_CHAIN id= ID (sc= VT_SQUARE_CHUNK )? (pc= VT_PAREN_CHUNK )? ( expression_chain )? ) )
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:299:4: ^(start= VT_EXPRESSION_CHAIN id= ID (sc= VT_SQUARE_CHUNK )? (pc= VT_PAREN_CHUNK )? ( expression_chain )? )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:300:2: ( ^(start= VT_EXPRESSION_CHAIN id= ID (sc= VT_SQUARE_CHUNK )? (pc= VT_PAREN_CHUNK )? ( expression_chain )? ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:300:4: ^(start= VT_EXPRESSION_CHAIN id= ID (sc= VT_SQUARE_CHUNK )? (pc= VT_PAREN_CHUNK )? ( expression_chain )? )
             {
             start=(DroolsTree)input.LT(1);
-            match(input,VT_EXPRESSION_CHAIN,FOLLOW_VT_EXPRESSION_CHAIN_in_expression_chain1546); 
+            match(input,VT_EXPRESSION_CHAIN,FOLLOW_VT_EXPRESSION_CHAIN_in_expression_chain1550); 
 
             match(input, Token.DOWN, null); 
             id=(DroolsTree)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_expression_chain1550); 
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:299:40: (sc= VT_SQUARE_CHUNK )?
+            match(input,ID,FOLLOW_ID_in_expression_chain1554); 
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:300:40: (sc= VT_SQUARE_CHUNK )?
             int alt38=2;
             int LA38_0 = input.LA(1);
 
@@ -3062,17 +3062,17 @@ public class DescrBuilderTree extends TreeParser {
             }
             switch (alt38) {
                 case 1 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:299:40: sc= VT_SQUARE_CHUNK
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:300:40: sc= VT_SQUARE_CHUNK
                     {
                     sc=(DroolsTree)input.LT(1);
-                    match(input,VT_SQUARE_CHUNK,FOLLOW_VT_SQUARE_CHUNK_in_expression_chain1554); 
+                    match(input,VT_SQUARE_CHUNK,FOLLOW_VT_SQUARE_CHUNK_in_expression_chain1558); 
 
                     }
                     break;
 
             }
 
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:299:60: (pc= VT_PAREN_CHUNK )?
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:300:60: (pc= VT_PAREN_CHUNK )?
             int alt39=2;
             int LA39_0 = input.LA(1);
 
@@ -3081,10 +3081,10 @@ public class DescrBuilderTree extends TreeParser {
             }
             switch (alt39) {
                 case 1 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:299:60: pc= VT_PAREN_CHUNK
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:300:60: pc= VT_PAREN_CHUNK
                     {
                     pc=(DroolsTree)input.LT(1);
-                    match(input,VT_PAREN_CHUNK,FOLLOW_VT_PAREN_CHUNK_in_expression_chain1559); 
+                    match(input,VT_PAREN_CHUNK,FOLLOW_VT_PAREN_CHUNK_in_expression_chain1563); 
 
                     }
                     break;
@@ -3093,7 +3093,7 @@ public class DescrBuilderTree extends TreeParser {
 
             	DeclarativeInvokerDescr declarativeInvokerResult = factory.createExpressionChain(start, id, sc, pc);	
             		((from_source_clause_scope)from_source_clause_stack.peek()).accessorDescr.addInvoker(declarativeInvokerResult);	
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:302:3: ( expression_chain )?
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:303:3: ( expression_chain )?
             int alt40=2;
             int LA40_0 = input.LA(1);
 
@@ -3102,9 +3102,9 @@ public class DescrBuilderTree extends TreeParser {
             }
             switch (alt40) {
                 case 1 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:302:3: expression_chain
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:303:3: expression_chain
                     {
-                    pushFollow(FOLLOW_expression_chain_in_expression_chain1567);
+                    pushFollow(FOLLOW_expression_chain_in_expression_chain1571);
                     expression_chain();
                     _fsp--;
 
@@ -3132,7 +3132,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start lhs_pattern
-    // src/main/resources/org/drools/lang/DescrBuilderTree.g:305:1: lhs_pattern returns [BaseDescr baseDescr] : ^( VT_PATTERN fe= fact_expression ) (oc= over_clause )? ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:306:1: lhs_pattern returns [BaseDescr baseDescr] : ^( VT_PATTERN fe= fact_expression ) (oc= over_clause )? ;
     public final BaseDescr lhs_pattern() throws RecognitionException {
         BaseDescr baseDescr = null;
 
@@ -3142,19 +3142,19 @@ public class DescrBuilderTree extends TreeParser {
 
 
         try {
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:306:2: ( ^( VT_PATTERN fe= fact_expression ) (oc= over_clause )? )
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:306:4: ^( VT_PATTERN fe= fact_expression ) (oc= over_clause )?
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:307:2: ( ^( VT_PATTERN fe= fact_expression ) (oc= over_clause )? )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:307:4: ^( VT_PATTERN fe= fact_expression ) (oc= over_clause )?
             {
-            match(input,VT_PATTERN,FOLLOW_VT_PATTERN_in_lhs_pattern1585); 
+            match(input,VT_PATTERN,FOLLOW_VT_PATTERN_in_lhs_pattern1589); 
 
             match(input, Token.DOWN, null); 
-            pushFollow(FOLLOW_fact_expression_in_lhs_pattern1589);
+            pushFollow(FOLLOW_fact_expression_in_lhs_pattern1593);
             fe=fact_expression();
             _fsp--;
 
 
             match(input, Token.UP, null); 
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:306:39: (oc= over_clause )?
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:307:39: (oc= over_clause )?
             int alt41=2;
             int LA41_0 = input.LA(1);
 
@@ -3163,9 +3163,9 @@ public class DescrBuilderTree extends TreeParser {
             }
             switch (alt41) {
                 case 1 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:306:39: oc= over_clause
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:307:39: oc= over_clause
                     {
-                    pushFollow(FOLLOW_over_clause_in_lhs_pattern1594);
+                    pushFollow(FOLLOW_over_clause_in_lhs_pattern1598);
                     oc=over_clause();
                     _fsp--;
 
@@ -3192,7 +3192,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start over_clause
-    // src/main/resources/org/drools/lang/DescrBuilderTree.g:310:1: over_clause returns [List behaviorList] : ^( OVER (oe= over_element )+ ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:311:1: over_clause returns [List behaviorList] : ^( OVER (oe= over_element )+ ) ;
     public final List over_clause() throws RecognitionException {
         List behaviorList = null;
 
@@ -3201,13 +3201,13 @@ public class DescrBuilderTree extends TreeParser {
 
         behaviorList = new LinkedList();
         try {
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:312:2: ( ^( OVER (oe= over_element )+ ) )
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:312:4: ^( OVER (oe= over_element )+ )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:313:2: ( ^( OVER (oe= over_element )+ ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:313:4: ^( OVER (oe= over_element )+ )
             {
-            match(input,OVER,FOLLOW_OVER_in_over_clause1619); 
+            match(input,OVER,FOLLOW_OVER_in_over_clause1623); 
 
             match(input, Token.DOWN, null); 
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:312:11: (oe= over_element )+
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:313:11: (oe= over_element )+
             int cnt42=0;
             loop42:
             do {
@@ -3221,9 +3221,9 @@ public class DescrBuilderTree extends TreeParser {
 
                 switch (alt42) {
             	case 1 :
-            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:312:12: oe= over_element
+            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:313:12: oe= over_element
             	    {
-            	    pushFollow(FOLLOW_over_element_in_over_clause1624);
+            	    pushFollow(FOLLOW_over_element_in_over_clause1628);
             	    oe=over_element();
             	    _fsp--;
 
@@ -3259,7 +3259,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start over_element
-    // src/main/resources/org/drools/lang/DescrBuilderTree.g:315:1: over_element returns [BehaviorDescr behavior] : ^( VT_BEHAVIOR ID id2= ID pc= VT_PAREN_CHUNK ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:316:1: over_element returns [BehaviorDescr behavior] : ^( VT_BEHAVIOR ID id2= ID pc= VT_PAREN_CHUNK ) ;
     public final BehaviorDescr over_element() throws RecognitionException {
         BehaviorDescr behavior = null;
 
@@ -3267,17 +3267,17 @@ public class DescrBuilderTree extends TreeParser {
         DroolsTree pc=null;
 
         try {
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:316:2: ( ^( VT_BEHAVIOR ID id2= ID pc= VT_PAREN_CHUNK ) )
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:316:4: ^( VT_BEHAVIOR ID id2= ID pc= VT_PAREN_CHUNK )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:317:2: ( ^( VT_BEHAVIOR ID id2= ID pc= VT_PAREN_CHUNK ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:317:4: ^( VT_BEHAVIOR ID id2= ID pc= VT_PAREN_CHUNK )
             {
-            match(input,VT_BEHAVIOR,FOLLOW_VT_BEHAVIOR_in_over_element1645); 
+            match(input,VT_BEHAVIOR,FOLLOW_VT_BEHAVIOR_in_over_element1649); 
 
             match(input, Token.DOWN, null); 
-            match(input,ID,FOLLOW_ID_in_over_element1647); 
-            id2=(DroolsTree)input.LT(1);
             match(input,ID,FOLLOW_ID_in_over_element1651); 
+            id2=(DroolsTree)input.LT(1);
+            match(input,ID,FOLLOW_ID_in_over_element1655); 
             pc=(DroolsTree)input.LT(1);
-            match(input,VT_PAREN_CHUNK,FOLLOW_VT_PAREN_CHUNK_in_over_element1655); 
+            match(input,VT_PAREN_CHUNK,FOLLOW_VT_PAREN_CHUNK_in_over_element1659); 
 
             match(input, Token.UP, null); 
             	behavior = factory.createBehavior(id2,pc);	
@@ -3300,7 +3300,7 @@ public class DescrBuilderTree extends TreeParser {
     };
 
     // $ANTLR start fact_expression
-    // src/main/resources/org/drools/lang/DescrBuilderTree.g:320:1: fact_expression returns [BaseDescr descr] : ( ^( VT_FACT pt= pattern_type (fe= fact_expression )* ) | ^( VT_FACT_BINDING label= VT_LABEL fact= fact_expression ) | ^(start= VT_FACT_OR left= fact_expression right= fact_expression ) | ^( VT_FIELD field= field_element (fe= fact_expression )? ) | ^( VT_BIND_FIELD label= VT_LABEL fe= fact_expression ) | ^( VK_EVAL pc= VT_PAREN_CHUNK ) | ^(op= EQUAL fe= fact_expression ) | ^(op= NOT_EQUAL fe= fact_expression ) | ^(op= GREATER fe= fact_expression ) | ^(op= GREATER_EQUAL fe= fact_expression ) | ^(op= LESS fe= fact_expression ) | ^(op= LESS_EQUAL fe= fact_expression ) | ^(op= VK_CONTAINS (not= VK_NOT )? fe= fact_expression ) | ^(op= VK_EXCLUDES (not= VK_NOT )? fe= fact_expression ) | ^(op= VK_MATCHES (not= VK_NOT )? fe= fact_expression ) | ^(op= VK_SOUNDSLIKE (not= VK_NOT )? fe= fact_expression ) | ^(op= VK_MEMBEROF (not= VK_NOT )? fe= fact_expression ) | ^(op= ID (not= VK_NOT )? (param= VT_SQUARE_CHUNK )? fe= fact_expression ) | ^( VK_IN (not= VK_NOT )? (fe= fact_expression )+ ) | ^( DOUBLE_PIPE left= fact_expression right= fact_expression ) | ^( DOUBLE_AMPER left= fact_expression right= fact_expression ) | ^( VT_ACCESSOR_PATH (ae= accessor_element )+ ) | s= STRING | i= INT | f= FLOAT | b= BOOL | n= NULL | pc= VT_PAREN_CHUNK );
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:321:1: fact_expression returns [BaseDescr descr] : ( ^( VT_FACT pt= pattern_type (fe= fact_expression )* ) | ^( VT_FACT_BINDING label= VT_LABEL fact= fact_expression ) | ^(start= VT_FACT_OR left= fact_expression right= fact_expression ) | ^( VT_FIELD field= field_element (fe= fact_expression )? ) | ^( VT_BIND_FIELD label= VT_LABEL fe= fact_expression ) | ^( VK_EVAL pc= VT_PAREN_CHUNK ) | ^(op= EQUAL fe= fact_expression ) | ^(op= NOT_EQUAL fe= fact_expression ) | ^(op= GREATER fe= fact_expression ) | ^(op= GREATER_EQUAL fe= fact_expression ) | ^(op= LESS fe= fact_expression ) | ^(op= LESS_EQUAL fe= fact_expression ) | ^(op= VK_CONTAINS (not= VK_NOT )? fe= fact_expression ) | ^(op= VK_EXCLUDES (not= VK_NOT )? fe= fact_expression ) | ^(op= VK_MATCHES (not= VK_NOT )? fe= fact_expression ) | ^(op= VK_SOUNDSLIKE (not= VK_NOT )? fe= fact_expression ) | ^(op= VK_MEMBEROF (not= VK_NOT )? fe= fact_expression ) | ^(op= ID (not= VK_NOT )? (param= VT_SQUARE_CHUNK )? fe= fact_expression ) | ^( VK_IN (not= VK_NOT )? (fe= fact_expression )+ ) | ^( DOUBLE_PIPE left= fact_expression right= fact_expression ) | ^( DOUBLE_AMPER left= fact_expression right= fact_expression ) | ^( VT_ACCESSOR_PATH (ae= accessor_element )+ ) | s= STRING | i= INT | f= FLOAT | b= BOOL | n= NULL | pc= VT_PAREN_CHUNK );
     public final fact_expression_return fact_expression() throws RecognitionException {
         fact_expression_return retval = new fact_expression_return();
         retval.start = input.LT(1);
@@ -3335,7 +3335,7 @@ public class DescrBuilderTree extends TreeParser {
         	List<BaseDescr> exprList = new LinkedList<BaseDescr>();
 
         try {
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:323:3: ( ^( VT_FACT pt= pattern_type (fe= fact_expression )* ) | ^( VT_FACT_BINDING label= VT_LABEL fact= fact_expression ) | ^(start= VT_FACT_OR left= fact_expression right= fact_expression ) | ^( VT_FIELD field= field_element (fe= fact_expression )? ) | ^( VT_BIND_FIELD label= VT_LABEL fe= fact_expression ) | ^( VK_EVAL pc= VT_PAREN_CHUNK ) | ^(op= EQUAL fe= fact_expression ) | ^(op= NOT_EQUAL fe= fact_expression ) | ^(op= GREATER fe= fact_expression ) | ^(op= GREATER_EQUAL fe= fact_expression ) | ^(op= LESS fe= fact_expression ) | ^(op= LESS_EQUAL fe= fact_expression ) | ^(op= VK_CONTAINS (not= VK_NOT )? fe= fact_expression ) | ^(op= VK_EXCLUDES (not= VK_NOT )? fe= fact_expression ) | ^(op= VK_MATCHES (not= VK_NOT )? fe= fact_expression ) | ^(op= VK_SOUNDSLIKE (not= VK_NOT )? fe= fact_expression ) | ^(op= VK_MEMBEROF (not= VK_NOT )? fe= fact_expression ) | ^(op= ID (not= VK_NOT )? (param= VT_SQUARE_CHUNK )? fe= fact_expression ) | ^( VK_IN (not= VK_NOT )? (fe= fact_expression )+ ) | ^( DOUBLE_PIPE left= fact_expression right= fact_expression ) | ^( DOUBLE_AMPER left= fact_expression right= fact_expression ) | ^( VT_ACCESSOR_PATH (ae= accessor_element )+ ) | s= STRING | i= INT | f= FLOAT | b= BOOL | n= NULL | pc= VT_PAREN_CHUNK )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:324:3: ( ^( VT_FACT pt= pattern_type (fe= fact_expression )* ) | ^( VT_FACT_BINDING label= VT_LABEL fact= fact_expression ) | ^(start= VT_FACT_OR left= fact_expression right= fact_expression ) | ^( VT_FIELD field= field_element (fe= fact_expression )? ) | ^( VT_BIND_FIELD label= VT_LABEL fe= fact_expression ) | ^( VK_EVAL pc= VT_PAREN_CHUNK ) | ^(op= EQUAL fe= fact_expression ) | ^(op= NOT_EQUAL fe= fact_expression ) | ^(op= GREATER fe= fact_expression ) | ^(op= GREATER_EQUAL fe= fact_expression ) | ^(op= LESS fe= fact_expression ) | ^(op= LESS_EQUAL fe= fact_expression ) | ^(op= VK_CONTAINS (not= VK_NOT )? fe= fact_expression ) | ^(op= VK_EXCLUDES (not= VK_NOT )? fe= fact_expression ) | ^(op= VK_MATCHES (not= VK_NOT )? fe= fact_expression ) | ^(op= VK_SOUNDSLIKE (not= VK_NOT )? fe= fact_expression ) | ^(op= VK_MEMBEROF (not= VK_NOT )? fe= fact_expression ) | ^(op= ID (not= VK_NOT )? (param= VT_SQUARE_CHUNK )? fe= fact_expression ) | ^( VK_IN (not= VK_NOT )? (fe= fact_expression )+ ) | ^( DOUBLE_PIPE left= fact_expression right= fact_expression ) | ^( DOUBLE_AMPER left= fact_expression right= fact_expression ) | ^( VT_ACCESSOR_PATH (ae= accessor_element )+ ) | s= STRING | i= INT | f= FLOAT | b= BOOL | n= NULL | pc= VT_PAREN_CHUNK )
             int alt55=28;
             switch ( input.LA(1) ) {
             case VT_FACT:
@@ -3480,23 +3480,23 @@ public class DescrBuilderTree extends TreeParser {
                 break;
             default:
                 NoViableAltException nvae =
-                    new NoViableAltException("320:1: fact_expression returns [BaseDescr descr] : ( ^( VT_FACT pt= pattern_type (fe= fact_expression )* ) | ^( VT_FACT_BINDING label= VT_LABEL fact= fact_expression ) | ^(start= VT_FACT_OR left= fact_expression right= fact_expression ) | ^( VT_FIELD field= field_element (fe= fact_expression )? ) | ^( VT_BIND_FIELD label= VT_LABEL fe= fact_expression ) | ^( VK_EVAL pc= VT_PAREN_CHUNK ) | ^(op= EQUAL fe= fact_expression ) | ^(op= NOT_EQUAL fe= fact_expression ) | ^(op= GREATER fe= fact_expression ) | ^(op= GREATER_EQUAL fe= fact_expression ) | ^(op= LESS fe= fact_expression ) | ^(op= LESS_EQUAL fe= fact_expression ) | ^(op= VK_CONTAINS (not= VK_NOT )? fe= fact_expression ) | ^(op= VK_EXCLUDES (not= VK_NOT )? fe= fact_expression ) | ^(op= VK_MATCHES (not= VK_NOT )? fe= fact_expression ) | ^(op= VK_SOUNDSLIKE (not= VK_NOT )? fe= fact_expression ) | ^(op= VK_MEMBEROF (not= VK_NOT )? fe= fact_expression ) | ^(op= ID (not= VK_NOT )? (param= VT_SQUARE_CHUNK )? fe= fact_expression ) | ^( VK_IN (not= VK_NOT )? (fe= fact_expression )+ ) | ^( DOUBLE_PIPE left= fact_expression right= fact_expression ) | ^( DOUBLE_AMPER left= fact_expression right= fact_expression ) | ^( VT_ACCESSOR_PATH (ae= accessor_element )+ ) | s= STRING | i= INT | f= FLOAT | b= BOOL | n= NULL | pc= VT_PAREN_CHUNK );", 55, 0, input);
+                    new NoViableAltException("321:1: fact_expression returns [BaseDescr descr] : ( ^( VT_FACT pt= pattern_type (fe= fact_expression )* ) | ^( VT_FACT_BINDING label= VT_LABEL fact= fact_expression ) | ^(start= VT_FACT_OR left= fact_expression right= fact_expression ) | ^( VT_FIELD field= field_element (fe= fact_expression )? ) | ^( VT_BIND_FIELD label= VT_LABEL fe= fact_expression ) | ^( VK_EVAL pc= VT_PAREN_CHUNK ) | ^(op= EQUAL fe= fact_expression ) | ^(op= NOT_EQUAL fe= fact_expression ) | ^(op= GREATER fe= fact_expression ) | ^(op= GREATER_EQUAL fe= fact_expression ) | ^(op= LESS fe= fact_expression ) | ^(op= LESS_EQUAL fe= fact_expression ) | ^(op= VK_CONTAINS (not= VK_NOT )? fe= fact_expression ) | ^(op= VK_EXCLUDES (not= VK_NOT )? fe= fact_expression ) | ^(op= VK_MATCHES (not= VK_NOT )? fe= fact_expression ) | ^(op= VK_SOUNDSLIKE (not= VK_NOT )? fe= fact_expression ) | ^(op= VK_MEMBEROF (not= VK_NOT )? fe= fact_expression ) | ^(op= ID (not= VK_NOT )? (param= VT_SQUARE_CHUNK )? fe= fact_expression ) | ^( VK_IN (not= VK_NOT )? (fe= fact_expression )+ ) | ^( DOUBLE_PIPE left= fact_expression right= fact_expression ) | ^( DOUBLE_AMPER left= fact_expression right= fact_expression ) | ^( VT_ACCESSOR_PATH (ae= accessor_element )+ ) | s= STRING | i= INT | f= FLOAT | b= BOOL | n= NULL | pc= VT_PAREN_CHUNK );", 55, 0, input);
 
                 throw nvae;
             }
 
             switch (alt55) {
                 case 1 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:323:5: ^( VT_FACT pt= pattern_type (fe= fact_expression )* )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:324:5: ^( VT_FACT pt= pattern_type (fe= fact_expression )* )
                     {
-                    match(input,VT_FACT,FOLLOW_VT_FACT_in_fact_expression1678); 
+                    match(input,VT_FACT,FOLLOW_VT_FACT_in_fact_expression1682); 
 
                     match(input, Token.DOWN, null); 
-                    pushFollow(FOLLOW_pattern_type_in_fact_expression1682);
+                    pushFollow(FOLLOW_pattern_type_in_fact_expression1686);
                     pt=pattern_type();
                     _fsp--;
 
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:323:31: (fe= fact_expression )*
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:324:31: (fe= fact_expression )*
                     loop43:
                     do {
                         int alt43=2;
@@ -3509,9 +3509,9 @@ public class DescrBuilderTree extends TreeParser {
 
                         switch (alt43) {
                     	case 1 :
-                    	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:323:32: fe= fact_expression
+                    	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:324:32: fe= fact_expression
                     	    {
-                    	    pushFollow(FOLLOW_fact_expression_in_fact_expression1687);
+                    	    pushFollow(FOLLOW_fact_expression_in_fact_expression1691);
                     	    fe=fact_expression();
                     	    _fsp--;
 
@@ -3532,14 +3532,14 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 2 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:325:4: ^( VT_FACT_BINDING label= VT_LABEL fact= fact_expression )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:326:4: ^( VT_FACT_BINDING label= VT_LABEL fact= fact_expression )
                     {
-                    match(input,VT_FACT_BINDING,FOLLOW_VT_FACT_BINDING_in_fact_expression1701); 
+                    match(input,VT_FACT_BINDING,FOLLOW_VT_FACT_BINDING_in_fact_expression1705); 
 
                     match(input, Token.DOWN, null); 
                     label=(DroolsTree)input.LT(1);
-                    match(input,VT_LABEL,FOLLOW_VT_LABEL_in_fact_expression1705); 
-                    pushFollow(FOLLOW_fact_expression_in_fact_expression1709);
+                    match(input,VT_LABEL,FOLLOW_VT_LABEL_in_fact_expression1709); 
+                    pushFollow(FOLLOW_fact_expression_in_fact_expression1713);
                     fact=fact_expression();
                     _fsp--;
 
@@ -3550,17 +3550,17 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 3 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:327:4: ^(start= VT_FACT_OR left= fact_expression right= fact_expression )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:328:4: ^(start= VT_FACT_OR left= fact_expression right= fact_expression )
                     {
                     start=(DroolsTree)input.LT(1);
-                    match(input,VT_FACT_OR,FOLLOW_VT_FACT_OR_in_fact_expression1721); 
+                    match(input,VT_FACT_OR,FOLLOW_VT_FACT_OR_in_fact_expression1725); 
 
                     match(input, Token.DOWN, null); 
-                    pushFollow(FOLLOW_fact_expression_in_fact_expression1725);
+                    pushFollow(FOLLOW_fact_expression_in_fact_expression1729);
                     left=fact_expression();
                     _fsp--;
 
-                    pushFollow(FOLLOW_fact_expression_in_fact_expression1729);
+                    pushFollow(FOLLOW_fact_expression_in_fact_expression1733);
                     right=fact_expression();
                     _fsp--;
 
@@ -3571,16 +3571,16 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 4 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:330:4: ^( VT_FIELD field= field_element (fe= fact_expression )? )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:331:4: ^( VT_FIELD field= field_element (fe= fact_expression )? )
                     {
-                    match(input,VT_FIELD,FOLLOW_VT_FIELD_in_fact_expression1740); 
+                    match(input,VT_FIELD,FOLLOW_VT_FIELD_in_fact_expression1744); 
 
                     match(input, Token.DOWN, null); 
-                    pushFollow(FOLLOW_field_element_in_fact_expression1744);
+                    pushFollow(FOLLOW_field_element_in_fact_expression1748);
                     field=field_element();
                     _fsp--;
 
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:330:37: (fe= fact_expression )?
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:331:37: (fe= fact_expression )?
                     int alt44=2;
                     int LA44_0 = input.LA(1);
 
@@ -3589,9 +3589,9 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     switch (alt44) {
                         case 1 :
-                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:330:37: fe= fact_expression
+                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:331:37: fe= fact_expression
                             {
-                            pushFollow(FOLLOW_fact_expression_in_fact_expression1748);
+                            pushFollow(FOLLOW_fact_expression_in_fact_expression1752);
                             fe=fact_expression();
                             _fsp--;
 
@@ -3612,14 +3612,14 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 5 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:336:4: ^( VT_BIND_FIELD label= VT_LABEL fe= fact_expression )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:337:4: ^( VT_BIND_FIELD label= VT_LABEL fe= fact_expression )
                     {
-                    match(input,VT_BIND_FIELD,FOLLOW_VT_BIND_FIELD_in_fact_expression1759); 
+                    match(input,VT_BIND_FIELD,FOLLOW_VT_BIND_FIELD_in_fact_expression1763); 
 
                     match(input, Token.DOWN, null); 
                     label=(DroolsTree)input.LT(1);
-                    match(input,VT_LABEL,FOLLOW_VT_LABEL_in_fact_expression1763); 
-                    pushFollow(FOLLOW_fact_expression_in_fact_expression1767);
+                    match(input,VT_LABEL,FOLLOW_VT_LABEL_in_fact_expression1767); 
+                    pushFollow(FOLLOW_fact_expression_in_fact_expression1771);
                     fe=fact_expression();
                     _fsp--;
 
@@ -3630,13 +3630,13 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 6 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:339:4: ^( VK_EVAL pc= VT_PAREN_CHUNK )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:340:4: ^( VK_EVAL pc= VT_PAREN_CHUNK )
                     {
-                    match(input,VK_EVAL,FOLLOW_VK_EVAL_in_fact_expression1778); 
+                    match(input,VK_EVAL,FOLLOW_VK_EVAL_in_fact_expression1782); 
 
                     match(input, Token.DOWN, null); 
                     pc=(DroolsTree)input.LT(1);
-                    match(input,VT_PAREN_CHUNK,FOLLOW_VT_PAREN_CHUNK_in_fact_expression1782); 
+                    match(input,VT_PAREN_CHUNK,FOLLOW_VT_PAREN_CHUNK_in_fact_expression1786); 
 
                     match(input, Token.UP, null); 
                     	retval.descr = factory.createPredicate(pc);	
@@ -3644,13 +3644,13 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 7 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:342:4: ^(op= EQUAL fe= fact_expression )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:343:4: ^(op= EQUAL fe= fact_expression )
                     {
                     op=(DroolsTree)input.LT(1);
-                    match(input,EQUAL,FOLLOW_EQUAL_in_fact_expression1795); 
+                    match(input,EQUAL,FOLLOW_EQUAL_in_fact_expression1799); 
 
                     match(input, Token.DOWN, null); 
-                    pushFollow(FOLLOW_fact_expression_in_fact_expression1799);
+                    pushFollow(FOLLOW_fact_expression_in_fact_expression1803);
                     fe=fact_expression();
                     _fsp--;
 
@@ -3661,13 +3661,13 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 8 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:344:4: ^(op= NOT_EQUAL fe= fact_expression )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:345:4: ^(op= NOT_EQUAL fe= fact_expression )
                     {
                     op=(DroolsTree)input.LT(1);
-                    match(input,NOT_EQUAL,FOLLOW_NOT_EQUAL_in_fact_expression1811); 
+                    match(input,NOT_EQUAL,FOLLOW_NOT_EQUAL_in_fact_expression1815); 
 
                     match(input, Token.DOWN, null); 
-                    pushFollow(FOLLOW_fact_expression_in_fact_expression1815);
+                    pushFollow(FOLLOW_fact_expression_in_fact_expression1819);
                     fe=fact_expression();
                     _fsp--;
 
@@ -3678,13 +3678,13 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 9 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:346:4: ^(op= GREATER fe= fact_expression )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:347:4: ^(op= GREATER fe= fact_expression )
                     {
                     op=(DroolsTree)input.LT(1);
-                    match(input,GREATER,FOLLOW_GREATER_in_fact_expression1827); 
+                    match(input,GREATER,FOLLOW_GREATER_in_fact_expression1831); 
 
                     match(input, Token.DOWN, null); 
-                    pushFollow(FOLLOW_fact_expression_in_fact_expression1831);
+                    pushFollow(FOLLOW_fact_expression_in_fact_expression1835);
                     fe=fact_expression();
                     _fsp--;
 
@@ -3695,13 +3695,13 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 10 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:348:4: ^(op= GREATER_EQUAL fe= fact_expression )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:349:4: ^(op= GREATER_EQUAL fe= fact_expression )
                     {
                     op=(DroolsTree)input.LT(1);
-                    match(input,GREATER_EQUAL,FOLLOW_GREATER_EQUAL_in_fact_expression1843); 
+                    match(input,GREATER_EQUAL,FOLLOW_GREATER_EQUAL_in_fact_expression1847); 
 
                     match(input, Token.DOWN, null); 
-                    pushFollow(FOLLOW_fact_expression_in_fact_expression1847);
+                    pushFollow(FOLLOW_fact_expression_in_fact_expression1851);
                     fe=fact_expression();
                     _fsp--;
 
@@ -3712,13 +3712,13 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 11 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:350:4: ^(op= LESS fe= fact_expression )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:351:4: ^(op= LESS fe= fact_expression )
                     {
                     op=(DroolsTree)input.LT(1);
-                    match(input,LESS,FOLLOW_LESS_in_fact_expression1859); 
+                    match(input,LESS,FOLLOW_LESS_in_fact_expression1863); 
 
                     match(input, Token.DOWN, null); 
-                    pushFollow(FOLLOW_fact_expression_in_fact_expression1863);
+                    pushFollow(FOLLOW_fact_expression_in_fact_expression1867);
                     fe=fact_expression();
                     _fsp--;
 
@@ -3729,13 +3729,13 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 12 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:352:4: ^(op= LESS_EQUAL fe= fact_expression )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:353:4: ^(op= LESS_EQUAL fe= fact_expression )
                     {
                     op=(DroolsTree)input.LT(1);
-                    match(input,LESS_EQUAL,FOLLOW_LESS_EQUAL_in_fact_expression1875); 
+                    match(input,LESS_EQUAL,FOLLOW_LESS_EQUAL_in_fact_expression1879); 
 
                     match(input, Token.DOWN, null); 
-                    pushFollow(FOLLOW_fact_expression_in_fact_expression1879);
+                    pushFollow(FOLLOW_fact_expression_in_fact_expression1883);
                     fe=fact_expression();
                     _fsp--;
 
@@ -3746,13 +3746,13 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 13 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:354:4: ^(op= VK_CONTAINS (not= VK_NOT )? fe= fact_expression )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:355:4: ^(op= VK_CONTAINS (not= VK_NOT )? fe= fact_expression )
                     {
                     op=(DroolsTree)input.LT(1);
-                    match(input,VK_CONTAINS,FOLLOW_VK_CONTAINS_in_fact_expression1891); 
+                    match(input,VK_CONTAINS,FOLLOW_VK_CONTAINS_in_fact_expression1895); 
 
                     match(input, Token.DOWN, null); 
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:354:24: (not= VK_NOT )?
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:355:24: (not= VK_NOT )?
                     int alt45=2;
                     int LA45_0 = input.LA(1);
 
@@ -3761,17 +3761,17 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     switch (alt45) {
                         case 1 :
-                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:354:24: not= VK_NOT
+                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:355:24: not= VK_NOT
                             {
                             not=(DroolsTree)input.LT(1);
-                            match(input,VK_NOT,FOLLOW_VK_NOT_in_fact_expression1895); 
+                            match(input,VK_NOT,FOLLOW_VK_NOT_in_fact_expression1899); 
 
                             }
                             break;
 
                     }
 
-                    pushFollow(FOLLOW_fact_expression_in_fact_expression1900);
+                    pushFollow(FOLLOW_fact_expression_in_fact_expression1904);
                     fe=fact_expression();
                     _fsp--;
 
@@ -3782,13 +3782,13 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 14 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:356:4: ^(op= VK_EXCLUDES (not= VK_NOT )? fe= fact_expression )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:357:4: ^(op= VK_EXCLUDES (not= VK_NOT )? fe= fact_expression )
                     {
                     op=(DroolsTree)input.LT(1);
-                    match(input,VK_EXCLUDES,FOLLOW_VK_EXCLUDES_in_fact_expression1912); 
+                    match(input,VK_EXCLUDES,FOLLOW_VK_EXCLUDES_in_fact_expression1916); 
 
                     match(input, Token.DOWN, null); 
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:356:24: (not= VK_NOT )?
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:357:24: (not= VK_NOT )?
                     int alt46=2;
                     int LA46_0 = input.LA(1);
 
@@ -3797,17 +3797,17 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     switch (alt46) {
                         case 1 :
-                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:356:24: not= VK_NOT
+                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:357:24: not= VK_NOT
                             {
                             not=(DroolsTree)input.LT(1);
-                            match(input,VK_NOT,FOLLOW_VK_NOT_in_fact_expression1916); 
+                            match(input,VK_NOT,FOLLOW_VK_NOT_in_fact_expression1920); 
 
                             }
                             break;
 
                     }
 
-                    pushFollow(FOLLOW_fact_expression_in_fact_expression1921);
+                    pushFollow(FOLLOW_fact_expression_in_fact_expression1925);
                     fe=fact_expression();
                     _fsp--;
 
@@ -3818,13 +3818,13 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 15 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:358:4: ^(op= VK_MATCHES (not= VK_NOT )? fe= fact_expression )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:359:4: ^(op= VK_MATCHES (not= VK_NOT )? fe= fact_expression )
                     {
                     op=(DroolsTree)input.LT(1);
-                    match(input,VK_MATCHES,FOLLOW_VK_MATCHES_in_fact_expression1933); 
+                    match(input,VK_MATCHES,FOLLOW_VK_MATCHES_in_fact_expression1937); 
 
                     match(input, Token.DOWN, null); 
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:358:23: (not= VK_NOT )?
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:359:23: (not= VK_NOT )?
                     int alt47=2;
                     int LA47_0 = input.LA(1);
 
@@ -3833,17 +3833,17 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     switch (alt47) {
                         case 1 :
-                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:358:23: not= VK_NOT
+                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:359:23: not= VK_NOT
                             {
                             not=(DroolsTree)input.LT(1);
-                            match(input,VK_NOT,FOLLOW_VK_NOT_in_fact_expression1937); 
+                            match(input,VK_NOT,FOLLOW_VK_NOT_in_fact_expression1941); 
 
                             }
                             break;
 
                     }
 
-                    pushFollow(FOLLOW_fact_expression_in_fact_expression1942);
+                    pushFollow(FOLLOW_fact_expression_in_fact_expression1946);
                     fe=fact_expression();
                     _fsp--;
 
@@ -3854,13 +3854,13 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 16 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:360:4: ^(op= VK_SOUNDSLIKE (not= VK_NOT )? fe= fact_expression )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:361:4: ^(op= VK_SOUNDSLIKE (not= VK_NOT )? fe= fact_expression )
                     {
                     op=(DroolsTree)input.LT(1);
-                    match(input,VK_SOUNDSLIKE,FOLLOW_VK_SOUNDSLIKE_in_fact_expression1954); 
+                    match(input,VK_SOUNDSLIKE,FOLLOW_VK_SOUNDSLIKE_in_fact_expression1958); 
 
                     match(input, Token.DOWN, null); 
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:360:26: (not= VK_NOT )?
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:361:26: (not= VK_NOT )?
                     int alt48=2;
                     int LA48_0 = input.LA(1);
 
@@ -3869,17 +3869,17 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     switch (alt48) {
                         case 1 :
-                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:360:26: not= VK_NOT
+                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:361:26: not= VK_NOT
                             {
                             not=(DroolsTree)input.LT(1);
-                            match(input,VK_NOT,FOLLOW_VK_NOT_in_fact_expression1958); 
+                            match(input,VK_NOT,FOLLOW_VK_NOT_in_fact_expression1962); 
 
                             }
                             break;
 
                     }
 
-                    pushFollow(FOLLOW_fact_expression_in_fact_expression1963);
+                    pushFollow(FOLLOW_fact_expression_in_fact_expression1967);
                     fe=fact_expression();
                     _fsp--;
 
@@ -3890,13 +3890,13 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 17 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:362:4: ^(op= VK_MEMBEROF (not= VK_NOT )? fe= fact_expression )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:363:4: ^(op= VK_MEMBEROF (not= VK_NOT )? fe= fact_expression )
                     {
                     op=(DroolsTree)input.LT(1);
-                    match(input,VK_MEMBEROF,FOLLOW_VK_MEMBEROF_in_fact_expression1975); 
+                    match(input,VK_MEMBEROF,FOLLOW_VK_MEMBEROF_in_fact_expression1979); 
 
                     match(input, Token.DOWN, null); 
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:362:24: (not= VK_NOT )?
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:363:24: (not= VK_NOT )?
                     int alt49=2;
                     int LA49_0 = input.LA(1);
 
@@ -3905,17 +3905,17 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     switch (alt49) {
                         case 1 :
-                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:362:24: not= VK_NOT
+                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:363:24: not= VK_NOT
                             {
                             not=(DroolsTree)input.LT(1);
-                            match(input,VK_NOT,FOLLOW_VK_NOT_in_fact_expression1979); 
+                            match(input,VK_NOT,FOLLOW_VK_NOT_in_fact_expression1983); 
 
                             }
                             break;
 
                     }
 
-                    pushFollow(FOLLOW_fact_expression_in_fact_expression1984);
+                    pushFollow(FOLLOW_fact_expression_in_fact_expression1988);
                     fe=fact_expression();
                     _fsp--;
 
@@ -3926,13 +3926,13 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 18 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:364:4: ^(op= ID (not= VK_NOT )? (param= VT_SQUARE_CHUNK )? fe= fact_expression )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:365:4: ^(op= ID (not= VK_NOT )? (param= VT_SQUARE_CHUNK )? fe= fact_expression )
                     {
                     op=(DroolsTree)input.LT(1);
-                    match(input,ID,FOLLOW_ID_in_fact_expression1996); 
+                    match(input,ID,FOLLOW_ID_in_fact_expression2000); 
 
                     match(input, Token.DOWN, null); 
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:364:15: (not= VK_NOT )?
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:365:15: (not= VK_NOT )?
                     int alt50=2;
                     int LA50_0 = input.LA(1);
 
@@ -3941,17 +3941,17 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     switch (alt50) {
                         case 1 :
-                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:364:15: not= VK_NOT
+                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:365:15: not= VK_NOT
                             {
                             not=(DroolsTree)input.LT(1);
-                            match(input,VK_NOT,FOLLOW_VK_NOT_in_fact_expression2000); 
+                            match(input,VK_NOT,FOLLOW_VK_NOT_in_fact_expression2004); 
 
                             }
                             break;
 
                     }
 
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:364:29: (param= VT_SQUARE_CHUNK )?
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:365:29: (param= VT_SQUARE_CHUNK )?
                     int alt51=2;
                     int LA51_0 = input.LA(1);
 
@@ -3960,17 +3960,17 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     switch (alt51) {
                         case 1 :
-                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:364:29: param= VT_SQUARE_CHUNK
+                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:365:29: param= VT_SQUARE_CHUNK
                             {
                             param=(DroolsTree)input.LT(1);
-                            match(input,VT_SQUARE_CHUNK,FOLLOW_VT_SQUARE_CHUNK_in_fact_expression2005); 
+                            match(input,VT_SQUARE_CHUNK,FOLLOW_VT_SQUARE_CHUNK_in_fact_expression2009); 
 
                             }
                             break;
 
                     }
 
-                    pushFollow(FOLLOW_fact_expression_in_fact_expression2010);
+                    pushFollow(FOLLOW_fact_expression_in_fact_expression2014);
                     fe=fact_expression();
                     _fsp--;
 
@@ -3981,12 +3981,12 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 19 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:367:4: ^( VK_IN (not= VK_NOT )? (fe= fact_expression )+ )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:368:4: ^( VK_IN (not= VK_NOT )? (fe= fact_expression )+ )
                     {
-                    match(input,VK_IN,FOLLOW_VK_IN_in_fact_expression2021); 
+                    match(input,VK_IN,FOLLOW_VK_IN_in_fact_expression2025); 
 
                     match(input, Token.DOWN, null); 
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:367:15: (not= VK_NOT )?
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:368:15: (not= VK_NOT )?
                     int alt52=2;
                     int LA52_0 = input.LA(1);
 
@@ -3995,17 +3995,17 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     switch (alt52) {
                         case 1 :
-                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:367:15: not= VK_NOT
+                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:368:15: not= VK_NOT
                             {
                             not=(DroolsTree)input.LT(1);
-                            match(input,VK_NOT,FOLLOW_VK_NOT_in_fact_expression2025); 
+                            match(input,VK_NOT,FOLLOW_VK_NOT_in_fact_expression2029); 
 
                             }
                             break;
 
                     }
 
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:367:24: (fe= fact_expression )+
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:368:24: (fe= fact_expression )+
                     int cnt53=0;
                     loop53:
                     do {
@@ -4019,9 +4019,9 @@ public class DescrBuilderTree extends TreeParser {
 
                         switch (alt53) {
                     	case 1 :
-                    	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:367:25: fe= fact_expression
+                    	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:368:25: fe= fact_expression
                     	    {
-                    	    pushFollow(FOLLOW_fact_expression_in_fact_expression2031);
+                    	    pushFollow(FOLLOW_fact_expression_in_fact_expression2035);
                     	    fe=fact_expression();
                     	    _fsp--;
 
@@ -4046,16 +4046,16 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 20 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:370:4: ^( DOUBLE_PIPE left= fact_expression right= fact_expression )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:371:4: ^( DOUBLE_PIPE left= fact_expression right= fact_expression )
                     {
-                    match(input,DOUBLE_PIPE,FOLLOW_DOUBLE_PIPE_in_fact_expression2046); 
+                    match(input,DOUBLE_PIPE,FOLLOW_DOUBLE_PIPE_in_fact_expression2050); 
 
                     match(input, Token.DOWN, null); 
-                    pushFollow(FOLLOW_fact_expression_in_fact_expression2050);
+                    pushFollow(FOLLOW_fact_expression_in_fact_expression2054);
                     left=fact_expression();
                     _fsp--;
 
-                    pushFollow(FOLLOW_fact_expression_in_fact_expression2054);
+                    pushFollow(FOLLOW_fact_expression_in_fact_expression2058);
                     right=fact_expression();
                     _fsp--;
 
@@ -4066,16 +4066,16 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 21 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:372:4: ^( DOUBLE_AMPER left= fact_expression right= fact_expression )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:373:4: ^( DOUBLE_AMPER left= fact_expression right= fact_expression )
                     {
-                    match(input,DOUBLE_AMPER,FOLLOW_DOUBLE_AMPER_in_fact_expression2064); 
+                    match(input,DOUBLE_AMPER,FOLLOW_DOUBLE_AMPER_in_fact_expression2068); 
 
                     match(input, Token.DOWN, null); 
-                    pushFollow(FOLLOW_fact_expression_in_fact_expression2068);
+                    pushFollow(FOLLOW_fact_expression_in_fact_expression2072);
                     left=fact_expression();
                     _fsp--;
 
-                    pushFollow(FOLLOW_fact_expression_in_fact_expression2072);
+                    pushFollow(FOLLOW_fact_expression_in_fact_expression2076);
                     right=fact_expression();
                     _fsp--;
 
@@ -4086,12 +4086,12 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 22 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:375:4: ^( VT_ACCESSOR_PATH (ae= accessor_element )+ )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:376:4: ^( VT_ACCESSOR_PATH (ae= accessor_element )+ )
                     {
-                    match(input,VT_ACCESSOR_PATH,FOLLOW_VT_ACCESSOR_PATH_in_fact_expression2083); 
+                    match(input,VT_ACCESSOR_PATH,FOLLOW_VT_ACCESSOR_PATH_in_fact_expression2087); 
 
                     match(input, Token.DOWN, null); 
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:375:23: (ae= accessor_element )+
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:376:23: (ae= accessor_element )+
                     int cnt54=0;
                     loop54:
                     do {
@@ -4105,9 +4105,9 @@ public class DescrBuilderTree extends TreeParser {
 
                         switch (alt54) {
                     	case 1 :
-                    	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:375:24: ae= accessor_element
+                    	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:376:24: ae= accessor_element
                     	    {
-                    	    pushFollow(FOLLOW_accessor_element_in_fact_expression2088);
+                    	    pushFollow(FOLLOW_accessor_element_in_fact_expression2092);
                     	    ae=accessor_element();
                     	    _fsp--;
 
@@ -4132,55 +4132,55 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 23 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:377:4: s= STRING
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:378:4: s= STRING
                     {
                     s=(DroolsTree)input.LT(1);
-                    match(input,STRING,FOLLOW_STRING_in_fact_expression2103); 
+                    match(input,STRING,FOLLOW_STRING_in_fact_expression2107); 
                     	retval.descr = factory.createStringLiteralRestriction(s);	
 
                     }
                     break;
                 case 24 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:379:4: i= INT
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:380:4: i= INT
                     {
                     i=(DroolsTree)input.LT(1);
-                    match(input,INT,FOLLOW_INT_in_fact_expression2113); 
+                    match(input,INT,FOLLOW_INT_in_fact_expression2117); 
                     	retval.descr = factory.createIntLiteralRestriction(i);	
 
                     }
                     break;
                 case 25 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:381:4: f= FLOAT
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:382:4: f= FLOAT
                     {
                     f=(DroolsTree)input.LT(1);
-                    match(input,FLOAT,FOLLOW_FLOAT_in_fact_expression2123); 
+                    match(input,FLOAT,FOLLOW_FLOAT_in_fact_expression2127); 
                     	retval.descr = factory.createFloatLiteralRestriction(f);	
 
                     }
                     break;
                 case 26 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:383:4: b= BOOL
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:384:4: b= BOOL
                     {
                     b=(DroolsTree)input.LT(1);
-                    match(input,BOOL,FOLLOW_BOOL_in_fact_expression2133); 
+                    match(input,BOOL,FOLLOW_BOOL_in_fact_expression2137); 
                     	retval.descr = factory.createBoolLiteralRestriction(b);	
 
                     }
                     break;
                 case 27 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:385:4: n= NULL
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:386:4: n= NULL
                     {
                     n=(DroolsTree)input.LT(1);
-                    match(input,NULL,FOLLOW_NULL_in_fact_expression2143); 
+                    match(input,NULL,FOLLOW_NULL_in_fact_expression2147); 
                     	retval.descr = factory.createNullLiteralRestriction(n);	
 
                     }
                     break;
                 case 28 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:387:4: pc= VT_PAREN_CHUNK
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:388:4: pc= VT_PAREN_CHUNK
                     {
                     pc=(DroolsTree)input.LT(1);
-                    match(input,VT_PAREN_CHUNK,FOLLOW_VT_PAREN_CHUNK_in_fact_expression2153); 
+                    match(input,VT_PAREN_CHUNK,FOLLOW_VT_PAREN_CHUNK_in_fact_expression2157); 
                     	retval.descr = factory.createReturnValue(pc);	
 
                     }
@@ -4200,7 +4200,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start field_element
-    // src/main/resources/org/drools/lang/DescrBuilderTree.g:391:1: field_element returns [FieldConstraintDescr element] : ^( VT_ACCESSOR_PATH (ae= accessor_element )+ ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:392:1: field_element returns [FieldConstraintDescr element] : ^( VT_ACCESSOR_PATH (ae= accessor_element )+ ) ;
     public final FieldConstraintDescr field_element() throws RecognitionException {
         FieldConstraintDescr element = null;
 
@@ -4211,13 +4211,13 @@ public class DescrBuilderTree extends TreeParser {
         	List<BaseDescr> aeList = new LinkedList<BaseDescr>();
 
         try {
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:394:3: ( ^( VT_ACCESSOR_PATH (ae= accessor_element )+ ) )
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:394:5: ^( VT_ACCESSOR_PATH (ae= accessor_element )+ )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:395:3: ( ^( VT_ACCESSOR_PATH (ae= accessor_element )+ ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:395:5: ^( VT_ACCESSOR_PATH (ae= accessor_element )+ )
             {
-            match(input,VT_ACCESSOR_PATH,FOLLOW_VT_ACCESSOR_PATH_in_field_element2175); 
+            match(input,VT_ACCESSOR_PATH,FOLLOW_VT_ACCESSOR_PATH_in_field_element2179); 
 
             match(input, Token.DOWN, null); 
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:394:24: (ae= accessor_element )+
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:395:24: (ae= accessor_element )+
             int cnt56=0;
             loop56:
             do {
@@ -4231,9 +4231,9 @@ public class DescrBuilderTree extends TreeParser {
 
                 switch (alt56) {
             	case 1 :
-            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:394:25: ae= accessor_element
+            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:395:25: ae= accessor_element
             	    {
-            	    pushFollow(FOLLOW_accessor_element_in_field_element2180);
+            	    pushFollow(FOLLOW_accessor_element_in_field_element2184);
             	    ae=accessor_element();
             	    _fsp--;
 
@@ -4270,7 +4270,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start accessor_element
-    // src/main/resources/org/drools/lang/DescrBuilderTree.g:398:1: accessor_element returns [BaseDescr element] : ^( VT_ACCESSOR_ELEMENT id= ID (sc+= VT_SQUARE_CHUNK )* ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:399:1: accessor_element returns [BaseDescr element] : ^( VT_ACCESSOR_ELEMENT id= ID (sc+= VT_SQUARE_CHUNK )* ) ;
     public final BaseDescr accessor_element() throws RecognitionException {
         BaseDescr element = null;
 
@@ -4279,15 +4279,15 @@ public class DescrBuilderTree extends TreeParser {
         List list_sc=null;
 
         try {
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:399:2: ( ^( VT_ACCESSOR_ELEMENT id= ID (sc+= VT_SQUARE_CHUNK )* ) )
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:399:4: ^( VT_ACCESSOR_ELEMENT id= ID (sc+= VT_SQUARE_CHUNK )* )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:400:2: ( ^( VT_ACCESSOR_ELEMENT id= ID (sc+= VT_SQUARE_CHUNK )* ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:400:4: ^( VT_ACCESSOR_ELEMENT id= ID (sc+= VT_SQUARE_CHUNK )* )
             {
-            match(input,VT_ACCESSOR_ELEMENT,FOLLOW_VT_ACCESSOR_ELEMENT_in_accessor_element2204); 
+            match(input,VT_ACCESSOR_ELEMENT,FOLLOW_VT_ACCESSOR_ELEMENT_in_accessor_element2208); 
 
             match(input, Token.DOWN, null); 
             id=(DroolsTree)input.LT(1);
-            match(input,ID,FOLLOW_ID_in_accessor_element2208); 
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:399:34: (sc+= VT_SQUARE_CHUNK )*
+            match(input,ID,FOLLOW_ID_in_accessor_element2212); 
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:400:34: (sc+= VT_SQUARE_CHUNK )*
             loop57:
             do {
                 int alt57=2;
@@ -4300,10 +4300,10 @@ public class DescrBuilderTree extends TreeParser {
 
                 switch (alt57) {
             	case 1 :
-            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:399:34: sc+= VT_SQUARE_CHUNK
+            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:400:34: sc+= VT_SQUARE_CHUNK
             	    {
             	    sc=(DroolsTree)input.LT(1);
-            	    match(input,VT_SQUARE_CHUNK,FOLLOW_VT_SQUARE_CHUNK_in_accessor_element2212); 
+            	    match(input,VT_SQUARE_CHUNK,FOLLOW_VT_SQUARE_CHUNK_in_accessor_element2216); 
             	    if (list_sc==null) list_sc=new ArrayList();
             	    list_sc.add(sc);
 
@@ -4335,7 +4335,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start pattern_type
-    // src/main/resources/org/drools/lang/DescrBuilderTree.g:403:1: pattern_type returns [BaseDescr dataType] : ^( VT_PATTERN_TYPE (idList+= ID )+ ( LEFT_SQUARE rightList+= RIGHT_SQUARE )* ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:404:1: pattern_type returns [BaseDescr dataType] : ^( VT_PATTERN_TYPE (idList+= ID )+ ( LEFT_SQUARE rightList+= RIGHT_SQUARE )* ) ;
     public final BaseDescr pattern_type() throws RecognitionException {
         BaseDescr dataType = null;
 
@@ -4345,13 +4345,13 @@ public class DescrBuilderTree extends TreeParser {
         List list_rightList=null;
 
         try {
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:404:2: ( ^( VT_PATTERN_TYPE (idList+= ID )+ ( LEFT_SQUARE rightList+= RIGHT_SQUARE )* ) )
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:404:4: ^( VT_PATTERN_TYPE (idList+= ID )+ ( LEFT_SQUARE rightList+= RIGHT_SQUARE )* )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:405:2: ( ^( VT_PATTERN_TYPE (idList+= ID )+ ( LEFT_SQUARE rightList+= RIGHT_SQUARE )* ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:405:4: ^( VT_PATTERN_TYPE (idList+= ID )+ ( LEFT_SQUARE rightList+= RIGHT_SQUARE )* )
             {
-            match(input,VT_PATTERN_TYPE,FOLLOW_VT_PATTERN_TYPE_in_pattern_type2233); 
+            match(input,VT_PATTERN_TYPE,FOLLOW_VT_PATTERN_TYPE_in_pattern_type2237); 
 
             match(input, Token.DOWN, null); 
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:404:28: (idList+= ID )+
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:405:28: (idList+= ID )+
             int cnt58=0;
             loop58:
             do {
@@ -4365,10 +4365,10 @@ public class DescrBuilderTree extends TreeParser {
 
                 switch (alt58) {
             	case 1 :
-            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:404:28: idList+= ID
+            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:405:28: idList+= ID
             	    {
             	    idList=(DroolsTree)input.LT(1);
-            	    match(input,ID,FOLLOW_ID_in_pattern_type2237); 
+            	    match(input,ID,FOLLOW_ID_in_pattern_type2241); 
             	    if (list_idList==null) list_idList=new ArrayList();
             	    list_idList.add(idList);
 
@@ -4385,7 +4385,7 @@ public class DescrBuilderTree extends TreeParser {
                 cnt58++;
             } while (true);
 
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:404:34: ( LEFT_SQUARE rightList+= RIGHT_SQUARE )*
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:405:34: ( LEFT_SQUARE rightList+= RIGHT_SQUARE )*
             loop59:
             do {
                 int alt59=2;
@@ -4398,11 +4398,11 @@ public class DescrBuilderTree extends TreeParser {
 
                 switch (alt59) {
             	case 1 :
-            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:404:35: LEFT_SQUARE rightList+= RIGHT_SQUARE
+            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:405:35: LEFT_SQUARE rightList+= RIGHT_SQUARE
             	    {
-            	    match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_pattern_type2241); 
+            	    match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_pattern_type2245); 
             	    rightList=(DroolsTree)input.LT(1);
-            	    match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_pattern_type2245); 
+            	    match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_pattern_type2249); 
             	    if (list_rightList==null) list_rightList=new ArrayList();
             	    list_rightList.add(rightList);
 
@@ -4434,7 +4434,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start data_type
-    // src/main/resources/org/drools/lang/DescrBuilderTree.g:408:1: data_type returns [BaseDescr dataType] : ^( VT_DATA_TYPE (idList+= ID )+ ( LEFT_SQUARE rightList+= RIGHT_SQUARE )* ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:409:1: data_type returns [BaseDescr dataType] : ^( VT_DATA_TYPE (idList+= ID )+ ( LEFT_SQUARE rightList+= RIGHT_SQUARE )* ) ;
     public final BaseDescr data_type() throws RecognitionException {
         BaseDescr dataType = null;
 
@@ -4444,13 +4444,13 @@ public class DescrBuilderTree extends TreeParser {
         List list_rightList=null;
 
         try {
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:409:2: ( ^( VT_DATA_TYPE (idList+= ID )+ ( LEFT_SQUARE rightList+= RIGHT_SQUARE )* ) )
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:409:4: ^( VT_DATA_TYPE (idList+= ID )+ ( LEFT_SQUARE rightList+= RIGHT_SQUARE )* )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:410:2: ( ^( VT_DATA_TYPE (idList+= ID )+ ( LEFT_SQUARE rightList+= RIGHT_SQUARE )* ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:410:4: ^( VT_DATA_TYPE (idList+= ID )+ ( LEFT_SQUARE rightList+= RIGHT_SQUARE )* )
             {
-            match(input,VT_DATA_TYPE,FOLLOW_VT_DATA_TYPE_in_data_type2267); 
+            match(input,VT_DATA_TYPE,FOLLOW_VT_DATA_TYPE_in_data_type2271); 
 
             match(input, Token.DOWN, null); 
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:409:25: (idList+= ID )+
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:410:25: (idList+= ID )+
             int cnt60=0;
             loop60:
             do {
@@ -4464,10 +4464,10 @@ public class DescrBuilderTree extends TreeParser {
 
                 switch (alt60) {
             	case 1 :
-            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:409:25: idList+= ID
+            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:410:25: idList+= ID
             	    {
             	    idList=(DroolsTree)input.LT(1);
-            	    match(input,ID,FOLLOW_ID_in_data_type2271); 
+            	    match(input,ID,FOLLOW_ID_in_data_type2275); 
             	    if (list_idList==null) list_idList=new ArrayList();
             	    list_idList.add(idList);
 
@@ -4484,7 +4484,7 @@ public class DescrBuilderTree extends TreeParser {
                 cnt60++;
             } while (true);
 
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:409:31: ( LEFT_SQUARE rightList+= RIGHT_SQUARE )*
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:410:31: ( LEFT_SQUARE rightList+= RIGHT_SQUARE )*
             loop61:
             do {
                 int alt61=2;
@@ -4497,11 +4497,11 @@ public class DescrBuilderTree extends TreeParser {
 
                 switch (alt61) {
             	case 1 :
-            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:409:32: LEFT_SQUARE rightList+= RIGHT_SQUARE
+            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:410:32: LEFT_SQUARE rightList+= RIGHT_SQUARE
             	    {
-            	    match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_data_type2275); 
+            	    match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_data_type2279); 
             	    rightList=(DroolsTree)input.LT(1);
-            	    match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_data_type2279); 
+            	    match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_data_type2283); 
             	    if (list_rightList==null) list_rightList=new ArrayList();
             	    list_rightList.add(rightList);
 
@@ -4580,204 +4580,204 @@ public class DescrBuilderTree extends TreeParser {
     public static final BitSet FOLLOW_END_in_query469 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VK_RULE_in_rule496 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_VT_RULE_ID_in_rule500 = new BitSet(new long[]{0x0000000000030000L,0x0000000048000000L});
-    public static final BitSet FOLLOW_rule_attributes_in_rule504 = new BitSet(new long[]{0x0000000000020000L,0x0000000048000000L});
-    public static final BitSet FOLLOW_decl_metadata_in_rule513 = new BitSet(new long[]{0x0000000000020000L,0x0000000048000000L});
-    public static final BitSet FOLLOW_when_part_in_rule525 = new BitSet(new long[]{0x0000000000020000L});
-    public static final BitSet FOLLOW_VT_RHS_CHUNK_in_rule530 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_WHEN_in_when_part549 = new BitSet(new long[]{0x0000000000400000L});
-    public static final BitSet FOLLOW_lhs_block_in_when_part553 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_VT_RULE_ATTRIBUTES_in_rule_attributes575 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VK_ATTRIBUTES_in_rule_attributes577 = new BitSet(new long[]{0x01FFE00000000000L});
-    public static final BitSet FOLLOW_rule_attribute_in_rule_attributes583 = new BitSet(new long[]{0x01FFE00000000008L});
-    public static final BitSet FOLLOW_VT_PARAM_LIST_in_parameters607 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_param_definition_in_parameters612 = new BitSet(new long[]{0x0000004000000008L,0x0000000000080000L});
-    public static final BitSet FOLLOW_data_type_in_param_definition634 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
-    public static final BitSet FOLLOW_argument_in_param_definition639 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_argument659 = new BitSet(new long[]{0x0000000000000002L,0x0004000000000000L});
-    public static final BitSet FOLLOW_LEFT_SQUARE_in_argument662 = new BitSet(new long[]{0x0000000000000000L,0x0008000000000000L});
-    public static final BitSet FOLLOW_RIGHT_SQUARE_in_argument666 = new BitSet(new long[]{0x0000000000000002L,0x0004000000000000L});
-    public static final BitSet FOLLOW_VK_DECLARE_in_type_declaration692 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VT_TYPE_DECLARE_ID_in_type_declaration696 = new BitSet(new long[]{0x0000000000000000L,0x0000000008480000L});
-    public static final BitSet FOLLOW_decl_metadata_in_type_declaration705 = new BitSet(new long[]{0x0000000000000000L,0x0000000008480000L});
-    public static final BitSet FOLLOW_decl_field_in_type_declaration718 = new BitSet(new long[]{0x0000000000000000L,0x0000000000480000L});
-    public static final BitSet FOLLOW_END_in_type_declaration724 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_AT_in_decl_metadata749 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_ID_in_decl_metadata753 = new BitSet(new long[]{0x0000000000100000L});
-    public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_decl_metadata757 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_ID_in_decl_field784 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_decl_field_initialization_in_decl_field788 = new BitSet(new long[]{0x0000004000000000L});
-    public static final BitSet FOLLOW_data_type_in_decl_field793 = new BitSet(new long[]{0x0000000000000008L,0x0000000008000000L});
-    public static final BitSet FOLLOW_decl_metadata_in_decl_field798 = new BitSet(new long[]{0x0000000000000008L,0x0000000008000000L});
-    public static final BitSet FOLLOW_EQUALS_in_decl_field_initialization825 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_decl_field_initialization829 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VK_SALIENCE_in_rule_attribute852 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_INT_in_rule_attribute857 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_rule_attribute861 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VK_NO_LOOP_in_rule_attribute872 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_BOOL_in_rule_attribute876 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VK_AGENDA_GROUP_in_rule_attribute888 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_STRING_in_rule_attribute892 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VK_DURATION_in_rule_attribute903 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_INT_in_rule_attribute907 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VK_ACTIVATION_GROUP_in_rule_attribute919 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_STRING_in_rule_attribute923 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VK_AUTO_FOCUS_in_rule_attribute933 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_BOOL_in_rule_attribute937 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VK_DATE_EFFECTIVE_in_rule_attribute948 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_STRING_in_rule_attribute952 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VK_DATE_EXPIRES_in_rule_attribute962 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_STRING_in_rule_attribute966 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VK_ENABLED_in_rule_attribute976 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_BOOL_in_rule_attribute981 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_rule_attribute985 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VK_RULEFLOW_GROUP_in_rule_attribute996 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_STRING_in_rule_attribute1000 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VK_LOCK_ON_ACTIVE_in_rule_attribute1010 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_BOOL_in_rule_attribute1014 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VK_DIALECT_in_rule_attribute1024 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_STRING_in_rule_attribute1028 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VT_AND_IMPLICIT_in_lhs_block1053 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_lhs_in_lhs_block1058 = new BitSet(new long[]{0x0000000087800008L,0x0000000800006204L});
-    public static final BitSet FOLLOW_VT_OR_PREFIX_in_lhs1084 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_lhs_in_lhs1089 = new BitSet(new long[]{0x0000000087800008L,0x0000000800006204L});
-    public static final BitSet FOLLOW_VT_OR_INFIX_in_lhs1105 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_lhs_in_lhs1109 = new BitSet(new long[]{0x0000000087800000L,0x0000000800006204L});
-    public static final BitSet FOLLOW_lhs_in_lhs1113 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VT_AND_PREFIX_in_lhs1125 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_lhs_in_lhs1130 = new BitSet(new long[]{0x0000000087800008L,0x0000000800006204L});
-    public static final BitSet FOLLOW_VT_AND_INFIX_in_lhs1146 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_lhs_in_lhs1150 = new BitSet(new long[]{0x0000000087800000L,0x0000000800006204L});
-    public static final BitSet FOLLOW_lhs_in_lhs1154 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VK_EXISTS_in_lhs1166 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_lhs_in_lhs1170 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VK_NOT_in_lhs1182 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_lhs_in_lhs1186 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VK_EVAL_in_lhs1198 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_lhs1202 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VK_FORALL_in_lhs1214 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_lhs_in_lhs1219 = new BitSet(new long[]{0x0000000087800008L,0x0000000800006204L});
-    public static final BitSet FOLLOW_FROM_in_lhs1233 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_lhs_pattern_in_lhs1237 = new BitSet(new long[]{0x0000000020000000L,0x000000A000000100L});
-    public static final BitSet FOLLOW_from_elements_in_lhs1241 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_lhs_pattern_in_lhs1252 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ACCUMULATE_in_from_elements1273 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_lhs_in_from_elements1277 = new BitSet(new long[]{0x0000000018000000L});
-    public static final BitSet FOLLOW_accumulate_parts_in_from_elements1287 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_COLLECT_in_from_elements1300 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_lhs_in_from_elements1304 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VK_ENTRY_POINT_in_from_elements1316 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VT_ENTRYPOINT_ID_in_from_elements1320 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_from_source_clause_in_from_elements1331 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_accumulate_init_clause_in_accumulate_parts1352 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_accumulate_id_clause_in_accumulate_parts1363 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_VT_ACCUMULATE_INIT_CLAUSE_in_accumulate_init_clause1386 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_INIT_in_accumulate_init_clause1395 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_accumulate_init_clause1399 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VK_ACTION_in_accumulate_init_clause1407 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_accumulate_init_clause1411 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_accumulate_init_reverse_clause_in_accumulate_init_clause1420 = new BitSet(new long[]{0x0000000000000000L,0x0000000000020000L});
-    public static final BitSet FOLLOW_VK_RESULT_in_accumulate_init_clause1427 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_accumulate_init_clause1431 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VK_REVERSE_in_accumulate_init_reverse_clause1454 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_accumulate_init_reverse_clause1458 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VT_ACCUMULATE_ID_CLAUSE_in_accumulate_id_clause1480 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_ID_in_accumulate_id_clause1484 = new BitSet(new long[]{0x0000000000100000L});
-    public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_accumulate_id_clause1488 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VT_FROM_SOURCE_in_from_source_clause1510 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_ID_in_from_source_clause1514 = new BitSet(new long[]{0x0000000040100008L});
-    public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_from_source_clause1518 = new BitSet(new long[]{0x0000000040000008L});
-    public static final BitSet FOLLOW_expression_chain_in_from_source_clause1527 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VT_EXPRESSION_CHAIN_in_expression_chain1546 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_ID_in_expression_chain1550 = new BitSet(new long[]{0x0000000040180008L});
-    public static final BitSet FOLLOW_VT_SQUARE_CHUNK_in_expression_chain1554 = new BitSet(new long[]{0x0000000040100008L});
-    public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_expression_chain1559 = new BitSet(new long[]{0x0000000040000008L});
-    public static final BitSet FOLLOW_expression_chain_in_expression_chain1567 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VT_PATTERN_in_lhs_pattern1585 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_fact_expression_in_lhs_pattern1589 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_over_clause_in_lhs_pattern1594 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_OVER_in_over_clause1619 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_over_element_in_over_clause1624 = new BitSet(new long[]{0x0000000000200008L});
-    public static final BitSet FOLLOW_VT_BEHAVIOR_in_over_element1645 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_ID_in_over_element1647 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
-    public static final BitSet FOLLOW_ID_in_over_element1651 = new BitSet(new long[]{0x0000000000100000L});
-    public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_over_element1655 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VT_FACT_in_fact_expression1678 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_pattern_type_in_fact_expression1682 = new BitSet(new long[]{0x0000001F00100048L,0x00037E07808804FCL});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression1687 = new BitSet(new long[]{0x0000001F00100048L,0x00037E07808804FCL});
-    public static final BitSet FOLLOW_VT_FACT_BINDING_in_fact_expression1701 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VT_LABEL_in_fact_expression1705 = new BitSet(new long[]{0x0000001F00100040L,0x00037E07808804FCL});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression1709 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VT_FACT_OR_in_fact_expression1721 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression1725 = new BitSet(new long[]{0x0000001F00100040L,0x00037E07808804FCL});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression1729 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VT_FIELD_in_fact_expression1740 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_field_element_in_fact_expression1744 = new BitSet(new long[]{0x0000001F00100048L,0x00037E07808804FCL});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression1748 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VT_BIND_FIELD_in_fact_expression1759 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VT_LABEL_in_fact_expression1763 = new BitSet(new long[]{0x0000001F00100040L,0x00037E07808804FCL});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression1767 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VK_EVAL_in_fact_expression1778 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_fact_expression1782 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_EQUAL_in_fact_expression1795 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression1799 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_NOT_EQUAL_in_fact_expression1811 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression1815 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_GREATER_in_fact_expression1827 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression1831 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_GREATER_EQUAL_in_fact_expression1843 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression1847 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_LESS_in_fact_expression1859 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression1863 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_LESS_EQUAL_in_fact_expression1875 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression1879 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VK_CONTAINS_in_fact_expression1891 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VK_NOT_in_fact_expression1895 = new BitSet(new long[]{0x0000001F00100040L,0x00037E07808804FCL});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression1900 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VK_EXCLUDES_in_fact_expression1912 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VK_NOT_in_fact_expression1916 = new BitSet(new long[]{0x0000001F00100040L,0x00037E07808804FCL});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression1921 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VK_MATCHES_in_fact_expression1933 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VK_NOT_in_fact_expression1937 = new BitSet(new long[]{0x0000001F00100040L,0x00037E07808804FCL});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression1942 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VK_SOUNDSLIKE_in_fact_expression1954 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VK_NOT_in_fact_expression1958 = new BitSet(new long[]{0x0000001F00100040L,0x00037E07808804FCL});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression1963 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VK_MEMBEROF_in_fact_expression1975 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VK_NOT_in_fact_expression1979 = new BitSet(new long[]{0x0000001F00100040L,0x00037E07808804FCL});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression1984 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_ID_in_fact_expression1996 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VK_NOT_in_fact_expression2000 = new BitSet(new long[]{0x0000001F00180040L,0x00037E07808804FCL});
-    public static final BitSet FOLLOW_VT_SQUARE_CHUNK_in_fact_expression2005 = new BitSet(new long[]{0x0000001F00100040L,0x00037E07808804FCL});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression2010 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VK_IN_in_fact_expression2021 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VK_NOT_in_fact_expression2025 = new BitSet(new long[]{0x0000001F00100040L,0x00037E07808804FCL});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression2031 = new BitSet(new long[]{0x0000001F00100048L,0x00037E07808804FCL});
-    public static final BitSet FOLLOW_DOUBLE_PIPE_in_fact_expression2046 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression2050 = new BitSet(new long[]{0x0000001F00100040L,0x00037E07808804FCL});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression2054 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_DOUBLE_AMPER_in_fact_expression2064 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression2068 = new BitSet(new long[]{0x0000001F00100040L,0x00037E07808804FCL});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression2072 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VT_ACCESSOR_PATH_in_fact_expression2083 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_accessor_element_in_fact_expression2088 = new BitSet(new long[]{0x0000002000000008L});
-    public static final BitSet FOLLOW_STRING_in_fact_expression2103 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_INT_in_fact_expression2113 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_FLOAT_in_fact_expression2123 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_BOOL_in_fact_expression2133 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_NULL_in_fact_expression2143 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_fact_expression2153 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_VT_ACCESSOR_PATH_in_field_element2175 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_accessor_element_in_field_element2180 = new BitSet(new long[]{0x0000002000000008L});
-    public static final BitSet FOLLOW_VT_ACCESSOR_ELEMENT_in_accessor_element2204 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_ID_in_accessor_element2208 = new BitSet(new long[]{0x0000000000080008L});
-    public static final BitSet FOLLOW_VT_SQUARE_CHUNK_in_accessor_element2212 = new BitSet(new long[]{0x0000000000080008L});
-    public static final BitSet FOLLOW_VT_PATTERN_TYPE_in_pattern_type2233 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_ID_in_pattern_type2237 = new BitSet(new long[]{0x0000000000000008L,0x0004000000080000L});
-    public static final BitSet FOLLOW_LEFT_SQUARE_in_pattern_type2241 = new BitSet(new long[]{0x0000000000000000L,0x0008000000000000L});
-    public static final BitSet FOLLOW_RIGHT_SQUARE_in_pattern_type2245 = new BitSet(new long[]{0x0000000000000008L,0x0004000000000000L});
-    public static final BitSet FOLLOW_VT_DATA_TYPE_in_data_type2267 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_ID_in_data_type2271 = new BitSet(new long[]{0x0000000000000008L,0x0004000000080000L});
-    public static final BitSet FOLLOW_LEFT_SQUARE_in_data_type2275 = new BitSet(new long[]{0x0000000000000000L,0x0008000000000000L});
-    public static final BitSet FOLLOW_RIGHT_SQUARE_in_data_type2279 = new BitSet(new long[]{0x0000000000000008L,0x0004000000000000L});
+    public static final BitSet FOLLOW_decl_metadata_in_rule509 = new BitSet(new long[]{0x0000000000030000L,0x0000000048000000L});
+    public static final BitSet FOLLOW_rule_attributes_in_rule520 = new BitSet(new long[]{0x0000000000020000L,0x0000000040000000L});
+    public static final BitSet FOLLOW_when_part_in_rule529 = new BitSet(new long[]{0x0000000000020000L});
+    public static final BitSet FOLLOW_VT_RHS_CHUNK_in_rule534 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_WHEN_in_when_part553 = new BitSet(new long[]{0x0000000000400000L});
+    public static final BitSet FOLLOW_lhs_block_in_when_part557 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_VT_RULE_ATTRIBUTES_in_rule_attributes579 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_VK_ATTRIBUTES_in_rule_attributes581 = new BitSet(new long[]{0x01FFE00000000000L});
+    public static final BitSet FOLLOW_rule_attribute_in_rule_attributes587 = new BitSet(new long[]{0x01FFE00000000008L});
+    public static final BitSet FOLLOW_VT_PARAM_LIST_in_parameters611 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_param_definition_in_parameters616 = new BitSet(new long[]{0x0000004000000008L,0x0000000000080000L});
+    public static final BitSet FOLLOW_data_type_in_param_definition638 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
+    public static final BitSet FOLLOW_argument_in_param_definition643 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_argument663 = new BitSet(new long[]{0x0000000000000002L,0x0004000000000000L});
+    public static final BitSet FOLLOW_LEFT_SQUARE_in_argument666 = new BitSet(new long[]{0x0000000000000000L,0x0008000000000000L});
+    public static final BitSet FOLLOW_RIGHT_SQUARE_in_argument670 = new BitSet(new long[]{0x0000000000000002L,0x0004000000000000L});
+    public static final BitSet FOLLOW_VK_DECLARE_in_type_declaration696 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_VT_TYPE_DECLARE_ID_in_type_declaration700 = new BitSet(new long[]{0x0000000000000000L,0x0000000008480000L});
+    public static final BitSet FOLLOW_decl_metadata_in_type_declaration709 = new BitSet(new long[]{0x0000000000000000L,0x0000000008480000L});
+    public static final BitSet FOLLOW_decl_field_in_type_declaration722 = new BitSet(new long[]{0x0000000000000000L,0x0000000000480000L});
+    public static final BitSet FOLLOW_END_in_type_declaration728 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_AT_in_decl_metadata753 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_ID_in_decl_metadata757 = new BitSet(new long[]{0x0000000000100000L});
+    public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_decl_metadata761 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_ID_in_decl_field788 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_decl_field_initialization_in_decl_field792 = new BitSet(new long[]{0x0000004000000000L});
+    public static final BitSet FOLLOW_data_type_in_decl_field797 = new BitSet(new long[]{0x0000000000000008L,0x0000000008000000L});
+    public static final BitSet FOLLOW_decl_metadata_in_decl_field802 = new BitSet(new long[]{0x0000000000000008L,0x0000000008000000L});
+    public static final BitSet FOLLOW_EQUALS_in_decl_field_initialization829 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_decl_field_initialization833 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VK_SALIENCE_in_rule_attribute856 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_INT_in_rule_attribute861 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_rule_attribute865 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VK_NO_LOOP_in_rule_attribute876 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_BOOL_in_rule_attribute880 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VK_AGENDA_GROUP_in_rule_attribute892 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_STRING_in_rule_attribute896 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VK_DURATION_in_rule_attribute907 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_INT_in_rule_attribute911 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VK_ACTIVATION_GROUP_in_rule_attribute923 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_STRING_in_rule_attribute927 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VK_AUTO_FOCUS_in_rule_attribute937 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_BOOL_in_rule_attribute941 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VK_DATE_EFFECTIVE_in_rule_attribute952 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_STRING_in_rule_attribute956 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VK_DATE_EXPIRES_in_rule_attribute966 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_STRING_in_rule_attribute970 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VK_ENABLED_in_rule_attribute980 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_BOOL_in_rule_attribute985 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_rule_attribute989 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VK_RULEFLOW_GROUP_in_rule_attribute1000 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_STRING_in_rule_attribute1004 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VK_LOCK_ON_ACTIVE_in_rule_attribute1014 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_BOOL_in_rule_attribute1018 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VK_DIALECT_in_rule_attribute1028 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_STRING_in_rule_attribute1032 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VT_AND_IMPLICIT_in_lhs_block1057 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_lhs_in_lhs_block1062 = new BitSet(new long[]{0x0000000087800008L,0x0000000800006204L});
+    public static final BitSet FOLLOW_VT_OR_PREFIX_in_lhs1088 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_lhs_in_lhs1093 = new BitSet(new long[]{0x0000000087800008L,0x0000000800006204L});
+    public static final BitSet FOLLOW_VT_OR_INFIX_in_lhs1109 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_lhs_in_lhs1113 = new BitSet(new long[]{0x0000000087800000L,0x0000000800006204L});
+    public static final BitSet FOLLOW_lhs_in_lhs1117 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VT_AND_PREFIX_in_lhs1129 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_lhs_in_lhs1134 = new BitSet(new long[]{0x0000000087800008L,0x0000000800006204L});
+    public static final BitSet FOLLOW_VT_AND_INFIX_in_lhs1150 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_lhs_in_lhs1154 = new BitSet(new long[]{0x0000000087800000L,0x0000000800006204L});
+    public static final BitSet FOLLOW_lhs_in_lhs1158 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VK_EXISTS_in_lhs1170 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_lhs_in_lhs1174 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VK_NOT_in_lhs1186 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_lhs_in_lhs1190 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VK_EVAL_in_lhs1202 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_lhs1206 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VK_FORALL_in_lhs1218 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_lhs_in_lhs1223 = new BitSet(new long[]{0x0000000087800008L,0x0000000800006204L});
+    public static final BitSet FOLLOW_FROM_in_lhs1237 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_lhs_pattern_in_lhs1241 = new BitSet(new long[]{0x0000000020000000L,0x000000A000000100L});
+    public static final BitSet FOLLOW_from_elements_in_lhs1245 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_lhs_pattern_in_lhs1256 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ACCUMULATE_in_from_elements1277 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_lhs_in_from_elements1281 = new BitSet(new long[]{0x0000000018000000L});
+    public static final BitSet FOLLOW_accumulate_parts_in_from_elements1291 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_COLLECT_in_from_elements1304 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_lhs_in_from_elements1308 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VK_ENTRY_POINT_in_from_elements1320 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_VT_ENTRYPOINT_ID_in_from_elements1324 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_from_source_clause_in_from_elements1335 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_accumulate_init_clause_in_accumulate_parts1356 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_accumulate_id_clause_in_accumulate_parts1367 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_VT_ACCUMULATE_INIT_CLAUSE_in_accumulate_init_clause1390 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_INIT_in_accumulate_init_clause1399 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_accumulate_init_clause1403 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VK_ACTION_in_accumulate_init_clause1411 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_accumulate_init_clause1415 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_accumulate_init_reverse_clause_in_accumulate_init_clause1424 = new BitSet(new long[]{0x0000000000000000L,0x0000000000020000L});
+    public static final BitSet FOLLOW_VK_RESULT_in_accumulate_init_clause1431 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_accumulate_init_clause1435 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VK_REVERSE_in_accumulate_init_reverse_clause1458 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_accumulate_init_reverse_clause1462 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VT_ACCUMULATE_ID_CLAUSE_in_accumulate_id_clause1484 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_ID_in_accumulate_id_clause1488 = new BitSet(new long[]{0x0000000000100000L});
+    public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_accumulate_id_clause1492 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VT_FROM_SOURCE_in_from_source_clause1514 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_ID_in_from_source_clause1518 = new BitSet(new long[]{0x0000000040100008L});
+    public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_from_source_clause1522 = new BitSet(new long[]{0x0000000040000008L});
+    public static final BitSet FOLLOW_expression_chain_in_from_source_clause1531 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VT_EXPRESSION_CHAIN_in_expression_chain1550 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_ID_in_expression_chain1554 = new BitSet(new long[]{0x0000000040180008L});
+    public static final BitSet FOLLOW_VT_SQUARE_CHUNK_in_expression_chain1558 = new BitSet(new long[]{0x0000000040100008L});
+    public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_expression_chain1563 = new BitSet(new long[]{0x0000000040000008L});
+    public static final BitSet FOLLOW_expression_chain_in_expression_chain1571 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VT_PATTERN_in_lhs_pattern1589 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_fact_expression_in_lhs_pattern1593 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_over_clause_in_lhs_pattern1598 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_OVER_in_over_clause1623 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_over_element_in_over_clause1628 = new BitSet(new long[]{0x0000000000200008L});
+    public static final BitSet FOLLOW_VT_BEHAVIOR_in_over_element1649 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_ID_in_over_element1651 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
+    public static final BitSet FOLLOW_ID_in_over_element1655 = new BitSet(new long[]{0x0000000000100000L});
+    public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_over_element1659 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VT_FACT_in_fact_expression1682 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_pattern_type_in_fact_expression1686 = new BitSet(new long[]{0x0000001F00100048L,0x00037E07808804FCL});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression1691 = new BitSet(new long[]{0x0000001F00100048L,0x00037E07808804FCL});
+    public static final BitSet FOLLOW_VT_FACT_BINDING_in_fact_expression1705 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_VT_LABEL_in_fact_expression1709 = new BitSet(new long[]{0x0000001F00100040L,0x00037E07808804FCL});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression1713 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VT_FACT_OR_in_fact_expression1725 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression1729 = new BitSet(new long[]{0x0000001F00100040L,0x00037E07808804FCL});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression1733 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VT_FIELD_in_fact_expression1744 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_field_element_in_fact_expression1748 = new BitSet(new long[]{0x0000001F00100048L,0x00037E07808804FCL});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression1752 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VT_BIND_FIELD_in_fact_expression1763 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_VT_LABEL_in_fact_expression1767 = new BitSet(new long[]{0x0000001F00100040L,0x00037E07808804FCL});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression1771 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VK_EVAL_in_fact_expression1782 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_fact_expression1786 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_EQUAL_in_fact_expression1799 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression1803 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_NOT_EQUAL_in_fact_expression1815 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression1819 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_GREATER_in_fact_expression1831 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression1835 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_GREATER_EQUAL_in_fact_expression1847 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression1851 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_LESS_in_fact_expression1863 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression1867 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_LESS_EQUAL_in_fact_expression1879 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression1883 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VK_CONTAINS_in_fact_expression1895 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_VK_NOT_in_fact_expression1899 = new BitSet(new long[]{0x0000001F00100040L,0x00037E07808804FCL});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression1904 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VK_EXCLUDES_in_fact_expression1916 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_VK_NOT_in_fact_expression1920 = new BitSet(new long[]{0x0000001F00100040L,0x00037E07808804FCL});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression1925 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VK_MATCHES_in_fact_expression1937 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_VK_NOT_in_fact_expression1941 = new BitSet(new long[]{0x0000001F00100040L,0x00037E07808804FCL});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression1946 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VK_SOUNDSLIKE_in_fact_expression1958 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_VK_NOT_in_fact_expression1962 = new BitSet(new long[]{0x0000001F00100040L,0x00037E07808804FCL});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression1967 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VK_MEMBEROF_in_fact_expression1979 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_VK_NOT_in_fact_expression1983 = new BitSet(new long[]{0x0000001F00100040L,0x00037E07808804FCL});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression1988 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_ID_in_fact_expression2000 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_VK_NOT_in_fact_expression2004 = new BitSet(new long[]{0x0000001F00180040L,0x00037E07808804FCL});
+    public static final BitSet FOLLOW_VT_SQUARE_CHUNK_in_fact_expression2009 = new BitSet(new long[]{0x0000001F00100040L,0x00037E07808804FCL});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression2014 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VK_IN_in_fact_expression2025 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_VK_NOT_in_fact_expression2029 = new BitSet(new long[]{0x0000001F00100040L,0x00037E07808804FCL});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression2035 = new BitSet(new long[]{0x0000001F00100048L,0x00037E07808804FCL});
+    public static final BitSet FOLLOW_DOUBLE_PIPE_in_fact_expression2050 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression2054 = new BitSet(new long[]{0x0000001F00100040L,0x00037E07808804FCL});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression2058 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_DOUBLE_AMPER_in_fact_expression2068 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression2072 = new BitSet(new long[]{0x0000001F00100040L,0x00037E07808804FCL});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression2076 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VT_ACCESSOR_PATH_in_fact_expression2087 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_accessor_element_in_fact_expression2092 = new BitSet(new long[]{0x0000002000000008L});
+    public static final BitSet FOLLOW_STRING_in_fact_expression2107 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_INT_in_fact_expression2117 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_FLOAT_in_fact_expression2127 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_BOOL_in_fact_expression2137 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_NULL_in_fact_expression2147 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_fact_expression2157 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_VT_ACCESSOR_PATH_in_field_element2179 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_accessor_element_in_field_element2184 = new BitSet(new long[]{0x0000002000000008L});
+    public static final BitSet FOLLOW_VT_ACCESSOR_ELEMENT_in_accessor_element2208 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_ID_in_accessor_element2212 = new BitSet(new long[]{0x0000000000080008L});
+    public static final BitSet FOLLOW_VT_SQUARE_CHUNK_in_accessor_element2216 = new BitSet(new long[]{0x0000000000080008L});
+    public static final BitSet FOLLOW_VT_PATTERN_TYPE_in_pattern_type2237 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_ID_in_pattern_type2241 = new BitSet(new long[]{0x0000000000000008L,0x0004000000080000L});
+    public static final BitSet FOLLOW_LEFT_SQUARE_in_pattern_type2245 = new BitSet(new long[]{0x0000000000000000L,0x0008000000000000L});
+    public static final BitSet FOLLOW_RIGHT_SQUARE_in_pattern_type2249 = new BitSet(new long[]{0x0000000000000008L,0x0004000000000000L});
+    public static final BitSet FOLLOW_VT_DATA_TYPE_in_data_type2271 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_ID_in_data_type2275 = new BitSet(new long[]{0x0000000000000008L,0x0004000000080000L});
+    public static final BitSet FOLLOW_LEFT_SQUARE_in_data_type2279 = new BitSet(new long[]{0x0000000000000000L,0x0008000000000000L});
+    public static final BitSet FOLLOW_RIGHT_SQUARE_in_data_type2283 = new BitSet(new long[]{0x0000000000000008L,0x0004000000000000L});
 
 }
