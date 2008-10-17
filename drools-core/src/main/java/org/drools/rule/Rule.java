@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -77,6 +78,8 @@ public class Rule
     private String            dialect;
 
     private String            agendaGroup;
+    
+    private Map<String,String> metaAttributes;
 
     /** Consequence. */
     private Consequence       consequence;
@@ -120,6 +123,7 @@ public class Rule
         out.writeObject(lhsRoot);
         out.writeObject(dialect);
         out.writeObject(agendaGroup);
+        out.writeObject(metaAttributes);
         
         if ( this.consequence instanceof CompiledInvoker ) {
             out.writeObject(  null );
@@ -150,6 +154,8 @@ public class Rule
         lhsRoot = (GroupElement)in.readObject();
         dialect = (String)in.readObject();
         agendaGroup = (String)in.readObject();
+        metaAttributes = (Map<String,String>)in.readObject();
+        
         consequence = (Consequence)in.readObject();
         duration = (Duration)in.readObject();
         loadOrder   = in.readLong();
@@ -188,6 +194,7 @@ public class Rule
         this.semanticallyValid = true;
         this.enabled = true;
         this.salience = SalienceInteger.DEFAULT_SALIENCE;
+        this.metaAttributes = new HashMap<String,String>();
     }
 
     /**
@@ -628,5 +635,14 @@ public class Rule
 
     public boolean isEnabled() {
         return this.enabled;
+    }
+	public void setMetaAttributes(Map<String,String> metaAttributes) {
+		this.metaAttributes = metaAttributes;
+	}
+	public Map<String,String> getMetaAttributes() {
+		return metaAttributes;
+	}
+    public String getMetaAttribute(final String identifier) {
+        return (String) this.metaAttributes.get( identifier );
     }
 }

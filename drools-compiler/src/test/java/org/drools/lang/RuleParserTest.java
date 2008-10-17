@@ -2972,10 +2972,23 @@ public class RuleParserTest extends TestCase {
 		assertEquals("duration", descr.getMetaAttribute("duration"));
 		assertEquals("timestamp", descr.getMetaAttribute("timestamp"));
 	}
+	public void testRuleMetadata() throws Exception {
+		parseResource("compilation_unit", "compilation_unit",
+				"Rule_with_Metadata.drl");
+		final PackageDescr pack = walker.getPackageDescr();
+//		@fooAttribute(barValue)
+//		@fooAtt2(barVal2)
+		RuleDescr rule = pack.getRules().get(0);
+		assertTrue(rule.getMetaAttributes().containsKey("fooAttribute"));
+		assertEquals("barValue",rule.getMetaAttribute("fooAttribute"));
+		assertTrue(rule.getMetaAttributes().containsKey("fooAtt2"));
+		assertEquals("barVal2",rule.getMetaAttribute("fooAtt2"));
+	}
 
 	public void testTypeDeclarationWithFields() throws Exception {
 		parseResource("compilation_unit", "compilation_unit",
 				"declare_type_with_fields.drl");
+
 		final PackageDescr pack = walker.getPackageDescr();
 
 		List<TypeDeclarationDescr> td = pack.getTypeDeclarations();

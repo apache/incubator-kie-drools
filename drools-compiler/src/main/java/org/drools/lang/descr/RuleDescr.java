@@ -21,7 +21,9 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.rule.Dialectable;
 import org.drools.rule.Namespaceable;
@@ -33,6 +35,7 @@ public class RuleDescr extends BaseDescr implements Dialectable, Namespaceable {
     private String            name;
     private String            dialect;
     private String            documentation;
+    private Map<String, String> metaAttributes;
 
     private AndDescr          lhs;
     private Object            consequence;
@@ -58,6 +61,7 @@ public class RuleDescr extends BaseDescr implements Dialectable, Namespaceable {
                      final String documentation) {
         this.name = ruleName;
         this.documentation = documentation;
+        this.metaAttributes = new HashMap<String, String>();
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
@@ -132,6 +136,35 @@ public class RuleDescr extends BaseDescr implements Dialectable, Namespaceable {
 
     public String getDocumentation() {
         return this.documentation;
+    }
+    
+    /**
+     * Adds a new attribute
+     * @param attr
+     * @param value
+     */
+    public void addMetaAttribute( String attr, String value ) {
+        if( this.metaAttributes == null ) {
+            this.metaAttributes = new HashMap<String, String>();
+        }
+        this.metaAttributes.put( attr, value );
+    }
+
+    /**
+     * Returns an attribute value or null if it is not defined
+     * @param attr
+     * @return
+     */
+    public String getMetaAttribute( String attr ) {
+        return this.metaAttributes != null ? this.metaAttributes.get( attr ) : null;
+    }
+
+    /**
+     * Returns the attribute map
+     * @return
+     */
+    public Map<String, String> getMetaAttributes() {
+        return this.metaAttributes != null ? this.metaAttributes : Collections.EMPTY_MAP;
     }
 
     public List<AttributeDescr> getAttributes() {

@@ -215,7 +215,37 @@ public class MiscTest extends TestCase {
         assertEquals( cheesery2,
                       list.get( 1 ) );
     }
+    public void testMetaConsequence() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_MetaConsequence.drl" ) ) );
+        final Package pkg = builder.getPackage();
 
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        StatefulSession session = ruleBase.newStatefulSession();
+        List results = new ArrayList();
+        session.setGlobal( "results",
+                           results );
+
+        
+
+        session.insert( new Person("Michael") );
+
+        session = SerializationHelper.getSerialisedStatefulSession( session,
+                                                                    ruleBase );
+        results = (List) session.getGlobal( "results" );
+
+        session.fireAllRules();
+        assertEquals( 2,
+                      results.size() );
+        assertEquals( "bar",
+                      (results.get( 0 )) );
+        assertEquals( "bar2",
+                      (results.get( 1 )) );
+
+
+    }
     public void testPrimitiveArray() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_primitiveArray.drl" ) ) );

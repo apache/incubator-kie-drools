@@ -423,13 +423,22 @@ public class DescrFactory {
 	 */
 	public RuleDescr createRule(DroolsTree start, DroolsTree id,
 			List<AttributeDescr> attributeList, AndDescr andDescr,
-			DroolsTree content) {
+			DroolsTree content, List<Map> metadata) {
 
 		RuleDescr ruleDescr = new RuleDescr(getCleanId(id), null);
 
 		if (null != attributeList && attributeList.size() > 0) {
 			for (AttributeDescr attributeDescr : attributeList) {
 				ruleDescr.addAttribute(attributeDescr);
+			}
+		}
+		
+		if ( null != metadata && metadata.size() > 0){
+			for (Map<DroolsTree,DroolsTree> map : metadata){
+				for (Map.Entry<DroolsTree,DroolsTree> entry : map.entrySet() ){ 
+					String chunkData = entry.getValue().getText();
+					ruleDescr.addMetaAttribute( entry.getKey().getText(),chunkData.substring(1, chunkData.length() - 1).trim()  );
+				}
 			}
 		}
 
@@ -458,6 +467,7 @@ public class DescrFactory {
 
 		ruleDescr.setLocation(getLineLocation(start), getColumnLocation(start));
 		ruleDescr.setEndCharacter(getEndOffsetLocation(content));
+		
 
 		return ruleDescr;
 	}
