@@ -751,8 +751,10 @@ date_expires
 	;
 	
 enabled
-	:	enabled_key^ {	emit(Location.LOCATION_RULE_HEADER_KEYWORD);	} BOOL
-	{	emit($BOOL, DroolsEditorType.BOOLEAN_CONST );	}
+	:	enabled_key^ {	emit(Location.LOCATION_RULE_HEADER_KEYWORD);	} 
+	    ( BOOL {	emit($BOOL, DroolsEditorType.BOOLEAN_CONST );	}
+	    | paren_chunk 
+	    )
 	;	
 
 salience

@@ -17,6 +17,7 @@ package org.drools.rule.builder;
  */
 
 import org.drools.RuntimeDroolsException;
+import org.drools.base.EnabledBoolean;
 import org.drools.base.SalienceInteger;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
@@ -80,6 +81,17 @@ public class RuleBuilder {
         } catch (Exception e) {
             // It wasn't an integer, so build as an expression
             context.getDialect().getSalienceBuilder().build( context );    
-        }              
+        }     
+        
+        String enabledText = context.getRuleDescr().getEnabled();
+        if( "true".equalsIgnoreCase( enabledText.trim() ) || "false".equalsIgnoreCase( enabledText.trim() ) ) {
+            if( Boolean.parseBoolean( enabledText ) ) {
+                context.getRule().setEnabled( EnabledBoolean.ENABLED_TRUE );
+            } else {
+                context.getRule().setEnabled( EnabledBoolean.ENABLED_FALSE );
+            }
+        } else {
+            context.getDialect().getEnabledBuilder().build( context );
+        }
     }
 }

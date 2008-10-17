@@ -182,7 +182,7 @@ public final class RuleTerminalNode extends BaseNode
                             final InternalWorkingMemory workingMemory,
                             final boolean fireActivationCreated) {
         //check if the rule is effective
-        if ( !this.rule.isEffective( workingMemory.getTimeMachine() ) ) {
+        if ( !this.rule.isEffective( workingMemory.getTimeMachine(), tuple, workingMemory ) ) {
             return;
         }
 

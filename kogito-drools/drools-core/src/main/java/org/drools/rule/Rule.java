@@ -25,12 +25,17 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.drools.WorkingMemory;
+import org.drools.base.EnabledBoolean;
 import org.drools.base.SalienceInteger;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.CompiledInvoker;
 import org.drools.spi.Consequence;
 import org.drools.spi.Duration;
+import org.drools.spi.Enabled;
 import org.drools.spi.Salience;
+import org.drools.spi.Tuple;
 import org.drools.spi.Wireable;
 
 /**
@@ -111,7 +116,7 @@ public class Rule
 
     private Calendar          dateExpires;
 
-    private boolean           enabled;
+    private Enabled           enabled;
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject(pkg);
@@ -142,7 +147,7 @@ public class Rule
         out.writeBoolean(semanticallyValid);
         out.writeObject(dateEffective);
         out.writeObject(dateExpires);
-        out.writeBoolean(enabled);
+        out.writeObject(enabled);
     }
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         pkg = (String)in.readObject();
@@ -168,7 +173,7 @@ public class Rule
         semanticallyValid = in.readBoolean();
         dateEffective   = (Calendar)in.readObject();
         dateExpires = (Calendar)in.readObject();
-        enabled = in.readBoolean();
+        enabled = (Enabled) in.readObject();
     }
     // ------------------------------------------------------------
     // Constructors
@@ -192,7 +197,7 @@ public class Rule
         this.agendaGroup = agendaGroup;
         this.lhsRoot = GroupElementFactory.newAndInstance();
         this.semanticallyValid = true;
-        this.enabled = true;
+        this.enabled = EnabledBoolean.ENABLED_TRUE;
         this.salience = SalienceInteger.DEFAULT_SALIENCE;
         this.metaAttributes = new HashMap<String,String>();
     }
@@ -351,8 +356,8 @@ public class Rule
      *
      * This uses the dateEffective, dateExpires and enabled flag to decide this.
      */
-    public boolean isEffective(TimeMachine tm) {
-        if ( !this.enabled ) {
+    public boolean isEffective(TimeMachine tm, Tuple tuple, WorkingMemory workingMemory) {
+        if ( !this.enabled.getValue( tuple, workingMemory ) ) {
             return false;
         }
         if ( this.dateEffective == null && this.dateExpires == null ) {
@@ -629,12 +634,12 @@ public class Rule
     /**
      * A rule is enabled by default. This can explicitly disable it in which case it will never activate.
      */
-    public void setEnabled(final boolean b) {
+    public void setEnabled(final Enabled b) {
         this.enabled = b;
     }
 
-    public boolean isEnabled() {
-        return this.enabled;
+    public boolean isEnabled( Tuple tuple, WorkingMemory workingMemory ) {
+        return this.enabled.getValue( tuple, workingMemory );
     }
 	public void setMetaAttributes(Map<String,String> metaAttributes) {
 		this.metaAttributes = metaAttributes;

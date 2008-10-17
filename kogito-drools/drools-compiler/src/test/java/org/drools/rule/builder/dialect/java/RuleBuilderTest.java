@@ -148,7 +148,7 @@ public class RuleBuilderTest extends TestCase {
         RuleBuildContext.setAttributes( rule, null, attributes );
 
         assertTrue( rule.isNoLoop() );
-        assertFalse( rule.isEffective(new TimeMachine()) );
+        assertFalse( rule.isEffective(new TimeMachine(), null, null) );
         assertEquals( "mygroup",
                       rule.getRuleFlowGroup() );
 
