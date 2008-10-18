@@ -15,6 +15,7 @@ public class RuleModel
     public String          modelVersion = "1.0";
 
     public RuleAttribute[] attributes   = new RuleAttribute[0];
+    public RuleMetadata[] metadataList   = new RuleMetadata[0];
 
     public IPattern[]      lhs          = new IPattern[0];
     public IAction[]       rhs          = new IAction[0];
@@ -188,6 +189,35 @@ public class RuleModel
 
         }
         this.attributes = newList;
+
+    }
+    
+    public void addMetadata(final RuleMetadata metadata) {
+
+        final RuleMetadata[] list = this.metadataList;
+        final RuleMetadata[] newList = new RuleMetadata[list.length + 1];
+
+        for ( int i = 0; i < list.length; i++ ) {
+            newList[i] = list[i];
+        }
+        newList[list.length] = metadata;
+
+        this.metadataList = newList;
+
+    }
+
+    public void removeMetadata(final int idx) {
+        final RuleMetadata[] newList = new RuleMetadata[this.metadataList.length - 1];
+        int newIdx = 0;
+        for ( int i = 0; i < this.metadataList.length; i++ ) {
+
+            if ( i != idx ) {
+                newList[newIdx] = this.metadataList[i];
+                newIdx++;
+            }
+
+        }
+        this.metadataList = newList;
 
     }
 

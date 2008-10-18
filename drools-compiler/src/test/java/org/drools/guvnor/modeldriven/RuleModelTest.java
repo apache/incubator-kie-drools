@@ -15,6 +15,7 @@ import org.drools.guvnor.client.modeldriven.brl.IAction;
 import org.drools.guvnor.client.modeldriven.brl.IPattern;
 import org.drools.guvnor.client.modeldriven.brl.ISingleFieldConstraint;
 import org.drools.guvnor.client.modeldriven.brl.RuleAttribute;
+import org.drools.guvnor.client.modeldriven.brl.RuleMetadata;
 import org.drools.guvnor.client.modeldriven.brl.RuleModel;
 import org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint;
 
@@ -353,7 +354,33 @@ public class RuleModelTest extends TestCase {
         assertEquals( at2,
                       m.attributes[0] );
     }
-    
+    public void testMetaData() {
+        final RuleModel m = new RuleModel();
+        final RuleMetadata rm = new RuleMetadata("foo", "bar");
+        
+        m.addMetadata(rm);
+        assertEquals( 1,
+                      m.metadataList.length );
+        assertEquals( rm ,
+                      m.metadataList[0] );
+        
+        final RuleMetadata rm2 = new RuleMetadata("foo2", "bar2");
+        m.addMetadata(rm2);
+        assertEquals( 2,
+                      m.metadataList.length );
+        assertEquals( rm2 ,
+                      m.metadataList[1] );
+        
+        assertEquals("@foo(bar)", rm.toString());
+        
+        m.removeMetadata( 0 );
+        assertEquals( 1,
+                      m.metadataList.length );
+        assertEquals( rm2,
+                      m.metadataList[0] );
+        
+        assertEquals("@foo2(bar2)", (m.metadataList[0]).toString());
+    }
     public void testIsDSLEnhanced() throws Exception {
         RuleModel m = new RuleModel();
         

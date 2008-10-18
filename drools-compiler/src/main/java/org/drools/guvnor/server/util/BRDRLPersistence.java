@@ -19,6 +19,7 @@ import org.drools.guvnor.client.modeldriven.brl.IAction;
 import org.drools.guvnor.client.modeldriven.brl.IPattern;
 import org.drools.guvnor.client.modeldriven.brl.ISingleFieldConstraint;
 import org.drools.guvnor.client.modeldriven.brl.RuleAttribute;
+import org.drools.guvnor.client.modeldriven.brl.RuleMetadata;
 import org.drools.guvnor.client.modeldriven.brl.RuleModel;
 import org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint;
 import org.drools.util.ReflectiveVisitor;
@@ -50,8 +51,9 @@ public class BRDRLPersistence
 
         StringBuffer buf = new StringBuffer();
         buf.append( "rule \"" + model.name + "\"\n" );
-        this.marshalAttributes( buf,
-                                model );
+        this.marshalMetadataList( buf, model );
+        this.marshalAttributes( buf, model );
+        
         buf.append( "\twhen\n" );
         this.marshalLHS( buf,
                          model,
@@ -100,6 +102,27 @@ public class BRDRLPersistence
         }
     }
 
+    /**
+     * Marshal model metadata
+     *
+     * @param buf
+     * @param model
+     */
+    private void marshalMetadataList(StringBuffer buf,
+                                   RuleModel model) {
+        boolean hasDialect = false;
+        for ( int i = 0; model.metadataList != null && i < model.metadataList.length; i++ ) {
+            RuleMetadata attr = model.metadataList[i];
+
+            buf.append( "\t" );
+            buf.append( attr );
+
+            buf.append( "\n" );
+            
+        }
+
+    }
+    
     /**
      * Marshal LHS patterns
      *
