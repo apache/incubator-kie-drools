@@ -6,6 +6,7 @@ import org.drools.guvnor.client.modeldriven.dt.ActionSetFieldCol;
 import org.drools.guvnor.client.modeldriven.dt.AttributeCol;
 import org.drools.guvnor.client.modeldriven.dt.ConditionCol;
 import org.drools.guvnor.client.modeldriven.dt.GuidedDecisionTable;
+import org.drools.guvnor.client.modeldriven.dt.MetadataCol;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
@@ -18,6 +19,7 @@ public class GuidedDTXMLPersistence {
     private GuidedDTXMLPersistence() {
     	xt = new XStream(new DomDriver());
     	xt.alias("decision-table", GuidedDecisionTable.class);
+    	xt.alias("metadata-column", MetadataCol.class);
     	xt.alias("attribute-column", AttributeCol.class);
     	xt.alias("condition-column", ConditionCol.class);
     	xt.alias("set-field-col", ActionSetFieldCol.class);

@@ -25,6 +25,8 @@ public class GuidedDecisionTable implements PortableObject {
 	 */
 	public String tableName;
 
+	public List<MetadataCol> metadataCols = new ArrayList<MetadataCol>();
+	
 	public List<AttributeCol> attributeCols = new ArrayList<AttributeCol>();
 
 	public List<ConditionCol> conditionCols = new ArrayList<ConditionCol>();
