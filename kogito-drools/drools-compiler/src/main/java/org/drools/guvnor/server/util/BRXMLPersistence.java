@@ -13,6 +13,7 @@ import org.drools.guvnor.client.modeldriven.brl.DSLSentence;
 import org.drools.guvnor.client.modeldriven.brl.FactPattern;
 import org.drools.guvnor.client.modeldriven.brl.FreeFormLine;
 import org.drools.guvnor.client.modeldriven.brl.RuleAttribute;
+import org.drools.guvnor.client.modeldriven.brl.RuleMetadata;
 import org.drools.guvnor.client.modeldriven.brl.RuleModel;
 import org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint;
 
@@ -50,6 +51,8 @@ public class BRXMLPersistence implements BRLPersistence {
                   DSLSentence.class );
         this.xt.alias( "compositePattern",
                   CompositeFactPattern.class );
+        this.xt.alias( "metadata",
+                RuleMetadata.class );
         this.xt.alias( "attribute",
                   RuleAttribute.class );
 
@@ -90,7 +93,12 @@ public class BRXMLPersistence implements BRLPersistence {
         if ( xml.trim().equals( "" ) ) {
             return new RuleModel();
         }
-        return (RuleModel) this.xt.fromXML( xml );
+        RuleModel rm = (RuleModel) this.xt.fromXML( xml );
+        //Fixme , hack for a upgrade to add Metadata
+        if(rm.metadataList == null){
+        	rm.metadataList = new RuleMetadata[0];
+        }
+        return rm;
     }
 
 }
