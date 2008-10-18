@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter xmlns:xi="http://www.w3.org/2001/XInclude" >
+
+  <title>Human Tasks</title>
+
+  <para></para>
+
+  <section>
+    <title>Human tasks inside processes</title>
+
+  </section>
+
+  <section>
+    <title>Human task management component</title>
+
+  </section>
+
+  <section>
+    <title>Human task management interface</title>
+
+    <section>
+      <title>Eclipse integration</title>
+    </section>
+
+  </section>
+
+</chapter>

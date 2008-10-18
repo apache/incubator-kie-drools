@@ -10,7 +10,7 @@
     is a plugin for the Eclipse developement environment that allows users to
     create, execute and debug Drools processes and rules.</para>
 
-    <para>To get started, you need an Eclipse 3.3.x, as well as the Eclipse
+    <para>To get started, you need an Eclipse 3.4.x, as well as the Eclipse
     Graphical Editing Framework (GEF) plugin installed.  Eclipse can be downloaded
     from <ulink url="http://www.eclipse.org/downloads/">
     http://www.eclipse.org/downloads/</ulink> (choose either the Eclipse IDE for Java
@@ -23,16 +23,18 @@
     url="http://www.jboss.org/auth/drools/downloads.html">
     http://www.jboss.org/auth/drools/downloads.html</ulink> (the latest snapshot build
     can also be downloaded from <ulink url="https://hudson.jboss.org/hudson/job/drools/lastSuccessfulBuild/artifact/trunk/target/">https://hudson.jboss.org/hudson/job/drools/lastSuccessfulBuild/artifact/trunk/target/</ulink>), unzip it in your eclipse
-    folder and (re)start Eclipse.  If installation was successful, the Drools menu
-    action should appear in the top menu bar.</para>
+    folder and (re)start Eclipse.  To check that installation was successful, open
+    the Drools perspective: Click the 'Open Perspective' button in the top right corner
+    of your eclipse window, select 'Other...' and pick the Drools perspective.</para>
   </section>
 
   <section>
     <title>Creating your first process</title>
 
-    <para>You should switch to the Drools perspective within Eclipse first, as this will
-    open all the relevant views for you.  You can do this by clicking on the Open Perspective
-    button (top right of your screen) and selecting Other ... -> Drools.</para>
+    <para>If you haven't done so already, you should switch to the Drools perspective within
+    Eclipse first, as this will open all the relevant views for you.  You can do this by
+    clicking on the Open Perspective button (top right of your screen) and selecting Other ...
+    -> Drools.</para>
 
     <para>A new project wizard can be used to setup an executable project to start using
     processes immediately. This will setup a basic structure, classpath, sample

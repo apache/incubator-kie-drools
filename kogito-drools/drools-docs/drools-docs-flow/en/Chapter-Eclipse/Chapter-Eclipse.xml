@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter xmlns:xi="http://www.w3.org/2001/XInclude" >
+
+  <title>Drools Eclipse IDE features</title>
+
+  <para>The Drools plugin for the Eclipse IDE provides a few additional features that
+  might be interesting for developers.</para>
+
+  <section>
+    <title>Process skins</title>
+
+    <para>We have introduced the concept of a (process) skin, which controls how the
+    different nodes inside a process are visualized. This allows you to change the 
+    visualization of the different node types the way you like them (by implementing
+    your own SkinProvider).</para>
+
+    <para>BPMN is a popular language used by business users for modeling business
+    processes. BPMN defines terminology, different types of nodes, how these should
+    be visualized, etc. People who are familiar with BPMN might find it easier to
+    implement an executable process (possibly based on a BPMN process diagram) using
+    a similar visualization. We have therefore created a BPMN skin that maps the Drools
+    Flow concepts to the equivalent BPMN visualization.</para>
+
+    <para>For example, the following figure shows a process using some of the different
+    types of nodes in the RuleFlow language using the default skin ...</para>
+
+    <mediaobject>
+      <imageobject>
+	      <imagedata align="center" fileref="RuleFlow.png" format="PNG" role="" />
+      </imageobject>
+    </mediaobject>
+
+    <para>Simply by switching the preferred process skin in the Drools preferences ...</para>
+
+    <mediaobject>
+      <imageobject>
+	      <imagedata align="center" fileref="preferences.png" format="PNG" role="" />
+      </imageobject>
+    </mediaobject>
+
+    <para>and then reopening the editor shows the same process using the BPMN skin ...</para>
+
+    <mediaobject>
+      <imageobject>
+	      <imagedata align="center" fileref="BPMN.png" format="PNG" role="" />
+      </imageobject>
+    </mediaobject>
+
+  </section>
+
+</chapter>
