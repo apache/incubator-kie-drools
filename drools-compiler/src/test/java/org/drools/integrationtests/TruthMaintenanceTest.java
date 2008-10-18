@@ -806,7 +806,7 @@ public class TruthMaintenanceTest extends TestCase {
         Sensor sensor2 = new Sensor( 200, 0 );
         FactHandle sensor2Handle = workingMemory.insert( sensor2 );
         Sensor sensor3 = new Sensor( 200, 0 );
-        FactHandle sensor3Handle = workingMemory.insert( sensor2 );
+        FactHandle sensor3Handle = workingMemory.insert( sensor3 );
 
         workingMemory.fireAllRules();
 
