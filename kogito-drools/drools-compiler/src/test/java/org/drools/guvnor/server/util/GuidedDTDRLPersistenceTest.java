@@ -12,6 +12,7 @@ import org.drools.guvnor.client.modeldriven.brl.ActionSetField;
 import org.drools.guvnor.client.modeldriven.brl.FactPattern;
 import org.drools.guvnor.client.modeldriven.brl.ISingleFieldConstraint;
 import org.drools.guvnor.client.modeldriven.brl.RuleAttribute;
+import org.drools.guvnor.client.modeldriven.brl.RuleMetadata;
 import org.drools.guvnor.client.modeldriven.brl.RuleModel;
 import org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint;
 import org.drools.guvnor.client.modeldriven.dt.ActionCol;
@@ -21,8 +22,7 @@ import org.drools.guvnor.client.modeldriven.dt.ActionSetFieldCol;
 import org.drools.guvnor.client.modeldriven.dt.AttributeCol;
 import org.drools.guvnor.client.modeldriven.dt.ConditionCol;
 import org.drools.guvnor.client.modeldriven.dt.GuidedDecisionTable;
-import org.drools.guvnor.server.util.BRDRLPersistence;
-import org.drools.guvnor.server.util.GuidedDTDRLPersistence;
+import org.drools.guvnor.client.modeldriven.dt.MetadataCol;
 
 public class GuidedDTDRLPersistenceTest extends TestCase {
 
@@ -133,7 +133,7 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 		List<AttributeCol> attributeCols = new ArrayList<AttributeCol>();
 		RuleModel rm = new RuleModel();
 		RuleAttribute[] orig = rm.attributes;
-		p.doAttribs(attributeCols, row, rm);
+		p.doAttribs(0,attributeCols, row, rm);
 
 		assertSame(orig, rm.attributes);
 
@@ -144,14 +144,14 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 		attributeCols.add(col1);
 		attributeCols.add(col2);
 
-		p.doAttribs(attributeCols, row, rm);
+		p.doAttribs(0, attributeCols, row, rm);
 
 		assertEquals(1, rm.attributes.length);
 		assertEquals("salience", rm.attributes[0].attributeName);
 		assertEquals("a", rm.attributes[0].value);
 
 		row = new String[] {"1", "desc", "a", "b"};
-		p.doAttribs(attributeCols, row, rm);
+		p.doAttribs(0, attributeCols, row, rm);
 		assertEquals(2, rm.attributes.length);
 		assertEquals("salience", rm.attributes[0].attributeName);
 		assertEquals("a", rm.attributes[0].value);
@@ -160,6 +160,43 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 
 	}
 
+	public void testMetaData() {
+		GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
+		String[] row = new String[] {"1", "desc", "bar", ""};
+
+		List<MetadataCol> metadataCols = new ArrayList<MetadataCol>();
+		RuleModel rm = new RuleModel();
+		RuleMetadata[] orig = rm.metadataList;
+//		RuleAttribute[] orig = rm.attributes;
+		p.doMetadata(metadataCols, row, rm);
+//		p.doAttribs(0,metadataCols, row, rm);
+
+		assertSame(orig, rm.metadataList);
+
+		MetadataCol col1 = new MetadataCol();
+		col1.attr = "foo";
+		MetadataCol col2 = new MetadataCol();
+		col2.attr = "foo2";
+		metadataCols.add(col1);
+		metadataCols.add(col2);
+
+		p.doMetadata(metadataCols, row, rm);
+//		p.doAttribs(0, metadataCols, row, rm);
+
+		assertEquals(1, rm.metadataList.length);
+		assertEquals("foo", rm.metadataList[0].attributeName);
+		assertEquals("bar", rm.metadataList[0].value);
+
+		row = new String[] {"1", "desc", "bar1", "bar2"};
+		p.doMetadata(metadataCols, row, rm);
+		assertEquals(2, rm.metadataList.length);
+		assertEquals("foo", rm.metadataList[0].attributeName);
+		assertEquals("bar1", rm.metadataList[0].value);
+		assertEquals("foo2", rm.metadataList[1].attributeName);
+		assertEquals("bar2", rm.metadataList[1].value);
+
+	}
+	
 	public void testLHS() {
 		GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
 		String[] row = new String[] {"1", "desc", "a", "mike", "33 + 1", "age > 6", "stilton"};

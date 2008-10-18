@@ -12,6 +12,7 @@ import org.drools.guvnor.client.modeldriven.brl.IAction;
 import org.drools.guvnor.client.modeldriven.brl.IPattern;
 import org.drools.guvnor.client.modeldriven.brl.ISingleFieldConstraint;
 import org.drools.guvnor.client.modeldriven.brl.RuleAttribute;
+import org.drools.guvnor.client.modeldriven.brl.RuleMetadata;
 import org.drools.guvnor.client.modeldriven.brl.RuleModel;
 import org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint;
 import org.drools.guvnor.client.modeldriven.dt.ActionCol;
@@ -21,6 +22,7 @@ import org.drools.guvnor.client.modeldriven.dt.ActionSetFieldCol;
 import org.drools.guvnor.client.modeldriven.dt.AttributeCol;
 import org.drools.guvnor.client.modeldriven.dt.ConditionCol;
 import org.drools.guvnor.client.modeldriven.dt.GuidedDecisionTable;
+import org.drools.guvnor.client.modeldriven.dt.MetadataCol;
 
 /**
  * This takes care of converting GuidedDT object to DRL (via the RuleModel).
@@ -45,9 +47,10 @@ public class GuidedDTDRLPersistence {
 			RuleModel rm = new RuleModel();
 			rm.name = getName(dt.tableName, num);
 
-			doAttribs(dt.attributeCols, row, rm);
-			doConditions(dt.attributeCols.size(), dt.conditionCols, row, rm);
-			doActions(dt.attributeCols.size() + dt.conditionCols.size(), dt.actionCols, row, rm);
+			doMetadata(dt.metadataCols, row, rm);
+			doAttribs(dt.metadataCols.size(), dt.attributeCols, row, rm);
+			doConditions(dt.metadataCols.size() + dt.attributeCols.size(), dt.conditionCols, row, rm);
+			doActions(dt.metadataCols.size() +dt.attributeCols.size() + dt.conditionCols.size(), dt.actionCols, row, rm);
 
 			sb.append("#from row number: " + (i + 1) + "\n");
 			String rule = BRDRLPersistence.getInstance().marshal(rm);
@@ -119,13 +122,13 @@ public class GuidedDTDRLPersistence {
 		return null;
 	}
 
-	void doConditions(int numOfAttributes, List<ConditionCol> conditionCols, String[] row, RuleModel rm) {
+	void doConditions(int numOfAttributesAndMeta, List<ConditionCol> conditionCols, String[] row, RuleModel rm) {
 
 		List<FactPattern> patterns = new ArrayList<FactPattern>();
 
 		for (int i = 0; i < conditionCols.size(); i++) {
 			ConditionCol c = (ConditionCol) conditionCols.get(i);
-			String cell = row[i + 2 + numOfAttributes];
+			String cell = row[i + 2 + numOfAttributesAndMeta];
 			if (validCell(cell)) {
 
 				//get or create the pattern it belongs too
@@ -188,17 +191,31 @@ public class GuidedDTDRLPersistence {
 		return null;
 	}
 
-	void doAttribs(List<AttributeCol> attributeCols, String[] row, RuleModel rm) {
+	void doAttribs(int numOfMeta, List<AttributeCol> attributeCols, String[] row, RuleModel rm) {
 		List<RuleAttribute> attribs = new ArrayList<RuleAttribute>();
 		for (int j = 0; j < attributeCols.size(); j++) {
 			AttributeCol at = attributeCols.get(j);
-			String cell = row[j + 2];
+			String cell = row[j + 2 + numOfMeta];
 			if (validCell(cell)) {
 				attribs.add(new RuleAttribute(at.attr, cell));
 			}
 		}
 		if (attribs.size() > 0) {
 			rm.attributes = attribs.toArray(new RuleAttribute[attribs.size()]);
+		}
+	}
+	
+	void doMetadata(List<MetadataCol> metadataCols, String[] row, RuleModel rm) {
+		List<RuleMetadata> metadataList = new ArrayList<RuleMetadata>();
+		for (int j = 0; j < metadataCols.size(); j++) {
+			MetadataCol meta = metadataCols.get(j);
+			String cell = row[j + 2];
+			if (validCell(cell)) {
+				metadataList.add(new RuleMetadata(meta.attr, cell));
+			}
+		}
+		if (metadataList.size() > 0) {
+			rm.metadataList = metadataList.toArray(new RuleMetadata[metadataList.size()]);
 		}
 	}
 
