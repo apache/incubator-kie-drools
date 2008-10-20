@@ -37,7 +37,7 @@ import java.util.List;
  */
 public class WorkingMemoryInMemoryLogger extends WorkingMemoryLogger {
 
-    private List events            = new ArrayList();
+    private List<LogEvent> events            = new ArrayList<LogEvent>();
 
     public WorkingMemoryInMemoryLogger() {
     }
@@ -85,6 +85,10 @@ public class WorkingMemoryInMemoryLogger extends WorkingMemoryLogger {
      */
     public void logEventCreated(final LogEvent logEvent) {
         this.events.add( logEvent );
+    }
+    
+    public List<LogEvent> getLogEvents() {
+    	return this.events;
     }
 
 }
