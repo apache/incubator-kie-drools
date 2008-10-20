@@ -30,10 +30,12 @@ public abstract class AbstractDSLMappingEntry {
 	protected MetaData metadata;
 	protected String key;
 	protected String value;
+	protected String sentence;
 	protected Map variables = Collections.EMPTY_MAP;
 	protected Pattern keyPattern;
 	protected String valuePattern;
-
+	
+	
 	public AbstractDSLMappingEntry() {
 		super();
 	}
@@ -109,6 +111,14 @@ public abstract class AbstractDSLMappingEntry {
 	    return this.section + "[" + this.metadata + "]" + this.key + "=" + this.value;
 	}
 
+	public void setSentence(String sentence){
+    	this.sentence = sentence;
+    }
+	
+	public String getSentence(){
+		return this.sentence;
+	}
+	
 	public int hashCode() {
 	    final int PRIME = 31;
 	    int result = 1;

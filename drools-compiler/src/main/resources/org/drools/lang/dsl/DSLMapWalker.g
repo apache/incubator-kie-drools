@@ -40,14 +40,16 @@ scope {
 	int counter;
 	StringBuffer keybuffer;
 	StringBuffer valuebuffer;
+	StringBuffer sentencebuffer;
 }
 @init {
 	$entry::retval = new AntlrDSLMappingEntry() ;
 	$entry::variables = new HashMap();
 	$entry::keybuffer = new StringBuffer();
 	$entry::valuebuffer = new StringBuffer();
+	$entry::sentencebuffer = new StringBuffer();
 }
-	: ^(VT_ENTRY scope_section meta_section? key_section {$entry::retval.variables = $entry::variables; $entry::retval.setMappingKey($entry::keybuffer.toString());}
+	: ^(VT_ENTRY scope_section meta_section? key_section {$entry::retval.variables = $entry::variables; $entry::retval.setMappingKey($entry::keybuffer.toString());$entry::retval.setSentence($entry::sentencebuffer.toString());}
 		value_section)
 	{
 		$entry::retval.setMappingValue($entry::valuebuffer.toString());
@@ -83,10 +85,12 @@ key_sentence
 	| vtl=VT_LITERAL 
 	{
 		$entry::keybuffer.append($vtl.text);
+		$entry::sentencebuffer.append($vtl.text);
 	}
 	| VT_SPACE
 	{
 		$entry::keybuffer.append("\\s+");
+		$entry::sentencebuffer.append(" ");
 	}
 	;		
 
@@ -114,11 +118,25 @@ literal
 	;	
 
 variable_definition
-	:   ^(VT_VAR_DEF varname=LITERAL pattern=VT_PATTERN? )
+	:   ^(VT_VAR_DEF varname=LITERAL  ^(VT_QUAL q=LITERAL?) pattern=VT_PATTERN? )
 	{
 		$entry::counter++;
 		$entry::variables.put($varname.text, new Integer($entry::counter));
-		$entry::keybuffer.append($pattern != null? "(" + $pattern.text + ")" : "(.*?)");
+		
+		if($q!=null && $pattern!=null){
+			$entry::sentencebuffer.append("{"+$varname.text+":"+$q.text+":"+$pattern.text+"}");
+		}else if($q==null && $pattern!=null){
+			$entry::sentencebuffer.append("{"+$varname.text+":"+$pattern.text+"}");
+		}else{
+			$entry::sentencebuffer.append("{"+$varname.text+"}");
+		}
+		
+		if($q == null || !$q.getText().equals("ENUM")){
+			$entry::keybuffer.append($pattern != null? "(" + $pattern.text + ")" : "(.*?)");
+		}else{
+			$entry::keybuffer.append("(.*?)");
+			
+		}
 	}
 	;
 

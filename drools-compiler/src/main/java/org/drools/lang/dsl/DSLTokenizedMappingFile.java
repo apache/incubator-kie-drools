@@ -26,6 +26,7 @@ public class DSLTokenizedMappingFile extends DSLMappingFile {
         	final DSLMappingParseException exception = 
         		new DSLMappingParseException( error, -1 );
         	this.errors.add( exception );
+        	
 		}
 		return this.errors.isEmpty();
     }

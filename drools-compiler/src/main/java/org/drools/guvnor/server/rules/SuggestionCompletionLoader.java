@@ -29,9 +29,11 @@ import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.TypeFieldDescr;
+import org.drools.lang.dsl.AbstractDSLMappingEntry;
 import org.drools.lang.dsl.DSLMapping;
 import org.drools.lang.dsl.DSLMappingEntry;
 import org.drools.lang.dsl.DSLMappingFile;
+import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.rule.MapBackedClassLoader;
 import org.drools.util.asm.ClassFieldInspector;
 
@@ -227,14 +229,14 @@ public class SuggestionCompletionLoader {
         // }
 
         for ( final Iterator it = dsls.iterator(); it.hasNext(); ) {
-            final DSLMappingFile file = (DSLMappingFile) it.next();
+            final DSLTokenizedMappingFile file = (DSLTokenizedMappingFile) it.next();
             final DSLMapping mapping = file.getMapping();
             for ( final Iterator entries = mapping.getEntries().iterator(); entries.hasNext(); ) {
-                final DSLMappingEntry entry = (DSLMappingEntry) entries.next();
+                final AbstractDSLMappingEntry entry = (AbstractDSLMappingEntry) entries.next();
                 if ( entry.getSection() == DSLMappingEntry.CONDITION ) {
-                    this.builder.addDSLConditionSentence( entry.getMappingKey() );
+                    this.builder.addDSLConditionSentence( entry.getSentence() );
                 } else if ( entry.getSection() == DSLMappingEntry.CONSEQUENCE ) {
-                    this.builder.addDSLActionSentence( entry.getMappingKey() );
+                    this.builder.addDSLActionSentence( entry.getSentence() );
                 }
             }
         }

@@ -36,17 +36,20 @@ public class AntlrDSLMappingEntry extends AbstractDSLMappingEntry
         this( DSLMappingEntry.ANY,
               DSLMappingEntry.EMPTY_METADATA,
               null,
-              null );
+              null,
+              null);
     }
 
     public AntlrDSLMappingEntry(final Section section,
                                 final MetaData metadata,
                                 final String key,
-                                final String value) {
+                                final String value,
+                                final String sentence) {
         this.section = section;
         this.metadata = metadata;
         this.setMappingKey( key );
         this.setMappingValue( value );
+        this.sentence = sentence;
     }
 
     /**

@@ -1,9 +1,9 @@
-// $ANTLR 3.0.1 DSLMap.g 2008-06-11 12:09:03
+// $ANTLR 3.0.1 src/main/resources/org/drools/lang/dsl/DSLMap.g 2008-10-20 12:49:42
 
 	package org.drools.lang.dsl;
 	import java.util.List;
 	import java.util.ArrayList;
-	import org.drools.lang.dsl.DSLMappingParseException;
+//	import org.drools.lang.dsl.DSLMappingParseException;
 
 
 import org.antlr.runtime.*;
@@ -13,54 +13,55 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 public class DSLMapLexer extends Lexer {
-    public static final int COMMA=26;
-    public static final int RIGHT_CURLY=29;
+    public static final int COMMA=27;
+    public static final int RIGHT_CURLY=30;
     public static final int VT_ENTRY_VAL=14;
-    public static final int WS=30;
-    public static final int MISC=34;
+    public static final int WS=31;
+    public static final int MISC=35;
     public static final int VT_META=12;
     public static final int VT_CONSEQUENCE=9;
-    public static final int VT_SPACE=19;
-    public static final int LINE_COMMENT=21;
+    public static final int VT_SPACE=20;
+    public static final int LINE_COMMENT=22;
     public static final int VT_ANY=11;
     public static final int VT_LITERAL=17;
-    public static final int DOT=32;
-    public static final int EQUALS=22;
+    public static final int DOT=33;
+    public static final int EQUALS=23;
     public static final int VT_DSL_GRAMMAR=4;
     public static final int VT_CONDITION=8;
     public static final int VT_VAR_DEF=15;
     public static final int VT_ENTRY=6;
     public static final int VT_PATTERN=18;
-    public static final int LITERAL=25;
-    public static final int EscapeSequence=31;
+    public static final int LITERAL=26;
+    public static final int EscapeSequence=32;
     public static final int VT_COMMENT=5;
     public static final int EOF=-1;
-    public static final int EOL=20;
-    public static final int LEFT_SQUARE=23;
-    public static final int Tokens=35;
+    public static final int EOL=21;
+    public static final int LEFT_SQUARE=24;
+    public static final int Tokens=36;
     public static final int VT_ENTRY_KEY=13;
     public static final int VT_SCOPE=7;
-    public static final int COLON=27;
+    public static final int COLON=28;
     public static final int VT_KEYWORD=10;
+    public static final int VT_QUAL=19;
     public static final int VT_VAR_REF=16;
-    public static final int LEFT_CURLY=28;
-    public static final int POUND=33;
-    public static final int RIGHT_SQUARE=24;
+    public static final int LEFT_CURLY=29;
+    public static final int POUND=34;
+    public static final int RIGHT_SQUARE=25;
     public DSLMapLexer() {;} 
     public DSLMapLexer(CharStream input) {
         super(input);
         ruleMemo = new HashMap[17+1];
      }
-    public String getGrammarFileName() { return "DSLMap.g"; }
+    public String getGrammarFileName() { return "src/main/resources/org/drools/lang/dsl/DSLMap.g"; }
 
     // $ANTLR start WS
     public final void mWS() throws RecognitionException {
         try {
             int _type = WS;
-            // DSLMap.g:267:9: ( ( ' ' | '\\t' | '\\f' )+ )
-            // DSLMap.g:267:17: ( ' ' | '\\t' | '\\f' )+
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:269:9: ( ( ' ' | '\\t' | '\\f' )+ )
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:269:17: ( ' ' | '\\t' | '\\f' )+
             {
-            // DSLMap.g:267:17: ( ' ' | '\\t' | '\\f' )+
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:269:17: ( ' ' | '\\t' | '\\f' )+
             int cnt1=0;
             loop1:
             do {
@@ -74,7 +75,7 @@ public class DSLMapLexer extends Lexer {
 
                 switch (alt1) {
             	case 1 :
-            	    // DSLMap.g:
+            	    // src/main/resources/org/drools/lang/dsl/DSLMap.g:
             	    {
             	    if ( input.LA(1)=='\t'||input.LA(1)=='\f'||input.LA(1)==' ' ) {
             	        input.consume();
@@ -118,10 +119,10 @@ public class DSLMapLexer extends Lexer {
     public final void mEOL() throws RecognitionException {
         try {
             int _type = EOL;
-            // DSLMap.g:274:6: ( ( ( '\\r\\n' )=> '\\r\\n' | '\\r' | '\\n' ) )
-            // DSLMap.g:275:6: ( ( '\\r\\n' )=> '\\r\\n' | '\\r' | '\\n' )
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:276:6: ( ( ( '\\r\\n' )=> '\\r\\n' | '\\r' | '\\n' ) )
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:277:6: ( ( '\\r\\n' )=> '\\r\\n' | '\\r' | '\\n' )
             {
-            // DSLMap.g:275:6: ( ( '\\r\\n' )=> '\\r\\n' | '\\r' | '\\n' )
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:277:6: ( ( '\\r\\n' )=> '\\r\\n' | '\\r' | '\\n' )
             int alt2=3;
             int LA2_0 = input.LA(1);
 
@@ -140,13 +141,13 @@ public class DSLMapLexer extends Lexer {
             else {
                 if (backtracking>0) {failed=true; return ;}
                 NoViableAltException nvae =
-                    new NoViableAltException("275:6: ( ( '\\r\\n' )=> '\\r\\n' | '\\r' | '\\n' )", 2, 0, input);
+                    new NoViableAltException("277:6: ( ( '\\r\\n' )=> '\\r\\n' | '\\r' | '\\n' )", 2, 0, input);
 
                 throw nvae;
             }
             switch (alt2) {
                 case 1 :
-                    // DSLMap.g:275:14: ( '\\r\\n' )=> '\\r\\n'
+                    // src/main/resources/org/drools/lang/dsl/DSLMap.g:277:14: ( '\\r\\n' )=> '\\r\\n'
                     {
                     match("\r\n"); if (failed) return ;
 
@@ -154,14 +155,14 @@ public class DSLMapLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // DSLMap.g:276:25: '\\r'
+                    // src/main/resources/org/drools/lang/dsl/DSLMap.g:278:25: '\\r'
                     {
                     match('\r'); if (failed) return ;
 
                     }
                     break;
                 case 3 :
-                    // DSLMap.g:277:25: '\\n'
+                    // src/main/resources/org/drools/lang/dsl/DSLMap.g:279:25: '\\n'
                     {
                     match('\n'); if (failed) return ;
 
@@ -183,8 +184,8 @@ public class DSLMapLexer extends Lexer {
     // $ANTLR start EscapeSequence
     public final void mEscapeSequence() throws RecognitionException {
         try {
-            // DSLMap.g:283:5: ( '\\\\' ( 'b' | 'B' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' | '.' | 'o' | 'x' | 'a' | 'e' | 'c' | 'd' | 'D' | 's' | 'S' | 'w' | 'W' | 'p' | 'A' | 'G' | 'Z' | 'z' | 'Q' | 'E' | '*' | '[' | ']' | '(' | ')' | '$' | '^' | '{' | '}' | '?' | '+' | '-' | '&' | '|' | '=' | 'u' | '0' | '#' ) )
-            // DSLMap.g:283:9: '\\\\' ( 'b' | 'B' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' | '.' | 'o' | 'x' | 'a' | 'e' | 'c' | 'd' | 'D' | 's' | 'S' | 'w' | 'W' | 'p' | 'A' | 'G' | 'Z' | 'z' | 'Q' | 'E' | '*' | '[' | ']' | '(' | ')' | '$' | '^' | '{' | '}' | '?' | '+' | '-' | '&' | '|' | '=' | 'u' | '0' | '#' )
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:285:5: ( '\\\\' ( 'b' | 'B' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' | '.' | 'o' | 'x' | 'a' | 'e' | 'c' | 'd' | 'D' | 's' | 'S' | 'w' | 'W' | 'p' | 'A' | 'G' | 'Z' | 'z' | 'Q' | 'E' | '*' | '[' | ']' | '(' | ')' | '$' | '^' | '{' | '}' | '?' | '+' | '-' | '&' | '|' | '=' | 'u' | '0' | '#' ) )
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:285:9: '\\\\' ( 'b' | 'B' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' | '.' | 'o' | 'x' | 'a' | 'e' | 'c' | 'd' | 'D' | 's' | 'S' | 'w' | 'W' | 'p' | 'A' | 'G' | 'Z' | 'z' | 'Q' | 'E' | '*' | '[' | ']' | '(' | ')' | '$' | '^' | '{' | '}' | '?' | '+' | '-' | '&' | '|' | '=' | 'u' | '0' | '#' )
             {
             match('\\'); if (failed) return ;
             if ( (input.LA(1)>='\"' && input.LA(1)<='$')||(input.LA(1)>='&' && input.LA(1)<='+')||(input.LA(1)>='-' && input.LA(1)<='.')||input.LA(1)=='0'||input.LA(1)=='='||input.LA(1)=='?'||(input.LA(1)>='A' && input.LA(1)<='B')||(input.LA(1)>='D' && input.LA(1)<='E')||input.LA(1)=='G'||input.LA(1)=='Q'||input.LA(1)=='S'||input.LA(1)=='W'||(input.LA(1)>='Z' && input.LA(1)<='^')||(input.LA(1)>='a' && input.LA(1)<='f')||(input.LA(1)>='n' && input.LA(1)<='p')||(input.LA(1)>='r' && input.LA(1)<='u')||(input.LA(1)>='w' && input.LA(1)<='x')||(input.LA(1)>='z' && input.LA(1)<='}') ) {
@@ -211,8 +212,8 @@ public class DSLMapLexer extends Lexer {
     public final void mLEFT_SQUARE() throws RecognitionException {
         try {
             int _type = LEFT_SQUARE;
-            // DSLMap.g:290:9: ( '[' )
-            // DSLMap.g:290:11: '['
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:292:9: ( '[' )
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:292:11: '['
             {
             match('['); if (failed) return ;
 
@@ -229,8 +230,8 @@ public class DSLMapLexer extends Lexer {
     public final void mRIGHT_SQUARE() throws RecognitionException {
         try {
             int _type = RIGHT_SQUARE;
-            // DSLMap.g:294:9: ( ']' )
-            // DSLMap.g:294:11: ']'
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:296:9: ( ']' )
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:296:11: ']'
             {
             match(']'); if (failed) return ;
 
@@ -247,8 +248,8 @@ public class DSLMapLexer extends Lexer {
     public final void mLEFT_CURLY() throws RecognitionException {
         try {
             int _type = LEFT_CURLY;
-            // DSLMap.g:298:9: ( '{' )
-            // DSLMap.g:298:11: '{'
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:300:9: ( '{' )
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:300:11: '{'
             {
             match('{'); if (failed) return ;
 
@@ -265,8 +266,8 @@ public class DSLMapLexer extends Lexer {
     public final void mRIGHT_CURLY() throws RecognitionException {
         try {
             int _type = RIGHT_CURLY;
-            // DSLMap.g:302:9: ( '}' )
-            // DSLMap.g:302:11: '}'
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:304:9: ( '}' )
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:304:11: '}'
             {
             match('}'); if (failed) return ;
 
@@ -283,8 +284,8 @@ public class DSLMapLexer extends Lexer {
     public final void mEQUALS() throws RecognitionException {
         try {
             int _type = EQUALS;
-            // DSLMap.g:305:8: ( '=' )
-            // DSLMap.g:305:10: '='
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:307:8: ( '=' )
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:307:10: '='
             {
             match('='); if (failed) return ;
 
@@ -301,8 +302,8 @@ public class DSLMapLexer extends Lexer {
     public final void mDOT() throws RecognitionException {
         try {
             int _type = DOT;
-            // DSLMap.g:308:5: ( '.' )
-            // DSLMap.g:308:7: '.'
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:310:5: ( '.' )
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:310:7: '.'
             {
             match('.'); if (failed) return ;
 
@@ -319,8 +320,8 @@ public class DSLMapLexer extends Lexer {
     public final void mPOUND() throws RecognitionException {
         try {
             int _type = POUND;
-            // DSLMap.g:311:9: ( '#' )
-            // DSLMap.g:311:11: '#'
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:313:9: ( '#' )
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:313:11: '#'
             {
             match('#'); if (failed) return ;
 
@@ -337,8 +338,8 @@ public class DSLMapLexer extends Lexer {
     public final void mCOLON() throws RecognitionException {
         try {
             int _type = COLON;
-            // DSLMap.g:314:7: ( ':' )
-            // DSLMap.g:314:9: ':'
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:316:7: ( ':' )
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:316:9: ':'
             {
             match(':'); if (failed) return ;
 
@@ -355,8 +356,8 @@ public class DSLMapLexer extends Lexer {
     public final void mCOMMA() throws RecognitionException {
         try {
             int _type = COMMA;
-            // DSLMap.g:317:7: ( ',' )
-            // DSLMap.g:317:9: ','
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:319:7: ( ',' )
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:319:9: ','
             {
             match(','); if (failed) return ;
 
@@ -373,11 +374,11 @@ public class DSLMapLexer extends Lexer {
     public final void mLINE_COMMENT() throws RecognitionException {
         try {
             int _type = LINE_COMMENT;
-            // DSLMap.g:325:2: ( POUND ( options {greedy=false; } : . )* EOL )
-            // DSLMap.g:325:4: POUND ( options {greedy=false; } : . )* EOL
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:327:2: ( POUND ( options {greedy=false; } : . )* EOL )
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:327:4: POUND ( options {greedy=false; } : . )* EOL
             {
             mPOUND(); if (failed) return ;
-            // DSLMap.g:325:10: ( options {greedy=false; } : . )*
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:327:10: ( options {greedy=false; } : . )*
             loop3:
             do {
                 int alt3=2;
@@ -396,7 +397,7 @@ public class DSLMapLexer extends Lexer {
 
                 switch (alt3) {
             	case 1 :
-            	    // DSLMap.g:325:37: .
+            	    // src/main/resources/org/drools/lang/dsl/DSLMap.g:327:37: .
             	    {
             	    matchAny(); if (failed) return ;
 
@@ -423,10 +424,10 @@ public class DSLMapLexer extends Lexer {
     public final void mLITERAL() throws RecognitionException {
         try {
             int _type = LITERAL;
-            // DSLMap.g:333:2: ( ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' | '\\u00c0' .. '\\u00ff' | MISC | EscapeSequence | DOT )+ )
-            // DSLMap.g:333:4: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' | '\\u00c0' .. '\\u00ff' | MISC | EscapeSequence | DOT )+
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:335:2: ( ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' | '\\u00c0' .. '\\u00ff' | MISC | EscapeSequence | DOT )+ )
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:335:4: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' | '\\u00c0' .. '\\u00ff' | MISC | EscapeSequence | DOT )+
             {
-            // DSLMap.g:333:4: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' | '\\u00c0' .. '\\u00ff' | MISC | EscapeSequence | DOT )+
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:335:4: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' | '\\u00c0' .. '\\u00ff' | MISC | EscapeSequence | DOT )+
             int cnt4=0;
             loop4:
             do {
@@ -618,56 +619,56 @@ public class DSLMapLexer extends Lexer {
 
                 switch (alt4) {
             	case 1 :
-            	    // DSLMap.g:333:5: 'a' .. 'z'
+            	    // src/main/resources/org/drools/lang/dsl/DSLMap.g:335:5: 'a' .. 'z'
             	    {
             	    matchRange('a','z'); if (failed) return ;
 
             	    }
             	    break;
             	case 2 :
-            	    // DSLMap.g:333:14: 'A' .. 'Z'
+            	    // src/main/resources/org/drools/lang/dsl/DSLMap.g:335:14: 'A' .. 'Z'
             	    {
             	    matchRange('A','Z'); if (failed) return ;
 
             	    }
             	    break;
             	case 3 :
-            	    // DSLMap.g:333:23: '_'
+            	    // src/main/resources/org/drools/lang/dsl/DSLMap.g:335:23: '_'
             	    {
             	    match('_'); if (failed) return ;
 
             	    }
             	    break;
             	case 4 :
-            	    // DSLMap.g:333:27: '0' .. '9'
+            	    // src/main/resources/org/drools/lang/dsl/DSLMap.g:335:27: '0' .. '9'
             	    {
             	    matchRange('0','9'); if (failed) return ;
 
             	    }
             	    break;
             	case 5 :
-            	    // DSLMap.g:333:36: '\\u00c0' .. '\\u00ff'
+            	    // src/main/resources/org/drools/lang/dsl/DSLMap.g:335:36: '\\u00c0' .. '\\u00ff'
             	    {
             	    matchRange('\u00C0','\u00FF'); if (failed) return ;
 
             	    }
             	    break;
             	case 6 :
-            	    // DSLMap.g:333:55: MISC
+            	    // src/main/resources/org/drools/lang/dsl/DSLMap.g:335:55: MISC
             	    {
             	    mMISC(); if (failed) return ;
 
             	    }
             	    break;
             	case 7 :
-            	    // DSLMap.g:333:60: EscapeSequence
+            	    // src/main/resources/org/drools/lang/dsl/DSLMap.g:335:60: EscapeSequence
             	    {
             	    mEscapeSequence(); if (failed) return ;
 
             	    }
             	    break;
             	case 8 :
-            	    // DSLMap.g:333:75: DOT
+            	    // src/main/resources/org/drools/lang/dsl/DSLMap.g:335:75: DOT
             	    {
             	    mDOT(); if (failed) return ;
 
@@ -697,8 +698,8 @@ public class DSLMapLexer extends Lexer {
     // $ANTLR start MISC
     public final void mMISC() throws RecognitionException {
         try {
-            // DSLMap.g:337:7: ( '>' | '<' | '!' | '@' | '$' | '%' | '^' | '*' | '-' | '+' | '?' | COMMA | '/' | '\\'' | '\"' | '|' | '&' | '(' | ')' | ';' )
-            // DSLMap.g:
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:339:7: ( '>' | '<' | '!' | '@' | '$' | '%' | '^' | '*' | '-' | '+' | '?' | COMMA | '/' | '\\'' | '\"' | '|' | '&' | '(' | ')' | ';' )
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:
             {
             if ( (input.LA(1)>='!' && input.LA(1)<='\"')||(input.LA(1)>='$' && input.LA(1)<='-')||input.LA(1)=='/'||(input.LA(1)>=';' && input.LA(1)<='<')||(input.LA(1)>='>' && input.LA(1)<='@')||input.LA(1)=='^'||input.LA(1)=='|' ) {
                 input.consume();
@@ -721,7 +722,7 @@ public class DSLMapLexer extends Lexer {
     // $ANTLR end MISC
 
     public void mTokens() throws RecognitionException {
-        // DSLMap.g:1:8: ( WS | EOL | LEFT_SQUARE | RIGHT_SQUARE | LEFT_CURLY | RIGHT_CURLY | EQUALS | DOT | POUND | COLON | COMMA | LINE_COMMENT | LITERAL )
+        // src/main/resources/org/drools/lang/dsl/DSLMap.g:1:8: ( WS | EOL | LEFT_SQUARE | RIGHT_SQUARE | LEFT_CURLY | RIGHT_CURLY | EQUALS | DOT | POUND | COLON | COMMA | LINE_COMMENT | LITERAL )
         int alt5=13;
         switch ( input.LA(1) ) {
         case '\t':
@@ -961,91 +962,91 @@ public class DSLMapLexer extends Lexer {
 
         switch (alt5) {
             case 1 :
-                // DSLMap.g:1:10: WS
+                // src/main/resources/org/drools/lang/dsl/DSLMap.g:1:10: WS
                 {
                 mWS(); if (failed) return ;
 
                 }
                 break;
             case 2 :
-                // DSLMap.g:1:13: EOL
+                // src/main/resources/org/drools/lang/dsl/DSLMap.g:1:13: EOL
                 {
                 mEOL(); if (failed) return ;
 
                 }
                 break;
             case 3 :
-                // DSLMap.g:1:17: LEFT_SQUARE
+                // src/main/resources/org/drools/lang/dsl/DSLMap.g:1:17: LEFT_SQUARE
                 {
                 mLEFT_SQUARE(); if (failed) return ;
 
                 }
                 break;
             case 4 :
-                // DSLMap.g:1:29: RIGHT_SQUARE
+                // src/main/resources/org/drools/lang/dsl/DSLMap.g:1:29: RIGHT_SQUARE
                 {
                 mRIGHT_SQUARE(); if (failed) return ;
 
                 }
                 break;
             case 5 :
-                // DSLMap.g:1:42: LEFT_CURLY
+                // src/main/resources/org/drools/lang/dsl/DSLMap.g:1:42: LEFT_CURLY
                 {
                 mLEFT_CURLY(); if (failed) return ;
 
                 }
                 break;
             case 6 :
-                // DSLMap.g:1:53: RIGHT_CURLY
+                // src/main/resources/org/drools/lang/dsl/DSLMap.g:1:53: RIGHT_CURLY
                 {
                 mRIGHT_CURLY(); if (failed) return ;
 
                 }
                 break;
             case 7 :
-                // DSLMap.g:1:65: EQUALS
+                // src/main/resources/org/drools/lang/dsl/DSLMap.g:1:65: EQUALS
                 {
                 mEQUALS(); if (failed) return ;
 
                 }
                 break;
             case 8 :
-                // DSLMap.g:1:72: DOT
+                // src/main/resources/org/drools/lang/dsl/DSLMap.g:1:72: DOT
                 {
                 mDOT(); if (failed) return ;
 
                 }
                 break;
             case 9 :
-                // DSLMap.g:1:76: POUND
+                // src/main/resources/org/drools/lang/dsl/DSLMap.g:1:76: POUND
                 {
                 mPOUND(); if (failed) return ;
 
                 }
                 break;
             case 10 :
-                // DSLMap.g:1:82: COLON
+                // src/main/resources/org/drools/lang/dsl/DSLMap.g:1:82: COLON
                 {
                 mCOLON(); if (failed) return ;
 
                 }
                 break;
             case 11 :
-                // DSLMap.g:1:88: COMMA
+                // src/main/resources/org/drools/lang/dsl/DSLMap.g:1:88: COMMA
                 {
                 mCOMMA(); if (failed) return ;
 
                 }
                 break;
             case 12 :
-                // DSLMap.g:1:94: LINE_COMMENT
+                // src/main/resources/org/drools/lang/dsl/DSLMap.g:1:94: LINE_COMMENT
                 {
                 mLINE_COMMENT(); if (failed) return ;
 
                 }
                 break;
             case 13 :
-                // DSLMap.g:1:107: LITERAL
+                // src/main/resources/org/drools/lang/dsl/DSLMap.g:1:107: LITERAL
                 {
                 mLITERAL(); if (failed) return ;
 
@@ -1058,8 +1059,8 @@ public class DSLMapLexer extends Lexer {
 
     // $ANTLR start synpred1
     public final void synpred1_fragment() throws RecognitionException {   
-        // DSLMap.g:275:14: ( '\\r\\n' )
-        // DSLMap.g:275:16: '\\r\\n'
+        // src/main/resources/org/drools/lang/dsl/DSLMap.g:277:14: ( '\\r\\n' )
+        // src/main/resources/org/drools/lang/dsl/DSLMap.g:277:16: '\\r\\n'
         {
         match("\r\n"); if (failed) return ;
 
