@@ -56,7 +56,7 @@ public class MVELReturnValueBuilder
             Dialect.AnalysisResult analysis = context.getDialect().analyzeExpression( context,
                                                                                       returnValueRestrictionDescr,
                                                                                       returnValueRestrictionDescr.getContent(),
-                                                                                      new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
+                                                                                      new Set[]{context.getDeclarationResolver().getDeclarations(context.getRule()).keySet(), context.getPkg().getGlobals().keySet()} );
     
             MVELCompilationUnit unit = dialect.getMVELCompilationUnit((String) returnValueRestrictionDescr.getContent(), analysis,  previousDeclarations, localDeclarations, null, context);
     

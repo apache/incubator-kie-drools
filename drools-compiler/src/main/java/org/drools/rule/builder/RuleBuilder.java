@@ -45,6 +45,10 @@ public class RuleBuilder {
     public void build(final RuleBuildContext context) {
         RuleDescr ruleDescr = context.getRuleDescr();
         
+        //Query and get object instead of using String
+        if(null != ruleDescr.getParentName() && null != context.getPkg().getRule(ruleDescr.getParentName())){
+        	context.getRule().setParent(context.getPkg().getRule(ruleDescr.getParentName()));
+        }
         context.getRule().getMetaAttributes().putAll(ruleDescr.getMetaAttributes());
         
         final RuleConditionBuilder builder = (RuleConditionBuilder) context.getDialect().getBuilder( ruleDescr.getLhs().getClass() );
@@ -82,6 +86,8 @@ public class RuleBuilder {
             // It wasn't an integer, so build as an expression
             context.getDialect().getSalienceBuilder().build( context );    
         }     
+        
+       
         
         String enabledText = context.getRuleDescr().getEnabled();
         if( "true".equalsIgnoreCase( enabledText.trim() ) || "false".equalsIgnoreCase( enabledText.trim() ) ) {

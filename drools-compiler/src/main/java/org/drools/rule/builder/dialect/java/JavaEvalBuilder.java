@@ -26,6 +26,7 @@ import org.drools.lang.descr.EvalDescr;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.Pattern;
+import org.drools.rule.Rule;
 import org.drools.rule.RuleConditionElement;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleConditionBuilder;
@@ -68,12 +69,13 @@ public class JavaEvalBuilder extends AbstractJavaRuleBuilder
         Dialect.AnalysisResult analysis = context.getDialect().analyzeExpression( context,
                                                                                   evalDescr,
                                                                                   evalDescr.getContent(),
-                                                                                  new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
+                                                                                  new Set[]{context.getDeclarationResolver().getDeclarations(context.getRule()).keySet(), context.getPkg().getGlobals().keySet()} );
         final List[] usedIdentifiers = analysis.getBoundIdentifiers();
 
         final Declaration[] declarations = new Declaration[usedIdentifiers[0].size()];
+        
         for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {
-            declarations[i] = context.getDeclarationResolver().getDeclaration( (String) usedIdentifiers[0].get( i ) );
+            declarations[i] = context.getDeclarationResolver().getDeclaration(context.getRule(), (String) usedIdentifiers[0].get( i ) );
         }
 
         final EvalCondition eval = new EvalCondition( declarations );

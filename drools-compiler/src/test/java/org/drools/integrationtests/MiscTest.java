@@ -247,10 +247,12 @@ public class MiscTest extends TestCase {
 
     }
     
-    public void yyytestEnabledExpression() throws Exception {
+    public void FIXME_testEnabledExpression() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_enabledExpression.drl" ) ) );
         final Package pkg = builder.getPackage();
+        
+        System.out.println(builder.getErrors().toString());
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
@@ -1071,7 +1073,73 @@ public class MiscTest extends TestCase {
                       ((List) workingMemory.getGlobal( "list" )).get( 0 ) );
 
     }
+    
+    public void testExtends() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "extend_rule_test.drl" ) ) );
+        final Package pkg = builder.getPackage();
+        System.out.println(builder.getErrors());
 
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        //ruleBase = SerializationHelper.serializeObject( ruleBase );
+        StatefulSession session = ruleBase.newStatefulSession();
+
+        //Test 2 levels of inheritance, and basic rule
+        final List list = new ArrayList();
+        session.setGlobal( "list", list );
+        final Cheese mycheese = new Cheese( "cheddar", 4);
+        FactHandle handle = session.insert( mycheese );
+        session.fireAllRules();
+        //System.out.println(((List) session.getGlobal( "list" )).toString());
+        assertEquals( "rule 2b", ((List) session.getGlobal( "list" )).get( 0 ) );
+        assertTrue(((List) session.getGlobal( "list" )).size() == 2);
+        
+        //Test 2nd level (parent) to make sure rule honors the extend rule
+        final List list2 = new ArrayList();
+        session.setGlobal( "list", list2 );
+        session.retract( handle);
+        final Cheese mycheese2 = new Cheese( "notcheddar", 4);
+        FactHandle handle2 = session.insert( mycheese2 );
+        session.fireAllRules();
+        //System.out.println(((List) session.getGlobal( "list" )).toString());
+        assertEquals( "rule 4", ((List) session.getGlobal( "list" )).get( 0 ) );
+        assertTrue(((List) session.getGlobal( "list" )).size() == 1);
+        
+        //Test 3 levels of inheritance, all levels
+        final List list3 = new ArrayList();
+        session.setGlobal( "list", list3 );
+        session.retract( handle2);
+        final Cheese mycheese3 = new Cheese( "stilton", 6);
+        FactHandle handle3 = session.insert( mycheese3 );
+        session.fireAllRules();
+        //System.out.println(((List) session.getGlobal( "list" )).toString());
+        assertEquals( "rule 3", ((List) session.getGlobal( "list" )).get( 0 ) );
+        assertTrue(((List) session.getGlobal( "list" )).size() == 1);
+        
+        //Test 3 levels of inheritance, third only
+        final List list4 = new ArrayList();
+        session.setGlobal( "list", list4 );
+        session.retract( handle3);
+        final Cheese mycheese4 = new Cheese( "notstilton", 6);
+        FactHandle handle4 = session.insert( mycheese4 );
+        session.fireAllRules();
+        //System.out.println(((List) session.getGlobal( "list" )).toString());
+        assertTrue(((List) session.getGlobal( "list" )).size() == 0);
+        
+        //Test 3 levels of inheritance, 2nd only 
+        final List list5 = new ArrayList();
+        session.setGlobal( "list", list5 );
+        session.retract( handle4);
+        final Cheese mycheese5 = new Cheese( "stilton", 7);
+        FactHandle handle5 = session.insert( mycheese5 );
+        session.fireAllRules();
+        //System.out.println(((List) session.getGlobal( "list" )).toString());
+        assertTrue(((List) session.getGlobal( "list" )).size() == 0);
+        
+
+    }
+    
     public void testLiteral() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "literal_rule_test.drl" ) ) );

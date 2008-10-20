@@ -74,7 +74,7 @@ public class MVELAccumulateBuilder
 
             final RuleConditionBuilder builder = context.getDialect().getBuilder( accumDescr.getInput().getClass() );
 
-            Declaration[] previousDeclarations = (  Declaration[] ) context.getDeclarationResolver().getDeclarations().values().toArray( new Declaration[ context.getDeclarationResolver().getDeclarations().size() ] );
+            Declaration[] previousDeclarations = (  Declaration[] ) context.getDeclarationResolver().getDeclarations(context.getRule()).values().toArray( new Declaration[ context.getDeclarationResolver().getDeclarations(context.getRule()).size() ] );
             
             // create source CE
             final RuleConditionElement source = builder.build( context,
@@ -96,7 +96,7 @@ public class MVELAccumulateBuilder
                 final Dialect.AnalysisResult analysis = dialect.analyzeExpression( context,
                                                                                    accumDescr,
                                                                                    accumDescr.getExpression(),
-                                                                                   new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
+                                                                                   new Set[]{context.getDeclarationResolver().getDeclarations(context.getRule()).keySet(), context.getPkg().getGlobals().keySet()} );
 
                 //            int size = analysis.getBoundIdentifiers()[0].size();
                 //            declarations = new Declaration[size];
@@ -127,18 +127,18 @@ public class MVELAccumulateBuilder
                 final MVELAnalysisResult initCodeAnalysis = (MVELAnalysisResult) dialect.analyzeBlock( context,
                                                                                                        accumDescr,
                                                                                                        accumDescr.getInitCode(),
-                                                                                                       new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
+                                                                                                       new Set[]{context.getDeclarationResolver().getDeclarations(context.getRule()).keySet(), context.getPkg().getGlobals().keySet()} );
 
                 final MVELAnalysisResult actionCodeAnalysis = (MVELAnalysisResult) dialect.analyzeBlock( context,
                                                                                                          accumDescr,
                                                                                                          null,
                                                                                                          accumDescr.getActionCode(),
-                                                                                                         new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()},
+                                                                                                         new Set[]{context.getDeclarationResolver().getDeclarations(context.getRule()).keySet(), context.getPkg().getGlobals().keySet()},
                                                                                                          initCodeAnalysis.getMvelVariables() );
                 final MVELAnalysisResult resultCodeAnalysis = (MVELAnalysisResult) dialect.analyzeExpression( context,
                                                                                                               accumDescr,
                                                                                                               accumDescr.getResultCode(),
-                                                                                                              new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()},
+                                                                                                              new Set[]{context.getDeclarationResolver().getDeclarations(context.getRule()).keySet(), context.getPkg().getGlobals().keySet()},
                                                                                                               initCodeAnalysis.getMvelVariables() );
 
                 Dialect.AnalysisResult reverseCodeAnalysis = null;
@@ -146,7 +146,7 @@ public class MVELAccumulateBuilder
                     reverseCodeAnalysis = context.getDialect().analyzeBlock( context,
                                                                              accumDescr,
                                                                              accumDescr.getActionCode(),
-                                                                             new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
+                                                                             new Set[]{context.getDeclarationResolver().getDeclarations(context.getRule()).keySet(), context.getPkg().getGlobals().keySet()} );
                 }
                     
                 MVELCompilationUnit initUnit = dialect.getMVELCompilationUnit( (String) accumDescr.getInitCode(),

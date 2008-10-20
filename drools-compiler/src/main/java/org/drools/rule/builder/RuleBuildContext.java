@@ -84,6 +84,8 @@ public class RuleBuildContext extends PackageBuildContext {
             this.rule = new Rule( ruleDescr.getName() );
         }        
         this.rule.setPackage( pkg.getName() );
+        
+      
 
         // Assign attributes
         setAttributes( this.rule,
@@ -101,6 +103,7 @@ public class RuleBuildContext extends PackageBuildContext {
             dialect.init( ruleDescr );
         } 
         
+      
     }
 
     /**

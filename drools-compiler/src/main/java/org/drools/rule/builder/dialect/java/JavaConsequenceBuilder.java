@@ -30,6 +30,7 @@ import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.Dialect;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.Declaration;
+import org.drools.rule.Rule;
 import org.drools.rule.builder.ConsequenceBuilder;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.dialect.java.parser.JavaModifyBlockDescr;
@@ -63,7 +64,7 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
         Dialect.AnalysisResult analysis = context.getDialect().analyzeBlock( context,
                                                                              ruleDescr,
                                                                              (String) ruleDescr.getConsequence(),
-                                                                             new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
+                                                                             new Set[]{context.getDeclarationResolver().getDeclarations(context.getRule()).keySet(), context.getPkg().getGlobals().keySet()} );
 
         if ( analysis == null ) {
             // not possible to get the analysis results
@@ -81,9 +82,9 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
         final List[] usedIdentifiers = analysis.getBoundIdentifiers();
 
         final Declaration[] declarations = new Declaration[usedIdentifiers[0].size()];
-
-        for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {
-            declarations[i] = context.getDeclarationResolver().getDeclaration( (String) usedIdentifiers[0].get( i ) );
+        
+        for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {    	
+            declarations[i] = context.getDeclarationResolver().getDeclaration(context.getRule(), (String) usedIdentifiers[0].get( i ) );
         }
 
         final Map map = createVariableContext( className,
@@ -162,7 +163,7 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
                                                                      context.getRuleDescr(),
                                                                      mvel.getInterceptors(),
                                                                      d.getModifyExpression(),
-                                                                     new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()},
+                                                                     new Set[]{context.getDeclarationResolver().getDeclarations(context.getRule()).keySet(), context.getPkg().getGlobals().keySet()},
                                                                      null );
 
             final ExecutableStatement expr = (ExecutableStatement) mvel.compile( d.getModifyExpression(),

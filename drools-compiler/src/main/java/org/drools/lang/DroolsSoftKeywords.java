@@ -29,6 +29,7 @@ public class DroolsSoftKeywords {
 	public static final String ENABLED = "enabled";
 	public static final String ATTRIBUTES = "attributes";
 	public static final String RULE = "rule";
+	public static final String EXTEND = "extends";
 	public static final String TEMPLATE = "template";
 	public static final String QUERY = "query";
 	public static final String DECLARE = "declare";

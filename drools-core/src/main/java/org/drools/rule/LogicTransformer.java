@@ -74,8 +74,10 @@ class LogicTransformer {
                                     method );
     }
 
-    public GroupElement[] transform(final GroupElement and) throws InvalidPatternException {
-        final GroupElement cloned = (GroupElement) and.clone();
+    public GroupElement[] transform(final GroupElement cloned) throws InvalidPatternException {
+        //moved cloned to up
+    	//final GroupElement cloned = (GroupElement) and.clone();
+        
 
         processTree( cloned );
         cloned.pack();
@@ -156,7 +158,7 @@ class LogicTransformer {
                 Constraint constraint = (Constraint) next;
                 Declaration[] decl = constraint.getRequiredDeclarations();
                 for ( int i = 0; i < decl.length; i++ ) {
-                    Declaration resolved = resolver.getDeclaration( decl[i].getIdentifier() );
+                    Declaration resolved = resolver.getDeclaration(null, decl[i].getIdentifier() );
                     if ( resolved != null && resolved != decl[i] ) {
                         constraint.replaceDeclaration( decl[i],
                                                        resolved );
@@ -176,7 +178,7 @@ class LogicTransformer {
         } else if ( element instanceof EvalCondition ) {
             Declaration[] decl = ((EvalCondition) element).getRequiredDeclarations();
             for ( int i = 0; i < decl.length; i++ ) {
-                Declaration resolved = resolver.getDeclaration( decl[i].getIdentifier() );
+                Declaration resolved = resolver.getDeclaration(null, decl[i].getIdentifier() );
                 if ( resolved != null && resolved != decl[i] ) {
                     ((EvalCondition) element).replaceDeclaration( decl[i],
                                                                   resolved );
@@ -310,7 +312,7 @@ class LogicTransformer {
                 // create the actual permutations
                 int mod = 1;
                 for ( int j = ors.length - 1; j >= 0; j-- ) {
-                    // we must insert at the beggining to keep the order
+                    // we must insert at the beginning to keep the order
                     and.getChildren().add( 0,
                                            ors[j].getChildren().get( indexes[j] ) );
                     if ( (i % mod) == 0 ) {

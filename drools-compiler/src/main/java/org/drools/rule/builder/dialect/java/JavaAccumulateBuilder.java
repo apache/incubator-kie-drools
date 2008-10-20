@@ -82,13 +82,13 @@ public class JavaAccumulateBuilder extends AbstractJavaRuleBuilder
             final JavaAnalysisResult analysis = (JavaAnalysisResult) context.getDialect().analyzeBlock( context,
                                                                                                         accumDescr,
                                                                                                         accumDescr.getExpression(),
-                                                                                                        new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
+                                                                                                        new Set[]{context.getDeclarationResolver().getDeclarations(context.getRule()).keySet(), context.getPkg().getGlobals().keySet()} );
 
             final List[] usedIdentifiers = analysis.getBoundIdentifiers();
 
             final List tupleDeclarations = new ArrayList();
             for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {
-                tupleDeclarations.add( context.getDeclarationResolver().getDeclaration( (String) usedIdentifiers[0].get( i ) ) );
+                tupleDeclarations.add( context.getDeclarationResolver().getDeclaration(context.getRule(), (String) usedIdentifiers[0].get( i ) ) );
             }
 
             final Declaration[] previousDeclarations = (Declaration[]) tupleDeclarations.toArray( new Declaration[tupleDeclarations.size()] );
@@ -129,15 +129,15 @@ public class JavaAccumulateBuilder extends AbstractJavaRuleBuilder
             final JavaAnalysisResult initCodeAnalysis = (JavaAnalysisResult) context.getDialect().analyzeBlock( context,
                                                                                                                 accumDescr,
                                                                                                                 accumDescr.getInitCode(),
-                                                                                                                new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
+                                                                                                                new Set[]{context.getDeclarationResolver().getDeclarations(context.getRule()).keySet(), context.getPkg().getGlobals().keySet()} );
             final Dialect.AnalysisResult actionCodeAnalysis = context.getDialect().analyzeBlock( context,
                                                                                                  accumDescr,
                                                                                                  accumDescr.getActionCode(),
-                                                                                                 new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
+                                                                                                 new Set[]{context.getDeclarationResolver().getDeclarations(context.getRule()).keySet(), context.getPkg().getGlobals().keySet()} );
             final Dialect.AnalysisResult resultCodeAnalysis = context.getDialect().analyzeExpression( context,
                                                                                                       accumDescr,
                                                                                                       accumDescr.getResultCode(),
-                                                                                                      new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
+                                                                                                      new Set[]{context.getDeclarationResolver().getDeclarations(context.getRule()).keySet(), context.getPkg().getGlobals().keySet()} );
 
             final Set requiredDeclarations = new HashSet( initCodeAnalysis.getBoundIdentifiers()[0] );
             requiredDeclarations.addAll( actionCodeAnalysis.getBoundIdentifiers()[0] );
@@ -151,7 +151,7 @@ public class JavaAccumulateBuilder extends AbstractJavaRuleBuilder
                 final Dialect.AnalysisResult reverseCodeAnalysis = context.getDialect().analyzeBlock( context,
                                                                                                       accumDescr,
                                                                                                       accumDescr.getActionCode(),
-                                                                                                      new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
+                                                                                                      new Set[]{context.getDeclarationResolver().getDeclarations(context.getRule()).keySet(), context.getPkg().getGlobals().keySet()} );
                 requiredDeclarations.addAll( reverseCodeAnalysis.getBoundIdentifiers()[0] );
                 requiredGlobals.addAll( reverseCodeAnalysis.getBoundIdentifiers()[1] );
             }
@@ -159,7 +159,7 @@ public class JavaAccumulateBuilder extends AbstractJavaRuleBuilder
             final Declaration[] declarations = new Declaration[requiredDeclarations.size()];
             int i = 0;
             for( Iterator it = requiredDeclarations.iterator(); it.hasNext(); i++ ) {
-                declarations[i] = context.getDeclarationResolver().getDeclaration( (String) it.next() );
+                declarations[i] = context.getDeclarationResolver().getDeclaration(context.getRule(), (String) it.next() );
             }
             final Declaration[] sourceDeclArr = (Declaration[]) source.getOuterDeclarations().values().toArray( new Declaration[0] );
 

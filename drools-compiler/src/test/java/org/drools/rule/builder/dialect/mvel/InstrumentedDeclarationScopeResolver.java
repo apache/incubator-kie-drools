@@ -6,6 +6,7 @@ package org.drools.rule.builder.dialect.mvel;
 import java.util.Map;
 
 import org.drools.rule.Declaration;
+import org.drools.rule.Rule;
 import org.drools.spi.DeclarationScopeResolver;
 
 public class InstrumentedDeclarationScopeResolver extends DeclarationScopeResolver {
@@ -19,11 +20,13 @@ public class InstrumentedDeclarationScopeResolver extends DeclarationScopeResolv
         this.declarations = map;
     }
 
-    public Map getDeclarations() {
+    @Override
+    public Map getDeclarations( Rule rule ) {
         return this.declarations;
     }
     
-    public Declaration getDeclaration(final String name) {
+    @Override
+    public Declaration getDeclaration( Rule rule, String name) {
         return ( Declaration ) this.declarations.get( name );
     }
 }

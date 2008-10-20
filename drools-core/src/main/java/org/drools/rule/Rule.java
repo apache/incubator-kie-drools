@@ -20,6 +20,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -28,7 +29,6 @@ import java.util.Map;
 import org.drools.WorkingMemory;
 import org.drools.base.EnabledBoolean;
 import org.drools.base.SalienceInteger;
-import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.CompiledInvoker;
 import org.drools.spi.Consequence;
@@ -69,6 +69,9 @@ public class Rule
 
     /** Name of the rule. */
     private String      name;
+    
+    /** Parent Rule Name, optional */
+    private Rule 			parent;
 
     /** Salience value. */
     private Salience               salience;
@@ -121,6 +124,7 @@ public class Rule
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject(pkg);
         out.writeObject(name);
+        out.writeObject(parent);
         out.writeObject(salience);
         out.writeBoolean(dirty);
         out.writeObject(declarations);
@@ -152,6 +156,7 @@ public class Rule
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         pkg = (String)in.readObject();
         name = (String)in.readObject();
+        parent = (Rule)in.readObject();
         salience = (Salience)in.readObject();
         dirty = in.readBoolean();
         declarations    = (Map)in.readObject();
@@ -200,6 +205,7 @@ public class Rule
         this.enabled = EnabledBoolean.ENABLED_TRUE;
         this.salience = SalienceInteger.DEFAULT_SALIENCE;
         this.metaAttributes = new HashMap<String,String>();
+     
     }
 
     /**
@@ -486,7 +492,23 @@ public class Rule
         this.dirty = true;
         this.lhsRoot = lhsRoot;
     }
-
+    private GroupElement getExtendedLhs(Rule rule, GroupElement fromChild){
+    	//combine rules LHS with Parent "Extends"
+    	final GroupElement lhs = (GroupElement) rule.lhsRoot.clone();
+    	//use the children passed from prior child rules, and combine with current LHS (at the end)
+    	if(null != fromChild){
+			//Have GroupElement from a child rule, so combine it
+			lhs.getChildren().addAll(fromChild.getChildren());
+		}
+    	//move recursively up the tree
+    	if(rule.parent != null){
+    		return getExtendedLhs(rule.parent, lhs);
+    	}
+    	//at the top of the tree, return combined LHS
+    	//TODO Merge LHS for performace
+    	
+    	return lhs;	
+    }
     /**
      * Uses the LogicTransformer to process the Rule patters - if no ORs are
      * used this will return an array of a single AND element. If there are Ors
@@ -498,7 +520,8 @@ public class Rule
      * @throws InvalidPatternException
      */
     public GroupElement[] getTransformedLhs() throws InvalidPatternException {
-        return LogicTransformer.getInstance().transform( this.lhsRoot );
+    	//Moved to getExtendedLhs --final GroupElement cloned = (GroupElement) this.lhsRoot.clone();
+    	return LogicTransformer.getInstance().transform( getExtendedLhs(this, null) );
     }
 
     public int getSpecifity() {
@@ -532,6 +555,8 @@ public class Rule
     public void wire(Object object) {
         if ( object instanceof Salience ) {
             setSalience( (Salience ) object );
+        } else if( object instanceof Enabled ) {
+        	setEnabled(( Enabled) object);
         } else {
             setConsequence( (Consequence) object );
         }
@@ -650,4 +675,10 @@ public class Rule
     public String getMetaAttribute(final String identifier) {
         return (String) this.metaAttributes.get( identifier );
     }
+	public void setParent(Rule parent) {
+		this.parent = parent;
+	}
+	public Rule getParent() {
+		return parent;
+	}
 }

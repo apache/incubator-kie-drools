@@ -130,11 +130,11 @@ query returns [QueryDescr queryDescr]
 
 rule returns [RuleDescr ruleDescr]
 @init {	List<Map> declMetadaList = new LinkedList<Map>();}
-	:	^(start=VK_RULE id=VT_RULE_ID  
+	:	^(start=VK_RULE id=VT_RULE_ID  (^(VK_EXTEND parent_id=VT_RULE_ID))?
 		(dm=decl_metadata {declMetadaList.add($dm.attData);	})*
 		 ra=rule_attributes? 
 		 wn=when_part? content=VT_RHS_CHUNK)
-	{	$ruleDescr = factory.createRule($start, $id, $ra.attrList, $wn.andDescr, $content, declMetadaList);	}
+	{	$ruleDescr = factory.createRule($start, $id, $parent_id, $ra.attrList, $wn.andDescr, $content, declMetadaList);	}
 	;
 
 when_part returns [AndDescr andDescr]

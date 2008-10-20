@@ -7,9 +7,11 @@ import java.io.ObjectOutput;
 import java.io.Serializable;
 
 import org.drools.WorkingMemory;
+import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
 import org.drools.spi.Enabled;
+import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.Tuple;
 import org.mvel.MVEL;
 
@@ -56,8 +58,9 @@ public class MVELEnabledExpression
                             final WorkingMemory workingMemory) {
         // it must be cloned for multi-thread safety
         DroolsMVELFactory factory = (DroolsMVELFactory) this.prototype.clone();
+        KnowledgeHelper knowledgeHelper = new DefaultKnowledgeHelper(workingMemory);
         factory.setContext( tuple,
-                            null,
+        		            knowledgeHelper,
                             null,
                             workingMemory,
                             null );

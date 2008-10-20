@@ -36,6 +36,7 @@ public class RuleDescr extends BaseDescr
     private static final long    serialVersionUID = 400L;
     private String               namespace;
     private String               name;
+    private String 				 parentName;
     private String               dialect;
     private String               documentation;
     private Map<String, String>  metaAttributes;
@@ -70,6 +71,7 @@ public class RuleDescr extends BaseDescr
         super.readExternal( in );
         namespace = (String) in.readObject();
         name = (String) in.readObject();
+        parentName = (String) in.readObject();
         dialect = (String) in.readObject();
         documentation = (String) in.readObject();
         consequence = in.readObject();
@@ -86,6 +88,7 @@ public class RuleDescr extends BaseDescr
         super.writeExternal( out );
         out.writeObject( namespace );
         out.writeObject( name );
+        out.writeObject( parentName );
         out.writeObject( dialect );
         out.writeObject( documentation );
         out.writeObject( consequence );
@@ -240,4 +243,12 @@ public class RuleDescr extends BaseDescr
         }
         return enabled;
     }
+
+	public void setParentName(String parentName) {
+		this.parentName = parentName;
+	}
+
+	public String getParentName() {
+		return parentName;
+	}
 }

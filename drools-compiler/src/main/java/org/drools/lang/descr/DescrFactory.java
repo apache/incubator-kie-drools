@@ -421,11 +421,17 @@ public class DescrFactory {
 	 * @return RuleDescr filled
 	 * @see RuleDescr
 	 */
-	public RuleDescr createRule(DroolsTree start, DroolsTree id,
+	public RuleDescr createRule(DroolsTree start, DroolsTree id, DroolsTree parentId,
 			List<AttributeDescr> attributeList, AndDescr andDescr,
 			DroolsTree content, List<Map> metadata) {
 
 		RuleDescr ruleDescr = new RuleDescr(getCleanId(id), null);
+		
+		//Add parentId, the rule you are extending to the ruleDescr 
+		if (null != parentId){
+			ruleDescr.setParentName(getCleanId(parentId));
+		}
+		
 
 		if (null != attributeList && attributeList.size() > 0) {
 			for (AttributeDescr attributeDescr : attributeList) {

@@ -54,7 +54,7 @@ public class MVELPredicateBuilder
             Dialect.AnalysisResult analysis = context.getDialect().analyzeExpression( context,
                                                                                       predicateDescr,
                                                                                       predicateDescr.getContent(),
-                                                                                      new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
+                                                                                      new Set[]{context.getDeclarationResolver().getDeclarations(context.getRule()).keySet(), context.getPkg().getGlobals().keySet()} );
 
             MVELCompilationUnit unit = dialect.getMVELCompilationUnit((String) predicateDescr.getContent(), analysis,  previousDeclarations, localDeclarations, null, context);
 
