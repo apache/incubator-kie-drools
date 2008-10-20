@@ -682,7 +682,7 @@ public class MVELDialect
                 DeclarationScopeResolver resolver = ((RuleBuildContext) context).getDeclarationResolver();
                 for ( Iterator it = list[0].iterator(); it.hasNext(); ) {
                     String identifier = (String) it.next();
-                    Class cls = resolver.getDeclaration( identifier ).getExtractor().getExtractToClass();
+                    Class cls = resolver.getDeclaration(null, identifier ).getExtractor().getExtractToClass();
                     parserContext.addInput( identifier,
                                             cls );
                 }

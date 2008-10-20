@@ -50,7 +50,12 @@ public class BRDRLPersistence
 
 
         StringBuffer buf = new StringBuffer();
-        buf.append( "rule \"" + model.name + "\"\n" );
+        buf.append( "rule \"" + model.name + "\"" );
+        if(null != model.parentName && model.parentName.length() > 0){
+        	buf.append( "extends \"" + model.parentName + "\"\n" );
+        }else{
+        	 buf.append( "\n" );
+        }
         this.marshalMetadataList( buf, model );
         this.marshalAttributes( buf, model );
         

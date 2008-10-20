@@ -70,6 +70,7 @@ tokens {
 	VK_ENABLED;
 	VK_ATTRIBUTES;
 	VK_RULE;
+	VK_EXTEND;
 	VK_IMPORT;
 	VK_PACKAGE;
 	VK_TEMPLATE;
@@ -654,8 +655,8 @@ rule
 	{	beginSentence(DroolsSentenceType.RULE);	}
 		rule_key rule_id 
 	{	emit(Location.LOCATION_RULE_HEADER);	}
-		decl_metadata* rule_attributes? when_part? rhs_chunk
-		-> ^(rule_key rule_id decl_metadata* rule_attributes? when_part? rhs_chunk)
+		(extend_key rule_id)? decl_metadata* rule_attributes? when_part? rhs_chunk
+		-> ^(rule_key rule_id ^(extend_key rule_id)? decl_metadata* rule_attributes? when_part? rhs_chunk)
 	;
 
 when_part
@@ -1560,6 +1561,12 @@ rule_key
 	:	{(validateIdentifierKey(DroolsSoftKeywords.RULE))}?=>  id=ID
 	{	emit($id, DroolsEditorType.KEYWORD);	}
 		->	VK_RULE[$id]
+	;
+
+extend_key
+	:	{(validateIdentifierKey(DroolsSoftKeywords.EXTEND))}?=>  id=ID
+	{	emit($id, DroolsEditorType.KEYWORD);	}
+		->	VK_EXTEND[$id]
 	;
 
 template_key

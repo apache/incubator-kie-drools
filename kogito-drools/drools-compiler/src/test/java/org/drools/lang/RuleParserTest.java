@@ -3001,11 +3001,24 @@ public class RuleParserTest extends TestCase {
 //		@fooAttribute(barValue)
 //		@fooAtt2(barVal2)
 		RuleDescr rule = pack.getRules().get(0);
-		assertTrue(rule.getMetaAttributes().containsKey("fooAttribute"));
-		assertEquals("barValue",rule.getMetaAttribute("fooAttribute"));
-		assertTrue(rule.getMetaAttributes().containsKey("fooAtt2"));
-		assertEquals("barVal2",rule.getMetaAttribute("fooAtt2"));
+		assertTrue(rule.getMetaAttributes().containsKey("fooMeta1"));
+		assertEquals("barVal1",rule.getMetaAttribute("fooMeta1"));
+		assertTrue(rule.getMetaAttributes().containsKey("fooMeta2"));
+		assertEquals("barVal2",rule.getMetaAttribute("fooMeta2"));
 	}
+	
+	public void testRuleExtends() throws Exception {
+		parseResource("compilation_unit", "compilation_unit",
+				"Rule_with_Extends.drl");
+		final PackageDescr pack = walker.getPackageDescr();
+//		@fooAttribute(barValue)
+//		@fooAtt2(barVal2)
+		RuleDescr rule = pack.getRules().get(0);
+		assertTrue(rule.getParentName() != null);
+		assertEquals("rule1",rule.getParentName());
+
+	}
+	
 
 	public void testTypeDeclarationWithFields() throws Exception {
 		parseResource("compilation_unit", "compilation_unit",

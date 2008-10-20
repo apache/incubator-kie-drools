@@ -12,6 +12,7 @@ public class RuleModel
      * file name is preferred (ie it could get out of sync with the name of the file it is in).
      */
     public String          name;
+    public String		   parentName;
     public String          modelVersion = "1.0";
 
     public RuleAttribute[] attributes   = new RuleAttribute[0];

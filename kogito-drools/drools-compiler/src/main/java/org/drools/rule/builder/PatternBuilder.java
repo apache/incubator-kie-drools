@@ -151,7 +151,7 @@ public class PatternBuilder
         Pattern pattern;
         if ( patternDescr.getIdentifier() != null && !patternDescr.getIdentifier().equals( "" ) ) {
 
-            if ( context.getDeclarationResolver().isDuplicated( patternDescr.getIdentifier() ) ) {
+            if ( context.getDeclarationResolver().isDuplicated(context.getRule(), patternDescr.getIdentifier() ) ) {
                 // This declaration already  exists, so throw an Exception
                 context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                               patternDescr,
@@ -538,7 +538,7 @@ public class PatternBuilder
                        final Pattern pattern,
                        final FieldBindingDescr fieldBindingDescr) {
 
-        if ( context.getDeclarationResolver().isDuplicated( fieldBindingDescr.getIdentifier() ) ) {
+        if ( context.getDeclarationResolver().isDuplicated(context.getRule(), fieldBindingDescr.getIdentifier() ) ) {
             // This declaration already  exists, so throw an Exception
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                           fieldBindingDescr,
@@ -565,7 +565,7 @@ public class PatternBuilder
         final Dialect.AnalysisResult analysis = context.getDialect().analyzeExpression( context,
                                                                                         predicateDescr,
                                                                                         predicateDescr.getContent(),
-                                                                                        new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
+                                                                                        new Set[]{context.getDeclarationResolver().getDeclarations(context.getRule()).keySet(), context.getPkg().getGlobals().keySet()} );
 
         if ( analysis == null ) {
             // something bad happened
@@ -580,7 +580,7 @@ public class PatternBuilder
         final List tupleDeclarations = new ArrayList();
         final List factDeclarations = new ArrayList();
         for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {
-            final Declaration decl = context.getDeclarationResolver().getDeclaration( (String) usedIdentifiers[0].get( i ) );
+            final Declaration decl = context.getDeclarationResolver().getDeclaration(context.getRule(), (String) usedIdentifiers[0].get( i ) );
             if ( decl.getPattern() == pattern ) {
                 factDeclarations.add( decl );
             } else {
@@ -725,7 +725,7 @@ public class PatternBuilder
             return null;
         }
 
-        Declaration declaration = context.getDeclarationResolver().getDeclaration( variableRestrictionDescr.getIdentifier() );
+        Declaration declaration = context.getDeclarationResolver().getDeclaration(context.getRule(), variableRestrictionDescr.getIdentifier() );
 
         if ( declaration == null ) {
             // trying to create implicit declaration
@@ -808,7 +808,7 @@ public class PatternBuilder
                                                          parts[1],
                                                          (Pattern) context.getBuildStack().peek() );
             } else {
-                final Declaration decl = context.getDeclarationResolver().getDeclaration( parts[0] );
+                final Declaration decl = context.getDeclarationResolver().getDeclaration(context.getRule(), parts[0] );
                 // if a declaration exists, then it may be a variable direct property access, not an enum
                 if ( decl != null ) {
                     if ( decl.isPatternDeclaration() ) {
@@ -892,13 +892,13 @@ public class PatternBuilder
         Dialect.AnalysisResult analysis = context.getDialect().analyzeExpression( context,
                                                                                   returnValueRestrictionDescr,
                                                                                   returnValueRestrictionDescr.getContent(),
-                                                                                  new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
+                                                                                  new Set[]{context.getDeclarationResolver().getDeclarations(context.getRule()).keySet(), context.getPkg().getGlobals().keySet()} );
         final List[] usedIdentifiers = analysis.getBoundIdentifiers();
 
         final List tupleDeclarations = new ArrayList();
         final List factDeclarations = new ArrayList();
         for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {
-            final Declaration declaration = context.getDeclarationResolver().getDeclaration( (String) usedIdentifiers[0].get( i ) );
+            final Declaration declaration = context.getDeclarationResolver().getDeclaration(context.getRule(), (String) usedIdentifiers[0].get( i ) );
             if ( declaration.getPattern() == pattern ) {
                 factDeclarations.add( declaration );
             } else {

@@ -72,9 +72,9 @@ public class MVELEvalBuilder
             Dialect.AnalysisResult analysis = context.getDialect().analyzeExpression( context,
                                                                                       evalDescr,
                                                                                       evalDescr.getContent(),
-                                                                                      new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
+                                                                                      new Set[]{context.getDeclarationResolver().getDeclarations(context.getRule()).keySet(), context.getPkg().getGlobals().keySet()} );
 
-            Declaration[] previousDeclarations = (Declaration[]) context.getDeclarationResolver().getDeclarations().values().toArray( new Declaration[context.getDeclarationResolver().getDeclarations().size()] );
+            Declaration[] previousDeclarations = (Declaration[]) context.getDeclarationResolver().getDeclarations(context.getRule()).values().toArray( new Declaration[context.getDeclarationResolver().getDeclarations(context.getRule()).size()] );
             MVELCompilationUnit unit = dialect.getMVELCompilationUnit( (String) evalDescr.getContent(),
                                                                        analysis,
                                                                        previousDeclarations,

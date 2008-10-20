@@ -576,12 +576,13 @@ public class OutputMarshaller {
         //Map<LeftTuple, Integer> tuples = context.terminalTupleMap;
         if ( entries.length != 0 ) {
             for ( Entry<LeftTuple, Integer> entry : entries ) {
-                LeftTuple leftTuple = entry.getKey();
-                stream.writeShort( PersisterEnums.ACTIVATION );
-                writeActivation( context,
-                                 leftTuple,
-                                 (AgendaItem) leftTuple.getActivation(),
-                                 (RuleTerminalNode) leftTuple.getLeftTupleSink() );
+                if (entry.getKey().getActivation() != null) {
+					LeftTuple leftTuple = entry.getKey();
+					stream.writeShort(PersisterEnums.ACTIVATION);
+					writeActivation(context, leftTuple, (AgendaItem) leftTuple
+							.getActivation(), (RuleTerminalNode) leftTuple
+							.getLeftTupleSink());
+				}
             }
         }
         stream.writeShort( PersisterEnums.END );
@@ -655,14 +656,15 @@ public class OutputMarshaller {
             Map<Long, PropagationContext> pcMap = new HashMap<Long, PropagationContext>();
             for ( Entry<LeftTuple, Integer> entry : entries ) {
                 LeftTuple leftTuple = entry.getKey();
-                PropagationContext pc = leftTuple.getActivation().getPropagationContext();
-                if ( !pcMap.containsKey( pc.getPropagationNumber() ) ) {
-                    stream.writeShort( PersisterEnums.PROPAGATION_CONTEXT );
-                    writePropagationContext( context,
-                                             pc );
-                    pcMap.put( pc.getPropagationNumber(),
-                               pc );
-                }
+                if (leftTuple.getActivation() != null) {
+					PropagationContext pc = leftTuple.getActivation()
+							.getPropagationContext();
+					if (!pcMap.containsKey(pc.getPropagationNumber())) {
+						stream.writeShort(PersisterEnums.PROPAGATION_CONTEXT);
+						writePropagationContext(context, pc);
+						pcMap.put(pc.getPropagationNumber(), pc);
+					}
+				}
             }
         }
 

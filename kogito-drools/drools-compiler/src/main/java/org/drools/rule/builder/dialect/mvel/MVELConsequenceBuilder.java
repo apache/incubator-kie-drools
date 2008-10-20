@@ -81,10 +81,10 @@ public class MVELConsequenceBuilder
                                                                     context.getRuleDescr(),
                                                                     dialect.getInterceptors(),
                                                                     text,
-                                                                    new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()},
+                                                                    new Set[]{context.getDeclarationResolver().getDeclarations(context.getRule()).keySet(), context.getPkg().getGlobals().keySet()},
                                                                     null );
             
-            Declaration[] previousDeclarations = (Declaration[]) context.getDeclarationResolver().getDeclarations().values().toArray( new Declaration[context.getDeclarationResolver().getDeclarations().size()] );
+            Declaration[] previousDeclarations = (Declaration[]) context.getDeclarationResolver().getDeclarations(context.getRule()).values().toArray( new Declaration[context.getDeclarationResolver().getDeclarations(context.getRule()).size()] );
             MVELCompilationUnit unit = dialect.getMVELCompilationUnit( text,
                                                                        analysis,
                                                                        previousDeclarations,

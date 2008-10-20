@@ -33,6 +33,8 @@ public class MVELDataProvider
     
     private Serializable      expr;
     private DroolsMVELFactory prototype;
+    
+    private transient Declaration[] requiredDeclarations;
 
     public MVELDataProvider() {
 
@@ -61,11 +63,12 @@ public class MVELDataProvider
     public void compile(ClassLoader classLoader) {
         expr = unit.getCompiledExpression( classLoader );
         prototype = unit.getFactory( );
+        this.requiredDeclarations = (Declaration[]) this.unit.getFactory().getPreviousDeclarations().values().toArray(new Declaration[this.unit.getFactory().getPreviousDeclarations().size()]);
     }   
     
     public Declaration[] getRequiredDeclarations() {
-        return new Declaration[]{};
-        //return factory.getRequiredDeclarations();
+        //return new Declaration[]{};
+        return this.requiredDeclarations;
     }
 
     public Object createContext() {
