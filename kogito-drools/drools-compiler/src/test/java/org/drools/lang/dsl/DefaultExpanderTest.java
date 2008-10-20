@@ -217,6 +217,39 @@ public class DefaultExpanderTest extends TestCase {
 
     }
     
+    public void testANTLREnumExpand() throws Exception {
+        DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
+        String dsl = "[when]When the credit rating is {rating:ENUM:Applicant.creditRating} = applicant:Applicant(credit=={rating})";
+        file.parseAndLoad( new StringReader( dsl ) );
+        assertEquals( 0,file.getErrors().size() );
+        DefaultExpander ex = new DefaultExpander();
+        ex.addDSLMapping( file.getMapping() );
+        String source = "rule \"TestNewDslSetup\"\ndialect \"mvel\"\nwhen\nWhen the credit rating is AA\nthen \nend";
+        
+//        String source="rule \"TestNewDslSetup\"\n"+
+//    					"dialect \"mvel\"\n"+
+//						"when\n"+
+//							"When the credit rating is OK\n"+
+//						"then\n"+
+//						"end\n";
+    
+        String drl = ex.expand(source);
+        
+        String expected = "rule \"TestNewDslSetup\"\n"+
+        "dialect \"mvel\"\n"+
+        "when\n"+
+        "applicant:Applicant(credit==AA) \n"+ 
+        "then end\n";
+        
+        assertFalse(ex.getErrors().toString(),ex.hasErrors());
+        assertEquals( expected, drl );
+        
+        
+
+
+        //System.err.println(ex.expand( "rule 'x' \n when \n foo \n then \n end" ));
+    }
+    
     private boolean equalsIgnoreWhiteSpace( String expected, String actual ) {
         String patternStr = expected.replaceAll( "\\s+", "(\\\\s|\\\\n|\\\\r)*" );//.replaceAll( "\\n", "\\s*\\$" );
         Pattern pattern = Pattern.compile( patternStr, Pattern.DOTALL );

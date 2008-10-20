@@ -21,22 +21,24 @@ tokens {
        VT_VAR_REF;
        VT_LITERAL;
        VT_PATTERN;
+       VT_QUAL;
        
        VT_SPACE;
+       
 }
 
 @parser::header {
 	package org.drools.lang.dsl;
 	import java.util.List;
 	import java.util.ArrayList;
-	import org.drools.lang.dsl.DSLMappingParseException;
+//	import org.drools.lang.dsl.DSLMappingParseException;
 }
 
 @lexer::header {
 	package org.drools.lang.dsl;
 	import java.util.List;
 	import java.util.ArrayList;
-	import org.drools.lang.dsl.DSLMappingParseException;
+//	import org.drools.lang.dsl.DSLMappingParseException;
 }
 
 @parser::members {
@@ -65,18 +67,18 @@ tokens {
 		return validateLT(1, text);
 	}
 	
-	public void reportError(RecognitionException re) {
+	//public void reportError(RecognitionException re) {
 		// if we've already reported an error and have not matched a token
 		// yet successfully, don't report any errors.
-		if (errorRecovery) {
-			return;
-		}
-		errorRecovery = true;
-	
-		String error = "Error parsing mapping entry: " + getErrorMessage(re, tokenNames);
-		DSLMappingParseException exception = new DSLMappingParseException (error, re.line);
-		errorList.add(exception);
-	}
+	//	if (errorRecovery) {
+	//		return;
+	//	}
+	//	errorRecovery = true;
+	//
+	//	String error = "Error parsing mapping entry: " + getErrorMessage(re, tokenNames);
+	//	DSLMappingParseException exception = new DSLMappingParseException (error, re.line);
+	//	errorList.add(exception);
+	//}
 	
 }
 
@@ -181,21 +183,21 @@ variable_definition
 		CommonToken back2 =  (CommonToken)input.LT(-2);
 		if( back2!=null && back2.getStopIndex() < ((CommonToken)lc).getStartIndex() -1 ) hasSpaceBefore = true; 
 		} 
-	name=LITERAL ( COLON pat=pattern {text = $pat.text;} )? rc=RIGHT_CURLY
+	name=LITERAL ( (COLON q=LITERAL)? COLON pat=pattern {text = $pat.text;} )? rc=RIGHT_CURLY
 	{
 	CommonToken rc1 = (CommonToken)input.LT(1);
 	if(!"=".equals(rc1.getText()) && ((CommonToken)rc).getStopIndex() < rc1.getStartIndex() - 1) hasSpaceAfter = true;
 	}
-	-> {hasSpaceBefore && !"".equals(text) && !hasSpaceAfter}? VT_SPACE ^(VT_VAR_DEF $name VT_PATTERN[$pat.start, text] )  //pat can be null if there's no pattern here
-	-> {!hasSpaceBefore && !"".equals(text)  && !hasSpaceAfter}? ^(VT_VAR_DEF $name VT_PATTERN[$pat.start, text] ) //pat can be null if there's no pattern here
-	-> {hasSpaceBefore  && !hasSpaceAfter}?	VT_SPACE ^(VT_VAR_DEF $name ) 
-	-> {!hasSpaceBefore  && !hasSpaceAfter}?	 ^(VT_VAR_DEF $name ) 
+	-> {hasSpaceBefore && !"".equals(text) && !hasSpaceAfter}? VT_SPACE ^(VT_VAR_DEF $name ^(VT_QUAL $q?) VT_PATTERN[$pat.start, text] )  //pat can be null if there's no pattern here
+	-> {!hasSpaceBefore && !"".equals(text)  && !hasSpaceAfter}? ^(VT_VAR_DEF $name ^(VT_QUAL $q?) VT_PATTERN[$pat.start, text] ) //pat can be null if there's no pattern here
+	-> {hasSpaceBefore  && !hasSpaceAfter}?	VT_SPACE ^(VT_VAR_DEF $name ^(VT_QUAL $q?)) 
+	-> {!hasSpaceBefore  && !hasSpaceAfter}?	 ^(VT_VAR_DEF $name ^(VT_QUAL $q?)) 
 	
-	-> {hasSpaceBefore && !"".equals(text) && hasSpaceAfter}? VT_SPACE ^(VT_VAR_DEF $name VT_PATTERN[$pat.start, text] ) VT_SPACE //pat can be null if there's no pattern here
-	-> {!hasSpaceBefore && !"".equals(text)  && hasSpaceAfter}? ^(VT_VAR_DEF $name VT_PATTERN[$pat.start, text] ) VT_SPACE //pat can be null if there's no pattern here
-	-> {hasSpaceBefore  && hasSpaceAfter}?	VT_SPACE ^(VT_VAR_DEF $name ) VT_SPACE
-	-> {!hasSpaceBefore  && hasSpaceAfter}?	 ^(VT_VAR_DEF $name ) VT_SPACE
-	-> ^(VT_VAR_DEF $name ) 
+	-> {hasSpaceBefore && !"".equals(text) && hasSpaceAfter}? VT_SPACE ^(VT_VAR_DEF $name ^(VT_QUAL $q?) VT_PATTERN[$pat.start, text] ) VT_SPACE //pat can be null if there's no pattern here
+	-> {!hasSpaceBefore && !"".equals(text)  && hasSpaceAfter}? ^(VT_VAR_DEF $name ^(VT_QUAL $q?) VT_PATTERN[$pat.start, text] ) VT_SPACE //pat can be null if there's no pattern here
+	-> {hasSpaceBefore  && hasSpaceAfter}?	VT_SPACE ^(VT_VAR_DEF $name ^(VT_QUAL $q?)) VT_SPACE
+	-> {!hasSpaceBefore  && hasSpaceAfter}?	 ^(VT_VAR_DEF $name ^(VT_QUAL $q?)) VT_SPACE
+	-> ^(VT_VAR_DEF $name ^(VT_QUAL $q?)) 
 	;
 	
 variable_definition2

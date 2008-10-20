@@ -20,7 +20,7 @@ public class SuggestionCompletionEngineTest extends TestCase {
         String pkg = "package org.test\n import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngineTest.NestedClass";
 
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
-        SuggestionCompletionEngine engine = loader.getSuggestionEngine( pkg, new ArrayList(), new ArrayList() );
+        SuggestionCompletionEngine engine = loader.getSuggestionEngine( pkg, new ArrayList(), new ArrayList());
 
         assertEquals( "String", engine.getFieldType( "SuggestionCompletionEngineTest$NestedClass", "name" ) );
     }
@@ -29,7 +29,7 @@ public class SuggestionCompletionEngineTest extends TestCase {
         String pkg = "package org.test\n import org.drools.guvnor.client.modeldriven.Alert";
 
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
-        SuggestionCompletionEngine engine = loader.getSuggestionEngine( pkg, new ArrayList(), new ArrayList() );
+        SuggestionCompletionEngine engine = loader.getSuggestionEngine( pkg, new ArrayList(),new ArrayList() );
 
         assertEquals( SuggestionCompletionEngine.TYPE_STRING, engine.getFieldType( "Alert", "message" ) );
 
