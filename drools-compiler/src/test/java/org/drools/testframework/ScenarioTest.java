@@ -108,6 +108,40 @@ public class ScenarioTest extends TestCase {
 
 
 
+	public void testExecutionTrace() {
+        Scenario sc = new Scenario();
+
+        sc.globals.add(new FactData("A", "A", new ArrayList(), false));
+        sc.fixtures.add(new FactData("B", "B", new ArrayList(), true));
+        sc.fixtures.add(new FactData("C", "C", new ArrayList(), true));
+        ExecutionTrace ex1 = new ExecutionTrace();
+        sc.fixtures.add(ex1);
+        sc.fixtures.add(new VerifyFact());
+        sc.fixtures.add(new RetractFact());
+        sc.fixtures.add(new FactData("D", "D", new ArrayList(), false));
+        sc.fixtures.add(new FactData("E", "E", new ArrayList(), false));
+        ExecutionTrace ex2 = new ExecutionTrace();
+        sc.fixtures.add(ex2);
+        sc.fixtures.add(new VerifyFact());
+        sc.fixtures.add(new FactData("F", "F", new ArrayList(), false));
+        ExecutionTrace ex3 = new ExecutionTrace();
+        sc.fixtures.add(ex3);
+
+        assertEquals( 11,
+                      sc.fixtures.size() );
+
+        sc.removeExecutionTrace( ex2 );
+
+        assertEquals( 6,
+                      sc.fixtures.size() );
+        assertTrue( sc.isFactNameExisting( "A" ) );
+        assertTrue( sc.isFactNameExisting( "B" ) );
+        assertTrue( sc.isFactNameExisting( "C" ) );
+        assertFalse( sc.isFactNameExisting( "D" ) );
+        assertFalse( sc.isFactNameExisting( "E" ) );
+        assertTrue( sc.isFactNameExisting( "F" ) );
+	}
+
 	public void testRemoveFixture() {
 		Scenario sc = new Scenario();
 
