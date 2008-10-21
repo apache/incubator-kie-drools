@@ -46,11 +46,11 @@ public class GuidedDTDRLPersistence {
 
 			RuleModel rm = new RuleModel();
 			rm.name = getName(dt.tableName, num);
-
-			doMetadata(dt.metadataCols, row, rm);
-			doAttribs(dt.metadataCols.size(), dt.attributeCols, row, rm);
-			doConditions(dt.metadataCols.size() + dt.attributeCols.size(), dt.conditionCols, row, rm);
-			doActions(dt.metadataCols.size() +dt.attributeCols.size() + dt.conditionCols.size(), dt.actionCols, row, rm);
+				
+			doMetadata(dt.getMetadataCols(), row, rm);
+			doAttribs(dt.getMetadataCols().size(), dt.attributeCols, row, rm);
+			doConditions(dt.getMetadataCols().size() + dt.attributeCols.size(), dt.conditionCols, row, rm);
+			doActions(dt.getMetadataCols().size() +dt.attributeCols.size() + dt.conditionCols.size(), dt.actionCols, row, rm);
 
 			sb.append("#from row number: " + (i + 1) + "\n");
 			String rule = BRDRLPersistence.getInstance().marshal(rm);
@@ -207,7 +207,8 @@ public class GuidedDTDRLPersistence {
 	
 	void doMetadata(List<MetadataCol> metadataCols, String[] row, RuleModel rm) {
 		List<RuleMetadata> metadataList = new ArrayList<RuleMetadata>();
-		for (int j = 0; j < metadataCols.size(); j++) {
+		
+		for (int j = 0;j < metadataCols.size(); j++) {
 			MetadataCol meta = metadataCols.get(j);
 			String cell = row[j + 2];
 			if (validCell(cell)) {

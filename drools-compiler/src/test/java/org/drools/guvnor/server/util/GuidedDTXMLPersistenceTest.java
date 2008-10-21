@@ -15,7 +15,7 @@ public class GuidedDTXMLPersistenceTest extends TestCase {
 		GuidedDecisionTable dt = new GuidedDecisionTable();
 		dt.actionCols.add(new ActionInsertFactCol());
 		dt.actionCols.add(new ActionSetFieldCol());
-		dt.metadataCols.add(new MetadataCol());
+		dt.getMetadataCols().add(new MetadataCol());
 		dt.attributeCols.add(new AttributeCol());
 		dt.conditionCols.add(new ConditionCol());
 		dt.data = new String[][] {
@@ -34,7 +34,7 @@ public class GuidedDTXMLPersistenceTest extends TestCase {
 		assertNotNull(dt_);
 		assertEquals(42, dt_.descriptionWidth);
 		assertEquals("blah", dt_.tableName);
-		assertEquals(1, dt_.metadataCols.size());
+		assertEquals(1, dt_.getMetadataCols().size());
 		assertEquals(1, dt_.attributeCols.size());
 		assertEquals(2, dt_.actionCols.size());
 		assertEquals(1, dt_.conditionCols.size());
