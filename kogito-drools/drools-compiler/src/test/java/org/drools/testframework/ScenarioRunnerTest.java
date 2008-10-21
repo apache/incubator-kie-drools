@@ -818,6 +818,80 @@ public class ScenarioRunnerTest extends RuleUnit {
         assertTrue(executionTrace.rulesFired.length > 0);
 
     }
+    
+    
+    public void testIntegrationInfiniteLoop() throws Exception {
+
+        Scenario sc = new Scenario();
+        FactData[] facts = new FactData[]{new FactData( "Cheese",
+                                                        "c1",
+                                                        ls( new FieldData( "type",
+                                                                           "cheddar" ),
+                                                            new FieldData( "price",
+                                                                           "42" ) ),
+                                                        false )
+
+        };
+        sc.globals.add( new FactData( "Person",
+                                      "p",
+                                      new ArrayList(),
+                                      false ) );
+        sc.fixtures.addAll( Arrays.asList( facts ) );
+
+        ExecutionTrace executionTrace = new ExecutionTrace();
+
+        sc.rules.add( "rule1" );
+        sc.rules.add( "rule2" );
+        sc.inclusive = true;
+        sc.fixtures.add( executionTrace );
+
+        Expectation[] assertions = new Expectation[5];
+
+        assertions[0] = new VerifyFact( "c1",
+                                        ls( new VerifyField( "type",
+                                                             "cheddar",
+                                                             "==" )
+
+                                        ) );
+
+        assertions[1] = new VerifyFact( "p",
+                                        ls( new VerifyField( "name",
+                                                             "rule1",
+                                                             "==" ),
+                                            new VerifyField( "status",
+                                                             "rule2",
+                                                             "==" ) )
+
+        );
+
+        assertions[2] = new VerifyRuleFired( "rule1",
+                                             1,
+                                             null );
+        assertions[3] = new VerifyRuleFired( "rule2",
+                                             1,
+                                             null );
+        assertions[4] = new VerifyRuleFired( "rule3",
+                                             0,
+                                             null );
+
+        sc.fixtures.addAll( Arrays.asList( assertions ) );
+
+        TypeResolver resolver = new ClassTypeResolver( new HashSet<String>(),
+                                                       Thread.currentThread().getContextClassLoader() );
+        resolver.addImport( "org.drools.Cheese" );
+        resolver.addImport( "org.drools.Person" );
+
+        WorkingMemory wm = getWorkingMemory( "test_rules_infinite_loop.drl" );
+
+        ScenarioRunner run = new ScenarioRunner( sc,
+                                                 resolver,
+                                                 (InternalWorkingMemory) wm );
+
+        assertEquals( sc.maxRuleFirings,
+                      executionTrace.numberOfRulesFired.intValue() );
+        
+
+    }
 
     public void testIntegrationWithDeclaredTypes() throws Exception {
         Scenario sc = new Scenario();
