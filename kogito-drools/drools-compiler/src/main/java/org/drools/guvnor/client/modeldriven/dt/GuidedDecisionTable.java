@@ -25,7 +25,7 @@ public class GuidedDecisionTable implements PortableObject {
 	 */
 	public String tableName;
 
-	public List<MetadataCol> metadataCols = new ArrayList<MetadataCol>();
+	private List<MetadataCol> metadataCols;
 	
 	public List<AttributeCol> attributeCols = new ArrayList<AttributeCol>();
 
@@ -155,6 +155,18 @@ public class GuidedDecisionTable implements PortableObject {
 		}
 		//we can reuse text filter from guided editor to enforce this for data entry.
 		return false;
+	}
+
+	public void setMetadataCols(List<MetadataCol> metadataCols) {
+		this.metadataCols = metadataCols;
+	}
+
+	public List<MetadataCol> getMetadataCols() 
+	{
+		if(null == metadataCols){
+			metadataCols = new ArrayList<MetadataCol>();
+		}
+		return metadataCols;
 	}
 
 }
