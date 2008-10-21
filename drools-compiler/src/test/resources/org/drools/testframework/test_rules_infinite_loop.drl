@@ -1,0 +1,16 @@
+package foo.bar
+
+import org.drools.Cheese
+import org.drools.Person
+
+global Person p
+
+rule "rule1"
+	when
+		c: Cheese()
+	then
+		insert(new Cheese());
+end
+
+
+

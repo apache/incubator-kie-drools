@@ -26,5 +26,3 @@ rule "rule3"
 	    p.setAge(42);
 
 end
-
-
