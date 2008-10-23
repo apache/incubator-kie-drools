@@ -237,6 +237,10 @@ public class SuggestionCompletionLoader {
                     this.builder.addDSLConditionSentence( entry.getSentence() );
                 } else if ( entry.getSection() == DSLMappingEntry.CONSEQUENCE ) {
                     this.builder.addDSLActionSentence( entry.getSentence() );
+                } else if ( entry.getSection() == DSLMappingEntry.KEYWORD) {
+                	this.builder.addDSLMapping(entry);
+                } else if (entry.getSection() == DSLMappingEntry.ANY) {
+
                 }
             }
         }
