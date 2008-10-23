@@ -15,6 +15,8 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.compiler.PackageBuilder;
+import org.drools.lang.Expander;
+import org.drools.lang.dsl.DefaultExpanderResolver;
 import org.drools.rule.Package;
 
 public class DslTest extends TestCase {
@@ -28,6 +30,15 @@ public class DslTest extends TestCase {
 
         return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
                                             config );
+    }
+
+
+    public void testMultiLineTemplates() throws Exception {
+        final Reader source = new InputStreamReader( getClass().getResourceAsStream( "rule_with_expander_multiline.dslr" ) );
+        final Reader dsl = new InputStreamReader( getClass().getResourceAsStream( "test_dsl_multiline.dsl" ) );
+        Expander ex =  new DefaultExpanderResolver(dsl).get("*", null);
+        String r = ex.expand(source);
+        assertEquals("when Car(color==\"Red\") then doSomething();", r.trim());
     }
 
     public void testWithExpanderDSL() throws Exception {
