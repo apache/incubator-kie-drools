@@ -22,5 +22,11 @@ public class DSLSentenceTest extends TestCase {
         assertEquals( newOne.sentence,
                       sen.sentence );
     }
-
+    
+    public void testEnumSentence(){
+    	
+        final DSLSentence sen = new DSLSentence();
+        sen.sentence = "this is {variable:ENUM:Value.test} here and {here}";
+        assertEquals( "this is variable here and here",sen.toString() );
+    }
 }
