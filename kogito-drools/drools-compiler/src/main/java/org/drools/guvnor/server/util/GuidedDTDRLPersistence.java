@@ -52,6 +52,10 @@ public class GuidedDTDRLPersistence {
 			doConditions(dt.getMetadataCols().size() + dt.attributeCols.size(), dt.conditionCols, row, rm);
 			doActions(dt.getMetadataCols().size() +dt.attributeCols.size() + dt.conditionCols.size(), dt.actionCols, row, rm);
 
+			if(dt.parentName != null){
+				rm.parentName = dt.parentName;
+			}
+			
 			sb.append("#from row number: " + (i + 1) + "\n");
 			String rule = BRDRLPersistence.getInstance().marshal(rm);
 			sb.append(rule);

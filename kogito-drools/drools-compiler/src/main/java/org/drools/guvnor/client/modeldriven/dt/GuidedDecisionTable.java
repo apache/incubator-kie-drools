@@ -24,6 +24,8 @@ public class GuidedDecisionTable implements PortableObject {
 	 * The name - obviously.
 	 */
 	public String tableName;
+	
+	public String parentName;
 
 	private List<MetadataCol> metadataCols;
 	
