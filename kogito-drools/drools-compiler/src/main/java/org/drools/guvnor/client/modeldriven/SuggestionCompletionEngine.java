@@ -103,13 +103,15 @@ public class SuggestionCompletionEngine
      */
     public DSLSentence[]          conditionDSLSentences  = new DSLSentence[0];
     public DSLSentence[]          actionDSLSentences     = new DSLSentence[0];
-
+    public DSLSentence[] 		  keywordDSLItems 	     = new DSLSentence[0];
+    public DSLSentence[] 		  anyScopeDSLItems 	     = new DSLSentence[0];
 
 
     /**
      * This is used to calculate what fields an enum list may depend on. Optional.
      */
 	private transient Map dataEnumLookupFields;
+
 
     //    /**
     //     * For bulk loading up the data (from a previous rule save)

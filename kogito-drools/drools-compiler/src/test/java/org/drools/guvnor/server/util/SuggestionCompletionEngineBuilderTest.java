@@ -1,9 +1,16 @@
 package org.drools.guvnor.server.util;
 
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+
 import junit.framework.TestCase;
 
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.server.util.SuggestionCompletionEngineBuilder;
+import org.drools.lang.dsl.AbstractDSLMappingEntry;
+import org.drools.lang.dsl.DSLMappingEntry;
+import org.drools.lang.dsl.DSLMappingEntry.Section;
 
 public class SuggestionCompletionEngineBuilderTest extends TestCase {
     SuggestionCompletionEngineBuilder builder = new SuggestionCompletionEngineBuilder();
@@ -23,11 +30,35 @@ public class SuggestionCompletionEngineBuilderTest extends TestCase {
         this.builder.addDSLConditionSentence( "foo bar" );
         final SuggestionCompletionEngine engine = this.builder.getInstance();
 
-        assertEquals( 1,
-                      engine.actionDSLSentences.length );
-        assertEquals( 1,
-                      engine.conditionDSLSentences.length );
+        assertEquals( 1, engine.actionDSLSentences.length );
+        assertEquals( 1, engine.conditionDSLSentences.length );
 
+    }
+
+    public void testAddSentenceMultipleTypes() {
+    	this.builder.addDSLMapping(new DSLMap(DSLMappingEntry.CONDITION, "cond"));
+    	this.builder.addDSLMapping(new DSLMap(DSLMappingEntry.CONSEQUENCE, "cons"));
+    	this.builder.addDSLMapping(new DSLMap(DSLMappingEntry.ANY, "any"));
+    	this.builder.addDSLMapping(new DSLMap(DSLMappingEntry.KEYWORD, "key"));
+
+        final SuggestionCompletionEngine engine = this.builder.getInstance();
+
+        assertEquals( 1, engine.actionDSLSentences.length );
+        assertEquals( 1, engine.conditionDSLSentences.length );
+        assertEquals( 1, engine.keywordDSLItems.length );
+        assertEquals( 1, engine.anyScopeDSLItems.length );
+
+
+        assertEquals("cond", engine.conditionDSLSentences[0].sentence);
+
+
+    }
+
+    class DSLMap extends AbstractDSLMappingEntry {
+    	DSLMap(Section sec, String sentence) {
+    		this.section = sec;
+    		this.sentence = sentence;
+    	}
     }
 
 }

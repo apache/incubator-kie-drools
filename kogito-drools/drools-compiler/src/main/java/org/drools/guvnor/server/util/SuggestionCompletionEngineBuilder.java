@@ -23,6 +23,8 @@ import java.util.Map;
 
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.brl.DSLSentence;
+import org.drools.lang.dsl.AbstractDSLMappingEntry;
+import org.drools.lang.dsl.DSLMappingEntry;
 
 /**
  * A builder to incrementally populate a SuggestionCompletionEngine
@@ -39,6 +41,8 @@ public class SuggestionCompletionEngineBuilder {
     private Map                        globalTypes           = new HashMap();
     private List                       actionDSLSentences    = new ArrayList();
     private List                       conditionDSLSentences = new ArrayList();
+    private List                       keywordDSLItems = new ArrayList();
+    private List                       anyScopeDSLItems = new ArrayList();
 
     public SuggestionCompletionEngineBuilder() {
     }
@@ -55,6 +59,8 @@ public class SuggestionCompletionEngineBuilder {
         this.globalTypes = new HashMap();
         this.actionDSLSentences = new ArrayList();
         this.conditionDSLSentences = new ArrayList();
+        this.keywordDSLItems = new ArrayList();
+        this.anyScopeDSLItems = new ArrayList();
     }
 
     /**
@@ -151,10 +157,31 @@ public class SuggestionCompletionEngineBuilder {
         this.instance.modifiers = this.modifiersForType;
         this.instance.fieldTypes = this.fieldTypes;
         this.instance.globalTypes = this.globalTypes;
-        this.instance.actionDSLSentences = (DSLSentence[]) this.actionDSLSentences.toArray( new DSLSentence[this.actionDSLSentences.size()] );
-        this.instance.conditionDSLSentences = (DSLSentence[]) this.conditionDSLSentences.toArray( new DSLSentence[this.conditionDSLSentences.size()] );
+        this.instance.actionDSLSentences = makeArray(this.actionDSLSentences);
+        this.instance.conditionDSLSentences = makeArray(this.conditionDSLSentences);
+        this.instance.keywordDSLItems = makeArray(this.keywordDSLItems);
+        this.instance.anyScopeDSLItems = makeArray(this.anyScopeDSLItems);
         return this.instance;
     }
+
+	private DSLSentence[] makeArray(List ls) {
+		return (DSLSentence[]) ls.toArray( new DSLSentence[this.conditionDSLSentences.size()] );
+	}
+
+	public void addDSLMapping(AbstractDSLMappingEntry entry) {
+		DSLSentence sen = new DSLSentence();
+		sen.sentence = entry.getSentence();
+		if (entry.getSection() == DSLMappingEntry.CONDITION) {
+			this.conditionDSLSentences.add(sen);
+		} else if (entry.getSection() == DSLMappingEntry.CONSEQUENCE) {
+			this.actionDSLSentences.add(sen);
+		} else if (entry.getSection() == DSLMappingEntry.KEYWORD) {
+			this.keywordDSLItems.add(sen);
+		} else if (entry.getSection() == DSLMappingEntry.ANY) {
+			this.anyScopeDSLItems.add(sen);
+		}
+
+	}
 
 
 
