@@ -1,4 +1,4 @@
-// $ANTLR 3.0.1 src/main/resources/org/drools/lang/dsl/DSLMap.g 2008-10-20 12:49:42
+// $ANTLR 3.0 src/main/resources/org/drools/lang/dsl/DSLMap.g 2008-10-22 23:57:51
 
 	package org.drools.lang.dsl;
 	import java.util.List;
@@ -129,7 +129,7 @@ public class DSLMapParser extends Parser {
 
         RewriteRuleSubtreeStream stream_statement=new RewriteRuleSubtreeStream(adaptor,"rule statement");
         try {
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:87:2: ( ( statement )* -> ^( VT_DSL_GRAMMAR ( statement )* ) )
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:87:4: ( ( statement )* -> ^( VT_DSL_GRAMMAR ( statement )* ) )
             // src/main/resources/org/drools/lang/dsl/DSLMap.g:87:4: ( statement )*
             {
             // src/main/resources/org/drools/lang/dsl/DSLMap.g:87:4: ( statement )*
@@ -235,7 +235,7 @@ public class DSLMapParser extends Parser {
         Object EOL4_tree=null;
 
         try {
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:92:2: ( entry | comment | EOL )
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:92:4: ( entry | comment | EOL )
             int alt2=3;
             switch ( input.LA(1) ) {
             case LEFT_SQUARE:
@@ -336,7 +336,7 @@ public class DSLMapParser extends Parser {
         RewriteRuleTokenStream stream_LINE_COMMENT=new RewriteRuleTokenStream(adaptor,"token LINE_COMMENT");
 
         try {
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:99:9: ( LINE_COMMENT -> ^( VT_COMMENT[$LINE_COMMENT, \"COMMENT\"] LINE_COMMENT ) )
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:99:11: ( LINE_COMMENT -> ^( VT_COMMENT[$LINE_COMMENT, \"COMMENT\"] LINE_COMMENT ) )
             // src/main/resources/org/drools/lang/dsl/DSLMap.g:99:11: LINE_COMMENT
             {
             LINE_COMMENT5=(Token)input.LT(1);
@@ -426,7 +426,7 @@ public class DSLMapParser extends Parser {
         RewriteRuleSubtreeStream stream_scope_section=new RewriteRuleSubtreeStream(adaptor,"rule scope_section");
         RewriteRuleSubtreeStream stream_meta_section=new RewriteRuleSubtreeStream(adaptor,"rule meta_section");
         try {
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:104:8: ( scope_section ( meta_section )? key_section EQUALS value_section ( EOL | EOF ) -> ^( VT_ENTRY scope_section ( meta_section )? key_section value_section ) )
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:104:10: ( scope_section ( meta_section )? key_section EQUALS value_section ( EOL | EOF ) -> ^( VT_ENTRY scope_section ( meta_section )? key_section value_section ) )
             // src/main/resources/org/drools/lang/dsl/DSLMap.g:104:10: scope_section ( meta_section )? key_section EQUALS value_section ( EOL | EOF )
             {
             pushFollow(FOLLOW_scope_section_in_entry350);
@@ -623,7 +623,7 @@ public class DSLMapParser extends Parser {
         RewriteRuleSubtreeStream stream_keyword_key=new RewriteRuleSubtreeStream(adaptor,"rule keyword_key");
         RewriteRuleSubtreeStream stream_consequence_key=new RewriteRuleSubtreeStream(adaptor,"rule consequence_key");
         try {
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:116:2: ( LEFT_SQUARE (value1= condition_key | value2= consequence_key | value3= keyword_key | value4= any_key ) RIGHT_SQUARE -> ^( VT_SCOPE[$LEFT_SQUARE, \"SCOPE SECTION\"] ( $value1)? ( $value2)? ( $value3)? ( $value4)? ) )
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:116:4: ( LEFT_SQUARE (value1= condition_key | value2= consequence_key | value3= keyword_key | value4= any_key ) RIGHT_SQUARE -> ^( VT_SCOPE[$LEFT_SQUARE, \"SCOPE SECTION\"] ( $value1)? ( $value2)? ( $value3)? ( $value4)? ) )
             // src/main/resources/org/drools/lang/dsl/DSLMap.g:116:4: LEFT_SQUARE (value1= condition_key | value2= consequence_key | value3= keyword_key | value4= any_key ) RIGHT_SQUARE
             {
             LEFT_SQUARE13=(Token)input.LT(1);
@@ -815,7 +815,7 @@ public class DSLMapParser extends Parser {
         RewriteRuleTokenStream stream_RIGHT_SQUARE=new RewriteRuleTokenStream(adaptor,"token RIGHT_SQUARE");
 
         try {
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:130:2: ( LEFT_SQUARE ( LITERAL )? RIGHT_SQUARE -> ^( VT_META[$LEFT_SQUARE, \"META SECTION\"] ( LITERAL )? ) )
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:130:4: ( LEFT_SQUARE ( LITERAL )? RIGHT_SQUARE -> ^( VT_META[$LEFT_SQUARE, \"META SECTION\"] ( LITERAL )? ) )
             // src/main/resources/org/drools/lang/dsl/DSLMap.g:130:4: LEFT_SQUARE ( LITERAL )? RIGHT_SQUARE
             {
             LEFT_SQUARE15=(Token)input.LT(1);
@@ -917,7 +917,7 @@ public class DSLMapParser extends Parser {
 
         RewriteRuleSubtreeStream stream_key_sentence=new RewriteRuleSubtreeStream(adaptor,"rule key_sentence");
         try {
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:135:2: ( (ks= key_sentence )+ -> ^( VT_ENTRY_KEY ( key_sentence )+ ) )
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:135:4: ( (ks= key_sentence )+ -> ^( VT_ENTRY_KEY ( key_sentence )+ ) )
             // src/main/resources/org/drools/lang/dsl/DSLMap.g:135:4: (ks= key_sentence )+
             {
             // src/main/resources/org/drools/lang/dsl/DSLMap.g:135:6: (ks= key_sentence )+
@@ -1032,7 +1032,7 @@ public class DSLMapParser extends Parser {
                 String text = "";
 
         try {
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:143:2: ( variable_definition | cb= key_chunk -> VT_LITERAL[$cb.start, text] )
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:143:4: ( variable_definition | cb= key_chunk -> VT_LITERAL[$cb.start, text] )
             int alt8=2;
             int LA8_0 = input.LA(1);
 
@@ -1133,7 +1133,7 @@ public class DSLMapParser extends Parser {
 
 
         try {
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:149:2: ( ( literal )+ )
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:149:4: ( ( literal )+ )
             // src/main/resources/org/drools/lang/dsl/DSLMap.g:149:4: ( literal )+
             {
             root_0 = (Object)adaptor.nil();
@@ -1217,7 +1217,7 @@ public class DSLMapParser extends Parser {
 
         RewriteRuleSubtreeStream stream_value_sentence=new RewriteRuleSubtreeStream(adaptor,"rule value_sentence");
         try {
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:153:2: ( ( value_sentence )+ -> ^( VT_ENTRY_VAL ( value_sentence )+ ) )
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:153:4: ( ( value_sentence )+ -> ^( VT_ENTRY_VAL ( value_sentence )+ ) )
             // src/main/resources/org/drools/lang/dsl/DSLMap.g:153:4: ( value_sentence )+
             {
             // src/main/resources/org/drools/lang/dsl/DSLMap.g:153:4: ( value_sentence )+
@@ -1332,7 +1332,7 @@ public class DSLMapParser extends Parser {
                 String text = "";
 
         try {
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:161:2: ( variable_reference | vc= value_chunk -> VT_LITERAL[$vc.start, text] )
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:161:4: ( variable_reference | vc= value_chunk -> VT_LITERAL[$vc.start, text] )
             int alt11=2;
             int LA11_0 = input.LA(1);
 
@@ -1437,7 +1437,7 @@ public class DSLMapParser extends Parser {
         Object COMMA24_tree=null;
 
         try {
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:167:2: ( ( literal | EQUALS | COMMA )+ )
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:167:4: ( ( literal | EQUALS | COMMA )+ )
             // src/main/resources/org/drools/lang/dsl/DSLMap.g:167:4: ( literal | EQUALS | COMMA )+
             {
             root_0 = (Object)adaptor.nil();
@@ -1572,7 +1572,7 @@ public class DSLMapParser extends Parser {
         Object set25_tree=null;
 
         try {
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:171:2: ( ( LITERAL | COLON | LEFT_SQUARE | RIGHT_SQUARE ) )
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:171:4: ( ( LITERAL | COLON | LEFT_SQUARE | RIGHT_SQUARE ) )
             // src/main/resources/org/drools/lang/dsl/DSLMap.g:171:4: ( LITERAL | COLON | LEFT_SQUARE | RIGHT_SQUARE )
             {
             root_0 = (Object)adaptor.nil();
@@ -1649,7 +1649,7 @@ public class DSLMapParser extends Parser {
                 boolean hasSpaceAfter = false;
 
         try {
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:181:2: (lc= LEFT_CURLY name= LITERAL ( ( COLON q= LITERAL )? COLON pat= pattern )? rc= RIGHT_CURLY -> {hasSpaceBefore && !\"\".equals(text) && !hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) VT_PATTERN[$pat.start, text] ) -> {!hasSpaceBefore && !\"\".equals(text) && !hasSpaceAfter}? ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) VT_PATTERN[$pat.start, text] ) -> {hasSpaceBefore && !hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) ) -> {!hasSpaceBefore && !hasSpaceAfter}? ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) ) -> {hasSpaceBefore && !\"\".equals(text) && hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) VT_PATTERN[$pat.start, text] ) VT_SPACE -> {!hasSpaceBefore && !\"\".equals(text) && hasSpaceAfter}? ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) VT_PATTERN[$pat.start, text] ) VT_SPACE -> {hasSpaceBefore && hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) ) VT_SPACE -> {!hasSpaceBefore && hasSpaceAfter}? ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) ) VT_SPACE -> ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) ) )
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:181:4: (lc= LEFT_CURLY name= LITERAL ( ( COLON q= LITERAL )? COLON pat= pattern )? rc= RIGHT_CURLY -> {hasSpaceBefore && !\"\".equals(text) && !hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) VT_PATTERN[$pat.start, text] ) -> {!hasSpaceBefore && !\"\".equals(text) && !hasSpaceAfter}? ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) VT_PATTERN[$pat.start, text] ) -> {hasSpaceBefore && !hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) ) -> {!hasSpaceBefore && !hasSpaceAfter}? ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) ) -> {hasSpaceBefore && !\"\".equals(text) && hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) VT_PATTERN[$pat.start, text] ) VT_SPACE -> {!hasSpaceBefore && !\"\".equals(text) && hasSpaceAfter}? ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) VT_PATTERN[$pat.start, text] ) VT_SPACE -> {hasSpaceBefore && hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) ) VT_SPACE -> {!hasSpaceBefore && hasSpaceAfter}? ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) ) VT_SPACE -> ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) ) )
             // src/main/resources/org/drools/lang/dsl/DSLMap.g:181:4: lc= LEFT_CURLY name= LITERAL ( ( COLON q= LITERAL )? COLON pat= pattern )? rc= RIGHT_CURLY
             {
             lc=(Token)input.LT(1);
@@ -2066,7 +2066,7 @@ public class DSLMapParser extends Parser {
                 String text = "";
 
         try {
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:207:2: ( LEFT_CURLY name= LITERAL ( COLON pat= pattern )? RIGHT_CURLY -> {!\"\".equals(text)}? ^( VT_VAR_DEF $name VT_PATTERN[$pat.start, text] ) -> ^( VT_VAR_DEF $name) )
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:207:4: ( LEFT_CURLY name= LITERAL ( COLON pat= pattern )? RIGHT_CURLY -> {!\"\".equals(text)}? ^( VT_VAR_DEF $name VT_PATTERN[$pat.start, text] ) -> ^( VT_VAR_DEF $name) )
             // src/main/resources/org/drools/lang/dsl/DSLMap.g:207:4: LEFT_CURLY name= LITERAL ( COLON pat= pattern )? RIGHT_CURLY
             {
             LEFT_CURLY28=(Token)input.LT(1);
@@ -2202,7 +2202,7 @@ public class DSLMapParser extends Parser {
         Object RIGHT_SQUARE37_tree=null;
 
         try {
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:214:9: ( ( literal | LEFT_CURLY literal RIGHT_CURLY | LEFT_SQUARE pattern RIGHT_SQUARE )+ )
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:214:11: ( ( literal | LEFT_CURLY literal RIGHT_CURLY | LEFT_SQUARE pattern RIGHT_SQUARE )+ )
             // src/main/resources/org/drools/lang/dsl/DSLMap.g:214:11: ( literal | LEFT_CURLY literal RIGHT_CURLY | LEFT_SQUARE pattern RIGHT_SQUARE )+
             {
             root_0 = (Object)adaptor.nil();
@@ -2370,7 +2370,7 @@ public class DSLMapParser extends Parser {
                 boolean hasSpaceAfter = false;
 
         try {
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:226:2: (lc= LEFT_CURLY name= LITERAL rc= RIGHT_CURLY -> {hasSpaceBefore && hasSpaceAfter}? VT_SPACE ^( VT_VAR_REF $name) VT_SPACE -> {hasSpaceBefore && !hasSpaceAfter}? VT_SPACE ^( VT_VAR_REF $name) -> {!hasSpaceBefore && hasSpaceAfter}? ^( VT_VAR_REF $name) VT_SPACE -> ^( VT_VAR_REF $name) )
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:226:4: (lc= LEFT_CURLY name= LITERAL rc= RIGHT_CURLY -> {hasSpaceBefore && hasSpaceAfter}? VT_SPACE ^( VT_VAR_REF $name) VT_SPACE -> {hasSpaceBefore && !hasSpaceAfter}? VT_SPACE ^( VT_VAR_REF $name) -> {!hasSpaceBefore && hasSpaceAfter}? ^( VT_VAR_REF $name) VT_SPACE -> ^( VT_VAR_REF $name) )
             // src/main/resources/org/drools/lang/dsl/DSLMap.g:226:4: lc= LEFT_CURLY name= LITERAL rc= RIGHT_CURLY
             {
             lc=(Token)input.LT(1);
@@ -2510,7 +2510,7 @@ public class DSLMapParser extends Parser {
         RewriteRuleTokenStream stream_LEFT_CURLY=new RewriteRuleTokenStream(adaptor,"token LEFT_CURLY");
 
         try {
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:241:2: ( LEFT_CURLY name= LITERAL RIGHT_CURLY -> ^( VT_VAR_REF $name) )
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:241:4: ( LEFT_CURLY name= LITERAL RIGHT_CURLY -> ^( VT_VAR_REF $name) )
             // src/main/resources/org/drools/lang/dsl/DSLMap.g:241:4: LEFT_CURLY name= LITERAL RIGHT_CURLY
             {
             LEFT_CURLY38=(Token)input.LT(1);
@@ -2592,7 +2592,7 @@ public class DSLMapParser extends Parser {
         RewriteRuleTokenStream stream_LITERAL=new RewriteRuleTokenStream(adaptor,"token LITERAL");
 
         try {
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:247:2: ({...}?value= LITERAL -> VT_CONDITION[$value] )
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:247:4: ({...}?value= LITERAL -> VT_CONDITION[$value] )
             // src/main/resources/org/drools/lang/dsl/DSLMap.g:247:4: {...}?value= LITERAL
             {
             if ( !(validateIdentifierKey("condition")||validateIdentifierKey("when")) ) {
@@ -2661,7 +2661,7 @@ public class DSLMapParser extends Parser {
         RewriteRuleTokenStream stream_LITERAL=new RewriteRuleTokenStream(adaptor,"token LITERAL");
 
         try {
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:252:2: ({...}?value= LITERAL -> VT_CONSEQUENCE[$value] )
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:252:4: ({...}?value= LITERAL -> VT_CONSEQUENCE[$value] )
             // src/main/resources/org/drools/lang/dsl/DSLMap.g:252:4: {...}?value= LITERAL
             {
             if ( !(validateIdentifierKey("consequence")||validateIdentifierKey("then")) ) {
@@ -2730,7 +2730,7 @@ public class DSLMapParser extends Parser {
         RewriteRuleTokenStream stream_LITERAL=new RewriteRuleTokenStream(adaptor,"token LITERAL");
 
         try {
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:257:2: ({...}?value= LITERAL -> VT_KEYWORD[$value] )
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:257:4: ({...}?value= LITERAL -> VT_KEYWORD[$value] )
             // src/main/resources/org/drools/lang/dsl/DSLMap.g:257:4: {...}?value= LITERAL
             {
             if ( !(validateIdentifierKey("keyword")) ) {
@@ -2799,7 +2799,7 @@ public class DSLMapParser extends Parser {
         RewriteRuleTokenStream stream_LITERAL=new RewriteRuleTokenStream(adaptor,"token LITERAL");
 
         try {
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:262:2: ({...}?value= LITERAL -> VT_ANY[$value] )
+            // src/main/resources/org/drools/lang/dsl/DSLMap.g:262:4: ({...}?value= LITERAL -> VT_ANY[$value] )
             // src/main/resources/org/drools/lang/dsl/DSLMap.g:262:4: {...}?value= LITERAL
             {
             if ( !(validateIdentifierKey("*")) ) {
