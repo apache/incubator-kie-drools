@@ -1,7 +1,11 @@
 package org.drools.process.core.event;
 
-public class EventTypeFilter implements EventFilter {
+import java.io.Serializable;
 
+public class EventTypeFilter implements EventFilter, Serializable {
+
+	private static final long serialVersionUID = 4L;
+	
 	private String type;
 	
 	public String getType() {
