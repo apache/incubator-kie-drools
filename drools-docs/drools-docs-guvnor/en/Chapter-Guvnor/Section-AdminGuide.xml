@@ -18,7 +18,7 @@
     the defaults.</para>
 
     <para>When you have downloaded the BRMS distribution (which you can get
-    from http://labs.jboss.com/jbossrules/downloads), you will find the
+    from http://www.jboss.org/drools), you will find the
     drools-jbrms.war file in the zip file. Copy the WAR file into the
     deployment directory of you app server, and then start your app server. If
     you need to customize some settings, you can first "explode" (unzip) the
