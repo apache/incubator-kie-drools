@@ -36,6 +36,7 @@ import org.drools.lang.descr.AccessorDescr;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
+import org.drools.lang.descr.BehaviorDescr;
 import org.drools.lang.descr.CollectDescr;
 import org.drools.lang.descr.EntryPointDescr;
 import org.drools.lang.descr.EvalDescr;
@@ -62,9 +63,11 @@ import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RestrictionConnectiveDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
+import org.drools.lang.descr.SlidingWindowDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.TypeFieldDescr;
 import org.drools.lang.descr.VariableRestrictionDescr;
+import org.drools.rule.Behavior;
 
 public class RuleParserTest extends TestCase {
 
@@ -3077,6 +3080,26 @@ public class RuleParserTest extends TestCase {
 		EntryPointDescr entry = (EntryPointDescr) pattern.getSource();
 		assertEquals("StreamA", entry.getEntryId());
 	}
+
+    public void testSlidingWindow() throws Exception {
+        final String text = "StockTick( symbol==\"ACME\") over window:length(10)";
+
+        PatternDescr pattern = (PatternDescr) parse("pattern_source", "lhs",
+                text);
+
+        assertEquals(1, pattern.getDescrs().size());
+        FieldConstraintDescr fcd = (FieldConstraintDescr) pattern.getDescrs()
+                .get(0);
+        assertEquals("symbol", fcd.getFieldName());
+
+        List<BehaviorDescr> behaviors = pattern.getBehaviors();
+        assertNotNull( behaviors );
+        assertEquals( 1, behaviors.size() );
+        SlidingWindowDescr descr = (SlidingWindowDescr) behaviors.get( 0 );
+        assertEquals( "length", descr.getText() );
+        assertEquals( "length", descr.getType() );
+        assertEquals( "10", descr.getParameters() );
+    }
 
 	public void testNesting() throws Exception {
 		parseResource("compilation_unit", "compilation_unit",

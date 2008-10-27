@@ -27,8 +27,6 @@ package org.drools.lang.descr;
  */
 public class BehaviorDescr extends BaseDescr {
     
-    private String type;
-
     /**
      * @param type
      */
@@ -41,21 +39,21 @@ public class BehaviorDescr extends BaseDescr {
      */
     public BehaviorDescr(String type) {
         super();
-        this.type = type;
+        setText(type);
     }
 
     /**
      * @return the type
      */
     public String getType() {
-        return type;
+        return getText();
     }
 
     /**
      * @param type the type to set
      */
     public void setType(String type) {
-        this.type = type;
+        setText( type );
     }
     
     
