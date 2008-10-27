@@ -68,6 +68,7 @@ import org.drools.rule.PredicateConstraint;
 import org.drools.rule.ReturnValueConstraint;
 import org.drools.rule.ReturnValueRestriction;
 import org.drools.rule.RuleConditionElement;
+import org.drools.rule.SlidingLengthWindow;
 import org.drools.rule.SlidingTimeWindow;
 import org.drools.rule.VariableConstraint;
 import org.drools.rule.VariableRestriction;
@@ -210,6 +211,10 @@ public class PatternBuilder
             if ( Behavior.BehaviorType.TIME_WINDOW.matches( behaviorDescr.getType() ) ) {
                 SlidingWindowDescr swd = (SlidingWindowDescr) behaviorDescr;
                 SlidingTimeWindow window = new SlidingTimeWindow( swd.getLength() );
+                pattern.addBehavior( window );
+            } else if( Behavior.BehaviorType.LENGTH_WINDOW.matches( behaviorDescr.getType() ) ) {
+                SlidingWindowDescr swd = (SlidingWindowDescr) behaviorDescr;
+                SlidingLengthWindow window = new SlidingLengthWindow( (int) swd.getLength() );
                 pattern.addBehavior( window );
             }
         }

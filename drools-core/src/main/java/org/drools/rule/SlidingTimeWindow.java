@@ -49,9 +49,6 @@ public class SlidingTimeWindow
     Behavior {
 
     private long size;
-    
-    // FIXME: THIS IS SO WRONG!!! HOW DID I MADE THAT???? 
-    private volatile transient RightTuple expiringTuple; 
 
     public SlidingTimeWindow() {
         this( 0 );
@@ -103,8 +100,7 @@ public class SlidingTimeWindow
     }
 
     public Object createContext() {
-        return new PriorityQueue<RightTuple>( 16, // arbitrary size... can we improve it?
-                                              new SlidingTimeWindowComparator() );
+        return new SlidingTimeWindowContext();
     }
 
     /**
@@ -115,9 +111,9 @@ public class SlidingTimeWindow
     public void assertRightTuple(final Object context,
                                  final RightTuple rightTuple,
                                  final InternalWorkingMemory workingMemory) {
-        PriorityQueue<RightTuple> queue = (PriorityQueue<RightTuple>) context;
-        queue.add( rightTuple );
-        if ( queue.peek() == rightTuple ) {
+        SlidingTimeWindowContext queue = (SlidingTimeWindowContext) context;
+        queue.queue.add( rightTuple );
+        if ( queue.queue.peek() == rightTuple ) {
             // update next expiration time 
             updateNextExpiration( rightTuple,
                                   workingMemory,
@@ -133,18 +129,18 @@ public class SlidingTimeWindow
     public void retractRightTuple(final Object context,
                                   final RightTuple rightTuple,
                                   final InternalWorkingMemory workingMemory) {
+        SlidingTimeWindowContext queue = (SlidingTimeWindowContext) context;
         // it may be a call back to expire the tuple that is already being expired
-        if( this.expiringTuple != rightTuple ) {
-            PriorityQueue<RightTuple> queue = (PriorityQueue<RightTuple>) context;
-            if ( queue.peek() == rightTuple ) {
+        if ( queue.expiringTuple != rightTuple ) {
+            if ( queue.queue.peek() == rightTuple ) {
                 // it was the head of the queue
-                queue.poll();
+                queue.queue.poll();
                 // update next expiration time 
-                updateNextExpiration( queue.peek(),
+                updateNextExpiration( queue.queue.peek(),
                                       workingMemory,
                                       queue );
             } else {
-                queue.remove( rightTuple );
+                queue.queue.remove( rightTuple );
             }
         }
     }
@@ -153,12 +149,12 @@ public class SlidingTimeWindow
                              final InternalWorkingMemory workingMemory) {
         TimerService clock = workingMemory.getTimerService();
         long currentTime = clock.getCurrentTime();
-        PriorityQueue<RightTuple> queue = (PriorityQueue<RightTuple>) context;
-        RightTuple tuple = queue.peek();
+        SlidingTimeWindowContext queue = (SlidingTimeWindowContext) context;
+        RightTuple tuple = queue.queue.peek();
         while ( tuple != null && isExpired( currentTime,
                                             tuple ) ) {
-            this.expiringTuple = tuple;
-            queue.remove();
+            queue.expiringTuple = tuple;
+            queue.queue.remove();
             final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
                                                                                       PropagationContext.RETRACTION,
                                                                                       null,
@@ -168,10 +164,10 @@ public class SlidingTimeWindow
                                                          propagationContext,
                                                          workingMemory );
             tuple.unlinkFromRightParent();
-            this.expiringTuple = null;
-            tuple = queue.peek();
+            queue.expiringTuple = null;
+            tuple = queue.queue.peek();
         }
-        
+
         // update next expiration time 
         updateNextExpiration( tuple,
                               workingMemory,
@@ -193,15 +189,19 @@ public class SlidingTimeWindow
         TimerService clock = workingMemory.getTimerService();
         if ( rightTuple != null ) {
             long nextTimestamp = ((EventFactHandle) rightTuple.getFactHandle()).getStartTimestamp() + this.size;
-            JobContext jobctx = new BehaviorJobContext( workingMemory, this, context );
+            JobContext jobctx = new BehaviorJobContext( workingMemory,
+                                                        this,
+                                                        context );
             BehaviorJob job = new BehaviorJob();
-            JobHandle handle = clock.scheduleJob( job, jobctx, new PointInTimeTrigger( nextTimestamp ));
+            JobHandle handle = clock.scheduleJob( job,
+                                                  jobctx,
+                                                  new PointInTimeTrigger( nextTimestamp ) );
             jobctx.setJobHandle( handle );
         }
     }
-    
+
     public String toString() {
-        return "SlidingTimeWindow( size="+size+" )";
+        return "SlidingTimeWindow( size=" + size + " )";
     }
 
     /**
@@ -219,13 +219,41 @@ public class SlidingTimeWindow
             return (e1.getStartTimestamp() < e2.getStartTimestamp()) ? -1 : (e1.getStartTimestamp() == e2.getStartTimestamp() ? 0 : 1);
         }
     }
-    
-    private static class PointInTimeTrigger implements Trigger {
+
+    private static class SlidingTimeWindowContext
+        implements
+        Externalizable {
+
+        public PriorityQueue<RightTuple> queue;
+        public RightTuple                expiringTuple;
+
+        public SlidingTimeWindowContext() {
+            this.queue = new PriorityQueue<RightTuple>( 16, // arbitrary size... can we improve it?
+                                                        new SlidingTimeWindowComparator() );
+        }
+
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
+            this.queue = (PriorityQueue<RightTuple>) in.readObject();
+            this.expiringTuple = (RightTuple) in.readObject();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject( this.queue );
+            out.writeObject( this.expiringTuple );
+        }
+
+    }
+
+    private static class PointInTimeTrigger
+        implements
+        Trigger {
         private Date timestamp;
-        
-        public PointInTimeTrigger() {}
-        
-        public PointInTimeTrigger( long timestamp ) {
+
+        public PointInTimeTrigger() {
+        }
+
+        public PointInTimeTrigger(long timestamp) {
             this.timestamp = new Date( timestamp );
         }
 
@@ -242,13 +270,15 @@ public class SlidingTimeWindow
             out.writeObject( this.timestamp );
         }
     }
-    
-    private static class BehaviorJobContext implements JobContext {
+
+    private static class BehaviorJobContext
+        implements
+        JobContext {
         public InternalWorkingMemory workingMemory;
-        public Behavior behavior;
-        public Object behaviorContext;
-        public JobHandle handle;
-        
+        public Behavior              behavior;
+        public Object                behaviorContext;
+        public JobHandle             handle;
+
         /**
          * @param workingMemory
          * @param behavior
@@ -270,21 +300,26 @@ public class SlidingTimeWindow
         public void setJobHandle(JobHandle jobHandle) {
             this.handle = jobHandle;
         }
-        
+
     }
-    
-    private static class BehaviorJob implements Job {
+
+    private static class BehaviorJob
+        implements
+        Job {
 
         public void execute(JobContext ctx) {
             BehaviorJobContext context = (BehaviorJobContext) ctx;
-            context.workingMemory.queueWorkingMemoryAction( new BehaviorExpireWMAction( context.behavior, context.behaviorContext ) );
+            context.workingMemory.queueWorkingMemoryAction( new BehaviorExpireWMAction( context.behavior,
+                                                                                        context.behaviorContext ) );
         }
 
     }
-    
-    private static class BehaviorExpireWMAction implements WorkingMemoryAction {
+
+    private static class BehaviorExpireWMAction
+        implements
+        WorkingMemoryAction {
         private final Behavior behavior;
-        private final Object context;
+        private final Object   context;
 
         /**
          * @param behavior
@@ -298,25 +333,26 @@ public class SlidingTimeWindow
         }
 
         public void execute(InternalWorkingMemory workingMemory) {
-            this.behavior.expireTuples( context, workingMemory );
+            this.behavior.expireTuples( context,
+                                        workingMemory );
         }
 
         public void write(MarshallerWriteContext context) throws IOException {
             // TODO Auto-generated method stub
-            
+
         }
 
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
             // TODO Auto-generated method stub
-            
+
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
             // TODO Auto-generated method stub
-            
+
         }
-        
+
     }
 
 }

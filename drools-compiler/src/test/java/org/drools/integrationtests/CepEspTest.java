@@ -511,6 +511,88 @@ public class CepEspTest extends TestCase {
 
     }
     
+    public void testSimpleLengthWindow() throws Exception {
+        // read in the source
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_SimpleLengthWindow.drl" ) );
+        final RuleBase ruleBase = loadRuleBase( reader );
+
+        SessionConfiguration conf = new SessionConfiguration();
+        conf.setClockType( ClockType.REALTIME_CLOCK );
+        StatefulSession wm = ruleBase.newStatefulSession( conf );
+
+        final List results = new ArrayList();
+
+        wm.setGlobal( "results",
+                      results );
+
+        EventFactHandle handle1 = (EventFactHandle) wm.insert( new OrderEvent( "1",
+                                                                               "customer A",
+                                                                               70 ) );
+
+        //        wm  = SerializationHelper.serializeObject(wm);
+        wm.fireAllRules();
+
+        assertEquals( 1,
+                      results.size() );
+        assertEquals( 70,
+                      ((Number) results.get( 0 )).intValue() );
+
+        // assert new data
+        EventFactHandle handle2 = (EventFactHandle) wm.insert( new OrderEvent( "2",
+                                                                               "customer A",
+                                                                               60 ) );
+        wm.fireAllRules();
+
+        assertEquals( 2,
+                      results.size() );
+        assertEquals( 65,
+                      ((Number) results.get( 1 )).intValue() );
+
+        // assert new data
+        EventFactHandle handle3 = (EventFactHandle) wm.insert( new OrderEvent( "3",
+                                                                               "customer A",
+                                                                               50 ) );
+        wm.fireAllRules();
+
+        assertEquals( 3,
+                      results.size() );
+        assertEquals( 60,
+                      ((Number) results.get( 2 )).intValue() );
+
+        // assert new data
+        EventFactHandle handle4 = (EventFactHandle) wm.insert( new OrderEvent( "4",
+                                                                               "customer A",
+                                                                               25 ) );
+        wm.fireAllRules();
+
+        // first event should have expired, making average under the rule threshold, so no additional rule fire
+        assertEquals( 3,
+                      results.size() );
+
+        // assert new data
+        EventFactHandle handle5 = (EventFactHandle) wm.insert( new OrderEvent( "5",
+                                                                               "customer A",
+                                                                               70 ) );
+        //        wm  = SerializationHelper.serializeObject(wm);
+        wm.fireAllRules();
+
+        // still under the threshold, so no fire
+        assertEquals( 3,
+                      results.size() );
+
+        // assert new data
+        EventFactHandle handle6 = (EventFactHandle) wm.insert( new OrderEvent( "6",
+                                                                               "customer A",
+                                                                               115 ) );
+        wm.fireAllRules();
+
+        assertEquals( 4,
+                      results.size() );
+        assertEquals( 70,
+                      ((Number) results.get( 3 )).intValue() );
+
+    }
+    
     //    public void FIXME_testTransactionCorrelation() throws Exception {
     //        // read in the source
     //        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_TransactionCorrelation.drl" ) );
