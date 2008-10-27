@@ -20,7 +20,7 @@ public class DSLSentence
         final char[] chars = this.sentence.toCharArray();
         boolean inBracket = false;
         boolean inBracketAfterColon=false;
-        
+
         String result = "";
         for ( int i = 0; i < chars.length; i++ ) {
             final char c = chars[i];
@@ -35,7 +35,7 @@ public class DSLSentence
             	inBracketAfterColon = true;
             }
         }
-        return result;
+        return result.replace("\\n", "\n");
     }
 
     /**
