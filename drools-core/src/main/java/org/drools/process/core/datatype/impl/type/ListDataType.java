@@ -19,7 +19,6 @@ package org.drools.process.core.datatype.impl.type;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.Iterator;
 import java.util.List;
 
 import org.drools.process.core.TypeObject;

@@ -106,6 +106,14 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
                 throw new SAXParseException("<" + localName + "> requires an Integer 'height' attribute", parser.getLocator());
             }
         }
+        final String color = element.getAttribute("color");
+        if (color != null && color.length() != 0) {
+            try {
+                node.setMetaData("color", new Integer(color));
+            } catch (NumberFormatException exc) {
+                throw new SAXParseException("<" + localName + "> requires an Integer 'color' attribute", parser.getLocator());
+            }
+        }
     }
     
     protected void handleAction(final Node node, final Element element, String type) {
@@ -151,6 +159,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
             Integer y = (Integer) node.getMetaData("y");
             Integer width = (Integer) node.getMetaData("width");
             Integer height = (Integer) node.getMetaData("height");
+            Integer color = (Integer) node.getMetaData("color");
             if (x != null && x != 0) {
                 xmlDump.append("x=\"" + x + "\" ");
             }
@@ -162,6 +171,9 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
             }
             if (height != null && height != -1) {
                 xmlDump.append("height=\"" + height + "\" ");
+            }
+            if (color != null && color != 0) {
+                xmlDump.append("color=\"" + color + "\" ");
             }
         }
     }

@@ -208,6 +208,12 @@ public class ProcessBuilder {
                     builder.append( "import " + importString + ";\n" );
                 }
             }
+            List<String> functionImports = ruleFlow.getFunctionImports();
+            if ( functionImports != null ) {
+                for ( String importString: functionImports ) {
+                    builder.append( "import function " + importString + ";\n" );
+                }
+            }
             Map<String, String> globals = ruleFlow.getGlobals();
             if ( globals != null ) {
                 for ( Map.Entry<String, String> entry: globals.entrySet()) {

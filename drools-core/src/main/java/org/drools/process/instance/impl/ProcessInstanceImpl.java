@@ -38,7 +38,9 @@ import org.drools.process.instance.ProcessInstance;
  */
 public abstract class ProcessInstanceImpl implements ProcessInstance, Serializable {
 
-    private long id;
+	private static final long serialVersionUID = 4L;
+	
+	private long id;
     private String processId;
     private transient Process process;
     private int state = STATE_PENDING;
@@ -159,11 +161,13 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
     }
 
     public void start() {
-        if ( getState() != ProcessInstanceImpl.STATE_PENDING ) {
-            throw new IllegalArgumentException( "A process instance can only be started once" );
-        }
-        setState( ProcessInstanceImpl.STATE_ACTIVE );
-        internalStart();
+    	synchronized (this) {
+            if ( getState() != ProcessInstanceImpl.STATE_PENDING ) {
+                throw new IllegalArgumentException( "A process instance can only be started once" );
+            }
+            setState( ProcessInstanceImpl.STATE_ACTIVE );
+            internalStart();
+		}
     }
     
     protected abstract void internalStart();

@@ -57,4 +57,8 @@ public final class FloatDataType
 		Float f = (Float) value;
 		return f == null ? "" : f.toString();
 	}
+
+	public String getStringType() {
+		return "Float";
+	}
 }

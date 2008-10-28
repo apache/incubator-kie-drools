@@ -53,4 +53,8 @@ public final class BooleanDataType
 	public String writeValue(Object value) {
 		return (Boolean) value ? "true" : "false";
 	}
+
+	public String getStringType() {
+		return "Boolean";
+	}
 }

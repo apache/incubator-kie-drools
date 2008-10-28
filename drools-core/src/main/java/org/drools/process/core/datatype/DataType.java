@@ -33,5 +33,10 @@ public interface DataType extends Externalizable {
     String writeValue(Object value);
     
     Object readValue(String value);
+    
+    /**
+     * Returns the corresponding Java type of this datatype
+     */
+    String getStringType();
 
 }

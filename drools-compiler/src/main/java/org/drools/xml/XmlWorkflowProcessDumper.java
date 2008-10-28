@@ -81,6 +81,7 @@ public class XmlWorkflowProcessDumper {
     private void visitHeader(WorkflowProcess process, StringBuffer xmlDump, boolean includeMeta) {
         xmlDump.append("  <header>" + EOL);
         visitImports(process.getImports(), xmlDump);
+        visitFunctionImports(process.getFunctionImports(), xmlDump);
         visitGlobals(process.getGlobals(), xmlDump);
         VariableScope variableScope = (VariableScope) process.getDefaultContext(VariableScope.VARIABLE_SCOPE);
         if (variableScope != null) {
@@ -104,6 +105,16 @@ public class XmlWorkflowProcessDumper {
                 xmlDump.append("      <import name=\"" + importString + "\" />" + EOL);
             }
             xmlDump.append("    </imports>" + EOL);
+        }
+    }
+    
+    private void visitFunctionImports(List<String> imports, StringBuffer xmlDump) {
+        if (imports != null && imports.size() > 0) {
+            xmlDump.append("    <functionImports>" + EOL);
+            for (String importString: imports) {
+                xmlDump.append("      <functionImport name=\"" + importString + "\" />" + EOL);
+            }
+            xmlDump.append("    </functionImports>" + EOL);
         }
     }
     

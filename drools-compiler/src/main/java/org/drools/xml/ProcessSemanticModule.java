@@ -10,6 +10,7 @@ import org.drools.xml.processes.EventNodeHandler;
 import org.drools.xml.processes.ExceptionHandlerHandler;
 import org.drools.xml.processes.FaultNodeHandler;
 import org.drools.xml.processes.ForEachNodeHandler;
+import org.drools.xml.processes.FunctionImportHandler;
 import org.drools.xml.processes.GlobalHandler;
 import org.drools.xml.processes.HumanTaskNodeHandler;
 import org.drools.xml.processes.ImportHandler;
@@ -70,6 +71,8 @@ public class ProcessSemanticModule extends DefaultSemanticModule implements Sema
                            new ConnectionHandler() );
         addHandler( "import",
                            new ImportHandler() );
+        addHandler( "functionImport",
+                           new FunctionImportHandler() );
         addHandler( "global",
                            new GlobalHandler() );        
         addHandler( "variable",

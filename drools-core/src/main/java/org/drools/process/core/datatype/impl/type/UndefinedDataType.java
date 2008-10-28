@@ -60,4 +60,7 @@ public final class UndefinedDataType implements DataType {
 		throw new IllegalArgumentException("Undefined datatype");
 	}
 
+	public String getStringType() {
+		return "Object";
+	}
 }
