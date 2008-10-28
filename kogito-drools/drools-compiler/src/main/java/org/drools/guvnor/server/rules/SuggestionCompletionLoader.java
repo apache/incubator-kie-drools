@@ -61,7 +61,7 @@ public class SuggestionCompletionLoader {
 
     private final MapBackedClassLoader              loader;
 
-    protected List                                  errors  = new ArrayList();
+    protected List<String>                                  errors  = new ArrayList<String>();
 
     // iterating over the import list
     final ClassTypeResolver                         resolver;
@@ -285,20 +285,22 @@ public class SuggestionCompletionLoader {
         for ( final Iterator it = pkgDescr.getImports().iterator(); it.hasNext(); ) {
             final ImportDescr imp = (ImportDescr) it.next();
             final String className = imp.getTarget();
-            resolver.addImport( className );
-
-            final Class clazz = loadClass( className, jars );
-
-            if ( clazz != null ) {
-                try {
-                    final String shortTypeName = getShortNameOfClass( clazz.getName() );
-                    loadClassFields( clazz, shortTypeName );
-                    this.builder.addFactType( shortTypeName );
-                } catch ( final IOException e ) {
-                    this.errors.add( "Error while inspecting the class: " + className + ". The error was: " + e.getMessage() );
-                } catch (NoClassDefFoundError e) {
-                	this.errors.add( "Unable to find the class: " + e.getMessage().replace('/', '.') + " which is required by: " + className + ". You may need to add more classes to the model.");
-                }
+            if (className.endsWith("*")) {
+            	this.errors.add("Unable to introspect model for wild card imports (" + className + "). Please explicitly import each fact type you require.");
+            } else {
+	            resolver.addImport( className );
+	            final Class clazz = loadClass( className, jars );
+	            if ( clazz != null ) {
+	                try {
+	                    final String shortTypeName = getShortNameOfClass( clazz.getName() );
+	                    loadClassFields( clazz, shortTypeName );
+	                    this.builder.addFactType( shortTypeName );
+	                } catch ( final IOException e ) {
+	                    this.errors.add( "Error while inspecting the class: " + className + ". The error was: " + e.getMessage() );
+	                } catch (NoClassDefFoundError e) {
+	                	this.errors.add( "Unable to find the class: " + e.getMessage().replace('/', '.') + " which is required by: " + className + ". You may need to add more classes to the model.");
+	                }
+	            }
             }
         }
 
@@ -525,7 +527,7 @@ public class SuggestionCompletionLoader {
     /**
      * Returns a list of String errors.
      */
-    public List getErrors() {
+    public List<String> getErrors() {
         return this.errors;
     }
 
