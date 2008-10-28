@@ -100,7 +100,7 @@
                         <format>
                             <formatName>pdf</formatName>
                             <stylesheetResource>classpath:/xslt/org/jboss/pdf.xsl</stylesheetResource>
-                            <finalName>${pom.name}.pdf</finalName>
+                            <finalName>${pom.artifactId}.pdf</finalName>
                         </format>
                         <format>
                             <formatName>html</formatName>
