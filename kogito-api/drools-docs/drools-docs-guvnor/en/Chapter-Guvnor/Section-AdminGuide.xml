@@ -142,7 +142,7 @@
       <para>In some cases it may be a requirement that you use an external
       RDBMS, such as Oracle, MySQL, or Microsoft SQL Server as the data store
       - this is permitted. In this case, the easiest thing to do is to start
-      up the RDBMS with defaults (or with a suitable home directory as
+      up the BRMS with defaults (or with a suitable home directory as
       specified above) to let it generate the default repository.xml
       scaffolding.</para>
 
