@@ -17,6 +17,18 @@ public class SuggestionCompletionLoaderTest extends TestCase {
     }
 
 
+    public void testSuggestionCompLoaderWildcards() throws Exception {
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+        loader.getSuggestionEngine( "package foo \n import org.drools.*", new ArrayList(), new ArrayList() );
+        assertEquals(1, loader.getErrors().size());
+        String err = loader.getErrors().get(0);
+        assertTrue(err.startsWith("Unable"));
+
+
+    }
+
+
+
     public void testLoadDifferentFieldTypes() throws Exception {
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
         SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n import org.drools.guvnor.server.rules.SomeFact", new ArrayList(), new ArrayList() );
