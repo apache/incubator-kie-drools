@@ -37,6 +37,7 @@ public class WorkflowProcessImpl extends ProcessImpl implements WorkflowProcess 
 
     private NodeContainer nodeContainer;
     private List<String> imports;
+    private List<String> functionImports;
     private Map<String, String> globals;
     
     public WorkflowProcessImpl() {
@@ -75,6 +76,14 @@ public class WorkflowProcessImpl extends ProcessImpl implements WorkflowProcess 
 
     public void setImports(List<String> imports) {
         this.imports = imports;
+    }
+    
+    public List<String> getFunctionImports() {
+        return functionImports;
+    }
+
+    public void setFunctionImports(List<String> functionImports) {
+        this.functionImports = functionImports;
     }
     
     public Map<String, String> getGlobals() {

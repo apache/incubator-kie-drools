@@ -68,8 +68,10 @@ public class RuleSetNodeInstance extends EventBasedNodeInstance
     }
 
     public void ruleFlowGroupDeactivated() {
-        removeEventListeners();
-        triggerCompleted();
+    	synchronized (getProcessInstance()) {
+            removeEventListeners();
+            triggerCompleted();
+		}
     }
 
 }

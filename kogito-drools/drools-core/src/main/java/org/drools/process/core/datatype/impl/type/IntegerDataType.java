@@ -58,4 +58,8 @@ public class IntegerDataType
 		return i == null ? "" : i.toString();
 	}
 
+	public String getStringType() {
+		return "String";
+	}
+
 }

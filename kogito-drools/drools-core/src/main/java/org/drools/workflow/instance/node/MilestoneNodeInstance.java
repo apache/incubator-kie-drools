@@ -87,8 +87,10 @@ public class MilestoneNodeInstance extends EventBasedNodeInstance implements Age
             String ruleName = event.getActivation().getRule().getName();
             String milestoneName = "RuleFlow-Milestone-" + getProcessInstance().getProcess().getId() + "-" + getNodeId();
             if (milestoneName.equals(ruleName)) {
-                removeEventListeners();
-                triggerCompleted();
+            	synchronized(getProcessInstance()) {
+	                removeEventListeners();
+	                triggerCompleted();
+            	}
             }
         }
     }

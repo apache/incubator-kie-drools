@@ -19,6 +19,7 @@
 		<xs:complexType>
 			<xs:choice minOccurs="0" maxOccurs="unbounded">
 				<xs:element ref="drools:imports"/>
+				<xs:element ref="drools:functionImports"/>
 				<xs:element ref="drools:globals"/>
 				<xs:element ref="drools:variables"/>
 				<xs:element ref="drools:swimlanes"/>
@@ -34,6 +35,18 @@
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="import">
+		<xs:complexType>
+			<xs:attribute name="name" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="functionImports">
+		<xs:complexType>
+			<xs:sequence minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="drools:functionImport"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="functionImport">
 		<xs:complexType>
 			<xs:attribute name="name" type="xs:string" use="required"/>
 		</xs:complexType>

@@ -83,4 +83,8 @@ public class ObjectDataType implements DataType {
 		XStream xstream = new XStream();
 		return xstream.toXML(value);
 	}
+
+	public String getStringType() {
+		return className == null ? "Object" : className;
+	}
 }

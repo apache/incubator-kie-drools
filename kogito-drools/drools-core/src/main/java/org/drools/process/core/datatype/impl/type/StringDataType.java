@@ -55,4 +55,7 @@ public class StringDataType implements DataType {
 		return (String) value;
 	}
 	
+	public String getStringType() {
+		return "String";
+	}
 }

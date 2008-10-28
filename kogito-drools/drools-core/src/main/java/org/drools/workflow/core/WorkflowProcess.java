@@ -37,11 +37,26 @@ public interface WorkflowProcess extends Process, NodeContainer {
     List<String> getImports();
     
     /**
+     * Returns the function imports of this RuleFlow process.
+     * They are defined as a List of fully qualified class names.
+     * 
+     * @return	the function imports of this RuleFlow process
+     */
+    List<String> getFunctionImports();
+    
+    /**
      * Sets the imports of this RuleFlow process
      * 
      * @param imports	the imports as a List of fully qualified class names
      */
     void setImports(List<String> imports);
+
+    /**
+     * Sets the imports of this RuleFlow process
+     * 
+     * @param imports	the imports as a List of fully qualified class names
+     */
+    void setFunctionImports(List<String> functionImports);
 
     /**
      * Returns the globals of this RuleFlow process.
