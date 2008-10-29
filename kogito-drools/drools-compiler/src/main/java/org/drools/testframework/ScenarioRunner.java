@@ -28,6 +28,7 @@ import org.drools.guvnor.client.modeldriven.testing.VerifyRuleFired;
 import org.drools.guvnor.server.util.ScenarioXMLPersistence;
 import org.drools.rule.Package;
 import org.drools.rule.TimeMachine;
+import org.mvel.MVEL;
 
 /**
  * This actually runs the test scenarios.
@@ -86,6 +87,7 @@ public class ScenarioRunner {
 	private void runScenario(final Scenario scenario,
 			final TypeResolver resolver, final InternalWorkingMemory wm)
 			throws ClassNotFoundException {
+		MVEL.COMPILER_OPT_ALLOW_NAKED_METH_CALL = true;
 		scenario.lastRunResult = new Date();
 		//stub out any rules we don't want to have the consequences firing of.
 		HashSet<String> ruleList = new HashSet<String>();
