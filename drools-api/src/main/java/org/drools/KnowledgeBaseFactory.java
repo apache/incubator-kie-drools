@@ -1,6 +1,5 @@
 package org.drools;
 
-import org.drools.util.ChainedProperties;
 
 public class KnowledgeBaseFactory {
     private static KnowledgeBaseProvider provider;
@@ -16,23 +15,31 @@ public class KnowledgeBaseFactory {
         return provider.newKnowledgeBase();
     }
     
-    @SuppressWarnings("unchecked")
+    public static KnowledgeBase newKnowledgeBase(KnowledgeBaseConfiguration conf) {
+        if ( provider == null ) {
+            loadProvider();
+        }        
+        return provider.newKnowledgeBase(conf);        
+    }
+    
 	private static void loadProvider() {
         try {
-            ChainedProperties properties = new ChainedProperties( "drools-providers.conf" );
-            String className = properties.getProperty( "KnowledgeSessionProvider", null );
-            if ( className != null && className.trim().length() > 0 ) {
-                Class<KnowledgeBaseProvider> cls = ( Class<KnowledgeBaseProvider> ) Class.forName( className );
-                setKnowledgeBaseProvider( cls.newInstance() );
-            }
-        } catch ( Exception e1 ) {
-            try {
-                // we didn't find anything in properties so lets try and us reflection
-                Class<KnowledgeBaseProvider> cls = ( Class<KnowledgeBaseProvider> ) Class.forName( "org.drools.KnowledgeBaseProviderImpl" );
-                setKnowledgeBaseProvider( cls.newInstance() );
-            } catch ( Exception e2 ) {
-                throw new ProviderInitializationException( "Provider was not set and the Factory was unable to load a provider from properties, nor could reflection find org.drools.KnowledgeBaseProviderImpl." );
-            }
+            // we didn't find anything in properties so lets try and us reflection
+            Class<KnowledgeBaseProvider> cls = ( Class<KnowledgeBaseProvider> ) Class.forName( "org.drools.impl.KnowledgeBaseProviderImpl" );
+            setKnowledgeBaseProvider( cls.newInstance() );
+        } catch ( Exception e2 ) {
+            throw new ProviderInitializationException( "Provider org.drools.impl.KnowledgeBaseProviderImpl could not be set." );
         }
+        
+//        try {
+//            ChainedProperties properties = new ChainedProperties( "drools-providers.conf" );
+//            String className = properties.getProperty( "KnowledgeSessionProvider", null );
+//            if ( className != null && className.trim().length() > 0 ) {
+//                Class<KnowledgeBaseProvider> cls = ( Class<KnowledgeBaseProvider> ) Class.forName( className );
+//                setKnowledgeBaseProvider( cls.newInstance() );
+//            }
+//        } catch ( Exception e1 ) {
+//
+//        }
     }    
 }

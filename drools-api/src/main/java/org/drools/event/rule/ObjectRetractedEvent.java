@@ -16,9 +16,9 @@ package org.drools.event.rule;
  * limitations under the License.
  */
 
-import org.drools.FactHandle;
+import org.drools.runtime.rule.FactHandle;
 
-public interface ObjectRetractedEvent extends RuleSessionEvent {
+public interface ObjectRetractedEvent extends WorkingMemoryEvent {
     
     public FactHandle getFactHandle();
 

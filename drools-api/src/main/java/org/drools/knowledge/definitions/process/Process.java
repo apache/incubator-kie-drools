@@ -10,4 +10,8 @@ public interface Process {
     
     String getPackageName();
     
+    String getType();
+    
+    Object getMetaData(String name);
+
 }
