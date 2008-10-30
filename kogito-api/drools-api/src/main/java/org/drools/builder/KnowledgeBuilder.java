@@ -1,5 +1,10 @@
 package org.drools.builder;
 
-public interface KnowledgeBuilder extends RuleBuilder, ProcessBuilder {
+import java.util.Collection;
 
+import org.drools.knowledge.definitions.KnowledgePackage;
+
+public interface KnowledgeBuilder extends RuleBuilder, ProcessBuilder {
+	
+	Collection<KnowledgePackage> getKnowledgePackages();
 }

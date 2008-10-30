@@ -5,6 +5,8 @@ public interface NodeInstance {
     long getId();
 
     long getNodeId();
+    
+    String getNodeName();
 
     WorkflowProcessInstance getProcessInstance();
 

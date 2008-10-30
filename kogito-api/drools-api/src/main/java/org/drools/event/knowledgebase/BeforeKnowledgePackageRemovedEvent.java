@@ -1,4 +1,7 @@
-package org.drools.event.rule;
+package org.drools.event.knowledgebase;
+
+import org.drools.knowledge.definitions.KnowledgePackage;
+import org.drools.knowledge.definitions.rule.Rule;
 
 /*
  * Copyright 2005 JBoss Inc
@@ -16,15 +19,6 @@ package org.drools.event.rule;
  * limitations under the License.
  */
 
-import java.util.EventListener;
-
-public interface RuleSessionEventListener
-    extends
-    EventListener {
-    void objectInserted(ObjectInsertedEvent event);
-
-    void objectUpdated(ObjectUpdatedEvent event);
-
-    void objectRetracted(ObjectRetractedEvent event);
-
+public interface BeforeKnowledgePackageRemovedEvent extends KnowledgeBaseEvent {
+    KnowledgePackage getKnowledgePackage();
 }

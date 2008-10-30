@@ -1,17 +1,18 @@
 package org.drools.process.instance;
 
-public interface ProcessInstance  { 
+public interface ProcessInstance extends EventListener { 
 	
     int STATE_PENDING   = 0;
     int STATE_ACTIVE    = 1;
     int STATE_COMPLETED = 2;
     int STATE_ABORTED   = 3;
-    int STATE_SUSPENDED = 4;    
-    
-    String getProcessId();
+    int STATE_SUSPENDED = 4;       
 
-    int getState();
+    String getProcessId();
     
-    void signalEvent(String type, Object event);
-    
+    long getId();    
+
+    String getProcessName();
+
+    int getState();    
 }

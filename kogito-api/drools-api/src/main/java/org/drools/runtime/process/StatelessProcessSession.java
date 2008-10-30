@@ -1,4 +1,4 @@
-package org.drools;
+package org.drools.runtime.process;
 
 public interface StatelessProcessSession {
 

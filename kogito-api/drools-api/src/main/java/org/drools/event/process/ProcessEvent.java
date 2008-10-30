@@ -16,9 +16,10 @@ package org.drools.event.process;
  * limitations under the License.
  */
 
+import org.drools.event.KnowledgeRuntimeEvent;
 import org.drools.process.instance.ProcessInstance;
 
-public interface ProcessEvent {
+public interface ProcessEvent extends KnowledgeRuntimeEvent {
 	
 	ProcessInstance getProcessInstance();
 

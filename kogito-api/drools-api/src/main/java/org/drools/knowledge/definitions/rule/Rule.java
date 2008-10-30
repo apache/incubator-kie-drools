@@ -1,5 +1,9 @@
 package org.drools.knowledge.definitions.rule;
 
 public interface Rule {
-    String getRuleName();
+	
+    String getName();
+    
+    public String getPackageName();
+    
 }
