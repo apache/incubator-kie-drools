@@ -221,8 +221,10 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 	}
 
 	public void start() {
-		registerExternalEventNodeListeners();
-		super.start();
+		synchronized (this) {
+			registerExternalEventNodeListeners();
+			super.start();
+		}
 	}
 
 	private void registerExternalEventNodeListeners() {
@@ -245,31 +247,33 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 	}
 
 	public void signalEvent(String type, Object event) {
-		List<EventListener> listeners = eventListeners.get(type);
-		if (listeners != null) {
-			for (EventListener listener : listeners) {
-				listener.signalEvent(type, event);
+		synchronized (this) {
+			List<EventListener> listeners = eventListeners.get(type);
+			if (listeners != null) {
+				for (EventListener listener : listeners) {
+					listener.signalEvent(type, event);
+				}
 			}
-		}
-		listeners = externalEventListeners.get(type);
-		if (listeners != null) {
-			for (EventListener listener : listeners) {
-				listener.signalEvent(type, event);
+			listeners = externalEventListeners.get(type);
+			if (listeners != null) {
+				for (EventListener listener : listeners) {
+					listener.signalEvent(type, event);
+				}
 			}
-		}
-		for (Node node : getWorkflowProcess().getNodes()) {
-			if (node instanceof EventNodeInterface) {
-				if (((EventNodeInterface) node).acceptsEvent(type, event)) {
-					if (node instanceof EventNode) {
-						EventNodeInstance eventNodeInstance = (EventNodeInstance) getNodeInstance(node);
-						eventNodeInstance.signalEvent(type, event);
-					} else {
-						List<NodeInstance> nodeInstances = getNodeInstances(node
-								.getId());
-						if (nodeInstances != null && !nodeInstances.isEmpty()) {
-							for (NodeInstance nodeInstance : nodeInstances) {
-								((EventNodeInstanceInterface) nodeInstance)
-										.signalEvent(type, event);
+			for (Node node : getWorkflowProcess().getNodes()) {
+				if (node instanceof EventNodeInterface) {
+					if (((EventNodeInterface) node).acceptsEvent(type, event)) {
+						if (node instanceof EventNode) {
+							EventNodeInstance eventNodeInstance = (EventNodeInstance) getNodeInstance(node);
+							eventNodeInstance.signalEvent(type, event);
+						} else {
+							List<NodeInstance> nodeInstances = getNodeInstances(node
+									.getId());
+							if (nodeInstances != null && !nodeInstances.isEmpty()) {
+								for (NodeInstance nodeInstance : nodeInstances) {
+									((EventNodeInstanceInterface) nodeInstance)
+											.signalEvent(type, event);
+								}
 							}
 						}
 					}
