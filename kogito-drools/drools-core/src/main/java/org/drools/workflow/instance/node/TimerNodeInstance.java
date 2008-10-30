@@ -2,10 +2,10 @@ package org.drools.workflow.instance.node;
 
 import org.drools.process.core.timer.Timer;
 import org.drools.process.instance.EventListener;
+import org.drools.process.instance.InternalProcessInstance;
+import org.drools.process.instance.NodeInstance;
 import org.drools.process.instance.timer.TimerInstance;
-import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.TimerNode;
-import org.drools.workflow.instance.NodeInstance;
 
 public class TimerNodeInstance extends EventBasedNodeInstance implements EventListener {
 
@@ -26,7 +26,7 @@ public class TimerNodeInstance extends EventBasedNodeInstance implements EventLi
     }
 
     public void internalTrigger(NodeInstance from, String type) {
-        if (!Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
+        if (!org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
             throw new IllegalArgumentException(
                 "A TimerNode only accepts default incoming connections!");
         }
@@ -34,7 +34,7 @@ public class TimerNodeInstance extends EventBasedNodeInstance implements EventLi
         if (getTimerInstances() == null) {
         	addTimerListener();
         }
-        getProcessInstance().getWorkingMemory().getTimerManager()
+        ((InternalProcessInstance) getProcessInstance()).getWorkingMemory().getTimerManager()
             .registerTimer(timer, getProcessInstance());
         timerId = timer.getId();
     }
@@ -62,24 +62,24 @@ public class TimerNodeInstance extends EventBasedNodeInstance implements EventLi
     }
     
     public void triggerCompleted(boolean remove) {
-        triggerCompleted(Node.CONNECTION_DEFAULT_TYPE, remove);
+        triggerCompleted(org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE, remove);
     }
     
     public void cancel() {
-        getProcessInstance().getWorkingMemory().getTimerManager().cancelTimer(timerId);
+    	((InternalProcessInstance) getProcessInstance()).getWorkingMemory().getTimerManager().cancelTimer(timerId);
         super.cancel();
     }
     
     public void addEventListeners() {
         super.addEventListeners();
         if (getTimerInstances() == null) {
-        	getProcessInstance().addEventListener("timerTriggered", this, false);
+        	((InternalProcessInstance) getProcessInstance()).addEventListener("timerTriggered", this, false);
         }
     }
     
     public void removeEventListeners() {
         super.removeEventListeners();
-        getProcessInstance().removeEventListener("timerTriggered", this, false);
+        ((InternalProcessInstance) getProcessInstance()).removeEventListener("timerTriggered", this, false);
     }
 
 }

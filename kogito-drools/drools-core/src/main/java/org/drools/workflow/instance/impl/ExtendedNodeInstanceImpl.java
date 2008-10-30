@@ -7,14 +7,14 @@ import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.base.SequentialKnowledgeHelper;
 import org.drools.common.InternalRuleBase;
 import org.drools.process.core.context.exception.ExceptionScope;
+import org.drools.process.instance.InternalProcessInstance;
+import org.drools.process.instance.NodeInstance;
 import org.drools.process.instance.context.exception.ExceptionScopeInstance;
 import org.drools.spi.Action;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.ProcessContext;
 import org.drools.workflow.core.DroolsAction;
-import org.drools.workflow.core.Node;
 import org.drools.workflow.core.impl.ExtendedNodeImpl;
-import org.drools.workflow.instance.NodeInstance;
 
 public abstract class ExtendedNodeInstanceImpl extends NodeInstanceImpl {
 
@@ -29,7 +29,7 @@ public abstract class ExtendedNodeInstanceImpl extends NodeInstanceImpl {
 	}
 	
     public void triggerCompleted(boolean remove) {
-        triggerCompleted(Node.CONNECTION_DEFAULT_TYPE, remove);
+        triggerCompleted(org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE, remove);
     }
     
 	protected void triggerCompleted(String type, boolean remove) {
@@ -49,7 +49,7 @@ public abstract class ExtendedNodeInstanceImpl extends NodeInstanceImpl {
 	
 	protected KnowledgeHelper createKnowledgeHelper() {
 		KnowledgeHelper knowledgeHelper = null;
-		WorkingMemory workingMemory = getProcessInstance().getWorkingMemory();
+		WorkingMemory workingMemory = ((InternalProcessInstance) getProcessInstance()).getWorkingMemory();
 		if (((InternalRuleBase) workingMemory.getRuleBase()).getConfiguration().isSequential()) {
 			knowledgeHelper = new SequentialKnowledgeHelper(workingMemory);
         } else {
@@ -63,7 +63,7 @@ public abstract class ExtendedNodeInstanceImpl extends NodeInstanceImpl {
 		ProcessContext context = new ProcessContext();
 		context.setNodeInstance(this);
 		try {
-			action.execute(knowledgeHelper, getProcessInstance().getWorkingMemory(), context);
+			action.execute(knowledgeHelper, ((InternalProcessInstance) getProcessInstance()).getWorkingMemory(), context);
 		} catch (Exception exception) {
 			String exceptionName = exception.getClass().getName();
 			ExceptionScopeInstance exceptionScopeInstance = (ExceptionScopeInstance)

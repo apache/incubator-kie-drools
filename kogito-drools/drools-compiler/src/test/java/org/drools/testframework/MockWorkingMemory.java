@@ -13,8 +13,6 @@ import java.util.concurrent.locks.Lock;
 
 import org.drools.Agenda;
 import org.drools.FactException;
-import org.drools.FactHandle;
-import org.drools.ObjectFilter;
 import org.drools.QueryResults;
 import org.drools.RuleBase;
 import org.drools.WorkingMemoryEntryPoint;
@@ -35,10 +33,12 @@ import org.drools.event.RuleFlowEventListener;
 import org.drools.event.RuleFlowEventSupport;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.event.WorkingMemoryEventSupport;
+import org.drools.process.instance.InternalProcessInstance;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.ProcessInstanceFactory;
 import org.drools.process.instance.ProcessInstanceManager;
-import org.drools.process.instance.WorkItemManager;
+import org.drools.process.instance.InternalWorkItemManager;
+import org.drools.process.instance.event.SignalManager;
 import org.drools.process.instance.event.SignalManager;
 import org.drools.process.instance.timer.TimerManager;
 import org.drools.reteoo.LIANodePropagation;
@@ -47,6 +47,8 @@ import org.drools.reteoo.PartitionTaskManager;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.rule.TimeMachine;
+import org.drools.runtime.ObjectFilter;
+import org.drools.runtime.rule.FactHandle;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
@@ -353,12 +355,12 @@ public class MockWorkingMemory implements InternalWorkingMemory {
 
 	}
 
-	public ProcessInstance startProcess(String processId) {
+	public InternalProcessInstance startProcess(String processId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-    public ProcessInstance startProcess(String processId,
+    public InternalProcessInstance startProcess(String processId,
             Map<String, Object> parameters) {
         // TODO Auto-generated method stub
         return null;
@@ -453,7 +455,7 @@ public class MockWorkingMemory implements InternalWorkingMemory {
 
     }
 
-    public ProcessInstance getProcessInstance(long id) {
+    public InternalProcessInstance getProcessInstance(long id) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -463,7 +465,7 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         return null;
     }
 
-    public WorkItemManager getWorkItemManager() {
+    public InternalWorkItemManager getWorkItemManager() {
         // TODO Auto-generated method stub
         return null;
     }

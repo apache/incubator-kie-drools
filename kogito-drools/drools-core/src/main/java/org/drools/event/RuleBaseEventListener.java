@@ -3,6 +3,13 @@ package org.drools.event;
 import java.util.EventListener;
 import java.io.Externalizable;
 
+import org.drools.event.AfterFunctionRemovedEvent;
+import org.drools.event.AfterRuleAddedEvent;
+import org.drools.event.AfterRuleRemovedEvent;
+import org.drools.event.BeforeFunctionRemovedEvent;
+import org.drools.event.BeforeRuleAddedEvent;
+import org.drools.event.BeforeRuleRemovedEvent;
+
 public interface RuleBaseEventListener
     extends
     EventListener, Externalizable {

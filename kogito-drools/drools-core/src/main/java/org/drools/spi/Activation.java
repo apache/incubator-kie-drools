@@ -36,13 +36,16 @@ import org.drools.util.LinkedList;
  */
 public interface Activation
     extends
-    Serializable {
+    Serializable,
+    org.drools.runtime.rule.Activation {
+    
     /**
-     * Retrieve the <code>Rule</code> that was activated.
      * 
-     * @return The rule.
+     * @return
+     *     The rule that was activated.
      */
     Rule getRule();
+    
     
     int getSalience();
 
@@ -51,7 +54,17 @@ public interface Activation
      * 
      * @return
      */
-    GroupElement getSubRule();
+    GroupElement getSubRule();    
+    
+    /**
+     * Each PropgationContext is assigned an id from a counter for the WorkingMemory action it 
+     * represents. All Activations return this id as the ActivationNumber, thus all Activations
+     * created from the same PropgationContext will return the same long for this method.
+     *  
+     * @return 
+     *     The activation number
+     */
+    long getActivationNumber();       
 
     /**
      * Retrieve the <code>Tuple</code> that was activated.
@@ -68,13 +81,6 @@ public interface Activation
     PropagationContext getPropagationContext();
 
     /**
-     * Retrieve the activation number.
-     * 
-     * @return The activation number
-     */
-    long getActivationNumber();
-
-    /**
      * Cancel the <code>Activation</code> by removing it from the <code>Agenda</code>. 
      */
     void remove();
@@ -85,9 +91,9 @@ public interface Activation
     
     public void setLogicalDependencies(LinkedList justified);
 
-    public boolean isActivated();
-
     public void setActivated(boolean activated);
+    
+    public boolean isActivated();
 
     public AgendaGroup getAgendaGroup();
 

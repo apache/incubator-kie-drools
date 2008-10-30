@@ -10,13 +10,13 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.process.instance.ProcessInstance;
+import org.drools.knowledge.definitions.process.Node;
+import org.drools.process.instance.InternalProcessInstance;
+import org.drools.process.instance.NodeInstance;
 import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.ruleflow.instance.RuleFlowProcessInstance;
-import org.drools.workflow.core.Node;
 import org.drools.workflow.core.impl.ConnectionImpl;
 import org.drools.workflow.core.node.StartNode;
-import org.drools.workflow.instance.NodeInstance;
 
 public class StartNodeInstanceTest extends TestCase {
     
@@ -32,12 +32,14 @@ public class StartNodeInstanceTest extends TestCase {
         
         RuleFlowProcess process = new RuleFlowProcess(); 
         
-        Node startNode = new StartNode();  
+        StartNode startNode = new StartNode();  
         startNode.setId( 1 );
         startNode.setName( "start node" );                
                             
         mockNode.setId( 2 );
-        new ConnectionImpl(startNode, Node.CONNECTION_DEFAULT_TYPE, mockNode, Node.CONNECTION_DEFAULT_TYPE);
+        new ConnectionImpl(
+    		startNode, org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE,
+    		mockNode, org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
         
         process.addNode( startNode );
         process.addNode( mockNode );
@@ -46,12 +48,13 @@ public class StartNodeInstanceTest extends TestCase {
         processInstance.setProcess( process );
         processInstance.setWorkingMemory( (InternalWorkingMemory) session );              
         
-        assertEquals(  ProcessInstance.STATE_PENDING, processInstance.getState() );
+        assertEquals(  InternalProcessInstance.STATE_PENDING, processInstance.getState() );
         processInstance.start();        
-        assertEquals(  ProcessInstance.STATE_ACTIVE, processInstance.getState() );
+        assertEquals(  InternalProcessInstance.STATE_ACTIVE, processInstance.getState() );
         
         MockNodeInstance mockNodeInstance = mockNodeFactory.getMockNodeInstance();
-        List<NodeInstance> triggeredBy = mockNodeInstance.getTriggers().get(Node.CONNECTION_DEFAULT_TYPE);
+        List<NodeInstance> triggeredBy =
+        	mockNodeInstance.getTriggers().get(org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
         assertNotNull(triggeredBy);
         assertEquals(1, triggeredBy.size());
         assertSame(startNode.getId(), triggeredBy.get(0).getNodeId());

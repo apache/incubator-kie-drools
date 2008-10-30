@@ -21,11 +21,12 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import org.drools.knowledge.definitions.process.Connection;
+import org.drools.process.instance.InternalProcessInstance;
 import org.drools.spi.CompiledInvoker;
 import org.drools.spi.ProcessContext;
 import org.drools.spi.ReturnValueEvaluator;
 import org.drools.spi.Wireable;
-import org.drools.workflow.core.Connection;
 import org.drools.workflow.core.Constraint;
 import org.drools.workflow.instance.node.SplitInstance;
 
@@ -117,7 +118,7 @@ public class ReturnValueConstraintEvaluator
         try {
             ProcessContext context = new ProcessContext();
             context.setNodeInstance( instance );
-            value = this.evaluator.evaluate( instance.getProcessInstance().getWorkingMemory(),
+            value = this.evaluator.evaluate( ((InternalProcessInstance) instance.getProcessInstance()).getWorkingMemory(),
                                              context );
         } catch ( Exception e ) {
             throw new RuntimeException( "unable to execute ReturnValueEvaluator",

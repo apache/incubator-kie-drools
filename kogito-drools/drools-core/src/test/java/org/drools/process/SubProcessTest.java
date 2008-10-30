@@ -3,7 +3,6 @@ package org.drools.process;
 import junit.framework.TestCase;
 
 import org.drools.RuleBaseFactory;
-import org.drools.WorkingMemory;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.process.core.Work;
@@ -13,6 +12,7 @@ import org.drools.process.instance.WorkItemHandler;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.ruleflow.core.RuleFlowProcess;
+import org.drools.WorkingMemory;
 import org.drools.spi.Action;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.ProcessContext;

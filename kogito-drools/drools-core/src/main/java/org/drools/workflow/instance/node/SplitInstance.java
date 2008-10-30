@@ -20,10 +20,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.workflow.core.Connection;
-import org.drools.workflow.core.Node;
+import org.drools.knowledge.definitions.process.Connection;
+import org.drools.process.instance.NodeInstance;
 import org.drools.workflow.core.node.Split;
-import org.drools.workflow.instance.NodeInstance;
+import org.drools.workflow.instance.NodeInstanceContainer;
 import org.drools.workflow.instance.impl.ConstraintEvaluator;
 import org.drools.workflow.instance.impl.NodeInstanceImpl;
 
@@ -41,7 +41,7 @@ public class SplitInstance extends NodeInstanceImpl {
     }
 
     public void internalTrigger(final NodeInstance from, String type) {
-        if (!Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
+        if (!org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
             throw new IllegalArgumentException(
                 "A Split only accepts default incoming connections!");
         }
@@ -49,7 +49,7 @@ public class SplitInstance extends NodeInstanceImpl {
         // TODO make different strategies for each type
         switch ( split.getType() ) {
             case Split.TYPE_AND :
-                triggerCompleted(Node.CONNECTION_DEFAULT_TYPE, true);
+                triggerCompleted(org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE, true);
                 break;
             case Split.TYPE_XOR :
                 List<Connection> outgoing = split.getDefaultOutgoingConnections();
@@ -67,14 +67,14 @@ public class SplitInstance extends NodeInstanceImpl {
                         }
                     }
                 }
-                getNodeInstanceContainer().removeNodeInstance(this);
+                ((NodeInstanceContainer) getNodeInstanceContainer()).removeNodeInstance(this);
                 if ( selected == null ) {
                     throw new IllegalArgumentException( "XOR split could not find at least one valid outgoing connection for split " + getSplit().getName() );
                 }
                 triggerConnection(selected);
                 break;
             case Split.TYPE_OR :
-                getNodeInstanceContainer().removeNodeInstance(this);
+            	((NodeInstanceContainer) getNodeInstanceContainer()).removeNodeInstance(this);
                 outgoing = split.getDefaultOutgoingConnections();
                 boolean found = false;
                 List<Connection> outgoingCopy = new ArrayList<Connection>(outgoing);

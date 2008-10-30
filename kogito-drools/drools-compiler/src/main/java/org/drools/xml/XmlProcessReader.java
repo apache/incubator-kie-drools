@@ -6,10 +6,9 @@ import java.io.Reader;
 
 import javax.xml.parsers.SAXParser;
 
-import org.drools.process.core.Process;
+import org.drools.knowledge.definitions.process.Process;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-
 
 public class XmlProcessReader {
     private ExtensibleXmlParser parser;

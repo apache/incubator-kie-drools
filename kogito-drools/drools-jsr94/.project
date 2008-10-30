@@ -4,6 +4,7 @@
   <projects>
     <project>drools-compiler</project>
     <project>drools-core</project>
+    <project>drools-api</project>
     <project>drools-decisiontables</project>
     <project>drools-templates</project>
   </projects>

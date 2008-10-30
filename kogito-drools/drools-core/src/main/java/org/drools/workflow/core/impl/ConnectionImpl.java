@@ -20,8 +20,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.knowledge.definitions.process.Node;
 import org.drools.workflow.core.Connection;
-import org.drools.workflow.core.Node;
 
 /**
  * Default implementation of a connection.
@@ -71,13 +71,13 @@ public class ConnectionImpl implements Connection, Serializable {
     }
     
     public void connect() {
-        this.from.addOutgoingConnection(fromType, this);
-        this.to.addIncomingConnection(toType, this);
+        ((org.drools.workflow.core.Node) this.from).addOutgoingConnection(fromType, this);
+        ((org.drools.workflow.core.Node) this.to).addIncomingConnection(toType, this);
     }
 
     public synchronized void terminate() {
-        this.from.removeOutgoingConnection(fromType, this);
-        this.to.removeIncomingConnection(toType, this);
+    	((org.drools.workflow.core.Node) this.from).removeOutgoingConnection(fromType, this);
+    	((org.drools.workflow.core.Node) this.to).removeIncomingConnection(toType, this);
         this.from = null;
         this.fromType = null;
         this.to = null;

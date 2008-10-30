@@ -25,6 +25,12 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.drools.RuleBase;
+import org.drools.event.AfterFunctionRemovedEvent;
+import org.drools.event.AfterRuleAddedEvent;
+import org.drools.event.AfterRuleRemovedEvent;
+import org.drools.event.BeforeFunctionRemovedEvent;
+import org.drools.event.BeforeRuleAddedEvent;
+import org.drools.event.BeforeRuleRemovedEvent;
 import org.drools.rule.Rule;
 import org.drools.rule.Package;
 

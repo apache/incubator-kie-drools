@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.process.instance.InternalProcessInstance;
 import org.drools.WorkingMemory;
-import org.drools.process.instance.ProcessInstance;
 
 public class StartProcessCommand implements Command {
 	
@@ -43,7 +43,7 @@ public class StartProcessCommand implements Command {
 				workingMemory.insert(o);
 			}
 		}
-		ProcessInstance processInstance = workingMemory.startProcess(processId, parameters);
+		InternalProcessInstance processInstance = ( InternalProcessInstance ) workingMemory.startProcess(processId, parameters);
 		workingMemory.fireAllRules();
 		return processInstance;
 	}

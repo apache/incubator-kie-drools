@@ -11,8 +11,6 @@ import junit.framework.TestCase;
 
 import org.drools.Agenda;
 import org.drools.FactException;
-import org.drools.FactHandle;
-import org.drools.ObjectFilter;
 import org.drools.QueryResults;
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
@@ -26,6 +24,8 @@ import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.event.SignalManager;
 import org.drools.process.instance.timer.TimerManager;
+import org.drools.runtime.ObjectFilter;
+import org.drools.runtime.rule.FactHandle;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.AsyncExceptionHandler;

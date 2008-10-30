@@ -36,7 +36,7 @@ import org.drools.base.ClassObjectType;
 import org.drools.common.DroolsObjectInputStream;
 import org.drools.common.DroolsObjectOutputStream;
 import org.drools.facttemplates.FactTemplate;
-import org.drools.process.core.Process;
+import org.drools.knowledge.definitions.process.Process;
 
 /**
  * Collection of related <code>Rule</code>s.

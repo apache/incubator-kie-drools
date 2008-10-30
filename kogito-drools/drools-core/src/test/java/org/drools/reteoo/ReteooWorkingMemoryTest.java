@@ -7,7 +7,6 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import org.drools.Cheese;
-import org.drools.FactHandle;
 import org.drools.Person;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
@@ -17,6 +16,7 @@ import org.drools.common.EqualityKey;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.TruthMaintenanceSystem;
 import org.drools.examples.manners.Guest;
+import org.drools.runtime.rule.FactHandle;
 import org.drools.spi.GlobalResolver;
 
 public class ReteooWorkingMemoryTest extends TestCase {

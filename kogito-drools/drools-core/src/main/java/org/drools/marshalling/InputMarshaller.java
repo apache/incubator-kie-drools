@@ -30,7 +30,10 @@ import org.drools.common.TruthMaintenanceSystem;
 import org.drools.concurrent.ExecutorService;
 import org.drools.process.core.context.swimlane.SwimlaneContext;
 import org.drools.process.core.context.variable.VariableScope;
-import org.drools.process.instance.ProcessInstance;
+import org.drools.process.instance.InternalProcessInstance;
+import org.drools.process.instance.InternalWorkItemManager;
+import org.drools.process.instance.NodeInstance;
+import org.drools.process.instance.NodeInstanceContainer;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.context.swimlane.SwimlaneContextInstance;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
@@ -70,8 +73,6 @@ import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.RuleFlowGroup;
 import org.drools.util.ObjectHashSet;
-import org.drools.workflow.instance.NodeInstance;
-import org.drools.workflow.instance.NodeInstanceContainer;
 import org.drools.workflow.instance.impl.NodeInstanceImpl;
 import org.drools.workflow.instance.node.CompositeContextNodeInstance;
 import org.drools.workflow.instance.node.ForEachNodeInstance;
@@ -757,7 +758,7 @@ public class InputMarshaller {
         }
     }
 
-    public static ProcessInstance readProcessInstance(MarshallerReaderContext context) throws IOException {
+    public static InternalProcessInstance readProcessInstance(MarshallerReaderContext context) throws IOException {
         ObjectInputStream stream = context.stream;
         InternalRuleBase ruleBase = context.ruleBase;
         InternalWorkingMemory wm = context.wm;
@@ -918,7 +919,7 @@ public class InputMarshaller {
         ObjectInputStream stream = context.stream;
         while ( stream.readShort() == PersisterEnums.WORK_ITEM ) {
             WorkItem workItem = readWorkItem( context );
-            wm.getWorkItemManager().internalAddWorkItem( workItem );
+            ((InternalWorkItemManager) wm.getWorkItemManager()).internalAddWorkItem( workItem );
         }
     }
 

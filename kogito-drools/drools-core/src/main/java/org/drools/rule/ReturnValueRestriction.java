@@ -26,10 +26,10 @@ import java.io.ObjectOutput;
 import java.io.IOException;
 
 import org.drools.RuntimeDroolsException;
-import org.drools.WorkingMemory;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
+import org.drools.WorkingMemory;
 import org.drools.spi.AcceptsReadAccessor;
 import org.drools.spi.CompiledInvoker;
 import org.drools.spi.Evaluator;

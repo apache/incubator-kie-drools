@@ -8,17 +8,17 @@ import junit.framework.TestCase;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
-import org.drools.WorkingMemory;
 import org.drools.persistence.Persister;
 import org.drools.persistence.session.MemoryPersisterManager;
 import org.drools.process.core.Work;
 import org.drools.process.core.impl.WorkImpl;
-import org.drools.process.instance.ProcessInstance;
+import org.drools.process.instance.InternalProcessInstance;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemHandler;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.rule.Package;
 import org.drools.ruleflow.core.RuleFlowProcess;
+import org.drools.WorkingMemory;
 import org.drools.spi.Action;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.ProcessContext;
@@ -51,24 +51,24 @@ public class MemoryPersistenceManagerTest extends TestCase {
 			public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
 			}
         });
-        ProcessInstance processInstance = session.startProcess("org.drools.test.TestProcess");
+        InternalProcessInstance processInstance = ( InternalProcessInstance ) session.startProcess("org.drools.test.TestProcess");
         long processInstanceId = processInstance.getId();
 		persister.setUniqueId(processInstanceId + "");
 		persister.save();
 		
 		persister = manager.getSessionPersister(processInstanceId + "", ruleBase);
 		session = persister.getObject();
-		processInstance = session.getProcessInstance(processInstanceId); 
-        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+		processInstance = ( InternalProcessInstance ) session.getProcessInstance(processInstanceId); 
+        assertEquals(InternalProcessInstance.STATE_ACTIVE, processInstance.getState());
 		
 		session.getWorkItemManager().completeWorkItem(
 			workItems.get(processInstanceId).getId(), null);
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertEquals(InternalProcessInstance.STATE_COMPLETED, processInstance.getState());
         persister.save();
         
         persister = manager.getSessionPersister(processInstanceId + "", ruleBase);
 		session = persister.getObject();
-		processInstance = session.getProcessInstance(processInstanceId); 
+		processInstance = ( InternalProcessInstance ) session.getProcessInstance(processInstanceId); 
         assertNull(processInstance);
 	}
 

@@ -20,7 +20,6 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -54,7 +53,8 @@ public class Rule
     implements
     Externalizable,
     Wireable,
-    Dialectable {
+    Dialectable,
+    org.drools.knowledge.definitions.rule.Rule {
     /**
      *
      */
@@ -68,13 +68,13 @@ public class Rule
     private String            pkg;
 
     /** Name of the rule. */
-    private String      name;
+    private String            name;
     
     /** Parent Rule Name, optional */
     private Rule 			parent;
 
     /** Salience value. */
-    private Salience               salience;
+    private Salience          salience;
 
     /** The Rule is dirty after patterns have been added */
     private boolean           dirty;
@@ -120,6 +120,8 @@ public class Rule
     private Calendar          dateExpires;
 
     private Enabled           enabled;
+    
+    private String            url;
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject(pkg);
@@ -133,9 +135,9 @@ public class Rule
         out.writeObject(dialect);
         out.writeObject(agendaGroup);
         out.writeObject(metaAttributes);
-        
+
         if ( this.consequence instanceof CompiledInvoker ) {
-            out.writeObject(  null );
+            out.writeObject( null );
         } else {
             out.writeObject(this.consequence);   
         } 
@@ -153,11 +155,13 @@ public class Rule
         out.writeObject(dateExpires);
         out.writeObject(enabled);
     }
+    
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         pkg = (String)in.readObject();
         name = (String)in.readObject();
         parent = (Rule)in.readObject();
         salience = (Salience)in.readObject();
+        
         dirty = in.readBoolean();
         declarations    = (Map)in.readObject();
         declarationArray = (Declaration[])in.readObject();
@@ -171,15 +175,16 @@ public class Rule
         loadOrder   = in.readLong();
         noLoop = in.readBoolean();
         autoFocus = in.readBoolean();
-        activationGroup = (String)in.readObject();
-        ruleFlowGroup = (String)in.readObject();
+        activationGroup = (String) in.readObject();
+        ruleFlowGroup = (String) in.readObject();
         lockOnActive = in.readBoolean();
         hasLogicalDependency = in.readBoolean();
         semanticallyValid = in.readBoolean();
-        dateEffective   = (Calendar)in.readObject();
-        dateExpires = (Calendar)in.readObject();
+        dateEffective = (Calendar) in.readObject();
+        dateExpires = (Calendar) in.readObject();
         enabled = (Enabled) in.readObject();
     }
+
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -227,8 +232,16 @@ public class Rule
               null,
               AgendaGroup.MAIN );
     }
+    
+    
 
+    public String getUrl() {
+        return url;
+    }
 
+    public void setUrl(String url) {
+        this.url = url;
+    }
 
     public String getDialect() {
         return dialect;
@@ -310,8 +323,12 @@ public class Rule
         return this.pkg;
     }
 
-    public void setPackage( String pkg ) {
+    public void setPackage(String pkg) {
         this.pkg = pkg;
+    }
+    
+    public String getPackageName() {
+        return this.pkg;
     }
 
     /**
@@ -342,9 +359,9 @@ public class Rule
     }
 
     public String getAgendaGroup() {
-    	if( this.agendaGroup == null || this.agendaGroup.equals( "" ) ) {
-    		return AgendaGroup.MAIN;
-    	}
+        if ( this.agendaGroup == null || this.agendaGroup.equals( "" ) ) {
+            return AgendaGroup.MAIN;
+        }
         return this.agendaGroup;
     }
 
@@ -551,10 +568,10 @@ public class Rule
 
         return specificity;
     }
-    
+
     public void wire(Object object) {
         if ( object instanceof Salience ) {
-            setSalience( (Salience ) object );
+            setSalience( (Salience) object );
         } else if( object instanceof Enabled ) {
         	setEnabled(( Enabled) object);
         } else {
@@ -646,7 +663,6 @@ public class Rule
     public void setDateExpires(final Calendar expiresDate) {
         this.dateExpires = expiresDate;
     }
-
 
     public Calendar getDateEffective() {
         return this.dateEffective;

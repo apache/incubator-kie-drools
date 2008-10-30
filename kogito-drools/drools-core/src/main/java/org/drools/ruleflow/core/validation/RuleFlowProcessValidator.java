@@ -22,15 +22,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.process.core.Process;
+import org.drools.knowledge.definitions.process.Connection;
+import org.drools.knowledge.definitions.process.Node;
+import org.drools.knowledge.definitions.process.Process;
 import org.drools.process.core.Work;
 import org.drools.process.core.context.variable.Variable;
 import org.drools.process.core.validation.ProcessValidationError;
 import org.drools.process.core.validation.ProcessValidator;
 import org.drools.process.core.validation.impl.ProcessValidationErrorImpl;
 import org.drools.ruleflow.core.RuleFlowProcess;
-import org.drools.workflow.core.Connection;
-import org.drools.workflow.core.Node;
 import org.drools.workflow.core.impl.DroolsConsequenceAction;
 import org.drools.workflow.core.node.ActionNode;
 import org.drools.workflow.core.node.CompositeNode;
@@ -296,19 +296,19 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                     errors.add(new ProcessValidationErrorImpl(process,
                         "ForEach node '" + node.getName() + "' [" + node.getId() + "] has no collection expression"));
                 }
-                if (forEachNode.getIncomingConnections(Node.CONNECTION_DEFAULT_TYPE).size() == 0) {
+                if (forEachNode.getIncomingConnections(org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE).size() == 0) {
                     errors.add(new ProcessValidationErrorImpl(process,
                         "ForEach node '" + node.getName() + "' [" + node.getId() + "] has no incoming connection"));
                 }
-                if (forEachNode.getOutgoingConnections(Node.CONNECTION_DEFAULT_TYPE).size() == 0) {
+                if (forEachNode.getOutgoingConnections(org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE).size() == 0) {
                     errors.add(new ProcessValidationErrorImpl(process,
                         "ForEach node '" + node.getName() + "' [" + node.getId() + "] has no outgoing connection"));
                 }
-                if (forEachNode.getLinkedIncomingNode(Node.CONNECTION_DEFAULT_TYPE) == null) {
+                if (forEachNode.getLinkedIncomingNode(org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE) == null) {
                     errors.add(new ProcessValidationErrorImpl(process,
                         "ForEach node '" + node.getName() + "' [" + node.getId() + "] has no linked start node"));
                 }
-                if (forEachNode.getLinkedOutgoingNode(Node.CONNECTION_DEFAULT_TYPE) == null) {
+                if (forEachNode.getLinkedOutgoingNode(org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE) == null) {
                     errors.add(new ProcessValidationErrorImpl(process,
                         "ForEach node '" + node.getName() + "' [" + node.getId() + "] has no linked end node"));
                 }
@@ -342,7 +342,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                     errors.add(new ProcessValidationErrorImpl(process,
                         "Event node '" + node.getName() + "' [" + node.getId() + "] should specify an event type"));
                 }
-                if (eventNode.getOutgoingConnections(Node.CONNECTION_DEFAULT_TYPE).size() == 0) {
+                if (eventNode.getOutgoingConnections(org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE).size() == 0) {
                     errors.add(new ProcessValidationErrorImpl(process,
                         "Event node '" + node.getName() + "' [" + node.getId() + "] has no outgoing connection"));
                 }

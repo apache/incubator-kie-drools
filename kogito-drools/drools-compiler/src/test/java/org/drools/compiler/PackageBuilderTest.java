@@ -20,13 +20,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.drools.Cheese;
 import org.drools.DroolsTestCase;
-import org.drools.FactHandle;
 import org.drools.Primitives;
 import org.drools.QueryResults;
 import org.drools.RuleBase;
@@ -70,7 +70,6 @@ import org.drools.lang.descr.TypeFieldDescr;
 import org.drools.lang.descr.VariableRestrictionDescr;
 import org.drools.process.core.Context;
 import org.drools.process.core.Process;
-import org.drools.process.core.context.variable.Variable;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.rule.Behavior;
 import org.drools.rule.CompositeClassLoader;
@@ -86,8 +85,8 @@ import org.drools.rule.ReturnValueConstraint;
 import org.drools.rule.Rule;
 import org.drools.rule.SlidingTimeWindow;
 import org.drools.rule.TypeDeclaration;
-import org.drools.rule.builder.dialect.java.JavaDialect;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
+import org.drools.runtime.rule.FactHandle;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.CompiledInvoker;
@@ -1425,21 +1424,6 @@ public class PackageBuilderTest extends DroolsTestCase {
         public void setPackageName(String packageName) {
         }
 
-        public String[] getVariableNames() {
-            return null;
-        }
-
-        public List<Variable> getVariables() {
-            return null;
-        }
-
-        public void setVariables(List<Variable> variables) {
-        }
-
-        public Variable findVariable(String variableName) {
-            return null;
-        }
-
         public void addContext(Context context) {
         }
 
@@ -1460,15 +1444,47 @@ public class PackageBuilderTest extends DroolsTestCase {
         }
 
         public Object getMetaData(String name) {
-            // TODO Auto-generated method stub
             return null;
         }
 
         public void setMetaData(String name,
                                 Object value) {
-            // TODO Auto-generated method stub
-
         }
+
+        public String getURL() {
+            return null;
+        }
+
+        public void setURL(String url) {
+        }
+
+		public String[] getGlobalNames() {
+			return null;
+		}
+
+		public Map<String, String> getGlobals() {
+			return null;
+		}
+
+		public List<String> getImports() {
+			return null;
+		}
+
+		public void setGlobals(Map<String, String> globals) {
+		}
+
+		public void setImports(List<String> imports) {
+		}
+
+		public List<String> getFunctionImports() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public void setFunctionImports(List<String> functionImports) {
+			// TODO Auto-generated method stub
+			
+		}
 
     }
 
@@ -1559,6 +1575,11 @@ public class PackageBuilderTest extends DroolsTestCase {
         public void setLogicalDependencies(LinkedList justified) {
             // TODO Auto-generated method stub
 
+        }
+
+        public Collection<FactHandle> getFactHandles() {
+            // TODO Auto-generated method stub
+            return null;
         }
     }
 

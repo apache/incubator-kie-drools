@@ -10,7 +10,7 @@ import org.drools.event.AgendaEventSupport;
 import org.drools.event.RuleFlowEventSupport;
 import org.drools.event.WorkingMemoryEventSupport;
 import org.drools.process.instance.ProcessInstanceFactory;
-import org.drools.process.instance.WorkItemManager;
+import org.drools.process.instance.InternalWorkItemManager;
 import org.drools.rule.TimeMachine;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.GlobalResolver;
@@ -39,7 +39,7 @@ public class SharedWorkingMemoryContext {
 
     private int                                 processCounter;
 
-    private WorkItemManager                     workItemManager;
+    private InternalWorkItemManager                     workItemManager;
 
     private Map<String, ProcessInstanceFactory> processInstanceFactories;
 
@@ -68,11 +68,11 @@ public class SharedWorkingMemoryContext {
         this.processInstances = processInstances;
     }
 
-    public WorkItemManager getWorkItemManager() {
+    public InternalWorkItemManager getWorkItemManager() {
         return workItemManager;
     }
 
-    public void setWorkItemManager(WorkItemManager workItemManager) {
+    public void setWorkItemManager(InternalWorkItemManager workItemManager) {
         this.workItemManager = workItemManager;
     }
 

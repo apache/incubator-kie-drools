@@ -25,18 +25,18 @@ import java.util.Map;
 import org.drools.WorkingMemory;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.knowledge.definitions.process.Process;
 import org.drools.process.core.Context;
 import org.drools.process.core.ContextContainer;
-import org.drools.process.core.Process;
 import org.drools.process.instance.ContextInstance;
-import org.drools.process.instance.ProcessInstance;
+import org.drools.process.instance.InternalProcessInstance;
 
 /**
  * Default implementation of a process instance.
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public abstract class ProcessInstanceImpl implements ProcessInstance, Serializable {
+public abstract class ProcessInstanceImpl implements InternalProcessInstance, Serializable {
 
 	private static final long serialVersionUID = 4L;
 	
@@ -58,12 +58,12 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
 
     public void setProcess(final Process process) {
         this.processId = process.getId();
-        this.process = process;
+        this.process = ( Process ) process;
     }
 
     public Process getProcess() {
         if (this.process == null) {
-            this.process = ((InternalRuleBase) workingMemory.getRuleBase())
+            this.process = ( Process ) ((InternalRuleBase) workingMemory.getRuleBase())
                 .getProcess(processId);
         }
         return this.process;
@@ -75,6 +75,10 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
     
     public String getProcessId() {
         return processId;
+    }
+    
+    public String getProcessName() {
+    	return getProcess().getName();
     }
 
     public void setState(final int state) {
@@ -97,7 +101,7 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
     }
     
     public ContextContainer getContextContainer() {
-        return getProcess();
+        return ( ContextContainer ) getProcess();
     }
     
     public void setContextInstance(String contextId, ContextInstance contextInstance) {
@@ -109,7 +113,7 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
         if (contextInstance != null) {
             return contextInstance;
         }
-        Context context = getProcess().getDefaultContext(contextId);
+        Context context = ((ContextContainer)getProcess()).getDefaultContext(contextId);
         if (context != null) {
             contextInstance = getContextInstance(context);
             return contextInstance;

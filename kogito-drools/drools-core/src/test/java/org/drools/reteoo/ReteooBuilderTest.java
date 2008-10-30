@@ -1,9 +1,9 @@
 package org.drools.reteoo;
 
 import org.drools.RuleBaseConfiguration;
-import org.drools.WorkingMemory;
 import org.drools.base.SalienceInteger;
 import org.drools.rule.Rule;
+import org.drools.WorkingMemory;
 import org.drools.spi.Consequence;
 import org.drools.spi.KnowledgeHelper;
 

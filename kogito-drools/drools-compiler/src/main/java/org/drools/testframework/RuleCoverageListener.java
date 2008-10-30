@@ -3,7 +3,6 @@ package org.drools.testframework;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.drools.WorkingMemory;
 import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.ActivationCreatedEvent;
 import org.drools.event.AfterActivationFiredEvent;
@@ -11,6 +10,7 @@ import org.drools.event.AgendaEventListener;
 import org.drools.event.AgendaGroupPoppedEvent;
 import org.drools.event.AgendaGroupPushedEvent;
 import org.drools.event.BeforeActivationFiredEvent;
+import org.drools.WorkingMemory;
 
 /**
  * Measure the rule coverage.

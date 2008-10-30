@@ -8,8 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.workflow.core.Node;
-import org.drools.workflow.instance.NodeInstance;
+import org.drools.knowledge.definitions.process.Node;
+import org.drools.process.instance.NodeInstance;
 import org.drools.workflow.instance.impl.NodeInstanceImpl;
 
 public class MockNodeInstance extends NodeInstanceImpl {
@@ -61,6 +61,6 @@ public class MockNodeInstance extends NodeInstanceImpl {
     }        
     
     public void triggerCompleted() {
-        triggerCompleted(Node.CONNECTION_DEFAULT_TYPE, true);
+        triggerCompleted(org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE, true);
     }
 }

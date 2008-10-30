@@ -18,30 +18,32 @@ package org.drools.workflow.instance.impl;
 
 import java.io.Serializable;
 
+import org.drools.WorkingMemory;
 import org.drools.common.EventSupport;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.knowledge.definitions.process.Connection;
+import org.drools.knowledge.definitions.process.Node;
 import org.drools.process.core.Context;
 import org.drools.process.core.ContextContainer;
 import org.drools.process.instance.ContextInstance;
 import org.drools.process.instance.ContextInstanceContainer;
-import org.drools.workflow.core.Connection;
-import org.drools.workflow.core.Node;
+import org.drools.process.instance.InternalProcessInstance;
+import org.drools.process.instance.NodeInstance;
+import org.drools.process.instance.NodeInstanceContainer;
+import org.drools.process.instance.WorkflowProcessInstance;
 import org.drools.workflow.core.impl.NodeImpl;
-import org.drools.workflow.instance.NodeInstance;
-import org.drools.workflow.instance.NodeInstanceContainer;
-import org.drools.workflow.instance.WorkflowProcessInstance;
 
 /**
  * Default implementation of a RuleFlow node instance.
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public abstract class NodeInstanceImpl implements NodeInstance, Serializable {
+public abstract class NodeInstanceImpl implements org.drools.workflow.instance.NodeInstance, Serializable {
 
     private long id;
     private long nodeId;
     private WorkflowProcessInstance processInstance;
-    private NodeInstanceContainer nodeInstanceContainer;
+    private org.drools.workflow.instance.NodeInstanceContainer nodeInstanceContainer;
 
     public void setId(final long id) {
         this.id = id;
@@ -58,6 +60,10 @@ public abstract class NodeInstanceImpl implements NodeInstance, Serializable {
     public long getNodeId() {
         return this.nodeId;
     }
+    
+    public String getNodeName() {
+    	return getNode().getName();
+    }
 
     public void setProcessInstance(final WorkflowProcessInstance processInstance) {
         this.processInstance = processInstance;
@@ -72,14 +78,15 @@ public abstract class NodeInstanceImpl implements NodeInstance, Serializable {
     }
     
     public void setNodeInstanceContainer(NodeInstanceContainer nodeInstanceContainer) {
-        this.nodeInstanceContainer = nodeInstanceContainer;
+        this.nodeInstanceContainer = (org.drools.workflow.instance.NodeInstanceContainer) nodeInstanceContainer;
         if (nodeInstanceContainer != null) {
-            nodeInstanceContainer.addNodeInstance(this);
+            this.nodeInstanceContainer.addNodeInstance(this);
         }
     }
 
     public Node getNode() {
-        return this.nodeInstanceContainer.getNodeContainer().internalGetNode( this.nodeId );
+        return ((org.drools.workflow.core.NodeContainer)
+    		this.nodeInstanceContainer.getNodeContainer()).internalGetNode( this.nodeId );
     }
     
     public boolean isInversionOfControl() {
@@ -95,12 +102,13 @@ public abstract class NodeInstanceImpl implements NodeInstance, Serializable {
     	if (getNode().getMetaData("hidden") != null) {
     		hidden = true;
     	}
+    	WorkingMemory workingMemory = ((InternalProcessInstance) getProcessInstance()).getWorkingMemory();
     	if (!hidden) {
-    		((EventSupport) getProcessInstance().getWorkingMemory()).getRuleFlowEventSupport().fireBeforeRuleFlowNodeTriggered(this, (InternalWorkingMemory) getProcessInstance().getWorkingMemory());
+    		((EventSupport) workingMemory).getRuleFlowEventSupport().fireBeforeRuleFlowNodeTriggered(this, (InternalWorkingMemory) workingMemory);
     	}
         internalTrigger(from, type);
         if (!hidden) {
-            ((EventSupport) getProcessInstance().getWorkingMemory()).getRuleFlowEventSupport().fireAfterRuleFlowNodeTriggered(this, (InternalWorkingMemory) getProcessInstance().getWorkingMemory());
+            ((EventSupport) workingMemory).getRuleFlowEventSupport().fireAfterRuleFlowNodeTriggered(this, (InternalWorkingMemory) workingMemory);
         }
     }
     
@@ -108,7 +116,7 @@ public abstract class NodeInstanceImpl implements NodeInstance, Serializable {
     
     protected void triggerCompleted(String type, boolean remove) {
         if (remove) {
-            getNodeInstanceContainer().removeNodeInstance(this);
+            ((org.drools.workflow.instance.NodeInstanceContainer) getNodeInstanceContainer()).removeNodeInstance(this);
         }
         for (Connection connection: getNode().getOutgoingConnections(type)) {
             triggerConnection(connection);
@@ -120,13 +128,14 @@ public abstract class NodeInstanceImpl implements NodeInstance, Serializable {
     	if (getNode().getMetaData("hidden") != null) {
     		hidden = true;
     	}
+    	WorkingMemory workingMemory = ((InternalProcessInstance) getProcessInstance()).getWorkingMemory();
     	if (!hidden) {
-    		((EventSupport) getProcessInstance().getWorkingMemory()).getRuleFlowEventSupport().fireBeforeRuleFlowNodeLeft(this, (InternalWorkingMemory) getProcessInstance().getWorkingMemory());
+    		((EventSupport) workingMemory).getRuleFlowEventSupport().fireBeforeRuleFlowNodeLeft(this, (InternalWorkingMemory) workingMemory);
     	}
-        getNodeInstanceContainer().getNodeInstance(connection.getTo())
-        	.trigger(this, connection.getToType());
+        ((org.drools.workflow.instance.NodeInstance) ((org.drools.workflow.instance.NodeInstanceContainer) getNodeInstanceContainer())
+        	.getNodeInstance(connection.getTo())).trigger(this, connection.getToType());
         if (!hidden) {
-            ((EventSupport) getProcessInstance().getWorkingMemory()).getRuleFlowEventSupport().fireAfterRuleFlowNodeLeft(this, (InternalWorkingMemory) getProcessInstance().getWorkingMemory());
+            ((EventSupport) workingMemory).getRuleFlowEventSupport().fireAfterRuleFlowNodeLeft(this, (InternalWorkingMemory) workingMemory);
         }
     }
     

@@ -15,7 +15,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Random;
 
-import org.drools.FactHandle;
+import org.drools.runtime.rule.FactHandle;
 import org.drools.WorkingMemory;
 
 

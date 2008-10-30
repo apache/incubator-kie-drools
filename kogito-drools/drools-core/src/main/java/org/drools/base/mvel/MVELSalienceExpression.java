@@ -6,9 +6,9 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
 
-import org.drools.WorkingMemory;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
+import org.drools.WorkingMemory;
 import org.drools.spi.Salience;
 import org.drools.spi.Tuple;
 import org.mvel.MVEL;

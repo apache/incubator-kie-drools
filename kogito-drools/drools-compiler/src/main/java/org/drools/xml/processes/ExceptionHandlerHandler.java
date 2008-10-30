@@ -3,7 +3,7 @@ package org.drools.xml.processes;
 import java.util.HashSet;
 
 import org.drools.process.core.ContextContainer;
-import org.drools.process.core.Process;
+import org.drools.knowledge.definitions.process.Process;
 import org.drools.process.core.context.exception.ActionExceptionHandler;
 import org.drools.process.core.context.exception.ExceptionHandler;
 import org.drools.process.core.context.exception.ExceptionScope;

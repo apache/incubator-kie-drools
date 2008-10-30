@@ -1,5 +1,7 @@
 package org.drools.event;
 
+import org.drools.process.instance.NodeInstance;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -16,7 +18,6 @@ package org.drools.event;
  * limitations under the License.
  */
 
-import org.drools.workflow.instance.NodeInstance;
 
 /**
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
@@ -38,6 +39,6 @@ public class RuleFlowNodeTriggeredEvent extends ProcessEvent {
 
     public String toString() {
         return "==>[WorkflowNodeTriggered(nodeId=" + nodeInstance.getNodeId() + "; id=" + nodeInstance.getId() 
-            + "; processName=" + getProcessInstance().getProcess().getName() + "; processId=" + getProcessInstance().getProcess().getId() + ")]";
+            + "; processName=" + getProcessInstance().getProcessName() + "; processId=" + getProcessInstance().getProcessId() + ")]";
     }
 }

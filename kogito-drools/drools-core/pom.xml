@@ -10,7 +10,7 @@
 
   <artifactId>drools-core</artifactId>
   <packaging>jar</packaging>
-  <name>Drools :: Rete-OO Core</name>
+  <name>Drools :: Core</name>
 
   <dependencies>  
     <!-- following are required for parser (lang). May be refactored out of core module. -->
@@ -25,11 +25,10 @@
       <artifactId>mvel</artifactId>
     </dependency> 
 
-    <!--dependency>
-      <groupId>milyn</groupId>
-      <artifactId>milyn-smooks-javabean</artifactId>
-      <version>1.0.1</version>
-    </dependency-->         
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-api</artifactId>
+    </dependency>         
     
   </dependencies>
   

@@ -3,10 +3,10 @@ package org.drools.workflow.core.node;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.knowledge.definitions.process.Node;
 import org.drools.process.core.context.variable.Variable;
 import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.core.datatype.DataType;
-import org.drools.workflow.core.Node;
 import org.drools.workflow.core.impl.ConnectionImpl;
 
 /*
@@ -49,8 +49,8 @@ public class ForEachNode extends CompositeNode {
         split.setMetaData("hidden", true);
         super.addNode(split);
         super.linkIncomingConnections(
-            Node.CONNECTION_DEFAULT_TYPE, 
-            new CompositeNode.NodeAndType(split, Node.CONNECTION_DEFAULT_TYPE));
+            org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE, 
+            new CompositeNode.NodeAndType(split, org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE));
         // Composite node
         CompositeContextNode compositeNode = new CompositeContextNode();
         compositeNode.setName("ForEachComposite");
@@ -65,15 +65,15 @@ public class ForEachNode extends CompositeNode {
         join.setMetaData("hidden", true);
         super.addNode(join);
         super.linkOutgoingConnections(
-            new CompositeNode.NodeAndType(join, Node.CONNECTION_DEFAULT_TYPE),
-            Node.CONNECTION_DEFAULT_TYPE);
+            new CompositeNode.NodeAndType(join, org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE),
+            org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
         new ConnectionImpl(
-            super.getNode(1), Node.CONNECTION_DEFAULT_TYPE,
-            getCompositeNode(), Node.CONNECTION_DEFAULT_TYPE
+            super.getNode(1), org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE,
+            getCompositeNode(), org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE
         );
         new ConnectionImpl(
-            getCompositeNode(), Node.CONNECTION_DEFAULT_TYPE,
-            super.getNode(3), Node.CONNECTION_DEFAULT_TYPE
+            getCompositeNode(), org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE,
+            super.getNode(3), org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE
         );
     }
     

@@ -18,8 +18,7 @@ package org.drools.workflow.core.node;
 
 import java.util.List;
 
-import org.drools.workflow.core.Connection;
-import org.drools.workflow.core.Node;
+import org.drools.knowledge.definitions.process.Connection;
 import org.drools.workflow.core.impl.NodeImpl;
 
 /**
@@ -66,7 +65,7 @@ public class Join extends NodeImpl {
 
     public Connection getTo() {
         final List<Connection> list =
-            getOutgoingConnections(Node.CONNECTION_DEFAULT_TYPE);
+            getOutgoingConnections(org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
         if (list.size() > 0) {
             return (Connection) list.get(0);
         }
@@ -74,13 +73,13 @@ public class Join extends NodeImpl {
     }
     
     public List<Connection> getDefaultIncomingConnections() {
-        return getIncomingConnections(Node.CONNECTION_DEFAULT_TYPE);
+        return getIncomingConnections(org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
     }
 
     public void validateAddIncomingConnection(final String type,
             final Connection connection) {
         super.validateAddIncomingConnection(type, connection);
-        if (!Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
+        if (!org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
             throw new IllegalArgumentException(
                 "This type of node only accepts default incoming connection type!");
         }
@@ -88,11 +87,11 @@ public class Join extends NodeImpl {
 
     public void validateAddOutgoingConnection(final String type, final Connection connection) {
         super.validateAddOutgoingConnection(type, connection);
-        if (!Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
+        if (!org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
             throw new IllegalArgumentException(
                 "This type of node only accepts default outgoing connection type!");
         }
-        if (!getOutgoingConnections(Node.CONNECTION_DEFAULT_TYPE).isEmpty()) {
+        if (!getOutgoingConnections(org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE).isEmpty()) {
             throw new IllegalArgumentException(
                 "This type of node cannot have more than one outgoing connection");
         }

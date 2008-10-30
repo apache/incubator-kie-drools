@@ -30,6 +30,7 @@ import org.drools.RuntimeDroolsException;
 import org.drools.base.accumulators.AccumulateFunction;
 import org.drools.base.evaluators.EvaluatorDefinition;
 import org.drools.base.evaluators.EvaluatorRegistry;
+import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.process.builder.ProcessNodeBuilder;
 import org.drools.process.builder.ProcessNodeBuilderRegistry;
 import org.drools.rule.Package;
@@ -67,7 +68,7 @@ import org.mvel.MVEL;
  * drools.accumulate.function.count = org.drools.base.accumulators.CountAccumulateFunction
  * drools.accumulate.function.sum = org.drools.base.accumulators.SumAccumulateFunction
  */
-public class PackageBuilderConfiguration {
+public class PackageBuilderConfiguration implements KnowledgeBuilderConfiguration {
 
     private static final String        ACCUMULATE_FUNCTION_PREFIX  = "drools.accumulate.function.";
 

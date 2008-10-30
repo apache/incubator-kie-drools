@@ -16,12 +16,14 @@ package org.drools.workflow.instance.node;
  * limitations under the License.
  */
 
+import org.drools.WorkingMemory;
 import org.drools.common.EventSupport;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.process.instance.InternalProcessInstance;
+import org.drools.process.instance.NodeInstance;
 import org.drools.process.instance.ProcessInstance;
-import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.EndNode;
-import org.drools.workflow.instance.NodeInstance;
+import org.drools.workflow.instance.NodeInstanceContainer;
 import org.drools.workflow.instance.impl.NodeInstanceImpl;
 
 /**
@@ -38,22 +40,23 @@ public class EndNodeInstance extends NodeInstanceImpl {
     }
     
     public void internalTrigger(final NodeInstance from, String type) {
-        if (!Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
+        if (!org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
             throw new IllegalArgumentException(
                 "An EndNode only accepts default incoming connections!");
         }
-        getNodeInstanceContainer().removeNodeInstance(this);
+        ((NodeInstanceContainer) getNodeInstanceContainer()).removeNodeInstance(this);
         if (getEndNode().isTerminate()) {
         	boolean hidden = false;
         	if (getNode().getMetaData("hidden") != null) {
         		hidden = true;
         	}
+        	WorkingMemory workingMemory = ((InternalProcessInstance) getProcessInstance()).getWorkingMemory();
         	if (!hidden) {
-        		((EventSupport) getProcessInstance().getWorkingMemory()).getRuleFlowEventSupport().fireBeforeRuleFlowNodeLeft(this, (InternalWorkingMemory) getProcessInstance().getWorkingMemory());
+        		((EventSupport) workingMemory).getRuleFlowEventSupport().fireBeforeRuleFlowNodeLeft(this, (InternalWorkingMemory) workingMemory);
         	}
-        	getProcessInstance().setState( ProcessInstance.STATE_COMPLETED );
+        	((InternalProcessInstance) getProcessInstance()).setState( ProcessInstance.STATE_COMPLETED );
             if (!hidden) {
-                ((EventSupport) getProcessInstance().getWorkingMemory()).getRuleFlowEventSupport().fireAfterRuleFlowNodeLeft(this, (InternalWorkingMemory) getProcessInstance().getWorkingMemory());
+                ((EventSupport) workingMemory).getRuleFlowEventSupport().fireAfterRuleFlowNodeLeft(this, (InternalWorkingMemory) workingMemory);
             }
         }
     }

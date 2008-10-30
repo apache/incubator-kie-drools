@@ -45,7 +45,7 @@ import org.drools.base.ClassFieldAccessorCache;
 import org.drools.event.RuleBaseEventListener;
 import org.drools.event.RuleBaseEventSupport;
 import org.drools.marshalling.Marshaller;
-import org.drools.process.core.Process;
+import org.drools.knowledge.definitions.process.Process;
 import org.drools.rule.CompositeClassLoader;
 import org.drools.rule.DialectRuntimeRegistry;
 import org.drools.rule.FactType;

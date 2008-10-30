@@ -16,12 +16,12 @@ package org.drools.spi;
  * limitations under the License.
  */
 
-import org.drools.WorkingMemory;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.Declaration;
+import org.drools.WorkingMemory;
 
 import java.io.ObjectOutput;
 import java.io.IOException;

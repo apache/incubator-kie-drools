@@ -3,14 +3,16 @@ package org.drools.integrationtests;
 import junit.framework.TestCase;
 import org.drools.Cheese;
 import org.drools.CheeseEqual;
-import org.drools.FactHandle;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseConfiguration;
+import org.drools.KnowledgeBaseFactory;
 import org.drools.Person;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.Sensor;
-import org.drools.WorkingMemory;
-import org.drools.base.ClassObjectFilter;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.TruthMaintenanceSystem;
 import org.drools.compiler.PackageBuilder;
@@ -19,12 +21,18 @@ import org.drools.event.ObjectInsertedEvent;
 import org.drools.event.ObjectRetractedEvent;
 import org.drools.event.ObjectUpdatedEvent;
 import org.drools.event.WorkingMemoryEventListener;
+import org.drools.knowledge.definitions.KnowledgePackage;
 import org.drools.rule.Package;
+import org.drools.runtime.ClassObjectFilter;
+import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.rule.FactHandle;
+import org.drools.WorkingMemory;
 import org.drools.util.ObjectHashMap;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class TruthMaintenanceTest extends TestCase {
@@ -40,28 +48,22 @@ public class TruthMaintenanceTest extends TestCase {
                                             config );
     }
     
+    protected KnowledgeBase getKnowledgeBase() throws Exception {
+        return KnowledgeBaseFactory.newKnowledgeBase();
+    }
+    
+    protected KnowledgeBase getKnowledgeBase(KnowledgeBaseConfiguration config) throws Exception {
+        return KnowledgeBaseFactory.newKnowledgeBase( config );
+    }    
+    
     public void testLogicalInsertionsDynamicRule() throws Exception {
-        PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalInsertionsDynamicRule.drl" ) ) );
-        final Package pkg = builder.getPackage();
-
-        org.drools.reteoo.ReteooRuleBase reteooRuleBase = null;
-        // org.drools.leaps.LeapsRuleBase leapsRuleBase = null;
-        RuleBase ruleBase = getRuleBase();
-        if ( ruleBase instanceof org.drools.reteoo.ReteooRuleBase ) {
-            reteooRuleBase = (org.drools.reteoo.ReteooRuleBase) ruleBase;
-            // } else if ( ruleBase instanceof org.drools.leaps.LeapsRuleBase )
-            // {
-            // leapsRuleBase = (org.drools.leaps.LeapsRuleBase) ruleBase;
-        }
-        ruleBase.addPackage( pkg );
-//        ruleBase    = SerializationHelper.serializeObject(ruleBase);
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
-
-        // workingMemory.addEventListener(new
-        // org.drools.event.DebugAgendaEventListener());
-        // workingMemory.addEventListener(new
-        // org.drools.event.DebugWorkingMemoryEventListener());
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.addPackageFromDrl( getClass().getResource( "test_LogicalInsertionsDynamicRule.drl" ) );
+        
+        Collection<KnowledgePackage> kpkgs = kbuilder.getKnowledgePackages();
+        KnowledgeBase kbase = getKnowledgeBase();
+        kbase.addKnowledgePackages( kpkgs );        
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         final Cheese c1 = new Cheese( "a",
                                       1 );
@@ -71,13 +73,13 @@ public class TruthMaintenanceTest extends TestCase {
                                       3 );
         List list;
 
-        workingMemory.insert( c1 );
-        final FactHandle h = workingMemory.insert( c2 );
-        workingMemory.insert( c3 );
-        workingMemory.fireAllRules();
+        ksession.insert( c1 );
+        final FactHandle h = ksession.insert( c2 );
+        ksession.insert( c3 );
+        ksession.fireAllRules();
 
-        // Check logical Insertions where made for c2 and c3
-        list = IteratorToList.convert( workingMemory.iterateObjects( new ClassObjectFilter( Person.class) ) );
+        // Check logical Insertions where made for c2 and c3        
+        list = new ArrayList( ksession.getObjects( new ClassObjectFilter( Person.class) ) );
         assertEquals( 2,
                       list.size() );
         assertFalse( list.contains( new Person( c1.getType() ) ) );
@@ -85,19 +87,18 @@ public class TruthMaintenanceTest extends TestCase {
         assertTrue( list.contains( new Person( c3.getType() ) ) );
 
         // this rule will make a logical assertion for c1 too
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_LogicalInsertionsDynamicRule2.drl" ) );
-        builder = new PackageBuilder();
-        builder.addPackageFromDrl( reader );
-        final Package pkg2 = builder.getPackage();
-        ruleBase.addPackage( pkg2 );
-        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.addPackageFromDrl(  getClass().getResource( "test_LogicalInsertionsDynamicRule2.drl" ) );
+        Collection<KnowledgePackage> kpkgs2 = kbuilder.getKnowledgePackages();
+        kbase.addKnowledgePackages( kpkgs2 );
+        kbase    = SerializationHelper.serializeObject( kbase );
 
-        workingMemory.fireAllRules();
+        ksession.fireAllRules();
 
-        ruleBase    = workingMemory.getRuleBase();
-
+        kbase    = ksession.getKnowledgeBase();
+        
         // check all now have just one logical assertion each
-        list = IteratorToList.convert( workingMemory.iterateObjects( new ClassObjectFilter( Person.class) ) );
+        list = new ArrayList( ksession.getObjects( new ClassObjectFilter( Person.class) ) );
         assertEquals( 3,
                       list.size() );
         assertTrue( list.contains( new Person( c1.getType() ) ) );
@@ -105,35 +106,33 @@ public class TruthMaintenanceTest extends TestCase {
         assertTrue( list.contains( new Person( c3.getType() ) ) );
 
         // check the packages are correctly populated
+        KnowledgePackage[] pkgs = ( KnowledgePackage[] ) kbase.getKnowledgePackages().toArray( new KnowledgePackage[] {} );
         assertEquals( "org.drools.test",
-                      ruleBase.getPackages()[0].getName() );
+                      pkgs[0].getName() );
         assertEquals( "org.drools.test2",
-                      ruleBase.getPackages()[1].getName() );
+                      pkgs[1].getName() );
         assertEquals( "rule1",
-                      ruleBase.getPackages()[0].getRules()[0].getName() );
+                      pkgs[0].getRules().iterator().next().getName() );
         assertEquals( "rule2",
-                      ruleBase.getPackages()[1].getRules()[0].getName() );
+                      pkgs[1].getRules().iterator().next().getName() );
 
         // now remove the first rule
-        if ( reteooRuleBase != null ) {
-            reteooRuleBase.removeRule( ruleBase.getPackages()[0].getName(),
-                                       ruleBase.getPackages()[0].getRules()[0].getName() );
-            // } else if ( leapsRuleBase != null ) {
-            // leapsRuleBase.removeRule( ruleBase.getPackages()[0].getName(),
-            // ruleBase.getPackages()[0].getRules()[0].getName() );
-        }
+        kbase.removeRule( pkgs[0].getName(),
+                          pkgs[0].getRules().iterator().next().getName() );
+        pkgs = ( KnowledgePackage[] ) kbase.getKnowledgePackages().toArray( new KnowledgePackage[] {} );
 
         // Check the rule was correctly remove
         assertEquals( 0,
-                      ruleBase.getPackages()[0].getRules().length );
+                      pkgs[0].getRules().size() );
         assertEquals( 1,
-                      ruleBase.getPackages()[1].getRules().length );
+                      pkgs[1].getRules().size() );
         assertEquals( "org.drools.test2",
-                      ruleBase.getPackages()[1].getName() );
+                      pkgs[1].getName() );
         assertEquals( "rule2",
-                      ruleBase.getPackages()[1].getRules()[0].getName() );
+                      pkgs[1].getRules().iterator().next().getName() );
 
-        list = IteratorToList.convert( workingMemory.iterateObjects( new ClassObjectFilter( Person.class) ) );
+        
+        list = new ArrayList( ksession.getObjects( new ClassObjectFilter( Person.class) ) );
         assertEquals( "removal of the rule should result in retraction of c3's logical assertion",
                       2,
                       list.size() );
@@ -145,9 +144,9 @@ public class TruthMaintenanceTest extends TestCase {
                      list.contains( new Person( c3.getType() ) ) );
 
         c2.setPrice( 3 );
-        workingMemory.update( h,
-                                    c2 );
-        list = IteratorToList.convert( workingMemory.iterateObjects( new ClassObjectFilter( Person.class) ) );
+        ksession.update( h,
+                         c2 );
+        list = new ArrayList( ksession.getObjects( new ClassObjectFilter( Person.class) ) );
         assertEquals( "c2 now has a higher price, its logical assertion should  be cancelled",
                       1,
                       list.size() );
@@ -156,183 +155,178 @@ public class TruthMaintenanceTest extends TestCase {
         assertTrue( "The logical assertion  for c1 should exist",
                     list.contains( new Person( c1.getType() ) ) );
 
-        if ( reteooRuleBase != null ) {
-            reteooRuleBase.removeRule( ruleBase.getPackages()[1].getName(),
-                                       ruleBase.getPackages()[1].getRules()[0].getName() );
-            // } else if ( leapsRuleBase != null ) {
-            // leapsRuleBase.removeRule( ruleBase.getPackages()[1].getName(),
-            // ruleBase.getPackages()[1].getRules()[0].getName() );
-        }
-        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        pkgs = ( KnowledgePackage[] ) kbase.getKnowledgePackages().toArray( new KnowledgePackage[] {} );
+            kbase.removeRule( pkgs[1].getName(),
+                              pkgs[1].getRules().iterator().next().getName() );
+        kbase    = SerializationHelper.serializeObject( kbase );
+        pkgs = ( KnowledgePackage[] ) kbase.getKnowledgePackages().toArray( new KnowledgePackage[] {} );
         assertEquals( 0,
-                      ruleBase.getPackages()[0].getRules().length );
+                      pkgs[0].getRules().size() );
         assertEquals( 0,
-                      ruleBase.getPackages()[1].getRules().length );
-        list = IteratorToList.convert( workingMemory.iterateObjects( new ClassObjectFilter( Person.class) ) );
+                      pkgs[1].getRules().size() );
+        list = new ArrayList( ksession.getObjects( new ClassObjectFilter( Person.class) ) );
         assertEquals( 0,
                       list.size() );
     }
 
     public void testLogicalInsertions() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalInsertions.drl" ) ) );
-        final Package pkg = builder.getPackage();
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.addPackageFromDrl( getClass().getResource( "test_LogicalInsertions.drl" ) );
+        Collection<KnowledgePackage> kpkgs = kbuilder.getKnowledgePackages();
 
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase    = SerializationHelper.serializeObject(ruleBase);
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kpkgs );
+        kbase    = SerializationHelper.serializeObject( kbase );
+        final StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
 
         final List list = new ArrayList();
-        workingMemory.setGlobal( "list",
+        session.setGlobal( "list",
                                  list );
 
         final Cheese brie = new Cheese( "brie",
                                         12 );
-        final FactHandle brieHandle = workingMemory.insert( brie );
+        final FactHandle brieHandle = session.insert( brie );
 
         final Cheese provolone = new Cheese( "provolone",
                                              12 );
-        final FactHandle provoloneHandle = workingMemory.insert( provolone );
+        final FactHandle provoloneHandle = session.insert( provolone );
 
-        workingMemory.fireAllRules();
+        session.fireAllRules();
 
         assertEquals( 3,
                       list.size() );
 
         assertEquals( 3,
-                      IteratorToList.convert( workingMemory.iterateObjects() ).size() );
+                      session.getObjects().size() );
 
-        workingMemory.retract( brieHandle );
+        session.retract( brieHandle );
 
         assertEquals( 2,
-                      IteratorToList.convert( workingMemory.iterateObjects() ).size() );
+                      session.getObjects().size() );
 
-        workingMemory.retract( provoloneHandle );
+        session.retract( provoloneHandle );
 
         assertEquals( 0,
-                      IteratorToList.convert( workingMemory.iterateObjects() ).size() );
+                      session.getObjects().size() );
     }
 
     public void testLogicalInsertionsBacking() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalInsertionsBacking.drl" ) ) );
-        final Package pkg = builder.getPackage();
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.addPackageFromDrl( getClass().getResource( "test_LogicalInsertionsBacking.drl" ) );
+        Collection<KnowledgePackage> kpkgs = kbuilder.getKnowledgePackages();
 
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase    = SerializationHelper.serializeObject(ruleBase);
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kpkgs );
+        kbase    = SerializationHelper.serializeObject( kbase );
+        final StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();        
 
         final Cheese cheese1 = new Cheese( "c",
                                            1 );
         final Cheese cheese2 = new Cheese( cheese1.getType(),
                                            1 );
-        List list;
+        
 
-        final FactHandle h1 = workingMemory.insert( cheese1 );
-        workingMemory.fireAllRules();
-        list = IteratorToList.convert( workingMemory.iterateObjects( new ClassObjectFilter( cheese1.getType().getClass() ) ) );
+        final FactHandle h1 = session.insert( cheese1 );
+        session.fireAllRules();   
+        Collection<?> list = session.getObjects( new ClassObjectFilter( cheese1.getType().getClass() ) );
         assertEquals( 1,
                       list.size() );
         // probably dangerous, as contains works with equals, not identity
         assertEquals( cheese1.getType(),
-                      list.get( 0 ) );
+                      list.iterator().next() );
         // FactHandle ht = workingMemory.getFactHandle(c1.getType());
 
-        final FactHandle h2 = workingMemory.insert( cheese2 );
-        workingMemory.fireAllRules();
-        list = IteratorToList.convert( workingMemory.iterateObjects(new ClassObjectFilter( cheese1.getType().getClass() ) ) );
+        final FactHandle h2 = session.insert( cheese2 );
+        session.fireAllRules();
+        list  = session.getObjects(new ClassObjectFilter( cheese1.getType().getClass() ) );
         assertEquals( 1,
                       list.size() );
         assertEquals( cheese1.getType(),
-                      list.get( 0 ) );
+                      list.iterator().next() );
         
-        assertEquals( 3, IteratorToList.convert( workingMemory.iterateObjects() ).size() );
+        assertEquals( 3, session.getObjects().size() );
 
-        workingMemory.retract( h1 );
-        workingMemory.fireAllRules();
-        list = IteratorToList.convert( workingMemory.iterateObjects(new ClassObjectFilter( cheese1.getType().getClass() ) ) );
+        session.retract( h1 );
+        session.fireAllRules();
+        list = session.getObjects(new ClassObjectFilter( cheese1.getType().getClass() ) );
         assertEquals( "cheese-type " + cheese1.getType() + " was retracted, but should not. Backed by cheese2 => type.",
                       1,
                       list.size() );
         assertEquals( "cheese-type " + cheese1.getType() + " was retracted, but should not. Backed by cheese2 => type.",
                       cheese1.getType(),
-                      list.get( 0 ) );
+                      list.iterator().next() );
 
-        workingMemory.retract( h2 );
-        workingMemory.fireAllRules();
-        list = IteratorToList.convert( workingMemory.iterateObjects(new ClassObjectFilter( cheese1.getType().getClass() ) ) );
+        session.retract( h2 );
+        session.fireAllRules();
+        list = session.getObjects(new ClassObjectFilter( cheese1.getType().getClass() ) );
         assertEquals( "cheese-type " + cheese1.getType() + " was not retracted, but should have. Neither  cheese1 => type nor cheese2 => type is true.",
                       0,
                       list.size() );
     }
 
     public void testLogicalInsertionsSelfreferencing() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalInsertionsSelfreferencing.drl" ) ) );
-        final Package pkg = builder.getPackage();
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.addPackageFromDrl( getClass().getResource( "test_LogicalInsertionsSelfreferencing.drl" ) );
+        Collection<KnowledgePackage> kpkgs = kbuilder.getKnowledgePackages();
 
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase    = SerializationHelper.serializeObject(ruleBase);
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
-
-        List list;
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kpkgs );
+        kbase    = SerializationHelper.serializeObject( kbase );
+        final StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();          
 
         final Person b = new Person( "b" );
         final Person a = new Person( "a" );
 
-        workingMemory.setGlobal( "b",
+        session.setGlobal( "b",
                                  b );
 
-        FactHandle h1 = workingMemory.insert( a );
-        workingMemory.fireAllRules();
-        list = IteratorToList.convert( workingMemory.iterateObjects(new ClassObjectFilter( a.getClass() ) ) );
+        FactHandle h1 = session.insert( a );
+        session.fireAllRules();
+        Collection<?> list = session.getObjects( new ClassObjectFilter( a.getClass() ) );        
         assertEquals( 2,
                       list.size() );
         assertTrue( list.contains( a ) );
         assertTrue( list.contains( b ) );
 
-        workingMemory.retract( h1 );
-        workingMemory.fireAllRules();
-        list = IteratorToList.convert( workingMemory.iterateObjects(new ClassObjectFilter( a.getClass() ) ) );
+        session.retract( h1 );
+        session.fireAllRules();
+        list = session.getObjects( new ClassObjectFilter( a.getClass() ) );
         assertEquals( "b was retracted, but it should not have. Is backed by b => b being true.",
                       1,
                       list.size() );
         assertEquals( "b was retracted, but it should not have. Is backed by b => b being true.",
                       b,
-                      list.get( 0 ) );
+                      list.iterator().next() );
 
-        h1 = workingMemory.getFactHandle( b );
-        workingMemory.retract( h1 );
-        workingMemory.fireAllRules();
-        list = IteratorToList.convert( workingMemory.iterateObjects(new ClassObjectFilter( a.getClass() ) ) );
+        h1 = session.getFactHandle( b );
+        session.retract( h1 );
+        session.fireAllRules();
+        list = session.getObjects( new ClassObjectFilter( a.getClass() ) );
         assertEquals( 0,
                       list.size() );
     }
 
     public void testLogicalInsertionsLoop() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalInsertionsLoop.drl" ) ) );
-        final Package pkg = builder.getPackage();
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.addPackageFromDrl( getClass().getResource(  "test_LogicalInsertionsLoop.drl" ) );
+        Collection<KnowledgePackage> kpkgs = kbuilder.getKnowledgePackages();
 
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase    = SerializationHelper.serializeObject(ruleBase);
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kpkgs );
+        kbase    = SerializationHelper.serializeObject( kbase );
+        final StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();  
 
-        List list;
+        
 
         final List l = new ArrayList();
         final Person a = new Person( "a" );
-        workingMemory.setGlobal( "a",
+        session.setGlobal( "a",
                                  a );
-        workingMemory.setGlobal( "l",
+        session.setGlobal( "l",
                                  l );
 
-        workingMemory.fireAllRules();
-        list = IteratorToList.convert( workingMemory.iterateObjects(new ClassObjectFilter( a.getClass() ) ) );
+        session.fireAllRules();
+        Collection<?> list = session.getObjects(new ClassObjectFilter( a.getClass() ) );
         assertEquals( "a still asserted.",
                       0,
                       list.size() );

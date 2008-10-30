@@ -20,9 +20,14 @@ import java.io.Externalizable;
 import java.io.ObjectOutput;
 import java.io.IOException;
 import java.io.ObjectInput;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
+import org.drools.runtime.rule.FactHandle;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.PropagationContext;
@@ -298,5 +303,14 @@ public class AgendaItem
 
     public GroupElement getSubRule() {
         return this.subrule;
+    }
+
+    public Collection<FactHandle> getFactHandles() {
+        FactHandle[] factHandles = this.tuple.getFactHandles();
+        List<FactHandle> list = new ArrayList<FactHandle>( factHandles.length );
+        for ( FactHandle factHandle : factHandles ) {
+            list.add( factHandle );
+        }
+        return Collections.unmodifiableCollection( list );
     }
 }

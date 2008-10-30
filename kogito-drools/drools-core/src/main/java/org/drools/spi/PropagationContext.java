@@ -18,30 +18,21 @@ package org.drools.spi;
 
 import java.io.Externalizable;
 
-import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
+import org.drools.runtime.rule.FactHandle;
 
 public interface PropagationContext
     extends
-    Externalizable {
+    Externalizable,
+    org.drools.runtime.rule.PropagationContext {    
 
-    public static final int ASSERTION     = 0;
-    public static final int RETRACTION    = 1;
-    public static final int MODIFICATION  = 2;
-    public static final int RULE_ADDITION = 3;
-    public static final int RULE_REMOVAL  = 4;
-
-    public long getPropagationNumber();
-
-    public Rule getRuleOrigin();
+    public Rule getRuleOrigin();    
+    
+    public FactHandle getFactHandleOrigin();    
 
     public LeftTuple getLeftTupleOrigin();
-    
-    public InternalFactHandle getFactHandleOrigin();
-
-    public int getType();
 
     public int getActiveActivations();
 

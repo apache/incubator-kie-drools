@@ -1,7 +1,7 @@
 package org.drools.process.command;
 
+import org.drools.process.instance.InternalProcessInstance;
 import org.drools.WorkingMemory;
-import org.drools.process.instance.ProcessInstance;
 
 public class SignalEventCommand implements Command {
 	
@@ -34,7 +34,7 @@ public class SignalEventCommand implements Command {
 	}
 
 	public Object execute(WorkingMemory workingMemory) {
-		ProcessInstance processInstance = workingMemory.getProcessInstance(processInstanceId);
+		InternalProcessInstance processInstance = ( InternalProcessInstance ) workingMemory.getProcessInstance(processInstanceId);
 		if (processInstance != null) {
 			processInstance.signalEvent(eventType, processInstance);
 		}

@@ -24,7 +24,6 @@ import java.io.IOException;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.drools.WorkingMemory;
 import org.drools.base.ClassObjectType;
 import org.drools.reteoo.ReteooBuilder;
 import org.drools.reteoo.ReteooRuleBase;
@@ -35,6 +34,7 @@ import org.drools.rule.Pattern;
 import org.drools.rule.GroupElement;
 import org.drools.rule.GroupElementFactory;
 import org.drools.rule.Rule;
+import org.drools.WorkingMemory;
 import org.drools.spi.Consequence;
 import org.drools.spi.KnowledgeHelper;
 

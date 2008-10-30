@@ -18,9 +18,9 @@ package org.drools.spi;
 
 import java.io.Serializable;
 
-import org.drools.WorkingMemory;
 import org.drools.common.InternalFactHandle;
 import org.drools.rule.Declaration;
+import org.drools.WorkingMemory;
 
 /**
  * Accumulator

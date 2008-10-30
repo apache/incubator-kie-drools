@@ -24,6 +24,7 @@ import java.io.OutputStream;
 import org.drools.marshalling.Marshaller;
 import org.drools.rule.FactType;
 import org.drools.rule.Package;
+import org.drools.WorkingMemory;
 
 /**
  * Active collection of <code>Rule</code>s.

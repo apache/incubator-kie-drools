@@ -40,8 +40,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.drools.Agenda;
 import org.drools.FactException;
-import org.drools.FactHandle;
-import org.drools.ObjectFilter;
 import org.drools.QueryResults;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
@@ -60,11 +58,13 @@ import org.drools.event.RuleFlowEventListener;
 import org.drools.event.RuleFlowEventSupport;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.event.WorkingMemoryEventSupport;
-import org.drools.process.core.Process;
+import org.drools.knowledge.definitions.process.Process;
+import org.drools.process.core.ContextContainer;
 import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.core.event.EventFilter;
 import org.drools.process.core.event.EventTypeFilter;
 import org.drools.process.instance.EventListener;
+import org.drools.process.instance.InternalProcessInstance;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.ProcessInstanceFactory;
 import org.drools.process.instance.ProcessInstanceFactoryRegistry;
@@ -86,6 +86,8 @@ import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.rule.TimeMachine;
 import org.drools.ruleflow.core.RuleFlowProcess;
+import org.drools.runtime.ObjectFilter;
+import org.drools.runtime.rule.FactHandle;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AsyncExceptionHandler;
@@ -1512,13 +1514,13 @@ public abstract class AbstractWorkingMemory
         if ( process == null ) {
             throw new IllegalArgumentException( "Unknown process ID: " + processId );
         }
-        ProcessInstance processInstance = getProcessInstance( process );
+        InternalProcessInstance processInstance = ( InternalProcessInstance ) getProcessInstance( process );
         processInstance.setWorkingMemory( this );
         processInstance.setProcess( process );
         processInstanceManager.addProcessInstance( processInstance );
         // set variable default values
         // TODO: should be part of processInstanceImpl?
-        VariableScope variableScope = (VariableScope) process.getDefaultContext( VariableScope.VARIABLE_SCOPE );
+        VariableScope variableScope = (VariableScope) ((ContextContainer) process).getDefaultContext( VariableScope.VARIABLE_SCOPE );
         VariableScopeInstance variableScopeInstance = (VariableScopeInstance) processInstance.getContextInstance( VariableScope.VARIABLE_SCOPE );
         // set input parameters
         if ( parameters != null ) {
@@ -1547,7 +1549,7 @@ public abstract class AbstractWorkingMemory
         if ( conf == null ) {
             throw new IllegalArgumentException( "Illegal process type: " + process.getClass() );
         }
-        ProcessInstance processInstance = conf.createProcessInstance();
+        InternalProcessInstance processInstance = conf.createProcessInstance();
         if ( processInstance == null ) {
             throw new IllegalArgumentException( "Illegal process type: " + process.getClass() );
         }
@@ -1559,7 +1561,7 @@ public abstract class AbstractWorkingMemory
     }
 
     public Collection<ProcessInstance> getProcessInstances() {
-        return processInstanceManager.getProcessInstances();
+        return ( Collection<ProcessInstance> ) processInstanceManager.getProcessInstances();
     }
 
     public ProcessInstance getProcessInstance(long id) {

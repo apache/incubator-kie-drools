@@ -19,13 +19,16 @@ package org.drools.base;
 import java.util.List;
 
 import org.drools.FactException;
-import org.drools.FactHandle;
 import org.drools.QueryResults;
-import org.drools.WorkingMemory;
 import org.drools.common.InternalWorkingMemoryActions;
+import org.drools.impl.StatefulKnowledgeSessionImpl;
+import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.rule.Declaration;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
+import org.drools.runtime.KnowledgeRuntime;
+import org.drools.runtime.rule.FactHandle;
+import org.drools.WorkingMemory;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.KnowledgeHelper;
@@ -146,6 +149,10 @@ public class SequentialKnowledgeHelper
     public WorkingMemory getWorkingMemory() {
         return this.workingMemory;
     }
+    
+    public KnowledgeRuntime getKnowledgeRuntime() {        
+        return new StatefulKnowledgeSessionImpl( (ReteooStatefulSession) this.workingMemory );
+     }
 
     public Activation getActivation() {
         return this.activation;

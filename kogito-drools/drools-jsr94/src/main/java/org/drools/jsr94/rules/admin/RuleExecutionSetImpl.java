@@ -35,7 +35,6 @@ import org.drools.jsr94.rules.Constants;
 import org.drools.jsr94.rules.Jsr94FactHandleFactory;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
-import org.drools.util.UUIDGenerator;
 
 /**
  * The Drools implementation of the <code>RuleExecutionSet</code> interface
@@ -121,11 +120,11 @@ public class RuleExecutionSetImpl
         RuleBaseConfiguration config = ( RuleBaseConfiguration ) this.properties.get( Constants.RES_RULEBASE_CONFIG );
         org.drools.reteoo.ReteooRuleBase ruleBase;
         if ( config != null ) {
-            ruleBase = new org.drools.reteoo.ReteooRuleBase( UUIDGenerator.getInstance().generateRandomBasedUUID().toString(),
+            ruleBase = new org.drools.reteoo.ReteooRuleBase( null,
                                                              config,
                                                              new Jsr94FactHandleFactory() );
         } else {
-            ruleBase = new org.drools.reteoo.ReteooRuleBase( UUIDGenerator.getInstance().generateRandomBasedUUID().toString(),
+            ruleBase = new org.drools.reteoo.ReteooRuleBase( null,
                                                              new Jsr94FactHandleFactory() );            
         }
         ruleBase.addPackage( pkg );

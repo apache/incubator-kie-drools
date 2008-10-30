@@ -35,7 +35,7 @@ public class SerializablePlaceholderResolverStrategy
     }
 
     public boolean accept(Object object) {
-        return this.accept( object );
+        return acceptor.accept( object );
     }
 
 }

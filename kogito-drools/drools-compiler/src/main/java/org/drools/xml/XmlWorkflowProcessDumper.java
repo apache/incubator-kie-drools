@@ -5,6 +5,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.knowledge.definitions.process.Connection;
+import org.drools.knowledge.definitions.process.Node;
+import org.drools.knowledge.definitions.process.WorkflowProcess;
 import org.drools.process.core.context.exception.ActionExceptionHandler;
 import org.drools.process.core.context.exception.ExceptionHandler;
 import org.drools.process.core.context.exception.ExceptionScope;
@@ -14,10 +17,7 @@ import org.drools.process.core.context.variable.Variable;
 import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.core.datatype.DataType;
 import org.drools.process.core.datatype.impl.type.ObjectDataType;
-import org.drools.workflow.core.Connection;
 import org.drools.workflow.core.DroolsAction;
-import org.drools.workflow.core.Node;
-import org.drools.workflow.core.WorkflowProcess;
 import org.drools.workflow.core.impl.NodeImpl;
 import org.drools.xml.processes.AbstractNodeHandler;
 
@@ -80,18 +80,21 @@ public class XmlWorkflowProcessDumper {
     
     private void visitHeader(WorkflowProcess process, StringBuffer xmlDump, boolean includeMeta) {
         xmlDump.append("  <header>" + EOL);
-        visitImports(process.getImports(), xmlDump);
-        visitFunctionImports(process.getFunctionImports(), xmlDump);
-        visitGlobals(process.getGlobals(), xmlDump);
-        VariableScope variableScope = (VariableScope) process.getDefaultContext(VariableScope.VARIABLE_SCOPE);
+        visitImports(((org.drools.process.core.Process) process).getImports(), xmlDump);
+        visitGlobals(((org.drools.process.core.Process) process).getGlobals(), xmlDump);
+        visitFunctionImports(((org.drools.process.core.Process) process).getFunctionImports(), xmlDump);
+        VariableScope variableScope = (VariableScope)
+        	((org.drools.process.core.Process) process).getDefaultContext(VariableScope.VARIABLE_SCOPE);
         if (variableScope != null) {
             visitVariables(variableScope.getVariables(), xmlDump);
         }
-        SwimlaneContext swimlaneContext = (SwimlaneContext) process.getDefaultContext(SwimlaneContext.SWIMLANE_SCOPE);
+        SwimlaneContext swimlaneContext = (SwimlaneContext)
+        	((org.drools.process.core.Process) process).getDefaultContext(SwimlaneContext.SWIMLANE_SCOPE);
         if (swimlaneContext != null) {
             visitSwimlanes(swimlaneContext.getSwimlanes(), xmlDump);
         }
-        ExceptionScope exceptionScope = (ExceptionScope) process.getDefaultContext(ExceptionScope.EXCEPTION_SCOPE);
+        ExceptionScope exceptionScope = (ExceptionScope)
+        	((org.drools.process.core.Process) process).getDefaultContext(ExceptionScope.EXCEPTION_SCOPE);
         if (exceptionScope != null) {
             visitExceptionHandlers(exceptionScope.getExceptionHandlers(), xmlDump);
         }
@@ -205,7 +208,7 @@ public class XmlWorkflowProcessDumper {
     public void visitNode(Node node, StringBuffer xmlDump, boolean includeMeta) {
      	Handler handler = semanticModule.getHandlerByClass(node.getClass());
         if (handler != null) {
-        	((AbstractNodeHandler) handler).writeNode(node, xmlDump, includeMeta);
+        	((AbstractNodeHandler) handler).writeNode((org.drools.workflow.core.Node) node, xmlDump, includeMeta);
         } else {
         	throw new IllegalArgumentException(
                 "Unknown node type: " + node);

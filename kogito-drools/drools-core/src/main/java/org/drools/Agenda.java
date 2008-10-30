@@ -15,6 +15,7 @@ package org.drools;
  * limitations under the License.
  */
 
+import org.drools.WorkingMemory;
 import org.drools.spi.Activation;
 import org.drools.spi.ActivationGroup;
 import org.drools.spi.AgendaGroup;
@@ -24,7 +25,7 @@ import org.drools.spi.RuleFlowGroup;
  * Agenda interface for the WorkingMemory
  *
  */
-public interface Agenda {
+public interface Agenda extends org.drools.runtime.rule.Agenda {
 
     /**
      * Returns the WorkignMemory for this Agenda

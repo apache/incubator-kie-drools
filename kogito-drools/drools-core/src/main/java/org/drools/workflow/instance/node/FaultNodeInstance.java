@@ -18,12 +18,13 @@ package org.drools.workflow.instance.node;
 
 import org.drools.process.core.context.exception.ExceptionScope;
 import org.drools.process.core.context.variable.VariableScope;
+import org.drools.process.instance.InternalProcessInstance;
+import org.drools.process.instance.NodeInstance;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.context.exception.ExceptionScopeInstance;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
-import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.FaultNode;
-import org.drools.workflow.instance.NodeInstance;
+import org.drools.workflow.instance.NodeInstanceContainer;
 import org.drools.workflow.instance.impl.NodeInstanceImpl;
 
 /**
@@ -40,17 +41,17 @@ public class FaultNodeInstance extends NodeInstanceImpl {
     }
     
     public void internalTrigger(final NodeInstance from, String type) {
-        if (!Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
+        if (!org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
             throw new IllegalArgumentException(
                 "A FaultNode only accepts default incoming connections!");
         }
         String faultName = getFaultName();
         ExceptionScopeInstance exceptionScopeInstance = getExceptionScopeInstance(faultName);
-        getNodeInstanceContainer().removeNodeInstance(this);
+        ((NodeInstanceContainer) getNodeInstanceContainer()).removeNodeInstance(this);
         if (exceptionScopeInstance != null) {
         	handleException(faultName, exceptionScopeInstance);
         } else {
-        	getProcessInstance().setState(ProcessInstance.STATE_ABORTED);
+        	((InternalProcessInstance) getProcessInstance()).setState(ProcessInstance.STATE_ABORTED);
         }
     }
     

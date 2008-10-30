@@ -3,7 +3,7 @@
  */
 package org.drools.concurrent;
 
-import org.drools.FactHandle;
+import org.drools.runtime.rule.FactHandle;
 import org.drools.WorkingMemory;
 
 import java.io.ObjectOutput;

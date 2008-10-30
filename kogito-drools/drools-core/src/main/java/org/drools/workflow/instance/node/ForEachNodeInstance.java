@@ -5,13 +5,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.drools.knowledge.definitions.process.Node;
 import org.drools.process.core.context.variable.VariableScope;
+import org.drools.process.instance.NodeInstance;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
-import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.ForEachNode;
 import org.drools.workflow.core.node.ForEachNode.ForEachJoinNode;
 import org.drools.workflow.core.node.ForEachNode.ForEachSplitNode;
-import org.drools.workflow.instance.NodeInstance;
+import org.drools.workflow.instance.NodeInstanceContainer;
 import org.drools.workflow.instance.impl.NodeInstanceImpl;
 
 /*
@@ -76,22 +77,22 @@ public class ForEachNodeInstance extends CompositeNodeInstance {
         public void internalTrigger(NodeInstance from, String type) {
             String collectionExpression = getForEachNode().getCollectionExpression();
             Collection<?> collection = evaluateCollectionExpression(collectionExpression);
-            getNodeInstanceContainer().removeNodeInstance(this);
+            ((NodeInstanceContainer) getNodeInstanceContainer()).removeNodeInstance(this);
             List<NodeInstance> nodeInstances = new ArrayList<NodeInstance>();
             for (Object o: collection) {
                 String variableName = getForEachNode().getVariableName();
                 CompositeNodeInstance nodeInstance = (CompositeNodeInstance)
-                    getNodeInstanceContainer().getNodeInstance(getForEachSplitNode().getTo().getTo());
+                    ((NodeInstanceContainer) getNodeInstanceContainer()).getNodeInstance(getForEachSplitNode().getTo().getTo());
                 VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
                     nodeInstance.resolveContextInstance(VariableScope.VARIABLE_SCOPE, variableName);
                 variableScopeInstance.setVariable(variableName, o);
                 nodeInstances.add(nodeInstance);
             }
             for (NodeInstance nodeInstance: nodeInstances) {
-                nodeInstance.trigger(this, getForEachSplitNode().getTo().getToType());
+                ((org.drools.workflow.instance.NodeInstance) nodeInstance).trigger(this, getForEachSplitNode().getTo().getToType());
             }
             if (!getForEachNode().isWaitForCompletion()) {
-            	ForEachNodeInstance.this.triggerCompleted(Node.CONNECTION_DEFAULT_TYPE, false);
+            	ForEachNodeInstance.this.triggerCompleted(org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE, false);
             }
         }
         
@@ -133,7 +134,7 @@ public class ForEachNodeInstance extends CompositeNodeInstance {
 
         public void internalTrigger(NodeInstance from, String type) {
             if (getNodeInstanceContainer().getNodeInstances().size() == 1) {
-                getNodeInstanceContainer().removeNodeInstance(this);
+            	((NodeInstanceContainer) getNodeInstanceContainer()).removeNodeInstance(this);
                 if (getForEachNode().isWaitForCompletion()) {
                 	triggerConnection(getForEachJoinNode().getTo());
                 }

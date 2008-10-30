@@ -28,6 +28,9 @@ import org.drools.common.RuleFlowGroupImpl;
 import org.drools.common.WorkingMemoryAction;
 import org.drools.process.core.context.swimlane.SwimlaneContext;
 import org.drools.process.core.context.variable.VariableScope;
+import org.drools.process.instance.InternalProcessInstance;
+import org.drools.process.instance.InternalWorkItemManager;
+import org.drools.process.instance.NodeInstance;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.context.swimlane.SwimlaneContextInstance;
@@ -55,7 +58,6 @@ import org.drools.spi.PropagationContext;
 import org.drools.spi.RuleFlowGroup;
 import org.drools.util.ObjectHashMap;
 import org.drools.util.ObjectHashSet;
-import org.drools.workflow.instance.NodeInstance;
 import org.drools.workflow.instance.node.CompositeContextNodeInstance;
 import org.drools.workflow.instance.node.ForEachNodeInstance;
 import org.drools.workflow.instance.node.HumanTaskNodeInstance;
@@ -697,7 +699,7 @@ public class OutputMarshaller {
 
         stream.writeLong( pc.getPropagationNumber() );
         if ( pc.getFactHandleOrigin() != null ) {
-            stream.writeInt( pc.getFactHandleOrigin().getId() );
+            stream.writeInt( ((InternalFactHandle)pc.getFactHandleOrigin()).getId() );
         } else {
             stream.writeInt( -1 );
         }
@@ -715,7 +717,7 @@ public class OutputMarshaller {
                           new Comparator<ProcessInstance>() {
                               public int compare(ProcessInstance o1,
                                                  ProcessInstance o2) {
-                                  return (int) (o1.getId() - o2.getId());
+                                  return (int) ((( InternalProcessInstance )o1).getId() - (( InternalProcessInstance )o2).getId());
                               }
                           } );
         for ( ProcessInstance processInstance : processInstances ) {
@@ -882,7 +884,8 @@ public class OutputMarshaller {
     public static void writeWorkItems(MarshallerWriteContext context) throws IOException {
         ObjectOutputStream stream = context.stream;
 
-        List<WorkItem> workItems = new ArrayList<WorkItem>( context.wm.getWorkItemManager().getWorkItems() );
+        List<WorkItem> workItems = new ArrayList<WorkItem>(
+    		((InternalWorkItemManager) context.wm.getWorkItemManager()).getWorkItems() );
         Collections.sort( workItems,
                           new Comparator<WorkItem>() {
                               public int compare(WorkItem o1,

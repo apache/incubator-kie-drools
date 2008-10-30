@@ -23,11 +23,9 @@ import java.util.Map;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.drools.FactHandle;
 import org.drools.QueryResult;
 import org.drools.QueryResults;
 import org.drools.RuleBaseFactory;
-import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.ClassFieldReader;
 import org.drools.base.ClassFieldAccessorCache;
@@ -42,6 +40,8 @@ import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Behavior;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Query;
+import org.drools.runtime.rule.FactHandle;
+import org.drools.WorkingMemory;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 

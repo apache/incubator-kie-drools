@@ -25,11 +25,11 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.WorkingMemory;
 import org.drools.common.InternalFactHandle;
 import org.drools.rule.Declaration;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
+import org.drools.WorkingMemory;
 import org.drools.spi.Accumulator;
 import org.drools.spi.Tuple;
 import org.mvel.MVEL;

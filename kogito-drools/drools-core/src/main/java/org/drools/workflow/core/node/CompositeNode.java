@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.workflow.core.Connection;
-import org.drools.workflow.core.Node;
+import org.drools.knowledge.definitions.process.Connection;
+import org.drools.knowledge.definitions.process.Node;
 import org.drools.workflow.core.NodeContainer;
 import org.drools.workflow.core.impl.ConnectionImpl;
 import org.drools.workflow.core.impl.NodeContainerImpl;
@@ -20,7 +20,7 @@ public class CompositeNode extends NodeImpl implements NodeContainer, EventNodeI
 
     private static final long serialVersionUID = 400L;
     
-    private NodeContainer nodeContainer;
+    private org.drools.workflow.core.NodeContainer nodeContainer;
     private Map<String, CompositeNode.NodeAndType> inConnectionMap = new HashMap<String, CompositeNode.NodeAndType>();
     private Map<String, CompositeNode.NodeAndType> outConnectionMap = new HashMap<String, CompositeNode.NodeAndType>();
     
@@ -58,10 +58,10 @@ public class CompositeNode extends NodeImpl implements NodeContainer, EventNodeI
 	                id = n.getId();
 	            }
 	        }
-	        node.setId(++id);
+	        ((org.drools.workflow.core.Node) node).setId(++id);
     	}
     	nodeContainer.addNode(node);
-        node.setNodeContainer(this);
+        ((org.drools.workflow.core.Node) node).setNodeContainer(this);
     }
     
     protected void internalAddNode(Node node) {
@@ -70,7 +70,7 @@ public class CompositeNode extends NodeImpl implements NodeContainer, EventNodeI
     
     public void removeNode(Node node) {
         nodeContainer.removeNode(node);
-        node.setNodeContainer(null);
+        ((org.drools.workflow.core.Node) node).setNodeContainer(null);
     }
     
     protected void internalRemoveNode(Node node) {
@@ -109,7 +109,7 @@ public class CompositeNode extends NodeImpl implements NodeContainer, EventNodeI
 		        internalAddNode(start);
 		        if (inNode.getNode() != null) {
 			        new ConnectionImpl(
-			            start, Node.CONNECTION_DEFAULT_TYPE, 
+			            start, org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE, 
 			            inNode.getNode(), inNode.getType());
 		        }
 	        }
@@ -138,7 +138,7 @@ public class CompositeNode extends NodeImpl implements NodeContainer, EventNodeI
 		        if (outNode.getNode() != null) {
 			        new ConnectionImpl(
 			            outNode.getNode(), outNode.getType(), 
-			            end, Node.CONNECTION_DEFAULT_TYPE);
+			            end, org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
 		        }
 	        }
         }
@@ -186,7 +186,7 @@ public class CompositeNode extends NodeImpl implements NodeContainer, EventNodeI
     
     public void addIncomingConnection(String type, Connection connection) {
     	if (connection.getFrom().getNodeContainer() == this) {
-    		linkOutgoingConnections(connection.getFrom().getId(), connection.getFromType(), Node.CONNECTION_DEFAULT_TYPE);
+    		linkOutgoingConnections(connection.getFrom().getId(), connection.getFromType(), org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
     	} else {
 	        super.addIncomingConnection(type, connection);
 	        CompositeNode.NodeAndType inNode = internalGetLinkedIncomingNode(type);
@@ -196,7 +196,7 @@ public class CompositeNode extends NodeImpl implements NodeContainer, EventNodeI
 		        NodeImpl node = (NodeImpl) inNode.getNode();
 	        	if (node != null) {
 			        new ConnectionImpl(
-			            start, Node.CONNECTION_DEFAULT_TYPE, 
+			            start, org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE, 
 			            inNode.getNode(), inNode.getType());
 	        	}
 	        }
@@ -221,7 +221,9 @@ public class CompositeNode extends NodeImpl implements NodeContainer, EventNodeI
     
     public void addOutgoingConnection(String type, Connection connection) {
     	if (connection.getTo().getNodeContainer() == this) {
-    		linkIncomingConnections(Node.CONNECTION_DEFAULT_TYPE, connection.getTo().getId(), connection.getToType());    		
+    		linkIncomingConnections(
+				org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE,
+				connection.getTo().getId(),	connection.getToType());    		
     	} else {
 	        super.addOutgoingConnection(type, connection);
 	        CompositeNode.NodeAndType outNode = internalGetLinkedOutgoingNode(type);
@@ -232,7 +234,7 @@ public class CompositeNode extends NodeImpl implements NodeContainer, EventNodeI
 	        	if (node != null) {
 	        		new ConnectionImpl(
         				outNode.getNode(), outNode.getType(), 
-        				end, Node.CONNECTION_DEFAULT_TYPE);
+        				end, org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
 	        	}
 	        }
     	}
@@ -391,7 +393,7 @@ public class CompositeNode extends NodeImpl implements NodeContainer, EventNodeI
         
         public Connection getTo() {
             final List<Connection> list =
-                getOutgoingConnections(Node.CONNECTION_DEFAULT_TYPE);
+                getOutgoingConnections(org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
             if (list.size() > 0) {
                 return (Connection) list.get(0);
             }

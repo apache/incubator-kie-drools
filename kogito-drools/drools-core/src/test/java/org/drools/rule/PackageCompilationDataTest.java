@@ -9,10 +9,10 @@ import java.security.CodeSource;
 
 import junit.framework.TestCase;
 
-import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.common.InternalRuleBase;
 import org.drools.reteoo.ReteooRuleBase;
+import org.drools.WorkingMemory;
 import org.drools.spi.EvalExpression;
 import org.drools.spi.Tuple;
 

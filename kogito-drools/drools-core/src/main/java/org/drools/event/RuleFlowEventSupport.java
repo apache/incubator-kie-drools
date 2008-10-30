@@ -17,18 +17,18 @@ package org.drools.event;
  */
 
 import java.io.Externalizable;
-import java.io.ObjectOutput;
 import java.io.IOException;
 import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.drools.common.InternalWorkingMemory;
-import org.drools.process.instance.ProcessInstance;
+import org.drools.process.instance.InternalProcessInstance;
+import org.drools.process.instance.NodeInstance;
+import org.drools.process.instance.WorkflowProcessInstance;
 import org.drools.spi.RuleFlowGroup;
-import org.drools.workflow.instance.NodeInstance;
-import org.drools.workflow.instance.WorkflowProcessInstance;
 
 /**
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
@@ -74,7 +74,7 @@ public class RuleFlowEventSupport implements Externalizable {
     }
 
     public void fireBeforeRuleFlowProcessStarted(
-            final ProcessInstance instance,
+            final InternalProcessInstance instance,
             final InternalWorkingMemory workingMemory) {
         if (this.listeners.isEmpty()) {
             return;
@@ -88,7 +88,7 @@ public class RuleFlowEventSupport implements Externalizable {
     }
 
     public void fireAfterRuleFlowProcessStarted(
-            final ProcessInstance instance,
+            final InternalProcessInstance instance,
             final InternalWorkingMemory workingMemory) {
         if (this.listeners.isEmpty()) {
             return;

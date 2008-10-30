@@ -21,27 +21,23 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.knowledge.definitions.process.Node;
+import org.drools.knowledge.definitions.process.NodeContainer;
+import org.drools.knowledge.definitions.process.WorkflowProcess;
 import org.drools.process.core.impl.ProcessImpl;
-import org.drools.workflow.core.Node;
-import org.drools.workflow.core.NodeContainer;
-import org.drools.workflow.core.WorkflowProcess;
 
 /**
  * Default implementation of a RuleFlow process.
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class WorkflowProcessImpl extends ProcessImpl implements WorkflowProcess {
+public class WorkflowProcessImpl extends ProcessImpl implements WorkflowProcess, org.drools.workflow.core.NodeContainer {
 
-    private static final long   serialVersionUID = 400L;
+    private static final long serialVersionUID = 400L;
 
-    private NodeContainer nodeContainer;
-    private List<String> imports;
-    private List<String> functionImports;
-    private Map<String, String> globals;
-    
+    private org.drools.workflow.core.NodeContainer nodeContainer;
     public WorkflowProcessImpl() {
-        nodeContainer = createNodeContainer();
+        nodeContainer = (org.drools.workflow.core.NodeContainer) createNodeContainer();
     }
     
     protected NodeContainer createNodeContainer() {
@@ -62,46 +58,12 @@ public class WorkflowProcessImpl extends ProcessImpl implements WorkflowProcess 
 
     public void removeNode(final Node node) {
         nodeContainer.removeNode(node);
-        node.setNodeContainer(null);
+        ((org.drools.workflow.core.Node) node).setNodeContainer(null);
     }
 
     public void addNode(final Node node) {
         nodeContainer.addNode(node);
-        node.setNodeContainer(this);
+        ((org.drools.workflow.core.Node) node).setNodeContainer(this);
     }
 
-    public List<String> getImports() {
-        return imports;
-    }
-
-    public void setImports(List<String> imports) {
-        this.imports = imports;
-    }
-    
-    public List<String> getFunctionImports() {
-        return functionImports;
-    }
-
-    public void setFunctionImports(List<String> functionImports) {
-        this.functionImports = functionImports;
-    }
-    
-    public Map<String, String> getGlobals() {
-        return globals;
-    }
-
-    public void setGlobals(Map<String, String> globals) {
-        this.globals = globals;
-    }
-
-    public String[] getGlobalNames() {
-        final List<String> result = new ArrayList<String>();
-        if (this.globals != null) {
-            for ( Iterator<String> iterator = this.globals.keySet().iterator(); iterator.hasNext(); ) {
-                result.add(iterator.next());
-            }
-        }
-        return result.toArray(new String[result.size()]);
-    }
-    
 }

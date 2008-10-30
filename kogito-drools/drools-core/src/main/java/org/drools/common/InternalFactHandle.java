@@ -16,9 +16,9 @@ package org.drools.common;
  * limitations under the License.
  */
 
-import org.drools.FactHandle;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RightTuple;
+import org.drools.FactHandle;
 
 public interface InternalFactHandle
     extends

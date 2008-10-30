@@ -9,7 +9,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.drools.FactHandle;
 import org.drools.RuleBase;
 import org.drools.base.ClassTypeResolver;
 import org.drools.base.TypeResolver;
@@ -28,6 +27,7 @@ import org.drools.guvnor.client.modeldriven.testing.VerifyRuleFired;
 import org.drools.guvnor.server.util.ScenarioXMLPersistence;
 import org.drools.rule.Package;
 import org.drools.rule.TimeMachine;
+import org.drools.runtime.rule.FactHandle;
 import org.mvel.MVEL;
 
 /**

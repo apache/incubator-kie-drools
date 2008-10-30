@@ -16,9 +16,9 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-import org.drools.WorkingMemory;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
+import org.drools.WorkingMemory;
 import org.drools.spi.EvalExpression;
 import org.drools.spi.Tuple;
 

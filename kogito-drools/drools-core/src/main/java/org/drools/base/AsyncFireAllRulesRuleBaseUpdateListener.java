@@ -5,8 +5,8 @@ package org.drools.base;
 
 import org.drools.StatefulSession;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.event.BeforeRuleBaseUnlockedEvent;
 import org.drools.event.DefaultRuleBaseEventListener;
+import org.drools.event.knowledgebase.BeforeKnowledgeBaseUnlockedEvent;
 import org.drools.spi.RuleBaseUpdateListener;
 
 public class AsyncFireAllRulesRuleBaseUpdateListener extends DefaultRuleBaseEventListener 
@@ -21,7 +21,7 @@ implements RuleBaseUpdateListener {
         this.session = (StatefulSession) session;
     }
     
-    public void beforeRuleBaseUnlocked(BeforeRuleBaseUnlockedEvent event) {
+    public void beforeRuleBaseUnlocked(BeforeKnowledgeBaseUnlockedEvent event) {
         if ( session.getRuleBase().getAdditionsSinceLock() > 0 ) { 
             session.asyncFireAllRules();
         }

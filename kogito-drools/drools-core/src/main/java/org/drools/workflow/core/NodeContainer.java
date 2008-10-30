@@ -1,31 +1,13 @@
 package org.drools.workflow.core;
 
+import org.drools.knowledge.definitions.process.Node;
 import org.drools.process.core.Context;
-
 
 /**
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public interface NodeContainer {
-
-    /**
-     * Returns the nodes of this node container.
-     * 
-     * @return the nodes of this node container
-     */
-    Node[] getNodes();
-
-    /**
-     * Returns the node with the given id
-     * 
-     * @param id
-     *            the node id
-     * @return the node with the given id
-     * @throws IllegalArgumentException
-     *             if an unknown id is passed
-     */
-    Node getNode(long id);
+public interface NodeContainer extends org.drools.knowledge.definitions.process.NodeContainer {
 
     /**
      * Method for adding a node to this node container. 

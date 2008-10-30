@@ -2,27 +2,30 @@ package org.drools.integrationtests;
 
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.WorkingMemory;
-import org.drools.compiler.PackageBuilder;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.knowledge.definitions.KnowledgePackage;
 import org.drools.process.core.context.variable.VariableScope;
+import org.drools.process.instance.InternalProcessInstance;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemHandler;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
-import org.drools.rule.Package;
+import org.drools.runtime.StatefulKnowledgeSession;
 
 public class ProcessWorkItemTest extends TestCase {
     
     public void testWorkItem() {
-        PackageBuilder builder = new PackageBuilder();
+    	KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<process xmlns=\"http://drools.org/drools-4.0/process\"\n" +
@@ -76,26 +79,27 @@ public class ProcessWorkItemTest extends TestCase {
             "  </connections>\n" +
             "\n" +
             "</process>");
-        builder.addRuleFlow(source);
-        Package pkg = builder.getPackage();
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
-        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        kbuilder.addProcessFromXml(source);
+        
+        Collection<KnowledgePackage> kpkgs = kbuilder.getKnowledgePackages();
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kpkgs );        
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+    	
         TestWorkItemHandler handler = new TestWorkItemHandler();
-        workingMemory.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
-        ProcessInstance processInstance =
-            workingMemory.startProcess("org.drools.actions");
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        ProcessInstance processInstance = ksession.startProcess("org.drools.actions");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         WorkItem workItem = handler.getWorkItem();
         assertNotNull(workItem);
         assertEquals("John Doe", workItem.getParameter("ActorId"));
-        workingMemory.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
         
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("UserName", "Jane Doe");
         parameters.put("MyObject", "SomeString");
-        processInstance = workingMemory.startProcess("org.drools.actions", parameters);
+        processInstance = ksession.startProcess("org.drools.actions", parameters);
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         workItem = handler.getWorkItem();
         assertNotNull(workItem);
@@ -103,10 +107,10 @@ public class ProcessWorkItemTest extends TestCase {
         assertEquals("SomeString", workItem.getParameter("Attachment"));
         Map<String, Object> results = new HashMap<String, Object>();
         results.put("Result", "SomeOtherString");
-        workingMemory.getWorkItemManager().completeWorkItem(workItem.getId(), results);
+        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), results);
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
         VariableScopeInstance variableScope = (VariableScopeInstance)
-        	processInstance.getContextInstance(VariableScope.VARIABLE_SCOPE);
+        	((InternalProcessInstance) processInstance).getContextInstance(VariableScope.VARIABLE_SCOPE);
         assertEquals("SomeOtherString", variableScope.getVariable("MyObject"));
     }
     

@@ -17,9 +17,9 @@ package org.drools.workflow.core;
  */
 
 import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
 
+import org.drools.knowledge.definitions.process.Connection;
+import org.drools.knowledge.definitions.process.NodeContainer;
 import org.drools.process.core.Contextable;
 
 /**
@@ -27,17 +27,10 @@ import org.drools.process.core.Contextable;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public interface Node extends Contextable, Serializable {
+public interface Node extends org.drools.knowledge.definitions.process.Node, Contextable, Serializable {
 
     static final String CONNECTION_DEFAULT_TYPE = "DROOLS_DEFAULT";
     
-    /**
-     * Returns the id of the node
-     * 
-     * @return the id of the node
-     */
-    long getId();
-
     /**
      * Method for setting the id of the node
      * 
@@ -46,32 +39,11 @@ public interface Node extends Contextable, Serializable {
     void setId(long id);
 
     /**
-     * Returns the name of the node
-     * 
-     * @return the name of the node
-     */
-    String getName();
-
-    /**
      * Method for setting the name of the node
      * 
      * @param name 	the name of the node
      */
     void setName(String name);
-
-    /**
-     * Returns the incoming connections
-     * 
-     * @return the incoming connections 
-     */
-    Map<String, List<Connection>> getIncomingConnections();
-
-    /**
-     * Returns the outgoing connections
-     * 
-     * @return the outgoing connections 
-     */
-    Map<String, List<Connection>> getOutgoingConnections();
 
     void addIncomingConnection(String type, Connection connection);
     
@@ -81,16 +53,8 @@ public interface Node extends Contextable, Serializable {
     
     void removeOutgoingConnection(String type, Connection connection);
     
-    List<Connection> getIncomingConnections(String type);
-    
-    List<Connection> getOutgoingConnections(String type);
-    
-    NodeContainer getNodeContainer();
-    
     void setNodeContainer(NodeContainer nodeContainer);
     
     void setMetaData(String name, Object value);
-    
-    Object getMetaData(String name);
     
 }

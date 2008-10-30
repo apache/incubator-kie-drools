@@ -21,6 +21,8 @@ import org.drools.base.ShadowProxy;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.Declaration;
+import org.drools.runtime.rule.FactHandle;
+import org.drools.WorkingMemory;
 import org.drools.spi.Tuple;
 
 public class QueryResult {

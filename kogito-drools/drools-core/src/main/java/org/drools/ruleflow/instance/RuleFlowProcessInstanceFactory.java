@@ -5,14 +5,14 @@ import java.io.ObjectOutput;
 import java.io.ObjectInput;
 import java.io.IOException;
 
-import org.drools.process.instance.ProcessInstance;
+import org.drools.process.instance.InternalProcessInstance;
 import org.drools.process.instance.ProcessInstanceFactory;
 
 public class RuleFlowProcessInstanceFactory implements ProcessInstanceFactory, Externalizable {
 
     private static final long serialVersionUID = 400L;
 
-    public ProcessInstance createProcessInstance() {
+    public InternalProcessInstance createProcessInstance() {
         return new RuleFlowProcessInstance();
     }
 

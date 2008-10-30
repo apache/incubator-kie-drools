@@ -9,8 +9,8 @@ import java.io.ObjectInput;
 import java.io.IOException;
 import java.io.ObjectOutput;
 
-import org.drools.WorkingMemory;
 import org.drools.common.InternalRuleBase;
+import org.drools.WorkingMemory;
 import org.drools.spi.GlobalExporter;
 import org.drools.spi.GlobalResolver;
 

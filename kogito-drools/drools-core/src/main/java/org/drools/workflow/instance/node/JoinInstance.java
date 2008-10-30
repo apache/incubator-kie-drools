@@ -19,10 +19,9 @@ package org.drools.workflow.instance.node;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.workflow.core.Connection;
-import org.drools.workflow.core.Node;
+import org.drools.knowledge.definitions.process.Connection;
+import org.drools.process.instance.NodeInstance;
 import org.drools.workflow.core.node.Join;
-import org.drools.workflow.instance.NodeInstance;
 import org.drools.workflow.instance.impl.NodeInstanceImpl;
 
 /**
@@ -41,7 +40,7 @@ public class JoinInstance extends NodeInstanceImpl {
     }
 
     public void internalTrigger(final NodeInstance from, String type) {
-        if (!Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
+        if (!org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
             throw new IllegalArgumentException(
                 "An ActionNode only accepts default incoming connections!");
         }
@@ -108,7 +107,7 @@ public class JoinInstance extends NodeInstanceImpl {
 
     public void triggerCompleted() {
         // join nodes are only removed from the container when they contain no more state
-        triggerCompleted(Node.CONNECTION_DEFAULT_TYPE, triggers.isEmpty());
+        triggerCompleted(org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE, triggers.isEmpty());
     }
     
     public Map<Long, Integer> getTriggers() {

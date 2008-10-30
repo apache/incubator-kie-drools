@@ -17,9 +17,9 @@ package org.drools.process.instance;
  */
 
 import org.drools.Agenda;
-import org.drools.WorkingMemory;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.process.core.Process;
+import org.drools.knowledge.definitions.process.Process;
+import org.drools.WorkingMemory;
 
 /**
  * A process instance is the representation of a process during its execution.
@@ -28,27 +28,15 @@ import org.drools.process.core.Process;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public interface ProcessInstance extends ContextInstanceContainer, ContextableInstance, EventListener {
-
-    int STATE_PENDING   = 0;
-    int STATE_ACTIVE    = 1;
-    int STATE_COMPLETED = 2;
-    int STATE_ABORTED   = 3;
-    int STATE_SUSPENDED = 4;
+public interface InternalProcessInstance extends ProcessInstance, ContextInstanceContainer, ContextableInstance {
 
     void setId(long id);
 
-    long getId();
-
     void setProcess(Process process);
 
-    Process getProcess();
-    
-    String getProcessId();
+    Process getProcess();   
 
     void setState(int state);
-
-    int getState();
     
     void setWorkingMemory(InternalWorkingMemory workingMemory);
     
@@ -57,5 +45,11 @@ public interface ProcessInstance extends ContextInstanceContainer, ContextableIn
     Agenda getAgenda();
     
     void start();
+
+    void addEventListener(String type, EventListener eventListener, boolean external);
+    
+    void removeEventListener(String type, EventListener eventListener, boolean external);
+    
+    void signalEvent(String type, Object event);
 
 }

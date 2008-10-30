@@ -30,6 +30,6 @@ public class RuleFlowCompletedEvent extends ProcessEvent {
     }
 
     public String toString() {
-        return "==>[ProcessCompleted(name=" + getProcessInstance().getProcess().getName() + "; id=" + getProcessInstance().getProcess().getId() + ")]";
+        return "==>[ProcessCompleted(name=" + getProcessInstance().getProcessName() + "; id=" + getProcessInstance().getProcessId() + ")]";
     }
 }

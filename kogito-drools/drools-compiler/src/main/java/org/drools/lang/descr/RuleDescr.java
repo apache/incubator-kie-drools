@@ -19,6 +19,7 @@ package org.drools.lang.descr;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -50,6 +51,8 @@ public class RuleDescr extends BaseDescr
     private String               salience;
 
     private String               className;
+    
+    private String               url;
 
     public RuleDescr() {
     }
@@ -82,6 +85,7 @@ public class RuleDescr extends BaseDescr
         attributes = (List<AttributeDescr>) in.readObject();
         salience = (String) in.readObject();
         className = (String) in.readObject();
+        url = ( String ) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -99,6 +103,7 @@ public class RuleDescr extends BaseDescr
         out.writeObject( attributes );
         out.writeObject( salience );
         out.writeObject( className );
+        out.writeObject( url );
     }
 
     public void setNamespace(String namespace) {
@@ -107,6 +112,14 @@ public class RuleDescr extends BaseDescr
 
     public String getNamespace() {
         return this.namespace;
+    }        
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public String getName() {

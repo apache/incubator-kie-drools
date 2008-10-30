@@ -11,20 +11,20 @@ import junit.framework.TestCase;
 
 import org.drools.Cheese;
 import org.drools.Cheesery;
-import org.drools.FactHandle;
 import org.drools.OuterClass;
 import org.drools.Person;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.RuntimeDroolsException;
-import org.drools.WorkingMemory;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
+import org.drools.runtime.rule.FactHandle;
+import org.drools.WorkingMemory;
 
 public class AccumulateTest extends TestCase {
     protected RuleBase getRuleBase() throws Exception {

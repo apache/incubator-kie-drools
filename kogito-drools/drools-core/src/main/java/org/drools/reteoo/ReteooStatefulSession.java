@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.FactHandle;
 import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
 import org.drools.common.InternalAgenda;
@@ -18,6 +17,7 @@ import org.drools.concurrent.Future;
 import org.drools.concurrent.RetractObject;
 import org.drools.concurrent.UpdateObject;
 import org.drools.event.RuleBaseEventListener;
+import org.drools.runtime.rule.FactHandle;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.RuleBaseUpdateListener;
@@ -96,6 +96,12 @@ public class ReteooStatefulSession extends ReteooWorkingMemory
         this.executor.submit( assertObjects );
         return assertObjects;
     }
+    
+    public Future asyncInsert(final Iterable<?> iterable) {
+        final AssertObjects assertObjects = new AssertObjects( iterable );
+        this.executor.submit( assertObjects );
+        return assertObjects;
+    }    
 
     public Future asyncFireAllRules(final AgendaFilter agendaFilter) {
         final FireAllRules fireAllRules = new FireAllRules( agendaFilter );

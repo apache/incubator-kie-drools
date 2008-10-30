@@ -10,9 +10,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.drools.WorkingMemoryEntryPoint;
 import org.drools.FactException;
-import org.drools.FactHandle;
 import org.drools.RuntimeDroolsException;
-import org.drools.WorkingMemory;
 import org.drools.RuleBaseConfiguration.AssertBehaviour;
 import org.drools.base.ShadowProxy;
 import org.drools.event.WorkingMemoryEventSupport;
@@ -21,6 +19,8 @@ import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ObjectTypeConf;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
+import org.drools.runtime.rule.FactHandle;
+import org.drools.WorkingMemory;
 import org.drools.spi.Activation;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.PropagationContext;

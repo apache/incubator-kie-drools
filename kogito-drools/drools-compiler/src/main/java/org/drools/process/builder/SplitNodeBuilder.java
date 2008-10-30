@@ -6,12 +6,12 @@ import java.util.Map;
 
 import org.drools.compiler.Dialect;
 import org.drools.compiler.ReturnValueDescr;
+import org.drools.knowledge.definitions.process.Connection;
+import org.drools.knowledge.definitions.process.Node;
+import org.drools.knowledge.definitions.process.Process;
 import org.drools.lang.descr.ProcessDescr;
-import org.drools.process.core.Process;
 import org.drools.rule.builder.ProcessBuildContext;
-import org.drools.workflow.core.Connection;
 import org.drools.workflow.core.Constraint;
-import org.drools.workflow.core.Node;
 import org.drools.workflow.core.impl.ConstraintImpl;
 import org.drools.workflow.core.node.Split;
 import org.drools.workflow.instance.impl.ReturnValueConstraintEvaluator;

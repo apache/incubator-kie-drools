@@ -2,14 +2,13 @@ package org.drools.xml.processes;
 
 import java.util.HashSet;
 
+import org.drools.knowledge.definitions.process.Node;
 import org.drools.workflow.core.Connection;
-import org.drools.workflow.core.Node;
 import org.drools.workflow.core.NodeContainer;
 import org.drools.workflow.core.impl.ConnectionImpl;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
-import org.drools.xml.ProcessBuildData;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -59,7 +58,9 @@ public class ConnectionHandler extends BaseAbstractHandler
                                          parser.getLocator() );
         }        
         
-        ConnectionImpl connection = new ConnectionImpl(fromNode, Node.CONNECTION_DEFAULT_TYPE, toNode, Node.CONNECTION_DEFAULT_TYPE);
+        ConnectionImpl connection = new ConnectionImpl(
+    		fromNode, org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE,
+    		toNode, org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
         connection.setMetaData("bendpoints", bendpoints);
         
         return connection;

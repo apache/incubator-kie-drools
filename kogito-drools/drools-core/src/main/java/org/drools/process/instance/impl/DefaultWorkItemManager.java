@@ -9,17 +9,18 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.WorkingMemory;
-import org.drools.process.instance.ProcessInstance;
+import org.drools.process.instance.InternalProcessInstance;
+import org.drools.process.instance.InternalWorkItem;
+import org.drools.process.instance.InternalWorkItemManager;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemHandler;
-import org.drools.process.instance.WorkItemManager;
+import org.drools.WorkingMemory;
 
 /**
  *
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
+public class DefaultWorkItemManager implements InternalWorkItemManager, Externalizable {
 
     private static final long serialVersionUID = 400L;
 
@@ -32,11 +33,12 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
 	    this.workingMemory = workingMemory;
 	}
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+    @SuppressWarnings("unchecked")
+	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         workItemCounter = in.readLong();
-        workItems   = (Map<Long, WorkItem>)in.readObject();
-        workingMemory   = (WorkingMemory)in.readObject();
-        workItemHandlers   = (Map<String, WorkItemHandler>)in.readObject();
+        workItems = (Map<Long, WorkItem>)in.readObject();
+        workingMemory = (WorkingMemory)in.readObject();
+        workItemHandlers = (Map<String, WorkItemHandler>) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -84,11 +86,11 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
 	}
 
     public void completeWorkItem(long id, Map<String, Object> results) {
-        WorkItemImpl workItem = (WorkItemImpl) workItems.get(new Long(id));
+        InternalWorkItem workItem = (InternalWorkItem) workItems.get(new Long(id));
         // work item may have been aborted
         if (workItem != null) {
             workItem.setResults(results);
-            ProcessInstance processInstance = workingMemory.getProcessInstance(workItem.getProcessInstanceId());
+            InternalProcessInstance processInstance = ( InternalProcessInstance ) workingMemory.getProcessInstance(workItem.getProcessInstanceId());
             workItem.setState(WorkItem.COMPLETED);
             // process instance may have finished already
             if (processInstance != null) {
@@ -103,7 +105,7 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
         WorkItemImpl workItem = (WorkItemImpl) workItems.get(new Long(id));
         // work item may have been aborted
         if (workItem != null) {
-            ProcessInstance processInstance = workingMemory.getProcessInstance(workItem.getProcessInstanceId());
+            InternalProcessInstance processInstance = ( InternalProcessInstance ) workingMemory.getProcessInstance(workItem.getProcessInstanceId());
             workItem.setState(WorkItem.ABORTED);
             // process instance may have finished already
             if (processInstance != null) {

@@ -3,7 +3,7 @@ package org.drools.workflow.instance.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.workflow.core.Node;
+import org.drools.knowledge.definitions.process.Node;
 import org.drools.workflow.core.node.ActionNode;
 import org.drools.workflow.core.node.CompositeContextNode;
 import org.drools.workflow.core.node.CompositeNode;

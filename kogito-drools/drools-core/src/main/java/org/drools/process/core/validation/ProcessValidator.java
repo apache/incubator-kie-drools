@@ -1,7 +1,5 @@
 package org.drools.process.core.validation;
 
-import org.drools.process.core.Process;
-
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -18,6 +16,8 @@ import org.drools.process.core.Process;
  * limitations under the License.
  */
 
+
+import org.drools.knowledge.definitions.process.Process;
 /**
  * A validator for validating a RuleFlow process. 
  * 

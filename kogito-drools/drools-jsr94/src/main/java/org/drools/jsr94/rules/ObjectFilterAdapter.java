@@ -7,7 +7,7 @@ import javax.rules.ObjectFilter;
  * @author mproctor
  *
  */
-public class ObjectFilterAdapter implements org.drools.ObjectFilter {
+public class ObjectFilterAdapter implements org.drools.runtime.ObjectFilter {
     private ObjectFilter filter;
     
     public ObjectFilterAdapter(ObjectFilter filter) {
