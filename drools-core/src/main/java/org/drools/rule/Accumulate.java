@@ -26,8 +26,8 @@ import java.io.ObjectInput;
 import java.io.Serializable;
 
 import org.drools.RuntimeDroolsException;
-import org.drools.WorkingMemory;
 import org.drools.common.InternalFactHandle;
+import org.drools.WorkingMemory;
 import org.drools.spi.Accumulator;
 import org.drools.spi.CompiledInvoker;
 import org.drools.spi.Tuple;

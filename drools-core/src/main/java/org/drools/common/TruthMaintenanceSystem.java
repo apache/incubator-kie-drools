@@ -282,7 +282,7 @@ public class TruthMaintenanceSystem {
                 workingMemory.retract( this.handle,
                                        false,
                                        true,
-                                       context.getRuleOrigin(),
+                                       (Rule) context.getRuleOrigin(),
                                        this.activation );
             }
         }

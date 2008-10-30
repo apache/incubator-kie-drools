@@ -3,13 +3,13 @@ package org.drools.reteoo;
 import org.drools.Otherwise;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
-import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassObjectType;
 import org.drools.base.TestBean;
 import org.drools.rule.Pattern;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
+import org.drools.WorkingMemory;
 import org.drools.spi.Consequence;
 import org.drools.spi.KnowledgeHelper;
 

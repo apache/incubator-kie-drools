@@ -13,7 +13,7 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.compiler.PackageBuilder;
-import org.drools.process.instance.ProcessInstance;
+import org.drools.process.instance.InternalProcessInstance;
 import org.drools.rule.Package;
 import org.drools.workflow.instance.WorkflowProcessInstanceUpgrader;
 
@@ -67,7 +67,7 @@ public class ProcessUpgradeTest extends TestCase {
 
         Person p = new Person( "bobba fet", 32);
         session.insert( p );
-        ProcessInstance processInstance = session.startProcess("org.test.ruleflow");
+        InternalProcessInstance processInstance = ( InternalProcessInstance ) session.startProcess("org.test.ruleflow");
         
         assertEquals(1, session.getProcessInstances().size());
         
@@ -109,7 +109,7 @@ public class ProcessUpgradeTest extends TestCase {
         session.fireAllRules();
         
         assertEquals(2, list.size());
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertEquals(InternalProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
 
 }

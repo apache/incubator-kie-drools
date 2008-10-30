@@ -20,12 +20,12 @@ import org.drools.WorkingMemory;
 import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.base.SequentialKnowledgeHelper;
 import org.drools.common.InternalRuleBase;
+import org.drools.process.instance.InternalProcessInstance;
+import org.drools.process.instance.NodeInstance;
 import org.drools.spi.Action;
-import org.drools.spi.ProcessContext;
 import org.drools.spi.KnowledgeHelper;
-import org.drools.workflow.core.Node;
+import org.drools.spi.ProcessContext;
 import org.drools.workflow.core.node.ActionNode;
-import org.drools.workflow.instance.NodeInstance;
 import org.drools.workflow.instance.impl.NodeInstanceImpl;
 
 /**
@@ -42,7 +42,7 @@ public class ActionNodeInstance extends NodeInstanceImpl {
     }
 
     public void internalTrigger(final NodeInstance from, String type) {
-        if (!Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
+        if (!org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
             throw new IllegalArgumentException(
                 "An ActionNode only accepts default incoming connections!");
         }
@@ -51,7 +51,7 @@ public class ActionNodeInstance extends NodeInstanceImpl {
 		    KnowledgeHelper knowledgeHelper = createKnowledgeHelper();
 		    ProcessContext context = new ProcessContext();
 		    context.setNodeInstance(this);
-	        action.execute(knowledgeHelper, getProcessInstance().getWorkingMemory(), context);		    
+	        action.execute(knowledgeHelper, ((InternalProcessInstance) getProcessInstance()).getWorkingMemory(), context);		    
 		} catch (Exception e) {
 		    throw new RuntimeException("unable to execute Action", e);
 		}
@@ -59,11 +59,11 @@ public class ActionNodeInstance extends NodeInstanceImpl {
     }
 
     public void triggerCompleted() {
-        triggerCompleted(Node.CONNECTION_DEFAULT_TYPE, true);
+        triggerCompleted(org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE, true);
     }
     
     private KnowledgeHelper createKnowledgeHelper() {
-        WorkingMemory workingMemory = getProcessInstance().getWorkingMemory();
+        WorkingMemory workingMemory = ((InternalProcessInstance) getProcessInstance()).getWorkingMemory();
         if ( ((InternalRuleBase) workingMemory.getRuleBase()).getConfiguration().isSequential() ) {
             return new SequentialKnowledgeHelper( workingMemory );
         } else {

@@ -23,10 +23,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.knowledge.definitions.process.Connection;
+import org.drools.knowledge.definitions.process.NodeContainer;
 import org.drools.process.core.Context;
-import org.drools.workflow.core.Connection;
 import org.drools.workflow.core.Node;
-import org.drools.workflow.core.NodeContainer;
 
 /**
  * Default implementation of a node.
@@ -35,7 +35,9 @@ import org.drools.workflow.core.NodeContainer;
  */
 public abstract class NodeImpl implements Node, Serializable {
 
-    protected static final NodeImpl[] EMPTY_NODE_ARRAY = new NodeImpl[0];
+    private static final long serialVersionUID = 4L;
+
+	protected static final NodeImpl[] EMPTY_NODE_ARRAY = new NodeImpl[0];
 
     private long id;
 
@@ -192,7 +194,7 @@ public abstract class NodeImpl implements Node, Serializable {
                 return context;
             }
         }
-        return nodeContainer.resolveContext(contextId, param);
+        return ((org.drools.workflow.core.NodeContainer) nodeContainer).resolveContext(contextId, param);
     }
     
     public void setMetaData(String name, Object value) {

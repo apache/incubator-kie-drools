@@ -2,8 +2,10 @@ package org.drools.spi;
 
 import java.io.Serializable;
 import java.io.Externalizable;
+import java.util.Collection;
 
 import org.drools.common.DefaultAgenda;
+import org.drools.runtime.rule.Activation;
 
 /*
  * Copyright 2005 JBoss Inc
@@ -33,33 +35,37 @@ import org.drools.common.DefaultAgenda;
  */
 public interface AgendaGroup
     extends
-    Externalizable {
-
+    Externalizable,
+    org.drools.runtime.rule.AgendaGroup {
+    
     /**
      * Static reference to determine the default <code>AgendaGroup</code> name.
      */
     public static String MAIN = "MAIN";
 
     /**
-     * @return
-     *      The <code>AgendaGroup</code> name
-     */
-    public String getName();
-
-    /**
-     * @return An array of all the activations in the AgendaGroup
+     * @return 
+     *     An immutable Collection of all the activations in the AgendaGroup
      */
     Activation[] getActivations();
 
-    /**
-     * The total number of activations in this group
+    /** 
      * @return
-     *      int value for the total number of activations
+     *     The int total number of activations
      */
     public int size();
 
+    /**
+     * @return
+     *     boolean value indicating if this AgendaGroup is empty or not
+     */
     public boolean isEmpty();
 
+    /**
+     * 
+     * @return
+     *     boolean value indicating if the AgendaGroup is active and thus being evaluated.
+     */
     public boolean isActive();
-
+    
 }

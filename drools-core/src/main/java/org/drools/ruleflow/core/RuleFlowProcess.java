@@ -1,10 +1,10 @@
 package org.drools.ruleflow.core;
 
+import org.drools.knowledge.definitions.process.Node;
+import org.drools.knowledge.definitions.process.NodeContainer;
 import org.drools.process.core.context.exception.ExceptionScope;
 import org.drools.process.core.context.swimlane.SwimlaneContext;
 import org.drools.process.core.context.variable.VariableScope;
-import org.drools.workflow.core.Node;
-import org.drools.workflow.core.NodeContainer;
 import org.drools.workflow.core.impl.NodeContainerImpl;
 import org.drools.workflow.core.impl.WorkflowProcessImpl;
 import org.drools.workflow.core.node.StartNode;

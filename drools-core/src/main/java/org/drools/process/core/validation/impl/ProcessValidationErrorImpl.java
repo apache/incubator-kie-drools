@@ -1,6 +1,6 @@
 package org.drools.process.core.validation.impl;
 
-import org.drools.process.core.Process;
+import org.drools.knowledge.definitions.process.Process;
 import org.drools.process.core.validation.ProcessValidationError;
 
 public class ProcessValidationErrorImpl implements ProcessValidationError {

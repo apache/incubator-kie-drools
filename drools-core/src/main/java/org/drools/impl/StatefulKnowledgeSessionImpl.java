@@ -1,0 +1,516 @@
+package org.drools.impl;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.IdentityHashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.concurrent.Future;
+
+import org.drools.KnowledgeBase;
+import org.drools.WorkingMemory;
+import org.drools.common.InternalFactHandle;
+import org.drools.common.ObjectStore;
+import org.drools.concurrent.FutureAdapter;
+import org.drools.event.ActivationCancelledEvent;
+import org.drools.event.ActivationCreatedEvent;
+import org.drools.event.AfterActivationFiredEvent;
+import org.drools.event.AgendaGroupPoppedEvent;
+import org.drools.event.AgendaGroupPushedEvent;
+import org.drools.event.BeforeActivationFiredEvent;
+import org.drools.event.ObjectInsertedEvent;
+import org.drools.event.ObjectRetractedEvent;
+import org.drools.event.ObjectUpdatedEvent;
+import org.drools.event.RuleFlowCompletedEvent;
+import org.drools.event.RuleFlowGroupActivatedEvent;
+import org.drools.event.RuleFlowGroupDeactivatedEvent;
+import org.drools.event.RuleFlowNodeTriggeredEvent;
+import org.drools.event.RuleFlowStartedEvent;
+import org.drools.event.process.ProcessEventListener;
+import org.drools.event.process.impl.ProcessCompletedEventImpl;
+import org.drools.event.process.impl.ProcessNodeLeftEventImpl;
+import org.drools.event.process.impl.ProcessNodeTriggeredEventImpl;
+import org.drools.event.process.impl.ProcessStartedEventImpl;
+import org.drools.event.rule.AgendaEventListener;
+import org.drools.event.rule.WorkingMemoryEventListener;
+import org.drools.event.rule.impl.ActivationCancelledEventImpl;
+import org.drools.event.rule.impl.ActivationCreatedEventImpl;
+import org.drools.event.rule.impl.AfterActivationFiredEventImpl;
+import org.drools.event.rule.impl.AgendaGroupPoppedEventImpl;
+import org.drools.event.rule.impl.AgendaGroupPushedEventImpl;
+import org.drools.event.rule.impl.BeforeActivationFiredEventImpl;
+import org.drools.event.rule.impl.ObjectInsertedEventImpl;
+import org.drools.event.rule.impl.ObjectRetractedEventImpl;
+import org.drools.event.rule.impl.ObjectUpdatedEventImpl;
+import org.drools.process.instance.ProcessInstance;
+import org.drools.process.instance.WorkItemManager;
+import org.drools.reteoo.ReteooStatefulSession;
+import org.drools.runtime.ObjectFilter;
+import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.rule.FactHandle;
+import org.drools.runtime.rule.WorkingMemoryEntryPoint;
+import org.drools.time.SessionClock;
+
+public class StatefulKnowledgeSessionImpl
+    implements
+    StatefulKnowledgeSession {
+    public ReteooStatefulSession                                              session;
+    public KnowledgeBaseImpl                                                  kbase;
+
+    public Map<WorkingMemoryEventListener, WorkingMemoryEventListenerWrapper> mappedWorkingMemoryListeners;
+    public Map<AgendaEventListener, AgendaEventListenerWrapper>               mappedAgendaListeners;
+    public Map<ProcessEventListener, ProcessEventListenerWrapper>             mappedProcessListeners;
+
+    public StatefulKnowledgeSessionImpl(ReteooStatefulSession session) {
+        this( session,
+              null );
+    }
+
+    public StatefulKnowledgeSessionImpl(ReteooStatefulSession session,
+                                        KnowledgeBaseImpl kbase) {
+        this.session = session;
+        this.kbase = kbase;
+        this.mappedWorkingMemoryListeners = new IdentityHashMap<WorkingMemoryEventListener, WorkingMemoryEventListenerWrapper>();
+        this.mappedAgendaListeners = new IdentityHashMap<AgendaEventListener, AgendaEventListenerWrapper>();
+        this.mappedProcessListeners = new IdentityHashMap<ProcessEventListener, ProcessEventListenerWrapper>();
+    }
+    
+    public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String name) {
+        return session.getWorkingMemoryEntryPoint( name );        
+    }    
+
+    public void addEventListener(WorkingMemoryEventListener listener) {
+        WorkingMemoryEventListenerWrapper wrapper = new WorkingMemoryEventListenerWrapper( listener );
+        this.mappedWorkingMemoryListeners.put( listener,
+                                               wrapper );
+        this.session.addEventListener( wrapper );
+    }
+
+    public void removeEventListener(WorkingMemoryEventListener listener) {
+        WorkingMemoryEventListenerWrapper wrapper = this.mappedWorkingMemoryListeners.remove( listener );
+        this.session.removeEventListener( wrapper );
+    }
+
+    public Collection<WorkingMemoryEventListener> getWorkingMemoryEventListeners() {
+        return Collections.unmodifiableCollection( this.mappedWorkingMemoryListeners.keySet() );
+    }
+
+    public void addEventListener(AgendaEventListener listener) {
+        AgendaEventListenerWrapper wrapper = new AgendaEventListenerWrapper( listener );
+        this.mappedAgendaListeners.put( listener,
+                                        wrapper );
+        this.session.addEventListener( wrapper );
+    }
+
+    public Collection<AgendaEventListener> getAgendaEventListeners() {
+        return Collections.unmodifiableCollection( this.mappedAgendaListeners.keySet() );
+    }
+
+    public void removeEventListener(AgendaEventListener listener) {
+        AgendaEventListenerWrapper wrapper = this.mappedAgendaListeners.remove( listener );
+        this.session.removeEventListener( wrapper );
+    }
+
+    public void addEventListener(ProcessEventListener listener) {
+        ProcessEventListenerWrapper wrapper = new ProcessEventListenerWrapper( listener );
+        this.mappedProcessListeners.put( listener,
+                                         wrapper );
+        this.session.addEventListener( wrapper );
+    }
+
+    public Collection<ProcessEventListener> getProcessEventListeners() {
+        return Collections.unmodifiableCollection( this.mappedProcessListeners.keySet() );
+    }
+
+    public void removeEventListener(ProcessEventListener listener) {
+        ProcessEventListenerWrapper wrapper = this.mappedProcessListeners.get( listener );
+        this.session.removeEventListener( wrapper );
+    }
+
+    public KnowledgeBase getKnowledgeBase() {
+        if ( this.kbase == null ) {
+            this.kbase = new KnowledgeBaseImpl( session.getRuleBase() );
+        }
+        return this.kbase;
+    }
+
+    public void fireAllRules() {
+        this.session.fireAllRules();
+    }
+
+    public SessionClock getSessionClock() {
+        return this.session.getSessionClock();
+    }
+
+    public void halt() {
+        this.session.halt();
+    }
+
+    public void setFocus(String agendaGroup) {
+        this.session.setFocus( agendaGroup );
+    }
+
+    public FactHandle insert(Object object) {
+        return this.session.insert( object );
+    }
+
+    public void retract(FactHandle factHandle) {
+        this.session.retract( factHandle );
+
+    }
+
+    public void update(FactHandle factHandle) {
+        this.session.update( factHandle,
+                             ((InternalFactHandle) factHandle).getObject() );
+    }
+
+    public void update(FactHandle factHandle,
+                       Object object) {
+        this.session.update( factHandle,
+                             object );
+    }
+
+    public FactHandle getFactHandle(Object object) {
+        return this.session.getFactHandle( object );
+    }
+
+    public ProcessInstance getProcessInstance(long id) {
+        return this.session.getProcessInstance( id );
+    }
+
+    public Collection<ProcessInstance> getProcessInstances() {
+        return this.session.getProcessInstances();
+    }
+
+    public WorkItemManager getWorkItemManager() {
+        return this.session.getWorkItemManager();
+    }
+
+    public ProcessInstance startProcess(String processId) {
+        return this.session.startProcess( processId );
+    }
+
+    public ProcessInstance startProcess(String processId,
+                                        Map<String, Object> parameters) {
+        return this.session.startProcess( processId,
+                                          parameters );
+    }
+
+    public void signalEvent(String type,
+                            Object event) {
+        this.session.getSignalManager().signalEvent( type,
+                                                     event );
+    }
+
+    public void setGlobal(String identifier,
+                          Object object) {
+        this.session.setGlobal( identifier,
+                                object );
+    }
+
+    public Future<Object> asyncInsert(Object object) {
+        return new FutureAdapter( this.session.asyncInsert( object ) );
+    }
+
+    public Future<Object> asyncInsert(Object[] array) {
+        return new FutureAdapter( this.session.asyncInsert( array ) );
+    }
+
+    public Future<Object> asyncInsert(Iterable< ? > iterable) {
+        return new FutureAdapter( this.session.asyncInsert( iterable ) );
+    }
+
+    public Future< ? > asyncFireAllRules() {
+        return new FutureAdapter( this.session.asyncFireAllRules() );
+    }
+
+    public Collection< ? extends FactHandle> getFactHandles() {
+        return new ObjectStoreWrapper( session.getObjectStore(),
+                                       null,
+                                       ObjectStoreWrapper.FACT_HANDLE );
+    }
+
+    public Collection< ? extends FactHandle> getFactHandles(ObjectFilter filter) {
+        return new ObjectStoreWrapper( session.getObjectStore(),
+                                       filter,
+                                       ObjectStoreWrapper.FACT_HANDLE );
+    }
+
+    public Collection< ? > getObjects() {
+        return new ObjectStoreWrapper( session.getObjectStore(),
+                                       null,
+                                       ObjectStoreWrapper.OBJECT );
+    }
+
+    public Collection< ? > getObjects(ObjectFilter filter) {
+        return new ObjectStoreWrapper( session.getObjectStore(),
+                                       filter,
+                                       ObjectStoreWrapper.OBJECT );
+    }
+
+    public static abstract class AbstractImmutableCollection
+        implements
+        Collection {
+
+        public boolean add(Object o) {
+            throw new UnsupportedOperationException( "This is an immmutable Collection" );
+        }
+
+        public boolean addAll(Collection c) {
+            throw new UnsupportedOperationException( "This is an immmutable Collection" );
+        }
+
+        public void clear() {
+            throw new UnsupportedOperationException( "This is an immmutable Collection" );
+        }
+
+        public boolean remove(Object o) {
+            throw new UnsupportedOperationException( "This is an immmutable Collection" );
+        }
+
+        public boolean removeAll(Collection c) {
+            throw new UnsupportedOperationException( "This is an immmutable Collection" );
+        }
+
+        public boolean retainAll(Collection c) {
+            throw new UnsupportedOperationException( "This is an immmutable Collection" );
+        }
+    }
+
+    public static class ObjectStoreWrapper extends AbstractImmutableCollection {
+        public ObjectStore      store;
+        public ObjectFilter     filter;
+        public int              type;           // 0 == object, 1 == facthandle
+        public static final int OBJECT      = 0;
+        public static final int FACT_HANDLE = 1;
+
+        public ObjectStoreWrapper(ObjectStore store,
+                                  ObjectFilter filter,
+                                  int type) {
+            this.store = store;
+            this.filter = filter;
+            this.type = type;
+        }
+
+        public boolean contains(Object object) {
+            if ( object instanceof FactHandle ) {
+                return this.store.getObjectForHandle( (InternalFactHandle) object ) != null;
+            } else {
+                return this.store.getHandleForObject( object ) != null;
+            }
+        }
+
+        public boolean containsAll(Collection c) {
+            for ( Object object : c ) {
+                if ( !contains( object ) ) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public boolean isEmpty() {
+            if ( this.filter == null ) {
+                return this.store.isEmpty();
+            }
+
+            return size() == 0;
+        }
+
+        public int size() {
+            if ( this.filter == null ) {
+                return this.store.size();
+            }
+
+            int i = 0;
+            for ( Iterator it = iterator(); it.hasNext(); ) {
+                it.next();
+                i++;
+            }
+
+            return i;
+        }
+
+        public Iterator< ? > iterator() {
+            Iterator it = null;
+            if ( type == OBJECT ) {
+                if ( filter != null ) {
+                    it = store.iterateObjects( filter );
+                } else {
+                    it = store.iterateObjects();
+                }
+            } else {
+                if ( filter != null ) {
+                    it = store.iterateFactHandles( filter );
+                } else {
+                    it = store.iterateFactHandles();
+                }
+            }
+            return it;
+        }
+
+        public Object[] toArray() {
+            return toArray( new Object[size()] );
+        }
+
+        public Object[] toArray(Object[] array) {
+            if ( array == null || array.length != size() ) {
+                array = new Object[size()];
+            }
+
+            int i = 0;
+            for ( Iterator it = iterator(); it.hasNext(); ) {
+                array[i++] = it.next();
+            }
+
+            return array;
+        }
+    }
+
+    public static class WorkingMemoryEventListenerWrapper
+        implements
+        org.drools.event.WorkingMemoryEventListener {
+        private WorkingMemoryEventListener listener;
+
+        public WorkingMemoryEventListenerWrapper(WorkingMemoryEventListener listener) {
+            this.listener = listener;
+        }
+
+        public void objectInserted(ObjectInsertedEvent event) {
+            listener.objectInserted( new ObjectInsertedEventImpl( event ) );
+        }
+
+        public void objectRetracted(ObjectRetractedEvent event) {
+            listener.objectRetracted( new ObjectRetractedEventImpl( event ) );
+        }
+
+        public void objectUpdated(ObjectUpdatedEvent event) {
+            listener.objectUpdated( new ObjectUpdatedEventImpl( event ) );
+        }
+    }
+
+    public static class AgendaEventListenerWrapper
+        implements
+        org.drools.event.AgendaEventListener {
+        private AgendaEventListener listener;
+
+        public AgendaEventListenerWrapper(AgendaEventListener listener) {
+            this.listener = listener;
+        }
+
+        public void activationCancelled(ActivationCancelledEvent event,
+                                        WorkingMemory workingMemory) {
+
+            listener.activationCancelled( new ActivationCancelledEventImpl( event.getActivation() ),
+                                          null );
+
+        }
+
+        public void activationCreated(ActivationCreatedEvent event,
+                                      WorkingMemory workingMemory) {
+            listener.activationCreated( new ActivationCreatedEventImpl( event.getActivation() ),
+                                        null );
+        }
+
+        public void beforeActivationFired(BeforeActivationFiredEvent event,
+                                          WorkingMemory workingMemory) {
+            listener.beforeActivationFired( new BeforeActivationFiredEventImpl( event.getActivation() ),
+                                            null );
+        }
+
+        public void afterActivationFired(AfterActivationFiredEvent event,
+                                         WorkingMemory workingMemory) {
+            listener.afterActivationFired( new AfterActivationFiredEventImpl( event.getActivation() ),
+                                           null );
+        }
+
+        public void agendaGroupPopped(AgendaGroupPoppedEvent event,
+                                      WorkingMemory workingMemory) {
+            listener.agendaGroupPopped( new AgendaGroupPoppedEventImpl( event.getAgendaGroup() ),
+                                        null );
+        }
+
+        public void agendaGroupPushed(AgendaGroupPushedEvent event,
+                                      WorkingMemory workingMemory) {
+            listener.agendaGroupPushed( new AgendaGroupPushedEventImpl( event.getAgendaGroup() ),
+                                        null );
+        }
+
+    }
+
+    public static class ProcessEventListenerWrapper
+        implements
+        org.drools.event.RuleFlowEventListener {
+        private ProcessEventListener listener;
+
+        public ProcessEventListenerWrapper(ProcessEventListener listener) {
+            this.listener = listener;
+        }
+
+        public void beforeRuleFlowCompleted(RuleFlowCompletedEvent event,
+                                            WorkingMemory workingMemory) {
+            listener.beforeProcessCompleted( new ProcessCompletedEventImpl( event,
+                                                                            workingMemory ) );
+        }
+
+        public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
+                                                 WorkingMemory workingMemory) {
+        }
+
+        public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event,
+                                                   WorkingMemory workingMemory) {
+        }
+
+        public void beforeRuleFlowNodeLeft(RuleFlowNodeTriggeredEvent event,
+                                           WorkingMemory workingMemory) {
+            listener.beforeNodeLeft( new ProcessNodeLeftEventImpl( event,
+                                                                   workingMemory ) );
+        }
+
+        public void beforeRuleFlowNodeTriggered(RuleFlowNodeTriggeredEvent event,
+                                                WorkingMemory workingMemory) {
+            listener.beforeNodeTriggered( new ProcessNodeTriggeredEventImpl( event,
+                                                                             workingMemory ) );
+        }
+
+        public void beforeRuleFlowStarted(RuleFlowStartedEvent event,
+                                          WorkingMemory workingMemory) {
+            listener.beforeProcessStarted( new ProcessStartedEventImpl( event,
+                                                                        workingMemory ) );
+        }
+
+        public void afterRuleFlowCompleted(RuleFlowCompletedEvent event,
+                                           WorkingMemory workingMemory) {
+            listener.afterProcessCompleted( new ProcessCompletedEventImpl( event,
+                                                                           workingMemory ) );
+        }
+
+        public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
+                                                WorkingMemory workingMemory) {
+        }
+
+        public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event,
+                                                  WorkingMemory workingMemory) {
+        }
+
+        public void afterRuleFlowNodeLeft(RuleFlowNodeTriggeredEvent event,
+                                          WorkingMemory workingMemory) {
+            listener.afterNodeLeft( new ProcessNodeLeftEventImpl( event,
+                                                                  workingMemory ) );
+        }
+
+        public void afterRuleFlowNodeTriggered(RuleFlowNodeTriggeredEvent event,
+                                               WorkingMemory workingMemory) {
+            listener.afterNodeTriggered( new ProcessNodeTriggeredEventImpl( event,
+                                                                            workingMemory ) );
+        }
+
+        public void afterRuleFlowStarted(RuleFlowStartedEvent event,
+                                         WorkingMemory workingMemory) {
+            listener.afterProcessStarted( new ProcessStartedEventImpl( event,
+                                                                       workingMemory ) );
+        }
+
+    }
+
+}

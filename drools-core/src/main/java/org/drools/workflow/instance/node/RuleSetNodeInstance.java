@@ -18,9 +18,9 @@ package org.drools.workflow.instance.node;
 
 import org.drools.common.InternalAgenda;
 import org.drools.common.RuleFlowGroupListener;
-import org.drools.workflow.core.Node;
+import org.drools.process.instance.InternalProcessInstance;
+import org.drools.process.instance.NodeInstance;
 import org.drools.workflow.core.node.RuleSetNode;
-import org.drools.workflow.instance.NodeInstance;
 
 /**
  * Runtime counterpart of a ruleset node.
@@ -39,11 +39,11 @@ public class RuleSetNodeInstance extends EventBasedNodeInstance
 
     public void internalTrigger(final NodeInstance from,
                                 String type) {
-        if ( !Node.CONNECTION_DEFAULT_TYPE.equals( type ) ) {
+        if ( !org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals( type ) ) {
             throw new IllegalArgumentException( "A RuleSetNode only accepts default incoming connections!" );
         }
         addRuleSetListener();
-        getProcessInstance().getAgenda().activateRuleFlowGroup( getRuleSetNode().getRuleFlowGroup() );
+        ((InternalProcessInstance) getProcessInstance()).getAgenda().activateRuleFlowGroup( getRuleSetNode().getRuleFlowGroup() );
     }
 
     public void addEventListeners() {
@@ -52,19 +52,19 @@ public class RuleSetNodeInstance extends EventBasedNodeInstance
     }
     
     private void addRuleSetListener() {
-        ((InternalAgenda) getProcessInstance().getWorkingMemory().getAgenda()).addRuleFlowGroupListener( getRuleSetNode().getRuleFlowGroup(),
+        ((InternalAgenda) ((InternalProcessInstance) getProcessInstance()).getWorkingMemory().getAgenda()).addRuleFlowGroupListener( getRuleSetNode().getRuleFlowGroup(),
                                                                                                          this );
     }
 
     public void removeEventListeners() {
         super.removeEventListeners();
-        ((InternalAgenda) getProcessInstance().getWorkingMemory().getAgenda()).removeRuleFlowGroupListener( getRuleSetNode().getRuleFlowGroup(),
+        ((InternalAgenda) ((InternalProcessInstance) getProcessInstance()).getWorkingMemory().getAgenda()).removeRuleFlowGroupListener( getRuleSetNode().getRuleFlowGroup(),
                                                                                                          this );
     }
 
     public void cancel() {
         super.cancel();
-        getProcessInstance().getAgenda().deactivateRuleFlowGroup( getRuleSetNode().getRuleFlowGroup() );
+        ((InternalProcessInstance) getProcessInstance()).getAgenda().deactivateRuleFlowGroup( getRuleSetNode().getRuleFlowGroup() );
     }
 
     public void ruleFlowGroupDeactivated() {

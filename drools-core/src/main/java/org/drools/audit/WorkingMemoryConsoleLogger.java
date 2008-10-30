@@ -1,8 +1,8 @@
 package org.drools.audit;
 
-import org.drools.WorkingMemory;
 import org.drools.WorkingMemoryEventManager;
 import org.drools.audit.event.LogEvent;
+import org.drools.WorkingMemory;
 
 import java.io.ObjectOutput;
 import java.io.IOException;

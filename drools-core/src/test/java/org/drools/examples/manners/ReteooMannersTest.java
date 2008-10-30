@@ -22,9 +22,9 @@ import java.util.List;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
-import org.drools.WorkingMemory;
 import org.drools.event.AfterActivationFiredEvent;
 import org.drools.event.DefaultAgendaEventListener;
+import org.drools.WorkingMemory;
 
 public class ReteooMannersTest extends BaseMannersTest {
 

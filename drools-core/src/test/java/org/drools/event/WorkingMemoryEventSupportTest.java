@@ -21,9 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.Cheese;
-import org.drools.FactHandle;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
+import org.drools.runtime.rule.FactHandle;
 import org.drools.WorkingMemory;
 
 import junit.framework.TestCase;
@@ -60,18 +60,18 @@ public class WorkingMemoryEventSupportTest extends TestCase {
         wm.addEventListener( workingMemoryListener );
 
         final Cheese stilton = new Cheese( "stilton",
-                                     15 );
+                                           15 );
         final Cheese cheddar = new Cheese( "cheddar",
-                                     17 );
+                                           17 );
 
         final FactHandle stiltonHandle = wm.insert( stilton );
 
-        final ObjectInsertedEvent oae = (ObjectInsertedEvent) wmList.get( 0 );
+        ObjectInsertedEvent oae = (ObjectInsertedEvent) wmList.get( 0 );
         assertSame( stiltonHandle,
                     oae.getFactHandle() );
 
         wm.update( stiltonHandle,
-                         stilton );
+                   stilton );
         final ObjectUpdatedEvent ome = (ObjectUpdatedEvent) wmList.get( 1 );
         assertSame( stiltonHandle,
                     ome.getFactHandle() );
@@ -81,6 +81,9 @@ public class WorkingMemoryEventSupportTest extends TestCase {
         assertSame( stiltonHandle,
                     ore.getFactHandle() );
 
-        wm.insert( cheddar );
+        final FactHandle cheddarHandle = wm.insert( cheddar );
+        oae = (ObjectInsertedEvent) wmList.get( 3 );
+        assertSame( cheddarHandle,
+                    oae.getFactHandle() );
     }
 }

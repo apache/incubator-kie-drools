@@ -17,29 +17,26 @@
  */
 package org.drools.integrationtests;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-import org.drools.ClockType;
-import org.drools.SessionConfiguration;
-import org.drools.StatefulSession;
-import org.drools.WorkingMemoryEntryPoint;
-import org.drools.RuleBase;
-import org.drools.RuleBaseConfiguration;
-import org.drools.RuleBaseFactory;
-import org.drools.StockTick;
-import org.drools.WorkingMemory;
-import org.drools.common.InternalFactHandle;
-import org.drools.compiler.DrlParser;
-import org.drools.compiler.DroolsParserException;
-import org.drools.compiler.PackageBuilder;
-import org.drools.lang.descr.PackageDescr;
-import org.drools.rule.Package;
-
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
+
+import junit.framework.TestCase;
+
+import org.drools.ClockType;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
+import org.drools.SessionConfiguration;
+import org.drools.StockTick;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.common.InternalFactHandle;
+import org.drools.compiler.DroolsParserException;
+import org.drools.runtime.KnowledgeSessionConfiguration;
+import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 
 /**
  * Tests related to the stream support features
@@ -62,51 +59,32 @@ public class StreamsTest extends TestCase {
         super.tearDown();
     }
 
-    protected RuleBase getRuleBase() throws Exception {
-
-        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
-                                            null );
-    }
-
-    protected RuleBase getRuleBase(final RuleBaseConfiguration config) throws Exception {
-
-        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
-                                            config );
-    }
-
-    private RuleBase loadRuleBase(final Reader reader) throws IOException,
-                                                      DroolsParserException,
-                                                      Exception {
-        final DrlParser parser = new DrlParser();
-        final PackageDescr packageDescr = parser.parse( reader );
-        if ( parser.hasErrors() ) {
-            System.out.println( parser.getErrors() );
-            Assert.fail( "Error messages in parser, need to sort this our (or else collect error messages)" );
-        }
-        // pre build the package
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackage( packageDescr );
-        final Package pkg = builder.getPackage();
-
-        // add the package to a rulebase
-        final RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        // load up the rulebase
-        return SerializationHelper.serializeObject(ruleBase);
+    
+    private KnowledgeBase loadKnowledgeBase(final Reader reader) throws IOException,
+        DroolsParserException,
+    Exception {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.addPackageFromDrl( reader );
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+                        
+        return SerializationHelper.serializeObject( kbase );
     }
 
     public void testEventAssertion() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_EntryPoint.drl" ) );
-        final RuleBase ruleBase = loadRuleBase( reader );
+        KnowledgeBase kbase = loadKnowledgeBase( reader );
+        //final RuleBase ruleBase = loadRuleBase( reader );
 
-        SessionConfiguration conf = new SessionConfiguration();
-        conf.setClockType( ClockType.PSEUDO_CLOCK );
-        StatefulSession wm = ruleBase.newStatefulSession( conf );
+        KnowledgeSessionConfiguration conf = new SessionConfiguration();
+        ((SessionConfiguration)conf).setClockType( ClockType.PSEUDO_CLOCK );
+        StatefulKnowledgeSession session = kbase.newStatefulSession( conf );
 
         final List results = new ArrayList();
 
-        wm.setGlobal( "results",
+        session.setGlobal( "results",
                       results );
 
         StockTick tick1 = new StockTick( 1,
@@ -126,10 +104,10 @@ public class StreamsTest extends TestCase {
                                          50,
                                          System.currentTimeMillis() );
 
-        InternalFactHandle handle1 = (InternalFactHandle) wm.insert( tick1 );
-        InternalFactHandle handle2 = (InternalFactHandle) wm.insert( tick2 );
-        InternalFactHandle handle3 = (InternalFactHandle) wm.insert( tick3 );
-        InternalFactHandle handle4 = (InternalFactHandle) wm.insert( tick4 );
+        InternalFactHandle handle1 = (InternalFactHandle) session.insert( tick1 );
+        InternalFactHandle handle2 = (InternalFactHandle) session.insert( tick2 );
+        InternalFactHandle handle3 = (InternalFactHandle) session.insert( tick3 );
+        InternalFactHandle handle4 = (InternalFactHandle) session.insert( tick4 );
 
         assertNotNull( handle1 );
         assertNotNull( handle2 );
@@ -141,7 +119,7 @@ public class StreamsTest extends TestCase {
         assertTrue( handle3.isEvent() );
         assertTrue( handle4.isEvent() );
 
-        wm.fireAllRules();
+        session.fireAllRules();
 
         assertEquals( 0,
                       results.size() );
@@ -163,7 +141,7 @@ public class StreamsTest extends TestCase {
                                          50,
                                          System.currentTimeMillis() );
 
-        WorkingMemoryEntryPoint entry = wm.getWorkingMemoryEntryPoint( "StockStream" );
+        WorkingMemoryEntryPoint entry = session.getWorkingMemoryEntryPoint( "StockStream" );
 
         InternalFactHandle handle5 = (InternalFactHandle) entry.insert( tick5 );
         InternalFactHandle handle6 = (InternalFactHandle) entry.insert( tick6 );
@@ -180,7 +158,7 @@ public class StreamsTest extends TestCase {
         assertTrue( handle7.isEvent() );
         assertTrue( handle8.isEvent() );
 
-        wm.fireAllRules();
+        session.fireAllRules();
 
         assertEquals( 1,
                       results.size() );

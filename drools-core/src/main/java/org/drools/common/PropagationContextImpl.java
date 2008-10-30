@@ -19,6 +19,7 @@ package org.drools.common;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
+import org.drools.runtime.rule.FactHandle;
 import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
 import org.drools.util.ObjectHashMap;
@@ -123,6 +124,10 @@ public class PropagationContextImpl
     public Rule getRuleOrigin() {
         return this.rule;
     }
+    
+    public org.drools.knowledge.definitions.rule.Rule getRule() {
+        return this.rule;
+    }
 
     public LeftTuple getLeftTupleOrigin() {
         return this.leftTuple;
@@ -131,6 +136,10 @@ public class PropagationContextImpl
     public InternalFactHandle getFactHandleOrigin() {
         return this.factHandle;
     }
+    
+    public FactHandle getFactHandle() {
+        return this.factHandle;
+    }    
 
     /*
      * (non-Javadoc)

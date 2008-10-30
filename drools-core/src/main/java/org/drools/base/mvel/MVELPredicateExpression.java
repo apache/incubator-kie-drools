@@ -1,9 +1,9 @@
 package org.drools.base.mvel;
 
-import org.drools.WorkingMemory;
 import org.drools.rule.Declaration;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
+import org.drools.WorkingMemory;
 import org.drools.spi.PredicateExpression;
 import org.drools.spi.Tuple;
 import org.mvel.MVEL;

@@ -1,7 +1,7 @@
 package org.drools.spi;
 
-import org.drools.WorkingMemory;
 import org.drools.base.JavaFactRegistryEntry;
+import org.drools.WorkingMemory;
 
 public interface JavaFact {
     public JavaFactRegistryEntry[] listWorkingMemories();

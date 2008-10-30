@@ -21,17 +21,17 @@ import java.util.Map;
 import java.util.List;
 
 import org.drools.FactException;
-import org.drools.FactHandle;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.StatefulSession;
-import org.drools.process.core.Process;
+import org.drools.knowledge.definitions.process.Process;
 import org.drools.reteoo.Rete;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.CompositeClassLoader;
 import org.drools.rule.MapBackedClassLoader;
 import org.drools.rule.Package;
 import org.drools.rule.TypeDeclaration;
+import org.drools.runtime.rule.FactHandle;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.PropagationContext;
 

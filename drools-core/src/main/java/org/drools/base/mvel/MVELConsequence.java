@@ -16,91 +16,84 @@ import org.mvel.MVEL;
 import org.mvel.compiler.CompiledExpression;
 import org.mvel.debug.DebugTools;
 
-public class MVELConsequence
-    implements
-    Consequence,
-    MVELCompileable,
-    Externalizable {
-    private static final long       serialVersionUID = 400L;
+public class MVELConsequence implements Consequence, MVELCompileable,
+		Externalizable {
+	private static final long serialVersionUID = 400L;
 
-    private MVELCompilationUnit unit;
-    private String id;    
-    
-    private Serializable expr;
-    private DroolsMVELFactory prototype;
+	private MVELCompilationUnit unit;
+	private String id;
 
-    
-    public MVELConsequence() {
-    }    
+	private Serializable expr;
+	private DroolsMVELFactory prototype;
 
-    public MVELConsequence(final MVELCompilationUnit unit,
-                           final String id) {
-        this.unit = unit;
-        this.id = id;
-    }
-    
+	public MVELConsequence() {
+	}
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        unit    = (MVELCompilationUnit)in.readObject();
-        id = in.readUTF();
-    }
+	public MVELConsequence(final MVELCompilationUnit unit, final String id) {
+		this.unit = unit;
+		this.id = id;
+	}
 
-    public void writeExternal(ObjectOutput out) throws IOException {        
-        out.writeObject(unit);        
-        out.writeUTF( id );
-    }
-    
-    public void compile(ClassLoader classLoader) {
-        expr = unit.getCompiledExpression( classLoader );
-        prototype = unit.getFactory( );
-    }
+	public void readExternal(ObjectInput in) throws IOException,
+			ClassNotFoundException {
+		unit = (MVELCompilationUnit) in.readObject();
+		id = in.readUTF();
+	}
 
-    public void evaluate(final KnowledgeHelper knowledgeHelper,
-                         final WorkingMemory workingMemory) throws Exception {
-        DroolsMVELFactory factory = (DroolsMVELFactory) this.prototype.clone();
+	public void writeExternal(ObjectOutput out) throws IOException {
+		out.writeObject(unit);
+		out.writeUTF(id);
+	}
 
-        factory.setContext( knowledgeHelper.getTuple(),
-                            knowledgeHelper,
-                            null,
-                            workingMemory,
-                            null );
-        
-        // do we have any functions for this namespace?
-        Package pkg = workingMemory.getRuleBase().getPackage( "MAIN" );
-        if ( pkg != null ) {
-            MVELDialectRuntimeData data = ( MVELDialectRuntimeData ) pkg.getDialectRuntimeRegistry().getDialectData( this.id );
-            factory.setNextFactory( data.getFunctionFactory() );
-        }
+	public void compile(ClassLoader classLoader) {
+		expr = unit.getCompiledExpression(classLoader);
+		prototype = unit.getFactory();
+	}
 
-        CompiledExpression compexpr = (CompiledExpression) this.expr;
+	public void evaluate(final KnowledgeHelper knowledgeHelper,
+			final WorkingMemory workingMemory) throws Exception {
+		DroolsMVELFactory factory = (DroolsMVELFactory) this.prototype.clone();
 
-        //Receive breakpoints from debugger
-        MVELDebugHandler.prepare();
-        
-        pkg = knowledgeHelper.getWorkingMemory().getRuleBase().getPackage( knowledgeHelper.getRule().getPackage() );
-        
-        ClassLoader tempClassLoader = Thread.currentThread().getContextClassLoader();
-        Thread.currentThread().setContextClassLoader( ((InternalRuleBase) workingMemory.getRuleBase()).getRootClassLoader() );
+		factory.setContext(knowledgeHelper.getTuple(), knowledgeHelper, null,
+				workingMemory, null);
 
-        if ( MVELDebugHandler.isDebugMode() ) {
-            if ( MVELDebugHandler.verbose ) {
-                System.out.println( DebugTools.decompile( compexpr ) );
-            }
-            MVEL.executeDebugger( compexpr,
-                                  null,
-                                  factory );
-        } else {
-            MVEL.executeExpression( compexpr,
-                                    null,
-                                    factory );
-        }
-        
-        Thread.currentThread().setContextClassLoader( tempClassLoader );
+		// do we have any functions for this namespace?
+		Package pkg = workingMemory.getRuleBase().getPackage("MAIN");
+		if (pkg != null) {
+			MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkg
+					.getDialectRuntimeRegistry().getDialectData(this.id);
+			factory.setNextFactory(data.getFunctionFactory());
+		}
 
-    }
+		CompiledExpression compexpr = (CompiledExpression) this.expr;
 
-    public Serializable getCompExpr() {
-        return expr;
-    }
+		// Receive breakpoints from debugger
+		MVELDebugHandler.prepare();
+
+		pkg = knowledgeHelper.getWorkingMemory().getRuleBase().getPackage(
+				knowledgeHelper.getRule().getPackage());
+
+		ClassLoader tempClassLoader = Thread.currentThread()
+				.getContextClassLoader();
+		Thread.currentThread().setContextClassLoader(
+				((InternalRuleBase) workingMemory.getRuleBase())
+						.getRootClassLoader());
+
+		if (MVELDebugHandler.isDebugMode()) {
+			if (MVELDebugHandler.verbose) {
+				System.out.println(DebugTools.decompile(compexpr));
+			}
+			MVEL.executeDebugger(compexpr, null, factory);
+		} else {
+			MVEL.executeExpression(compexpr, null, factory);
+		}
+
+		Thread.currentThread().setContextClassLoader(tempClassLoader);
+
+	}
+
+	public Serializable getCompExpr() {
+		return expr;
+	}
 
 }

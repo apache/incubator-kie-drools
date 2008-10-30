@@ -22,9 +22,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.workflow.core.Connection;
+import org.drools.knowledge.definitions.process.Connection;
 import org.drools.workflow.core.Constraint;
-import org.drools.workflow.core.Node;
 import org.drools.workflow.core.impl.NodeImpl;
 
 /**
@@ -102,8 +101,8 @@ public class Split extends NodeImpl {
             if ( connection == null ) {
                 throw new IllegalArgumentException( "connection is null" );
             }
-            if (getOutgoingConnections(Node.CONNECTION_DEFAULT_TYPE) != null
-                    && !getOutgoingConnections(Node.CONNECTION_DEFAULT_TYPE).contains(connection)) {
+            if (getOutgoingConnections(org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE) != null
+                    && !getOutgoingConnections(org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE).contains(connection)) {
                 throw new IllegalArgumentException("connection is unknown:" + connection);
             }
             internalSetConstraint(
@@ -124,7 +123,7 @@ public class Split extends NodeImpl {
 
     public Connection getFrom() {
         final List<Connection> list =
-            getIncomingConnections(Node.CONNECTION_DEFAULT_TYPE);
+            getIncomingConnections(org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
         if (list.size() > 0) {
             return (Connection) list.get(0);
         }
@@ -132,17 +131,17 @@ public class Split extends NodeImpl {
     }
     
     public List<Connection> getDefaultOutgoingConnections() {
-        return getOutgoingConnections(Node.CONNECTION_DEFAULT_TYPE);
+        return getOutgoingConnections(org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
     }
 
     public void validateAddIncomingConnection(final String type,
             final Connection connection) {
         super.validateAddIncomingConnection(type, connection);
-        if (!Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
+        if (!org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
             throw new IllegalArgumentException(
                 "This type of node only accepts default incoming connection type!");
         }
-        if (!getIncomingConnections(Node.CONNECTION_DEFAULT_TYPE).isEmpty()) {
+        if (!getIncomingConnections(org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE).isEmpty()) {
             throw new IllegalArgumentException(
                 "This type of node cannot have more than one incoming connection!");
         }
@@ -150,7 +149,7 @@ public class Split extends NodeImpl {
 
     public void validateAddOutgoingConnection(final String type, final Connection connection) {
         super.validateAddOutgoingConnection(type, connection);
-        if (!Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
+        if (!org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
             throw new IllegalArgumentException(
                 "This type of node only accepts default outgoing connection type!");
         }

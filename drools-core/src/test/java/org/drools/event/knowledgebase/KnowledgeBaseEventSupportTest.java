@@ -15,22 +15,27 @@
  *
  * Created on Sep 11, 2007
  */
-package org.drools.event;
+package org.drools.event.knowledgebase;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 import junit.framework.TestCase;
 
 import org.drools.Cheese;
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
 import org.drools.WorkingMemory;
+import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.ClassFieldReader;
-import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassObjectType;
 import org.drools.base.FieldFactory;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
 import org.drools.base.evaluators.Operator;
+import org.drools.knowledge.definitions.impl.KnowledgePackageImp;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Package;
 import org.drools.rule.Pattern;
@@ -40,20 +45,16 @@ import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 import org.drools.spi.KnowledgeHelper;
 
-import java.io.ObjectOutput;
-import java.io.IOException;
-import java.io.ObjectInput;
-
 /**
  * @author etirelli
  *
  */
-public class RuleBaseEventListenerTest extends TestCase {
+public class KnowledgeBaseEventSupportTest extends TestCase {
 
-    private RuleBase             ruleBase;
+    private KnowledgeBase        kbase;
     private TestRuleBaseListener listener1;
     private TestRuleBaseListener listener2;
-    private Package              pkg;
+    private KnowledgePackageImp  pkg;
 
     /* (non-Javadoc)
      * @see junit.framework.TestCase#setUp()
@@ -61,11 +62,11 @@ public class RuleBaseEventListenerTest extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
 
-        ruleBase = RuleBaseFactory.newRuleBase();
+        kbase = KnowledgeBaseFactory.newKnowledgeBase();
         listener1 = new TestRuleBaseListener( "(listener-1) " );
         listener2 = new TestRuleBaseListener( "(listener-2) " );
-        ruleBase.addEventListener( listener1 );
-        ruleBase.addEventListener( listener2 );
+        kbase.addEventListener( listener1 );
+        kbase.addEventListener( listener2 );
 
         final Rule rule1 = new Rule( "test1" );
         final ClassObjectType cheeseObjectType = new ClassObjectType( Cheese.class );
@@ -139,10 +140,9 @@ public class RuleBaseEventListenerTest extends TestCase {
             }
         } );
 
-        pkg = new Package( "org.drools.test1" );
-        pkg.addRule( rule1 );
-        pkg.addRule( rule2 );
-
+        pkg = new KnowledgePackageImp( new Package( "org.drools.test1" ) );
+        pkg.pkg.addRule( rule1 );
+        pkg.pkg.addRule( rule2 );
     }
 
     /* (non-Javadoc)
@@ -170,7 +170,7 @@ public class RuleBaseEventListenerTest extends TestCase {
         assertEquals( 0,
                       listener2.getAfterRuleAdded() );
 
-        this.ruleBase.addPackage( pkg );
+        this.kbase.addKnowledgePackage( pkg );
 
         assertEquals( 1,
                       listener1.getBeforePackageAdded() );
@@ -191,16 +191,16 @@ public class RuleBaseEventListenerTest extends TestCase {
     }
 
     public void testRemovePackageEvents() throws Exception {
-        this.ruleBase.addPackage( pkg );
+        this.kbase.addKnowledgePackage( pkg );
 
         assertEquals( 0,
-                      listener1.getBeforePackageRemoved() );
+                      listener1.getBeforeKnowledgePackageRemoved() );
         assertEquals( 0,
-                      listener1.getAfterPackageRemoved() );
+                      listener1.getAfterKnowledgePackageRemoved() );
         assertEquals( 0,
-                      listener2.getBeforePackageRemoved() );
+                      listener2.getBeforeKnowledgePackageRemoved() );
         assertEquals( 0,
-                      listener2.getAfterPackageRemoved() );
+                      listener2.getAfterKnowledgePackageRemoved() );
 
         assertEquals( 0,
                       listener1.getBeforeRuleRemoved() );
@@ -211,16 +211,16 @@ public class RuleBaseEventListenerTest extends TestCase {
         assertEquals( 0,
                       listener2.getAfterRuleRemoved() );
 
-        this.ruleBase.removePackage( "org.drools.test1" );
+        this.kbase.removeKnowledgePackage( "org.drools.test1" );
 
         assertEquals( 1,
-                      listener1.getBeforePackageRemoved() );
+                      listener1.getBeforeKnowledgePackageRemoved() );
         assertEquals( 1,
-                      listener1.getAfterPackageRemoved() );
+                      listener1.getAfterKnowledgePackageRemoved() );
         assertEquals( 1,
-                      listener2.getBeforePackageRemoved() );
+                      listener2.getBeforeKnowledgePackageRemoved() );
         assertEquals( 1,
-                      listener2.getAfterPackageRemoved() );
+                      listener2.getAfterKnowledgePackageRemoved() );
         assertEquals( 2,
                       listener1.getBeforeRuleRemoved() );
         assertEquals( 2,
@@ -234,7 +234,7 @@ public class RuleBaseEventListenerTest extends TestCase {
 
     public static class TestRuleBaseListener
         implements
-        RuleBaseEventListener {
+        KnowledgeBaseEventListener {
         private String id;
         private int    beforePackageAdded   = 0;
         private int    afterPackageAdded    = 0;
@@ -278,12 +278,12 @@ public class RuleBaseEventListenerTest extends TestCase {
             out.writeInt( afterRuleRemoved );
         }
 
-        public void afterPackageAdded(AfterPackageAddedEvent event) {
+        public void afterKnowledgePackageAdded(AfterKnowledgePackageAddedEvent event) {
             //            System.out.println( this.id + event );
             this.afterPackageAdded++;
         }
 
-        public void beforePackageAdded(BeforePackageAddedEvent event) {
+        public void beforeKnowledgePackageAdded(BeforeKnowledgePackageAddedEvent event) {
             //            System.out.println( this.id + event );
             this.beforePackageAdded++;
         }
@@ -300,21 +300,21 @@ public class RuleBaseEventListenerTest extends TestCase {
             return id;
         }
 
-        public void afterPackageRemoved(AfterPackageRemovedEvent event) {
+        public void afterKnowledgePackageRemoved(AfterKnowledgePackageRemovedEvent event) {
             //            System.out.println( this.id + event );
             this.afterPackageRemoved++;
         }
 
-        public void beforePackageRemoved(BeforePackageRemovedEvent event) {
+        public void beforeKnowledgePackageRemoved(BeforeKnowledgePackageRemovedEvent event) {
             //            System.out.println( this.id + event );
             this.beforePackageRemoved++;
         }
 
-        protected int getAfterPackageRemoved() {
+        protected int getAfterKnowledgePackageRemoved() {
             return afterPackageRemoved;
         }
 
-        protected int getBeforePackageRemoved() {
+        protected int getBeforeKnowledgePackageRemoved() {
             return beforePackageRemoved;
         }
 
@@ -359,12 +359,12 @@ public class RuleBaseEventListenerTest extends TestCase {
 
         }
 
-        public void afterRuleBaseLocked(AfterRuleBaseLockedEvent event) {
+        public void afterKnowledgeBaseLocked(AfterKnowledgeBaseLockedEvent event) {
             // TODO Auto-generated method stub
 
         }
 
-        public void afterRuleBaseUnlocked(AfterRuleBaseUnlockedEvent event) {
+        public void afterKnowledgeBaseUnlocked(AfterKnowledgeBaseUnlockedEvent event) {
             // TODO Auto-generated method stub
 
         }
@@ -374,12 +374,12 @@ public class RuleBaseEventListenerTest extends TestCase {
 
         }
 
-        public void beforeRuleBaseLocked(BeforeRuleBaseLockedEvent event) {
+        public void beforeKnowledgeBaseLocked(BeforeKnowledgeBaseLockedEvent event) {
             // TODO Auto-generated method stub
 
         }
 
-        public void beforeRuleBaseUnlocked(BeforeRuleBaseUnlockedEvent event) {
+        public void beforeKnowledgeBaseUnlocked(BeforeKnowledgeBaseUnlockedEvent event) {
             // TODO Auto-generated method stub
 
         }

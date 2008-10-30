@@ -24,8 +24,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.drools.WorkingMemory;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.WorkingMemory;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
 

@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.List;
 
 import org.drools.concurrent.Future;
+import org.drools.runtime.rule.FactHandle;
+import org.drools.WorkingMemory;
 import org.drools.spi.AgendaFilter;
 
 /**

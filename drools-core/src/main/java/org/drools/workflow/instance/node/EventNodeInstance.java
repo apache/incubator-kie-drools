@@ -18,10 +18,9 @@ package org.drools.workflow.instance.node;
 
 import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.core.event.EventTransformer;
+import org.drools.process.instance.NodeInstance;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
-import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.EventNode;
-import org.drools.workflow.instance.NodeInstance;
 import org.drools.workflow.instance.impl.NodeInstanceImpl;
 
 /**
@@ -68,7 +67,7 @@ public class EventNodeInstance extends NodeInstanceImpl implements EventNodeInst
     }
 
     public void triggerCompleted() {
-        triggerCompleted(Node.CONNECTION_DEFAULT_TYPE, true);
+        triggerCompleted(org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE, true);
     }
     
 }

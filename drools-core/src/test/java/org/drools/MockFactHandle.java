@@ -4,6 +4,8 @@ import java.io.ObjectOutput;
 import java.io.IOException;
 import java.io.ObjectInput;
 
+import org.drools.runtime.rule.FactHandle;
+
 /*
  * Copyright 2005 JBoss Inc
  *

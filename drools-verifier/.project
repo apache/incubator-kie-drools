@@ -4,6 +4,7 @@
   <projects>
     <project>drools-compiler</project>
     <project>drools-core</project>
+    <project>drools-api</project>
   </projects>
   <buildSpec>
     <buildCommand>

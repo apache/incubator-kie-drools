@@ -42,6 +42,8 @@ public class FunctionDescr extends BaseDescr
     private int               offset;
 
     private String            className;
+    
+    private String            url;    
 
     public FunctionDescr(final String name,
                          final String returnType) {
@@ -55,6 +57,14 @@ public class FunctionDescr extends BaseDescr
 
     public String getNamespace() {
         return this.namespace;
+    }        
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public String getName() {

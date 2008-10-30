@@ -17,9 +17,9 @@ package org.drools.audit;
  */
 
 import com.thoughtworks.xstream.XStream;
-import org.drools.WorkingMemory;
 import org.drools.WorkingMemoryEventManager;
 import org.drools.audit.event.LogEvent;
+import org.drools.WorkingMemory;
 
 import java.io.IOException;
 import java.io.ObjectInput;

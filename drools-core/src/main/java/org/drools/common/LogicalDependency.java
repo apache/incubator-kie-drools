@@ -16,7 +16,7 @@ package org.drools.common;
  * limitations under the License.
  */
 
-import org.drools.FactHandle;
+import org.drools.runtime.rule.FactHandle;
 import org.drools.spi.Activation;
 import org.drools.util.AbstractBaseLinkedListNode;
 

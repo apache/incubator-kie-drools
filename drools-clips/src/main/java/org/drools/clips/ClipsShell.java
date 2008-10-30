@@ -24,7 +24,6 @@ import java.util.Map.Entry;
 
 import org.antlr.runtime.ANTLRReaderStream;
 import org.antlr.runtime.CommonTokenStream;
-import org.drools.FactHandle;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
@@ -64,6 +63,7 @@ import org.drools.rule.ImportDeclaration;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Namespaceable;
 import org.drools.rule.Package;
+import org.drools.runtime.rule.FactHandle;
 import org.drools.spi.GlobalResolver;
 import org.mvel.MVEL;
 import org.mvel.ParserContext;

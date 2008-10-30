@@ -47,7 +47,7 @@ import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.ProcessDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
-import org.drools.process.core.Process;
+import org.drools.knowledge.definitions.process.Process;
 import org.drools.rule.Function;
 import org.drools.rule.JavaDialectRuntimeData;
 import org.drools.rule.LineMappings;

@@ -7,9 +7,9 @@ import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.List;
 
-import org.drools.WorkingMemory;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
+import org.drools.WorkingMemory;
 import org.drools.spi.Action;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.ProcessContext;

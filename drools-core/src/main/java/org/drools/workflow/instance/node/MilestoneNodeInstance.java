@@ -25,9 +25,9 @@ import org.drools.event.AgendaEventListener;
 import org.drools.event.AgendaGroupPoppedEvent;
 import org.drools.event.AgendaGroupPushedEvent;
 import org.drools.event.BeforeActivationFiredEvent;
-import org.drools.workflow.core.Node;
+import org.drools.process.instance.InternalProcessInstance;
+import org.drools.process.instance.NodeInstance;
 import org.drools.workflow.core.node.MilestoneNode;
-import org.drools.workflow.instance.NodeInstance;
 
 /**
  * Runtime counterpart of a milestone node.
@@ -44,14 +44,15 @@ public class MilestoneNodeInstance extends EventBasedNodeInstance implements Age
 
     public void internalTrigger(final NodeInstance from, String type) {
     	super.internalTrigger(from, type);
-        if (!Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
+        if (!org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
             throw new IllegalArgumentException(
                 "A MilestoneNode only accepts default incoming connections!");
         }
-        String rule = "RuleFlow-Milestone-" + getProcessInstance().getProcess().getId()
+        String rule = "RuleFlow-Milestone-" + getProcessInstance().getProcessId()
         + "-" + getNode().getId();
 
-        if( ((InternalAgenda)getProcessInstance().getAgenda()).isRuleActiveInRuleFlowGroup( "DROOLS_SYSTEM", rule ) ) {
+        if( ((InternalAgenda) ((InternalProcessInstance) getProcessInstance())
+        		.getAgenda()).isRuleActiveInRuleFlowGroup( "DROOLS_SYSTEM", rule ) ) {
             triggerCompleted();
         } else {
             addActivationListener();
@@ -64,12 +65,12 @@ public class MilestoneNodeInstance extends EventBasedNodeInstance implements Age
     }
     
     private void addActivationListener() {
-        getProcessInstance().getWorkingMemory().addEventListener(this);
+    	((InternalProcessInstance) getProcessInstance()).getWorkingMemory().addEventListener(this);
     }
 
     public void removeEventListeners() {
         super.removeEventListeners();
-        getProcessInstance().getWorkingMemory().removeEventListener(this);
+        ((InternalProcessInstance) getProcessInstance()).getWorkingMemory().removeEventListener(this);
     }
 
     public void activationCancelled(ActivationCancelledEvent event,
@@ -85,7 +86,7 @@ public class MilestoneNodeInstance extends EventBasedNodeInstance implements Age
             // new activations of the rule associate with a milestone node
             // trigger node instances of that milestone node
             String ruleName = event.getActivation().getRule().getName();
-            String milestoneName = "RuleFlow-Milestone-" + getProcessInstance().getProcess().getId() + "-" + getNodeId();
+            String milestoneName = "RuleFlow-Milestone-" + getProcessInstance().getProcessId() + "-" + getNodeId();
             if (milestoneName.equals(ruleName)) {
             	synchronized(getProcessInstance()) {
 	                removeEventListeners();

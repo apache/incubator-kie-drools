@@ -25,9 +25,9 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.WorkingMemory;
 import org.drools.common.InternalFactHandle;
 import org.drools.rule.Declaration;
+import org.drools.WorkingMemory;
 import org.drools.spi.Accumulator;
 import org.drools.spi.CompiledInvoker;
 import org.drools.spi.ReturnValueExpression;

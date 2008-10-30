@@ -9,18 +9,18 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.drools.Message;
-import org.drools.ObjectFilter;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
-import org.drools.WorkingMemory;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderErrors;
-import org.drools.process.instance.ProcessInstance;
+import org.drools.process.instance.InternalProcessInstance;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemHandler;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.rule.Package;
+import org.drools.runtime.ObjectFilter;
+import org.drools.WorkingMemory;
 
 public class ProcessActionTest extends TestCase {
     
@@ -84,19 +84,18 @@ public class ProcessActionTest extends TestCase {
         workingMemory.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
         List<String> list = new ArrayList<String>();
         workingMemory.setGlobal("list", list);
-        ProcessInstance processInstance =
+        InternalProcessInstance processInstance = ( InternalProcessInstance )
             workingMemory.startProcess("org.drools.actions");
-        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        assertEquals(InternalProcessInstance.STATE_ACTIVE, processInstance.getState());
         WorkItem workItem = handler.getWorkItem();
         assertNotNull(workItem);
         assertEquals(1, list.size());
         workingMemory.getWorkItemManager().completeWorkItem(workItem.getId(), null);
         assertEquals(3, list.size());
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertEquals(InternalProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
     
-    @SuppressWarnings("unchecked")
-	public void testActionContextJava() {
+    public void testActionContextJava() {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -127,11 +126,11 @@ public class ProcessActionTest extends TestCase {
 			"String variable = (String) context.getVariable(\"variable\");\n" +
 			"System.out.println(drools.getWorkingMemory());\n" +
 			"list.add(variable);\n" +
-			"String nodeName = context.getNodeInstance().getNode().getName();\n" +
+			"String nodeName = context.getNodeInstance().getNodeName();\n" +
 			"list.add(nodeName);\n" +
 			"insert( new Message() );\n" +
 			"</action>\n" +
-			"    </actionNode>/n" + 
+			"    </actionNode>\n" + 
             "    <end id=\"3\" name=\"End\" />\n" +
             "  </nodes>\n" +
             "\n" +
@@ -155,7 +154,7 @@ public class ProcessActionTest extends TestCase {
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
         List<String> list = new ArrayList<String>();
         workingMemory.setGlobal("list", list);
-        ProcessInstance processInstance =
+        InternalProcessInstance processInstance = ( InternalProcessInstance )
             workingMemory.startProcess("org.drools.actions");
         assertEquals(2, list.size());
         assertEquals("SomeText", list.get(0));
@@ -166,10 +165,9 @@ public class ProcessActionTest extends TestCase {
 			}
         });
         assertTrue(iterator.hasNext());
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertEquals(InternalProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
     
-	@SuppressWarnings("unchecked")
 	public void testActionContextMVEL() {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
@@ -205,11 +203,11 @@ public class ProcessActionTest extends TestCase {
 			"list.add(myVariable);\n" +
 			// TODO: Cannot put "String nodeName = ..." here because this generates a runtime exception
 			// stating that nodeName could not be resolved
-			"nodeName = context.getNodeInstance().getNode().getName();\n" +
+			"nodeName = context.getNodeInstance().getNodeName();\n" +
 			"list.add(nodeName);\n" +
 			"insert( new Message() );\n" +
 			"</action>\n" +
-			"    </actionNode>/n" + 
+			"    </actionNode>\n" + 
             "    <end id=\"3\" name=\"End\" />\n" +
             "  </nodes>\n" +
             "\n" +
@@ -233,7 +231,7 @@ public class ProcessActionTest extends TestCase {
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
         List<String> list = new ArrayList<String>();
         workingMemory.setGlobal("list", list);
-        ProcessInstance processInstance =
+        InternalProcessInstance processInstance = ( InternalProcessInstance )
             workingMemory.startProcess("org.drools.actions");
         assertEquals(2, list.size());
         assertEquals("SomeText", list.get(0));
@@ -244,7 +242,7 @@ public class ProcessActionTest extends TestCase {
 			}
         });
         assertTrue(iterator.hasNext());
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertEquals(InternalProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
 
 	private static class TestWorkItemHandler implements WorkItemHandler {

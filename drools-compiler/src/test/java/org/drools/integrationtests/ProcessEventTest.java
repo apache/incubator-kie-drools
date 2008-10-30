@@ -11,6 +11,7 @@ import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.compiler.PackageBuilder;
 import org.drools.process.core.context.variable.VariableScope;
+import org.drools.process.instance.InternalProcessInstance;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.rule.Package;
@@ -65,7 +66,9 @@ public class ProcessEventTest extends TestCase {
         ProcessInstance processInstance =
             session.startProcess("org.drools.event");
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
-        assertEquals("MyValue", ((VariableScopeInstance) processInstance.getContextInstance(VariableScope.VARIABLE_SCOPE)).getVariable("MyVar"));
+        assertEquals("MyValue", ((VariableScopeInstance) 
+    		((InternalProcessInstance) processInstance).getContextInstance(
+				VariableScope.VARIABLE_SCOPE)).getVariable("MyVar"));
     }
     
     public void testProcessInstanceSignalEvent() throws Exception {
@@ -116,7 +119,9 @@ public class ProcessEventTest extends TestCase {
         processInstance = session.getProcessInstance(processInstance.getId());
         processInstance.signalEvent("MyEvent", "MyValue");
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
-        assertEquals("MyValue", ((VariableScopeInstance) processInstance.getContextInstance(VariableScope.VARIABLE_SCOPE)).getVariable("MyVar"));
+        assertEquals("MyValue", ((VariableScopeInstance) 
+    		((InternalProcessInstance) processInstance).getContextInstance(
+				VariableScope.VARIABLE_SCOPE)).getVariable("MyVar"));
     }
     
     public void testExternalEventCorrelation() throws Exception {
@@ -162,13 +167,17 @@ public class ProcessEventTest extends TestCase {
         StatefulSession session = ruleBase.newStatefulSession();
         ProcessInstance processInstance = session.startProcess("org.drools.event");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
-        assertEquals("SomeText", ((VariableScopeInstance) processInstance.getContextInstance(VariableScope.VARIABLE_SCOPE)).getVariable("MyVar"));
+        assertEquals("SomeText", ((VariableScopeInstance) 
+    		((InternalProcessInstance) processInstance).getContextInstance(
+				VariableScope.VARIABLE_SCOPE)).getVariable("MyVar"));
         
         session = SerializationHelper.getSerialisedStatefulSession(session);
         processInstance = session.getProcessInstance(processInstance.getId());
         session.getSignalManager().signalEvent("MyEvent", "MyValue");
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
-        assertEquals("MyValue", ((VariableScopeInstance) processInstance.getContextInstance(VariableScope.VARIABLE_SCOPE)).getVariable("MyVar"));
+        assertEquals("MyValue", ((VariableScopeInstance) 
+    		((InternalProcessInstance) processInstance).getContextInstance(
+				VariableScope.VARIABLE_SCOPE)).getVariable("MyVar"));
     }
 
     public void testInternalEventCorrelation() throws Exception {
@@ -214,7 +223,9 @@ public class ProcessEventTest extends TestCase {
         StatefulSession session = ruleBase.newStatefulSession();
         ProcessInstance processInstance = session.startProcess("org.drools.event");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
-        assertEquals("SomeText", ((VariableScopeInstance) processInstance.getContextInstance(VariableScope.VARIABLE_SCOPE)).getVariable("MyVar"));
+        assertEquals("SomeText", ((VariableScopeInstance) 
+    		((InternalProcessInstance) processInstance).getContextInstance(
+				VariableScope.VARIABLE_SCOPE)).getVariable("MyVar"));
 
         session = SerializationHelper.getSerialisedStatefulSession(session);
         processInstance = session.getProcessInstance(processInstance.getId());
@@ -282,7 +293,9 @@ public class ProcessEventTest extends TestCase {
         ProcessInstance processInstance =
             workingMemory.startProcess("org.drools.event");
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
-        assertEquals("MyValue", ((VariableScopeInstance) processInstance.getContextInstance(VariableScope.VARIABLE_SCOPE)).getVariable("MyVar"));
+        assertEquals("MyValue", ((VariableScopeInstance)
+    		((InternalProcessInstance) processInstance).getContextInstance(
+				VariableScope.VARIABLE_SCOPE)).getVariable("MyVar"));
     }
     
     public void testProcessInstanceSignalCompositeEvent() throws Exception {
@@ -345,7 +358,9 @@ public class ProcessEventTest extends TestCase {
         processInstance = session.getProcessInstance(processInstance.getId());
         processInstance.signalEvent("MyEvent", "MyValue");
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
-        assertEquals("MyValue", ((VariableScopeInstance) processInstance.getContextInstance(VariableScope.VARIABLE_SCOPE)).getVariable("MyVar"));
+        assertEquals("MyValue", ((VariableScopeInstance) 
+    		((InternalProcessInstance) processInstance).getContextInstance(
+				VariableScope.VARIABLE_SCOPE)).getVariable("MyVar"));
     }
     
     public void testExternalCompositeEventCorrelation() throws Exception {
@@ -408,7 +423,9 @@ public class ProcessEventTest extends TestCase {
         processInstance = session.getProcessInstance(processInstance.getId());
         session.getSignalManager().signalEvent("MyEvent", "MyValue");
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
-        assertEquals("MyValue", ((VariableScopeInstance) processInstance.getContextInstance(VariableScope.VARIABLE_SCOPE)).getVariable("MyVar"));
+        assertEquals("MyValue", ((VariableScopeInstance) 
+    		((InternalProcessInstance) processInstance).getContextInstance(
+				VariableScope.VARIABLE_SCOPE)).getVariable("MyVar"));
     }
     
     public void testInternalCompositeEventCorrelation() throws Exception {

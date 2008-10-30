@@ -1,6 +1,6 @@
 package org.drools.testframework;
 
-import org.drools.FactHandle;
+import org.drools.runtime.rule.FactHandle;
 
 import java.io.IOException;
 import java.io.ObjectInput;

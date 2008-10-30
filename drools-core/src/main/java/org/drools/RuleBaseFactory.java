@@ -1,6 +1,6 @@
 package org.drools;
 
-import org.drools.util.UUIDGenerator;
+import java.util.UUID;
 
 /*
  * Copyright 2005 JBoss Inc
@@ -54,7 +54,8 @@ public class RuleBaseFactory {
                                        final RuleBaseConfiguration config) {
         switch ( type ) {
             case RuleBase.RETEOO :
-                return new org.drools.reteoo.ReteooRuleBase( UUIDGenerator.getInstance().generateRandomBasedUUID().toString(),
+                
+                return new org.drools.reteoo.ReteooRuleBase( UUID.randomUUID().toString(),
                                                              config );
             default :
                 throw new IllegalArgumentException( "Unknown engine type: " + type );

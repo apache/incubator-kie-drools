@@ -25,8 +25,8 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-import org.drools.FactHandle;
 import org.drools.StatefulSession;
+import org.drools.runtime.rule.FactHandle;
 import org.mvel.MVEL;
 import org.mvel.ParserContext;
 import org.mvel.compiler.ExpressionCompiler;

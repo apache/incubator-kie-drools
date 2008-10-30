@@ -9,7 +9,6 @@ import junit.framework.TestCase;
 
 import org.drools.Person;
 import org.drools.RuleBaseFactory;
-import org.drools.WorkingMemory;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.process.core.context.variable.Variable;
@@ -17,6 +16,7 @@ import org.drools.process.core.datatype.impl.type.ListDataType;
 import org.drools.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.ruleflow.core.RuleFlowProcess;
+import org.drools.WorkingMemory;
 import org.drools.spi.Action;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.ProcessContext;

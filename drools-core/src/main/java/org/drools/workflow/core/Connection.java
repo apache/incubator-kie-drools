@@ -21,36 +21,8 @@ package org.drools.workflow.core;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public interface Connection {
-
-    /**
-     * Returns the from node of the connection.
-     * @return the from node of the connection.
-     */
-    Node getFrom();
-
-    /**
-     * Returns the to node of the connection
-     * @return the to node of the connection
-     */
-    Node getTo();
-
-    /**
-     * Returns the type of the connection at the from node
-     * 
-     * @return the type of the connection at the from node
-     */
-    String getFromType();
-
-    /**
-     * Returns the type of the connection at the to node
-     * 
-     * @return the type of the connection at the to node
-     */
-    String getToType();
+public interface Connection extends org.drools.knowledge.definitions.process.Connection {
 
     void setMetaData(String name, Object value);
-    
-    Object getMetaData(String name);
     
 }

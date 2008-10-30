@@ -24,18 +24,18 @@ import java.io.IOException;
 
 import org.drools.DroolsTestCase;
 import org.drools.RuleBaseFactory;
-import org.drools.WorkingMemory;
 import org.drools.base.SalienceInteger;
 import org.drools.common.DefaultAgenda;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalAgenda;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.RuleFlowGroupImpl;
-import org.drools.process.instance.ProcessInstance;
+import org.drools.process.instance.InternalProcessInstance;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Rule;
 import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.ruleflow.instance.RuleFlowProcessInstance;
+import org.drools.WorkingMemory;
 import org.drools.spi.Consequence;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.PropagationContext;
@@ -212,7 +212,7 @@ public class RuleFlowGroupTest extends DroolsTestCase {
         final RuleFlowProcessInstance processInstance = new RuleFlowProcessInstance();
         processInstance.setWorkingMemory( workingMemory );
         processInstance.setProcess( process );
-        assertEquals( ProcessInstance.STATE_PENDING,
+        assertEquals( InternalProcessInstance.STATE_PENDING,
                       processInstance.getState() );
 
         final RuleFlowGroupImpl ruleFlowGroup0 = (RuleFlowGroupImpl) agenda.getRuleFlowGroup( "rule-flow-group-0" );
@@ -275,7 +275,7 @@ public class RuleFlowGroupTest extends DroolsTestCase {
         // Activate process instance, the activations stay in the group,
         // but should now also be in the Agenda
         processInstance.start();
-        assertEquals( ProcessInstance.STATE_ACTIVE,
+        assertEquals( InternalProcessInstance.STATE_ACTIVE,
                       processInstance.getState() );
         assertEquals( 2,
                       ruleFlowGroup0.size() );
@@ -338,7 +338,7 @@ public class RuleFlowGroupTest extends DroolsTestCase {
                       ruleFlowGroup3.size() );
         assertEquals( 0,
                       agenda.agendaSize() );
-        assertEquals( ProcessInstance.STATE_COMPLETED,
+        assertEquals( InternalProcessInstance.STATE_COMPLETED,
                       processInstance.getState() );
     }
 
@@ -522,7 +522,7 @@ public class RuleFlowGroupTest extends DroolsTestCase {
         final RuleFlowProcessInstance processInstance = new RuleFlowProcessInstance();
         processInstance.setWorkingMemory( workingMemory );
         processInstance.setProcess( process );
-        assertEquals( ProcessInstance.STATE_PENDING,
+        assertEquals( InternalProcessInstance.STATE_PENDING,
                       processInstance.getState() );
 
         final RuleFlowGroupImpl ruleFlowGroup0 = (RuleFlowGroupImpl) agenda.getRuleFlowGroup( "rule-flow-group-0" );
@@ -605,7 +605,7 @@ public class RuleFlowGroupTest extends DroolsTestCase {
         // Activate process instance, the activations stay in the group,
         // but should now also be in the Agenda
         processInstance.start();
-        assertEquals( ProcessInstance.STATE_ACTIVE,
+        assertEquals( InternalProcessInstance.STATE_ACTIVE,
                       processInstance.getState() );
         assertEquals( 2,
                       ruleFlowGroup0.size() );
@@ -656,7 +656,7 @@ public class RuleFlowGroupTest extends DroolsTestCase {
                       ruleFlowGroup3.size() );
         assertEquals( 0,
                       agenda.agendaSize() );
-        assertEquals( ProcessInstance.STATE_COMPLETED,
+        assertEquals( InternalProcessInstance.STATE_COMPLETED,
                       processInstance.getState() );
     }
 }

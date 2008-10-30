@@ -6,6 +6,6 @@ package org.drools.process.instance;
  */
 public interface ProcessInstanceFactory {
     
-    ProcessInstance createProcessInstance();
+    InternalProcessInstance createProcessInstance();
 
 }

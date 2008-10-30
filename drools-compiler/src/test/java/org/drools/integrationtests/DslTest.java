@@ -13,11 +13,11 @@ import org.drools.Person;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
-import org.drools.WorkingMemory;
 import org.drools.compiler.PackageBuilder;
 import org.drools.lang.Expander;
 import org.drools.lang.dsl.DefaultExpanderResolver;
 import org.drools.rule.Package;
+import org.drools.WorkingMemory;
 
 public class DslTest extends TestCase {
     protected RuleBase getRuleBase() throws Exception {

@@ -23,10 +23,10 @@ import java.io.ObjectOutput;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.drools.WorkingMemory;
 import org.drools.marshalling.MarshallerReaderContext;
 import org.drools.marshalling.MarshallerWriteContext;
 import org.drools.reteoo.ObjectTypeConf;
+import org.drools.WorkingMemory;
 import org.drools.spi.FactHandleFactory;
 
 public abstract class AbstractFactHandleFactory

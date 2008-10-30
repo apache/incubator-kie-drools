@@ -2,6 +2,7 @@ package org.drools.testframework;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,10 +12,11 @@ import java.util.Map;
 import org.drools.Cheese;
 import org.drools.OuterFact;
 import org.drools.Person;
-import org.drools.WorkingMemory;
 import org.drools.base.ClassTypeResolver;
 import org.drools.base.TypeResolver;
 import org.drools.base.mvel.DroolsMVELFactory;
+import org.drools.base.mvel.MVELCalendarCoercion;
+import org.drools.base.mvel.MVELDateCoercion;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.guvnor.client.modeldriven.testing.ExecutionTrace;
@@ -28,8 +30,18 @@ import org.drools.guvnor.client.modeldriven.testing.VerifyField;
 import org.drools.guvnor.client.modeldriven.testing.VerifyRuleFired;
 import org.drools.guvnor.server.util.ScenarioXMLPersistence;
 import org.drools.rule.TimeMachine;
+import org.drools.WorkingMemory;
+import org.mvel.DataConversion;
 
 public class ScenarioRunnerTest extends RuleUnit {
+	
+    static {
+        try {
+			Class.forName( "org.drools.base.mvel.MVELCompilationUnit" );
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+    }   	
 
 	public void setUp() {
 		//needed when running stand alone to make sure the converters get loaded.

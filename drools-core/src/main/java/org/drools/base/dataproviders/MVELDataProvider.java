@@ -9,11 +9,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 
-import org.drools.WorkingMemory;
 import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.base.mvel.MVELCompileable;
 import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.rule.Declaration;
+import org.drools.WorkingMemory;
 import org.drools.spi.DataProvider;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;

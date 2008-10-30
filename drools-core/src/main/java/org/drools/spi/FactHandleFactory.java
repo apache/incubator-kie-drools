@@ -19,12 +19,12 @@ package org.drools.spi;
 import java.io.IOException;
 import java.io.Serializable;
 
-import org.drools.FactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.marshalling.MarshallerReaderContext;
 import org.drools.marshalling.MarshallerWriteContext;
 import org.drools.reteoo.ObjectTypeConf;
+import org.drools.runtime.rule.FactHandle;
 
 /**
  * Factory Interface to return new <code>FactHandle</code>s

@@ -1,7 +1,7 @@
 package org.drools.workflow.instance;
 
+import org.drools.knowledge.definitions.process.Node;
 import org.drools.process.instance.ContextInstance;
-import org.drools.workflow.core.Node;
 
 
 /*
@@ -28,17 +28,9 @@ import org.drools.workflow.core.Node;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public interface NodeInstance {
+public interface NodeInstance extends org.drools.process.instance.NodeInstance {
 
-    long getId();
-
-    long getNodeId();
-
-    WorkflowProcessInstance getProcessInstance();
-
-    NodeInstanceContainer getNodeInstanceContainer();
-    
-    void trigger(NodeInstance from, String type);
+    void trigger(org.drools.process.instance.NodeInstance from, String type);
 
     void cancel();
     

@@ -16,8 +16,8 @@ package org.drools.common;
  * limitations under the License.
  */
 
-import org.drools.FactHandle;
 import org.drools.base.ShadowProxy;
+import org.drools.runtime.rule.FactHandle;
 import org.drools.util.AbstractHashTable.ObjectComparator;
 
 import java.io.IOException;

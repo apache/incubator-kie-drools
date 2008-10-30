@@ -6,11 +6,11 @@ import java.io.ObjectOutput;
 import java.io.ObjectInput;
 import java.io.IOException;
 
-import org.drools.ObjectFilter;
 import org.drools.QueryResults;
 import org.drools.StatelessSessionResult;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.ObjectStore;
+import org.drools.runtime.ObjectFilter;
 import org.drools.spi.GlobalResolver;
 import org.drools.util.JavaIteratorAdapter;
 import org.drools.util.ObjectHashMap;

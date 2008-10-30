@@ -16,7 +16,7 @@ package org.drools.event;
  * limitations under the License.
  */
 
-import org.drools.process.instance.ProcessInstance;
+import org.drools.process.instance.InternalProcessInstance;
 
 /**
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
@@ -25,11 +25,11 @@ public class RuleFlowStartedEvent extends ProcessEvent {
 
     private static final long serialVersionUID = 400L;
 
-    public RuleFlowStartedEvent(final ProcessInstance instance) {
+    public RuleFlowStartedEvent(final InternalProcessInstance instance) {
         super( instance );
     }
 
     public String toString() {
-        return "==>[ProcessStarted(name=" + getProcessInstance().getProcess().getName() + "; id=" + getProcessInstance().getProcess().getId() + ")]";
+        return "==>[ProcessStarted(name=" + getProcessInstance().getProcessName() + "; id=" + getProcessInstance().getProcessId() + ")]";
     }
 }

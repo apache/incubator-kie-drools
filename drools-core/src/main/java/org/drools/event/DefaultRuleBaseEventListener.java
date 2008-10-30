@@ -19,6 +19,13 @@ import java.io.ObjectInput;
  * limitations under the License.
  */
 
+import org.drools.event.AfterFunctionRemovedEvent;
+import org.drools.event.AfterRuleAddedEvent;
+import org.drools.event.AfterRuleRemovedEvent;
+import org.drools.event.BeforeFunctionRemovedEvent;
+import org.drools.event.BeforeRuleAddedEvent;
+import org.drools.event.BeforeRuleRemovedEvent;
+
 
 public class DefaultRuleBaseEventListener
     implements

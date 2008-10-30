@@ -1,9 +1,9 @@
 package org.drools.workflow.instance.impl.factory;
 
-import org.drools.workflow.core.Node;
-import org.drools.workflow.instance.NodeInstance;
-import org.drools.workflow.instance.NodeInstanceContainer;
-import org.drools.workflow.instance.WorkflowProcessInstance;
+import org.drools.knowledge.definitions.process.Node;
+import org.drools.process.instance.NodeInstance;
+import org.drools.process.instance.NodeInstanceContainer;
+import org.drools.process.instance.WorkflowProcessInstance;
 import org.drools.workflow.instance.impl.NodeInstanceFactory;
 import org.drools.workflow.instance.impl.NodeInstanceImpl;
 
@@ -16,7 +16,8 @@ public class ReuseNodeFactory implements NodeInstanceFactory {
     }
 
 	public NodeInstance getNodeInstance(Node node, WorkflowProcessInstance processInstance, NodeInstanceContainer nodeInstanceContainer) {    	
-        NodeInstance result = nodeInstanceContainer.getFirstNodeInstance( node.getId() );
+        NodeInstance result = ((org.drools.workflow.instance.NodeInstanceContainer)
+    		nodeInstanceContainer).getFirstNodeInstance( node.getId() );
         if (result != null) {
             return result;
         }

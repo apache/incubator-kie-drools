@@ -29,17 +29,17 @@ import org.drools.Agenda;
 import org.drools.common.EventSupport;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.knowledge.definitions.process.Node;
+import org.drools.knowledge.definitions.process.NodeContainer;
+import org.drools.knowledge.definitions.process.WorkflowProcess;
 import org.drools.process.instance.EventListener;
-import org.drools.process.instance.ProcessInstance;
+import org.drools.process.instance.InternalProcessInstance;
+import org.drools.process.instance.NodeInstance;
+import org.drools.process.instance.NodeInstanceContainer;
+import org.drools.process.instance.WorkflowProcessInstance;
 import org.drools.process.instance.impl.ProcessInstanceImpl;
-import org.drools.workflow.core.Node;
-import org.drools.workflow.core.NodeContainer;
-import org.drools.workflow.core.WorkflowProcess;
 import org.drools.workflow.core.node.EventNode;
 import org.drools.workflow.core.node.EventNodeInterface;
-import org.drools.workflow.instance.NodeInstance;
-import org.drools.workflow.instance.NodeInstanceContainer;
-import org.drools.workflow.instance.WorkflowProcessInstance;
 import org.drools.workflow.instance.node.EventBasedNodeInstance;
 import org.drools.workflow.instance.node.EventBasedNodeInstanceInterface;
 import org.drools.workflow.instance.node.EventNodeInstance;
@@ -51,261 +51,280 @@ import org.drools.workflow.instance.node.EventNodeInstanceInterface;
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
-        implements WorkflowProcessInstance {
+		implements WorkflowProcessInstance,
+		org.drools.workflow.instance.NodeInstanceContainer {
 
-    private static final long serialVersionUID = 400L;
+	private static final long serialVersionUID = 400L;
 
-    private final List<NodeInstance> nodeInstances = new ArrayList<NodeInstance>();;
-    private long nodeInstanceCounter = 0;
-    private Map<String, List<EventListener>> eventListeners = new HashMap<String, List<EventListener>>();
-    private Map<String, List<EventListener>> externalEventListeners = new HashMap<String, List<EventListener>>();
+	private final List<NodeInstance> nodeInstances = new ArrayList<NodeInstance>();;
+	private long nodeInstanceCounter = 0;
+	private Map<String, List<EventListener>> eventListeners = new HashMap<String, List<EventListener>>();
+	private Map<String, List<EventListener>> externalEventListeners = new HashMap<String, List<EventListener>>();
 
-    public NodeContainer getNodeContainer() {
-        return getWorkflowProcess();
-    }
-
-    public void addNodeInstance(final NodeInstance nodeInstance) {
-        ((NodeInstanceImpl) nodeInstance).setId(nodeInstanceCounter++);
-        this.nodeInstances.add(nodeInstance);
-    }
-
-    public void removeNodeInstance(final NodeInstance nodeInstance) {
-        if (((NodeInstanceImpl) nodeInstance).isInversionOfControl()) {
-            getWorkingMemory().retract(getWorkingMemory().getFactHandle(nodeInstance));
-        }
-        this.nodeInstances.remove(nodeInstance);
-    }
-
-    public Collection<NodeInstance> getNodeInstances() {
-        return getNodeInstances(false);
-    }
-    
-    public Collection<NodeInstance> getNodeInstances(boolean recursive) {
-        Collection<NodeInstance> result = nodeInstances;
-        if (recursive) {
-            result = new ArrayList<NodeInstance>(result);
-            for (Iterator<NodeInstance> iterator = nodeInstances.iterator(); iterator.hasNext(); ) {
-                NodeInstance nodeInstance = iterator.next();
-                if (nodeInstance instanceof NodeInstanceContainer) {
-                    result.addAll(((NodeInstanceContainer) nodeInstance).getNodeInstances(true));
-                }
-            }
-        }
-        return Collections.unmodifiableCollection(result);
-    }
-
-    public NodeInstance getFirstNodeInstance(final long nodeId) {
-        for ( final Iterator<NodeInstance> iterator = this.nodeInstances.iterator(); iterator.hasNext(); ) {
-            final NodeInstance nodeInstance = iterator.next();
-            if ( nodeInstance.getNodeId() == nodeId ) {
-                return nodeInstance;
-            }
-        }
-        return null;
-    }
-
-    public List<NodeInstance> getNodeInstances(final long nodeId) {
-    	List<NodeInstance> result = new ArrayList<NodeInstance>();
-        for ( final Iterator<NodeInstance> iterator = this.nodeInstances.iterator(); iterator.hasNext(); ) {
-            final NodeInstance nodeInstance = iterator.next();
-            if ( nodeInstance.getNodeId() == nodeId ) {
-                result.add(nodeInstance);
-            }
-        }
-        return result;
-    }
-
-    public NodeInstance getNodeInstance(final Node node) {
-        NodeInstanceFactoryRegistry nodeRegistry =
-            ((InternalRuleBase) getWorkingMemory().getRuleBase())
-                .getConfiguration().getProcessNodeInstanceFactoryRegistry();
-        NodeInstanceFactory conf = nodeRegistry.getProcessNodeInstanceFactory(node);
-        if (conf == null) {
-            throw new IllegalArgumentException("Illegal node type: " + node.getClass());
-        }
-        NodeInstanceImpl nodeInstance = (NodeInstanceImpl) conf.getNodeInstance(node, this, this);
-        if (nodeInstance == null) {
-            throw new IllegalArgumentException("Illegal node type: " + node.getClass());
-        }
-        if (((NodeInstanceImpl) nodeInstance).isInversionOfControl()) {
-            getWorkingMemory().insert(nodeInstance);
-        }
-        return nodeInstance;
-    }
-    
-    public long getNodeInstanceCounter() {
-    	return nodeInstanceCounter;
-    }
-    
-    public void internalSetNodeInstanceCounter(long nodeInstanceCounter) {
-    	this.nodeInstanceCounter = nodeInstanceCounter;
-    }
-
-    public Agenda getAgenda() {
-        if ( getWorkingMemory() == null ) {
-            return null;
-        }
-        return getWorkingMemory().getAgenda();
-    }
-
-    public WorkflowProcess getWorkflowProcess() {
-        return (WorkflowProcess) getProcess();
-    }
-    
-    public void setState(final int state) {
-    	synchronized (this) {
-	        super.setState( state );
-	        // TODO move most of this to ProcessInstanceImpl
-	        if ( state == ProcessInstance.STATE_COMPLETED 
-	                || state == ProcessInstance.STATE_ABORTED ) {
-	            InternalWorkingMemory workingMemory = (InternalWorkingMemory) getWorkingMemory();
-	            ((EventSupport) getWorkingMemory()).getRuleFlowEventSupport()
-	                .fireBeforeRuleFlowProcessCompleted( this, workingMemory );
-	            // deactivate all node instances of this process instance
-	            while ( !nodeInstances.isEmpty() ) {
-	                NodeInstance nodeInstance = (NodeInstance) nodeInstances.get( 0 );
-	                nodeInstance.cancel();
-	            }
-	            removeEventListeners();
-	            workingMemory.removeProcessInstance( this );
-	            ((EventSupport) workingMemory).getRuleFlowEventSupport()
-	                .fireAfterRuleFlowProcessCompleted( this, workingMemory );
-	            
-				String type = "processInstanceCompleted:" + getId();
-				workingMemory.getSignalManager().signalEvent(type, this);
-	        }
-    	}
-    }
-
-    public void disconnect() {
-        removeEventListeners();
-        for (NodeInstance nodeInstance: nodeInstances) {
-            if (nodeInstance instanceof EventBasedNodeInstance) {
-                ((EventBasedNodeInstance) nodeInstance).removeEventListeners();
-            }
-        }
-        super.disconnect();
-    }
-    
-    public void reconnect() {
-        super.reconnect();
-        for (NodeInstance nodeInstance: nodeInstances) {
-            if (nodeInstance instanceof EventBasedNodeInstanceInterface) {
-                ((EventBasedNodeInstanceInterface) nodeInstance).addEventListeners();
-            }
-        }
-        addEventListeners();
-    }
-    
-    public String toString() {
-        final StringBuffer sb = new StringBuffer( "WorkflowProcessInstance" );
-        sb.append( getId() );
-        sb.append( " [processId=" );
-        sb.append( getProcess().getId() );
-        sb.append( ",state=" );
-        sb.append( getState() );
-        sb.append( "]" );
-        return sb.toString();
-    }
-    
-    public void start() {
-    	synchronized (this) {
-    		registerExternalEventNodeListeners();
-    		super.start();
-    	}
+	public NodeContainer getNodeContainer() {
+		return getWorkflowProcess();
 	}
-    
-    private void registerExternalEventNodeListeners() {
-    	for (Node node: getWorkflowProcess().getNodes()) {
-			if (node instanceof EventNode) {
-				if ("external".equals(((EventNode) node).getScope())) {
-					addEventListener(((EventNode) node).getType(), new EventListener() {
-						public String[] getEventTypes() {
-							return null;
-						}
-						public void signalEvent(String type, Object event) {
-						}
-					}, true);
+
+	public void addNodeInstance(final NodeInstance nodeInstance) {
+		((NodeInstanceImpl) nodeInstance).setId(nodeInstanceCounter++);
+		this.nodeInstances.add(nodeInstance);
+	}
+
+	public void removeNodeInstance(final NodeInstance nodeInstance) {
+		if (((NodeInstanceImpl) nodeInstance).isInversionOfControl()) {
+			getWorkingMemory().retract(
+					getWorkingMemory().getFactHandle(nodeInstance));
+		}
+		this.nodeInstances.remove(nodeInstance);
+	}
+
+	public Collection<NodeInstance> getNodeInstances() {
+		return getNodeInstances(false);
+	}
+
+	public Collection<NodeInstance> getNodeInstances(boolean recursive) {
+		Collection<NodeInstance> result = nodeInstances;
+		if (recursive) {
+			result = new ArrayList<NodeInstance>(result);
+			for (Iterator<NodeInstance> iterator = nodeInstances.iterator(); iterator
+					.hasNext();) {
+				NodeInstance nodeInstance = iterator.next();
+				if (nodeInstance instanceof NodeInstanceContainer) {
+					result
+							.addAll(((org.drools.workflow.instance.NodeInstanceContainer) nodeInstance)
+									.getNodeInstances(true));
 				}
 			}
-    	}
-    }
-    
-    public void signalEvent(String type, Object event) {
-    	synchronized (this) {
-	    	List<EventListener> listeners = eventListeners.get(type);
-	    	if (listeners != null) {
-	    		for (EventListener listener: listeners) {
-	    			listener.signalEvent(type, event);
-	    		}
-	    	}
-	    	listeners = externalEventListeners.get(type);
-	    	if (listeners != null) {
-	    		for (EventListener listener: listeners) {
-	    			listener.signalEvent(type, event);
-	    		}
-	    	}
-	    	for (Node node: getWorkflowProcess().getNodes()) {
-				if (node instanceof EventNodeInterface) {
-					if (((EventNodeInterface) node).acceptsEvent(type, event)) {
-						if (node instanceof EventNode) {
-	    					EventNodeInstance eventNodeInstance = (EventNodeInstance) getNodeInstance(node);
-	    					eventNodeInstance.signalEvent(type, event);
-						} else {
-	    					List<NodeInstance> nodeInstances = getNodeInstances(node.getId());
-	    					if (nodeInstances != null && !nodeInstances.isEmpty()) {
-	    						for (NodeInstance nodeInstance: nodeInstances) {
-	    							((EventNodeInstanceInterface) nodeInstance).signalEvent(type, event);
-	    						}
-	    					}
+		}
+		return Collections.unmodifiableCollection(result);
+	}
+
+	public NodeInstance getFirstNodeInstance(final long nodeId) {
+		for (final Iterator<NodeInstance> iterator = this.nodeInstances
+				.iterator(); iterator.hasNext();) {
+			final NodeInstance nodeInstance = iterator.next();
+			if (nodeInstance.getNodeId() == nodeId) {
+				return nodeInstance;
+			}
+		}
+		return null;
+	}
+
+	public List<NodeInstance> getNodeInstances(final long nodeId) {
+		List<NodeInstance> result = new ArrayList<NodeInstance>();
+		for (final Iterator<NodeInstance> iterator = this.nodeInstances
+				.iterator(); iterator.hasNext();) {
+			final NodeInstance nodeInstance = iterator.next();
+			if (nodeInstance.getNodeId() == nodeId) {
+				result.add(nodeInstance);
+			}
+		}
+		return result;
+	}
+
+	public NodeInstance getNodeInstance(final Node node) {
+		NodeInstanceFactoryRegistry nodeRegistry = ((InternalRuleBase) getWorkingMemory()
+				.getRuleBase()).getConfiguration()
+				.getProcessNodeInstanceFactoryRegistry();
+		NodeInstanceFactory conf = nodeRegistry
+				.getProcessNodeInstanceFactory(node);
+		if (conf == null) {
+			throw new IllegalArgumentException("Illegal node type: "
+					+ node.getClass());
+		}
+		NodeInstanceImpl nodeInstance = (NodeInstanceImpl) conf
+				.getNodeInstance(node, this, this);
+		if (nodeInstance == null) {
+			throw new IllegalArgumentException("Illegal node type: "
+					+ node.getClass());
+		}
+		if (((NodeInstanceImpl) nodeInstance).isInversionOfControl()) {
+			getWorkingMemory().insert(nodeInstance);
+		}
+		return nodeInstance;
+	}
+
+
+	public long getNodeInstanceCounter() {
+		return nodeInstanceCounter;
+	}
+
+	public void internalSetNodeInstanceCounter(long nodeInstanceCounter) {
+		this.nodeInstanceCounter = nodeInstanceCounter;
+	}
+
+	public Agenda getAgenda() {
+		if (getWorkingMemory() == null) {
+			return null;
+		}
+		return getWorkingMemory().getAgenda();
+	}
+
+	public WorkflowProcess getWorkflowProcess() {
+		return (WorkflowProcess) getProcess();
+	}
+
+	public void setState(final int state) {
+		super.setState(state);
+		// TODO move most of this to ProcessInstanceImpl
+		if (state == InternalProcessInstance.STATE_COMPLETED
+				|| state == InternalProcessInstance.STATE_ABORTED) {
+			InternalWorkingMemory workingMemory = (InternalWorkingMemory) getWorkingMemory();
+			((EventSupport) getWorkingMemory()).getRuleFlowEventSupport()
+					.fireBeforeRuleFlowProcessCompleted(this, workingMemory);
+			// deactivate all node instances of this process instance
+			while (!nodeInstances.isEmpty()) {
+				NodeInstance nodeInstance = nodeInstances.get(0);
+				((org.drools.workflow.instance.NodeInstance) nodeInstance)
+						.cancel();
+			}
+			removeEventListeners();
+			workingMemory.removeProcessInstance(this);
+			((EventSupport) workingMemory).getRuleFlowEventSupport()
+					.fireAfterRuleFlowProcessCompleted(this, workingMemory);
+
+			String type = "processInstanceCompleted:" + getId();
+			workingMemory.getSignalManager().signalEvent(type, this);
+		}
+	}
+
+	public void disconnect() {
+		removeEventListeners();
+		for (NodeInstance nodeInstance : nodeInstances) {
+			if (nodeInstance instanceof EventBasedNodeInstance) {
+				((EventBasedNodeInstance) nodeInstance).removeEventListeners();
+			}
+		}
+		super.disconnect();
+	}
+
+	public void reconnect() {
+		super.reconnect();
+		for (NodeInstance nodeInstance : nodeInstances) {
+			if (nodeInstance instanceof EventBasedNodeInstanceInterface) {
+				((EventBasedNodeInstanceInterface) nodeInstance)
+						.addEventListeners();
+			}
+		}
+		addEventListeners();
+	}
+
+	public String toString() {
+		final StringBuffer sb = new StringBuffer("WorkflowProcessInstance");
+		sb.append(getId());
+		sb.append(" [processId=");
+		sb.append(getProcess().getId());
+		sb.append(",state=");
+		sb.append(getState());
+		sb.append("]");
+		return sb.toString();
+	}
+
+	public void start() {
+		registerExternalEventNodeListeners();
+		super.start();
+	}
+
+	private void registerExternalEventNodeListeners() {
+		for (Node node : getWorkflowProcess().getNodes()) {
+			if (node instanceof EventNode) {
+				if ("external".equals(((EventNode) node).getScope())) {
+					addEventListener(((EventNode) node).getType(),
+							new EventListener() {
+								public String[] getEventTypes() {
+									return null;
+								}
+
+								public void signalEvent(String type,
+										Object event) {
+								}
+							}, true);
+				}
+			}
+		}
+	}
+
+	public void signalEvent(String type, Object event) {
+		List<EventListener> listeners = eventListeners.get(type);
+		if (listeners != null) {
+			for (EventListener listener : listeners) {
+				listener.signalEvent(type, event);
+			}
+		}
+		listeners = externalEventListeners.get(type);
+		if (listeners != null) {
+			for (EventListener listener : listeners) {
+				listener.signalEvent(type, event);
+			}
+		}
+		for (Node node : getWorkflowProcess().getNodes()) {
+			if (node instanceof EventNodeInterface) {
+				if (((EventNodeInterface) node).acceptsEvent(type, event)) {
+					if (node instanceof EventNode) {
+						EventNodeInstance eventNodeInstance = (EventNodeInstance) getNodeInstance(node);
+						eventNodeInstance.signalEvent(type, event);
+					} else {
+						List<NodeInstance> nodeInstances = getNodeInstances(node
+								.getId());
+						if (nodeInstances != null && !nodeInstances.isEmpty()) {
+							for (NodeInstance nodeInstance : nodeInstances) {
+								((EventNodeInstanceInterface) nodeInstance)
+										.signalEvent(type, event);
+							}
 						}
 					}
 				}
 			}
 		}
 	}
-    
-    public void addEventListener(String type, EventListener listener, boolean external) {
-    	Map<String, List<EventListener>> eventListeners =
-    		external ? this.externalEventListeners : this.eventListeners;
-    	List<EventListener> listeners = eventListeners.get(type);
-    	if (listeners == null) {
-    		listeners = new CopyOnWriteArrayList<EventListener>();
-    		eventListeners.put(type, listeners);
-    		if (external) {
-    			getWorkingMemory().getSignalManager().addEventListener(type, this);
-    		}
-    	}
-        listeners.add(listener);
-    }
-    
-    public void removeEventListener(String type, EventListener listener, boolean external) {
-    	Map<String, List<EventListener>> eventListeners =
-    		external ? this.externalEventListeners : this.eventListeners;
-    	List<EventListener> listeners = eventListeners.get(type);
-    	if (listeners != null) {
-    		listeners.remove(listener);
-    		if (listeners.isEmpty()) {
-    			eventListeners.remove(type);
-    			if (external) {
-    				getWorkingMemory().getSignalManager().removeEventListener(type, this);
-    			}
-    		}
-    	}
-    }
-    
+
+	public void addEventListener(String type, EventListener listener,
+			boolean external) {
+		Map<String, List<EventListener>> eventListeners = external ? this.externalEventListeners
+				: this.eventListeners;
+		List<EventListener> listeners = eventListeners.get(type);
+		if (listeners == null) {
+			listeners = new CopyOnWriteArrayList<EventListener>();
+			eventListeners.put(type, listeners);
+			if (external) {
+				getWorkingMemory().getSignalManager().addEventListener(type,
+						this);
+			}
+		}
+		listeners.add(listener);
+	}
+
+	public void removeEventListener(String type, EventListener listener,
+			boolean external) {
+		Map<String, List<EventListener>> eventListeners = external ? this.externalEventListeners
+				: this.eventListeners;
+		List<EventListener> listeners = eventListeners.get(type);
+		if (listeners != null) {
+			listeners.remove(listener);
+			if (listeners.isEmpty()) {
+				eventListeners.remove(type);
+				if (external) {
+					getWorkingMemory().getSignalManager().removeEventListener(
+							type, this);
+				}
+			}
+		}
+	}
+
 	private void addEventListeners() {
 		registerExternalEventNodeListeners();
-    }
-    
-    private void removeEventListeners() {
-    	for (String type: externalEventListeners.keySet()) {
-			getWorkingMemory().getSignalManager().removeEventListener(type, this);
+	}
+
+	private void removeEventListeners() {
+		for (String type : externalEventListeners.keySet()) {
+			getWorkingMemory().getSignalManager().removeEventListener(type,
+					this);
 		}
-    }
-    
-    public String[] getEventTypes() {
-    	return externalEventListeners.keySet().toArray(new String[externalEventListeners.size()]);
-    }
-    
+	}
+
+	public String[] getEventTypes() {
+		return externalEventListeners.keySet().toArray(
+				new String[externalEventListeners.size()]);
+	}
+
 }

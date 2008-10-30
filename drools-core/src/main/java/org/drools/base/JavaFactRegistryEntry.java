@@ -3,7 +3,7 @@
  */
 package org.drools.base;
 
-import org.drools.FactHandle;
+import org.drools.runtime.rule.FactHandle;
 import org.drools.WorkingMemory;
 
 public class JavaFactRegistryEntry {

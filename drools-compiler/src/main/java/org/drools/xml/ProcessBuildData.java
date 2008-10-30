@@ -6,8 +6,9 @@ package org.drools.xml;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.process.core.Process;
 import org.drools.workflow.core.Node;
+
+import  org.drools.knowledge.definitions.process.Process;
 
 public class ProcessBuildData {
     

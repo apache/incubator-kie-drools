@@ -23,6 +23,7 @@ import java.util.NoSuchElementException;
 
 import org.drools.rule.Declaration;
 import org.drools.rule.Query;
+import org.drools.WorkingMemory;
 import org.drools.spi.Tuple;
 
 /**

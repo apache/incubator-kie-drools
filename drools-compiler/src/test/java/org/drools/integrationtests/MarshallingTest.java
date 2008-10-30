@@ -29,7 +29,6 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
-import org.drools.WorkingMemory;
 import org.drools.base.ClassObjectType;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
@@ -44,6 +43,7 @@ import org.drools.reteoo.RuleTerminalNode;
 import org.drools.rule.MapBackedClassLoader;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
+import org.drools.WorkingMemory;
 import org.drools.spi.GlobalResolver;
 import org.drools.util.DroolsStreamUtils;
 

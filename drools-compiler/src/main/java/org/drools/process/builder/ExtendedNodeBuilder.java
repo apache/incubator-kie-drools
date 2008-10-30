@@ -3,12 +3,12 @@ package org.drools.process.builder;
 import java.util.List;
 
 import org.drools.compiler.Dialect;
+import org.drools.knowledge.definitions.process.Node;
+import org.drools.knowledge.definitions.process.Process;
 import org.drools.lang.descr.ActionDescr;
 import org.drools.lang.descr.ProcessDescr;
-import org.drools.process.core.Process;
 import org.drools.rule.builder.ProcessBuildContext;
 import org.drools.workflow.core.DroolsAction;
-import org.drools.workflow.core.Node;
 import org.drools.workflow.core.impl.DroolsConsequenceAction;
 import org.drools.workflow.core.impl.ExtendedNodeImpl;
 

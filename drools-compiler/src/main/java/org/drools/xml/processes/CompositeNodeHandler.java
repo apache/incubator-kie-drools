@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.knowledge.definitions.process.Connection;
 import org.drools.process.core.context.exception.ExceptionScope;
 import org.drools.process.core.context.variable.Variable;
 import org.drools.process.core.context.variable.VariableScope;
-import org.drools.workflow.core.Connection;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.CompositeContextNode;
 import org.drools.workflow.core.node.CompositeNode;
@@ -82,12 +82,13 @@ public class CompositeNodeHandler extends AbstractNodeHandler {
     }
     
     protected List<Node> getSubNodes(CompositeNode compositeNode) {
-    	List<Node> subNodes = new ArrayList<Node>();
-        for (Node subNode: compositeNode.getNodes()) {
+    	List<Node> subNodes =
+    		new ArrayList<Node>();
+        for (org.drools.knowledge.definitions.process.Node subNode: compositeNode.getNodes()) {
         	// filter out composite start and end nodes as they can be regenerated
         	if ((!(subNode instanceof CompositeNode.CompositeNodeStart)) &&
     			(!(subNode instanceof CompositeNode.CompositeNodeEnd))) {
-        		subNodes.add(subNode);
+        		subNodes.add((Node) subNode);
         	}
         }
         return subNodes;
@@ -95,7 +96,7 @@ public class CompositeNodeHandler extends AbstractNodeHandler {
     
     protected List<Connection> getSubConnections(CompositeNode compositeNode) {
     	List<Connection> connections = new ArrayList<Connection>();
-        for (Node subNode: compositeNode.getNodes()) {
+        for (org.drools.knowledge.definitions.process.Node subNode: compositeNode.getNodes()) {
         	// filter out composite start and end nodes as they can be regenerated
             if (!(subNode instanceof CompositeNode.CompositeNodeEnd)) {
                 for (Connection connection: subNode.getIncomingConnections(Node.CONNECTION_DEFAULT_TYPE)) {

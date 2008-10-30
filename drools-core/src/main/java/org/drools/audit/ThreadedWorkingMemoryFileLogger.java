@@ -1,8 +1,8 @@
 package org.drools.audit;
 
-import org.drools.WorkingMemory;
 import org.drools.WorkingMemoryEventManager;
 import org.drools.audit.event.LogEvent;
+import org.drools.WorkingMemory;
 
 public class ThreadedWorkingMemoryFileLogger extends WorkingMemoryFileLogger {
     

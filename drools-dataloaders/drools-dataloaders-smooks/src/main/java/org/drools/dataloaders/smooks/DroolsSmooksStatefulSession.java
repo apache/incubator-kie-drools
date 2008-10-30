@@ -6,9 +6,9 @@ import java.util.Map;
 
 import javax.xml.transform.Source;
 
-import org.drools.FactHandle;
 import org.drools.StatefulSession;
 import org.drools.common.InternalRuleBase;
+import org.drools.runtime.rule.FactHandle;
 import org.milyn.Smooks;
 import org.milyn.container.ExecutionContext;
 import org.milyn.payload.JavaResult;

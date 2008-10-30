@@ -8,7 +8,6 @@ import junit.framework.TestCase;
 import org.drools.Cheese;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
-import org.drools.WorkingMemory;
 import org.drools.base.mvel.MVELCompileable;
 import org.drools.common.InternalFactHandle;
 import org.drools.compiler.DialectCompiletimeRegistry;
@@ -24,6 +23,7 @@ import org.drools.reteoo.MockLeftTupleSink;
 import org.drools.rule.Accumulate;
 import org.drools.rule.Package;
 import org.drools.rule.builder.RuleBuildContext;
+import org.drools.WorkingMemory;
 
 public class MVELAccumulateBuilderTest extends TestCase {
 

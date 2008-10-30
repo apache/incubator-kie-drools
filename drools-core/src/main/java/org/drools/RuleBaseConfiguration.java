@@ -33,7 +33,7 @@ import org.drools.common.ArrayAgendaGroupFactory;
 import org.drools.common.PriorityQueueAgendaGroupFactory;
 import org.drools.process.core.Context;
 import org.drools.process.core.ParameterDefinition;
-import org.drools.process.core.Process;
+import org.drools.knowledge.definitions.process.Process;
 import org.drools.process.core.WorkDefinition;
 import org.drools.process.core.datatype.DataType;
 import org.drools.process.core.impl.ParameterDefinitionImpl;
@@ -94,6 +94,7 @@ import org.mvel.MVEL;
  */
 public class RuleBaseConfiguration
     implements
+    KnowledgeBaseConfiguration,
     Externalizable {
     private static final long              serialVersionUID = 400L;
 
@@ -539,7 +540,7 @@ public class RuleBaseConfiguration
     public boolean isMultithreadEvaluation() {
         return this.multithread;
     }
-
+    
     /**
      * If multi-thread evaluation is enabled, this parameter configures the 
      * maximum number of threads each session can use for concurrent Rete
@@ -550,10 +551,10 @@ public class RuleBaseConfiguration
      *                   of threads equal to the number of partitions in the
      *                   rule base. Default number of threads is 0. 
      */
-    public void setMaxThreads(final int maxThreads) {
-        this.maxThreads = maxThreads;
+    public void setMaxThreads( final int maxThreads ) {
+    	this.maxThreads = maxThreads;
     }
-
+    
     /**
      * Returns the configured number of maximum threads to use for concurrent
      * propagation when multi-thread evaluation is enabled. Default is zero.
@@ -561,7 +562,7 @@ public class RuleBaseConfiguration
      * @return
      */
     public int getMaxThreads() {
-        return this.maxThreads;
+    	return this.maxThreads;
     }
 
     private void initProcessNodeInstanceFactoryRegistry() {

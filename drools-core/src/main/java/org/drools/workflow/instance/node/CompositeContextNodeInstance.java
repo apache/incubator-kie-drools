@@ -10,6 +10,7 @@ import org.drools.process.core.Context;
 import org.drools.process.core.ContextContainer;
 import org.drools.process.instance.ContextInstance;
 import org.drools.process.instance.ContextInstanceContainer;
+import org.drools.process.instance.InternalProcessInstance;
 import org.drools.process.instance.impl.ContextInstanceFactory;
 import org.drools.process.instance.impl.ContextInstanceFactoryRegistry;
 import org.drools.workflow.core.node.CompositeContextNode;
@@ -73,7 +74,8 @@ public class CompositeContextNodeInstance extends CompositeNodeInstance implemen
 
     public ContextInstance getContextInstance(final Context context) {
         ContextInstanceFactoryRegistry contextRegistry =
-            ((InternalRuleBase) getProcessInstance().getWorkingMemory().getRuleBase())
+            ((InternalRuleBase) ((InternalProcessInstance) getProcessInstance())
+        		.getWorkingMemory().getRuleBase())
                 .getConfiguration().getProcessContextInstanceFactoryRegistry();
         ContextInstanceFactory conf = contextRegistry.getContextInstanceFactory(context);
         if (conf == null) {

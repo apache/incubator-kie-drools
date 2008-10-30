@@ -18,8 +18,10 @@ package org.drools.compiler;
 
 import java.beans.IntrospectionException;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -54,7 +56,7 @@ import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.TypeFieldDescr;
-import org.drools.process.core.Process;
+import org.drools.knowledge.definitions.process.Process;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.rule.CompositeClassLoader;
 import org.drools.rule.JavaDialectRuntimeData;
@@ -110,6 +112,8 @@ public class PackageBuilder {
     private CompositeClassLoader         rootClassLoader;
 
     private Map<String, Class>           globals;
+
+    private String                       url;
 
     /**
      * Use this when package is starting from scratch.
@@ -255,6 +259,13 @@ public class PackageBuilder {
         }
     }
 
+    public void addPackageFromDrl(final URL url) throws DroolsParserException,
+                                                IOException {
+        this.url = url.toExternalForm();
+        addPackageFromDrl( new InputStreamReader( url.openStream() ) );
+        this.url = null;
+    }
+
     /**
      * Load a rule package from XML source.
      * 
@@ -274,6 +285,12 @@ public class PackageBuilder {
         }
 
         addPackage( xmlReader.getPackageDescr() );
+    }
+
+    public void addPackageFromXml(final URL url) throws DroolsParserException,
+                                                IOException {
+        this.url = url.toExternalForm();
+        addPackageFromXml( new InputStreamReader( url.openStream() ) );
     }
 
     /**
@@ -302,28 +319,23 @@ public class PackageBuilder {
      * Add a ruleflow (.rfm) asset to this package.
      */
     public void addRuleFlow(Reader processSource) {
-        ProcessBuilder processBuilder = new ProcessBuilder( this );
-
-        try {
-            processBuilder.addProcessFromFile( processSource );
-            this.results.addAll( processBuilder.getErrors() );
-        } catch ( Exception e ) {
-            if ( e instanceof RuntimeException ) {
-                throw (RuntimeException) e;
-            }
-            this.results.add( new RuleFlowLoadError( "Unable to load the rule flow.",
-                                                     e ) );
-        }
-
-        this.results = getResults( this.results );
+        addProcessFromXml( processSource );
     }
 
-    public void addProcessFromXml(Reader reader) {
-        ProcessBuilder processBuilder = new ProcessBuilder( this );
-        XmlProcessReader xmlReader = new XmlProcessReader( this.configuration.getSemanticModules() );
+    public void addProcessFromXml(URL processSource) {
+        this.url = processSource.toExternalForm();
         try {
-            Process process = xmlReader.read( reader );
-            processBuilder.buildProcess( process );
+            addProcessFromXml( new InputStreamReader( processSource.openStream() ) );
+        } catch ( IOException e ) {
+            throw new RuntimeException( e );
+        }
+        this.url = null;
+    }
+    
+    public void addProcessFromXml(Reader processSource) {
+        ProcessBuilder processBuilder = new ProcessBuilder( this );
+        try {
+            processBuilder.addProcessFromFile( processSource, url );
             this.results.addAll( processBuilder.getErrors() );
         } catch ( Exception e ) {
             if ( e instanceof RuntimeException ) {
@@ -762,6 +774,7 @@ public class PackageBuilder {
     }
 
     private void addFunction(final FunctionDescr functionDescr) {
+        functionDescr.setUrl( this.url );
         PackageRegistry pkgRegistry = this.pkgRegistryMap.get( functionDescr.getNamespace() );
         Dialect dialect = pkgRegistry.getDialectCompiletimeRegistry().getDialect( functionDescr.getDialect() );
         dialect.addFunction( functionDescr,
@@ -809,6 +822,7 @@ public class PackageBuilder {
 
     private void addRule(final RuleDescr ruleDescr) {
         // this.dialect.init( ruleDescr );
+        ruleDescr.setUrl( url );
 
         if ( ruleDescr instanceof QueryDescr ) {
             // ruleDescr.getLhs().insertDescr( 0, baseDescr );
@@ -825,6 +839,8 @@ public class PackageBuilder {
         this.ruleBuilder.build( context );
 
         this.results.addAll( context.getErrors() );
+
+        context.getRule().setUrl( url );
 
         context.getDialect().addRule( context );
 

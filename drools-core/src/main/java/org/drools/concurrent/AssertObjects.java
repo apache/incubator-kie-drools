@@ -47,7 +47,7 @@ public class AssertObjects
                 for ( int i = 0; i < objects.length; i++ ) {
                     this.results.add( workingMemory.insert( objects[i] ) );
                 }
-            } else if ( this.object instanceof List ) {
+            } else if ( this.object instanceof Iterable<?> ) {
                 final List list = (List) this.object;
                 this.results = new ArrayList( list.size() );
                 for ( final Iterator it = list.iterator(); it.hasNext(); ) {

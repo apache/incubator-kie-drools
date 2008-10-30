@@ -16,7 +16,7 @@ package org.drools;
  * limitations under the License.
  */
 
-import org.drools.process.core.Process;
+import org.drools.knowledge.definitions.process.Process;
 import org.drools.rule.Rule;
 
 /**

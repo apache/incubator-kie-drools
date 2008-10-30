@@ -19,10 +19,11 @@ package org.drools.spi;
 import java.io.Serializable;
 
 import org.drools.FactException;
-import org.drools.FactHandle;
-import org.drools.WorkingMemory;
 import org.drools.rule.Declaration;
 import org.drools.rule.Rule;
+import org.drools.runtime.rule.FactHandle;
+import org.drools.runtime.rule.RuleContext;
+import org.drools.WorkingMemory;
 
 /**
  * KnowledgeHelper implementation types are injected into consequenses
@@ -39,6 +40,7 @@ import org.drools.rule.Rule;
  */
 public interface KnowledgeHelper
     extends
+    RuleContext,
     Serializable {
     
     public void setActivation(final Activation agendaItem); 

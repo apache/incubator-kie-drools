@@ -3,8 +3,8 @@ package org.drools.spi;
 import java.io.Serializable;
 import java.util.Iterator;
 
-import org.drools.WorkingMemory;
 import org.drools.rule.Declaration;
+import org.drools.WorkingMemory;
 
 public interface DataProvider extends Serializable {
 

@@ -2,6 +2,7 @@ package org.drools;
 
 import java.util.Iterator;
 
+import org.drools.runtime.ObjectFilter;
 import org.drools.spi.GlobalResolver;
 
 /**

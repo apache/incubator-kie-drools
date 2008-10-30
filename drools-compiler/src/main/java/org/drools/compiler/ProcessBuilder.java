@@ -24,13 +24,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.knowledge.definitions.process.Connection;
+import org.drools.knowledge.definitions.process.Node;
+import org.drools.knowledge.definitions.process.NodeContainer;
+import org.drools.knowledge.definitions.process.Process;
+import org.drools.knowledge.definitions.process.WorkflowProcess;
 import org.drools.lang.descr.ActionDescr;
 import org.drools.lang.descr.ProcessDescr;
 import org.drools.process.builder.ProcessNodeBuilder;
 import org.drools.process.builder.ProcessNodeBuilderRegistry;
 import org.drools.process.core.Context;
 import org.drools.process.core.ContextContainer;
-import org.drools.process.core.Process;
 import org.drools.process.core.context.exception.ActionExceptionHandler;
 import org.drools.process.core.context.exception.ExceptionHandler;
 import org.drools.process.core.context.exception.ExceptionScope;
@@ -39,11 +43,7 @@ import org.drools.process.core.validation.ProcessValidator;
 import org.drools.rule.builder.ProcessBuildContext;
 import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.ruleflow.core.validation.RuleFlowProcessValidator;
-import org.drools.workflow.core.Connection;
 import org.drools.workflow.core.Constraint;
-import org.drools.workflow.core.Node;
-import org.drools.workflow.core.NodeContainer;
-import org.drools.workflow.core.WorkflowProcess;
 import org.drools.workflow.core.impl.DroolsConsequenceAction;
 import org.drools.workflow.core.impl.WorkflowProcessImpl;
 import org.drools.workflow.core.node.ConstraintTrigger;
@@ -74,11 +74,12 @@ public class ProcessBuilder {
         return errors;
     }
 
-    public void buildProcess(final Process process) {
+    public void buildProcess(final Process process, String url) {
+        ((org.drools.process.core.Process) process).setURL( url );
         boolean hasErrors = false;
-        ProcessValidator validator = processValidators.get(process.getType());
+        ProcessValidator validator = processValidators.get(((Process)process).getType());
         if (validator == null) {
-            System.out.println("Could not find validator for process " + process.getType() + ".");
+            System.out.println("Could not find validator for process " + ((Process)process).getType() + ".");
             System.out.println("Continuing without validation of the process " + process.getName() + "[" + process.getId() + "]");
         } else {
             ProcessValidationError[] errors = validator.validateProcess( (WorkflowProcess) process );
@@ -106,6 +107,7 @@ public class ProcessBuilder {
             
             ProcessDescr processDescr = new ProcessDescr();
             processDescr.setName(process.getPackageName());
+            processDescr.setUrl( url );
             PackageRegistry pkgRegistry = this.packageBuilder.getPackageRegistry( this.packageBuilder.getPackage().getName() );
             DialectCompiletimeRegistry dialectRegistry = pkgRegistry.getDialectCompiletimeRegistry();           
             Dialect dialect = dialectRegistry.getDialect( "java" );
@@ -119,7 +121,7 @@ public class ProcessBuilder {
                 dialectRegistry,
                 dialect);
 
-            buildContexts( process, buildContext );
+            buildContexts( ( ContextContainer ) process, buildContext );
             if (process instanceof WorkflowProcess) {
             	buildNodes( (WorkflowProcess) process, buildContext );
             }
@@ -180,7 +182,7 @@ public class ProcessBuilder {
         }
     }
 
-    public void addProcessFromFile(final Reader reader) throws Exception {
+    public void addProcessFromFile(final Reader reader, final String url) throws Exception {
         PackageBuilderConfiguration configuration = packageBuilder.getPackageBuilderConfiguration();
         XmlProcessReader xmlReader = new XmlProcessReader( configuration.getSemanticModules() );
         
@@ -189,7 +191,7 @@ public class ProcessBuilder {
         try {
             Thread.currentThread().setContextClassLoader( newLoader );
             Process process = xmlReader.read(reader);
-            buildProcess( process );
+            buildProcess( process, url );
         } finally {
             Thread.currentThread().setContextClassLoader( oldLoader );
         }

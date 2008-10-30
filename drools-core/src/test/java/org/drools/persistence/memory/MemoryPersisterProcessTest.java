@@ -5,17 +5,17 @@ import junit.framework.TestCase;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
-import org.drools.WorkingMemory;
 import org.drools.persistence.Transaction;
 import org.drools.persistence.session.StatefulSessionSnapshotter;
 import org.drools.process.core.Work;
 import org.drools.process.core.impl.WorkImpl;
-import org.drools.process.instance.ProcessInstance;
+import org.drools.process.instance.InternalProcessInstance;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemHandler;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.rule.Package;
 import org.drools.ruleflow.core.RuleFlowProcess;
+import org.drools.WorkingMemory;
 import org.drools.spi.Action;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.ProcessContext;
@@ -45,22 +45,22 @@ public class MemoryPersisterProcessTest extends TestCase {
 			public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
 			}
         });
-        ProcessInstance processInstance = session.startProcess("org.drools.test.TestProcess");
+        InternalProcessInstance processInstance = ( InternalProcessInstance ) session.startProcess("org.drools.test.TestProcess");
         assertNotNull(workItem);
 
         MemoryPersister pm = new MemoryPersister( new StatefulSessionSnapshotter( session ) );
         pm.save();
 
         session.getWorkItemManager().completeWorkItem(workItem.getId(), null);
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertEquals(InternalProcessInstance.STATE_COMPLETED, processInstance.getState());
         
         pm.load();
-        processInstance = session.getProcessInstance(processInstance.getId());
+        processInstance = ( InternalProcessInstance ) session.getProcessInstance(processInstance.getId());
         assertNotNull(processInstance);
-        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        assertEquals(InternalProcessInstance.STATE_ACTIVE, processInstance.getState());
         
         session.getWorkItemManager().completeWorkItem(workItem.getId(), null);
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertEquals(InternalProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
 
     public void testTransactionWithRollback() throws Exception {
@@ -77,23 +77,23 @@ public class MemoryPersisterProcessTest extends TestCase {
 			public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
 			}
         });
-        ProcessInstance processInstance = session.startProcess("org.drools.test.TestProcess");
+        InternalProcessInstance processInstance = ( InternalProcessInstance ) session.startProcess("org.drools.test.TestProcess");
 
         MemoryPersister pm = new MemoryPersister( new StatefulSessionSnapshotter( session ) );
         Transaction t = pm.getTransaction();
         t.start();
 
         session.getWorkItemManager().completeWorkItem(workItem.getId(), null);
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertEquals(InternalProcessInstance.STATE_COMPLETED, processInstance.getState());
         
         t.rollback();
         
-        processInstance = session.getProcessInstance(processInstance.getId());
+        processInstance = ( InternalProcessInstance ) session.getProcessInstance(processInstance.getId());
         assertNotNull(processInstance);
-        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        assertEquals(InternalProcessInstance.STATE_ACTIVE, processInstance.getState());
         
         session.getWorkItemManager().completeWorkItem(workItem.getId(), null);
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertEquals(InternalProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
 
     private RuleFlowProcess getProcess() {

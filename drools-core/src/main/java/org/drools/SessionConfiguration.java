@@ -22,6 +22,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Properties;
 
+import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.util.ChainedProperties;
 
 /**
@@ -44,6 +45,7 @@ import org.drools.util.ChainedProperties;
  */
 public class SessionConfiguration
     implements
+    KnowledgeSessionConfiguration,
     Externalizable {
     private static final long serialVersionUID = 500L;
 
