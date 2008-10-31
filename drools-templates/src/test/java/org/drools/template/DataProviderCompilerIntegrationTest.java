@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.template.DataProvider;
-import org.drools.template.DataProviderCompiler;
-
 import junit.framework.TestCase;
 
 public class DataProviderCompilerIntegrationTest extends TestCase {

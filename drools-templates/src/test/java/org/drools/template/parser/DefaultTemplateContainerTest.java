@@ -4,12 +4,6 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.template.parser.Column;
-import org.drools.template.parser.DecisionTableParseException;
-import org.drools.template.parser.DefaultTemplateContainer;
-import org.drools.template.parser.RuleTemplate;
-import org.drools.template.parser.TemplateColumn;
-
 import junit.framework.TestCase;
 
 public class DefaultTemplateContainerTest extends TestCase {

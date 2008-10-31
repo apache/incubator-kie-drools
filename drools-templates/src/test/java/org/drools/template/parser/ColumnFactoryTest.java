@@ -1,11 +1,5 @@
 package org.drools.template.parser;
 
-import org.drools.template.parser.ArrayColumn;
-import org.drools.template.parser.Column;
-import org.drools.template.parser.ColumnFactory;
-import org.drools.template.parser.LongColumn;
-import org.drools.template.parser.StringColumn;
-
 import junit.framework.TestCase;
 
 public class ColumnFactoryTest extends TestCase {

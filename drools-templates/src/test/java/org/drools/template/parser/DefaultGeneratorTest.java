@@ -3,13 +3,6 @@ package org.drools.template.parser;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.template.parser.Column;
-import org.drools.template.parser.DefaultGenerator;
-import org.drools.template.parser.Row;
-import org.drools.template.parser.RuleTemplate;
-import org.drools.template.parser.StringColumn;
-import org.drools.template.parser.TemplateContainer;
-
 import junit.framework.TestCase;
 
 public class DefaultGeneratorTest extends TestCase {

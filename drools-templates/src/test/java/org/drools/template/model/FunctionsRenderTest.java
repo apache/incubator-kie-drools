@@ -16,9 +16,6 @@ package org.drools.template.model;
  * limitations under the License.
  */
 
-import org.drools.template.model.DRLOutput;
-import org.drools.template.model.Functions;
-
 import junit.framework.TestCase;
 
 public class FunctionsRenderTest extends TestCase {

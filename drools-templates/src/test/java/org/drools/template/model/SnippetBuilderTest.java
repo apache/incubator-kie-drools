@@ -16,8 +16,6 @@ package org.drools.template.model;
  * limitations under the License.
  */
 
-import org.drools.template.model.SnippetBuilder;
-
 import junit.framework.TestCase;
 
 /**

@@ -12,9 +12,9 @@ import org.drools.runtime.rule.FactHandle;
 import org.milyn.Smooks;
 import org.milyn.container.ExecutionContext;
 import org.milyn.payload.JavaResult;
-import org.mvel.MVEL;
-import org.mvel.ParserContext;
-import org.mvel.compiler.ExpressionCompiler;
+import org.mvel2.MVEL;
+import org.mvel2.ParserContext;
+import org.mvel2.compiler.ExpressionCompiler;
 
 public class DroolsSmooksStatefulSession {
     private Smooks                    smooks;

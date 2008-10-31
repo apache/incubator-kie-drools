@@ -5,16 +5,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.xml.transform.stream.StreamSource;
 
 import junit.framework.TestCase;
 
-import org.drools.FactHandle;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
-import org.drools.StatefulSession;
 import org.drools.StatelessSession;
 import org.drools.compiler.PackageBuilder;
 import org.milyn.Smooks;
