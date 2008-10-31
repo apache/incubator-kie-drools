@@ -3,13 +3,12 @@ package org.drools.verifier;
 import java.util.List;
 import java.util.Set;
 
-import org.drools.verifier.PatternSolver;
-import org.drools.verifier.components.VerifierComponent;
+import junit.framework.TestCase;
+
 import org.drools.verifier.components.LiteralRestriction;
 import org.drools.verifier.components.OperatorDescr;
 import org.drools.verifier.components.Pattern;
-
-import junit.framework.TestCase;
+import org.drools.verifier.components.VerifierComponent;
 
 /**
  * 

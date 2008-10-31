@@ -11,10 +11,10 @@ import org.drools.verifier.components.LiteralRestriction;
 import org.drools.verifier.components.VariableRestriction;
 import org.drools.verifier.dao.VerifierResult;
 import org.drools.verifier.dao.VerifierResultFactory;
-import org.drools.verifier.report.components.VerifierMessage;
-import org.drools.verifier.report.components.VerifierMessageBase;
 import org.drools.verifier.report.components.Cause;
 import org.drools.verifier.report.components.Severity;
+import org.drools.verifier.report.components.VerifierMessage;
+import org.drools.verifier.report.components.VerifierMessageBase;
 
 public class MissingEqualityTest extends TestBase {
 

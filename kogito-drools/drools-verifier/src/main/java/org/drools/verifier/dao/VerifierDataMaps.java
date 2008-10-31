@@ -8,14 +8,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.drools.verifier.components.ObjectType;
-import org.drools.verifier.components.VerifierEvalDescr;
-import org.drools.verifier.components.VerifierPredicateDescr;
-import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.components.Consequence;
 import org.drools.verifier.components.Constraint;
 import org.drools.verifier.components.Field;
 import org.drools.verifier.components.FieldObjectTypeLink;
+import org.drools.verifier.components.ObjectType;
 import org.drools.verifier.components.OperatorDescr;
 import org.drools.verifier.components.Pattern;
 import org.drools.verifier.components.PatternPossibility;
@@ -23,6 +20,9 @@ import org.drools.verifier.components.Restriction;
 import org.drools.verifier.components.RulePackage;
 import org.drools.verifier.components.RulePossibility;
 import org.drools.verifier.components.Variable;
+import org.drools.verifier.components.VerifierEvalDescr;
+import org.drools.verifier.components.VerifierPredicateDescr;
+import org.drools.verifier.components.VerifierRule;
 
 /**
  * 

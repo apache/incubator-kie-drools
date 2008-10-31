@@ -1,12 +1,7 @@
 package org.drools.rule.builder.dialect.clips;
 
-import java.util.Iterator;
 import java.util.List;
 
-import org.drools.clips.Appendable;
-import org.drools.clips.FunctionHandlers;
-import org.drools.clips.LispForm;
-import org.drools.clips.StringBuilderAppendable;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.rule.Declaration;
 import org.drools.rule.ReturnValueRestriction;

@@ -5,8 +5,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.drools.verifier.components.VerifierComponent;
 import org.drools.verifier.components.OperatorDescr;
+import org.drools.verifier.components.VerifierComponent;
 
 /**
  * Takes a list of Constraints and makes possibilities from them.

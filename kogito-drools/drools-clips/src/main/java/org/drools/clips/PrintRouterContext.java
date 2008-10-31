@@ -1,9 +1,6 @@
 package org.drools.clips;
 
 import java.io.PrintStream;
-import java.util.Map;
-
-import org.mvel.ast.Function;
 
 public interface PrintRouterContext {
 

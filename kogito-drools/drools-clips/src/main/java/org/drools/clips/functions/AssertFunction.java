@@ -5,7 +5,6 @@ import org.drools.clips.Function;
 import org.drools.clips.FunctionHandlers;
 import org.drools.clips.LispAtom;
 import org.drools.clips.LispForm;
-import org.drools.clips.SExpression;
 
 public class AssertFunction implements Function {
     private static final String name = "assert";

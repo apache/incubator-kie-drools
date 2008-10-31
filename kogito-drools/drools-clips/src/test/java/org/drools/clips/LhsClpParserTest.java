@@ -24,7 +24,6 @@ import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.RestrictionConnectiveDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
-import org.drools.reteoo.builder.BuildContext;
 
 public class LhsClpParserTest extends TestCase {
 

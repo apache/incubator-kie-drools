@@ -16,7 +16,6 @@ import org.drools.compiler.DrlParser;
 import org.drools.compiler.PackageBuilder;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
-import org.drools.verifier.PackageDescrFlattener;
 import org.drools.verifier.dao.VerifierData;
 import org.drools.verifier.report.components.Cause;
 

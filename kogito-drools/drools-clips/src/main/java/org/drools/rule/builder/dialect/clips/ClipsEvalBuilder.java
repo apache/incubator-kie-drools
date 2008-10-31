@@ -16,37 +16,17 @@
 
 package org.drools.rule.builder.dialect.clips;
 
-import java.io.Serializable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.drools.base.mvel.DroolsMVELFactory;
-import org.drools.base.mvel.MVELEvalExpression;
 import org.drools.clips.Appendable;
 import org.drools.clips.FunctionHandlers;
 import org.drools.clips.LispForm;
 import org.drools.clips.StringBuilderAppendable;
-import org.drools.compiler.Dialect;
-import org.drools.compiler.DescrBuildError;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.EvalDescr;
-import org.drools.lang.descr.PredicateDescr;
-import org.drools.rule.Declaration;
-import org.drools.rule.EvalCondition;
-import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Pattern;
 import org.drools.rule.RuleConditionElement;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleConditionBuilder;
 import org.drools.rule.builder.dialect.mvel.MVELEvalBuilder;
-import org.drools.spi.DeclarationScopeResolver;
-import org.mvel.compiler.AbstractParser;
-import org.mvel.compiler.ExpressionCompiler;
-import org.mvel.MVEL;
-import org.mvel.ParserContext;
-import org.mvel.util.ParseTools;
 
 /**
  * @author etirelli

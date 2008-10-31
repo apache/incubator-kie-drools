@@ -11,9 +11,9 @@ import org.drools.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.dao.VerifierResult;
 import org.drools.verifier.dao.VerifierResultFactory;
+import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.VerifierMessageBase;
-import org.drools.verifier.report.components.Severity;
 
 /**
  *

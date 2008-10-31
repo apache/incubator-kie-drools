@@ -10,9 +10,9 @@ import org.drools.verifier.TestBase;
 import org.drools.verifier.components.VerifierComponent;
 import org.drools.verifier.dao.VerifierResult;
 import org.drools.verifier.dao.VerifierResultFactory;
+import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.VerifierMessageBase;
-import org.drools.verifier.report.components.Severity;
 
 public class PatternOrderTest extends TestBase {
 

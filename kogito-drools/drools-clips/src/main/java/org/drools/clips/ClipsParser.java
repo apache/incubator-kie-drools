@@ -2,25 +2,50 @@
 
 	package org.drools.clips;
 
-    import org.drools.clips.*;		
-    
-	import java.util.List;
-	import java.util.ArrayList;
-	import java.util.Iterator;
-	import java.util.HashMap;	
-	import java.util.Set;	
-	import java.util.HashSet;			
-	import java.util.StringTokenizer;
-	import org.drools.lang.descr.*;
-	import org.drools.lang.Location;	
-
-
-import org.antlr.runtime.*;
-import java.util.Stack;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
+    import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import org.antlr.runtime.BitSet;
+import org.antlr.runtime.CommonToken;
+import org.antlr.runtime.EarlyExitException;
+import org.antlr.runtime.FailedPredicateException;
+import org.antlr.runtime.MismatchedNotSetException;
+import org.antlr.runtime.MismatchedSetException;
+import org.antlr.runtime.MismatchedTokenException;
+import org.antlr.runtime.MismatchedTreeNodeException;
+import org.antlr.runtime.NoViableAltException;
+import org.antlr.runtime.Parser;
+import org.antlr.runtime.RecognitionException;
+import org.antlr.runtime.Token;
+import org.antlr.runtime.TokenStream;
+import org.drools.lang.Location;
+import org.drools.lang.descr.AndDescr;
+import org.drools.lang.descr.AttributeDescr;
+import org.drools.lang.descr.ConditionalElementDescr;
+import org.drools.lang.descr.DescrFactory;
+import org.drools.lang.descr.EvalDescr;
+import org.drools.lang.descr.ExistsDescr;
+import org.drools.lang.descr.FieldBindingDescr;
+import org.drools.lang.descr.FieldConstraintDescr;
+import org.drools.lang.descr.FunctionDescr;
+import org.drools.lang.descr.ImportDescr;
+import org.drools.lang.descr.LiteralRestrictionDescr;
+import org.drools.lang.descr.NotDescr;
+import org.drools.lang.descr.OrDescr;
+import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.descr.PatternDescr;
+import org.drools.lang.descr.PredicateDescr;
+import org.drools.lang.descr.RestrictionConnectiveDescr;
+import org.drools.lang.descr.RestrictionDescr;
+import org.drools.lang.descr.ReturnValueRestrictionDescr;
+import org.drools.lang.descr.RuleDescr;
+import org.drools.lang.descr.TypeDeclarationDescr;
+import org.drools.lang.descr.TypeFieldDescr;
+import org.drools.lang.descr.VariableRestrictionDescr;
 public class ClipsParser extends Parser {
     public static final String[] tokenNames = new String[] {
         "<invalid>", "<EOR>", "<DOWN>", "<UP>", "LEFT_PAREN", "NAME", "RIGHT_PAREN", "DEFFUNCTION", "DEFRULE", "STRING", "SALIENCE", "INT", "AND", "OR", "NOT", "EXISTS", "TEST", "VAR", "ASSIGN_OP", "PIPE", "AMPERSAND", "TILDE", "COLON", "EQUALS", "FLOAT", "BOOL", "NULL", "DEFTEMPLATE", "EOL", "WS", "DECLARE", "EscapeSequence", "HexDigit", "UnicodeEscape", "OctalEscape", "SYMBOL_CHAR", "SH_STYLE_SINGLE_LINE_COMMENT", "C_STYLE_SINGLE_LINE_COMMENT", "LEFT_SQUARE", "RIGHT_SQUARE", "LEFT_CURLY", "RIGHT_CURLY", "MULTI_LINE_COMMENT", "SYMBOL", "FIRST_SYMBOL_CHAR", "'import'", "'=>'"

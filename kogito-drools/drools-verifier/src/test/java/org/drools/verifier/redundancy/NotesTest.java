@@ -11,11 +11,10 @@ import org.drools.verifier.components.PatternPossibility;
 import org.drools.verifier.components.RulePossibility;
 import org.drools.verifier.dao.VerifierResult;
 import org.drools.verifier.dao.VerifierResultFactory;
-import org.drools.verifier.report.components.VerifierMessage;
-import org.drools.verifier.report.components.VerifierMessageBase;
 import org.drools.verifier.report.components.Redundancy;
 import org.drools.verifier.report.components.RedundancyType;
 import org.drools.verifier.report.components.Severity;
+import org.drools.verifier.report.components.VerifierMessageBase;
 
 public class NotesTest extends TestBase {
 
