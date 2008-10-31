@@ -16,11 +16,6 @@ package org.drools.template.model;
  * limitations under the License.
  */
 
-import org.drools.template.model.Condition;
-import org.drools.template.model.Consequence;
-import org.drools.template.model.DRLOutput;
-import org.drools.template.model.Rule;
-
 import junit.framework.TestCase;
 
 /**

@@ -21,11 +21,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.mvel.templates.CompiledTemplate;
-import org.mvel.templates.SimpleTemplateRegistry;
-import org.mvel.templates.TemplateCompiler;
-import org.mvel.templates.TemplateRegistry;
-import org.mvel.templates.TemplateRuntime;
+import org.mvel2.templates.CompiledTemplate;
+import org.mvel2.templates.SimpleTemplateRegistry;
+import org.mvel2.templates.TemplateCompiler;
+import org.mvel2.templates.TemplateRegistry;
+import org.mvel2.templates.TemplateRuntime;
 
 /**
  * @author <a href="mailto:stevearoonie@gmail.com">Steven Williams</a>

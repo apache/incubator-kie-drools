@@ -10,13 +10,6 @@ import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.rule.VariableConstraint;
-import org.drools.template.parser.Column;
-import org.drools.template.parser.DefaultGenerator;
-import org.drools.template.parser.DefaultTemplateRuleBase;
-import org.drools.template.parser.LongColumn;
-import org.drools.template.parser.RuleTemplate;
-import org.drools.template.parser.StringColumn;
-import org.drools.template.parser.TemplateContainer;
 
 public class DefaultTemplateRuleBaseTest extends TestCase {
 

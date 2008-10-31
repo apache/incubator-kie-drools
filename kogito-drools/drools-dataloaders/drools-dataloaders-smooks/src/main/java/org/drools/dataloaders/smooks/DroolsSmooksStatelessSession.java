@@ -2,23 +2,19 @@ package org.drools.dataloaders.smooks;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.xml.transform.Source;
 
-import org.drools.FactHandle;
-import org.drools.StatefulSession;
 import org.drools.StatelessSession;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalStatelessSession;
 import org.milyn.Smooks;
 import org.milyn.container.ExecutionContext;
 import org.milyn.payload.JavaResult;
-import org.mvel.MVEL;
-import org.mvel.ParserContext;
-import org.mvel.compiler.ExpressionCompiler;
+import org.mvel2.MVEL;
+import org.mvel2.ParserContext;
+import org.mvel2.compiler.ExpressionCompiler;
 
 public class DroolsSmooksStatelessSession {
     private Smooks                    smooks;

@@ -5,10 +5,6 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.drools.template.parser.Column;
-import org.drools.template.parser.RuleTemplate;
-import org.drools.template.parser.TemplateColumn;
-import org.drools.template.parser.TemplateContainer;
 import org.drools.util.StringUtils;
 
 public class RuleTemplateTest extends TestCase {
