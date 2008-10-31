@@ -4,15 +4,15 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.verifier.components.ObjectType;
-import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.components.Field;
+import org.drools.verifier.components.ObjectType;
 import org.drools.verifier.components.Restriction;
 import org.drools.verifier.components.RulePackage;
+import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.dao.VerifierData;
 import org.drools.verifier.dao.VerifierResult;
 import org.drools.verifier.report.components.RangeCheckCause;
-import org.mvel.templates.TemplateRuntime;
+import org.mvel2.templates.TemplateRuntime;
 
 class ComponentsReportVisitor extends ReportVisitor {
 

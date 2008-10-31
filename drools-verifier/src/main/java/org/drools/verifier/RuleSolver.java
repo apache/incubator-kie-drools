@@ -1,7 +1,7 @@
 package org.drools.verifier;
 
-import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.components.OperatorDescr;
+import org.drools.verifier.components.VerifierRule;
 
 /**
  * Takes a list of Constraints and makes possibilities from them.

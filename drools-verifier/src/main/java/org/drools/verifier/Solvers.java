@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.drools.verifier.components.VerifierComponent;
-import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.components.OperatorDescr;
 import org.drools.verifier.components.Pattern;
 import org.drools.verifier.components.PatternPossibility;
 import org.drools.verifier.components.Restriction;
 import org.drools.verifier.components.RulePossibility;
+import org.drools.verifier.components.VerifierComponent;
+import org.drools.verifier.components.VerifierRule;
 
 /**
  * 

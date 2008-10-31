@@ -1,9 +1,6 @@
 package org.drools.rule.builder.dialect.clips;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -11,12 +8,9 @@ import org.drools.clips.Appendable;
 import org.drools.clips.FunctionHandlers;
 import org.drools.clips.LispForm;
 import org.drools.clips.StringBuilderAppendable;
-import org.drools.commons.jci.readers.MemoryResourceReader;
-import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.Dialect;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageRegistry;
-import org.drools.compiler.ReturnValueDescr;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BaseDescr;
@@ -40,7 +34,6 @@ import org.drools.rule.builder.PredicateBuilder;
 import org.drools.rule.builder.ReturnValueBuilder;
 import org.drools.rule.builder.RuleConditionBuilder;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
-import org.drools.rule.builder.dialect.mvel.MVELDialectConfiguration;
 
 public class ClipsDialect extends MVELDialect {
 

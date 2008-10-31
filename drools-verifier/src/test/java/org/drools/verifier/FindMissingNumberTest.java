@@ -2,8 +2,6 @@ package org.drools.verifier;
 
 import java.math.BigDecimal;
 
-import org.drools.verifier.FindMissingNumber;
-
 import junit.framework.TestCase;
 
 public class FindMissingNumberTest extends TestCase {

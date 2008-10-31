@@ -65,10 +65,9 @@ import org.drools.rule.Namespaceable;
 import org.drools.rule.Package;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.spi.GlobalResolver;
-import org.mvel.MVEL;
-import org.mvel.ParserContext;
-import org.mvel.ast.Function;
-import org.mvel.compiler.ExpressionCompiler;
+import org.mvel2.MVEL;
+import org.mvel2.ParserContext;
+import org.mvel2.compiler.ExpressionCompiler;
 
 /**
  * An interactive Clips session shell.
@@ -504,7 +503,7 @@ public class ClipsShell
     }
 
     public void addFunction(Function function) {
-        this.factory.createVariable( function.getAbsoluteName(),
+        this.factory.createVariable( function.getName(),
                                      function );
     }
 

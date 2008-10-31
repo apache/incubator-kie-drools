@@ -1,22 +1,5 @@
 package org.drools.clips;
 
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
-import java.io.Reader;
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
-
-import junit.framework.TestCase;
-
-import org.antlr.runtime.ANTLRStringStream;
-import org.antlr.runtime.CharStream;
-import org.antlr.runtime.CommonTokenStream;
-import org.antlr.runtime.Lexer;
-import org.antlr.runtime.TokenStream;
-import org.drools.Person;
 
 public class CompiledFunctionsTest { //extends TestCase {
 //    private CLPParser parser;

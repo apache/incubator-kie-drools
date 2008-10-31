@@ -1,23 +1,6 @@
 package org.drools.verifier;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-
 import junit.framework.TestCase;
-
-import org.drools.StatelessSession;
-import org.drools.StatelessSessionResult;
-import org.drools.base.RuleNameMatchesAgendaFilter;
-import org.drools.base.evaluators.Operator;
-import org.drools.verifier.components.VerifierComponent;
-import org.drools.verifier.components.Field;
-import org.drools.verifier.components.LiteralRestriction;
-import org.drools.verifier.dao.VerifierResult;
-import org.drools.verifier.dao.VerifierResultFactory;
-import org.drools.verifier.report.components.Gap;
 
 /**
  * 

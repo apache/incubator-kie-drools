@@ -7,7 +7,6 @@ import junit.framework.TestCase;
 import org.drools.RuleBase;
 import org.drools.compiler.DrlParser;
 import org.drools.lang.descr.PackageDescr;
-import org.drools.verifier.Verifier;
 import org.drools.verifier.dao.VerifierResult;
 import org.drools.verifier.report.components.Severity;
 

@@ -6,11 +6,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.verifier.dao.VerifierData;
+import org.drools.verifier.report.components.Cause;
 import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.VerifierMessageBase;
 import org.drools.verifier.report.components.VerifierRangeCheckMessage;
-import org.drools.verifier.report.components.Cause;
-import org.mvel.templates.TemplateRuntime;
+import org.mvel2.templates.TemplateRuntime;
 
 /**
  * 

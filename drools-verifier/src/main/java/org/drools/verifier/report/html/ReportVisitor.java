@@ -6,7 +6,7 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.mvel.templates.TemplateRuntime;
+import org.mvel2.templates.TemplateRuntime;
 
 
 abstract class ReportVisitor {

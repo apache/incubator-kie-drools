@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.drools.verifier.report.components.VerifierMessageBase;
 import org.drools.verifier.report.components.Gap;
 import org.drools.verifier.report.components.MissingNumberPattern;
 import org.drools.verifier.report.components.RangeCheckCause;
 import org.drools.verifier.report.components.Severity;
+import org.drools.verifier.report.components.VerifierMessageBase;
 
 /**
  *

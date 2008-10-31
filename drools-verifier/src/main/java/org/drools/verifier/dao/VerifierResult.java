@@ -2,11 +2,11 @@ package org.drools.verifier.dao;
 
 import java.util.Collection;
 
-import org.drools.verifier.report.components.VerifierMessageBase;
 import org.drools.verifier.report.components.Gap;
 import org.drools.verifier.report.components.MissingNumberPattern;
 import org.drools.verifier.report.components.RangeCheckCause;
 import org.drools.verifier.report.components.Severity;
+import org.drools.verifier.report.components.VerifierMessageBase;
 
 /**
  *

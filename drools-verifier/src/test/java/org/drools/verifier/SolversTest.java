@@ -4,17 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.drools.verifier.Solvers;
-import org.drools.verifier.components.VerifierRule;
+import junit.framework.TestCase;
+
 import org.drools.verifier.components.LiteralRestriction;
 import org.drools.verifier.components.OperatorDescr;
 import org.drools.verifier.components.Pattern;
 import org.drools.verifier.components.PatternPossibility;
 import org.drools.verifier.components.Restriction;
 import org.drools.verifier.components.RulePossibility;
+import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.report.components.Cause;
-
-import junit.framework.TestCase;
 
 /**
  * 

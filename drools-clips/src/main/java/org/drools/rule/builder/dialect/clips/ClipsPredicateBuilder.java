@@ -16,32 +16,14 @@
 
 package org.drools.rule.builder.dialect.clips;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
-import org.drools.base.mvel.DroolsMVELFactory;
-import org.drools.base.mvel.MVELPredicateExpression;
-import org.drools.clips.Appendable;
-import org.drools.clips.FunctionHandlers;
-import org.drools.clips.LispForm;
-import org.drools.clips.StringBuilderAppendable;
-import org.drools.compiler.Dialect;
-import org.drools.compiler.DescrBuildError;
 import org.drools.lang.descr.PredicateDescr;
 import org.drools.rule.Declaration;
-import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.PredicateConstraint;
 import org.drools.rule.builder.PredicateBuilder;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.dialect.mvel.MVELPredicateBuilder;
-import org.mvel.compiler.AbstractParser;
-import org.mvel.compiler.ExpressionCompiler;
-import org.mvel.MVEL;
-import org.mvel.ParserContext;
 
 /**
  * @author etirelli
