@@ -126,13 +126,13 @@ public class TimerManager {
             }
             
             ctx.getTimer().setLastTriggered(new Date());
-
+            
             InternalProcessInstance processInstance = ( InternalProcessInstance ) workingMemory.getProcessInstance( processInstanceId );
             // process instance may have finished already
             if ( processInstance != null ) {
-                processInstance.signalEvent( "timerTriggered", ctx.getTimer() );
+                workingMemory.getSignalManager().signalEvent(processInstance, "timerTriggered", ctx.getTimer());
             }
-            
+
             if (ctx.getTimer().getPeriod() == 0) {
             	TimerManager.this.timers.remove(ctx.getTimer().getId());
             }
