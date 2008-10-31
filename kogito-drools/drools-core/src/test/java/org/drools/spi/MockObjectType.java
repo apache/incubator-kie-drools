@@ -1,11 +1,10 @@
 package org.drools.spi;
 
-import org.drools.base.ClassObjectType;
-import org.drools.base.ValueType;
-
-import java.io.ObjectOutput;
-import java.io.ObjectInput;
 import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
+import org.drools.base.ValueType;
 
 /*
  * Copyright 2005 JBoss Inc

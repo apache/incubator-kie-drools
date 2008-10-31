@@ -1,8 +1,8 @@
 package org.drools.integrationtests;
 
-import org.drools.util.DroolsStreamUtils;
-
 import java.io.IOException;
+
+import org.drools.util.DroolsStreamUtils;
 
 /**
  * Marshalling helper class to perform serialize/de-serialize a given object

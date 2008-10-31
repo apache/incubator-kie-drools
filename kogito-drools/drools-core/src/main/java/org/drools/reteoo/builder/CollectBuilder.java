@@ -20,8 +20,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.drools.RuntimeDroolsException;
-import org.drools.base.ClassObjectType;
 import org.drools.common.BetaConstraints;
 import org.drools.common.TupleStartEqualsConstraint;
 import org.drools.reteoo.CollectNode;
@@ -33,7 +31,6 @@ import org.drools.rule.Collect;
 import org.drools.rule.Pattern;
 import org.drools.rule.RuleConditionElement;
 import org.drools.spi.AlphaNodeFieldConstraint;
-import org.drools.spi.ObjectType;
 
 /**
  * @author etirelli

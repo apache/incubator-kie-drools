@@ -32,7 +32,7 @@ import org.drools.rule.Package;
 import org.drools.WorkingMemory;
 import org.drools.spi.Accumulator;
 import org.drools.spi.Tuple;
-import org.mvel.MVEL;
+import org.mvel2.MVEL;
 
 /**
  * An MVEL accumulator implementation

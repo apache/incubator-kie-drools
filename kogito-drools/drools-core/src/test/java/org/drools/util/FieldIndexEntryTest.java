@@ -3,9 +3,9 @@ package org.drools.util;
 import junit.framework.TestCase;
 
 import org.drools.Cheese;
+import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.ClassFieldReader;
-import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
 import org.drools.base.evaluators.Operator;

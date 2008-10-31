@@ -948,12 +948,16 @@ public class InputMarshaller {
         return workItem;
     }
 
-    public static void readTimers(MarshallerReaderContext context) throws IOException {
+    public static void readTimers(MarshallerReaderContext context) throws IOException, ClassNotFoundException {
         InternalWorkingMemory wm = context.wm;
         ObjectInputStream stream = context.stream;
 
         TimerManager timerManager = wm.getTimerManager();
         timerManager.internalSetTimerId( stream.readLong() );
+        
+        // still need to think on how to fix this.
+//        TimerService service = (TimerService) stream.readObject();
+//        timerManager.setTimerService( service );
 
         while ( stream.readShort() == PersisterEnums.TIMER ) {
             TimerInstance timer = readTimer( context );

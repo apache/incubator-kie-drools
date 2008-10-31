@@ -6,7 +6,6 @@ import java.io.ObjectOutput;
 import java.io.Serializable;
 
 import org.drools.RuleBaseConfiguration;
-import org.drools.reteoo.builder.BuildContext;
 import org.drools.common.BaseNode;
 import org.drools.common.BetaConstraints;
 import org.drools.common.EmptyBetaConstraints;
@@ -14,6 +13,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
+import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.ContextEntry;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.DataProvider;

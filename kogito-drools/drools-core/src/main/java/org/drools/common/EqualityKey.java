@@ -17,13 +17,11 @@ package org.drools.common;
  */
 
 import java.io.Externalizable;
-import java.io.ObjectOutput;
 import java.io.IOException;
 import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.drools.base.ShadowProxy;
 
 /**
  * Upon instantiation the EqualityKey caches the first Object's hashCode

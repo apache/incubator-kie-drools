@@ -5,23 +5,16 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Method;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.reteoo.LeftTuple;
-import org.drools.rule.Declaration;
 import org.drools.WorkingMemory;
-import org.drools.spi.KnowledgeHelper;
-import org.drools.spi.Tuple;
-import org.mvel.DataConversion;
-import org.mvel.integration.VariableResolver;
-import org.mvel.integration.impl.BaseVariableResolverFactory;
-import org.mvel.integration.impl.LocalVariableResolverFactory;
-import org.mvel.integration.impl.StaticMethodImportResolverFactory;
+import org.mvel2.integration.VariableResolver;
+import org.mvel2.integration.impl.BaseVariableResolverFactory;
+import org.mvel2.integration.impl.LocalVariableResolverFactory;
+import org.mvel2.integration.impl.StaticMethodImportResolverFactory;
 
 public class DroolsProcessMVELFactory extends BaseVariableResolverFactory
     implements

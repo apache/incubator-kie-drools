@@ -3,11 +3,11 @@
  */
 package org.drools.base;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.HashMap;
 import java.util.Map;
-import java.io.ObjectInput;
-import java.io.IOException;
-import java.io.ObjectOutput;
 
 import org.drools.common.InternalRuleBase;
 import org.drools.WorkingMemory;

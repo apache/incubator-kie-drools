@@ -16,10 +16,7 @@ package org.drools.base;
  * limitations under the License.
  */
 
-import java.util.List;
-
 import org.drools.FactException;
-import org.drools.QueryResults;
 import org.drools.common.InternalWorkingMemoryActions;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.ReteooStatefulSession;
@@ -30,7 +27,6 @@ import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.spi.Activation;
-import org.drools.spi.AgendaGroup;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.Tuple;
 

@@ -3,8 +3,8 @@ package org.drools.rule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectOutput;
 import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.security.CodeSource;
 
 import junit.framework.TestCase;

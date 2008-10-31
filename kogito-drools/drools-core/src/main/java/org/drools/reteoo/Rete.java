@@ -25,7 +25,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.common.*;
+import org.drools.common.BaseNode;
+import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalRuleBase;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.common.InternalWorkingMemoryEntryPoint;
+import org.drools.common.RuleBasePartitionId;
 import org.drools.rule.EntryPoint;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;

@@ -18,11 +18,10 @@ package org.drools.common;
 
 import java.io.IOException;
 import java.io.ObjectInput;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import org.drools.marshalling.PersisterEnums;
+
 import org.drools.marshalling.MarshallerReaderContext;
 import org.drools.marshalling.MarshallerWriteContext;
 import org.drools.spi.Activation;

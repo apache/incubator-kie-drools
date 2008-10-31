@@ -3,7 +3,7 @@ package org.drools.base.mvel;
 import java.util.Calendar;
 
 import org.drools.util.DateUtils;
-import org.mvel.ConversionHandler;
+import org.mvel2.ConversionHandler;
 
 public class MVELCalendarCoercion implements ConversionHandler {
 

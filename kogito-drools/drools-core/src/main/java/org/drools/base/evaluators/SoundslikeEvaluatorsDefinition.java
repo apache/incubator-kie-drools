@@ -17,19 +17,19 @@
  */
 package org.drools.base.evaluators;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 import org.drools.base.BaseEvaluator;
 import org.drools.base.ValueType;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.VariableRestriction.ObjectVariableContextEntry;
 import org.drools.rule.VariableRestriction.VariableContextEntry;
 import org.drools.spi.Evaluator;
-import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.FieldValue;
-import org.mvel.Soundex;
-
-import java.io.ObjectInput;
-import java.io.IOException;
-import java.io.ObjectOutput;
+import org.drools.spi.InternalReadAccessor;
+import org.mvel2.util.Soundex;
 
 /**
  * This class defines the soundslike evaluator

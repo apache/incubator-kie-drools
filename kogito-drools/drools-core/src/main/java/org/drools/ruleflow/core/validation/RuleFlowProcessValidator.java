@@ -46,9 +46,9 @@ import org.drools.workflow.core.node.StartNode;
 import org.drools.workflow.core.node.SubProcessNode;
 import org.drools.workflow.core.node.WorkItemNode;
 import org.drools.workflow.core.node.CompositeNode.NodeAndType;
-import org.mvel.ErrorDetail;
-import org.mvel.ParserContext;
-import org.mvel.compiler.ExpressionCompiler;
+import org.mvel2.ErrorDetail;
+import org.mvel2.ParserContext;
+import org.mvel2.compiler.ExpressionCompiler;
 
 /**
  * Default implementation of a RuleFlow validator.

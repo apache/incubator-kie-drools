@@ -16,15 +16,15 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
+import org.drools.WorkingMemory;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
-import org.drools.WorkingMemory;
 import org.drools.spi.EvalExpression;
 import org.drools.spi.Tuple;
-
-import java.io.ObjectOutput;
-import java.io.ObjectInput;
-import java.io.IOException;
 
 public class MockEvalCondition extends EvalCondition {
 

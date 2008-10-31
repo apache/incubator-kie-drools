@@ -1,11 +1,11 @@
 package org.drools.facttemplates;
 
-import org.drools.base.ValueType;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+
+import org.drools.base.ValueType;
 
 public class FieldTemplateImpl
     implements

@@ -1,10 +1,10 @@
 package org.drools.base.extractors;
 
-import java.lang.reflect.Method;
 import java.io.Externalizable;
 import java.io.IOException;
-import java.io.ObjectOutput;
 import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.lang.reflect.Method;
 
 import org.drools.base.ValueType;
 import org.drools.common.InternalWorkingMemory;

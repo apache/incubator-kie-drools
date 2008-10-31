@@ -16,31 +16,20 @@ package org.drools.common;
  * limitations under the License.
  */
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
 import java.io.IOException;
 import java.io.ObjectInput;
-import java.io.Externalizable;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.Comparator;
+import java.io.ObjectOutput;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
 import org.drools.FactException;
-import org.drools.marshalling.PersisterEnums;
 import org.drools.marshalling.MarshallerReaderContext;
 import org.drools.marshalling.MarshallerWriteContext;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
-import org.drools.spi.AgendaGroup;
 import org.drools.spi.PropagationContext;
 import org.drools.util.ObjectHashMap;
-import org.drools.util.PrimitiveLongMap;
-import org.drools.util.ObjectHashMap.ObjectEntry;
-import org.w3c.dom.views.AbstractView;
 
 /**
  * The Truth Maintenance System is responsible for tracking two things. Firstly

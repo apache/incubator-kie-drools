@@ -23,8 +23,6 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.drools.base.ClassFieldAccessor;
 import org.drools.rule.FactField;
-import org.drools.spi.AcceptsReadAccessor;
-import org.drools.spi.InternalReadAccessor;
 
 /**
  * Declares a field to be dynamically generated.

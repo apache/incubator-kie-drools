@@ -16,17 +16,20 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-import org.drools.RuleBaseConfiguration;
-import org.drools.common.*;
-import org.drools.reteoo.builder.BuildContext;
-import org.drools.spi.PropagationContext;
-import org.drools.util.FactEntry;
-import org.drools.util.RightTupleList;
-import org.drools.util.Iterator;
-
-import java.io.ObjectOutput;
 import java.io.IOException;
 import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
+import org.drools.RuleBaseConfiguration;
+import org.drools.common.BaseNode;
+import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.common.NodeMemory;
+import org.drools.common.PropagationContextImpl;
+import org.drools.common.RuleBasePartitionId;
+import org.drools.reteoo.builder.BuildContext;
+import org.drools.spi.PropagationContext;
+import org.drools.util.RightTupleList;
 
 /**
  * All asserting Facts must propagated into the right <code>ObjectSink</code> side of a BetaNode, if this is the first Pattern

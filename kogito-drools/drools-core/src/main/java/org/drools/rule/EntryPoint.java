@@ -17,13 +17,13 @@
  */
 package org.drools.rule;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.io.Externalizable;
-import java.io.ObjectInput;
-import java.io.IOException;
-import java.io.ObjectOutput;
 
 /**
  * This class defines a Rete "Entry Point".

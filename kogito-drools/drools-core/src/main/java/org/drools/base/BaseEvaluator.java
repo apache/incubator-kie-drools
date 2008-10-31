@@ -16,14 +16,14 @@ package org.drools.base;
  * limitations under the License.
  */
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 import org.drools.base.evaluators.Operator;
 import org.drools.common.InternalFactHandle;
 import org.drools.spi.Evaluator;
-
-import java.io.Externalizable;
-import java.io.ObjectInput;
-import java.io.IOException;
-import java.io.ObjectOutput;
 
 /**
  * BaseEvaluator is an Object Comparator that is operator aware

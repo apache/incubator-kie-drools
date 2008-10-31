@@ -3,7 +3,6 @@ package org.drools.integrationtests;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -399,7 +398,7 @@ public class CepEspTest extends TestCase {
         conf.setClockType( ClockType.PSEUDO_CLOCK );
         StatefulSession wm = ruleBase.newStatefulSession( conf );
 
-        final List results = new ArrayList();
+        List results = new ArrayList();
 
         wm.setGlobal( "results",
                       results );
@@ -417,7 +416,10 @@ public class CepEspTest extends TestCase {
         assertEquals( 0,
                       handle1.getDuration() );
 
-        //        wm  = SerializationHelper.serializeObject(wm);
+//        wm  = SerializationHelper.getSerialisedStatefulSession( wm );
+//        results = (List) wm.getGlobal( "results" );
+//        clock = (SessionPseudoClock) wm.getSessionClock();
+        
         wm.fireAllRules();
 
         assertEquals( 1,

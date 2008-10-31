@@ -19,23 +19,26 @@ package org.drools.reteoo;
  */
 
 import java.io.Externalizable;
-import java.io.ObjectInput;
 import java.io.IOException;
+import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.WorkingMemoryEntryPoint;
 import org.drools.base.ShadowProxy;
-import org.drools.common.*;
+import org.drools.common.BaseNode;
+import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.common.InternalWorkingMemoryEntryPoint;
+import org.drools.common.NodeMemory;
+import org.drools.common.PropagationContextImpl;
+import org.drools.common.RuleBasePartitionId;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.EntryPoint;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
-import org.drools.util.FactEntry;
-import org.drools.util.ObjectHashSet;
-import org.drools.util.RightTupleList;
 import org.drools.util.Iterator;
+import org.drools.util.ObjectHashSet;
 import org.drools.util.ObjectHashSet.ObjectEntry;
 
 /**

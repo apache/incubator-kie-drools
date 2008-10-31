@@ -3,17 +3,14 @@
  */
 package org.drools.common;
 
-import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.drools.WorkingMemoryEntryPoint;
 import org.drools.FactException;
 import org.drools.RuntimeDroolsException;
+import org.drools.WorkingMemoryEntryPoint;
 import org.drools.RuleBaseConfiguration.AssertBehaviour;
-import org.drools.base.ShadowProxy;
-import org.drools.event.WorkingMemoryEventSupport;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ObjectTypeConf;

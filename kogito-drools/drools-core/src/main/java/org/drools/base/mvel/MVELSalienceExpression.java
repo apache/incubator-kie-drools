@@ -11,7 +11,7 @@ import org.drools.rule.Package;
 import org.drools.WorkingMemory;
 import org.drools.spi.Salience;
 import org.drools.spi.Tuple;
-import org.mvel.MVEL;
+import org.mvel2.MVEL;
 
 public class MVELSalienceExpression
     implements

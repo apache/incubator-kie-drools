@@ -1,14 +1,14 @@
 package org.drools.reteoo;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.RuleBasePartitionId;
 import org.drools.spi.PropagationContext;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 
 public class CompositeLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
     private LeftTupleSinkNodeList sinks;

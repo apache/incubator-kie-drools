@@ -18,10 +18,10 @@ import org.drools.RuntimeDroolsException;
 import org.drools.base.ModifyInterceptor;
 import org.drools.rule.Declaration;
 import org.drools.spi.KnowledgeHelper;
-import org.mvel.DataConversion;
-import org.mvel.ParserContext;
-import org.mvel.compiler.AbstractParser;
-import org.mvel.compiler.ExpressionCompiler;
+import org.mvel2.DataConversion;
+import org.mvel2.ParserContext;
+import org.mvel2.compiler.AbstractParser;
+import org.mvel2.compiler.ExpressionCompiler;
 
 public class MVELCompilationUnit
     implements

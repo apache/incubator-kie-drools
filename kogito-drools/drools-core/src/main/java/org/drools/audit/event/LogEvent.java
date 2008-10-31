@@ -1,8 +1,7 @@
 package org.drools.audit.event;
 
-import java.io.Externalizable;
-import java.io.ObjectInput;
 import java.io.IOException;
+import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 /*

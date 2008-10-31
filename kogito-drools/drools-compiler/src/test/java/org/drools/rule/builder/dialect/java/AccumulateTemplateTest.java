@@ -15,12 +15,12 @@ import org.drools.base.ClassObjectType;
 import org.drools.rule.Declaration;
 import org.drools.spi.PatternExtractor;
 import org.drools.util.StringUtils;
-import org.mvel.integration.impl.MapVariableResolverFactory;
-import org.mvel.templates.CompiledTemplate;
-import org.mvel.templates.SimpleTemplateRegistry;
-import org.mvel.templates.TemplateCompiler;
-import org.mvel.templates.TemplateRegistry;
-import org.mvel.templates.TemplateRuntime;
+import org.mvel2.integration.impl.MapVariableResolverFactory;
+import org.mvel2.templates.CompiledTemplate;
+import org.mvel2.templates.SimpleTemplateRegistry;
+import org.mvel2.templates.TemplateCompiler;
+import org.mvel2.templates.TemplateRegistry;
+import org.mvel2.templates.TemplateRuntime;
 
 public class AccumulateTemplateTest extends TestCase {
 

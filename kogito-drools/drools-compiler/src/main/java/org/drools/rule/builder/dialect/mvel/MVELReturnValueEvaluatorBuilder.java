@@ -1,13 +1,10 @@
 package org.drools.rule.builder.dialect.mvel;
 
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.Set;
 
-import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.base.mvel.MVELReturnValueEvaluator;
-import org.drools.base.mvel.MVELReturnValueExpression;
 import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.Dialect;
 import org.drools.compiler.ReturnValueDescr;

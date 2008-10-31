@@ -15,21 +15,23 @@ package org.drools.reteoo;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import java.io.Externalizable;
+import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.IOException;
-import java.io.Externalizable;
 
 import org.drools.FactException;
 import org.drools.RuleBaseConfiguration;
-import org.drools.common.*;
+import org.drools.common.BaseNode;
+import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.common.NodeMemory;
+import org.drools.common.PropagationContextImpl;
+import org.drools.common.RuleBasePartitionId;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.ContextEntry;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
-import org.drools.util.FactEntry;
-import org.drools.util.RightTupleList;
-import org.drools.util.Iterator;
 
 /**
  * <code>AlphaNodes</code> are nodes in the <code>Rete</code> network used

@@ -27,8 +27,8 @@ import java.util.Set;
 
 import org.antlr.runtime.RecognitionException;
 import org.drools.rule.builder.PackageBuildContext;
-import org.mvel.ParserContext;
-import org.mvel.compiler.ExpressionCompiler;
+import org.mvel2.ParserContext;
+import org.mvel2.compiler.ExpressionCompiler;
 
 /**
  * Expression analyzer.

@@ -16,7 +16,10 @@ package org.drools.integrationtests;
  * limitations under the License.
  */
 
+import java.io.InputStreamReader;
+
 import junit.framework.TestCase;
+
 import org.drools.Cheese;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
@@ -26,8 +29,6 @@ import org.drools.StatefulSession;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
 import org.drools.WorkingMemory;
-
-import java.io.InputStreamReader;
 
 
 /** Run all the tests with the ReteOO engine implementation */

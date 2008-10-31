@@ -29,9 +29,7 @@ import org.drools.lang.descr.PatternDescr;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
-import org.mvel.templates.res.TextNode;
 import org.w3c.dom.Element;
-import org.w3c.dom.Text;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 

@@ -1,6 +1,5 @@
 package org.drools.rule.builder;
 
-import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
 import org.drools.base.FieldFactory;

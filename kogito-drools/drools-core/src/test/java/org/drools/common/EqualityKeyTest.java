@@ -1,10 +1,9 @@
 package org.drools.common;
 
+import junit.framework.TestCase;
+
 import org.drools.Cheese;
 import org.drools.reteoo.ReteooFactHandleFactory;
-import org.drools.spi.FactHandleFactory;
-
-import junit.framework.TestCase;
 
 public class EqualityKeyTest extends TestCase {
     public void test1() {

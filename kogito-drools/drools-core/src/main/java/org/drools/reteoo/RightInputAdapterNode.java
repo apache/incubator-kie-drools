@@ -16,18 +16,21 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 import org.drools.RuleBaseConfiguration;
-import org.drools.common.*;
+import org.drools.common.BaseNode;
+import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.common.NodeMemory;
+import org.drools.common.PropagationContextImpl;
 import org.drools.reteoo.builder.BuildContext;
-import org.drools.rule.EntryPoint;
 import org.drools.spi.PropagationContext;
 import org.drools.util.Iterator;
 import org.drools.util.ObjectHashMap;
 import org.drools.util.ObjectHashMap.ObjectEntry;
-
-import java.io.ObjectOutput;
-import java.io.ObjectInput;
-import java.io.IOException;
 
 /**
  * When joining a subnetwork into the main network again, RightInputAdapterNode adapts the

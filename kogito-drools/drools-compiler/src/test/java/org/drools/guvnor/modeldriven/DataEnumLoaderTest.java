@@ -10,8 +10,8 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import org.drools.guvnor.server.util.DataEnumLoader;
-import org.mvel.MVEL;
-import org.mvel.templates.TemplateRuntime;
+import org.mvel2.MVEL;
+import org.mvel2.templates.TemplateRuntime;
 
 public class DataEnumLoaderTest extends TestCase {
 

@@ -16,6 +16,10 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 import org.drools.Agenda;
 import org.drools.Cheese;
 import org.drools.DroolsTestCase;
@@ -24,7 +28,6 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.RuleBaseConfiguration.LogicalOverride;
 import org.drools.base.ClassObjectType;
-import org.drools.base.ShadowProxy;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalAgenda;
 import org.drools.common.InternalFactHandle;
@@ -37,10 +40,6 @@ import org.drools.WorkingMemory;
 import org.drools.spi.Consequence;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.PropagationContext;
-
-import java.io.ObjectOutput;
-import java.io.ObjectInput;
-import java.io.IOException;
 
 public class LogicalAssertionTest extends DroolsTestCase {
     private ReteooRuleBase ruleBase;

@@ -16,12 +16,12 @@ package org.drools.facttemplates;
  * limitations under the License.
  */
 
-import org.drools.base.ValueType;
-import org.drools.spi.ObjectType;
-
-import java.io.ObjectOutput;
 import java.io.IOException;
 import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
+import org.drools.base.ValueType;
+import org.drools.spi.ObjectType;
 
 public class FactTemplateObjectType
     implements

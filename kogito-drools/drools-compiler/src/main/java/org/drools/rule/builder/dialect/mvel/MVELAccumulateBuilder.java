@@ -16,22 +16,14 @@
 
 package org.drools.rule.builder.dialect.mvel;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.drools.base.accumulators.AccumulateFunction;
 import org.drools.base.accumulators.MVELAccumulatorFunctionExecutor;
-import org.drools.base.mvel.DroolsMVELFactory;
-import org.drools.base.mvel.DroolsMVELShadowFactory;
 import org.drools.base.mvel.MVELAccumulator;
 import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.base.mvel.MVELCompileable;
-import org.drools.base.mvel.MVELConsequence;
 import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.Dialect;
 import org.drools.lang.descr.AccumulateDescr;

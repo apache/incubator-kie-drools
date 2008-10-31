@@ -1,8 +1,5 @@
 package org.drools.spi;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.drools.StatefulSession;
 import org.drools.util.ClassUtils;
 

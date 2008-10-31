@@ -3,10 +3,6 @@ package org.drools.reteoo;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 
-import java.io.ObjectInput;
-import java.io.IOException;
-import java.io.ObjectOutput;
-
 /*
  * Copyright 2005 JBoss Inc
  *

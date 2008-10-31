@@ -3,6 +3,7 @@ package org.drools.lang.dsl;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.LinkedList;
+
 import org.antlr.runtime.ANTLRReaderStream;
 import org.antlr.runtime.CharStream;
 import org.antlr.runtime.CommonTokenStream;

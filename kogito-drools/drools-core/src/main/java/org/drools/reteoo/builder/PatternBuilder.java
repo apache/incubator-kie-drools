@@ -16,12 +16,6 @@
 
 package org.drools.reteoo.builder;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,8 +23,6 @@ import java.util.List;
 import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
-import org.drools.common.DroolsObjectInputStream;
-import org.drools.common.DroolsObjectOutputStream;
 import org.drools.common.InstanceNotEqualsConstraint;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.AlphaNode;

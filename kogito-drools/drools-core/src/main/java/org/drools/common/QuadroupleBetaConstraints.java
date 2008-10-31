@@ -16,28 +16,28 @@ package org.drools.common;
  * limitations under the License.
  */
 
-import org.drools.RuleBaseConfiguration;
-import org.drools.base.evaluators.Operator;
-import org.drools.reteoo.BetaMemory;
-import org.drools.reteoo.RightTupleMemory;
-import org.drools.reteoo.LeftTuple;
-import org.drools.reteoo.LeftTupleMemory;
-import org.drools.rule.ContextEntry;
-import org.drools.rule.VariableConstraint;
-import org.drools.spi.BetaNodeFieldConstraint;
-import org.drools.util.AbstractHashTable.FieldIndex;
-import org.drools.util.RightTupleIndexHashTable;
-import org.drools.util.RightTupleList;
-import org.drools.util.LinkedList;
-import org.drools.util.LinkedListEntry;
-import org.drools.util.LeftTupleList;
-import org.drools.util.LeftTupleIndexHashTable;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.drools.RuleBaseConfiguration;
+import org.drools.base.evaluators.Operator;
+import org.drools.reteoo.BetaMemory;
+import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.LeftTupleMemory;
+import org.drools.reteoo.RightTupleMemory;
+import org.drools.rule.ContextEntry;
+import org.drools.rule.VariableConstraint;
+import org.drools.spi.BetaNodeFieldConstraint;
+import org.drools.util.LeftTupleIndexHashTable;
+import org.drools.util.LeftTupleList;
+import org.drools.util.LinkedList;
+import org.drools.util.LinkedListEntry;
+import org.drools.util.RightTupleIndexHashTable;
+import org.drools.util.RightTupleList;
+import org.drools.util.AbstractHashTable.FieldIndex;
 
 public class QuadroupleBetaConstraints
     implements

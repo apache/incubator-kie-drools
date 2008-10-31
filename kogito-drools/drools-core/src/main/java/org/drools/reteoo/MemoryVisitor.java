@@ -1,20 +1,18 @@
 package org.drools.reteoo;
 
-import java.lang.reflect.Field;
-import java.util.Map;
 import java.io.Externalizable;
-import java.io.ObjectOutput;
-import java.io.ObjectInput;
 import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.lang.reflect.Field;
 
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.RuleTerminalNode.TerminalNodeMemory;
-import org.drools.spi.ObjectType;
 import org.drools.util.AbstractHashTable;
 import org.drools.util.Entry;
+import org.drools.util.ReflectiveVisitor;
 import org.drools.util.RightTupleIndexHashTable;
 import org.drools.util.RightTupleList;
-import org.drools.util.ReflectiveVisitor;
 
 public class MemoryVisitor extends ReflectiveVisitor
     implements

@@ -5,15 +5,16 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.drools.WorkingMemory;
-import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
+import org.drools.rule.Rule;
 import org.drools.spi.Enabled;
-import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.Tuple;
-import org.mvel.MVEL;
+import org.mvel2.MVEL;
 
 public class MVELEnabledExpression
     implements
@@ -55,15 +56,16 @@ public class MVELEnabledExpression
     }
 
     public boolean getValue(final Tuple tuple,
+                            final Rule rule,
                             final WorkingMemory workingMemory) {
         // it must be cloned for multi-thread safety
         DroolsMVELFactory factory = (DroolsMVELFactory) this.prototype.clone();
-        KnowledgeHelper knowledgeHelper = new DefaultKnowledgeHelper(workingMemory);
         factory.setContext( tuple,
-        		            knowledgeHelper,
+        		            null,
                             null,
                             workingMemory,
                             null );
+        factory.createVariable( "rule", rule, rule.getClass() );
 
         // do we have any functions for this namespace?
         Package pkg = workingMemory.getRuleBase().getPackage( "MAIN" );
@@ -73,6 +75,7 @@ public class MVELEnabledExpression
         }
 
         return ((Boolean) MVEL.executeExpression( this.expr,
+                                                  null,
                                                   factory )).booleanValue();
     }
 

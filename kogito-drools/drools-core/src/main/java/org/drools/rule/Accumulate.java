@@ -16,14 +16,14 @@
 
 package org.drools.rule;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.io.ObjectOutput;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.Serializable;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.common.InternalFactHandle;

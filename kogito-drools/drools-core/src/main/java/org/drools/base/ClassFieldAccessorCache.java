@@ -1,24 +1,11 @@
 package org.drools.base;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.security.ProtectionDomain;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.WeakHashMap;
-import java.util.Map.Entry;
 
 import org.drools.RuntimeDroolsException;
-import org.drools.spi.AcceptsReadAccessor;
-import org.drools.spi.AcceptsWriteAccessor;
-import org.drools.spi.Constraint;
-import org.drools.spi.InternalReadAccessor;
-import org.drools.spi.ReadAccessor;
 import org.drools.util.asm.ClassFieldInspector;
 
 public class ClassFieldAccessorCache {

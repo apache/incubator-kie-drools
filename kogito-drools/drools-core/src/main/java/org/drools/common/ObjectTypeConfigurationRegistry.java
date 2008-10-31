@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.base.ShadowProxy;
 import org.drools.facttemplates.Fact;
 import org.drools.reteoo.ClassObjectTypeConf;
 import org.drools.reteoo.FactTemplateTypeConf;

@@ -2,9 +2,9 @@ package org.drools.facttemplates;
 
 import junit.framework.TestCase;
 
-import org.drools.rule.Pattern;
 import org.drools.rule.Declaration;
 import org.drools.rule.Package;
+import org.drools.rule.Pattern;
 import org.drools.spi.InternalReadAccessor;
 
 public class FactTemplateFieldExtractorTest extends TestCase {

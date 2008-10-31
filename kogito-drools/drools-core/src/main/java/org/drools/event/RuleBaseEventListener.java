@@ -1,7 +1,7 @@
 package org.drools.event;
 
-import java.util.EventListener;
 import java.io.Externalizable;
+import java.util.EventListener;
 
 import org.drools.event.AfterFunctionRemovedEvent;
 import org.drools.event.AfterRuleAddedEvent;

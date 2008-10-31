@@ -1,10 +1,10 @@
 package org.drools.reteoo;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.io.ObjectOutput;
 import java.io.IOException;
 import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.RuleBasePartitionId;

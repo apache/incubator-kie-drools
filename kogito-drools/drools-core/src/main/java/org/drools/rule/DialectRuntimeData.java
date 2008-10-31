@@ -1,7 +1,5 @@
 package org.drools.rule;
 
-import org.drools.RuntimeDroolsException;
-import org.drools.rule.JavaDialectRuntimeData.PackageClassLoader;
 
 public interface DialectRuntimeData extends Cloneable {
     public void removeRule(Package pkg, Rule rule);

@@ -24,7 +24,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.rule.Dialectable;
 import org.drools.rule.Namespaceable;
 
 public class PackageDescr extends BaseDescr implements Namespaceable {

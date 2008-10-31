@@ -29,7 +29,6 @@ import org.drools.spi.Constraint;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
-import org.drools.spi.ReadAccessor;
 
 public class LiteralConstraint
     implements

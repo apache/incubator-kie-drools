@@ -20,13 +20,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import junit.framework.TestCase;
+
 import org.drools.Cheese;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.WorkingMemory;
-
-import junit.framework.TestCase;
 
 /**
  * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris</a>

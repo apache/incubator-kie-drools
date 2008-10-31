@@ -16,14 +16,14 @@
 
 package org.drools.common;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.Declaration;
 import org.drools.spi.BetaNodeFieldConstraint;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 
 /**
  * Checks if one tuple is the start subtuple of other tuple.

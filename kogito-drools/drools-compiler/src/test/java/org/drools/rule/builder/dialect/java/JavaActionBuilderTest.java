@@ -12,7 +12,6 @@ import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
-import org.drools.compiler.PackageRegistry;
 import org.drools.lang.descr.ActionDescr;
 import org.drools.lang.descr.ProcessDescr;
 import org.drools.rule.Package;

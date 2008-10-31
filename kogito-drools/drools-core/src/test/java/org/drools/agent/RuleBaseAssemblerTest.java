@@ -5,18 +5,16 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
+
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
-import org.drools.util.DroolsStreamUtils;
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.rule.Package;
-
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-import junit.framework.Test;
+import org.drools.util.DroolsStreamUtils;
 
 public class RuleBaseAssemblerTest extends TestCase {
 

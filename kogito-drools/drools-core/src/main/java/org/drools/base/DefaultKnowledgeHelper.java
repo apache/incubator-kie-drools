@@ -16,6 +16,11 @@ package org.drools.base;
  * limitations under the License.
  */
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 import org.drools.FactException;
 import org.drools.common.InternalWorkingMemoryActions;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
@@ -29,11 +34,6 @@ import org.drools.WorkingMemory;
 import org.drools.spi.Activation;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.Tuple;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectOutput;
-import java.io.ObjectInput;
 
 public class DefaultKnowledgeHelper
     implements

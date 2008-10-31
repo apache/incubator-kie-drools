@@ -1,11 +1,9 @@
 package org.drools.rule.builder.dialect.mvel;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.base.mvel.MVELConsequence;
 import org.drools.compiler.DescrBuildError;
@@ -13,11 +11,9 @@ import org.drools.compiler.Dialect;
 import org.drools.rule.Declaration;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.builder.ConsequenceBuilder;
-import org.drools.rule.builder.PackageBuildContext;
 import org.drools.rule.builder.RuleBuildContext;
-import org.mvel.Macro;
-import org.mvel.MacroProcessor;
-import org.mvel.compiler.CompiledExpression;
+import org.mvel2.Macro;
+import org.mvel2.MacroProcessor;
 
 public class MVELConsequenceBuilder
     implements

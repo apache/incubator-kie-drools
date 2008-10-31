@@ -3,6 +3,8 @@ package org.drools.testframework;
 import java.util.Collection;
 import java.util.HashSet;
 
+import junit.framework.TestCase;
+
 import org.drools.common.ActivationGroupNode;
 import org.drools.common.LogicalDependency;
 import org.drools.common.RuleFlowGroupNode;
@@ -15,8 +17,6 @@ import org.drools.spi.AgendaGroup;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
 import org.drools.util.LinkedList;
-
-import junit.framework.TestCase;
 
 public class RuleCoverageListenerTest extends TestCase {
 

@@ -4,15 +4,14 @@
 package org.drools.common;
 
 import java.io.Externalizable;
-import java.io.ObjectOutput;
 import java.io.IOException;
 import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.Iterator;
 import java.util.concurrent.locks.Lock;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseConfiguration.AssertBehaviour;
-import org.drools.base.ShadowProxy;
 import org.drools.runtime.ObjectFilter;
 import org.drools.util.JavaIteratorAdapter;
 import org.drools.util.ObjectHashMap;

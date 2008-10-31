@@ -1,7 +1,12 @@
 package org.drools.integrationtests.eventgenerator;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
+
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.compiler.DrlParser;
@@ -12,10 +17,6 @@ import org.drools.integrationtests.eventgenerator.Event.EventType;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
 import org.drools.WorkingMemory;
-
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
 
 
 public class SimpleEventGeneratorTest extends TestCase {

@@ -6,8 +6,6 @@ import org.drools.Cheese;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.LeftTuple;
-import org.drools.reteoo.RightTuple;
-import org.drools.util.ObjectHashMap.ObjectEntry;
 
 public class RightTupleListTest extends TestCase {
     public void testEmptyIterator() {                

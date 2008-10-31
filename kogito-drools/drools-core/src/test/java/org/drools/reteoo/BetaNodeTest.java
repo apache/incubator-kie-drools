@@ -16,12 +16,12 @@
 
 package org.drools.reteoo;
 
+import junit.framework.TestCase;
+
 import org.drools.RuleBaseFactory;
 import org.drools.common.EmptyBetaConstraints;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Behavior;
-
-import junit.framework.TestCase;
 
 /**
  * @author etirelli

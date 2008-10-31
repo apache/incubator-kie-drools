@@ -67,7 +67,6 @@ import org.drools.lang.descr.SlidingWindowDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.TypeFieldDescr;
 import org.drools.lang.descr.VariableRestrictionDescr;
-import org.drools.rule.Behavior;
 
 public class RuleParserTest extends TestCase {
 

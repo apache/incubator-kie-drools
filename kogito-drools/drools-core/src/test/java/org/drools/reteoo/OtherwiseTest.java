@@ -1,23 +1,23 @@
 package org.drools.reteoo;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
+import junit.framework.TestCase;
+
 import org.drools.Otherwise;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassObjectType;
 import org.drools.base.TestBean;
-import org.drools.rule.Pattern;
 import org.drools.rule.Package;
+import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
 import org.drools.WorkingMemory;
 import org.drools.spi.Consequence;
 import org.drools.spi.KnowledgeHelper;
-
-import junit.framework.TestCase;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 
 /**
  * This tests the "otherwise" feature.

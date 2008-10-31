@@ -34,18 +34,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.drools.RuntimeDroolsException;
-import org.drools.base.accumulators.JavaAccumulatorFunctionExecutor;
 import org.drools.common.DroolsObjectInput;
-import org.drools.spi.Accumulator;
-import org.drools.spi.Consequence;
-import org.drools.spi.EvalExpression;
-import org.drools.spi.PredicateExpression;
-import org.drools.spi.ReturnValueEvaluator;
-import org.drools.spi.ReturnValueExpression;
 import org.drools.spi.Wireable;
 import org.drools.util.StringUtils;
-import org.drools.workflow.core.DroolsAction;
-import org.drools.workflow.instance.impl.ReturnValueConstraintEvaluator;
 
 public class JavaDialectRuntimeData
     implements

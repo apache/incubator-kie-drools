@@ -1,11 +1,15 @@
 package org.drools.util;
 
-import org.drools.common.DroolsObjectOutputStream;
-import org.drools.common.DroolsObjectInputStream;
-
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+
+import org.drools.common.DroolsObjectInputStream;
+import org.drools.common.DroolsObjectOutputStream;
 
 /**
  * Created by IntelliJ IDEA.

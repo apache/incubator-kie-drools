@@ -1,12 +1,12 @@
 package org.drools.audit;
 
-import org.drools.WorkingMemoryEventManager;
-import org.drools.audit.event.LogEvent;
-import org.drools.WorkingMemory;
 
-import java.io.ObjectOutput;
 import java.io.IOException;
 import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
+import org.drools.WorkingMemoryEventManager;
+import org.drools.audit.event.LogEvent;
 
 public class WorkingMemoryConsoleLogger extends WorkingMemoryLogger {
 

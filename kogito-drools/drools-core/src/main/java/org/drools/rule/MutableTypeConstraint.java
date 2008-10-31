@@ -18,14 +18,14 @@
 
 package org.drools.rule;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.Constraint;
-
-import java.io.Externalizable;
-import java.io.ObjectOutput;
-import java.io.ObjectInput;
-import java.io.IOException;
 
 /**
  * A base class for constraints

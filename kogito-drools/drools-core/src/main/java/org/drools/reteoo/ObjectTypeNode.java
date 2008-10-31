@@ -23,7 +23,13 @@ import java.io.ObjectOutput;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.base.ClassObjectType;
-import org.drools.common.*;
+import org.drools.common.AbstractRuleBase;
+import org.drools.common.BaseNode;
+import org.drools.common.DroolsObjectInputStream;
+import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.common.NodeMemory;
+import org.drools.common.PropagationContextImpl;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Declaration;
 import org.drools.rule.EntryPoint;

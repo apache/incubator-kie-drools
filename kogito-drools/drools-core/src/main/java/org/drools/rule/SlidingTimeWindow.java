@@ -273,7 +273,8 @@ public class SlidingTimeWindow
 
     private static class BehaviorJobContext
         implements
-        JobContext {
+        JobContext, 
+        Externalizable {
         public InternalWorkingMemory workingMemory;
         public Behavior              behavior;
         public Object                behaviorContext;
@@ -299,6 +300,16 @@ public class SlidingTimeWindow
 
         public void setJobHandle(JobHandle jobHandle) {
             this.handle = jobHandle;
+        }
+
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
+            //this.behavior = (O)
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            // TODO Auto-generated method stub
+            
         }
 
     }

@@ -16,11 +16,9 @@ package org.drools.factmodel;
  * limitations under the License.
  */
 
-import java.beans.IntrospectionException;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -29,12 +27,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
-import org.drools.base.ClassFieldAccessor;
-import org.drools.base.ClassFieldAccessorCache;
-import org.drools.base.ClassFieldReader;
-import org.drools.base.ClassFieldWriter;
 import org.drools.rule.FactField;
 import org.drools.rule.FactType;
 

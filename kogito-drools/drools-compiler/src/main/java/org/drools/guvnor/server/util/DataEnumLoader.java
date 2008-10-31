@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import org.mvel.MVEL;
+import org.mvel2.MVEL;
 
 /**
  * Use mvel to load up map/list of valid items for fields - used by the Guided rule editor.

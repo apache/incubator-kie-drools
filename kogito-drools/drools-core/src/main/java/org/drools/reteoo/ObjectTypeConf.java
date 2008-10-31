@@ -17,7 +17,6 @@
  */
 package org.drools.reteoo;
 
-import org.drools.RuntimeDroolsException;
 import org.drools.rule.TypeDeclaration;
 
 public interface ObjectTypeConf {

@@ -17,8 +17,8 @@ package org.drools.common;
  */
 
 import java.io.IOException;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.FactException;
 import org.drools.RuleBase;
@@ -28,7 +28,6 @@ import org.drools.knowledge.definitions.process.Process;
 import org.drools.reteoo.Rete;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.CompositeClassLoader;
-import org.drools.rule.MapBackedClassLoader;
 import org.drools.rule.Package;
 import org.drools.rule.TypeDeclaration;
 import org.drools.runtime.rule.FactHandle;

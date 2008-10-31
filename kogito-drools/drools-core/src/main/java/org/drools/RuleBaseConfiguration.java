@@ -53,7 +53,7 @@ import org.drools.util.ConfFileUtils;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.instance.impl.NodeInstanceFactory;
 import org.drools.workflow.instance.impl.NodeInstanceFactoryRegistry;
-import org.mvel.MVEL;
+import org.mvel2.MVEL;
 
 /**
  * RuleBaseConfiguration

@@ -22,8 +22,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.drools.RuntimeDroolsException;
-import org.drools.base.ClassFieldReader;
 import org.drools.base.ClassObjectType;
 import org.drools.base.FieldFactory;
 import org.drools.base.ValueType;
@@ -73,7 +71,6 @@ import org.drools.rule.SlidingTimeWindow;
 import org.drools.rule.VariableConstraint;
 import org.drools.rule.VariableRestriction;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
-import org.drools.spi.Acceptor;
 import org.drools.spi.AcceptsReadAccessor;
 import org.drools.spi.Constraint;
 import org.drools.spi.Evaluator;
@@ -83,8 +80,8 @@ import org.drools.spi.ObjectType;
 import org.drools.spi.PatternExtractor;
 import org.drools.spi.Restriction;
 import org.drools.spi.Constraint.ConstraintType;
-import org.mvel.ParserContext;
-import org.mvel.compiler.ExpressionCompiler;
+import org.mvel2.ParserContext;
+import org.mvel2.compiler.ExpressionCompiler;
 
 /**
  * A builder for patterns

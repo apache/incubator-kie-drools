@@ -16,19 +16,14 @@ package org.drools.common;
  * limitations under the License.
  */
 
-import org.drools.conflict.DepthConflictResolver;
-import org.drools.marshalling.MarshallerReaderContext;
-import org.drools.marshalling.MarshallerWriteContext;
-import org.drools.spi.Activation;
-import org.drools.spi.AgendaGroup;
-import org.drools.spi.ConflictResolver;
-import org.drools.util.BinaryHeapQueue;
-import org.drools.util.Queueable;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.Collection;
+import java.util.PriorityQueue;
+
+import org.drools.spi.Activation;
+import org.drools.util.BinaryHeapQueue;
+import org.drools.util.Queueable;
 
 /**
  * <code>AgendaGroup</code> implementation that uses a <code>PriorityQueue</code> to prioritise the evaluation of added

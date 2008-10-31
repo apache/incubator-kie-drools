@@ -23,8 +23,6 @@ import org.drools.guvnor.client.modeldriven.brl.ISingleFieldConstraint;
 import org.drools.guvnor.client.modeldriven.brl.RuleAttribute;
 import org.drools.guvnor.client.modeldriven.brl.RuleModel;
 import org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint;
-import org.drools.guvnor.server.util.BRLPersistence;
-import org.drools.guvnor.server.util.BRXMLPersistence;
 
 public class BRLPersitenceTest extends TestCase {
 

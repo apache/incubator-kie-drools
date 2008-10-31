@@ -16,10 +16,10 @@ package org.drools.event;
  * limitations under the License.
  */
 
-import java.io.Serializable;
-import java.io.ObjectOutput;
 import java.io.IOException;
 import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,11 +28,10 @@ import junit.framework.TestCase;
 import org.drools.Cheese;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
-import org.drools.base.ClassFieldReader;
 import org.drools.base.ClassFieldAccessorCache;
+import org.drools.base.ClassFieldReader;
 import org.drools.base.ClassObjectType;
 import org.drools.base.FieldFactory;
-import org.drools.base.ShadowProxy;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.ComparableEvaluatorsDefinition;
 import org.drools.base.evaluators.EqualityEvaluatorsDefinition;

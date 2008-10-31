@@ -1,12 +1,12 @@
 package org.drools.conflict;
 
-import org.drools.spi.Activation;
-import org.drools.spi.ConflictResolver;
-
 import java.io.Externalizable;
 import java.io.IOException;
-import java.io.ObjectOutput;
 import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
+import org.drools.spi.Activation;
+import org.drools.spi.ConflictResolver;
 
 public class DepthConflictResolver
     implements

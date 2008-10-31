@@ -1,12 +1,12 @@
 package org.drools.base.mvel;
 
-import org.mvel.integration.VariableResolver;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Map;
 import java.util.Set;
+
+import org.mvel2.integration.VariableResolver;
 
 public class DroolsMVELShadowFactory extends DroolsMVELFactory {
 

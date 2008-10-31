@@ -12,10 +12,10 @@ import org.drools.rule.Package;
 import org.drools.WorkingMemory;
 import org.drools.spi.ProcessContext;
 import org.drools.spi.ReturnValueEvaluator;
-import org.mvel.MVEL;
-import org.mvel.compiler.CompiledExpression;
-import org.mvel.debug.DebugTools;
-import org.mvel.integration.impl.SimpleValueResolver;
+import org.mvel2.MVEL;
+import org.mvel2.compiler.CompiledExpression;
+import org.mvel2.debug.DebugTools;
+import org.mvel2.integration.impl.SimpleValueResolver;
 
 public class MVELReturnValueEvaluator
     implements

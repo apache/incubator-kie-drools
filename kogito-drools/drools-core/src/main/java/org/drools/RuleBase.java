@@ -16,9 +16,9 @@ package org.drools;
  * limitations under the License.
  */
 
+import java.io.Externalizable;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Externalizable;
 import java.io.OutputStream;
 
 import org.drools.marshalling.Marshaller;

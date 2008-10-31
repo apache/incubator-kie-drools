@@ -1,19 +1,19 @@
 package org.drools.common;
 
-import junit.framework.TestCase;
-
-import java.io.File;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.Externalizable;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInput;
-import java.io.FileOutputStream;
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectOutput;
-import java.io.ByteArrayInputStream;
-import java.io.Serializable;
-import java.io.ObjectOutputStream;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+
+import junit.framework.TestCase;
 
 import org.drools.rule.GroupElement;
 import org.drools.rule.Package;

@@ -12,9 +12,9 @@ import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
 import org.drools.spi.Consequence;
 import org.drools.spi.KnowledgeHelper;
-import org.mvel.MVEL;
-import org.mvel.compiler.CompiledExpression;
-import org.mvel.debug.DebugTools;
+import org.mvel2.MVEL;
+import org.mvel2.compiler.CompiledExpression;
+import org.mvel2.debug.DebugTools;
 
 public class MVELConsequence implements Consequence, MVELCompileable,
 		Externalizable {

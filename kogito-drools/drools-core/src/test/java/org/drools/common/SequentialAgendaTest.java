@@ -1,9 +1,9 @@
 package org.drools.common;
 
+import junit.framework.TestCase;
+
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
-
-import junit.framework.TestCase;
 
 public class SequentialAgendaTest extends TestCase {
     public void testgetNext() {

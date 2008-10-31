@@ -3,14 +3,14 @@
  */
 package org.drools.concurrent;
 
-import org.drools.WorkingMemory;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+
+import org.drools.WorkingMemory;
 
 /**
  * The CommandExecutor is a Producer/Consumer style classes that provides a queue of Commands

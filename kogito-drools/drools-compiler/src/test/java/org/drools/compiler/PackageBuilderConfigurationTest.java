@@ -8,7 +8,6 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
-import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.TypeResolver;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;

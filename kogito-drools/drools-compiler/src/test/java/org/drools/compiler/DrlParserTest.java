@@ -2,14 +2,14 @@ package org.drools.compiler;
 
 import java.io.StringReader;
 
+import junit.framework.TestCase;
+
 import org.drools.RuntimeDroolsException;
 import org.drools.lang.Expander;
 import org.drools.lang.dsl.DSLMappingFile;
 import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.lang.dsl.DefaultExpander;
 import org.drools.lang.dsl.DefaultExpanderResolver;
-
-import junit.framework.TestCase;
 
 public class DrlParserTest extends TestCase {
 

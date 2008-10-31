@@ -1,6 +1,9 @@
 package org.drools.rule.builder.dialect.java;
 
+import java.util.Set;
+
 import junit.framework.TestCase;
+
 import org.antlr.runtime.RecognitionException;
 import org.drools.Cheese;
 import org.drools.base.ClassObjectType;
@@ -14,8 +17,6 @@ import org.drools.rule.Package;
 import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
 import org.drools.rule.builder.RuleBuildContext;
-
-import java.util.Set;
 
 public class JavaConsequenceBuilderTest extends TestCase {
 

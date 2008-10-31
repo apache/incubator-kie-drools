@@ -3,12 +3,11 @@
  */
 package org.drools.util;
 
+import java.io.Externalizable;
 import java.io.File;
 import java.io.IOException;
-import java.io.Serializable;
-import java.io.Externalizable;
-import java.io.ObjectOutput;
 import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;

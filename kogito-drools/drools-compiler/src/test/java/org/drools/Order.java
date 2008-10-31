@@ -16,11 +16,11 @@
 
 package org.drools;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.io.Serializable;
 
 /**
  * @author etirelli

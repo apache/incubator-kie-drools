@@ -2,9 +2,9 @@ package org.drools.rule;
 
 import java.util.Calendar;
 
-import org.drools.base.EnabledBoolean;
-
 import junit.framework.TestCase;
+
+import org.drools.base.EnabledBoolean;
 
 /**
  * @author Michael Neale

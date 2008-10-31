@@ -1,24 +1,24 @@
 package org.drools.base.dataproviders;
 
-import java.io.Serializable;
 import java.io.Externalizable;
-import java.io.ObjectOutput;
 import java.io.IOException;
 import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 
 import org.drools.base.mvel.DroolsMVELFactory;
-import org.drools.base.mvel.MVELCompileable;
 import org.drools.base.mvel.MVELCompilationUnit;
+import org.drools.base.mvel.MVELCompileable;
 import org.drools.rule.Declaration;
 import org.drools.WorkingMemory;
 import org.drools.spi.DataProvider;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
 import org.drools.util.ArrayIterator;
-import org.mvel.MVEL;
+import org.mvel2.MVEL;
 
 public class MVELDataProvider
     implements

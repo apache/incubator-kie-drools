@@ -5,7 +5,7 @@ global java.util.List results;
 rule "Test enabled expression 1"
 	@ruleID(1234)
     #arbitrary expression using a rule metadata
-    enabled ( "1234".equals( this.getMetaAttribute("ruleID") ) )
+    enabled ( rule.metaAttributes["ruleID"] == "1234" )
   when
     Person(name == "Michael")
   then

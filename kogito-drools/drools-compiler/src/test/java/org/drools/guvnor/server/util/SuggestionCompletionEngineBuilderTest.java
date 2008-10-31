@@ -1,13 +1,8 @@
 package org.drools.guvnor.server.util;
 
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
-
 import junit.framework.TestCase;
 
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.guvnor.server.util.SuggestionCompletionEngineBuilder;
 import org.drools.lang.dsl.AbstractDSLMappingEntry;
 import org.drools.lang.dsl.DSLMappingEntry;
 import org.drools.lang.dsl.DSLMappingEntry.Section;

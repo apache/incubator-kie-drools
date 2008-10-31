@@ -15,7 +15,6 @@
  */
 package org.drools.reteoo;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.drools.RuleBase;

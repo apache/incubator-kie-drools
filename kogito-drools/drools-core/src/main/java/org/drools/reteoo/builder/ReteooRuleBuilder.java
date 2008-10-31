@@ -16,6 +16,9 @@
 
 package org.drools.reteoo.builder;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.InitialFact;
 import org.drools.RuleIntegrationException;
 import org.drools.base.ClassObjectType;
@@ -25,10 +28,17 @@ import org.drools.reteoo.QueryTerminalNode;
 import org.drools.reteoo.ReteooBuilder;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.reteoo.TerminalNode;
-import org.drools.rule.*;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.drools.rule.Accumulate;
+import org.drools.rule.Collect;
+import org.drools.rule.EntryPoint;
+import org.drools.rule.EvalCondition;
+import org.drools.rule.Forall;
+import org.drools.rule.From;
+import org.drools.rule.GroupElement;
+import org.drools.rule.InvalidPatternException;
+import org.drools.rule.Pattern;
+import org.drools.rule.Query;
+import org.drools.rule.Rule;
 
 /**
  * @author etirelli

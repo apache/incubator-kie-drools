@@ -29,7 +29,6 @@ import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;

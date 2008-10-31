@@ -1,6 +1,5 @@
 package org.drools.rule;
 
-import java.io.Serializable;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -10,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.spi.DataProvider;
-import org.drools.spi.ReturnValueExpression;
 import org.drools.spi.Wireable;
 
 public class From extends ConditionalElement

@@ -1,7 +1,15 @@
 package org.drools.integrationtests;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
+
 import org.drools.Cheese;
 import org.drools.Cheesery;
 import org.drools.Order;
@@ -14,6 +22,7 @@ import org.drools.RuleBaseFactory;
 import org.drools.SpecialString;
 import org.drools.State;
 import org.drools.StatefulSession;
+import org.drools.WorkingMemory;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
@@ -21,16 +30,6 @@ import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.runtime.rule.FactHandle;
-import org.drools.WorkingMemory;
-import org.drools.util.DroolsStreamUtils;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 public class FirstOrderLogicTest extends TestCase {
     protected RuleBase getRuleBase() throws Exception {

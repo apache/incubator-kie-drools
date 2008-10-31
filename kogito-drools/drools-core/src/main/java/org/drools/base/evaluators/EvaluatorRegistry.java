@@ -18,15 +18,15 @@
 package org.drools.base.evaluators;
 
 import java.io.Externalizable;
-import java.io.ObjectInput;
 import java.io.IOException;
+import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.RuntimeDroolsException;
-import org.drools.common.DroolsObjectInput;
 import org.drools.base.ValueType;
+import org.drools.common.DroolsObjectInput;
 import org.drools.spi.Evaluator;
 
 /**

@@ -1,8 +1,8 @@
 package org.drools.reteoo;
 
 import java.io.Externalizable;
-import java.io.ObjectInput;
 import java.io.IOException;
+import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Iterator;
 import java.util.NoSuchElementException;

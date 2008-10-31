@@ -7,9 +7,6 @@ import org.drools.common.RuleFlowGroupImpl.DeactivateCallback;
 import org.drools.common.TruthMaintenanceSystem.LogicalRetractCallback;
 import org.drools.reteoo.PropagationQueuingNode.PropagateAction;
 import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;
-import org.drools.reteoo.PropagationQueuingNode.PropagateAction;
-import org.drools.common.RuleFlowGroupImpl.DeactivateCallback;
-import org.drools.common.TruthMaintenanceSystem;
 
 public class PersisterHelper {
     public static WorkingMemoryAction readWorkingMemoryAction(MarshallerReaderContext context) throws IOException {

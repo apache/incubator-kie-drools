@@ -20,7 +20,6 @@ import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.ProtectionDomain;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.RuntimeDroolsException;
@@ -29,6 +28,8 @@ import org.drools.asm.Label;
 import org.drools.asm.MethodVisitor;
 import org.drools.asm.Opcodes;
 import org.drools.asm.Type;
+import org.drools.base.ClassFieldAccessorCache.ByteArrayClassLoader;
+import org.drools.base.ClassFieldAccessorCache.CacheEntry;
 import org.drools.base.extractors.BaseBooleanClassFieldReader;
 import org.drools.base.extractors.BaseBooleanClassFieldWriter;
 import org.drools.base.extractors.BaseByteClassFieldReader;
@@ -50,8 +51,6 @@ import org.drools.base.extractors.BaseShortClassFieldWriter;
 import org.drools.base.extractors.MVELClassFieldReader;
 import org.drools.base.extractors.SelfReferenceClassFieldReader;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.base.ClassFieldAccessorCache.ByteArrayClassLoader;
-import org.drools.base.ClassFieldAccessorCache.CacheEntry;
 import org.drools.util.asm.ClassFieldInspector;
 
 /**
@@ -149,7 +148,7 @@ public class ClassFieldAccessorFactory {
         } catch ( final RuntimeDroolsException e ) {
             throw e;
         } catch ( final Exception e ) {
-            e.printStackTrace();
+//            e.printStackTrace();
             throw new RuntimeDroolsException( e );
         }
     }

@@ -1,16 +1,15 @@
 package org.drools.base.field;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.spi.FieldValue;
-
-import java.io.Externalizable;
-import java.io.ObjectInput;
-import java.io.IOException;
-import java.io.ObjectOutput;
-import java.io.Serializable;
 
 public class DoubleFieldImpl
     implements

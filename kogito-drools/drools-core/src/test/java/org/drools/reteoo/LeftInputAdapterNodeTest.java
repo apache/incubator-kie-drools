@@ -21,15 +21,11 @@ import java.util.List;
 
 import org.drools.DroolsTestCase;
 import org.drools.RuleBaseFactory;
-import org.drools.common.BaseNode;
 import org.drools.common.DefaultFactHandle;
-import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
-import org.drools.reteoo.ReteooBuilder.IdGenerator;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
-import org.drools.util.RightTupleList;
 
 public class LeftInputAdapterNodeTest extends DroolsTestCase {
     private ReteooRuleBase ruleBase;

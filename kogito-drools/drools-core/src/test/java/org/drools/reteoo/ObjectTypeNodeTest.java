@@ -16,7 +16,6 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +27,6 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.base.ClassObjectType;
-import org.drools.base.ShadowProxy;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
@@ -39,8 +37,6 @@ import org.drools.rule.EntryPoint;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
 import org.drools.util.ObjectHashSet;
-import org.drools.util.RightTupleList;
-import org.drools.util.ObjectHashMap;
 
 public class ObjectTypeNodeTest extends DroolsTestCase {
     private ReteooRuleBase ruleBase;

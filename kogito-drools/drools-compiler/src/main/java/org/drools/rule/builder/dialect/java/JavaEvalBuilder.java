@@ -26,7 +26,6 @@ import org.drools.lang.descr.EvalDescr;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.Pattern;
-import org.drools.rule.Rule;
 import org.drools.rule.RuleConditionElement;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleConditionBuilder;

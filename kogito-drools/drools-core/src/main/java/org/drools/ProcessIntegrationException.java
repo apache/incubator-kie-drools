@@ -17,7 +17,6 @@ package org.drools;
  */
 
 import org.drools.knowledge.definitions.process.Process;
-import org.drools.rule.Rule;
 
 /**
  * Indicates an error integrating a <code>Process</code> or <code>Package</code>

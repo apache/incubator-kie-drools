@@ -44,7 +44,7 @@ import org.drools.xml.ProcessSemanticModule;
 import org.drools.xml.RulesSemanticModule;
 import org.drools.xml.SemanticModule;
 import org.drools.xml.SemanticModules;
-import org.mvel.MVEL;
+import org.mvel2.MVEL;
 
 /**
  * This class configures the package compiler.

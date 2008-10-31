@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import junit.framework.TestCase;
 
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.guvnor.server.rules.SuggestionCompletionLoader;
 
 public class SuggestionCompletionLoaderTest extends TestCase {
 

@@ -16,10 +16,9 @@ package org.drools.util;
  * limitations under the License.
  */
 
-import java.io.Serializable;
 import java.io.Externalizable;
-import java.io.ObjectInput;
 import java.io.IOException;
+import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 public class PrimitiveLongStack

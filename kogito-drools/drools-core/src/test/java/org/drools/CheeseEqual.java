@@ -1,10 +1,9 @@
 package org.drools;
 
-import java.io.Serializable;
 import java.io.Externalizable;
-import java.io.ObjectOutput;
 import java.io.IOException;
 import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 /*
  * Copyright 2005 JBoss Inc

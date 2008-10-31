@@ -1,18 +1,19 @@
 package org.drools.integrationtests;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+
 import junit.framework.TestCase;
+
 import org.drools.Address;
 import org.drools.Person;
-import org.drools.rule.Package;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatelessSession;
 import org.drools.compiler.PackageBuilder;
-
-import java.io.InputStreamReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import org.drools.rule.Package;
 
 /**
  * This is for testing possible PermSpace issues (leaking) when spawning lots of sessions in concurrent threads.
