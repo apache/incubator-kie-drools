@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.drools.process.instance.EventListener;
+import org.drools.process.instance.ProcessInstance;
 
 public class DefaultSignalManager implements SignalManager {
 	
@@ -41,6 +42,10 @@ public class DefaultSignalManager implements SignalManager {
 				}
 			}
 		}
+	}
+	
+	public void signalEvent(ProcessInstance processInstance, String type, Object event) {
+        processInstance.signalEvent(type, event);
 	}
 	
 }
