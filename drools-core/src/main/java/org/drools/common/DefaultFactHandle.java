@@ -20,10 +20,6 @@ import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RightTuple;
 import org.drools.runtime.rule.FactHandle;
 
-import java.io.ObjectOutput;
-import java.io.IOException;
-import java.io.ObjectInput;
-
 /**
  * Implementation of <code>FactHandle</code>.
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>

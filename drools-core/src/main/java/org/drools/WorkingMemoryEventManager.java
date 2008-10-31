@@ -16,7 +16,6 @@ package org.drools;
  * limitations under the License.
  */
 
-import java.io.Externalizable;
 import java.util.List;
 
 import org.drools.event.AgendaEventListener;

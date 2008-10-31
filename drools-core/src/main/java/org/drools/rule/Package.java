@@ -26,13 +26,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
-import org.drools.base.ClassObjectType;
 import org.drools.common.DroolsObjectInputStream;
 import org.drools.common.DroolsObjectOutputStream;
 import org.drools.facttemplates.FactTemplate;

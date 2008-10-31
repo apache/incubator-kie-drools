@@ -4,7 +4,6 @@
 package org.drools.base;
 
 import org.drools.StatefulSession;
-import org.drools.common.InternalWorkingMemory;
 import org.drools.event.DefaultRuleBaseEventListener;
 import org.drools.event.knowledgebase.BeforeKnowledgeBaseUnlockedEvent;
 import org.drools.spi.RuleBaseUpdateListener;

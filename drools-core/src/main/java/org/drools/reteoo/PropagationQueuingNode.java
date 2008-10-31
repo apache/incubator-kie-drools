@@ -15,20 +15,24 @@
  */
 package org.drools.reteoo;
 
-import org.drools.RuleBaseConfiguration;
-import org.drools.RuntimeDroolsException;
-import org.drools.common.*;
-import org.drools.marshalling.MarshallerReaderContext;
-import org.drools.marshalling.MarshallerWriteContext;
-import org.drools.reteoo.builder.BuildContext;
-import org.drools.spi.PropagationContext;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.drools.RuleBaseConfiguration;
+import org.drools.RuntimeDroolsException;
+import org.drools.common.BaseNode;
+import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.common.NodeMemory;
+import org.drools.common.WorkingMemoryAction;
+import org.drools.marshalling.MarshallerReaderContext;
+import org.drools.marshalling.MarshallerWriteContext;
+import org.drools.reteoo.builder.BuildContext;
+import org.drools.spi.PropagationContext;
 
 /**
  * A node that will add the propagation to the working memory actions queue,

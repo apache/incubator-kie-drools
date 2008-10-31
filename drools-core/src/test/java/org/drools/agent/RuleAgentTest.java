@@ -2,20 +2,19 @@ package org.drools.agent;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
 
+import junit.framework.TestCase;
+
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseConfiguration.SequentialAgenda;
 import org.drools.common.InternalRuleBase;
 import org.drools.rule.Package;
-
-import junit.framework.TestCase;
 
 public class RuleAgentTest extends TestCase {
 

@@ -1,11 +1,11 @@
 package org.drools.rule;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;

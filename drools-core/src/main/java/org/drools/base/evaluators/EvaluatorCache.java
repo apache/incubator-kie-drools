@@ -17,15 +17,15 @@
  */
 package org.drools.base.evaluators;
 
-import org.drools.base.ValueType;
-import org.drools.spi.Evaluator;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.drools.base.ValueType;
+import org.drools.spi.Evaluator;
 
 /**
  * A simple helper class to store Evaluators for a given set of

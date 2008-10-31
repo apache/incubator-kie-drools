@@ -9,8 +9,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.drools.common.DroolsObjectInput;
-
 public class DialectRuntimeRegistry
     implements
     Externalizable {

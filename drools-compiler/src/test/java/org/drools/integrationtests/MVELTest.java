@@ -1,7 +1,17 @@
 package org.drools.integrationtests;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
+
 import org.drools.Cheese;
 import org.drools.Person;
 import org.drools.RuleBase;
@@ -13,16 +23,7 @@ import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
 import org.drools.WorkingMemory;
 import org.drools.util.DateUtils;
-import org.mvel.MVEL;
-
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import org.mvel2.MVEL;
 
 public class MVELTest extends TestCase {
     public void testHelloWorld() throws Exception {

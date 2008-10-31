@@ -40,7 +40,6 @@ package org.drools.rule;
  *
  */
 
-import java.io.Serializable;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -50,11 +49,8 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import org.drools.RuntimeDroolsException;
-import org.drools.base.ClassFieldReader;
-import org.drools.base.ShadowProxy;
 import org.drools.base.ValueType;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.spi.AcceptsClassObjectType;
 import org.drools.spi.AcceptsReadAccessor;
 import org.drools.spi.InternalReadAccessor;
 

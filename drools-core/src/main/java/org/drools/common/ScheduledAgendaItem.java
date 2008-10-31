@@ -17,19 +17,16 @@ package org.drools.common;
  */
 
 import java.io.Externalizable;
-import java.io.ObjectOutput;
 import java.io.IOException;
 import java.io.ObjectInput;
-import java.util.TimerTask;
+import java.io.ObjectOutput;
 
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
-import org.drools.spi.AgendaGroup;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
 import org.drools.time.JobHandle;
-import org.drools.util.LinkedList;
 import org.drools.util.LinkedListNode;
 
 /**

@@ -1,12 +1,11 @@
 package org.drools.base.mvel;
 
-import java.io.Serializable;
 import java.io.Externalizable;
-import java.io.ObjectOutput;
 import java.io.IOException;
 import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
-import org.mvel.integration.VariableResolver;
+import org.mvel2.integration.VariableResolver;
 
 public class DroolsMVELGlobalVariable
     implements

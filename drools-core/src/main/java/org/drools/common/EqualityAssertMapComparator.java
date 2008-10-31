@@ -16,13 +16,13 @@ package org.drools.common;
  * limitations under the License.
  */
 
-import org.drools.base.ShadowProxy;
-import org.drools.runtime.rule.FactHandle;
-import org.drools.util.AbstractHashTable.ObjectComparator;
 
 import java.io.IOException;
-import java.io.ObjectOutput;
 import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
+import org.drools.runtime.rule.FactHandle;
+import org.drools.util.AbstractHashTable.ObjectComparator;
 
 public class EqualityAssertMapComparator
     implements

@@ -10,9 +10,9 @@ import junit.framework.TestCase;
 import org.drools.Cheese;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
+import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.ClassFieldReader;
-import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassObjectType;
 import org.drools.base.FieldFactory;
 import org.drools.base.ValueType;
@@ -36,8 +36,6 @@ import org.drools.spi.DataProvider;
 import org.drools.spi.FieldValue;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
-import org.drools.util.LinkedList;
-import org.drools.util.LinkedListEntry;
 
 public class FromNodeTest extends TestCase {
     EqualityEvaluatorsDefinition equals = new EqualityEvaluatorsDefinition();

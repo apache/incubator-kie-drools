@@ -1,6 +1,5 @@
 package org.drools.rule.builder.dialect.mvel;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -16,8 +15,8 @@ import org.drools.rule.builder.ActionBuilder;
 import org.drools.rule.builder.PackageBuildContext;
 import org.drools.spi.ProcessContext;
 import org.drools.workflow.core.DroolsAction;
-import org.mvel.Macro;
-import org.mvel.MacroProcessor;
+import org.mvel2.Macro;
+import org.mvel2.MacroProcessor;
 
 public class MVELActionBuilder
     implements

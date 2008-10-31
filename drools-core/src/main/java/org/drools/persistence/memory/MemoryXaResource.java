@@ -8,8 +8,6 @@ import javax.transaction.xa.XAException;
 import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
 
-import org.drools.persistence.ByteArraySnapshotter;
-
 public class MemoryXaResource implements XAResource {
     private MemoryPersister pm;
     

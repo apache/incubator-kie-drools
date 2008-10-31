@@ -16,14 +16,17 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-import java.util.LinkedList;
-import java.io.ObjectOutput;
 import java.io.IOException;
 import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.LinkedList;
 
 import org.drools.RuleBaseConfiguration;
+import org.drools.common.BaseNode;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.common.NodeMemory;
+import org.drools.common.PropagationContextImpl;
 import org.drools.reteoo.builder.BuildContext;
-import org.drools.common.*;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
 import org.drools.spi.PropagationContext;

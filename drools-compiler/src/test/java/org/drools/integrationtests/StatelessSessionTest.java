@@ -1,6 +1,11 @@
 package org.drools.integrationtests;
 
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+
 import junit.framework.TestCase;
+
 import org.drools.Cheese;
 import org.drools.Cheesery;
 import org.drools.RuleBase;
@@ -14,10 +19,6 @@ import org.drools.base.ReferenceOriginalGlobalExporter;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
 import org.drools.spi.GlobalResolver;
-
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 
 public class StatelessSessionTest extends TestCase {
     final List list = new ArrayList();

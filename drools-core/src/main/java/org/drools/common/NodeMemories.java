@@ -18,7 +18,6 @@
 
 package org.drools.common;
 
-import java.io.Externalizable;
 
 /**
  * An interface for node memories implementation

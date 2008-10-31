@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.base.TypeResolver;
 import org.drools.rule.Package;
 import org.drools.rule.builder.ProcessBuildContext;
 

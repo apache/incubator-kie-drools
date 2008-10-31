@@ -1,19 +1,27 @@
 // $ANTLR 3.0 src/main/resources/org/drools/lang/dsl/DSLMap.g 2008-10-22 23:57:51
 
 	package org.drools.lang.dsl;
-	import java.util.List;
 	import java.util.ArrayList;
-//	import org.drools.lang.dsl.DSLMappingParseException;
-
-
-import org.antlr.runtime.*;
-import java.util.Stack;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
 
-import org.antlr.runtime.tree.*;
+import org.antlr.runtime.BitSet;
+import org.antlr.runtime.CommonToken;
+import org.antlr.runtime.EarlyExitException;
+import org.antlr.runtime.FailedPredicateException;
+import org.antlr.runtime.MismatchedSetException;
+import org.antlr.runtime.NoViableAltException;
+import org.antlr.runtime.Parser;
+import org.antlr.runtime.ParserRuleReturnScope;
+import org.antlr.runtime.RecognitionException;
+import org.antlr.runtime.Token;
+import org.antlr.runtime.TokenStream;
+import org.antlr.runtime.tree.CommonTreeAdaptor;
+import org.antlr.runtime.tree.RewriteEarlyExitException;
+import org.antlr.runtime.tree.RewriteEmptyStreamException;
+import org.antlr.runtime.tree.RewriteRuleSubtreeStream;
+import org.antlr.runtime.tree.RewriteRuleTokenStream;
+import org.antlr.runtime.tree.TreeAdaptor;
 
 public class DSLMapParser extends Parser {
     public static final String[] tokenNames = new String[] {

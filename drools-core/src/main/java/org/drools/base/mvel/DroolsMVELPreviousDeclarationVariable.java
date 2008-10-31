@@ -1,13 +1,13 @@
 package org.drools.base.mvel;
 
 import java.io.Externalizable;
-import java.io.ObjectOutput;
-import java.io.ObjectInput;
 import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.Declaration;
-import org.mvel.integration.VariableResolver;
+import org.mvel2.integration.VariableResolver;
 
 public class DroolsMVELPreviousDeclarationVariable
     implements

@@ -17,12 +17,12 @@
  */
 package org.drools.base.evaluators;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.io.ObjectInput;
-import java.io.IOException;
-import java.io.ObjectOutput;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.base.BaseEvaluator;
@@ -33,8 +33,8 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.VariableRestriction.ObjectVariableContextEntry;
 import org.drools.rule.VariableRestriction.VariableContextEntry;
 import org.drools.spi.Evaluator;
-import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.FieldValue;
+import org.drools.spi.InternalReadAccessor;
 
 /**
  * The implementation of the 'overlaps' evaluator definition

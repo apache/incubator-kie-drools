@@ -16,14 +16,13 @@ package org.drools.rule;
  * limitations under the License.
  */
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.io.Externalizable;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.IOException;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.common.InternalFactHandle;

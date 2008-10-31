@@ -18,10 +18,10 @@ package org.drools.reteoo.builder;
 
 import java.util.Iterator;
 
-import org.drools.rule.Pattern;
 import org.drools.rule.Forall;
 import org.drools.rule.GroupElement;
 import org.drools.rule.GroupElementFactory;
+import org.drools.rule.Pattern;
 import org.drools.rule.RuleConditionElement;
 
 /**

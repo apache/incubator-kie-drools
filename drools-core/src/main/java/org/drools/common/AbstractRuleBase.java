@@ -16,7 +16,6 @@ package org.drools.common;
  * limitations under the License.
  */
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
 import java.io.IOException;
@@ -52,7 +51,6 @@ import org.drools.rule.FactType;
 import org.drools.rule.Function;
 import org.drools.rule.ImportDeclaration;
 import org.drools.rule.InvalidPatternException;
-import org.drools.rule.MapBackedClassLoader;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.rule.TypeDeclaration;

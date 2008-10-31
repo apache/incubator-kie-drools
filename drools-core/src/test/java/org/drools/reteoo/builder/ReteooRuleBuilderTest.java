@@ -16,10 +16,10 @@
 
 package org.drools.reteoo.builder;
 
-import java.util.List;
-import java.io.ObjectOutput;
-import java.io.ObjectInput;
 import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.List;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -28,11 +28,9 @@ import org.drools.base.ClassObjectType;
 import org.drools.reteoo.ReteooBuilder;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.RuleTerminalNode;
-import org.drools.reteoo.ReteooBuilder.IdGenerator;
-import org.drools.rule.Package;
-import org.drools.rule.Pattern;
 import org.drools.rule.GroupElement;
 import org.drools.rule.GroupElementFactory;
+import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
 import org.drools.WorkingMemory;
 import org.drools.spi.Consequence;

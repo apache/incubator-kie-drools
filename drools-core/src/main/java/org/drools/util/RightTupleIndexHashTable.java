@@ -3,19 +3,13 @@
  */
 package org.drools.util;
 
-import org.drools.common.InternalFactHandle;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
+import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RightTuple;
 import org.drools.reteoo.RightTupleMemory;
-import org.drools.reteoo.LeftTuple;
-import org.drools.util.AbstractHashTable.HashTableIterator;
-import org.drools.util.AbstractHashTable.Index;
-import org.drools.util.AbstractHashTable.ObjectComparator;
-import org.drools.util.LeftTupleIndexHashTable.FieldIndexHashTableFullIterator;
-
-import java.io.ObjectInput;
-import java.io.IOException;
-import java.io.ObjectOutput;
-import java.io.Externalizable;
 
 public class RightTupleIndexHashTable extends AbstractHashTable
     implements

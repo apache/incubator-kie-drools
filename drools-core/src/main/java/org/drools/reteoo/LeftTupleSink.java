@@ -16,7 +16,6 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-import java.io.Serializable;
 import java.io.Externalizable;
 
 import org.drools.common.InternalWorkingMemory;

@@ -18,8 +18,6 @@ package org.drools.reteoo;
 
 import java.beans.IntrospectionException;
 
-import junit.framework.Assert;
-
 import org.drools.Cheese;
 import org.drools.DroolsTestCase;
 import org.drools.FactException;

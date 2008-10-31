@@ -5,7 +5,7 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.mvel.MVEL;
+import org.mvel2.MVEL;
 
 public class FactPopulatorTest extends TestCase {
 

@@ -1,12 +1,12 @@
 package org.drools.common;
 
+import java.io.Externalizable;
+
 import org.drools.RuleBaseConfiguration;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.ContextEntry;
 import org.drools.util.LinkedList;
-
-import java.io.Externalizable;
 
 public interface BetaConstraints
     extends

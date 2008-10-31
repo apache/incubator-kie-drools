@@ -30,7 +30,6 @@ import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.MockLeftTupleSink;
-import org.drools.reteoo.ReteooRuleBase;
 import org.drools.rule.Declaration;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Package;
@@ -41,8 +40,9 @@ import org.drools.rule.builder.RuleBuilder;
 import org.drools.WorkingMemory;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PatternExtractor;
-import org.mvel.ParserContext;
-import org.mvel.compiler.ExpressionCompiler;
+import org.mvel2.ParserContext;
+import org.mvel2.compiler.ExpressionCompiler;
+import org.mvel2.debug.DebugTools;
 
 public class MVELConsequenceBuilderTest extends TestCase {
 
@@ -271,7 +271,7 @@ public class MVELConsequenceBuilderTest extends TestCase {
 
             MVELConsequence mvelCons = (MVELConsequence) rule.getConsequence();
             mvelCons.compile( Thread.currentThread().getContextClassLoader() );
-            String s = org.mvel.debug.DebugTools.decompile( mvelCons.getCompExpr() );
+            String s = DebugTools.decompile( mvelCons.getCompExpr() );
 
             int fromIndex = 0;
             int count = 0;
@@ -303,7 +303,7 @@ public class MVELConsequenceBuilderTest extends TestCase {
 
         Serializable compiledExpression = compiler.compile( context );
 
-        String s = org.mvel.debug.DebugTools.decompile( compiledExpression );
+        String s = DebugTools.decompile( compiledExpression );
 
         System.out.println( "s " + s );
 

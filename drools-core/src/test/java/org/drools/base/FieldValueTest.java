@@ -16,10 +16,10 @@ package org.drools.base;
  * limitations under the License.
  */
 
-import org.drools.spi.FieldValue;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.drools.spi.FieldValue;
 
 public class FieldValueTest extends TestCase {
     FieldValue field1;

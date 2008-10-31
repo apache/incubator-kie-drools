@@ -17,19 +17,15 @@
 package org.drools.rule.builder;
 
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
-import java.util.Map.Entry;
 
-import org.drools.RuntimeDroolsException;
 import org.drools.base.EnabledBoolean;
 import org.drools.compiler.Dialect;
 import org.drools.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.PackageBuilder;
-import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;

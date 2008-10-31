@@ -1,8 +1,8 @@
 package org.drools.base.mvel;
 
-import org.mvel.MVELRuntime;
-import org.mvel.debug.Debugger;
-import org.mvel.debug.Frame;
+import org.mvel2.MVELRuntime;
+import org.mvel2.debug.Debugger;
+import org.mvel2.debug.Frame;
 
 /**
  * Debug Handler for MVEL dialect.

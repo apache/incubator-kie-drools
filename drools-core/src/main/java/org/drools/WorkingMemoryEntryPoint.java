@@ -17,7 +17,6 @@
  */
 package org.drools;
 
-import java.io.Serializable;
 
 import org.drools.runtime.rule.FactHandle;
 

@@ -17,7 +17,6 @@ package org.drools;
 
 import java.util.Map;
 
-import org.drools.base.ShadowProxy;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.Declaration;

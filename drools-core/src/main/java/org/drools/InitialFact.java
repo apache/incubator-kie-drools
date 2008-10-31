@@ -1,7 +1,6 @@
 package org.drools;
 
 import java.io.Serializable;
-import java.io.Externalizable;
 
 /*
  * Copyright 2005 JBoss Inc

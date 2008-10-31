@@ -1,6 +1,6 @@
 package org.drools.testframework;
 
-import static org.mvel.MVEL.eval;
+import static org.mvel2.MVEL.eval;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -28,7 +28,8 @@ import org.drools.guvnor.server.util.ScenarioXMLPersistence;
 import org.drools.rule.Package;
 import org.drools.rule.TimeMachine;
 import org.drools.runtime.rule.FactHandle;
-import org.mvel.MVEL;
+import org.mvel2.MVEL;
+
 
 /**
  * This actually runs the test scenarios.

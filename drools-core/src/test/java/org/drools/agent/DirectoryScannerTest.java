@@ -3,11 +3,11 @@ package org.drools.agent;
 import java.io.File;
 import java.util.Properties;
 
+import junit.framework.TestCase;
+
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.rule.Package;
-
-import junit.framework.TestCase;
 
 public class DirectoryScannerTest extends TestCase {
 

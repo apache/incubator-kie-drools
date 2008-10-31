@@ -1,19 +1,7 @@
 package org.drools.common;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
-import org.drools.base.MapGlobalResolver;
-import org.drools.event.AgendaEventSupport;
-import org.drools.event.RuleFlowEventSupport;
-import org.drools.event.WorkingMemoryEventSupport;
-import org.drools.process.instance.ProcessInstanceFactory;
-import org.drools.process.instance.InternalWorkItemManager;
-import org.drools.rule.TimeMachine;
 import org.drools.spi.FactHandleFactory;
-import org.drools.spi.GlobalResolver;
 import org.drools.time.SessionClock;
 
 public class SharedTemporalWorkingMemoryContext<T extends SessionClock>  extends SharedWorkingMemoryContext {    

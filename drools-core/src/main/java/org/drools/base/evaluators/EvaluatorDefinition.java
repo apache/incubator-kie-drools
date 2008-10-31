@@ -17,10 +17,10 @@
  */
 package org.drools.base.evaluators;
 
+import java.io.Externalizable;
+
 import org.drools.base.ValueType;
 import org.drools.spi.Evaluator;
-
-import java.io.Externalizable;
 
 /**
  * An evaluator definition interface that allows for pluggable

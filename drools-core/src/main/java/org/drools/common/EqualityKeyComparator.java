@@ -16,11 +16,11 @@ package org.drools.common;
  * limitations under the License.
  */
 
-import org.drools.util.AbstractHashTable.ObjectComparator;
-
-import java.io.ObjectOutput;
 import java.io.IOException;
 import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
+import org.drools.util.AbstractHashTable.ObjectComparator;
 
 public class EqualityKeyComparator
     implements

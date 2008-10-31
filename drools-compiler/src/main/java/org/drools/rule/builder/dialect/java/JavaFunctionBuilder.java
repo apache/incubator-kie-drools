@@ -18,8 +18,8 @@ import org.drools.rule.LineMappings;
 import org.drools.rule.Package;
 import org.drools.rule.builder.FunctionBuilder;
 import org.drools.util.StringUtils;
-import org.mvel.templates.TemplateRuntime;
-import org.mvel.integration.impl.MapVariableResolverFactory;
+import org.mvel2.integration.impl.MapVariableResolverFactory;
+import org.mvel2.templates.TemplateRuntime;
 
 
 public class JavaFunctionBuilder

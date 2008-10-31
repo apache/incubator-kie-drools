@@ -923,6 +923,9 @@ public class OutputMarshaller {
         long timerId = timerManager.internalGetTimerId();
         stream.writeLong( timerId );
         
+        // need to think on how to fix this
+        // stream.writeObject( timerManager.getTimerService() );
+        
         List<TimerInstance> timers = new ArrayList<TimerInstance>( timerManager.getTimers() );
         Collections.sort( timers,
                           new Comparator<TimerInstance>() {

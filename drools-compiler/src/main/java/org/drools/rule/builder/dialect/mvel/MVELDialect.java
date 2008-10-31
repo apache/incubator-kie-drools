@@ -70,13 +70,10 @@ import org.drools.rule.builder.dialect.java.JavaFunctionBuilder;
 import org.drools.spi.DeclarationScopeResolver;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.util.StringUtils;
-import org.mvel.MVEL;
-import org.mvel.ParserContext;
-import org.mvel.compiler.AbstractParser;
-import org.mvel.compiler.CompiledExpression;
-import org.mvel.compiler.ExpressionCompiler;
-import org.mvel.util.CompilerTools;
-import org.mvel.util.ParseTools;
+import org.mvel2.MVEL;
+import org.mvel2.ParserContext;
+import org.mvel2.compiler.AbstractParser;
+import org.mvel2.compiler.ExpressionCompiler;
 
 public class MVELDialect
     implements
@@ -341,9 +338,9 @@ public class MVELDialect
                                    null,
                                    null,
                                    null );
-        Map<String, org.mvel.ast.Function> map = CompilerTools.extractAllDeclaredFunctions( (CompiledExpression) s1 );
+        Map<String, org.mvel2.ast.Function> map = org.mvel2.util.CompilerTools.extractAllDeclaredFunctions( (org.mvel2.compiler.CompiledExpression) s1 );
         MVELDialectRuntimeData data = (MVELDialectRuntimeData) this.packageRegistry.getDialectRuntimeRegistry().getDialectData( getId() );
-        for ( org.mvel.ast.Function function : map.values() ) {
+        for ( org.mvel2.ast.Function function : map.values() ) {
             data.addFunction( function );
         }
     }
@@ -367,7 +364,7 @@ public class MVELDialect
         } else {
             try {
                 Class cls = this.packageRegistry.getTypeResolver().resolveType( importEntry );
-                this.imports.put( ParseTools.getSimpleClassName( cls ),
+                this.imports.put( cls.getSimpleName(),
                                   cls );
             } catch ( ClassNotFoundException e ) {
                 this.results.add( new ImportError( importEntry,

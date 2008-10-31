@@ -16,11 +16,8 @@
 
 package org.drools.rule.builder.dialect.mvel;
 
-import java.io.Serializable;
-import java.util.List;
 import java.util.Set;
 
-import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.base.mvel.MVELEvalExpression;
 import org.drools.compiler.DescrBuildError;

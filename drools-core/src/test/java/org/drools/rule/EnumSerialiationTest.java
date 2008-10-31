@@ -1,6 +1,7 @@
 package org.drools.rule;
 
 import junit.framework.TestCase;
+
 import org.drools.integrationtests.SerializationHelper;
 
 /**

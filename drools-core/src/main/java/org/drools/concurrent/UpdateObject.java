@@ -3,12 +3,12 @@
  */
 package org.drools.concurrent;
 
-import org.drools.runtime.rule.FactHandle;
-import org.drools.WorkingMemory;
-
-import java.io.ObjectOutput;
 import java.io.IOException;
 import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
+import org.drools.FactHandle;
+import org.drools.WorkingMemory;
 
 public class UpdateObject
     implements

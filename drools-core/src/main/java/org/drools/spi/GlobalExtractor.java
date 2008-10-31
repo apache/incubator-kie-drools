@@ -21,13 +21,11 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Method;
-import java.util.Map;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassObjectType;
 import org.drools.base.ValueType;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.util.ClassUtils;
 
 /**
  * This is a global variable extractor used to get a global variable value

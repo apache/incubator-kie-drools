@@ -247,7 +247,7 @@ public class MiscTest extends TestCase {
 
     }
     
-    public void FIXME_testEnabledExpression() throws Exception {
+    public void testEnabledExpression() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_enabledExpression.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -264,8 +264,8 @@ public class MiscTest extends TestCase {
 
         session.insert( new Person("Michael") );
 
-        session = SerializationHelper.getSerialisedStatefulSession( session,
-                                                                    ruleBase );
+//        session = SerializationHelper.getSerialisedStatefulSession( session,
+//                                                                    ruleBase );
         results = (List) session.getGlobal( "results" );
 
         session.fireAllRules();

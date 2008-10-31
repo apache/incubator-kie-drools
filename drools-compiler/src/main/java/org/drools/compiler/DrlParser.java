@@ -29,6 +29,8 @@ import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.TokenStream;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
 import org.antlr.runtime.tree.Tree;
+import org.drools.lang.DRLLexer;
+import org.drools.lang.DRLParser;
 import org.drools.lang.DescrBuilderTree;
 import org.drools.lang.DroolsSentence;
 import org.drools.lang.DroolsTree;
@@ -36,8 +38,6 @@ import org.drools.lang.DroolsTreeAdaptor;
 import org.drools.lang.Expander;
 import org.drools.lang.ExpanderException;
 import org.drools.lang.Location;
-import org.drools.lang.DRLLexer;
-import org.drools.lang.DRLParser;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.dsl.DefaultExpanderResolver;
 

@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.DroolsTestCase;
-import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.common.DefaultBetaConstraints;
@@ -35,8 +34,6 @@ import org.drools.rule.Rule;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.MockConstraint;
 import org.drools.spi.PropagationContext;
-import org.drools.util.FactEntry;
-import org.drools.util.Iterator;
 
 public class JoinNodeTest extends DroolsTestCase {
     Rule                rule;

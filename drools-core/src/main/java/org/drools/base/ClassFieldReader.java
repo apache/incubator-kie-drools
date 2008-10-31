@@ -22,11 +22,8 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Method;
 
-import org.drools.RuntimeDroolsException;
-import org.drools.common.DroolsObjectInput;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.InternalReadAccessor;
-import org.drools.spi.ReadAccessor;
 import org.drools.util.ClassUtils;
 
 /**

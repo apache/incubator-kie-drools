@@ -3,9 +3,9 @@ package org.drools.compiler;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import org.drools.rule.Package;
-
 import junit.framework.TestCase;
+
+import org.drools.rule.Package;
 
 public class CompilerPerfProfileTest extends TestCase {
 

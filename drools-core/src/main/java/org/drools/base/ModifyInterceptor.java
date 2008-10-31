@@ -1,17 +1,16 @@
 package org.drools.base;
 
-import java.io.Serializable;
 import java.io.Externalizable;
-import java.io.ObjectOutput;
 import java.io.IOException;
 import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 import org.drools.base.mvel.DroolsMVELKnowledgeHelper;
 import org.drools.spi.KnowledgeHelper;
-import org.mvel.ast.ASTNode;
-import org.mvel.ast.WithNode;
-import org.mvel.integration.Interceptor;
-import org.mvel.integration.VariableResolverFactory;
+import org.mvel2.ast.ASTNode;
+import org.mvel2.ast.WithNode;
+import org.mvel2.integration.Interceptor;
+import org.mvel2.integration.VariableResolverFactory;
 
 public class ModifyInterceptor
     implements

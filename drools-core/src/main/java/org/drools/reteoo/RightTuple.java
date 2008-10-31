@@ -1,9 +1,5 @@
 package org.drools.reteoo;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-
 import org.drools.common.InternalFactHandle;
 import org.drools.util.Entry;
 import org.drools.util.RightTupleList;

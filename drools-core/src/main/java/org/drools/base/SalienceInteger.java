@@ -1,13 +1,13 @@
 package org.drools.base;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 import org.drools.WorkingMemory;
 import org.drools.spi.Salience;
 import org.drools.spi.Tuple;
-
-import java.io.Externalizable;
-import java.io.ObjectInput;
-import java.io.IOException;
-import java.io.ObjectOutput;
 
 public class SalienceInteger
     implements

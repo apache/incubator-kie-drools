@@ -1,8 +1,5 @@
 package org.drools.rule.builder.dialect.mvel;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import junit.framework.TestCase;
 
 import org.drools.Cheese;

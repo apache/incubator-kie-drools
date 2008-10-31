@@ -1,6 +1,5 @@
 package org.drools.reteoo;
 
-import org.drools.common.InternalFactHandle;
 import org.drools.util.Entry;
 import org.drools.util.Iterator;
 

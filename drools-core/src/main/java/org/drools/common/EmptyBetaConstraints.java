@@ -16,18 +16,17 @@ package org.drools.common;
  * limitations under the License.
  */
 
-import org.drools.RuleBaseConfiguration;
-import org.drools.reteoo.BetaMemory;
-import org.drools.reteoo.RightTupleMemory;
-import org.drools.reteoo.LeftTuple;
-import org.drools.rule.ContextEntry;
-import org.drools.util.RightTupleList;
-import org.drools.util.LinkedList;
-import org.drools.util.LeftTupleList;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+
+import org.drools.RuleBaseConfiguration;
+import org.drools.reteoo.BetaMemory;
+import org.drools.reteoo.LeftTuple;
+import org.drools.rule.ContextEntry;
+import org.drools.util.LeftTupleList;
+import org.drools.util.LinkedList;
+import org.drools.util.RightTupleList;
 
 public class EmptyBetaConstraints
     implements

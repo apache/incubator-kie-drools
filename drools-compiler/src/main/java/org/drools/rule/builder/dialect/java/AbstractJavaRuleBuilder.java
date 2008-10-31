@@ -10,13 +10,13 @@ import org.drools.rule.Declaration;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.util.StringUtils;
-import org.mvel.compiler.AbstractParser;
-import org.mvel.integration.impl.MapVariableResolverFactory;
-import org.mvel.optimizers.OptimizerFactory;
-import org.mvel.templates.SimpleTemplateRegistry;
-import org.mvel.templates.TemplateCompiler;
-import org.mvel.templates.TemplateRegistry;
-import org.mvel.templates.TemplateRuntime;
+import org.mvel2.compiler.AbstractParser;
+import org.mvel2.integration.impl.MapVariableResolverFactory;
+import org.mvel2.optimizers.OptimizerFactory;
+import org.mvel2.templates.SimpleTemplateRegistry;
+import org.mvel2.templates.TemplateCompiler;
+import org.mvel2.templates.TemplateRegistry;
+import org.mvel2.templates.TemplateRuntime;
 
 public class AbstractJavaRuleBuilder {
 

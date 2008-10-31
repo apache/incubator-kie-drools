@@ -3,27 +3,14 @@
  */
 package org.drools.common;
 
-import java.io.Externalizable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InvalidClassException;
-import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamClass;
-import java.io.StreamCorruptedException;
-import java.lang.reflect.Array;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicReferenceArray;
 
-import org.drools.base.ClassFieldAccessorCache;
-import org.drools.rule.DialectRuntimeRegistry;
 import org.drools.rule.Package;
 
 public class DroolsObjectInputStream extends ObjectInputStream

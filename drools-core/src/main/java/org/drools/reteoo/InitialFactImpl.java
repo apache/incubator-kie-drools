@@ -16,12 +16,12 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-import org.drools.InitialFact;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+
+import org.drools.InitialFact;
 
 /**
  * We dont want users to be able to instantiate InitialFact so we expose it as

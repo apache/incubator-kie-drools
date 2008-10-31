@@ -4,7 +4,6 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -12,12 +11,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.base.mvel.MVELCompileable;
 import org.drools.spi.Wireable;
-import org.mvel.ast.Function;
-import org.mvel.integration.VariableResolver;
-import org.mvel.integration.impl.MapVariableResolverFactory;
+import org.mvel2.integration.VariableResolver;
+import org.mvel2.integration.impl.MapVariableResolverFactory;
 
 public class MVELDialectRuntimeData
     implements
@@ -119,10 +116,11 @@ public class MVELDialectRuntimeData
                            Rule rule) {
     }
 
-    public void addFunction(Function function) {
+    public void addFunction(org.mvel2.ast.Function function) {
         this.functionFactory.addFunction( function );
     }
 
+    // TODO: FIXME: make it consistent with above
     public void removeFunction(Package pkg,
                                org.drools.rule.Function function) {
         this.functionFactory.removeFunction( function.getName() );
@@ -156,7 +154,7 @@ public class MVELDialectRuntimeData
             this.variables = (Map) in.readObject();
         }
 
-        public void addFunction(Function function) {
+        public void addFunction(org.mvel2.ast.Function function) {
             this.variables.put( function.getName(),
                                 function );
         }

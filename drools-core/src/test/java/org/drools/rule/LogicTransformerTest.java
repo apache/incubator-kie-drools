@@ -19,13 +19,11 @@ package org.drools.rule;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 
 import org.drools.DroolsTestCase;
-import org.drools.util.DroolsStreamUtils;
 import org.drools.base.ClassObjectType;
 import org.drools.spi.ObjectType;
+import org.drools.util.DroolsStreamUtils;
 
 public class LogicTransformerTest extends DroolsTestCase {
     /**

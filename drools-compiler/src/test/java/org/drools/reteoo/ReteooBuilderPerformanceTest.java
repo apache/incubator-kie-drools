@@ -1,18 +1,18 @@
 package org.drools.reteoo;
 
-import org.drools.integrationtests.LargeRuleBase;
-import org.drools.compiler.DrlParser;
-import org.drools.compiler.PackageBuilder;
-import org.drools.compiler.DroolsParserException;
-import org.drools.compiler.PackageBuilderConfiguration;
-import org.drools.lang.descr.PackageDescr;
-import org.drools.RuleBaseConfiguration;
-
 import java.io.StringReader;
 
+import junit.framework.TestCase;
+
+import org.drools.RuleBaseConfiguration;
+import org.drools.compiler.DrlParser;
+import org.drools.compiler.DroolsParserException;
+import org.drools.compiler.PackageBuilder;
+import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.integrationtests.LargeRuleBase;
+import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
-import junit.framework.TestCase;
 
 /**
  * Created by IntelliJ IDEA. User: SG0521861 Date: Mar 20, 2008 Time: 2:36:47 PM To change this template use File |

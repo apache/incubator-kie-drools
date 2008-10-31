@@ -3,12 +3,10 @@
  */
 package org.drools.util;
 
-import org.drools.util.AbstractHashTable.EqualityEquals;
-
-import java.io.ObjectOutput;
-import java.io.ObjectInput;
-import java.io.IOException;
 import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 public class ObjectHashMap extends AbstractHashTable implements Externalizable {
 

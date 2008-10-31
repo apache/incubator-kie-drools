@@ -17,6 +17,7 @@
  */
 package org.drools.time.impl;
 
+import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -45,7 +46,8 @@ import org.drools.time.Trigger;
 public class PseudoClockScheduler
     implements
     TimerService,
-    SessionPseudoClock {
+    SessionPseudoClock,
+    Externalizable {
 
     private volatile long                   timer;
     private PriorityQueue<ScheduledJob>     queue;

@@ -1,23 +1,24 @@
 package org.drools.integrationtests.sequential;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+
 import junit.framework.TestCase;
+
 import org.drools.Cheese;
 import org.drools.Person;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.StatelessSession;
-import org.drools.integrationtests.SerializationHelper;
-import org.drools.integrationtests.DynamicRulesTest;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
+import org.drools.integrationtests.DynamicRulesTest;
+import org.drools.integrationtests.SerializationHelper;
 import org.drools.rule.Package;
-
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
 
 public class SequentialTest extends TestCase {
     public void testBasicOperation() throws Exception {

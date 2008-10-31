@@ -1,11 +1,7 @@
 package org.drools;
 
 import java.util.Collection;
-import java.util.List;
 
-import org.drools.event.AgendaEventListener;
-import org.drools.event.RuleFlowEventListener;
-import org.drools.event.WorkingMemoryEventListener;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.GlobalExporter;
 import org.drools.spi.GlobalResolver;

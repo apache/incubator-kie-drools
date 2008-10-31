@@ -4,32 +4,19 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.Serializable;
-import java.security.ProtectionDomain;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.WeakHashMap;
 import java.util.Map.Entry;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.base.AccessorKey.AccessorType;
-import org.drools.rule.Declaration;
 import org.drools.spi.Acceptor;
 import org.drools.spi.AcceptsClassObjectType;
 import org.drools.spi.AcceptsReadAccessor;
 import org.drools.spi.AcceptsWriteAccessor;
-import org.drools.spi.Constraint;
-import org.drools.spi.GlobalExtractor;
-import org.drools.spi.InternalReadAccessor;
-import org.drools.spi.ObjectType;
-import org.drools.spi.PatternExtractor;
-import org.drools.spi.ReadAccessor;
-import org.drools.util.asm.ClassFieldInspector;
 
 public class ClassFieldAccessorStore
     implements

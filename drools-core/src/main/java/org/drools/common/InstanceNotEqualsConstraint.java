@@ -16,15 +16,15 @@ package org.drools.common;
  * limitations under the License.
  */
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.Declaration;
 import org.drools.rule.Pattern;
 import org.drools.spi.BetaNodeFieldConstraint;
-
-import java.io.ObjectOutput;
-import java.io.IOException;
-import java.io.ObjectInput;
 
 public class InstanceNotEqualsConstraint
     implements

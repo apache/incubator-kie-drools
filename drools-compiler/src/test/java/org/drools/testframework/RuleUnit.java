@@ -3,13 +3,13 @@ package org.drools.testframework;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import junit.framework.TestCase;
+
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
-
-import junit.framework.TestCase;
 
 /**
  * A class with some utilities for testing rules.

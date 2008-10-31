@@ -16,11 +16,9 @@
 
 package org.drools.rule.builder.dialect.mvel;
 
-import java.io.Serializable;
 import java.util.Set;
 
 import org.drools.base.dataproviders.MVELDataProvider;
-import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.Dialect;
@@ -34,7 +32,6 @@ import org.drools.rule.Pattern;
 import org.drools.rule.RuleConditionElement;
 import org.drools.rule.builder.FromBuilder;
 import org.drools.rule.builder.RuleBuildContext;
-import org.drools.spi.DataProvider;
 
 /**
  * A builder for "from" conditional element

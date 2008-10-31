@@ -33,7 +33,6 @@ import org.drools.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
-import org.drools.compiler.PackageRegistry;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;

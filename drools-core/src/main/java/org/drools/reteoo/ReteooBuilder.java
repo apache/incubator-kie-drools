@@ -16,17 +16,12 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.Externalizable;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.Serializable;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.Externalizable;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -42,9 +37,9 @@ import org.drools.RuleIntegrationException;
 import org.drools.base.SalienceInteger;
 import org.drools.common.BaseNode;
 import org.drools.common.DroolsObjectInputStream;
+import org.drools.common.DroolsObjectOutputStream;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.common.DroolsObjectOutputStream;
 import org.drools.reteoo.builder.ReteooRuleBuilder;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Rule;

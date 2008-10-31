@@ -16,21 +16,15 @@ package org.drools.common;
  * limitations under the License.
  */
 
-import org.drools.conflict.DepthConflictResolver;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.PriorityQueue;
+
 import org.drools.spi.Activation;
-import org.drools.spi.AgendaGroup;
-import org.drools.spi.ConflictResolver;
-import org.drools.util.BinaryHeapQueue;
 import org.drools.util.Iterator;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListEntry;
-import org.drools.util.PrimitiveLongMap;
-import org.drools.util.Queueable;
-import org.drools.util.LinkedList.LinkedListIterator;
-
-import java.io.IOException;
-import java.io.ObjectOutput;
-import java.io.ObjectInput;
 
 /**
  * <code>AgendaGroup</code> implementation that uses a <code>PriorityQueue</code> to prioritise the evaluation of added

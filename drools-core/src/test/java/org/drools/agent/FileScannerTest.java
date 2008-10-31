@@ -1,19 +1,15 @@
 package org.drools.agent;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import junit.framework.TestCase;
+
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.rule.Package;
-
-import junit.framework.TestCase;
 
 public class FileScannerTest extends TestCase {
 

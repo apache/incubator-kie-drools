@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.drools.common.BaseNode;
 import org.drools.common.InternalRuleBase;
-import org.drools.reteoo.BetaNode;
 import org.drools.reteoo.LeftTupleSink;
 import org.drools.reteoo.LeftTupleSource;
 import org.drools.reteoo.ObjectSink;

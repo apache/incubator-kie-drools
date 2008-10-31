@@ -8,7 +8,6 @@ import java.lang.reflect.Method;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassObjectType;
-import org.drools.base.ShadowProxy;
 import org.drools.base.ValueType;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.facttemplates.Fact;

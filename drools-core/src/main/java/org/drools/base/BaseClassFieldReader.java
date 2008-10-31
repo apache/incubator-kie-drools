@@ -16,10 +16,6 @@ package org.drools.base;
  * limitations under the License.
  */
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-
 import org.drools.RuntimeDroolsException;
 import org.drools.util.ClassUtils;
 import org.drools.util.asm.ClassFieldInspector;

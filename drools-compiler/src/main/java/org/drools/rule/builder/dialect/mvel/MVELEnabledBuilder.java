@@ -10,10 +10,8 @@ import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.Dialect;
 import org.drools.rule.Declaration;
 import org.drools.rule.MVELDialectRuntimeData;
-import org.drools.rule.Rule;
 import org.drools.rule.builder.EnabledBuilder;
 import org.drools.rule.builder.RuleBuildContext;
-import org.drools.spi.KnowledgeHelper;
 
 public class MVELEnabledBuilder
     implements
@@ -27,19 +25,25 @@ public class MVELEnabledBuilder
             // This builder is re-usable in other dialects, so specify by name            
             MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
 
+            Map<String,Class> otherVars = new HashMap<String, Class>();
+            otherVars.put( "rule", org.drools.rule.Rule.class );
+
             Map<String, Declaration> declarations = context.getDeclarationResolver().getDeclarations(context.getRule());
             Dialect.AnalysisResult analysis = dialect.analyzeExpression( context,
                                                                          context.getRuleDescr(),
                                                                          (String) context.getRuleDescr().getEnabled(),
-                                                                         new Set[]{declarations.keySet(), context.getPkg().getGlobals().keySet()} );
+                                                                         new Set[]{declarations.keySet(), context.getPkg().getGlobals().keySet()},
+                                                                         otherVars );
 
             Declaration[] previousDeclarations = (Declaration[]) declarations.values().toArray( new Declaration[declarations.size()] );
             
-            MVELCompilationUnit unit = dialect.getMVELCompilationUnit( (String) context.getRuleDescr().getEnabled(),
+            String exprStr = (String) context.getRuleDescr().getEnabled();
+            exprStr = exprStr.substring( 1, exprStr.length()-1 )+" ";
+            MVELCompilationUnit unit = dialect.getMVELCompilationUnit( exprStr,
                                                                        analysis,
                                                                        previousDeclarations,
                                                                        null,
-                                                                       null,
+                                                                       otherVars,
                                                                        context );
 
             MVELEnabledExpression expr = new MVELEnabledExpression( unit,

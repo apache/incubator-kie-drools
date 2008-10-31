@@ -19,8 +19,6 @@ package org.drools.spi;
 import org.drools.rule.Declaration;
 import org.drools.WorkingMemory;
 
-import java.io.Externalizable;
-
 public interface PredicateExpression
     extends
     Invoker {

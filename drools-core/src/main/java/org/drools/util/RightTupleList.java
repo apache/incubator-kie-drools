@@ -3,16 +3,11 @@
  */
 package org.drools.util;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-
 import org.drools.common.InternalFactHandle;
+import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RightTuple;
 import org.drools.reteoo.RightTupleMemory;
-import org.drools.reteoo.LeftTuple;
 import org.drools.util.AbstractHashTable.Index;
-import org.drools.util.LeftTupleList.TupleHashTableIterator;
 
 public class RightTupleList
     implements

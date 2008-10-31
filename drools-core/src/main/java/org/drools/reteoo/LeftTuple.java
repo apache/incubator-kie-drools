@@ -1,12 +1,8 @@
 package org.drools.reteoo;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.base.ShadowProxy;
 import org.drools.common.InternalFactHandle;
 import org.drools.rule.Declaration;
 import org.drools.spi.Activation;

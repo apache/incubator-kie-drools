@@ -1,7 +1,6 @@
 package org.drools.util;
 
 import junit.framework.TestCase;
-import org.drools.util.ObjectHashMap;
 
 public class ObjectHashMapTest2 extends TestCase {
 

@@ -1,18 +1,19 @@
 package org.drools.base.mvel;
 
-import org.drools.rule.Declaration;
-import org.drools.rule.MVELDialectRuntimeData;
-import org.drools.rule.Package;
-import org.drools.WorkingMemory;
-import org.drools.spi.PredicateExpression;
-import org.drools.spi.Tuple;
-import org.mvel.MVEL;
 
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
+
+import org.drools.WorkingMemory;
+import org.drools.rule.Declaration;
+import org.drools.rule.MVELDialectRuntimeData;
+import org.drools.rule.Package;
+import org.drools.spi.PredicateExpression;
+import org.drools.spi.Tuple;
+import org.mvel2.MVEL;
 
 public class MVELPredicateExpression implements PredicateExpression, MVELCompileable, Externalizable {
     private static final long       serialVersionUID = 400L;

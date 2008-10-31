@@ -1,6 +1,5 @@
 package org.drools.spi;
 
-import java.io.Serializable;
 import java.io.Externalizable;
 
 import org.drools.common.InternalFactHandle;

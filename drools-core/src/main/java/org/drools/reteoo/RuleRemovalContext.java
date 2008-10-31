@@ -18,15 +18,12 @@
 
 package org.drools.reteoo;
 
-import java.io.Serializable;
 import java.io.Externalizable;
-import java.io.ObjectOutput;
 import java.io.IOException;
 import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.drools.common.BaseNode;
 
 /**
  * This context class is used during rule removal to ensure

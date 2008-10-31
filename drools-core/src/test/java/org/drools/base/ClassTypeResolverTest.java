@@ -10,9 +10,6 @@ import junit.framework.TestCase;
 import org.drools.Cheese;
 import org.drools.FirstClass;
 import org.drools.SecondClass;
-import org.drools.base.ClassTypeResolver;
-import org.drools.base.TypeResolver;
-import org.drools.Person.Nested1.Nested2.Nested3;
 
 /**
  * @author fburlet

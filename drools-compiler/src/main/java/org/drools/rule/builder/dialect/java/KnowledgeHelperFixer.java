@@ -19,8 +19,8 @@ package org.drools.rule.builder.dialect.java;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.mvel.Macro;
-import org.mvel.MacroProcessor;
+import org.mvel2.Macro;
+import org.mvel2.MacroProcessor;
 
 public class KnowledgeHelperFixer {
     private static final Map macros;

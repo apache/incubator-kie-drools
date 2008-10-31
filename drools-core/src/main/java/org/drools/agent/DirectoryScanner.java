@@ -2,14 +2,10 @@ package org.drools.agent;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-
-import org.drools.RuleBase;
-import org.drools.rule.Package;
 
 /**
  * This will scan a directory for files to watch for a change. It will update

@@ -4,10 +4,8 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 import org.drools.util.Iterator;
-import org.drools.util.LinkedList;
 import org.drools.util.ObjectHashMap;
 import org.drools.util.ObjectHashMap.ObjectEntry;
-import org.drools.reteoo.CompositeObjectSinkAdapter.HashKey;
 
 public class AlphaNetworkCompiler {
     private StringBuilder builder;

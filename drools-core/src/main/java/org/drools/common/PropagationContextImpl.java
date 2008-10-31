@@ -16,6 +16,10 @@ package org.drools.common;
  * limitations under the License.
  */
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
@@ -23,10 +27,6 @@ import org.drools.runtime.rule.FactHandle;
 import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
 import org.drools.util.ObjectHashMap;
-
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.IOException;
 
 public class PropagationContextImpl
     implements

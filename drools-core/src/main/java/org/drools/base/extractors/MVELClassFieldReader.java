@@ -17,23 +17,19 @@
  */
 package org.drools.base.extractors;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
 import org.drools.base.AccessorKey;
-import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ValueType;
-import org.drools.common.InternalWorkingMemory;
 import org.drools.base.ClassFieldAccessorCache.CacheEntry;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.InternalReadAccessor;
-import org.mvel.MVEL;
-import org.mvel.compiler.CompiledExpression;
-import org.mvel.compiler.ExpressionCompiler;
+import org.mvel2.MVEL;
+import org.mvel2.compiler.CompiledExpression;
+import org.mvel2.compiler.ExpressionCompiler;
 
 /**
  * A class field extractor that uses MVEL engine to extract the actual value for a given

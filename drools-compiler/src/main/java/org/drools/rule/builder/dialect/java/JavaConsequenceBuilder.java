@@ -30,14 +30,13 @@ import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.Dialect;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.Declaration;
-import org.drools.rule.Rule;
 import org.drools.rule.builder.ConsequenceBuilder;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.dialect.java.parser.JavaModifyBlockDescr;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.spi.PatternExtractor;
 import org.drools.util.ClassUtils;
-import org.mvel.compiler.ExecutableStatement;
+import org.mvel2.compiler.ExecutableStatement;
 
 /**
  * @author etirelli

@@ -2,37 +2,43 @@
 
 	package org.drools.lang;
 
-	import java.util.HashMap;
-	import java.util.Map;
-	import java.util.LinkedList;
-	import org.drools.lang.descr.AccessorDescr;
-	import org.drools.lang.descr.AccumulateDescr;
-	import org.drools.lang.descr.AndDescr;
-	import org.drools.lang.descr.AttributeDescr;
-	import org.drools.lang.descr.BaseDescr;
-	import org.drools.lang.descr.BehaviorDescr;
-	import org.drools.lang.descr.DeclarativeInvokerDescr;
-	import org.drools.lang.descr.DescrFactory;
-	import org.drools.lang.descr.FactTemplateDescr;
-	import org.drools.lang.descr.FieldConstraintDescr;
-	import org.drools.lang.descr.FieldTemplateDescr;
-	import org.drools.lang.descr.FromDescr;
-	import org.drools.lang.descr.FunctionDescr;
-	import org.drools.lang.descr.FunctionImportDescr;
-	import org.drools.lang.descr.GlobalDescr;
-	import org.drools.lang.descr.ImportDescr;
-	import org.drools.lang.descr.PackageDescr;
-	import org.drools.lang.descr.PatternSourceDescr;
-	import org.drools.lang.descr.QueryDescr;
-	import org.drools.lang.descr.RuleDescr;
-	import org.drools.lang.descr.TypeDeclarationDescr;
-	import org.drools.lang.descr.TypeFieldDescr;
-
-
-import org.antlr.runtime.*;
-import org.antlr.runtime.tree.*;import java.util.Stack;
+	import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.ArrayList;
+import java.util.Map;
+import java.util.Stack;
+
+import org.antlr.runtime.BitSet;
+import org.antlr.runtime.EarlyExitException;
+import org.antlr.runtime.NoViableAltException;
+import org.antlr.runtime.RecognitionException;
+import org.antlr.runtime.Token;
+import org.antlr.runtime.tree.TreeNodeStream;
+import org.antlr.runtime.tree.TreeParser;
+import org.antlr.runtime.tree.TreeRuleReturnScope;
+import org.drools.lang.descr.AccessorDescr;
+import org.drools.lang.descr.AccumulateDescr;
+import org.drools.lang.descr.AndDescr;
+import org.drools.lang.descr.AttributeDescr;
+import org.drools.lang.descr.BaseDescr;
+import org.drools.lang.descr.BehaviorDescr;
+import org.drools.lang.descr.DeclarativeInvokerDescr;
+import org.drools.lang.descr.DescrFactory;
+import org.drools.lang.descr.FactTemplateDescr;
+import org.drools.lang.descr.FieldConstraintDescr;
+import org.drools.lang.descr.FieldTemplateDescr;
+import org.drools.lang.descr.FromDescr;
+import org.drools.lang.descr.FunctionDescr;
+import org.drools.lang.descr.FunctionImportDescr;
+import org.drools.lang.descr.GlobalDescr;
+import org.drools.lang.descr.ImportDescr;
+import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.descr.PatternSourceDescr;
+import org.drools.lang.descr.QueryDescr;
+import org.drools.lang.descr.RuleDescr;
+import org.drools.lang.descr.TypeDeclarationDescr;
+import org.drools.lang.descr.TypeFieldDescr;
 
 public class DescrBuilderTree extends TreeParser {
     public static final String[] tokenNames = new String[] {

@@ -18,11 +18,9 @@
  */
 package org.drools.base.mvel;
 
-import org.mvel.CompileException;
-import org.mvel.DataConversion;
-import org.mvel.integration.VariableResolver;
-
-import java.util.Map;
+import org.mvel2.CompileException;
+import org.mvel2.DataConversion;
+import org.mvel2.integration.VariableResolver;
 
 public class LocalVariableResolver implements VariableResolver {
     private String name;

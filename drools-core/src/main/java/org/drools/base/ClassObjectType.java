@@ -16,14 +16,13 @@ package org.drools.base;
  * limitations under the License.
  */
 
-import org.drools.RuntimeDroolsException;
-import org.drools.common.DroolsObjectInputStream;
-import org.drools.spi.ObjectType;
-
-import java.io.ObjectInput;
-import java.io.IOException;
-import java.io.ObjectOutput;
 import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
+import org.drools.RuntimeDroolsException;
+import org.drools.spi.ObjectType;
 
 /**
  * Java class semantics <code>ObjectType</code>.

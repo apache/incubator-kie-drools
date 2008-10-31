@@ -2,7 +2,6 @@ package org.drools.reteoo;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import org.drools.SessionConfiguration;
@@ -16,7 +15,6 @@ import org.drools.concurrent.FireAllRules;
 import org.drools.concurrent.Future;
 import org.drools.concurrent.RetractObject;
 import org.drools.concurrent.UpdateObject;
-import org.drools.event.RuleBaseEventListener;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.FactHandleFactory;
@@ -81,7 +79,7 @@ public class ReteooStatefulSession extends ReteooWorkingMemory
 
     public Future asyncUpdate(final FactHandle factHandle,
                               final Object object) {
-        return this.executor.submit( new UpdateObject( factHandle,
+        return this.executor.submit( new UpdateObject( (org.drools.FactHandle)factHandle,
                                                        object ) );
     }
 

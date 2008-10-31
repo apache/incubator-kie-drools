@@ -17,16 +17,16 @@ package org.drools;
  */
 
 import java.io.Externalizable;
-import java.io.ObjectOutput;
-import java.io.ObjectInput;
 import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.ActivationCreatedEvent;
 import org.drools.event.AfterActivationFiredEvent;
 import org.drools.event.ObjectInsertedEvent;
-import org.drools.event.ObjectUpdatedEvent;
 import org.drools.event.ObjectRetractedEvent;
+import org.drools.event.ObjectUpdatedEvent;
 import org.drools.event.WorkingMemoryEventListener;
 
 public class TestWorkingMemoryEventListener

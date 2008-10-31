@@ -1,9 +1,9 @@
 package org.drools.rule;
 
-import org.drools.RuntimeDroolsException;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.drools.RuntimeDroolsException;
 
 public class GroupElementTest extends TestCase {
 

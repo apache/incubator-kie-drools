@@ -17,7 +17,6 @@
  */
 package org.drools.factmodel;
 
-import java.sql.Types;
 import java.util.Calendar;
 import java.util.Date;
 

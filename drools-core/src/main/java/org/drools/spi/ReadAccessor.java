@@ -1,6 +1,5 @@
 package org.drools.spi;
 
-import java.io.Externalizable;
 import java.lang.reflect.Method;
 
 import org.drools.base.ValueType;

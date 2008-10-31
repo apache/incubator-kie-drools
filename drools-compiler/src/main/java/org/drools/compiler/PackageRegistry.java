@@ -1,8 +1,6 @@
 package org.drools.compiler;
 
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
 
 import org.drools.base.ClassTypeResolver;
 import org.drools.base.TypeResolver;
@@ -10,7 +8,6 @@ import org.drools.rule.DialectRuntimeRegistry;
 import org.drools.rule.ImportDeclaration;
 import org.drools.rule.Package;
 import org.drools.rule.builder.ProcessBuildContext;
-import org.drools.rule.builder.ProcessClassBuilder;
 
 public class PackageRegistry {
     private Package                    pkg;

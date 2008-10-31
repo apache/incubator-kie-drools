@@ -16,17 +16,10 @@ package org.drools.common;
  * limitations under the License.
  */
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.drools.marshalling.MarshallerReaderContext;
-import org.drools.marshalling.MarshallerWriteContext;
 import org.drools.reteoo.ObjectTypeConf;
-import org.drools.WorkingMemory;
 import org.drools.spi.FactHandleFactory;
 
 public abstract class AbstractFactHandleFactory

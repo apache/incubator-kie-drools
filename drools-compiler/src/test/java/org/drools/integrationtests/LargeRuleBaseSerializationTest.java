@@ -1,17 +1,17 @@
 package org.drools.integrationtests;
 
-import org.drools.compiler.DrlParser;
-import org.drools.compiler.PackageBuilder;
-import org.drools.compiler.DroolsParserException;
-import org.drools.lang.descr.PackageDescr;
-import org.drools.rule.Package;
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.util.DroolsStreamUtils;
-
 import java.io.StringReader;
 
 import junit.framework.TestCase;
+
+import org.drools.RuleBase;
+import org.drools.RuleBaseFactory;
+import org.drools.compiler.DrlParser;
+import org.drools.compiler.DroolsParserException;
+import org.drools.compiler.PackageBuilder;
+import org.drools.lang.descr.PackageDescr;
+import org.drools.rule.Package;
+import org.drools.util.DroolsStreamUtils;
 
 /**
  * Created by IntelliJ IDEA. User: SG0521861 Date: Mar 18, 2008 Time: 1:22:50 PM To change this template use File |

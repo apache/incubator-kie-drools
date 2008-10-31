@@ -1,17 +1,17 @@
 package org.drools.reteoo;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
+import junit.framework.TestCase;
+
 import org.drools.RuleBaseConfiguration;
 import org.drools.base.SalienceInteger;
 import org.drools.rule.Rule;
 import org.drools.WorkingMemory;
 import org.drools.spi.Consequence;
 import org.drools.spi.KnowledgeHelper;
-
-import junit.framework.TestCase;
-
-import java.io.IOException;
-import java.io.ObjectOutput;
-import java.io.ObjectInput;
 
 public class ReteooBuilderTest extends TestCase {
 

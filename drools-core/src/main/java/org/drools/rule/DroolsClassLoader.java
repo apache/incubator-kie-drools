@@ -1,7 +1,6 @@
 package org.drools.rule;
 
 import java.io.InputStream;
-import java.io.Externalizable;
 
 public interface DroolsClassLoader {
 

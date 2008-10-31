@@ -15,9 +15,9 @@
  */
 package org.drools.reteoo;
 
-import org.drools.common.RuleBasePartitionId;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.RuleBasePartitionId;
 import org.drools.spi.PropagationContext;
 
 /**

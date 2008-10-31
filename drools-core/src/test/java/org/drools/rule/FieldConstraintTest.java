@@ -30,7 +30,6 @@ import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.ClassFieldReader;
 import org.drools.base.ClassObjectType;
 import org.drools.base.FieldFactory;
-import org.drools.base.ShadowProxy;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.ComparableEvaluatorsDefinition;
 import org.drools.base.evaluators.EqualityEvaluatorsDefinition;

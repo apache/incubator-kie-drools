@@ -16,11 +16,11 @@ package org.drools.process.core.datatype.impl.type;
  * limitations under the License.
  */
 
-import org.drools.process.core.datatype.DataType;
-
-import java.io.ObjectOutput;
 import java.io.IOException;
 import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
+import org.drools.process.core.datatype.DataType;
 
 /**
  * Representation of an undefined datatype.

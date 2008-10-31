@@ -108,6 +108,10 @@ public class TimerManager {
     public void internalSetTimerId(long timerId) {
     	this.timerId = timerId;
     }
+    
+    public void setTimerService(TimerService timerService) {
+        this.timerService = timerService;
+    }
 
     public class ProcessJob implements Job {
     	

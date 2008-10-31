@@ -7,7 +7,7 @@ import java.io.ObjectOutput;
 
 import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.Declaration;
-import org.mvel.integration.VariableResolver;
+import org.mvel2.integration.VariableResolver;
 
 public class DroolsMVELLocalDeclarationVariable
     implements

@@ -7,7 +7,6 @@ import java.io.OutputStream;
 import org.drools.StatefulSession;
 import org.drools.common.InternalRuleBase;
 import org.drools.concurrent.ExecutorService;
-import org.drools.reteoo.ReteooStatefulSession;
 
 public interface Marshaller {
 

@@ -16,11 +16,11 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-import java.util.ArrayList;
-import java.util.List;
-import java.io.ObjectOutput;
 import java.io.IOException;
 import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;

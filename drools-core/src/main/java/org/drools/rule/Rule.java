@@ -380,7 +380,7 @@ public class Rule
      * This uses the dateEffective, dateExpires and enabled flag to decide this.
      */
     public boolean isEffective(TimeMachine tm, Tuple tuple, WorkingMemory workingMemory) {
-        if ( !this.enabled.getValue( tuple, workingMemory ) ) {
+        if ( !this.enabled.getValue( tuple, this, workingMemory ) ) {
             return false;
         }
         if ( this.dateEffective == null && this.dateExpires == null ) {
@@ -680,7 +680,7 @@ public class Rule
     }
 
     public boolean isEnabled( Tuple tuple, WorkingMemory workingMemory ) {
-        return this.enabled.getValue( tuple, workingMemory );
+        return this.enabled.getValue( tuple, this, workingMemory );
     }
 	public void setMetaAttributes(Map<String,String> metaAttributes) {
 		this.metaAttributes = metaAttributes;

@@ -15,10 +15,10 @@
  */
 package org.drools.rule;
 
-import java.util.Arrays;
-import java.io.ObjectOutput;
 import java.io.IOException;
 import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Arrays;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.common.InternalFactHandle;
