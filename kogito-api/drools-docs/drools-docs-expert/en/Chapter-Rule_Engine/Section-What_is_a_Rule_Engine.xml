@@ -57,7 +57,7 @@
     the validation and expression evaluation Rule Engines mention previously
     are not Expert Systems.</para>
 
-    <para>A Production Rule System is turing complete with a focus on
+    <para>A Production Rule System is Turing complete with a focus on
     knowledge representation to express propositional and first order logic in
     a concise, non ambiguous and declarative manner. The brain of a Production
     Rules System is an Inference Engine that is able to scale to a large
@@ -123,7 +123,7 @@ then
     where they may then be modified or retracted. A system with a large number
     of rules and facts may result in many rules being true for the same fact
     assertion, these rules are said to be in conflict. The Agenda manages the
-    execution order of these conflicuting rules using a Conflict Resolution
+    execution order of these conflicting rules using a Conflict Resolution
     strategy.</para>
 
     <figure>
@@ -131,7 +131,7 @@ then
 
       <mediaobject>
         <imageobject>
-		<imagedata align="center" fileref="Rule_Engine.png" format="PNG" />
+		<imagedata align="center" fileref="rule-engine-inkscape.png" format="PNG" />
         </imageobject>
       </mediaobject>
     </figure>
