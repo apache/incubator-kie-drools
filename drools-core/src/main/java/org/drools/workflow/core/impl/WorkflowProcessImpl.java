@@ -16,15 +16,10 @@ package org.drools.workflow.core.impl;
  * limitations under the License.
  */
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import org.drools.knowledge.definitions.process.Node;
 import org.drools.knowledge.definitions.process.NodeContainer;
-import org.drools.knowledge.definitions.process.WorkflowProcess;
 import org.drools.process.core.impl.ProcessImpl;
+import org.drools.workflow.core.WorkflowProcess;
 
 /**
  * Default implementation of a RuleFlow process.
