@@ -1,4 +1,4 @@
-package org.drools.knowledge.definitions.process;
+package org.drools.definition.process;
 
 import java.util.List;
 import java.util.Map;

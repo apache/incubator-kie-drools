@@ -2,7 +2,7 @@ package org.drools.builder;
 
 import java.util.Collection;
 
-import org.drools.knowledge.definitions.KnowledgePackage;
+import org.drools.definition.KnowledgePackage;
 
 public interface KnowledgeBuilder extends RuleBuilder, ProcessBuilder {
 	

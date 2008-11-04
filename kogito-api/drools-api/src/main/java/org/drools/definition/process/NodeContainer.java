@@ -1,4 +1,4 @@
-package org.drools.knowledge.definitions.process;
+package org.drools.definition.process;
 
 public interface NodeContainer {
 
