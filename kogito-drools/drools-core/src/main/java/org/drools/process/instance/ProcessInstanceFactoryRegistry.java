@@ -3,7 +3,7 @@ package org.drools.process.instance;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.knowledge.definitions.process.Process;
+import org.drools.definition.process.Process;
 import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.ruleflow.instance.RuleFlowProcessInstanceFactory;
 

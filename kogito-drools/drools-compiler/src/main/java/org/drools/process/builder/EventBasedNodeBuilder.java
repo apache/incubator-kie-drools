@@ -2,8 +2,8 @@ package org.drools.process.builder;
 
 import java.util.Map;
 
-import org.drools.knowledge.definitions.process.Node;
-import org.drools.knowledge.definitions.process.Process;
+import org.drools.definition.process.Node;
+import org.drools.definition.process.Process;
 import org.drools.lang.descr.ProcessDescr;
 import org.drools.process.core.timer.Timer;
 import org.drools.rule.builder.ProcessBuildContext;

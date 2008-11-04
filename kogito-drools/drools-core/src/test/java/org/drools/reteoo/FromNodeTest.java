@@ -29,7 +29,7 @@ import org.drools.rule.Declaration;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Pattern;
 import org.drools.rule.VariableConstraint;
-import org.drools.runtime.rule.FactHandle;
+import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.DataProvider;

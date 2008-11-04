@@ -51,6 +51,7 @@ import org.drools.RuleBaseConfiguration.AssertBehaviour;
 import org.drools.RuleBaseConfiguration.LogicalOverride;
 import org.drools.base.MapGlobalResolver;
 import org.drools.concurrent.ExecutorService;
+import org.drools.definition.process.Process;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.AgendaEventSupport;
 import org.drools.event.RuleBaseEventListener;
@@ -58,7 +59,6 @@ import org.drools.event.RuleFlowEventListener;
 import org.drools.event.RuleFlowEventSupport;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.event.WorkingMemoryEventSupport;
-import org.drools.knowledge.definitions.process.Process;
 import org.drools.process.core.ContextContainer;
 import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.core.event.EventFilter;
@@ -87,7 +87,7 @@ import org.drools.rule.Rule;
 import org.drools.rule.TimeMachine;
 import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.runtime.ObjectFilter;
-import org.drools.runtime.rule.FactHandle;
+import org.drools.FactHandle;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AsyncExceptionHandler;
@@ -1063,15 +1063,15 @@ public abstract class AbstractWorkingMemory
         }
     }
 
-    public void retract(final FactHandle handle) throws FactException {
-        retract( handle,
+    public void retract(final org.drools.runtime.rule.FactHandle handle) throws FactException {
+        retract( (org.drools.FactHandle) handle,
                  true,
                  true,
                  null,
                  null );
     }
 
-    public void retract(final FactHandle factHandle,
+    public void retract(final org.drools.FactHandle factHandle,
                         final boolean removeLogical,
                         final boolean updateEqualsMap,
                         final Rule rule,
@@ -1271,9 +1271,9 @@ public abstract class AbstractWorkingMemory
         }
     }
 
-    public void update(final FactHandle handle,
+    public void update(final org.drools.runtime.rule.FactHandle handle,
                        final Object object) throws FactException {
-        update( handle,
+        update( (org.drools.FactHandle) handle,
                 object,
                 null,
                 null );
@@ -1285,7 +1285,7 @@ public abstract class AbstractWorkingMemory
      * 
      * @see WorkingMemory
      */
-    public void update(final FactHandle factHandle,
+    public void update(final org.drools.FactHandle factHandle,
                        final Object object,
                        final Rule rule,
                        final Activation activation) throws FactException {
@@ -1374,7 +1374,7 @@ public abstract class AbstractWorkingMemory
                                               this );
 
             this.workingMemoryEventSupport.fireObjectUpdated( propagationContext,
-                                                              factHandle,
+                                                              (org.drools.FactHandle) factHandle,
                                                               originalObject,
                                                               object,
                                                               this );

@@ -23,7 +23,7 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
-import org.drools.runtime.rule.FactHandle;
+import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 
 public class AccumulateTest extends TestCase {

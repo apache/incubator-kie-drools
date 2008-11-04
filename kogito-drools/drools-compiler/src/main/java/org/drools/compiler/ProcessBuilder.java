@@ -24,11 +24,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.knowledge.definitions.process.Connection;
-import org.drools.knowledge.definitions.process.Node;
-import org.drools.knowledge.definitions.process.NodeContainer;
-import org.drools.knowledge.definitions.process.Process;
-import org.drools.knowledge.definitions.process.WorkflowProcess;
+import org.drools.definition.process.Connection;
+import org.drools.definition.process.Node;
+import org.drools.definition.process.NodeContainer;
+import org.drools.definition.process.Process;
+import org.drools.definition.process.WorkflowProcess;
 import org.drools.lang.descr.ActionDescr;
 import org.drools.lang.descr.ProcessDescr;
 import org.drools.process.builder.ProcessNodeBuilder;

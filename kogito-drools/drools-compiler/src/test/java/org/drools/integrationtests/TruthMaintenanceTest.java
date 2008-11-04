@@ -23,12 +23,13 @@ import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.TruthMaintenanceSystem;
 import org.drools.compiler.PackageBuilder;
+import org.drools.definition.KnowledgePackage;
 import org.drools.event.DefaultWorkingMemoryEventListener;
 import org.drools.event.ObjectInsertedEvent;
 import org.drools.event.ObjectRetractedEvent;
 import org.drools.event.ObjectUpdatedEvent;
 import org.drools.event.WorkingMemoryEventListener;
-import org.drools.knowledge.definitions.KnowledgePackage;
+import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.rule.Package;
 import org.drools.runtime.ClassObjectFilter;
 import org.drools.runtime.StatefulKnowledgeSession;
@@ -786,35 +787,37 @@ public class TruthMaintenanceTest extends TestCase {
 
     public void FIXME_testLogicalInsertionsModifySameRuleGivesDifferentLogicalInsertion() throws Exception {
         // TODO JBRULES-1804
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalInsertionsModifySameRuleGivesDifferentLogicalInsertion.drl" ) ) );
-        final Package pkg = builder.getPackage();
+        
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalInsertionsModifySameRuleGivesDifferentLogicalInsertion.drl" ) ) );
+        Collection<KnowledgePackage> pkgs = kbuilder.getKnowledgePackages();
 
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase    = SerializationHelper.serializeObject(ruleBase);
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        KnowledgeBase kbase = getKnowledgeBase();
+        kbase.addKnowledgePackages( pkgs );
+        kbase    = SerializationHelper.serializeObject(kbase);
+        final StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
 
         Sensor sensor1 = new Sensor( 100, 0 );
-        FactHandle sensor1Handle = workingMemory.insert( sensor1 );
+        FactHandle sensor1Handle = session.insert( sensor1 );
         Sensor sensor2 = new Sensor( 200, 0 );
-        FactHandle sensor2Handle = workingMemory.insert( sensor2 );
+        FactHandle sensor2Handle = session.insert( sensor2 );
         Sensor sensor3 = new Sensor( 200, 0 );
-        FactHandle sensor3Handle = workingMemory.insert( sensor3 );
+        FactHandle sensor3Handle = session.insert( sensor3 );
 
-        workingMemory.fireAllRules();
+        session.fireAllRules();
 
-        List temperatureList = IteratorToList.convert(workingMemory.iterateObjects(new ClassObjectFilter(Integer.class)));
+        List temperatureList = new ArrayList( session.getObjects( new ClassObjectFilter(Integer.class) ) );
         assertTrue(temperatureList.contains(Integer.valueOf(100)));
         assertTrue(temperatureList.contains(Integer.valueOf(200)));
         assertEquals(2, temperatureList.size());
 
-        workingMemory.modifyRetract(sensor1Handle);
-        sensor1.setTemperature(150);
-        workingMemory.modifyInsert(sensor1Handle, sensor1);
-        workingMemory.fireAllRules();
         
-        temperatureList = IteratorToList.convert(workingMemory.iterateObjects(new ClassObjectFilter(Integer.class)));
+        ((StatefulKnowledgeSessionImpl)session).session.modifyRetract( (org.drools.FactHandle) sensor1Handle);
+        sensor1.setTemperature(150);
+        ((StatefulKnowledgeSessionImpl)session).session.modifyInsert( (org.drools.FactHandle) sensor1Handle, sensor1);
+        session.fireAllRules();
+        
+        temperatureList = new ArrayList( session.getObjects( new ClassObjectFilter(Integer.class) ) );
         assertFalse(temperatureList.contains(Integer.valueOf(100))); // TODO currently it fails here, because 100 lingers
         assertTrue(temperatureList.contains(Integer.valueOf(150)));
         assertTrue(temperatureList.contains(Integer.valueOf(200)));

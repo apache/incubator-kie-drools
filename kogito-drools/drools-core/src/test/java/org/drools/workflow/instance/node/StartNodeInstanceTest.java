@@ -10,7 +10,7 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.knowledge.definitions.process.Node;
+import org.drools.definition.process.Node;
 import org.drools.process.instance.InternalProcessInstance;
 import org.drools.process.instance.NodeInstance;
 import org.drools.ruleflow.core.RuleFlowProcess;

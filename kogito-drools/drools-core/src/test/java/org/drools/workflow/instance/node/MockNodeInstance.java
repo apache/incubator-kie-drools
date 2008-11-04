@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.knowledge.definitions.process.Node;
+import org.drools.definition.process.Node;
 import org.drools.process.instance.NodeInstance;
 import org.drools.workflow.instance.impl.NodeInstanceImpl;
 

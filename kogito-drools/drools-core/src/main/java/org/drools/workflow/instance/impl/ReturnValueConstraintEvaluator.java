@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.knowledge.definitions.process.Connection;
+import org.drools.definition.process.Connection;
 import org.drools.process.instance.InternalProcessInstance;
 import org.drools.spi.CompiledInvoker;
 import org.drools.spi.ProcessContext;

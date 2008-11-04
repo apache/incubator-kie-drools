@@ -7,7 +7,7 @@ import org.drools.common.LogicalDependency;
 import org.drools.common.RuleFlowGroupNode;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
-import org.drools.runtime.rule.FactHandle;
+import org.drools.FactHandle;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;

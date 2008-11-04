@@ -2,7 +2,7 @@ package org.drools.xml.processes;
 
 import java.util.HashSet;
 
-import org.drools.knowledge.definitions.process.Node;
+import org.drools.definition.process.Node;
 import org.drools.workflow.core.Connection;
 import org.drools.workflow.core.NodeContainer;
 import org.drools.workflow.core.impl.ConnectionImpl;

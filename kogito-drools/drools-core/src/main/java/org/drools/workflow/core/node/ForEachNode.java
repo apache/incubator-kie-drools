@@ -3,7 +3,7 @@ package org.drools.workflow.core.node;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.knowledge.definitions.process.Node;
+import org.drools.definition.process.Node;
 import org.drools.process.core.context.variable.Variable;
 import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.core.datatype.DataType;

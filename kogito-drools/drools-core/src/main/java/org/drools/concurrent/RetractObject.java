@@ -9,7 +9,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.WorkingMemory;
-import org.drools.runtime.rule.FactHandle;
+import org.drools.FactHandle;
 
 public class RetractObject
     implements

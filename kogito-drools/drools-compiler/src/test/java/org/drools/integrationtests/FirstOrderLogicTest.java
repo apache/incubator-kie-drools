@@ -29,7 +29,7 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
-import org.drools.runtime.rule.FactHandle;
+import org.drools.FactHandle;
 
 public class FirstOrderLogicTest extends TestCase {
     protected RuleBase getRuleBase() throws Exception {

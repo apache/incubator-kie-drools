@@ -24,13 +24,13 @@ import org.drools.FactException;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.StatefulSession;
-import org.drools.knowledge.definitions.process.Process;
+import org.drools.definition.process.Process;
 import org.drools.reteoo.Rete;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.CompositeClassLoader;
 import org.drools.rule.Package;
 import org.drools.rule.TypeDeclaration;
-import org.drools.runtime.rule.FactHandle;
+import org.drools.FactHandle;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.PropagationContext;
 

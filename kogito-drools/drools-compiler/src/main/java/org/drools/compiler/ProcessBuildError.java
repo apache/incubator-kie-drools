@@ -1,7 +1,7 @@
 package org.drools.compiler;
 
 import org.drools.lang.descr.BaseDescr;
-import org.drools.knowledge.definitions.process.Process;
+import org.drools.definition.process.Process;
 
 public class ProcessBuildError extends DescrBuildError {
     private final Process process;

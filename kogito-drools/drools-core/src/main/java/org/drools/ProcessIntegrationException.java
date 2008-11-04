@@ -16,7 +16,7 @@ package org.drools;
  * limitations under the License.
  */
 
-import org.drools.knowledge.definitions.process.Process;
+import org.drools.definition.process.Process;
 
 /**
  * Indicates an error integrating a <code>Process</code> or <code>Package</code>

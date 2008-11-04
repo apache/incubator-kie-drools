@@ -17,12 +17,14 @@ package org.drools.spi;
  */
 
 import java.io.Serializable;
+import java.util.Collection;
 
 import org.drools.common.ActivationGroupNode;
 import org.drools.common.LogicalDependency;
 import org.drools.common.RuleFlowGroupNode;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
+import org.drools.runtime.rule.FactHandle;
 import org.drools.util.LinkedList;
 
 /**
@@ -78,7 +80,7 @@ public interface Activation
      * 
      * @return The propagation context
      */
-    PropagationContext getPropagationContext();
+    PropagationContext getPropagationContext();         
 
     /**
      * Cancel the <code>Activation</code> by removing it from the <code>Agenda</code>. 

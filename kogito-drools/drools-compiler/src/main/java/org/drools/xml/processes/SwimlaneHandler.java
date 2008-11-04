@@ -2,7 +2,7 @@ package org.drools.xml.processes;
 
 import java.util.HashSet;
 
-import org.drools.knowledge.definitions.process.Process;
+import org.drools.definition.process.Process;
 import org.drools.process.core.context.swimlane.Swimlane;
 import org.drools.process.core.context.swimlane.SwimlaneContext;
 import org.drools.workflow.core.impl.WorkflowProcessImpl;

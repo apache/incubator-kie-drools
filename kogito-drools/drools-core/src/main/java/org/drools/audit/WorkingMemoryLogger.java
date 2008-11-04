@@ -69,7 +69,7 @@ import org.drools.event.BeforeFunctionRemovedEvent;
 import org.drools.event.BeforeRuleAddedEvent;
 import org.drools.event.BeforeRuleRemovedEvent;
 import org.drools.rule.Declaration;
-import org.drools.runtime.rule.FactHandle;
+import org.drools.FactHandle;
 import org.drools.spi.Activation;
 import org.drools.spi.Tuple;
 

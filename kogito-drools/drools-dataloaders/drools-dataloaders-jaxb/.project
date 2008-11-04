@@ -1,7 +1,11 @@
 <projectDescription>
   <name>drools-dataloaders-jaxb</name>
   <comment>A rule production system</comment>
-  <projects/>
+  <projects>
+    <project>drools-compiler</project>
+    <project>drools-core</project>
+    <project>drools-api</project>
+  </projects>
   <buildSpec>
     <buildCommand>
       <name>org.eclipse.jdt.core.javabuilder</name>

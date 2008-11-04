@@ -5,9 +5,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.knowledge.definitions.process.Connection;
-import org.drools.knowledge.definitions.process.Node;
-import org.drools.knowledge.definitions.process.WorkflowProcess;
+import org.drools.definition.process.Connection;
+import org.drools.definition.process.Node;
+import org.drools.definition.process.WorkflowProcess;
 import org.drools.process.core.context.exception.ActionExceptionHandler;
 import org.drools.process.core.context.exception.ExceptionHandler;
 import org.drools.process.core.context.exception.ExceptionScope;

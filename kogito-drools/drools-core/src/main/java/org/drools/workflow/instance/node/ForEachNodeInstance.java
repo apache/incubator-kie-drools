@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.drools.knowledge.definitions.process.Node;
+import org.drools.definition.process.Node;
 import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.instance.NodeInstance;
 import org.drools.process.instance.context.variable.VariableScopeInstance;

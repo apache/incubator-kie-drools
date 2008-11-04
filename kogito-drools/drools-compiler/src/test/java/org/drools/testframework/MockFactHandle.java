@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.runtime.rule.FactHandle;
+import org.drools.FactHandle;
 
 /*
 * Copyright 2005 JBoss Inc

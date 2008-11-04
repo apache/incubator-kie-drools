@@ -3,7 +3,7 @@ package org.drools.process.core;
 import java.util.List;
 import java.util.Map;
 
-public interface Process extends org.drools.knowledge.definitions.process.Process, ContextContainer {
+public interface Process extends org.drools.definition.process.Process, ContextContainer {
 
     /**
      * Sets the id of this process.

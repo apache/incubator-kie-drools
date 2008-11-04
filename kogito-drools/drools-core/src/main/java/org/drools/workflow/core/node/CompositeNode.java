@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.knowledge.definitions.process.Connection;
-import org.drools.knowledge.definitions.process.Node;
+import org.drools.definition.process.Connection;
+import org.drools.definition.process.Node;
 import org.drools.workflow.core.NodeContainer;
 import org.drools.workflow.core.impl.ConnectionImpl;
 import org.drools.workflow.core.impl.NodeContainerImpl;

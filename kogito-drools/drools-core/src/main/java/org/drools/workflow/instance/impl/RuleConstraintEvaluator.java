@@ -19,7 +19,7 @@ package org.drools.workflow.instance.impl;
 import java.io.Serializable;
 
 import org.drools.common.InternalAgenda;
-import org.drools.knowledge.definitions.process.Connection;
+import org.drools.definition.process.Connection;
 import org.drools.process.instance.InternalProcessInstance;
 import org.drools.process.instance.WorkflowProcessInstance;
 import org.drools.workflow.core.Constraint;

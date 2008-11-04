@@ -27,7 +27,7 @@ import org.drools.guvnor.client.modeldriven.testing.VerifyRuleFired;
 import org.drools.guvnor.server.util.ScenarioXMLPersistence;
 import org.drools.rule.Package;
 import org.drools.rule.TimeMachine;
-import org.drools.runtime.rule.FactHandle;
+import org.drools.FactHandle;
 import org.mvel2.MVEL;
 
 

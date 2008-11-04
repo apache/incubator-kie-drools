@@ -11,7 +11,7 @@ import org.drools.common.RuleFlowGroupNode;
 import org.drools.event.AfterActivationFiredEvent;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
-import org.drools.runtime.rule.FactHandle;
+import org.drools.FactHandle;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.PropagationContext;

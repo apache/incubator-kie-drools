@@ -2,7 +2,7 @@ package org.drools.workflow.core.node;
 
 import java.util.List;
 
-import org.drools.knowledge.definitions.process.Connection;
+import org.drools.definition.process.Connection;
 import org.drools.workflow.core.impl.ExtendedNodeImpl;
 
 /**

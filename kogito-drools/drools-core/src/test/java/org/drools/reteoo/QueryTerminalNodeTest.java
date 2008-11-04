@@ -40,7 +40,7 @@ import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Behavior;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Query;
-import org.drools.runtime.rule.FactHandle;
+import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;

@@ -3,7 +3,7 @@ package org.drools.xml.processes;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-import org.drools.knowledge.definitions.process.Process;
+import org.drools.definition.process.Process;
 import org.drools.workflow.core.impl.WorkflowProcessImpl;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;

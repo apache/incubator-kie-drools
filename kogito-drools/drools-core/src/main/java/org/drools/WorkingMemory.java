@@ -25,7 +25,7 @@ import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.event.SignalManager;
 import org.drools.process.instance.timer.TimerManager;
 import org.drools.runtime.ObjectFilter;
-import org.drools.runtime.rule.FactHandle;
+import org.drools.FactHandle;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AsyncExceptionHandler;
 import org.drools.spi.GlobalResolver;

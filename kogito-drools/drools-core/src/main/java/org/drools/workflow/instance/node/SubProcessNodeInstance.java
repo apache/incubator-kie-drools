@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.common.InternalRuleBase;
-import org.drools.knowledge.definitions.process.Process;
+import org.drools.definition.process.Process;
 import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.instance.EventListener;
 import org.drools.process.instance.InternalProcessInstance;

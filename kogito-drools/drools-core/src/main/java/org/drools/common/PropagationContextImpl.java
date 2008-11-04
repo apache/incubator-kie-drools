@@ -23,7 +23,7 @@ import java.io.ObjectOutput;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
-import org.drools.runtime.rule.FactHandle;
+import org.drools.FactHandle;
 import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
 import org.drools.util.ObjectHashMap;
@@ -125,7 +125,7 @@ public class PropagationContextImpl
         return this.rule;
     }
     
-    public org.drools.knowledge.definitions.rule.Rule getRule() {
+    public org.drools.definition.rule.Rule getRule() {
         return this.rule;
     }
 

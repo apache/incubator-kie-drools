@@ -16,8 +16,8 @@ package org.drools.workflow.core.impl;
  * limitations under the License.
  */
 
-import org.drools.knowledge.definitions.process.Node;
-import org.drools.knowledge.definitions.process.NodeContainer;
+import org.drools.definition.process.Node;
+import org.drools.definition.process.NodeContainer;
 import org.drools.process.core.impl.ProcessImpl;
 import org.drools.workflow.core.WorkflowProcess;
 

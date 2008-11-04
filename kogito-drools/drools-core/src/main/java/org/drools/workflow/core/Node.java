@@ -18,8 +18,8 @@ package org.drools.workflow.core;
 
 import java.io.Serializable;
 
-import org.drools.knowledge.definitions.process.Connection;
-import org.drools.knowledge.definitions.process.NodeContainer;
+import org.drools.definition.process.Connection;
+import org.drools.definition.process.NodeContainer;
 import org.drools.process.core.Contextable;
 
 /**
@@ -27,7 +27,7 @@ import org.drools.process.core.Contextable;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public interface Node extends org.drools.knowledge.definitions.process.Node, Contextable, Serializable {
+public interface Node extends org.drools.definition.process.Node, Contextable, Serializable {
 
     static final String CONNECTION_DEFAULT_TYPE = "DROOLS_DEFAULT";
     

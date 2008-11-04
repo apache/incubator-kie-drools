@@ -16,7 +16,7 @@ package org.drools.process.core.validation;
  * limitations under the License.
  */
 
-import org.drools.knowledge.definitions.process.Process;
+import org.drools.definition.process.Process;
 /**
  * Represents a RuleFlow validation error. 
  * 

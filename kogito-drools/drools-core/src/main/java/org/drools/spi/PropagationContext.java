@@ -21,7 +21,7 @@ import java.io.Externalizable;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
-import org.drools.runtime.rule.FactHandle;
+import org.drools.FactHandle;
 
 public interface PropagationContext
     extends

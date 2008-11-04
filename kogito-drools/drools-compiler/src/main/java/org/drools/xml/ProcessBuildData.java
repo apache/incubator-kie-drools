@@ -8,7 +8,7 @@ import java.util.Map;
 
 import org.drools.workflow.core.Node;
 
-import  org.drools.knowledge.definitions.process.Process;
+import org.drools.definition.process.Process;
 
 public class ProcessBuildData {
     

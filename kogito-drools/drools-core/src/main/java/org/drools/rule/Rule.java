@@ -54,7 +54,7 @@ public class Rule
     Externalizable,
     Wireable,
     Dialectable,
-    org.drools.knowledge.definitions.rule.Rule {
+    org.drools.definition.rule.Rule {
     /**
      *
      */

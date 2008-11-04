@@ -1,6 +1,6 @@
 package org.drools.common;
 
-import org.drools.runtime.rule.FactHandle;
+import org.drools.FactHandle;
 
 public class EventFactHandle extends DefaultFactHandle {
 
