@@ -25,7 +25,7 @@ import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.event.SignalManager;
 import org.drools.process.instance.timer.TimerManager;
 import org.drools.runtime.ObjectFilter;
-import org.drools.runtime.rule.FactHandle;
+import org.drools.FactHandle;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.AsyncExceptionHandler;
@@ -198,7 +198,7 @@ public class ExternalSheetListenerTest extends TestCase {
 					return null;
 				}
 
-				public void update(FactHandle arg0, Object arg1)
+				public void update(org.drools.runtime.rule.FactHandle arg0, Object arg1)
 						throws FactException {
 
 				}
@@ -215,7 +215,7 @@ public class ExternalSheetListenerTest extends TestCase {
 
 				}
 
-				public void retract(FactHandle arg0) throws FactException {
+				public void retract(org.drools.runtime.rule.FactHandle arg0) throws FactException {
 
 				}
 

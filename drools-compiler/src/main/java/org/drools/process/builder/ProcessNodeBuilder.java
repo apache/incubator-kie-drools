@@ -1,7 +1,7 @@
 package org.drools.process.builder;
 
-import org.drools.knowledge.definitions.process.Node;
-import org.drools.knowledge.definitions.process.Process;
+import org.drools.definition.process.Node;
+import org.drools.definition.process.Process;
 import org.drools.lang.descr.ProcessDescr;
 import org.drools.rule.builder.ProcessBuildContext;
 

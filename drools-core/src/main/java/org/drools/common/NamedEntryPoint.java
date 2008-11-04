@@ -16,7 +16,7 @@ import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ObjectTypeConf;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
-import org.drools.runtime.rule.FactHandle;
+import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.spi.Activation;
 import org.drools.spi.FactHandleFactory;
@@ -158,7 +158,7 @@ public class NamedEntryPoint
                                                                    wm );
     }
 
-    public void update(final FactHandle handle,
+    public void update(final org.drools.runtime.rule.FactHandle handle,
                        final Object object) throws FactException {
         update( handle,
                 object,
@@ -166,7 +166,7 @@ public class NamedEntryPoint
                 null );
     }
 
-    protected void update(final FactHandle factHandle,
+    protected void update(final org.drools.runtime.rule.FactHandle factHandle,
                           final Object object,
                           final Rule rule,
                           final Activation activation) throws FactException {
@@ -223,7 +223,7 @@ public class NamedEntryPoint
                                               this.wm );
 
             this.wm.getWorkingMemoryEventSupport().fireObjectUpdated( propagationContext,
-                                                                      factHandle,
+                                                                      (org.drools.FactHandle)factHandle,
                                                                       originalObject,
                                                                       object,
                                                                       this.wm );
@@ -236,8 +236,8 @@ public class NamedEntryPoint
         }
     }
 
-    public void retract(final FactHandle handle) throws FactException {
-        retract( handle,
+    public void retract(final org.drools.runtime.rule.FactHandle handle) throws FactException {
+        retract( (org.drools.FactHandle) handle,
                  true,
                  true,
                  null,

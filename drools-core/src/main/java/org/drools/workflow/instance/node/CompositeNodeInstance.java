@@ -23,9 +23,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.drools.common.InternalRuleBase;
-import org.drools.knowledge.definitions.process.Connection;
-import org.drools.knowledge.definitions.process.Node;
-import org.drools.knowledge.definitions.process.NodeContainer;
+import org.drools.definition.process.Connection;
+import org.drools.definition.process.Node;
+import org.drools.definition.process.NodeContainer;
 import org.drools.process.instance.EventListener;
 import org.drools.process.instance.InternalProcessInstance;
 import org.drools.process.instance.NodeInstance;

@@ -15,9 +15,9 @@ import org.drools.KnowledgeBaseFactory;
 import org.drools.RuleBaseConfiguration;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.knowledge.definitions.KnowledgePackage;
+import org.drools.definition.KnowledgePackage;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.rule.FactHandle;
+import org.drools.FactHandle;
 
 public class StatefulSessionTest extends TestCase {
     final List list = new ArrayList();

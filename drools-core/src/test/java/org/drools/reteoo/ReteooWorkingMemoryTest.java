@@ -15,7 +15,7 @@ import org.drools.base.MapGlobalResolver;
 import org.drools.common.EqualityKey;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.TruthMaintenanceSystem;
-import org.drools.runtime.rule.FactHandle;
+import org.drools.FactHandle;
 import org.drools.spi.GlobalResolver;
 
 public class ReteooWorkingMemoryTest extends TestCase {

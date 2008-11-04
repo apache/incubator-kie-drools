@@ -35,7 +35,7 @@ import org.drools.common.PropagationContextImpl;
 import org.drools.reteoo.ReteooBuilder.IdGenerator;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Rule;
-import org.drools.runtime.rule.FactHandle;
+import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.spi.Consequence;
 import org.drools.spi.KnowledgeHelper;

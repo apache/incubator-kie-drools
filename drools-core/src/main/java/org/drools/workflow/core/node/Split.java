@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.knowledge.definitions.process.Connection;
+import org.drools.definition.process.Connection;
 import org.drools.workflow.core.Constraint;
 import org.drools.workflow.core.impl.NodeImpl;
 

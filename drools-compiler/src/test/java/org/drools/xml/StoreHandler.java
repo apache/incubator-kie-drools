@@ -2,7 +2,7 @@ package org.drools.xml;
 
 import java.util.HashSet;
 
-import org.drools.knowledge.definitions.process.Process;
+import org.drools.definition.process.Process;
 import org.drools.workflow.core.impl.DroolsConsequenceAction;
 import org.drools.workflow.core.impl.WorkflowProcessImpl;
 import org.drools.workflow.core.node.ActionNode;

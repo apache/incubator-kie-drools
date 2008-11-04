@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.drools.common.InternalWorkingMemory;
-import org.drools.runtime.rule.FactHandle;
+import org.drools.FactHandle;
 import org.drools.spi.PropagationContext;
 
 /**

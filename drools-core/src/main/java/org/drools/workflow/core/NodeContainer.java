@@ -1,13 +1,13 @@
 package org.drools.workflow.core;
 
-import org.drools.knowledge.definitions.process.Node;
+import org.drools.definition.process.Node;
 import org.drools.process.core.Context;
 
 /**
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public interface NodeContainer extends org.drools.knowledge.definitions.process.NodeContainer {
+public interface NodeContainer extends org.drools.definition.process.NodeContainer {
 
     /**
      * Method for adding a node to this node container. 

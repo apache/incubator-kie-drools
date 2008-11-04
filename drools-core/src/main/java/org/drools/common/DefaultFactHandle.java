@@ -18,7 +18,7 @@ package org.drools.common;
 
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RightTuple;
-import org.drools.runtime.rule.FactHandle;
+import org.drools.FactHandle;
 
 /**
  * Implementation of <code>FactHandle</code>.

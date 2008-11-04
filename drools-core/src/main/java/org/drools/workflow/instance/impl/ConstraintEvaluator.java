@@ -1,6 +1,6 @@
 package org.drools.workflow.instance.impl;
 
-import org.drools.knowledge.definitions.process.Connection;
+import org.drools.definition.process.Connection;
 import org.drools.workflow.core.Constraint;
 import org.drools.workflow.instance.node.SplitInstance;
 

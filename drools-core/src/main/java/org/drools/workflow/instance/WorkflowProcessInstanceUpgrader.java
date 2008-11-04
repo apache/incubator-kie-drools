@@ -5,7 +5,7 @@ import java.util.Map;
 import org.drools.WorkingMemory;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.knowledge.definitions.process.WorkflowProcess;
+import org.drools.definition.process.WorkflowProcess;
 import org.drools.process.instance.InternalProcessInstance;
 import org.drools.process.instance.NodeInstance;
 import org.drools.process.instance.WorkflowProcessInstance;

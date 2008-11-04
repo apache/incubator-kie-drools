@@ -3,7 +3,7 @@ package org.drools.xml.processes;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.knowledge.definitions.process.Connection;
+import org.drools.definition.process.Connection;
 import org.drools.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.CompositeNode;

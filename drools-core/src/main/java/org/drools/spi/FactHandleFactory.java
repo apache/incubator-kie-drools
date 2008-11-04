@@ -19,7 +19,7 @@ package org.drools.spi;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ObjectTypeConf;
-import org.drools.runtime.rule.FactHandle;
+import org.drools.FactHandle;
 
 /**
  * Factory Interface to return new <code>FactHandle</code>s

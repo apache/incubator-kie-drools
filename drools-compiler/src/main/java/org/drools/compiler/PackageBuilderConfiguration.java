@@ -168,6 +168,37 @@ public class PackageBuilderConfiguration implements KnowledgeBuilderConfiguratio
 
         buildDumpDirectory();
     }
+    
+    public void setProperty(String name, String value) {
+        if ( name == null ) {
+            return;
+        }
+        
+        name = name.trim();
+        
+        if ( name.equals( "drools.dialect.default" ) ) {
+            setDefaultDialect( value );    
+        } else if ( name.startsWith( "drools.accumulate.function" ) ) {
+            addAccumulateFunction( name.substring( name.lastIndexOf( '.' ) ), value );
+        }else if ( name.startsWith( "drools.evaluator." ) ) {
+            this.evaluatorRegistry.addEvaluatorDefinition( value );
+        } else if ( name.equals(  "drools.dump.dir" ) ) {
+            buildDumpDirectory( value );
+        }
+    }
+    
+    public String getProperty(String name) {
+        if ( name.equals( "drools.dialect.default" ) ) {
+            return getDefaultDialect( );    
+        } else if ( name.startsWith( "drools.accumulate.function" ) ) {
+            return this.accumulateFunctions.get( name );
+        }else if ( name.startsWith( "drools.evaluator." ) ) {
+            return this.evaluatorRegistry.getEvaluatorDefinition( name.substring( name.lastIndexOf( '.' ) ) ).getClass().getName();
+        } else if ( name.equals(  "drools.dump.dir" ) ) {
+            return Boolean.toString( this.dumpDirectory != null ); 
+        }
+        return null;
+    }
 
     public ChainedProperties getChainedProperties() {
         return this.chainedProperties;
@@ -498,6 +529,10 @@ public class PackageBuilderConfiguration implements KnowledgeBuilderConfiguratio
     private void buildDumpDirectory() {
         String dumpStr = this.chainedProperties.getProperty( "drools.dump.dir",
                                                              null );
+        buildDumpDirectory( dumpStr );
+    }
+    
+    private void buildDumpDirectory(String dumpStr) {
         if ( dumpStr != null ) {
             this.dumpDirectory = new File( dumpStr );
             if ( !dumpDirectory.isDirectory() || !dumpDirectory.canWrite() || !dumpDirectory.canRead() ) {
@@ -505,7 +540,7 @@ public class PackageBuilderConfiguration implements KnowledgeBuilderConfiguratio
                 throw new RuntimeDroolsException( "Drools dump directory is not accessible: " + dumpStr );
             }
         }
-    }
+    }    
 
     public File getDumpDir() {
         return this.dumpDirectory;

@@ -18,7 +18,7 @@
 package org.drools;
 
 
-import org.drools.runtime.rule.FactHandle;
+import org.drools.FactHandle;
 
 /**
  * An interface for instances that allow handling of entry-point-scoped
@@ -68,7 +68,7 @@ public interface WorkingMemoryEntryPoint extends org.drools.runtime.rule.Working
      * @throws FactException
      *             If a RuntimeException error occurs.
      */
-    void retract(FactHandle handle) throws FactException;
+    void retract(org.drools.runtime.rule.FactHandle handle) throws FactException;
 
     /**
      * Inform the WorkingMemory that a Fact has been modified and that it
@@ -82,21 +82,21 @@ public interface WorkingMemoryEntryPoint extends org.drools.runtime.rule.Working
      * @throws FactException
      *             If a RuntimeException error occurs.
      */
-    void update(FactHandle handle,
+    void update(org.drools.runtime.rule.FactHandle handle,
                 Object object) throws FactException;
 
     /**
      * 
      * @param factHandle
      */
-    public void modifyRetract(final FactHandle factHandle);
+    public void modifyRetract(final org.drools.FactHandle factHandle);
 
     /**
      * 
      * @param factHandle
      * @param object
      */
-    public void modifyInsert(final FactHandle factHandle,
+    public void modifyInsert(final org.drools.FactHandle factHandle,
                              final Object object);
 
     public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String name);

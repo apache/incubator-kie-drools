@@ -21,7 +21,7 @@ import java.io.Serializable;
 import org.drools.FactException;
 import org.drools.rule.Declaration;
 import org.drools.rule.Rule;
-import org.drools.runtime.rule.FactHandle;
+import org.drools.FactHandle;
 import org.drools.runtime.rule.RuleContext;
 import org.drools.WorkingMemory;
 

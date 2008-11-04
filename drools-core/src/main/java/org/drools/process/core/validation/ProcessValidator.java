@@ -17,7 +17,7 @@ package org.drools.process.core.validation;
  */
 
 
-import org.drools.knowledge.definitions.process.Process;
+import org.drools.definition.process.Process;
 /**
  * A validator for validating a RuleFlow process. 
  * 

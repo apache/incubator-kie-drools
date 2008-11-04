@@ -23,8 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.knowledge.definitions.process.Connection;
-import org.drools.knowledge.definitions.process.NodeContainer;
+import org.drools.definition.process.Connection;
+import org.drools.definition.process.NodeContainer;
 import org.drools.process.core.Context;
 import org.drools.workflow.core.Node;
 

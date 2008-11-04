@@ -33,8 +33,8 @@ import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
 import org.drools.common.DroolsObjectInputStream;
 import org.drools.common.DroolsObjectOutputStream;
+import org.drools.definition.process.Process;
 import org.drools.facttemplates.FactTemplate;
-import org.drools.knowledge.definitions.process.Process;
 
 /**
  * Collection of related <code>Rule</code>s.

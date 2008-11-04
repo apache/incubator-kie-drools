@@ -22,9 +22,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.knowledge.definitions.process.Connection;
-import org.drools.knowledge.definitions.process.Node;
-import org.drools.knowledge.definitions.process.Process;
+import org.drools.definition.process.Connection;
+import org.drools.definition.process.Node;
+import org.drools.definition.process.Process;
 import org.drools.process.core.Work;
 import org.drools.process.core.context.variable.Variable;
 import org.drools.process.core.validation.ProcessValidationError;

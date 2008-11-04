@@ -15,7 +15,7 @@ import org.drools.concurrent.FireAllRules;
 import org.drools.concurrent.Future;
 import org.drools.concurrent.RetractObject;
 import org.drools.concurrent.UpdateObject;
-import org.drools.runtime.rule.FactHandle;
+import org.drools.FactHandle;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.RuleBaseUpdateListener;

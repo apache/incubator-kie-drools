@@ -14,7 +14,7 @@ import org.drools.reteoo.LIANodePropagation;
 import org.drools.reteoo.PartitionTaskManager;
 import org.drools.rule.Rule;
 import org.drools.rule.TimeMachine;
-import org.drools.runtime.rule.FactHandle;
+import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.spi.Activation;
 import org.drools.spi.FactHandleFactory;

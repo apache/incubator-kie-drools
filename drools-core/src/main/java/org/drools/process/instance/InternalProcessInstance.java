@@ -18,7 +18,7 @@ package org.drools.process.instance;
 
 import org.drools.Agenda;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.knowledge.definitions.process.Process;
+import org.drools.definition.process.Process;
 import org.drools.WorkingMemory;
 
 /**

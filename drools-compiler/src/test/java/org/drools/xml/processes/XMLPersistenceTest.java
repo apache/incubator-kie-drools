@@ -58,7 +58,7 @@ public class XMLPersistenceTest extends TestCase {
         RuleFlowProcess process = new RuleFlowProcess() {
             private static final long serialVersionUID = 400L;
             int id = 0;
-            public void addNode(org.drools.knowledge.definitions.process.Node node) {
+            public void addNode(org.drools.definition.process.Node node) {
                 ((Node) node).setId(++id);
                 super.addNode(node);
             }
@@ -112,7 +112,7 @@ public class XMLPersistenceTest extends TestCase {
         RuleFlowProcess process = new RuleFlowProcess() {
             private static final long serialVersionUID = 400L;
             int id = 0;
-            public void addNode(org.drools.knowledge.definitions.process.Node node) {
+            public void addNode(org.drools.definition.process.Node node) {
                 ((Node) node).setId(++id);
                 super.addNode(node);
             }

@@ -24,7 +24,7 @@ import org.drools.rule.Declaration;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
 import org.drools.runtime.KnowledgeRuntime;
-import org.drools.runtime.rule.FactHandle;
+import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.spi.Activation;
 import org.drools.spi.KnowledgeHelper;

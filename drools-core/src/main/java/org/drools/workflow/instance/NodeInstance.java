@@ -1,6 +1,6 @@
 package org.drools.workflow.instance;
 
-import org.drools.knowledge.definitions.process.Node;
+import org.drools.definition.process.Node;
 import org.drools.process.instance.ContextInstance;
 
 

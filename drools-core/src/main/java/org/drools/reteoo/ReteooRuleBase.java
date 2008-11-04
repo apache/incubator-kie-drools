@@ -42,7 +42,7 @@ import org.drools.rule.EntryPoint;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
-import org.drools.runtime.rule.FactHandle;
+import org.drools.FactHandle;
 import org.drools.spi.ExecutorServiceFactory;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.PropagationContext;

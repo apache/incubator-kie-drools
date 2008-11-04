@@ -113,7 +113,7 @@ import org.drools.rule.InvalidRulePackage;
 import org.drools.rule.Package;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.runtime.ClassObjectFilter;
-import org.drools.runtime.rule.FactHandle;
+import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.spi.Activation;
 import org.drools.spi.ConsequenceExceptionHandler;

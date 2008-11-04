@@ -2,8 +2,8 @@ package org.drools.workflow.instance;
 
 import java.util.Collection;
 
-import org.drools.knowledge.definitions.process.Node;
-import org.drools.knowledge.definitions.process.NodeContainer;
+import org.drools.definition.process.Node;
+import org.drools.definition.process.NodeContainer;
 import org.drools.process.instance.NodeInstance;
 
 /**

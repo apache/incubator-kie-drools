@@ -36,7 +36,7 @@ import org.drools.lang.descr.PackageDescr;
 import org.drools.process.instance.InternalProcessInstance;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.rule.Package;
-import org.drools.runtime.rule.FactHandle;
+import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.spi.Activation;
 import org.drools.spi.ActivationGroup;

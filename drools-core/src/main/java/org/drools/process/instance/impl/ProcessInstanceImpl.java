@@ -25,7 +25,7 @@ import java.util.Map;
 import org.drools.WorkingMemory;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.knowledge.definitions.process.Process;
+import org.drools.definition.process.Process;
 import org.drools.process.core.Context;
 import org.drools.process.core.ContextContainer;
 import org.drools.process.instance.ContextInstance;

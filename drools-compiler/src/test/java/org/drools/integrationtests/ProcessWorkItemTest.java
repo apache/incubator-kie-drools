@@ -12,7 +12,7 @@ import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.knowledge.definitions.KnowledgePackage;
+import org.drools.definition.KnowledgePackage;
 import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.instance.InternalProcessInstance;
 import org.drools.process.instance.ProcessInstance;

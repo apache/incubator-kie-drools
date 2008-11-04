@@ -3,7 +3,7 @@ package org.drools.process.builder;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.knowledge.definitions.process.Node;
+import org.drools.definition.process.Node;
 import org.drools.workflow.core.node.ActionNode;
 import org.drools.workflow.core.node.EndNode;
 import org.drools.workflow.core.node.FaultNode;

@@ -3,9 +3,9 @@ package org.drools.rule.builder;
 import org.drools.compiler.Dialect;
 import org.drools.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.PackageBuilder;
+import org.drools.definition.process.Process;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.ProcessDescr;
-import org.drools.knowledge.definitions.process.Process;
 import org.drools.rule.Package;
 
 public class ProcessBuildContext extends PackageBuildContext {
