@@ -1,4 +1,4 @@
-package org.drools.knowledge.definitions.rule;
+package org.drools.definition.rule;
 
 public interface Rule {
 	

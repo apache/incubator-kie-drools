@@ -1,9 +1,9 @@
-package org.drools.knowledge.definitions;
+package org.drools.definition;
 
 import java.util.Collection;
 
-import org.drools.knowledge.definitions.process.Process;
-import org.drools.knowledge.definitions.rule.Rule;
+import org.drools.definition.process.Process;
+import org.drools.definition.rule.Rule;
 
 public interface KnowledgePackage {
 	String getName();
