@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<section version="5.0" xmlns="http://docbook.org/ns/docbook"
+                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                    xmlns:xi="http://www.w3.org/2001/XInclude"
+                    xmlns:svg="http://www.w3.org/2000/svg"
+                    xmlns:m="http://www.w3.org/1998/Math/MathML"
+                    xmlns:html="http://www.w3.org/1999/xhtml"
+                    xmlns:db="http://docbook.org/ns/docbook" xml:base="../../">
+  <title>Query</title>
+
+  <figure>
+    <title>query</title>
+
+    <mediaobject>
+      <imageobject>
+	      <imagedata align="center" fileref="images/Chapter-Rule_Language/query.png" format="PNG" role="" />
+      </imageobject>
+    </mediaobject>
+  </figure>
+
+  <para>A query contains the structure of the LHS of a rule only (you don't
+  specify "when" or "then"). It is simply a way to query the working memory
+  for facts that match the conditions stated. A query has an optional set of
+  parameters, that can also be optionally typed, if type is not given then
+  Object type is assumed and the engine will attempt to co-erce the values as
+  needed.</para>
+
+  <para>To return the results use WorkingMemory.getQueryResults("name") -
+  where "name" is query name. Query names are global to the RuleBase, so do
+  not add queries of the same name to different packages for the same Rule
+  Base. This contains a list of query results, which allow you to to get to
+  the objects that matched the query.</para>
+
+  <para>This example creates a simple query for all the people over the age of
+  30</para>
+
+  <example>
+    <title>Query People over the age of 30</title>
+
+    <programlisting>query "people over the age of 30" 
+    person : Person( age &gt; 30 )
+end</programlisting>
+  </example>
+
+  <example>
+    <title>Query People over the age of X, and who live in y</title>
+
+    <programlisting>query "people over the age of X"  (int x, String y)
+    person : Person( age &gt; x, location == y )
+end</programlisting>
+  </example>
+
+  <para>We iterate over the returned QueryResults using a standard 'for' loop.
+  Each row returns a QueryResult which we can use to access each of the
+  columns in the Tuple. Those columns can be access by bound declaration name
+  or index position.</para>
+
+  <example>
+    <title>Query People over the age of 30</title>
+
+    <programlisting>QueryResults results = workingMemory.getQueryResults( "people over the age of 30" );
+System.out.println( "we have " + results.size() + " people over the age  of 30" );
+
+System.out.println( "These people are are over 30:" );
+
+for ( Iterator it = results.iterator; it.hasNext(); ) {
+    QueryResult result = ( QueryResult ) it.next();
+    Person person = ( Person ) result.get( "person" );
+    System.out.println( person.getName() + "\n" );
+}</programlisting>
+  </example>
+</section>
