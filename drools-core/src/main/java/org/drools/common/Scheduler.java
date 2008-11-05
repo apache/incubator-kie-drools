@@ -114,7 +114,7 @@ final class Scheduler {
             this.agenda = agenda;
         }
 
-        public DuractionJobContext(ScheduledAgendaItem agendaItem) {
+        public DuractionJobContext(ScheduledAgendaItem scheduledAgendaItem) {
             this.scheduledAgendaItem = scheduledAgendaItem;
         }
         
