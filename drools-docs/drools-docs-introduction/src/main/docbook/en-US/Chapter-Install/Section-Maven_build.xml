@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section  version="5.0" xmlns="http://docbook.org/ns/docbook"
+                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                    xmlns:xi="http://www.w3.org/2001/XInclude"
+                    xmlns:svg="http://www.w3.org/2000/svg"
+                    xmlns:m="http://www.w3.org/1998/Math/MathML"
+                    xmlns:html="http://www.w3.org/1999/xhtml"
+                    xmlns:db="http://docbook.org/ns/docbook" xml:base="../../">
+  <title>Build</title>
+
+  <section>
+    <title>Building the Source</title>
+
+    <para>Now that we have the source the next step is to build and install
+    the source. Since version 3.1 Drools uses <indexterm><primary>Maven 2</primary></indexterm> to build the system. There are two profiles
+    available which enable the associated modules "documentation" and
+    "Eclipse"; this enables quicker building of the core modules for
+    developers. The Eclipse profile will download Eclipse into the
+    drools-Eclipse folder, which is over 100MB download (It depends on your operating system), however this only
+    needs to be done once; if you wish you can move that Eclipse download into
+    another location and specify it with
+    -DlocalEclipseDrop=/folder/jboss-rules/local-Eclipse-drop-mirror. The
+    following builds all the jars, the documentation and the Eclipse zip with
+    a local folder specified to avoid downloading Eclipse:</para>
+
+    <para><programlisting>mvn -Declipse -Ddocumentation clean install -DlocalEclipseDrop=/folder/jboss-rules/local-Eclipse-drop-mirror </programlisting></para>
+
+    <para>You can produce distribution builds, which puts everything into
+    zips, as follows:
+<programlisting>mvn -Declipse -Ddocumentation clean install -DlocalEclipseDrop=/folder/jboss-rules/local-Eclipse-drop-mirror
+mvn -Ddocumentation -Declipse -Dmaven.test.skip package javadoc:javadoc assembly:assembly -DlocalEclipseDrop=/folder/jboss-rules/local-Eclipse-drop-mirror
+</programlisting></para>
+
+    <para>Note that install must be done first as javadoc:javadoc won't work
+    unless the jars are in the local maven repo, but the tests can be skipped
+    on the second run. assembly:assembly fails unless you increase the
+    available memory to Maven, on windows the following command worked well:
+    set MAVEN_OPTS=-Xmx512m</para>
+
+    <para>Type mvn clean to clear old artifacts, and then test and built the
+    source, and report on any errors.</para>
+
+    <para>The resulting jars are put in the /target directory from the top
+    level of the project.</para>
+
+    <para>As maven builds each module it will install the resulting jars in
+    the local Maven 2 repository automatically. Where it can be easily used
+    from other project <literal>pom.xml</literal> or copied else where.</para>
+
+    <screenshot>
+      <screeninfo>Installed Drools Jars</screeninfo>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Install/mvn_install4.jpg" />
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+  </section>
+
+  <section>
+    <title>Building the Manual</title>
+
+	<para>
+		The building of the manual is now integrated into the maven build process, and is built by either using the profile (-Ddocumentation) switch or 
+		cding into the main directory. The manual can still be built from ant command line too by cding into the documentation/manual itself.
+	</para>
+
+    <para>Drools uses <indexterm>
+        <primary>docbook</primary>
+      </indexterm>Docbook for this manual. Ant is used internally in maven to build documents and this build produces three different formats, 
+      all sharing the same images directory.</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>html_single</para>
+
+        <para>The entire manual in a single html document</para>
+      </listitem>
+
+      <listitem>
+        <para><indexterm>
+            <primary>html</primary>
+          </indexterm>html</para>
+
+        <para>The manual is split into multiple documents and placed in a
+        frameset. The left frame provides navigation</para>
+      </listitem>
+
+      <listitem>
+        <para>Eclipse</para>
+
+        <para>Documentation suitable for including in an Eclipse plug-in</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>The manual can be generated from the project pom.xml by
+    calling <literal>'mvn package'</literal> in the documentation directory or adding the -Ddocumentation switch when you build the sources, 
+	with the generated documentation being copied to <literal>'target/</literal>. What actually happens is that maven
+    call a separate ant build.xml for the manual, located at
+    <literal>documentation/manual</literal>; the documentation is generated
+    into <literal>documentation/manual/build</literal> before being copied to
+    <literal>'target/'.</literal>
+
+    <programlisting>fmeyer:~/projects/jbossrules/documentation $ mvn clean package
+[INFO] Scanning for projects...
+[INFO] ----------------------------------------------------------------------------
+[INFO] Building Drools :: Documentation
+[INFO]    task-segment: [install]
+[INFO] ----------------------------------------------------------------------------
+[INFO] [antrun:run {execution: manual}]
+[INFO] Executing tasks
+ [delete] Deleting directory /Users/fernandomeyer/projects/jbossrules/documentation/manual/build
+
+clean:
+
+all.doc:
+
+lang.all:
+
+lang.misc:
+   [copy] Copying 188 files to /Users/fernandomeyer/projects/jbossrules/documentation/manual/build/en/shared/images
+   [copy] Copying 1 file to /Users/fernandomeyer/projects/jbossrules/documentation/manual/build/en/shared/css
+
+lang.dochtml:
+  [mkdir] Created dir: /Users/fernandomeyer/projects/jbossrules/documentation/manual/build/en/html
+   [copy] Copying 1 file to /Users/fernandomeyer/projects/jbossrules/documentation/manual/build/en/html
+   [java] Writing bk01-toc.html for book
+   [java] Writing pr01.html for preface(preface)
+   [java] Writing ch01s02.html for section
+   [java] Writing ch01s03.html for section
+   [java] Writing ch01s04.html for section
+   [java] Writing ch01s05.html for section
+   [java] Writing ch01s06.html for section
+   [java] Writing ch01.html for chapter
+   [java] Writing ch02s02.html for section
+   [java] Writing ch02s03.html for section
+   [java] Writing ch02s04.html for section
+   [java] Writing ch02s05.html for section
+   [java] Writing ch02.html for chapter
+   [java] Writing ch03s02.html for section
+   [java] Writing ch03s03.html for section
+   [java] Writing ch03s04.html for section
+   [java] Writing ch03s05.html for section
+   [java] Writing ch03s06.html for section
+   [java] Writing ch03s07.html for section
+   [java] Writing ch03s08.html for section
+   [java] Writing ch03s09.html for section
+   [java] Writing ch03.html for chapter
+   [java] Writing ch04.html for chapter
+   [java] Writing ch05.html for chapter
+   [java] Writing ch06s02.html for section
+   [java] Writing ch06s03.html for section
+   [java] Writing ch06s04.html for section
+   [java] Writing ch06s05.html for section
+   [java] Writing ch06.html for chapter
+   [java] Writing ch07s02.html for section
+   [java] Writing ch07s03.html for section
+   [java] Writing ch07.html for chapter
+   [java] Writing ch08.html for chapter
+   [java] Writing ch09.html for chapter
+   [java] Writing ch10s02.html for section
+   [java] Writing ch10.html for chapter
+   [java] Writing ch11.html for chapter
+   [java] Writing pt01.html for part
+   [java] Writing ix01.html for index
+   [java] Writing title.html for book
+
+...snip ...
+
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESSFUL
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 51 seconds
+[INFO] Finished at: Mon Jul 21 12:03:38 BRT 2007
+[INFO] Final Memory: 5M/10M
+[INFO] ------------------------------------------------------------------------&gt;</programlisting>
+    </para>
+    <para>The generated manual can be found in the
+    <literal>target\drools-documentation$VERSION.jar'</literal> file, a compressed archive with all formats.</para>
+
+    <screenshot>
+      <screeninfo>Generated documentation</screeninfo>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Install/manual4.jpg" />
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+
+    <para>The manual was first generated into the manual's
+    <literal>build</literal> directory, as shown below, before being copied
+    across.</para>
+
+    <screenshot>
+      <screeninfo>Generated documentation</screeninfo>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Install/manual3.jpg" />
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+  </section>
+</section>
