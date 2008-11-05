@@ -5,8 +5,8 @@ import java.util.Collection;
 
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.knowledge.definitions.KnowledgePackage;
-import org.drools.knowledge.definitions.rule.Rule;
+import org.drools.definition.KnowledgePackage;
+import org.drools.definition.rule.Rule;
 
 import junit.framework.TestCase;
 
