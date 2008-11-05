@@ -2,7 +2,7 @@ package org.drools.knowledge.definitions.rule.impl;
 
 import org.drools.rule.Rule;
 
-public class RuleImpl implements org.drools.knowledge.definitions.rule.Rule {
+public class RuleImpl implements org.drools.definition.rule.Rule {
 	private Rule rule;
 	
 	public RuleImpl(Rule rule) {

@@ -7,7 +7,7 @@ import java.io.ObjectOutput;
 import org.drools.event.rule.ObjectUpdatedEvent;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.ReteooStatefulSession;
-import org.drools.runtime.rule.FactHandle;
+import org.drools.FactHandle;
 import org.drools.runtime.rule.WorkingMemory;
 
 public class ObjectUpdatedEventImpl  extends WorkingMemoryEventImpl implements ObjectUpdatedEvent {
