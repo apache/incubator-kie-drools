@@ -165,8 +165,8 @@ public class SuggestionCompletionEngineBuilder {
     }
 
 	private DSLSentence[] makeArray(List ls) {
-		return (DSLSentence[]) ls.toArray( new DSLSentence[this.conditionDSLSentences.size()] );
-	}
+        return (DSLSentence[]) ls.toArray( new DSLSentence[ls.size()] );
+    }
 
 	public void addDSLMapping(AbstractDSLMappingEntry entry) {
 		DSLSentence sen = new DSLSentence();
