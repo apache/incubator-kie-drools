@@ -8,7 +8,7 @@ import java.util.List;
 
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.compiler.PackageBuilder;
-import org.drools.knowledge.definitions.KnowledgePackage;
+import org.drools.definition.KnowledgePackage;
 import org.drools.knowledge.definitions.impl.KnowledgePackageImp;
 import org.drools.rule.Package;
 
