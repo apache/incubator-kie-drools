@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import org.drools.definition.rule.Rule;
 import org.drools.impl.SerializedRule;
-import org.drools.knowledge.definitions.rule.Rule;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.PropagationContext;
 

@@ -6,7 +6,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Collection;
 
-import org.drools.knowledge.definitions.rule.Rule;
+import org.drools.definition.rule.Rule;
 import org.drools.runtime.rule.Activation;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.PropagationContext;
@@ -16,7 +16,7 @@ public class SerializableActivation
     Activation,
     Externalizable {
     private Rule                   rule;
-    private Collection<FactHandle> factHandles;
+    private Collection<? extends FactHandle> factHandles;
     private PropagationContext     propgationContext;
 
     public SerializableActivation(Activation activation) {
@@ -36,7 +36,7 @@ public class SerializableActivation
         return this.rule;
     }
 
-    public Collection<FactHandle> getFactHandles() {
+    public Collection<? extends FactHandle> getFactHandles() {
         return this.factHandles;
     }
 

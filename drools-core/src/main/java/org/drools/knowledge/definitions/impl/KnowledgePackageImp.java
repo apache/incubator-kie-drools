@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.knowledge.definitions.KnowledgePackage;
-import org.drools.knowledge.definitions.process.Process;
-import org.drools.knowledge.definitions.rule.Rule;
+import org.drools.definition.KnowledgePackage;
+import org.drools.definition.process.Process;
+import org.drools.definition.rule.Rule;
 import org.drools.knowledge.definitions.rule.impl.RuleImpl;
 import org.drools.rule.Package;
 

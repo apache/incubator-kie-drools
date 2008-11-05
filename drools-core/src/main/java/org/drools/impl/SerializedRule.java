@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.knowledge.definitions.rule.Rule;
+import org.drools.definition.rule.Rule;
 
 public class SerializedRule
     implements
