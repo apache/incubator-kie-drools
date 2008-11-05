@@ -1,6 +1,6 @@
 package org.drools.runtime.rule;
 
-import org.drools.knowledge.definitions.rule.Rule;
+import org.drools.definition.rule.Rule;
 
 public interface PropagationContext {
     public static final int ASSERTION     = 0;

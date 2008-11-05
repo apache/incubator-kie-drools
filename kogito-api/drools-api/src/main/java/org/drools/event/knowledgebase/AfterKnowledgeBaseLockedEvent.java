@@ -16,7 +16,7 @@ package org.drools.event.knowledgebase;
  * limitations under the License.
  */
 
-import org.drools.knowledge.definitions.rule.Rule;
+import org.drools.definition.rule.Rule;
 
 public interface AfterKnowledgeBaseLockedEvent extends KnowledgeBaseEvent {
     Rule getRule();

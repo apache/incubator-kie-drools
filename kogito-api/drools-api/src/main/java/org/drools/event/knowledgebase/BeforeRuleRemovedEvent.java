@@ -1,6 +1,6 @@
 package org.drools.event.knowledgebase;
 
-import org.drools.knowledge.definitions.rule.Rule;
+import org.drools.definition.rule.Rule;
 
 /*
  * Copyright 2005 JBoss Inc
