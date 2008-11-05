@@ -175,8 +175,7 @@ public class MockWorkingMemory implements InternalWorkingMemory {
     }
 
     public TimeMachine getTimeMachine() {
-        // TODO Auto-generated method stub
-        return null;
+		return this.timeMachine;
     }
 
     public TimerService getTimerService() {
@@ -469,8 +468,8 @@ public class MockWorkingMemory implements InternalWorkingMemory {
     }
 
     public FactHandle insert(Object object) throws FactException {
-        // TODO Auto-generated method stub
-        return null;
+		this.facts .add(object);
+		return new MockFactHandle(object.hashCode());
     }
 
     public FactHandle insert(Object object,
