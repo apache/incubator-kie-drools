@@ -1,6 +1,6 @@
 package org.drools.event.knowledgebase;
 
-import org.drools.knowledge.definitions.KnowledgePackage;
+import org.drools.definition.KnowledgePackage;
 
 /*
  * Copyright 2005 JBoss Inc

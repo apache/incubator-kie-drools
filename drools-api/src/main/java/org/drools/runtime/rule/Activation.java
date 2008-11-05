@@ -2,7 +2,7 @@ package org.drools.runtime.rule;
 
 import java.util.Collection;
 
-import org.drools.knowledge.definitions.rule.Rule;
+import org.drools.definition.rule.Rule;
 
 public interface Activation {
     /**
@@ -24,5 +24,5 @@ public interface Activation {
      * @return
      *     The matched FactHandles for this activation
      */
-    Collection<FactHandle> getFactHandles();        
+    Collection<? extends FactHandle> getFactHandles();        
 }

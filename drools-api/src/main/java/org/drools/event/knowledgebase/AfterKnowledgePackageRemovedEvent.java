@@ -16,7 +16,7 @@ package org.drools.event.knowledgebase;
  * limitations under the License.
  */
 
-import org.drools.knowledge.definitions.KnowledgePackage;
+import org.drools.definition.KnowledgePackage;
 
 public interface AfterKnowledgePackageRemovedEvent extends KnowledgeBaseEvent {
     public KnowledgePackage getKnowledgePackage();
