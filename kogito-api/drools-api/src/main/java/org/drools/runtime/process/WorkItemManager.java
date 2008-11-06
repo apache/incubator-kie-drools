@@ -1,4 +1,4 @@
-package org.drools.process.instance;
+package org.drools.runtime.process;
 
 import java.util.Map;
 

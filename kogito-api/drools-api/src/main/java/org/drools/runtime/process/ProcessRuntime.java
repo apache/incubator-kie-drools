@@ -4,8 +4,6 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.drools.event.process.ProcessEventManager;
-import org.drools.process.instance.ProcessInstance;
-import org.drools.process.instance.WorkItemManager;
 
 public interface ProcessRuntime extends ProcessEventManager {
 
