@@ -235,6 +235,113 @@ public class RuleBaseConfiguration
         init( classLoader,
               null );
     }
+    
+    public boolean isEmpty(String value) {
+        if ( value == null || value.trim().length() == 0 ) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void setProperty(String name,
+                            String value) {
+        if ( name == null ) {
+            return;
+        }
+
+        if ( name.equals( "drools.sequential.agenda" ) ) {
+            setSequentialAgenda( SequentialAgenda.determineSequentialAgenda( isEmpty( value ) ? "sequential" : value ) );
+        } else if ( name.equals( "drools.sequential" ) ) {
+            setSequential( isEmpty( value) ? false : Boolean.valueOf( value ) );
+        } else if ( name.equals( "drools.maintainTms" ) ) {
+            setMaintainTms( isEmpty( value) ? false : Boolean.valueOf( value ) );
+        } else if ( name.equals( "drools.removeIdentities" ) ) {
+            setRemoveIdentities( isEmpty( value) ? false : Boolean.valueOf( value ) );
+        } else if ( name.equals( "drools.shareAlphaNodes" ) ) {
+            setShareAlphaNodes( isEmpty( value) ? false : Boolean.valueOf( value ) );
+        } else if ( name.equals( "drools.shareBetaNodes" ) ) {
+            setShareBetaNodes( isEmpty( value) ? false : Boolean.valueOf( value ) );
+        } else if ( name.equals( "drools.alphaNodeHashingThreshold" ) ) {
+            setAlphaNodeHashingThreshold( isEmpty( value) ? 3 : Integer.parseInt( value ));
+        } else if ( name.equals( "drools.compositeKeyDepth" ) ) {
+            setCompositeKeyDepth( isEmpty( value) ? 3 : Integer.parseInt( value ) );
+        } else if ( name.equals( "drools.indexLeftBetaMemory" ) ) {
+            setIndexLeftBetaMemory( isEmpty( value) ? true : Boolean.valueOf( value ) );
+        } else if ( name.equals( "drools.indexRightBetaMemory" ) ) {
+            setIndexRightBetaMemory( isEmpty( value) ? true : Boolean.valueOf( value ) );
+        } else if ( name.equals( "drools.assertBehaviour" ) ) {
+            setAssertBehaviour( AssertBehaviour.determineAssertBehaviour( isEmpty( value) ? "identity" : value ) );
+        } else if ( name.equals( "drools.logicalOverride" ) ) {
+            setLogicalOverride( LogicalOverride.determineLogicalOverride( isEmpty( value) ? "discard" : value ) );
+        } else if ( name.equals( "drools.executorService" ) ) {
+            setExecutorService( isEmpty( value) ? "org.drools.concurrent.DefaultExecutorService" : value );
+        } else if ( name.equals( "drools.consequenceExceptionHandler" ) ) {
+            setConsequenceExceptionHandler( RuleBaseConfiguration.determineConsequenceExceptionHandler( isEmpty( value) ? "org.drools.base.DefaultConsequenceExceptionHandler" : value ) );
+        } else if ( name.equals( "drools.ruleBaseUpdateHandler" ) ) {
+            setRuleBaseUpdateHandler( isEmpty( value) ? "org.drools.base.FireAllRulesRuleBaseUpdateListener" : value );
+        } else if ( name.equals( "drools.conflictResolver" ) ) {
+            setConflictResolver( RuleBaseConfiguration.determineConflictResolver( isEmpty( value) ? "org.drools.conflict.DepthConflictResolver" : value ) );
+        } else if ( name.equals( "drools.conflictResolver" ) ) {
+            setAdvancedProcessRuleIntegration(  isEmpty( value) ? false : Boolean.valueOf( value ) );
+        } else if ( name.equals( "drools.multithreadEvaluation" ) ) {
+            setMultithreadEvaluation(  isEmpty( value) ? false : Boolean.valueOf( value ) );
+        }  else if ( name.equals( "drools.maxThreads" ) ) {
+            setMaxThreads(  isEmpty( value) ? -1 : Integer.parseInt( value ) );
+        } else if ( name.equals( "drools.eventProcessingMode" ) ) {
+            setEventProcessingMode( EventProcessingMode.determineAssertBehaviour( isEmpty( value) ? "cloud" : value ) );
+        } 
+    }
+
+    public String getProperty(String name) {
+        if ( name == null ) {
+            return null;
+        }
+
+        if ( name.equals( "drools.sequential.agenda" ) ) {
+            return getSequentialAgenda().toExternalForm();
+        } else if ( name.equals( "drools.sequential" ) ) {
+            return Boolean.toString( isSequential() );
+        } else if ( name.equals( "drools.maintainTms" ) ) {
+            return Boolean.toString( isMaintainTms() );
+        } else if ( name.equals( "drools.removeIdentities" ) ) {
+            return Boolean.toString( isRemoveIdentities() );
+        } else if ( name.equals( "drools.shareAlphaNodes" ) ) {
+            return Boolean.toString( isShareAlphaNodes() );
+        } else if ( name.equals( "drools.shareBetaNodes" ) ) {
+            return Boolean.toString( isShareBetaNodes() );
+        } else if ( name.equals( "drools.alphaNodeHashingThreshold" ) ) {
+            return Integer.toString( getAlphaNodeHashingThreshold() );
+        } else if ( name.equals( "drools.compositeKeyDepth" ) ) {
+            return Integer.toString( getCompositeKeyDepth() );
+        } else if ( name.equals( "drools.indexLeftBetaMemory" ) ) {
+            return Boolean.toString( isIndexLeftBetaMemory() );
+        } else if ( name.equals( "drools.indexRightBetaMemory" ) ) {
+            return Boolean.toString( isIndexRightBetaMemory() );
+        } else if ( name.equals( "drools.assertBehaviour" ) ) {
+            return getAssertBehaviour().toExternalForm();
+        } else if ( name.equals( "drools.logicalOverride" ) ) {
+            return getLogicalOverride().toExternalForm();
+        } else if ( name.equals( "drools.executorService" ) ) {
+            return getExecutorService();
+        } else if ( name.equals( "drools.consequenceExceptionHandler" ) ) {
+            return getConsequenceExceptionHandler().getClass().getName();
+        } else if ( name.equals( "drools.ruleBaseUpdateHandler" ) ) {
+            return getRuleBaseUpdateHandler();
+        } else if ( name.equals( "drools.conflictResolver" ) ) {
+            return getConflictResolver().getClass().getName();
+        } else if ( name.equals( "drools.conflictResolver" ) ) {
+            return Boolean.toString( isAdvancedProcessRuleIntegration() );
+        } else if ( name.equals( "drools.multithreadEvaluation" ) ) {
+            Boolean.toString( isMultithreadEvaluation() );
+        }  else if ( name.equals( "drools.maxThreads" ) ) {
+            return Integer.toString( getMaxThreads() );
+        } else if ( name.equals( "drools.eventProcessingMode" ) ) {
+            return getEventProcessingMode().toExternalForm();
+        } 
+        
+        return null;
+    }
 
     /**
      * A constructor that sets the classloader to be used as the parent classloader
@@ -540,7 +647,7 @@ public class RuleBaseConfiguration
     public boolean isMultithreadEvaluation() {
         return this.multithread;
     }
-    
+
     /**
      * If multi-thread evaluation is enabled, this parameter configures the 
      * maximum number of threads each session can use for concurrent Rete
@@ -551,10 +658,10 @@ public class RuleBaseConfiguration
      *                   of threads equal to the number of partitions in the
      *                   rule base. Default number of threads is 0. 
      */
-    public void setMaxThreads( final int maxThreads ) {
-    	this.maxThreads = maxThreads;
+    public void setMaxThreads(final int maxThreads) {
+        this.maxThreads = maxThreads;
     }
-    
+
     /**
      * Returns the configured number of maximum threads to use for concurrent
      * propagation when multi-thread evaluation is enabled. Default is zero.
@@ -562,7 +669,7 @@ public class RuleBaseConfiguration
      * @return
      */
     public int getMaxThreads() {
-    	return this.maxThreads;
+        return this.maxThreads;
     }
 
     private void initProcessNodeInstanceFactoryRegistry() {
@@ -692,39 +799,39 @@ public class RuleBaseConfiguration
                                                                                   null,
                                                                                   RuleBaseConfiguration.class ) );
         try {
-        	List<Map<String, Object>> workDefinitionsMap = (List<Map<String, Object>>) MVEL.eval( content,
-                                                                                              new HashMap() );
-	        for ( Map<String, Object> workDefinitionMap : workDefinitionsMap ) {
-	            WorkDefinitionExtensionImpl workDefinition = new WorkDefinitionExtensionImpl();
-	            workDefinition.setName( (String) workDefinitionMap.get( "name" ) );
-	            workDefinition.setDisplayName( (String) workDefinitionMap.get( "displayName" ) );
-	            workDefinition.setIcon( (String) workDefinitionMap.get( "icon" ) );
-	            workDefinition.setCustomEditor( (String) workDefinitionMap.get( "customEditor" ) );
-	            Set<ParameterDefinition> parameters = new HashSet<ParameterDefinition>();
-	            Map<String, DataType> parameterMap = (Map<String, DataType>) workDefinitionMap.get( "parameters" );
-	            if ( parameterMap != null ) {
-	                for ( Map.Entry<String, DataType> entry : parameterMap.entrySet() ) {
-	                    parameters.add( new ParameterDefinitionImpl( entry.getKey(),
-	                                                                 entry.getValue() ) );
-	                }
-	            }
-	            workDefinition.setParameters( parameters );
-	            Set<ParameterDefinition> results = new HashSet<ParameterDefinition>();
-	            Map<String, DataType> resultMap = (Map<String, DataType>) workDefinitionMap.get( "results" );
-	            if ( resultMap != null ) {
-	                for ( Map.Entry<String, DataType> entry : resultMap.entrySet() ) {
-	                    results.add( new ParameterDefinitionImpl( entry.getKey(),
-	                                                              entry.getValue() ) );
-	                }
-	            }
-	            workDefinition.setResults( results );
-	            this.workDefinitions.put( workDefinition.getName(),
-	                                      workDefinition );
-	        }
-        } catch (Throwable t) {
-        	System.err.println("Error occured while loading work definitions " + location);
-        	System.err.println("Continuing without reading these work definitions");
-        	t.printStackTrace();
+            List<Map<String, Object>> workDefinitionsMap = (List<Map<String, Object>>) MVEL.eval( content,
+                                                                                                  new HashMap() );
+            for ( Map<String, Object> workDefinitionMap : workDefinitionsMap ) {
+                WorkDefinitionExtensionImpl workDefinition = new WorkDefinitionExtensionImpl();
+                workDefinition.setName( (String) workDefinitionMap.get( "name" ) );
+                workDefinition.setDisplayName( (String) workDefinitionMap.get( "displayName" ) );
+                workDefinition.setIcon( (String) workDefinitionMap.get( "icon" ) );
+                workDefinition.setCustomEditor( (String) workDefinitionMap.get( "customEditor" ) );
+                Set<ParameterDefinition> parameters = new HashSet<ParameterDefinition>();
+                Map<String, DataType> parameterMap = (Map<String, DataType>) workDefinitionMap.get( "parameters" );
+                if ( parameterMap != null ) {
+                    for ( Map.Entry<String, DataType> entry : parameterMap.entrySet() ) {
+                        parameters.add( new ParameterDefinitionImpl( entry.getKey(),
+                                                                     entry.getValue() ) );
+                    }
+                }
+                workDefinition.setParameters( parameters );
+                Set<ParameterDefinition> results = new HashSet<ParameterDefinition>();
+                Map<String, DataType> resultMap = (Map<String, DataType>) workDefinitionMap.get( "results" );
+                if ( resultMap != null ) {
+                    for ( Map.Entry<String, DataType> entry : resultMap.entrySet() ) {
+                        results.add( new ParameterDefinitionImpl( entry.getKey(),
+                                                                  entry.getValue() ) );
+                    }
+                }
+                workDefinition.setResults( results );
+                this.workDefinitions.put( workDefinition.getName(),
+                                          workDefinition );
+            }
+        } catch ( Throwable t ) {
+            System.err.println( "Error occured while loading work definitions " + location );
+            System.err.println( "Continuing without reading these work definitions" );
+            t.printStackTrace();
         }
     }
 
@@ -1078,6 +1185,10 @@ public class RuleBaseConfiguration
                     throw new IllegalArgumentException( "Illegal enum value '" + this.value + "' for AssertBehaviour" );
             }
         }
+        
+        public String toExternalForm() {
+            return (this.value == 0) ? "identity" : "equality";
+        }
 
         public String toString() {
             return "AssertBehaviour : " + ((this.value == 0) ? "identity" : "equality");
@@ -1140,6 +1251,10 @@ public class RuleBaseConfiguration
             }
             return false;
         }
+        
+        public String toExternalForm() {
+            return (this.value == 0) ? "preserve" : "discard";
+        }
 
         public String toString() {
             return "LogicalOverride : " + ((this.value == 0) ? "preserve" : "discard");
@@ -1193,6 +1308,10 @@ public class RuleBaseConfiguration
                     throw new IllegalArgumentException( "Illegal enum value '" + this.value + "' for SequentialAgenda" );
             }
         }
+        
+        public String toExternalForm() {
+            return (this.value == 0) ? "sequential" : "dynamic";
+        }
 
         public String toString() {
             return "SequentialAgenda : " + ((this.value == 0) ? "sequential" : "dynamic");
@@ -1219,25 +1338,32 @@ public class RuleBaseConfiguration
      */
     public static enum EventProcessingMode {
 
-        CLOUD("cloud"), STREAM("stream");
+        CLOUD(
+                "cloud"), STREAM(
+                "stream");
 
         private String string;
-        EventProcessingMode( String mode ) {
+
+        EventProcessingMode(String mode) {
             this.string = mode;
         }
-        
+
         public String getId() {
             return string;
         }
-        
+
         public String toString() {
             return string;
         }
         
+        public String toExternalForm() {
+            return this.string;
+        }        
+
         public static EventProcessingMode determineAssertBehaviour(String mode) {
-            if( STREAM.getId().equalsIgnoreCase( mode ) ) {
+            if ( STREAM.getId().equalsIgnoreCase( mode ) ) {
                 return STREAM;
-            } else if( CLOUD.getId().equalsIgnoreCase( mode ) ) {
+            } else if ( CLOUD.getId().equalsIgnoreCase( mode ) ) {
                 return CLOUD;
             }
             throw new IllegalArgumentException( "Illegal enum value '" + mode + "' for EventProcessingMode" );

@@ -10,9 +10,9 @@ import java.io.ObjectOutput;
 import java.util.Iterator;
 import java.util.concurrent.locks.Lock;
 
+import org.drools.runtime.ObjectFilter;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseConfiguration.AssertBehaviour;
-import org.drools.runtime.ObjectFilter;
 import org.drools.util.JavaIteratorAdapter;
 import org.drools.util.ObjectHashMap;
 import org.drools.util.AbstractHashTable.HashTableIterator;
@@ -161,7 +161,7 @@ public class  SingleThreadedObjectStore implements Externalizable, ObjectStore {
     /* (non-Javadoc)
      * @see org.drools.common.ObjectStore#iterateObjects(org.drools.ObjectFilter)
      */
-    public Iterator iterateObjects(ObjectFilter filter) {
+    public Iterator iterateObjects(org.drools.runtime.ObjectFilter filter) {
         HashTableIterator iterator = new HashTableIterator( this.assertMap );
         iterator.reset();
         return new JavaIteratorAdapter( iterator,
@@ -182,7 +182,7 @@ public class  SingleThreadedObjectStore implements Externalizable, ObjectStore {
     /* (non-Javadoc)
      * @see org.drools.common.ObjectStore#iterateFactHandles(org.drools.ObjectFilter)
      */
-    public Iterator iterateFactHandles(ObjectFilter filter) {
+    public Iterator iterateFactHandles(org.drools.runtime.ObjectFilter filter) {
         HashTableIterator iterator = new HashTableIterator( this.assertMap );
         iterator.reset();
         return new JavaIteratorAdapter( iterator,

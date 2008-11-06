@@ -9,6 +9,7 @@ import junit.framework.TestCase;
 
 import org.drools.Cheese;
 import org.drools.CheeseEqual;
+import org.drools.ClassObjectFilter;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
@@ -31,7 +32,6 @@ import org.drools.event.ObjectUpdatedEvent;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.rule.Package;
-import org.drools.runtime.ClassObjectFilter;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.util.ObjectHashMap;

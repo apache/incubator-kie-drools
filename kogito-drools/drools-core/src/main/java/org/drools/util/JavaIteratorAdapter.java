@@ -2,8 +2,8 @@ package org.drools.util;
 
 import java.util.NoSuchElementException;
 
-import org.drools.common.InternalFactHandle;
 import org.drools.runtime.ObjectFilter;
+import org.drools.common.InternalFactHandle;
 import org.drools.util.ObjectHashMap.ObjectEntry;
 
 public class JavaIteratorAdapter

@@ -34,7 +34,7 @@ public interface ObjectStore {
     /**
      * This class is not thread safe, changes to the working memory during iteration may give unexpected results
      */
-    public abstract Iterator iterateObjects(ObjectFilter filter);
+    public abstract Iterator iterateObjects(org.drools.runtime.ObjectFilter filter);
 
     /**
      * This class is not thread safe, changes to the working memory during iteration may give unexpected results
@@ -44,6 +44,6 @@ public interface ObjectStore {
     /**
      * This class is not thread safe, changes to the working memory during iteration may give unexpected results
      */
-    public abstract Iterator iterateFactHandles(ObjectFilter filter);
+    public abstract Iterator iterateFactHandles(org.drools.runtime.ObjectFilter filter);
 
 }

@@ -2,7 +2,6 @@ package org.drools;
 
 import java.util.Iterator;
 
-import org.drools.runtime.ObjectFilter;
 import org.drools.spi.GlobalResolver;
 
 /**
@@ -29,7 +28,7 @@ public interface StatelessSessionResult {
      * @return
      *             java.util.Iterators.
      */
-    Iterator iterateObjects(ObjectFilter filter);   
+    Iterator iterateObjects(org.drools.runtime.ObjectFilter filter);   
     
     /**
      * Retrieve the QueryResults of the specified query.
