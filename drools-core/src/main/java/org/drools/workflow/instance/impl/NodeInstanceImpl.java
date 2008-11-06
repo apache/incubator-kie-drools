@@ -27,10 +27,10 @@ import org.drools.process.core.Context;
 import org.drools.process.core.ContextContainer;
 import org.drools.process.instance.ContextInstance;
 import org.drools.process.instance.ContextInstanceContainer;
-import org.drools.process.instance.InternalProcessInstance;
-import org.drools.process.instance.NodeInstance;
-import org.drools.process.instance.NodeInstanceContainer;
-import org.drools.process.instance.WorkflowProcessInstance;
+import org.drools.process.instance.ProcessInstance;
+import org.drools.runtime.process.NodeInstance;
+import org.drools.runtime.process.NodeInstanceContainer;
+import org.drools.runtime.process.WorkflowProcessInstance;
 import org.drools.workflow.core.impl.NodeImpl;
 
 /**
@@ -102,7 +102,7 @@ public abstract class NodeInstanceImpl implements org.drools.workflow.instance.N
     	if (getNode().getMetaData("hidden") != null) {
     		hidden = true;
     	}
-    	WorkingMemory workingMemory = ((InternalProcessInstance) getProcessInstance()).getWorkingMemory();
+    	WorkingMemory workingMemory = ((ProcessInstance) getProcessInstance()).getWorkingMemory();
     	if (!hidden) {
     		((EventSupport) workingMemory).getRuleFlowEventSupport().fireBeforeRuleFlowNodeTriggered(this, (InternalWorkingMemory) workingMemory);
     	}
@@ -128,7 +128,7 @@ public abstract class NodeInstanceImpl implements org.drools.workflow.instance.N
     	if (getNode().getMetaData("hidden") != null) {
     		hidden = true;
     	}
-    	WorkingMemory workingMemory = ((InternalProcessInstance) getProcessInstance()).getWorkingMemory();
+    	WorkingMemory workingMemory = ((ProcessInstance) getProcessInstance()).getWorkingMemory();
     	if (!hidden) {
     		((EventSupport) workingMemory).getRuleFlowEventSupport().fireBeforeRuleFlowNodeLeft(this, (InternalWorkingMemory) workingMemory);
     	}

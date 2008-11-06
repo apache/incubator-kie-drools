@@ -29,13 +29,13 @@ import org.drools.PackageIntegrationException;
 import org.drools.RuleBase;
 import org.drools.RuleIntegrationException;
 import org.drools.StatefulSession;
+import org.drools.WorkingMemory;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Package;
-import org.drools.WorkingMemory;
 
 /**
  * This is a sample file to launch a rule package from a rule source file.

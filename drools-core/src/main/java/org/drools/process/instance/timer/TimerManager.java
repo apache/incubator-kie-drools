@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.WorkingMemory;
-import org.drools.process.instance.InternalProcessInstance;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.time.Job;
 import org.drools.time.JobContext;
@@ -127,7 +126,7 @@ public class TimerManager {
             
             ctx.getTimer().setLastTriggered(new Date());
             
-            InternalProcessInstance processInstance = ( InternalProcessInstance ) workingMemory.getProcessInstance( processInstanceId );
+            ProcessInstance processInstance = ( ProcessInstance ) workingMemory.getProcessInstance( processInstanceId );
             // process instance may have finished already
             if ( processInstance != null ) {
                 workingMemory.getSignalManager().signalEvent(processInstance, "timerTriggered", ctx.getTimer());

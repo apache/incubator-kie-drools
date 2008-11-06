@@ -10,6 +10,7 @@ import java.util.concurrent.Future;
 import junit.framework.TestCase;
 
 import org.drools.Cheese;
+import org.drools.FactHandle;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.RuleBaseConfiguration;
@@ -17,7 +18,6 @@ import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.definition.KnowledgePackage;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.FactHandle;
 
 public class StatefulSessionTest extends TestCase {
     final List list = new ArrayList();

@@ -1,6 +1,7 @@
 package org.drools.process.instance;
 
 import org.drools.process.core.Context;
+import org.drools.runtime.process.ProcessInstance;
 
 /**
  * 

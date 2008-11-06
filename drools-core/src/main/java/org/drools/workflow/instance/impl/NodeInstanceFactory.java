@@ -1,9 +1,9 @@
 package org.drools.workflow.instance.impl;
 
 import org.drools.definition.process.Node;
-import org.drools.process.instance.NodeInstance;
-import org.drools.process.instance.NodeInstanceContainer;
-import org.drools.process.instance.WorkflowProcessInstance;
+import org.drools.runtime.process.NodeInstance;
+import org.drools.runtime.process.NodeInstanceContainer;
+import org.drools.runtime.process.WorkflowProcessInstance;
 
 public interface NodeInstanceFactory {
     

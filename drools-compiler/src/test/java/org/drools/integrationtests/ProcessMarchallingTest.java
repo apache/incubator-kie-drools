@@ -20,12 +20,12 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.marshalling.DefaultMarshaller;
 import org.drools.marshalling.Marshaller;
 import org.drools.process.core.context.variable.VariableScope;
-import org.drools.process.instance.InternalProcessInstance;
-import org.drools.process.instance.WorkItem;
-import org.drools.process.instance.WorkItemHandler;
-import org.drools.process.instance.WorkItemManager;
+import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.rule.Package;
+import org.drools.runtime.process.WorkItem;
+import org.drools.runtime.process.WorkItemHandler;
+import org.drools.runtime.process.WorkItemManager;
 
 public class ProcessMarchallingTest extends TestCase {
 
@@ -154,7 +154,7 @@ public class ProcessMarchallingTest extends TestCase {
         session = getSerialisedStatefulSession( session );
         assertEquals(1, session.getProcessInstances().size());
         VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
-        	(( InternalProcessInstance )session.getProcessInstances().iterator().next()).getContextInstance(VariableScope.VARIABLE_SCOPE);
+        	(( ProcessInstance )session.getProcessInstances().iterator().next()).getContextInstance(VariableScope.VARIABLE_SCOPE);
         assertEquals("ThisIsMyValue", variableScopeInstance.getVariable("myVariable"));
         
         session.getWorkItemManager().completeWorkItem(handler.getWorkItem().getId(), null);

@@ -18,7 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import org.drools.process.instance.WorkItem;
+import org.drools.runtime.process.WorkItem;
 
 /**
  * 

@@ -1,6 +1,6 @@
 package org.drools.event;
 
-import org.drools.process.instance.NodeInstance;
+import org.drools.runtime.process.NodeInstance;
 
 /*
  * Copyright 2005 JBoss Inc

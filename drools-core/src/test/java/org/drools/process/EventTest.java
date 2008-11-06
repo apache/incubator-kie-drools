@@ -12,7 +12,6 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.process.core.context.variable.Variable;
 import org.drools.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.process.core.event.EventTypeFilter;
-import org.drools.process.instance.InternalProcessInstance;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.ruleflow.core.RuleFlowProcess;
@@ -121,7 +120,7 @@ public class EventTest extends TestCase {
         jack.setName("Jack");
         processInstance.signalEvent("myEvent", jack);
         assertEquals(1, myList.size());
-        assertEquals(InternalProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
     
     public void testEvent2() {

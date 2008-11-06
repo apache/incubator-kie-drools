@@ -1,10 +1,10 @@
 package org.drools.workflow.instance.node;
 
 import org.drools.process.core.timer.Timer;
-import org.drools.process.instance.EventListener;
-import org.drools.process.instance.InternalProcessInstance;
-import org.drools.process.instance.NodeInstance;
+import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.timer.TimerInstance;
+import org.drools.runtime.process.EventListener;
+import org.drools.runtime.process.NodeInstance;
 import org.drools.workflow.core.node.TimerNode;
 
 public class TimerNodeInstance extends EventBasedNodeInstance implements EventListener {
@@ -34,8 +34,8 @@ public class TimerNodeInstance extends EventBasedNodeInstance implements EventLi
         if (getTimerInstances() == null) {
         	addTimerListener();
         }
-        ((InternalProcessInstance) getProcessInstance()).getWorkingMemory().getTimerManager()
-            .registerTimer(timer, getProcessInstance());
+        ((ProcessInstance) getProcessInstance()).getWorkingMemory().getTimerManager()
+            .registerTimer(timer, (ProcessInstance) getProcessInstance());
         timerId = timer.getId();
     }
     
@@ -66,20 +66,20 @@ public class TimerNodeInstance extends EventBasedNodeInstance implements EventLi
     }
     
     public void cancel() {
-    	((InternalProcessInstance) getProcessInstance()).getWorkingMemory().getTimerManager().cancelTimer(timerId);
+    	((ProcessInstance) getProcessInstance()).getWorkingMemory().getTimerManager().cancelTimer(timerId);
         super.cancel();
     }
     
     public void addEventListeners() {
         super.addEventListeners();
         if (getTimerInstances() == null) {
-        	((InternalProcessInstance) getProcessInstance()).addEventListener("timerTriggered", this, false);
+        	((ProcessInstance) getProcessInstance()).addEventListener("timerTriggered", this, false);
         }
     }
     
     public void removeEventListeners() {
         super.removeEventListeners();
-        ((InternalProcessInstance) getProcessInstance()).removeEventListener("timerTriggered", this, false);
+        ((ProcessInstance) getProcessInstance()).removeEventListener("timerTriggered", this, false);
     }
 
 }

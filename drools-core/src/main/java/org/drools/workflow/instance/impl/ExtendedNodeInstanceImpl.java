@@ -7,9 +7,9 @@ import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.base.SequentialKnowledgeHelper;
 import org.drools.common.InternalRuleBase;
 import org.drools.process.core.context.exception.ExceptionScope;
-import org.drools.process.instance.InternalProcessInstance;
-import org.drools.process.instance.NodeInstance;
+import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.context.exception.ExceptionScopeInstance;
+import org.drools.runtime.process.NodeInstance;
 import org.drools.spi.Action;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.ProcessContext;
@@ -49,7 +49,7 @@ public abstract class ExtendedNodeInstanceImpl extends NodeInstanceImpl {
 	
 	protected KnowledgeHelper createKnowledgeHelper() {
 		KnowledgeHelper knowledgeHelper = null;
-		WorkingMemory workingMemory = ((InternalProcessInstance) getProcessInstance()).getWorkingMemory();
+		WorkingMemory workingMemory = ((ProcessInstance) getProcessInstance()).getWorkingMemory();
 		if (((InternalRuleBase) workingMemory.getRuleBase()).getConfiguration().isSequential()) {
 			knowledgeHelper = new SequentialKnowledgeHelper(workingMemory);
         } else {
@@ -63,7 +63,7 @@ public abstract class ExtendedNodeInstanceImpl extends NodeInstanceImpl {
 		ProcessContext context = new ProcessContext();
 		context.setNodeInstance(this);
 		try {
-			action.execute(knowledgeHelper, ((InternalProcessInstance) getProcessInstance()).getWorkingMemory(), context);
+			action.execute(knowledgeHelper, ((ProcessInstance) getProcessInstance()).getWorkingMemory(), context);
 		} catch (Exception exception) {
 			String exceptionName = exception.getClass().getName();
 			ExceptionScopeInstance exceptionScopeInstance = (ExceptionScopeInstance)

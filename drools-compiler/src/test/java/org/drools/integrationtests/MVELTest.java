@@ -16,12 +16,12 @@ import org.drools.Cheese;
 import org.drools.Person;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
+import org.drools.WorkingMemory;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
-import org.drools.WorkingMemory;
 import org.drools.util.DateUtils;
 import org.mvel2.MVEL;
 

@@ -8,7 +8,7 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.process.instance.InternalProcessInstance;
+import org.drools.process.instance.ProcessInstance;
 import org.drools.ruleflow.instance.RuleFlowProcessInstance;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.impl.ConnectionImpl;
@@ -39,13 +39,13 @@ public class EndNodeInstanceTest extends TestCase {
         process.addNode( endNode );
                 
         RuleFlowProcessInstance processInstance = new RuleFlowProcessInstance();   
-        processInstance.setState( InternalProcessInstance.STATE_ACTIVE );
+        processInstance.setState( ProcessInstance.STATE_ACTIVE );
         processInstance.setProcess( process );
         processInstance.setWorkingMemory( (InternalWorkingMemory) session );
         
         MockNodeInstance mockNodeInstance = ( MockNodeInstance ) processInstance.getNodeInstance( mockNode );
         
         mockNodeInstance.triggerCompleted();
-        assertEquals( InternalProcessInstance.STATE_COMPLETED, processInstance.getState() );                               
+        assertEquals( ProcessInstance.STATE_COMPLETED, processInstance.getState() );                               
     }
 }

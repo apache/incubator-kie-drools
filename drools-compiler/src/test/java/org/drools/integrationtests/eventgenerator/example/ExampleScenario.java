@@ -16,13 +16,13 @@ import java.util.ArrayList;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
+import org.drools.WorkingMemory;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.integrationtests.eventgenerator.PseudoSessionClock;
 import org.drools.integrationtests.eventgenerator.SimpleEventGenerator;
 import org.drools.integrationtests.eventgenerator.SimpleEventListener;
 import org.drools.rule.Package;
-import org.drools.WorkingMemory;
 
 
 public class ExampleScenario {

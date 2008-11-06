@@ -2,12 +2,11 @@ package org.drools.process.instance;
 
 import java.util.Map;
 
-
 /**
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public interface InternalWorkItem extends WorkItem {
+public interface WorkItem extends org.drools.runtime.process.WorkItem {
 	
 	void setName(String name);
 	

@@ -11,7 +11,6 @@ import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.compiler.PackageBuilder;
 import org.drools.process.core.context.variable.VariableScope;
-import org.drools.process.instance.InternalProcessInstance;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.rule.Package;
@@ -67,7 +66,7 @@ public class ProcessEventTest extends TestCase {
             session.startProcess("org.drools.event");
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
         assertEquals("MyValue", ((VariableScopeInstance) 
-    		((InternalProcessInstance) processInstance).getContextInstance(
+    		((ProcessInstance) processInstance).getContextInstance(
 				VariableScope.VARIABLE_SCOPE)).getVariable("MyVar"));
     }
     
@@ -120,7 +119,7 @@ public class ProcessEventTest extends TestCase {
         processInstance.signalEvent("MyEvent", "MyValue");
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
         assertEquals("MyValue", ((VariableScopeInstance) 
-    		((InternalProcessInstance) processInstance).getContextInstance(
+    		((ProcessInstance) processInstance).getContextInstance(
 				VariableScope.VARIABLE_SCOPE)).getVariable("MyVar"));
     }
     
@@ -168,7 +167,7 @@ public class ProcessEventTest extends TestCase {
         ProcessInstance processInstance = session.startProcess("org.drools.event");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         assertEquals("SomeText", ((VariableScopeInstance) 
-    		((InternalProcessInstance) processInstance).getContextInstance(
+    		((ProcessInstance) processInstance).getContextInstance(
 				VariableScope.VARIABLE_SCOPE)).getVariable("MyVar"));
         
         session = SerializationHelper.getSerialisedStatefulSession(session);
@@ -176,7 +175,7 @@ public class ProcessEventTest extends TestCase {
         session.getSignalManager().signalEvent("MyEvent", "MyValue");
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
         assertEquals("MyValue", ((VariableScopeInstance) 
-    		((InternalProcessInstance) processInstance).getContextInstance(
+    		((ProcessInstance) processInstance).getContextInstance(
 				VariableScope.VARIABLE_SCOPE)).getVariable("MyVar"));
     }
 
@@ -224,7 +223,7 @@ public class ProcessEventTest extends TestCase {
         ProcessInstance processInstance = session.startProcess("org.drools.event");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         assertEquals("SomeText", ((VariableScopeInstance) 
-    		((InternalProcessInstance) processInstance).getContextInstance(
+    		((ProcessInstance) processInstance).getContextInstance(
 				VariableScope.VARIABLE_SCOPE)).getVariable("MyVar"));
 
         session = SerializationHelper.getSerialisedStatefulSession(session);
@@ -294,7 +293,7 @@ public class ProcessEventTest extends TestCase {
             workingMemory.startProcess("org.drools.event");
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
         assertEquals("MyValue", ((VariableScopeInstance)
-    		((InternalProcessInstance) processInstance).getContextInstance(
+    		((ProcessInstance) processInstance).getContextInstance(
 				VariableScope.VARIABLE_SCOPE)).getVariable("MyVar"));
     }
     
@@ -359,7 +358,7 @@ public class ProcessEventTest extends TestCase {
         processInstance.signalEvent("MyEvent", "MyValue");
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
         assertEquals("MyValue", ((VariableScopeInstance) 
-    		((InternalProcessInstance) processInstance).getContextInstance(
+    		((ProcessInstance) processInstance).getContextInstance(
 				VariableScope.VARIABLE_SCOPE)).getVariable("MyVar"));
     }
     
@@ -424,7 +423,7 @@ public class ProcessEventTest extends TestCase {
         session.getSignalManager().signalEvent("MyEvent", "MyValue");
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
         assertEquals("MyValue", ((VariableScopeInstance) 
-    		((InternalProcessInstance) processInstance).getContextInstance(
+    		((ProcessInstance) processInstance).getContextInstance(
 				VariableScope.VARIABLE_SCOPE)).getVariable("MyVar"));
     }
     

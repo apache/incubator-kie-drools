@@ -7,11 +7,11 @@ import java.util.List;
 
 import org.drools.definition.process.Node;
 import org.drools.process.core.context.variable.VariableScope;
-import org.drools.process.instance.NodeInstance;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.workflow.core.node.ForEachNode;
 import org.drools.workflow.core.node.ForEachNode.ForEachJoinNode;
 import org.drools.workflow.core.node.ForEachNode.ForEachSplitNode;
+import org.drools.workflow.instance.NodeInstance;
 import org.drools.workflow.instance.NodeInstanceContainer;
 import org.drools.workflow.instance.impl.NodeInstanceImpl;
 
@@ -74,7 +74,7 @@ public class ForEachNodeInstance extends CompositeNodeInstance {
             return (ForEachSplitNode) getNode();
         }
 
-        public void internalTrigger(NodeInstance from, String type) {
+        public void internalTrigger(org.drools.runtime.process.NodeInstance from, String type) {
             String collectionExpression = getForEachNode().getCollectionExpression();
             Collection<?> collection = evaluateCollectionExpression(collectionExpression);
             ((NodeInstanceContainer) getNodeInstanceContainer()).removeNodeInstance(this);
@@ -132,7 +132,7 @@ public class ForEachNodeInstance extends CompositeNodeInstance {
             return (ForEachJoinNode) getNode();
         }
 
-        public void internalTrigger(NodeInstance from, String type) {
+        public void internalTrigger(org.drools.runtime.process.NodeInstance from, String type) {
             if (getNodeInstanceContainer().getNodeInstances().size() == 1) {
             	((NodeInstanceContainer) getNodeInstanceContainer()).removeNodeInstance(this);
                 if (getForEachNode().isWaitForCompletion()) {

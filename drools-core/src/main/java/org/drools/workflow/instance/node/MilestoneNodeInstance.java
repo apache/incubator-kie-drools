@@ -25,8 +25,8 @@ import org.drools.event.AgendaEventListener;
 import org.drools.event.AgendaGroupPoppedEvent;
 import org.drools.event.AgendaGroupPushedEvent;
 import org.drools.event.BeforeActivationFiredEvent;
-import org.drools.process.instance.InternalProcessInstance;
-import org.drools.process.instance.NodeInstance;
+import org.drools.process.instance.ProcessInstance;
+import org.drools.runtime.process.NodeInstance;
 import org.drools.workflow.core.node.MilestoneNode;
 
 /**
@@ -51,7 +51,7 @@ public class MilestoneNodeInstance extends EventBasedNodeInstance implements Age
         String rule = "RuleFlow-Milestone-" + getProcessInstance().getProcessId()
         + "-" + getNode().getId();
 
-        if( ((InternalAgenda) ((InternalProcessInstance) getProcessInstance())
+        if( ((InternalAgenda) ((ProcessInstance) getProcessInstance())
         		.getAgenda()).isRuleActiveInRuleFlowGroup( "DROOLS_SYSTEM", rule ) ) {
             triggerCompleted();
         } else {
@@ -65,12 +65,12 @@ public class MilestoneNodeInstance extends EventBasedNodeInstance implements Age
     }
     
     private void addActivationListener() {
-    	((InternalProcessInstance) getProcessInstance()).getWorkingMemory().addEventListener(this);
+    	((ProcessInstance) getProcessInstance()).getWorkingMemory().addEventListener(this);
     }
 
     public void removeEventListeners() {
         super.removeEventListeners();
-        ((InternalProcessInstance) getProcessInstance()).getWorkingMemory().removeEventListener(this);
+        ((ProcessInstance) getProcessInstance()).getWorkingMemory().removeEventListener(this);
     }
 
     public void activationCancelled(ActivationCancelledEvent event,

@@ -8,8 +8,8 @@ import org.drools.WorkingMemory;
 import org.drools.event.knowlegebase.impl.KnowledgeRuntimeEventImpl;
 import org.drools.event.process.ProcessEvent;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
-import org.drools.process.instance.ProcessInstance;
 import org.drools.reteoo.ReteooStatefulSession;
+import org.drools.runtime.process.ProcessInstance;
 
 public class ProcessEventImpl extends KnowledgeRuntimeEventImpl implements ProcessEvent {
 

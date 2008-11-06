@@ -22,11 +22,10 @@ import java.util.Map;
 import org.drools.common.InternalRuleBase;
 import org.drools.definition.process.Process;
 import org.drools.process.core.context.variable.VariableScope;
-import org.drools.process.instance.EventListener;
-import org.drools.process.instance.InternalProcessInstance;
-import org.drools.process.instance.NodeInstance;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
+import org.drools.runtime.process.EventListener;
+import org.drools.runtime.process.NodeInstance;
 import org.drools.workflow.core.node.SubProcessNode;
 
 /**
@@ -63,18 +62,18 @@ public class SubProcessNodeInstance extends EventBasedNodeInstance implements Ev
             }
         }
         String processId = getSubProcessNode().getProcessId();
-        Process process = ((InternalRuleBase) ((InternalProcessInstance) getProcessInstance())
+        Process process = ((InternalRuleBase) ((ProcessInstance) getProcessInstance())
     		.getWorkingMemory().getRuleBase()).getProcess(processId);
         if (process == null) {
         	System.err.println("Could not find process " + processId);
         	System.err.println("Aborting process");
-        	((InternalProcessInstance) getProcessInstance()).setState(InternalProcessInstance.STATE_ABORTED);
+        	((ProcessInstance) getProcessInstance()).setState(ProcessInstance.STATE_ABORTED);
         } else {
-	    	InternalProcessInstance processInstance = ( InternalProcessInstance )
-	    		((InternalProcessInstance) getProcessInstance()).getWorkingMemory()
+	    	ProcessInstance processInstance = ( ProcessInstance )
+	    		((ProcessInstance) getProcessInstance()).getWorkingMemory()
 	    			.startProcess(processId, parameters);
 	    	if (!getSubProcessNode().isWaitForCompletion()
-	    	        || processInstance.getState() == InternalProcessInstance.STATE_COMPLETED) {
+	    	        || processInstance.getState() == ProcessInstance.STATE_COMPLETED) {
 	    		triggerCompleted();
 	    	} else {
 	    		this.processInstanceId = processInstance.getId();
@@ -86,8 +85,8 @@ public class SubProcessNodeInstance extends EventBasedNodeInstance implements Ev
     public void cancel() {
         super.cancel();
         if (!getSubProcessNode().isIndependent()) {
-            InternalProcessInstance processInstance = (InternalProcessInstance)
-                ((InternalProcessInstance) getProcessInstance()).getWorkingMemory()
+            ProcessInstance processInstance = (ProcessInstance)
+                ((ProcessInstance) getProcessInstance()).getWorkingMemory()
                     .getProcessInstance(processInstanceId);
             processInstance.setState(ProcessInstance.STATE_ABORTED);
         }
@@ -107,17 +106,17 @@ public class SubProcessNodeInstance extends EventBasedNodeInstance implements Ev
     }
     
     private void addProcessListener() {
-    	((InternalProcessInstance) getProcessInstance()).addEventListener("processInstanceCompleted:" + processInstanceId, this, true);
+    	((ProcessInstance) getProcessInstance()).addEventListener("processInstanceCompleted:" + processInstanceId, this, true);
     }
 
     public void removeEventListeners() {
         super.removeEventListeners();
-        ((InternalProcessInstance) getProcessInstance()).removeEventListener("processInstanceCompleted:" + processInstanceId, this, true);
+        ((ProcessInstance) getProcessInstance()).removeEventListener("processInstanceCompleted:" + processInstanceId, this, true);
     }
 
 	public void signalEvent(String type, Object event) {
 		if (("processInstanceCompleted:" + processInstanceId).equals(type)) {
-			processInstanceCompleted((InternalProcessInstance) event);
+			processInstanceCompleted((ProcessInstance) event);
 		} else {
 			super.signalEvent(type, event);
 		}
@@ -127,7 +126,7 @@ public class SubProcessNodeInstance extends EventBasedNodeInstance implements Ev
     	return new String[] { "processInstanceCompleted:" + processInstanceId };
     }
     
-    public void processInstanceCompleted(InternalProcessInstance processInstance) {
+    public void processInstanceCompleted(ProcessInstance processInstance) {
         removeEventListeners();
         VariableScopeInstance subProcessVariableScopeInstance = (VariableScopeInstance)
             processInstance.getContextInstance(VariableScope.VARIABLE_SCOPE);

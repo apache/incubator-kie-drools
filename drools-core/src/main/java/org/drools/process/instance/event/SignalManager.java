@@ -1,7 +1,7 @@
 package org.drools.process.instance.event;
 
-import org.drools.process.instance.EventListener;
-import org.drools.process.instance.ProcessInstance;
+import org.drools.runtime.process.EventListener;
+import org.drools.runtime.process.ProcessInstance;
 
 public interface SignalManager {
 	

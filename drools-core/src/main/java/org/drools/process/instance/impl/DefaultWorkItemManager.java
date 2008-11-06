@@ -9,18 +9,17 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.process.instance.InternalProcessInstance;
-import org.drools.process.instance.InternalWorkItem;
-import org.drools.process.instance.InternalWorkItemManager;
-import org.drools.process.instance.WorkItem;
-import org.drools.process.instance.WorkItemHandler;
 import org.drools.WorkingMemory;
+import org.drools.process.instance.ProcessInstance;
+import org.drools.process.instance.WorkItem;
+import org.drools.process.instance.WorkItemManager;
+import org.drools.runtime.process.WorkItemHandler;
 
 /**
  *
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class DefaultWorkItemManager implements InternalWorkItemManager, Externalizable {
+public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
 
     private static final long serialVersionUID = 400L;
 
@@ -86,12 +85,12 @@ public class DefaultWorkItemManager implements InternalWorkItemManager, External
 	}
 
     public void completeWorkItem(long id, Map<String, Object> results) {
-        InternalWorkItem workItem = (InternalWorkItem) workItems.get(new Long(id));
+        WorkItem workItem = (WorkItem) workItems.get(new Long(id));
         // work item may have been aborted
         if (workItem != null) {
-            workItem.setResults(results);
-            InternalProcessInstance processInstance = ( InternalProcessInstance ) workingMemory.getProcessInstance(workItem.getProcessInstanceId());
-            workItem.setState(WorkItem.COMPLETED);
+            ((org.drools.process.instance.WorkItem) workItem).setResults(results);
+            ProcessInstance processInstance = ( ProcessInstance ) workingMemory.getProcessInstance(workItem.getProcessInstanceId());
+            ((org.drools.process.instance.WorkItem) workItem).setState(WorkItem.COMPLETED);
             // process instance may have finished already
             if (processInstance != null) {
                 processInstance.signalEvent("workItemCompleted", workItem);
@@ -105,7 +104,7 @@ public class DefaultWorkItemManager implements InternalWorkItemManager, External
         WorkItemImpl workItem = (WorkItemImpl) workItems.get(new Long(id));
         // work item may have been aborted
         if (workItem != null) {
-            InternalProcessInstance processInstance = ( InternalProcessInstance ) workingMemory.getProcessInstance(workItem.getProcessInstanceId());
+            ProcessInstance processInstance = ( ProcessInstance ) workingMemory.getProcessInstance(workItem.getProcessInstanceId());
             workItem.setState(WorkItem.ABORTED);
             // process instance may have finished already
             if (processInstance != null) {

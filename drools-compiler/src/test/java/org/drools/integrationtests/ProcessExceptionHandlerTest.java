@@ -9,12 +9,12 @@ import junit.framework.TestCase;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
+import org.drools.WorkingMemory;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderErrors;
-import org.drools.process.instance.InternalProcessInstance;
+import org.drools.process.instance.ProcessInstance;
 import org.drools.rule.Package;
-import org.drools.WorkingMemory;
 
 public class ProcessExceptionHandlerTest extends TestCase {
     
@@ -52,9 +52,9 @@ public class ProcessExceptionHandlerTest extends TestCase {
         RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage( pkg );
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
-        InternalProcessInstance processInstance = ( InternalProcessInstance )
+        ProcessInstance processInstance = ( ProcessInstance )
             workingMemory.startProcess("org.drools.exception");
-        assertEquals(InternalProcessInstance.STATE_ABORTED, processInstance.getState());
+        assertEquals(ProcessInstance.STATE_ABORTED, processInstance.getState());
     }
     
     public void testProcessExceptionHandlerAction() {
@@ -103,9 +103,9 @@ public class ProcessExceptionHandlerTest extends TestCase {
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
         List<String> list = new ArrayList<String>();
         workingMemory.setGlobal("list", list);
-        InternalProcessInstance processInstance = ( InternalProcessInstance )
+        ProcessInstance processInstance = ( ProcessInstance )
             workingMemory.startProcess("org.drools.exception");
-        assertEquals(InternalProcessInstance.STATE_ACTIVE, processInstance.getState());
+        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         assertEquals(1, list.size());
         assertEquals("SomeValue", list.get(0));
     }
@@ -125,7 +125,7 @@ public class ProcessExceptionHandlerTest extends TestCase {
 			"    </globals>\n" +
 			"    <exceptionHandlers>\n" +
 			"      <exceptionHandler faultName=\"myFault\" type=\"action\"  >\n" +
-			"        <action type=\"expression\" name=\"Complete\" dialect=\"java\" >((org.drools.process.instance.InternalProcessInstance) context.getProcessInstance()).setState(org.drools.process.instance.ProcessInstance.STATE_COMPLETED);</action>\n" +
+			"        <action type=\"expression\" name=\"Complete\" dialect=\"java\" >context.getProcessInstance().setState(org.drools.process.instance.ProcessInstance.STATE_COMPLETED);</action>\n" +
 			"      </exceptionHandler>\n" +
 			"    </exceptionHandlers>\n" +
 			"  </header>\n" +
@@ -145,9 +145,9 @@ public class ProcessExceptionHandlerTest extends TestCase {
         RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage( pkg );
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
-        InternalProcessInstance processInstance = ( InternalProcessInstance )
+        ProcessInstance processInstance = ( ProcessInstance )
             workingMemory.startProcess("org.drools.exception");
-        assertEquals(InternalProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
     
     public void testCompositeNodeExceptionHandlerTriggerNode() {
@@ -220,11 +220,11 @@ public class ProcessExceptionHandlerTest extends TestCase {
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
         List<String> list = new ArrayList<String>();
         workingMemory.setGlobal("list", list);
-        InternalProcessInstance processInstance = ( InternalProcessInstance )
+        ProcessInstance processInstance = ( ProcessInstance )
             workingMemory.startProcess("org.drools.exception");
         assertEquals(1, list.size());
         assertEquals("SomeValue", list.get(0));
-        assertEquals(InternalProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
     
     public void testNestedExceptionHandler() {
@@ -297,10 +297,10 @@ public class ProcessExceptionHandlerTest extends TestCase {
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
         List<String> list = new ArrayList<String>();
         workingMemory.setGlobal("list", list);
-        InternalProcessInstance processInstance = ( InternalProcessInstance )
+        ProcessInstance processInstance = ( ProcessInstance )
             workingMemory.startProcess("org.drools.exception");
         assertEquals(1, list.size());
-        assertEquals(InternalProcessInstance.STATE_ACTIVE, processInstance.getState());
+        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
     }
     
 }

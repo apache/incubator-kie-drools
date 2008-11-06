@@ -18,11 +18,10 @@ package org.drools.workflow.instance.node;
 
 import org.drools.process.core.context.exception.ExceptionScope;
 import org.drools.process.core.context.variable.VariableScope;
-import org.drools.process.instance.InternalProcessInstance;
-import org.drools.process.instance.NodeInstance;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.context.exception.ExceptionScopeInstance;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
+import org.drools.runtime.process.NodeInstance;
 import org.drools.workflow.core.node.FaultNode;
 import org.drools.workflow.instance.NodeInstanceContainer;
 import org.drools.workflow.instance.impl.NodeInstanceImpl;
@@ -51,7 +50,7 @@ public class FaultNodeInstance extends NodeInstanceImpl {
         if (exceptionScopeInstance != null) {
         	handleException(faultName, exceptionScopeInstance);
         } else {
-        	((InternalProcessInstance) getProcessInstance()).setState(ProcessInstance.STATE_ABORTED);
+        	((ProcessInstance) getProcessInstance()).setState(ProcessInstance.STATE_ABORTED);
         }
     }
     

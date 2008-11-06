@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.process.instance.InternalProcessInstance;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.ProcessInstanceManager;
 
@@ -15,12 +14,12 @@ public class DefaultProcessInstanceManager implements ProcessInstanceManager {
     private int processCounter = 0;
 
     public void addProcessInstance(ProcessInstance processInstance) {
-        ((InternalProcessInstance)processInstance).setId(++processCounter);
+        ((ProcessInstance)processInstance).setId(++processCounter);
         internalAddProcessInstance(processInstance);
     }
     
     public void internalAddProcessInstance(ProcessInstance processInstance) {
-    	processInstances.put(((InternalProcessInstance)processInstance).getId(), processInstance);
+    	processInstances.put(((ProcessInstance)processInstance).getId(), processInstance);
     }
 
     public Collection<ProcessInstance> getProcessInstances() {
@@ -36,6 +35,6 @@ public class DefaultProcessInstanceManager implements ProcessInstanceManager {
     }
 
     public void internalRemoveProcessInstance(ProcessInstance processInstance) {
-        processInstances.remove(((InternalProcessInstance)processInstance).getId());
+        processInstances.remove(((ProcessInstance)processInstance).getId());
     }
 }

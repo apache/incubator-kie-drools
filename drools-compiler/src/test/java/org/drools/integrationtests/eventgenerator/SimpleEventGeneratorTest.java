@@ -9,6 +9,7 @@ import junit.framework.TestCase;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
+import org.drools.WorkingMemory;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
@@ -16,7 +17,6 @@ import org.drools.integrationtests.SerializationHelper;
 import org.drools.integrationtests.eventgenerator.Event.EventType;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
-import org.drools.WorkingMemory;
 
 
 public class SimpleEventGeneratorTest extends TestCase {

@@ -25,9 +25,9 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.drools.common.InternalWorkingMemory;
-import org.drools.process.instance.InternalProcessInstance;
-import org.drools.process.instance.NodeInstance;
-import org.drools.process.instance.WorkflowProcessInstance;
+import org.drools.process.instance.ProcessInstance;
+import org.drools.runtime.process.NodeInstance;
+import org.drools.runtime.process.WorkflowProcessInstance;
 import org.drools.spi.RuleFlowGroup;
 
 /**
@@ -74,7 +74,7 @@ public class RuleFlowEventSupport implements Externalizable {
     }
 
     public void fireBeforeRuleFlowProcessStarted(
-            final InternalProcessInstance instance,
+            final ProcessInstance instance,
             final InternalWorkingMemory workingMemory) {
         if (this.listeners.isEmpty()) {
             return;
@@ -88,7 +88,7 @@ public class RuleFlowEventSupport implements Externalizable {
     }
 
     public void fireAfterRuleFlowProcessStarted(
-            final InternalProcessInstance instance,
+            final ProcessInstance instance,
             final InternalWorkingMemory workingMemory) {
         if (this.listeners.isEmpty()) {
             return;

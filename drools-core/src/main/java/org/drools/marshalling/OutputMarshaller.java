@@ -28,11 +28,8 @@ import org.drools.common.RuleFlowGroupImpl;
 import org.drools.common.WorkingMemoryAction;
 import org.drools.process.core.context.swimlane.SwimlaneContext;
 import org.drools.process.core.context.variable.VariableScope;
-import org.drools.process.instance.InternalProcessInstance;
-import org.drools.process.instance.InternalWorkItemManager;
-import org.drools.process.instance.NodeInstance;
 import org.drools.process.instance.ProcessInstance;
-import org.drools.process.instance.WorkItem;
+import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.context.swimlane.SwimlaneContextInstance;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.process.instance.timer.TimerInstance;
@@ -52,6 +49,8 @@ import org.drools.reteoo.CollectNode.CollectMemory;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.ruleflow.instance.RuleFlowProcessInstance;
+import org.drools.runtime.process.NodeInstance;
+import org.drools.runtime.process.WorkItem;
 import org.drools.spi.ActivationGroup;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.PropagationContext;
@@ -712,15 +711,15 @@ public class OutputMarshaller {
 
     public static void writeProcessInstances(MarshallerWriteContext context) throws IOException {
         ObjectOutputStream stream = context.stream;
-        List<ProcessInstance> processInstances = new ArrayList<ProcessInstance>( context.wm.getProcessInstances() );
+        List<org.drools.runtime.process.ProcessInstance> processInstances = new ArrayList<org.drools.runtime.process.ProcessInstance>( context.wm.getProcessInstances() );
         Collections.sort( processInstances,
-                          new Comparator<ProcessInstance>() {
-                              public int compare(ProcessInstance o1,
-                                                 ProcessInstance o2) {
-                                  return (int) ((( InternalProcessInstance )o1).getId() - (( InternalProcessInstance )o2).getId());
+                          new Comparator<org.drools.runtime.process.ProcessInstance>() {
+                              public int compare(org.drools.runtime.process.ProcessInstance o1,
+                            		  org.drools.runtime.process.ProcessInstance o2) {
+                                  return (int) (o1.getId() - o2.getId());
                               }
                           } );
-        for ( ProcessInstance processInstance : processInstances ) {
+        for ( org.drools.runtime.process.ProcessInstance processInstance : processInstances ) {
             stream.writeShort( PersisterEnums.PROCESS_INSTANCE );
             writeProcessInstance( context,
                                   (RuleFlowProcessInstance) processInstance );
@@ -885,7 +884,7 @@ public class OutputMarshaller {
         ObjectOutputStream stream = context.stream;
 
         List<WorkItem> workItems = new ArrayList<WorkItem>(
-    		((InternalWorkItemManager) context.wm.getWorkItemManager()).getWorkItems() );
+    		((WorkItemManager) context.wm.getWorkItemManager()).getWorkItems() );
         Collections.sort( workItems,
                           new Comparator<WorkItem>() {
                               public int compare(WorkItem o1,

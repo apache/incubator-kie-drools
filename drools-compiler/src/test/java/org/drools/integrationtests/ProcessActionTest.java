@@ -9,18 +9,18 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.drools.Message;
-import org.drools.runtime.ObjectFilter;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
+import org.drools.WorkingMemory;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderErrors;
-import org.drools.process.instance.InternalProcessInstance;
-import org.drools.process.instance.WorkItem;
-import org.drools.process.instance.WorkItemHandler;
-import org.drools.process.instance.WorkItemManager;
+import org.drools.process.instance.ProcessInstance;
 import org.drools.rule.Package;
-import org.drools.WorkingMemory;
+import org.drools.runtime.ObjectFilter;
+import org.drools.runtime.process.WorkItem;
+import org.drools.runtime.process.WorkItemHandler;
+import org.drools.runtime.process.WorkItemManager;
 
 public class ProcessActionTest extends TestCase {
     
@@ -84,15 +84,15 @@ public class ProcessActionTest extends TestCase {
         workingMemory.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
         List<String> list = new ArrayList<String>();
         workingMemory.setGlobal("list", list);
-        InternalProcessInstance processInstance = ( InternalProcessInstance )
+        ProcessInstance processInstance = ( ProcessInstance )
             workingMemory.startProcess("org.drools.actions");
-        assertEquals(InternalProcessInstance.STATE_ACTIVE, processInstance.getState());
+        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         WorkItem workItem = handler.getWorkItem();
         assertNotNull(workItem);
         assertEquals(1, list.size());
         workingMemory.getWorkItemManager().completeWorkItem(workItem.getId(), null);
         assertEquals(3, list.size());
-        assertEquals(InternalProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
     
     public void testActionContextJava() {
@@ -154,7 +154,7 @@ public class ProcessActionTest extends TestCase {
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
         List<String> list = new ArrayList<String>();
         workingMemory.setGlobal("list", list);
-        InternalProcessInstance processInstance = ( InternalProcessInstance )
+        ProcessInstance processInstance = ( ProcessInstance )
             workingMemory.startProcess("org.drools.actions");
         assertEquals(2, list.size());
         assertEquals("SomeText", list.get(0));
@@ -165,7 +165,7 @@ public class ProcessActionTest extends TestCase {
 			}
         });
         assertTrue(iterator.hasNext());
-        assertEquals(InternalProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
     
 	public void testActionContextMVEL() {
@@ -231,7 +231,7 @@ public class ProcessActionTest extends TestCase {
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
         List<String> list = new ArrayList<String>();
         workingMemory.setGlobal("list", list);
-        InternalProcessInstance processInstance = ( InternalProcessInstance )
+        ProcessInstance processInstance = ( ProcessInstance )
             workingMemory.startProcess("org.drools.actions");
         assertEquals(2, list.size());
         assertEquals("SomeText", list.get(0));
@@ -242,7 +242,7 @@ public class ProcessActionTest extends TestCase {
 			}
         });
         assertTrue(iterator.hasNext());
-        assertEquals(InternalProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
 
 	private static class TestWorkItemHandler implements WorkItemHandler {

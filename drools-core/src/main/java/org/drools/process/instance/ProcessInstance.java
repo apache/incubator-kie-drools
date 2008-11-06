@@ -19,6 +19,7 @@ package org.drools.process.instance;
 import org.drools.Agenda;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.definition.process.Process;
+import org.drools.runtime.process.EventListener;
 import org.drools.WorkingMemory;
 
 /**
@@ -28,7 +29,7 @@ import org.drools.WorkingMemory;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public interface InternalProcessInstance extends ProcessInstance, ContextInstanceContainer, ContextableInstance {
+public interface ProcessInstance extends org.drools.runtime.process.ProcessInstance, ContextInstanceContainer, ContextableInstance {
 
     void setId(long id);
 

@@ -26,13 +26,13 @@ import org.drools.common.InternalRuleBase;
 import org.drools.definition.process.Connection;
 import org.drools.definition.process.Node;
 import org.drools.definition.process.NodeContainer;
-import org.drools.process.instance.EventListener;
-import org.drools.process.instance.InternalProcessInstance;
-import org.drools.process.instance.NodeInstance;
-import org.drools.process.instance.WorkflowProcessInstance;
+import org.drools.process.instance.ProcessInstance;
+import org.drools.runtime.process.EventListener;
+import org.drools.runtime.process.WorkflowProcessInstance;
 import org.drools.workflow.core.node.CompositeNode;
 import org.drools.workflow.core.node.EventNode;
 import org.drools.workflow.core.node.EventNodeInterface;
+import org.drools.workflow.instance.NodeInstance;
 import org.drools.workflow.instance.NodeInstanceContainer;
 import org.drools.workflow.instance.impl.NodeInstanceFactory;
 import org.drools.workflow.instance.impl.NodeInstanceFactoryRegistry;
@@ -59,7 +59,7 @@ public class CompositeNodeInstance extends NodeInstanceImpl implements NodeInsta
     	for (Node node: getCompositeNode().getNodes()) {
 			if (node instanceof EventNode) {
 				if ("external".equals(((EventNode) node).getScope())) {
-					((InternalProcessInstance) getProcessInstance()).addEventListener(
+					((ProcessInstance) getProcessInstance()).addEventListener(
 							((EventNode) node).getType(), new EventListener() {
 						public String[] getEventTypes() {
 							return null;
@@ -80,7 +80,7 @@ public class CompositeNodeInstance extends NodeInstanceImpl implements NodeInsta
         return getCompositeNode();
     }
     
-    public void internalTrigger(final NodeInstance from, String type) {
+    public void internalTrigger(final org.drools.runtime.process.NodeInstance from, String type) {
         CompositeNode.NodeAndType nodeAndType = getCompositeNode().internalGetLinkedIncomingNode(type);
         List<Connection> connections = nodeAndType.getNode().getIncomingConnections(nodeAndType.getType());
         for (Iterator<Connection> iterator = connections.iterator(); iterator.hasNext(); ) {
@@ -122,8 +122,8 @@ public class CompositeNodeInstance extends NodeInstanceImpl implements NodeInsta
         this.nodeInstances.remove(nodeInstance);
     }
 
-    public Collection<NodeInstance> getNodeInstances() {
-        return getNodeInstances(false);
+    public Collection<org.drools.runtime.process.NodeInstance> getNodeInstances() {
+        return new ArrayList(getNodeInstances(false));
     }
     
     public Collection<NodeInstance> getNodeInstances(boolean recursive) {
@@ -168,7 +168,7 @@ public class CompositeNodeInstance extends NodeInstanceImpl implements NodeInsta
         }
         
         NodeInstanceFactoryRegistry nodeRegistry =
-            ((InternalRuleBase) ((InternalProcessInstance) getProcessInstance()).getWorkingMemory().getRuleBase())
+            ((InternalRuleBase) ((ProcessInstance) getProcessInstance()).getWorkingMemory().getRuleBase())
                 .getConfiguration().getProcessNodeInstanceFactoryRegistry();
         NodeInstanceFactory conf = nodeRegistry.getProcessNodeInstanceFactory(node);
         if (conf == null) {
@@ -200,7 +200,7 @@ public class CompositeNodeInstance extends NodeInstanceImpl implements NodeInsta
             return (CompositeNode.CompositeNodeStart) getNode();
         }
         
-        public void internalTrigger(NodeInstance from, String type) {
+        public void internalTrigger(org.drools.runtime.process.NodeInstance from, String type) {
             triggerCompleted();
         }
         
@@ -218,7 +218,7 @@ public class CompositeNodeInstance extends NodeInstanceImpl implements NodeInsta
             return (CompositeNode.CompositeNodeEnd) getNode();
         }
         
-        public void internalTrigger(NodeInstance from, String type) {
+        public void internalTrigger(org.drools.runtime.process.NodeInstance from, String type) {
             triggerCompleted();
         }
         

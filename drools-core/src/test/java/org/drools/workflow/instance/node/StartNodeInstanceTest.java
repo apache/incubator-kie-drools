@@ -11,10 +11,10 @@ import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.definition.process.Node;
-import org.drools.process.instance.InternalProcessInstance;
-import org.drools.process.instance.NodeInstance;
+import org.drools.process.instance.ProcessInstance;
 import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.ruleflow.instance.RuleFlowProcessInstance;
+import org.drools.runtime.process.NodeInstance;
 import org.drools.workflow.core.impl.ConnectionImpl;
 import org.drools.workflow.core.node.StartNode;
 
@@ -48,9 +48,9 @@ public class StartNodeInstanceTest extends TestCase {
         processInstance.setProcess( process );
         processInstance.setWorkingMemory( (InternalWorkingMemory) session );              
         
-        assertEquals(  InternalProcessInstance.STATE_PENDING, processInstance.getState() );
+        assertEquals(  ProcessInstance.STATE_PENDING, processInstance.getState() );
         processInstance.start();        
-        assertEquals(  InternalProcessInstance.STATE_ACTIVE, processInstance.getState() );
+        assertEquals(  ProcessInstance.STATE_ACTIVE, processInstance.getState() );
         
         MockNodeInstance mockNodeInstance = mockNodeFactory.getMockNodeInstance();
         List<NodeInstance> triggeredBy =

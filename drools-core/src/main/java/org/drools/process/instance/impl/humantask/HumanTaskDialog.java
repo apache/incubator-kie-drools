@@ -26,7 +26,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import org.drools.process.instance.WorkItem;
+import org.drools.runtime.process.WorkItem;
 
 /**
  * 

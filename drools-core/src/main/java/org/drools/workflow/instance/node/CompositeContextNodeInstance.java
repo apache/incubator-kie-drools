@@ -10,7 +10,7 @@ import org.drools.process.core.Context;
 import org.drools.process.core.ContextContainer;
 import org.drools.process.instance.ContextInstance;
 import org.drools.process.instance.ContextInstanceContainer;
-import org.drools.process.instance.InternalProcessInstance;
+import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.impl.ContextInstanceFactory;
 import org.drools.process.instance.impl.ContextInstanceFactoryRegistry;
 import org.drools.workflow.core.node.CompositeContextNode;
@@ -74,14 +74,14 @@ public class CompositeContextNodeInstance extends CompositeNodeInstance implemen
 
     public ContextInstance getContextInstance(final Context context) {
         ContextInstanceFactoryRegistry contextRegistry =
-            ((InternalRuleBase) ((InternalProcessInstance) getProcessInstance())
+            ((InternalRuleBase) ((ProcessInstance) getProcessInstance())
         		.getWorkingMemory().getRuleBase())
                 .getConfiguration().getProcessContextInstanceFactoryRegistry();
         ContextInstanceFactory conf = contextRegistry.getContextInstanceFactory(context);
         if (conf == null) {
             throw new IllegalArgumentException("Illegal context type (registry not found): " + context.getClass());
         }
-        ContextInstance contextInstance = (ContextInstance) conf.getContextInstance(context, this, getProcessInstance());
+        ContextInstance contextInstance = (ContextInstance) conf.getContextInstance(context, this, (ProcessInstance) getProcessInstance());
         if (contextInstance == null) {
             throw new IllegalArgumentException("Illegal context type (instance not found): " + context.getClass());
         }

@@ -22,7 +22,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.definition.process.Connection;
-import org.drools.process.instance.InternalProcessInstance;
+import org.drools.process.instance.ProcessInstance;
 import org.drools.spi.CompiledInvoker;
 import org.drools.spi.ProcessContext;
 import org.drools.spi.ReturnValueEvaluator;
@@ -118,7 +118,7 @@ public class ReturnValueConstraintEvaluator
         try {
             ProcessContext context = new ProcessContext();
             context.setNodeInstance( instance );
-            value = this.evaluator.evaluate( ((InternalProcessInstance) instance.getProcessInstance()).getWorkingMemory(),
+            value = this.evaluator.evaluate( ((ProcessInstance) instance.getProcessInstance()).getWorkingMemory(),
                                              context );
         } catch ( Exception e ) {
             throw new RuntimeException( "unable to execute ReturnValueEvaluator",
