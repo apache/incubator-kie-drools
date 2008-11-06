@@ -32,14 +32,14 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.definition.process.Node;
 import org.drools.definition.process.NodeContainer;
 import org.drools.definition.process.WorkflowProcess;
-import org.drools.process.instance.EventListener;
-import org.drools.process.instance.InternalProcessInstance;
-import org.drools.process.instance.NodeInstance;
-import org.drools.process.instance.NodeInstanceContainer;
-import org.drools.process.instance.WorkflowProcessInstance;
+import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.impl.ProcessInstanceImpl;
+import org.drools.runtime.process.EventListener;
+import org.drools.runtime.process.NodeInstanceContainer;
+import org.drools.runtime.process.WorkflowProcessInstance;
 import org.drools.workflow.core.node.EventNode;
 import org.drools.workflow.core.node.EventNodeInterface;
+import org.drools.workflow.instance.NodeInstance;
 import org.drools.workflow.instance.node.EventBasedNodeInstance;
 import org.drools.workflow.instance.node.EventBasedNodeInstanceInterface;
 import org.drools.workflow.instance.node.EventNodeInstance;
@@ -78,8 +78,8 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 		this.nodeInstances.remove(nodeInstance);
 	}
 
-	public Collection<NodeInstance> getNodeInstances() {
-		return getNodeInstances(false);
+	public Collection<org.drools.runtime.process.NodeInstance> getNodeInstances() {
+		return new ArrayList(getNodeInstances(false));
 	}
 
 	public Collection<NodeInstance> getNodeInstances(boolean recursive) {
@@ -167,8 +167,8 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 	public void setState(final int state) {
 		super.setState(state);
 		// TODO move most of this to ProcessInstanceImpl
-		if (state == InternalProcessInstance.STATE_COMPLETED
-				|| state == InternalProcessInstance.STATE_ABORTED) {
+		if (state == ProcessInstance.STATE_COMPLETED
+				|| state == ProcessInstance.STATE_ABORTED) {
 			InternalWorkingMemory workingMemory = (InternalWorkingMemory) getWorkingMemory();
 			((EventSupport) getWorkingMemory()).getRuleFlowEventSupport()
 					.fireBeforeRuleFlowProcessCompleted(this, workingMemory);

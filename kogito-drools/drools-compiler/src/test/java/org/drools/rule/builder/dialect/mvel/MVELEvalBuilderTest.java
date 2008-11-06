@@ -8,6 +8,7 @@ import junit.framework.TestCase;
 import org.drools.Cheese;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
+import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.ClassObjectType;
@@ -24,7 +25,6 @@ import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.Package;
 import org.drools.rule.Pattern;
-import org.drools.WorkingMemory;
 import org.drools.spi.InternalReadAccessor;
 
 public class MVELEvalBuilderTest extends TestCase {

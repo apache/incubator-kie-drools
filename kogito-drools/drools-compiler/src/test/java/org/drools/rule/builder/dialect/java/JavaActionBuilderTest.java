@@ -8,6 +8,7 @@ import junit.framework.TestCase;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
+import org.drools.WorkingMemory;
 import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.PackageBuilder;
@@ -16,7 +17,6 @@ import org.drools.lang.descr.ActionDescr;
 import org.drools.lang.descr.ProcessDescr;
 import org.drools.rule.Package;
 import org.drools.rule.builder.ProcessBuildContext;
-import org.drools.WorkingMemory;
 import org.drools.spi.Action;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.workflow.core.DroolsAction;

@@ -19,9 +19,8 @@ package org.drools.workflow.instance.node;
 import org.drools.WorkingMemory;
 import org.drools.common.EventSupport;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.process.instance.InternalProcessInstance;
-import org.drools.process.instance.NodeInstance;
 import org.drools.process.instance.ProcessInstance;
+import org.drools.runtime.process.NodeInstance;
 import org.drools.workflow.core.node.EndNode;
 import org.drools.workflow.instance.NodeInstanceContainer;
 import org.drools.workflow.instance.impl.NodeInstanceImpl;
@@ -50,11 +49,11 @@ public class EndNodeInstance extends NodeInstanceImpl {
         	if (getNode().getMetaData("hidden") != null) {
         		hidden = true;
         	}
-        	WorkingMemory workingMemory = ((InternalProcessInstance) getProcessInstance()).getWorkingMemory();
+        	WorkingMemory workingMemory = ((ProcessInstance) getProcessInstance()).getWorkingMemory();
         	if (!hidden) {
         		((EventSupport) workingMemory).getRuleFlowEventSupport().fireBeforeRuleFlowNodeLeft(this, (InternalWorkingMemory) workingMemory);
         	}
-        	((InternalProcessInstance) getProcessInstance()).setState( ProcessInstance.STATE_COMPLETED );
+        	((ProcessInstance) getProcessInstance()).setState( ProcessInstance.STATE_COMPLETED );
             if (!hidden) {
                 ((EventSupport) workingMemory).getRuleFlowEventSupport().fireAfterRuleFlowNodeLeft(this, (InternalWorkingMemory) workingMemory);
             }

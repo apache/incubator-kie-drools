@@ -4,13 +4,12 @@ import java.util.Collection;
 
 import org.drools.definition.process.Node;
 import org.drools.definition.process.NodeContainer;
-import org.drools.process.instance.NodeInstance;
 
 /**
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public interface NodeInstanceContainer extends org.drools.process.instance.NodeInstanceContainer {
+public interface NodeInstanceContainer extends org.drools.runtime.process.NodeInstanceContainer {
 
     Collection<NodeInstance> getNodeInstances(boolean recursive);
 

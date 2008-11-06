@@ -3,13 +3,13 @@ package org.drools.api;
 import java.io.StringReader;
 import java.util.Collection;
 
+import junit.framework.TestCase;
+
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definition.process.Process;
 import org.drools.definition.rule.Rule;
-
-import junit.framework.TestCase;
 
 public class KnowledgeBuilderTest extends TestCase {
 	

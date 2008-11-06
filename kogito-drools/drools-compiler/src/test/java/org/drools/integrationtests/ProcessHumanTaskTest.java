@@ -9,13 +9,13 @@ import junit.framework.TestCase;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
-import org.drools.compiler.PackageBuilder;
-import org.drools.process.instance.InternalProcessInstance;
-import org.drools.process.instance.WorkItem;
-import org.drools.process.instance.WorkItemHandler;
-import org.drools.process.instance.WorkItemManager;
-import org.drools.rule.Package;
 import org.drools.WorkingMemory;
+import org.drools.compiler.PackageBuilder;
+import org.drools.process.instance.ProcessInstance;
+import org.drools.rule.Package;
+import org.drools.runtime.process.WorkItem;
+import org.drools.runtime.process.WorkItemHandler;
+import org.drools.runtime.process.WorkItemManager;
 
 public class ProcessHumanTaskTest extends TestCase {
     
@@ -67,13 +67,13 @@ public class ProcessHumanTaskTest extends TestCase {
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
         TestWorkItemHandler handler = new TestWorkItemHandler();
         workingMemory.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
-        InternalProcessInstance processInstance = ( InternalProcessInstance )
+        ProcessInstance processInstance = ( ProcessInstance )
             workingMemory.startProcess("org.drools.humantask");
-        assertEquals(InternalProcessInstance.STATE_ACTIVE, processInstance.getState());
+        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         WorkItem workItem = handler.getWorkItem();
         assertNotNull(workItem);
         workingMemory.getWorkItemManager().completeWorkItem(workItem.getId(), null);
-        assertEquals(InternalProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
     
     public void testSwimlane() {
@@ -145,9 +145,9 @@ public class ProcessHumanTaskTest extends TestCase {
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
         TestWorkItemHandler handler = new TestWorkItemHandler();
         workingMemory.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
-        InternalProcessInstance processInstance = ( InternalProcessInstance )
+        ProcessInstance processInstance = ( ProcessInstance )
             workingMemory.startProcess("org.drools.humantask");
-        assertEquals(InternalProcessInstance.STATE_ACTIVE, processInstance.getState());
+        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         WorkItem workItem = handler.getWorkItem();
         assertNotNull(workItem);
         assertEquals("Do something", workItem.getParameter("TaskName"));
@@ -160,7 +160,7 @@ public class ProcessHumanTaskTest extends TestCase {
         assertEquals("Do something else", workItem.getParameter("TaskName"));
         assertEquals("Jane Doe", workItem.getParameter("ActorId"));
         workingMemory.getWorkItemManager().completeWorkItem(workItem.getId(), null);
-        assertEquals(InternalProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
 
     private static class TestWorkItemHandler implements WorkItemHandler {

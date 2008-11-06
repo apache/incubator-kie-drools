@@ -16,7 +16,7 @@ package org.drools.workflow.instance.node;
  * limitations under the License.
  */
 
-import org.drools.process.instance.NodeInstance;
+import org.drools.runtime.process.NodeInstance;
 import org.drools.workflow.core.node.StartNode;
 import org.drools.workflow.instance.impl.NodeInstanceImpl;
 

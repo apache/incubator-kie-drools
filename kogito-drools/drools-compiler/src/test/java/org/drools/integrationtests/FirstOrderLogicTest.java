@@ -12,6 +12,7 @@ import junit.framework.TestCase;
 
 import org.drools.Cheese;
 import org.drools.Cheesery;
+import org.drools.FactHandle;
 import org.drools.Order;
 import org.drools.OrderItem;
 import org.drools.Person;
@@ -29,7 +30,6 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
-import org.drools.FactHandle;
 
 public class FirstOrderLogicTest extends TestCase {
     protected RuleBase getRuleBase() throws Exception {

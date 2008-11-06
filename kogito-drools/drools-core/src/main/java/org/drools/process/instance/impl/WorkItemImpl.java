@@ -5,13 +5,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.drools.process.instance.InternalWorkItem;
+import org.drools.process.instance.WorkItem;
 
 /**
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class WorkItemImpl implements InternalWorkItem, Serializable {
+public class WorkItemImpl implements WorkItem, Serializable {
 
     private static final long serialVersionUID = 400L;
     

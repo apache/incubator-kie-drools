@@ -30,11 +30,9 @@ import org.drools.common.TruthMaintenanceSystem;
 import org.drools.concurrent.ExecutorService;
 import org.drools.process.core.context.swimlane.SwimlaneContext;
 import org.drools.process.core.context.variable.VariableScope;
-import org.drools.process.instance.InternalProcessInstance;
-import org.drools.process.instance.InternalWorkItemManager;
-import org.drools.process.instance.NodeInstance;
-import org.drools.process.instance.NodeInstanceContainer;
+import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.WorkItem;
+import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.context.swimlane.SwimlaneContextInstance;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.process.instance.impl.WorkItemImpl;
@@ -66,6 +64,8 @@ import org.drools.rule.GroupElement;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.ruleflow.instance.RuleFlowProcessInstance;
+import org.drools.runtime.process.NodeInstance;
+import org.drools.runtime.process.NodeInstanceContainer;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.FactHandleFactory;
@@ -758,7 +758,7 @@ public class InputMarshaller {
         }
     }
 
-    public static InternalProcessInstance readProcessInstance(MarshallerReaderContext context) throws IOException {
+    public static ProcessInstance readProcessInstance(MarshallerReaderContext context) throws IOException {
         ObjectInputStream stream = context.stream;
         InternalRuleBase ruleBase = context.ruleBase;
         InternalWorkingMemory wm = context.wm;
@@ -919,7 +919,7 @@ public class InputMarshaller {
         ObjectInputStream stream = context.stream;
         while ( stream.readShort() == PersisterEnums.WORK_ITEM ) {
             WorkItem workItem = readWorkItem( context );
-            ((InternalWorkItemManager) wm.getWorkItemManager()).internalAddWorkItem( workItem );
+            ((WorkItemManager) wm.getWorkItemManager()).internalAddWorkItem( workItem );
         }
     }
 

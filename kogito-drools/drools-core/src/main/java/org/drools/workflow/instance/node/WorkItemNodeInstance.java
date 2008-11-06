@@ -26,14 +26,13 @@ import org.drools.WorkingMemory;
 import org.drools.common.InternalRuleBase;
 import org.drools.process.core.Work;
 import org.drools.process.core.context.variable.VariableScope;
-import org.drools.process.instance.EventListener;
-import org.drools.process.instance.InternalProcessInstance;
-import org.drools.process.instance.InternalWorkItem;
-import org.drools.process.instance.InternalWorkItemManager;
-import org.drools.process.instance.NodeInstance;
+import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.WorkItem;
+import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.process.instance.impl.WorkItemImpl;
+import org.drools.runtime.process.EventListener;
+import org.drools.runtime.process.NodeInstance;
 import org.drools.workflow.core.node.WorkItemNode;
 
 /**
@@ -55,7 +54,7 @@ public class WorkItemNodeInstance extends EventBasedNodeInstance implements Even
     
     public WorkItem getWorkItem() {
     	if (workItem == null && workItemId >= 0) {
-    		workItem = ((InternalWorkItemManager) ((InternalProcessInstance) getProcessInstance())
+    		workItem = ((WorkItemManager) ((ProcessInstance) getProcessInstance())
 				.getWorkingMemory().getWorkItemManager()).getWorkItem(workItemId);
     	}
         return workItem;
@@ -70,7 +69,7 @@ public class WorkItemNodeInstance extends EventBasedNodeInstance implements Even
     }
     
     public boolean isInversionOfControl() {
-        return ((InternalRuleBase) ((InternalProcessInstance) getProcessInstance())
+        return ((InternalRuleBase) ((ProcessInstance) getProcessInstance())
     		.getWorkingMemory().getRuleBase()).getConfiguration().isAdvancedProcessRuleIntegration();
     }
 
@@ -87,10 +86,10 @@ public class WorkItemNodeInstance extends EventBasedNodeInstance implements Even
 		    addWorkItemListener();
         }
 		if (isInversionOfControl()) {
-			((InternalProcessInstance) getProcessInstance()).getWorkingMemory()
-				.update(((InternalProcessInstance) getProcessInstance()).getWorkingMemory().getFactHandle(this), this);
+			((ProcessInstance) getProcessInstance()).getWorkingMemory()
+				.update(((ProcessInstance) getProcessInstance()).getWorkingMemory().getFactHandle(this), this);
 		} else {
-		    ((InternalWorkItemManager) ((InternalProcessInstance) getProcessInstance())
+		    ((WorkItemManager) ((ProcessInstance) getProcessInstance())
 	    		.getWorkingMemory().getWorkItemManager()).internalExecuteWorkItem(workItem);
 		}
         if (!workItemNode.isWaitForCompletion()) {
@@ -103,15 +102,15 @@ public class WorkItemNodeInstance extends EventBasedNodeInstance implements Even
     protected WorkItem createWorkItem(WorkItemNode workItemNode) {
         Work work = workItemNode.getWork();
         workItem = new WorkItemImpl();
-        ((InternalWorkItem) workItem).setName(work.getName());
-        ((InternalWorkItem) workItem).setProcessInstanceId(getProcessInstance().getId());
-        ((InternalWorkItem) workItem).setParameters(new HashMap<String, Object>(work.getParameters()));
+        ((WorkItem) workItem).setName(work.getName());
+        ((WorkItem) workItem).setProcessInstanceId(getProcessInstance().getId());
+        ((WorkItem) workItem).setParameters(new HashMap<String, Object>(work.getParameters()));
         for (Iterator<Map.Entry<String, String>> iterator = workItemNode.getInMappings().entrySet().iterator(); iterator.hasNext(); ) {
             Map.Entry<String, String> mapping = iterator.next();
             VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
                 resolveContextInstance(VariableScope.VARIABLE_SCOPE, mapping.getValue());
             if (variableScopeInstance != null) {
-            	((InternalWorkItem) workItem).setParameter(mapping.getKey(), variableScopeInstance.getVariable(mapping.getValue()));
+            	((WorkItem) workItem).setParameter(mapping.getKey(), variableScopeInstance.getVariable(mapping.getValue()));
             } else {
                 System.err.println("Could not find variable scope for variable " + mapping.getValue());
                 System.err.println("when trying to execute Work Item " + work.getName());
@@ -142,7 +141,7 @@ public class WorkItemNodeInstance extends EventBasedNodeInstance implements Even
                 for (Map.Entry<String, String> replacement: replacements.entrySet()) {
                 	s = s.replace("#{" + replacement.getKey() + "}", replacement.getValue());
                 }
-                ((InternalWorkItem) workItem).setParameter(entry.getKey(), s);
+                ((WorkItem) workItem).setParameter(entry.getKey(), s);
         	}
         }
         return workItem;
@@ -162,7 +161,7 @@ public class WorkItemNodeInstance extends EventBasedNodeInstance implements Even
             }
         }
         if (isInversionOfControl()) {
-            WorkingMemory workingMemory = ((InternalProcessInstance) getProcessInstance()).getWorkingMemory();
+            WorkingMemory workingMemory = ((ProcessInstance) getProcessInstance()).getWorkingMemory();
             workingMemory.update(workingMemory.getFactHandle(this), this);
         } else {
             triggerCompleted();
@@ -171,7 +170,7 @@ public class WorkItemNodeInstance extends EventBasedNodeInstance implements Even
     
     public void cancel() {
     	if (workItemId != -1) {
-    		((InternalWorkItemManager) ((InternalProcessInstance) getProcessInstance())
+    		((WorkItemManager) ((ProcessInstance) getProcessInstance())
 				.getWorkingMemory().getWorkItemManager()).internalAbortWorkItem(workItemId);
     	}
         super.cancel();
@@ -183,14 +182,14 @@ public class WorkItemNodeInstance extends EventBasedNodeInstance implements Even
     }
     
     private void addWorkItemListener() {
-    	((InternalProcessInstance) getProcessInstance()).addEventListener("workItemCompleted", this, false);
-    	((InternalProcessInstance) getProcessInstance()).addEventListener("workItemAborted", this, false);
+    	((ProcessInstance) getProcessInstance()).addEventListener("workItemCompleted", this, false);
+    	((ProcessInstance) getProcessInstance()).addEventListener("workItemAborted", this, false);
     }
     
     public void removeEventListeners() {
         super.removeEventListeners();
-        ((InternalProcessInstance) getProcessInstance()).removeEventListener("workItemCompleted", this, false);
-        ((InternalProcessInstance) getProcessInstance()).removeEventListener("workItemAborted", this, false);
+        ((ProcessInstance) getProcessInstance()).removeEventListener("workItemCompleted", this, false);
+        ((ProcessInstance) getProcessInstance()).removeEventListener("workItemAborted", this, false);
     }
     
     public void signalEvent(String type, Object event) {

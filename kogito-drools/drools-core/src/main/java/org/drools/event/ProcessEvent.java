@@ -18,7 +18,7 @@ package org.drools.event;
 
 import java.util.EventObject;
 
-import org.drools.process.instance.ProcessInstance;
+import org.drools.runtime.process.ProcessInstance;
 
 /**
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>

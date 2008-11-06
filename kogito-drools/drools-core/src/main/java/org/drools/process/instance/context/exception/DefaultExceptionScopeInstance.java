@@ -7,7 +7,6 @@ import org.drools.common.InternalRuleBase;
 import org.drools.process.core.context.exception.ActionExceptionHandler;
 import org.drools.process.core.context.exception.ExceptionHandler;
 import org.drools.process.instance.ContextInstanceContainer;
-import org.drools.process.instance.InternalProcessInstance;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.spi.Action;
 import org.drools.spi.KnowledgeHelper;
@@ -36,7 +35,7 @@ public class DefaultExceptionScopeInstance extends ExceptionScopeInstance {
 			    if (faultVariable != null) {
 			    	context.setVariable(faultVariable, params);
 			    }
-		        action.execute(knowledgeHelper, ((InternalProcessInstance) processInstance).getWorkingMemory(), context);
+		        action.execute(knowledgeHelper, ((ProcessInstance) processInstance).getWorkingMemory(), context);
 			} catch (Exception e) {
 			    throw new RuntimeException("unable to execute Action", e);
 			}
@@ -46,7 +45,7 @@ public class DefaultExceptionScopeInstance extends ExceptionScopeInstance {
 	}
 
     private KnowledgeHelper createKnowledgeHelper() {
-        WorkingMemory workingMemory = ((InternalProcessInstance) getProcessInstance()).getWorkingMemory();
+        WorkingMemory workingMemory = ((ProcessInstance) getProcessInstance()).getWorkingMemory();
         if ( ((InternalRuleBase) workingMemory.getRuleBase()).getConfiguration().isSequential() ) {
             return new SequentialKnowledgeHelper( workingMemory );
         } else {

@@ -6,9 +6,9 @@ import org.drools.WorkingMemory;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.definition.process.WorkflowProcess;
-import org.drools.process.instance.InternalProcessInstance;
-import org.drools.process.instance.NodeInstance;
-import org.drools.process.instance.WorkflowProcessInstance;
+import org.drools.process.instance.ProcessInstance;
+import org.drools.runtime.process.NodeInstance;
+import org.drools.runtime.process.WorkflowProcessInstance;
 import org.drools.workflow.instance.impl.NodeInstanceImpl;
 import org.drools.workflow.instance.impl.WorkflowProcessInstanceImpl;
 
@@ -32,7 +32,7 @@ public class WorkflowProcessInstanceUpgrader {
             return;
         }
         ((WorkflowProcessInstanceImpl) processInstance).disconnect();
-        ((InternalProcessInstance) processInstance).setProcess(process);
+        ((ProcessInstance) processInstance).setProcess(process);
         for (NodeInstance nodeInstance: processInstance.getNodeInstances()) {
             Long oldNodeId = nodeInstance.getNodeId();
             Long newNodeId = nodeMapping.get(oldNodeId);
@@ -46,7 +46,7 @@ public class WorkflowProcessInstanceUpgrader {
                 ((NodeInstanceImpl) nodeInstance).setNodeId(newNodeId);
             }
         }
-        ((InternalProcessInstance) processInstance).setWorkingMemory((InternalWorkingMemory) workingMemory);
+        ((ProcessInstance) processInstance).setWorkingMemory((InternalWorkingMemory) workingMemory);
         ((WorkflowProcessInstanceImpl) processInstance).reconnect();
     }
 

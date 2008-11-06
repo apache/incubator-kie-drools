@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.definition.process.Connection;
-import org.drools.process.instance.NodeInstance;
+import org.drools.runtime.process.NodeInstance;
 import org.drools.workflow.core.node.Join;
 import org.drools.workflow.instance.impl.NodeInstanceImpl;
 

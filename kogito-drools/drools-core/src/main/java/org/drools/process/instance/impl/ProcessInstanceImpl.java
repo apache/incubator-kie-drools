@@ -29,14 +29,14 @@ import org.drools.definition.process.Process;
 import org.drools.process.core.Context;
 import org.drools.process.core.ContextContainer;
 import org.drools.process.instance.ContextInstance;
-import org.drools.process.instance.InternalProcessInstance;
+import org.drools.process.instance.ProcessInstance;
 
 /**
  * Default implementation of a process instance.
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public abstract class ProcessInstanceImpl implements InternalProcessInstance, Serializable {
+public abstract class ProcessInstanceImpl implements ProcessInstance, Serializable {
 
 	private static final long serialVersionUID = 4L;
 	

@@ -13,6 +13,7 @@ import junit.framework.TestCase;
 import org.drools.Alarm;
 import org.drools.Cell;
 import org.drools.Cheese;
+import org.drools.FactHandle;
 import org.drools.Message;
 import org.drools.Neighbor;
 import org.drools.Person;
@@ -21,6 +22,7 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
+import org.drools.WorkingMemory;
 import org.drools.common.DefaultAgenda;
 import org.drools.common.InternalWorkingMemoryActions;
 import org.drools.common.RuleFlowGroupImpl;
@@ -33,11 +35,8 @@ import org.drools.event.ActivationCreatedEvent;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.DefaultAgendaEventListener;
 import org.drools.lang.descr.PackageDescr;
-import org.drools.process.instance.InternalProcessInstance;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.rule.Package;
-import org.drools.FactHandle;
-import org.drools.WorkingMemory;
 import org.drools.spi.Activation;
 import org.drools.spi.ActivationGroup;
 import org.drools.spi.AgendaGroup;
@@ -830,7 +829,7 @@ public class ExecutionFlowControlTest extends TestCase {
                       list.size() );
 
         final ProcessInstance processInstance = workingMemory.startProcess( "0" );
-        assertEquals( InternalProcessInstance.STATE_ACTIVE,
+        assertEquals( ProcessInstance.STATE_ACTIVE,
                       processInstance.getState() );
         workingMemory.fireAllRules();
         assertEquals( 4,
@@ -843,7 +842,7 @@ public class ExecutionFlowControlTest extends TestCase {
                       list.get( 2 ) );
         assertEquals( "Rule4",
                       list.get( 3 ) );
-        assertEquals( InternalProcessInstance.STATE_COMPLETED,
+        assertEquals( ProcessInstance.STATE_COMPLETED,
                       processInstance.getState() );
     }
     
@@ -920,7 +919,7 @@ public class ExecutionFlowControlTest extends TestCase {
                       list.size() );
 
         final ProcessInstance processInstance = workingMemory.startProcess( "0" );
-        assertEquals( InternalProcessInstance.STATE_ACTIVE,
+        assertEquals( ProcessInstance.STATE_ACTIVE,
                       processInstance.getState() );
         workingMemory.fireAllRules();
         assertEquals( 4,
@@ -933,7 +932,7 @@ public class ExecutionFlowControlTest extends TestCase {
                       list.get( 2 ) );
         assertEquals( "Rule4",
                       list.get( 3 ) );
-        assertEquals( InternalProcessInstance.STATE_COMPLETED,
+        assertEquals( ProcessInstance.STATE_COMPLETED,
                       processInstance.getState() );
         
     }

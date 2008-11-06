@@ -8,6 +8,7 @@ import junit.framework.TestCase;
 import org.drools.Person;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
+import org.drools.WorkingMemory;
 import org.drools.base.ClassObjectType;
 import org.drools.base.mvel.MVELSalienceExpression;
 import org.drools.common.InternalFactHandle;
@@ -20,7 +21,6 @@ import org.drools.rule.Declaration;
 import org.drools.rule.Package;
 import org.drools.rule.Pattern;
 import org.drools.rule.builder.SalienceBuilder;
-import org.drools.WorkingMemory;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PatternExtractor;
 

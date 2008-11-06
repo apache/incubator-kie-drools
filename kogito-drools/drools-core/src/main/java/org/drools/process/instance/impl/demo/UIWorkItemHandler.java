@@ -24,9 +24,9 @@ import javax.swing.WindowConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import org.drools.process.instance.WorkItem;
-import org.drools.process.instance.WorkItemHandler;
-import org.drools.process.instance.WorkItemManager;
+import org.drools.runtime.process.WorkItem;
+import org.drools.runtime.process.WorkItemHandler;
+import org.drools.runtime.process.WorkItemManager;
 
 /**
  * 

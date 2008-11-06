@@ -28,9 +28,9 @@ import org.drools.process.instance.ContextInstance;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public interface NodeInstance extends org.drools.process.instance.NodeInstance {
+public interface NodeInstance extends org.drools.runtime.process.NodeInstance {
 
-    void trigger(org.drools.process.instance.NodeInstance from, String type);
+    void trigger(org.drools.runtime.process.NodeInstance from, String type);
 
     void cancel();
     

@@ -26,9 +26,9 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
+import org.drools.WorkingMemory;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
-import org.drools.WorkingMemory;
 
 
 /** Run all the tests with the ReteOO engine implementation */

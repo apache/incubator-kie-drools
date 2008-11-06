@@ -13,7 +13,7 @@ import java.util.concurrent.locks.Lock;
 
 import org.drools.Agenda;
 import org.drools.FactException;
-import org.drools.ObjectFilter;
+import org.drools.FactHandle;
 import org.drools.QueryResults;
 import org.drools.RuleBase;
 import org.drools.WorkingMemoryEntryPoint;
@@ -34,32 +34,23 @@ import org.drools.event.RuleFlowEventListener;
 import org.drools.event.RuleFlowEventSupport;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.event.WorkingMemoryEventSupport;
-import org.drools.process.instance.InternalProcessInstance;
 import org.drools.process.instance.ProcessInstance;
-import org.drools.process.instance.ProcessInstanceFactory;
 import org.drools.process.instance.ProcessInstanceManager;
-import org.drools.process.instance.InternalWorkItemManager;
 import org.drools.process.instance.WorkItemManager;
-import org.drools.process.instance.event.SignalManager;
 import org.drools.process.instance.event.SignalManager;
 import org.drools.process.instance.timer.TimerManager;
 import org.drools.reteoo.LIANodePropagation;
-import org.drools.reteoo.ObjectTypeConf;
 import org.drools.reteoo.PartitionTaskManager;
-import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.rule.TimeMachine;
-import org.drools.FactHandle;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
-import org.drools.spi.AgendaGroup;
 import org.drools.spi.AsyncExceptionHandler;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.GlobalResolver;
 import org.drools.spi.PropagationContext;
 import org.drools.time.SessionClock;
 import org.drools.time.TimerService;
-import org.drools.util.ObjectHashMap;
 
 public class MockWorkingMemory implements InternalWorkingMemory {
                 

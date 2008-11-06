@@ -10,13 +10,12 @@ import junit.framework.TestCase;
 import org.drools.Person;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
+import org.drools.WorkingMemory;
 import org.drools.compiler.PackageBuilder;
 import org.drools.process.core.context.variable.VariableScope;
-import org.drools.process.instance.InternalProcessInstance;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.rule.Package;
-import org.drools.WorkingMemory;
 
 public class SubProcessTest extends TestCase {
 
@@ -24,12 +23,12 @@ public class SubProcessTest extends TestCase {
         try {
             RuleBase ruleBase = readRule(true);
             WorkingMemory workingMemory = ruleBase.newStatefulSession();
-            InternalProcessInstance processInstance = ( InternalProcessInstance )
+            ProcessInstance processInstance = ( ProcessInstance )
         		workingMemory.startProcess("com.sample.ruleflow");
-            assertEquals(InternalProcessInstance.STATE_ACTIVE, processInstance.getState());
+            assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
             assertEquals(2, workingMemory.getProcessInstances().size());
             workingMemory.insert(new Person());
-            assertEquals(InternalProcessInstance.STATE_COMPLETED, processInstance.getState());
+            assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
             assertEquals(0, workingMemory.getProcessInstances().size());
         } catch (Throwable t) {
             t.printStackTrace();
@@ -40,11 +39,11 @@ public class SubProcessTest extends TestCase {
         try {
             RuleBase ruleBase = readRule(true);
             WorkingMemory workingMemory = ruleBase.newStatefulSession();
-            InternalProcessInstance processInstance = ( InternalProcessInstance )
+            ProcessInstance processInstance = ( ProcessInstance )
         		workingMemory.startProcess("com.sample.ruleflow");
-            assertEquals(InternalProcessInstance.STATE_ACTIVE, processInstance.getState());
+            assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
             assertEquals(2, workingMemory.getProcessInstances().size());
-            processInstance.setState(InternalProcessInstance.STATE_ABORTED);
+            processInstance.setState(ProcessInstance.STATE_ABORTED);
             assertEquals(1, workingMemory.getProcessInstances().size());
         } catch (Throwable t) {
             t.printStackTrace();
@@ -55,11 +54,11 @@ public class SubProcessTest extends TestCase {
         try {
             RuleBase ruleBase = readRule(false);
             WorkingMemory workingMemory = ruleBase.newStatefulSession();
-            InternalProcessInstance processInstance = ( InternalProcessInstance )
+            ProcessInstance processInstance = ( ProcessInstance )
         		workingMemory.startProcess("com.sample.ruleflow");
-            assertEquals(InternalProcessInstance.STATE_ACTIVE, processInstance.getState());
+            assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
             assertEquals(2, workingMemory.getProcessInstances().size());
-            processInstance.setState(InternalProcessInstance.STATE_ABORTED);
+            processInstance.setState(ProcessInstance.STATE_ABORTED);
             assertEquals(0, workingMemory.getProcessInstances().size());
         } catch (Throwable t) {
             t.printStackTrace();
@@ -72,13 +71,13 @@ public class SubProcessTest extends TestCase {
             WorkingMemory workingMemory = ruleBase.newStatefulSession();
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("x", "x-value");
-            InternalProcessInstance processInstance = ( InternalProcessInstance )
+            ProcessInstance processInstance = ( ProcessInstance )
         		workingMemory.startProcess("com.sample.ruleflow", map);
-            assertEquals(InternalProcessInstance.STATE_ACTIVE, processInstance.getState());
+            assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
             assertEquals(2, workingMemory.getProcessInstances().size());
             for (ProcessInstance p: workingMemory.getProcessInstances()) {
         		VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
-        			(( InternalProcessInstance )p).getContextInstance(VariableScope.VARIABLE_SCOPE);
+        			(( ProcessInstance )p).getContextInstance(VariableScope.VARIABLE_SCOPE);
             	if ("com.sample.ruleflow".equals(p.getProcessId())) {
             		assertEquals("x-value", variableScopeInstance.getVariable("x"));
             	} else if ("com.sample.subflow".equals(p.getProcessId())) {
@@ -87,7 +86,7 @@ public class SubProcessTest extends TestCase {
             	}
             }
             workingMemory.insert(new Person());
-            assertEquals(InternalProcessInstance.STATE_COMPLETED, processInstance.getState());
+            assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
             VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
 				processInstance.getContextInstance(VariableScope.VARIABLE_SCOPE);
         	assertEquals("z-value", variableScopeInstance.getVariable("x"));

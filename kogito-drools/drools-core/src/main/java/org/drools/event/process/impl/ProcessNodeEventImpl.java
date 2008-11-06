@@ -7,7 +7,7 @@ import java.io.ObjectOutput;
 import org.drools.WorkingMemory;
 import org.drools.event.RuleFlowNodeTriggeredEvent;
 import org.drools.event.process.ProcessNodeEvent;
-import org.drools.process.instance.NodeInstance;
+import org.drools.runtime.process.NodeInstance;
 
 public class ProcessNodeEventImpl extends ProcessEventImpl implements ProcessNodeEvent {
 

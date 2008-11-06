@@ -40,7 +40,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.drools.Agenda;
 import org.drools.FactException;
-import org.drools.runtime.ObjectFilter;
+import org.drools.FactHandle;
 import org.drools.QueryResults;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
@@ -64,14 +64,10 @@ import org.drools.process.core.ContextContainer;
 import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.core.event.EventFilter;
 import org.drools.process.core.event.EventTypeFilter;
-import org.drools.process.instance.EventListener;
-import org.drools.process.instance.InternalProcessInstance;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.ProcessInstanceFactory;
 import org.drools.process.instance.ProcessInstanceFactoryRegistry;
 import org.drools.process.instance.ProcessInstanceManager;
-import org.drools.process.instance.WorkItemHandler;
-import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.process.instance.event.SignalManager;
 import org.drools.process.instance.timer.TimerManager;
@@ -87,7 +83,9 @@ import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.rule.TimeMachine;
 import org.drools.ruleflow.core.RuleFlowProcess;
-import org.drools.FactHandle;
+import org.drools.runtime.process.EventListener;
+import org.drools.runtime.process.WorkItemHandler;
+import org.drools.runtime.process.WorkItemManager;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AsyncExceptionHandler;
@@ -1514,7 +1512,7 @@ public abstract class AbstractWorkingMemory
         if ( process == null ) {
             throw new IllegalArgumentException( "Unknown process ID: " + processId );
         }
-        InternalProcessInstance processInstance = ( InternalProcessInstance ) getProcessInstance( process );
+        ProcessInstance processInstance = ( ProcessInstance ) getProcessInstance( process );
         processInstance.setWorkingMemory( this );
         processInstance.setProcess( process );
         processInstanceManager.addProcessInstance( processInstance );
@@ -1549,7 +1547,7 @@ public abstract class AbstractWorkingMemory
         if ( conf == null ) {
             throw new IllegalArgumentException( "Illegal process type: " + process.getClass() );
         }
-        InternalProcessInstance processInstance = conf.createProcessInstance();
+        ProcessInstance processInstance = conf.createProcessInstance();
         if ( processInstance == null ) {
             throw new IllegalArgumentException( "Illegal process type: " + process.getClass() );
         }

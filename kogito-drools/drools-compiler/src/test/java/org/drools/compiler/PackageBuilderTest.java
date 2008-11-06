@@ -27,6 +27,7 @@ import java.util.Map;
 
 import org.drools.Cheese;
 import org.drools.DroolsTestCase;
+import org.drools.FactHandle;
 import org.drools.Primitives;
 import org.drools.QueryResults;
 import org.drools.RuleBase;
@@ -86,7 +87,6 @@ import org.drools.rule.Rule;
 import org.drools.rule.SlidingTimeWindow;
 import org.drools.rule.TypeDeclaration;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
-import org.drools.FactHandle;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.CompiledInvoker;

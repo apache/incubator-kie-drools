@@ -67,7 +67,6 @@ import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleBuilder;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.xml.XmlPackageReader;
-import org.drools.xml.XmlProcessReader;
 import org.xml.sax.SAXException;
 
 /**

@@ -1,14 +1,15 @@
 package org.drools.impl;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
 
 import org.drools.KnowledgeBase;
-import org.drools.runtime.ObjectFilter;
 import org.drools.WorkingMemory;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.ObjectStore;
@@ -43,10 +44,10 @@ import org.drools.event.rule.impl.BeforeActivationFiredEventImpl;
 import org.drools.event.rule.impl.ObjectInsertedEventImpl;
 import org.drools.event.rule.impl.ObjectRetractedEventImpl;
 import org.drools.event.rule.impl.ObjectUpdatedEventImpl;
-import org.drools.process.instance.ProcessInstance;
-import org.drools.process.instance.WorkItemManager;
 import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.process.ProcessInstance;
+import org.drools.runtime.process.WorkItemManager;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.time.SessionClock;
@@ -179,7 +180,9 @@ public class StatefulKnowledgeSessionImpl
     }
 
     public Collection<ProcessInstance> getProcessInstances() {
-        return this.session.getProcessInstances();
+    	List<ProcessInstance> result = new ArrayList<ProcessInstance>();
+    	result.addAll(this.session.getProcessInstances());
+    	return result;
     }
 
     public WorkItemManager getWorkItemManager() {

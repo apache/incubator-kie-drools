@@ -5,14 +5,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.process.core.timer.Timer;
-import org.drools.process.instance.EventListener;
-import org.drools.process.instance.InternalProcessInstance;
-import org.drools.process.instance.NodeInstance;
+import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.timer.TimerInstance;
 import org.drools.process.instance.timer.TimerManager;
+import org.drools.runtime.process.EventListener;
+import org.drools.runtime.process.NodeInstance;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.workflow.core.DroolsAction;
-import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.EventBasedNode;
 import org.drools.workflow.instance.impl.ExtendedNodeInstanceImpl;
 
@@ -33,10 +32,10 @@ public abstract class EventBasedNodeInstance extends ExtendedNodeInstanceImpl im
 		if (timers != null) {
 			addTimerListener();
 			timerInstances = new ArrayList<Long>(timers.size());
-			TimerManager timerManager = ((InternalProcessInstance) getProcessInstance()).getWorkingMemory().getTimerManager();
+			TimerManager timerManager = ((ProcessInstance) getProcessInstance()).getWorkingMemory().getTimerManager();
 			for (Timer timer: timers.keySet()) {
 				TimerInstance timerInstance = createTimerInstance(timer); 
-				timerManager.registerTimer(timerInstance, getProcessInstance());
+				timerManager.registerTimer(timerInstance, (ProcessInstance) getProcessInstance());
 				timerInstances.add(timerInstance.getId());
 			}
 		}
@@ -84,11 +83,11 @@ public abstract class EventBasedNodeInstance extends ExtendedNodeInstanceImpl im
     }
     
     protected void addTimerListener() {
-    	((InternalProcessInstance) getProcessInstance()).addEventListener("timerTriggered", this, false);
+    	((ProcessInstance) getProcessInstance()).addEventListener("timerTriggered", this, false);
     }
     
     public void removeEventListeners() {
-    	((InternalProcessInstance) getProcessInstance()).removeEventListener("timerTriggered", this, false);
+    	((ProcessInstance) getProcessInstance()).removeEventListener("timerTriggered", this, false);
     }
 
 	protected void triggerCompleted(String type, boolean remove) {
@@ -113,7 +112,7 @@ public abstract class EventBasedNodeInstance extends ExtendedNodeInstanceImpl im
 	private void cancelTimers() {
 		// deactivate still active timers
 		if (timerInstances != null) {
-			TimerManager timerManager = ((InternalProcessInstance) getProcessInstance()).getWorkingMemory().getTimerManager();
+			TimerManager timerManager = ((ProcessInstance) getProcessInstance()).getWorkingMemory().getTimerManager();
 			for (Long id: timerInstances) {
 				timerManager.cancelTimer(id);
 			}

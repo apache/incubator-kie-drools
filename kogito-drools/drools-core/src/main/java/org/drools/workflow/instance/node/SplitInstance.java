@@ -21,7 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.drools.definition.process.Connection;
-import org.drools.process.instance.NodeInstance;
+import org.drools.runtime.process.NodeInstance;
 import org.drools.workflow.core.node.Split;
 import org.drools.workflow.instance.NodeInstanceContainer;
 import org.drools.workflow.instance.impl.ConstraintEvaluator;

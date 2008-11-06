@@ -18,8 +18,8 @@ package org.drools.workflow.instance.node;
 
 import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.core.event.EventTransformer;
-import org.drools.process.instance.NodeInstance;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
+import org.drools.runtime.process.NodeInstance;
 import org.drools.workflow.core.node.EventNode;
 import org.drools.workflow.instance.impl.NodeInstanceImpl;
 

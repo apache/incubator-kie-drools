@@ -14,13 +14,12 @@ import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.definition.KnowledgePackage;
 import org.drools.process.core.context.variable.VariableScope;
-import org.drools.process.instance.InternalProcessInstance;
-import org.drools.process.instance.ProcessInstance;
-import org.drools.process.instance.WorkItem;
-import org.drools.process.instance.WorkItemHandler;
-import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.process.ProcessInstance;
+import org.drools.runtime.process.WorkItem;
+import org.drools.runtime.process.WorkItemHandler;
+import org.drools.runtime.process.WorkItemManager;
 
 public class ProcessWorkItemTest extends TestCase {
     
@@ -110,7 +109,8 @@ public class ProcessWorkItemTest extends TestCase {
         ksession.getWorkItemManager().completeWorkItem(workItem.getId(), results);
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
         VariableScopeInstance variableScope = (VariableScopeInstance)
-        	((InternalProcessInstance) processInstance).getContextInstance(VariableScope.VARIABLE_SCOPE);
+        	((org.drools.process.instance.ProcessInstance) processInstance)
+        		.getContextInstance(VariableScope.VARIABLE_SCOPE);
         assertEquals("SomeOtherString", variableScope.getVariable("MyObject"));
     }
     
