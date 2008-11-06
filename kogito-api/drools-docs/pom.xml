@@ -132,8 +132,8 @@
 
 						<format>
 							<formatName>eclipse</formatName>
-							<stylesheetResource>classpath:/org/jboss/eclipse.xsl</stylesheetResource>
-							<finalName>index.html</finalName>
+							<stylesheetResource>classpath:/eclipse/eclipse.xsl</stylesheetResource>
+							<finalName>${artifactId}.html</finalName>
 							<!-- <profilingTypeName>two_pass</profilingTypeName> -->
 						</format>
 					</formats>
