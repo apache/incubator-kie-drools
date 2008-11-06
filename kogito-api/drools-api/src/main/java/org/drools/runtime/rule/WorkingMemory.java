@@ -2,8 +2,8 @@ package org.drools.runtime.rule;
 
 import java.util.Collection;
 
-import org.drools.event.rule.WorkingMemoryEventManager;
 import org.drools.runtime.ObjectFilter;
+import org.drools.event.rule.WorkingMemoryEventManager;
 import org.drools.time.SessionClock;
 
 public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryEntryPoint {

@@ -1,5 +1,5 @@
 package org.drools;
 
-public interface KnowledgeBaseConfiguration {
+public interface KnowledgeBaseConfiguration  extends PropertiesConfiguration  {
 
 }
