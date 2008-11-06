@@ -9,6 +9,7 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.drools.Message;
+import org.drools.runtime.ObjectFilter;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.compiler.DroolsError;
@@ -19,7 +20,6 @@ import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemHandler;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.rule.Package;
-import org.drools.runtime.ObjectFilter;
 import org.drools.WorkingMemory;
 
 public class ProcessActionTest extends TestCase {

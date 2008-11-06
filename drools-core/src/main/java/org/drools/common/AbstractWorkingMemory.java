@@ -40,6 +40,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.drools.Agenda;
 import org.drools.FactException;
+import org.drools.runtime.ObjectFilter;
 import org.drools.QueryResults;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
@@ -86,7 +87,6 @@ import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.rule.TimeMachine;
 import org.drools.ruleflow.core.RuleFlowProcess;
-import org.drools.runtime.ObjectFilter;
 import org.drools.FactHandle;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
@@ -702,7 +702,7 @@ public abstract class AbstractWorkingMemory
      * This class is not thread safe, changes to the working memory during
      * iteration may give unexpected results
      */
-    public Iterator iterateObjects(ObjectFilter filter) {
+    public Iterator iterateObjects(org.drools.runtime.ObjectFilter filter) {
         return this.objectStore.iterateObjects( filter );
     }
 
@@ -718,7 +718,7 @@ public abstract class AbstractWorkingMemory
      * This class is not thread safe, changes to the working memory during
      * iteration may give unexpected results
      */
-    public Iterator iterateFactHandles(ObjectFilter filter) {
+    public Iterator iterateFactHandles(org.drools.runtime.ObjectFilter filter) {
         return this.objectStore.iterateFactHandles( filter );
     }
 

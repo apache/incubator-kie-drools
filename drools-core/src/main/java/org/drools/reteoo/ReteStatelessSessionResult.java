@@ -6,11 +6,11 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Iterator;
 
+import org.drools.runtime.ObjectFilter;
 import org.drools.QueryResults;
 import org.drools.StatelessSessionResult;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.ObjectStore;
-import org.drools.runtime.ObjectFilter;
 import org.drools.spi.GlobalResolver;
 
 public class ReteStatelessSessionResult
@@ -59,7 +59,7 @@ public class ReteStatelessSessionResult
         return this.objectStore.iterateObjects();
     }
 
-    public Iterator iterateObjects(ObjectFilter filter) {
+    public Iterator iterateObjects(org.drools.runtime.ObjectFilter filter) {
         return this.objectStore.iterateObjects( filter );
     }
 

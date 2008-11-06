@@ -24,7 +24,6 @@ import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.event.SignalManager;
 import org.drools.process.instance.timer.TimerManager;
-import org.drools.runtime.ObjectFilter;
 import org.drools.FactHandle;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AsyncExceptionHandler;
@@ -166,7 +165,7 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      * @return
      *     the Iterator
      */
-    Iterator<?> iterateObjects(ObjectFilter filter);
+    Iterator<?> iterateObjects(org.drools.runtime.ObjectFilter filter);
 
     /**
      * Returns an Iterator for the FactHandles in the Working Memory. This Iterator is not thread safe.
@@ -186,7 +185,7 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      * @return
      *     the Iterator
      */
-    Iterator<?> iterateFactHandles(ObjectFilter filter);
+    Iterator<?> iterateFactHandles(org.drools.runtime.ObjectFilter filter);
 
     /**
      * Set the focus to the specified AgendaGroup

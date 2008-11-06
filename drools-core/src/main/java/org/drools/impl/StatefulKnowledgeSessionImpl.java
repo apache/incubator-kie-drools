@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.concurrent.Future;
 
 import org.drools.KnowledgeBase;
+import org.drools.runtime.ObjectFilter;
 import org.drools.WorkingMemory;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.ObjectStore;
@@ -45,7 +46,6 @@ import org.drools.event.rule.impl.ObjectUpdatedEventImpl;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.reteoo.ReteooStatefulSession;
-import org.drools.runtime.ObjectFilter;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
@@ -230,7 +230,7 @@ public class StatefulKnowledgeSessionImpl
                                        ObjectStoreWrapper.FACT_HANDLE );
     }
 
-    public Collection< ? extends FactHandle> getFactHandles(ObjectFilter filter) {
+    public Collection< ? extends FactHandle> getFactHandles(org.drools.runtime.ObjectFilter filter) {
         return new ObjectStoreWrapper( session.getObjectStore(),
                                        filter,
                                        ObjectStoreWrapper.FACT_HANDLE );
@@ -242,7 +242,7 @@ public class StatefulKnowledgeSessionImpl
                                        ObjectStoreWrapper.OBJECT );
     }
 
-    public Collection< ? > getObjects(ObjectFilter filter) {
+    public Collection< ? > getObjects(org.drools.runtime.ObjectFilter filter) {
         return new ObjectStoreWrapper( session.getObjectStore(),
                                        filter,
                                        ObjectStoreWrapper.OBJECT );
@@ -279,13 +279,13 @@ public class StatefulKnowledgeSessionImpl
 
     public static class ObjectStoreWrapper extends AbstractImmutableCollection {
         public ObjectStore      store;
-        public ObjectFilter     filter;
+        public org.drools.runtime.ObjectFilter     filter;
         public int              type;           // 0 == object, 1 == facthandle
         public static final int OBJECT      = 0;
         public static final int FACT_HANDLE = 1;
 
         public ObjectStoreWrapper(ObjectStore store,
-                                  ObjectFilter filter,
+                                  org.drools.runtime.ObjectFilter filter,
                                   int type) {
             this.store = store;
             this.filter = filter;
