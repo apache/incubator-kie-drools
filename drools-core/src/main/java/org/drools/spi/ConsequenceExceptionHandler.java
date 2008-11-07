@@ -1,8 +1,8 @@
 package org.drools.spi;
 
-import java.io.Externalizable;
-
+import org.drools.spi.Activation;
 import org.drools.WorkingMemory;
+
 
 /**
  * Care should be taken when implementing this class. Swallowing of consequence can be dangerous
@@ -10,6 +10,6 @@ import org.drools.WorkingMemory;
  * WorkingMemory invalid.
  *
  */
-public interface ConsequenceExceptionHandler extends Externalizable {
+public interface ConsequenceExceptionHandler {
     void handleException(Activation activation, WorkingMemory workingMemory, Exception exception);
 }
