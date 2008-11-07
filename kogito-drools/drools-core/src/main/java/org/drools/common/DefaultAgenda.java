@@ -32,7 +32,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.base.SequentialKnowledgeHelper;
 import org.drools.common.RuleFlowGroupImpl.DeactivateCallback;
+import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.ReteooStatefulSession;
+import org.drools.RuleBaseConfiguration;
 import org.drools.WorkingMemory;
 import org.drools.spi.Activation;
 import org.drools.spi.ActivationGroup;
@@ -43,6 +46,7 @@ import org.drools.spi.ConsequenceExceptionHandler;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.RuleFlowGroup;
+import org.drools.util.ClassUtils;
 import org.drools.util.LinkedListNode;
 
 /**
@@ -73,38 +77,40 @@ public class DefaultAgenda
     /**
      * 
      */
-    private static final long                serialVersionUID = 400L;
+    private static final long                                   serialVersionUID = 400L;
 
     /** Working memory of this Agenda. */
-    private InternalWorkingMemory            workingMemory;
+    private InternalWorkingMemory                               workingMemory;
 
-    private org.drools.util.LinkedList       scheduledActivations;
+    private org.drools.util.LinkedList                          scheduledActivations;
 
     /** Items time-delayed. */
 
-    private Map<String, InternalAgendaGroup> agendaGroups;
+    private Map<String, InternalAgendaGroup>                    agendaGroups;
 
-    private Map<String, ActivationGroup>     activationGroups;
+    private Map<String, ActivationGroup>                        activationGroups;
 
-    private Map<String, RuleFlowGroup>       ruleFlowGroups;
+    private Map<String, RuleFlowGroup>                          ruleFlowGroups;
 
-    private LinkedList<AgendaGroup>          focusStack;
+    private LinkedList<AgendaGroup>                             focusStack;
 
-    private InternalAgendaGroup              currentModule;
+    private InternalAgendaGroup                                 currentModule;
 
-    private InternalAgendaGroup              main;
+    private InternalAgendaGroup                                 main;
 
-    private AgendaGroupFactory               agendaGroupFactory;
+    private AgendaGroupFactory                                  agendaGroupFactory;
 
-    private KnowledgeHelper                  knowledgeHelper;
+    private KnowledgeHelper                                     knowledgeHelper;
 
-    public int                               activeActivations;
+    public int                                                  activeActivations;
 
-    public int                               dormantActivations;
+    public int                                                  dormantActivations;
 
-    private ConsequenceExceptionHandler      consequenceExceptionHandler;
+    private ConsequenceExceptionHandler                         legacyConsequenceExceptionHandler;
 
-    protected volatile AtomicBoolean         halt             = new AtomicBoolean( false );
+    private org.drools.runtime.rule.ConsequenceExceptionHandler consequenceExceptionHandler;
+
+    protected volatile AtomicBoolean                            halt             = new AtomicBoolean( false );
 
     // ------------------------------------------------------------
     // Constructors
@@ -154,8 +160,13 @@ public class DefaultAgenda
 
             this.focusStack.add( this.main );
         }
-
-        this.consequenceExceptionHandler = rb.getConfiguration().getConsequenceExceptionHandler();
+        Object object = ClassUtils.instantiateObject( rb.getConfiguration().getConsequenceExceptionHandler(),
+                                                      rb.getConfiguration().getClassLoader() );
+        if ( object instanceof ConsequenceExceptionHandler ) {
+            this.legacyConsequenceExceptionHandler = (ConsequenceExceptionHandler) object;
+        } else {
+            this.consequenceExceptionHandler = (org.drools.runtime.rule.ConsequenceExceptionHandler) object;
+        }
     }
 
     public void setWorkingMemory(final InternalWorkingMemory workingMemory) {
@@ -232,7 +243,7 @@ public class DefaultAgenda
         knowledgeHelper = (KnowledgeHelper) in.readObject();
         activeActivations = in.readInt();
         dormantActivations = in.readInt();
-        consequenceExceptionHandler = (ConsequenceExceptionHandler) in.readObject();
+        legacyConsequenceExceptionHandler = (ConsequenceExceptionHandler) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -248,7 +259,7 @@ public class DefaultAgenda
         out.writeObject( knowledgeHelper );
         out.writeInt( activeActivations );
         out.writeInt( dormantActivations );
-        out.writeObject( consequenceExceptionHandler );
+        out.writeObject( legacyConsequenceExceptionHandler );
     }
 
     /*
@@ -898,9 +909,17 @@ public class DefaultAgenda
                                                             this.workingMemory );
             this.knowledgeHelper.reset();
         } catch ( final Exception e ) {
-            this.consequenceExceptionHandler.handleException( activation,
-                                                              this.workingMemory,
-                                                              e );
+            if ( this.legacyConsequenceExceptionHandler != null ) {
+                this.legacyConsequenceExceptionHandler.handleException( activation,
+                                                                        this.workingMemory,
+                                                                        e );
+            } else if ( this.consequenceExceptionHandler != null ) {
+                this.consequenceExceptionHandler.handleException( activation,
+                                                                  new StatefulKnowledgeSessionImpl( (ReteooStatefulSession) this.workingMemory ),
+                                                                  e );
+            } else {
+                throw new RuntimeException( e );
+            }
         }
 
         if ( activation.getRuleFlowGroupNode() != null ) {
@@ -1019,4 +1038,7 @@ public class DefaultAgenda
         }
     }
 
+    public ConsequenceExceptionHandler getConsequenceExceptionHandler() {
+        return this.legacyConsequenceExceptionHandler;
+    }
 }

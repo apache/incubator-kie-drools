@@ -116,7 +116,7 @@ public class RuleBaseConfiguration
     private AssertBehaviour                assertBehaviour;
     private LogicalOverride                logicalOverride;
     private String                         executorService;
-    private ConsequenceExceptionHandler    consequenceExceptionHandler;
+    private String                         consequenceExceptionHandler;
     private String                         ruleBaseUpdateHandler;
 
     private EventProcessingMode            eventProcessingMode;
@@ -186,7 +186,7 @@ public class RuleBaseConfiguration
         assertBehaviour = (AssertBehaviour) in.readObject();
         logicalOverride = (LogicalOverride) in.readObject();
         executorService = (String) in.readObject();
-        consequenceExceptionHandler = (ConsequenceExceptionHandler) in.readObject();
+        consequenceExceptionHandler = (String) in.readObject();
         ruleBaseUpdateHandler = (String) in.readObject();
         conflictResolver = (ConflictResolver) in.readObject();
         processNodeInstanceFactoryRegistry = (NodeInstanceFactoryRegistry) in.readObject();
@@ -235,7 +235,7 @@ public class RuleBaseConfiguration
         init( classLoader,
               null );
     }
-    
+
     public boolean isEmpty(String value) {
         if ( value == null || value.trim().length() == 0 ) {
             return true;
@@ -253,44 +253,44 @@ public class RuleBaseConfiguration
         if ( name.equals( "drools.sequential.agenda" ) ) {
             setSequentialAgenda( SequentialAgenda.determineSequentialAgenda( isEmpty( value ) ? "sequential" : value ) );
         } else if ( name.equals( "drools.sequential" ) ) {
-            setSequential( isEmpty( value) ? false : Boolean.valueOf( value ) );
+            setSequential( isEmpty( value ) ? false : Boolean.valueOf( value ) );
         } else if ( name.equals( "drools.maintainTms" ) ) {
-            setMaintainTms( isEmpty( value) ? false : Boolean.valueOf( value ) );
+            setMaintainTms( isEmpty( value ) ? false : Boolean.valueOf( value ) );
         } else if ( name.equals( "drools.removeIdentities" ) ) {
-            setRemoveIdentities( isEmpty( value) ? false : Boolean.valueOf( value ) );
+            setRemoveIdentities( isEmpty( value ) ? false : Boolean.valueOf( value ) );
         } else if ( name.equals( "drools.shareAlphaNodes" ) ) {
-            setShareAlphaNodes( isEmpty( value) ? false : Boolean.valueOf( value ) );
+            setShareAlphaNodes( isEmpty( value ) ? false : Boolean.valueOf( value ) );
         } else if ( name.equals( "drools.shareBetaNodes" ) ) {
-            setShareBetaNodes( isEmpty( value) ? false : Boolean.valueOf( value ) );
+            setShareBetaNodes( isEmpty( value ) ? false : Boolean.valueOf( value ) );
         } else if ( name.equals( "drools.alphaNodeHashingThreshold" ) ) {
-            setAlphaNodeHashingThreshold( isEmpty( value) ? 3 : Integer.parseInt( value ));
+            setAlphaNodeHashingThreshold( isEmpty( value ) ? 3 : Integer.parseInt( value ) );
         } else if ( name.equals( "drools.compositeKeyDepth" ) ) {
-            setCompositeKeyDepth( isEmpty( value) ? 3 : Integer.parseInt( value ) );
+            setCompositeKeyDepth( isEmpty( value ) ? 3 : Integer.parseInt( value ) );
         } else if ( name.equals( "drools.indexLeftBetaMemory" ) ) {
-            setIndexLeftBetaMemory( isEmpty( value) ? true : Boolean.valueOf( value ) );
+            setIndexLeftBetaMemory( isEmpty( value ) ? true : Boolean.valueOf( value ) );
         } else if ( name.equals( "drools.indexRightBetaMemory" ) ) {
-            setIndexRightBetaMemory( isEmpty( value) ? true : Boolean.valueOf( value ) );
+            setIndexRightBetaMemory( isEmpty( value ) ? true : Boolean.valueOf( value ) );
         } else if ( name.equals( "drools.assertBehaviour" ) ) {
-            setAssertBehaviour( AssertBehaviour.determineAssertBehaviour( isEmpty( value) ? "identity" : value ) );
+            setAssertBehaviour( AssertBehaviour.determineAssertBehaviour( isEmpty( value ) ? "identity" : value ) );
         } else if ( name.equals( "drools.logicalOverride" ) ) {
-            setLogicalOverride( LogicalOverride.determineLogicalOverride( isEmpty( value) ? "discard" : value ) );
+            setLogicalOverride( LogicalOverride.determineLogicalOverride( isEmpty( value ) ? "discard" : value ) );
         } else if ( name.equals( "drools.executorService" ) ) {
-            setExecutorService( isEmpty( value) ? "org.drools.concurrent.DefaultExecutorService" : value );
+            setExecutorService( isEmpty( value ) ? "org.drools.concurrent.DefaultExecutorService" : value );
         } else if ( name.equals( "drools.consequenceExceptionHandler" ) ) {
-            setConsequenceExceptionHandler( RuleBaseConfiguration.determineConsequenceExceptionHandler( isEmpty( value) ? "org.drools.base.DefaultConsequenceExceptionHandler" : value ) );
+            setConsequenceExceptionHandler( isEmpty( value ) ? "org.drools.runtime.rule.impl.DefaultConsequenceExceptionHandler" : value );
         } else if ( name.equals( "drools.ruleBaseUpdateHandler" ) ) {
-            setRuleBaseUpdateHandler( isEmpty( value) ? "org.drools.base.FireAllRulesRuleBaseUpdateListener" : value );
+            setRuleBaseUpdateHandler( isEmpty( value ) ? "org.drools.base.FireAllRulesRuleBaseUpdateListener" : value );
         } else if ( name.equals( "drools.conflictResolver" ) ) {
-            setConflictResolver( RuleBaseConfiguration.determineConflictResolver( isEmpty( value) ? "org.drools.conflict.DepthConflictResolver" : value ) );
-        } else if ( name.equals( "drools.conflictResolver" ) ) {
-            setAdvancedProcessRuleIntegration(  isEmpty( value) ? false : Boolean.valueOf( value ) );
+            setConflictResolver( RuleBaseConfiguration.determineConflictResolver( isEmpty( value ) ? "org.drools.conflict.DepthConflictResolver" : value ) );
+        } else if ( name.equals( "drools.advancedProcessRuleIntegration" ) ) {
+            setAdvancedProcessRuleIntegration( isEmpty( value ) ? false : Boolean.valueOf( value ) );
         } else if ( name.equals( "drools.multithreadEvaluation" ) ) {
-            setMultithreadEvaluation(  isEmpty( value) ? false : Boolean.valueOf( value ) );
-        }  else if ( name.equals( "drools.maxThreads" ) ) {
-            setMaxThreads(  isEmpty( value) ? -1 : Integer.parseInt( value ) );
+            setMultithreadEvaluation( isEmpty( value ) ? false : Boolean.valueOf( value ) );
+        } else if ( name.equals( "drools.maxThreads" ) ) {
+            setMaxThreads( isEmpty( value ) ? -1 : Integer.parseInt( value ) );
         } else if ( name.equals( "drools.eventProcessingMode" ) ) {
-            setEventProcessingMode( EventProcessingMode.determineAssertBehaviour( isEmpty( value) ? "cloud" : value ) );
-        } 
+            setEventProcessingMode( EventProcessingMode.determineAssertBehaviour( isEmpty( value ) ? "cloud" : value ) );
+        }
     }
 
     public String getProperty(String name) {
@@ -330,16 +330,16 @@ public class RuleBaseConfiguration
             return getRuleBaseUpdateHandler();
         } else if ( name.equals( "drools.conflictResolver" ) ) {
             return getConflictResolver().getClass().getName();
-        } else if ( name.equals( "drools.conflictResolver" ) ) {
+        } else if ( name.equals( "drools.advancedProcessRuleIntegration" ) ) {
             return Boolean.toString( isAdvancedProcessRuleIntegration() );
         } else if ( name.equals( "drools.multithreadEvaluation" ) ) {
             Boolean.toString( isMultithreadEvaluation() );
-        }  else if ( name.equals( "drools.maxThreads" ) ) {
+        } else if ( name.equals( "drools.maxThreads" ) ) {
             return Integer.toString( getMaxThreads() );
         } else if ( name.equals( "drools.eventProcessingMode" ) ) {
             return getEventProcessingMode().toExternalForm();
-        } 
-        
+        }
+
         return null;
     }
 
@@ -412,8 +412,8 @@ public class RuleBaseConfiguration
         setExecutorService( this.chainedProperties.getProperty( "drools.executorService",
                                                                 "org.drools.concurrent.DefaultExecutorService" ) );
 
-        setConsequenceExceptionHandler( RuleBaseConfiguration.determineConsequenceExceptionHandler( this.chainedProperties.getProperty( "drools.consequenceExceptionHandler",
-                                                                                                                                        "org.drools.base.DefaultConsequenceExceptionHandler" ) ) );
+        setConsequenceExceptionHandler( this.chainedProperties.getProperty( "drools.consequenceExceptionHandler",
+                                                                            "org.drools.runtime.rule.impl.DefaultConsequenceExceptionHandler" ) );
 
         setRuleBaseUpdateHandler( this.chainedProperties.getProperty( "drools.ruleBaseUpdateHandler",
                                                                       "org.drools.base.FireAllRulesRuleBaseUpdateListener" ) );
@@ -578,11 +578,11 @@ public class RuleBaseConfiguration
         this.executorService = executorService;
     }
 
-    public ConsequenceExceptionHandler getConsequenceExceptionHandler() {
+    public String getConsequenceExceptionHandler() {
         return consequenceExceptionHandler;
     }
 
-    public void setConsequenceExceptionHandler(ConsequenceExceptionHandler consequenceExceptionHandler) {
+    public void setConsequenceExceptionHandler(String consequenceExceptionHandler) {
         checkCanChange(); // throws an exception if a change isn't possible;
         this.consequenceExceptionHandler = consequenceExceptionHandler;
     }
@@ -1097,37 +1097,6 @@ public class RuleBaseConfiguration
         this.classLoader = classLoader;
     }
 
-    private static ConsequenceExceptionHandler determineConsequenceExceptionHandler(String className) {
-        return (ConsequenceExceptionHandler) instantiateClass( "ConsequenceExceptionHandler",
-                                                               className );
-    }
-
-    private static Object instantiateClass(String type,
-                                           String className) {
-        Class clazz = null;
-        try {
-            clazz = Thread.currentThread().getContextClassLoader().loadClass( className );
-        } catch ( ClassNotFoundException e ) {
-        }
-
-        if ( clazz == null ) {
-            try {
-                clazz = RuleBaseConfiguration.class.getClassLoader().loadClass( className );
-            } catch ( ClassNotFoundException e ) {
-            }
-        }
-
-        if ( clazz != null ) {
-            try {
-                return clazz.newInstance();
-            } catch ( Exception e ) {
-                throw new IllegalArgumentException( "Unable to instantiate " + type + " '" + className + "'" );
-            }
-        } else {
-            throw new IllegalArgumentException( type + " '" + className + "' not found" );
-        }
-    }
-
     public static class AssertBehaviour
         implements
         Externalizable {
@@ -1185,7 +1154,7 @@ public class RuleBaseConfiguration
                     throw new IllegalArgumentException( "Illegal enum value '" + this.value + "' for AssertBehaviour" );
             }
         }
-        
+
         public String toExternalForm() {
             return (this.value == 0) ? "identity" : "equality";
         }
@@ -1251,7 +1220,7 @@ public class RuleBaseConfiguration
             }
             return false;
         }
-        
+
         public String toExternalForm() {
             return (this.value == 0) ? "preserve" : "discard";
         }
@@ -1308,7 +1277,7 @@ public class RuleBaseConfiguration
                     throw new IllegalArgumentException( "Illegal enum value '" + this.value + "' for SequentialAgenda" );
             }
         }
-        
+
         public String toExternalForm() {
             return (this.value == 0) ? "sequential" : "dynamic";
         }
@@ -1355,10 +1324,10 @@ public class RuleBaseConfiguration
         public String toString() {
             return string;
         }
-        
+
         public String toExternalForm() {
             return this.string;
-        }        
+        }
 
         public static EventProcessingMode determineAssertBehaviour(String mode) {
             if ( STREAM.getId().equalsIgnoreCase( mode ) ) {

@@ -83,6 +83,7 @@ import org.drools.Cheesery.Maturity;
 import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.audit.WorkingMemoryInMemoryLogger;
 import org.drools.common.AbstractWorkingMemory;
+import org.drools.common.DefaultAgenda;
 import org.drools.common.InternalFactHandle;
 import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.DrlParser;
@@ -1422,8 +1423,7 @@ public class MiscTest extends TestCase {
                       ((List) session.getGlobal( "list" )).size() );
     }
 
-    // @FIXME
-    public void FIXME_testBigDecimalWithFromAndEval() throws Exception {
+    public void testBigDecimalWithFromAndEval() throws Exception {
         String rule = "package org.test;\n";
         rule += "rule \"Test Rule\"\n";
         rule += "when\n";
@@ -2204,7 +2204,8 @@ public class MiscTest extends TestCase {
         try {
             workingMemory.fireAllRules();
             fail( "Should throw an Exception from the Consequence" );
-        } catch ( final Exception e ) {
+        } catch ( final org.drools.runtime.rule.ConsequenceException e ) {
+            assertEquals( "Throw Consequence Exception", e.getRule().getName() );
             assertEquals( "this should throw an exception",
                           e.getCause().getMessage() );
         }
@@ -2216,8 +2217,7 @@ public class MiscTest extends TestCase {
         final Package pkg = builder.getPackage();
 
         RuleBaseConfiguration conf = new RuleBaseConfiguration();
-        CustomConsequenceExceptionHandler handler = new CustomConsequenceExceptionHandler();
-        conf.setConsequenceExceptionHandler( handler );
+        conf.setConsequenceExceptionHandler( CustomConsequenceExceptionHandler.class.getName() );
 
         RuleBase ruleBase = getRuleBase( conf );
         ruleBase.addPackage( pkg );
@@ -2230,7 +2230,9 @@ public class MiscTest extends TestCase {
 
         workingMemory.fireAllRules();
 
-        assertTrue( ((CustomConsequenceExceptionHandler) ((ReteooRuleBase) ruleBase).getConfiguration().getConsequenceExceptionHandler()).isCalled() );
+        
+        
+        assertTrue( ((CustomConsequenceExceptionHandler) ((DefaultAgenda) workingMemory.getAgenda()).getConsequenceExceptionHandler()).isCalled() );
     }
 
     public static class CustomConsequenceExceptionHandler
@@ -2239,8 +2241,8 @@ public class MiscTest extends TestCase {
 
         private boolean called;
 
-        public void handleException(Activation activation,
-                                    WorkingMemory workingMemory,
+        public void handleException(org.drools.spi.Activation activation,
+                                    org.drools.WorkingMemory workingMemory,
                                     Exception exception) {
             this.called = true;
         }
