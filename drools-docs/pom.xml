@@ -14,6 +14,7 @@
 	<name>Drools :: Documentation</name>
 
 	<modules>
+	 <module>docbook-style-drools</module>
 		<module>docbook-xsl-drools</module>
 		<module>drools-docs-introduction</module>
 		<module>drools-docs-expert</module>
@@ -25,6 +26,11 @@
 
 	<dependencyManagement>
 		<dependencies>
+		<dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>docbook-style-drools</artifactId>
+        <version>1.1.0</version>
+      </dependency>
 			<dependency>
 				<groupId>org.drools</groupId>
 				<artifactId>docbook-xsl-drools</artifactId>
@@ -74,16 +80,17 @@
 				<version>2.1.2</version>
 				<extensions>true</extensions>
 				<dependencies>
+				<dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>docbook-style-drools</artifactId>
+            <version>1.1.0</version>
+            <type>jdocbook-style</type>
+          </dependency>
+				
 					<dependency>
 						<groupId>org.drools</groupId>
 						<artifactId>docbook-xsl-drools</artifactId>
 						<version>1.1.0</version>
-					</dependency>
-					<dependency>
-						<groupId>org.jboss</groupId>
-						<artifactId>jbossorg-jdocbook-style</artifactId>
-						<version>1.1.0</version>
-						<type>jdocbook-style</type>
 					</dependency>
 				</dependencies>
 
