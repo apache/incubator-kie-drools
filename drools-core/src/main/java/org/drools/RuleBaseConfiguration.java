@@ -50,6 +50,7 @@ import org.drools.spi.ConflictResolver;
 import org.drools.spi.ConsequenceExceptionHandler;
 import org.drools.util.ChainedProperties;
 import org.drools.util.ConfFileUtils;
+import org.drools.util.StringUtils;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.instance.impl.NodeInstanceFactory;
 import org.drools.workflow.instance.impl.NodeInstanceFactoryRegistry;
@@ -235,65 +236,60 @@ public class RuleBaseConfiguration
               null );
     }
 
-    public boolean isEmpty(String value) {
-        if ( value == null || value.trim().length() == 0 ) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 
     public void setProperty(String name,
                             String value) {
-        if ( name == null ) {
+        name = name.trim();
+        if ( StringUtils.isEmpty( name ) ) {
             return;
         }
 
         if ( name.equals( "drools.sequential.agenda" ) ) {
-            setSequentialAgenda( SequentialAgenda.determineSequentialAgenda( isEmpty( value ) ? "sequential" : value ) );
+            setSequentialAgenda( SequentialAgenda.determineSequentialAgenda( StringUtils.isEmpty( value ) ? "sequential" : value ) );
         } else if ( name.equals( "drools.sequential" ) ) {
-            setSequential( isEmpty( value ) ? false : Boolean.valueOf( value ) );
+            setSequential( StringUtils.isEmpty( value ) ? false : Boolean.valueOf( value ) );
         } else if ( name.equals( "drools.maintainTms" ) ) {
-            setMaintainTms( isEmpty( value ) ? false : Boolean.valueOf( value ) );
+            setMaintainTms( StringUtils.isEmpty( value ) ? false : Boolean.valueOf( value ) );
         } else if ( name.equals( "drools.removeIdentities" ) ) {
-            setRemoveIdentities( isEmpty( value ) ? false : Boolean.valueOf( value ) );
+            setRemoveIdentities( StringUtils.isEmpty( value ) ? false : Boolean.valueOf( value ) );
         } else if ( name.equals( "drools.shareAlphaNodes" ) ) {
-            setShareAlphaNodes( isEmpty( value ) ? false : Boolean.valueOf( value ) );
+            setShareAlphaNodes( StringUtils.isEmpty( value ) ? false : Boolean.valueOf( value ) );
         } else if ( name.equals( "drools.shareBetaNodes" ) ) {
-            setShareBetaNodes( isEmpty( value ) ? false : Boolean.valueOf( value ) );
+            setShareBetaNodes( StringUtils.isEmpty( value ) ? false : Boolean.valueOf( value ) );
         } else if ( name.equals( "drools.alphaNodeHashingThreshold" ) ) {
-            setAlphaNodeHashingThreshold( isEmpty( value ) ? 3 : Integer.parseInt( value ) );
+            setAlphaNodeHashingThreshold( StringUtils.isEmpty( value ) ? 3 : Integer.parseInt( value ) );
         } else if ( name.equals( "drools.compositeKeyDepth" ) ) {
-            setCompositeKeyDepth( isEmpty( value ) ? 3 : Integer.parseInt( value ) );
+            setCompositeKeyDepth( StringUtils.isEmpty( value ) ? 3 : Integer.parseInt( value ) );
         } else if ( name.equals( "drools.indexLeftBetaMemory" ) ) {
-            setIndexLeftBetaMemory( isEmpty( value ) ? true : Boolean.valueOf( value ) );
+            setIndexLeftBetaMemory( StringUtils.isEmpty( value ) ? true : Boolean.valueOf( value ) );
         } else if ( name.equals( "drools.indexRightBetaMemory" ) ) {
-            setIndexRightBetaMemory( isEmpty( value ) ? true : Boolean.valueOf( value ) );
+            setIndexRightBetaMemory( StringUtils.isEmpty( value ) ? true : Boolean.valueOf( value ) );
         } else if ( name.equals( "drools.assertBehaviour" ) ) {
-            setAssertBehaviour( AssertBehaviour.determineAssertBehaviour( isEmpty( value ) ? "identity" : value ) );
+            setAssertBehaviour( AssertBehaviour.determineAssertBehaviour( StringUtils.isEmpty( value ) ? "identity" : value ) );
         } else if ( name.equals( "drools.logicalOverride" ) ) {
-            setLogicalOverride( LogicalOverride.determineLogicalOverride( isEmpty( value ) ? "discard" : value ) );
+            setLogicalOverride( LogicalOverride.determineLogicalOverride( StringUtils.isEmpty( value ) ? "discard" : value ) );
         } else if ( name.equals( "drools.executorService" ) ) {
-            setExecutorService( isEmpty( value ) ? "org.drools.concurrent.DefaultExecutorService" : value );
+            setExecutorService( StringUtils.isEmpty( value ) ? "org.drools.concurrent.DefaultExecutorService" : value );
         } else if ( name.equals( "drools.consequenceExceptionHandler" ) ) {
-            setConsequenceExceptionHandler( isEmpty( value ) ? "org.drools.runtime.rule.impl.DefaultConsequenceExceptionHandler" : value );
+            setConsequenceExceptionHandler( StringUtils.isEmpty( value ) ? "org.drools.runtime.rule.impl.DefaultConsequenceExceptionHandler" : value );
         } else if ( name.equals( "drools.ruleBaseUpdateHandler" ) ) {
-            setRuleBaseUpdateHandler( isEmpty( value ) ? "org.drools.base.FireAllRulesRuleBaseUpdateListener" : value );
+            setRuleBaseUpdateHandler( StringUtils.isEmpty( value ) ? "org.drools.base.FireAllRulesRuleBaseUpdateListener" : value );
         } else if ( name.equals( "drools.conflictResolver" ) ) {
-            setConflictResolver( RuleBaseConfiguration.determineConflictResolver( isEmpty( value ) ? "org.drools.conflict.DepthConflictResolver" : value ) );
+            setConflictResolver( RuleBaseConfiguration.determineConflictResolver( StringUtils.isEmpty( value ) ? "org.drools.conflict.DepthConflictResolver" : value ) );
         } else if ( name.equals( "drools.advancedProcessRuleIntegration" ) ) {
-            setAdvancedProcessRuleIntegration( isEmpty( value ) ? false : Boolean.valueOf( value ) );
+            setAdvancedProcessRuleIntegration( StringUtils.isEmpty( value ) ? false : Boolean.valueOf( value ) );
         } else if ( name.equals( "drools.multithreadEvaluation" ) ) {
-            setMultithreadEvaluation( isEmpty( value ) ? false : Boolean.valueOf( value ) );
+            setMultithreadEvaluation( StringUtils.isEmpty( value ) ? false : Boolean.valueOf( value ) );
         } else if ( name.equals( "drools.maxThreads" ) ) {
-            setMaxThreads( isEmpty( value ) ? -1 : Integer.parseInt( value ) );
+            setMaxThreads( StringUtils.isEmpty( value ) ? -1 : Integer.parseInt( value ) );
         } else if ( name.equals( "drools.eventProcessingMode" ) ) {
-            setEventProcessingMode( EventProcessingMode.determineAssertBehaviour( isEmpty( value ) ? "cloud" : value ) );
+            setEventProcessingMode( EventProcessingMode.determineAssertBehaviour( StringUtils.isEmpty( value ) ? "cloud" : value ) );
         }
     }
 
     public String getProperty(String name) {
-        if ( name == null ) {
+        name = name.trim();
+        if ( StringUtils.isEmpty( name ) ) {
             return null;
         }
 

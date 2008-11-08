@@ -37,6 +37,7 @@ import org.drools.rule.Package;
 import org.drools.util.ChainedProperties;
 import org.drools.util.ClassUtils;
 import org.drools.util.ConfFileUtils;
+import org.drools.util.StringUtils;
 import org.drools.workflow.core.Node;
 import org.drools.xml.DefaultSemanticModule;
 import org.drools.xml.Handler;
@@ -170,11 +171,10 @@ public class PackageBuilderConfiguration implements KnowledgeBuilderConfiguratio
     }
     
     public void setProperty(String name, String value) {
-        if ( name == null ) {
+        name = name.trim();
+        if ( StringUtils.isEmpty( name ) ) {
             return;
         }
-        
-        name = name.trim();
         
         if ( name.equals( "drools.dialect.default" ) ) {
             setDefaultDialect( value );    
@@ -188,6 +188,11 @@ public class PackageBuilderConfiguration implements KnowledgeBuilderConfiguratio
     }
     
     public String getProperty(String name) {
+        name = name.trim();
+        if ( StringUtils.isEmpty( name ) ) {
+            return null;
+        }
+        
         if ( name.equals( "drools.dialect.default" ) ) {
             return getDefaultDialect( );    
         } else if ( name.startsWith( "drools.accumulate.function" ) ) {

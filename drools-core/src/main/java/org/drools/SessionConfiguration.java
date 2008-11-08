@@ -24,6 +24,7 @@ import java.util.Properties;
 
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.util.ChainedProperties;
+import org.drools.util.StringUtils;
 
 /**
  * SessionConfiguration
@@ -102,6 +103,35 @@ public class SessionConfiguration
         setClockType( ClockType.resolveClockType( this.chainedProperties.getProperty( "drools.clockType",
                                                                                       "realtime" ) ) );
     }
+    
+    public void setProperty(String name,
+                            String value) {
+        name = name.trim();
+        if ( StringUtils.isEmpty( name ) ) {
+            return;
+        }
+        
+        if ( name.equals( "drools.keepReference" ) ) {
+            setKeepReference(  StringUtils.isEmpty( value ) ? true : Boolean.parseBoolean( value ) );
+        } else if ( name.equals( "drools.clockType" ) ) {
+            setClockType( ClockType.resolveClockType(  StringUtils.isEmpty( value ) ? "realtime" : value ) );
+        }
+    }   
+    
+    public String getProperty(String name) {
+        name = name.trim();
+        if ( StringUtils.isEmpty( name ) ) {
+            return null;
+        }
+        
+        if ( name.equals( "drools.keepReference" ) ) {
+            return Boolean.toString( this.keepReference );
+        } else if ( name.equals( "drools.clockType" ) ) {
+            return this.clockType.toExternalForm();
+        }
+        
+        return null;
+    } 
 
     /**
      * Makes the configuration object immutable. Once it becomes immutable,
