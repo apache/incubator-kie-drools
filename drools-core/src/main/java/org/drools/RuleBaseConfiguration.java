@@ -89,7 +89,6 @@ import org.mvel2.MVEL;
  * drools.consequenceExceptionHandler = <qualified class name>
  * drools.ruleBaseUpdateHandler = <qualified class name>
  * drools.sessionClock = <qualified class name>
- * drools.useStaticObjenesis = <false|true>
  * 
  */
 public class RuleBaseConfiguration
