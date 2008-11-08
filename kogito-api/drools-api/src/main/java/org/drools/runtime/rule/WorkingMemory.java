@@ -7,15 +7,9 @@ import org.drools.event.rule.WorkingMemoryEventManager;
 import org.drools.time.SessionClock;
 
 public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryEntryPoint {
-    FactHandle insert(Object object);
-    
-    void retract(FactHandle factHandle);
-    
-    void update(FactHandle factHandle);
-    
-    void update(FactHandle factHandle, Object object);
     
     void halt();
+    
     /**
      * Returns the session clock instance associated with this session
      * @return
