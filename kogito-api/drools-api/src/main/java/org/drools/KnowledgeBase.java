@@ -12,9 +12,7 @@ public interface KnowledgeBase extends KnowledgeBaseEventManager {
     
     void addKnowledgePackages(Collection<KnowledgePackage> knowledgePackage);
     
-    Collection<KnowledgePackage> getKnowledgePackages();
-    
-    StatefulKnowledgeSession newStatefulKnowledgeSession();
+    Collection<KnowledgePackage> getKnowledgePackages();    
     
     void removeKnowledgePackage(String packageName);
 
@@ -22,6 +20,8 @@ public interface KnowledgeBase extends KnowledgeBaseEventManager {
                     String ruleName);
 
     StatefulKnowledgeSession newStatefulSession(KnowledgeSessionConfiguration conf);
+    
+    StatefulKnowledgeSession newStatefulKnowledgeSession();
     
     
 }
