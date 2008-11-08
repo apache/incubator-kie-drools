@@ -48,8 +48,10 @@ import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.process.WorkItemManager;
+import org.drools.runtime.rule.AgendaFilter;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
+import org.drools.spi.Activation;
 import org.drools.time.SessionClock;
 
 public class StatefulKnowledgeSessionImpl
@@ -135,9 +137,21 @@ public class StatefulKnowledgeSessionImpl
         return this.kbase;
     }
 
-    public void fireAllRules() {
-        this.session.fireAllRules();
+    public int fireAllRules() {
+        return this.session.fireAllRules();
     }
+    
+    public int fireAllRules(AgendaFilter agendaFilter) {
+        return this.session.fireAllRules( new AgendaFilterWrapper( agendaFilter ) );
+    }
+
+    public void fireUntilHalt() {
+        this.session.fireUntilHalt( );
+    }
+
+    public void fireUntilHalt(AgendaFilter agendaFilter) {
+        this.session.fireUntilHalt( new AgendaFilterWrapper( agendaFilter ) );
+    }    
 
     public SessionClock getSessionClock() {
         return this.session.getSessionClock();
@@ -515,5 +529,19 @@ public class StatefulKnowledgeSessionImpl
         }
 
     }
+    
+    public static class AgendaFilterWrapper implements org.drools.spi.AgendaFilter {
+        private AgendaFilter filter;        
+        
+        public AgendaFilterWrapper(AgendaFilter filter) {
+            this.filter = filter;
+        }
+
+        public boolean accept(Activation activation) {
+            return filter.accept( activation );
+        }               
+    }
+    
+    
 
 }
