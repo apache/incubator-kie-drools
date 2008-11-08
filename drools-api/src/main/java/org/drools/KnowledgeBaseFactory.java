@@ -22,6 +22,10 @@ public class KnowledgeBaseFactory {
         return provider.newKnowledgeBase(conf);        
     }
     
+    public static KnowledgeBaseConfiguration newKnowledgBaseConfiguration() {
+        return null;
+    }
+    
 	private static void loadProvider() {
         try {
             // we didn't find anything in properties so lets try and us reflection
