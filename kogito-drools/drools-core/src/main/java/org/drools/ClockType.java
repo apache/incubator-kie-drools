@@ -51,6 +51,10 @@ public enum ClockType {
         this.string = string;
     }
     
+    public String toExternalForm() {
+        return this.string;
+    }
+    
     public String toString() {
         return this.string;
     }
