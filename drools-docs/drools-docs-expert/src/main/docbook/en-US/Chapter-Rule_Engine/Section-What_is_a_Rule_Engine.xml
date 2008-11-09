@@ -26,18 +26,17 @@
     MYCIN medical diagnosis Expert System. Where-as early Expert Systems had
     their logic hard coded, "shells" separated the logic from the system,
     providing an easy to use environment for user input. Drools is a Rule
-    Engine that uses the Rule Based approached to implement an Expert System
+    Engine that uses the Rule Based approach to implement an Expert System
     and is more correctly classified as a Production Rule System.</para>
 
     <para>The term "Production Rule" originates from formal grammar - where it
     is described as "an abstract structure that describes a formal language
     precisely, i.e., a set of rules that mathematically delineates a (usually
     infinite) set of finite-length strings over a (usually finite) alphabet"
-    (<ulink
-    url="http://en.wikipedia.org/wiki/Formal_grammar">wikipedia</ulink>).</para>
+    (<ulink url="http://en.wikipedia.org/wiki/Formal_grammar"><citetitle>wikipedia</citetitle></ulink>).</para>
 
     <para>Business Rule Management Systems build additional value on top of a
-    general purpose Rule Engines by providing, business user focused, systems
+    general purpose Rule Engines by providing business user focused systems
     for rule creation, management, deployment, collaboration, analysis and end
     user tools. Further adding to this value is the fast evolving and popular
     methodology "Business Rules Approach", which is a helping to formalize the
@@ -58,22 +57,22 @@
     transitions in a Workflow. At each node it evaluates has a rule set that
     dictates the transition to undertake - this is also a Rule Engine. While a
     Production Rule System is a kind of Rule Engine and also an Expert System,
-    the validation and expression evaluation Rule Engines mention previously
+    the validation and expression evaluation Rule Engines mentioned previously
     are not Expert Systems.</para>
 
     <para>A Production Rule System is Turing complete with a focus on
     knowledge representation to express propositional and first order logic in
-    a concise, non ambiguous and declarative manner. The brain of a Production
+    a concise, non-ambiguous and declarative manner. The brain of a Production
     Rules System is an Inference Engine that is able to scale to a large
-    number of rules and facts. The Inference Engine matches facts and data,
-    against Production Rules, also called Productions or just Rules, to infer
+    number of rules and facts. The Inference Engine matches facts and data
+     against Production Rules - also called Productions or just Rules - to infer
     conclusions which result in actions. A Production Rule is a two-part
     structure using First Order Logic for knowledge representation.</para>
 
-    <programlisting>when
-    &lt;conditions&gt;
+    <programlisting role="JAVA"><![CDATA[when
+    <conditions>
 then
-    &lt;actions&gt;</programlisting>
+    <actions>;]]></programlisting>
 
     <para>The process of matching the new or existing facts against Production
     Rules is called <indexterm>
@@ -105,7 +104,7 @@ then
         <primary>Rete</primary>
       </indexterm> Rete algorithm, <indexterm>
         <primary>Leaps</primary>
-      </indexterm> Leaps used to be provided but was retired as it became unmaintaned. The Drools <indexterm>
+      </indexterm> Leaps used to be provided but was retired as it became unmaintained. The Drools <indexterm>
         <primary>Rete</primary>
       </indexterm> Rete implementation is called ReteOO, signifying that
     Drools has an enhanced and optimized implementation of the Rete algorithm
@@ -131,11 +130,11 @@ then
     strategy.</para>
 
     <figure>
-      <title>A Basic Rete network</title>
+      <title>High-level View of a Rule Engine</title>
 
       <mediaobject>
         <imageobject>
-		<imagedata align="center" fileref="images/Chapter-Rule_Engine/rule-engine-inkscape.png" format="PNG" />
+		<imagedata align="center" fileref="images/Chapter-Rule_Engine/rule-engine-inkscape.svg" format="SVG" contentwidth="540px" contentdepth="300px" />
         </imageobject>
       </mediaobject>
     </figure>
@@ -148,7 +147,7 @@ then
     Maintenance, which always ensures that hope can only exist for a
     democracy while we have honest politicians.</para>
 
-    <programlisting>
+    <programlisting role="JAVA">
 when
     an honest Politician exists
 then
