@@ -157,7 +157,7 @@ public class DslTest extends TestCase {
 
     public void FIXME_estEmptyDSL() throws Exception {
         // FIXME eterelli / mic_hat not sure what to do with this?
-        final String DSL = "# This is an empty dsl file.\n";
+        final String DSL = "# This is an empty dsl file.";  // gives antlr <EOF> error
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         final Reader drlReader = new InputStreamReader( getClass().getResourceAsStream( "literal_rule.drl" ) );
         final Reader dslReader = new StringReader( DSL );
@@ -167,7 +167,7 @@ public class DslTest extends TestCase {
         kbuilder.addResource( drlReader,
                               KnowledgeType.DSLR );
 
-        assertFalse( kbuilder.hasErrors() );
+        assertFalse( kbuilder.hasErrors() ); // trying to expand Cheese() pattern
 
         // Check errors
         final String err = kbuilder.getErrors().toString();
