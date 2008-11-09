@@ -1,11 +1,20 @@
 package org.drools.compiler;
 
+import java.util.ArrayList;
 
-public class PackageBuilderErrors {
+import org.drools.builder.KnowledgeBuilderError;
+import org.drools.builder.KnowledgeBuilderErrors;
+
+
+public class PackageBuilderErrors extends ArrayList<KnowledgeBuilderError> implements KnowledgeBuilderErrors {
     private DroolsError[] errors;
 
     public PackageBuilderErrors(DroolsError[] errors) {
+        super( errors.length );
         this.errors = errors;
+        for ( DroolsError error : errors ) {
+            add( error );
+        }
     }
 
     public DroolsError[]  getErrors() {
