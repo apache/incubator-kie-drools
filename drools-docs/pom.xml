@@ -71,6 +71,19 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+	
+	<contributors>
+		<contributor>
+			<name>Ellen N. Zhao</name>
+			<email>enzhao@gmail.com</email>
+			<url>ningning.org</url>
+			<organization>HaCon Ingenieurgesellschaft mbH</organization>
+			<organizationUrl>hacon.de</organizationUrl>
+			<timezone>+1</timezone>
+			<roles>
+			</roles>
+		</contributor>
+	</contributors>
 
 	<build>
 		<plugins>
@@ -120,6 +133,7 @@
 						<format>
 							<formatName>pdf</formatName>
 							<stylesheetResource>classpath:/org/jboss/pdf.xsl</stylesheetResource>
+							<!-- <stylesheetResource>classpath:/fo/docbook.xsl</stylesheetResource> -->
 							<finalName>${artifactId}.pdf</finalName>
 							<!-- <profilingTypeName>two_pass</profilingTypeName> -->
 						</format>
