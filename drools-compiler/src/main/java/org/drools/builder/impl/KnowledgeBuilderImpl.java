@@ -7,6 +7,8 @@ import java.util.Collection;
 import java.util.List;
 
 import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderError;
+import org.drools.builder.KnowledgeBuilderErrors;
 import org.drools.builder.KnowledgeType;
 import org.drools.compiler.PackageBuilder;
 import org.drools.definition.KnowledgePackage;
@@ -48,4 +50,8 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 	public boolean hasErrors() {
 	    return this.pkgBuilder.hasErrors();
 	}
+
+    public KnowledgeBuilderErrors getErrors() {
+        return this.pkgBuilder.getErrors();
+    }
 }

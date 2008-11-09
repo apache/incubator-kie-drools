@@ -1,5 +1,7 @@
 package org.drools.compiler;
 
+import org.drools.builder.KnowledgeBuilderError;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -16,7 +18,7 @@ package org.drools.compiler;
  * limitations under the License.
  */
 
-public abstract class DroolsError {
+public abstract class DroolsError implements KnowledgeBuilderError {
 
     /**
      * Classes that extend this must provide a printable message,
