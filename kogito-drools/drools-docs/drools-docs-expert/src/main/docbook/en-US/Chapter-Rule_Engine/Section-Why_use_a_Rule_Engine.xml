@@ -199,14 +199,16 @@
   <section>
     <title>When not to use a Rule Engine</title>
 
-    <para>To quote a Drools mailing list regular (Dave Hamu): "It seems to me
+    <para>To quote a Drools mailing list regular: <blockquote><attribution>Dave Hamu</attribution>
+<para>It seems to me
     that in the excitement of working with rules engines, that people forget
     that a rules engine is only one piece of a complex application or
     solution. Rules engines are not really intended to handle workflow or
     process executions nor are workflow engines or process management tools
     designed to do rules. Use the right tool for the job. Sure, a pair of
     pliers can be used as a hammering tool in a pinch, but that's not what
-    it's designed for."</para>
+    it's designed for.</para>
+</blockquote></para>
 
     <para>As rule engines are dynamic (dynamic in the sense that the rules can
     be stored and managed and updated as data), they are often looked at as a
