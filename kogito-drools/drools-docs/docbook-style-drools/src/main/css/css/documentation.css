@@ -100,7 +100,8 @@ dt a {font-weight:normal;}
 
 pre, code, .guibutton, .keycap, .guilabel {
     font-size:0.9em;
-    font-family:verdana, helvetica, sans-serif;
+    font-family: courier, serif;
+    /*font-family:verdana, helvetica, sans-serif;*/
 }
 
 .guibutton, .keycap, .guilabel {
@@ -516,7 +517,8 @@ div.chapter, div.section {padding-top:2em;}
 pre .replaceable, pre .keycap {color:white;}
 
 pre {
-  font-family:verdana,helvetica,sans-serif;
+  font-family: courier, serif;
+  /*font-family:verdana,helvetica,sans-serif;*/
   background-color:#F5F5F5;
   border:1px solid #CCCCCC;
   padding:5px 15px 5px 25px;
