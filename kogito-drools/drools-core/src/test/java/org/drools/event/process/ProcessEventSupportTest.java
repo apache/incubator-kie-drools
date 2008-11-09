@@ -23,6 +23,7 @@ import junit.framework.TestCase;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
+import org.drools.definition.KnowledgePackage;
 import org.drools.knowledge.definitions.impl.KnowledgePackageImp;
 import org.drools.rule.Package;
 import org.drools.ruleflow.core.RuleFlowProcess;
@@ -82,7 +83,9 @@ public class ProcessEventSupportTest extends TestCase {
         );
         
         pkg.addProcess(process);
-        kbase.addKnowledgePackage( new KnowledgePackageImp( pkg ) );
+        List<KnowledgePackage> pkgs = new ArrayList<KnowledgePackage>();
+        pkgs.add( new KnowledgePackageImp( pkg ) );
+        kbase.addKnowledgePackages( pkgs );
         
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
         final List<ProcessEvent> processEventList = new ArrayList<ProcessEvent>();
