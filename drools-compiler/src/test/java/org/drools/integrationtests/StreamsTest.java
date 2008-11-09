@@ -32,6 +32,7 @@ import org.drools.SessionConfiguration;
 import org.drools.StockTick;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.KnowledgeType;
 import org.drools.common.InternalFactHandle;
 import org.drools.compiler.DroolsParserException;
 import org.drools.runtime.KnowledgeSessionConfiguration;
@@ -64,7 +65,7 @@ public class StreamsTest extends TestCase {
         DroolsParserException,
     Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.addPackageFromDrl( reader );
+        kbuilder.addResource( reader, KnowledgeType.DRL );
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );

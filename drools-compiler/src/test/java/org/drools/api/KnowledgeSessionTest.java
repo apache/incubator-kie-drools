@@ -7,6 +7,7 @@ import junit.framework.TestCase;
 
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.KnowledgeType;
 import org.drools.definition.KnowledgePackage;
 
 public class KnowledgeSessionTest extends TestCase {
@@ -23,7 +24,7 @@ public class KnowledgeSessionTest extends TestCase {
 		str += "when\n";
 		str += "then\n";
 		str += "end\n";				
-		builder.addPackageFromDrl( new StringReader( str ) );
+		builder.addResource( new StringReader( str ), KnowledgeType.DRL );
 		
 		str = "package org.test2\n";
 		str += "rule rule3\n";
@@ -34,7 +35,7 @@ public class KnowledgeSessionTest extends TestCase {
 		str += "when\n";
 		str += "then\n";
 		str += "end\n";			
-		builder.addPackageFromDrl( new StringReader( str ) );
+		builder.addResource( new StringReader( str ), KnowledgeType.DRL );
 		
 		Collection<KnowledgePackage> pkgs = builder.getKnowledgePackages();
 

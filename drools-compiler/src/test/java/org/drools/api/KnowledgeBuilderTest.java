@@ -7,6 +7,7 @@ import junit.framework.TestCase;
 
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.KnowledgeType;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definition.process.Process;
 import org.drools.definition.rule.Rule;
@@ -31,7 +32,7 @@ public class KnowledgeBuilderTest extends TestCase {
 		str += "when\n";
 		str += "then\n";
 		str += "end\n";				
-		builder.addPackageFromDrl( new StringReader( str ) );
+		builder.addResource( new StringReader( str ), KnowledgeType.DRL );
 		
 		str = "package org.test2\n";
 		str += "rule rule3\n";
@@ -42,7 +43,7 @@ public class KnowledgeBuilderTest extends TestCase {
 		str += "when\n";
 		str += "then\n";
 		str += "end\n";			
-		builder.addPackageFromDrl( new StringReader( str ) );
+		builder.addResource( new StringReader( str ), KnowledgeType.DRL );
 		
 		Collection<KnowledgePackage> pkgs = builder.getKnowledgePackages();
 		assertNotNull( pkgs );
@@ -76,7 +77,7 @@ public class KnowledgeBuilderTest extends TestCase {
 		str += "  <nodes><start id=\"1\" name=\"Start\" /><end id=\"2\" name=\"End\" /></nodes>\n";
 	    str += "  <connections><connection from=\"1\" to=\"2\"/></connections>";
 	    str += "</process>";
-	    builder.addProcessFromXml( new StringReader( str ) );
+	    builder.addResource( new StringReader( str ), KnowledgeType.DRF );
 	    
 		str = "";
 		str += "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
@@ -86,7 +87,7 @@ public class KnowledgeBuilderTest extends TestCase {
 		str += "  <nodes><start id=\"1\" name=\"Start\" /><end id=\"2\" name=\"End\" /></nodes>\n";
 	    str += "  <connections><connection from=\"1\" to=\"2\"/></connections>";
 	    str += "</process>";	
-	    builder.addProcessFromXml( new StringReader( str ) );
+	    builder.addResource( new StringReader( str ), KnowledgeType.DRF );
 	    
 		Collection<KnowledgePackage> pkgs = builder.getKnowledgePackages();
 		assertNotNull( pkgs );

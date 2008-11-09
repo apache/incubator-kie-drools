@@ -15,105 +15,19 @@ import org.drools.rule.Package;
 
 public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 	private PackageBuilder pkgBuilder;
-	
-	private StringBuilder dslStore;
-	
+
 	public KnowledgeBuilderImpl(PackageBuilder pkgBuilder) {
 		this.pkgBuilder = pkgBuilder;
 	}
 	
 	public void addResource(URL url, KnowledgeType type) {
-        try {
-    	    switch ( type ) {
-    	        case DRL : {
-    	            pkgBuilder.addPackageFromDrl( url );
-    	            break;
-    	        } 
-    	        case DSLR : {
-    	            break;
-    	        }
-    	        case DSL : {
-    	            if ( dslStore == null ) {
-    	                dslStore = new StringBuilder();
-    	            }
-    	            break;
-    	        }
-    	        case XDRL : {
-    	            pkgBuilder.addPackageFromXml( url );
-    	            break;
-    	        }
-    	        case DRF : {
-    	            pkgBuilder.addProcessFromXml( url );
-    	            break;
-    	        }
-    	        case XLS : {
-    	            //pkgBuilder.
-    	        }
-    	    }
-        } catch (Exception e) {
-            throw new RuntimeException( e );
-        }   
-	}
+        pkgBuilder.addResource( url, type )  ;
+	}	
 	
-	public void processDsl() {
-	    
-	}
-	
-	public void X() {
-	    try {
-            Class compiler = Class.forName( "org.drools.decisiontable.SpreadsheetCompiler" );
-        } catch ( ClassNotFoundException e ) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-	}
-
-	public void addPackageFromDrl(URL url) {
-        try {
-            pkgBuilder.addPackageFromDrl(url);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }	    
-	}
-	
-	public void addPackageFromDrl(Reader reader) {
-		try {
-			pkgBuilder.addPackageFromDrl(reader);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void addPackageFromXml(URL url) {
-        try {
-            pkgBuilder.addPackageFromXml( url );
-        } catch (Exception e) {
-            e.printStackTrace();
-        }	    
-	}
-	
-	public void addPackageFromXml(Reader reader) {
-		try {
-			pkgBuilder.addPackageFromXml(reader);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	public void addProcessFromXml(URL url) {
-	       try {
-	            pkgBuilder.addProcessFromXml(url);
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	        }
-	}
-	
-	public void addProcessFromXml(Reader reader) {
-		try {
-			pkgBuilder.addProcessFromXml(reader);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+    public void addResource(Reader reader,
+                            KnowledgeType type) {
+        pkgBuilder.addResource( reader, type )  ;
+    }	
 
 	public Collection<KnowledgePackage> getKnowledgePackages() {
 		Package[] pkgs = pkgBuilder.getPackages();
@@ -122,18 +36,5 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 			list.add( new KnowledgePackageImp( pkg ) );
 		}
 		return list;
-	}
-
-    public void addResorce(URL url,
-                           KnowledgeType type) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    public void addResource(Reader reader,
-                            KnowledgeType type) {
-        // TODO Auto-generated method stub
-        
-    }
-	
+	}	
 }

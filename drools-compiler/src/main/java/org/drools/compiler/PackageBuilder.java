@@ -34,6 +34,7 @@ import org.drools.RuleBase;
 import org.drools.base.ClassFieldAccessor;
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
+import org.drools.builder.KnowledgeType;
 import org.drools.common.InternalRuleBase;
 import org.drools.commons.jci.problems.CompilationProblem;
 import org.drools.definition.process.Process;
@@ -57,6 +58,9 @@ import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.TypeFieldDescr;
+import org.drools.lang.dsl.DSLMappingFile;
+import org.drools.lang.dsl.DSLTokenizedMappingFile;
+import org.drools.lang.dsl.DefaultExpander;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.rule.CompositeClassLoader;
 import org.drools.rule.JavaDialectRuntimeData;
@@ -85,34 +89,36 @@ public class PackageBuilder {
 
     //private DialectRegistry              dialectRegistry;
 
-    private Map<String, PackageRegistry> pkgRegistryMap;
+    private Map<String, PackageRegistry>  pkgRegistryMap;
 
-    private List<DroolsError>            results;
+    private List<DroolsError>             results;
 
-    private PackageBuilderConfiguration  configuration;
+    private PackageBuilderConfiguration   configuration;
 
-    public static final RuleBuilder      ruleBuilder = new RuleBuilder();
+    public static final RuleBuilder       ruleBuilder = new RuleBuilder();
 
     /**
      * Optional RuleBase for incremental live building
      */
-    private ReteooRuleBase               ruleBase;
+    private ReteooRuleBase                ruleBase;
 
     /**
      * Current default package
      */
-    private String                       defaultNamespace;
+    private String                        defaultNamespace;
 
     /**
      * default dialect
      */
-    private final String                 defaultDialect;
+    private final String                  defaultDialect;
 
-    private CompositeClassLoader         rootClassLoader;
+    private CompositeClassLoader          rootClassLoader;
 
-    private Map<String, Class>           globals;
+    private Map<String, Class>            globals;
 
-    private String                       url;
+    private String                        url;
+
+    private List<DSLTokenizedMappingFile> dslFiles;
 
     /**
      * Use this when package is starting from scratch.
@@ -290,6 +296,7 @@ public class PackageBuilder {
                                                 IOException {
         this.url = url.toExternalForm();
         addPackageFromXml( new InputStreamReader( url.openStream() ) );
+        this.url = null;
     }
 
     /**
@@ -313,6 +320,56 @@ public class PackageBuilder {
             addPackage( pkg );
         }
     }
+    
+    public void addPackageFromDslr(final Reader source) {
+        final DrlParser parser = new DrlParser();
+        DefaultExpander expander = getDslExpander();
+        
+        try {
+            String str = expander.expand(  source );
+            if ( expander.hasErrors() ) {
+                this.results.addAll( expander.getErrors() );           
+            }
+            
+            final PackageDescr pkg = parser.parse( str );
+            this.results.addAll( parser.getErrors() );
+            if ( !parser.hasErrors() ) {
+                addPackage( pkg );
+            }
+        } catch (Exception e) {
+            throw new RuntimeException( e );
+        }
+    }
+    
+    public void addPackageFromDslr(final URL url) {
+        this.url = url.toExternalForm();
+        try {
+            addPackageFromDslr( new InputStreamReader( url.openStream() ) );
+        } catch ( IOException e ) {
+            throw new RuntimeException( e );
+        }
+        this.url = null;
+    }    
+    
+    public void addDsl(Reader dsl) {
+        try {
+            DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
+            file.parseAndLoad( dsl );
+            this.dslFiles.add( file );
+        } catch ( Exception e ) {
+            throw new RuntimeException( e );
+        }
+    }
+    
+    public void addDsl(URL url) {
+        this.url = url.toExternalForm();
+        try {
+            addDsl( new InputStreamReader( url.openStream() ) );
+        } catch ( IOException e ) {
+            throw new RuntimeException( e );
+        }
+        this.url = null;
+    }
 
     /**
      * Add a ruleflow (.rfm) asset to this package.
@@ -330,11 +387,12 @@ public class PackageBuilder {
         }
         this.url = null;
     }
-    
+
     public void addProcessFromXml(Reader processSource) {
         ProcessBuilder processBuilder = new ProcessBuilder( this );
         try {
-            processBuilder.addProcessFromFile( processSource, url );
+            processBuilder.addProcessFromFile( processSource,
+                                               url );
             this.results.addAll( processBuilder.getErrors() );
         } catch ( Exception e ) {
             if ( e instanceof RuntimeException ) {
@@ -346,6 +404,47 @@ public class PackageBuilder {
 
         this.results = getResults( this.results );
     }
+    
+    public void addResource(URL url, KnowledgeType type) {
+        try {
+            addResource( new InputStreamReader( url.openStream() ), type );
+        } catch ( IOException e ) {
+            throw new RuntimeException( e );
+        }
+    }   
+    
+    public void addResource(Reader reader,
+                            KnowledgeType type) {
+        try {
+            switch ( type ) {
+                case DRL : {
+                    addPackageFromDrl( reader );
+                    break;
+                } 
+                case DSLR : {
+                    addPackageFromDrl( reader );
+                    break;
+                }
+                case DSL : {
+                    addDsl( reader );
+                    break;
+                }
+                case XDRL : {
+                    addPackageFromXml( reader );
+                    break;
+                }
+                case DRF : {
+                    addProcessFromXml( reader );
+                    break;
+                }
+                case XLS : {
+                    //pkgBuilder.
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException( e );
+        }    
+    }       
 
     private void addSemanticModules() {
         // this.configuration.getSemanticModules();
@@ -907,6 +1006,20 @@ public class PackageBuilder {
 
     public Map<String, PackageRegistry> getPackageRegistry() {
         return this.pkgRegistryMap;
+    }
+
+    /**
+     * Returns an expander for DSLs (only if there is a DSL configured for this package).
+     */
+    public DefaultExpander getDslExpander() {
+        DefaultExpander expander = new DefaultExpander();
+        if ( this.dslFiles == null || this.dslFiles.isEmpty() ) {
+            return expander;
+        }
+        for ( DSLMappingFile file : this.dslFiles ) {
+            expander.addDSLMapping( file.getMapping() );
+        }
+        return expander;
     }
 
     public Map<String, Class> getGlobals() {
