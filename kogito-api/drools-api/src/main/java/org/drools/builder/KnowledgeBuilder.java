@@ -7,7 +7,7 @@ import java.util.Collection;
 import org.drools.definition.KnowledgePackage;
 
 public interface KnowledgeBuilder extends RuleBuilder, ProcessBuilder {
-    public void addResorce(URL url, KnowledgeType type);    
+    public void addResource(URL url, KnowledgeType type);    
     public void addResource(Reader reader, KnowledgeType type);
     
 	Collection<KnowledgePackage> getKnowledgePackages();
