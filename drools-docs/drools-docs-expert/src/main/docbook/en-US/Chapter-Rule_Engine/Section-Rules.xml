@@ -220,18 +220,18 @@ public void cheddarCheese(Cheese cheese) {
     be a "closed statement". In programming terms this is an expression that
     does not reference any variables:</para>
 
-    <para>10 == 2 * 5</para>
+    <programlisting>10 == 2 * 5</programlisting>
 
     <para>Expressions that evaluate against one or more variables, the facts,
     are "open statements", in that we cannot determine whether the statement
     is true until we have a variable instance to evaluate against:</para>
 
-    <para>Person.sex == "male"</para>
+    <programlisting>Person.sex == "male"</programlisting>
 
     <para>With SQL if we look at the conclusion's action as simply returning
     the matched fact to the user:</para>
 
-    <para>select * from People where People.sex == "male"</para>
+    <para>select * from Person where Person.sex == "male"</para>
 
     <para>For any rows, which represent our facts, that are returned we have
     inferred that those facts are male people. The following diagram shows how
@@ -243,7 +243,7 @@ public void cheddarCheese(Cheese cheese) {
 
       <mediaobject>
         <imageobject>
-		<imagedata align="center" fileref="images/Chapter-Rule_Engine/Male_People.png" format="PNG" />
+		<imagedata align="center" fileref="images/Chapter-Rule_Engine/Male_Person.svg" format="SVG" contentwidth="485px" contentdepth="213px" />
         </imageobject>
       </mediaobject>
     </figure>
@@ -256,30 +256,18 @@ public void cheddarCheese(Cheese cheese) {
     '&amp;&amp;' and '||'. The following shows two open propositional
     statements connected together with a single disjunctive connective.</para>
 
-    <programlisting>
-      
-      person.getEyeColor().equals("blue") || person.getEyeColor().equals("green") 
-      
-    </programlisting>
+    <programlisting role="JAVA">person.getEyeColor().equals("blue") || person.getEyeColor().equals("green")</programlisting>
 
     <para>This can be expressed using a disjunctive Conditional Element
     connective - which actually results in the generation of two rules, to
     represent the two possible logic outcomes.</para>
 
-    <programlisting>
-      
-      Person( eyeColour == "blue" ) || Person( eyeColor == "green" )
-      
-    </programlisting>
+    <programlisting role="JAVA">Person( eyeColour == "blue" ) || Person( eyeColor == "green" )</programlisting>
 
     <para>Disjunctive field constraints connectives could also be used and
     would not result in multiple rule generation.</para>
 
-    <programlisting>
-      
-      Person( eyeColour == "blue"||"green" )
-      
-    </programlisting>
+    <programlisting role="JAVA">Person( eyeColour == "blue"||"green" )</programlisting>
 
     <para>Propositional Logic is not Turing complete, limiting the problems
     you can define, because it cannot express criteria for the structure of
@@ -287,9 +275,9 @@ public void cheddarCheese(Cheese cheese) {
     Logic with two new quantifier concepts to allow expressions defining
     structure - specifically universal and existential quantifiers. Universal
     quantifiers allow you to check that something is true for everything;
-    normally supported by the 'forall' conditional element. Existential
+    normally supported by the <code>forall</code> conditional element. Existential
     quantifiers check for the existence of something, in that it occurs at
-    least once - this is supported with 'not' and 'exists' conditional
+    least once - this is supported with <code>not</code> and <code>exists</code> conditional
     elements.</para>
 
     <para>Imagine we have two classes - Student and Module. Module represents
@@ -300,19 +288,14 @@ public void cheddarCheese(Cheese cheese) {
     40" open proposition to check for the existence of a Module that is true
     for the specified criteria.</para>
 
-    <programlisting>
-    
-    public class Student {
+    <programlisting role="JAVA"><![CDATA[public class Student {
     private String name;
     private List modules;
 
     ...
-    }
-       
-    </programlisting>
+    }]]></programlisting>
 
-    <programlisting>
-    
+    <programlisting role="JAVA">    
     public class Module {
     private String name;
     private String studentName;
@@ -325,8 +308,7 @@ public void cheddarCheese(Cheese cheese) {
     things, to iterate data structures to check for existence. The following
     should return a List of students who have failed the semester.</para>
 
-    <programlisting>
-    
+    <programlisting role="JAVA">    
     List failedStudents = new ArrayList();
     
     for ( Iterator studentIter = students.iterator(); studentIter.hasNext();) {
@@ -338,8 +320,7 @@ public void cheddarCheese(Cheese cheese) {
                 break;
             }
         }
-    }
-    
+    }    
     </programlisting>
 
     <para>Early SQL implementations were not Turing complete as they did not
@@ -348,8 +329,7 @@ public void cheddarCheese(Cheese cheese) {
     and 'in'. The following show SQL and a Rule to return a set of Students
     who have failed the semester.</para>
 
-    <programlisting>
-
+    <programlisting role="SQL">
 select
     * 
 from 
@@ -362,20 +342,14 @@ where exists (
     where 
         m.student_name = s.name and 
         m.score &lt; 40 
-)
-
-    </programlisting>
+)</programlisting>
 
     <para></para>
 
-    <programlisting>
-
+    <programlisting role="JAVA">
     rule "Failed_Students"
     when
         exists( $student : Student() &amp;&amp; Module( student == $student, score &lt; 40 ) )
-    
     </programlisting>
-
-    <para></para>
   </section>
 </section>
