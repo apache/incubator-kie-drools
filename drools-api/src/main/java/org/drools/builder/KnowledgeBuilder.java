@@ -22,7 +22,17 @@ public interface KnowledgeBuilder extends RuleBuilder, ProcessBuilder {
      */
 	Collection<KnowledgePackage> getKnowledgePackages();
 	
+	/**
+	 * If errors occurred during the build process they are added here
+	 * @return
+	 */
 	boolean hasErrors();
+	
+	/**
+	 * Return errors that occurred during the build process.
+	 * @return
+	 */
+	KnowledgeBuilderErrors getErrors();
 	
 	
 }
