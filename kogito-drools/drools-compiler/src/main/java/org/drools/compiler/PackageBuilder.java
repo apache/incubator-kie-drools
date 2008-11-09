@@ -355,6 +355,9 @@ public class PackageBuilder {
         try {
             DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
             file.parseAndLoad( dsl );
+            if ( this.dslFiles == null ) {
+                this.dslFiles = new ArrayList<DSLTokenizedMappingFile>();
+            }
             this.dslFiles.add( file );
         } catch ( Exception e ) {
             throw new RuntimeException( e );
@@ -422,7 +425,7 @@ public class PackageBuilder {
                     break;
                 } 
                 case DSLR : {
-                    addPackageFromDrl( reader );
+                    addPackageFromDslr( reader );
                     break;
                 }
                 case DSL : {

@@ -30,11 +30,22 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     }	
 
 	public Collection<KnowledgePackage> getKnowledgePackages() {
+	    if ( pkgBuilder.hasErrors() ) {
+	        return new ArrayList<KnowledgePackage>( 0 );
+	    }
+	    
 		Package[] pkgs = pkgBuilder.getPackages();
 		List<KnowledgePackage> list = new ArrayList<KnowledgePackage>( pkgs.length );
+		
 		for ( Package pkg : pkgs ) {
 			list.add( new KnowledgePackageImp( pkg ) );
 		}
+		
 		return list;
 	}	
+	
+	
+	public boolean hasErrors() {
+	    return this.pkgBuilder.hasErrors();
+	}
 }

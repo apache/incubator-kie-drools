@@ -4,22 +4,31 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import junit.framework.TestCase;
 
 import org.drools.Cheese;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
 import org.drools.Person;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.KnowledgeType;
 import org.drools.compiler.PackageBuilder;
+import org.drools.definition.KnowledgePackage;
 import org.drools.lang.Expander;
 import org.drools.lang.dsl.DefaultExpanderResolver;
 import org.drools.rule.Package;
+import org.drools.runtime.StatefulKnowledgeSession;
 
 public class DslTest extends TestCase {
+   
     protected RuleBase getRuleBase() throws Exception {
 
         return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
@@ -42,40 +51,45 @@ public class DslTest extends TestCase {
     }
 
     public void testWithExpanderDSL() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
+        //final PackageBuilder builder = new PackageBuilder();
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        
         final Reader source = new InputStreamReader( getClass().getResourceAsStream( "rule_with_expander_dsl.dslr" ) );
         final Reader dsl = new InputStreamReader( getClass().getResourceAsStream( "test_expander.dsl" ) );
-        builder.addPackageFromDrl( source,
-                                   dsl );
+        kbuilder.addResource( dsl,
+                              KnowledgeType.DSL );        
+        kbuilder.addResource( source,
+                              KnowledgeType.DSLR );
 
         // the compiled package
-        final Package pkg = builder.getPackage();
-        assertTrue( pkg.isValid() );
-        assertEquals( null,
-                      pkg.getErrorSummary() );
+        final Collection<KnowledgePackage> pkgs = kbuilder.getKnowledgePackages();
+        assertFalse( kbuilder.hasErrors() );
+        //assertTrue( pkg.isValid() );
+//        assertEquals( null,
+//                      pkg.getErrorSummary() );
         // Check errors
-        final String err = builder.getErrors().toString();
-        assertEquals( "",
-                      err );
+//        final String err = builder.getErrors().toString();
+//        assertEquals( "",
+//                      err );
+//
+//        assertEquals( 0,
+//                      builder.getErrors().getErrors().length );
 
-        assertEquals( 0,
-                      builder.getErrors().getErrors().length );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( pkgs );
+        kbase    = SerializationHelper.serializeObject( kbase );
 
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase    = SerializationHelper.serializeObject(ruleBase);
-
-        WorkingMemory wm = ruleBase.newStatefulSession();
-        wm.insert( new Person( "Bob",
+        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        session.insert( new Person( "Bob",
                                "http://foo.bar" ) );
-        wm.insert( new Cheese( "stilton",
+        session.insert( new Cheese( "stilton",
                                42 ) );
 
         final List messages = new ArrayList();
-        wm.setGlobal( "messages",
+        session.setGlobal( "messages",
                       messages );
 //        wm  = SerializationHelper.serializeObject(wm);
-        wm.fireAllRules();
+        session.fireAllRules();
 
         // should have fired
         assertEquals( 1,
