@@ -8,7 +8,6 @@ import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 
 public interface KnowledgeBase extends KnowledgeBaseEventManager {    
-    void addKnowledgePackage(KnowledgePackage knowledgePackage);
     
     void addKnowledgePackages(Collection<KnowledgePackage> knowledgePackage);
     
