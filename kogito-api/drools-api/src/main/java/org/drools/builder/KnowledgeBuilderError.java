@@ -1,6 +1,6 @@
 package org.drools.builder;
 
-public interface KnowledgePackageError {
+public interface KnowledgeBuilderError {
     
     /**
      * Returns the error message
