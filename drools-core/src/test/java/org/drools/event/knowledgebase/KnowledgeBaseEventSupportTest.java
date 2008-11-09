@@ -20,6 +20,8 @@ package org.drools.event.knowledgebase;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -35,6 +37,7 @@ import org.drools.base.FieldFactory;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
 import org.drools.base.evaluators.Operator;
+import org.drools.definition.KnowledgePackage;
 import org.drools.knowledge.definitions.impl.KnowledgePackageImp;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Package;
@@ -170,7 +173,9 @@ public class KnowledgeBaseEventSupportTest extends TestCase {
         assertEquals( 0,
                       listener2.getAfterRuleAdded() );
 
-        this.kbase.addKnowledgePackage( pkg );
+        List<KnowledgePackage> pkgs = new ArrayList<KnowledgePackage>();
+        pkgs.add( pkg );
+        this.kbase.addKnowledgePackages( pkgs );
 
         assertEquals( 1,
                       listener1.getBeforePackageAdded() );
@@ -191,7 +196,9 @@ public class KnowledgeBaseEventSupportTest extends TestCase {
     }
 
     public void testRemovePackageEvents() throws Exception {
-        this.kbase.addKnowledgePackage( pkg );
+        List<KnowledgePackage> pkgs = new ArrayList<KnowledgePackage>();
+        pkgs.add( pkg );
+        this.kbase.addKnowledgePackages( pkgs );
 
         assertEquals( 0,
                       listener1.getBeforeKnowledgePackageRemoved() );

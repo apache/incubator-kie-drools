@@ -40,6 +40,7 @@ import org.drools.base.evaluators.Operator;
 import org.drools.base.evaluators.SetEvaluatorsDefinition;
 import org.drools.base.evaluators.SoundslikeEvaluatorsDefinition;
 import org.drools.common.InternalFactHandle;
+import org.drools.definition.KnowledgePackage;
 import org.drools.knowledge.definitions.impl.KnowledgePackageImp;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Package;
@@ -114,7 +115,9 @@ public class AgendaEventSupportTest extends TestCase {
         pkg.addRule( rule );
         
                 
-        kbase.addKnowledgePackage( new KnowledgePackageImp( pkg ) );
+        List<KnowledgePackage> pkgs = new ArrayList<KnowledgePackage>();
+        pkgs.add( new KnowledgePackageImp( pkg ) );
+        kbase.addKnowledgePackages( pkgs );
 
         // create a new working memory and add an AgendaEventListener
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
