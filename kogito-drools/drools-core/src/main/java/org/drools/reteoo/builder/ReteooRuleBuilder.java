@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.drools.InitialFact;
 import org.drools.RuleIntegrationException;
+import org.drools.RuleBaseConfiguration.EventProcessingMode;
 import org.drools.base.ClassObjectType;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalRuleBase;
@@ -39,6 +40,8 @@ import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Pattern;
 import org.drools.rule.Query;
 import org.drools.rule.Rule;
+import org.drools.time.Interval;
+import org.drools.time.TemporalDependencyMatrix;
 
 /**
  * @author etirelli
@@ -85,20 +88,27 @@ public class ReteooRuleBuilder {
      *             the <code>Rule</code>.
      * @throws InvalidPatternException
      */
-    public List addRule(final Rule rule,
+    public List<TerminalNode> addRule(final Rule rule,
                         final InternalRuleBase rulebase,
                         final ReteooBuilder.IdGenerator idGenerator) throws InvalidPatternException {
 
         // the list of terminal nodes
-        final List nodes = new ArrayList();
+        final List<TerminalNode> nodes = new ArrayList<TerminalNode>();
 
         // transform rule and gets the array of subrules
         final GroupElement[] subrules = rule.getTransformedLhs();
 
         for ( int i = 0; i < subrules.length; i++ ) {
+            
             // creates a clean build context for each subrule
             final BuildContext context = new BuildContext( rulebase,
                                                            idGenerator );
+            
+            // if running in STREAM mode, calculate temporal distance for events
+            if( EventProcessingMode.STREAM.equals( rulebase.getConfiguration().getEventProcessingMode() ) ) {
+                TemporalDependencyMatrix temporal = this.utils.calculateTemporalDistance( subrules[i] );
+                context.setTemporalDistance( temporal );
+            }
            
             if ( rulebase.getConfiguration().isSequential() ) {
                 context.setTupleMemoryEnabled( false );
@@ -175,29 +185,6 @@ public class ReteooRuleBuilder {
 
         return terminal;
     }
-
-//    /**
-//     * Assigns the current partition ID to the list of created nodes
-//     *
-//     * @param context
-//     */
-//    private void assignPartitionId(BuildContext context) {
-//        if( context.getRuleBase().getConfiguration().isPartitionsEnabled() ) {
-//            org.drools.common.RuleBasePartitionId partitionId = null;
-//            if( context.getPartitionId() != null ) {
-//                // it means it shares nodes with an existing partition, so
-//                // assign the first id to the newly added nodes
-//                partitionId = context.getPartitionId();
-//            } else {
-//                // nodes are independent of existing nodes, so create a new
-//                // partition ID for them
-//                partitionId = context.getRuleBase().createNewPartitionId();
-//            }
-//            for( BaseNode node : context.getNodes() ) {
-//                node.setPartitionId( partitionId );
-//            }
-//        }
-//    }
 
     /**
      * Adds a query pattern to the given subrule

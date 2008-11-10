@@ -27,6 +27,7 @@ import org.drools.reteoo.LeftTuple;
 import org.drools.spi.AcceptsReadAccessor;
 import org.drools.spi.Evaluator;
 import org.drools.spi.InternalReadAccessor;
+import org.drools.time.Interval;
 
 public class VariableConstraint extends MutableTypeConstraint
     implements
@@ -110,6 +111,14 @@ public class VariableConstraint extends MutableTypeConstraint
                                         final ContextEntry context) {
         return this.restriction.isAllowedCachedRight( tuple,
                                                       context );
+    }
+    
+    public boolean isTemporal() {
+        return this.restriction.isTemporal();
+    }
+    
+    public Interval getInterval() {
+        return this.restriction.getInterval();
     }
 
     public String toString() {

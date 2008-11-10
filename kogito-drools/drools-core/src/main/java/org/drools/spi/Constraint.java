@@ -4,6 +4,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.io.Serializable;
 
 import org.drools.rule.Declaration;
 
@@ -63,67 +64,25 @@ public interface Constraint
      * @return
      */
     public ConstraintType getType();
-
+    
     /**
-     * A java 1.4 type-safe enum
+     * An enum for Constraint Types
      */
-    public static class ConstraintType implements Externalizable {
+    public static enum ConstraintType {
 
-        private static final long serialVersionUID = 4865182371013556266L;
+        UNKNOWN("UNKNOWN"),
+        ALPHA("ALPHA"),
+        BETA("BETA");
 
-        public static final ConstraintType UNKNOWN = new ConstraintType(0, "UNKNOWN");
-        public static final ConstraintType ALPHA = new ConstraintType(1, "ALPHA");
-        public static final ConstraintType BETA = new ConstraintType(2, "BETA");
-
-        private int type;
         private String desc;
 
-        public ConstraintType() {
-
-        }
-
-        private ConstraintType( int type, String desc ) {
-            this.type = type;
+        private ConstraintType( String desc ) {
             this.desc = desc;
-        }
-
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            type    = in.readInt();
-            desc    = (String)in.readObject();
-        }
-
-        public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeInt(type);
-            out.writeObject(desc);
-        }
-        /**
-         * @inheritDoc
-         *
-         * @see java.lang.Object#hashCode()
-         */
-        public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + type;
-            return result;
-        }
-
-        /**
-         * @inheritDoc
-         *
-         * @see java.lang.Object#equals(java.lang.Object)
-         */
-        public boolean equals(Object obj) {
-            if ( this == obj ) return true;
-            if ( obj == null ) return false;
-            if ( getClass() != obj.getClass() ) return false;
-            final ConstraintType other = (ConstraintType) obj;
-            if ( type != other.type ) return false;
-            return true;
         }
 
         public String toString() {
             return "ConstraintType::"+this.desc;
         }
     }
+    
 }

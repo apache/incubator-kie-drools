@@ -30,6 +30,7 @@ import org.drools.spi.Evaluator;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.ReadAccessor;
 import org.drools.spi.Restriction;
+import org.drools.time.Interval;
 
 public class VariableRestriction
     implements
@@ -115,6 +116,14 @@ public class VariableRestriction
         return this.evaluator.evaluateCachedRight( ((VariableContextEntry) context).workingMemory,
                                                    (VariableContextEntry) context,
                                                    this.evaluator.prepareObject( tuple.get( this.declaration ) ) );
+    }
+    
+    public boolean isTemporal() {
+        return this.evaluator.isTemporal();
+    }
+    
+    public Interval getInterval() {
+        return this.evaluator.getInterval();
     }
 
     public String toString() {

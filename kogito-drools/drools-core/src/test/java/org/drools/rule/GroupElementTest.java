@@ -221,7 +221,7 @@ public class GroupElementTest extends TestCase {
         and2.pack();
 
         // and2 now is in fact transformed into an OR
-        assertEquals( GroupElement.OR,
+        assertEquals( GroupElement.Type.OR,
                       and2.getType() );
 
         assertEquals( 2,

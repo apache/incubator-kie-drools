@@ -82,6 +82,8 @@ public class ObjectTypeNode extends ObjectSource
     private boolean           skipOnModify     = false;
 
     private boolean           objectMemoryEnabled;
+    
+    private long              expirationOffset = -1;
 
     public ObjectTypeNode() {
 
@@ -141,18 +143,6 @@ public class ObjectTypeNode extends ObjectSource
         return this.objectType;
     }
 
-//    /**
-//     * Tests the provided object to see if this <code>ObjectTypeNode</code> can receive the object
-//     * for assertion and retraction propagations.
-//     *
-//     * @param object
-//     * @return
-//     *      boolean value indicating whether the <code>ObjectTypeNode</code> can receive the object.
-//     */
-//    public boolean matches(final Object object) {
-//        return this.objectType.matches( object );
-//    }
-
     public boolean isAssignableFrom(final ObjectType objectType) {
         return this.objectType.isAssignableFrom( objectType );
     }
@@ -187,7 +177,7 @@ public class ObjectTypeNode extends ObjectSource
                                          context,
                                          workingMemory );
     }
-
+    
     /**
      * Retract the <code>FactHandleimpl</code> from the <code>Rete</code> network. Also remove the 
      * <code>FactHandleImpl</code> from the node memory.
@@ -413,5 +403,13 @@ public class ObjectTypeNode extends ObjectSource
      */
     public EntryPoint getEntryPoint() {
         return ((EntryPointNode) this.source).getEntryPoint();
+    }
+
+    public long getExpirationOffset() {
+        return expirationOffset;
+    }
+
+    public void setExpirationOffset(long expirationOffset) {
+        this.expirationOffset = expirationOffset;
     }
 }

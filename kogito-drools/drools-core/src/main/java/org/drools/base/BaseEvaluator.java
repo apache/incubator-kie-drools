@@ -24,6 +24,7 @@ import java.io.ObjectOutput;
 import org.drools.base.evaluators.Operator;
 import org.drools.common.InternalFactHandle;
 import org.drools.spi.Evaluator;
+import org.drools.time.Interval;
 
 /**
  * BaseEvaluator is an Object Comparator that is operator aware
@@ -74,6 +75,15 @@ public abstract class BaseEvaluator
 
     public Object prepareObject(InternalFactHandle handle) {
         return handle.getObject();
+    }
+    
+    public boolean isTemporal() {
+        return false;
+    }
+    
+    public Interval getInterval() {
+        // returns an open bound interval
+        return new Interval();
     }
 
     public boolean equals(final Object object) {
