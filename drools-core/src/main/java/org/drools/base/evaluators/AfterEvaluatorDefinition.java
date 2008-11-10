@@ -20,6 +20,7 @@ package org.drools.base.evaluators;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,6 +36,7 @@ import org.drools.rule.VariableRestriction.VariableContextEntry;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
+import org.drools.time.Interval;
 
 /**
  * The implementation of the 'after' evaluator definition
@@ -44,7 +46,7 @@ import org.drools.spi.InternalReadAccessor;
 public class AfterEvaluatorDefinition
     implements
     EvaluatorDefinition {
-
+    
     public static final Operator   AFTER         = Operator.addOperatorToRegistry( "after",
                                                                                    false );
     public static final Operator   NOT_AFTER     = Operator.addOperatorToRegistry( "after",
@@ -174,6 +176,33 @@ public class AfterEvaluatorDefinition
             return handle;
         }
 
+        @Override
+        public boolean isTemporal() {
+            return true;
+        }
+        
+        @Override
+        public Interval getInterval() {
+            long init = this.initRange;
+            long end = this.finalRange;
+            if( this.getOperator().isNegated() ) {
+                if( init == Interval.MIN && end != Interval.MAX ) {
+                    init = finalRange+1;
+                    end = Interval.MAX;
+                } else if( init != Interval.MIN && end == Interval.MAX ) {
+                    init = Interval.MIN;
+                    end = initRange-1;
+                } else if( init == Interval.MIN && end == Interval.MAX ) {
+                    init = 0;
+                    end = -1;
+                } else {
+                    init = Interval.MIN;
+                    end = Interval.MAX;
+                }
+            }
+            return new Interval( init, end );
+        }
+        
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1,

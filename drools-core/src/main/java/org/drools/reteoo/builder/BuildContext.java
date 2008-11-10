@@ -30,6 +30,7 @@ import org.drools.reteoo.ReteooBuilder;
 import org.drools.rule.Behavior;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.RuleConditionElement;
+import org.drools.time.TemporalDependencyMatrix;
 
 /**
  * A build context for Reteoo Builder
@@ -89,6 +90,9 @@ public class BuildContext {
     /** Stores the id of the partition this rule will be added to */
     private RuleBasePartitionId       partitionId;
 
+    /** the calculate temporal distance matrix */
+    private TemporalDependencyMatrix  temporal;
+
     public BuildContext(final InternalRuleBase rulebase,
                         final ReteooBuilder.IdGenerator idGenerator) {
         this.rulebase = rulebase;
@@ -110,7 +114,7 @@ public class BuildContext {
         this.objectTypeNodeMemoryEnabled = true;
 
         this.currentEntryPoint = EntryPoint.DEFAULT;
-        
+
         this.nodes = new LinkedList<BaseNode>();
 
         this.partitionId = null;
@@ -402,6 +406,14 @@ public class BuildContext {
      */
     public void setPartitionId(RuleBasePartitionId partitionId) {
         this.partitionId = partitionId;
+    }
+
+    public void setTemporalDistance(TemporalDependencyMatrix temporal) {
+        this.temporal = temporal;
+    }
+
+    public TemporalDependencyMatrix getTemporalDistance() {
+        return this.temporal;
     }
 
 }

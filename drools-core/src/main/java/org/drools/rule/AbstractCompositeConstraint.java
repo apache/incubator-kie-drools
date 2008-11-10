@@ -58,6 +58,15 @@ public abstract class AbstractCompositeConstraint extends MutableTypeConstraint 
         out.writeObject(betaConstraints);
         out.writeObject(requiredDeclarations);
     }
+
+    public AlphaNodeFieldConstraint[] getAlphaConstraints() {
+        return alphaConstraints;
+    }
+
+    public BetaNodeFieldConstraint[] getBetaConstraints() {
+        return betaConstraints;
+    }
+
     /**
      * Adds an alpha constraint to the multi field OR constraint
      *

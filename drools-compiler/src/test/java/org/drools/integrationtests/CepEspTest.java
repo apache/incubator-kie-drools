@@ -18,6 +18,7 @@ import org.drools.RuleBaseFactory;
 import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
 import org.drools.StockTick;
+import org.drools.RuleBaseConfiguration.EventProcessingMode;
 import org.drools.common.EventFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.compiler.DrlParser;
@@ -44,6 +45,14 @@ public class CepEspTest extends TestCase {
     private RuleBase loadRuleBase(final Reader reader) throws IOException,
                                                       DroolsParserException,
                                                       Exception {
+        return loadRuleBase( reader,
+                             null );
+    }
+
+    private RuleBase loadRuleBase(final Reader reader,
+                                  final RuleBaseConfiguration conf) throws IOException,
+                                                                   DroolsParserException,
+                                                                   Exception {
         final DrlParser parser = new DrlParser();
         final PackageDescr packageDescr = parser.parse( reader );
         if ( parser.hasErrors() ) {
@@ -56,7 +65,7 @@ public class CepEspTest extends TestCase {
         final Package pkg = builder.getPackage();
 
         // add the package to a rulebase
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase( conf );
         ruleBase.addPackage( pkg );
         // load up the rulebase
         ruleBase = SerializationHelper.serializeObject( ruleBase );
@@ -71,10 +80,10 @@ public class CepEspTest extends TestCase {
         SessionConfiguration conf = new SessionConfiguration();
         conf.setClockType( ClockType.PSEUDO_CLOCK );
         StatefulSession session = ruleBase.newStatefulSession( conf );
-        
+
         final List results = new ArrayList();
 
-        session.setGlobal( "results",    
+        session.setGlobal( "results",
                            results );
 
         StockTick tick1 = new StockTick( 1,
@@ -192,7 +201,10 @@ public class CepEspTest extends TestCase {
     public void testTimeRelationalOperators() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_TimeRelationalOperators.drl" ) );
-        final RuleBase ruleBase = loadRuleBase( reader );
+        final RuleBaseConfiguration rbconf = new RuleBaseConfiguration();
+        rbconf.setEventProcessingMode( EventProcessingMode.STREAM );
+        final RuleBase ruleBase = loadRuleBase( reader,
+                                                rbconf );
 
         SessionConfiguration conf = new SessionConfiguration();
         conf.setClockType( ClockType.PSEUDO_CLOCK );
@@ -284,17 +296,22 @@ public class CepEspTest extends TestCase {
                                          3 );
 
         InternalFactHandle handle1 = (InternalFactHandle) wm.insert( tick1 );
-        clock.advanceTime( 4, TimeUnit.MILLISECONDS );
+        clock.advanceTime( 4,
+                           TimeUnit.MILLISECONDS );
         InternalFactHandle handle2 = (InternalFactHandle) wm.insert( tick2 );
-        clock.advanceTime( 4, TimeUnit.MILLISECONDS );
+        clock.advanceTime( 4,
+                           TimeUnit.MILLISECONDS );
         InternalFactHandle handle3 = (InternalFactHandle) wm.insert( tick3 );
-        clock.advanceTime( 4, TimeUnit.MILLISECONDS );
+        clock.advanceTime( 4,
+                           TimeUnit.MILLISECONDS );
         InternalFactHandle handle4 = (InternalFactHandle) wm.insert( tick4 );
         InternalFactHandle handle5 = (InternalFactHandle) wm.insert( tick5 );
-        clock.advanceTime( 1, TimeUnit.MILLISECONDS );
+        clock.advanceTime( 1,
+                           TimeUnit.MILLISECONDS );
         InternalFactHandle handle6 = (InternalFactHandle) wm.insert( tick6 );
         InternalFactHandle handle7 = (InternalFactHandle) wm.insert( tick7 );
-        clock.advanceTime( 2, TimeUnit.MILLISECONDS );
+        clock.advanceTime( 2,
+                           TimeUnit.MILLISECONDS );
         InternalFactHandle handle8 = (InternalFactHandle) wm.insert( tick8 );
 
         assertNotNull( handle1 );
@@ -392,7 +409,10 @@ public class CepEspTest extends TestCase {
     public void testSimpleTimeWindow() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_SimpleTimeWindow.drl" ) );
-        final RuleBase ruleBase = loadRuleBase( reader );
+        final RuleBaseConfiguration rbconf = new RuleBaseConfiguration();
+        rbconf.setEventProcessingMode( EventProcessingMode.STREAM );
+        final RuleBase ruleBase = loadRuleBase( reader,
+                                                rbconf );
 
         SessionConfiguration conf = new SessionConfiguration();
         conf.setClockType( ClockType.PSEUDO_CLOCK );
@@ -407,7 +427,8 @@ public class CepEspTest extends TestCase {
         // how to configure the clock?
         SessionPseudoClock clock = (SessionPseudoClock) wm.getSessionClock();
 
-        clock.advanceTime( 5, TimeUnit.SECONDS ); // 5 seconds
+        clock.advanceTime( 5,
+                           TimeUnit.SECONDS ); // 5 seconds
         EventFactHandle handle1 = (EventFactHandle) wm.insert( new OrderEvent( "1",
                                                                                "customer A",
                                                                                70 ) );
@@ -416,10 +437,10 @@ public class CepEspTest extends TestCase {
         assertEquals( 0,
                       handle1.getDuration() );
 
-//        wm  = SerializationHelper.getSerialisedStatefulSession( wm );
-//        results = (List) wm.getGlobal( "results" );
-//        clock = (SessionPseudoClock) wm.getSessionClock();
-        
+        //        wm  = SerializationHelper.getSerialisedStatefulSession( wm );
+        //        results = (List) wm.getGlobal( "results" );
+        //        clock = (SessionPseudoClock) wm.getSessionClock();
+
         wm.fireAllRules();
 
         assertEquals( 1,
@@ -428,7 +449,8 @@ public class CepEspTest extends TestCase {
                       ((Number) results.get( 0 )).intValue() );
 
         // advance clock and assert new data
-        clock.advanceTime( 10, TimeUnit.SECONDS ); // 10 seconds
+        clock.advanceTime( 10,
+                           TimeUnit.SECONDS ); // 10 seconds
         EventFactHandle handle2 = (EventFactHandle) wm.insert( new OrderEvent( "2",
                                                                                "customer A",
                                                                                60 ) );
@@ -445,7 +467,8 @@ public class CepEspTest extends TestCase {
                       ((Number) results.get( 1 )).intValue() );
 
         // advance clock and assert new data
-        clock.advanceTime( 10, TimeUnit.SECONDS ); // 10 seconds
+        clock.advanceTime( 10,
+                           TimeUnit.SECONDS ); // 10 seconds
         EventFactHandle handle3 = (EventFactHandle) wm.insert( new OrderEvent( "3",
                                                                                "customer A",
                                                                                50 ) );
@@ -462,7 +485,8 @@ public class CepEspTest extends TestCase {
                       ((Number) results.get( 2 )).intValue() );
 
         // advance clock and assert new data
-        clock.advanceTime( 10, TimeUnit.SECONDS ); // 10 seconds
+        clock.advanceTime( 10,
+                           TimeUnit.SECONDS ); // 10 seconds
         EventFactHandle handle4 = (EventFactHandle) wm.insert( new OrderEvent( "4",
                                                                                "customer A",
                                                                                25 ) );
@@ -478,7 +502,8 @@ public class CepEspTest extends TestCase {
                       results.size() );
 
         // advance clock and assert new data
-        clock.advanceTime( 10, TimeUnit.SECONDS ); // 10 seconds
+        clock.advanceTime( 10,
+                           TimeUnit.SECONDS ); // 10 seconds
         EventFactHandle handle5 = (EventFactHandle) wm.insert( new OrderEvent( "5",
                                                                                "customer A",
                                                                                70 ) );
@@ -495,7 +520,8 @@ public class CepEspTest extends TestCase {
                       results.size() );
 
         // advance clock and assert new data
-        clock.advanceTime( 10, TimeUnit.SECONDS ); // 10 seconds
+        clock.advanceTime( 10,
+                           TimeUnit.SECONDS ); // 10 seconds
         EventFactHandle handle6 = (EventFactHandle) wm.insert( new OrderEvent( "6",
                                                                                "customer A",
                                                                                115 ) );
@@ -512,11 +538,14 @@ public class CepEspTest extends TestCase {
                       ((Number) results.get( 3 )).intValue() );
 
     }
-    
+
     public void testSimpleLengthWindow() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_SimpleLengthWindow.drl" ) );
-        final RuleBase ruleBase = loadRuleBase( reader );
+        final RuleBaseConfiguration rbconf = new RuleBaseConfiguration();
+        rbconf.setEventProcessingMode( EventProcessingMode.STREAM );
+        final RuleBase ruleBase = loadRuleBase( reader,
+                                                rbconf );
 
         SessionConfiguration conf = new SessionConfiguration();
         conf.setClockType( ClockType.REALTIME_CLOCK );
@@ -594,7 +623,7 @@ public class CepEspTest extends TestCase {
                       ((Number) results.get( 3 )).intValue() );
 
     }
-    
+
     //    public void FIXME_testTransactionCorrelation() throws Exception {
     //        // read in the source
     //        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_TransactionCorrelation.drl" ) );
@@ -608,5 +637,5 @@ public class CepEspTest extends TestCase {
     //
     //
     //    }
-    
+
 }

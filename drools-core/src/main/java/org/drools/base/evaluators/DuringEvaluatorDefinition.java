@@ -35,6 +35,7 @@ import org.drools.rule.VariableRestriction.VariableContextEntry;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
+import org.drools.time.Interval;
 
 /**
  * The implementation of the 'during' evaluator definition
@@ -178,6 +179,19 @@ public class DuringEvaluatorDefinition
             return handle;
         }
 
+        @Override
+        public boolean isTemporal() {
+            return true;
+        }
+        
+        @Override
+        public Interval getInterval() {
+            if( this.getOperator().isNegated() ) {
+                return new Interval( Interval.MIN, Interval.MAX );
+            }
+            return new Interval( 0, Interval.MAX );
+        }
+        
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1,

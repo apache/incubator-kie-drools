@@ -23,6 +23,7 @@ import org.drools.base.evaluators.Operator;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.VariableRestriction.VariableContextEntry;
+import org.drools.time.Interval;
 
 /**
  * A public interface to be implemented by all evaluators
@@ -199,5 +200,23 @@ public interface Evaluator
     public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                        VariableContextEntry context,
                                        Object left);
+    
+    /**
+     * Returns true if this evaluator implements a temporal evaluation,
+     * i.e., a time sensitive evaluation whose properties of matching
+     * only events within an specific time interval can be used for
+     * determining event expirations automatically. 
+     * 
+     * @return true if the evaluator is a temporal evaluator. 
+     */
+    public boolean isTemporal();
+
+    /**
+     * In case this is a temporal evaluator, returns the interval 
+     * in which this evaluator may match the target fact
+     * 
+     * @return
+     */
+    public Interval getInterval();
 
 }

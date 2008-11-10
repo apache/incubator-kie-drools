@@ -29,43 +29,39 @@ import java.util.Map;
 
 import org.drools.RuntimeDroolsException;
 
-public class GroupElement extends ConditionalElement implements Externalizable {
+public class GroupElement extends ConditionalElement
+    implements
+    Externalizable {
 
     private static final long serialVersionUID = 400L;
 
-    public static final Type  AND              = new AndType();
-    public static final Type  OR               = new OrType();
-    public static final Type  EXISTS           = new ExistsType();
-    public static final Type  NOT              = new NotType();
+    public static final Type AND = Type.AND;
+    public static final Type OR = Type.OR;
+    public static final Type NOT = Type.NOT;
+    public static final Type EXISTS = Type.EXISTS;
 
     private Type              type             = null;
-    private List        children         = new ArrayList();
+    private List              children         = new ArrayList();
 
     public GroupElement() {
-        this( AND );
+        this( Type.AND );
     }
 
     public GroupElement(final Type type) {
         this.type = type;
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        String  name    = (String)in.readObject();
-        if ("AND".equals(name))
-            type    = AND;
-        else if ("OR".equals(name))
-            type    = OR;
-        else if ("EXISTS".equals(name))
-            type    = EXISTS;
-        else
-            type    = NOT;
-        children = (List)in.readObject();
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        this.type = (Type) in.readObject();
+        children = (List) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(type.toString());
-        out.writeObject(children);
+        out.writeObject( type );
+        out.writeObject( children );
     }
+
     /**
      * Adds a child to the current GroupElement.
      *
@@ -297,19 +293,19 @@ public class GroupElement extends ConditionalElement implements Externalizable {
     }
 
     public boolean isAnd() {
-        return this.type.isAnd();
+        return AND.equals( this.type );
     }
 
     public boolean isOr() {
-        return this.type.isOr();
+        return OR.equals( this.type );
     }
 
     public boolean isNot() {
-        return this.type.isNot();
+        return NOT.equals( this.type );
     }
 
     public boolean isExists() {
-        return this.type.isExists();
+        return EXISTS.equals( this.type );
     }
 
     public String toString() {
@@ -325,43 +321,62 @@ public class GroupElement extends ConditionalElement implements Externalizable {
     }
 
     /**
-     * A public interface for CE types
+     * A public enum for CE types
      */
-    public static interface Type
-        extends
-        Externalizable {
+    public static enum Type {
 
-        /**
-         * Returns true if this CE type is an AND
-         */
-        public boolean isAnd();
+        AND(false), 
+        OR(false), 
+        NOT(true), 
+        EXISTS(true);
 
-        /**
-         * Returns true if this CE type is an OR
-         */
-        public boolean isOr();
+        private final boolean scopeDelimiter;
 
-        /**
-         * Returns true if this CE type is an NOT
-         */
-        public boolean isNot();
-
-        /**
-         * Returns true if this CE type is an EXISTS
-         */
-        public boolean isExists();
+        Type(final boolean scopeDelimiter) {
+            this.scopeDelimiter = scopeDelimiter;
+        }
 
         /**
          * Returns a map of declarations that are
          * visible inside of an element of this type
          */
-        public Map getInnerDeclarations(List children);
+        public Map getInnerDeclarations(List children) {
+            Map declarations = null;
+
+            if ( children.isEmpty() ) {
+                declarations = Collections.EMPTY_MAP;
+            } else if ( children.size() == 1 ) {
+                final RuleConditionElement re = (RuleConditionElement) children.get( 0 );
+                declarations = re.getOuterDeclarations();
+            } else {
+                declarations = new HashMap();
+                for ( final Iterator it = children.iterator(); it.hasNext(); ) {
+                    declarations.putAll( ((RuleConditionElement) it.next()).getOuterDeclarations() );
+                }
+            }
+            return declarations;
+        }
 
         /**
          * Returns a map of declarations that are
          * visible outside of an element of this type
          */
-        public Map getOuterDeclarations(List children);
+        public Map getOuterDeclarations(List children) {
+            Map declarations = null;
+
+            if ( this.scopeDelimiter || children.isEmpty() ) {
+                declarations = Collections.EMPTY_MAP;
+            } else if ( children.size() == 1 ) {
+                final RuleConditionElement re = (RuleConditionElement) children.get( 0 );
+                declarations = re.getOuterDeclarations();
+            } else {
+                declarations = new HashMap();
+                for ( final Iterator it = children.iterator(); it.hasNext(); ) {
+                    declarations.putAll( ((RuleConditionElement) it.next()).getOuterDeclarations() );
+                }
+            }
+            return declarations;
+        }
 
         /**
          * Returns true in case this RuleConditionElement delimits
@@ -371,281 +386,9 @@ public class GroupElement extends ConditionalElement implements Externalizable {
          * NOT CE is a scope delimiter
          * @return
          */
-        public boolean isPatternScopeDelimiter();
-    }
-
-    private static abstract class AbstractType
-        implements
-        Type {
-
-        private static final long serialVersionUID = 400L;
-
-        /**
-         * @inheritDoc
-         */
-        public Map getInnerDeclarations(final List children) {
-            Map declarations = null;
-
-            if ( children.isEmpty() ) {
-                declarations = Collections.EMPTY_MAP;
-            } else if ( children.size() == 1 ) {
-                final RuleConditionElement re = (RuleConditionElement) children.get( 0 );
-                declarations = re.getOuterDeclarations();
-            } else {
-                declarations = new HashMap();
-                for ( final Iterator it = children.iterator(); it.hasNext(); ) {
-                    declarations.putAll( ((RuleConditionElement) it.next()).getOuterDeclarations() );
-                }
-            }
-            return declarations;
-        }
-
-        /**
-         * @inheritDoc
-         */
-        public Map getOuterDeclarations(final List children) {
-            Map declarations = null;
-
-            if ( children.isEmpty() ) {
-                declarations = Collections.EMPTY_MAP;
-            } else if ( children.size() == 1 ) {
-                final RuleConditionElement re = (RuleConditionElement) children.get( 0 );
-                declarations = re.getOuterDeclarations();
-            } else {
-                declarations = new HashMap();
-                for ( final Iterator it = children.iterator(); it.hasNext(); ) {
-                    declarations.putAll( ((RuleConditionElement) it.next()).getOuterDeclarations() );
-                }
-            }
-            return declarations;
-        }
-    }
-
-    /**
-     * An AND CE type
-     */
-    private static class AndType extends AbstractType {
-
-        private static final long serialVersionUID = 400L;
-
-        public AndType() {
-        }
-
-        public boolean isAnd() {
-            return true;
-        }
-
-        public boolean isExists() {
-            return false;
-        }
-
-        public boolean isNot() {
-            return false;
-        }
-
-        public boolean isOr() {
-            return false;
-        }
-
-        public boolean equals(final Object obj) {
-            if ( !(obj instanceof AndType) ) {
-                return false;
-            }
-            return true;
-        }
-
-        public int hashCode() {
-            return 11;
-        }
-
-        public String toString() {
-            return "AND";
-        }
-
         public boolean isPatternScopeDelimiter() {
-            return false;
+            return this.scopeDelimiter;
         }
 
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-
-        }
-
-        public void writeExternal(ObjectOutput out) throws IOException {
-
-        }
     }
-
-    /**
-     * An OR CE type
-     */
-    private static class OrType extends AbstractType {
-
-        private static final long serialVersionUID = 400L;
-
-        public OrType() {
-        }
-
-        public boolean isAnd() {
-            return false;
-        }
-
-        public boolean isExists() {
-            return false;
-        }
-
-        public boolean isNot() {
-            return false;
-        }
-
-        public boolean isOr() {
-            return true;
-        }
-
-        public boolean equals(final Object obj) {
-            if ( !(obj instanceof OrType) ) {
-                return false;
-            }
-            return true;
-        }
-
-        public int hashCode() {
-            return 17;
-        }
-
-        public String toString() {
-            return "OR";
-        }
-
-        public boolean isPatternScopeDelimiter() {
-            return false;
-        }
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-
-        }
-
-        public void writeExternal(ObjectOutput out) throws IOException {
-
-        }
-    }
-
-    /**
-     * A NOT CE type
-     */
-    private static class NotType extends AbstractType {
-
-        private static final long serialVersionUID = 400L;
-
-        public NotType() {
-        }
-
-        public boolean isAnd() {
-            return false;
-        }
-
-        public boolean isExists() {
-            return false;
-        }
-
-        public boolean isNot() {
-            return true;
-        }
-
-        public boolean isOr() {
-            return false;
-        }
-
-        /**
-         * @inheritDoc
-         */
-        public Map getOuterDeclarations(final List children) {
-            return Collections.EMPTY_MAP;
-        }
-
-        public boolean equals(final Object obj) {
-            if ( !(obj instanceof NotType) ) {
-                return false;
-            }
-            return true;
-        }
-
-        public int hashCode() {
-            return 23;
-        }
-
-        public String toString() {
-            return "NOT";
-        }
-
-        public boolean isPatternScopeDelimiter() {
-            return true;
-        }
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-
-        }
-
-        public void writeExternal(ObjectOutput out) throws IOException {
-
-        }
-    }
-
-    /**
-     * An EXISTS CE type
-     */
-    private static class ExistsType extends AbstractType {
-
-        private static final long serialVersionUID = 400L;
-
-        public ExistsType() {
-        }
-
-        public boolean isAnd() {
-            return false;
-        }
-
-        public boolean isExists() {
-            return true;
-        }
-
-        public boolean isNot() {
-            return false;
-        }
-
-        public boolean isOr() {
-            return false;
-        }
-
-        /**
-         * @inheritDoc
-         */
-        public Map getOuterDeclarations(final List children) {
-            return Collections.EMPTY_MAP;
-        }
-
-        public boolean equals(final Object obj) {
-            if ( !(obj instanceof ExistsType) ) {
-                return false;
-            }
-            return true;
-        }
-
-        public int hashCode() {
-            return 31;
-        }
-
-        public String toString() {
-            return "EXISTS";
-        }
-
-        public boolean isPatternScopeDelimiter() {
-            return true;
-        }
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-
-        }
-
-        public void writeExternal(ObjectOutput out) throws IOException {
-
-        }
-    }
-
 }

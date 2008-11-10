@@ -35,6 +35,7 @@ import org.drools.rule.VariableRestriction.VariableContextEntry;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
+import org.drools.time.Interval;
 
 /**
  * The implementation of the 'before' evaluator definition
@@ -174,6 +175,33 @@ public class BeforeEvaluatorDefinition
             return handle;
         }
 
+        @Override
+        public boolean isTemporal() {
+            return true;
+        }
+        
+        @Override
+        public Interval getInterval() {
+            long init = ( this.finalRange == Interval.MAX ) ? Interval.MIN : -this.finalRange;
+            long end = ( this.initRange == Interval.MIN ) ? Interval.MAX : -this.initRange;
+            if( this.getOperator().isNegated() ) {
+                if( init == Interval.MIN && end != Interval.MAX ) {
+                    init = finalRange+1;
+                    end = Interval.MAX;
+                } else if( init != Interval.MIN && end == Interval.MAX ) {
+                    init = Interval.MIN;
+                    end = initRange-1;
+                } else if( init == Interval.MIN && end == Interval.MAX ) {
+                    init = 0;
+                    end = -1;
+                } else {
+                    init = Interval.MIN;
+                    end = Interval.MAX;
+                }
+            }
+            return new Interval( init, end );
+        }
+        
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1,

@@ -21,6 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.drools.RuntimeDroolsException;
+import org.drools.RuleBaseConfiguration.EventProcessingMode;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
 import org.drools.common.InstanceNotEqualsConstraint;
@@ -180,7 +181,7 @@ public class PatternBuilder
                                                      epn,
                                                      objectType,
                                                      context );
-
+            
             if ( wms.length > 0 ) {
                 otn.attach( wms );
             } else {
@@ -197,7 +198,7 @@ public class PatternBuilder
                                  List alphaConstraints) throws InvalidPatternException {
 
         // Drools Query ObjectTypeNode never has memory, but other ObjectTypeNode/AlphaNoesNodes may (if not in sequential), 
-        //so need to preserve, so we can resotre after this node is added. LeftMemory  and Terminal remain the same once set.
+        //so need to preserve, so we can restore after this node is added. LeftMemory  and Terminal remain the same once set.
 
         boolean objectMemory = context.isObjectTypeNodeMemoryEnabled();
         boolean alphaMemory = context.isAlphaMemoryAllowed();
@@ -218,11 +219,16 @@ public class PatternBuilder
                                                                                       context.getRuleBase().getRete(),
                                                                                       context ) ) );
 
+        ObjectTypeNode otn = new ObjectTypeNode( context.getNextId(),
+                                                 (EntryPointNode) context.getObjectSource(),
+                                                 objectType,
+                                                 context );
+        if( objectType.isEvent() && EventProcessingMode.STREAM.equals( context.getRuleBase().getConfiguration().getEventProcessingMode() ) ) {
+            otn.setExpirationOffset( context.getTemporalDistance().getExpirationOffset( pattern ) );
+        }
+
         context.setObjectSource( (ObjectSource) utils.attachNode( context,
-                                                                  new ObjectTypeNode( context.getNextId(),
-                                                                                      (EntryPointNode) context.getObjectSource(),
-                                                                                      objectType,
-                                                                                      context ) ) );
+                                                                  otn ) );
 
         for ( final Iterator it = alphaConstraints.iterator(); it.hasNext(); ) {
             final AlphaNodeFieldConstraint constraint = (AlphaNodeFieldConstraint) it.next();

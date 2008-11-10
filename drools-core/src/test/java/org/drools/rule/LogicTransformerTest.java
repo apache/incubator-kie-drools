@@ -166,7 +166,7 @@ public class LogicTransformerTest extends DroolsTestCase {
 
         LogicTransformer.getInstance().applyOrTransformation( parent );
 
-        assertEquals( GroupElement.OR,
+        assertEquals( GroupElement.Type.OR,
                       parent.getType() );
 
         assertLength( 4,
