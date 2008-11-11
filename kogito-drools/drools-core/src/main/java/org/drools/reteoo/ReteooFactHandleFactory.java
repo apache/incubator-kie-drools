@@ -16,6 +16,8 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
+import java.sql.Date;
+
 import org.drools.common.AbstractFactHandleFactory;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.EventFactHandle;
@@ -31,10 +33,12 @@ public class ReteooFactHandleFactory extends AbstractFactHandleFactory {
     public ReteooFactHandleFactory() {
         super();
     }
-    
-    public ReteooFactHandleFactory(int id, long counter) {
-        super( id, counter );     
-    }    
+
+    public ReteooFactHandleFactory(int id,
+                                   long counter) {
+        super( id,
+               counter );
+    }
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.FactHandleFactory#newFactHandle(long)
@@ -46,7 +50,18 @@ public class ReteooFactHandleFactory extends AbstractFactHandleFactory {
                                                      final InternalWorkingMemory workingMemory) {
         if ( conf != null && conf.isEvent() ) {
             TypeDeclaration type = conf.getTypeDeclaration();
-            long timestamp = workingMemory.getTimerService().getCurrentTime();
+            long timestamp;
+            if ( type.getTimestampExtractor() != null ) {
+                if ( Date.class.isAssignableFrom( type.getTimestampExtractor().getExtractToClass() ) ) {
+                    timestamp = ((Date) type.getTimestampExtractor().getValue( workingMemory,
+                                                                               object )).getTime();
+                } else {
+                    timestamp = type.getTimestampExtractor().getLongValue( workingMemory,
+                                                                           object );
+                }
+            } else {
+                timestamp = workingMemory.getTimerService().getCurrentTime();
+            }
             long duration = 0;
             if ( type.getDurationExtractor() != null ) {
                 duration = type.getDurationExtractor().getLongValue( workingMemory,
@@ -70,9 +85,11 @@ public class ReteooFactHandleFactory extends AbstractFactHandleFactory {
     public FactHandleFactory newInstance() {
         return new ReteooFactHandleFactory();
     }
-    
-    public FactHandleFactory newInstance(int id, long counter) {
-        return new ReteooFactHandleFactory(id, counter);
+
+    public FactHandleFactory newInstance(int id,
+                                         long counter) {
+        return new ReteooFactHandleFactory( id,
+                                            counter );
     }
 
     public Class getFactHandleType() {
