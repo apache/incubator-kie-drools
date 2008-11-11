@@ -785,6 +785,11 @@ public class PackageBuilder {
             String timestamp = typeDescr.getMetaAttribute( TypeDeclaration.ATTR_TIMESTAMP );
             if ( timestamp != null ) {
                 type.setTimestampAttribute( timestamp );
+                ClassDefinition cd = type.getTypeClassDef();
+                ClassFieldAccessorStore store = pkgRegistry.getPackage().getClassFieldAccessorStore();
+                InternalReadAccessor extractor = store.getReader( type.getTypeClass().getName(),
+                                                                  timestamp,
+                                                                  type.new TimestampAccessorSetter() );
             }
             String duration = typeDescr.getMetaAttribute( TypeDeclaration.ATTR_DURATION );
             if ( duration != null ) {
@@ -793,8 +798,7 @@ public class PackageBuilder {
                 ClassFieldAccessorStore store = pkgRegistry.getPackage().getClassFieldAccessorStore();
                 InternalReadAccessor extractor = store.getReader( type.getTypeClass().getName(),
                                                                   duration,
-                                                                  type );
-                type.setReadAccessor( extractor );
+                                                                  type.new DurationAccessorSetter() );
             }
 
             pkgRegistry.getPackage().addTypeDeclaration( type );

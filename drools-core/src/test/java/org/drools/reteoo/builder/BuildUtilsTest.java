@@ -34,7 +34,7 @@ import junit.framework.TestCase;
 import static org.drools.time.Interval.*;
 
 /**
- * @author admin
+ * @author etirelli
  *
  */
 public class BuildUtilsTest extends TestCase {

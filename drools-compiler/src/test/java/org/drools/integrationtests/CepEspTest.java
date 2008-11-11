@@ -89,19 +89,19 @@ public class CepEspTest extends TestCase {
         StockTick tick1 = new StockTick( 1,
                                          "DROO",
                                          50,
-                                         System.currentTimeMillis() );
+                                         10000 );
         StockTick tick2 = new StockTick( 2,
                                          "ACME",
                                          10,
-                                         System.currentTimeMillis() );
+                                         10010 );
         StockTick tick3 = new StockTick( 3,
                                          "ACME",
                                          10,
-                                         System.currentTimeMillis() );
+                                         10100 );
         StockTick tick4 = new StockTick( 4,
                                          "DROO",
                                          50,
-                                         System.currentTimeMillis() );
+                                         11000 );
 
         InternalFactHandle handle1 = (InternalFactHandle) session.insert( tick1 );
         InternalFactHandle handle2 = (InternalFactHandle) session.insert( tick2 );
@@ -144,22 +144,22 @@ public class CepEspTest extends TestCase {
         StockTick tick1 = new StockTick( 1,
                                          "DROO",
                                          50,
-                                         System.currentTimeMillis(),
+                                         10000,
                                          5 );
         StockTick tick2 = new StockTick( 2,
                                          "ACME",
                                          10,
-                                         System.currentTimeMillis(),
+                                         11000,
                                          10 );
         StockTick tick3 = new StockTick( 3,
                                          "ACME",
                                          10,
-                                         System.currentTimeMillis(),
+                                         12000,
                                          8 );
         StockTick tick4 = new StockTick( 4,
                                          "DROO",
                                          50,
-                                         System.currentTimeMillis(),
+                                         13000,
                                          7 );
 
         InternalFactHandle handle1 = (InternalFactHandle) wm.insert( tick1 );
@@ -181,6 +181,15 @@ public class CepEspTest extends TestCase {
         EventFactHandle eh2 = (EventFactHandle) handle2;
         EventFactHandle eh3 = (EventFactHandle) handle3;
         EventFactHandle eh4 = (EventFactHandle) handle4;
+
+        assertEquals( tick1.getTime(),
+                      eh1.getStartTimestamp() );
+        assertEquals( tick2.getTime(),
+                      eh2.getStartTimestamp() );
+        assertEquals( tick3.getTime(),
+                      eh3.getStartTimestamp() );
+        assertEquals( tick4.getTime(),
+                      eh4.getStartTimestamp() );
 
         assertEquals( tick1.getDuration(),
                       eh1.getDuration() );

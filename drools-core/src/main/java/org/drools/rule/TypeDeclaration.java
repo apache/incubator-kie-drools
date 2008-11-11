@@ -22,6 +22,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.io.Serializable;
 
 import org.drools.factmodel.ClassDefinition;
 import org.drools.facttemplates.FactTemplate;
@@ -36,7 +37,6 @@ import org.drools.spi.InternalReadAccessor;
  */
 public class TypeDeclaration
     implements
-    AcceptsReadAccessor,
     Externalizable {
 
     public static final String ATTR_CLASS     = "class";
@@ -74,16 +74,17 @@ public class TypeDeclaration
         }
     }
 
-    private String                         typeName;
-    private Role                           role;
-    private Format                         format;
-    private String                         timestampAttribute;
-    private String                         durationAttribute;
+    private String               typeName;
+    private Role                 role;
+    private Format               format;
+    private String               timestampAttribute;
+    private String               durationAttribute;
     private InternalReadAccessor durationExtractor;
-    private transient Class< ? >                     typeClass;
-    private FactTemplate                   typeTemplate;
-    private ClassDefinition                typeClassDef;
-
+    private InternalReadAccessor timestampExtractor;
+    private transient Class< ? > typeClass;
+    private FactTemplate         typeTemplate;
+    private ClassDefinition      typeClassDef;
+    
     public TypeDeclaration() {
     }
 
@@ -108,6 +109,7 @@ public class TypeDeclaration
         this.typeTemplate = (FactTemplate) in.readObject();
         this.typeClassDef = (ClassDefinition) in.readObject();
         this.durationExtractor = (InternalReadAccessor) in.readObject();
+        this.timestampExtractor = (InternalReadAccessor) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -120,11 +122,8 @@ public class TypeDeclaration
         out.writeObject( typeTemplate );
         out.writeObject( typeClassDef );
         out.writeObject( durationExtractor );
+        out.writeObject( timestampExtractor );
     }
-    
-    public void setReadAccessor(InternalReadAccessor readAccessor) {
-        this.durationExtractor = readAccessor;
-    }    
 
     /**
      * @return the type
@@ -201,7 +200,7 @@ public class TypeDeclaration
      */
     public void setTypeClass(Class< ? > typeClass) {
         this.typeClass = typeClass;
-        if( this.typeClassDef != null ) {
+        if ( this.typeClassDef != null ) {
             this.typeClassDef.setDefinedClass( this.typeClass );
         }
     }
@@ -278,4 +277,25 @@ public class TypeDeclaration
         this.typeClassDef = typeClassDef;
     }
 
+    public InternalReadAccessor getTimestampExtractor() {
+        return timestampExtractor;
+    }
+
+    public void setTimestampExtractor(InternalReadAccessor timestampExtractor) {
+        this.timestampExtractor = timestampExtractor;
+    }
+
+    public class DurationAccessorSetter implements AcceptsReadAccessor, Serializable {
+        private static final long serialVersionUID = 1429300982505284833L;
+        public void setReadAccessor(InternalReadAccessor readAccessor) {
+            setDurationExtractor( readAccessor );
+        }
+    }
+    
+    public class TimestampAccessorSetter implements AcceptsReadAccessor, Serializable {
+        private static final long serialVersionUID = 8656678871125722903L;
+        public void setReadAccessor(InternalReadAccessor readAccessor) {
+            setTimestampExtractor( readAccessor );
+        }
+    }
 }
