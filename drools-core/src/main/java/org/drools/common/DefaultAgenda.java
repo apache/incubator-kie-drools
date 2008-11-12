@@ -35,6 +35,7 @@ import org.drools.common.RuleFlowGroupImpl.DeactivateCallback;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ReteooStatefulSession;
+import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.RuleBaseConfiguration;
 import org.drools.WorkingMemory;
 import org.drools.spi.Activation;
@@ -915,7 +916,7 @@ public class DefaultAgenda
                                                                         e );
             } else if ( this.consequenceExceptionHandler != null ) {
                 this.consequenceExceptionHandler.handleException( activation,
-                                                                  new StatefulKnowledgeSessionImpl( (ReteooStatefulSession) this.workingMemory ),
+                                                                  new StatefulKnowledgeSessionImpl( (ReteooWorkingMemory) this.workingMemory ),
                                                                   e );
             } else {
                 throw new RuntimeException( e );

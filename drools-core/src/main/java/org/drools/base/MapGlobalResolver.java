@@ -1,5 +1,6 @@
 package org.drools.base;
 
+import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -11,7 +12,8 @@ import org.drools.spi.GlobalResolver;
 
 public class MapGlobalResolver
     implements
-    GlobalResolver {
+    GlobalResolver,
+    Externalizable {
 
     private static final long serialVersionUID = 400L;
 

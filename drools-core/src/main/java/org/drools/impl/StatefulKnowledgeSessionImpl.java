@@ -45,6 +45,8 @@ import org.drools.event.rule.impl.ObjectInsertedEventImpl;
 import org.drools.event.rule.impl.ObjectRetractedEventImpl;
 import org.drools.event.rule.impl.ObjectUpdatedEventImpl;
 import org.drools.reteoo.ReteooStatefulSession;
+import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.runtime.GlobalResolver;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.process.WorkItemManager;
@@ -57,19 +59,19 @@ import org.drools.time.SessionClock;
 public class StatefulKnowledgeSessionImpl
     implements
     StatefulKnowledgeSession {
-    public ReteooStatefulSession                                              session;
+    public ReteooWorkingMemory                                              session;
     public KnowledgeBaseImpl                                                  kbase;
 
     public Map<WorkingMemoryEventListener, WorkingMemoryEventListenerWrapper> mappedWorkingMemoryListeners;
     public Map<AgendaEventListener, AgendaEventListenerWrapper>               mappedAgendaListeners;
     public Map<ProcessEventListener, ProcessEventListenerWrapper>             mappedProcessListeners;
 
-    public StatefulKnowledgeSessionImpl(ReteooStatefulSession session) {
+    public StatefulKnowledgeSessionImpl(ReteooWorkingMemory session) {
         this( session,
               null );
     }
 
-    public StatefulKnowledgeSessionImpl(ReteooStatefulSession session,
+    public StatefulKnowledgeSessionImpl(ReteooWorkingMemory session,
                                         KnowledgeBaseImpl kbase) {
         this.session = session;
         this.kbase = kbase;
@@ -224,22 +226,26 @@ public class StatefulKnowledgeSessionImpl
         this.session.setGlobal( identifier,
                                 object );
     }
+    
+    public void setGlobalResolver(GlobalResolver globalResolver) {
+        this.session.setGlobalResolver( (org.drools.spi.GlobalResolver) globalResolver );
+    }    
 
-    public Future<Object> asyncInsert(Object object) {
-        return new FutureAdapter( this.session.asyncInsert( object ) );
-    }
-
-    public Future<Object> asyncInsert(Object[] array) {
-        return new FutureAdapter( this.session.asyncInsert( array ) );
-    }
-
-    public Future<Object> asyncInsert(Iterable< ? > iterable) {
-        return new FutureAdapter( this.session.asyncInsert( iterable ) );
-    }
-
-    public Future< ? > asyncFireAllRules() {
-        return new FutureAdapter( this.session.asyncFireAllRules() );
-    }
+//    public Future<Object> asyncInsert(Object object) {
+//        return new FutureAdapter( this.session.asyncInsert( object ) );
+//    }
+//
+//    public Future<Object> asyncInsert(Object[] array) {
+//        return new FutureAdapter( this.session.asyncInsert( array ) );
+//    }
+//
+//    public Future<Object> asyncInsert(Iterable< ? > iterable) {
+//        return new FutureAdapter( this.session.asyncInsert( iterable ) );
+//    }
+//
+//    public Future< ? > asyncFireAllRules() {
+//        return new FutureAdapter( this.session.asyncFireAllRules() );
+//    }
 
     public Collection< ? extends FactHandle> getFactHandles() {
         return new ObjectStoreWrapper( session.getObjectStore(),
@@ -541,7 +547,4 @@ public class StatefulKnowledgeSessionImpl
             return filter.accept( activation );
         }               
     }
-    
-    
-
 }

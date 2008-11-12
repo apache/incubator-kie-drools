@@ -1,0 +1,48 @@
+package org.drools.test;
+
+import org.drools.Cheese;
+import org.drools.Cheesery
+
+global java.util.List list;
+global Cheesery cheesery;
+
+global String inString
+global Cheese inCheese;
+global Cheese outCheese;
+
+// test Fact in Parameter
+rule "rule1"
+    salience 10
+    when
+        Cheese( this == inCheese, $type : type )
+    then
+		list.add( "rule1 " + $type );        
+end    
+
+// test Global in Parameter
+rule "rule2"
+    salience 5
+    when
+        Cheese( $type : type == "stilton" )
+    then
+		list.add( "rule2 " + $type );      
+end  
+
+// test Global out Parameter
+rule "rule3"
+    salience 3
+    when
+    then
+        Cheese brie = new Cheese("brie", 50);
+        insert( brie );
+        list.add( "rule3 brie" ); 
+		drools.getWorkingMemory().setGlobal("outCheese", brie);
+end  
+
+// test Global in Parameter
+rule "rule4"
+    salience 0
+    when
+    then
+        list.add( "rule4 " + inString ); 
+end 
