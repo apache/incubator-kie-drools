@@ -28,11 +28,11 @@ import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.compiler.PackageBuilder;
-import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemHandler;
-import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.impl.demo.UIWorkItemHandler;
 import org.drools.rule.Package;
+import org.drools.runtime.process.WorkItem;
+import org.drools.runtime.process.WorkItemManager;
 
 public class OrderExample extends JFrame {
 	
