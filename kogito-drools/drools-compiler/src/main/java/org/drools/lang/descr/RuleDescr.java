@@ -263,4 +263,8 @@ public class RuleDescr extends BaseDescr
 	public String getParentName() {
 		return parentName;
 	}
+	
+	public String toString() {
+	    return "[Rule name='" + this.name + "']";
+	}
 }

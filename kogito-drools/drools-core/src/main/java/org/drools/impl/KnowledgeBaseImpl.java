@@ -15,6 +15,7 @@ import org.drools.KnowledgeBase;
 import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
+import org.drools.common.InternalRuleBase;
 import org.drools.definition.KnowledgePackage;
 import org.drools.event.AfterFunctionRemovedEvent;
 import org.drools.event.AfterPackageAddedEvent;
@@ -52,6 +53,7 @@ import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.rule.Package;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.StatelessKnowledgeSession;
 
 public class KnowledgeBaseImpl
     implements
@@ -128,6 +130,14 @@ public class KnowledgeBaseImpl
         return new StatefulKnowledgeSessionImpl( session,
                                                  this );
     }    
+    
+    public StatelessKnowledgeSession newStatelessKnowledgeSession() {
+        return new StatelessKnowledgeSessionImpl( (InternalRuleBase) this.ruleBase );
+    }
+    
+    public StatelessKnowledgeSession newStatelessKnowledgeSession(KnowledgeSessionConfiguration conf) {        
+        return new StatelessKnowledgeSessionImpl( (InternalRuleBase) this.ruleBase );
+    } 
 
     public void removeKnowledgePackage(String packageName) {
         this.ruleBase.removePackage( packageName );
@@ -225,5 +235,4 @@ public class KnowledgeBaseImpl
                                                                              new RuleImpl( event.getRule() ) ) );
         }
     }
-
 }

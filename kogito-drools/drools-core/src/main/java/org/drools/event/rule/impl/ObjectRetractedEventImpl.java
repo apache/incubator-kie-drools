@@ -7,6 +7,7 @@ import java.io.ObjectOutput;
 import org.drools.event.rule.ObjectRetractedEvent;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.ReteooStatefulSession;
+import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.FactHandle;
 import org.drools.runtime.rule.WorkingMemory;
 
@@ -15,7 +16,7 @@ public class ObjectRetractedEventImpl  extends WorkingMemoryEventImpl implements
     private Object oldbOject;
     
     public ObjectRetractedEventImpl( org.drools.event.ObjectRetractedEvent event) {
-        super( (WorkingMemory) new StatefulKnowledgeSessionImpl( (ReteooStatefulSession) event.getWorkingMemory() ), event.getPropagationContext() );
+        super( (WorkingMemory) new StatefulKnowledgeSessionImpl( (ReteooWorkingMemory) event.getWorkingMemory() ), event.getPropagationContext() );
         factHandle = event.getFactHandle();
         oldbOject = event.getOldObject();
     }

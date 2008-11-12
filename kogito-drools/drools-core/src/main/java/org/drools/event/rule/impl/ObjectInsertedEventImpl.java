@@ -7,6 +7,7 @@ import java.io.ObjectOutput;
 import org.drools.event.rule.ObjectInsertedEvent;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.ReteooStatefulSession;
+import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.FactHandle;
 import org.drools.runtime.rule.WorkingMemory;
 
@@ -17,7 +18,7 @@ public class ObjectInsertedEventImpl extends WorkingMemoryEventImpl
     private Object      object;
 
     public ObjectInsertedEventImpl(org.drools.event.ObjectInsertedEvent event) {
-        super( (WorkingMemory) new StatefulKnowledgeSessionImpl( (ReteooStatefulSession) event.getWorkingMemory() ), event.getPropagationContext() );
+        super( (WorkingMemory) new StatefulKnowledgeSessionImpl( (ReteooWorkingMemory) event.getWorkingMemory() ), event.getPropagationContext() );
         factHandle = event.getFactHandle();
         object = event.getObject();
     }
