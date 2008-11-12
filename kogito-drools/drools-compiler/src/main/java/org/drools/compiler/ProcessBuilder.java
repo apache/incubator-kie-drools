@@ -16,13 +16,24 @@ package org.drools.compiler;
  * limitations under the License.
  */
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import org.drools.definition.process.Connection;
 import org.drools.definition.process.Node;
@@ -61,13 +72,17 @@ import org.drools.xml.XmlProcessReader;
  */
 public class ProcessBuilder {
 
-    private PackageBuilder packageBuilder;
-    private final List<DroolsError> errors = new ArrayList<DroolsError>();
-    private Map<String, ProcessValidator> processValidators = new HashMap<String, ProcessValidator>();;
+    private PackageBuilder                packageBuilder;
+    private final List<DroolsError>       errors                         = new ArrayList<DroolsError>();
+    private Map<String, ProcessValidator> processValidators              = new HashMap<String, ProcessValidator>();
+    private static final String           XSL_FROM_4_TO_5                = "/org/drools/xml/processes/RuleFlowFrom4To5.xsl";
+    private static final String           PROCESS_ELEMENT_WITH_NAMESPACE = "<process xmlns=\"http://drools.org/drools-4.0/process\"\n" + "    xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+                                                                           + "    xs:schemaLocation=\"http://drools.org/drools-4.0/process drools-processes-4.0.xsd\"\n";
 
     public ProcessBuilder(PackageBuilder packageBuilder) {
         this.packageBuilder = packageBuilder;
-        this.processValidators.put(RuleFlowProcess.RULEFLOW_TYPE, RuleFlowProcessValidator.getInstance());
+        this.processValidators.put( RuleFlowProcess.RULEFLOW_TYPE,
+                                    RuleFlowProcessValidator.getInstance() );
     }
 
     public List<DroolsError> getErrors() {
@@ -173,11 +188,16 @@ public class ProcessBuilder {
                                context,
                                node );
             }
-            if (node instanceof NodeContainer) {
-                processNodes(((NodeContainer) node).getNodes(), process, processDescr, context, nodeBuilderRegistry);
+            if ( node instanceof NodeContainer ) {
+                processNodes( ((NodeContainer) node).getNodes(),
+                              process,
+                              processDescr,
+                              context,
+                              nodeBuilderRegistry );
             }
-            if (node instanceof ContextContainer) {
-            	buildContexts((ContextContainer) node, context); 
+            if ( node instanceof ContextContainer ) {
+                buildContexts( (ContextContainer) node,
+                               context );
             }
         }
     }
@@ -190,12 +210,48 @@ public class ProcessBuilder {
         final ClassLoader newLoader = this.getClass().getClassLoader();
         try {
             Thread.currentThread().setContextClassLoader( newLoader );
-            Process process = xmlReader.read(reader);
+            String portRuleFlow = System.getProperty( "drools.ruleflow.port", "false" );
+            Reader portedReader = null;
+            if ( portRuleFlow.equalsIgnoreCase( "true" ) ) {
+                portedReader = portToCurrentVersion( reader );
+            } else {
+                portedReader = reader;
+            }
+            Process process = xmlReader.read(portedReader);
             buildProcess( process, url );
         } finally {
             Thread.currentThread().setContextClassLoader( oldLoader );
         }
         reader.close();
+    }
+
+    private Reader portToCurrentVersion(final Reader reader) throws Exception {
+        String xml = convertReaderToString( reader );
+        if ( xml.indexOf( "<org.drools.ruleflow.core.impl.RuleFlowProcessImpl " ) >= 0 ) {
+            // Not a current version convert it.
+            String version5XML = XSLTransformation.transform( XSL_FROM_4_TO_5,
+                                                              xml,
+                                                              null );
+            // Add the namespace attribute to the process element as it is not added by the XSL transformation.
+            version5XML = version5XML.replaceAll( "<process ",
+                                                  PROCESS_ELEMENT_WITH_NAMESPACE );
+            return new StringReader( version5XML );
+        }
+        return reader;
+    }
+
+    private String convertReaderToString(Reader reader) throws IOException {
+        final StringBuffer text = new StringBuffer();
+
+        final char[] buf = new char[1024];
+        int len = 0;
+
+        while ( (len = reader.read( buf )) >= 0 ) {
+            text.append( buf,
+                         0,
+                         len );
+        }
+        return text.toString();
     }
 
     private String generateRules(final Process process) {
@@ -228,7 +284,7 @@ public class ProcessBuilder {
                 if ( nodes[i] instanceof Split ) {
                     Split split = (Split) nodes[i];
                     if ( split.getType() == Split.TYPE_XOR || split.getType() == Split.TYPE_OR ) {
-                        for ( Connection connection: split.getDefaultOutgoingConnections() ) {
+                        for ( Connection connection : split.getDefaultOutgoingConnections() ) {
                             Constraint constraint = split.getConstraint( connection );
                             if ( "rule".equals( constraint.getType() ) ) {
                                 builder.append( createSplitRule( process,
@@ -242,16 +298,16 @@ public class ProcessBuilder {
                     builder.append( createMilestoneRule( process,
                                                          milestone ) );
                 } else if ( nodes[i] instanceof StartNode ) {
-                	StartNode startNode = (StartNode) nodes[i];
-                	List<Trigger> triggers = startNode.getTriggers();
-                	if (triggers != null) {
-                		for (Trigger trigger: triggers) {
-                			if (trigger instanceof ConstraintTrigger) {
-                				builder.append( createStartConstraintRule( process,
-            						(ConstraintTrigger) trigger ));
-                			}
-                		}
-                	}
+                    StartNode startNode = (StartNode) nodes[i];
+                    List<Trigger> triggers = startNode.getTriggers();
+                    if ( triggers != null ) {
+                        for ( Trigger trigger : triggers ) {
+                            if ( trigger instanceof ConstraintTrigger ) {
+                                builder.append( createStartConstraintRule( process,
+                                                                           (ConstraintTrigger) trigger ) );
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -269,29 +325,76 @@ public class ProcessBuilder {
                                        MilestoneNode milestone) {
         return "rule \"RuleFlow-Milestone-" + process.getId() + "-" + milestone.getId() + "\" \n" + "      ruleflow-group \"DROOLS_SYSTEM\" \n" + "    when \n" + "      " + milestone.getConstraint() + "\n" + "    then \n" + "end \n\n";
     }
-    
+
     private String createStartConstraintRule(Process process,
-    										 ConstraintTrigger trigger) {
-    	String result =
-    		"rule \"RuleFlow-Start-" + process.getId() + "\" \n" +
-    		"    when\n" +
-			"        " + trigger.getConstraint() + "\n" +
-			"    then\n";
-    	Map<String, String> inMappings = trigger.getInMappings();
-    	if (inMappings != null && !inMappings.isEmpty()) {
-    		result += "        java.util.Map params = new java.util.HashMap();\n";
-    		for (Map.Entry<String, String> entry: inMappings.entrySet()) {
-	    		result += "        params.put(\"" + entry.getKey() + "\", " + entry.getValue() + ");\n";
-	    	}
-	    	result += 
-				"        drools.getWorkingMemory().startProcess(\"" + process.getId() + "\", params);\n" +
-			   	"end\n\n";
-    	} else {
-    		result += 
-				"        drools.getWorkingMemory().startProcess(\"" + process.getId() + "\");\n" +
-			   	"end\n\n";
-    	}
-		return result;
+                                             ConstraintTrigger trigger) {
+        String result = "rule \"RuleFlow-Start-" + process.getId() + "\" \n" + "    when\n" + "        " + trigger.getConstraint() + "\n" + "    then\n";
+        Map<String, String> inMappings = trigger.getInMappings();
+        if ( inMappings != null && !inMappings.isEmpty() ) {
+            result += "        java.util.Map params = new java.util.HashMap();\n";
+            for ( Map.Entry<String, String> entry : inMappings.entrySet() ) {
+                result += "        params.put(\"" + entry.getKey() + "\", " + entry.getValue() + ");\n";
+            }
+            result += "        drools.getWorkingMemory().startProcess(\"" + process.getId() + "\", params);\n" + "end\n\n";
+        } else {
+            result += "        drools.getWorkingMemory().startProcess(\"" + process.getId() + "\");\n" + "end\n\n";
+        }
+        return result;
     }
-    
+
+    private static class XSLTransformation {
+        public static String transform(String stylesheet,
+                                       String srcXMLString,
+                                       HashMap<String, String> params) throws Exception {
+            StringWriter writer = new StringWriter();
+            StreamResult result = new StreamResult( writer );
+            Source src = new StreamSource( new StringReader( srcXMLString ) );
+            transform( stylesheet,
+                       src,
+                       result,
+                       params );
+            return writer.toString();
+        }
+
+        public static void transform(String stylesheet,
+                                     Source src,
+                                     Result res,
+                                     HashMap<String, String> params) throws Exception {
+
+            Transformer transformer = getTransformer( stylesheet );
+
+            transformer.clearParameters();
+
+            if ( params != null && params.size() > 0 ) {
+                Iterator<String> itKeys = params.keySet().iterator();
+
+                while ( itKeys.hasNext() ) {
+                    String key = itKeys.next();
+                    String value = params.get( key );
+                    transformer.setParameter( key,
+                                              value );
+                }
+            }
+
+            transformer.transform( src,
+                                   res );
+        }
+
+        private static Transformer getTransformer(String stylesheet) throws Exception {
+            Transformer transformer = null;
+            InputStream xslStream = null;
+
+            try {
+                InputStream in = XSLTransformation.class.getResourceAsStream( stylesheet );
+                xslStream = new BufferedInputStream( in );
+                StreamSource src = new StreamSource( xslStream );
+                src.setSystemId( stylesheet );
+                transformer = TransformerFactory.newInstance().newTransformer( src );
+            } finally {
+                if ( xslStream != null ) xslStream.close();
+            }
+
+            return transformer;
+        }
+    }
 }

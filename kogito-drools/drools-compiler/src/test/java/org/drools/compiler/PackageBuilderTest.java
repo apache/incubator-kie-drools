@@ -247,7 +247,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         // It's been serialised so we have to simulate the re-wiring process
         newPkg.getDialectRuntimeRegistry().onAdd( ruleBase.getRootClassLoader() );
         newPkg.getDialectRuntimeRegistry().onBeforeExecute();
-        
+
         ruleBase.getGlobals().put( "map",
                                    Map.class );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -989,7 +989,6 @@ public class PackageBuilderTest extends DroolsTestCase {
         builder.addPackage( pkgDescr );
         DialectCompiletimeRegistry reg = builder.getPackageRegistry( pkgDescr.getName() ).getDialectCompiletimeRegistry();
 
-
         final Field dialectField = builder.getClass().getDeclaredField( "defaultDialect" );
         dialectField.setAccessible( true );
         String dialectName = (String) dialectField.get( builder );
@@ -1061,11 +1060,13 @@ public class PackageBuilderTest extends DroolsTestCase {
         PackageDescr pkgDescr = new PackageDescr( "org.test" );
         TypeDeclarationDescr typeDescr = new TypeDeclarationDescr( "NewBean" );
 
-        TypeFieldDescr f1 = new TypeFieldDescr("name", new PatternDescr("String"));
-        TypeFieldDescr f2 = new TypeFieldDescr("age", new PatternDescr("int"));
+        TypeFieldDescr f1 = new TypeFieldDescr( "name",
+                                                new PatternDescr( "String" ) );
+        TypeFieldDescr f2 = new TypeFieldDescr( "age",
+                                                new PatternDescr( "int" ) );
 
-        typeDescr.addField(f1);
-        typeDescr.addField(f2);
+        typeDescr.addField( f1 );
+        typeDescr.addField( f2 );
 
         pkgDescr.addTypeDeclaration( typeDescr );
 
@@ -1083,17 +1084,17 @@ public class PackageBuilderTest extends DroolsTestCase {
                       type.getRole() );
         assertEquals( "org.test.NewBean",
                       type.getTypeClass().getName() );
-        assertFalse(builder.hasErrors());
+        assertFalse( builder.hasErrors() );
 
         Package bp = builder.getPackage();
         CompositeClassLoader rootClassloader = new CompositeClassLoader( Thread.currentThread().getContextClassLoader() );
-        JavaDialectRuntimeData dialectData = ( JavaDialectRuntimeData ) bp.getDialectRuntimeRegistry().getDialectData( "java" );
-        dialectData.onAdd( bp.getDialectRuntimeRegistry(), rootClassloader );
-        
-        Class newBean = rootClassloader.loadClass("org.test.NewBean");
-        assertNotNull(newBean);
-    }
+        JavaDialectRuntimeData dialectData = (JavaDialectRuntimeData) bp.getDialectRuntimeRegistry().getDialectData( "java" );
+        dialectData.onAdd( bp.getDialectRuntimeRegistry(),
+                           rootClassloader );
 
+        Class newBean = rootClassloader.loadClass( "org.test.NewBean" );
+        assertNotNull( newBean );
+    }
 
     public void testPackageMerge() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
@@ -1277,6 +1278,47 @@ public class PackageBuilderTest extends DroolsTestCase {
         assertTrue( p instanceof WorkflowProcessImpl );
     }
 
+    public void testRuleFlowUpgrade() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        // Set the system property so that automatic conversion can happen
+        System.setProperty( "drools.ruleflow.port",
+                            "true" );
+
+        InputStream in = this.getClass().getResourceAsStream( "/org/drools/integrationtests/ruleflow40.rfm" );
+        assertNotNull( in );
+
+        builder.addPackage( new PackageDescr( "com.sample" ) );
+
+        builder.addRuleFlow( new InputStreamReader( in ) );
+        Package pkg = builder.getPackage();
+        assertNotNull( pkg );
+
+        Map flows = pkg.getRuleFlows();
+        assertNotNull( flows );
+        assertEquals( 1,
+                      flows.size() );
+
+        assertTrue( flows.containsKey( "0" ) );
+
+        Process p = (Process) flows.get( "0" );
+        assertTrue( p instanceof WorkflowProcessImpl );
+
+        //now serialization
+        Package pkg2 = (Package) DroolsStreamUtils.streamIn( DroolsStreamUtils.streamOut( pkg ) );
+        assertNotNull( pkg2 );
+
+        flows = pkg2.getRuleFlows();
+        assertNotNull( flows );
+        assertEquals( 1,
+                      flows.size() );
+        assertTrue( flows.containsKey( "0" ) );
+        p = (Process) flows.get( "0" );
+        assertTrue( p instanceof WorkflowProcessImpl );
+        // Reset the system property so that automatic conversion should not happen
+        System.setProperty( "drools.ruleflow.port",
+                            "false" );
+    }
+
     public void testPackageRuleFlows() throws Exception {
         Package pkg = new Package( "boo" );
         Process rf = new MockRuleFlow( "1" );
@@ -1316,28 +1358,31 @@ public class PackageBuilderTest extends DroolsTestCase {
 
     public void testSinglePackage() throws Exception {
         PackageBuilderConfiguration cfg = new PackageBuilderConfiguration();
-        cfg.setAllowMultipleNamespaces(false);
+        cfg.setAllowMultipleNamespaces( false );
         PackageBuilder bldr = new PackageBuilder( cfg );
-    	bldr.addPackageFromDrl(new StringReader("package whee\n import org.drools.Cheese"));
-    	assertFalse(bldr.hasErrors());
-    	bldr.addPackageFromDrl(new StringReader("package whee\n import org.drools.Person"));
-    	assertFalse(bldr.hasErrors());
-    	bldr.addPackageFromDrl(new StringReader("package whee2\n import org.drools.Person"));
-    	assertFalse(bldr.hasErrors());
+        bldr.addPackageFromDrl( new StringReader( "package whee\n import org.drools.Cheese" ) );
+        assertFalse( bldr.hasErrors() );
+        bldr.addPackageFromDrl( new StringReader( "package whee\n import org.drools.Person" ) );
+        assertFalse( bldr.hasErrors() );
+        bldr.addPackageFromDrl( new StringReader( "package whee2\n import org.drools.Person" ) );
+        assertFalse( bldr.hasErrors() );
 
-    	assertEquals(1, bldr.getPackages().length);
+        assertEquals( 1,
+                      bldr.getPackages().length );
 
-    	cfg = new PackageBuilderConfiguration();
-    	assertEquals(true, cfg.isAllowMultipleNamespaces());
-    	bldr = new PackageBuilder( cfg );
-    	bldr.addPackageFromDrl(new StringReader("package whee\n import org.drools.Cheese"));
-    	assertFalse(bldr.hasErrors());
-    	bldr.addPackageFromDrl(new StringReader("import org.drools.Person"));
-    	assertFalse(bldr.hasErrors());
-    	bldr.addPackageFromDrl(new StringReader("package whee2\n import org.drools.Person"));
-    	assertFalse(bldr.hasErrors());
+        cfg = new PackageBuilderConfiguration();
+        assertEquals( true,
+                      cfg.isAllowMultipleNamespaces() );
+        bldr = new PackageBuilder( cfg );
+        bldr.addPackageFromDrl( new StringReader( "package whee\n import org.drools.Cheese" ) );
+        assertFalse( bldr.hasErrors() );
+        bldr.addPackageFromDrl( new StringReader( "import org.drools.Person" ) );
+        assertFalse( bldr.hasErrors() );
+        bldr.addPackageFromDrl( new StringReader( "package whee2\n import org.drools.Person" ) );
+        assertFalse( bldr.hasErrors() );
 
-    	assertEquals(2, bldr.getPackages().length);
+        assertEquals( 2,
+                      bldr.getPackages().length );
     }
 
     public void testTimeWindowBehavior() throws Exception {
@@ -1371,7 +1416,7 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         final Pattern pattern = (Pattern) rule.getLhs().getChildren().get( 0 );
         assertEquals( StockTick.class.getName(),
-                      ((ClassObjectType)pattern.getObjectType()).getClassType().getName() );
+                      ((ClassObjectType) pattern.getObjectType()).getClassType().getName() );
         final Behavior window = pattern.getBehaviors().get( 0 );
         assertEquals( Behavior.BehaviorType.TIME_WINDOW,
                       window.getType() );
