@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.WorkingMemory;
-import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemHandler;
-import org.drools.process.instance.WorkItemManager;
+import org.drools.runtime.process.WorkItem;
+import org.drools.runtime.process.WorkItemManager;
 
 public class ShippingWorkItemHandler implements WorkItemHandler {
 
