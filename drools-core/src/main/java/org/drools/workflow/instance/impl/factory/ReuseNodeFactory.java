@@ -3,7 +3,7 @@ package org.drools.workflow.instance.impl.factory;
 import org.drools.definition.process.Node;
 import org.drools.runtime.process.NodeInstance;
 import org.drools.runtime.process.NodeInstanceContainer;
-import org.drools.runtime.process.WorkflowProcessInstance;
+import org.drools.workflow.instance.WorkflowProcessInstance;
 import org.drools.workflow.instance.impl.NodeInstanceFactory;
 import org.drools.workflow.instance.impl.NodeInstanceImpl;
 

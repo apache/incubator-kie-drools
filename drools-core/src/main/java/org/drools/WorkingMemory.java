@@ -21,9 +21,9 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.drools.process.instance.ProcessInstance;
+import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.event.SignalManager;
 import org.drools.process.instance.timer.TimerManager;
-import org.drools.runtime.process.WorkItemManager;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AsyncExceptionHandler;
 import org.drools.spi.GlobalResolver;

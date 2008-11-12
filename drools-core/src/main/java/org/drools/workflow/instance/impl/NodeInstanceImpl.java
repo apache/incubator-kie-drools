@@ -30,8 +30,8 @@ import org.drools.process.instance.ContextInstanceContainer;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.runtime.process.NodeInstance;
 import org.drools.runtime.process.NodeInstanceContainer;
-import org.drools.runtime.process.WorkflowProcessInstance;
 import org.drools.workflow.core.impl.NodeImpl;
+import org.drools.workflow.instance.WorkflowProcessInstance;
 
 /**
  * Default implementation of a RuleFlow node instance.
@@ -40,7 +40,9 @@ import org.drools.workflow.core.impl.NodeImpl;
  */
 public abstract class NodeInstanceImpl implements org.drools.workflow.instance.NodeInstance, Serializable {
 
-    private long id;
+	private static final long serialVersionUID = 4L;
+	
+	private long id;
     private long nodeId;
     private WorkflowProcessInstance processInstance;
     private org.drools.workflow.instance.NodeInstanceContainer nodeInstanceContainer;
