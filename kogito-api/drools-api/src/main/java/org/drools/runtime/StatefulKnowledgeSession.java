@@ -8,6 +8,12 @@ public interface StatefulKnowledgeSession extends StatefulRuleSession, StatefulP
 
     void setGlobal(String identifier,
                    Object object);
+    
+    /**
+     * Delegate used to resolve any global names not found in the global map.
+     * @param globalResolver
+     */
+    void setGlobalResolver(GlobalResolver globalResolver);    
 
     KnowledgeBase getKnowledgeBase();
 

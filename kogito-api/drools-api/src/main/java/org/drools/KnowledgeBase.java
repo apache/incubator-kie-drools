@@ -6,6 +6,7 @@ import org.drools.definition.KnowledgePackage;
 import org.drools.event.knowledgebase.KnowledgeBaseEventManager;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.StatelessKnowledgeSession;
 
 public interface KnowledgeBase extends KnowledgeBaseEventManager {    
     
@@ -22,5 +23,8 @@ public interface KnowledgeBase extends KnowledgeBaseEventManager {
     
     StatefulKnowledgeSession newStatefulKnowledgeSession();
     
+    StatelessKnowledgeSession newStatelessKnowledgeSession(KnowledgeSessionConfiguration conf);
+    
+    StatelessKnowledgeSession newStatelessKnowledgeSession();    
     
 }
