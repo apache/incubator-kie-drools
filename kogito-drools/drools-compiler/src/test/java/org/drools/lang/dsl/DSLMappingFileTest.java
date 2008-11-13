@@ -108,10 +108,9 @@ public class DSLMappingFileTest extends TestCase {
     }
 
     /**
-     * From Toni to Edson.
      * Right now this test fails because there is no RHS for the rule. It connects the "then" and "end" to "thenend".
      */
-    public void FIXMEtestNoRHS() {
+    public void testNoRHS() {
         String file = "[then]TEST=System.out.println(\"DO_SOMETHING\");\n" + "[when]code {code1} occurs and sum of all digit not equal \\( {code2} \\+ {code3} \\)=AAAA( cd1 == {code1}, cd2 != ( {code2} + {code3} ))\n"
                       + "[when]code {code1} occurs=BBBB\n";
         try {
