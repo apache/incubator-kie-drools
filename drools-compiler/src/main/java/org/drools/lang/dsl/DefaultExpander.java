@@ -312,7 +312,9 @@ public class DefaultExpander
             }
             buf.append( "\n" );
         }
-
+        if( lines.length == 0 ) {
+            buf.append( "\n" );
+        }
         return buf.toString();
     }
 
