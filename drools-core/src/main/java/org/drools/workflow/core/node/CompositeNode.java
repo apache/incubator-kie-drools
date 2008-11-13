@@ -98,7 +98,17 @@ public class CompositeNode extends NodeImpl implements NodeContainer, EventNodeI
         	if (oldNodeAndType.equals(inNode)) {
         		return;
         	} else {
-        		// TODO remove old composite start nodes and connections 
+        		// remove old start nodes + connections
+        		List<Connection> oldInConnections = 
+        			oldNodeAndType.getNode().getIncomingConnections(oldNodeAndType.getType());
+        		if (oldInConnections != null) {
+        			for (Connection connection: new ArrayList<Connection>(oldInConnections)) {
+        				if (connection.getFrom() instanceof CompositeNodeStart) {
+        					removeNode(connection.getFrom());
+        					((ConnectionImpl) connection).terminate();
+        				}
+        			}
+        		}
         	}
         }
         inConnectionMap.put(inType, inNode);
@@ -126,7 +136,15 @@ public class CompositeNode extends NodeImpl implements NodeContainer, EventNodeI
         	if (oldNodeAndType.equals(outNode)) {
         		return;
         	} else {
-        		// TODO remove old composite start nodes and connections 
+        		// remove old end nodes + connections
+        		List<Connection> oldOutConnections = 
+        			oldNodeAndType.getNode().getOutgoingConnections(oldNodeAndType.getType());
+    			for (Connection connection: new ArrayList<Connection>(oldOutConnections)) {
+    				if (connection.getTo() instanceof CompositeNodeEnd) {
+    					removeNode(connection.getTo());
+    					((ConnectionImpl) connection).terminate();
+    				}
+    			}
         	}
         }
         outConnectionMap.put(outType, outNode);
