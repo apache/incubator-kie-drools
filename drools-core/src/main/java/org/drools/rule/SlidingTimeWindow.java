@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.PriorityQueue;
 
 import org.drools.common.EventFactHandle;
@@ -37,7 +36,7 @@ import org.drools.time.Job;
 import org.drools.time.JobContext;
 import org.drools.time.JobHandle;
 import org.drools.time.TimerService;
-import org.drools.time.Trigger;
+import org.drools.time.impl.PointInTimeTrigger;
 
 /**
  * @author etirelli
@@ -156,7 +155,7 @@ public class SlidingTimeWindow
             queue.expiringTuple = tuple;
             queue.queue.remove();
             final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
-                                                                                      PropagationContext.RETRACTION,
+                                                                                      PropagationContext.EXPIRATION,
                                                                                       null,
                                                                                       null,
                                                                                       tuple.getFactHandle() );
@@ -243,32 +242,6 @@ public class SlidingTimeWindow
             out.writeObject( this.expiringTuple );
         }
 
-    }
-
-    private static class PointInTimeTrigger
-        implements
-        Trigger {
-        private Date timestamp;
-
-        public PointInTimeTrigger() {
-        }
-
-        public PointInTimeTrigger(long timestamp) {
-            this.timestamp = new Date( timestamp );
-        }
-
-        public Date getNextFireTime() {
-            return this.timestamp;
-        }
-
-        public void readExternal(ObjectInput in) throws IOException,
-                                                ClassNotFoundException {
-            this.timestamp = (Date) in.readObject();
-        }
-
-        public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject( this.timestamp );
-        }
     }
 
     private static class BehaviorJobContext

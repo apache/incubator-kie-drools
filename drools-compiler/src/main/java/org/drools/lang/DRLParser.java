@@ -1,166 +1,153 @@
-// $ANTLR 3.0.1 src/main/resources/org/drools/lang/DRL.g 2008-10-18 17:54:42
+// $ANTLR 3.0.1 src/main/resources/org/drools/lang/DRL.g 2008-11-13 19:22:16
 
 	package org.drools.lang;
 	
-	import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
+	import java.util.List;
+	import java.util.LinkedList;
+	import org.drools.compiler.DroolsParserException;
 
-import org.antlr.runtime.BaseRecognizer;
-import org.antlr.runtime.BitSet;
-import org.antlr.runtime.DFA;
-import org.antlr.runtime.EarlyExitException;
-import org.antlr.runtime.FailedPredicateException;
-import org.antlr.runtime.IntStream;
-import org.antlr.runtime.MismatchedSetException;
-import org.antlr.runtime.NoViableAltException;
-import org.antlr.runtime.Parser;
-import org.antlr.runtime.ParserRuleReturnScope;
-import org.antlr.runtime.RecognitionException;
-import org.antlr.runtime.Token;
-import org.antlr.runtime.TokenStream;
-import org.antlr.runtime.tree.CommonTreeAdaptor;
-import org.antlr.runtime.tree.RewriteEarlyExitException;
-import org.antlr.runtime.tree.RewriteEmptyStreamException;
-import org.antlr.runtime.tree.RewriteRuleSubtreeStream;
-import org.antlr.runtime.tree.RewriteRuleTokenStream;
-import org.antlr.runtime.tree.TreeAdaptor;
-import org.drools.compiler.DroolsParserException;
+
+import org.antlr.runtime.*;
+import java.util.Stack;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
+
+import org.antlr.runtime.tree.*;
 
 public class DRLParser extends Parser {
     public static final String[] tokenNames = new String[] {
-        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "VT_COMPILATION_UNIT", "VT_FUNCTION_IMPORT", "VT_FACT", "VT_CONSTRAINTS", "VT_LABEL", "VT_QUERY_ID", "VT_TEMPLATE_ID", "VT_TYPE_DECLARE_ID", "VT_RULE_ID", "VT_ENTRYPOINT_ID", "VT_SLOT_ID", "VT_SLOT", "VT_RULE_ATTRIBUTES", "VT_RHS_CHUNK", "VT_CURLY_CHUNK", "VT_SQUARE_CHUNK", "VT_PAREN_CHUNK", "VT_BEHAVIOR", "VT_AND_IMPLICIT", "VT_AND_PREFIX", "VT_OR_PREFIX", "VT_AND_INFIX", "VT_OR_INFIX", "VT_ACCUMULATE_INIT_CLAUSE", "VT_ACCUMULATE_ID_CLAUSE", "VT_FROM_SOURCE", "VT_EXPRESSION_CHAIN", "VT_PATTERN", "VT_FACT_BINDING", "VT_FACT_OR", "VT_BIND_FIELD", "VT_FIELD", "VT_ACCESSOR_PATH", "VT_ACCESSOR_ELEMENT", "VT_DATA_TYPE", "VT_PATTERN_TYPE", "VT_PACKAGE_ID", "VT_IMPORT_ID", "VT_GLOBAL_ID", "VT_FUNCTION_ID", "VT_PARAM_LIST", "VK_DATE_EFFECTIVE", "VK_DATE_EXPIRES", "VK_LOCK_ON_ACTIVE", "VK_NO_LOOP", "VK_AUTO_FOCUS", "VK_ACTIVATION_GROUP", "VK_AGENDA_GROUP", "VK_RULEFLOW_GROUP", "VK_DURATION", "VK_DIALECT", "VK_SALIENCE", "VK_ENABLED", "VK_ATTRIBUTES", "VK_RULE", "VK_EXTEND", "VK_IMPORT", "VK_PACKAGE", "VK_TEMPLATE", "VK_QUERY", "VK_DECLARE", "VK_FUNCTION", "VK_GLOBAL", "VK_EVAL", "VK_CONTAINS", "VK_MATCHES", "VK_EXCLUDES", "VK_SOUNDSLIKE", "VK_MEMBEROF", "VK_ENTRY_POINT", "VK_NOT", "VK_IN", "VK_OR", "VK_AND", "VK_EXISTS", "VK_FORALL", "VK_ACTION", "VK_REVERSE", "VK_RESULT", "SEMICOLON", "ID", "DOT", "DOT_STAR", "END", "STRING", "LEFT_PAREN", "COMMA", "RIGHT_PAREN", "AT", "COLON", "EQUALS", "WHEN", "BOOL", "INT", "DOUBLE_PIPE", "DOUBLE_AMPER", "FROM", "OVER", "ACCUMULATE", "INIT", "COLLECT", "ARROW", "EQUAL", "GREATER", "GREATER_EQUAL", "LESS", "LESS_EQUAL", "NOT_EQUAL", "GRAVE_ACCENT", "FLOAT", "NULL", "LEFT_SQUARE", "RIGHT_SQUARE", "THEN", "LEFT_CURLY", "RIGHT_CURLY", "MISC", "EOL", "WS", "EscapeSequence", "HexDigit", "UnicodeEscape", "OctalEscape", "SH_STYLE_SINGLE_LINE_COMMENT", "C_STYLE_SINGLE_LINE_COMMENT", "MULTI_LINE_COMMENT"
+        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "VT_COMPILATION_UNIT", "VT_FUNCTION_IMPORT", "VT_FACT", "VT_CONSTRAINTS", "VT_LABEL", "VT_QUERY_ID", "VT_TEMPLATE_ID", "VT_TYPE_DECLARE_ID", "VT_RULE_ID", "VT_ENTRYPOINT_ID", "VT_SLOT_ID", "VT_SLOT", "VT_RULE_ATTRIBUTES", "VT_RHS_CHUNK", "VT_CURLY_CHUNK", "VT_SQUARE_CHUNK", "VT_PAREN_CHUNK", "VT_BEHAVIOR", "VT_AND_IMPLICIT", "VT_AND_PREFIX", "VT_OR_PREFIX", "VT_AND_INFIX", "VT_OR_INFIX", "VT_ACCUMULATE_INIT_CLAUSE", "VT_ACCUMULATE_ID_CLAUSE", "VT_FROM_SOURCE", "VT_EXPRESSION_CHAIN", "VT_PATTERN", "VT_FACT_BINDING", "VT_FACT_OR", "VT_BIND_FIELD", "VT_FIELD", "VT_ACCESSOR_PATH", "VT_ACCESSOR_ELEMENT", "VT_DATA_TYPE", "VT_PATTERN_TYPE", "VT_PACKAGE_ID", "VT_IMPORT_ID", "VT_GLOBAL_ID", "VT_FUNCTION_ID", "VT_PARAM_LIST", "VK_DATE_EFFECTIVE", "VK_DATE_EXPIRES", "VK_LOCK_ON_ACTIVE", "VK_NO_LOOP", "VK_AUTO_FOCUS", "VK_ACTIVATION_GROUP", "VK_AGENDA_GROUP", "VK_RULEFLOW_GROUP", "VK_DURATION", "VK_DIALECT", "VK_SALIENCE", "VK_ENABLED", "VK_ATTRIBUTES", "VK_RULE", "VK_EXTEND", "VK_IMPORT", "VK_PACKAGE", "VK_TEMPLATE", "VK_QUERY", "VK_DECLARE", "VK_FUNCTION", "VK_GLOBAL", "VK_EVAL", "VK_CONTAINS", "VK_MATCHES", "VK_EXCLUDES", "VK_SOUNDSLIKE", "VK_MEMBEROF", "VK_ENTRY_POINT", "VK_NOT", "VK_IN", "VK_OR", "VK_AND", "VK_EXISTS", "VK_FORALL", "VK_ACTION", "VK_REVERSE", "VK_RESULT", "SEMICOLON", "ID", "DOT", "DOT_STAR", "END", "STRING", "LEFT_PAREN", "COMMA", "RIGHT_PAREN", "AT", "COLON", "EQUALS", "WHEN", "BOOL", "INT", "DOUBLE_PIPE", "DOUBLE_AMPER", "FROM", "OVER", "ACCUMULATE", "INIT", "COLLECT", "ARROW", "EQUAL", "GREATER", "GREATER_EQUAL", "LESS", "LESS_EQUAL", "NOT_EQUAL", "TILDE", "FLOAT", "NULL", "LEFT_SQUARE", "RIGHT_SQUARE", "THEN", "LEFT_CURLY", "RIGHT_CURLY", "MISC", "EOL", "WS", "EscapeSequence", "HexDigit", "UnicodeEscape", "OctalEscape", "GRAVE_ACCENT", "SH_STYLE_SINGLE_LINE_COMMENT", "C_STYLE_SINGLE_LINE_COMMENT", "MULTI_LINE_COMMENT"
     };
-    public static final int ACCUMULATE=102;
-    public static final int VT_ACCESSOR_ELEMENT=37;
-    public static final int VT_DATA_TYPE=38;
-    public static final int DOT_STAR=86;
-    public static final int VK_FUNCTION=65;
-    public static final int VK_GLOBAL=66;
-    public static final int VK_AND=77;
-    public static final int EQUALS=94;
-    public static final int SH_STYLE_SINGLE_LINE_COMMENT=127;
-    public static final int VK_AUTO_FOCUS=49;
-    public static final int VK_SALIENCE=55;
-    public static final int EOF=-1;
-    public static final int VT_PATTERN_TYPE=39;
-    public static final int VT_FUNCTION_IMPORT=5;
-    public static final int VT_OR_INFIX=26;
-    public static final int EOL=121;
-    public static final int GREATER=107;
-    public static final int DOUBLE_AMPER=99;
-    public static final int VK_IMPORT=60;
-    public static final int NOT_EQUAL=111;
-    public static final int VK_ACTION=80;
-    public static final int VK_RULE=58;
-    public static final int LESS=109;
-    public static final int VK_MEMBEROF=72;
-    public static final int GRAVE_ACCENT=112;
-    public static final int VT_SLOT=15;
-    public static final int VK_OR=76;
-    public static final int VT_AND_PREFIX=23;
-    public static final int NULL=114;
-    public static final int BOOL=96;
-    public static final int VK_QUERY=63;
-    public static final int INT=97;
-    public static final int SEMICOLON=83;
-    public static final int VT_FUNCTION_ID=43;
-    public static final int VT_RHS_CHUNK=17;
-    public static final int VT_FACT_BINDING=32;
-    public static final int VK_RULEFLOW_GROUP=52;
-    public static final int VK_ENTRY_POINT=73;
-    public static final int VT_PACKAGE_ID=40;
-    public static final int VK_RESULT=82;
-    public static final int VT_LABEL=8;
-    public static final int WS=122;
-    public static final int VK_NO_LOOP=48;
-    public static final int LEFT_CURLY=118;
-    public static final int VT_FACT=6;
-    public static final int VT_PATTERN=31;
-    public static final int VK_IN=75;
-    public static final int LEFT_PAREN=89;
-    public static final int LESS_EQUAL=110;
-    public static final int VT_IMPORT_ID=41;
-    public static final int VT_RULE_ID=12;
-    public static final int MISC=120;
-    public static final int FROM=100;
-    public static final int END=87;
-    public static final int COLLECT=104;
-    public static final int INIT=103;
-    public static final int EscapeSequence=123;
-    public static final int VK_ACTIVATION_GROUP=50;
-    public static final int VK_ENABLED=56;
-    public static final int C_STYLE_SINGLE_LINE_COMMENT=128;
-    public static final int VK_PACKAGE=61;
-    public static final int OVER=101;
-    public static final int VK_EXTEND=59;
-    public static final int RIGHT_SQUARE=116;
-    public static final int RIGHT_CURLY=119;
-    public static final int VK_MATCHES=69;
-    public static final int VT_FACT_OR=33;
-    public static final int VT_FIELD=35;
-    public static final int FLOAT=113;
-    public static final int VT_ACCUMULATE_ID_CLAUSE=28;
-    public static final int VK_EXISTS=78;
-    public static final int VK_DATE_EXPIRES=46;
-    public static final int ID=84;
-    public static final int HexDigit=124;
-    public static final int VT_OR_PREFIX=24;
-    public static final int VK_EVAL=67;
-    public static final int DOUBLE_PIPE=98;
-    public static final int AT=92;
-    public static final int RIGHT_PAREN=91;
-    public static final int THEN=117;
-    public static final int VT_COMPILATION_UNIT=4;
-    public static final int VT_EXPRESSION_CHAIN=30;
     public static final int COMMA=90;
-    public static final int EQUAL=106;
-    public static final int VT_BEHAVIOR=21;
-    public static final int VT_QUERY_ID=9;
+    public static final int VT_PATTERN_TYPE=39;
+    public static final int VT_ACCUMULATE_ID_CLAUSE=28;
     public static final int VK_DIALECT=54;
-    public static final int DOT=85;
-    public static final int VT_GLOBAL_ID=42;
-    public static final int VK_NOT=74;
-    public static final int VT_FROM_SOURCE=29;
-    public static final int VT_ENTRYPOINT_ID=13;
-    public static final int VK_DECLARE=64;
-    public static final int VT_PAREN_CHUNK=20;
-    public static final int VK_CONTAINS=68;
-    public static final int VT_TYPE_DECLARE_ID=11;
-    public static final int VK_REVERSE=81;
-    public static final int VK_LOCK_ON_ACTIVE=47;
-    public static final int VK_TEMPLATE=62;
-    public static final int VT_AND_INFIX=25;
-    public static final int VT_RULE_ATTRIBUTES=16;
-    public static final int VK_DURATION=53;
-    public static final int VT_ACCESSOR_PATH=36;
-    public static final int MULTI_LINE_COMMENT=129;
-    public static final int VK_FORALL=79;
-    public static final int COLON=93;
-    public static final int VK_EXCLUDES=70;
-    public static final int VT_AND_IMPLICIT=22;
-    public static final int VK_SOUNDSLIKE=71;
-    public static final int VT_ACCUMULATE_INIT_CLAUSE=27;
-    public static final int VT_CURLY_CHUNK=18;
-    public static final int VT_SLOT_ID=14;
+    public static final int VK_FUNCTION=65;
+    public static final int END=87;
+    public static final int HexDigit=124;
     public static final int VK_ATTRIBUTES=57;
-    public static final int WHEN=95;
-    public static final int UnicodeEscape=125;
-    public static final int VT_SQUARE_CHUNK=19;
-    public static final int VT_TEMPLATE_ID=10;
-    public static final int VK_DATE_EFFECTIVE=45;
-    public static final int VT_PARAM_LIST=44;
-    public static final int ARROW=105;
-    public static final int VT_BIND_FIELD=34;
-    public static final int VT_CONSTRAINTS=7;
-    public static final int VK_AGENDA_GROUP=51;
+    public static final int VT_EXPRESSION_CHAIN=30;
+    public static final int MISC=120;
+    public static final int VT_AND_PREFIX=23;
+    public static final int VK_QUERY=63;
+    public static final int THEN=117;
+    public static final int VK_AUTO_FOCUS=49;
+    public static final int TILDE=112;
+    public static final int DOT=85;
+    public static final int VK_IMPORT=60;
+    public static final int VT_SLOT=15;
+    public static final int VT_PACKAGE_ID=40;
     public static final int LEFT_SQUARE=115;
-    public static final int OctalEscape=126;
-    public static final int GREATER_EQUAL=108;
+    public static final int SH_STYLE_SINGLE_LINE_COMMENT=128;
+    public static final int VT_DATA_TYPE=38;
+    public static final int VT_FACT=6;
+    public static final int VK_MATCHES=69;
+    public static final int LEFT_CURLY=118;
+    public static final int AT=92;
+    public static final int DOUBLE_AMPER=99;
+    public static final int LEFT_PAREN=89;
+    public static final int VT_QUERY_ID=9;
+    public static final int VT_ACCESSOR_PATH=36;
+    public static final int VT_LABEL=8;
+    public static final int WHEN=95;
+    public static final int VT_ENTRYPOINT_ID=13;
+    public static final int WS=122;
+    public static final int VT_FIELD=35;
+    public static final int VK_SALIENCE=55;
+    public static final int VK_SOUNDSLIKE=71;
+    public static final int OVER=101;
+    public static final int VK_AND=77;
     public static final int STRING=88;
+    public static final int VT_ACCESSOR_ELEMENT=37;
+    public static final int VT_ACCUMULATE_INIT_CLAUSE=27;
+    public static final int VK_GLOBAL=66;
+    public static final int VK_REVERSE=81;
+    public static final int VT_BEHAVIOR=21;
+    public static final int GRAVE_ACCENT=127;
+    public static final int VK_DURATION=53;
+    public static final int VT_SQUARE_CHUNK=19;
+    public static final int VK_FORALL=79;
+    public static final int VT_PAREN_CHUNK=20;
+    public static final int VT_COMPILATION_UNIT=4;
+    public static final int COLLECT=104;
+    public static final int VK_ENABLED=56;
+    public static final int EQUALS=94;
+    public static final int VK_RESULT=82;
+    public static final int UnicodeEscape=125;
+    public static final int VK_PACKAGE=61;
+    public static final int VT_RULE_ID=12;
+    public static final int EQUAL=106;
+    public static final int VK_NO_LOOP=48;
+    public static final int SEMICOLON=83;
+    public static final int VK_TEMPLATE=62;
+    public static final int VT_AND_IMPLICIT=22;
+    public static final int NULL=114;
+    public static final int COLON=93;
+    public static final int MULTI_LINE_COMMENT=130;
+    public static final int VT_RULE_ATTRIBUTES=16;
+    public static final int RIGHT_SQUARE=116;
+    public static final int VK_AGENDA_GROUP=51;
+    public static final int VT_FACT_OR=33;
+    public static final int VK_NOT=74;
+    public static final int VK_DATE_EXPIRES=46;
+    public static final int ARROW=105;
+    public static final int FLOAT=113;
+    public static final int INIT=103;
+    public static final int VK_EXTEND=59;
+    public static final int VT_SLOT_ID=14;
+    public static final int VT_CURLY_CHUNK=18;
+    public static final int VT_OR_PREFIX=24;
+    public static final int DOUBLE_PIPE=98;
+    public static final int LESS=109;
+    public static final int VT_TYPE_DECLARE_ID=11;
+    public static final int VT_PATTERN=31;
+    public static final int VK_DATE_EFFECTIVE=45;
+    public static final int EscapeSequence=123;
+    public static final int VK_EXISTS=78;
+    public static final int INT=97;
+    public static final int VT_BIND_FIELD=34;
+    public static final int VK_RULE=58;
+    public static final int VK_EVAL=67;
+    public static final int GREATER=107;
+    public static final int VT_FACT_BINDING=32;
+    public static final int FROM=100;
+    public static final int ID=84;
+    public static final int NOT_EQUAL=111;
+    public static final int RIGHT_CURLY=119;
+    public static final int BOOL=96;
+    public static final int VT_AND_INFIX=25;
+    public static final int VT_PARAM_LIST=44;
+    public static final int VK_ENTRY_POINT=73;
+    public static final int VT_FROM_SOURCE=29;
+    public static final int VK_LOCK_ON_ACTIVE=47;
+    public static final int VK_CONTAINS=68;
+    public static final int VT_FUNCTION_IMPORT=5;
+    public static final int VK_IN=75;
+    public static final int VT_RHS_CHUNK=17;
+    public static final int GREATER_EQUAL=108;
+    public static final int VK_MEMBEROF=72;
+    public static final int VT_OR_INFIX=26;
+    public static final int DOT_STAR=86;
+    public static final int VK_OR=76;
+    public static final int VT_GLOBAL_ID=42;
+    public static final int LESS_EQUAL=110;
+    public static final int ACCUMULATE=102;
+    public static final int VK_RULEFLOW_GROUP=52;
+    public static final int VT_FUNCTION_ID=43;
+    public static final int EOF=-1;
+    public static final int VT_CONSTRAINTS=7;
+    public static final int EOL=121;
+    public static final int VT_IMPORT_ID=41;
+    public static final int VK_ACTIVATION_GROUP=50;
+    public static final int OctalEscape=126;
+    public static final int VK_ACTION=80;
+    public static final int VK_EXCLUDES=70;
+    public static final int RIGHT_PAREN=91;
+    public static final int VT_TEMPLATE_ID=10;
+    public static final int C_STYLE_SINGLE_LINE_COMMENT=129;
+    public static final int VK_DECLARE=64;
 
         public DRLParser(TokenStream input) {
             super(input);
@@ -179,7 +166,7 @@ public class DRLParser extends Parser {
     public String[] getTokenNames() { return tokenNames; }
     public String getGrammarFileName() { return "src/main/resources/org/drools/lang/DRL.g"; }
 
-
+    
     	private Stack<Map<DroolsParaphraseTypes, String>> paraphrases = new Stack<Map<DroolsParaphraseTypes, String>>();
     	private List<DroolsParserException> errors = new ArrayList<DroolsParserException>();
     	private DroolsParserExceptionFactory errorMessageFactory = new DroolsParserExceptionFactory(tokenNames, paraphrases);
@@ -187,19 +174,19 @@ public class DRLParser extends Parser {
     	private boolean lookaheadTest = false;
     	private LinkedList<DroolsSentence> editorInterface = null;
     	private boolean isEditorInterfaceEnabled = false;
-
+    
     	public LinkedList<DroolsSentence> getEditorInterface(){
     		return editorInterface;
     	}
-
+    
     	public void enableEditorInterface(){
     		isEditorInterfaceEnabled = true;
     	}
-
+    
     	public void disableEditorInterface(){
     		isEditorInterfaceEnabled = false;
     	}
-
+    
     	private void beginSentence(DroolsSentenceType sentenceType){
     		if (isEditorInterfaceEnabled) {
     			if (null == editorInterface) {
@@ -210,11 +197,11 @@ public class DRLParser extends Parser {
     			editorInterface.add(sentence);
     		}
     	}
-
+    
     	private DroolsSentence getActiveSentence(){
     		return editorInterface.getLast();
     	}
-
+    
     	private void emit(List tokens, DroolsEditorType editorType){
     		if (isEditorInterfaceEnabled && tokens != null) {		
     			for (Object activeObject : tokens){
@@ -222,14 +209,14 @@ public class DRLParser extends Parser {
     			}
     		}
     	}
-
+    
     	private void emit(Token token, DroolsEditorType editorType){
     		if (isEditorInterfaceEnabled && token != null) {
     			((DroolsToken)token).setEditorType(editorType);
     			getActiveSentence().addContent((DroolsToken) token);
     		}
     	}
-
+    
     	private void emit(boolean forceEmit, int activeContext){
     		if (isEditorInterfaceEnabled) {
     				getActiveSentence().addContent(activeContext);
@@ -241,7 +228,7 @@ public class DRLParser extends Parser {
     			emit(false, activeContext);
     		}
     	}
-
+    
     	private DroolsToken getLastTokenOnList(LinkedList list){
     		DroolsToken lastToken = null;
     		for (Object object : list) {
@@ -251,7 +238,7 @@ public class DRLParser extends Parser {
     		}
     		return lastToken;
     	}
-
+    
     	private int getLastIntegerValue(LinkedList list) {
     		int lastIntergerValue = -1;
     		for (Object object : list) {
@@ -261,7 +248,7 @@ public class DRLParser extends Parser {
     		}
     		return lastIntergerValue;
     	}
-
+    
     	private boolean validateLT(int LTNumber, String text) {
     		if (null == input)
     			return false;
@@ -294,11 +281,11 @@ public class DRLParser extends Parser {
     		}
     		return false;
     	}
-
+    
     	private boolean validateRestr() {
     		int lookahead = 2;
     		int countParen = 1;
-
+    
     		while (true) {
     			if (input.LA(lookahead) == COMMA) {
     				break;
@@ -327,7 +314,7 @@ public class DRLParser extends Parser {
     			input.seek(activeIndex);
     		}
     		lookaheadTest = false;
-
+    
     		return returnValue;
     	}
     	
@@ -367,7 +354,7 @@ public class DRLParser extends Parser {
     	public boolean hasErrors() {
     		return !errors.isEmpty();
     	}
-
+    
     	/**
     	 * Method that adds a paraphrase type into paraphrases stack.
     	 * 
@@ -379,7 +366,7 @@ public class DRLParser extends Parser {
     		activeMap.put(type, "");
     		paraphrases.push(activeMap);
     	}
-
+    
     	/**
     	 * Method that sets paraphrase value for a type into paraphrases stack.
     	 * 
@@ -391,7 +378,7 @@ public class DRLParser extends Parser {
     	private void setParaphrasesValue(DroolsParaphraseTypes type, String value) {
     		paraphrases.peek().put(type, value);
     	}
-
+    
     	/**
     	 * Helper method that creates a string from a token list.
     	 * 
@@ -463,8 +450,8 @@ public class DRLParser extends Parser {
 
         Object EOF3_tree=null;
         RewriteRuleTokenStream stream_EOF=new RewriteRuleTokenStream(adaptor,"token EOF");
-        RewriteRuleSubtreeStream stream_statement=new RewriteRuleSubtreeStream(adaptor,"rule statement");
         RewriteRuleSubtreeStream stream_package_statement=new RewriteRuleSubtreeStream(adaptor,"rule package_statement");
+        RewriteRuleSubtreeStream stream_statement=new RewriteRuleSubtreeStream(adaptor,"rule statement");
         try {
             // src/main/resources/org/drools/lang/DRL.g:397:2: ( ( package_statement )? ( statement )* EOF -> ^( VT_COMPILATION_UNIT ( package_statement )? ( statement )* ) )
             // src/main/resources/org/drools/lang/DRL.g:397:4: ( package_statement )? ( statement )* EOF
@@ -473,10 +460,10 @@ public class DRLParser extends Parser {
             int alt1=2;
             int LA1_0 = input.LA(1);
 
-            if ( (LA1_0==ID) && (((validateIdentifierKey(DroolsSoftKeywords.AUTO) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.FOCUS))||(validateIdentifierKey(DroolsSoftKeywords.ACTIVATION) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.SALIENCE))||(validateIdentifierKey(DroolsSoftKeywords.RULE))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||(validateIdentifierKey(DroolsSoftKeywords.LOCK) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.ON) && validateLT(4, "-") && validateLT(5, DroolsSoftKeywords.ACTIVE))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EXPIRES))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||(validateIdentifierKey(DroolsSoftKeywords.QUERY))||(validateIdentifierKey(DroolsSoftKeywords.DIALECT))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||(validateIdentifierKey(DroolsSoftKeywords.AGENDA) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.ENABLED))||(validateIdentifierKey(DroolsSoftKeywords.RULEFLOW) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||(validateIdentifierKey(DroolsSoftKeywords.IMPORT))||(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EFFECTIVE))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||(validateIdentifierKey(DroolsSoftKeywords.PACKAGE))||(validateIdentifierKey(DroolsSoftKeywords.FUNCTION))||(validateIdentifierKey(DroolsSoftKeywords.NO) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.LOOP))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||(validateIdentifierKey(DroolsSoftKeywords.GLOBAL))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||(validateIdentifierKey(DroolsSoftKeywords.DURATION))))) {
+            if ( (LA1_0==ID) && ((((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||(validateIdentifierKey(DroolsSoftKeywords.QUERY))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||(validateIdentifierKey(DroolsSoftKeywords.DIALECT))||(validateIdentifierKey(DroolsSoftKeywords.FUNCTION))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EFFECTIVE))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||(validateIdentifierKey(DroolsSoftKeywords.AGENDA) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.RULE))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EXPIRES))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||(validateIdentifierKey(DroolsSoftKeywords.SALIENCE))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||(validateIdentifierKey(DroolsSoftKeywords.IMPORT))||(validateIdentifierKey(DroolsSoftKeywords.RULEFLOW) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.ENABLED))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||(validateIdentifierKey(DroolsSoftKeywords.PACKAGE))||(validateIdentifierKey(DroolsSoftKeywords.AUTO) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.FOCUS))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||(validateIdentifierKey(DroolsSoftKeywords.GLOBAL))||(validateIdentifierKey(DroolsSoftKeywords.ACTIVATION) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||(validateIdentifierKey(DroolsSoftKeywords.NO) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.LOOP))||(validateIdentifierKey(DroolsSoftKeywords.DURATION))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||(validateIdentifierKey(DroolsSoftKeywords.LOCK) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.ON) && validateLT(4, "-") && validateLT(5, DroolsSoftKeywords.ACTIVE))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))))) {
                 int LA1_1 = input.LA(2);
 
-                if ( (LA1_1==ID) && ((((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||(validateIdentifierKey(DroolsSoftKeywords.IMPORT))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||(validateIdentifierKey(DroolsSoftKeywords.RULE))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||(validateIdentifierKey(DroolsSoftKeywords.QUERY))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||(validateIdentifierKey(DroolsSoftKeywords.PACKAGE))||(validateIdentifierKey(DroolsSoftKeywords.FUNCTION))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||(validateIdentifierKey(DroolsSoftKeywords.GLOBAL))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))))) {
+                if ( (LA1_1==ID) && ((((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||(validateIdentifierKey(DroolsSoftKeywords.PACKAGE))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||(validateIdentifierKey(DroolsSoftKeywords.QUERY))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||(validateIdentifierKey(DroolsSoftKeywords.FUNCTION))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||(validateIdentifierKey(DroolsSoftKeywords.RULE))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||(validateIdentifierKey(DroolsSoftKeywords.IMPORT))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||(validateIdentifierKey(DroolsSoftKeywords.GLOBAL))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))))) {
                     int LA1_4 = input.LA(3);
 
                     if ( ((validateIdentifierKey(DroolsSoftKeywords.PACKAGE))) ) {
@@ -505,7 +492,7 @@ public class DRLParser extends Parser {
                 int alt2=2;
                 int LA2_0 = input.LA(1);
 
-                if ( (LA2_0==ID) && (((validateIdentifierKey(DroolsSoftKeywords.AUTO) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.FOCUS))||(validateIdentifierKey(DroolsSoftKeywords.ACTIVATION) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||(validateIdentifierKey(DroolsSoftKeywords.SALIENCE))||(validateIdentifierKey(DroolsSoftKeywords.RULE))||(validateIdentifierKey(DroolsSoftKeywords.IMPORT))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EFFECTIVE))||(validateIdentifierKey(DroolsSoftKeywords.LOCK) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.ON) && validateLT(4, "-") && validateLT(5, DroolsSoftKeywords.ACTIVE))||(validateIdentifierKey(DroolsSoftKeywords.FUNCTION))||(validateIdentifierKey(DroolsSoftKeywords.NO) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.LOOP))||(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EXPIRES))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||(validateIdentifierKey(DroolsSoftKeywords.DIALECT))||(validateIdentifierKey(DroolsSoftKeywords.QUERY))||(validateIdentifierKey(DroolsSoftKeywords.GLOBAL))||(validateIdentifierKey(DroolsSoftKeywords.AGENDA) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.ENABLED))||(validateIdentifierKey(DroolsSoftKeywords.RULEFLOW) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.DURATION))))) {
+                if ( (LA2_0==ID) && (((validateIdentifierKey(DroolsSoftKeywords.QUERY))||(validateIdentifierKey(DroolsSoftKeywords.DIALECT))||(validateIdentifierKey(DroolsSoftKeywords.GLOBAL))||(validateIdentifierKey(DroolsSoftKeywords.ACTIVATION) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||(validateIdentifierKey(DroolsSoftKeywords.NO) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.LOOP))||(validateIdentifierKey(DroolsSoftKeywords.FUNCTION))||(validateIdentifierKey(DroolsSoftKeywords.DURATION))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EFFECTIVE))||(validateIdentifierKey(DroolsSoftKeywords.AGENDA) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.RULE))||(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EXPIRES))||(validateIdentifierKey(DroolsSoftKeywords.LOCK) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.ON) && validateLT(4, "-") && validateLT(5, DroolsSoftKeywords.ACTIVE))||(validateIdentifierKey(DroolsSoftKeywords.SALIENCE))||(validateIdentifierKey(DroolsSoftKeywords.IMPORT))||(validateIdentifierKey(DroolsSoftKeywords.ENABLED))||(validateIdentifierKey(DroolsSoftKeywords.RULEFLOW) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.AUTO) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.FOCUS))))) {
                     alt2=1;
                 }
 
@@ -534,7 +521,7 @@ public class DRLParser extends Parser {
 
 
             // AST REWRITE
-            // elements: statement, package_statement
+            // elements: package_statement, statement
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -581,16 +568,16 @@ public class DRLParser extends Parser {
             }
         }
         catch ( RecognitionException e ) {
-
+            
             		reportError( e );
             	
         }
         catch ( RewriteEmptyStreamException e ) {
-
+            
             	
         }
         finally {
-
+            
             	if (isEditorInterfaceEnabled && retval.tree == null) {
             		retval.tree = root_0;
             		root_0 = (Object) adaptor.nil();
@@ -904,14 +891,20 @@ public class DRLParser extends Parser {
             int alt5=9;
             int LA5_0 = input.LA(1);
 
-            if ( (LA5_0==ID) && ((((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||(validateIdentifierKey(DroolsSoftKeywords.AUTO) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.FOCUS))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||(validateIdentifierKey(DroolsSoftKeywords.ACTIVATION) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.RULE))||(validateIdentifierKey(DroolsSoftKeywords.SALIENCE))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||(validateIdentifierKey(DroolsSoftKeywords.LOCK) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.ON) && validateLT(4, "-") && validateLT(5, DroolsSoftKeywords.ACTIVE))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EXPIRES))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||(validateIdentifierKey(DroolsSoftKeywords.DIALECT))||(validateIdentifierKey(DroolsSoftKeywords.QUERY))||(validateIdentifierKey(DroolsSoftKeywords.AGENDA) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.RULEFLOW) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.ENABLED))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||(validateIdentifierKey(DroolsSoftKeywords.IMPORT))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EFFECTIVE))||(validateIdentifierKey(DroolsSoftKeywords.FUNCTION))||(validateIdentifierKey(DroolsSoftKeywords.NO) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.LOOP))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||(validateIdentifierKey(DroolsSoftKeywords.GLOBAL))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||(validateIdentifierKey(DroolsSoftKeywords.DURATION))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))))) {
+            if ( (LA5_0==ID) && (((validateIdentifierKey(DroolsSoftKeywords.QUERY))||(validateIdentifierKey(DroolsSoftKeywords.DIALECT))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||(validateIdentifierKey(DroolsSoftKeywords.FUNCTION))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EFFECTIVE))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||(validateIdentifierKey(DroolsSoftKeywords.AGENDA) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.RULE))||(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EXPIRES))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||(validateIdentifierKey(DroolsSoftKeywords.SALIENCE))||(validateIdentifierKey(DroolsSoftKeywords.IMPORT))||(validateIdentifierKey(DroolsSoftKeywords.RULEFLOW) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.ENABLED))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||(validateIdentifierKey(DroolsSoftKeywords.AUTO) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.FOCUS))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||(validateIdentifierKey(DroolsSoftKeywords.GLOBAL))||(validateIdentifierKey(DroolsSoftKeywords.ACTIVATION) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||(validateIdentifierKey(DroolsSoftKeywords.NO) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.LOOP))||(validateIdentifierKey(DroolsSoftKeywords.DURATION))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||(validateIdentifierKey(DroolsSoftKeywords.LOCK) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.ON) && validateLT(4, "-") && validateLT(5, DroolsSoftKeywords.ACTIVE))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))))) {
                 int LA5_1 = input.LA(2);
 
-                if ( (LA5_1==MISC) && (((validateIdentifierKey(DroolsSoftKeywords.NO) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.LOOP))||(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EXPIRES))||(validateIdentifierKey(DroolsSoftKeywords.AUTO) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.FOCUS))||(validateIdentifierKey(DroolsSoftKeywords.ACTIVATION) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.AGENDA) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.RULEFLOW) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.LOCK) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.ON) && validateLT(4, "-") && validateLT(5, DroolsSoftKeywords.ACTIVE))||(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EFFECTIVE))))) {
+                if ( (LA5_1==MISC) && (((validateIdentifierKey(DroolsSoftKeywords.AGENDA) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EXPIRES))||(validateIdentifierKey(DroolsSoftKeywords.ACTIVATION) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.LOCK) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.ON) && validateLT(4, "-") && validateLT(5, DroolsSoftKeywords.ACTIVE))||(validateIdentifierKey(DroolsSoftKeywords.NO) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.LOOP))||(validateIdentifierKey(DroolsSoftKeywords.RULEFLOW) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.AUTO) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.FOCUS))||(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EFFECTIVE))))) {
                     alt5=1;
                 }
-                else if ( (LA5_1==ID) && ((((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||(validateIdentifierKey(DroolsSoftKeywords.RULE))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||(validateIdentifierKey(DroolsSoftKeywords.QUERY))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||(validateIdentifierKey(DroolsSoftKeywords.IMPORT))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||(validateIdentifierKey(DroolsSoftKeywords.FUNCTION))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||(validateIdentifierKey(DroolsSoftKeywords.GLOBAL))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))))) {
-                    int LA5_3 = input.LA(3);
+                else if ( (LA5_1==BOOL) && ((validateIdentifierKey(DroolsSoftKeywords.ENABLED)))) {
+                    alt5=1;
+                }
+                else if ( (LA5_1==LEFT_PAREN) && (((validateIdentifierKey(DroolsSoftKeywords.SALIENCE))||(validateIdentifierKey(DroolsSoftKeywords.ENABLED))))) {
+                    alt5=1;
+                }
+                else if ( (LA5_1==ID) && (((validateIdentifierKey(DroolsSoftKeywords.QUERY))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||(validateIdentifierKey(DroolsSoftKeywords.FUNCTION))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||(validateIdentifierKey(DroolsSoftKeywords.RULE))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||(validateIdentifierKey(DroolsSoftKeywords.IMPORT))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||(validateIdentifierKey(DroolsSoftKeywords.GLOBAL))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.DECLARE))&&(validateIdentifierKey(DroolsSoftKeywords.DECLARE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))))) {
+                    int LA5_5 = input.LA(3);
 
                     if ( (((validateLT(1, "import") && validateLT(2, "function") )&&(validateIdentifierKey(DroolsSoftKeywords.IMPORT)))) ) {
                         alt5=2;
@@ -940,13 +933,13 @@ public class DRLParser extends Parser {
                     else {
                         if (backtracking>0) {failed=true; return retval;}
                         NoViableAltException nvae =
-                            new NoViableAltException("455:1: statement options {k=2; } : ( rule_attribute | {...}? => function_import_statement | import_statement | global | function | {...}? => template | {...}? => type_declaration | rule | query );", 5, 3, input);
+                            new NoViableAltException("455:1: statement options {k=2; } : ( rule_attribute | {...}? => function_import_statement | import_statement | global | function | {...}? => template | {...}? => type_declaration | rule | query );", 5, 5, input);
 
                         throw nvae;
                     }
                 }
-                else if ( (LA5_1==STRING) && ((((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||(validateIdentifierKey(DroolsSoftKeywords.RULE))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||(validateIdentifierKey(DroolsSoftKeywords.DIALECT))||(validateIdentifierKey(DroolsSoftKeywords.QUERY))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))))) {
-                    int LA5_4 = input.LA(3);
+                else if ( (LA5_1==STRING) && ((((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||(validateIdentifierKey(DroolsSoftKeywords.QUERY))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||(validateIdentifierKey(DroolsSoftKeywords.DIALECT))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||(validateIdentifierKey(DroolsSoftKeywords.RULE))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))||((validateLT(1, DroolsSoftKeywords.TEMPLATE))&&(validateIdentifierKey(DroolsSoftKeywords.TEMPLATE)))))) {
+                    int LA5_6 = input.LA(3);
 
                     if ( ((validateIdentifierKey(DroolsSoftKeywords.DIALECT))) ) {
                         alt5=1;
@@ -963,16 +956,10 @@ public class DRLParser extends Parser {
                     else {
                         if (backtracking>0) {failed=true; return retval;}
                         NoViableAltException nvae =
-                            new NoViableAltException("455:1: statement options {k=2; } : ( rule_attribute | {...}? => function_import_statement | import_statement | global | function | {...}? => template | {...}? => type_declaration | rule | query );", 5, 4, input);
+                            new NoViableAltException("455:1: statement options {k=2; } : ( rule_attribute | {...}? => function_import_statement | import_statement | global | function | {...}? => template | {...}? => type_declaration | rule | query );", 5, 6, input);
 
                         throw nvae;
                     }
-                }
-                else if ( (LA5_1==BOOL) && ((validateIdentifierKey(DroolsSoftKeywords.ENABLED)))) {
-                    alt5=1;
-                }
-                else if ( (LA5_1==LEFT_PAREN) && (((validateIdentifierKey(DroolsSoftKeywords.SALIENCE))||(validateIdentifierKey(DroolsSoftKeywords.ENABLED))))) {
-                    alt5=1;
                 }
                 else if ( (LA5_1==INT) && (((validateIdentifierKey(DroolsSoftKeywords.SALIENCE))||(validateIdentifierKey(DroolsSoftKeywords.DURATION))))) {
                     alt5=1;
@@ -1282,8 +1269,8 @@ public class DRLParser extends Parser {
 
         Object SEMICOLON21_tree=null;
         RewriteRuleTokenStream stream_SEMICOLON=new RewriteRuleTokenStream(adaptor,"token SEMICOLON");
-        RewriteRuleSubtreeStream stream_function_key=new RewriteRuleSubtreeStream(adaptor,"rule function_key");
         RewriteRuleSubtreeStream stream_import_key=new RewriteRuleSubtreeStream(adaptor,"rule import_key");
+        RewriteRuleSubtreeStream stream_function_key=new RewriteRuleSubtreeStream(adaptor,"rule function_key");
         RewriteRuleSubtreeStream stream_import_name=new RewriteRuleSubtreeStream(adaptor,"rule import_name");
          pushParaphrases(DroolsParaphraseTypes.FUNCTION_IMPORT); 
         try {
@@ -1334,7 +1321,7 @@ public class DRLParser extends Parser {
             }
 
             // AST REWRITE
-            // elements: function_key, import_name
+            // elements: import_name, function_key
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -1400,9 +1387,9 @@ public class DRLParser extends Parser {
         List list_id=null;
 
         Object id_tree=null;
+        RewriteRuleTokenStream stream_DOT_STAR=new RewriteRuleTokenStream(adaptor,"token DOT_STAR");
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
         RewriteRuleTokenStream stream_DOT=new RewriteRuleTokenStream(adaptor,"token DOT");
-        RewriteRuleTokenStream stream_DOT_STAR=new RewriteRuleTokenStream(adaptor,"token DOT_STAR");
 
         try {
             // src/main/resources/org/drools/lang/DRL.g:492:2: (id+= ID (id+= DOT id+= ID )* (id+= DOT_STAR )? -> ^( VT_IMPORT_ID ( ID )+ ( DOT_STAR )? ) )
@@ -1564,9 +1551,9 @@ public class DRLParser extends Parser {
 
         Object SEMICOLON25_tree=null;
         RewriteRuleTokenStream stream_SEMICOLON=new RewriteRuleTokenStream(adaptor,"token SEMICOLON");
-        RewriteRuleSubtreeStream stream_global_key=new RewriteRuleSubtreeStream(adaptor,"rule global_key");
         RewriteRuleSubtreeStream stream_data_type=new RewriteRuleSubtreeStream(adaptor,"rule data_type");
         RewriteRuleSubtreeStream stream_global_id=new RewriteRuleSubtreeStream(adaptor,"rule global_id");
+        RewriteRuleSubtreeStream stream_global_key=new RewriteRuleSubtreeStream(adaptor,"rule global_key");
          pushParaphrases(DroolsParaphraseTypes.GLOBAL); 
         try {
             // src/main/resources/org/drools/lang/DRL.g:501:2: ( global_key data_type global_id ( SEMICOLON )? -> ^( global_key data_type global_id ) )
@@ -1616,7 +1603,7 @@ public class DRLParser extends Parser {
             }
 
             // AST REWRITE
-            // elements: global_id, global_key, data_type
+            // elements: data_type, global_key, global_id
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -1758,11 +1745,11 @@ public class DRLParser extends Parser {
         curly_chunk_return curly_chunk30 = null;
 
 
-        RewriteRuleSubtreeStream stream_function_key=new RewriteRuleSubtreeStream(adaptor,"rule function_key");
-        RewriteRuleSubtreeStream stream_function_id=new RewriteRuleSubtreeStream(adaptor,"rule function_id");
-        RewriteRuleSubtreeStream stream_data_type=new RewriteRuleSubtreeStream(adaptor,"rule data_type");
         RewriteRuleSubtreeStream stream_parameters=new RewriteRuleSubtreeStream(adaptor,"rule parameters");
+        RewriteRuleSubtreeStream stream_function_key=new RewriteRuleSubtreeStream(adaptor,"rule function_key");
         RewriteRuleSubtreeStream stream_curly_chunk=new RewriteRuleSubtreeStream(adaptor,"rule curly_chunk");
+        RewriteRuleSubtreeStream stream_data_type=new RewriteRuleSubtreeStream(adaptor,"rule data_type");
+        RewriteRuleSubtreeStream stream_function_id=new RewriteRuleSubtreeStream(adaptor,"rule function_id");
          pushParaphrases(DroolsParaphraseTypes.FUNCTION); 
         try {
             // src/main/resources/org/drools/lang/DRL.g:518:2: ( function_key ( data_type )? function_id parameters curly_chunk -> ^( function_key ( data_type )? function_id parameters curly_chunk ) )
@@ -1819,7 +1806,7 @@ public class DRLParser extends Parser {
             if ( backtracking==0 ) stream_curly_chunk.add(curly_chunk30.getTree());
 
             // AST REWRITE
-            // elements: parameters, curly_chunk, data_type, function_key, function_id
+            // elements: function_key, data_type, curly_chunk, parameters, function_id
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -1970,11 +1957,11 @@ public class DRLParser extends Parser {
 
         Object END35_tree=null;
         Object SEMICOLON36_tree=null;
-        RewriteRuleTokenStream stream_SEMICOLON=new RewriteRuleTokenStream(adaptor,"token SEMICOLON");
         RewriteRuleTokenStream stream_END=new RewriteRuleTokenStream(adaptor,"token END");
+        RewriteRuleTokenStream stream_SEMICOLON=new RewriteRuleTokenStream(adaptor,"token SEMICOLON");
+        RewriteRuleSubtreeStream stream_parameters=new RewriteRuleSubtreeStream(adaptor,"rule parameters");
         RewriteRuleSubtreeStream stream_query_key=new RewriteRuleSubtreeStream(adaptor,"rule query_key");
         RewriteRuleSubtreeStream stream_normal_lhs_block=new RewriteRuleSubtreeStream(adaptor,"rule normal_lhs_block");
-        RewriteRuleSubtreeStream stream_parameters=new RewriteRuleSubtreeStream(adaptor,"rule parameters");
         RewriteRuleSubtreeStream stream_query_id=new RewriteRuleSubtreeStream(adaptor,"rule query_id");
          pushParaphrases(DroolsParaphraseTypes.QUERY); 
         try {
@@ -2054,7 +2041,7 @@ public class DRLParser extends Parser {
             }
 
             // AST REWRITE
-            // elements: parameters, query_id, query_key, normal_lhs_block, END
+            // elements: END, parameters, query_id, normal_lhs_block, query_key
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -2126,8 +2113,8 @@ public class DRLParser extends Parser {
         Token id=null;
 
         Object id_tree=null;
-        RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
         RewriteRuleTokenStream stream_STRING=new RewriteRuleTokenStream(adaptor,"token STRING");
+        RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
         try {
             // src/main/resources/org/drools/lang/DRL.g:548:2: (id= ID -> VT_QUERY_ID[$id] | id= STRING -> VT_QUERY_ID[$id] )
@@ -2257,9 +2244,9 @@ public class DRLParser extends Parser {
         Object LEFT_PAREN37_tree=null;
         Object COMMA39_tree=null;
         Object RIGHT_PAREN41_tree=null;
+        RewriteRuleTokenStream stream_COMMA=new RewriteRuleTokenStream(adaptor,"token COMMA");
         RewriteRuleTokenStream stream_LEFT_PAREN=new RewriteRuleTokenStream(adaptor,"token LEFT_PAREN");
         RewriteRuleTokenStream stream_RIGHT_PAREN=new RewriteRuleTokenStream(adaptor,"token RIGHT_PAREN");
-        RewriteRuleTokenStream stream_COMMA=new RewriteRuleTokenStream(adaptor,"token COMMA");
         RewriteRuleSubtreeStream stream_param_definition=new RewriteRuleSubtreeStream(adaptor,"rule param_definition");
         try {
             // src/main/resources/org/drools/lang/DRL.g:557:2: ( LEFT_PAREN ( param_definition ( COMMA param_definition )* )? RIGHT_PAREN -> ^( VT_PARAM_LIST ( param_definition )* RIGHT_PAREN ) )
@@ -2339,7 +2326,7 @@ public class DRLParser extends Parser {
             }
 
             // AST REWRITE
-            // elements: RIGHT_PAREN, param_definition
+            // elements: param_definition, RIGHT_PAREN
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -2567,9 +2554,9 @@ public class DRLParser extends Parser {
         Object END50_tree=null;
         RewriteRuleTokenStream stream_END=new RewriteRuleTokenStream(adaptor,"token END");
         RewriteRuleSubtreeStream stream_decl_field=new RewriteRuleSubtreeStream(adaptor,"rule decl_field");
-        RewriteRuleSubtreeStream stream_type_declare_id=new RewriteRuleSubtreeStream(adaptor,"rule type_declare_id");
-        RewriteRuleSubtreeStream stream_decl_metadata=new RewriteRuleSubtreeStream(adaptor,"rule decl_metadata");
         RewriteRuleSubtreeStream stream_declare_key=new RewriteRuleSubtreeStream(adaptor,"rule declare_key");
+        RewriteRuleSubtreeStream stream_decl_metadata=new RewriteRuleSubtreeStream(adaptor,"rule decl_metadata");
+        RewriteRuleSubtreeStream stream_type_declare_id=new RewriteRuleSubtreeStream(adaptor,"rule type_declare_id");
          pushParaphrases(DroolsParaphraseTypes.TYPE_DECLARE); 
         try {
             // src/main/resources/org/drools/lang/DRL.g:575:2: ( declare_key type_declare_id ( decl_metadata )* ( decl_field )* END -> ^( declare_key type_declare_id ( decl_metadata )* ( decl_field )* END ) )
@@ -2655,7 +2642,7 @@ public class DRLParser extends Parser {
             }
 
             // AST REWRITE
-            // elements: declare_key, decl_field, type_declare_id, decl_metadata, END
+            // elements: type_declare_id, END, declare_key, decl_metadata, decl_field
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -2833,7 +2820,7 @@ public class DRLParser extends Parser {
             if ( backtracking==0 ) stream_paren_chunk.add(paren_chunk53.getTree());
 
             // AST REWRITE
-            // elements: paren_chunk, ID, AT
+            // elements: paren_chunk, AT, ID
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -2905,9 +2892,9 @@ public class DRLParser extends Parser {
         Object COLON56_tree=null;
         RewriteRuleTokenStream stream_COLON=new RewriteRuleTokenStream(adaptor,"token COLON");
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
+        RewriteRuleSubtreeStream stream_decl_metadata=new RewriteRuleSubtreeStream(adaptor,"rule decl_metadata");
         RewriteRuleSubtreeStream stream_decl_field_initialization=new RewriteRuleSubtreeStream(adaptor,"rule decl_field_initialization");
         RewriteRuleSubtreeStream stream_data_type=new RewriteRuleSubtreeStream(adaptor,"rule data_type");
-        RewriteRuleSubtreeStream stream_decl_metadata=new RewriteRuleSubtreeStream(adaptor,"rule decl_metadata");
         try {
             // src/main/resources/org/drools/lang/DRL.g:601:2: ( ID ( decl_field_initialization )? COLON data_type ( decl_metadata )* -> ^( ID ( decl_field_initialization )? data_type ( decl_metadata )* ) )
             // src/main/resources/org/drools/lang/DRL.g:601:4: ID ( decl_field_initialization )? COLON data_type ( decl_metadata )*
@@ -2984,7 +2971,7 @@ public class DRLParser extends Parser {
 
 
             // AST REWRITE
-            // elements: data_type, decl_field_initialization, ID, decl_metadata
+            // elements: decl_metadata, decl_field_initialization, ID, data_type
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -3079,7 +3066,7 @@ public class DRLParser extends Parser {
             if ( backtracking==0 ) stream_paren_chunk.add(paren_chunk60.getTree());
 
             // AST REWRITE
-            // elements: EQUALS, paren_chunk
+            // elements: paren_chunk, EQUALS
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -3150,10 +3137,10 @@ public class DRLParser extends Parser {
         Object semi1_tree=null;
         Object semi2_tree=null;
         Object END64_tree=null;
-        RewriteRuleTokenStream stream_SEMICOLON=new RewriteRuleTokenStream(adaptor,"token SEMICOLON");
         RewriteRuleTokenStream stream_END=new RewriteRuleTokenStream(adaptor,"token END");
-        RewriteRuleSubtreeStream stream_template_slot=new RewriteRuleSubtreeStream(adaptor,"rule template_slot");
+        RewriteRuleTokenStream stream_SEMICOLON=new RewriteRuleTokenStream(adaptor,"token SEMICOLON");
         RewriteRuleSubtreeStream stream_template_id=new RewriteRuleSubtreeStream(adaptor,"rule template_id");
+        RewriteRuleSubtreeStream stream_template_slot=new RewriteRuleSubtreeStream(adaptor,"rule template_slot");
         RewriteRuleSubtreeStream stream_template_key=new RewriteRuleSubtreeStream(adaptor,"rule template_key");
          pushParaphrases(DroolsParaphraseTypes.TEMPLATE); 
         try {
@@ -3263,7 +3250,7 @@ public class DRLParser extends Parser {
             }
 
             // AST REWRITE
-            // elements: template_id, template_key, template_slot, END
+            // elements: template_slot, template_id, END, template_key
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -3336,8 +3323,8 @@ public class DRLParser extends Parser {
         Token id=null;
 
         Object id_tree=null;
-        RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
         RewriteRuleTokenStream stream_STRING=new RewriteRuleTokenStream(adaptor,"token STRING");
+        RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
         try {
             // src/main/resources/org/drools/lang/DRL.g:631:2: (id= ID -> VT_TEMPLATE_ID[$id] | id= STRING -> VT_TEMPLATE_ID[$id] )
@@ -3650,13 +3637,13 @@ public class DRLParser extends Parser {
         rhs_chunk_return rhs_chunk75 = null;
 
 
-        RewriteRuleSubtreeStream stream_rule_id=new RewriteRuleSubtreeStream(adaptor,"rule rule_id");
-        RewriteRuleSubtreeStream stream_rhs_chunk=new RewriteRuleSubtreeStream(adaptor,"rule rhs_chunk");
-        RewriteRuleSubtreeStream stream_rule_attributes=new RewriteRuleSubtreeStream(adaptor,"rule rule_attributes");
         RewriteRuleSubtreeStream stream_rule_key=new RewriteRuleSubtreeStream(adaptor,"rule rule_key");
-        RewriteRuleSubtreeStream stream_extend_key=new RewriteRuleSubtreeStream(adaptor,"rule extend_key");
-        RewriteRuleSubtreeStream stream_decl_metadata=new RewriteRuleSubtreeStream(adaptor,"rule decl_metadata");
+        RewriteRuleSubtreeStream stream_rule_id=new RewriteRuleSubtreeStream(adaptor,"rule rule_id");
         RewriteRuleSubtreeStream stream_when_part=new RewriteRuleSubtreeStream(adaptor,"rule when_part");
+        RewriteRuleSubtreeStream stream_rule_attributes=new RewriteRuleSubtreeStream(adaptor,"rule rule_attributes");
+        RewriteRuleSubtreeStream stream_rhs_chunk=new RewriteRuleSubtreeStream(adaptor,"rule rhs_chunk");
+        RewriteRuleSubtreeStream stream_decl_metadata=new RewriteRuleSubtreeStream(adaptor,"rule decl_metadata");
+        RewriteRuleSubtreeStream stream_extend_key=new RewriteRuleSubtreeStream(adaptor,"rule extend_key");
          pushParaphrases(DroolsParaphraseTypes.RULE); 
         try {
             // src/main/resources/org/drools/lang/DRL.g:654:2: ( rule_key rule_id ( extend_key rule_id )? ( decl_metadata )* ( rule_attributes )? ( when_part )? rhs_chunk -> ^( rule_key rule_id ( ^( extend_key rule_id ) )? ( decl_metadata )* ( rule_attributes )? ( when_part )? rhs_chunk ) )
@@ -3682,18 +3669,18 @@ public class DRLParser extends Parser {
             int alt28=2;
             int LA28_0 = input.LA(1);
 
-            if ( (LA28_0==ID) && (((validateIdentifierKey(DroolsSoftKeywords.AUTO) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.FOCUS))||(validateIdentifierKey(DroolsSoftKeywords.ACTIVATION) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.SALIENCE))||(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EFFECTIVE))||(validateIdentifierKey(DroolsSoftKeywords.LOCK) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.ON) && validateLT(4, "-") && validateLT(5, DroolsSoftKeywords.ACTIVE))||(validateIdentifierKey(DroolsSoftKeywords.NO) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.LOOP))||(validateIdentifierKey(DroolsSoftKeywords.ATTRIBUTES))||(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EXPIRES))||(validateIdentifierKey(DroolsSoftKeywords.DIALECT))||(validateIdentifierKey(DroolsSoftKeywords.EXTEND))||(validateIdentifierKey(DroolsSoftKeywords.AGENDA) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.ENABLED))||(validateIdentifierKey(DroolsSoftKeywords.RULEFLOW) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.DURATION))))) {
+            if ( (LA28_0==ID) && (((validateIdentifierKey(DroolsSoftKeywords.DIALECT))||(validateIdentifierKey(DroolsSoftKeywords.ACTIVATION) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.EXTEND))||(validateIdentifierKey(DroolsSoftKeywords.NO) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.LOOP))||(validateIdentifierKey(DroolsSoftKeywords.DURATION))||(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EFFECTIVE))||(validateIdentifierKey(DroolsSoftKeywords.AGENDA) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EXPIRES))||(validateIdentifierKey(DroolsSoftKeywords.LOCK) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.ON) && validateLT(4, "-") && validateLT(5, DroolsSoftKeywords.ACTIVE))||(validateIdentifierKey(DroolsSoftKeywords.SALIENCE))||(validateIdentifierKey(DroolsSoftKeywords.RULEFLOW) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.ENABLED))||(validateIdentifierKey(DroolsSoftKeywords.ATTRIBUTES))||(validateIdentifierKey(DroolsSoftKeywords.AUTO) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.FOCUS))))) {
                 int LA28_1 = input.LA(2);
 
-                if ( (LA28_1==STRING) && (((validateIdentifierKey(DroolsSoftKeywords.DIALECT))||(validateIdentifierKey(DroolsSoftKeywords.EXTEND))))) {
+                if ( (LA28_1==ID) && ((validateIdentifierKey(DroolsSoftKeywords.EXTEND)))) {
+                    alt28=1;
+                }
+                else if ( (LA28_1==STRING) && (((validateIdentifierKey(DroolsSoftKeywords.DIALECT))||(validateIdentifierKey(DroolsSoftKeywords.EXTEND))))) {
                     int LA28_5 = input.LA(3);
 
                     if ( ((validateIdentifierKey(DroolsSoftKeywords.EXTEND))) ) {
                         alt28=1;
                     }
-                }
-                else if ( (LA28_1==ID) && ((validateIdentifierKey(DroolsSoftKeywords.EXTEND)))) {
-                    alt28=1;
                 }
             }
             switch (alt28) {
@@ -3749,7 +3736,7 @@ public class DRLParser extends Parser {
             int alt30=2;
             int LA30_0 = input.LA(1);
 
-            if ( (LA30_0==ID) && (((validateIdentifierKey(DroolsSoftKeywords.AUTO) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.FOCUS))||(validateIdentifierKey(DroolsSoftKeywords.ACTIVATION) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.SALIENCE))||(validateIdentifierKey(DroolsSoftKeywords.LOCK) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.ON) && validateLT(4, "-") && validateLT(5, DroolsSoftKeywords.ACTIVE))||(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EFFECTIVE))||(validateIdentifierKey(DroolsSoftKeywords.NO) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.LOOP))||(validateIdentifierKey(DroolsSoftKeywords.ATTRIBUTES))||(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EXPIRES))||(validateIdentifierKey(DroolsSoftKeywords.DIALECT))||(validateIdentifierKey(DroolsSoftKeywords.AGENDA) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.ENABLED))||(validateIdentifierKey(DroolsSoftKeywords.RULEFLOW) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.DURATION))))) {
+            if ( (LA30_0==ID) && (((validateIdentifierKey(DroolsSoftKeywords.ACTIVATION) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.DIALECT))||(validateIdentifierKey(DroolsSoftKeywords.NO) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.LOOP))||(validateIdentifierKey(DroolsSoftKeywords.DURATION))||(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EFFECTIVE))||(validateIdentifierKey(DroolsSoftKeywords.AGENDA) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EXPIRES))||(validateIdentifierKey(DroolsSoftKeywords.LOCK) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.ON) && validateLT(4, "-") && validateLT(5, DroolsSoftKeywords.ACTIVE))||(validateIdentifierKey(DroolsSoftKeywords.SALIENCE))||(validateIdentifierKey(DroolsSoftKeywords.ENABLED))||(validateIdentifierKey(DroolsSoftKeywords.RULEFLOW) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.ATTRIBUTES))||(validateIdentifierKey(DroolsSoftKeywords.AUTO) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.FOCUS))))) {
                 alt30=1;
             }
             switch (alt30) {
@@ -3796,7 +3783,7 @@ public class DRLParser extends Parser {
             if ( backtracking==0 ) stream_rhs_chunk.add(rhs_chunk75.getTree());
 
             // AST REWRITE
-            // elements: decl_metadata, rule_attributes, rhs_chunk, when_part, rule_id, rule_id, extend_key, rule_key
+            // elements: extend_key, when_part, rule_id, rule_attributes, rule_id, decl_metadata, rule_key, rhs_chunk
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -3815,7 +3802,7 @@ public class DRLParser extends Parser {
 
                 adaptor.addChild(root_1, stream_rule_id.next());
                 // src/main/resources/org/drools/lang/DRL.g:659:25: ( ^( extend_key rule_id ) )?
-                if ( stream_rule_id.hasNext()||stream_extend_key.hasNext() ) {
+                if ( stream_extend_key.hasNext()||stream_rule_id.hasNext() ) {
                     // src/main/resources/org/drools/lang/DRL.g:659:25: ^( extend_key rule_id )
                     {
                     Object root_2 = (Object)adaptor.nil();
@@ -3827,8 +3814,8 @@ public class DRLParser extends Parser {
                     }
 
                 }
-                stream_rule_id.reset();
                 stream_extend_key.reset();
+                stream_rule_id.reset();
                 // src/main/resources/org/drools/lang/DRL.g:659:48: ( decl_metadata )*
                 while ( stream_decl_metadata.hasNext() ) {
                     adaptor.addChild(root_1, stream_decl_metadata.next());
@@ -3946,7 +3933,7 @@ public class DRLParser extends Parser {
             if ( backtracking==0 ) stream_normal_lhs_block.add(normal_lhs_block78.getTree());
 
             // AST REWRITE
-            // elements: normal_lhs_block, WHEN
+            // elements: WHEN, normal_lhs_block
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -4000,8 +3987,8 @@ public class DRLParser extends Parser {
         Token id=null;
 
         Object id_tree=null;
-        RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
         RewriteRuleTokenStream stream_STRING=new RewriteRuleTokenStream(adaptor,"token STRING");
+        RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
         try {
             // src/main/resources/org/drools/lang/DRL.g:671:2: (id= ID -> VT_RULE_ID[$id] | id= STRING -> VT_RULE_ID[$id] )
@@ -4131,10 +4118,10 @@ public class DRLParser extends Parser {
 
         Object COLON80_tree=null;
         Object COMMA82_tree=null;
-        RewriteRuleTokenStream stream_COLON=new RewriteRuleTokenStream(adaptor,"token COLON");
         RewriteRuleTokenStream stream_COMMA=new RewriteRuleTokenStream(adaptor,"token COMMA");
-        RewriteRuleSubtreeStream stream_rule_attribute=new RewriteRuleSubtreeStream(adaptor,"rule rule_attribute");
+        RewriteRuleTokenStream stream_COLON=new RewriteRuleTokenStream(adaptor,"token COLON");
         RewriteRuleSubtreeStream stream_attributes_key=new RewriteRuleSubtreeStream(adaptor,"rule attributes_key");
+        RewriteRuleSubtreeStream stream_rule_attribute=new RewriteRuleSubtreeStream(adaptor,"rule rule_attribute");
         try {
             // src/main/resources/org/drools/lang/DRL.g:680:2: ( ( attributes_key COLON )? rule_attribute ( ( COMMA )? attr= rule_attribute )* -> ^( VT_RULE_ATTRIBUTES ( attributes_key )? ( rule_attribute )+ ) )
             // src/main/resources/org/drools/lang/DRL.g:680:4: ( attributes_key COLON )? rule_attribute ( ( COMMA )? attr= rule_attribute )*
@@ -4143,7 +4130,7 @@ public class DRLParser extends Parser {
             int alt34=2;
             int LA34_0 = input.LA(1);
 
-            if ( (LA34_0==ID) && (((validateIdentifierKey(DroolsSoftKeywords.AUTO) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.FOCUS))||(validateIdentifierKey(DroolsSoftKeywords.ACTIVATION) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.SALIENCE))||(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EFFECTIVE))||(validateIdentifierKey(DroolsSoftKeywords.LOCK) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.ON) && validateLT(4, "-") && validateLT(5, DroolsSoftKeywords.ACTIVE))||(validateIdentifierKey(DroolsSoftKeywords.NO) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.LOOP))||(validateIdentifierKey(DroolsSoftKeywords.ATTRIBUTES))||(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EXPIRES))||(validateIdentifierKey(DroolsSoftKeywords.DIALECT))||(validateIdentifierKey(DroolsSoftKeywords.AGENDA) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.ENABLED))||(validateIdentifierKey(DroolsSoftKeywords.RULEFLOW) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.DURATION))))) {
+            if ( (LA34_0==ID) && (((validateIdentifierKey(DroolsSoftKeywords.DIALECT))||(validateIdentifierKey(DroolsSoftKeywords.ACTIVATION) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.NO) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.LOOP))||(validateIdentifierKey(DroolsSoftKeywords.DURATION))||(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EFFECTIVE))||(validateIdentifierKey(DroolsSoftKeywords.AGENDA) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EXPIRES))||(validateIdentifierKey(DroolsSoftKeywords.LOCK) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.ON) && validateLT(4, "-") && validateLT(5, DroolsSoftKeywords.ACTIVE))||(validateIdentifierKey(DroolsSoftKeywords.SALIENCE))||(validateIdentifierKey(DroolsSoftKeywords.RULEFLOW) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.ENABLED))||(validateIdentifierKey(DroolsSoftKeywords.ATTRIBUTES))||(validateIdentifierKey(DroolsSoftKeywords.AUTO) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.FOCUS))))) {
                 int LA34_1 = input.LA(2);
 
                 if ( (LA34_1==COLON) && ((validateIdentifierKey(DroolsSoftKeywords.ATTRIBUTES)))) {
@@ -4186,7 +4173,7 @@ public class DRLParser extends Parser {
                 if ( (LA36_0==COMMA) ) {
                     alt36=1;
                 }
-                else if ( (LA36_0==ID) && (((validateIdentifierKey(DroolsSoftKeywords.NO) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.LOOP))||(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EXPIRES))||(validateIdentifierKey(DroolsSoftKeywords.AUTO) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.FOCUS))||(validateIdentifierKey(DroolsSoftKeywords.DIALECT))||(validateIdentifierKey(DroolsSoftKeywords.ACTIVATION) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.SALIENCE))||(validateIdentifierKey(DroolsSoftKeywords.AGENDA) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.ENABLED))||(validateIdentifierKey(DroolsSoftKeywords.RULEFLOW) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.DURATION))||(validateIdentifierKey(DroolsSoftKeywords.LOCK) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.ON) && validateLT(4, "-") && validateLT(5, DroolsSoftKeywords.ACTIVE))||(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EFFECTIVE))))) {
+                else if ( (LA36_0==ID) && (((validateIdentifierKey(DroolsSoftKeywords.AGENDA) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EXPIRES))||(validateIdentifierKey(DroolsSoftKeywords.ACTIVATION) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.DIALECT))||(validateIdentifierKey(DroolsSoftKeywords.LOCK) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.ON) && validateLT(4, "-") && validateLT(5, DroolsSoftKeywords.ACTIVE))||(validateIdentifierKey(DroolsSoftKeywords.SALIENCE))||(validateIdentifierKey(DroolsSoftKeywords.NO) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.LOOP))||(validateIdentifierKey(DroolsSoftKeywords.RULEFLOW) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.ENABLED))||(validateIdentifierKey(DroolsSoftKeywords.DURATION))||(validateIdentifierKey(DroolsSoftKeywords.AUTO) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.FOCUS))||(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EFFECTIVE))))) {
                     alt36=1;
                 }
 
@@ -4235,7 +4222,7 @@ public class DRLParser extends Parser {
 
 
             // AST REWRITE
-            // elements: attributes_key, rule_attribute
+            // elements: rule_attribute, attributes_key
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -4511,7 +4498,7 @@ public class DRLParser extends Parser {
             recover(input,re);
         }
         finally {
-
+            
             	if (isEditorInterfaceEnabled && isFailed) {
             		if (input.LA(6) == EOF && input.LA(1) == ID && input.LA(2) == MISC && input.LA(3) == ID && 
             			input.LA(5) == MISC && input.LA(6) == ID && 
@@ -5618,7 +5605,7 @@ public class DRLParser extends Parser {
         RewriteRuleTokenStream stream_RIGHT_PAREN=new RewriteRuleTokenStream(adaptor,"token RIGHT_PAREN");
         RewriteRuleSubtreeStream stream_or_key=new RewriteRuleSubtreeStream(adaptor,"rule or_key");
         RewriteRuleSubtreeStream stream_lhs_and=new RewriteRuleSubtreeStream(adaptor,"rule lhs_and");
-
+        
         	Token orToken = null;
 
         try {
@@ -5769,7 +5756,7 @@ public class DRLParser extends Parser {
                     }
 
                     // AST REWRITE
-                    // elements: lhs_and, RIGHT_PAREN
+                    // elements: RIGHT_PAREN, lhs_and
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -5926,7 +5913,7 @@ public class DRLParser extends Parser {
                     	    if ( backtracking==0 ) stream_lhs_and.add(lhs_and127.getTree());
 
                     	    // AST REWRITE
-                    	    // elements: lhs_or, lhs_and
+                    	    // elements: lhs_and, lhs_or
                     	    // token labels: 
                     	    // rule labels: retval
                     	    // token list labels: 
@@ -6013,12 +6000,12 @@ public class DRLParser extends Parser {
         Object amper_tree=null;
         Object LEFT_PAREN128_tree=null;
         Object RIGHT_PAREN130_tree=null;
+        RewriteRuleTokenStream stream_DOUBLE_AMPER=new RewriteRuleTokenStream(adaptor,"token DOUBLE_AMPER");
         RewriteRuleTokenStream stream_LEFT_PAREN=new RewriteRuleTokenStream(adaptor,"token LEFT_PAREN");
         RewriteRuleTokenStream stream_RIGHT_PAREN=new RewriteRuleTokenStream(adaptor,"token RIGHT_PAREN");
-        RewriteRuleTokenStream stream_DOUBLE_AMPER=new RewriteRuleTokenStream(adaptor,"token DOUBLE_AMPER");
-        RewriteRuleSubtreeStream stream_lhs_unary=new RewriteRuleSubtreeStream(adaptor,"rule lhs_unary");
         RewriteRuleSubtreeStream stream_and_key=new RewriteRuleSubtreeStream(adaptor,"rule and_key");
-
+        RewriteRuleSubtreeStream stream_lhs_unary=new RewriteRuleSubtreeStream(adaptor,"rule lhs_unary");
+        
         	Token andToken = null;
 
         try {
@@ -6029,7 +6016,10 @@ public class DRLParser extends Parser {
             if ( (LA51_0==LEFT_PAREN) ) {
                 int LA51_1 = input.LA(2);
 
-                if ( (LA51_1==ID) ) {
+                if ( (LA51_1==LEFT_PAREN) ) {
+                    alt51=2;
+                }
+                else if ( (LA51_1==ID) ) {
                     switch ( input.LA(3) ) {
                     case DOT:
                     case COLON:
@@ -6041,7 +6031,7 @@ public class DRLParser extends Parser {
                     case LEFT_PAREN:
                         {
                         switch ( input.LA(4) ) {
-                        case LEFT_PAREN:
+                        case ID:
                             {
                             int LA51_6 = input.LA(5);
 
@@ -6060,7 +6050,7 @@ public class DRLParser extends Parser {
                             }
                             }
                             break;
-                        case ID:
+                        case LEFT_PAREN:
                             {
                             int LA51_7 = input.LA(5);
 
@@ -6185,7 +6175,7 @@ public class DRLParser extends Parser {
                         case LESS:
                         case LESS_EQUAL:
                         case NOT_EQUAL:
-                        case GRAVE_ACCENT:
+                        case TILDE:
                         case FLOAT:
                         case NULL:
                         case LEFT_SQUARE:
@@ -6200,6 +6190,7 @@ public class DRLParser extends Parser {
                         case HexDigit:
                         case UnicodeEscape:
                         case OctalEscape:
+                        case GRAVE_ACCENT:
                         case SH_STYLE_SINGLE_LINE_COMMENT:
                         case C_STYLE_SINGLE_LINE_COMMENT:
                         case MULTI_LINE_COMMENT:
@@ -6244,9 +6235,6 @@ public class DRLParser extends Parser {
                         throw nvae;
                     }
 
-                }
-                else if ( (LA51_1==LEFT_PAREN) ) {
-                    alt51=2;
                 }
                 else {
                     if (backtracking>0) {failed=true; return retval;}
@@ -6329,7 +6317,7 @@ public class DRLParser extends Parser {
                     }
 
                     // AST REWRITE
-                    // elements: RIGHT_PAREN, lhs_unary
+                    // elements: lhs_unary, RIGHT_PAREN
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -6486,7 +6474,7 @@ public class DRLParser extends Parser {
                     	    if ( backtracking==0 ) stream_lhs_unary.add(lhs_unary132.getTree());
 
                     	    // AST REWRITE
-                    	    // elements: lhs_unary, lhs_and
+                    	    // elements: lhs_and, lhs_unary
                     	    // token labels: 
                     	    // rule labels: retval
                     	    // token list labels: 
@@ -6800,9 +6788,9 @@ public class DRLParser extends Parser {
         Object RIGHT_PAREN147_tree=null;
         RewriteRuleTokenStream stream_LEFT_PAREN=new RewriteRuleTokenStream(adaptor,"token LEFT_PAREN");
         RewriteRuleTokenStream stream_RIGHT_PAREN=new RewriteRuleTokenStream(adaptor,"token RIGHT_PAREN");
-        RewriteRuleSubtreeStream stream_lhs_pattern=new RewriteRuleSubtreeStream(adaptor,"rule lhs_pattern");
         RewriteRuleSubtreeStream stream_lhs_or=new RewriteRuleSubtreeStream(adaptor,"rule lhs_or");
         RewriteRuleSubtreeStream stream_exists_key=new RewriteRuleSubtreeStream(adaptor,"rule exists_key");
+        RewriteRuleSubtreeStream stream_lhs_pattern=new RewriteRuleSubtreeStream(adaptor,"rule lhs_pattern");
         try {
             // src/main/resources/org/drools/lang/DRL.g:865:2: ( exists_key ( ( LEFT_PAREN ( or_key | and_key ) )=> lhs_or | LEFT_PAREN lhs_or RIGHT_PAREN | lhs_pattern ) -> ^( exists_key ( lhs_or )? ( lhs_pattern )? ( RIGHT_PAREN )? ) )
             // src/main/resources/org/drools/lang/DRL.g:865:4: exists_key ( ( LEFT_PAREN ( or_key | and_key ) )=> lhs_or | LEFT_PAREN lhs_or RIGHT_PAREN | lhs_pattern )
@@ -6871,7 +6859,7 @@ public class DRLParser extends Parser {
 
 
             // AST REWRITE
-            // elements: RIGHT_PAREN, lhs_pattern, lhs_or, exists_key
+            // elements: exists_key, RIGHT_PAREN, lhs_pattern, lhs_or
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -6969,7 +6957,7 @@ public class DRLParser extends Parser {
             if ( backtracking==0 ) stream_fact_binding.add(fact_binding150.getTree());
 
             // AST REWRITE
-            // elements: fact_binding, not_key
+            // elements: not_key, fact_binding
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -7050,9 +7038,9 @@ public class DRLParser extends Parser {
         Object RIGHT_PAREN155_tree=null;
         RewriteRuleTokenStream stream_LEFT_PAREN=new RewriteRuleTokenStream(adaptor,"token LEFT_PAREN");
         RewriteRuleTokenStream stream_RIGHT_PAREN=new RewriteRuleTokenStream(adaptor,"token RIGHT_PAREN");
+        RewriteRuleSubtreeStream stream_lhs_or=new RewriteRuleSubtreeStream(adaptor,"rule lhs_or");
         RewriteRuleSubtreeStream stream_not_key=new RewriteRuleSubtreeStream(adaptor,"rule not_key");
         RewriteRuleSubtreeStream stream_lhs_pattern=new RewriteRuleSubtreeStream(adaptor,"rule lhs_pattern");
-        RewriteRuleSubtreeStream stream_lhs_or=new RewriteRuleSubtreeStream(adaptor,"rule lhs_or");
         try {
             // src/main/resources/org/drools/lang/DRL.g:881:9: ( not_key ( ( LEFT_PAREN ( or_key | and_key ) )=> lhs_or | LEFT_PAREN lhs_or RIGHT_PAREN | lhs_pattern ) -> ^( not_key ( lhs_or )? ( lhs_pattern )? ( RIGHT_PAREN )? ) )
             // src/main/resources/org/drools/lang/DRL.g:881:11: not_key ( ( LEFT_PAREN ( or_key | and_key ) )=> lhs_or | LEFT_PAREN lhs_or RIGHT_PAREN | lhs_pattern )
@@ -7124,7 +7112,7 @@ public class DRLParser extends Parser {
 
 
             // AST REWRITE
-            // elements: not_key, lhs_or, RIGHT_PAREN, lhs_pattern
+            // elements: RIGHT_PAREN, not_key, lhs_or, lhs_pattern
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -7204,8 +7192,8 @@ public class DRLParser extends Parser {
         paren_chunk_return pc = null;
 
 
-        RewriteRuleSubtreeStream stream_paren_chunk=new RewriteRuleSubtreeStream(adaptor,"rule paren_chunk");
         RewriteRuleSubtreeStream stream_eval_key=new RewriteRuleSubtreeStream(adaptor,"rule eval_key");
+        RewriteRuleSubtreeStream stream_paren_chunk=new RewriteRuleSubtreeStream(adaptor,"rule paren_chunk");
         try {
             // src/main/resources/org/drools/lang/DRL.g:892:2: (ev= eval_key pc= paren_chunk -> ^( eval_key paren_chunk ) )
             // src/main/resources/org/drools/lang/DRL.g:892:4: ev= eval_key pc= paren_chunk
@@ -7232,7 +7220,7 @@ public class DRLParser extends Parser {
             }
 
             // AST REWRITE
-            // elements: paren_chunk, eval_key
+            // elements: eval_key, paren_chunk
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -7363,7 +7351,7 @@ public class DRLParser extends Parser {
             }
 
             // AST REWRITE
-            // elements: RIGHT_PAREN, lhs_pattern, forall_key
+            // elements: forall_key, RIGHT_PAREN, lhs_pattern
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -7612,7 +7600,7 @@ public class DRLParser extends Parser {
             recover(input,re);
         }
         finally {
-
+            
             	if (isEditorInterfaceEnabled && input.LA(3) == EOF && input.LA(1) == ACCUMULATE) {
             			emit(input.LT(1), DroolsEditorType.KEYWORD);
             			emit(input.LT(2), DroolsEditorType.SYMBOL);
@@ -7796,15 +7784,15 @@ public class DRLParser extends Parser {
             if ( backtracking==0 ) stream_paren_chunk.add(paren_chunk173.getTree());
 
             // AST REWRITE
-            // elements: paren_chunk, id2, id1
-            // token labels: id2, id1
+            // elements: id2, paren_chunk, id1
+            // token labels: id1, id2
             // rule labels: retval
             // token list labels: 
             // rule list labels: 
             if ( backtracking==0 ) {
             retval.tree = root_0;
-            RewriteRuleTokenStream stream_id2=new RewriteRuleTokenStream(adaptor,"token id2",id2);
             RewriteRuleTokenStream stream_id1=new RewriteRuleTokenStream(adaptor,"token id1",id1);
+            RewriteRuleTokenStream stream_id2=new RewriteRuleTokenStream(adaptor,"token id2",id2);
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
@@ -7873,13 +7861,13 @@ public class DRLParser extends Parser {
         Object LEFT_PAREN175_tree=null;
         Object COMMA177_tree=null;
         Object RIGHT_PAREN180_tree=null;
+        RewriteRuleTokenStream stream_COMMA=new RewriteRuleTokenStream(adaptor,"token COMMA");
         RewriteRuleTokenStream stream_ACCUMULATE=new RewriteRuleTokenStream(adaptor,"token ACCUMULATE");
         RewriteRuleTokenStream stream_LEFT_PAREN=new RewriteRuleTokenStream(adaptor,"token LEFT_PAREN");
         RewriteRuleTokenStream stream_RIGHT_PAREN=new RewriteRuleTokenStream(adaptor,"token RIGHT_PAREN");
-        RewriteRuleTokenStream stream_COMMA=new RewriteRuleTokenStream(adaptor,"token COMMA");
+        RewriteRuleSubtreeStream stream_lhs_or=new RewriteRuleSubtreeStream(adaptor,"rule lhs_or");
         RewriteRuleSubtreeStream stream_accumulate_init_clause=new RewriteRuleSubtreeStream(adaptor,"rule accumulate_init_clause");
         RewriteRuleSubtreeStream stream_accumulate_id_clause=new RewriteRuleSubtreeStream(adaptor,"rule accumulate_id_clause");
-        RewriteRuleSubtreeStream stream_lhs_or=new RewriteRuleSubtreeStream(adaptor,"rule lhs_or");
         try {
             // src/main/resources/org/drools/lang/DRL.g:953:2: ( ACCUMULATE LEFT_PAREN lhs_or ( COMMA )? ( accumulate_init_clause | accumulate_id_clause ) RIGHT_PAREN -> ^( ACCUMULATE lhs_or ( accumulate_init_clause )? ( accumulate_id_clause )? RIGHT_PAREN ) )
             // src/main/resources/org/drools/lang/DRL.g:953:4: ACCUMULATE LEFT_PAREN lhs_or ( COMMA )? ( accumulate_init_clause | accumulate_id_clause ) RIGHT_PAREN
@@ -7985,7 +7973,7 @@ public class DRLParser extends Parser {
             }
 
             // AST REWRITE
-            // elements: lhs_or, ACCUMULATE, accumulate_id_clause, accumulate_init_clause, RIGHT_PAREN
+            // elements: RIGHT_PAREN, lhs_or, accumulate_init_clause, accumulate_id_clause, ACCUMULATE
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -8081,10 +8069,10 @@ public class DRLParser extends Parser {
         Object INIT181_tree=null;
         RewriteRuleTokenStream stream_COMMA=new RewriteRuleTokenStream(adaptor,"token COMMA");
         RewriteRuleTokenStream stream_INIT=new RewriteRuleTokenStream(adaptor,"token INIT");
-        RewriteRuleSubtreeStream stream_action_key=new RewriteRuleSubtreeStream(adaptor,"rule action_key");
         RewriteRuleSubtreeStream stream_accumulate_paren_chunk=new RewriteRuleSubtreeStream(adaptor,"rule accumulate_paren_chunk");
         RewriteRuleSubtreeStream stream_reverse_key=new RewriteRuleSubtreeStream(adaptor,"rule reverse_key");
         RewriteRuleSubtreeStream stream_result_key=new RewriteRuleSubtreeStream(adaptor,"rule result_key");
+        RewriteRuleSubtreeStream stream_action_key=new RewriteRuleSubtreeStream(adaptor,"rule action_key");
          boolean isFailed = true;	
         try {
             // src/main/resources/org/drools/lang/DRL.g:970:2: ( INIT pc1= accumulate_paren_chunk[Location.LOCATION_LHS_FROM_ACCUMULATE_INIT_INSIDE] (cm1= COMMA )? action_key pc2= accumulate_paren_chunk[Location.LOCATION_LHS_FROM_ACCUMULATE_ACTION_INSIDE] (cm2= COMMA )? ( reverse_key pc3= accumulate_paren_chunk[Location.LOCATION_LHS_FROM_ACCUMULATE_REVERSE_INSIDE] (cm3= COMMA )? )? res1= result_key pc4= accumulate_paren_chunk[Location.LOCATION_LHS_FROM_ACCUMULATE_RESULT_INSIDE] -> ^( VT_ACCUMULATE_INIT_CLAUSE ^( INIT $pc1) ^( action_key $pc2) ( ^( reverse_key $pc3) )? ^( result_key $pc4) ) )
@@ -8234,18 +8222,18 @@ public class DRLParser extends Parser {
             if ( backtracking==0 ) stream_accumulate_paren_chunk.add(pc4.getTree());
 
             // AST REWRITE
-            // elements: pc3, action_key, result_key, INIT, pc2, reverse_key, pc1, pc4
+            // elements: result_key, pc4, action_key, pc3, INIT, reverse_key, pc1, pc2
             // token labels: 
-            // rule labels: pc4, pc3, retval, pc1, pc2
+            // rule labels: pc2, pc3, pc4, pc1, retval
             // token list labels: 
             // rule list labels: 
             if ( backtracking==0 ) {
             retval.tree = root_0;
-            RewriteRuleSubtreeStream stream_pc4=new RewriteRuleSubtreeStream(adaptor,"token pc4",pc4!=null?pc4.tree:null);
-            RewriteRuleSubtreeStream stream_pc3=new RewriteRuleSubtreeStream(adaptor,"token pc3",pc3!=null?pc3.tree:null);
-            RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
-            RewriteRuleSubtreeStream stream_pc1=new RewriteRuleSubtreeStream(adaptor,"token pc1",pc1!=null?pc1.tree:null);
             RewriteRuleSubtreeStream stream_pc2=new RewriteRuleSubtreeStream(adaptor,"token pc2",pc2!=null?pc2.tree:null);
+            RewriteRuleSubtreeStream stream_pc3=new RewriteRuleSubtreeStream(adaptor,"token pc3",pc3!=null?pc3.tree:null);
+            RewriteRuleSubtreeStream stream_pc4=new RewriteRuleSubtreeStream(adaptor,"token pc4",pc4!=null?pc4.tree:null);
+            RewriteRuleSubtreeStream stream_pc1=new RewriteRuleSubtreeStream(adaptor,"token pc1",pc1!=null?pc1.tree:null);
+            RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
             // 980:2: -> ^( VT_ACCUMULATE_INIT_CLAUSE ^( INIT $pc1) ^( action_key $pc2) ( ^( reverse_key $pc3) )? ^( result_key $pc4) )
@@ -8354,7 +8342,7 @@ public class DRLParser extends Parser {
 
 
         RewriteRuleSubtreeStream stream_accumulate_paren_chunk_data=new RewriteRuleSubtreeStream(adaptor,"rule accumulate_paren_chunk_data");
-
+        
         	String text = "";
 
         try {
@@ -8688,7 +8676,7 @@ public class DRLParser extends Parser {
             }
 
             // AST REWRITE
-            // elements: COLLECT, pattern_source, RIGHT_PAREN
+            // elements: COLLECT, RIGHT_PAREN, pattern_source
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -8776,7 +8764,7 @@ public class DRLParser extends Parser {
             }
 
             // AST REWRITE
-            // elements: entry_point_key, entrypoint_id
+            // elements: entrypoint_id, entry_point_key
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -8837,8 +8825,8 @@ public class DRLParser extends Parser {
         Token value=null;
 
         Object value_tree=null;
-        RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
         RewriteRuleTokenStream stream_STRING=new RewriteRuleTokenStream(adaptor,"token STRING");
+        RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
         try {
             // src/main/resources/org/drools/lang/DRL.g:1044:2: (value= ID -> VT_ENTRYPOINT_ID[$value] | value= STRING -> VT_ENTRYPOINT_ID[$value] )
@@ -8963,8 +8951,8 @@ public class DRLParser extends Parser {
 
         Object ID193_tree=null;
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
-        RewriteRuleSubtreeStream stream_paren_chunk=new RewriteRuleSubtreeStream(adaptor,"rule paren_chunk");
         RewriteRuleSubtreeStream stream_expression_chain=new RewriteRuleSubtreeStream(adaptor,"rule expression_chain");
+        RewriteRuleSubtreeStream stream_paren_chunk=new RewriteRuleSubtreeStream(adaptor,"rule paren_chunk");
         try {
             // src/main/resources/org/drools/lang/DRL.g:1051:2: ( ID ( ( LEFT_PAREN )=>args= paren_chunk )? ( expression_chain )? -> ^( VT_FROM_SOURCE ID ( paren_chunk )? ( expression_chain )? ) )
             // src/main/resources/org/drools/lang/DRL.g:1051:4: ID ( ( LEFT_PAREN )=>args= paren_chunk )? ( expression_chain )?
@@ -8978,7 +8966,32 @@ public class DRLParser extends Parser {
             }
             // src/main/resources/org/drools/lang/DRL.g:1052:3: ( ( LEFT_PAREN )=>args= paren_chunk )?
             int alt69=2;
-            alt69 = dfa69.predict(input);
+            int LA69_0 = input.LA(1);
+
+            if ( (LA69_0==LEFT_PAREN) ) {
+                int LA69_1 = input.LA(2);
+
+                if ( (LA69_1==LEFT_PAREN) ) {
+                    int LA69_3 = input.LA(3);
+
+                    if ( (synpred8()) ) {
+                        alt69=1;
+                    }
+                }
+                else if ( (LA69_1==ID) ) {
+                    int LA69_4 = input.LA(3);
+
+                    if ( (synpred8()) ) {
+                        alt69=1;
+                    }
+                }
+                else if ( ((LA69_1>=VT_COMPILATION_UNIT && LA69_1<=SEMICOLON)||(LA69_1>=DOT && LA69_1<=STRING)||LA69_1==COMMA||(LA69_1>=AT && LA69_1<=MULTI_LINE_COMMENT)) && (synpred8())) {
+                    alt69=1;
+                }
+                else if ( (LA69_1==RIGHT_PAREN) && (synpred8())) {
+                    alt69=1;
+                }
+            }
             switch (alt69) {
                 case 1 :
                     // src/main/resources/org/drools/lang/DRL.g:1052:5: ( LEFT_PAREN )=>args= paren_chunk
@@ -9025,7 +9038,7 @@ public class DRLParser extends Parser {
             }
 
             // AST REWRITE
-            // elements: paren_chunk, ID, expression_chain
+            // elements: ID, paren_chunk, expression_chain
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -9108,9 +9121,9 @@ public class DRLParser extends Parser {
         Object ID196_tree=null;
         RewriteRuleTokenStream stream_DOT=new RewriteRuleTokenStream(adaptor,"token DOT");
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
-        RewriteRuleSubtreeStream stream_paren_chunk=new RewriteRuleSubtreeStream(adaptor,"rule paren_chunk");
         RewriteRuleSubtreeStream stream_square_chunk=new RewriteRuleSubtreeStream(adaptor,"rule square_chunk");
         RewriteRuleSubtreeStream stream_expression_chain=new RewriteRuleSubtreeStream(adaptor,"rule expression_chain");
+        RewriteRuleSubtreeStream stream_paren_chunk=new RewriteRuleSubtreeStream(adaptor,"rule paren_chunk");
         try {
             // src/main/resources/org/drools/lang/DRL.g:1063:2: ( DOT ID ({...}? paren_chunk | square_chunk )? ( expression_chain )? -> ^( VT_EXPRESSION_CHAIN[$DOT] ID ( square_chunk )? ( paren_chunk )? ( expression_chain )? ) )
             // src/main/resources/org/drools/lang/DRL.g:1064:3: DOT ID ({...}? paren_chunk | square_chunk )? ( expression_chain )?
@@ -9259,7 +9272,7 @@ public class DRLParser extends Parser {
                     case LESS:
                     case LESS_EQUAL:
                     case NOT_EQUAL:
-                    case GRAVE_ACCENT:
+                    case TILDE:
                     case FLOAT:
                     case NULL:
                     case LEFT_SQUARE:
@@ -9274,6 +9287,7 @@ public class DRLParser extends Parser {
                     case HexDigit:
                     case UnicodeEscape:
                     case OctalEscape:
+                    case GRAVE_ACCENT:
                     case SH_STYLE_SINGLE_LINE_COMMENT:
                     case C_STYLE_SINGLE_LINE_COMMENT:
                     case MULTI_LINE_COMMENT:
@@ -9341,7 +9355,7 @@ public class DRLParser extends Parser {
 
 
             // AST REWRITE
-            // elements: ID, paren_chunk, expression_chain, square_chunk
+            // elements: square_chunk, expression_chain, paren_chunk, ID
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -9575,9 +9589,9 @@ public class DRLParser extends Parser {
         Object RIGHT_PAREN206_tree=null;
         RewriteRuleTokenStream stream_LEFT_PAREN=new RewriteRuleTokenStream(adaptor,"token LEFT_PAREN");
         RewriteRuleTokenStream stream_RIGHT_PAREN=new RewriteRuleTokenStream(adaptor,"token RIGHT_PAREN");
-        RewriteRuleSubtreeStream stream_fact=new RewriteRuleSubtreeStream(adaptor,"rule fact");
-        RewriteRuleSubtreeStream stream_fact_binding_expression=new RewriteRuleSubtreeStream(adaptor,"rule fact_binding_expression");
         RewriteRuleSubtreeStream stream_label=new RewriteRuleSubtreeStream(adaptor,"rule label");
+        RewriteRuleSubtreeStream stream_fact_binding_expression=new RewriteRuleSubtreeStream(adaptor,"rule fact_binding_expression");
+        RewriteRuleSubtreeStream stream_fact=new RewriteRuleSubtreeStream(adaptor,"rule fact");
         try {
             // src/main/resources/org/drools/lang/DRL.g:1081:3: ( label ( fact | LEFT_PAREN fact_binding_expression RIGHT_PAREN ) -> ^( VT_FACT_BINDING label ( fact )? ( fact_binding_expression )? ( RIGHT_PAREN )? ) )
             // src/main/resources/org/drools/lang/DRL.g:1081:5: label ( fact | LEFT_PAREN fact_binding_expression RIGHT_PAREN )
@@ -9646,7 +9660,7 @@ public class DRLParser extends Parser {
 
 
             // AST REWRITE
-            // elements: label, RIGHT_PAREN, fact_binding_expression, fact
+            // elements: fact_binding_expression, label, RIGHT_PAREN, fact
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -9732,9 +9746,9 @@ public class DRLParser extends Parser {
 
         Object pipe_tree=null;
         RewriteRuleTokenStream stream_DOUBLE_PIPE=new RewriteRuleTokenStream(adaptor,"token DOUBLE_PIPE");
-        RewriteRuleSubtreeStream stream_fact=new RewriteRuleSubtreeStream(adaptor,"rule fact");
         RewriteRuleSubtreeStream stream_or_key=new RewriteRuleSubtreeStream(adaptor,"rule or_key");
-
+        RewriteRuleSubtreeStream stream_fact=new RewriteRuleSubtreeStream(adaptor,"rule fact");
+        
         	Token orToken = null;
 
         try {
@@ -9844,7 +9858,7 @@ public class DRLParser extends Parser {
             	    if ( backtracking==0 ) stream_fact.add(fact208.getTree());
 
             	    // AST REWRITE
-            	    // elements: fact, fact_binding_expression
+            	    // elements: fact_binding_expression, fact
             	    // token labels: 
             	    // rule labels: retval
             	    // token list labels: 
@@ -9923,8 +9937,8 @@ public class DRLParser extends Parser {
         Object RIGHT_PAREN212_tree=null;
         RewriteRuleTokenStream stream_LEFT_PAREN=new RewriteRuleTokenStream(adaptor,"token LEFT_PAREN");
         RewriteRuleTokenStream stream_RIGHT_PAREN=new RewriteRuleTokenStream(adaptor,"token RIGHT_PAREN");
-        RewriteRuleSubtreeStream stream_constraints=new RewriteRuleSubtreeStream(adaptor,"rule constraints");
         RewriteRuleSubtreeStream stream_pattern_type=new RewriteRuleSubtreeStream(adaptor,"rule pattern_type");
+        RewriteRuleSubtreeStream stream_constraints=new RewriteRuleSubtreeStream(adaptor,"rule constraints");
          boolean isFailedOnConstraints = true; pushParaphrases(DroolsParaphraseTypes.PATTERN); 
         try {
             // src/main/resources/org/drools/lang/DRL.g:1100:2: ( pattern_type LEFT_PAREN ( constraints )? RIGHT_PAREN -> ^( VT_FACT pattern_type ( constraints )? RIGHT_PAREN ) )
@@ -10032,7 +10046,7 @@ public class DRLParser extends Parser {
             recover(input,re);
         }
         finally {
-
+            
             	if (isEditorInterfaceEnabled && isFailedOnConstraints && input.LA(1) == EOF && input.get(input.index() - 1).getType() == WS){
             		if (!(getActiveSentence().getContent().getLast() instanceof Integer) && input.LA(-1) != COLON) {
             			emit(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
@@ -10395,7 +10409,7 @@ public class DRLParser extends Parser {
             if ( (LA81_0==ID) ) {
                 int LA81_1 = input.LA(2);
 
-                if ( ((LA81_1>=ID && LA81_1<=DOT)||LA81_1==COLON||(LA81_1>=EQUAL && LA81_1<=GRAVE_ACCENT)||LA81_1==LEFT_SQUARE) ) {
+                if ( ((LA81_1>=ID && LA81_1<=DOT)||LA81_1==COLON||(LA81_1>=EQUAL && LA81_1<=TILDE)||LA81_1==LEFT_SQUARE) ) {
                     alt81=2;
                 }
                 else if ( (LA81_1==LEFT_PAREN) ) {
@@ -10551,11 +10565,11 @@ public class DRLParser extends Parser {
 
         Object arw_tree=null;
         RewriteRuleTokenStream stream_ARROW=new RewriteRuleTokenStream(adaptor,"token ARROW");
+        RewriteRuleSubtreeStream stream_accessor_path=new RewriteRuleSubtreeStream(adaptor,"rule accessor_path");
+        RewriteRuleSubtreeStream stream_label=new RewriteRuleSubtreeStream(adaptor,"rule label");
         RewriteRuleSubtreeStream stream_paren_chunk=new RewriteRuleSubtreeStream(adaptor,"rule paren_chunk");
         RewriteRuleSubtreeStream stream_or_restr_connective=new RewriteRuleSubtreeStream(adaptor,"rule or_restr_connective");
-        RewriteRuleSubtreeStream stream_label=new RewriteRuleSubtreeStream(adaptor,"rule label");
-        RewriteRuleSubtreeStream stream_accessor_path=new RewriteRuleSubtreeStream(adaptor,"rule accessor_path");
-
+        
         	boolean isArrow = false;
 
         try {
@@ -10569,7 +10583,7 @@ public class DRLParser extends Parser {
                 if ( (LA83_1==COLON) ) {
                     alt83=1;
                 }
-                else if ( ((LA83_1>=ID && LA83_1<=DOT)||LA83_1==LEFT_PAREN||(LA83_1>=EQUAL && LA83_1<=GRAVE_ACCENT)||LA83_1==LEFT_SQUARE) ) {
+                else if ( ((LA83_1>=ID && LA83_1<=DOT)||LA83_1==LEFT_PAREN||(LA83_1>=EQUAL && LA83_1<=TILDE)||LA83_1==LEFT_SQUARE) ) {
                     alt83=2;
                 }
                 else {
@@ -10605,7 +10619,7 @@ public class DRLParser extends Parser {
                     int alt82=3;
                     int LA82_0 = input.LA(1);
 
-                    if ( (LA82_0==ID||LA82_0==LEFT_PAREN||(LA82_0>=EQUAL && LA82_0<=GRAVE_ACCENT)) ) {
+                    if ( (LA82_0==ID||LA82_0==LEFT_PAREN||(LA82_0>=EQUAL && LA82_0<=TILDE)) ) {
                         alt82=1;
                     }
                     else if ( (LA82_0==ARROW) ) {
@@ -10649,7 +10663,7 @@ public class DRLParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: label, accessor_path, paren_chunk, or_restr_connective, label, accessor_path
+                    // elements: label, accessor_path, or_restr_connective, accessor_path, label, paren_chunk
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -10743,7 +10757,7 @@ public class DRLParser extends Parser {
                     if ( backtracking==0 ) stream_or_restr_connective.add(or_restr_connective234.getTree());
 
                     // AST REWRITE
-                    // elements: or_restr_connective, accessor_path
+                    // elements: accessor_path, or_restr_connective
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -11258,7 +11272,7 @@ public class DRLParser extends Parser {
                     case LESS:
                     case LESS_EQUAL:
                     case NOT_EQUAL:
-                    case GRAVE_ACCENT:
+                    case TILDE:
                     case LEFT_SQUARE:
                     case RIGHT_SQUARE:
                     case THEN:
@@ -11271,6 +11285,7 @@ public class DRLParser extends Parser {
                     case HexDigit:
                     case UnicodeEscape:
                     case OctalEscape:
+                    case GRAVE_ACCENT:
                     case SH_STYLE_SINGLE_LINE_COMMENT:
                     case C_STYLE_SINGLE_LINE_COMMENT:
                     case MULTI_LINE_COMMENT:
@@ -11382,7 +11397,7 @@ public class DRLParser extends Parser {
                     }
 
                 }
-                else if ( (LA86_1==GRAVE_ACCENT) && ((validateIdentifierKey(DroolsSoftKeywords.NOT)))) {
+                else if ( (LA86_1==TILDE) && ((validateIdentifierKey(DroolsSoftKeywords.NOT)))) {
                     alt86=2;
                 }
                 else {
@@ -11400,7 +11415,7 @@ public class DRLParser extends Parser {
             case LESS:
             case LESS_EQUAL:
             case NOT_EQUAL:
-            case GRAVE_ACCENT:
+            case TILDE:
                 {
                 alt86=2;
                 }
@@ -11482,7 +11497,7 @@ public class DRLParser extends Parser {
             }
         }
         catch ( RecognitionException re ) {
-
+            
             	if (!lookaheadTest){
             		reportError(re);
             		recover(input, re);
@@ -11492,7 +11507,7 @@ public class DRLParser extends Parser {
 
         }
         finally {
-
+            
             	if (isEditorInterfaceEnabled && input.LA(2) == EOF && input.LA(1) == ID) {
             		emit(true, Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
             		emit(input.LT(1), DroolsEditorType.KEYWORD);
@@ -11535,7 +11550,7 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start simple_operator
-    // src/main/resources/org/drools/lang/DRL.g:1235:1: simple_operator : ( EQUAL | GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | NOT_EQUAL | not_key ( contains_key | soundslike_key | matches_key | memberof_key | id1= ID | ga1= GRAVE_ACCENT id2= ID square_chunk ) | contains_key | excludes_key | matches_key | soundslike_key | memberof_key | id3= ID | ga2= GRAVE_ACCENT id4= ID square_chunk ) expression_value ;
+    // src/main/resources/org/drools/lang/DRL.g:1235:1: simple_operator : ( EQUAL | GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | NOT_EQUAL | not_key ( contains_key | soundslike_key | matches_key | memberof_key | id1= ID | ga1= TILDE id2= ID square_chunk ) | contains_key | excludes_key | matches_key | soundslike_key | memberof_key | id3= ID | ga2= TILDE id4= ID square_chunk ) expression_value ;
     public final simple_operator_return simple_operator() throws RecognitionException {
         simple_operator_return retval = new simple_operator_return();
         retval.start = input.LT(1);
@@ -11595,15 +11610,15 @@ public class DRLParser extends Parser {
         Object NOT_EQUAL252_tree=null;
 
         try {
-            // src/main/resources/org/drools/lang/DRL.g:1236:2: ( ( EQUAL | GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | NOT_EQUAL | not_key ( contains_key | soundslike_key | matches_key | memberof_key | id1= ID | ga1= GRAVE_ACCENT id2= ID square_chunk ) | contains_key | excludes_key | matches_key | soundslike_key | memberof_key | id3= ID | ga2= GRAVE_ACCENT id4= ID square_chunk ) expression_value )
-            // src/main/resources/org/drools/lang/DRL.g:1236:4: ( EQUAL | GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | NOT_EQUAL | not_key ( contains_key | soundslike_key | matches_key | memberof_key | id1= ID | ga1= GRAVE_ACCENT id2= ID square_chunk ) | contains_key | excludes_key | matches_key | soundslike_key | memberof_key | id3= ID | ga2= GRAVE_ACCENT id4= ID square_chunk ) expression_value
+            // src/main/resources/org/drools/lang/DRL.g:1236:2: ( ( EQUAL | GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | NOT_EQUAL | not_key ( contains_key | soundslike_key | matches_key | memberof_key | id1= ID | ga1= TILDE id2= ID square_chunk ) | contains_key | excludes_key | matches_key | soundslike_key | memberof_key | id3= ID | ga2= TILDE id4= ID square_chunk ) expression_value )
+            // src/main/resources/org/drools/lang/DRL.g:1236:4: ( EQUAL | GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | NOT_EQUAL | not_key ( contains_key | soundslike_key | matches_key | memberof_key | id1= ID | ga1= TILDE id2= ID square_chunk ) | contains_key | excludes_key | matches_key | soundslike_key | memberof_key | id3= ID | ga2= TILDE id4= ID square_chunk ) expression_value
             {
             root_0 = (Object)adaptor.nil();
 
             if ( backtracking==0 ) {
               	emit(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);	
             }
-            // src/main/resources/org/drools/lang/DRL.g:1237:3: ( EQUAL | GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | NOT_EQUAL | not_key ( contains_key | soundslike_key | matches_key | memberof_key | id1= ID | ga1= GRAVE_ACCENT id2= ID square_chunk ) | contains_key | excludes_key | matches_key | soundslike_key | memberof_key | id3= ID | ga2= GRAVE_ACCENT id4= ID square_chunk )
+            // src/main/resources/org/drools/lang/DRL.g:1237:3: ( EQUAL | GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | NOT_EQUAL | not_key ( contains_key | soundslike_key | matches_key | memberof_key | id1= ID | ga1= TILDE id2= ID square_chunk ) | contains_key | excludes_key | matches_key | soundslike_key | memberof_key | id3= ID | ga2= TILDE id4= ID square_chunk )
             int alt88=14;
             switch ( input.LA(1) ) {
             case EQUAL:
@@ -11640,7 +11655,7 @@ public class DRLParser extends Parser {
                 {
                 int LA88_7 = input.LA(2);
 
-                if ( (LA88_7==ID||LA88_7==GRAVE_ACCENT) && ((validateIdentifierKey(DroolsSoftKeywords.NOT)))) {
+                if ( (LA88_7==ID||LA88_7==TILDE) && ((validateIdentifierKey(DroolsSoftKeywords.NOT)))) {
                     alt88=7;
                 }
                 else if ( ((validateIdentifierKey(DroolsSoftKeywords.CONTAINS))) ) {
@@ -11664,13 +11679,13 @@ public class DRLParser extends Parser {
                 else {
                     if (backtracking>0) {failed=true; return retval;}
                     NoViableAltException nvae =
-                        new NoViableAltException("1237:3: ( EQUAL | GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | NOT_EQUAL | not_key ( contains_key | soundslike_key | matches_key | memberof_key | id1= ID | ga1= GRAVE_ACCENT id2= ID square_chunk ) | contains_key | excludes_key | matches_key | soundslike_key | memberof_key | id3= ID | ga2= GRAVE_ACCENT id4= ID square_chunk )", 88, 7, input);
+                        new NoViableAltException("1237:3: ( EQUAL | GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | NOT_EQUAL | not_key ( contains_key | soundslike_key | matches_key | memberof_key | id1= ID | ga1= TILDE id2= ID square_chunk ) | contains_key | excludes_key | matches_key | soundslike_key | memberof_key | id3= ID | ga2= TILDE id4= ID square_chunk )", 88, 7, input);
 
                     throw nvae;
                 }
                 }
                 break;
-            case GRAVE_ACCENT:
+            case TILDE:
                 {
                 alt88=14;
                 }
@@ -11678,7 +11693,7 @@ public class DRLParser extends Parser {
             default:
                 if (backtracking>0) {failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("1237:3: ( EQUAL | GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | NOT_EQUAL | not_key ( contains_key | soundslike_key | matches_key | memberof_key | id1= ID | ga1= GRAVE_ACCENT id2= ID square_chunk ) | contains_key | excludes_key | matches_key | soundslike_key | memberof_key | id3= ID | ga2= GRAVE_ACCENT id4= ID square_chunk )", 88, 0, input);
+                    new NoViableAltException("1237:3: ( EQUAL | GREATER | GREATER_EQUAL | LESS | LESS_EQUAL | NOT_EQUAL | not_key ( contains_key | soundslike_key | matches_key | memberof_key | id1= ID | ga1= TILDE id2= ID square_chunk ) | contains_key | excludes_key | matches_key | soundslike_key | memberof_key | id3= ID | ga2= TILDE id4= ID square_chunk )", 88, 0, input);
 
                 throw nvae;
             }
@@ -11775,14 +11790,14 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 7 :
-                    // src/main/resources/org/drools/lang/DRL.g:1243:4: not_key ( contains_key | soundslike_key | matches_key | memberof_key | id1= ID | ga1= GRAVE_ACCENT id2= ID square_chunk )
+                    // src/main/resources/org/drools/lang/DRL.g:1243:4: not_key ( contains_key | soundslike_key | matches_key | memberof_key | id1= ID | ga1= TILDE id2= ID square_chunk )
                     {
                     pushFollow(FOLLOW_not_key_in_simple_operator4206);
                     not_key253=not_key();
                     _fsp--;
                     if (failed) return retval;
                     if ( backtracking==0 ) adaptor.addChild(root_0, not_key253.getTree());
-                    // src/main/resources/org/drools/lang/DRL.g:1244:3: ( contains_key | soundslike_key | matches_key | memberof_key | id1= ID | ga1= GRAVE_ACCENT id2= ID square_chunk )
+                    // src/main/resources/org/drools/lang/DRL.g:1244:3: ( contains_key | soundslike_key | matches_key | memberof_key | id1= ID | ga1= TILDE id2= ID square_chunk )
                     int alt87=6;
                     int LA87_0 = input.LA(1);
 
@@ -11807,18 +11822,18 @@ public class DRLParser extends Parser {
                         else {
                             if (backtracking>0) {failed=true; return retval;}
                             NoViableAltException nvae =
-                                new NoViableAltException("1244:3: ( contains_key | soundslike_key | matches_key | memberof_key | id1= ID | ga1= GRAVE_ACCENT id2= ID square_chunk )", 87, 1, input);
+                                new NoViableAltException("1244:3: ( contains_key | soundslike_key | matches_key | memberof_key | id1= ID | ga1= TILDE id2= ID square_chunk )", 87, 1, input);
 
                             throw nvae;
                         }
                     }
-                    else if ( (LA87_0==GRAVE_ACCENT) ) {
+                    else if ( (LA87_0==TILDE) ) {
                         alt87=6;
                     }
                     else {
                         if (backtracking>0) {failed=true; return retval;}
                         NoViableAltException nvae =
-                            new NoViableAltException("1244:3: ( contains_key | soundslike_key | matches_key | memberof_key | id1= ID | ga1= GRAVE_ACCENT id2= ID square_chunk )", 87, 0, input);
+                            new NoViableAltException("1244:3: ( contains_key | soundslike_key | matches_key | memberof_key | id1= ID | ga1= TILDE id2= ID square_chunk )", 87, 0, input);
 
                         throw nvae;
                     }
@@ -11883,10 +11898,10 @@ public class DRLParser extends Parser {
                             }
                             break;
                         case 6 :
-                            // src/main/resources/org/drools/lang/DRL.g:1249:5: ga1= GRAVE_ACCENT id2= ID square_chunk
+                            // src/main/resources/org/drools/lang/DRL.g:1249:5: ga1= TILDE id2= ID square_chunk
                             {
                             ga1=(Token)input.LT(1);
-                            match(input,GRAVE_ACCENT,FOLLOW_GRAVE_ACCENT_in_simple_operator4254); if (failed) return retval;
+                            match(input,TILDE,FOLLOW_TILDE_in_simple_operator4254); if (failed) return retval;
                             if ( backtracking==0 ) {
                               	emit(ga1, DroolsEditorType.SYMBOL);	
                             }
@@ -11984,10 +11999,10 @@ public class DRLParser extends Parser {
                     }
                     break;
                 case 14 :
-                    // src/main/resources/org/drools/lang/DRL.g:1256:4: ga2= GRAVE_ACCENT id4= ID square_chunk
+                    // src/main/resources/org/drools/lang/DRL.g:1256:4: ga2= TILDE id4= ID square_chunk
                     {
                     ga2=(Token)input.LT(1);
-                    match(input,GRAVE_ACCENT,FOLLOW_GRAVE_ACCENT_in_simple_operator4316); if (failed) return retval;
+                    match(input,TILDE,FOLLOW_TILDE_in_simple_operator4316); if (failed) return retval;
                     if ( backtracking==0 ) {
                       	emit(ga2, DroolsEditorType.SYMBOL);	
                     }
@@ -12623,7 +12638,7 @@ public class DRLParser extends Parser {
 
 
             // AST REWRITE
-            // elements: ID, dimension_definition
+            // elements: dimension_definition, ID
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -12786,7 +12801,7 @@ public class DRLParser extends Parser {
             }
 
             // AST REWRITE
-            // elements: ID, dimension_definition
+            // elements: dimension_definition, ID
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -13158,7 +13173,7 @@ public class DRLParser extends Parser {
 
 
         RewriteRuleSubtreeStream stream_rhs_chunk_data=new RewriteRuleSubtreeStream(adaptor,"rule rhs_chunk_data");
-
+        
         	String text = "";
 
         try {
@@ -13365,7 +13380,7 @@ public class DRLParser extends Parser {
 
 
         RewriteRuleSubtreeStream stream_curly_chunk_data=new RewriteRuleSubtreeStream(adaptor,"rule curly_chunk_data");
-
+        
         	String text = "";
 
         try {
@@ -13567,7 +13582,7 @@ public class DRLParser extends Parser {
 
 
         RewriteRuleSubtreeStream stream_paren_chunk_data=new RewriteRuleSubtreeStream(adaptor,"rule paren_chunk_data");
-
+        
         	String text = "";
 
         try {
@@ -13769,7 +13784,7 @@ public class DRLParser extends Parser {
 
 
         RewriteRuleSubtreeStream stream_square_chunk_data=new RewriteRuleSubtreeStream(adaptor,"rule square_chunk_data");
-
+        
         	String text = "";
 
         try {
@@ -13978,10 +13993,10 @@ public class DRLParser extends Parser {
         Object id2_tree=null;
         Object mis2_tree=null;
         Object id3_tree=null;
-        RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
         RewriteRuleTokenStream stream_MISC=new RewriteRuleTokenStream(adaptor,"token MISC");
+        RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
-
+        
         	String text = "";
 
         try {
@@ -14081,10 +14096,10 @@ public class DRLParser extends Parser {
         Object id1_tree=null;
         Object mis1_tree=null;
         Object id2_tree=null;
-        RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
         RewriteRuleTokenStream stream_MISC=new RewriteRuleTokenStream(adaptor,"token MISC");
+        RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
-
+        
         	String text = "";
 
         try {
@@ -14174,10 +14189,10 @@ public class DRLParser extends Parser {
         Object id1_tree=null;
         Object mis1_tree=null;
         Object id2_tree=null;
-        RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
         RewriteRuleTokenStream stream_MISC=new RewriteRuleTokenStream(adaptor,"token MISC");
+        RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
-
+        
         	String text = "";
 
         try {
@@ -14267,10 +14282,10 @@ public class DRLParser extends Parser {
         Object id1_tree=null;
         Object mis1_tree=null;
         Object id2_tree=null;
-        RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
         RewriteRuleTokenStream stream_MISC=new RewriteRuleTokenStream(adaptor,"token MISC");
+        RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
-
+        
         	String text = "";
 
         try {
@@ -14360,10 +14375,10 @@ public class DRLParser extends Parser {
         Object id1_tree=null;
         Object mis1_tree=null;
         Object id2_tree=null;
-        RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
         RewriteRuleTokenStream stream_MISC=new RewriteRuleTokenStream(adaptor,"token MISC");
+        RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
-
+        
         	String text = "";
 
         try {
@@ -14453,10 +14468,10 @@ public class DRLParser extends Parser {
         Object id1_tree=null;
         Object mis1_tree=null;
         Object id2_tree=null;
-        RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
         RewriteRuleTokenStream stream_MISC=new RewriteRuleTokenStream(adaptor,"token MISC");
+        RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
-
+        
         	String text = "";
 
         try {
@@ -14546,10 +14561,10 @@ public class DRLParser extends Parser {
         Object id1_tree=null;
         Object mis1_tree=null;
         Object id2_tree=null;
-        RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
         RewriteRuleTokenStream stream_MISC=new RewriteRuleTokenStream(adaptor,"token MISC");
+        RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
-
+        
         	String text = "";
 
         try {
@@ -14639,10 +14654,10 @@ public class DRLParser extends Parser {
         Object id1_tree=null;
         Object mis1_tree=null;
         Object id2_tree=null;
-        RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
         RewriteRuleTokenStream stream_MISC=new RewriteRuleTokenStream(adaptor,"token MISC");
+        RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
-
+        
         	String text = "";
 
         try {
@@ -14732,10 +14747,10 @@ public class DRLParser extends Parser {
         Object id1_tree=null;
         Object mis1_tree=null;
         Object id2_tree=null;
-        RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
         RewriteRuleTokenStream stream_MISC=new RewriteRuleTokenStream(adaptor,"token MISC");
+        RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
-
+        
         	String text = "";
 
         try {
@@ -17153,25 +17168,11 @@ public class DRLParser extends Parser {
     }
     // $ANTLR end synpred8
 
-    public final boolean synpred5() {
+    public final boolean synpred4() {
         backtracking++;
         int start = input.mark();
         try {
-            synpred5_fragment(); // can never throw exception
-        } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
-        }
-        boolean success = !failed;
-        input.rewind(start);
-        backtracking--;
-        failed=false;
-        return success;
-    }
-    public final boolean synpred6() {
-        backtracking++;
-        int start = input.mark();
-        try {
-            synpred6_fragment(); // can never throw exception
+            synpred4_fragment(); // can never throw exception
         } catch (RecognitionException re) {
             System.err.println("impossible: "+re);
         }
@@ -17186,34 +17187,6 @@ public class DRLParser extends Parser {
         int start = input.mark();
         try {
             synpred7_fragment(); // can never throw exception
-        } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
-        }
-        boolean success = !failed;
-        input.rewind(start);
-        backtracking--;
-        failed=false;
-        return success;
-    }
-    public final boolean synpred8() {
-        backtracking++;
-        int start = input.mark();
-        try {
-            synpred8_fragment(); // can never throw exception
-        } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
-        }
-        boolean success = !failed;
-        input.rewind(start);
-        backtracking--;
-        failed=false;
-        return success;
-    }
-    public final boolean synpred1() {
-        backtracking++;
-        int start = input.mark();
-        try {
-            synpred1_fragment(); // can never throw exception
         } catch (RecognitionException re) {
             System.err.println("impossible: "+re);
         }
@@ -17251,11 +17224,53 @@ public class DRLParser extends Parser {
         failed=false;
         return success;
     }
-    public final boolean synpred4() {
+    public final boolean synpred1() {
         backtracking++;
         int start = input.mark();
         try {
-            synpred4_fragment(); // can never throw exception
+            synpred1_fragment(); // can never throw exception
+        } catch (RecognitionException re) {
+            System.err.println("impossible: "+re);
+        }
+        boolean success = !failed;
+        input.rewind(start);
+        backtracking--;
+        failed=false;
+        return success;
+    }
+    public final boolean synpred5() {
+        backtracking++;
+        int start = input.mark();
+        try {
+            synpred5_fragment(); // can never throw exception
+        } catch (RecognitionException re) {
+            System.err.println("impossible: "+re);
+        }
+        boolean success = !failed;
+        input.rewind(start);
+        backtracking--;
+        failed=false;
+        return success;
+    }
+    public final boolean synpred6() {
+        backtracking++;
+        int start = input.mark();
+        try {
+            synpred6_fragment(); // can never throw exception
+        } catch (RecognitionException re) {
+            System.err.println("impossible: "+re);
+        }
+        boolean success = !failed;
+        input.rewind(start);
+        backtracking--;
+        failed=false;
+        return success;
+    }
+    public final boolean synpred8() {
+        backtracking++;
+        int start = input.mark();
+        try {
+            synpred8_fragment(); // can never throw exception
         } catch (RecognitionException re) {
             System.err.println("impossible: "+re);
         }
@@ -17273,7 +17288,6 @@ public class DRLParser extends Parser {
     protected DFA54 dfa54 = new DFA54(this);
     protected DFA55 dfa55 = new DFA55(this);
     protected DFA66 dfa66 = new DFA66(this);
-    protected DFA69 dfa69 = new DFA69(this);
     protected DFA84 dfa84 = new DFA84(this);
     protected DFA85 dfa85 = new DFA85(this);
     static final String DFA12_eotS =
@@ -17281,10 +17295,9 @@ public class DRLParser extends Parser {
     static final String DFA12_eofS =
         "\16\uffff";
     static final String DFA12_minS =
-        "\2\124\1\uffff\1\124\1\uffff\2\124\2\164\2\124\1\131\1\164\1\124";
+        "\2\124\1\uffff\1\124\1\uffff\1\124\1\164\3\124\2\164\1\131\1\124";
     static final String DFA12_maxS =
-        "\1\131\1\133\1\uffff\1\163\1\uffff\1\163\1\124\2\164\3\163\1\164"+
-        "\1\163";
+        "\1\131\1\133\1\uffff\1\163\1\uffff\1\124\1\164\3\163\2\164\2\163";
     static final String DFA12_acceptS =
         "\2\uffff\1\2\1\uffff\1\1\11\uffff";
     static final String DFA12_specialS =
@@ -17293,17 +17306,17 @@ public class DRLParser extends Parser {
             "\1\2\2\uffff\1\2\1\uffff\1\1",
             "\1\3\4\uffff\1\2\1\uffff\1\4",
             "",
-            "\1\5\1\6\3\uffff\1\2\2\4\1\uffff\1\2\25\uffff\1\7",
+            "\1\7\1\5\3\uffff\1\2\2\4\1\uffff\1\2\25\uffff\1\6",
             "",
-            "\2\2\3\uffff\1\2\2\4\1\uffff\1\2\25\uffff\1\10",
+            "\1\10",
             "\1\11",
-            "\1\12",
-            "\1\13",
-            "\1\4\1\6\3\uffff\1\2\31\uffff\1\14",
-            "\1\4\4\uffff\1\2\2\4\27\uffff\1\7",
-            "\1\2\2\4\27\uffff\1\10",
+            "\2\2\3\uffff\1\2\2\4\1\uffff\1\2\25\uffff\1\12",
+            "\1\4\1\5\3\uffff\1\2\31\uffff\1\13",
+            "\1\4\4\uffff\1\2\2\4\27\uffff\1\6",
+            "\1\14",
             "\1\15",
-            "\1\4\4\uffff\1\2\31\uffff\1\14"
+            "\1\2\2\4\27\uffff\1\12",
+            "\1\4\4\uffff\1\2\31\uffff\1\13"
     };
 
     static final short[] DFA12_eot = DFA.unpackEncodedString(DFA12_eotS);
@@ -17344,20 +17357,20 @@ public class DRLParser extends Parser {
     static final String DFA17_eofS =
         "\6\uffff";
     static final String DFA17_minS =
-        "\2\124\1\164\2\uffff\1\124";
+        "\2\124\1\uffff\1\164\1\uffff\1\124";
     static final String DFA17_maxS =
-        "\1\124\1\163\1\164\2\uffff\1\163";
+        "\1\124\1\163\1\uffff\1\164\1\uffff\1\163";
     static final String DFA17_acceptS =
-        "\3\uffff\1\2\1\1\1\uffff";
+        "\2\uffff\1\1\1\uffff\1\2\1\uffff";
     static final String DFA17_specialS =
         "\6\uffff}>";
     static final String[] DFA17_transitionS = {
             "\1\1",
-            "\2\4\4\uffff\2\3\27\uffff\1\2",
+            "\2\2\4\uffff\2\4\27\uffff\1\3",
+            "",
             "\1\5",
             "",
-            "",
-            "\1\4\5\uffff\2\3\27\uffff\1\2"
+            "\1\2\5\uffff\2\4\27\uffff\1\3"
     };
 
     static final short[] DFA17_eot = DFA.unpackEncodedString(DFA17_eotS);
@@ -17398,31 +17411,31 @@ public class DRLParser extends Parser {
     static final String DFA37_eofS =
         "\31\uffff";
     static final String DFA37_minS =
-        "\1\124\1\130\1\124\2\uffff\1\4\1\0\1\130\1\4\2\0\3\uffff\1\0\2"+
-        "\uffff\1\0\7\uffff";
-    static final String DFA37_maxS =
-        "\1\124\1\170\1\124\2\uffff\1\u0081\1\0\1\170\1\u0081\2\0\3\uffff"+
+        "\1\124\1\130\1\124\1\0\1\4\2\uffff\1\130\2\uffff\1\4\2\0\1\uffff"+
         "\1\0\2\uffff\1\0\7\uffff";
+    static final String DFA37_maxS =
+        "\1\124\1\170\1\124\1\0\1\u0082\2\uffff\1\170\2\uffff\1\u0082\2\0"+
+        "\1\uffff\1\0\2\uffff\1\0\7\uffff";
     static final String DFA37_acceptS =
-        "\3\uffff\1\14\1\11\6\uffff\1\1\1\4\1\13\1\uffff\1\2\1\6\1\uffff"+
-        "\1\1\1\3\1\5\1\7\1\10\1\12\1\1";
+        "\5\uffff\1\14\1\11\1\uffff\1\1\1\4\3\uffff\1\13\1\uffff\1\2\1\6"+
+        "\1\uffff\1\1\1\3\1\5\1\7\1\10\1\12\1\1";
     static final String DFA37_specialS =
-        "\1\7\1\4\1\12\2\uffff\1\3\1\1\1\0\1\11\1\10\1\5\3\uffff\1\6\2\uffff"+
-        "\1\2\7\uffff}>";
+        "\1\10\1\3\1\12\1\5\1\1\2\uffff\1\4\2\uffff\1\11\1\0\1\2\1\uffff"+
+        "\1\6\2\uffff\1\7\7\uffff}>";
     static final String[] DFA37_transitionS = {
             "\1\1",
-            "\1\3\1\5\6\uffff\1\4\1\6\26\uffff\1\2",
+            "\1\5\1\4\6\uffff\1\6\1\3\26\uffff\1\2",
             "\1\7",
-            "",
-            "",
-            "\125\10\1\11\1\10\1\12\46\10",
             "\1\uffff",
+            "\125\12\1\13\1\12\1\14\47\12",
+            "",
+            "",
             "\1\16\37\uffff\1\15",
-            "\125\10\1\21\1\10\1\12\46\10",
-            "\1\uffff",
-            "\1\uffff",
             "",
             "",
+            "\125\12\1\21\1\12\1\14\47\12",
+            "\1\uffff",
+            "\1\uffff",
             "",
             "\1\uffff",
             "",
@@ -17473,6 +17486,74 @@ public class DRLParser extends Parser {
         	int _s = s;
             switch ( s ) {
                     case 0 : 
+                        int LA37_11 = input.LA(1);
+
+                         
+                        int index37_11 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( ((validateIdentifierKey(DroolsSoftKeywords.SALIENCE))) ) {s = 18;}
+
+                        else if ( ((validateIdentifierKey(DroolsSoftKeywords.ENABLED))) ) {s = 6;}
+
+                         
+                        input.seek(index37_11);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 1 : 
+                        int LA37_4 = input.LA(1);
+
+                         
+                        int index37_4 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( ((LA37_4>=VT_COMPILATION_UNIT && LA37_4<=STRING)||LA37_4==COMMA||(LA37_4>=AT && LA37_4<=MULTI_LINE_COMMENT)) && (((validateIdentifierKey(DroolsSoftKeywords.SALIENCE))||(validateIdentifierKey(DroolsSoftKeywords.ENABLED))))) {s = 10;}
+
+                        else if ( (LA37_4==LEFT_PAREN) && (((validateIdentifierKey(DroolsSoftKeywords.SALIENCE))||(validateIdentifierKey(DroolsSoftKeywords.ENABLED))))) {s = 11;}
+
+                        else if ( (LA37_4==RIGHT_PAREN) && (((validateIdentifierKey(DroolsSoftKeywords.SALIENCE))||(validateIdentifierKey(DroolsSoftKeywords.ENABLED))))) {s = 12;}
+
+                         
+                        input.seek(index37_4);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 2 : 
+                        int LA37_12 = input.LA(1);
+
+                         
+                        int index37_12 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( ((validateIdentifierKey(DroolsSoftKeywords.SALIENCE))) ) {s = 8;}
+
+                        else if ( ((validateIdentifierKey(DroolsSoftKeywords.ENABLED))) ) {s = 6;}
+
+                         
+                        input.seek(index37_12);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 3 : 
+                        int LA37_1 = input.LA(1);
+
+                         
+                        int index37_1 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA37_1==MISC) && (((validateIdentifierKey(DroolsSoftKeywords.AGENDA) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EXPIRES))||(validateIdentifierKey(DroolsSoftKeywords.ACTIVATION) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.LOCK) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.ON) && validateLT(4, "-") && validateLT(5, DroolsSoftKeywords.ACTIVE))||(validateIdentifierKey(DroolsSoftKeywords.NO) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.LOOP))||(validateIdentifierKey(DroolsSoftKeywords.RULEFLOW) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.AUTO) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.FOCUS))||(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EFFECTIVE))))) {s = 2;}
+
+                        else if ( (LA37_1==INT) && (((validateIdentifierKey(DroolsSoftKeywords.SALIENCE))||(validateIdentifierKey(DroolsSoftKeywords.DURATION))))) {s = 3;}
+
+                        else if ( (LA37_1==LEFT_PAREN) && (((validateIdentifierKey(DroolsSoftKeywords.SALIENCE))||(validateIdentifierKey(DroolsSoftKeywords.ENABLED))))) {s = 4;}
+
+                        else if ( (LA37_1==STRING) && ((validateIdentifierKey(DroolsSoftKeywords.DIALECT)))) {s = 5;}
+
+                        else if ( (LA37_1==BOOL) && ((validateIdentifierKey(DroolsSoftKeywords.ENABLED)))) {s = 6;}
+
+                         
+                        input.seek(index37_1);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 4 : 
                         int LA37_7 = input.LA(1);
 
                          
@@ -17481,7 +17562,7 @@ public class DRLParser extends Parser {
                         s = -1;
                         if ( (LA37_7==MISC) && ((validateIdentifierKey(DroolsSoftKeywords.LOCK) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.ON) && validateLT(4, "-") && validateLT(5, DroolsSoftKeywords.ACTIVE)))) {s = 13;}
 
-                        else if ( (LA37_7==STRING) && (((validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EXPIRES))||(validateIdentifierKey(DroolsSoftKeywords.ACTIVATION) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.AGENDA) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.RULEFLOW) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EFFECTIVE))))) {s = 14;}
+                        else if ( (LA37_7==STRING) && (((validateIdentifierKey(DroolsSoftKeywords.AGENDA) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EXPIRES))||(validateIdentifierKey(DroolsSoftKeywords.ACTIVATION) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.RULEFLOW) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EFFECTIVE))))) {s = 14;}
 
                         else if ( ((validateIdentifierKey(DroolsSoftKeywords.NO) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.LOOP))) ) {s = 15;}
 
@@ -17491,87 +17572,19 @@ public class DRLParser extends Parser {
                         input.seek(index37_7);
                         if ( s>=0 ) return s;
                         break;
-                    case 1 : 
-                        int LA37_6 = input.LA(1);
-
-                         
-                        int index37_6 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( ((validateIdentifierKey(DroolsSoftKeywords.SALIENCE))) ) {s = 11;}
-
-                        else if ( ((validateIdentifierKey(DroolsSoftKeywords.DURATION))) ) {s = 12;}
-
-                         
-                        input.seek(index37_6);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 2 : 
-                        int LA37_17 = input.LA(1);
-
-                         
-                        int index37_17 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( ((validateIdentifierKey(DroolsSoftKeywords.SALIENCE))) ) {s = 24;}
-
-                        else if ( ((validateIdentifierKey(DroolsSoftKeywords.ENABLED))) ) {s = 4;}
-
-                         
-                        input.seek(index37_17);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 3 : 
-                        int LA37_5 = input.LA(1);
-
-                         
-                        int index37_5 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( ((LA37_5>=VT_COMPILATION_UNIT && LA37_5<=STRING)||LA37_5==COMMA||(LA37_5>=AT && LA37_5<=MULTI_LINE_COMMENT)) && (((validateIdentifierKey(DroolsSoftKeywords.SALIENCE))||(validateIdentifierKey(DroolsSoftKeywords.ENABLED))))) {s = 8;}
-
-                        else if ( (LA37_5==LEFT_PAREN) && (((validateIdentifierKey(DroolsSoftKeywords.SALIENCE))||(validateIdentifierKey(DroolsSoftKeywords.ENABLED))))) {s = 9;}
-
-                        else if ( (LA37_5==RIGHT_PAREN) && (((validateIdentifierKey(DroolsSoftKeywords.SALIENCE))||(validateIdentifierKey(DroolsSoftKeywords.ENABLED))))) {s = 10;}
-
-                         
-                        input.seek(index37_5);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 4 : 
-                        int LA37_1 = input.LA(1);
-
-                         
-                        int index37_1 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA37_1==MISC) && (((validateIdentifierKey(DroolsSoftKeywords.NO) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.LOOP))||(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EXPIRES))||(validateIdentifierKey(DroolsSoftKeywords.AUTO) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.FOCUS))||(validateIdentifierKey(DroolsSoftKeywords.ACTIVATION) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.AGENDA) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.RULEFLOW) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.LOCK) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.ON) && validateLT(4, "-") && validateLT(5, DroolsSoftKeywords.ACTIVE))||(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EFFECTIVE))))) {s = 2;}
-
-                        else if ( (LA37_1==STRING) && ((validateIdentifierKey(DroolsSoftKeywords.DIALECT)))) {s = 3;}
-
-                        else if ( (LA37_1==BOOL) && ((validateIdentifierKey(DroolsSoftKeywords.ENABLED)))) {s = 4;}
-
-                        else if ( (LA37_1==LEFT_PAREN) && (((validateIdentifierKey(DroolsSoftKeywords.SALIENCE))||(validateIdentifierKey(DroolsSoftKeywords.ENABLED))))) {s = 5;}
-
-                        else if ( (LA37_1==INT) && (((validateIdentifierKey(DroolsSoftKeywords.SALIENCE))||(validateIdentifierKey(DroolsSoftKeywords.DURATION))))) {s = 6;}
-
-                         
-                        input.seek(index37_1);
-                        if ( s>=0 ) return s;
-                        break;
                     case 5 : 
-                        int LA37_10 = input.LA(1);
+                        int LA37_3 = input.LA(1);
 
                          
-                        int index37_10 = input.index();
+                        int index37_3 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( ((validateIdentifierKey(DroolsSoftKeywords.SALIENCE))) ) {s = 11;}
+                        if ( ((validateIdentifierKey(DroolsSoftKeywords.SALIENCE))) ) {s = 8;}
 
-                        else if ( ((validateIdentifierKey(DroolsSoftKeywords.ENABLED))) ) {s = 4;}
+                        else if ( ((validateIdentifierKey(DroolsSoftKeywords.DURATION))) ) {s = 9;}
 
                          
-                        input.seek(index37_10);
+                        input.seek(index37_3);
                         if ( s>=0 ) return s;
                         break;
                     case 6 : 
@@ -17596,48 +17609,48 @@ public class DRLParser extends Parser {
                         if ( s>=0 ) return s;
                         break;
                     case 7 : 
+                        int LA37_17 = input.LA(1);
+
+                         
+                        int index37_17 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( ((validateIdentifierKey(DroolsSoftKeywords.SALIENCE))) ) {s = 24;}
+
+                        else if ( ((validateIdentifierKey(DroolsSoftKeywords.ENABLED))) ) {s = 6;}
+
+                         
+                        input.seek(index37_17);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 8 : 
                         int LA37_0 = input.LA(1);
 
                          
                         int index37_0 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA37_0==ID) && (((validateIdentifierKey(DroolsSoftKeywords.NO) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.LOOP))||(validateIdentifierKey(DroolsSoftKeywords.AUTO) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.FOCUS))||(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EXPIRES))||(validateIdentifierKey(DroolsSoftKeywords.ACTIVATION) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.DIALECT))||(validateIdentifierKey(DroolsSoftKeywords.SALIENCE))||(validateIdentifierKey(DroolsSoftKeywords.AGENDA) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.ENABLED))||(validateIdentifierKey(DroolsSoftKeywords.RULEFLOW) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.DURATION))||(validateIdentifierKey(DroolsSoftKeywords.LOCK) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.ON) && validateLT(4, "-") && validateLT(5, DroolsSoftKeywords.ACTIVE))||(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EFFECTIVE))))) {s = 1;}
+                        if ( (LA37_0==ID) && (((validateIdentifierKey(DroolsSoftKeywords.AGENDA) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EXPIRES))||(validateIdentifierKey(DroolsSoftKeywords.DIALECT))||(validateIdentifierKey(DroolsSoftKeywords.ACTIVATION) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.LOCK) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.ON) && validateLT(4, "-") && validateLT(5, DroolsSoftKeywords.ACTIVE))||(validateIdentifierKey(DroolsSoftKeywords.SALIENCE))||(validateIdentifierKey(DroolsSoftKeywords.NO) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.LOOP))||(validateIdentifierKey(DroolsSoftKeywords.RULEFLOW) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.ENABLED))||(validateIdentifierKey(DroolsSoftKeywords.DURATION))||(validateIdentifierKey(DroolsSoftKeywords.AUTO) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.FOCUS))||(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EFFECTIVE))))) {s = 1;}
 
                          
                         input.seek(index37_0);
                         if ( s>=0 ) return s;
                         break;
-                    case 8 : 
-                        int LA37_9 = input.LA(1);
-
-                         
-                        int index37_9 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( ((validateIdentifierKey(DroolsSoftKeywords.SALIENCE))) ) {s = 18;}
-
-                        else if ( ((validateIdentifierKey(DroolsSoftKeywords.ENABLED))) ) {s = 4;}
-
-                         
-                        input.seek(index37_9);
-                        if ( s>=0 ) return s;
-                        break;
                     case 9 : 
-                        int LA37_8 = input.LA(1);
+                        int LA37_10 = input.LA(1);
 
                          
-                        int index37_8 = input.index();
+                        int index37_10 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA37_8==RIGHT_PAREN) && (((validateIdentifierKey(DroolsSoftKeywords.SALIENCE))||(validateIdentifierKey(DroolsSoftKeywords.ENABLED))))) {s = 10;}
+                        if ( (LA37_10==RIGHT_PAREN) && (((validateIdentifierKey(DroolsSoftKeywords.SALIENCE))||(validateIdentifierKey(DroolsSoftKeywords.ENABLED))))) {s = 12;}
 
-                        else if ( ((LA37_8>=VT_COMPILATION_UNIT && LA37_8<=STRING)||LA37_8==COMMA||(LA37_8>=AT && LA37_8<=MULTI_LINE_COMMENT)) && (((validateIdentifierKey(DroolsSoftKeywords.SALIENCE))||(validateIdentifierKey(DroolsSoftKeywords.ENABLED))))) {s = 8;}
+                        else if ( ((LA37_10>=VT_COMPILATION_UNIT && LA37_10<=STRING)||LA37_10==COMMA||(LA37_10>=AT && LA37_10<=MULTI_LINE_COMMENT)) && (((validateIdentifierKey(DroolsSoftKeywords.SALIENCE))||(validateIdentifierKey(DroolsSoftKeywords.ENABLED))))) {s = 10;}
 
-                        else if ( (LA37_8==LEFT_PAREN) && (((validateIdentifierKey(DroolsSoftKeywords.SALIENCE))||(validateIdentifierKey(DroolsSoftKeywords.ENABLED))))) {s = 17;}
+                        else if ( (LA37_10==LEFT_PAREN) && (((validateIdentifierKey(DroolsSoftKeywords.SALIENCE))||(validateIdentifierKey(DroolsSoftKeywords.ENABLED))))) {s = 17;}
 
                          
-                        input.seek(index37_8);
+                        input.seek(index37_10);
                         if ( s>=0 ) return s;
                         break;
                     case 10 : 
@@ -17647,7 +17660,7 @@ public class DRLParser extends Parser {
                         int index37_2 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA37_2==ID) && (((validateIdentifierKey(DroolsSoftKeywords.NO) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.LOOP))||(validateIdentifierKey(DroolsSoftKeywords.AUTO) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.FOCUS))||(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EXPIRES))||(validateIdentifierKey(DroolsSoftKeywords.ACTIVATION) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.AGENDA) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.RULEFLOW) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EFFECTIVE))||(validateIdentifierKey(DroolsSoftKeywords.LOCK) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.ON) && validateLT(4, "-") && validateLT(5, DroolsSoftKeywords.ACTIVE))))) {s = 7;}
+                        if ( (LA37_2==ID) && (((validateIdentifierKey(DroolsSoftKeywords.AGENDA) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EXPIRES))||(validateIdentifierKey(DroolsSoftKeywords.ACTIVATION) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.LOCK) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.ON) && validateLT(4, "-") && validateLT(5, DroolsSoftKeywords.ACTIVE))||(validateIdentifierKey(DroolsSoftKeywords.NO) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.LOOP))||(validateIdentifierKey(DroolsSoftKeywords.RULEFLOW) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.GROUP))||(validateIdentifierKey(DroolsSoftKeywords.AUTO) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.FOCUS))||(validateIdentifierKey(DroolsSoftKeywords.DATE) && validateLT(2, "-") && validateLT(3, DroolsSoftKeywords.EFFECTIVE))))) {s = 7;}
 
                          
                         input.seek(index37_2);
@@ -17666,41 +17679,41 @@ public class DRLParser extends Parser {
     static final String DFA54_eofS =
         "\u0082\uffff";
     static final String DFA54_minS =
-        "\3\124\2\0\2\124\1\164\1\0\3\uffff\1\125\1\124\1\125\1\131\1\uffff"+
-        "\1\124\1\164\1\124\1\125\1\124\1\125\1\131\1\124\2\0\1\124\1\164"+
-        "\2\124\2\0\1\124\1\0\1\4\11\124\2\uffff\1\125\1\131\1\124\1\0\2"+
-        "\124\1\4\11\124\1\0\1\uffff\1\124\1\uffff\1\4\32\0\1\uffff\23\0"+
-        "\1\uffff\17\0";
+        "\3\124\2\0\1\124\1\0\1\124\1\164\3\uffff\1\125\1\124\1\uffff\1\125"+
+        "\1\131\1\124\1\164\1\124\1\125\1\124\1\125\1\131\1\124\2\0\1\124"+
+        "\1\164\2\124\2\0\1\124\1\4\11\124\1\0\2\uffff\1\125\1\131\1\124"+
+        "\1\0\2\124\1\4\11\124\1\0\1\uffff\1\124\1\4\16\0\1\uffff\14\0\1"+
+        "\uffff\23\0\1\uffff\17\0";
     static final String DFA54_maxS =
-        "\2\131\1\163\2\0\1\131\1\124\1\164\1\0\3\uffff\1\163\1\124\2\163"+
-        "\1\uffff\1\124\1\164\1\133\1\163\1\133\3\163\2\0\1\124\1\164\1\133"+
-        "\1\163\2\0\1\124\1\0\1\u0081\1\124\7\162\1\124\2\uffff\3\163\1\0"+
-        "\1\142\1\124\1\u0081\1\124\7\162\1\124\1\0\1\uffff\1\163\1\uffff"+
-        "\1\u0081\32\0\1\uffff\23\0\1\uffff\17\0";
+        "\2\131\1\163\2\0\1\131\1\0\1\124\1\164\3\uffff\1\163\1\124\1\uffff"+
+        "\2\163\1\124\1\164\1\133\1\163\1\133\3\163\2\0\1\124\1\164\1\133"+
+        "\1\163\2\0\1\124\1\u0082\1\124\7\162\1\124\1\0\2\uffff\3\163\1\0"+
+        "\1\142\1\124\1\u0082\1\124\7\162\1\124\1\0\1\uffff\1\163\1\u0082"+
+        "\16\0\1\uffff\14\0\1\uffff\23\0\1\uffff\17\0";
     static final String DFA54_acceptS =
-        "\11\uffff\1\1\2\2\4\uffff\1\3\34\uffff\2\3\21\uffff\1\3\1\uffff"+
-        "\1\3\33\uffff\1\3\23\uffff\1\3\17\uffff";
+        "\11\uffff\1\1\2\2\2\uffff\1\3\36\uffff\2\3\21\uffff\1\3\20\uffff"+
+        "\1\3\14\uffff\1\3\23\uffff\1\3\17\uffff";
     static final String DFA54_specialS =
-        "\2\uffff\1\2\1\12\1\11\3\uffff\1\10\20\uffff\1\7\1\3\4\uffff\1"+
-        "\6\1\4\1\uffff\1\0\17\uffff\1\5\14\uffff\1\1\102\uffff}>";
+        "\2\uffff\1\4\1\12\1\0\1\uffff\1\10\22\uffff\1\7\1\2\4\uffff\1\6"+
+        "\1\3\13\uffff\1\5\5\uffff\1\11\14\uffff\1\1\102\uffff}>";
     static final String[] DFA54_transitionS = {
             "\1\2\4\uffff\1\1",
             "\1\3\4\uffff\1\4",
-            "\1\11\1\6\3\uffff\1\10\3\uffff\1\5\25\uffff\1\7",
+            "\1\11\1\7\3\uffff\1\6\3\uffff\1\5\25\uffff\1\10",
             "\1\uffff",
             "\1\uffff",
             "\1\14\4\uffff\1\15",
-            "\1\16",
-            "\1\17",
             "\1\uffff",
+            "\1\17",
+            "\1\20",
             "",
             "",
             "",
             "\1\21\3\uffff\1\23\31\uffff\1\22",
             "\1\24",
-            "\1\6\3\uffff\1\25\31\uffff\1\7",
-            "\1\25\31\uffff\1\7",
             "",
+            "\1\7\3\uffff\1\25\31\uffff\1\10",
+            "\1\25\31\uffff\1\10",
             "\1\26",
             "\1\27",
             "\1\30\4\uffff\1\31\1\uffff\1\32",
@@ -17708,83 +17721,83 @@ public class DRLParser extends Parser {
             "\1\36\4\uffff\1\37\1\uffff\1\40",
             "\1\21\3\uffff\1\23\31\uffff\1\22",
             "\1\23\31\uffff\1\22",
-            "\1\45\1\44\3\uffff\1\42\3\uffff\1\41\14\uffff\1\46\1\47\1"+
-            "\50\1\51\1\52\1\53\1\54\2\uffff\1\43",
+            "\1\44\1\43\3\uffff\1\54\3\uffff\1\41\14\uffff\1\45\1\46\1\47"+
+            "\1\50\1\51\1\52\1\53\2\uffff\1\42",
             "\1\uffff",
             "\1\uffff",
             "\1\57",
             "\1\60",
             "\1\61\4\uffff\1\62\1\uffff\1\63",
-            "\1\67\1\66\3\uffff\1\77\3\uffff\1\64\14\uffff\1\70\1\71\1"+
-            "\72\1\73\1\74\1\75\1\76\2\uffff\1\65",
+            "\1\67\1\66\3\uffff\1\77\3\uffff\1\64\14\uffff\1\70\1\71\1\72"+
+            "\1\73\1\74\1\75\1\76\2\uffff\1\65",
             "\1\uffff",
             "\1\uffff",
             "\1\101",
+            "\157\102\1\103\1\104\16\102",
+            "\1\105",
+            "\1\106\3\uffff\1\107\1\114\6\uffff\1\112\1\110\16\uffff\1\115"+
+            "\1\111\1\113",
+            "\1\116\3\uffff\1\107\1\117\6\uffff\1\112\1\110\17\uffff\1\111"+
+            "\1\113",
+            "\1\116\3\uffff\1\107\1\117\6\uffff\1\112\1\110\17\uffff\1\111"+
+            "\1\113",
+            "\1\116\3\uffff\1\107\1\117\6\uffff\1\112\1\110\17\uffff\1\111"+
+            "\1\113",
+            "\1\116\3\uffff\1\107\1\117\6\uffff\1\112\1\110\17\uffff\1\111"+
+            "\1\113",
+            "\1\116\3\uffff\1\107\1\117\6\uffff\1\112\1\110\17\uffff\1\111"+
+            "\1\113",
+            "\1\116\3\uffff\1\107\1\117\6\uffff\1\112\1\110\17\uffff\1\111"+
+            "\1\113",
+            "\1\120",
             "\1\uffff",
-            "\157\103\1\104\1\105\15\103",
-            "\1\106",
-            "\1\107\3\uffff\1\110\1\115\6\uffff\1\113\1\111\16\uffff\1"+
-            "\116\1\112\1\114",
-            "\1\117\3\uffff\1\110\1\120\6\uffff\1\113\1\111\17\uffff\1"+
-            "\112\1\114",
-            "\1\117\3\uffff\1\110\1\120\6\uffff\1\113\1\111\17\uffff\1"+
-            "\112\1\114",
-            "\1\117\3\uffff\1\110\1\120\6\uffff\1\113\1\111\17\uffff\1"+
-            "\112\1\114",
-            "\1\117\3\uffff\1\110\1\120\6\uffff\1\113\1\111\17\uffff\1"+
-            "\112\1\114",
-            "\1\117\3\uffff\1\110\1\120\6\uffff\1\113\1\111\17\uffff\1"+
-            "\112\1\114",
-            "\1\117\3\uffff\1\110\1\120\6\uffff\1\113\1\111\17\uffff\1"+
-            "\112\1\114",
-            "\1\121",
             "",
             "",
             "\1\33\3\uffff\1\35\31\uffff\1\34",
             "\1\35\31\uffff\1\34",
-            "\1\125\1\124\3\uffff\1\135\3\uffff\1\122\14\uffff\1\126\1"+
-            "\127\1\130\1\131\1\132\1\133\1\134\2\uffff\1\123",
+            "\1\126\1\125\3\uffff\1\123\3\uffff\1\122\14\uffff\1\127\1\130"+
+            "\1\131\1\132\1\133\1\134\1\135\2\uffff\1\124",
             "\1\uffff",
             "\1\137\6\uffff\1\141\6\uffff\1\140",
             "\1\142",
-            "\157\143\1\144\1\145\15\143",
+            "\157\143\1\144\1\145\16\143",
             "\1\146",
-            "\1\147\3\uffff\1\150\1\155\6\uffff\1\153\1\151\16\uffff\1"+
-            "\156\1\152\1\154",
-            "\1\157\3\uffff\1\150\1\160\6\uffff\1\153\1\151\17\uffff\1"+
-            "\152\1\154",
-            "\1\157\3\uffff\1\150\1\160\6\uffff\1\153\1\151\17\uffff\1"+
-            "\152\1\154",
-            "\1\157\3\uffff\1\150\1\160\6\uffff\1\153\1\151\17\uffff\1"+
-            "\152\1\154",
-            "\1\157\3\uffff\1\150\1\160\6\uffff\1\153\1\151\17\uffff\1"+
-            "\152\1\154",
-            "\1\157\3\uffff\1\150\1\160\6\uffff\1\153\1\151\17\uffff\1"+
-            "\152\1\154",
-            "\1\157\3\uffff\1\150\1\160\6\uffff\1\153\1\151\17\uffff\1"+
-            "\152\1\154",
+            "\1\147\3\uffff\1\150\1\155\6\uffff\1\153\1\151\16\uffff\1\156"+
+            "\1\152\1\154",
+            "\1\157\3\uffff\1\150\1\160\6\uffff\1\153\1\151\17\uffff\1\152"+
+            "\1\154",
+            "\1\157\3\uffff\1\150\1\160\6\uffff\1\153\1\151\17\uffff\1\152"+
+            "\1\154",
+            "\1\157\3\uffff\1\150\1\160\6\uffff\1\153\1\151\17\uffff\1\152"+
+            "\1\154",
+            "\1\157\3\uffff\1\150\1\160\6\uffff\1\153\1\151\17\uffff\1\152"+
+            "\1\154",
+            "\1\157\3\uffff\1\150\1\160\6\uffff\1\153\1\151\17\uffff\1\152"+
+            "\1\154",
+            "\1\157\3\uffff\1\150\1\160\6\uffff\1\153\1\151\17\uffff\1\152"+
+            "\1\154",
             "\1\161",
             "\1\uffff",
             "",
-            "\1\165\1\164\3\uffff\1\175\1\u0081\1\32\6\uffff\1\u0080\1"+
-            "\177\5\uffff\1\176\1\166\1\167\1\170\1\171\1\172\1\173\1\174"+
-            "\2\uffff\1\163",
+            "\1\165\1\164\3\uffff\1\175\1\u0081\1\32\6\uffff\1\u0080\1\177"+
+            "\5\uffff\1\176\1\166\1\167\1\170\1\171\1\172\1\173\1\174\2\uffff"+
+            "\1\163",
+            "\157\102\1\103\1\104\16\102",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
             "",
-            "\157\103\1\104\1\105\15\103",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
@@ -17871,18 +17884,18 @@ public class DRLParser extends Parser {
         	int _s = s;
             switch ( s ) {
                     case 0 : 
-                        int LA54_34 = input.LA(1);
+                        int LA54_4 = input.LA(1);
 
                          
-                        int index54_34 = input.index();
+                        int index54_4 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred6()) ) {s = 9;}
 
-                        else if ( (true) ) {s = 66;}
+                        else if ( (true) ) {s = 11;}
 
                          
-                        input.seek(index54_34);
+                        input.seek(index54_4);
                         if ( s>=0 ) return s;
                         break;
                     case 1 : 
@@ -17901,27 +17914,6 @@ public class DRLParser extends Parser {
                         if ( s>=0 ) return s;
                         break;
                     case 2 : 
-                        int LA54_2 = input.LA(1);
-
-                         
-                        int index54_2 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA54_2==COLON) ) {s = 5;}
-
-                        else if ( (LA54_2==DOT) ) {s = 6;}
-
-                        else if ( (LA54_2==LEFT_SQUARE) ) {s = 7;}
-
-                        else if ( (LA54_2==LEFT_PAREN) ) {s = 8;}
-
-                        else if ( (LA54_2==ID) && (((synpred6()&&(validateIdentifierKey(DroolsSoftKeywords.NOT)))||(synpred6()&&(validateIdentifierKey(DroolsSoftKeywords.EXISTS)))||(synpred6()&&(validateIdentifierKey(DroolsSoftKeywords.NOT)))||(synpred6()&&(validateIdentifierKey(DroolsSoftKeywords.EXISTS)))||(synpred6()&&(validateIdentifierKey(DroolsSoftKeywords.NOT)))||(synpred6()&&(validateIdentifierKey(DroolsSoftKeywords.EXISTS)))||(synpred6()&&(validateIdentifierKey(DroolsSoftKeywords.NOT)))||(synpred6()&&(validateIdentifierKey(DroolsSoftKeywords.NOT)))||(synpred6()&&(validateIdentifierKey(DroolsSoftKeywords.EXISTS)))||((synpred6()&&validateNotWithBinding())&&(validateIdentifierKey(DroolsSoftKeywords.NOT)))||(synpred6()&&(validateIdentifierKey(DroolsSoftKeywords.NOT)))||(synpred6()&&(validateIdentifierKey(DroolsSoftKeywords.EXISTS)))||(synpred6()&&(validateIdentifierKey(DroolsSoftKeywords.NOT)))||(synpred6()&&(validateIdentifierKey(DroolsSoftKeywords.EXISTS)))||(synpred6()&&(validateIdentifierKey(DroolsSoftKeywords.NOT)))||(synpred6()&&(validateIdentifierKey(DroolsSoftKeywords.EXISTS)))||(synpred6()&&(validateIdentifierKey(DroolsSoftKeywords.EXISTS)))||(synpred6()&&(validateIdentifierKey(DroolsSoftKeywords.NOT)))||(synpred6()&&(validateIdentifierKey(DroolsSoftKeywords.EXISTS)))))) {s = 9;}
-
-                         
-                        input.seek(index54_2);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 3 : 
                         int LA54_26 = input.LA(1);
 
                          
@@ -17936,7 +17928,7 @@ public class DRLParser extends Parser {
                         input.seek(index54_26);
                         if ( s>=0 ) return s;
                         break;
-                    case 4 : 
+                    case 3 : 
                         int LA54_32 = input.LA(1);
 
                          
@@ -17951,19 +17943,40 @@ public class DRLParser extends Parser {
                         input.seek(index54_32);
                         if ( s>=0 ) return s;
                         break;
-                    case 5 : 
-                        int LA54_50 = input.LA(1);
+                    case 4 : 
+                        int LA54_2 = input.LA(1);
 
                          
-                        int index54_50 = input.index();
+                        int index54_2 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA54_2==COLON) ) {s = 5;}
+
+                        else if ( (LA54_2==LEFT_PAREN) ) {s = 6;}
+
+                        else if ( (LA54_2==DOT) ) {s = 7;}
+
+                        else if ( (LA54_2==LEFT_SQUARE) ) {s = 8;}
+
+                        else if ( (LA54_2==ID) && (((synpred6()&&(validateIdentifierKey(DroolsSoftKeywords.EXISTS)))||(synpred6()&&(validateIdentifierKey(DroolsSoftKeywords.NOT)))||(synpred6()&&(validateIdentifierKey(DroolsSoftKeywords.EXISTS)))||(synpred6()&&(validateIdentifierKey(DroolsSoftKeywords.EXISTS)))||(synpred6()&&(validateIdentifierKey(DroolsSoftKeywords.NOT)))||(synpred6()&&(validateIdentifierKey(DroolsSoftKeywords.NOT)))||(synpred6()&&(validateIdentifierKey(DroolsSoftKeywords.EXISTS)))||(synpred6()&&(validateIdentifierKey(DroolsSoftKeywords.NOT)))||(synpred6()&&(validateIdentifierKey(DroolsSoftKeywords.NOT)))||((synpred6()&&validateNotWithBinding())&&(validateIdentifierKey(DroolsSoftKeywords.NOT)))||(synpred6()&&(validateIdentifierKey(DroolsSoftKeywords.EXISTS)))||(synpred6()&&(validateIdentifierKey(DroolsSoftKeywords.EXISTS)))||(synpred6()&&(validateIdentifierKey(DroolsSoftKeywords.NOT)))||(synpred6()&&(validateIdentifierKey(DroolsSoftKeywords.NOT)))||(synpred6()&&(validateIdentifierKey(DroolsSoftKeywords.EXISTS)))||(synpred6()&&(validateIdentifierKey(DroolsSoftKeywords.NOT)))||(synpred6()&&(validateIdentifierKey(DroolsSoftKeywords.NOT)))||(synpred6()&&(validateIdentifierKey(DroolsSoftKeywords.EXISTS)))||(synpred6()&&(validateIdentifierKey(DroolsSoftKeywords.EXISTS)))))) {s = 9;}
+
+                         
+                        input.seek(index54_2);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 5 : 
+                        int LA54_44 = input.LA(1);
+
+                         
+                        int index54_44 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred6()) ) {s = 9;}
 
-                        else if ( (true) ) {s = 94;}
+                        else if ( (true) ) {s = 81;}
 
                          
-                        input.seek(index54_50);
+                        input.seek(index54_44);
                         if ( s>=0 ) return s;
                         break;
                     case 6 : 
@@ -17997,33 +18010,33 @@ public class DRLParser extends Parser {
                         if ( s>=0 ) return s;
                         break;
                     case 8 : 
-                        int LA54_8 = input.LA(1);
+                        int LA54_6 = input.LA(1);
 
                          
-                        int index54_8 = input.index();
+                        int index54_6 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (((synpred6()&&(validateIdentifierKey(DroolsSoftKeywords.FORALL)))||(synpred6()&&(validateIdentifierKey(DroolsSoftKeywords.EVAL)))||synpred6()||(synpred6()&&(validateIdentifierKey(DroolsSoftKeywords.NOT)))||(synpred6()&&(validateIdentifierKey(DroolsSoftKeywords.EXISTS))))) ) {s = 9;}
+                        if ( (((synpred6()&&(validateIdentifierKey(DroolsSoftKeywords.EXISTS)))||(synpred6()&&(validateIdentifierKey(DroolsSoftKeywords.NOT)))||synpred6()||(synpred6()&&(validateIdentifierKey(DroolsSoftKeywords.EVAL)))||(synpred6()&&(validateIdentifierKey(DroolsSoftKeywords.FORALL))))) ) {s = 9;}
 
-                        else if ( (true) ) {s = 16;}
+                        else if ( (true) ) {s = 14;}
 
                          
-                        input.seek(index54_8);
+                        input.seek(index54_6);
                         if ( s>=0 ) return s;
                         break;
                     case 9 : 
-                        int LA54_4 = input.LA(1);
+                        int LA54_50 = input.LA(1);
 
                          
-                        int index54_4 = input.index();
+                        int index54_50 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred6()) ) {s = 9;}
 
-                        else if ( (true) ) {s = 11;}
+                        else if ( (true) ) {s = 94;}
 
                          
-                        input.seek(index54_4);
+                        input.seek(index54_50);
                         if ( s>=0 ) return s;
                         break;
                     case 10 : 
@@ -18054,41 +18067,41 @@ public class DRLParser extends Parser {
     static final String DFA55_eofS =
         "\u0082\uffff";
     static final String DFA55_minS =
-        "\3\124\2\0\1\124\1\uffff\1\124\1\164\1\0\2\uffff\1\125\1\124\1"+
-        "\125\1\131\1\uffff\1\124\1\164\1\124\1\125\1\124\1\125\1\131\1\124"+
-        "\2\0\1\124\1\164\2\124\2\0\1\124\1\4\11\124\1\0\2\uffff\1\125\1"+
-        "\131\1\124\1\0\2\124\1\0\1\4\11\124\1\uffff\1\124\1\4\16\0\1\uffff"+
-        "\14\0\1\uffff\4\0\1\uffff\36\0";
+        "\3\124\2\0\1\124\1\0\1\uffff\1\124\1\164\2\uffff\1\125\1\124\1\uffff"+
+        "\1\125\1\131\1\124\1\164\1\124\1\125\1\124\1\125\1\131\1\124\2\0"+
+        "\1\124\1\164\2\124\2\0\1\124\1\0\1\4\11\124\2\uffff\1\125\1\131"+
+        "\1\124\1\0\2\124\1\4\11\124\1\0\1\uffff\1\124\1\uffff\1\4\32\0\1"+
+        "\uffff\23\0\1\uffff\17\0";
     static final String DFA55_maxS =
-        "\2\131\1\163\2\0\1\131\1\uffff\1\124\1\164\1\0\2\uffff\1\163\1"+
-        "\124\2\163\1\uffff\1\124\1\164\1\133\1\163\1\133\3\163\2\0\1\124"+
-        "\1\164\1\133\1\163\2\0\1\124\1\u0081\1\124\7\162\1\124\1\0\2\uffff"+
-        "\3\163\1\0\1\142\1\124\1\0\1\u0081\1\124\7\162\1\124\1\uffff\1\163"+
-        "\1\u0081\16\0\1\uffff\14\0\1\uffff\4\0\1\uffff\36\0";
+        "\2\131\1\163\2\0\1\131\1\0\1\uffff\1\124\1\164\2\uffff\1\163\1\124"+
+        "\1\uffff\2\163\1\124\1\164\1\133\1\163\1\133\3\163\2\0\1\124\1\164"+
+        "\1\133\1\163\2\0\1\124\1\0\1\u0082\1\124\7\162\1\124\2\uffff\3\163"+
+        "\1\0\1\142\1\124\1\u0082\1\124\7\162\1\124\1\0\1\uffff\1\163\1\uffff"+
+        "\1\u0082\32\0\1\uffff\23\0\1\uffff\17\0";
     static final String DFA55_acceptS =
-        "\6\uffff\1\1\3\uffff\2\2\4\uffff\1\3\34\uffff\2\3\21\uffff\1\3"+
-        "\20\uffff\1\3\14\uffff\1\3\4\uffff\1\3\36\uffff";
+        "\7\uffff\1\1\2\uffff\2\2\2\uffff\1\3\36\uffff\2\3\21\uffff\1\3\1"+
+        "\uffff\1\3\33\uffff\1\3\23\uffff\1\3\17\uffff";
     static final String DFA55_specialS =
-        "\2\uffff\1\2\1\11\1\4\4\uffff\1\12\17\uffff\1\6\1\0\4\uffff\1\5"+
-        "\1\3\13\uffff\1\1\5\uffff\1\7\2\uffff\1\10\114\uffff}>";
+        "\2\uffff\1\2\1\0\1\1\1\uffff\1\3\22\uffff\1\7\1\6\4\uffff\1\12\1"+
+        "\11\1\uffff\1\4\17\uffff\1\10\14\uffff\1\5\102\uffff}>";
     static final String[] DFA55_transitionS = {
             "\1\2\4\uffff\1\1",
             "\1\4\4\uffff\1\3",
-            "\1\6\1\7\3\uffff\1\11\3\uffff\1\5\25\uffff\1\10",
+            "\1\7\1\10\3\uffff\1\6\3\uffff\1\5\25\uffff\1\11",
             "\1\uffff",
             "\1\uffff",
             "\1\14\4\uffff\1\15",
-            "",
-            "\1\16",
-            "\1\17",
             "\1\uffff",
+            "",
+            "\1\17",
+            "\1\20",
             "",
             "",
             "\1\21\3\uffff\1\23\31\uffff\1\22",
             "\1\24",
-            "\1\7\3\uffff\1\25\31\uffff\1\10",
-            "\1\25\31\uffff\1\10",
             "",
+            "\1\10\3\uffff\1\25\31\uffff\1\11",
+            "\1\25\31\uffff\1\11",
             "\1\26",
             "\1\27",
             "\1\30\4\uffff\1\31\1\uffff\1\32",
@@ -18096,96 +18109,91 @@ public class DRLParser extends Parser {
             "\1\36\4\uffff\1\37\1\uffff\1\40",
             "\1\21\3\uffff\1\23\31\uffff\1\22",
             "\1\23\31\uffff\1\22",
-            "\1\44\1\43\3\uffff\1\54\3\uffff\1\41\14\uffff\1\45\1\46\1"+
-            "\47\1\50\1\51\1\52\1\53\2\uffff\1\42",
+            "\1\45\1\44\3\uffff\1\42\3\uffff\1\41\14\uffff\1\46\1\47\1\50"+
+            "\1\51\1\52\1\53\1\54\2\uffff\1\43",
             "\1\uffff",
             "\1\uffff",
             "\1\57",
             "\1\60",
             "\1\61\4\uffff\1\62\1\uffff\1\63",
-            "\1\70\1\67\3\uffff\1\65\3\uffff\1\64\14\uffff\1\71\1\72\1"+
-            "\73\1\74\1\75\1\76\1\77\2\uffff\1\66",
+            "\1\67\1\66\3\uffff\1\77\3\uffff\1\64\14\uffff\1\70\1\71\1\72"+
+            "\1\73\1\74\1\75\1\76\2\uffff\1\65",
             "\1\uffff",
             "\1\uffff",
             "\1\101",
-            "\157\102\1\103\1\104\15\102",
-            "\1\105",
-            "\1\106\3\uffff\1\107\1\114\6\uffff\1\112\1\110\16\uffff\1"+
-            "\115\1\111\1\113",
-            "\1\116\3\uffff\1\107\1\117\6\uffff\1\112\1\110\17\uffff\1"+
-            "\111\1\113",
-            "\1\116\3\uffff\1\107\1\117\6\uffff\1\112\1\110\17\uffff\1"+
-            "\111\1\113",
-            "\1\116\3\uffff\1\107\1\117\6\uffff\1\112\1\110\17\uffff\1"+
-            "\111\1\113",
-            "\1\116\3\uffff\1\107\1\117\6\uffff\1\112\1\110\17\uffff\1"+
-            "\111\1\113",
-            "\1\116\3\uffff\1\107\1\117\6\uffff\1\112\1\110\17\uffff\1"+
-            "\111\1\113",
-            "\1\116\3\uffff\1\107\1\117\6\uffff\1\112\1\110\17\uffff\1"+
-            "\111\1\113",
-            "\1\120",
             "\1\uffff",
+            "\157\103\1\104\1\105\16\103",
+            "\1\106",
+            "\1\107\3\uffff\1\110\1\115\6\uffff\1\113\1\111\16\uffff\1\116"+
+            "\1\112\1\114",
+            "\1\117\3\uffff\1\110\1\120\6\uffff\1\113\1\111\17\uffff\1\112"+
+            "\1\114",
+            "\1\117\3\uffff\1\110\1\120\6\uffff\1\113\1\111\17\uffff\1\112"+
+            "\1\114",
+            "\1\117\3\uffff\1\110\1\120\6\uffff\1\113\1\111\17\uffff\1\112"+
+            "\1\114",
+            "\1\117\3\uffff\1\110\1\120\6\uffff\1\113\1\111\17\uffff\1\112"+
+            "\1\114",
+            "\1\117\3\uffff\1\110\1\120\6\uffff\1\113\1\111\17\uffff\1\112"+
+            "\1\114",
+            "\1\117\3\uffff\1\110\1\120\6\uffff\1\113\1\111\17\uffff\1\112"+
+            "\1\114",
+            "\1\121",
             "",
             "",
             "\1\33\3\uffff\1\35\31\uffff\1\34",
             "\1\35\31\uffff\1\34",
-            "\1\126\1\125\3\uffff\1\123\3\uffff\1\122\14\uffff\1\127\1"+
-            "\130\1\131\1\132\1\133\1\134\1\135\2\uffff\1\124",
+            "\1\126\1\125\3\uffff\1\123\3\uffff\1\122\14\uffff\1\127\1\130"+
+            "\1\131\1\132\1\133\1\134\1\135\2\uffff\1\124",
             "\1\uffff",
             "\1\137\6\uffff\1\141\6\uffff\1\140",
             "\1\142",
-            "\1\uffff",
-            "\157\144\1\145\1\146\15\144",
-            "\1\147",
-            "\1\150\3\uffff\1\151\1\156\6\uffff\1\154\1\152\16\uffff\1"+
-            "\157\1\153\1\155",
-            "\1\160\3\uffff\1\151\1\161\6\uffff\1\154\1\152\17\uffff\1"+
-            "\153\1\155",
-            "\1\160\3\uffff\1\151\1\161\6\uffff\1\154\1\152\17\uffff\1"+
-            "\153\1\155",
-            "\1\160\3\uffff\1\151\1\161\6\uffff\1\154\1\152\17\uffff\1"+
-            "\153\1\155",
-            "\1\160\3\uffff\1\151\1\161\6\uffff\1\154\1\152\17\uffff\1"+
-            "\153\1\155",
-            "\1\160\3\uffff\1\151\1\161\6\uffff\1\154\1\152\17\uffff\1"+
-            "\153\1\155",
-            "\1\160\3\uffff\1\151\1\161\6\uffff\1\154\1\152\17\uffff\1"+
-            "\153\1\155",
-            "\1\162",
-            "",
-            "\1\165\1\164\3\uffff\1\175\1\u0081\1\32\6\uffff\1\u0080\1"+
-            "\177\5\uffff\1\176\1\166\1\167\1\170\1\171\1\172\1\173\1\174"+
-            "\2\uffff\1\163",
-            "\157\102\1\103\1\104\15\102",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
+            "\157\143\1\144\1\145\16\143",
+            "\1\146",
+            "\1\147\3\uffff\1\150\1\155\6\uffff\1\153\1\151\16\uffff\1\156"+
+            "\1\152\1\154",
+            "\1\157\3\uffff\1\150\1\160\6\uffff\1\153\1\151\17\uffff\1\152"+
+            "\1\154",
+            "\1\157\3\uffff\1\150\1\160\6\uffff\1\153\1\151\17\uffff\1\152"+
+            "\1\154",
+            "\1\157\3\uffff\1\150\1\160\6\uffff\1\153\1\151\17\uffff\1\152"+
+            "\1\154",
+            "\1\157\3\uffff\1\150\1\160\6\uffff\1\153\1\151\17\uffff\1\152"+
+            "\1\154",
+            "\1\157\3\uffff\1\150\1\160\6\uffff\1\153\1\151\17\uffff\1\152"+
+            "\1\154",
+            "\1\157\3\uffff\1\150\1\160\6\uffff\1\153\1\151\17\uffff\1\152"+
+            "\1\154",
+            "\1\161",
             "\1\uffff",
             "",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
+            "\1\165\1\164\3\uffff\1\175\1\u0081\1\32\6\uffff\1\u0080\1\177"+
+            "\5\uffff\1\176\1\166\1\167\1\170\1\171\1\172\1\173\1\174\2\uffff"+
+            "\1\163",
             "",
+            "\157\103\1\104\1\105\16\103",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
@@ -18206,6 +18214,11 @@ public class DRLParser extends Parser {
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "\1\uffff",
+            "",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
@@ -18259,33 +18272,33 @@ public class DRLParser extends Parser {
         	int _s = s;
             switch ( s ) {
                     case 0 : 
-                        int LA55_26 = input.LA(1);
+                        int LA55_3 = input.LA(1);
 
                          
-                        int index55_26 = input.index();
+                        int index55_3 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7()) ) {s = 6;}
+                        if ( (synpred7()) ) {s = 7;}
 
-                        else if ( (true) ) {s = 46;}
+                        else if ( (true) ) {s = 10;}
 
                          
-                        input.seek(index55_26);
+                        input.seek(index55_3);
                         if ( s>=0 ) return s;
                         break;
                     case 1 : 
-                        int LA55_44 = input.LA(1);
+                        int LA55_4 = input.LA(1);
 
                          
-                        int index55_44 = input.index();
+                        int index55_4 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7()) ) {s = 6;}
+                        if ( (synpred7()) ) {s = 7;}
 
-                        else if ( (true) ) {s = 81;}
+                        else if ( (true) ) {s = 11;}
 
                          
-                        input.seek(index55_44);
+                        input.seek(index55_4);
                         if ( s>=0 ) return s;
                         break;
                     case 2 : 
@@ -18297,71 +18310,86 @@ public class DRLParser extends Parser {
                         s = -1;
                         if ( (LA55_2==COLON) ) {s = 5;}
 
-                        else if ( (LA55_2==ID) && (((synpred7()&&(validateIdentifierKey(DroolsSoftKeywords.EXISTS)))||(synpred7()&&(validateIdentifierKey(DroolsSoftKeywords.EXISTS)))||(synpred7()&&(validateIdentifierKey(DroolsSoftKeywords.EXISTS)))||(synpred7()&&(validateIdentifierKey(DroolsSoftKeywords.NOT)))||(synpred7()&&(validateIdentifierKey(DroolsSoftKeywords.EXISTS)))||(synpred7()&&(validateIdentifierKey(DroolsSoftKeywords.EXISTS)))||(synpred7()&&(validateIdentifierKey(DroolsSoftKeywords.NOT)))||(synpred7()&&(validateIdentifierKey(DroolsSoftKeywords.NOT)))||(synpred7()&&(validateIdentifierKey(DroolsSoftKeywords.NOT)))||(synpred7()&&(validateIdentifierKey(DroolsSoftKeywords.NOT)))||((synpred7()&&validateNotWithBinding())&&(validateIdentifierKey(DroolsSoftKeywords.NOT)))||(synpred7()&&(validateIdentifierKey(DroolsSoftKeywords.EXISTS)))||(synpred7()&&(validateIdentifierKey(DroolsSoftKeywords.NOT)))||(synpred7()&&(validateIdentifierKey(DroolsSoftKeywords.NOT)))||(synpred7()&&(validateIdentifierKey(DroolsSoftKeywords.EXISTS)))||(synpred7()&&(validateIdentifierKey(DroolsSoftKeywords.EXISTS)))||(synpred7()&&(validateIdentifierKey(DroolsSoftKeywords.EXISTS)))||(synpred7()&&(validateIdentifierKey(DroolsSoftKeywords.NOT)))||(synpred7()&&(validateIdentifierKey(DroolsSoftKeywords.NOT)))))) {s = 6;}
+                        else if ( (LA55_2==LEFT_PAREN) ) {s = 6;}
 
-                        else if ( (LA55_2==DOT) ) {s = 7;}
+                        else if ( (LA55_2==ID) && (((synpred7()&&(validateIdentifierKey(DroolsSoftKeywords.EXISTS)))||(synpred7()&&(validateIdentifierKey(DroolsSoftKeywords.NOT)))||(synpred7()&&(validateIdentifierKey(DroolsSoftKeywords.EXISTS)))||(synpred7()&&(validateIdentifierKey(DroolsSoftKeywords.NOT)))||(synpred7()&&(validateIdentifierKey(DroolsSoftKeywords.NOT)))||(synpred7()&&(validateIdentifierKey(DroolsSoftKeywords.NOT)))||(synpred7()&&(validateIdentifierKey(DroolsSoftKeywords.EXISTS)))||(synpred7()&&(validateIdentifierKey(DroolsSoftKeywords.EXISTS)))||(synpred7()&&(validateIdentifierKey(DroolsSoftKeywords.NOT)))||(synpred7()&&(validateIdentifierKey(DroolsSoftKeywords.EXISTS)))||(synpred7()&&(validateIdentifierKey(DroolsSoftKeywords.NOT)))||((synpred7()&&validateNotWithBinding())&&(validateIdentifierKey(DroolsSoftKeywords.NOT)))||(synpred7()&&(validateIdentifierKey(DroolsSoftKeywords.NOT)))||(synpred7()&&(validateIdentifierKey(DroolsSoftKeywords.EXISTS)))||(synpred7()&&(validateIdentifierKey(DroolsSoftKeywords.EXISTS)))||(synpred7()&&(validateIdentifierKey(DroolsSoftKeywords.EXISTS)))||(synpred7()&&(validateIdentifierKey(DroolsSoftKeywords.EXISTS)))||(synpred7()&&(validateIdentifierKey(DroolsSoftKeywords.NOT)))||(synpred7()&&(validateIdentifierKey(DroolsSoftKeywords.NOT)))))) {s = 7;}
 
-                        else if ( (LA55_2==LEFT_SQUARE) ) {s = 8;}
+                        else if ( (LA55_2==DOT) ) {s = 8;}
 
-                        else if ( (LA55_2==LEFT_PAREN) ) {s = 9;}
+                        else if ( (LA55_2==LEFT_SQUARE) ) {s = 9;}
 
                          
                         input.seek(index55_2);
                         if ( s>=0 ) return s;
                         break;
                     case 3 : 
-                        int LA55_32 = input.LA(1);
+                        int LA55_6 = input.LA(1);
 
                          
-                        int index55_32 = input.index();
+                        int index55_6 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7()) ) {s = 6;}
+                        if ( ((synpred7()||(synpred7()&&(validateIdentifierKey(DroolsSoftKeywords.EXISTS)))||(synpred7()&&(validateIdentifierKey(DroolsSoftKeywords.EVAL)))||(synpred7()&&(validateIdentifierKey(DroolsSoftKeywords.NOT)))||(synpred7()&&(validateIdentifierKey(DroolsSoftKeywords.FORALL))))) ) {s = 7;}
+
+                        else if ( (true) ) {s = 14;}
+
+                         
+                        input.seek(index55_6);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 4 : 
+                        int LA55_34 = input.LA(1);
+
+                         
+                        int index55_34 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7()) ) {s = 7;}
+
+                        else if ( (true) ) {s = 66;}
+
+                         
+                        input.seek(index55_34);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 5 : 
+                        int LA55_63 = input.LA(1);
+
+                         
+                        int index55_63 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7()) ) {s = 7;}
+
+                        else if ( (true) ) {s = 114;}
+
+                         
+                        input.seek(index55_63);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 6 : 
+                        int LA55_26 = input.LA(1);
+
+                         
+                        int index55_26 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7()) ) {s = 7;}
 
                         else if ( (true) ) {s = 46;}
 
                          
-                        input.seek(index55_32);
+                        input.seek(index55_26);
                         if ( s>=0 ) return s;
                         break;
-                    case 4 : 
-                        int LA55_4 = input.LA(1);
-
-                         
-                        int index55_4 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred7()) ) {s = 6;}
-
-                        else if ( (true) ) {s = 11;}
-
-                         
-                        input.seek(index55_4);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 5 : 
-                        int LA55_31 = input.LA(1);
-
-                         
-                        int index55_31 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred7()) ) {s = 6;}
-
-                        else if ( (true) ) {s = 64;}
-
-                         
-                        input.seek(index55_31);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 6 : 
+                    case 7 : 
                         int LA55_25 = input.LA(1);
 
                          
                         int index55_25 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7()) ) {s = 6;}
+                        if ( (synpred7()) ) {s = 7;}
 
                         else if ( (true) ) {s = 45;}
 
@@ -18369,14 +18397,14 @@ public class DRLParser extends Parser {
                         input.seek(index55_25);
                         if ( s>=0 ) return s;
                         break;
-                    case 7 : 
+                    case 8 : 
                         int LA55_50 = input.LA(1);
 
                          
                         int index55_50 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7()) ) {s = 6;}
+                        if ( (synpred7()) ) {s = 7;}
 
                         else if ( (true) ) {s = 94;}
 
@@ -18384,49 +18412,34 @@ public class DRLParser extends Parser {
                         input.seek(index55_50);
                         if ( s>=0 ) return s;
                         break;
-                    case 8 : 
-                        int LA55_53 = input.LA(1);
-
-                         
-                        int index55_53 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred7()) ) {s = 6;}
-
-                        else if ( (true) ) {s = 99;}
-
-                         
-                        input.seek(index55_53);
-                        if ( s>=0 ) return s;
-                        break;
                     case 9 : 
-                        int LA55_3 = input.LA(1);
+                        int LA55_32 = input.LA(1);
 
                          
-                        int index55_3 = input.index();
+                        int index55_32 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7()) ) {s = 6;}
+                        if ( (synpred7()) ) {s = 7;}
 
-                        else if ( (true) ) {s = 10;}
+                        else if ( (true) ) {s = 46;}
 
                          
-                        input.seek(index55_3);
+                        input.seek(index55_32);
                         if ( s>=0 ) return s;
                         break;
                     case 10 : 
-                        int LA55_9 = input.LA(1);
+                        int LA55_31 = input.LA(1);
 
                          
-                        int index55_9 = input.index();
+                        int index55_31 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (((synpred7()&&(validateIdentifierKey(DroolsSoftKeywords.FORALL)))||(synpred7()&&(validateIdentifierKey(DroolsSoftKeywords.NOT)))||(synpred7()&&(validateIdentifierKey(DroolsSoftKeywords.EVAL)))||synpred7()||(synpred7()&&(validateIdentifierKey(DroolsSoftKeywords.EXISTS))))) ) {s = 6;}
+                        if ( (synpred7()) ) {s = 7;}
 
-                        else if ( (true) ) {s = 16;}
+                        else if ( (true) ) {s = 64;}
 
                          
-                        input.seek(index55_9);
+                        input.seek(index55_31);
                         if ( s>=0 ) return s;
                         break;
             }
@@ -18444,16 +18457,16 @@ public class DRLParser extends Parser {
     static final String DFA66_minS =
         "\1\124\1\131\2\4\1\0\1\124\1\0\4\uffff";
     static final String DFA66_maxS =
-        "\1\124\1\131\2\u0081\1\0\1\133\1\0\4\uffff";
+        "\1\124\1\131\2\u0082\1\0\1\133\1\0\4\uffff";
     static final String DFA66_acceptS =
         "\7\uffff\1\1\1\2\1\1\1\2";
     static final String DFA66_specialS =
-        "\1\2\1\6\1\5\1\3\1\4\1\0\1\1\4\uffff}>";
+        "\1\5\1\1\1\4\1\0\1\3\1\2\1\6\4\uffff}>";
     static final String[] DFA66_transitionS = {
             "\1\1",
             "\1\2",
-            "\125\3\1\4\1\3\1\5\46\3",
-            "\125\3\1\6\1\3\1\5\46\3",
+            "\125\3\1\4\1\3\1\5\47\3",
+            "\125\3\1\6\1\3\1\5\47\3",
             "\1\uffff",
             "\1\11\5\uffff\1\11\1\12",
             "\1\uffff",
@@ -18499,49 +18512,6 @@ public class DRLParser extends Parser {
         	int _s = s;
             switch ( s ) {
                     case 0 : 
-                        int LA66_5 = input.LA(1);
-
-                         
-                        int index66_5 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA66_5==ID||LA66_5==COMMA) && ((validateIdentifierKey(DroolsSoftKeywords.REVERSE)))) {s = 9;}
-
-                        else if ( (LA66_5==RIGHT_PAREN) && ((validateIdentifierKey(DroolsSoftKeywords.RESULT)))) {s = 10;}
-
-                         
-                        input.seek(index66_5);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 1 : 
-                        int LA66_6 = input.LA(1);
-
-                         
-                        int index66_6 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( ((validateIdentifierKey(DroolsSoftKeywords.REVERSE))) ) {s = 9;}
-
-                        else if ( ((validateIdentifierKey(DroolsSoftKeywords.RESULT))) ) {s = 10;}
-
-                         
-                        input.seek(index66_6);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 2 : 
-                        int LA66_0 = input.LA(1);
-
-                         
-                        int index66_0 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA66_0==ID) && (((validateIdentifierKey(DroolsSoftKeywords.REVERSE))||(validateIdentifierKey(DroolsSoftKeywords.RESULT))))) {s = 1;}
-
-                         
-                        input.seek(index66_0);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 3 : 
                         int LA66_3 = input.LA(1);
 
                          
@@ -18558,7 +18528,35 @@ public class DRLParser extends Parser {
                         input.seek(index66_3);
                         if ( s>=0 ) return s;
                         break;
-                    case 4 : 
+                    case 1 : 
+                        int LA66_1 = input.LA(1);
+
+                         
+                        int index66_1 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA66_1==LEFT_PAREN) && (((validateIdentifierKey(DroolsSoftKeywords.REVERSE))||(validateIdentifierKey(DroolsSoftKeywords.RESULT))))) {s = 2;}
+
+                         
+                        input.seek(index66_1);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 2 : 
+                        int LA66_5 = input.LA(1);
+
+                         
+                        int index66_5 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA66_5==ID||LA66_5==COMMA) && ((validateIdentifierKey(DroolsSoftKeywords.REVERSE)))) {s = 9;}
+
+                        else if ( (LA66_5==RIGHT_PAREN) && ((validateIdentifierKey(DroolsSoftKeywords.RESULT)))) {s = 10;}
+
+                         
+                        input.seek(index66_5);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 3 : 
                         int LA66_4 = input.LA(1);
 
                          
@@ -18573,7 +18571,7 @@ public class DRLParser extends Parser {
                         input.seek(index66_4);
                         if ( s>=0 ) return s;
                         break;
-                    case 5 : 
+                    case 4 : 
                         int LA66_2 = input.LA(1);
 
                          
@@ -18590,17 +18588,32 @@ public class DRLParser extends Parser {
                         input.seek(index66_2);
                         if ( s>=0 ) return s;
                         break;
-                    case 6 : 
-                        int LA66_1 = input.LA(1);
+                    case 5 : 
+                        int LA66_0 = input.LA(1);
 
                          
-                        int index66_1 = input.index();
+                        int index66_0 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA66_1==LEFT_PAREN) && (((validateIdentifierKey(DroolsSoftKeywords.REVERSE))||(validateIdentifierKey(DroolsSoftKeywords.RESULT))))) {s = 2;}
+                        if ( (LA66_0==ID) && (((validateIdentifierKey(DroolsSoftKeywords.REVERSE))||(validateIdentifierKey(DroolsSoftKeywords.RESULT))))) {s = 1;}
 
                          
-                        input.seek(index66_1);
+                        input.seek(index66_0);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 6 : 
+                        int LA66_6 = input.LA(1);
+
+                         
+                        int index66_6 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( ((validateIdentifierKey(DroolsSoftKeywords.REVERSE))) ) {s = 9;}
+
+                        else if ( ((validateIdentifierKey(DroolsSoftKeywords.RESULT))) ) {s = 10;}
+
+                         
+                        input.seek(index66_6);
                         if ( s>=0 ) return s;
                         break;
             }
@@ -18611,349 +18624,44 @@ public class DRLParser extends Parser {
             throw nvae;
         }
     }
-    static final String DFA69_eotS =
-        "\25\uffff";
-    static final String DFA69_eofS =
-        "\25\uffff";
-    static final String DFA69_minS =
-        "\1\123\1\4\1\uffff\1\4\1\0\2\uffff\1\4\2\0\3\4\1\0\1\4\1\uffff"+
-        "\1\4\4\0";
-    static final String DFA69_maxS =
-        "\1\165\1\u0081\1\uffff\1\u0081\1\0\2\uffff\1\u0081\2\0\3\u0081"+
-        "\1\0\1\u0081\1\uffff\1\u0081\4\0";
-    static final String DFA69_acceptS =
-        "\2\uffff\1\2\2\uffff\2\1\10\uffff\1\1\5\uffff";
-    static final String DFA69_specialS =
-        "\1\uffff\1\10\1\uffff\1\1\1\0\2\uffff\1\4\1\7\1\5\1\2\1\6\1\13"+
-        "\1\3\1\12\1\uffff\1\11\4\uffff}>";
-    static final String[] DFA69_transitionS = {
-            "\3\2\1\uffff\1\2\1\uffff\1\1\2\2\6\uffff\2\2\3\uffff\1\2\15"+
-            "\uffff\1\2",
-            "\120\5\1\3\4\5\1\4\1\5\1\6\46\5",
-            "",
-            "\120\5\1\11\1\12\3\5\1\10\1\5\1\6\1\5\1\7\25\5\1\13\16\5",
-            "\1\uffff",
-            "",
-            "",
-            "\120\5\1\14\4\5\1\15\1\5\1\6\46\5",
-            "\1\uffff",
-            "\1\uffff",
-            "\120\5\1\16\4\5\1\17\1\5\1\6\46\5",
-            "\125\5\1\17\1\5\1\6\30\5\1\20\15\5",
-            "\121\5\1\21\3\5\1\23\1\5\1\6\27\5\1\22\16\5",
-            "\1\uffff",
-            "\121\5\1\12\3\5\1\24\1\5\1\6\27\5\1\13\16\5",
-            "",
-            "\125\5\1\24\1\5\1\6\27\5\1\13\16\5",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff"
-    };
-
-    static final short[] DFA69_eot = DFA.unpackEncodedString(DFA69_eotS);
-    static final short[] DFA69_eof = DFA.unpackEncodedString(DFA69_eofS);
-    static final char[] DFA69_min = DFA.unpackEncodedStringToUnsignedChars(DFA69_minS);
-    static final char[] DFA69_max = DFA.unpackEncodedStringToUnsignedChars(DFA69_maxS);
-    static final short[] DFA69_accept = DFA.unpackEncodedString(DFA69_acceptS);
-    static final short[] DFA69_special = DFA.unpackEncodedString(DFA69_specialS);
-    static final short[][] DFA69_transition;
-
-    static {
-        int numStates = DFA69_transitionS.length;
-        DFA69_transition = new short[numStates][];
-        for (int i=0; i<numStates; i++) {
-            DFA69_transition[i] = DFA.unpackEncodedString(DFA69_transitionS[i]);
-        }
-    }
-
-    class DFA69 extends DFA {
-
-        public DFA69(BaseRecognizer recognizer) {
-            this.recognizer = recognizer;
-            this.decisionNumber = 69;
-            this.eot = DFA69_eot;
-            this.eof = DFA69_eof;
-            this.min = DFA69_min;
-            this.max = DFA69_max;
-            this.accept = DFA69_accept;
-            this.special = DFA69_special;
-            this.transition = DFA69_transition;
-        }
-        public String getDescription() {
-            return "1052:3: ( ( LEFT_PAREN )=>args= paren_chunk )?";
-        }
-        public int specialStateTransition(int s, IntStream input) throws NoViableAltException {
-        	int _s = s;
-            switch ( s ) {
-                    case 0 : 
-                        int LA69_4 = input.LA(1);
-
-                         
-                        int index69_4 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred8()) ) {s = 6;}
-
-                        else if ( (true) ) {s = 2;}
-
-                         
-                        input.seek(index69_4);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 1 : 
-                        int LA69_3 = input.LA(1);
-
-                         
-                        int index69_3 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA69_3==COLON) ) {s = 7;}
-
-                        else if ( (LA69_3==LEFT_PAREN) ) {s = 8;}
-
-                        else if ( (LA69_3==ID) ) {s = 9;}
-
-                        else if ( (LA69_3==DOT) ) {s = 10;}
-
-                        else if ( (LA69_3==LEFT_SQUARE) ) {s = 11;}
-
-                        else if ( (LA69_3==RIGHT_PAREN) && (synpred8())) {s = 6;}
-
-                        else if ( ((LA69_3>=VT_COMPILATION_UNIT && LA69_3<=SEMICOLON)||(LA69_3>=DOT_STAR && LA69_3<=STRING)||LA69_3==COMMA||LA69_3==AT||(LA69_3>=EQUALS && LA69_3<=NULL)||(LA69_3>=RIGHT_SQUARE && LA69_3<=MULTI_LINE_COMMENT)) && (synpred8())) {s = 5;}
-
-                         
-                        input.seek(index69_3);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 2 : 
-                        int LA69_10 = input.LA(1);
-
-                         
-                        int index69_10 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA69_10==ID) ) {s = 14;}
-
-                        else if ( (LA69_10==RIGHT_PAREN) && (synpred8())) {s = 6;}
-
-                        else if ( ((LA69_10>=VT_COMPILATION_UNIT && LA69_10<=SEMICOLON)||(LA69_10>=DOT && LA69_10<=STRING)||LA69_10==COMMA||(LA69_10>=AT && LA69_10<=MULTI_LINE_COMMENT)) && (synpred8())) {s = 5;}
-
-                        else if ( (LA69_10==LEFT_PAREN) && (synpred8())) {s = 15;}
-
-                         
-                        input.seek(index69_10);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 3 : 
-                        int LA69_13 = input.LA(1);
-
-                         
-                        int index69_13 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred8()) ) {s = 15;}
-
-                        else if ( (true) ) {s = 2;}
-
-                         
-                        input.seek(index69_13);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 4 : 
-                        int LA69_7 = input.LA(1);
-
-                         
-                        int index69_7 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA69_7==ID) ) {s = 12;}
-
-                        else if ( (LA69_7==LEFT_PAREN) ) {s = 13;}
-
-                        else if ( (LA69_7==RIGHT_PAREN) && (synpred8())) {s = 6;}
-
-                        else if ( ((LA69_7>=VT_COMPILATION_UNIT && LA69_7<=SEMICOLON)||(LA69_7>=DOT && LA69_7<=STRING)||LA69_7==COMMA||(LA69_7>=AT && LA69_7<=MULTI_LINE_COMMENT)) && (synpred8())) {s = 5;}
-
-                         
-                        input.seek(index69_7);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 5 : 
-                        int LA69_9 = input.LA(1);
-
-                         
-                        int index69_9 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred8()) ) {s = 6;}
-
-                        else if ( (true) ) {s = 2;}
-
-                         
-                        input.seek(index69_9);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 6 : 
-                        int LA69_11 = input.LA(1);
-
-                         
-                        int index69_11 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA69_11==RIGHT_SQUARE) ) {s = 16;}
-
-                        else if ( (LA69_11==RIGHT_PAREN) && (synpred8())) {s = 6;}
-
-                        else if ( ((LA69_11>=VT_COMPILATION_UNIT && LA69_11<=STRING)||LA69_11==COMMA||(LA69_11>=AT && LA69_11<=LEFT_SQUARE)||(LA69_11>=THEN && LA69_11<=MULTI_LINE_COMMENT)) && (synpred8())) {s = 5;}
-
-                        else if ( (LA69_11==LEFT_PAREN) && (synpred8())) {s = 15;}
-
-                         
-                        input.seek(index69_11);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 7 : 
-                        int LA69_8 = input.LA(1);
-
-                         
-                        int index69_8 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred8()) ) {s = 6;}
-
-                        else if ( (true) ) {s = 2;}
-
-                         
-                        input.seek(index69_8);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 8 : 
-                        int LA69_1 = input.LA(1);
-
-                         
-                        int index69_1 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA69_1==ID) ) {s = 3;}
-
-                        else if ( (LA69_1==LEFT_PAREN) ) {s = 4;}
-
-                        else if ( ((LA69_1>=VT_COMPILATION_UNIT && LA69_1<=SEMICOLON)||(LA69_1>=DOT && LA69_1<=STRING)||LA69_1==COMMA||(LA69_1>=AT && LA69_1<=MULTI_LINE_COMMENT)) && (synpred8())) {s = 5;}
-
-                        else if ( (LA69_1==RIGHT_PAREN) && (synpred8())) {s = 6;}
-
-                         
-                        input.seek(index69_1);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 9 : 
-                        int LA69_16 = input.LA(1);
-
-                         
-                        int index69_16 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA69_16==LEFT_PAREN) ) {s = 20;}
-
-                        else if ( (LA69_16==LEFT_SQUARE) ) {s = 11;}
-
-                        else if ( (LA69_16==RIGHT_PAREN) && (synpred8())) {s = 6;}
-
-                        else if ( ((LA69_16>=VT_COMPILATION_UNIT && LA69_16<=STRING)||LA69_16==COMMA||(LA69_16>=AT && LA69_16<=NULL)||(LA69_16>=RIGHT_SQUARE && LA69_16<=MULTI_LINE_COMMENT)) && (synpred8())) {s = 5;}
-
-                         
-                        input.seek(index69_16);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 10 : 
-                        int LA69_14 = input.LA(1);
-
-                         
-                        int index69_14 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA69_14==LEFT_SQUARE) ) {s = 11;}
-
-                        else if ( (LA69_14==LEFT_PAREN) ) {s = 20;}
-
-                        else if ( (LA69_14==DOT) ) {s = 10;}
-
-                        else if ( (LA69_14==RIGHT_PAREN) && (synpred8())) {s = 6;}
-
-                        else if ( ((LA69_14>=VT_COMPILATION_UNIT && LA69_14<=ID)||(LA69_14>=DOT_STAR && LA69_14<=STRING)||LA69_14==COMMA||(LA69_14>=AT && LA69_14<=NULL)||(LA69_14>=RIGHT_SQUARE && LA69_14<=MULTI_LINE_COMMENT)) && (synpred8())) {s = 5;}
-
-                         
-                        input.seek(index69_14);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 11 : 
-                        int LA69_12 = input.LA(1);
-
-                         
-                        int index69_12 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA69_12==DOT) ) {s = 17;}
-
-                        else if ( (LA69_12==LEFT_SQUARE) ) {s = 18;}
-
-                        else if ( (LA69_12==LEFT_PAREN) ) {s = 19;}
-
-                        else if ( (LA69_12==RIGHT_PAREN) && (synpred8())) {s = 6;}
-
-                        else if ( ((LA69_12>=VT_COMPILATION_UNIT && LA69_12<=ID)||(LA69_12>=DOT_STAR && LA69_12<=STRING)||LA69_12==COMMA||(LA69_12>=AT && LA69_12<=NULL)||(LA69_12>=RIGHT_SQUARE && LA69_12<=MULTI_LINE_COMMENT)) && (synpred8())) {s = 5;}
-
-                         
-                        input.seek(index69_12);
-                        if ( s>=0 ) return s;
-                        break;
-            }
-            if (backtracking>0) {failed=true; return -1;}
-            NoViableAltException nvae =
-                new NoViableAltException(getDescription(), 69, _s, input);
-            error(nvae);
-            throw nvae;
-        }
-    }
     static final String DFA84_eotS =
         "\40\uffff";
     static final String DFA84_eofS =
         "\40\uffff";
     static final String DFA84_minS =
-        "\1\132\1\uffff\2\124\1\uffff\1\0\1\124\1\0\1\124\6\0\1\4\1\163"+
-        "\2\4\15\0";
+        "\1\132\1\uffff\2\124\1\uffff\1\0\1\124\1\0\1\124\1\4\6\0\1\163\2"+
+        "\4\15\0";
     static final String DFA84_maxS =
-        "\1\143\1\uffff\1\160\1\163\1\uffff\1\0\1\163\1\0\1\124\6\0\1\u0081"+
-        "\1\163\2\u0081\15\0";
+        "\1\143\1\uffff\1\160\1\163\1\uffff\1\0\1\163\1\0\1\124\1\u0082\6"+
+        "\0\1\163\2\u0082\15\0";
     static final String DFA84_acceptS =
         "\1\uffff\1\2\2\uffff\1\1\33\uffff";
     static final String DFA84_specialS =
-        "\2\uffff\1\3\1\5\1\uffff\1\4\1\2\1\12\1\uffff\1\10\1\0\1\1\1\11"+
-        "\1\7\1\6\21\uffff}>";
+        "\2\uffff\1\12\1\7\1\uffff\1\3\1\11\1\4\2\uffff\1\2\1\1\1\6\1\0\1"+
+        "\5\1\10\20\uffff}>";
     static final String[] DFA84_transitionS = {
             "\2\1\6\uffff\1\2\1\1",
             "",
             "\1\3\4\uffff\1\5\20\uffff\7\4",
-            "\1\6\1\1\2\uffff\1\4\1\7\3\uffff\1\1\2\uffff\2\4\10\uffff"+
-            "\6\1\1\10\2\4\1\1",
+            "\1\6\1\1\2\uffff\1\4\1\7\3\uffff\1\1\2\uffff\2\4\10\uffff\6"+
+            "\1\1\10\2\4\1\1",
             "",
             "\1\uffff",
-            "\1\11\1\4\2\uffff\1\12\1\17\2\4\4\uffff\1\15\1\13\2\4\14\uffff"+
-            "\1\1\1\14\1\16\1\4",
+            "\1\12\1\4\2\uffff\1\13\1\11\2\4\4\uffff\1\16\1\14\2\4\14\uffff"+
+            "\1\1\1\15\1\17\1\4",
             "\1\uffff",
             "\1\20",
+            "\120\30\1\21\3\30\1\22\1\27\1\30\1\31\4\30\1\25\1\23\17\30\1"+
+            "\24\1\26\20\30",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
-            "\120\30\1\21\3\30\1\22\1\27\1\30\1\31\4\30\1\25\1\23\17\30"+
-            "\1\24\1\26\17\30",
             "\1\32",
-            "\121\30\1\36\3\30\1\35\1\37\1\33\27\30\1\34\16\30",
-            "\125\30\1\35\1\37\1\33\46\30",
+            "\121\30\1\34\3\30\1\37\1\35\1\36\27\30\1\33\17\30",
+            "\125\30\1\37\1\35\1\36\47\30",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
@@ -19005,10 +18713,10 @@ public class DRLParser extends Parser {
         	int _s = s;
             switch ( s ) {
                     case 0 : 
-                        int LA84_10 = input.LA(1);
+                        int LA84_13 = input.LA(1);
 
                          
-                        int index84_10 = input.index();
+                        int index84_13 = input.index();
                         input.rewind();
                         s = -1;
                         if ( ((validateRestr())) ) {s = 4;}
@@ -19016,7 +18724,7 @@ public class DRLParser extends Parser {
                         else if ( (true) ) {s = 1;}
 
                          
-                        input.seek(index84_10);
+                        input.seek(index84_13);
                         if ( s>=0 ) return s;
                         break;
                     case 1 : 
@@ -19035,52 +18743,21 @@ public class DRLParser extends Parser {
                         if ( s>=0 ) return s;
                         break;
                     case 2 : 
-                        int LA84_6 = input.LA(1);
+                        int LA84_10 = input.LA(1);
 
                          
-                        int index84_6 = input.index();
+                        int index84_10 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA84_6==ID) ) {s = 9;}
+                        if ( ((validateRestr())) ) {s = 4;}
 
-                        else if ( (LA84_6==STRING) ) {s = 10;}
-
-                        else if ( (LA84_6==INT) ) {s = 11;}
-
-                        else if ( (LA84_6==FLOAT) ) {s = 12;}
-
-                        else if ( (LA84_6==BOOL) ) {s = 13;}
-
-                        else if ( (LA84_6==NULL) ) {s = 14;}
-
-                        else if ( (LA84_6==LEFT_PAREN) ) {s = 15;}
-
-                        else if ( (LA84_6==DOT||(LA84_6>=COMMA && LA84_6<=RIGHT_PAREN)||(LA84_6>=DOUBLE_PIPE && LA84_6<=DOUBLE_AMPER)||LA84_6==LEFT_SQUARE) && ((validateRestr()))) {s = 4;}
-
-                        else if ( (LA84_6==GRAVE_ACCENT) ) {s = 1;}
+                        else if ( (true) ) {s = 1;}
 
                          
-                        input.seek(index84_6);
+                        input.seek(index84_10);
                         if ( s>=0 ) return s;
                         break;
                     case 3 : 
-                        int LA84_2 = input.LA(1);
-
-                         
-                        int index84_2 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA84_2==ID) ) {s = 3;}
-
-                        else if ( ((LA84_2>=EQUAL && LA84_2<=GRAVE_ACCENT)) && ((validateRestr()))) {s = 4;}
-
-                        else if ( (LA84_2==LEFT_PAREN) ) {s = 5;}
-
-                         
-                        input.seek(index84_2);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 4 : 
                         int LA84_5 = input.LA(1);
 
                          
@@ -19095,88 +18772,7 @@ public class DRLParser extends Parser {
                         input.seek(index84_5);
                         if ( s>=0 ) return s;
                         break;
-                    case 5 : 
-                        int LA84_3 = input.LA(1);
-
-                         
-                        int index84_3 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA84_3==DOT||LA84_3==COLON||(LA84_3>=EQUAL && LA84_3<=NOT_EQUAL)||LA84_3==LEFT_SQUARE) ) {s = 1;}
-
-                        else if ( (LA84_3==ID) ) {s = 6;}
-
-                        else if ( (LA84_3==STRING||(LA84_3>=BOOL && LA84_3<=INT)||(LA84_3>=FLOAT && LA84_3<=NULL)) && ((validateRestr()))) {s = 4;}
-
-                        else if ( (LA84_3==LEFT_PAREN) ) {s = 7;}
-
-                        else if ( (LA84_3==GRAVE_ACCENT) ) {s = 8;}
-
-                         
-                        input.seek(index84_3);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 6 : 
-                        int LA84_14 = input.LA(1);
-
-                         
-                        int index84_14 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( ((validateRestr())) ) {s = 4;}
-
-                        else if ( (true) ) {s = 1;}
-
-                         
-                        input.seek(index84_14);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 7 : 
-                        int LA84_13 = input.LA(1);
-
-                         
-                        int index84_13 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( ((validateRestr())) ) {s = 4;}
-
-                        else if ( (true) ) {s = 1;}
-
-                         
-                        input.seek(index84_13);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 8 : 
-                        int LA84_9 = input.LA(1);
-
-                         
-                        int index84_9 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( ((validateRestr())) ) {s = 4;}
-
-                        else if ( (true) ) {s = 1;}
-
-                         
-                        input.seek(index84_9);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 9 : 
-                        int LA84_12 = input.LA(1);
-
-                         
-                        int index84_12 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( ((validateRestr())) ) {s = 4;}
-
-                        else if ( (true) ) {s = 1;}
-
-                         
-                        input.seek(index84_12);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 10 : 
+                    case 4 : 
                         int LA84_7 = input.LA(1);
 
                          
@@ -19191,6 +18787,118 @@ public class DRLParser extends Parser {
                         input.seek(index84_7);
                         if ( s>=0 ) return s;
                         break;
+                    case 5 : 
+                        int LA84_14 = input.LA(1);
+
+                         
+                        int index84_14 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( ((validateRestr())) ) {s = 4;}
+
+                        else if ( (true) ) {s = 1;}
+
+                         
+                        input.seek(index84_14);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 6 : 
+                        int LA84_12 = input.LA(1);
+
+                         
+                        int index84_12 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( ((validateRestr())) ) {s = 4;}
+
+                        else if ( (true) ) {s = 1;}
+
+                         
+                        input.seek(index84_12);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 7 : 
+                        int LA84_3 = input.LA(1);
+
+                         
+                        int index84_3 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA84_3==DOT||LA84_3==COLON||(LA84_3>=EQUAL && LA84_3<=NOT_EQUAL)||LA84_3==LEFT_SQUARE) ) {s = 1;}
+
+                        else if ( (LA84_3==ID) ) {s = 6;}
+
+                        else if ( (LA84_3==STRING||(LA84_3>=BOOL && LA84_3<=INT)||(LA84_3>=FLOAT && LA84_3<=NULL)) && ((validateRestr()))) {s = 4;}
+
+                        else if ( (LA84_3==LEFT_PAREN) ) {s = 7;}
+
+                        else if ( (LA84_3==TILDE) ) {s = 8;}
+
+                         
+                        input.seek(index84_3);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 8 : 
+                        int LA84_15 = input.LA(1);
+
+                         
+                        int index84_15 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( ((validateRestr())) ) {s = 4;}
+
+                        else if ( (true) ) {s = 1;}
+
+                         
+                        input.seek(index84_15);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 9 : 
+                        int LA84_6 = input.LA(1);
+
+                         
+                        int index84_6 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA84_6==LEFT_PAREN) ) {s = 9;}
+
+                        else if ( (LA84_6==ID) ) {s = 10;}
+
+                        else if ( (LA84_6==STRING) ) {s = 11;}
+
+                        else if ( (LA84_6==INT) ) {s = 12;}
+
+                        else if ( (LA84_6==FLOAT) ) {s = 13;}
+
+                        else if ( (LA84_6==BOOL) ) {s = 14;}
+
+                        else if ( (LA84_6==NULL) ) {s = 15;}
+
+                        else if ( (LA84_6==DOT||(LA84_6>=COMMA && LA84_6<=RIGHT_PAREN)||(LA84_6>=DOUBLE_PIPE && LA84_6<=DOUBLE_AMPER)||LA84_6==LEFT_SQUARE) && ((validateRestr()))) {s = 4;}
+
+                        else if ( (LA84_6==TILDE) ) {s = 1;}
+
+                         
+                        input.seek(index84_6);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 10 : 
+                        int LA84_2 = input.LA(1);
+
+                         
+                        int index84_2 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA84_2==ID) ) {s = 3;}
+
+                        else if ( ((LA84_2>=EQUAL && LA84_2<=TILDE)) && ((validateRestr()))) {s = 4;}
+
+                        else if ( (LA84_2==LEFT_PAREN) ) {s = 5;}
+
+                         
+                        input.seek(index84_2);
+                        if ( s>=0 ) return s;
+                        break;
             }
             if (backtracking>0) {failed=true; return -1;}
             NoViableAltException nvae =
@@ -19200,35 +18908,35 @@ public class DRLParser extends Parser {
         }
     }
     static final String DFA85_eotS =
-        "\75\uffff";
+        "\74\uffff";
     static final String DFA85_eofS =
-        "\75\uffff";
+        "\74\uffff";
     static final String DFA85_minS =
-        "\1\132\1\uffff\3\124\1\uffff\2\124\1\4\1\124\7\0\1\4\1\163\1\4"+
-        "\2\0\2\4\45\0";
+        "\1\132\1\uffff\2\124\1\uffff\2\124\1\4\2\124\7\0\2\4\2\0\2\4\45"+
+        "\0";
     static final String DFA85_maxS =
-        "\1\143\1\uffff\1\160\1\163\1\160\1\uffff\1\163\1\124\1\u0081\1"+
-        "\163\7\0\1\u0081\1\163\1\u0081\2\0\2\u0081\45\0";
+        "\1\143\1\uffff\1\160\1\163\1\uffff\1\160\1\163\1\u0082\1\124\1\163"+
+        "\7\0\2\u0082\2\0\2\u0082\45\0";
     static final String DFA85_acceptS =
-        "\1\uffff\1\2\3\uffff\1\1\67\uffff";
+        "\1\uffff\1\2\2\uffff\1\1\67\uffff";
     static final String DFA85_specialS =
-        "\2\uffff\1\6\1\12\1\15\1\uffff\1\11\2\uffff\1\13\1\5\1\10\1\3\1"+
-        "\4\1\0\1\1\1\2\3\uffff\1\7\1\14\47\uffff}>";
+        "\2\uffff\1\7\1\3\1\uffff\1\5\1\12\2\uffff\1\4\1\15\1\2\1\11\1\1"+
+        "\1\13\1\14\1\0\2\uffff\1\6\1\10\47\uffff}>";
     static final String[] DFA85_transitionS = {
             "\2\1\6\uffff\1\1\1\2",
             "",
-            "\1\3\4\uffff\1\4\20\uffff\7\5",
-            "\1\6\1\1\2\uffff\1\5\1\10\3\uffff\1\1\2\uffff\2\5\10\uffff"+
-            "\6\1\1\7\2\5\1\1",
-            "\1\11\4\uffff\1\12\20\uffff\7\5",
+            "\1\3\4\uffff\1\5\20\uffff\7\4",
+            "\1\6\1\1\2\uffff\1\4\1\7\3\uffff\1\1\2\uffff\2\4\10\uffff\6"+
+            "\1\1\10\2\4\1\1",
             "",
-            "\1\13\1\5\2\uffff\1\14\1\21\2\5\4\uffff\1\17\1\15\2\5\14\uffff"+
-            "\1\1\1\16\1\20\1\5",
-            "\1\22",
-            "\120\42\1\23\3\42\1\26\1\24\1\42\1\25\4\42\1\31\1\27\10\42"+
-            "\1\33\1\34\1\35\1\36\1\37\1\40\1\41\1\30\1\32\17\42",
-            "\1\43\1\1\2\uffff\1\5\1\45\3\uffff\1\1\2\uffff\2\5\10\uffff"+
-            "\6\1\1\44\2\5\1\1",
+            "\1\11\4\uffff\1\12\20\uffff\7\4",
+            "\1\13\1\4\2\uffff\1\14\1\21\2\4\4\uffff\1\17\1\15\2\4\14\uffff"+
+            "\1\1\1\16\1\20\1\4",
+            "\120\41\1\22\3\41\1\25\1\23\1\41\1\24\4\41\1\30\1\26\10\41\1"+
+            "\32\1\33\1\34\1\35\1\36\1\37\1\40\1\27\1\31\20\41",
+            "\1\42",
+            "\1\44\1\1\2\uffff\1\4\1\43\3\uffff\1\1\2\uffff\2\4\10\uffff"+
+            "\6\1\1\45\2\4\1\1",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
@@ -19236,15 +18944,14 @@ public class DRLParser extends Parser {
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
-            "\120\56\1\46\3\56\1\51\1\47\1\56\1\50\4\56\1\54\1\52\17\56"+
-            "\1\53\1\55\17\56",
-            "\1\57",
-            "\120\42\1\60\1\70\2\42\1\61\1\66\1\71\1\72\4\42\1\64\1\62"+
-            "\16\42\1\73\1\63\1\65\1\67\16\42",
+            "\120\56\1\46\3\56\1\51\1\47\1\56\1\50\4\56\1\54\1\52\17\56\1"+
+            "\53\1\55\20\56",
+            "\120\41\1\57\1\67\2\41\1\60\1\65\1\70\1\71\4\41\1\63\1\61\16"+
+            "\41\1\72\1\62\1\64\1\66\17\41",
             "\1\uffff",
             "\1\uffff",
-            "\125\42\1\74\1\71\1\72\46\42",
-            "\125\42\1\74\1\71\1\72\46\42",
+            "\125\41\1\73\1\70\1\71\47\41",
+            "\125\41\1\73\1\70\1\71\47\41",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
@@ -19320,43 +19027,13 @@ public class DRLParser extends Parser {
         	int _s = s;
             switch ( s ) {
                     case 0 : 
-                        int LA85_14 = input.LA(1);
-
-                         
-                        int index85_14 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( ((validateRestr())) ) {s = 5;}
-
-                        else if ( (true) ) {s = 1;}
-
-                         
-                        input.seek(index85_14);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 1 : 
-                        int LA85_15 = input.LA(1);
-
-                         
-                        int index85_15 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( ((validateRestr())) ) {s = 5;}
-
-                        else if ( (true) ) {s = 1;}
-
-                         
-                        input.seek(index85_15);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 2 : 
                         int LA85_16 = input.LA(1);
 
                          
                         int index85_16 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( ((validateRestr())) ) {s = 5;}
+                        if ( ((validateRestr())) ) {s = 4;}
 
                         else if ( (true) ) {s = 1;}
 
@@ -19364,29 +19041,14 @@ public class DRLParser extends Parser {
                         input.seek(index85_16);
                         if ( s>=0 ) return s;
                         break;
-                    case 3 : 
-                        int LA85_12 = input.LA(1);
-
-                         
-                        int index85_12 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( ((validateRestr())) ) {s = 5;}
-
-                        else if ( (true) ) {s = 1;}
-
-                         
-                        input.seek(index85_12);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 4 : 
+                    case 1 : 
                         int LA85_13 = input.LA(1);
 
                          
                         int index85_13 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( ((validateRestr())) ) {s = 5;}
+                        if ( ((validateRestr())) ) {s = 4;}
 
                         else if ( (true) ) {s = 1;}
 
@@ -19394,22 +19056,96 @@ public class DRLParser extends Parser {
                         input.seek(index85_13);
                         if ( s>=0 ) return s;
                         break;
-                    case 5 : 
-                        int LA85_10 = input.LA(1);
+                    case 2 : 
+                        int LA85_11 = input.LA(1);
 
                          
-                        int index85_10 = input.index();
+                        int index85_11 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( ((validateRestr())) ) {s = 5;}
+                        if ( ((validateRestr())) ) {s = 4;}
 
                         else if ( (true) ) {s = 1;}
 
                          
-                        input.seek(index85_10);
+                        input.seek(index85_11);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 3 : 
+                        int LA85_3 = input.LA(1);
+
+                         
+                        int index85_3 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA85_3==DOT||LA85_3==COLON||(LA85_3>=EQUAL && LA85_3<=NOT_EQUAL)||LA85_3==LEFT_SQUARE) ) {s = 1;}
+
+                        else if ( (LA85_3==ID) ) {s = 6;}
+
+                        else if ( (LA85_3==STRING||(LA85_3>=BOOL && LA85_3<=INT)||(LA85_3>=FLOAT && LA85_3<=NULL)) && ((validateRestr()))) {s = 4;}
+
+                        else if ( (LA85_3==LEFT_PAREN) ) {s = 7;}
+
+                        else if ( (LA85_3==TILDE) ) {s = 8;}
+
+                         
+                        input.seek(index85_3);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 4 : 
+                        int LA85_9 = input.LA(1);
+
+                         
+                        int index85_9 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA85_9==DOT||LA85_9==COLON||(LA85_9>=EQUAL && LA85_9<=NOT_EQUAL)||LA85_9==LEFT_SQUARE) ) {s = 1;}
+
+                        else if ( (LA85_9==LEFT_PAREN) ) {s = 35;}
+
+                        else if ( (LA85_9==ID) ) {s = 36;}
+
+                        else if ( (LA85_9==TILDE) ) {s = 37;}
+
+                        else if ( (LA85_9==STRING||(LA85_9>=BOOL && LA85_9<=INT)||(LA85_9>=FLOAT && LA85_9<=NULL)) && ((validateRestr()))) {s = 4;}
+
+                         
+                        input.seek(index85_9);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 5 : 
+                        int LA85_5 = input.LA(1);
+
+                         
+                        int index85_5 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA85_5==ID) ) {s = 9;}
+
+                        else if ( (LA85_5==LEFT_PAREN) ) {s = 10;}
+
+                        else if ( ((LA85_5>=EQUAL && LA85_5<=TILDE)) && ((validateRestr()))) {s = 4;}
+
+                         
+                        input.seek(index85_5);
                         if ( s>=0 ) return s;
                         break;
                     case 6 : 
+                        int LA85_19 = input.LA(1);
+
+                         
+                        int index85_19 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( ((validateRestr())) ) {s = 4;}
+
+                        else if ( (true) ) {s = 1;}
+
+                         
+                        input.seek(index85_19);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 7 : 
                         int LA85_2 = input.LA(1);
 
                          
@@ -19418,22 +19154,22 @@ public class DRLParser extends Parser {
                         s = -1;
                         if ( (LA85_2==ID) ) {s = 3;}
 
-                        else if ( (LA85_2==LEFT_PAREN) ) {s = 4;}
+                        else if ( ((LA85_2>=EQUAL && LA85_2<=TILDE)) && ((validateRestr()))) {s = 4;}
 
-                        else if ( ((LA85_2>=EQUAL && LA85_2<=GRAVE_ACCENT)) && ((validateRestr()))) {s = 5;}
+                        else if ( (LA85_2==LEFT_PAREN) ) {s = 5;}
 
                          
                         input.seek(index85_2);
                         if ( s>=0 ) return s;
                         break;
-                    case 7 : 
+                    case 8 : 
                         int LA85_20 = input.LA(1);
 
                          
                         int index85_20 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( ((validateRestr())) ) {s = 5;}
+                        if ( ((validateRestr())) ) {s = 4;}
 
                         else if ( (true) ) {s = 1;}
 
@@ -19441,22 +19177,22 @@ public class DRLParser extends Parser {
                         input.seek(index85_20);
                         if ( s>=0 ) return s;
                         break;
-                    case 8 : 
-                        int LA85_11 = input.LA(1);
+                    case 9 : 
+                        int LA85_12 = input.LA(1);
 
                          
-                        int index85_11 = input.index();
+                        int index85_12 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( ((validateRestr())) ) {s = 5;}
+                        if ( ((validateRestr())) ) {s = 4;}
 
                         else if ( (true) ) {s = 1;}
 
                          
-                        input.seek(index85_11);
+                        input.seek(index85_12);
                         if ( s>=0 ) return s;
                         break;
-                    case 9 : 
+                    case 10 : 
                         int LA85_6 = input.LA(1);
 
                          
@@ -19477,86 +19213,57 @@ public class DRLParser extends Parser {
 
                         else if ( (LA85_6==LEFT_PAREN) ) {s = 17;}
 
-                        else if ( (LA85_6==DOT||(LA85_6>=COMMA && LA85_6<=RIGHT_PAREN)||(LA85_6>=DOUBLE_PIPE && LA85_6<=DOUBLE_AMPER)||LA85_6==LEFT_SQUARE) && ((validateRestr()))) {s = 5;}
+                        else if ( (LA85_6==DOT||(LA85_6>=COMMA && LA85_6<=RIGHT_PAREN)||(LA85_6>=DOUBLE_PIPE && LA85_6<=DOUBLE_AMPER)||LA85_6==LEFT_SQUARE) && ((validateRestr()))) {s = 4;}
 
-                        else if ( (LA85_6==GRAVE_ACCENT) ) {s = 1;}
+                        else if ( (LA85_6==TILDE) ) {s = 1;}
 
                          
                         input.seek(index85_6);
                         if ( s>=0 ) return s;
                         break;
-                    case 10 : 
-                        int LA85_3 = input.LA(1);
-
-                         
-                        int index85_3 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA85_3==DOT||LA85_3==COLON||(LA85_3>=EQUAL && LA85_3<=NOT_EQUAL)||LA85_3==LEFT_SQUARE) ) {s = 1;}
-
-                        else if ( (LA85_3==ID) ) {s = 6;}
-
-                        else if ( (LA85_3==GRAVE_ACCENT) ) {s = 7;}
-
-                        else if ( (LA85_3==STRING||(LA85_3>=BOOL && LA85_3<=INT)||(LA85_3>=FLOAT && LA85_3<=NULL)) && ((validateRestr()))) {s = 5;}
-
-                        else if ( (LA85_3==LEFT_PAREN) ) {s = 8;}
-
-                         
-                        input.seek(index85_3);
-                        if ( s>=0 ) return s;
-                        break;
                     case 11 : 
-                        int LA85_9 = input.LA(1);
+                        int LA85_14 = input.LA(1);
 
                          
-                        int index85_9 = input.index();
+                        int index85_14 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA85_9==DOT||LA85_9==COLON||(LA85_9>=EQUAL && LA85_9<=NOT_EQUAL)||LA85_9==LEFT_SQUARE) ) {s = 1;}
-
-                        else if ( (LA85_9==ID) ) {s = 35;}
-
-                        else if ( (LA85_9==GRAVE_ACCENT) ) {s = 36;}
-
-                        else if ( (LA85_9==LEFT_PAREN) ) {s = 37;}
-
-                        else if ( (LA85_9==STRING||(LA85_9>=BOOL && LA85_9<=INT)||(LA85_9>=FLOAT && LA85_9<=NULL)) && ((validateRestr()))) {s = 5;}
-
-                         
-                        input.seek(index85_9);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 12 : 
-                        int LA85_21 = input.LA(1);
-
-                         
-                        int index85_21 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( ((validateRestr())) ) {s = 5;}
+                        if ( ((validateRestr())) ) {s = 4;}
 
                         else if ( (true) ) {s = 1;}
 
                          
-                        input.seek(index85_21);
+                        input.seek(index85_14);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 12 : 
+                        int LA85_15 = input.LA(1);
+
+                         
+                        int index85_15 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( ((validateRestr())) ) {s = 4;}
+
+                        else if ( (true) ) {s = 1;}
+
+                         
+                        input.seek(index85_15);
                         if ( s>=0 ) return s;
                         break;
                     case 13 : 
-                        int LA85_4 = input.LA(1);
+                        int LA85_10 = input.LA(1);
 
                          
-                        int index85_4 = input.index();
+                        int index85_10 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA85_4==ID) ) {s = 9;}
+                        if ( ((validateRestr())) ) {s = 4;}
 
-                        else if ( (LA85_4==LEFT_PAREN) ) {s = 10;}
-
-                        else if ( ((LA85_4>=EQUAL && LA85_4<=GRAVE_ACCENT)) && ((validateRestr()))) {s = 5;}
+                        else if ( (true) ) {s = 1;}
 
                          
-                        input.seek(index85_4);
+                        input.seek(index85_10);
                         if ( s>=0 ) return s;
                         break;
             }
@@ -19792,9 +19499,9 @@ public class DRLParser extends Parser {
     public static final BitSet FOLLOW_result_key_in_accumulate_init_clause3110 = new BitSet(new long[]{0x0000000000000000L,0x0000000002000000L});
     public static final BitSet FOLLOW_accumulate_paren_chunk_in_accumulate_init_clause3116 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_accumulate_paren_chunk_data_in_accumulate_paren_chunk3174 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_accumulate_paren_chunk_data3198 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000003L});
-    public static final BitSet FOLLOW_set_in_accumulate_paren_chunk_data3210 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000003L});
-    public static final BitSet FOLLOW_accumulate_paren_chunk_data_in_accumulate_paren_chunk_data3226 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000003L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_accumulate_paren_chunk_data3198 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000007L});
+    public static final BitSet FOLLOW_set_in_accumulate_paren_chunk_data3210 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000007L});
+    public static final BitSet FOLLOW_accumulate_paren_chunk_data_in_accumulate_paren_chunk_data3226 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000007L});
     public static final BitSet FOLLOW_RIGHT_PAREN_in_accumulate_paren_chunk_data3237 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_ID_in_accumulate_id_clause3253 = new BitSet(new long[]{0x0000000000000000L,0x0000000002000000L});
     public static final BitSet FOLLOW_paren_chunk_in_accumulate_id_clause3259 = new BitSet(new long[]{0x0000000000000002L});
@@ -19877,7 +19584,7 @@ public class DRLParser extends Parser {
     public static final BitSet FOLLOW_matches_key_in_simple_operator4227 = new BitSet(new long[]{0x0000000000000000L,0x0006000303100000L});
     public static final BitSet FOLLOW_memberof_key_in_simple_operator4234 = new BitSet(new long[]{0x0000000000000000L,0x0006000303100000L});
     public static final BitSet FOLLOW_ID_in_simple_operator4243 = new BitSet(new long[]{0x0000000000000000L,0x0006000303100000L});
-    public static final BitSet FOLLOW_GRAVE_ACCENT_in_simple_operator4254 = new BitSet(new long[]{0x0000000000000000L,0x0000000000100000L});
+    public static final BitSet FOLLOW_TILDE_in_simple_operator4254 = new BitSet(new long[]{0x0000000000000000L,0x0000000000100000L});
     public static final BitSet FOLLOW_ID_in_simple_operator4262 = new BitSet(new long[]{0x0000000000000000L,0x0008000000000000L});
     public static final BitSet FOLLOW_square_chunk_in_simple_operator4268 = new BitSet(new long[]{0x0000000000000000L,0x0006000303100000L});
     public static final BitSet FOLLOW_contains_key_in_simple_operator4274 = new BitSet(new long[]{0x0000000000000000L,0x0006000303100000L});
@@ -19886,7 +19593,7 @@ public class DRLParser extends Parser {
     public static final BitSet FOLLOW_soundslike_key_in_simple_operator4292 = new BitSet(new long[]{0x0000000000000000L,0x0006000303100000L});
     public static final BitSet FOLLOW_memberof_key_in_simple_operator4298 = new BitSet(new long[]{0x0000000000000000L,0x0006000303100000L});
     public static final BitSet FOLLOW_ID_in_simple_operator4306 = new BitSet(new long[]{0x0000000000000000L,0x0006000303100000L});
-    public static final BitSet FOLLOW_GRAVE_ACCENT_in_simple_operator4316 = new BitSet(new long[]{0x0000000000000000L,0x0000000000100000L});
+    public static final BitSet FOLLOW_TILDE_in_simple_operator4316 = new BitSet(new long[]{0x0000000000000000L,0x0000000000100000L});
     public static final BitSet FOLLOW_ID_in_simple_operator4324 = new BitSet(new long[]{0x0000000000000000L,0x0008000000000000L});
     public static final BitSet FOLLOW_square_chunk_in_simple_operator4330 = new BitSet(new long[]{0x0000000000000000L,0x0006000303100000L});
     public static final BitSet FOLLOW_expression_value_in_simple_operator4337 = new BitSet(new long[]{0x0000000000000002L});
@@ -19922,24 +19629,24 @@ public class DRLParser extends Parser {
     public static final BitSet FOLLOW_ID_in_accessor_element4642 = new BitSet(new long[]{0x0000000000000002L,0x0008000000000000L});
     public static final BitSet FOLLOW_square_chunk_in_accessor_element4648 = new BitSet(new long[]{0x0000000000000002L,0x0008000000000000L});
     public static final BitSet FOLLOW_rhs_chunk_data_in_rhs_chunk4677 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_THEN_in_rhs_chunk_data4696 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000003L});
-    public static final BitSet FOLLOW_set_in_rhs_chunk_data4709 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000003L});
+    public static final BitSet FOLLOW_THEN_in_rhs_chunk_data4696 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000007L});
+    public static final BitSet FOLLOW_set_in_rhs_chunk_data4709 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000007L});
     public static final BitSet FOLLOW_END_in_rhs_chunk_data4722 = new BitSet(new long[]{0x0000000000000002L,0x0000000000080000L});
     public static final BitSet FOLLOW_SEMICOLON_in_rhs_chunk_data4728 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_curly_chunk_data_in_curly_chunk4747 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_CURLY_in_curly_chunk_data4770 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000003L});
-    public static final BitSet FOLLOW_set_in_curly_chunk_data4782 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000003L});
-    public static final BitSet FOLLOW_curly_chunk_data_in_curly_chunk_data4798 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000003L});
+    public static final BitSet FOLLOW_LEFT_CURLY_in_curly_chunk_data4770 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000007L});
+    public static final BitSet FOLLOW_set_in_curly_chunk_data4782 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000007L});
+    public static final BitSet FOLLOW_curly_chunk_data_in_curly_chunk_data4798 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000007L});
     public static final BitSet FOLLOW_RIGHT_CURLY_in_curly_chunk_data4809 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_paren_chunk_data_in_paren_chunk4830 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_paren_chunk_data4854 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000003L});
-    public static final BitSet FOLLOW_set_in_paren_chunk_data4866 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000003L});
-    public static final BitSet FOLLOW_paren_chunk_data_in_paren_chunk_data4882 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000003L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_paren_chunk_data4854 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000007L});
+    public static final BitSet FOLLOW_set_in_paren_chunk_data4866 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000007L});
+    public static final BitSet FOLLOW_paren_chunk_data_in_paren_chunk_data4882 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000007L});
     public static final BitSet FOLLOW_RIGHT_PAREN_in_paren_chunk_data4893 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_square_chunk_data_in_square_chunk4914 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_SQUARE_in_square_chunk_data4937 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000003L});
-    public static final BitSet FOLLOW_set_in_square_chunk_data4949 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000003L});
-    public static final BitSet FOLLOW_square_chunk_data_in_square_chunk_data4964 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000003L});
+    public static final BitSet FOLLOW_LEFT_SQUARE_in_square_chunk_data4937 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000007L});
+    public static final BitSet FOLLOW_set_in_square_chunk_data4949 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000007L});
+    public static final BitSet FOLLOW_square_chunk_data_in_square_chunk_data4964 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0xFFFFFFFFFFFFFFFFL,0x0000000000000007L});
     public static final BitSet FOLLOW_RIGHT_SQUARE_in_square_chunk_data4975 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_ID_in_lock_on_active_key4999 = new BitSet(new long[]{0x0000000000000000L,0x0100000000000000L});
     public static final BitSet FOLLOW_MISC_in_lock_on_active_key5003 = new BitSet(new long[]{0x0000000000000000L,0x0000000000100000L});

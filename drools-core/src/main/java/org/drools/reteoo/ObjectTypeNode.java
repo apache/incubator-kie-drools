@@ -30,6 +30,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
+import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteExpireAction;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Declaration;
 import org.drools.rule.EntryPoint;
@@ -37,6 +38,11 @@ import org.drools.rule.EvalCondition;
 import org.drools.spi.Constraint;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
+import org.drools.time.Job;
+import org.drools.time.JobContext;
+import org.drools.time.JobHandle;
+import org.drools.time.TimerService;
+import org.drools.time.impl.PointInTimeTrigger;
 import org.drools.util.Iterator;
 import org.drools.util.ObjectHashSet;
 import org.drools.util.ObjectHashSet.ObjectEntry;
@@ -74,16 +80,18 @@ public class ObjectTypeNode extends ObjectSource
     /**
      *
      */
-    private static final long serialVersionUID = 400L;
+    private static final long   serialVersionUID = 400L;
 
     /** The <code>ObjectType</code> semantic module. */
-    private ObjectType        objectType;
+    private ObjectType          objectType;
 
-    private boolean           skipOnModify     = false;
+    private boolean             skipOnModify     = false;
 
-    private boolean           objectMemoryEnabled;
-    
-    private long              expirationOffset = -1;
+    private boolean             objectMemoryEnabled;
+
+    private long                expirationOffset = -1;
+
+    private transient ExpireJob job              = new ExpireJob();
 
     public ObjectTypeNode() {
 
@@ -115,13 +123,13 @@ public class ObjectTypeNode extends ObjectSource
                                             ClassNotFoundException {
         super.readExternal( in );
         objectType = (ObjectType) in.readObject();
-        
+
         // this is here as not all objectTypeNodes used ClassObjectTypes in packages (i.e. rules with those nodes did not exist yet)
         // and thus have no wiring targets
         if ( objectType instanceof ClassObjectType ) {
-            objectType = ((AbstractRuleBase) ((DroolsObjectInputStream)in).getRuleBase()).getClassFieldAccessorCache().getClassObjectType( (ClassObjectType ) objectType );
+            objectType = ((AbstractRuleBase) ((DroolsObjectInputStream) in).getRuleBase()).getClassFieldAccessorCache().getClassObjectType( (ClassObjectType) objectType );
         }
-        
+
         skipOnModify = in.readBoolean();
         objectMemoryEnabled = in.readBoolean();
     }
@@ -172,12 +180,27 @@ public class ObjectTypeNode extends ObjectSource
             memory.add( factHandle,
                         false );
         }
-
         this.sink.propagateAssertObject( factHandle,
                                          context,
                                          workingMemory );
+
+        if ( this.expirationOffset >= 0 ) {
+            // schedule expiration
+            WorkingMemoryReteExpireAction expire = new WorkingMemoryReteExpireAction( factHandle,
+                                                                                      this );
+            TimerService clock = workingMemory.getTimerService();
+
+            long nextTimestamp = clock.getCurrentTime() + this.expirationOffset;
+            JobContext jobctx = new ExpireJobContext( expire,
+                                                      workingMemory );
+            JobHandle handle = clock.scheduleJob( job,
+                                                  jobctx,
+                                                  new PointInTimeTrigger( nextTimestamp ) );
+            jobctx.setJobHandle( handle );
+        }
+
     }
-    
+
     /**
      * Retract the <code>FactHandleimpl</code> from the <code>Rete</code> network. Also remove the 
      * <code>FactHandleImpl</code> from the node memory.
@@ -411,5 +434,62 @@ public class ObjectTypeNode extends ObjectSource
 
     public void setExpirationOffset(long expirationOffset) {
         this.expirationOffset = expirationOffset;
+        if ( this.expirationOffset > 0 || this.expirationOffset == -1 ) {
+            // override memory enabled settings
+            this.setObjectMemoryEnabled( true );
+        } else {
+            this.setObjectMemoryEnabled( false );
+        }
+    }
+
+    private static class ExpireJob
+        implements
+        Job {
+
+        public void execute(JobContext ctx) {
+            ExpireJobContext context = (ExpireJobContext) ctx;
+            context.workingMemory.queueWorkingMemoryAction( context.expireAction );
+        }
+
+    }
+
+    private static class ExpireJobContext
+        implements
+        JobContext,
+        Externalizable {
+        public WorkingMemoryReteExpireAction expireAction;
+        public InternalWorkingMemory         workingMemory;
+        public JobHandle                     handle;
+
+        /**
+         * @param workingMemory
+         * @param behavior
+         * @param behaviorContext
+         */
+        public ExpireJobContext(WorkingMemoryReteExpireAction expireAction,
+                                InternalWorkingMemory workingMemory) {
+            super();
+            this.expireAction = expireAction;
+            this.workingMemory = workingMemory;
+        }
+
+        public JobHandle getJobHandle() {
+            return this.handle;
+        }
+
+        public void setJobHandle(JobHandle jobHandle) {
+            this.handle = jobHandle;
+        }
+
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
+            //this.behavior = (O)
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            // TODO Auto-generated method stub
+
+        }
+
     }
 }

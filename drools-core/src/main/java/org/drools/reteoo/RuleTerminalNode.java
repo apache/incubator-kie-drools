@@ -24,6 +24,7 @@ import java.io.ObjectOutput;
 import org.drools.RuleBaseConfiguration;
 import org.drools.common.AgendaItem;
 import org.drools.common.BaseNode;
+import org.drools.common.EventFactHandle;
 import org.drools.common.EventSupport;
 import org.drools.common.InternalAgenda;
 import org.drools.common.InternalRuleFlowGroup;
@@ -284,20 +285,26 @@ public final class RuleTerminalNode extends BaseNode
                 }
             }
 
-            activation.remove();
+            // on fact expiration, we don't remove the activation, but let it fire
+            if( context.getType() == PropagationContext.EXPIRATION ) {
+                EventFactHandle efh = (EventFactHandle) context.getFactHandleOrigin();
+                efh.increaseActivationsCount();
+            } else {
+                activation.remove();
 
-            if ( activation.getActivationGroupNode() != null ) {
-                activation.getActivationGroupNode().getActivationGroup().removeActivation( activation );
+                if ( activation.getActivationGroupNode() != null ) {
+                    activation.getActivationGroupNode().getActivationGroup().removeActivation( activation );
+                }
+
+                if ( activation.getRuleFlowGroupNode() != null ) {
+                    final InternalRuleFlowGroup ruleFlowGroup = activation.getRuleFlowGroupNode().getRuleFlowGroup();
+                    ruleFlowGroup.removeActivation( activation );
+                }
+
+                ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCancelled( activation,
+                                                                                                workingMemory );
+                ((InternalAgenda) workingMemory.getAgenda()).decreaseActiveActivations();
             }
-
-            if ( activation.getRuleFlowGroupNode() != null ) {
-                final InternalRuleFlowGroup ruleFlowGroup = activation.getRuleFlowGroupNode().getRuleFlowGroup();
-                ruleFlowGroup.removeActivation( activation );
-            }
-
-            ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCancelled( activation,
-                                                                                            workingMemory );
-            ((InternalAgenda) workingMemory.getAgenda()).decreaseActiveActivations();
         } else {
             ((InternalAgenda) workingMemory.getAgenda()).decreaseDormantActivations();
         }

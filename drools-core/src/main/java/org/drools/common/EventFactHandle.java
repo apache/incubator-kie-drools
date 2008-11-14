@@ -8,6 +8,8 @@ public class EventFactHandle extends DefaultFactHandle {
 
     private long startTimestamp;
     private long duration;
+    private boolean expired;
+    private long activationsCount;
 
     // ----------------------------------------------------------------------
     // Constructors
@@ -113,5 +115,25 @@ public class EventFactHandle extends DefaultFactHandle {
      */
     public long getEndTimestamp() {
         return this.startTimestamp + this.duration;
+    }
+
+    public boolean isExpired() {
+        return expired;
+    }
+
+    public void setExpired(boolean expired) {
+        this.expired = expired;
+    }
+
+    public long getActivationsCount() {
+        return activationsCount;
+    }
+
+    public void increaseActivationsCount() {
+        this.activationsCount++;
+    }
+    
+    public void decreaseActivationsCount() {
+        this.activationsCount--;
     }
 }

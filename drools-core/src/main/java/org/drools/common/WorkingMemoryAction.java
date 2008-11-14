@@ -13,6 +13,7 @@ public interface WorkingMemoryAction extends Externalizable {
     public static final int DeactivateCallback = 2;
     public static final int PropagateAction = 3;
     public static final int LogicalRetractCallback = 4;
+    public static final int WorkingMemoryReteExpireAction = 5;
     
     
     public void execute(InternalWorkingMemory workingMemory);

@@ -108,7 +108,7 @@ public class SlidingLengthWindow
             final RightTuple tuple = window.rightTuples[window.pos];
             // retract previous
             final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
-                                                                                      PropagationContext.RETRACTION,
+                                                                                      PropagationContext.EXPIRATION,
                                                                                       null,
                                                                                       null,
                                                                                       tuple.getFactHandle() );
