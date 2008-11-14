@@ -1246,14 +1246,14 @@ simple_operator
 		|	matches_key^
 		|	memberof_key^
 		|	id1=ID^ {	emit($id1, DroolsEditorType.IDENTIFIER);	}
-		|	ga1=GRAVE_ACCENT!  {	emit($ga1, DroolsEditorType.SYMBOL);	} id2=ID^  {	emit($id2, DroolsEditorType.IDENTIFIER);	} square_chunk)
+		|	ga1=TILDE!  {	emit($ga1, DroolsEditorType.SYMBOL);	} id2=ID^  {	emit($id2, DroolsEditorType.IDENTIFIER);	} square_chunk)
 	|	contains_key^
 	|	excludes_key^
 	|	matches_key^
 	|	soundslike_key^
 	|	memberof_key^
 	|	id3=ID^ {	emit($id3, DroolsEditorType.IDENTIFIER);	}
-	|	ga2=GRAVE_ACCENT!  {	emit($ga2, DroolsEditorType.SYMBOL);	} id4=ID^  {	emit($id4, DroolsEditorType.IDENTIFIER);	} square_chunk)
+	|	ga2=TILDE!  {	emit($ga2, DroolsEditorType.SYMBOL);	} id4=ID^  {	emit($id4, DroolsEditorType.IDENTIFIER);	} square_chunk)
 	{	emit(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);	}
 	expression_value
 	;
@@ -1786,6 +1786,10 @@ WHEN
 GRAVE_ACCENT
 	:	'`'
 	;
+	
+TILDE
+	:	'~'
+	;	
 
 AT	:	'@'
 	;

@@ -239,7 +239,7 @@ public class DefaultExpanderTest extends TestCase {
         "dialect \"mvel\"\n"+
         "when\n"+
         "applicant:Applicant(credit==AA) \n"+ 
-        "then end\n";
+        "then \nend\n";
         
         assertFalse(ex.getErrors().toString(),ex.hasErrors());
         assertEquals( expected, drl );

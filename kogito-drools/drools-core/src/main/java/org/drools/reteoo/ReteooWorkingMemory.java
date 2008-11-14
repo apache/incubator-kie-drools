@@ -28,6 +28,7 @@ import org.drools.SessionConfiguration;
 import org.drools.base.DroolsQuery;
 import org.drools.common.AbstractWorkingMemory;
 import org.drools.common.DefaultAgenda;
+import org.drools.common.EventFactHandle;
 import org.drools.common.InternalAgenda;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
@@ -278,4 +279,53 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
         }
     }
 
+    public static class WorkingMemoryReteExpireAction
+        implements
+        WorkingMemoryAction {
+
+        private InternalFactHandle factHandle;
+        private ObjectTypeNode     node;
+
+        public WorkingMemoryReteExpireAction(final InternalFactHandle factHandle,
+                                             final ObjectTypeNode node) {
+            this.factHandle = factHandle;
+            this.node = node;
+        }
+
+        public WorkingMemoryReteExpireAction(MarshallerReaderContext context) throws IOException {
+            this.factHandle = context.handles.get( context.readInt() );
+            final int nodeId = context.readInt();
+            this.node = (ObjectTypeNode) context.sinks.get( Integer.valueOf( nodeId ) );
+        }
+
+        public void write(MarshallerWriteContext context) throws IOException {
+            context.writeInt( WorkingMemoryAction.WorkingMemoryReteExpireAction );
+            context.writeInt( this.factHandle.getId() );
+            context.writeInt( this.node.getId() );
+        }
+
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
+            factHandle = (InternalFactHandle) in.readObject();
+            node = (ObjectTypeNode) in.readObject();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject( factHandle );
+            out.writeObject( node );
+        }
+
+        public void execute(InternalWorkingMemory workingMemory) {
+
+            final PropagationContext context = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
+                                                                           PropagationContext.EXPIRATION,
+                                                                           null,
+                                                                           null,
+                                                                           this.factHandle );
+            ((EventFactHandle)factHandle).setExpired( true );
+            this.node.retractObject( factHandle,
+                                     context,
+                                     workingMemory );
+        }
+    }
 }

@@ -32,7 +32,7 @@ end
 rule "before operator"
 when
     $a : StockTick( company == "DROO" )
-    $b : StockTick( company == "ACME", this `before[5,8] $a )
+    $b : StockTick( company == "ACME", this ~before[5,8] $a )
 then
     results_before.add( $b );
 end
@@ -40,7 +40,7 @@ end
 rule "after operator"
 when
     $a : StockTick( company == "DROO" )
-    $b : StockTick( company == "ACME", this `after[5,8] $a )
+    $b : StockTick( company == "ACME", this ~after[5,8] $a )
 then
     results_after.add( $b );
 end
@@ -48,7 +48,7 @@ end
 rule "meets operator"
 when
     $a : StockTick( company == "DROO" )
-    $b : StockTick( company == "ACME", this `meets[1] $a )
+    $b : StockTick( company == "ACME", this ~meets[1] $a )
 then
     results_meets.add( $b );
 end
@@ -56,7 +56,7 @@ end
 rule "met-by operator"
 when
     $a : StockTick( company == "DROO" )
-    $b : StockTick( company == "ACME", this `metby[1] $a )
+    $b : StockTick( company == "ACME", this ~metby[1] $a )
 then
     results_met_by.add( $b );
 end
@@ -65,7 +65,7 @@ end
 rule "overlaps operator"
 when
     $a : StockTick( company == "ACME" )
-    $b : StockTick( company == "DROO", this `overlaps[1] $a )
+    $b : StockTick( company == "DROO", this ~overlaps[1] $a )
 then
     results_overlaps.add( $b );
 end
@@ -73,7 +73,7 @@ end
 rule "overlapped-by operator"
 when
     $a : StockTick( company == "DROO" )
-    $b : StockTick( company == "ACME", this `overlappedby[1] $a )
+    $b : StockTick( company == "ACME", this ~overlappedby[1] $a )
 then
     results_overlapped_by.add( $b );
 end
@@ -81,7 +81,7 @@ end
 rule "during operator"
 when
     $a : StockTick( company == "DROO" )
-    $b : StockTick( company == "ACME", this `during[1] $a )
+    $b : StockTick( company == "ACME", this ~during[1] $a )
 then
     results_during.add( $b );
 end
@@ -89,7 +89,7 @@ end
 rule "includes operator"
 when
     $a : StockTick( company == "ACME" )
-    $b : StockTick( company == "DROO", this `includes[1] $a )
+    $b : StockTick( company == "DROO", this ~includes[1] $a )
 then
     results_includes.add( $b );
 end
@@ -97,7 +97,7 @@ end
 rule "starts operator"
 when
     $a : StockTick( company == "ACME" )
-    $b : StockTick( company == "ACME", this `starts[2] $a )
+    $b : StockTick( company == "ACME", this ~starts[2] $a )
 then
     results_starts.add( $b );
 end
@@ -105,7 +105,7 @@ end
 rule "started-by operator"
 when
     $a : StockTick( company == "ACME" )
-    $b : StockTick( company == "ACME", this `startedby[2] $a )
+    $b : StockTick( company == "ACME", this ~startedby[2] $a )
 then
     results_started_by.add( $b );
 end
@@ -113,7 +113,7 @@ end
 rule "finishes operator"
 when
     $a : StockTick( company == "ACME" )
-    $b : StockTick( company == "ACME", this `finishes[2] $a )
+    $b : StockTick( company == "ACME", this ~finishes[2] $a )
 then
     results_finishes.add( $b );
 end
@@ -121,7 +121,7 @@ end
 rule "finished-by operator"
 when
     $a : StockTick( company == "ACME" )
-    $b : StockTick( company == "ACME", this `finishedby[2] $a )
+    $b : StockTick( company == "ACME", this ~finishedby[2] $a )
 then
     results_finished_by.add( $b );
 end
