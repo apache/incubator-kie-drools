@@ -16,7 +16,7 @@ Step 7: You can then run the tests that are scenarios as needed !
 
 * Setting up the client app *
 Step 8: Import the mortgage-client app (its an eclipse project) into eclipse IDE (or other IDE)
-Step 9: Browse to the war "directory" (exploded war) and grab drools-core and mvel jars (just the 2) from WEB-INF/lib and place them in the LIB directory of that project. 
+Step 9: Browse to the war "directory" (exploded war) and grab drools-api, drools-core and mvel jars (just the 3) from WEB-INF/lib and place them in the LIB directory of that project. 
 (this step is necessary to make sure that the version of the runtime that the client has is the same as the one in the BRMS). 
 Step 10: open mortgageapproval.properties in the project: make sure it points to your BRMS server address (this is the agent config file)
 Step 11: you can execute the "client" ! Note how it uses declared facts. 
