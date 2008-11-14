@@ -16,12 +16,16 @@ import org.drools.Cheese;
 import org.drools.Person;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
+import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
+import org.drools.base.mvel.MVELDebugHandler;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
+import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
+import org.drools.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.util.DateUtils;
 import org.mvel2.MVEL;
 
@@ -83,6 +87,26 @@ public class MVELTest extends TestCase {
         } catch (Exception e) {
             e.printStackTrace();
             fail( "Should not raise any exception");
+        }
+
+    }
+
+    public void testMVELUsingGlobalsInDebugMode() throws Exception {
+        MVELDebugHandler.setDebugMode( true );
+        try {
+            final PackageBuilder builder = new PackageBuilder();
+            builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_MVELGlobalDebug.drl" ) ) );
+            final Package pkg = builder.getPackage();
+            RuleBase ruleBase = getRuleBase();
+            ruleBase.addPackage( pkg );
+            ruleBase = SerializationHelper.serializeObject( ruleBase );
+            final StatefulSession session = ruleBase.newStatefulSession();
+            session.dispose();
+            MVELDebugHandler.setDebugMode( false );
+        } catch ( Exception e ) {
+            MVELDebugHandler.setDebugMode( false );
+            e.printStackTrace();
+            fail("Should not raise exceptions");
         }
 
     }
