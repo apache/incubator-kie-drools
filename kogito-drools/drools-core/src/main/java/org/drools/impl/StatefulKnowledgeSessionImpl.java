@@ -167,6 +167,10 @@ public class StatefulKnowledgeSessionImpl
         this.session.setFocus( agendaGroup );
     }
 
+    public void dispose() {
+        this.session.dispose();
+    }
+    
     public FactHandle insert(Object object) {
         return this.session.insert( object );
     }
