@@ -36,37 +36,37 @@ public class SpreadsheetIntegrationTest extends TestCase {
         final String drl = converter.compile( "/data/IntegrationExampleTest.xls",
                                         InputType.XLS );
         assertNotNull( drl );
-        System.out.println(drl);
+        //System.out.println(drl);
 
-//        //COMPILE
-//        final PackageBuilder builder = new PackageBuilder();
-//        builder.addPackageFromDrl( new StringReader( drl ) );
-//
-//        final Package pkg = builder.getPackage();
-//        assertNotNull( pkg );
-//        System.out.println( pkg.getErrorSummary() );
-//        assertEquals( 0,
-//                      builder.getErrors().getErrors().length );
-//
-//        //BUILD RULEBASE
-//        final RuleBase rb = RuleBaseFactory.newRuleBase();
-//        rb.addPackage( pkg );
-//
-//        //NEW WORKING MEMORY
-//        final WorkingMemory wm = rb.newStatefulSession();
-//
-//        //ASSERT AND FIRE
-//        wm.insert( new Cheese( "stilton",
-//                                     42 ) );
-//        wm.insert( new Person( "michael",
-//                                     "stilton",
-//                                     42 ) );
-//        final List<String> list = new ArrayList<String>();
-//        wm.setGlobal( "list",
-//                      list );
-//        wm.fireAllRules();
-//        assertEquals( 1,
-//                      list.size() );
+        //COMPILE
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new StringReader( drl ) );
+
+        final Package pkg = builder.getPackage();
+        assertNotNull( pkg );
+        System.out.println( pkg.getErrorSummary() );
+        assertEquals( 0,
+                      builder.getErrors().getErrors().length );
+
+        //BUILD RULEBASE
+        final RuleBase rb = RuleBaseFactory.newRuleBase();
+        rb.addPackage( pkg );
+
+        //NEW WORKING MEMORY
+        final WorkingMemory wm = rb.newStatefulSession();
+
+        //ASSERT AND FIRE
+        wm.insert( new Cheese( "stilton",
+                                     42 ) );
+        wm.insert( new Person( "michael",
+                                     "stilton",
+                                     42 ) );
+        final List<String> list = new ArrayList<String>();
+        wm.setGlobal( "list",
+                      list );
+        wm.fireAllRules();
+        assertEquals( 1,
+                      list.size() );
 
     }
     
