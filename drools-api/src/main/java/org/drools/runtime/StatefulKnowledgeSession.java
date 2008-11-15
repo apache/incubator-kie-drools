@@ -19,4 +19,5 @@ public interface StatefulKnowledgeSession extends StatefulRuleSession, StatefulP
 
     void setFocus(String string);
 
+    void dispose();
 }
