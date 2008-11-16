@@ -22,6 +22,15 @@ public interface KnowledgeBuilderProvider {
     public KnowledgeBuilderConfiguration newKnowledgeBuilderConfiguration(Properties properties, ClassLoader classLoader);
     
     /**
+     * DecisionTables need to take a configuration of the InputType and XLS based
+     * ones can also take a Worksheet name.
+     * 
+     * @return
+     *     The DecisionTableConfiguration
+     */
+    public DecisionTableConfiguration newDecisionTableConfiguration();    
+    
+    /**
      * Instantiate and return a new KnowledgeBuilder using the default KnowledgeBuilderConfiguration
      * 
      * @return

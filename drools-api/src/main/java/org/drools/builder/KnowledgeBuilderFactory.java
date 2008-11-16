@@ -1,12 +1,36 @@
 package org.drools.builder;
 
+import java.util.Properties;
+
 import org.drools.ProviderInitializationException;
 
 public class KnowledgeBuilderFactory {
-    private static KnowledgeBuilderProvider provider;
+    private static volatile KnowledgeBuilderProvider provider;
     
     public static void setKnowledgeBuilderProvider(KnowledgeBuilderProvider provider) {
         KnowledgeBuilderFactory.provider = provider;
+    }
+    
+    public static KnowledgeBuilderConfiguration newKnowledgeBuilderConfiguration() {
+        if ( provider == null ) {
+            loadProvider();
+        }
+        return provider.newKnowledgeBuilderConfiguration();        
+    }
+    
+    public static KnowledgeBuilderConfiguration newKnowledgeBuilderConfiguration(Properties properties, ClassLoader classLoader) {
+        if ( provider == null ) {
+            loadProvider();
+        }
+        return provider.newKnowledgeBuilderConfiguration( properties, 
+                                                          classLoader );         
+    }
+    
+    public static DecisionTableConfiguration newDecisionTableConfiguration() {
+        if ( provider == null ) {
+            loadProvider();
+        }
+        return provider.newDecisionTableConfiguration();        
     }
     
     public static KnowledgeBuilder newKnowledgeBuilder() {
@@ -14,6 +38,13 @@ public class KnowledgeBuilderFactory {
     		loadProvider();
     	}
         return provider.newKnowledgeBuilder();
+    }
+    
+    public static KnowledgeBuilder newKnowledgeBuilder(KnowledgeBuilderConfiguration conf) {
+        if ( provider == null ) {
+            loadProvider();
+        }
+        return provider.newKnowledgeBuilder(conf);        
     }
     
 	private static void loadProvider() {

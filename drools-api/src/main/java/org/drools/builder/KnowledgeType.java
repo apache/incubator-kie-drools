@@ -4,18 +4,18 @@ public enum KnowledgeType {
     /** Drools Rule Language */
     DRL, 
     
-    /** Drools DSL Rule */    
-    DSLR, 
+    /** Drools XML Rule Language */
+    XDRL,
     
     /** Drools DSL */    
-    DSL, 
+    DSL,     
     
-    /** Drools XML Rule Language */
-    XDRL, 
-    
+    /** Drools DSL Rule */    
+    DSLR, 
+               
     /** Drools Rule Flow Language */
     DRF, 
     
-    /** Excel Decision Table */
-    XLS;
+    /** Decision Table */
+    DTABLE;
 }
