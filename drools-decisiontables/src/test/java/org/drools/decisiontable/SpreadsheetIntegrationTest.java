@@ -71,6 +71,44 @@ public class SpreadsheetIntegrationTest extends TestCase {
         session.fireAllRules();
         assertEquals( 1,
                       list.size() );
+        assertEquals( "Old man stilton",
+                      list.get( 0 ) );
+    }
+    
+    public void testNamedWorksheet() {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        
+        DecisionTableConfiguration dtconf = KnowledgeBuilderFactory.newDecisionTableConfiguration();
+        dtconf.setInputType( DecisionTableInputType.XLS );
+        dtconf.setWorksheetName( "Tables_2" );
+        
+        kbuilder.addResource( new InputStreamReader( getClass().getResourceAsStream( "/data/IntegrationExampleTest.xls" ) ), 
+                              KnowledgeType.DTABLE,
+                              dtconf );       
+        
+        assertFalse( kbuilder.hasErrors() );
+
+        //BUILD RULEBASE
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        //NEW WORKING MEMORY
+        final StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+
+        //ASSERT AND FIRE
+        session.insert( new Cheese( "cheddar",
+                                     42 ) );
+        session.insert( new Person( "michael",
+                                     "stilton",
+                                     25 ) );
+        final List<String> list = new ArrayList<String>();
+        session.setGlobal( "list",
+                      list );
+        session.fireAllRules();
+        assertEquals( 1,
+                      list.size() );
+        assertEquals( "Young man cheddar",
+                      list.get( 0 ) );        
     }
     
     /**
