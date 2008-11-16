@@ -7,8 +7,14 @@ import java.util.Collection;
 import org.drools.definition.KnowledgePackage;
 
 public interface KnowledgeBuilder extends RuleBuilder, ProcessBuilder {
-    void addResource(URL url, KnowledgeType type);    
-    void addResource(Reader reader, KnowledgeType type);
+    
+    void addResource(URL url, KnowledgeType type);
+    
+    void addResource(URL url, KnowledgeType type, ResourceConfiguration configuration);
+    
+    void addResource(Reader reader, KnowledgeType type);   
+    
+    void addResource(Reader reader, KnowledgeType type, ResourceConfiguration configuration);    
     
     /**
      * Returns the built packages.
