@@ -16,6 +16,7 @@ package org.drools.decisiontable;
  * limitations under the License.
  */
 
+import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,51 +24,53 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.acme.insurance.launcher.PricingRuleLauncher;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
+import org.drools.builder.DecisionTableConfiguration;
+import org.drools.builder.DecisionTableInputType;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.KnowledgeType;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
+import org.drools.runtime.StatefulKnowledgeSession;
 
 public class SpreadsheetIntegrationTest extends TestCase {
 
     public void testExecute() throws Exception {
-        final SpreadsheetCompiler converter = new SpreadsheetCompiler();
-        final String drl = converter.compile( "/data/IntegrationExampleTest.xls",
-                                        InputType.XLS );
-        assertNotNull( drl );
-        //System.out.println(drl);
-
-        //COMPILE
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new StringReader( drl ) );
-
-        final Package pkg = builder.getPackage();
-        assertNotNull( pkg );
-        System.out.println( pkg.getErrorSummary() );
-        assertEquals( 0,
-                      builder.getErrors().getErrors().length );
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        
+        DecisionTableConfiguration dtconf = KnowledgeBuilderFactory.newDecisionTableConfiguration();
+        dtconf.setInputType( DecisionTableInputType.XLS );
+        
+        kbuilder.addResource( new InputStreamReader( getClass().getResourceAsStream( "/data/IntegrationExampleTest.xls" ) ), 
+                              KnowledgeType.DTABLE,
+                              dtconf );       
+        
+        assertFalse( kbuilder.hasErrors() );
 
         //BUILD RULEBASE
-        final RuleBase rb = RuleBaseFactory.newRuleBase();
-        rb.addPackage( pkg );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         //NEW WORKING MEMORY
-        final WorkingMemory wm = rb.newStatefulSession();
+        final StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
 
         //ASSERT AND FIRE
-        wm.insert( new Cheese( "stilton",
+        session.insert( new Cheese( "stilton",
                                      42 ) );
-        wm.insert( new Person( "michael",
+        session.insert( new Person( "michael",
                                      "stilton",
                                      42 ) );
         final List<String> list = new ArrayList<String>();
-        wm.setGlobal( "list",
+        session.setGlobal( "list",
                       list );
-        wm.fireAllRules();
+        session.fireAllRules();
         assertEquals( 1,
                       list.size() );
-
     }
     
     /**
