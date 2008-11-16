@@ -2,6 +2,7 @@ package org.drools.builder.impl;
 
 import java.util.Properties;
 
+import org.drools.builder.DecisionTableConfiguration;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderProvider;
@@ -18,6 +19,10 @@ public class KnowledgeBuilderProviderImpl implements KnowledgeBuilderProvider {
         return new PackageBuilderConfiguration(classLoader, properties);
     }   
     
+    public DecisionTableConfiguration newDecisionTableConfiguration() {
+        return new DecisionTableConfigurationImpl();
+    }    
+    
 	public KnowledgeBuilder newKnowledgeBuilder() {
 		return new KnowledgeBuilderImpl( new PackageBuilder() );
 	}
@@ -25,6 +30,4 @@ public class KnowledgeBuilderProviderImpl implements KnowledgeBuilderProvider {
     public KnowledgeBuilder newKnowledgeBuilder(KnowledgeBuilderConfiguration conf) {
         return new KnowledgeBuilderImpl( new PackageBuilder( (PackageBuilderConfiguration) conf ) );
     }
-
-
 }

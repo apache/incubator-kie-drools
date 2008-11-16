@@ -10,6 +10,7 @@ import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.KnowledgeBuilderErrors;
 import org.drools.builder.KnowledgeType;
+import org.drools.builder.ResourceConfiguration;
 import org.drools.compiler.PackageBuilder;
 import org.drools.definition.KnowledgePackage;
 import org.drools.knowledge.definitions.impl.KnowledgePackageImp;
@@ -25,12 +26,24 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 	public void addResource(URL url, KnowledgeType type) {
         pkgBuilder.addResource( url, type )  ;
 	}	
+
+    public void addResource(URL url,
+                            KnowledgeType type,
+                            ResourceConfiguration configuration) {
+        pkgBuilder.addResource( url, type, configuration );
+    }	
 	
     public void addResource(Reader reader,
                             KnowledgeType type) {
         pkgBuilder.addResource( reader, type )  ;
     }	
 
+    public void addResource(Reader reader,
+                            KnowledgeType type,
+                            ResourceConfiguration configuration) {
+        pkgBuilder.addResource( reader, type, configuration );
+    }    
+    
 	public Collection<KnowledgePackage> getKnowledgePackages() {
 	    if ( pkgBuilder.hasErrors() ) {
 	        return new ArrayList<KnowledgePackage>( 0 );

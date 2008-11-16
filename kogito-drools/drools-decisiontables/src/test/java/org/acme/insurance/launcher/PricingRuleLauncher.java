@@ -2,17 +2,26 @@ package org.acme.insurance.launcher;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.StringReader;
 
 import org.acme.insurance.Driver;
 import org.acme.insurance.Policy;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
+import org.drools.builder.DecisionTableConfiguration;
+import org.drools.builder.DecisionTableInputType;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.KnowledgeType;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.decisiontable.InputType;
 import org.drools.decisiontable.SpreadsheetCompiler;
+import org.drools.runtime.StatefulKnowledgeSession;
 
 /**
  * This is a sample file to launch a rule package from a rule source file.
@@ -25,26 +34,34 @@ public class PricingRuleLauncher {
     }
     
     public int executeExample() throws Exception {
-    	
-    	//first we compile the decision table into a whole lot of rules.
-    	SpreadsheetCompiler compiler = new SpreadsheetCompiler();
-    	String drl = compiler.compile(getSpreadsheetStream(), InputType.XLS);
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        
+        DecisionTableConfiguration dtconf = KnowledgeBuilderFactory.newDecisionTableConfiguration();
+        dtconf.setInputType( DecisionTableInputType.XLS );
+        
+        kbuilder.addResource( new InputStreamReader( getClass().getResourceAsStream( "/data/ExamplePolicyPricing.xls" ) ), 
+                              KnowledgeType.DTABLE,
+                              dtconf );       
+        
+        if ( kbuilder.hasErrors() ) {
+            throw new RuntimeException( kbuilder.getErrors().toString() );
+        }
 
-    	//UNCOMMENT ME TO SEE THE DRL THAT IS GENERATED
-    	//System.out.println(drl);
+        //BUILD RULEBASE
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-    	RuleBase ruleBase = buildRuleBase(drl);
-    	
-		WorkingMemory wm = ruleBase.newStatefulSession();
+        //NEW WORKING MEMORY
+        final StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
 		
 		//now create some test data
 		Driver driver = new Driver();
 		Policy policy = new Policy();
 		
-		wm.insert(driver);
-		wm.insert(policy);
+		session.insert(driver);
+		session.insert(policy);
 		
-		wm.fireAllRules();
+		session.fireAllRules();
 		
 		System.out.println("BASE PRICE IS: " + policy.getBasePrice());
 		System.out.println("DISCOUNT IS: " + policy.getDiscountPercent());

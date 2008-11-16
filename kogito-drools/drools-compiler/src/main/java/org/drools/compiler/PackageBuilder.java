@@ -20,6 +20,7 @@ import java.beans.IntrospectionException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -34,7 +35,9 @@ import org.drools.RuleBase;
 import org.drools.base.ClassFieldAccessor;
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
+import org.drools.builder.DecisionTableConfiguration;
 import org.drools.builder.KnowledgeType;
+import org.drools.builder.ResourceConfiguration;
 import org.drools.common.InternalRuleBase;
 import org.drools.commons.jci.problems.CompilationProblem;
 import org.drools.definition.process.Process;
@@ -409,8 +412,12 @@ public class PackageBuilder {
     }
     
     public void addResource(URL url, KnowledgeType type) {
+        addResource( url, type, null );
+    }
+    
+    public void addResource(URL url, KnowledgeType type, ResourceConfiguration configuration) {
         try {
-            addResource( new InputStreamReader( url.openStream() ), type );
+            addResource( new InputStreamReader( url.openStream() ), type, configuration );
         } catch ( IOException e ) {
             throw new RuntimeException( e );
         }
@@ -418,11 +425,18 @@ public class PackageBuilder {
     
     public void addResource(Reader reader,
                             KnowledgeType type) {
+        addResource(reader, type, null);
+    }
+    
+    public void addResource(Reader reader,
+                            KnowledgeType type,
+                            ResourceConfiguration configuration) {
         try {
             switch ( type ) {
                 case DRL : {
                     addPackageFromDrl( reader );
                     break;
+                    
                 } 
                 case DSLR : {
                     addPackageFromDslr( reader );
@@ -440,18 +454,16 @@ public class PackageBuilder {
                     addProcessFromXml( reader );
                     break;
                 }
-                case XLS : {
-                    //pkgBuilder.
+                case DTABLE : {
+                    String string = DecisionTableFactory.loadFromReader( reader, (DecisionTableConfiguration) configuration );
+                    addPackageFromDrl( new StringReader( string ) );
+                    break;
                 }
             }
         } catch (Exception e) {
             throw new RuntimeException( e );
         }    
     }       
-
-    private void addSemanticModules() {
-        // this.configuration.getSemanticModules();
-    }
 
     /**
      * This adds a package from a Descr/AST This will also trigger a compile, if
