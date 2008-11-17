@@ -18,9 +18,10 @@ package org.drools.event.rule;
 
 import java.util.EventObject;
 
+import org.drools.event.KnowledgeRuntimeEvent;
 import org.drools.runtime.rule.AgendaGroup;
 
-public interface AgendaGroupEvent {
+public interface AgendaGroupEvent extends KnowledgeRuntimeEvent  {
 
     public AgendaGroup getAgendaGroup();
 

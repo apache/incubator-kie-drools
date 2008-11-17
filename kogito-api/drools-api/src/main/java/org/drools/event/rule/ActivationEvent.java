@@ -16,10 +16,11 @@ package org.drools.event.rule;
  * limitations under the License.
  */
 
+import org.drools.event.KnowledgeRuntimeEvent;
 import org.drools.runtime.rule.Activation;
 
 
-public interface ActivationEvent {
+public interface ActivationEvent extends KnowledgeRuntimeEvent {
 
     public Activation getActivation();
 

@@ -1,5 +1,7 @@
 package org.drools.event.rule;
 
+import org.drools.runtime.KnowledgeRuntime;
+
 public class DefaultWorkingMemoryEventListener
     implements
     WorkingMemoryEventListener {

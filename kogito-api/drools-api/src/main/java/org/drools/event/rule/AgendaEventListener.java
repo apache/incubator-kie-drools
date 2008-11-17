@@ -18,27 +18,19 @@ package org.drools.event.rule;
 
 import java.util.EventListener;
 
-import org.drools.runtime.rule.WorkingMemory;
-
 
 public interface AgendaEventListener
     extends
     EventListener {
-    void activationCreated(ActivationCreatedEvent event,
-                           WorkingMemory workingMemory);
+    void activationCreated(ActivationCreatedEvent event);
 
-    void activationCancelled(ActivationCancelledEvent event,
-                             WorkingMemory workingMemory);
+    void activationCancelled(ActivationCancelledEvent event);
 
-    void beforeActivationFired(BeforeActivationFiredEvent event,
-                               WorkingMemory workingMemory);
+    void beforeActivationFired(BeforeActivationFiredEvent event);
 
-    void afterActivationFired(AfterActivationFiredEvent event,
-                              WorkingMemory workingMemory);
+    void afterActivationFired(AfterActivationFiredEvent event);
 
-    void agendaGroupPopped(AgendaGroupPoppedEvent event,
-                           WorkingMemory workingMemory);
+    void agendaGroupPopped(AgendaGroupPoppedEvent event);
 
-    void agendaGroupPushed(AgendaGroupPushedEvent event,
-                           WorkingMemory workingMemory);
+    void agendaGroupPushed(AgendaGroupPushedEvent event);
 }
