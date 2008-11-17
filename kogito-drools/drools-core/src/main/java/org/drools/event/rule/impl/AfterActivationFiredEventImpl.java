@@ -1,6 +1,7 @@
 package org.drools.event.rule.impl;
 
 import org.drools.event.rule.AfterActivationFiredEvent;
+import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.rule.Activation;
 
 /*
@@ -21,8 +22,8 @@ import org.drools.runtime.rule.Activation;
 
 public class AfterActivationFiredEventImpl  extends ActivationEventImpl implements AfterActivationFiredEvent {
 
-    public AfterActivationFiredEventImpl(Activation activation) {
-        super( activation );
+    public AfterActivationFiredEventImpl(Activation activation, KnowledgeRuntime kruntime) {
+        super( activation, kruntime );
     }
 
 }

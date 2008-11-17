@@ -16,21 +16,44 @@ package org.drools.event.rule.impl;
  * limitations under the License.
  */
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 import org.drools.event.rule.ActivationCancelledEvent;
 import org.drools.event.rule.ActivationCreatedEvent;
 import org.drools.event.rule.ActivationEvent;
+import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.rule.Activation;
 
 
-public class ActivationEventImpl implements ActivationEvent, ActivationCreatedEvent, ActivationCancelledEvent {
+public class ActivationEventImpl implements ActivationEvent, Externalizable {
     private Activation activation;
+    private KnowledgeRuntime kruntime;
     
-    public ActivationEventImpl(Activation activation) {
+    public ActivationEventImpl(Activation activation, KnowledgeRuntime kruntime) {
         this.activation = activation;
+        this.kruntime = kruntime;
     }
     
     public Activation getActivation() {
         return this.activation;
+    }
+
+    public KnowledgeRuntime getKnowledgeRuntime() {
+        return this.kruntime;
+    }
+    
+    public void writeExternal(ObjectOutput out) throws IOException {
+        new SerializableActivation( this.activation ).writeExternal( out );
+    }
+
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        this.activation = new SerializableActivation();
+        ((SerializableActivation)this.activation).readExternal( in );
+        this.kruntime = null; // we null this as it isn't serializable;
     }
 
 }

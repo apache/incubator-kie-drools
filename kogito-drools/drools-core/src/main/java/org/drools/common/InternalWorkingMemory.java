@@ -15,6 +15,7 @@ import org.drools.reteoo.LIANodePropagation;
 import org.drools.reteoo.PartitionTaskManager;
 import org.drools.rule.Rule;
 import org.drools.rule.TimeMachine;
+import org.drools.runtime.KnowledgeRuntime;
 import org.drools.spi.Activation;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.PropagationContext;
@@ -108,4 +109,8 @@ public interface InternalWorkingMemory
      * @return the PartitionTaskManager
      */
     public PartitionTaskManager getPartitionManager( RuleBasePartitionId partitionId );
+    
+    public void setKnowledgeRuntime(KnowledgeRuntime kruntime);
+    
+    public KnowledgeRuntime getKnowledgeRuntime();
 }

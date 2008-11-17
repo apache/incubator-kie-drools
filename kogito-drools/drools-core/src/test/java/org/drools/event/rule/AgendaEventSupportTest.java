@@ -46,6 +46,7 @@ import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Package;
 import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
+import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.WorkingMemory;
@@ -124,34 +125,28 @@ public class AgendaEventSupportTest extends TestCase {
         final List agendaList = new ArrayList();
         final AgendaEventListener agendaEventListener = new AgendaEventListener() {
 
-            public void activationCancelled(ActivationCancelledEvent event,
-                                            WorkingMemory workingMemory) {
+            public void activationCancelled(ActivationCancelledEvent event) {
                 agendaList.add( event );
 
             }
 
-            public void activationCreated(ActivationCreatedEvent event,
-                                          WorkingMemory workingMemory) {
+            public void activationCreated(ActivationCreatedEvent event) {
                 agendaList.add( event );
             }
 
-            public void afterActivationFired(AfterActivationFiredEvent event,
-                                             WorkingMemory workingMemory) {
+            public void afterActivationFired(AfterActivationFiredEvent event) {
                 agendaList.add( event );
             }
 
-            public void agendaGroupPopped(AgendaGroupPoppedEvent event,
-                                          WorkingMemory workingMemory) {
+            public void agendaGroupPopped(AgendaGroupPoppedEvent event) {
                 agendaList.add( event );
             }
 
-            public void agendaGroupPushed(AgendaGroupPushedEvent event,
-                                          WorkingMemory workingMemory) {
+            public void agendaGroupPushed(AgendaGroupPushedEvent event) {
                 agendaList.add( event );
             }
 
-            public void beforeActivationFired(BeforeActivationFiredEvent event,
-                                              WorkingMemory workingMemory) {
+            public void beforeActivationFired(BeforeActivationFiredEvent event) {
                 agendaList.add( event );
             }
         };

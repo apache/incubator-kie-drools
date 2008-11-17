@@ -43,6 +43,7 @@ import org.drools.reteoo.LIANodePropagation;
 import org.drools.reteoo.PartitionTaskManager;
 import org.drools.rule.Rule;
 import org.drools.rule.TimeMachine;
+import org.drools.runtime.KnowledgeRuntime;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AsyncExceptionHandler;
@@ -487,6 +488,16 @@ public class MockWorkingMemory implements InternalWorkingMemory {
 
     public void update(org.drools.runtime.rule.FactHandle handle,
                        Object object) throws FactException {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public KnowledgeRuntime getKnowledgeRuntime() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public void setKnowledgeRuntime(KnowledgeRuntime kruntime) {
         // TODO Auto-generated method stub
         
     }

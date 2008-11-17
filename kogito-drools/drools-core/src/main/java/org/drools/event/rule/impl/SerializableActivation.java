@@ -15,10 +15,14 @@ public class SerializableActivation
     implements
     Activation,
     Externalizable {
-    private Rule                   rule;
-    private Collection<? extends FactHandle> factHandles;
-    private PropagationContext     propgationContext;
+    private Rule                              rule;
+    private Collection< ? extends FactHandle> factHandles;
+    private PropagationContext                propgationContext;
 
+    public SerializableActivation() {
+        
+    }
+    
     public SerializableActivation(Activation activation) {
         this.rule = activation.getRule();
         this.factHandles = activation.getFactHandles();
@@ -36,7 +40,7 @@ public class SerializableActivation
         return this.rule;
     }
 
-    public Collection<? extends FactHandle> getFactHandles() {
+    public Collection< ? extends FactHandle> getFactHandles() {
         return this.factHandles;
     }
 
