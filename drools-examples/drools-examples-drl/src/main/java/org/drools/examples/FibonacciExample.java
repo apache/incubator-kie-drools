@@ -2,46 +2,52 @@ package org.drools.examples;
 
 import java.io.InputStreamReader;
 
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.audit.WorkingMemoryFileLogger;
-import org.drools.compiler.PackageBuilder;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.KnowledgeType;
+import org.drools.runtime.StatefulKnowledgeSession;
 
 public class FibonacciExample {
 
     public static void main(final String[] args) throws Exception {
 
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( FibonacciExample.class.getResourceAsStream( "Fibonacci.drl" ) ) );
+        final KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        builder.addResource( new InputStreamReader( FibonacciExample.class.getResourceAsStream( "Fibonacci.drl" ) ),
+                             KnowledgeType.DRL );
 
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( builder.getPackage() );
+        final KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
+        knowledgeBase.addKnowledgePackages( builder.getKnowledgePackages() );
 
-        final StatefulSession session = ruleBase.newStatefulSession();
+        final StatefulKnowledgeSession session = knowledgeBase.newStatefulKnowledgeSession();
 
-        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( session );
-        logger.setFileName( "log/fibonacci" );
+        //        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( session );
+        //        logger.setFileName( "log/fibonacci" );
 
         session.insert( new Fibonacci( 10 ) );
 
         session.fireAllRules();
 
-        logger.writeToDisk();
-        
+        //        logger.writeToDisk();
+
         session.dispose(); // Stateful rule session must always be disposed when finished
-        
+
     }
 
     public static class Fibonacci {
         private int  sequence;
 
         private long value;
-        
+
         public Fibonacci() {
-        	
+
         }
-        
+
         public Fibonacci(final int sequence) {
             this.sequence = sequence;
             this.value = -1;

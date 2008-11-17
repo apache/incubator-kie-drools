@@ -1,26 +1,26 @@
 package org.drools.examples;
 
 import java.io.InputStreamReader;
-import java.io.Reader;
 
-import org.drools.FactHandle;
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.StatefulSession;
-import org.drools.WorkingMemory;
-import org.drools.compiler.PackageBuilder;
-import org.drools.rule.Package;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.KnowledgeType;
+import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.rule.FactHandle;
+
 
 public class ShoppingExample {
 
     public static final void main(String[] args) throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( ShoppingExample.class.getResourceAsStream( "Shopping.drl" ) ) );
+        final KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        builder.addResource( new InputStreamReader( ShoppingExample.class.getResourceAsStream( "Shopping.drl" ) ) ,KnowledgeType.DRL);
 
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( builder.getPackage() );
+        final KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
+        knowledgeBase.addKnowledgePackages( builder.getKnowledgePackages() );
 
-        final StatefulSession session = ruleBase.newStatefulSession();
+        final StatefulKnowledgeSession session = knowledgeBase.newStatefulKnowledgeSession();
 
         Customer mark = new Customer( "mark",
                                       0 );
@@ -36,6 +36,9 @@ public class ShoppingExample {
 
         session.insert( new Purchase( mark,
                                       shoes ) );
+        
+        
+        
         FactHandle hatPurchaseHandle = session.insert( new Purchase( mark,
                                                                      hat ) );
 

@@ -2,10 +2,13 @@ package org.drools.examples;
 
 import java.io.InputStreamReader;
 
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.StatefulSession;
-import org.drools.compiler.PackageBuilder;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.KnowledgeType;
+import org.drools.runtime.StatefulKnowledgeSession;
+
 
 public class GolfingExample {
 
@@ -14,13 +17,13 @@ public class GolfingExample {
      */
     public static void main(final String[] args) throws Exception {
 
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( GolfingExample.class.getResourceAsStream( "golf.drl" ) ) );
+        final KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        builder.addResource( new InputStreamReader( GolfingExample.class.getResourceAsStream( "golf.drl" ) ) , KnowledgeType.DRL);
 
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( builder.getPackage() );
+        final KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
+        knowledgeBase.addKnowledgePackages( builder.getKnowledgePackages() );
 
-        final StatefulSession session = ruleBase.newStatefulSession();
+        final StatefulKnowledgeSession session = knowledgeBase.newStatefulKnowledgeSession();
         
         String[] names = new String[] { "Fred", "Joe", "Bob", "Tom" };
         String[] colors = new String[] { "red", "blue", "plaid", "orange" };
@@ -35,7 +38,10 @@ public class GolfingExample {
         }
 
         session.fireAllRules();
+        
         session.dispose();
+        
+        
     }
 
 
