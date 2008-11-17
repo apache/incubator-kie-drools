@@ -3,19 +3,16 @@ package org.drools.examples;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.StatefulSession;
-import org.drools.audit.WorkingMemoryFileLogger;
-import org.drools.common.DefaultAgenda;
-import org.drools.compiler.PackageBuilder;
-import org.drools.event.DebugAgendaEventListener;
-import org.drools.event.DebugWorkingMemoryEventListener;
-import org.drools.event.DefaultAgendaEventListener;
-import org.drools.event.DefaultWorkingMemoryEventListener;
-import org.drools.rule.Package;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.KnowledgeType;
+import org.drools.definition.KnowledgePackage;
+import org.drools.runtime.StatefulKnowledgeSession;
 
 /**
  * This is a sample file to launch a rule package from a rule source file.
@@ -26,32 +23,34 @@ public class HelloWorldExample {
         //read in the source
         final Reader source = new InputStreamReader( HelloWorldExample.class.getResourceAsStream( "HelloWorld.drl" ) );
 
-        final PackageBuilder builder = new PackageBuilder();
+        final KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
         //this will parse and compile in one step
-        builder.addPackageFromDrl( source );
-        
+        builder.addResource( source,
+                             KnowledgeType.DRL );
+
         // Check the builder for errors
         if ( builder.hasErrors() ) {
             System.out.println( builder.getErrors().toString() );
-            throw new RuntimeException( "Unable to compile \"HelloWorld.drl\".");
+            throw new RuntimeException( "Unable to compile \"HelloWorld.drl\"." );
         }
 
         //get the compiled package (which is serializable)
-        final Package pkg = builder.getPackage();
+        final Collection<KnowledgePackage> pkgs = builder.getKnowledgePackages();
 
         //add the package to a rulebase (deploy the rule package).
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
+        final KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
+        knowledgeBase.addKnowledgePackages( pkgs );
 
-        final StatefulSession session = ruleBase.newStatefulSession();
-        session.setGlobal( "list", new ArrayList() );
+        final StatefulKnowledgeSession session = knowledgeBase.newStatefulKnowledgeSession();
+        session.setGlobal( "list",
+                           new ArrayList() );
+
+//        session.addEventListener( new DebugAgendaEventListener() );
+//        session.addEventListener( new DebugWorkingMemoryEventListener() );
         
-        session.addEventListener( new DebugAgendaEventListener() );
-        session.addEventListener( new DebugWorkingMemoryEventListener() );
-        
-        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( session );
-        logger.setFileName( "log/helloworld" );        
+//        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( session );
+//        logger.setFileName( "log/helloworld" );        
 
         final Message message = new Message();
         message.setMessage( "Hello World" );
@@ -60,7 +59,7 @@ public class HelloWorldExample {
         
         session.fireAllRules();
         
-        logger.writeToDisk();
+//        logger.writeToDisk();
         
         session.dispose();
     }

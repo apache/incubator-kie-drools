@@ -3,31 +3,29 @@ package org.drools.examples;
 import java.io.InputStreamReader;
 import java.util.Random;
 
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.StatefulSession;
-import org.drools.WorkingMemory;
-import org.drools.audit.WorkingMemoryFileLogger;
-import org.drools.compiler.PackageBuilder;
-import org.drools.event.DefaultRuleFlowEventListener;
-import org.drools.event.RuleFlowEventListener;
-import org.drools.event.RuleFlowGroupDeactivatedEvent;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.KnowledgeType;
+import org.drools.runtime.StatefulKnowledgeSession;
 
 public class NumberGuessExample {
 
     public static final void main(String[] args) throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( ShoppingExample.class.getResourceAsStream( "NumberGuess.drl" ) ) );
+        final KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        builder.addResource( new InputStreamReader( ShoppingExample.class.getResourceAsStream( "NumberGuess.drl" ) ),
+                             KnowledgeType.DRL );
+        builder.addResource( new InputStreamReader( ShoppingExample.class.getResourceAsStream( "NumberGuess.rf" ) ),
+                             KnowledgeType.DRF );
 
-        builder.addRuleFlow( new InputStreamReader( ShoppingExample.class.getResourceAsStream( "NumberGuess.rf" ) ) );
+        final KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
+        knowledgeBase.addKnowledgePackages( builder.getKnowledgePackages() );
 
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( builder.getPackage() );
+        final StatefulKnowledgeSession session = knowledgeBase.newStatefulKnowledgeSession();
 
-        final StatefulSession session = ruleBase.newStatefulSession();
-        
-        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( session );
-        logger.setFileName( "log/numberguess" );        
+//        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( session );
+//        logger.setFileName( "log/numberguess" );
 
         session.insert( new GameRules( 100,
                                        5 ) );
@@ -36,8 +34,8 @@ public class NumberGuessExample {
 
         session.startProcess( "Number Guess" );
         session.fireAllRules();
-        
-        logger.writeToDisk();        
+
+//        logger.writeToDisk();
 
         session.dispose();
     }
