@@ -1,4 +1,5 @@
 package org.drools.benchmark.waltz;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,75 +16,79 @@ package org.drools.benchmark.waltz;
  * limitations under the License.
  */
 
-
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.drools.RuleBase;
-import org.drools.RuleBaseConfiguration;
-import org.drools.RuleBaseFactory;
-import org.drools.StatefulSession;
-import org.drools.WorkingMemory;
-import org.drools.compiler.PackageBuilder;
-import org.drools.rule.Package;
- 
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseConfiguration;
+import org.drools.KnowledgeBaseFactory;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.KnowledgeType;
+import org.drools.definition.KnowledgePackage;
+import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.rule.WorkingMemory;
+
 /**
  * This is a sample file to launch a rule package from a rule source file.
  */
 public abstract class WaltzBenchmark {
 
     public static void main(final String[] args) throws Exception {
-            PackageBuilder builder = new PackageBuilder();
-            builder.addPackageFromDrl( new InputStreamReader( WaltzBenchmark.class.getResourceAsStream( "waltz.drl" ) ) );
-            Package pkg = builder.getPackage();
-            //add the package to a rulebase
-            RuleBaseConfiguration conf = new RuleBaseConfiguration();
-            //conf.setAlphaMemory( true );
-//            conf.setShadowProxy( false );
-            final RuleBase ruleBase = RuleBaseFactory.newRuleBase( conf );
-            ruleBase.addPackage( pkg );
-            
-            StatefulSession session = ruleBase.newStatefulSession();
-            
-            String filename;
-            if (  args.length != 0 ) {
-                String arg = args[0];                
-                filename  = arg;                
-            } else {
-                filename  = "waltz12.dat";
-            }
-            
-            loadLines( session, filename );
-            
-            Stage stage = new Stage(Stage.DUPLICATE);
-            session.insert( stage );
-                        
-            long start = System.currentTimeMillis();
-            session.setGlobal( "time", start );
-            session.fireAllRules();
-            System.out.println( (System.currentTimeMillis() - start) / 1000 );
-            session.dispose();
+        KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        builder.addResource( new InputStreamReader( WaltzBenchmark.class.getResourceAsStream( "waltz.drl" ) ),
+                             KnowledgeType.DRL );
+        Collection<KnowledgePackage> pkgs = builder.getKnowledgePackages();
+        //add the package to a rulebase
+        KnowledgeBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        //conf.setAlphaMemory( true );
+        //            conf.setShadowProxy( false );
+        final KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase( conf );
+        knowledgeBase.addKnowledgePackages( pkgs );
+
+        StatefulKnowledgeSession session = knowledgeBase.newStatefulKnowledgeSession();
+
+        String filename;
+        if ( args.length != 0 ) {
+            String arg = args[0];
+            filename = arg;
+        } else {
+            filename = "waltz12.dat";
+        }
+
+        loadLines( session,
+                   filename );
+
+        Stage stage = new Stage( Stage.DUPLICATE );
+        session.insert( stage );
+
+        long start = System.currentTimeMillis();
+        session.setGlobal( "time",
+                           start );
+        session.fireAllRules();
+        System.out.println( (System.currentTimeMillis() - start) / 1000 );
+        session.dispose();
     }
 
-    
-    private static void loadLines(WorkingMemory wm, String filename) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader( WaltzBenchmark.class.getResourceAsStream( filename ) ));
+    private static void loadLines(WorkingMemory wm,
+                                  String filename) throws IOException {
+        BufferedReader reader = new BufferedReader( new InputStreamReader( WaltzBenchmark.class.getResourceAsStream( filename ) ) );
         Pattern pat = Pattern.compile( ".*make line \\^p1 ([0-9]*) \\^p2 ([0-9]*).*" );
         String line = reader.readLine();
-        while(line != null) {
+        while ( line != null ) {
             Matcher m = pat.matcher( line );
-            if(m.matches()) {
-                Line l = new Line(Integer.parseInt( m.group( 1 ) ),
-                                  Integer.parseInt( m.group( 2 ) ) );
+            if ( m.matches() ) {
+                Line l = new Line( Integer.parseInt( m.group( 1 ) ),
+                                   Integer.parseInt( m.group( 2 ) ) );
                 wm.insert( l );
             }
             line = reader.readLine();
         }
         reader.close();
     }
-    
+
 }

@@ -7,17 +7,21 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.StatefulSession;
-import org.drools.compiler.PackageBuilder;
-import org.drools.compiler.PackageBuilderConfiguration;
-import org.drools.rule.Package;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderConfiguration;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.KnowledgeType;
+import org.drools.definition.KnowledgePackage;
+import org.drools.runtime.StatefulKnowledgeSession;
+
 
 public class MannersBenchmark {
 	/** Number of guests at the dinner (default: 16). */
@@ -33,18 +37,18 @@ public class MannersBenchmark {
 	private int maxHobbies = 3;
 
 	public static void main(final String[] args) throws Exception {
-	    PackageBuilderConfiguration config = new PackageBuilderConfiguration();
+	    KnowledgeBuilderConfiguration config= KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
 	    
-		PackageBuilder builder = new PackageBuilder(config);
-		builder.addPackageFromDrl(new InputStreamReader(MannersBenchmark.class
-				.getResourceAsStream("manners.drl")));
-		Package pkg = builder.getPackage();
+	    KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder(config);
+	    builder.addResource( new InputStreamReader(MannersBenchmark.class
+				.getResourceAsStream("manners.drl")), KnowledgeType.DRL);
+	    Collection<KnowledgePackage> pkgs = builder.getKnowledgePackages();
 		
         // add the package to a rulebase
-		final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-		ruleBase.addPackage(pkg);
+	    final KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
+	    knowledgeBase.addKnowledgePackages( pkgs );
 
-		StatefulSession session = ruleBase.newStatefulSession();
+	    StatefulKnowledgeSession session = knowledgeBase.newStatefulKnowledgeSession();
 
 		String filename;
 		if (args.length != 0) {
