@@ -29,10 +29,13 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumnModel;
 
 import org.drools.FactException;
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.WorkingMemory;
-import org.drools.compiler.PackageBuilder;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.KnowledgeType;
+import org.drools.runtime.StatefulKnowledgeSession;
+
 
 public class PetStore {
 
@@ -45,10 +48,11 @@ public class PetStore {
             //            ruleBaseLoader.addFromRuleSetLoader( ruleSetLoader );
             //            RuleBase ruleBase = ruleBaseLoader.buildRuleBase();
 
-            PackageBuilder builder = new PackageBuilder();
-            builder.addPackageFromDrl( new InputStreamReader( PetStore.class.getResourceAsStream( "PetStore.drl" ) ) );
-            RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-            ruleBase.addPackage( builder.getPackage() );
+            KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+            
+            builder.addResource( new InputStreamReader( PetStore.class.getResourceAsStream( "PetStore.drl" ) ) ,KnowledgeType.DRL);
+            KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
+            knowledgeBase.addKnowledgePackages( builder.getKnowledgePackages() );
 
             //RuleB
 
@@ -63,7 +67,7 @@ public class PetStore {
             //The callback is responsible for populating working memory and
             // fireing all rules
             PetStoreUI ui = new PetStoreUI( stock,
-                                            new CheckoutCallback( ruleBase ) );
+                                            new CheckoutCallback( knowledgeBase ) );
             ui.createAndShowGUI();
         } catch ( Exception e ) {
             e.printStackTrace();
@@ -369,11 +373,11 @@ public class PetStore {
      *  
      */
     public static class CheckoutCallback {
-        RuleBase  ruleBase;
+        KnowledgeBase knowledgeBase;
         JTextArea output;
 
-        public CheckoutCallback(RuleBase ruleBase) {
-            this.ruleBase = ruleBase;
+        public CheckoutCallback(KnowledgeBase knowledgeBase) {
+            this.knowledgeBase= knowledgeBase;
         }
 
         public void setOutput(JTextArea output) {
@@ -399,25 +403,26 @@ public class PetStore {
             }
 
             //add the JFrame to the ApplicationData to allow for user interaction
-            WorkingMemory workingMemory = ruleBase.newStatefulSession();
-            workingMemory.setGlobal( "frame",
+            
+            StatefulKnowledgeSession statefulKnowledgeSession = knowledgeBase.newStatefulKnowledgeSession();
+            statefulKnowledgeSession.setGlobal( "frame",
                                      frame );
-            workingMemory.setGlobal( "textArea",
+            statefulKnowledgeSession.setGlobal( "textArea",
                                      this.output );
 
-            workingMemory.insert( new Product( "Gold Fish",
+            statefulKnowledgeSession.insert( new Product( "Gold Fish",
                                                5 ) );
-            workingMemory.insert( new Product( "Fish Tank",
+            statefulKnowledgeSession.insert( new Product( "Fish Tank",
                                                25 ) );
-            workingMemory.insert( new Product( "Fish Food",
+            statefulKnowledgeSession.insert( new Product( "Fish Food",
                                                2 ) );
             
-            workingMemory.insert( new Product( "Fish Food Sample",
+            statefulKnowledgeSession.insert( new Product( "Fish Food Sample",
                                                0 ) );            
            
 
-            workingMemory.insert( order );
-            workingMemory.fireAllRules();
+            statefulKnowledgeSession.insert( order );
+            statefulKnowledgeSession.fireAllRules();
 
             //returns the state of the cart
             return order.toString();

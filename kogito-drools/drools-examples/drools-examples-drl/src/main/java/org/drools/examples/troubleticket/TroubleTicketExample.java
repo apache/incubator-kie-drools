@@ -2,13 +2,13 @@ package org.drools.examples.troubleticket;
 
 import java.io.InputStreamReader;
 
-import org.drools.FactHandle;
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.StatefulSession;
-import org.drools.audit.ThreadedWorkingMemoryFileLogger;
-import org.drools.audit.WorkingMemoryFileLogger;
-import org.drools.compiler.PackageBuilder;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.KnowledgeType;
+import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.rule.FactHandle;
 
 public class TroubleTicketExample {
 
@@ -17,17 +17,18 @@ public class TroubleTicketExample {
      */
     public static void main(final String[] args) throws Exception {
 
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( TroubleTicketExample.class.getResourceAsStream( "TroubleTicket.drl" ) ) );
+        final KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        builder.addResource( new InputStreamReader( TroubleTicketExample.class.getResourceAsStream( "TroubleTicket.drl" ) ),
+                             KnowledgeType.DRL );
 
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( builder.getPackage() );
+        final KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
+        knowledgeBase.addKnowledgePackages( builder.getKnowledgePackages() );
 
-        final StatefulSession session = ruleBase.newStatefulSession();
+        final StatefulKnowledgeSession session = knowledgeBase.newStatefulKnowledgeSession();
 
-        ThreadedWorkingMemoryFileLogger logger = new ThreadedWorkingMemoryFileLogger(session);
-        logger.setFileName( "log/trouble_ticket" );
-        logger.start(1000);
+        //        ThreadedWorkingMemoryFileLogger logger = new ThreadedWorkingMemoryFileLogger(session);
+        //        logger.setFileName( "log/trouble_ticket" );
+        //        logger.start(1000);
 
         final Customer a = new Customer( "A",
                                          "Drools",
@@ -74,9 +75,9 @@ public class TroubleTicketExample {
         System.err.println( "[[ awake ]]" );
 
         session.dispose();
-        
-        logger.stop();
-        logger.writeToDisk();
+
+        //        logger.stop();
+        //        logger.writeToDisk();
     }
 
 }
