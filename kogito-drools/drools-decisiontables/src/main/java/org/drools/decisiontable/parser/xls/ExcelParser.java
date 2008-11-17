@@ -41,9 +41,9 @@ public class ExcelParser
     implements
     DecisionTableParser {
 
-    public static final String DEFAULT_RULESHEET_NAME = "Decision Tables";
-    private Map<String, List<DataListener>> _listners = new HashMap<String, List<DataListener>>();
-    private boolean            _useFirstSheet;
+    public static final String              DEFAULT_RULESHEET_NAME = "Decision Tables";
+    private Map<String, List<DataListener>> _listners              = new HashMap<String, List<DataListener>>();
+    private boolean                         _useFirstSheet;
 
     /**
      * Define a map of sheet name to listner handlers.
@@ -86,7 +86,7 @@ public class ExcelParser
                 }
             }
         } catch ( BiffException e ) {
-            throw new DecisionTableParseException( "An error occured opening the workbook. ",
+            throw new DecisionTableParseException( "An error occured opening the workbook. It is possible that the encoding of the document did not match the encoding of the reader.",
                                                    e );
 
         } catch ( IOException e ) {
@@ -97,7 +97,7 @@ public class ExcelParser
     }
 
     private void processSheet(Sheet sheet,
-                              List<? extends DataListener> listeners) {
+                              List< ? extends DataListener> listeners) {
         int maxRows = sheet.getRows();
 
         Range[] mergedRanges = sheet.getMergedCells();
@@ -153,13 +153,13 @@ public class ExcelParser
         return stringVal;
     }
 
-    private void finishSheet(List<? extends DataListener> listeners) {
+    private void finishSheet(List< ? extends DataListener> listeners) {
         for ( DataListener listener : listeners ) {
             listener.finishSheet();
         }
     }
 
-    private void newRow(List<? extends DataListener> listeners,
+    private void newRow(List< ? extends DataListener> listeners,
                         int row,
                         int cols) {
         for ( DataListener listener : listeners ) {
@@ -168,7 +168,7 @@ public class ExcelParser
         }
     }
 
-    public void newCell(List<? extends DataListener> listeners,
+    public void newCell(List< ? extends DataListener> listeners,
                         int row,
                         int column,
                         String value,

@@ -17,7 +17,6 @@ package org.drools.decisiontable;
  */
 
 import java.io.InputStreamReader;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,30 +25,26 @@ import junit.framework.TestCase;
 import org.acme.insurance.launcher.PricingRuleLauncher;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.WorkingMemory;
 import org.drools.builder.DecisionTableConfiguration;
 import org.drools.builder.DecisionTableInputType;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.KnowledgeType;
-import org.drools.compiler.PackageBuilder;
-import org.drools.rule.Package;
 import org.drools.runtime.StatefulKnowledgeSession;
 
 public class SpreadsheetIntegrationTest extends TestCase {
 
     public void testExecute() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        
+
         DecisionTableConfiguration dtconf = KnowledgeBuilderFactory.newDecisionTableConfiguration();
         dtconf.setInputType( DecisionTableInputType.XLS );
-        
-        kbuilder.addResource( new InputStreamReader( getClass().getResourceAsStream( "/data/IntegrationExampleTest.xls" ) ), 
+
+        kbuilder.addResource( new InputStreamReader( getClass().getResourceAsStream( "/data/IntegrationExampleTest.xls" ),
+                                                     "windows-1252" ),
                               KnowledgeType.DTABLE,
-                              dtconf );       
-        
+                              dtconf );
+
         assertFalse( kbuilder.hasErrors() );
 
         //BUILD RULEBASE
@@ -61,31 +56,32 @@ public class SpreadsheetIntegrationTest extends TestCase {
 
         //ASSERT AND FIRE
         session.insert( new Cheese( "stilton",
-                                     42 ) );
+                                    42 ) );
         session.insert( new Person( "michael",
-                                     "stilton",
-                                     42 ) );
+                                    "stilton",
+                                    42 ) );
         final List<String> list = new ArrayList<String>();
         session.setGlobal( "list",
-                      list );
+                           list );
         session.fireAllRules();
         assertEquals( 1,
                       list.size() );
         assertEquals( "Old man stilton",
                       list.get( 0 ) );
     }
-    
-    public void testNamedWorksheet() {
+
+    public void testNamedWorksheet() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        
+
         DecisionTableConfiguration dtconf = KnowledgeBuilderFactory.newDecisionTableConfiguration();
         dtconf.setInputType( DecisionTableInputType.XLS );
         dtconf.setWorksheetName( "Tables_2" );
-        
-        kbuilder.addResource( new InputStreamReader( getClass().getResourceAsStream( "/data/IntegrationExampleTest.xls" ) ), 
+
+        kbuilder.addResource( new InputStreamReader( getClass().getResourceAsStream( "/data/IntegrationExampleTest.xls" ),
+                                                     "windows-1252" ),
                               KnowledgeType.DTABLE,
-                              dtconf );       
-        
+                              dtconf );
+
         assertFalse( kbuilder.hasErrors() );
 
         //BUILD RULEBASE
@@ -97,26 +93,27 @@ public class SpreadsheetIntegrationTest extends TestCase {
 
         //ASSERT AND FIRE
         session.insert( new Cheese( "cheddar",
-                                     42 ) );
+                                    42 ) );
         session.insert( new Person( "michael",
-                                     "stilton",
-                                     25 ) );
+                                    "stilton",
+                                    25 ) );
         final List<String> list = new ArrayList<String>();
         session.setGlobal( "list",
-                      list );
+                           list );
         session.fireAllRules();
         assertEquals( 1,
                       list.size() );
         assertEquals( "Young man cheddar",
-                      list.get( 0 ) );        
+                      list.get( 0 ) );
     }
-    
+
     /**
      * A smoke test mainly.
      */
     public void testInsuranceExample() throws Exception {
         PricingRuleLauncher launcher = new PricingRuleLauncher();
-        assertEquals(120, launcher.executeExample());
+        assertEquals( 120,
+                      launcher.executeExample() );
     }
 
 }

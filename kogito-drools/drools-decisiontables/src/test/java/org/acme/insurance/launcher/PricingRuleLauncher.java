@@ -28,21 +28,22 @@ import org.drools.runtime.StatefulKnowledgeSession;
  */
 public class PricingRuleLauncher {
 
-    public static final void main(String[] args) throws Exception {    	
-    	PricingRuleLauncher launcher = new PricingRuleLauncher();
-    	launcher.executeExample();
+    public static final void main(String[] args) throws Exception {
+        PricingRuleLauncher launcher = new PricingRuleLauncher();
+        launcher.executeExample();
     }
-    
+
     public int executeExample() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        
+
         DecisionTableConfiguration dtconf = KnowledgeBuilderFactory.newDecisionTableConfiguration();
         dtconf.setInputType( DecisionTableInputType.XLS );
-        
-        kbuilder.addResource( new InputStreamReader( getClass().getResourceAsStream( "/data/ExamplePolicyPricing.xls" ) ), 
+
+        kbuilder.addResource( new InputStreamReader( getClass().getResourceAsStream( "/data/ExamplePolicyPricing.xls" ),
+                                                     "windows-1252" ),
                               KnowledgeType.DTABLE,
-                              dtconf );       
-        
+                              dtconf );
+
         if ( kbuilder.hasErrors() ) {
             throw new RuntimeException( kbuilder.getErrors().toString() );
         }
@@ -53,44 +54,39 @@ public class PricingRuleLauncher {
 
         //NEW WORKING MEMORY
         final StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
-		
-		//now create some test data
-		Driver driver = new Driver();
-		Policy policy = new Policy();
-		
-		session.insert(driver);
-		session.insert(policy);
-		
-		session.fireAllRules();
-		
-		System.out.println("BASE PRICE IS: " + policy.getBasePrice());
-		System.out.println("DISCOUNT IS: " + policy.getDiscountPercent());
-		
+
+        //now create some test data
+        Driver driver = new Driver();
+        Policy policy = new Policy();
+
+        session.insert( driver );
+        session.insert( policy );
+
+        session.fireAllRules();
+
+        System.out.println( "BASE PRICE IS: " + policy.getBasePrice() );
+        System.out.println( "DISCOUNT IS: " + policy.getDiscountPercent() );
+
         return policy.getBasePrice();
-    	
+
     }
 
-
     /** Build the rule base from the generated DRL */
-	private RuleBase buildRuleBase(String drl) throws DroolsParserException, IOException, Exception {
-		//now we build the rule package and rulebase, as if they are normal rules
-		PackageBuilder builder = new PackageBuilder();
-		builder.addPackageFromDrl( new StringReader(drl) );
-		
-		//add the package to a rulebase (deploy the rule package).
-		RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-		ruleBase.addPackage( builder.getPackage() );
-		return ruleBase;
-	}
-    
-    
+    private RuleBase buildRuleBase(String drl) throws DroolsParserException,
+                                              IOException,
+                                              Exception {
+        //now we build the rule package and rulebase, as if they are normal rules
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new StringReader( drl ) );
 
+        //add the package to a rulebase (deploy the rule package).
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        ruleBase.addPackage( builder.getPackage() );
+        return ruleBase;
+    }
 
     private InputStream getSpreadsheetStream() {
-    	return this.getClass().getResourceAsStream("/data/ExamplePolicyPricing.xls");
-	}
+        return this.getClass().getResourceAsStream( "/data/ExamplePolicyPricing.xls" );
+    }
 
-
-
-    
 }
