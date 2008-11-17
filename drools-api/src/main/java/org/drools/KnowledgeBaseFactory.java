@@ -22,8 +22,11 @@ public class KnowledgeBaseFactory {
         return provider.newKnowledgeBase(conf);        
     }
     
-    public static KnowledgeBaseConfiguration newKnowledgBaseConfiguration() {
-        return null;
+    public static KnowledgeBaseConfiguration newKnowledgeBaseConfiguration() {
+        if ( provider == null ) {
+            loadProvider();
+        }        
+        return provider.newKnowledgeBaseConfiguration();        
     }
     
 	private static void loadProvider() {
