@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import org.drools.common.InternalWorkingMemory;
 import org.drools.event.rule.ObjectUpdatedEvent;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.ReteooStatefulSession;
@@ -17,7 +18,7 @@ public class ObjectUpdatedEventImpl  extends WorkingMemoryEventImpl implements O
     private Object      oldObject;
     
     public ObjectUpdatedEventImpl(org.drools.event.ObjectUpdatedEvent event) {
-        super( (WorkingMemory) new StatefulKnowledgeSessionImpl( (ReteooWorkingMemory) event.getWorkingMemory() ), event.getPropagationContext() );
+        super( ((InternalWorkingMemory) event.getWorkingMemory() ).getKnowledgeRuntime(), event.getPropagationContext() );
         factHandle = event.getFactHandle();
         object = event.getObject();
         object = event.getOldObject();

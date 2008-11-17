@@ -16,19 +16,40 @@ package org.drools.event.rule.impl;
  * limitations under the License.
  */
 
-import java.util.EventObject;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 import org.drools.event.rule.AgendaGroupEvent;
+import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.rule.AgendaGroup;
 
-public class AgendaGroupEventImpl implements AgendaGroupEvent {
+public class AgendaGroupEventImpl implements AgendaGroupEvent, Externalizable {
     private AgendaGroup agendaGroup;
+    KnowledgeRuntime kruntime;
 
-    public AgendaGroupEventImpl(AgendaGroup agendaGroup) {
+    public AgendaGroupEventImpl(AgendaGroup agendaGroup, KnowledgeRuntime kruntime) {
         this.agendaGroup = agendaGroup;
+        this.kruntime = kruntime;
     }
 
     public AgendaGroup getAgendaGroup() {
         return agendaGroup;
-    }        
+    }
+
+    public KnowledgeRuntime getKnowledgeRuntime() {
+        return this.kruntime;
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        new SerializableAgendaGroup( this.agendaGroup ).writeExternal( out );
+    } 
+    
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        this.agendaGroup = new SerializableAgendaGroup( );
+        ((SerializableAgendaGroup)this.agendaGroup).readExternal( in );
+        this.kruntime = null; // we null this as it isn't serializable; 
+    }       
 }

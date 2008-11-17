@@ -6,13 +6,31 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.event.rule.WorkingMemoryEvent;
+import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.rule.PropagationContext;
 import org.drools.runtime.rule.WorkingMemory;
 
 public class WorkingMemoryEventImpl implements WorkingMemoryEvent, Externalizable {
-    private WorkingMemory ruleRuntime;
+    private KnowledgeRuntime kruntime;
     
-    private PropagationContext propagationContext;
+    private PropagationContext propagationContext;     
+    
+    public WorkingMemoryEventImpl() {
+        
+    }
+                                      
+    public WorkingMemoryEventImpl(KnowledgeRuntime kruntime, PropagationContext propagationContext) {
+        this.kruntime = kruntime;
+        this.propagationContext = propagationContext;
+    }
+    
+    public KnowledgeRuntime getKnowledgeRuntime() {
+        return this.kruntime;
+    }
+    
+    public PropagationContext getPropagationContext() {
+        return this.propagationContext;
+    }   
     
     public void writeExternal(ObjectOutput out) throws IOException {
         new SerializablePropagationContext( propagationContext ).writeExternal( out );
@@ -20,21 +38,8 @@ public class WorkingMemoryEventImpl implements WorkingMemoryEvent, Externalizabl
     
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {        
-        this.ruleRuntime = null; // null because we don't serialise this
+        this.kruntime = null; // null because we don't serialise this
         this.propagationContext = new SerializablePropagationContext();
         ((SerializablePropagationContext)this.propagationContext).readExternal( in );
-    }    
-    
-    public WorkingMemoryEventImpl(WorkingMemory ruleRuntime, PropagationContext propagationContext) {
-        this.ruleRuntime = ruleRuntime;
-        this.propagationContext = propagationContext;
-    }
-    
-    public WorkingMemory getWorkingMemory() {
-        return this.ruleRuntime;
-    }
-    
-    public PropagationContext getPropagationContext() {
-        return this.propagationContext;
-    }   
+    }      
 }

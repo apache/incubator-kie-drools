@@ -84,6 +84,7 @@ import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.rule.TimeMachine;
 import org.drools.ruleflow.core.RuleFlowProcess;
+import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.process.EventListener;
 import org.drools.runtime.process.WorkItemHandler;
 import org.drools.spi.Activation;
@@ -202,6 +203,8 @@ public abstract class AbstractWorkingMemory
     protected transient AtomicReference<java.util.concurrent.ExecutorService> threadPool = new AtomicReference<java.util.concurrent.ExecutorService>();
 
     private Map<InternalFactHandle, PropagationContext>      modifyContexts;
+    
+    private KnowledgeRuntime                                 kruntime;
 
     // ------------------------------------------------------------
     // Constructors
@@ -1793,5 +1796,13 @@ public abstract class AbstractWorkingMemory
         this.stopPartitionManagers();
         this.timerManager.dispose();
     }
+    
+    public void setKnowledgeRuntime(KnowledgeRuntime kruntime) {
+        this.kruntime = kruntime;
+    }
+    
+    public KnowledgeRuntime getKnowledgeRuntime() {
+        return this.kruntime;
+    }       
 
 }

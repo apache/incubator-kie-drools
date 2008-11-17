@@ -1,6 +1,7 @@
 package org.drools.event.rule.impl;
 
 import org.drools.event.rule.AgendaGroupPoppedEvent;
+import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.rule.AgendaGroup;
 
 /*
@@ -21,8 +22,8 @@ import org.drools.runtime.rule.AgendaGroup;
 
 public class AgendaGroupPoppedEventImpl extends AgendaGroupEventImpl implements AgendaGroupPoppedEvent {
 
-    public AgendaGroupPoppedEventImpl(AgendaGroup agendaGroup) {
-        super( agendaGroup );
+    public AgendaGroupPoppedEventImpl(AgendaGroup agendaGroup, KnowledgeRuntime kruntime) {
+        super( agendaGroup, kruntime );
     }
 
 }

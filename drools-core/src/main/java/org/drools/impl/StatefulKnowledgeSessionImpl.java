@@ -12,6 +12,7 @@ import java.util.concurrent.Future;
 import org.drools.KnowledgeBase;
 import org.drools.WorkingMemory;
 import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.common.ObjectStore;
 import org.drools.concurrent.FutureAdapter;
 import org.drools.event.ActivationCancelledEvent;
@@ -47,6 +48,7 @@ import org.drools.event.rule.impl.ObjectUpdatedEventImpl;
 import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.runtime.GlobalResolver;
+import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.process.WorkItemManager;
@@ -74,6 +76,7 @@ public class StatefulKnowledgeSessionImpl
     public StatefulKnowledgeSessionImpl(ReteooWorkingMemory session,
                                         KnowledgeBaseImpl kbase) {
         this.session = session;
+        this.session.setKnowledgeRuntime( this );
         this.kbase = kbase;
         this.mappedWorkingMemoryListeners = new IdentityHashMap<WorkingMemoryEventListener, WorkingMemoryEventListenerWrapper>();
         this.mappedAgendaListeners = new IdentityHashMap<AgendaEventListener, AgendaEventListenerWrapper>();
@@ -419,7 +422,7 @@ public class StatefulKnowledgeSessionImpl
     public static class AgendaEventListenerWrapper
         implements
         org.drools.event.AgendaEventListener {
-        private AgendaEventListener listener;
+        private AgendaEventListener listener;      
 
         public AgendaEventListenerWrapper(AgendaEventListener listener) {
             this.listener = listener;
@@ -428,39 +431,39 @@ public class StatefulKnowledgeSessionImpl
         public void activationCancelled(ActivationCancelledEvent event,
                                         WorkingMemory workingMemory) {
 
-            listener.activationCancelled( new ActivationCancelledEventImpl( event.getActivation() ),
-                                          null );
+            listener.activationCancelled( new ActivationCancelledEventImpl( event.getActivation(),
+                                          ((InternalWorkingMemory)workingMemory).getKnowledgeRuntime() ) );
 
         }
 
         public void activationCreated(ActivationCreatedEvent event,
                                       WorkingMemory workingMemory) {
-            listener.activationCreated( new ActivationCreatedEventImpl( event.getActivation() ),
-                                        null );
+            listener.activationCreated( new ActivationCreatedEventImpl( event.getActivation(),
+                                        ((InternalWorkingMemory)workingMemory).getKnowledgeRuntime() ) );
         }
 
         public void beforeActivationFired(BeforeActivationFiredEvent event,
                                           WorkingMemory workingMemory) {
-            listener.beforeActivationFired( new BeforeActivationFiredEventImpl( event.getActivation() ),
-                                            null );
+            listener.beforeActivationFired( new BeforeActivationFiredEventImpl( event.getActivation(),
+                                            ((InternalWorkingMemory)workingMemory).getKnowledgeRuntime() ) );
         }
 
         public void afterActivationFired(AfterActivationFiredEvent event,
                                          WorkingMemory workingMemory) {
-            listener.afterActivationFired( new AfterActivationFiredEventImpl( event.getActivation() ),
-                                           null );
+            listener.afterActivationFired( new AfterActivationFiredEventImpl( event.getActivation(),
+                                           ((InternalWorkingMemory)workingMemory).getKnowledgeRuntime() ) );
         }
 
         public void agendaGroupPopped(AgendaGroupPoppedEvent event,
                                       WorkingMemory workingMemory) {
-            listener.agendaGroupPopped( new AgendaGroupPoppedEventImpl( event.getAgendaGroup() ),
-                                        null );
+            listener.agendaGroupPopped( new AgendaGroupPoppedEventImpl( event.getAgendaGroup(),
+                                        ((InternalWorkingMemory)workingMemory).getKnowledgeRuntime() ) );
         }
 
         public void agendaGroupPushed(AgendaGroupPushedEvent event,
                                       WorkingMemory workingMemory) {
-            listener.agendaGroupPushed( new AgendaGroupPushedEventImpl( event.getAgendaGroup() ),
-                                        null );
+            listener.agendaGroupPushed( new AgendaGroupPushedEventImpl( event.getAgendaGroup(),
+                                        ((InternalWorkingMemory)workingMemory).getKnowledgeRuntime() ) );
         }
 
     }
