@@ -27,8 +27,7 @@ import java.util.List;
 
 import org.drools.WorkingMemoryEventManager;
 import org.drools.audit.event.LogEvent;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.rule.StatefulRuleSession;
+import org.drools.event.KnowledgeRuntimeEventManager;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -49,13 +48,14 @@ public class WorkingMemoryInMemoryLogger extends WorkingMemoryLogger {
         super( workingMemory );
     }
     
-    public WorkingMemoryInMemoryLogger(final StatefulKnowledgeSession session) {
+    public WorkingMemoryInMemoryLogger(final KnowledgeRuntimeEventManager session) {
     	super( session );
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+    @SuppressWarnings("unchecked")
+	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         super.readExternal(in);
-        events  = (List)in.readObject();
+        events  = (List<LogEvent>) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {

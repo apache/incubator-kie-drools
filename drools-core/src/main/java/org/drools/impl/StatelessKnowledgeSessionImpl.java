@@ -48,9 +48,9 @@ public class StatelessKnowledgeSessionImpl
     public Map<ProcessEventListener, ProcessEventListenerWrapper>             mappedProcessListeners;
 
     /** The event support */
-    protected WorkingMemoryEventSupport                                       workingMemoryEventSupport = new WorkingMemoryEventSupport();
-    protected AgendaEventSupport                                              agendaEventSupport        = new AgendaEventSupport();
-    protected RuleFlowEventSupport                                            ruleFlowEventSupport      = new RuleFlowEventSupport();
+    public WorkingMemoryEventSupport                                          workingMemoryEventSupport = new WorkingMemoryEventSupport();
+    public AgendaEventSupport                                                 agendaEventSupport        = new AgendaEventSupport();
+    public RuleFlowEventSupport                                               ruleFlowEventSupport      = new RuleFlowEventSupport();
 
     public StatelessKnowledgeSessionImpl() {
     }
