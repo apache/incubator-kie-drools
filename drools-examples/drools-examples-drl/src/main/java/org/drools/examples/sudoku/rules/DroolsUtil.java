@@ -15,7 +15,6 @@ import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.KnowledgeType;
-import org.drools.definition.KnowledgePackage;
 
 public class DroolsUtil {
     private static DroolsUtil INSTANCE;

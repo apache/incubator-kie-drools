@@ -4,6 +4,7 @@ import java.io.InputStreamReader;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
+import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.KnowledgeType;
@@ -22,14 +23,14 @@ public class FibonacciExample {
 
         final StatefulKnowledgeSession session = knowledgeBase.newStatefulKnowledgeSession();
 
-        //        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( session );
-        //        logger.setFileName( "log/fibonacci" );
+        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( session );
+        logger.setFileName( "log/fibonacci" );
 
         session.insert( new Fibonacci( 10 ) );
 
         session.fireAllRules();
 
-        //        logger.writeToDisk();
+        logger.writeToDisk();
 
         session.dispose(); // Stateful rule session must always be disposed when finished
 

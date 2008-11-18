@@ -1,47 +1,46 @@
 package org.drools.examples.troubleticket;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
+import java.io.InputStreamReader;
 
-import org.drools.FactHandle;
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.StatefulSession;
-import org.drools.StatelessSession;
-import org.drools.WorkingMemory;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
 import org.drools.audit.WorkingMemoryFileLogger;
-import org.drools.compiler.DroolsParserException;
-import org.drools.compiler.PackageBuilder;
-import org.drools.decisiontable.InputType;
-import org.drools.decisiontable.SpreadsheetCompiler;
-import org.drools.examples.decisiontable.Driver;
-import org.drools.examples.decisiontable.Policy;
+import org.drools.builder.DecisionTableConfiguration;
+import org.drools.builder.DecisionTableInputType;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.KnowledgeType;
+import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.rule.FactHandle;
 
 /**
  * This shows off a decision table.
  */
 public class TroubleTicketWithDT {
 
-    public static final void main(String[] args) throws Exception {    	
-    	TroubleTicketWithDT launcher = new TroubleTicketWithDT();
-    	launcher.executeExample();
+    public static final void main(String[] args) throws Exception {
+        TroubleTicketWithDT launcher = new TroubleTicketWithDT();
+        launcher.executeExample();
     }
-    
+
     public void executeExample() throws Exception {
-    	
-    	//first we compile the decision table into a whole lot of rules.
-    	SpreadsheetCompiler compiler = new SpreadsheetCompiler();
-    	String drl = compiler.compile(getSpreadsheetStream(), InputType.XLS);
 
-    	//UNCOMMENT ME TO SEE THE DRL THAT IS GENERATED
-    	//System.out.println(drl);
+        final DecisionTableConfiguration conf = KnowledgeBuilderFactory.newDecisionTableConfiguration();
+        conf.setInputType( DecisionTableInputType.XLS );
 
-    	RuleBase ruleBase = buildRuleBase(drl);
-    	
+        final KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        builder.addResource( new InputStreamReader( getSpreadsheetStream(),
+                                                    "windows-1252" ),
+                             KnowledgeType.DTABLE,
+                             conf );
+
+        final KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
+        knowledgeBase.addKnowledgePackages( builder.getKnowledgePackages() );
+
         // typical decision tables are used statelessly
-		StatefulSession session = ruleBase.newStatefulSession();
-		
+        StatefulKnowledgeSession session = knowledgeBase.newStatefulKnowledgeSession();
+
         final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( session );
         logger.setFileName( "log/trouble_ticket" );
 
@@ -92,28 +91,11 @@ public class TroubleTicketWithDT {
         session.dispose();
 
         logger.writeToDisk();
-    	
+
     }
 
-
-    /** Build the rule base from the generated DRL */
-	private RuleBase buildRuleBase(String drl) throws DroolsParserException, IOException, Exception {
-		//now we build the rule package and rulebase, as if they are normal rules
-		PackageBuilder builder = new PackageBuilder();
-		builder.addPackageFromDrl( new StringReader(drl) );
-		
-		//add the package to a rulebase (deploy the rule package).
-		RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-		ruleBase.addPackage( builder.getPackage() );
-		return ruleBase;
-	}
-    
-
     private InputStream getSpreadsheetStream() {
-    	return this.getClass().getResourceAsStream("TroubleTicket.xls");
-	}
+        return this.getClass().getResourceAsStream( "TroubleTicket.xls" );
+    }
 
-
-
-    
 }

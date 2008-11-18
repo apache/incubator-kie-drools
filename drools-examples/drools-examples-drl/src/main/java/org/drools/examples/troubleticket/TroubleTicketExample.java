@@ -4,6 +4,7 @@ import java.io.InputStreamReader;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
+import org.drools.audit.ThreadedWorkingMemoryFileLogger;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.KnowledgeType;
@@ -26,9 +27,9 @@ public class TroubleTicketExample {
 
         final StatefulKnowledgeSession session = knowledgeBase.newStatefulKnowledgeSession();
 
-        //        ThreadedWorkingMemoryFileLogger logger = new ThreadedWorkingMemoryFileLogger(session);
-        //        logger.setFileName( "log/trouble_ticket" );
-        //        logger.start(1000);
+        ThreadedWorkingMemoryFileLogger logger = new ThreadedWorkingMemoryFileLogger( session );
+        logger.setFileName( "log/trouble_ticket" );
+        logger.start( 1000 );
 
         final Customer a = new Customer( "A",
                                          "Drools",
@@ -76,8 +77,8 @@ public class TroubleTicketExample {
 
         session.dispose();
 
-        //        logger.stop();
-        //        logger.writeToDisk();
+        logger.stop();
+        logger.writeToDisk();
     }
 
 }
