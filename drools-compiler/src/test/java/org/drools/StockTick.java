@@ -1,6 +1,7 @@
 package org.drools;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class StockTick implements Serializable {
     private long seq;
@@ -78,5 +79,10 @@ public class StockTick implements Serializable {
     public void setDuration(long duration) {
         this.duration = duration;
     }
+    
+    public Date getDateTimestamp() {
+        return new Date( this.time );
+    }
+    
 
 }
