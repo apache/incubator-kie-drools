@@ -27,6 +27,8 @@ import java.util.List;
 
 import org.drools.WorkingMemoryEventManager;
 import org.drools.audit.event.LogEvent;
+import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.rule.StatefulRuleSession;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -43,12 +45,12 @@ public class WorkingMemoryInMemoryLogger extends WorkingMemoryLogger {
     public WorkingMemoryInMemoryLogger() {
     }
 
-    /**
-     * Creates a new WorkingMemoryInMemoryLogger for the given working memory.
-     * @param workingMemory
-     */
     public WorkingMemoryInMemoryLogger(final WorkingMemoryEventManager workingMemory) {
         super( workingMemory );
+    }
+    
+    public WorkingMemoryInMemoryLogger(final StatefulKnowledgeSession session) {
+    	super( session );
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {

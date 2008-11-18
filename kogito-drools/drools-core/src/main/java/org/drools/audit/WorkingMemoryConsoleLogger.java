@@ -7,6 +7,7 @@ import java.io.ObjectOutput;
 
 import org.drools.WorkingMemoryEventManager;
 import org.drools.audit.event.LogEvent;
+import org.drools.runtime.StatefulKnowledgeSession;
 
 public class WorkingMemoryConsoleLogger extends WorkingMemoryLogger {
 
@@ -20,6 +21,10 @@ public class WorkingMemoryConsoleLogger extends WorkingMemoryLogger {
 
     public WorkingMemoryConsoleLogger(WorkingMemoryEventManager workingMemory) {
         super(workingMemory);
+    }
+    
+    public WorkingMemoryConsoleLogger(StatefulKnowledgeSession session) {
+    	super(session);
     }
 
     public void logEventCreated(LogEvent logEvent) {

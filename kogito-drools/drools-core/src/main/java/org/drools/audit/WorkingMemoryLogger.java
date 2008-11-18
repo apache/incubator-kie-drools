@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.WorkingMemoryEventManager;
 import org.drools.audit.event.ActivationLogEvent;
@@ -39,18 +40,24 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.ActivationCreatedEvent;
 import org.drools.event.AfterActivationFiredEvent;
+import org.drools.event.AfterFunctionRemovedEvent;
 import org.drools.event.AfterPackageAddedEvent;
 import org.drools.event.AfterPackageRemovedEvent;
+import org.drools.event.AfterRuleAddedEvent;
 import org.drools.event.AfterRuleBaseLockedEvent;
 import org.drools.event.AfterRuleBaseUnlockedEvent;
+import org.drools.event.AfterRuleRemovedEvent;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.AgendaGroupPoppedEvent;
 import org.drools.event.AgendaGroupPushedEvent;
 import org.drools.event.BeforeActivationFiredEvent;
+import org.drools.event.BeforeFunctionRemovedEvent;
 import org.drools.event.BeforePackageAddedEvent;
 import org.drools.event.BeforePackageRemovedEvent;
+import org.drools.event.BeforeRuleAddedEvent;
 import org.drools.event.BeforeRuleBaseLockedEvent;
 import org.drools.event.BeforeRuleBaseUnlockedEvent;
+import org.drools.event.BeforeRuleRemovedEvent;
 import org.drools.event.ObjectInsertedEvent;
 import org.drools.event.ObjectRetractedEvent;
 import org.drools.event.ObjectUpdatedEvent;
@@ -62,14 +69,9 @@ import org.drools.event.RuleFlowGroupDeactivatedEvent;
 import org.drools.event.RuleFlowNodeTriggeredEvent;
 import org.drools.event.RuleFlowStartedEvent;
 import org.drools.event.WorkingMemoryEventListener;
-import org.drools.event.AfterFunctionRemovedEvent;
-import org.drools.event.AfterRuleAddedEvent;
-import org.drools.event.AfterRuleRemovedEvent;
-import org.drools.event.BeforeFunctionRemovedEvent;
-import org.drools.event.BeforeRuleAddedEvent;
-import org.drools.event.BeforeRuleRemovedEvent;
+import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.rule.Declaration;
-import org.drools.FactHandle;
+import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.spi.Activation;
 import org.drools.spi.Tuple;
 
@@ -94,7 +96,7 @@ public abstract class WorkingMemoryLogger
     RuleFlowEventListener,
     RuleBaseEventListener {
 
-    private List    filters = new ArrayList();
+    private List<ILogEventFilter>    filters = new ArrayList<ILogEventFilter>();
 
     public WorkingMemoryLogger() {
     }
@@ -110,9 +112,14 @@ public abstract class WorkingMemoryLogger
         workingMemoryEventManager.addEventListener( (RuleFlowEventListener) this );
         workingMemoryEventManager.addEventListener( (RuleBaseEventListener) this );
     }
+    
+    public WorkingMemoryLogger(final StatefulKnowledgeSession session) {
+    	this(((StatefulKnowledgeSessionImpl) session).session);
+    }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        filters = (List)in.readObject();
+    @SuppressWarnings("unchecked")
+	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        filters = (List<ILogEventFilter>) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -135,9 +142,7 @@ public abstract class WorkingMemoryLogger
      * @param logEvent
      */
     private void filterLogEvent(final LogEvent logEvent) {
-        final Iterator iterator = this.filters.iterator();
-        while ( iterator.hasNext() ) {
-            final ILogEventFilter filter = (ILogEventFilter) iterator.next();
+        for ( ILogEventFilter filter: this.filters) {
             // do nothing if one of the filters doesn't accept the event
             if ( !filter.acceptEvent( logEvent ) ) {
                 return;
@@ -268,8 +273,8 @@ public abstract class WorkingMemoryLogger
     private String extractDeclarations(final Activation activation,  final WorkingMemory workingMemory) {
         final StringBuffer result = new StringBuffer();
         final Tuple tuple = activation.getTuple();
-        final Map declarations = activation.getSubRule().getOuterDeclarations();
-        for ( Iterator it = declarations.values().iterator(); it.hasNext(); ) {
+        final Map<?, ?> declarations = activation.getSubRule().getOuterDeclarations();
+        for ( Iterator<?> it = declarations.values().iterator(); it.hasNext(); ) {
             final Declaration declaration = (Declaration) it.next();
             final FactHandle handle = tuple.get( declaration );
             if ( handle instanceof InternalFactHandle ) {
