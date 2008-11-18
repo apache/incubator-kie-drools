@@ -182,7 +182,6 @@ public class RuleModel
         final RuleAttribute[] newList = new RuleAttribute[this.attributes.length - 1];
         int newIdx = 0;
         for ( int i = 0; i < this.attributes.length; i++ ) {
-
             if ( i != idx ) {
                 newList[newIdx] = this.attributes[i];
                 newIdx++;
@@ -190,21 +189,22 @@ public class RuleModel
 
         }
         this.attributes = newList;
-
     }
     
+    /**
+     * Add metaData 
+     * @param metadata
+     */
     public void addMetadata(final RuleMetadata metadata) {
 
-        final RuleMetadata[] list = this.metadataList;
-        final RuleMetadata[] newList = new RuleMetadata[list.length + 1];
+        final RuleMetadata[] newList = new RuleMetadata[this.metadataList.length + 1];
 
-        for ( int i = 0; i < list.length; i++ ) {
-            newList[i] = list[i];
+        for ( int i = 0; i < this.metadataList.length; i++ ) {
+            newList[i] = this.metadataList[i];
         }
-        newList[list.length] = metadata;
+        newList[this.metadataList.length] = metadata;
 
         this.metadataList = newList;
-
     }
 
     public void removeMetadata(final int idx) {
@@ -221,6 +221,44 @@ public class RuleModel
         this.metadataList = newList;
 
     }
+    
+    /**
+     * Locate metadata element
+     * @param attributeName - value to look for
+     * @return null if not found
+     */
+    public RuleMetadata getMetaData(String attributeName){
+    
+    	if (metadataList != null && attributeName != null){
+    		for (int i = 0; i < metadataList.length; i++) {
+    			if (attributeName.equals(metadataList[i].attributeName)){
+    				return metadataList[i];
+    			}
+			}
+    	}
+    	return null;
+    }
+    
+	/**
+	 * Update metaData element if it exists or add it otherwise 
+	 * @param metadata
+	 * @return 
+	 * 		true on update of existing element
+	 * 		false on added of element
+	 * 		
+	 */
+	public boolean updateMetadata(final RuleMetadata target) {
+
+		RuleMetadata metaData = getMetaData(target.attributeName);
+		if (metaData != null) {
+			metaData.value = target.value;
+			return true;
+		}
+
+		addMetadata(target);
+		return false;
+	}
+    
 
     /**
      * This uses a deceptively simple algorithm to determine
@@ -329,5 +367,6 @@ public class RuleModel
 
         return false;
    }
+
 
 }
