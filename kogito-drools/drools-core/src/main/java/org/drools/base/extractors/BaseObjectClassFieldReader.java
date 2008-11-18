@@ -1,6 +1,7 @@
 package org.drools.base.extractors;
 
 import java.lang.reflect.Method;
+import java.util.Date;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.base.BaseClassFieldReader;
@@ -49,6 +50,8 @@ public abstract class BaseObjectClassFieldReader extends BaseClassFieldReader {
 
         if ( value instanceof Number ) {
             return ((Number) value).byteValue();
+        } else if( value instanceof Date ) {
+            return (byte) ((Date) value).getTime();
         }
         throw new RuntimeDroolsException( "Conversion to byte not supported from " + value.getClass().getName() );
     }
@@ -73,6 +76,8 @@ public abstract class BaseObjectClassFieldReader extends BaseClassFieldReader {
 
         if ( value instanceof Number ) {
             return ((Number) value).doubleValue();
+        } else if( value instanceof Date ) {
+            return (double) ((Date) value).getTime();
         }
         throw new RuntimeDroolsException( "Conversion to double not supported from " + value.getClass().getName() );
     }
@@ -84,6 +89,8 @@ public abstract class BaseObjectClassFieldReader extends BaseClassFieldReader {
 
         if ( value instanceof Number ) {
             return ((Number) value).floatValue();
+        } else if( value instanceof Date ) {
+            return (float) ((Date) value).getTime();
         }
         throw new RuntimeDroolsException( "Conversion to float not supported from " + value.getClass().getName() );
     }
@@ -95,6 +102,8 @@ public abstract class BaseObjectClassFieldReader extends BaseClassFieldReader {
 
         if ( value instanceof Number ) {
             return ((Number) value).intValue();
+        } else if( value instanceof Date ) {
+            return (int) ((Date) value).getTime();
         }
         throw new RuntimeDroolsException( "Conversion to int not supported from " + value.getClass().getName() );
     }
@@ -106,6 +115,8 @@ public abstract class BaseObjectClassFieldReader extends BaseClassFieldReader {
 
         if ( value instanceof Number ) {
             return ((Number) value).longValue();
+        } else if( value instanceof Date ) {
+            return ((Date) value).getTime();
         }
         throw new RuntimeDroolsException( "Conversion to long not supported from " + value.getClass().getName() );
     }
@@ -117,6 +128,8 @@ public abstract class BaseObjectClassFieldReader extends BaseClassFieldReader {
 
         if ( value instanceof Number ) {
             return ((Number) value).shortValue();
+        } else if( value instanceof Date ) {
+            return (short) ((Date) value).getTime();
         }
         throw new RuntimeDroolsException( "Conversion to short not supported from " + value.getClass().getName() );
     }

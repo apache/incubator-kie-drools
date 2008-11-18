@@ -207,6 +207,77 @@ public class CepEspTest extends TestCase {
 
     }
 
+    public void testEventAssertionWithDateTimestamp() throws Exception {
+        // read in the source
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_SimpleEventAssertionWithDateTimestamp.drl" ) );
+        final RuleBase ruleBase = loadRuleBase( reader );
+
+        SessionConfiguration conf = new SessionConfiguration();
+        conf.setClockType( ClockType.PSEUDO_CLOCK );
+        StatefulSession wm = ruleBase.newStatefulSession( conf );
+
+        final List results = new ArrayList();
+
+        wm.setGlobal( "results",
+                      results );
+
+        StockTick tick1 = new StockTick( 1,
+                                         "DROO",
+                                         50,
+                                         10000,
+                                         5 );
+        StockTick tick2 = new StockTick( 2,
+                                         "ACME",
+                                         10,
+                                         11000,
+                                         10 );
+        StockTick tick3 = new StockTick( 3,
+                                         "ACME",
+                                         10,
+                                         12000,
+                                         8 );
+        StockTick tick4 = new StockTick( 4,
+                                         "DROO",
+                                         50,
+                                         13000,
+                                         7 );
+
+        InternalFactHandle handle1 = (InternalFactHandle) wm.insert( tick1 );
+        InternalFactHandle handle2 = (InternalFactHandle) wm.insert( tick2 );
+        InternalFactHandle handle3 = (InternalFactHandle) wm.insert( tick3 );
+        InternalFactHandle handle4 = (InternalFactHandle) wm.insert( tick4 );
+
+        assertNotNull( handle1 );
+        assertNotNull( handle2 );
+        assertNotNull( handle3 );
+        assertNotNull( handle4 );
+
+        assertTrue( handle1.isEvent() );
+        assertTrue( handle2.isEvent() );
+        assertTrue( handle3.isEvent() );
+        assertTrue( handle4.isEvent() );
+
+        EventFactHandle eh1 = (EventFactHandle) handle1;
+        EventFactHandle eh2 = (EventFactHandle) handle2;
+        EventFactHandle eh3 = (EventFactHandle) handle3;
+        EventFactHandle eh4 = (EventFactHandle) handle4;
+
+        assertEquals( tick1.getTime(),
+                      eh1.getStartTimestamp() );
+        assertEquals( tick2.getTime(),
+                      eh2.getStartTimestamp() );
+        assertEquals( tick3.getTime(),
+                      eh3.getStartTimestamp() );
+        assertEquals( tick4.getTime(),
+                      eh4.getStartTimestamp() );
+
+        wm.fireAllRules();
+
+        assertEquals( 2,
+                      results.size() );
+
+    }
+
     public void testTimeRelationalOperators() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_TimeRelationalOperators.drl" ) );
