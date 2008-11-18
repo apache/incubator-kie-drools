@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.drools.WorkingMemoryEventManager;
 import org.drools.audit.event.LogEvent;
+import org.drools.runtime.StatefulKnowledgeSession;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -65,10 +66,15 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
         super( workingMemoryEventManager );
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+    public WorkingMemoryFileLogger(final StatefulKnowledgeSession session) {
+    	super( session );
+    }
+
+    @SuppressWarnings("unchecked")
+	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         super.readExternal(in);
         events  = (List<LogEvent>)in.readObject();
-        fileName    = (String)in.readObject();
+        fileName    = (String) in.readObject();
         maxEventsInMemory   = in.readInt();
         nbOfFile            = in.readInt();
         split               = in.readBoolean();
