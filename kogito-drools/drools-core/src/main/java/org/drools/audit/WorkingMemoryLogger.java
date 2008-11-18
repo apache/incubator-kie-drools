@@ -58,6 +58,7 @@ import org.drools.event.BeforeRuleAddedEvent;
 import org.drools.event.BeforeRuleBaseLockedEvent;
 import org.drools.event.BeforeRuleBaseUnlockedEvent;
 import org.drools.event.BeforeRuleRemovedEvent;
+import org.drools.event.KnowledgeRuntimeEventManager;
 import org.drools.event.ObjectInsertedEvent;
 import org.drools.event.ObjectRetractedEvent;
 import org.drools.event.ObjectUpdatedEvent;
@@ -70,8 +71,8 @@ import org.drools.event.RuleFlowNodeTriggeredEvent;
 import org.drools.event.RuleFlowStartedEvent;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
+import org.drools.impl.StatelessKnowledgeSessionImpl;
 import org.drools.rule.Declaration;
-import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.spi.Activation;
 import org.drools.spi.Tuple;
 
@@ -113,8 +114,21 @@ public abstract class WorkingMemoryLogger
         workingMemoryEventManager.addEventListener( (RuleBaseEventListener) this );
     }
     
-    public WorkingMemoryLogger(final StatefulKnowledgeSession session) {
-    	this(((StatefulKnowledgeSessionImpl) session).session);
+    public WorkingMemoryLogger(final KnowledgeRuntimeEventManager session) {
+    	if (session instanceof StatefulKnowledgeSessionImpl) {
+    		WorkingMemoryEventManager eventManager = ((StatefulKnowledgeSessionImpl) session).session;
+    		eventManager.addEventListener( (WorkingMemoryEventListener) this );
+    		eventManager.addEventListener( (AgendaEventListener) this );
+    		eventManager.addEventListener( (RuleFlowEventListener) this );
+    		eventManager.addEventListener( (RuleBaseEventListener) this );
+    	} else if (session instanceof StatelessKnowledgeSessionImpl) {
+    		((StatelessKnowledgeSessionImpl) session).workingMemoryEventSupport.addEventListener( this );
+    		((StatelessKnowledgeSessionImpl) session).agendaEventSupport.addEventListener( this );
+    		((StatelessKnowledgeSessionImpl) session).ruleFlowEventSupport.addEventListener( this );
+    		((StatelessKnowledgeSessionImpl) session).getRuleBase().addEventListener( this );
+    	} else {
+    		throw new IllegalArgumentException("Not supported session in logger: " + session.getClass());
+    	}
     }
 
     @SuppressWarnings("unchecked")

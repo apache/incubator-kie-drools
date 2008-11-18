@@ -7,7 +7,7 @@ import java.io.ObjectOutput;
 
 import org.drools.WorkingMemoryEventManager;
 import org.drools.audit.event.LogEvent;
-import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.event.KnowledgeRuntimeEventManager;
 
 public class WorkingMemoryConsoleLogger extends WorkingMemoryLogger {
 
@@ -23,7 +23,7 @@ public class WorkingMemoryConsoleLogger extends WorkingMemoryLogger {
         super(workingMemory);
     }
     
-    public WorkingMemoryConsoleLogger(StatefulKnowledgeSession session) {
+    public WorkingMemoryConsoleLogger(KnowledgeRuntimeEventManager session) {
     	super(session);
     }
 

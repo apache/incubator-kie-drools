@@ -26,7 +26,7 @@ import java.util.List;
 
 import org.drools.WorkingMemoryEventManager;
 import org.drools.audit.event.LogEvent;
-import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.event.KnowledgeRuntimeEventManager;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -66,7 +66,7 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
         super( workingMemoryEventManager );
     }
 
-    public WorkingMemoryFileLogger(final StatefulKnowledgeSession session) {
+    public WorkingMemoryFileLogger(final KnowledgeRuntimeEventManager session) {
     	super( session );
     }
 
