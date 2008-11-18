@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
+import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.KnowledgeType;
@@ -46,21 +47,21 @@ public class HelloWorldExample {
         session.setGlobal( "list",
                            new ArrayList() );
 
-//        session.addEventListener( new DebugAgendaEventListener() );
-//        session.addEventListener( new DebugWorkingMemoryEventListener() );
-        
-//        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( session );
-//        logger.setFileName( "log/helloworld" );        
+        //        session.addEventListener( new DebugAgendaEventListener() );
+        //        session.addEventListener( new DebugWorkingMemoryEventListener() );
+
+        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( session );
+        logger.setFileName( "log/helloworld" );
 
         final Message message = new Message();
         message.setMessage( "Hello World" );
         message.setStatus( Message.HELLO );
         session.insert( message );
-        
+
         session.fireAllRules();
-        
-//        logger.writeToDisk();
-        
+
+        logger.writeToDisk();
+
         session.dispose();
     }
 
@@ -91,13 +92,14 @@ public class HelloWorldExample {
         public void setStatus(final int status) {
             this.status = status;
         }
-        
+
         public static Message doSomething(Message message) {
             return message;
         }
-        
-        public boolean isSomething(String msg, List list) {
-            list.add( this );        
+
+        public boolean isSomething(String msg,
+                                   List list) {
+            list.add( this );
             return this.message.equals( msg );
         }
     }

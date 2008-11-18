@@ -3,12 +3,14 @@ package org.drools.examples.troubleticket;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
-import org.drools.FactHandle;
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.StatefulSession;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
 import org.drools.audit.WorkingMemoryFileLogger;
-import org.drools.compiler.PackageBuilder;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.KnowledgeType;
+import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.rule.FactHandle;
 
 public class TroubleTicketExampleWithDSL {
 
@@ -17,14 +19,17 @@ public class TroubleTicketExampleWithDSL {
      */
     public static void main(final String[] args) throws Exception {
 
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( getSource(),
-                                   getDSL() );
+        final KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( builder.getPackage() );
+        builder.addResource( getDSL(),
+                             KnowledgeType.DSL );
+        builder.addResource( getSource(),
+                             KnowledgeType.DSLR );
 
-        final StatefulSession session = ruleBase.newStatefulSession();
+        final KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
+        knowledgeBase.addKnowledgePackages( builder.getKnowledgePackages() );
+
+        final StatefulKnowledgeSession session = knowledgeBase.newStatefulKnowledgeSession();
 
         final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( session );
         logger.setFileName( "log/state" );
@@ -70,7 +75,7 @@ public class TroubleTicketExampleWithDSL {
         } catch ( final InterruptedException e ) {
             e.printStackTrace();
         }
-        
+
         System.err.println( "[[ awake ]]" );
 
         session.fireAllRules();
