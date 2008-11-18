@@ -1,7 +1,5 @@
 package org.drools.event.rule;
 
-import org.drools.runtime.KnowledgeRuntime;
-import org.drools.runtime.rule.WorkingMemory;
 
 public class DefaultAgendaEventListener
     implements
