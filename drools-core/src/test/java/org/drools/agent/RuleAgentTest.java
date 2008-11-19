@@ -299,10 +299,6 @@ public class RuleAgentTest extends TestCase {
         
         KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent( "agent1", props );
         
-        //RuleAgent ag = RuleAgent.newRuleAgent( props );
-
-        //assertTrue( ag.isNewInstance() );
-
         KnowledgeBase kbase = kagent.getKnowledgeBase();
         
         assertEquals( 2,
@@ -312,12 +308,12 @@ public class RuleAgentTest extends TestCase {
         assertSame( kbase,
                     kbase_ );
 
-//        //only change one
+        //only change one
         RuleBaseAssemblerTest.writePackage( p1,
                                             p1f );
         int i = 0;
-        while ( i < 10 && kagent.getKnowledgeBase() == kbase ) {
-            // this will sleep for a max of 5 seconds, it'll check every 500ms to see if a new kbase exists
+        while ( i < 20 && kagent.getKnowledgeBase() == kbase ) {
+            // this will sleep for a max of 10 seconds, it'll check every 500ms to see if a new kbase exists
             // if it exists, it will break the loop.
             Thread.sleep( 500 );
             i++;
