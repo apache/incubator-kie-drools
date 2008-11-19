@@ -14,25 +14,25 @@ public class FibonacciExample {
 
     public static void main(final String[] args) throws Exception {
 
-        final KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        builder.addResource( new InputStreamReader( FibonacciExample.class.getResourceAsStream( "Fibonacci.drl" ) ),
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.addResource( new InputStreamReader( FibonacciExample.class.getResourceAsStream( "Fibonacci.drl" ) ),
                              KnowledgeType.DRL );
 
-        final KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
-        knowledgeBase.addKnowledgePackages( builder.getKnowledgePackages() );
+        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        final StatefulKnowledgeSession session = knowledgeBase.newStatefulKnowledgeSession();
+        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( session );
+        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( ksession );
         logger.setFileName( "log/fibonacci" );
 
-        session.insert( new Fibonacci( 10 ) );
+        ksession.insert( new Fibonacci( 10 ) );
 
-        session.fireAllRules();
+        ksession.fireAllRules();
 
         logger.writeToDisk();
 
-        session.dispose(); // Stateful rule session must always be disposed when finished
+        ksession.dispose(); // Stateful rule session must always be disposed when finished
 
     }
 

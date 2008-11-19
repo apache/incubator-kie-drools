@@ -41,24 +41,24 @@ public class DroolsUtil {
         //Use package builder to build up a rule package.
         //An alternative lower level class called "DrlParser" can also be used...
 
-        KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
         //this will parse and compile in one step
-        builder.addResource( source,
+        kbuilder.addResource( source,
                              KnowledgeType.DRL );
 
         //Use the following instead of above if you are using a DSL:
         //builder.addPackageFromDrl( source, dsl );
 
         //add the package to a rulebase (deploy the rule package).
-        KnowledgeBaseConfiguration configuration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        configuration.setProperty( "drools.removeIdentities",
+        KnowledgeBaseConfiguration kbaseconfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kbaseconfiguration.setProperty( "drools.removeIdentities",
                                    "true" );
 
-        KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase( configuration );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kbaseconfiguration );
         //        RuleBase ruleBase = RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
         //                                                         conf );
-        knowledgeBase.addKnowledgePackages( builder.getKnowledgePackages() );
-        return knowledgeBase;
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        return kbase;
     }
 }

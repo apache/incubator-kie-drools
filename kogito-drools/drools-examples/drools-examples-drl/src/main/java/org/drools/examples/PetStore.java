@@ -48,11 +48,11 @@ public class PetStore {
             //            ruleBaseLoader.addFromRuleSetLoader( ruleSetLoader );
             //            RuleBase ruleBase = ruleBaseLoader.buildRuleBase();
 
-            KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+            KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
             
-            builder.addResource( new InputStreamReader( PetStore.class.getResourceAsStream( "PetStore.drl" ) ) ,KnowledgeType.DRL);
-            KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
-            knowledgeBase.addKnowledgePackages( builder.getKnowledgePackages() );
+            kbuilder.addResource( new InputStreamReader( PetStore.class.getResourceAsStream( "PetStore.drl" ) ) ,KnowledgeType.DRL);
+            KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+            kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
             //RuleB
 
@@ -67,7 +67,7 @@ public class PetStore {
             //The callback is responsible for populating working memory and
             // fireing all rules
             PetStoreUI ui = new PetStoreUI( stock,
-                                            new CheckoutCallback( knowledgeBase ) );
+                                            new CheckoutCallback( kbase ) );
             ui.createAndShowGUI();
         } catch ( Exception e ) {
             e.printStackTrace();
@@ -373,11 +373,11 @@ public class PetStore {
      *  
      */
     public static class CheckoutCallback {
-        KnowledgeBase knowledgeBase;
+        KnowledgeBase kbase;
         JTextArea output;
 
-        public CheckoutCallback(KnowledgeBase knowledgeBase) {
-            this.knowledgeBase= knowledgeBase;
+        public CheckoutCallback(KnowledgeBase kbase) {
+            this.kbase= kbase;
         }
 
         public void setOutput(JTextArea output) {
@@ -404,25 +404,25 @@ public class PetStore {
 
             //add the JFrame to the ApplicationData to allow for user interaction
             
-            StatefulKnowledgeSession statefulKnowledgeSession = knowledgeBase.newStatefulKnowledgeSession();
-            statefulKnowledgeSession.setGlobal( "frame",
+            StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+            ksession.setGlobal( "frame",
                                      frame );
-            statefulKnowledgeSession.setGlobal( "textArea",
+            ksession.setGlobal( "textArea",
                                      this.output );
 
-            statefulKnowledgeSession.insert( new Product( "Gold Fish",
+            ksession.insert( new Product( "Gold Fish",
                                                5 ) );
-            statefulKnowledgeSession.insert( new Product( "Fish Tank",
+            ksession.insert( new Product( "Fish Tank",
                                                25 ) );
-            statefulKnowledgeSession.insert( new Product( "Fish Food",
+            ksession.insert( new Product( "Fish Food",
                                                2 ) );
             
-            statefulKnowledgeSession.insert( new Product( "Fish Food Sample",
+            ksession.insert( new Product( "Fish Food Sample",
                                                0 ) );            
            
 
-            statefulKnowledgeSession.insert( order );
-            statefulKnowledgeSession.fireAllRules();
+            ksession.insert( order );
+            ksession.fireAllRules();
 
             //returns the state of the cart
             return order.toString();

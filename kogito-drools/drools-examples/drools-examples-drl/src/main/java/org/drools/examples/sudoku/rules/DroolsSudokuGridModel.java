@@ -181,14 +181,14 @@ public class DroolsSudokuGridModel extends AbstractSudokuGridModel
 
         if ( solved ) {
             try {
-                KnowledgeBase validatorRuleBase = DroolsUtil.getInstance().readRuleBase( SUDOKU_VALIDATOR_DRL );
+                KnowledgeBase kbase = DroolsUtil.getInstance().readRuleBase( SUDOKU_VALIDATOR_DRL );
 
-                StatefulKnowledgeSession validatorStatefulSession = validatorRuleBase.newStatefulKnowledgeSession();
+                StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
                 List issues = new ArrayList();
-                validatorStatefulSession.setGlobal( "issues",
+                ksession.setGlobal( "issues",
                                                     issues );
-                insertAllCellValues( validatorStatefulSession );
-                validatorStatefulSession.fireAllRules();
+                insertAllCellValues( ksession );
+                ksession.fireAllRules();
 
                 if ( issues.isEmpty() ) {
                     System.out.println( "Sucessfully Validated Solution" );

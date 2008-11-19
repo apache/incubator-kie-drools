@@ -24,45 +24,45 @@ public class HelloWorldExample {
         //read in the source
         final Reader source = new InputStreamReader( HelloWorldExample.class.getResourceAsStream( "HelloWorld.drl" ) );
 
-        final KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
         //this will parse and compile in one step
-        builder.addResource( source,
+        kbuilder.addResource( source,
                              KnowledgeType.DRL );
 
         // Check the builder for errors
-        if ( builder.hasErrors() ) {
-            System.out.println( builder.getErrors().toString() );
+        if ( kbuilder.hasErrors() ) {
+            System.out.println( kbuilder.getErrors().toString() );
             throw new RuntimeException( "Unable to compile \"HelloWorld.drl\"." );
         }
 
         //get the compiled package (which is serializable)
-        final Collection<KnowledgePackage> pkgs = builder.getKnowledgePackages();
+        final Collection<KnowledgePackage> pkgs = kbuilder.getKnowledgePackages();
 
         //add the package to a rulebase (deploy the rule package).
-        final KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
-        knowledgeBase.addKnowledgePackages( pkgs );
+        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( pkgs );
 
-        final StatefulKnowledgeSession session = knowledgeBase.newStatefulKnowledgeSession();
-        session.setGlobal( "list",
+        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.setGlobal( "list",
                            new ArrayList() );
 
         //        session.addEventListener( new DebugAgendaEventListener() );
         //        session.addEventListener( new DebugWorkingMemoryEventListener() );
 
-        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( session );
+        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( ksession );
         logger.setFileName( "log/helloworld" );
 
         final Message message = new Message();
         message.setMessage( "Hello World" );
         message.setStatus( Message.HELLO );
-        session.insert( message );
+        ksession.insert( message );
 
-        session.fireAllRules();
+        ksession.fireAllRules();
 
         logger.writeToDisk();
 
-        session.dispose();
+        ksession.dispose();
     }
 
     public static class Message {

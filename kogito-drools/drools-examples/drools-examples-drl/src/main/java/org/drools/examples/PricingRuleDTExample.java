@@ -28,26 +28,26 @@ public class PricingRuleDTExample {
 
     public int executeExample() throws Exception {
 
-        DecisionTableConfiguration conf = KnowledgeBuilderFactory.newDecisionTableConfiguration();
-        conf.setInputType( DecisionTableInputType.XLS );
+        DecisionTableConfiguration dtableconfiguration = KnowledgeBuilderFactory.newDecisionTableConfiguration();
+        dtableconfiguration.setInputType( DecisionTableInputType.XLS );
 
-        KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        builder.addResource( new InputStreamReader( getSpreadsheetStream(),
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.addResource( new InputStreamReader( getSpreadsheetStream(),
                                                     "windows-1252" ),
                              KnowledgeType.DTABLE,
-                             conf );
+                             dtableconfiguration );
 
-        KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
-        knowledgeBase.addKnowledgePackages( builder.getKnowledgePackages() );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         // typical decision tables are used statelessly
-        StatelessKnowledgeSession session = knowledgeBase.newStatelessKnowledgeSession();
+        StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
 
         //now create some test data
         Driver driver = new Driver();
         Policy policy = new Policy();
 
-        session.executeObject( new Object[]{driver, policy} );
+        ksession.executeObject( new Object[]{driver, policy} );
 
         System.out.println( "BASE PRICE IS: " + policy.getBasePrice() );
         System.out.println( "DISCOUNT IS: " + policy.getDiscountPercent() );

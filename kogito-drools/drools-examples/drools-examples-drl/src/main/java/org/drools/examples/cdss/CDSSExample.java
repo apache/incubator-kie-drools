@@ -25,26 +25,26 @@ public class CDSSExample {
         try {
 
             //load up the rulebase
-            KnowledgeBase knowledgeBase = readRule();
+            KnowledgeBase kbase = readRule();
 
-            StatefulKnowledgeSession workingMemory = knowledgeBase.newStatefulKnowledgeSession();
-            WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( workingMemory );
+            StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+            WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( ksession );
 
             // set globals
             RecommendationService recommendationService = new RecommendationService();
-            workingMemory.setGlobal( "recommendationService",
+            ksession.setGlobal( "recommendationService",
                                      recommendationService );
 
             // create patient
             Patient patient = new Patient();
             patient.setName( "John Doe" );
             patient.setAge( 20 );
-            workingMemory.insert( patient );
+            ksession.insert( patient );
 
             // Go!
             Diagnose diagnose = new Diagnose( Terminology.DIAGNOSE_X );
-            workingMemory.insert( diagnose );
-            workingMemory.fireAllRules();
+            ksession.insert( diagnose );
+            ksession.fireAllRules();
 
             // Print out recommendations
             List recommendations = recommendationService.getRecommendations();
@@ -55,8 +55,8 @@ public class CDSSExample {
 
             // Simulate a diagnose: incomplete results
             diagnose = new Diagnose( Terminology.DIAGNOSE_X_TYPE_UNKNOWN );
-            workingMemory.insert( diagnose );
-            workingMemory.fireAllRules();
+            ksession.insert( diagnose );
+            ksession.fireAllRules();
 
             // Print out recommendations
             recommendations = recommendationService.getRecommendations();
@@ -67,8 +67,8 @@ public class CDSSExample {
 
             // Simulate a diagnose: type2
             diagnose = new Diagnose( Terminology.DIAGNOSE_X_TYPE2 );
-            workingMemory.insert( diagnose );
-            workingMemory.fireAllRules();
+            ksession.insert( diagnose );
+            ksession.fireAllRules();
 
             logger.writeToDisk();
 
@@ -78,26 +78,26 @@ public class CDSSExample {
     }
 
     private static KnowledgeBase readRule() throws Exception {
-        KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Reader reader = new InputStreamReader( CDSSExample.class.getResourceAsStream( "/org/drools/examples/cdss/GenericRules.drl" ) );
-        builder.addResource( reader,
+        kbuilder.addResource( reader,
                              KnowledgeType.DRL );
         reader = new InputStreamReader( CDSSExample.class.getResourceAsStream( "/org/drools/examples/cdss/ClinicalPathwayX.drl" ) );
-        builder.addResource( reader,
+        kbuilder.addResource( reader,
                              KnowledgeType.DRL );
         reader = new InputStreamReader( CDSSExample.class.getResourceAsStream( "/org/drools/examples/cdss/ClinicalPathwayX.rf" ) );
-        builder.addResource( reader,
+        kbuilder.addResource( reader,
                              KnowledgeType.DRF );
         reader = new InputStreamReader( CDSSExample.class.getResourceAsStream( "/org/drools/examples/cdss/TreatmentX.rf" ) );
-        builder.addResource( reader,
+        kbuilder.addResource( reader,
                              KnowledgeType.DRF );
         reader = new InputStreamReader( CDSSExample.class.getResourceAsStream( "/org/drools/examples/cdss/TreatmentY.rf" ) );
-        builder.addResource( reader,
+        kbuilder.addResource( reader,
                              KnowledgeType.DRF );
 
-        KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
-        knowledgeBase.addKnowledgePackages( builder.getKnowledgePackages() );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        return knowledgeBase;
+        return kbase;
     }
 }

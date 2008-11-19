@@ -10,50 +10,48 @@ import org.drools.builder.KnowledgeType;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 
-
 public class ShoppingExample {
 
     public static final void main(String[] args) throws Exception {
-        final KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        builder.addResource( new InputStreamReader( ShoppingExample.class.getResourceAsStream( "Shopping.drl" ) ) ,KnowledgeType.DRL);
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.addResource( new InputStreamReader( ShoppingExample.class.getResourceAsStream( "Shopping.drl" ) ),
+                              KnowledgeType.DRL );
 
-        final KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
-        knowledgeBase.addKnowledgePackages( builder.getKnowledgePackages() );
+        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        final StatefulKnowledgeSession session = knowledgeBase.newStatefulKnowledgeSession();
+        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         Customer mark = new Customer( "mark",
                                       0 );
-        session.insert( mark );
+        ksession.insert( mark );
 
         Product shoes = new Product( "shoes",
                                      60 );
-        session.insert( shoes );
+        ksession.insert( shoes );
 
         Product hat = new Product( "hat",
                                    60 );
-        session.insert( hat );
+        ksession.insert( hat );
 
-        session.insert( new Purchase( mark,
-                                      shoes ) );
-        
-        
-        
-        FactHandle hatPurchaseHandle = session.insert( new Purchase( mark,
-                                                                     hat ) );
+        ksession.insert( new Purchase( mark,
+                                       shoes ) );
 
-        session.fireAllRules();
+        FactHandle hatPurchaseHandle = ksession.insert( new Purchase( mark,
+                                                                      hat ) );
 
-        session.retract( hatPurchaseHandle );
+        ksession.fireAllRules();
+
+        ksession.retract( hatPurchaseHandle );
         System.out.println( "Customer mark has returned the hat" );
-        session.fireAllRules();
+        ksession.fireAllRules();
     }
-    
+
     public static class Customer {
         private String name;
-        
-        private int discount;
-            
+
+        private int    discount;
+
         public Customer(String name,
                         int discount) {
             this.name = name;
@@ -71,19 +69,19 @@ public class ShoppingExample {
         public void setDiscount(int discount) {
             this.discount = discount;
         }
-                       
+
     }
-    
+
     public static class Discount {
         private Customer customer;
-        private int amount;
+        private int      amount;
 
         public Discount(Customer customer,
                         int amount) {
             this.customer = customer;
             this.amount = amount;
-        }    
-        
+        }
+
         public Customer getCustomer() {
             return customer;
         }
@@ -91,46 +89,45 @@ public class ShoppingExample {
         public int getAmount() {
             return amount;
         }
-        
+
     }
 
     public static class Product {
         private String name;
-        private float price;
-        
+        private float  price;
+
         public Product(String name,
                        float price) {
             this.name = name;
             this.price = price;
         }
-        
+
         public String getName() {
             return name;
         }
-        
+
         public float getPrice() {
             return price;
         }
-        
-        
+
     }
-    
+
     public static class Purchase {
         private Customer customer;
-        private Product product;
-        
+        private Product  product;
+
         public Purchase(Customer customer,
                         Product product) {
             this.customer = customer;
             this.product = product;
         }
-        
+
         public Customer getCustomer() {
             return customer;
         }
-        
+
         public Product getProduct() {
             return product;
-        }            
-    }    
+        }
+    }
 }

@@ -14,31 +14,31 @@ import org.drools.runtime.StatefulKnowledgeSession;
 public class NumberGuessExample {
 
     public static final void main(String[] args) throws Exception {
-        final KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        builder.addResource( new InputStreamReader( ShoppingExample.class.getResourceAsStream( "NumberGuess.drl" ) ),
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.addResource( new InputStreamReader( ShoppingExample.class.getResourceAsStream( "NumberGuess.drl" ) ),
                              KnowledgeType.DRL );
-        builder.addResource( new InputStreamReader( ShoppingExample.class.getResourceAsStream( "NumberGuess.rf" ) ),
+        kbuilder.addResource( new InputStreamReader( ShoppingExample.class.getResourceAsStream( "NumberGuess.rf" ) ),
                              KnowledgeType.DRF );
 
-        final KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
-        knowledgeBase.addKnowledgePackages( builder.getKnowledgePackages() );
+        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        final StatefulKnowledgeSession session = knowledgeBase.newStatefulKnowledgeSession();
+        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( session );
+        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( ksession );
         logger.setFileName( "log/numberguess" );
 
-        session.insert( new GameRules( 100,
+        ksession.insert( new GameRules( 100,
                                        5 ) );
-        session.insert( new RandomNumber() );
-        session.insert( new Game() );
+        ksession.insert( new RandomNumber() );
+        ksession.insert( new Game() );
 
-        session.startProcess( "Number Guess" );
-        session.fireAllRules();
+        ksession.startProcess( "Number Guess" );
+        ksession.fireAllRules();
 
         logger.writeToDisk();
 
-        session.dispose();
+        ksession.dispose();
     }
 
     public static class RandomNumber {
