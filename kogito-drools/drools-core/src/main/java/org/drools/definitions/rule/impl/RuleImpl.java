@@ -1,4 +1,4 @@
-package org.drools.knowledge.definitions.rule.impl;
+package org.drools.definitions.rule.impl;
 
 import org.drools.rule.Rule;
 

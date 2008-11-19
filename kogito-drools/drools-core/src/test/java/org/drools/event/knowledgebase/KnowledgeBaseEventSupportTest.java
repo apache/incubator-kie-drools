@@ -38,7 +38,7 @@ import org.drools.base.ValueType;
 import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
 import org.drools.base.evaluators.Operator;
 import org.drools.definition.KnowledgePackage;
-import org.drools.knowledge.definitions.impl.KnowledgePackageImp;
+import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Package;
 import org.drools.rule.Pattern;

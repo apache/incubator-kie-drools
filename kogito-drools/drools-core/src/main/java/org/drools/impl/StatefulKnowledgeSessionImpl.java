@@ -52,6 +52,7 @@ import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.process.WorkItemManager;
+import org.drools.runtime.rule.Agenda;
 import org.drools.runtime.rule.AgendaFilter;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
@@ -553,5 +554,10 @@ public class StatefulKnowledgeSessionImpl
         public boolean accept(Activation activation) {
             return filter.accept( activation );
         }               
+    }
+
+    public Agenda getAgenda() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }
