@@ -86,8 +86,7 @@ rule "reset calculate"
 	agenda-group "reset calculate"
 when
 then
-	WorkingMemory wm = drools.getWorkingMemory();
-	wm.clearAgendaGroup( "calculate" );
+	drools.getKnowledgeRuntime().getAgenda().getAgendaGroup( "calculate" ).clear();
 end
 
 rule "kill"

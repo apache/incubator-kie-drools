@@ -12,6 +12,7 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.event.AgendaGroupPoppedEvent;
 import org.drools.event.DefaultAgendaEventListener;
 import org.drools.examples.conway.patterns.ConwayPattern;
+import org.drools.runtime.StatefulKnowledgeSession;
 
 /**
  * A <code>CellGrid</code> represents a grid of <code>Cell</code> objects.
@@ -24,7 +25,7 @@ public class CellGridImpl implements CellGrid {
 
     private final Cell[][]     cells;
 
-    private final StatefulSession    session;
+    private final StatefulKnowledgeSession    session;
 
     private final ConwayRuleDelegate delegate;
 
