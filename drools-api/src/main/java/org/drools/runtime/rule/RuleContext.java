@@ -5,8 +5,8 @@ import org.drools.runtime.KnowledgeRuntime;
 
 public interface RuleContext {
     Rule getRule();
-    
+
     Activation getActivation();
-    
-    KnowledgeRuntime getKnowledgeRuntime();            
+
+    KnowledgeRuntime getKnowledgeRuntime();
 }

@@ -1,7 +1,5 @@
 package org.drools.event.rule;
 
-import org.drools.runtime.rule.AgendaGroup;
-
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -18,6 +16,8 @@ import org.drools.runtime.rule.AgendaGroup;
  * limitations under the License.
  */
 
-public interface AgendaGroupPoppedEvent extends AgendaGroupEvent {
+public interface AgendaGroupPoppedEvent
+    extends
+    AgendaGroupEvent {
 
 }

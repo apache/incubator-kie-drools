@@ -1,7 +1,7 @@
 package org.drools.runtime.rule;
 
 public interface AgendaFilter {
-    
+
     /**
      * Determine if a given activation should be fired.
      * 

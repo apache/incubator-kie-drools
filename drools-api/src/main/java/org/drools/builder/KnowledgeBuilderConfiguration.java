@@ -2,7 +2,6 @@ package org.drools.builder;
 
 import org.drools.PropertiesConfiguration;
 
-
 /**
  * This class configures the knowledge package builder and compiler.
  * Dialects and their DialectConfigurations  are handled by the DialectRegistry
@@ -32,6 +31,8 @@ import org.drools.PropertiesConfiguration;
  * drools.accumulate.function.count = org.drools.base.accumulators.CountAccumulateFunction
  * drools.accumulate.function.sum = org.drools.base.accumulators.SumAccumulateFunction
  */
-public interface KnowledgeBuilderConfiguration extends PropertiesConfiguration {
+public interface KnowledgeBuilderConfiguration
+    extends
+    PropertiesConfiguration {
 
 }

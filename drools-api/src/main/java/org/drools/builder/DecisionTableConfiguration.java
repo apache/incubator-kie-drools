@@ -1,12 +1,14 @@
 package org.drools.builder;
 
-public interface DecisionTableConfiguration extends ResourceConfiguration {
-    
+public interface DecisionTableConfiguration
+    extends
+    ResourceConfiguration {
+
     void setInputType(DecisionTableInputType inputType);
-    
-    DecisionTableInputType getInputType();    
-    
+
+    DecisionTableInputType getInputType();
+
     void setWorksheetName(String name);
-    
-    String getWorksheetName();       
+
+    String getWorksheetName();
 }

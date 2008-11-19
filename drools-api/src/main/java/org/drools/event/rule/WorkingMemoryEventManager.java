@@ -1,7 +1,6 @@
 package org.drools.event.rule;
 
 import java.util.Collection;
-import java.util.List;
 
 public interface WorkingMemoryEventManager {
 
@@ -27,7 +26,7 @@ public interface WorkingMemoryEventManager {
      * @return listeners The listeners.
      */
     public Collection<WorkingMemoryEventListener> getWorkingMemoryEventListeners();
-    
+
     /**
      * Add an event listener.
      * 
@@ -49,6 +48,6 @@ public interface WorkingMemoryEventManager {
      * 
      * @return listeners The listeners.
      */
-    public Collection<AgendaEventListener> getAgendaEventListeners();    
+    public Collection<AgendaEventListener> getAgendaEventListeners();
 
 }

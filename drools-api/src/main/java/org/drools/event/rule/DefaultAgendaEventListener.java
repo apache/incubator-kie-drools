@@ -1,6 +1,5 @@
 package org.drools.event.rule;
 
-
 public class DefaultAgendaEventListener
     implements
     AgendaEventListener {

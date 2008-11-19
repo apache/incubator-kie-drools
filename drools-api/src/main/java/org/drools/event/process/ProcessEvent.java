@@ -19,8 +19,10 @@ package org.drools.event.process;
 import org.drools.event.KnowledgeRuntimeEvent;
 import org.drools.runtime.process.ProcessInstance;
 
-public interface ProcessEvent extends KnowledgeRuntimeEvent {
-	
-	ProcessInstance getProcessInstance();
+public interface ProcessEvent
+    extends
+    KnowledgeRuntimeEvent {
+
+    ProcessInstance getProcessInstance();
 
 }

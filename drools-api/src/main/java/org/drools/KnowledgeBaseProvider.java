@@ -3,15 +3,15 @@ package org.drools;
 import java.util.Properties;
 
 public interface KnowledgeBaseProvider {
-    
+
     /**
      * Instantiate and return a new KnowledgeBaseConfiguration
      * 
      * @return
      *     the KnowledgeBaseConfiguration
      */
-    public KnowledgeBaseConfiguration newKnowledgeBaseConfiguration(); 
-    
+    public KnowledgeBaseConfiguration newKnowledgeBaseConfiguration();
+
     /**
      * Instantiate and return a new KnowledgeBaseConfiguration
      * 
@@ -22,8 +22,9 @@ public interface KnowledgeBaseProvider {
      * @return
      *     The KnowledgeBaseConfiguration
      */
-    public KnowledgeBaseConfiguration newKnowledgeBaseConfiguration(Properties properties, ClassLoader classLoader);   
-    
+    public KnowledgeBaseConfiguration newKnowledgeBaseConfiguration(Properties properties,
+                                                                    ClassLoader classLoader);
+
     /**
      * Instantiate and return a KnowledgeBase using a default KnowledgeBaseConfiguration
      * 
@@ -31,7 +32,7 @@ public interface KnowledgeBaseProvider {
      *      The KnowledgeBase
      */
     KnowledgeBase newKnowledgeBase();
-    
+
     /**
      * Instantiate and return a KnowledgeBase using the given KnowledgeBaseConfiguration
      * 
@@ -40,6 +41,6 @@ public interface KnowledgeBaseProvider {
      * @return
      *     The KnowledgeBase
      */
-    KnowledgeBase newKnowledgeBase(KnowledgeBaseConfiguration conf);   
-    
+    KnowledgeBase newKnowledgeBase(KnowledgeBaseConfiguration conf);
+
 }

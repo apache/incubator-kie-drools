@@ -18,8 +18,6 @@ package org.drools.event.rule;
 
 import java.util.EventListener;
 
-import org.drools.runtime.KnowledgeRuntime;
-
 public interface WorkingMemoryEventListener
     extends
     EventListener {

@@ -16,6 +16,8 @@ package org.drools.event.process;
  * limitations under the License.
  */
 
-public interface ProcessNodeTriggeredEvent extends ProcessNodeEvent {
+public interface ProcessNodeTriggeredEvent
+    extends
+    ProcessNodeEvent {
 
 }

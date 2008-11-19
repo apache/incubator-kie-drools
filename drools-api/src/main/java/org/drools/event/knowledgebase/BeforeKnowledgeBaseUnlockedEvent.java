@@ -18,6 +18,8 @@ import org.drools.KnowledgeBase;
  * limitations under the License.
  */
 
-public interface BeforeKnowledgeBaseUnlockedEvent extends KnowledgeBaseEvent {
+public interface BeforeKnowledgeBaseUnlockedEvent
+    extends
+    KnowledgeBaseEvent {
     KnowledgeBase getKnowledgeBase();
 }

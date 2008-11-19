@@ -24,6 +24,8 @@ import org.drools.PropertiesConfiguration;
  * drools.keepReference = <true|false>
  * drools.clockType = <pseudo|realtime|heartbeat|implicit>
  */
-public interface KnowledgeSessionConfiguration extends PropertiesConfiguration  {
+public interface KnowledgeSessionConfiguration
+    extends
+    PropertiesConfiguration {
 
 }

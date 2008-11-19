@@ -6,16 +6,25 @@ import java.util.Collection;
 
 import org.drools.definition.KnowledgePackage;
 
-public interface KnowledgeBuilder extends RuleBuilder, ProcessBuilder {
-    
-    void addResource(URL url, KnowledgeType type);
-    
-    void addResource(URL url, KnowledgeType type, ResourceConfiguration configuration);
-    
-    void addResource(Reader reader, KnowledgeType type);   
-    
-    void addResource(Reader reader, KnowledgeType type, ResourceConfiguration configuration);    
-    
+public interface KnowledgeBuilder
+    extends
+    RuleBuilder,
+    ProcessBuilder {
+
+    void addResource(URL url,
+                     KnowledgeType type);
+
+    void addResource(URL url,
+                     KnowledgeType type,
+                     ResourceConfiguration configuration);
+
+    void addResource(Reader reader,
+                     KnowledgeType type);
+
+    void addResource(Reader reader,
+                     KnowledgeType type,
+                     ResourceConfiguration configuration);
+
     /**
      * Returns the built packages.
      * 
@@ -26,19 +35,18 @@ public interface KnowledgeBuilder extends RuleBuilder, ProcessBuilder {
      * @return
      *     The Collection of KnowledgePackages
      */
-	Collection<KnowledgePackage> getKnowledgePackages();
-	
-	/**
-	 * If errors occurred during the build process they are added here
-	 * @return
-	 */
-	boolean hasErrors();
-	
-	/**
-	 * Return errors that occurred during the build process.
-	 * @return
-	 */
-	KnowledgeBuilderErrors getErrors();
-	
-	
+    Collection<KnowledgePackage> getKnowledgePackages();
+
+    /**
+     * If errors occurred during the build process they are added here
+     * @return
+     */
+    boolean hasErrors();
+
+    /**
+     * Return errors that occurred during the build process.
+     * @return
+     */
+    KnowledgeBuilderErrors getErrors();
+
 }

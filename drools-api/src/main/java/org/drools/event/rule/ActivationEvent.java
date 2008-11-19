@@ -19,8 +19,9 @@ package org.drools.event.rule;
 import org.drools.event.KnowledgeRuntimeEvent;
 import org.drools.runtime.rule.Activation;
 
-
-public interface ActivationEvent extends KnowledgeRuntimeEvent {
+public interface ActivationEvent
+    extends
+    KnowledgeRuntimeEvent {
 
     public Activation getActivation();
 

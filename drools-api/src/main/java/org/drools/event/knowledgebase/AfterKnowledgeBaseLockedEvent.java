@@ -18,6 +18,8 @@ package org.drools.event.knowledgebase;
 
 import org.drools.definition.rule.Rule;
 
-public interface AfterKnowledgeBaseLockedEvent extends KnowledgeBaseEvent {
+public interface AfterKnowledgeBaseLockedEvent
+    extends
+    KnowledgeBaseEvent {
     Rule getRule();
 }

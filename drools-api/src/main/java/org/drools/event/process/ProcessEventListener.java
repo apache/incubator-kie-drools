@@ -18,7 +18,9 @@ package org.drools.event.process;
 
 import java.util.EventListener;
 
-public interface ProcessEventListener extends EventListener {
+public interface ProcessEventListener
+    extends
+    EventListener {
 
     void beforeProcessStarted(ProcessStartedEvent event);
 

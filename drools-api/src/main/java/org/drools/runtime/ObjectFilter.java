@@ -6,7 +6,7 @@ package org.drools.runtime;
  *
  */
 public interface ObjectFilter {
-    
+
     /**
      * Returning true means the Iterator accepts, and thus returns, the current Object.
      * @param object

@@ -6,10 +6,10 @@ import org.drools.definition.process.Process;
 import org.drools.definition.rule.Rule;
 
 public interface KnowledgePackage {
-	String getName();
-	
+    String getName();
+
     Collection<Rule> getRules();
-    
+
     Collection<Process> getProcesses();
-    
+
 }

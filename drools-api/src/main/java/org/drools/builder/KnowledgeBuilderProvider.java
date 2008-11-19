@@ -9,7 +9,7 @@ public interface KnowledgeBuilderProvider {
      *     the KnowledgeBuilderConfiguration
      */
     public KnowledgeBuilderConfiguration newKnowledgeBuilderConfiguration();
-    
+
     /**
      * Instantiate and return a new KnowledgeBuilderConfiguration
      * 
@@ -19,8 +19,9 @@ public interface KnowledgeBuilderProvider {
      *     Provided ClassLoader, can be null and then ClassLoader defaults to Thread.currentThread().getContextClassLoader()
      * @return
      */
-    public KnowledgeBuilderConfiguration newKnowledgeBuilderConfiguration(Properties properties, ClassLoader classLoader);
-    
+    public KnowledgeBuilderConfiguration newKnowledgeBuilderConfiguration(Properties properties,
+                                                                          ClassLoader classLoader);
+
     /**
      * DecisionTables need to take a configuration of the InputType and XLS based
      * ones can also take a Worksheet name.
@@ -28,8 +29,8 @@ public interface KnowledgeBuilderProvider {
      * @return
      *     The DecisionTableConfiguration
      */
-    public DecisionTableConfiguration newDecisionTableConfiguration();    
-    
+    public DecisionTableConfiguration newDecisionTableConfiguration();
+
     /**
      * Instantiate and return a new KnowledgeBuilder using the default KnowledgeBuilderConfiguration
      * 
@@ -37,7 +38,7 @@ public interface KnowledgeBuilderProvider {
      *     The KnowledgeBuilder
      */
     KnowledgeBuilder newKnowledgeBuilder();
-    
+
     /**
      * Instantiate and return a new KnowledgeBuilder using the given KnowledgeBuilderConfiguration
      * 

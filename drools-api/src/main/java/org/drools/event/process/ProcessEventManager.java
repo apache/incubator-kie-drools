@@ -3,7 +3,7 @@ package org.drools.event.process;
 import java.util.Collection;
 
 public interface ProcessEventManager {
-	
+
     /**
      * Add an event listener.
      * 
@@ -26,5 +26,5 @@ public interface ProcessEventManager {
      * @return listeners The listeners.
      */
     public Collection<ProcessEventListener> getProcessEventListeners();
-    
+
 }

@@ -18,7 +18,6 @@ package org.drools.event.rule;
 
 import java.util.EventListener;
 
-
 public interface AgendaEventListener
     extends
     EventListener {
