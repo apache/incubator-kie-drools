@@ -136,7 +136,7 @@ public class MVELDialect
     private int                                            languageLevel;
     public static final Object                             COMPILER_LOCK                  = new Object();
     
-    private static AtomicInteger                           nameCounter;
+    private static AtomicInteger                           nameCounter = new AtomicInteger();
 
     public MVELDialect(PackageBuilder builder,
                        PackageRegistry pkgRegistry,
