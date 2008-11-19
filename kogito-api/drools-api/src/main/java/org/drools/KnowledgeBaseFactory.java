@@ -15,11 +15,11 @@ public class KnowledgeBaseFactory {
         return getsetKnowledgeBaseProvider().newKnowledgeBase(conf);        
     }
     
-    public static KnowledgeBaseConfiguration newKnowledgBaseConfiguration() {
+    public static KnowledgeBaseConfiguration newKnowledgeBaseConfiguration() {
         return getsetKnowledgeBaseProvider().newKnowledgeBaseConfiguration();
     }
     
-    public static KnowledgeBaseConfiguration newKnowledgBaseConfiguration(Properties properties, ClassLoader classLoader) {
+    public static KnowledgeBaseConfiguration newKnowledgeBaseConfiguration(Properties properties, ClassLoader classLoader) {
         return getsetKnowledgeBaseProvider().newKnowledgeBaseConfiguration( properties, classLoader );
     }    
     
