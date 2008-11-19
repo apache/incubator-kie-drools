@@ -27,7 +27,7 @@ import org.drools.ProviderInitializationException;
  * </p>
  * 
  * <p>
- * CONFIG OPTIONS (to be passed in as properties):<br/>
+ * CONFIG OPTIONS (to be passed in as properties):
  * <ul>
  *  <li><code>newInstance</code>: setting this to "true" means that each time the rules are changed
  *   a new instance of the KnowledeBase is created (as opposed to updated in place)
