@@ -18,7 +18,9 @@ public class RuleSetNodeHandler extends AbstractNodeHandler {
         super.handleNode(node, element, uri, localName, parser);
         RuleSetNode ruleSetNode = (RuleSetNode) node;
         String ruleFlowGroup = element.getAttribute("ruleFlowGroup");
-        ruleSetNode.setRuleFlowGroup(ruleFlowGroup);
+        if (ruleFlowGroup != null && ruleFlowGroup.length() > 0) {
+        	ruleSetNode.setRuleFlowGroup(ruleFlowGroup);
+        }
     }
 
     @SuppressWarnings("unchecked")

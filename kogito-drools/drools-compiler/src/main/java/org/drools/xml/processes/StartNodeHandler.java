@@ -41,8 +41,8 @@ public class StartNodeHandler extends AbstractNodeHandler {
 			    	if (inMappings != null && !inMappings.isEmpty()) {
 			    		for (Map.Entry<String, String> entry: inMappings.entrySet()) {
 				    		xmlDump.append("          <mapping type=\"in\" from=\""
-			    				+ XmlDumper.replaceIllegalChars(entry.getKey())
-			    				+ "\" to=\"" + entry.getValue() + "\" />" + EOL);
+			    				+ XmlDumper.replaceIllegalChars(entry.getValue())
+			    				+ "\" to=\"" + entry.getKey() + "\" />" + EOL);
 				    	}
 			    	}
 					xmlDump.append("         </trigger>" + EOL);
@@ -60,6 +60,14 @@ public class StartNodeHandler extends AbstractNodeHandler {
 			        	}
 			        }
 			        xmlDump.append("           </eventFilters>" + EOL);
+					Map<String, String> inMappings = trigger.getInMappings();
+			    	if (inMappings != null && !inMappings.isEmpty()) {
+			    		for (Map.Entry<String, String> entry: inMappings.entrySet()) {
+				    		xmlDump.append("          <mapping type=\"in\" from=\""
+			    				+ XmlDumper.replaceIllegalChars(entry.getValue())
+			    				+ "\" to=\"" + entry.getKey() + "\" />" + EOL);
+				    	}
+			    	}
 					xmlDump.append("         </trigger>" + EOL);
 				} else {
 					throw new IllegalArgumentException(

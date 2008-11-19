@@ -20,7 +20,7 @@ public class TimerNodeHandler extends AbstractNodeHandler {
         TimerNode timerNode = (TimerNode) node;
         String delay = element.getAttribute("delay");
         String period = element.getAttribute("period");
-        if (delay != null || period != null) {
+        if ((delay != null && delay.length() > 0) || (period != null && period.length() > 0)) {
             Timer timer = timerNode.getTimer();
             if (timer == null) {
                 timer = new Timer();

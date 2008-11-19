@@ -21,6 +21,7 @@ public class TriggerHandler extends BaseAbstractHandler implements Handler {
 
             this.validPeers = new HashSet<Class<?>>();         
             this.validPeers.add( null );
+            this.validPeers.add( Trigger.class );
 
             this.allowNesting = false;
         }

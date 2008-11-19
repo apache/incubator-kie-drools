@@ -1,5 +1,9 @@
 package org.drools.xml.processes;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 
 import org.drools.process.core.ParameterDefinition;
@@ -77,7 +81,16 @@ public class WorkItemNodeHandler extends AbstractNodeHandler {
     protected void visitWork(Work work, StringBuffer xmlDump, boolean includeMeta) {
         if (work != null) {
             xmlDump.append("      <work name=\"" + work.getName() + "\" >" + EOL);
-            for (ParameterDefinition paramDefinition: work.getParameterDefinitions()) {
+            List<ParameterDefinition> parameterDefinitions =
+            	new ArrayList<ParameterDefinition>(work.getParameterDefinitions());
+            Collections.sort(parameterDefinitions, new Comparator<ParameterDefinition>() {
+				public int compare(ParameterDefinition o1,
+						ParameterDefinition o2) {
+					return o1.getName().compareTo(o2.getName());
+				}
+            	
+            });
+            for (ParameterDefinition paramDefinition: parameterDefinitions) {
             	DataType dataType = paramDefinition.getType();
                 xmlDump.append("        <parameter name=\"" + paramDefinition.getName() + "\" >" + EOL + "  ");
                 XmlWorkflowProcessDumper.visitDataType(dataType, xmlDump);
