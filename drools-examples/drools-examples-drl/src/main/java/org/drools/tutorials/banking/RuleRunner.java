@@ -20,25 +20,25 @@ public class RuleRunner {
     public void runRules(String[] rules,
                          Object[] facts) throws Exception {
 
-        KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
-        KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
         for ( int i = 0; i < rules.length; i++ ) {
             String ruleFile = rules[i];
             System.out.println( "Loading file: " + ruleFile );            
-            builder.addResource( new InputStreamReader( RuleRunner.class.getResourceAsStream( ruleFile ) ), KnowledgeType.DRL );
+            kbuilder.addResource( new InputStreamReader( RuleRunner.class.getResourceAsStream( ruleFile ) ), KnowledgeType.DRL );
         }
 
-        Collection<KnowledgePackage> pkgs = builder.getKnowledgePackages();
-        knowledgeBase.addKnowledgePackages( pkgs );
-        StatefulKnowledgeSession statefullKnowledgeSession = knowledgeBase.newStatefulKnowledgeSession();
+        Collection<KnowledgePackage> pkgs = kbuilder.getKnowledgePackages();
+        kbase.addKnowledgePackages( pkgs );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         for ( int i = 0; i < facts.length; i++ ) {
             Object fact = facts[i];
             System.out.println( "Inserting fact: " + fact );
-            statefullKnowledgeSession.insert( fact );
+            ksession.insert( fact );
         }
 
-        statefullKnowledgeSession.fireAllRules();
+        ksession.fireAllRules();
     }
 }

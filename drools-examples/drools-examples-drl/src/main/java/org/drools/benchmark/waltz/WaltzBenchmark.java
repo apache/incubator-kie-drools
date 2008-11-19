@@ -39,18 +39,18 @@ import org.drools.runtime.rule.WorkingMemory;
 public abstract class WaltzBenchmark {
 
     public static void main(final String[] args) throws Exception {
-        KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        builder.addResource( new InputStreamReader( WaltzBenchmark.class.getResourceAsStream( "waltz.drl" ) ),
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.addResource( new InputStreamReader( WaltzBenchmark.class.getResourceAsStream( "waltz.drl" ) ),
                              KnowledgeType.DRL );
-        Collection<KnowledgePackage> pkgs = builder.getKnowledgePackages();
+        Collection<KnowledgePackage> pkgs = kbuilder.getKnowledgePackages();
         //add the package to a rulebase
-        KnowledgeBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KnowledgeBaseConfiguration kbaseConfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         //conf.setAlphaMemory( true );
         //            conf.setShadowProxy( false );
-        final KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase( conf );
-        knowledgeBase.addKnowledgePackages( pkgs );
+        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kbaseConfiguration );
+        kbase.addKnowledgePackages( pkgs );
 
-        StatefulKnowledgeSession session = knowledgeBase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
 
         String filename;
         if ( args.length != 0 ) {

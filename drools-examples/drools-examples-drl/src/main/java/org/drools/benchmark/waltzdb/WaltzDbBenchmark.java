@@ -19,21 +19,21 @@ import org.drools.runtime.StatefulKnowledgeSession;
 
 public class WaltzDbBenchmark {
     public static void main(final String[] args) throws Exception {
-        KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        builder.addResource( new InputStreamReader( WaltzDbBenchmark.class.getResourceAsStream( "waltzdb.drl" ) ),
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.addResource( new InputStreamReader( WaltzDbBenchmark.class.getResourceAsStream( "waltzdb.drl" ) ),
                              KnowledgeType.DRL );
-        Collection<KnowledgePackage> pkgs = builder.getKnowledgePackages();
+        Collection<KnowledgePackage> pkgs = kbuilder.getKnowledgePackages();
 
-        KnowledgeBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        conf.setProperty( "drools.removeIdentities", "true" );
+        KnowledgeBaseConfiguration kbaseConfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kbaseConfiguration.setProperty( "drools.removeIdentities", "true" );
 
-        final KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase( conf );
+        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kbaseConfiguration );
 //                final RuleBase ruleBase = RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
 //                                                               conf );
 
-        knowledgeBase.addKnowledgePackages( pkgs );
+        kbase.addKnowledgePackages( pkgs );
 
-        StatefulKnowledgeSession session = knowledgeBase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         java.util.List lines = WaltzDbBenchmark.loadLines( "waltzdb16.dat" ); //12,8,4
         java.util.List labels = WaltzDbBenchmark.loadLabels( "waltzdb16.dat" ); //12,8,4
@@ -41,22 +41,22 @@ public class WaltzDbBenchmark {
         Iterator iter = lines.iterator();
         while ( iter.hasNext() ) {
             Line line = (Line) iter.next();
-            session.insert( line );
+            ksession.insert( line );
             System.out.println( line.getP1() + " " + line.getP2() );
         }
 
         iter = labels.iterator();
         while ( iter.hasNext() ) {
             Label label = (Label) iter.next();
-            session.insert( label );
+            ksession.insert( label );
             System.out.println( label.getId() + " " + label.getType() );
         }
 
         Stage stage = new Stage( Stage.DUPLICATE );
-        session.insert( stage );
-        session.fireAllRules();
+        ksession.insert( stage );
+        ksession.fireAllRules();
         System.out.println( "Time: " + (System.currentTimeMillis() - now) );
-        session.dispose();
+        ksession.dispose();
 
     }
 

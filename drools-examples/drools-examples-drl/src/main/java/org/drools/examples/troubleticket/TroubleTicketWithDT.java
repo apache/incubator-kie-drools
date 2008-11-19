@@ -26,22 +26,22 @@ public class TroubleTicketWithDT {
 
     public void executeExample() throws Exception {
 
-        final DecisionTableConfiguration conf = KnowledgeBuilderFactory.newDecisionTableConfiguration();
-        conf.setInputType( DecisionTableInputType.XLS );
+        final DecisionTableConfiguration dtableconfiguration = KnowledgeBuilderFactory.newDecisionTableConfiguration();
+        dtableconfiguration.setInputType( DecisionTableInputType.XLS );
 
-        final KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        builder.addResource( new InputStreamReader( getSpreadsheetStream(),
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.addResource( new InputStreamReader( getSpreadsheetStream(),
                                                     "windows-1252" ),
                              KnowledgeType.DTABLE,
-                             conf );
+                             dtableconfiguration );
 
-        final KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
-        knowledgeBase.addKnowledgePackages( builder.getKnowledgePackages() );
+        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         // typical decision tables are used statelessly
-        StatefulKnowledgeSession session = knowledgeBase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( session );
+        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( ksession );
         logger.setFileName( "log/trouble_ticket" );
 
         final Customer a = new Customer( "A",
@@ -62,21 +62,21 @@ public class TroubleTicketWithDT {
         final Ticket t3 = new Ticket( c );
         final Ticket t4 = new Ticket( d );
 
-        session.insert( a );
-        session.insert( b );
-        session.insert( c );
-        session.insert( d );
+        ksession.insert( a );
+        ksession.insert( b );
+        ksession.insert( c );
+        ksession.insert( d );
 
-        session.insert( t1 );
-        session.insert( t2 );
-        final FactHandle ft3 = session.insert( t3 );
-        session.insert( t4 );
+        ksession.insert( t1 );
+        ksession.insert( t2 );
+        final FactHandle ft3 = ksession.insert( t3 );
+        ksession.insert( t4 );
 
-        session.fireAllRules();
+        ksession.fireAllRules();
 
         t3.setStatus( "Done" );
 
-        session.update( ft3,
+        ksession.update( ft3,
                         t3 );
 
         try {
@@ -88,7 +88,7 @@ public class TroubleTicketWithDT {
 
         System.err.println( "[[ awake ]]" );
 
-        session.dispose();
+        ksession.dispose();
 
         logger.writeToDisk();
 

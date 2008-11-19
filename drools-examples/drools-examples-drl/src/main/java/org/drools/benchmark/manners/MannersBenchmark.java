@@ -37,18 +37,18 @@ public class MannersBenchmark {
 	private int maxHobbies = 3;
 
 	public static void main(final String[] args) throws Exception {
-	    KnowledgeBuilderConfiguration config= KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+	    KnowledgeBuilderConfiguration kbuilderConfig= KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
 	    
-	    KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder(config);
-	    builder.addResource( new InputStreamReader(MannersBenchmark.class
+	    KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(kbuilderConfig);
+	    kbuilder.addResource( new InputStreamReader(MannersBenchmark.class
 				.getResourceAsStream("manners.drl")), KnowledgeType.DRL);
-	    Collection<KnowledgePackage> pkgs = builder.getKnowledgePackages();
+	    Collection<KnowledgePackage> pkgs = kbuilder.getKnowledgePackages();
 		
         // add the package to a rulebase
-	    final KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
-	    knowledgeBase.addKnowledgePackages( pkgs );
+	    final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+	    kbase.addKnowledgePackages( pkgs );
 
-	    StatefulKnowledgeSession session = knowledgeBase.newStatefulKnowledgeSession();
+	    StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
 		String filename;
 		if (args.length != 0) {
@@ -62,15 +62,15 @@ public class MannersBenchmark {
 		List list = getInputObjects(is);
 		for (Iterator it = list.iterator(); it.hasNext();) {
 			Object object = it.next();
-			session.insert(object);
+			ksession.insert(object);
 		}
 
-		session.insert(new Count(1));
+		ksession.insert(new Count(1));
 
 		long start = System.currentTimeMillis();
-		session.fireAllRules();
+		ksession.fireAllRules();
 		System.err.println(System.currentTimeMillis() - start);
-        session.dispose();
+        ksession.dispose();
 	}
 
 	/**

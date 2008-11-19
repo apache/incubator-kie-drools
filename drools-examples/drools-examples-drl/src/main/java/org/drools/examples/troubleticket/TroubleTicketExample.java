@@ -18,16 +18,16 @@ public class TroubleTicketExample {
      */
     public static void main(final String[] args) throws Exception {
 
-        final KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        builder.addResource( new InputStreamReader( TroubleTicketExample.class.getResourceAsStream( "TroubleTicket.drl" ) ),
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.addResource( new InputStreamReader( TroubleTicketExample.class.getResourceAsStream( "TroubleTicket.drl" ) ),
                              KnowledgeType.DRL );
 
-        final KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
-        knowledgeBase.addKnowledgePackages( builder.getKnowledgePackages() );
+        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        final StatefulKnowledgeSession session = knowledgeBase.newStatefulKnowledgeSession();
+        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        ThreadedWorkingMemoryFileLogger logger = new ThreadedWorkingMemoryFileLogger( session );
+        ThreadedWorkingMemoryFileLogger logger = new ThreadedWorkingMemoryFileLogger( ksession );
         logger.setFileName( "log/trouble_ticket" );
         logger.start( 1000 );
 
@@ -49,21 +49,21 @@ public class TroubleTicketExample {
         final Ticket t3 = new Ticket( c );
         final Ticket t4 = new Ticket( d );
 
-        session.insert( a );
-        session.insert( b );
-        session.insert( c );
-        session.insert( d );
+        ksession.insert( a );
+        ksession.insert( b );
+        ksession.insert( c );
+        ksession.insert( d );
 
-        session.insert( t1 );
-        session.insert( t2 );
-        final FactHandle ft3 = session.insert( t3 );
-        session.insert( t4 );
+        ksession.insert( t1 );
+        ksession.insert( t2 );
+        final FactHandle ft3 = ksession.insert( t3 );
+        ksession.insert( t4 );
 
-        session.fireAllRules();
+        ksession.fireAllRules();
 
         t3.setStatus( "Done" );
 
-        session.update( ft3,
+        ksession.update( ft3,
                         t3 );
 
         try {
@@ -75,7 +75,7 @@ public class TroubleTicketExample {
 
         System.err.println( "[[ awake ]]" );
 
-        session.dispose();
+        ksession.dispose();
 
         logger.stop();
         logger.writeToDisk();

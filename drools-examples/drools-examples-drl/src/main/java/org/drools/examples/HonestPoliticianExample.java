@@ -1,6 +1,5 @@
 package org.drools.examples;
 
-import java.io.File;
 import java.io.InputStreamReader;
 
 import org.drools.KnowledgeBase;
@@ -19,20 +18,20 @@ public class HonestPoliticianExample {
      */
     public static void main(final String[] args) throws Exception {
 
-        KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
-        conf.setProperty( "drools.dump.dir",
+        KnowledgeBuilderConfiguration kbuilderconfiguration = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+        kbuilderconfiguration.setProperty( "drools.dump.dir",
                           "target" );
 
-        final KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        builder.addResource( new InputStreamReader( HonestPoliticianExample.class.getResourceAsStream( "HonestPolitician.drl" ) ),
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.addResource( new InputStreamReader( HonestPoliticianExample.class.getResourceAsStream( "HonestPolitician.drl" ) ),
                              KnowledgeType.DRL );
 
-        final KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
-        knowledgeBase.addKnowledgePackages( builder.getKnowledgePackages() );
+        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        final StatefulKnowledgeSession session = knowledgeBase.newStatefulKnowledgeSession();
+        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( session );
+        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( ksession );
         logger.setFileName( "log/honest-politician" );
 
         final Politician blair = new Politician( "blair",
@@ -44,16 +43,16 @@ public class HonestPoliticianExample {
         final Politician schroder = new Politician( "schroder",
                                                     true );
 
-        session.insert( blair );
-        session.insert( bush );
-        session.insert( chirac );
-        session.insert( schroder );
+        ksession.insert( blair );
+        ksession.insert( bush );
+        ksession.insert( chirac );
+        ksession.insert( schroder );
 
-        session.fireAllRules();
+        ksession.fireAllRules();
 
         logger.writeToDisk();
 
-        session.dispose();
+        ksession.dispose();
     }
 
     public static class Politician {
