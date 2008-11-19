@@ -30,14 +30,18 @@ import org.drools.process.core.timer.Timer;
 import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.workflow.core.Connection;
 import org.drools.workflow.core.Constraint;
+import org.drools.workflow.core.DroolsAction;
 import org.drools.workflow.core.Node;
 import org.drools.workflow.core.impl.ConnectionImpl;
 import org.drools.workflow.core.impl.ConstraintImpl;
 import org.drools.workflow.core.impl.DroolsConsequenceAction;
+import org.drools.workflow.core.impl.ExtendedNodeImpl;
 import org.drools.workflow.core.node.ActionNode;
 import org.drools.workflow.core.node.CompositeContextNode;
+import org.drools.workflow.core.node.ConstraintTrigger;
 import org.drools.workflow.core.node.EndNode;
 import org.drools.workflow.core.node.EventNode;
+import org.drools.workflow.core.node.EventTrigger;
 import org.drools.workflow.core.node.FaultNode;
 import org.drools.workflow.core.node.ForEachNode;
 import org.drools.workflow.core.node.HumanTaskNode;
@@ -95,8 +99,6 @@ public class XMLPersistenceTest extends TestCase {
         }
         
         assertEquals(15, process.getNodes().length);
-        
-//        System.out.println("************************************");
         
         String xml2 = XmlRuleFlowProcessDumper.INSTANCE.dump(process, false);
         if (xml2 == null) {
@@ -183,6 +185,22 @@ public class XMLPersistenceTest extends TestCase {
         startNode.setMetaData("y", 2);
         startNode.setMetaData("width", 3);
         startNode.setMetaData("height", 4);
+        ConstraintTrigger constraintTrigger = new ConstraintTrigger();
+        constraintTrigger.setConstraint("constraint");
+        Map<String, String> inMapping = new HashMap<String, String>();
+        inMapping.put("key", "value");
+        inMapping.put("key2", "value2");
+        constraintTrigger.setInMappings(inMapping);
+        startNode.addTrigger(constraintTrigger);
+        EventTrigger eventTrigger = new EventTrigger();
+        EventTypeFilter eventTypeFilter = new EventTypeFilter();
+        eventTypeFilter.setType("eventType");
+        eventTrigger.addEventFilter(eventTypeFilter);
+        inMapping = new HashMap<String, String>();
+        inMapping.put("key", "value");
+        inMapping.put("key2", "value2");
+        eventTrigger.setInMappings(inMapping);
+        startNode.addTrigger(eventTrigger);
         process.addNode(startNode);
         
         ActionNode actionNode = new ActionNode();
@@ -291,6 +309,13 @@ public class XMLPersistenceTest extends TestCase {
         timer.setPeriod(200);
         action = new DroolsConsequenceAction("dialect", "consequence");
         milestone.addTimer(timer, action);
+        List<DroolsAction> actions = new ArrayList<DroolsAction>();
+        DroolsAction action1 = new DroolsConsequenceAction("java", "System.out.println(\"action1\");");
+        actions.add(action1);
+        DroolsAction action2 = new DroolsConsequenceAction("java", "System.out.println(\"action2\");");
+        actions.add(action2);
+        milestone.setActions(ExtendedNodeImpl.EVENT_NODE_ENTER, actions);
+        milestone.setActions(ExtendedNodeImpl.EVENT_NODE_EXIT, actions);
         process.addNode(milestone);
         connection = new ConnectionImpl(join, Node.CONNECTION_DEFAULT_TYPE, milestone, Node.CONNECTION_DEFAULT_TYPE);
         connection.setMetaData("bendpoints", "[10,10;20,20]");
@@ -316,6 +341,8 @@ public class XMLPersistenceTest extends TestCase {
         timer.setPeriod(200);
         action = new DroolsConsequenceAction("dialect", "consequence");
         subProcess.addTimer(timer, action);
+        subProcess.setActions(ExtendedNodeImpl.EVENT_NODE_ENTER, actions);
+        subProcess.setActions(ExtendedNodeImpl.EVENT_NODE_EXIT, actions);
         process.addNode(subProcess);
         connection = new ConnectionImpl(milestone, Node.CONNECTION_DEFAULT_TYPE, subProcess, Node.CONNECTION_DEFAULT_TYPE);
         connection.setMetaData("bendpoints", "[10,10]");
@@ -346,6 +373,8 @@ public class XMLPersistenceTest extends TestCase {
         timer.setPeriod(200);
         action = new DroolsConsequenceAction("dialect", "consequence");
         workItemNode.addTimer(timer, action);
+        workItemNode.setActions(ExtendedNodeImpl.EVENT_NODE_ENTER, actions);
+        workItemNode.setActions(ExtendedNodeImpl.EVENT_NODE_EXIT, actions);
         process.addNode(workItemNode);
         connection = new ConnectionImpl(subProcess, Node.CONNECTION_DEFAULT_TYPE, workItemNode, Node.CONNECTION_DEFAULT_TYPE);
         connection.setMetaData("bendpoints", "[]");
@@ -365,7 +394,9 @@ public class XMLPersistenceTest extends TestCase {
         work.setParameterDefinitions(parameterDefinitions);
         work.setParameter("TaskName", "Do something");
         work.setParameter("ActorId", "John Doe");
-        workItemNode.setWaitForCompletion(false);
+        humanTaskNode.setWaitForCompletion(false);
+        humanTaskNode.setActions(ExtendedNodeImpl.EVENT_NODE_ENTER, actions);
+        humanTaskNode.setActions(ExtendedNodeImpl.EVENT_NODE_EXIT, actions);
         process.addNode(humanTaskNode);
         connection = new ConnectionImpl(workItemNode, Node.CONNECTION_DEFAULT_TYPE, humanTaskNode, Node.CONNECTION_DEFAULT_TYPE);
         
@@ -441,7 +472,7 @@ public class XMLPersistenceTest extends TestCase {
             throw new IllegalArgumentException("Failed to persist full nodes!");
         }
         
-//        System.out.println(xml);
+        System.out.println(xml);
         
         XmlProcessReader reader = new XmlProcessReader(
             new PackageBuilderConfiguration().getSemanticModules());
@@ -458,7 +489,7 @@ public class XMLPersistenceTest extends TestCase {
         assertEquals(2, process.getSwimlaneContext().getSwimlanes().size());
         assertEquals(2, process.getExceptionScope().getExceptionHandlers().size());
         
-//        System.out.println("************************************");
+        System.out.println("************************************");
         
         String xml2 = XmlRuleFlowProcessDumper.INSTANCE.dump(process, true);
         if (xml2 == null) {

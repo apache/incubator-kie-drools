@@ -290,6 +290,8 @@
 			<xs:choice minOccurs="0" maxOccurs="unbounded">
 				<xs:element ref="drools:constraint"/>
 				<xs:element ref="drools:timers"/>
+				<xs:element ref="drools:onEntry"/>
+				<xs:element ref="drools:onExit"/>
 			</xs:choice>
 			<xs:attribute name="id" type="xs:string" use="required"/>
 			<xs:attribute name="name" type="xs:string"/>

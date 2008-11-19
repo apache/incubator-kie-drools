@@ -20,7 +20,9 @@ public class SubProcessNodeHandler extends AbstractNodeHandler {
         super.handleNode(node, element, uri, localName, parser);
         SubProcessNode subProcessNode = (SubProcessNode) node;
         String processId = element.getAttribute("processId");
-        subProcessNode.setProcessId(processId);
+        if (processId != null && processId.length() > 0) {
+        	subProcessNode.setProcessId(processId);
+        }
         String waitForCompletion = element.getAttribute("waitForCompletion");
         subProcessNode.setWaitForCompletion(!"false".equals(waitForCompletion));
         String independent = element.getAttribute("independent");

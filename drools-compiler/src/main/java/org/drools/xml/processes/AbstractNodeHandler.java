@@ -1,6 +1,8 @@
 package org.drools.xml.processes;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -215,14 +217,19 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
     public void writeTimers(final Map<Timer, DroolsAction> timers, final StringBuffer xmlDump) {
     	if (timers != null && !timers.isEmpty()) {
     		xmlDump.append("      <timers>" + EOL);
-    		for (Map.Entry<Timer, DroolsAction> entry: timers.entrySet()) {
-    			Timer timer = entry.getKey();
+    		List<Timer> timerList = new ArrayList<Timer>(timers.keySet());
+    		Collections.sort(timerList, new Comparator<Timer>() {
+				public int compare(Timer o1, Timer o2) {
+					return (int) (o2.getId() - o1.getId());
+				}
+    		});
+    		for (Timer timer: timerList) {
     			xmlDump.append("        <timer id=\"" + timer.getId() + "\" delay=\"" + timer.getDelay() + "\" ");
                 if (timer.getPeriod() > 0) {
                     xmlDump.append("period=\"" + timer.getPeriod() + "\" ");
                 }
                 xmlDump.append(">" + EOL);
-                writeAction(entry.getValue(), xmlDump);
+                writeAction(timers.get(timer), xmlDump);
                 xmlDump.append("        </timer>" + EOL);
     		}
     		xmlDump.append("      </timers>" + EOL);
