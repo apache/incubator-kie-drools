@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.base.ModifyInterceptor;
 import org.drools.base.TypeResolver;
@@ -134,6 +135,8 @@ public class MVELDialect
     private boolean                                        strictMode;
     private int                                            languageLevel;
     public static final Object                             COMPILER_LOCK                  = new Object();
+    
+    private static AtomicInteger                           nameCounter;
 
     public MVELDialect(PackageBuilder builder,
                        PackageRegistry pkgRegistry,
@@ -632,7 +635,9 @@ public class MVELDialect
             inputTypes[i++] = entry.getValue().getName();
         }
 
-        MVELCompilationUnit compilationUnit = new MVELCompilationUnit( expression,
+        String name = context.getPkg().getName();
+        MVELCompilationUnit compilationUnit = new MVELCompilationUnit( name,
+                                                                       expression,
                                                                        pkgImports,
                                                                        importClasses.toArray( new String[importClasses.size()] ),
                                                                        importMethods.toArray( new String[importMethods.size()] ),
@@ -656,7 +661,7 @@ public class MVELDialect
         // @todo proper source file name
         final ParserContext parserContext = new ParserContext( this.imports,
                                                                null,
-                                                               "xxx" );// context.getPkg().getName()+"."+context.
+                                                               context.getPkg().getName()+ "_" + nameCounter.getAndIncrement() );
         // getRuleDescr().getClassName() );
 
         for ( Iterator it = this.packageImports.values().iterator(); it.hasNext(); ) {
