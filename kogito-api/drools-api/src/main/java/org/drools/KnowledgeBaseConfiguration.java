@@ -26,29 +26,29 @@ package org.drools;
  * <p>
  * The following properties are supported:
  * <ul>
- * <li>drools.maintainTms = <true|false></li>
- * <li>drools.assertBehaviour = <identity|equality></li>
- * <li>drools.logicalOverride = <discard|preserve></li>
- * <li>drools.sequential = <true|false></li>
- * <li>drools.sequential.agenda = <sequential|dynamic></li>
- * <li>drools.removeIdentities = <true|false></li>
- * <li>drools.shareAlphaNodes  = <true|false></li>
- * <li>drools.shareBetaNodes = <true|false></li>
- * <li>drools.alphaMemory = <true/false></li>
- * <li>drools.alphaNodeHashingThreshold = <1...n></li>
- * <li>drools.compositeKeyDepth  = <1..3></li>
- * <li>drools.indexLeftBetaMemory = <true/false></li>
- * <li>drools.indexRightBetaMemory = <true/false></li>
- * <li>drools.consequenceExceptionHandler = <qualified class name></li>
+ * <li>drools.maintainTms = &lt;true|false&gt;</li>
+ * <li>drools.assertBehaviour = &lt;identity|equality&gt;</li>
+ * <li>drools.logicalOverride = &lt;discard|preserve&gt;</li>
+ * <li>drools.sequential = &lt;true|false&gt;</li>
+ * <li>drools.sequential.agenda = &lt;sequential|dynamic&gt;</li>
+ * <li>drools.removeIdentities = &lt;true|false&gt;</li>
+ * <li>drools.shareAlphaNodes  = &lt;true|false&gt;</li>
+ * <li>drools.shareBetaNodes = &lt;true|false&gt;</li>
+ * <li>drools.alphaMemory = &lt;true/false&gt;</li>
+ * <li>drools.alphaNodeHashingThreshold = &lt;1...n&gt;</li>
+ * <li>drools.compositeKeyDepth  = &lt;1..3&gt;</li>
+ * <li>drools.indexLeftBetaMemory = &lt;true/false&gt;</li>
+ * <li>drools.indexRightBetaMemory = &lt;true/false&gt;</li>
+ * <li>drools.consequenceExceptionHandler = &lt;qualified class name&gt;</li>
  * </ul>
  * </p>
  * 
  * <p>
  * The follow properties have not yet been migrated from the Drools 4.0 api:
  * <ul>
- * <li>drools.executorService = <qualified class name></li>
- * <li>drools.conflictResolver = <qualified class name></li>
- * <li>drools.ruleBaseUpdateHandler = <qualified class name></li>
+ * <li>drools.executorService = &lt;qualified class name&gt;</li>
+ * <li>drools.conflictResolver = &lt;qualified class name&gt;</li>
+ * <li>drools.ruleBaseUpdateHandler = &lt;qualified class name&gt;</li>
  * </ul>
  * </p>
  */
