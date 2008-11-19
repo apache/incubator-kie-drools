@@ -3,13 +3,19 @@ package org.drools.examples.conway;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.KnowledgeType;
 import org.drools.compiler.PackageBuilder;
+import org.drools.runtime.StatefulKnowledgeSession;
 
 public class RuleFlowDelegate implements ConwayRuleDelegate {
-    private StatefulSession session;
+    private StatefulKnowledgeSession session;
     
     public RuleFlowDelegate() {
         final Reader drl = new InputStreamReader( CellGridImpl.class.getResourceAsStream( "/org/drools/examples/conway/conway-ruleflow.drl" ) );
@@ -18,16 +24,16 @@ public class RuleFlowDelegate implements ConwayRuleDelegate {
         final Reader registerNeighborRf = new InputStreamReader( CellGridImpl.class.getResourceAsStream( "/org/drools/examples/conway/registerNeighbor.rf" ) );
 
         try {
-            PackageBuilder builder = new PackageBuilder();
-            builder.addPackageFromDrl( drl );
-            builder.addRuleFlow( generationRf );
-            builder.addRuleFlow( killAllRf );
-            builder.addRuleFlow( registerNeighborRf );
-
-            RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-            ruleBase.addPackage( builder.getPackage() );
-
-            this.session = ruleBase.newStatefulSession();
+            KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+            kbuilder.addResource( drl, KnowledgeType.DRL );
+            kbuilder.addResource(  generationRf, KnowledgeType.DRF );
+            kbuilder.addResource( killAllRf, KnowledgeType.DRF );
+            kbuilder.addResource( registerNeighborRf, KnowledgeType.DRF );
+            
+            KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+            kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+            
+            this.session = kbase.newStatefulKnowledgeSession();
 
         } catch ( Exception e ) {
             throw new RuntimeException( e );
@@ -37,7 +43,7 @@ public class RuleFlowDelegate implements ConwayRuleDelegate {
     /* (non-Javadoc)
      * @see org.drools.examples.conway.ConwayRuleDelegate#getSession()
      */
-    public StatefulSession getSession() {
+    public StatefulKnowledgeSession getSession() {
         return this.session;
     }
     
@@ -47,7 +53,7 @@ public class RuleFlowDelegate implements ConwayRuleDelegate {
     public void init() {
         this.session.startProcess( "register neighbor" );
         this.session.fireAllRules();
-        session.clearRuleFlowGroup( "calculate" );
+        session.getAgenda().getRuleFlowGroup( "calculate" ).clear();       
     }
     
     /* (non-Javadoc)

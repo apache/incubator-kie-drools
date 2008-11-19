@@ -3,26 +3,32 @@ package org.drools.examples.conway;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
+import org.drools.api.KnowledgeSessionTest;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.KnowledgeType;
 import org.drools.compiler.PackageBuilder;
+import org.drools.runtime.StatefulKnowledgeSession;
 
 public class AgendaGroupDelegate implements ConwayRuleDelegate {
-    private StatefulSession session;
+    private StatefulKnowledgeSession session;
     
     public AgendaGroupDelegate() {
         final Reader drl = new InputStreamReader( AgendaGroupDelegate.class.getResourceAsStream( "/org/drools/examples/conway/conway-agendagroup.drl" ) );
 
         try {
-            PackageBuilder builder = new PackageBuilder();
-            builder.addPackageFromDrl( drl );
-
-            RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-            ruleBase.addPackage( builder.getPackage() );
-
-            this.session = ruleBase.newStatefulSession();
-
+            KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+            kbuilder.addResource( drl, KnowledgeType.DRL );
+            
+            KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+            kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+            
+            this.session = kbase.newStatefulKnowledgeSession();
         } catch ( Exception e ) {
             throw new RuntimeException( e );
         }
@@ -31,7 +37,7 @@ public class AgendaGroupDelegate implements ConwayRuleDelegate {
     /* (non-Javadoc)
      * @see org.drools.examples.conway.ConwayRuleDelegate#getSession()
      */
-    public StatefulSession getSession() {
+    public StatefulKnowledgeSession getSession() {
         return this.session;
     }
     
@@ -39,9 +45,9 @@ public class AgendaGroupDelegate implements ConwayRuleDelegate {
      * @see org.drools.examples.conway.ConwayRuleDelegate#init()
      */
     public void init() {
-        this.session.setFocus( "register neighbor" );
+        this.session.getAgenda().getAgendaGroup( "register neighbor" ).setFocus();
         this.session.fireAllRules();     
-        session.clearAgendaGroup( "calculate" );
+        this.session.getAgenda().getAgendaGroup( "calculate" ).clear();
     }
     
     /* (non-Javadoc)
@@ -52,12 +58,12 @@ public class AgendaGroupDelegate implements ConwayRuleDelegate {
      */
     public boolean nextGeneration() {
         // System.out.println( "next generation" );
-        session.setFocus( "kill" );
-        session.setFocus( "birth" );
-        session.setFocus( "reset calculate" );
-        session.setFocus( "rest" );
-        session.setFocus( "evaluate" );
-        session.setFocus( "calculate" );        
+        this.session.getAgenda().getAgendaGroup( "kill" ).setFocus();
+        this.session.getAgenda().getAgendaGroup( "birth" ).setFocus();
+        this.session.getAgenda().getAgendaGroup( "reset calculate" ).setFocus();
+        this.session.getAgenda().getAgendaGroup( "rest" ).setFocus();
+        this.session.getAgenda().getAgendaGroup( "evaluate" ).setFocus();
+        this.session.getAgenda().getAgendaGroup( "calculate" ).setFocus();        
         return session.fireAllRules() != 0;
         //return session.getAgenda().getAgendaGroup( "calculate" ).size() != 0;
     }
@@ -69,9 +75,9 @@ public class AgendaGroupDelegate implements ConwayRuleDelegate {
      * @see org.drools.examples.conway.ConwayRuleDelegate#killAll()
      */
     public void killAll() {
-        this.session.setFocus( "calculate" );
-        this.session.setFocus( "kill all" );
-        this.session.setFocus( "calculate" );
+        this.session.getAgenda().getAgendaGroup( "calculate" ).setFocus();
+        this.session.getAgenda().getAgendaGroup( "kill all" ).setFocus();
+        this.session.getAgenda().getAgendaGroup( "calculate" ).setFocus();
         this.session.fireAllRules();
     }
     

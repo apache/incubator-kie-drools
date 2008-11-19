@@ -29,7 +29,7 @@ rule "B to C"
 	then
 		System.out.println(c.getName() + " finished" );
 		c.setState( State.FINISHED );
-		drools.setFocus( "B to D" );
+		drools.getKnowledgeRuntime().getAgenda().getAgendaGroup( "B to D" ).setFocus();
 end
 
 rule "B to D"

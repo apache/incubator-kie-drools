@@ -1,10 +1,10 @@
 package org.drools.examples.conway;
 
-import org.drools.StatefulSession;
+import org.drools.runtime.StatefulKnowledgeSession;
 
 public interface ConwayRuleDelegate {
 
-    public abstract StatefulSession getSession();
+    public abstract StatefulKnowledgeSession getSession();
 
     public abstract void init();
 
