@@ -11,6 +11,7 @@ import java.util.concurrent.Future;
 
 import org.drools.KnowledgeBase;
 import org.drools.WorkingMemory;
+import org.drools.common.InternalAgenda;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.ObjectStore;
@@ -56,6 +57,7 @@ import org.drools.runtime.rule.Agenda;
 import org.drools.runtime.rule.AgendaFilter;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
+import org.drools.runtime.rule.impl.AgendaImpl;
 import org.drools.spi.Activation;
 import org.drools.time.SessionClock;
 
@@ -166,11 +168,7 @@ public class StatefulKnowledgeSessionImpl
     public void halt() {
         this.session.halt();
     }
-
-    public void setFocus(String agendaGroup) {
-        this.session.setFocus( agendaGroup );
-    }
-
+    
     public void dispose() {
         this.session.dispose();
     }
@@ -557,7 +555,6 @@ public class StatefulKnowledgeSessionImpl
     }
 
     public Agenda getAgenda() {
-        // TODO Auto-generated method stub
-        return null;
+        return new AgendaImpl( ( InternalAgenda ) this.session.getAgenda() );
     }
 }

@@ -14,6 +14,8 @@ import org.drools.Alarm;
 import org.drools.Cell;
 import org.drools.Cheese;
 import org.drools.FactHandle;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
 import org.drools.Message;
 import org.drools.Neighbor;
 import org.drools.Person;
@@ -23,6 +25,9 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.KnowledgeType;
 import org.drools.common.DefaultAgenda;
 import org.drools.common.InternalWorkingMemoryActions;
 import org.drools.common.RuleFlowGroupImpl;
@@ -37,6 +42,7 @@ import org.drools.event.DefaultAgendaEventListener;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.rule.Package;
+import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.spi.Activation;
 import org.drools.spi.ActivationGroup;
 import org.drools.spi.AgendaGroup;
@@ -508,24 +514,26 @@ public class ExecutionFlowControlTest extends TestCase {
     }
 
     public void testAgendaGroups() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_AgendaGroups.drl" ) ) );
-        final Package pkg = builder.getPackage();
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.addResource( new InputStreamReader( getClass().getResourceAsStream( "test_AgendaGroups.drl" ) ), KnowledgeType.DRL );
 
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        assertFalse( kbuilder.hasErrors() );
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        kbase = SerializationHelper.serializeObject( kbase );
+        final StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
 
         final List list = new ArrayList();
-        workingMemory.setGlobal( "list",
+        session.setGlobal( "list",
                                  list );
 
         final Cheese brie = new Cheese( "brie",
                                         12 );
-        workingMemory.insert( brie );
+        session.insert( brie );
 
-        workingMemory.fireAllRules();
+        session.fireAllRules();
 
         assertEquals( 7,
                       list.size() );
@@ -545,13 +553,29 @@ public class ExecutionFlowControlTest extends TestCase {
         assertEquals( "MAIN",
                       list.get( 6 ) );
 
-        workingMemory.setFocus( "group2" );
-        workingMemory.fireAllRules();
+        session.getAgenda().getAgendaGroup( "group2" ).setFocus( );
+        session.fireAllRules();
 
         assertEquals( 8,
                       list.size() );
         assertEquals( "group2",
                       list.get( 7 ) );
+        
+        // clear main only the auto focus related ones should fire
+        list.clear();
+        session.insert( new Cheese( "cheddar" ) );        
+        session.getAgenda().getAgendaGroup( "MAIN" ).clear();
+        session.fireAllRules();
+        assertEquals( 3,
+                      list.size() );
+        assertEquals( "group3",
+                      list.get( 0 ) );
+        assertEquals( "group4",
+                      list.get( 1 ) );        
+        assertEquals( "group3",
+                      list.get( 2 ) );        
+
+        
     }
 
     public void testActivationGroups() throws Exception {

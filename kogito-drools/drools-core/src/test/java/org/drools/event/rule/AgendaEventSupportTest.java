@@ -191,7 +191,7 @@ public class AgendaEventSupportTest extends TestCase {
         agendaList.clear();
 
         // setFocus results in an AgendaGroupPushedEvent
-        session.setFocus( "test group" );
+        session.getAgenda().getAgendaGroup( "test group" ).setFocus();
         assertEquals( 1,
                       agendaList.size() );
         final AgendaGroupPushedEvent pushedEvent = (AgendaGroupPushedEvent) agendaList.get( 0 );
