@@ -6,31 +6,11 @@ package org.drools.agent;
  * 
  * @author Michael Neale
  */
-public interface AgentEventListener {
+public interface AgentEventListener extends KnowledgeEventListener {
 
     /**
      * This sets the name for logging.
      */
     public void setAgentName(String name);
-    
-    /**
-     * For general info messages.
-     */
-    public void info(String message);
-    
-    /**
-     * For a warning (useful when tracking down problems).
-     */
-    public void warning(String message);
-    
-    /**
-     * An exception occurred.
-     */
-    public void exception(Exception e);
-    
-    
-    /**
-     * These should not be logged, just shown if needed.
-     */
-    public void debug(String message);
+
 }

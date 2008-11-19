@@ -96,6 +96,8 @@ public class RuleAgent {
                                                                  URLScanner.class );
                                                         }
                                                     };
+                                                    
+    String               name;
 
     /**
      * This is true if the rulebase is created anew each time.
@@ -282,6 +284,13 @@ public class RuleAgent {
         return newRuleAgent( loadFromProperties( propsFileName ),
                              listener,
                              ruleBaseConfiguration );
+    }
+    
+    public void setName(String name) {
+        this.name = name;
+        if ( this.listener != null ) {
+            this.listener.setAgentName( this.name );
+        }
     }
 
     static Properties loadFromProperties(String propsFileName) {
