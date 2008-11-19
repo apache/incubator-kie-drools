@@ -28,7 +28,7 @@ public class MVELCompilationUnit
     implements
     Externalizable {
     private String                          name;
-    private static AtomicInteger            nameCounter;
+    private static AtomicInteger            nameCounter = new AtomicInteger();
     
     private String                          expression;
 
@@ -88,6 +88,9 @@ public class MVELCompilationUnit
 
     public static final Object              COMPILER_LOCK = new Object();
 
+    public MVELCompilationUnit() {
+    }
+
     public MVELCompilationUnit(String name, 
                                String expression,
                                String[] pkgImports,
@@ -102,6 +105,7 @@ public class MVELCompilationUnit
                                String[] inputTypes,
                                int languageLevel,
                                boolean strictMode) {
+        this.name = name;
         this.expression = expression;
 
         this.pkgImports = pkgImports;
@@ -126,7 +130,8 @@ public class MVELCompilationUnit
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-
+        out.writeUTF( name );
+        
         out.writeUTF( expression );
 
         out.writeObject( pkgImports );
@@ -150,6 +155,7 @@ public class MVELCompilationUnit
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
+        name = in.readUTF();
         expression = in.readUTF();
 
         pkgImports = (String[]) in.readObject();
