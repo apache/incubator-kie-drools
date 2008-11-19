@@ -2,6 +2,15 @@ package org.drools.examples.process.order
 
 import org.drools.process.instance.impl.WorkItemImpl
 import org.drools.workflow.instance.node.WorkItemNodeInstance
+import org.drools.WorkingMemory
+import org.drools.FactHandle
+
+function void updateIfExists(WorkingMemory workingMemory, Object o) {
+	FactHandle factHandle = workingMemory.getFactHandle(o);
+	if (factHandle != null) {
+		workingMemory.update(factHandle, o);
+	} 
+}
 
 rule "Execute Pending Work Item" salience 20
 	when
@@ -11,13 +20,13 @@ rule "Execute Pending Work Item" salience 20
 		workItemNodeInstance.getProcessInstance().getWorkingMemory()
 			.getWorkItemManager().internalExecuteWorkItem(workItem);
 		workItemNodeInstance.internalSetWorkItemId(workItem.getId());
-		update(workItemNodeInstance);
+		updateIfExists(drools.getWorkingMemory(), workItemNodeInstance);
 end
 
 rule "Complete WorkItemNodeInstance" salience 20
 	when
 	    workItemNodeInstance: WorkItemNodeInstance( )
 		WorkItemImpl( state == WorkItemImpl.COMPLETED ) from workItemNodeInstance.getWorkItem()
-	then 
+	then
 		workItemNodeInstance.triggerCompleted();
 end
