@@ -18,6 +18,8 @@ import org.drools.definition.KnowledgePackage;
  * limitations under the License.
  */
 
-public interface BeforeKnowledgePackageAddedEvent extends KnowledgeBaseEvent {
+public interface BeforeKnowledgePackageAddedEvent
+    extends
+    KnowledgeBaseEvent {
     KnowledgePackage getKnowledgePackage();
 }

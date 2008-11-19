@@ -11,5 +11,5 @@ public interface Connection {
     String getToType();
 
     Object getMetaData(String name);
-    
+
 }

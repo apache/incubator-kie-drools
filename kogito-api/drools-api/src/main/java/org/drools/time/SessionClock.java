@@ -17,7 +17,6 @@
  */
 package org.drools.time;
 
-
 /**
  * A clock interface that all engine clocks must implement
  * 

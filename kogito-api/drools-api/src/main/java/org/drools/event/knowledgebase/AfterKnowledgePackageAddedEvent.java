@@ -2,7 +2,6 @@ package org.drools.event.knowledgebase;
 
 import org.drools.definition.KnowledgePackage;
 
-
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -19,7 +18,9 @@ import org.drools.definition.KnowledgePackage;
  * limitations under the License.
  */
 
-public interface AfterKnowledgePackageAddedEvent extends KnowledgeBaseEvent {
+public interface AfterKnowledgePackageAddedEvent
+    extends
+    KnowledgeBaseEvent {
 
     public KnowledgePackage getKnowledgePackage();
 }

@@ -18,7 +18,6 @@ import org.drools.KnowledgeBase;
  * limitations under the License.
  */
 
-
 public interface KnowledgeBaseEvent {
     public KnowledgeBase getKnowledgeBase();
 }

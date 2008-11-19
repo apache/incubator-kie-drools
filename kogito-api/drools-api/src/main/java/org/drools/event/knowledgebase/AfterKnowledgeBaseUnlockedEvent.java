@@ -16,7 +16,8 @@ package org.drools.event.knowledgebase;
  * limitations under the License.
  */
 
-
-public interface AfterKnowledgeBaseUnlockedEvent extends KnowledgeBaseEvent {
+public interface AfterKnowledgeBaseUnlockedEvent
+    extends
+    KnowledgeBaseEvent {
 
 }

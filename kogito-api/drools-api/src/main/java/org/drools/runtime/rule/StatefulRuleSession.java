@@ -1,15 +1,16 @@
 package org.drools.runtime.rule;
 
-public interface StatefulRuleSession extends WorkingMemory {      
-    
+public interface StatefulRuleSession
+    extends
+    WorkingMemory {
+
     /**
      * Fire all Activations on the Agenda
      * @return
      *     returns the number of rules fired
      */
-    int fireAllRules();   
-    
-    
+    int fireAllRules();
+
     /**
      * Fire all Activations on the Agenda
      * 
@@ -19,7 +20,7 @@ public interface StatefulRuleSession extends WorkingMemory {
      *      returns the number of rules fired
      */
     int fireAllRules(AgendaFilter agendaFilter);
-    
+
     /**
      * Keeps firing activations until a halt is called. If in a given moment,
      * there is no activation to fire, it will wait for an activation to be
@@ -41,5 +42,5 @@ public interface StatefulRuleSession extends WorkingMemory {
      * @throws IllegalStateException
      *             if this method is called when running in sequential mode
      */
-    public void fireUntilHalt(final AgendaFilter agendaFilter);    
+    public void fireUntilHalt(final AgendaFilter agendaFilter);
 }

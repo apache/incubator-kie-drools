@@ -16,6 +16,8 @@ package org.drools.event.knowledgebase;
  * limitations under the License.
  */
 
-public interface BeforeFunctionRemovedEvent extends KnowledgeBaseEvent {
+public interface BeforeFunctionRemovedEvent
+    extends
+    KnowledgeBaseEvent {
     String getFunction();
 }

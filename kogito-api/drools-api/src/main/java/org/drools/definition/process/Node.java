@@ -14,11 +14,11 @@ public interface Node {
     Map<String, List<Connection>> getOutgoingConnections();
 
     List<Connection> getIncomingConnections(String type);
-    
+
     List<Connection> getOutgoingConnections(String type);
-    
+
     NodeContainer getNodeContainer();
-    
+
     Object getMetaData(String name);
-    
+
 }

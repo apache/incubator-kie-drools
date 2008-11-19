@@ -1,7 +1,6 @@
 package org.drools.event.knowledgebase;
 
 import java.util.Collection;
-import java.util.List;
 
 public interface KnowledgeBaseEventManager {
     /**

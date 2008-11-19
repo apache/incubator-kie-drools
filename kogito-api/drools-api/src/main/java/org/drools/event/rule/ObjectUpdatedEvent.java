@@ -18,7 +18,9 @@ package org.drools.event.rule;
 
 import org.drools.runtime.rule.FactHandle;
 
-public interface ObjectUpdatedEvent extends WorkingMemoryEvent {
+public interface ObjectUpdatedEvent
+    extends
+    WorkingMemoryEvent {
 
     public FactHandle getFactHandle();
 

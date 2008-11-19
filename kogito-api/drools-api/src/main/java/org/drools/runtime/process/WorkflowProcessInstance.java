@@ -1,5 +1,8 @@
 package org.drools.runtime.process;
 
-public interface WorkflowProcessInstance extends ProcessInstance, NodeInstanceContainer {
+public interface WorkflowProcessInstance
+    extends
+    ProcessInstance,
+    NodeInstanceContainer {
 
 }

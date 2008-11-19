@@ -41,6 +41,8 @@ package org.drools;
  * drools.ruleBaseUpdateHandler = <qualified class name>
  *  
  */
-public interface KnowledgeBaseConfiguration  extends PropertiesConfiguration  {
+public interface KnowledgeBaseConfiguration
+    extends
+    PropertiesConfiguration {
 
 }

@@ -18,8 +18,10 @@ package org.drools.event.rule;
 
 import org.drools.runtime.rule.FactHandle;
 
-
-public interface ObjectInsertedEvent extends WorkingMemoryEvent {
+public interface ObjectInsertedEvent
+    extends
+    WorkingMemoryEvent {
     FactHandle getFactHandle();
+
     Object getObject();
 }

@@ -18,6 +18,8 @@ package org.drools.event.knowledgebase;
 
 import org.drools.definition.KnowledgePackage;
 
-public interface AfterKnowledgePackageRemovedEvent extends KnowledgeBaseEvent {
+public interface AfterKnowledgePackageRemovedEvent
+    extends
+    KnowledgeBaseEvent {
     public KnowledgePackage getKnowledgePackage();
 }

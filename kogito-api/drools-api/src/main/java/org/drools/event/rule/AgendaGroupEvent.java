@@ -16,12 +16,12 @@ package org.drools.event.rule;
  * limitations under the License.
  */
 
-import java.util.EventObject;
-
 import org.drools.event.KnowledgeRuntimeEvent;
 import org.drools.runtime.rule.AgendaGroup;
 
-public interface AgendaGroupEvent extends KnowledgeRuntimeEvent  {
+public interface AgendaGroupEvent
+    extends
+    KnowledgeRuntimeEvent {
 
     public AgendaGroup getAgendaGroup();
 

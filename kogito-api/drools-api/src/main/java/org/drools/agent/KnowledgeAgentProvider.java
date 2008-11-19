@@ -5,7 +5,7 @@ import java.util.Properties;
 import org.drools.KnowledgeBaseConfiguration;
 
 public interface KnowledgeAgentProvider {
-    
+
     KnowledgeAgent newKnowledgeAgent(String name,
                                      Properties config);
 

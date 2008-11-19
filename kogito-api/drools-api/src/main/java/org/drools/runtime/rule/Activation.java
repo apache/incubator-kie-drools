@@ -11,18 +11,18 @@ public interface Activation {
      *     The Rule that was activated.
      */
     Rule getRule();
-    
+
     /**
      * 
      * @return 
      *     The PropagationContext that created this Activation
      */
-    PropagationContext getPropagationContext();   
-    
+    PropagationContext getPropagationContext();
+
     /**
      * 
      * @return
      *     The matched FactHandles for this activation
      */
-    Collection<? extends FactHandle> getFactHandles();        
+    Collection< ? extends FactHandle> getFactHandles();
 }

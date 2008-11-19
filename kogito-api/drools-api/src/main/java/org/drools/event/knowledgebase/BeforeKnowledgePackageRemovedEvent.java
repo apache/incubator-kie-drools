@@ -1,7 +1,6 @@
 package org.drools.event.knowledgebase;
 
 import org.drools.definition.KnowledgePackage;
-import org.drools.definition.rule.Rule;
 
 /*
  * Copyright 2005 JBoss Inc
@@ -19,6 +18,8 @@ import org.drools.definition.rule.Rule;
  * limitations under the License.
  */
 
-public interface BeforeKnowledgePackageRemovedEvent extends KnowledgeBaseEvent {
+public interface BeforeKnowledgePackageRemovedEvent
+    extends
+    KnowledgeBaseEvent {
     KnowledgePackage getKnowledgePackage();
 }

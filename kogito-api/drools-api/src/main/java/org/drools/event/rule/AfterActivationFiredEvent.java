@@ -16,6 +16,8 @@ package org.drools.event.rule;
  * limitations under the License.
  */
 
-public interface AfterActivationFiredEvent extends ActivationEvent {
+public interface AfterActivationFiredEvent
+    extends
+    ActivationEvent {
 
 }

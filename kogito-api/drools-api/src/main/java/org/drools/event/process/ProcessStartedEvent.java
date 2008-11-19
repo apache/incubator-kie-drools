@@ -16,6 +16,8 @@ package org.drools.event.process;
  * limitations under the License.
  */
 
-public interface ProcessStartedEvent extends ProcessEvent {
+public interface ProcessStartedEvent
+    extends
+    ProcessEvent {
 
 }

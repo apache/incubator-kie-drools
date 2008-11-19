@@ -46,7 +46,7 @@ public class ProviderInitializationException extends RuntimeException {
      * @see java.lang.Exception#Exception(String message, Throwable cause)
      */
     public ProviderInitializationException(final String message,
-                                  final Throwable cause) {
+                                           final Throwable cause) {
         super( message,
                cause );
     }

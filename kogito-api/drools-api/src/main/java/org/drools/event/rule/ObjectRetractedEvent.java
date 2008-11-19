@@ -18,8 +18,10 @@ package org.drools.event.rule;
 
 import org.drools.runtime.rule.FactHandle;
 
-public interface ObjectRetractedEvent extends WorkingMemoryEvent {
-    
+public interface ObjectRetractedEvent
+    extends
+    WorkingMemoryEvent {
+
     public FactHandle getFactHandle();
 
     public Object getOldObject();

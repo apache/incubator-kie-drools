@@ -18,7 +18,8 @@ import org.drools.definition.rule.Rule;
  * limitations under the License.
  */
 
-
-public interface AfterRuleAddedEvent extends KnowledgeBaseEvent {
+public interface AfterRuleAddedEvent
+    extends
+    KnowledgeBaseEvent {
     Rule getRule();
 }
