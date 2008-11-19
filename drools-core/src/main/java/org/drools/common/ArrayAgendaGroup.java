@@ -219,4 +219,8 @@ public class ArrayAgendaGroup
     public int hashCode() {
         return this.name.hashCode();
     }
+    
+    public void setFocus() {
+        throw new UnsupportedOperationException();
+    }    
 }

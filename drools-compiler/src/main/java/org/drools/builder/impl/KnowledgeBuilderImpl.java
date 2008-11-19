@@ -13,7 +13,7 @@ import org.drools.builder.KnowledgeType;
 import org.drools.builder.ResourceConfiguration;
 import org.drools.compiler.PackageBuilder;
 import org.drools.definition.KnowledgePackage;
-import org.drools.knowledge.definitions.impl.KnowledgePackageImp;
+import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.rule.Package;
 
 public class KnowledgeBuilderImpl implements KnowledgeBuilder {

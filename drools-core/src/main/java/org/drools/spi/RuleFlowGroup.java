@@ -21,7 +21,7 @@ import java.util.Iterator;
 
 import org.drools.common.RuleFlowGroupNode;
 
-public interface RuleFlowGroup extends Externalizable {
+public interface RuleFlowGroup extends org.drools.runtime.rule.RuleFlowGroup {
 
     String getName();
 

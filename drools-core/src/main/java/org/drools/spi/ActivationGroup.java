@@ -5,7 +5,7 @@ import java.util.Iterator;
 
 public interface ActivationGroup
     extends
-    Serializable {
+    org.drools.runtime.rule.ActivationGroup  {
     public String getName();
 
     public void addActivation(Activation activation);

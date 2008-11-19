@@ -1,22 +1,27 @@
-package org.drools.event.rule.impl;
+package org.drools.runtime.rule.impl;
 
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import org.drools.Agenda;
+import org.drools.common.InternalAgenda;
 import org.drools.runtime.rule.AgendaGroup;
 
-public class SerializableAgendaGroup implements AgendaGroup, Externalizable {
+public class AgendaGroupImpl implements AgendaGroup, Externalizable {
     
     private String name;
     
-    SerializableAgendaGroup() {
+    private InternalAgenda agenda;
+    
+    AgendaGroupImpl() {
         
     }
     
-    SerializableAgendaGroup(AgendaGroup agendaGroup) {
+    AgendaGroupImpl(org.drools.spi.AgendaGroup agendaGroup, InternalAgenda agenda) {
         this.name = agendaGroup.getName();
+        this.agenda = agenda;
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -30,14 +35,14 @@ public class SerializableAgendaGroup implements AgendaGroup, Externalizable {
     
     public String getName() {
         return this.name;
-    }
-
-    public void clear() {
-        throw new UnsupportedOperationException();
-    }
-
-    public void setFocus() {
-        throw new UnsupportedOperationException();
     }    
+    
+    public void clear() {
+        this.agenda.clearAndCancelAgendaGroup( this.name );
+    }    
+    
+    public void setFocus() {
+        this.agenda.setFocus( this.name );
+    }
 
 }

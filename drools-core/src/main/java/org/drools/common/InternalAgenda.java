@@ -2,9 +2,11 @@ package org.drools.common;
 
 import org.drools.Agenda;
 import org.drools.spi.Activation;
+import org.drools.spi.ActivationGroup;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.ConsequenceException;
+import org.drools.spi.RuleFlowGroup;
 
 public interface InternalAgenda
     extends
@@ -112,6 +114,12 @@ public interface InternalAgenda
      * @param agendaFilter filters the activations that may fire
      */
     public void fireUntilHalt(AgendaFilter agendaFilter);
+
+    public AgendaGroup getAgendaGroup(String name);
+
+    public ActivationGroup getActivationGroup(String name);
+
+    public RuleFlowGroup getRuleFlowGroup(String name);
     
     
 }
