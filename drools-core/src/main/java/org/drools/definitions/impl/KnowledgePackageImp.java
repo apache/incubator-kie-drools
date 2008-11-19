@@ -1,4 +1,4 @@
-package org.drools.knowledge.definitions.impl;
+package org.drools.definitions.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -7,7 +7,7 @@ import java.util.List;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definition.process.Process;
 import org.drools.definition.rule.Rule;
-import org.drools.knowledge.definitions.rule.impl.RuleImpl;
+import org.drools.definitions.rule.impl.RuleImpl;
 import org.drools.rule.Package;
 
 public class KnowledgePackageImp implements KnowledgePackage {

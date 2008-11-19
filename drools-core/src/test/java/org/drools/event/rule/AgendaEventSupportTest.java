@@ -41,7 +41,7 @@ import org.drools.base.evaluators.SetEvaluatorsDefinition;
 import org.drools.base.evaluators.SoundslikeEvaluatorsDefinition;
 import org.drools.common.InternalFactHandle;
 import org.drools.definition.KnowledgePackage;
-import org.drools.knowledge.definitions.impl.KnowledgePackageImp;
+import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Package;
 import org.drools.rule.Pattern;

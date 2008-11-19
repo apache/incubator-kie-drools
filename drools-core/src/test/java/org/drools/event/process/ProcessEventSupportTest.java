@@ -24,7 +24,7 @@ import junit.framework.TestCase;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.definition.KnowledgePackage;
-import org.drools.knowledge.definitions.impl.KnowledgePackageImp;
+import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.rule.Package;
 import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.runtime.StatefulKnowledgeSession;
