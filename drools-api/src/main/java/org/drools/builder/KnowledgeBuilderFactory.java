@@ -7,45 +7,37 @@ import org.drools.ProviderInitializationException;
 public class KnowledgeBuilderFactory {
     private static volatile KnowledgeBuilderProvider provider;
     
-    public static void setKnowledgeBuilderProvider(KnowledgeBuilderProvider provider) {
-        KnowledgeBuilderFactory.provider = provider;
-    }
-    
     public static KnowledgeBuilderConfiguration newKnowledgeBuilderConfiguration() {
-        if ( provider == null ) {
-            loadProvider();
-        }
-        return provider.newKnowledgeBuilderConfiguration();        
+        return getKnowledgeBuilderProvider().newKnowledgeBuilderConfiguration();        
     }
     
     public static KnowledgeBuilderConfiguration newKnowledgeBuilderConfiguration(Properties properties, ClassLoader classLoader) {
-        if ( provider == null ) {
-            loadProvider();
-        }
-        return provider.newKnowledgeBuilderConfiguration( properties, 
+        return getKnowledgeBuilderProvider().newKnowledgeBuilderConfiguration( properties, 
                                                           classLoader );         
     }
     
     public static DecisionTableConfiguration newDecisionTableConfiguration() {
-        if ( provider == null ) {
-            loadProvider();
-        }
-        return provider.newDecisionTableConfiguration();        
+        return getKnowledgeBuilderProvider().newDecisionTableConfiguration();        
     }
     
     public static KnowledgeBuilder newKnowledgeBuilder() {
-    	if ( provider == null ) {
-    		loadProvider();
-    	}
-        return provider.newKnowledgeBuilder();
+        return getKnowledgeBuilderProvider().newKnowledgeBuilder();
     }
     
     public static KnowledgeBuilder newKnowledgeBuilder(KnowledgeBuilderConfiguration conf) {
+        return getKnowledgeBuilderProvider().newKnowledgeBuilder(conf);        
+    }
+    
+    public static void setKnowledgeBuilderProvider(KnowledgeBuilderProvider provider) {
+        KnowledgeBuilderFactory.provider = provider;
+    }    
+    
+    public static synchronized KnowledgeBuilderProvider getKnowledgeBuilderProvider() {
         if ( provider == null ) {
             loadProvider();
-        }
-        return provider.newKnowledgeBuilder(conf);        
-    }
+        }     
+        return provider;
+    }    
     
 	private static void loadProvider() {
         try {
@@ -54,15 +46,5 @@ public class KnowledgeBuilderFactory {
         } catch ( Exception e2 ) {
             throw new ProviderInitializationException( "Provider org.drools.builder.impl.KnowledgeBuilderProviderImpl could not be set.", e2 );
         }
-        
-//        try {
-//            ChainedProperties properties = new ChainedProperties( "drools-providers.conf" );
-//            String className = properties.getProperty( "KnowledgeBuilderProvider", null );
-//            if ( className != null && className.trim().length() > 0 ) {
-//                Class<KnowledgeBuilderProvider> cls = ( Class<KnowledgeBuilderProvider> ) Class.forName( className );
-//                setKnowledgeBuilderProvider( cls.newInstance() );
-//            }
-//        } catch ( Exception e1 ) {
-//        }
     }    
 }
