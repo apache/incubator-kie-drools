@@ -120,30 +120,33 @@ public class ProcessBuilder {
                 e.printStackTrace( System.err );
             }
             
-            ProcessDescr processDescr = new ProcessDescr();
-            processDescr.setName(process.getPackageName());
-            processDescr.setUrl( url );
-            PackageRegistry pkgRegistry = this.packageBuilder.getPackageRegistry( this.packageBuilder.getPackage().getName() );
-            DialectCompiletimeRegistry dialectRegistry = pkgRegistry.getDialectCompiletimeRegistry();           
-            Dialect dialect = dialectRegistry.getDialect( "java" );
-            dialect.init(processDescr);
-
-            ProcessBuildContext buildContext = new ProcessBuildContext(
-        		this.packageBuilder,
-                this.packageBuilder.getPackage(),
-                process,
-                processDescr,
-                dialectRegistry,
-                dialect);
-
-            buildContexts( ( ContextContainer ) process, buildContext );
-            if (process instanceof WorkflowProcess) {
-            	buildNodes( (WorkflowProcess) process, buildContext );
+            if (packageBuilder.getPackage() != null) {
+            
+	            ProcessDescr processDescr = new ProcessDescr();
+	            processDescr.setName(process.getPackageName());
+	            processDescr.setUrl( url );
+	            PackageRegistry pkgRegistry = this.packageBuilder.getPackageRegistry( this.packageBuilder.getPackage().getName() );
+	            DialectCompiletimeRegistry dialectRegistry = pkgRegistry.getDialectCompiletimeRegistry();           
+	            Dialect dialect = dialectRegistry.getDialect( "java" );
+	            dialect.init(processDescr);
+	
+	            ProcessBuildContext buildContext = new ProcessBuildContext(
+	        		this.packageBuilder,
+	                this.packageBuilder.getPackage(),
+	                process,
+	                processDescr,
+	                dialectRegistry,
+	                dialect);
+	
+	            buildContexts( ( ContextContainer ) process, buildContext );
+	            if (process instanceof WorkflowProcess) {
+	            	buildNodes( (WorkflowProcess) process, buildContext );
+	            }
+	            this.packageBuilder.getPackage().addProcess( process );
+	
+	            pkgRegistry.compileAll();                
+	            pkgRegistry.getDialectRuntimeRegistry().onBeforeExecute();
             }
-            this.packageBuilder.getPackage().addProcess( process );
-
-            pkgRegistry.compileAll();                
-            pkgRegistry.getDialectRuntimeRegistry().onBeforeExecute();
         }
     }
 
