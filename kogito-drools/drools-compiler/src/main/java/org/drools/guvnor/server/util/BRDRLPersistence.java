@@ -56,7 +56,7 @@ public class BRDRLPersistence
         }else{
         	 buf.append( "\n" );
         }
-        this.marshalMetadataList( buf, model );
+        this.marshalMetadata( buf, model );
         this.marshalAttributes( buf, model );
         
         buf.append( "\twhen\n" );
@@ -113,27 +113,20 @@ public class BRDRLPersistence
      * @param buf
      * @param model
      */
-    private void marshalMetadataList(StringBuffer buf,
-                                   RuleModel model) {
-        boolean hasDialect = false;
-        for ( int i = 0; model.metadataList != null && i < model.metadataList.length; i++ ) {
-            RuleMetadata attr = model.metadataList[i];
-
-            buf.append( "\t" );
-            buf.append( attr );
-
-            buf.append( "\n" );
-            
-        }
-
-    }
+    private void marshalMetadata(StringBuffer buf, RuleModel model) {
+		if (model.metadataList != null) {
+			for (int i = 0; i < model.metadataList.length; i++) {
+				buf.append("\t").append(model.metadataList[i]).append("\n");
+			}
+		}
+	}
     
     /**
-     * Marshal LHS patterns
-     *
-     * @param buf
-     * @param model
-     */
+	 * Marshal LHS patterns
+	 * 
+	 * @param buf
+	 * @param model
+	 */
     private void marshalLHS(StringBuffer buf,
                             RuleModel model,
                             boolean isDSLEnhanced) {
