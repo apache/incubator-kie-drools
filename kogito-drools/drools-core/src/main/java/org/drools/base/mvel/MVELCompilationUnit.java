@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.base.ModifyInterceptor;
@@ -26,6 +27,9 @@ import org.mvel2.compiler.ExpressionCompiler;
 public class MVELCompilationUnit
     implements
     Externalizable {
+    private String                          name;
+    private static AtomicInteger            nameCounter;
+    
     private String                          expression;
 
     private String[]                        pkgImports;
@@ -84,10 +88,8 @@ public class MVELCompilationUnit
 
     public static final Object              COMPILER_LOCK = new Object();
 
-    public MVELCompilationUnit() {
-    }
-
-    public MVELCompilationUnit(String expression,
+    public MVELCompilationUnit(String name, 
+                               String expression,
                                String[] pkgImports,
                                String[] importClasses,
                                String[] importMethods,
@@ -226,7 +228,7 @@ public class MVELCompilationUnit
 
         final ParserContext parserContext = new ParserContext( resolvedImports,
                                                                null,
-                                                               "xxx" );// context.getPkg().getName()+"."+context.
+                                                               name + "_" + this.nameCounter.getAndIncrement() );
         parserContext.getParserConfiguration().setClassLoader( classLoader );
 
         for ( String pkgImport : this.pkgImports ) {
