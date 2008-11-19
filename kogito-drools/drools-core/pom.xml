@@ -54,6 +54,34 @@
     </plugin>      
     </plugins>
   </build>
+  
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.5</version>
+                <configuration>
+                    <aggregate>false</aggregate>
+                    <links>
+                        <link>http://java.sun.com/j2se/1.5.0/docs/api</link>
+                    </links>
+                    <minmemory>128m</minmemory>
+                    <maxmemory>512</maxmemory>
+                    <author>false</author>
+                    <bottom>true</bottom>
+                    <header>JBoss Drools</header>
+                    <packagenames>org.drools.*</packagenames>
+                    <use>true</use>
+                    <version>true</version>
+                    <windowtitle>${project.name} ${project.version} API</windowtitle>
+                    <breakiterator>true</breakiterator>
+                    <excludePackageNames>org.drools.asm*,org.drools.objenesis.*,org.drools.commons.jci.*
+                    </excludePackageNames>       
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>    
 
 
 </project>
