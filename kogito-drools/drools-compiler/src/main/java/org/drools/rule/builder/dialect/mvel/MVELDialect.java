@@ -635,7 +635,12 @@ public class MVELDialect
             inputTypes[i++] = entry.getValue().getName();
         }
 
-        String name = context.getPkg().getName();
+        String name;
+        if ( context != null && context.getPkg() != null & context.getPkg().getName() != null ) {
+            name = context.getPkg().getName();
+        } else {
+            name = "";
+        }
         MVELCompilationUnit compilationUnit = new MVELCompilationUnit( name,
                                                                        expression,
                                                                        pkgImports,
@@ -659,9 +664,15 @@ public class MVELDialect
                                           final Map otherInputVariables,
                                           final PackageBuildContext context) {
         // @todo proper source file name
+        String name;
+        if ( context != null && context.getPkg() != null & context.getPkg().getName() != null ) {
+            name = context.getPkg().getName();
+        } else {
+            name = "";
+        }
         final ParserContext parserContext = new ParserContext( this.imports,
                                                                null,
-                                                               context.getPkg().getName()+ "_" + nameCounter.getAndIncrement() );
+                                                               name + "_" + nameCounter.getAndIncrement() );
         // getRuleDescr().getClassName() );
 
         for ( Iterator it = this.packageImports.values().iterator(); it.hasNext(); ) {
