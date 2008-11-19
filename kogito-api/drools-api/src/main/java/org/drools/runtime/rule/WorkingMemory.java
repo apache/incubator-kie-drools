@@ -25,4 +25,6 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
     Collection<? extends FactHandle> getFactHandles();
 
     Collection<? extends FactHandle> getFactHandles(ObjectFilter filter);   
+    
+    Agenda getAgenda();
 }

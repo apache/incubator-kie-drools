@@ -1,14 +1,12 @@
 package org.drools.runtime.rule;
 
 
-public interface AgendaGroup {
+public interface ActivationGroup {
     /**
      * @return
-     *      The AgendaGroup name
+     *      The ActivationGroup name
      */
     public String getName();    
     
     public void clear();
-    
-    public void setFocus();
 }
