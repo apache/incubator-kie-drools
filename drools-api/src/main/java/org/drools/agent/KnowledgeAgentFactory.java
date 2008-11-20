@@ -2,6 +2,7 @@ package org.drools.agent;
 
 import java.util.Properties;
 
+import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseConfiguration;
 import org.drools.ProviderInitializationException;
 
@@ -78,10 +79,38 @@ import org.drools.ProviderInitializationException;
  *  events happen, or errors/warnings occur. As the updating happens in a background thread, this may be important.
  *  The default event listener logs to the System.err output stream.
  * </p>
+ * 
+ * <p>
+ * The Follow example constructs an agent that will build a new KnowledgeBase from the files specified in the path String.
+ * It will poll those files every 30 seconds to see if they are updated. If new files are found it will construct a new 
+ * KnowledgeBase, instead of upating the existing one, due to the "newInstance" set to "true":
+ * <p/>
+ * <pre>
+ * Properties props = new Properties();
+ * props.setProperty( "file", path );
+ *
+ * props.setProperty( "newInstance", "true" );
+ * props.setProperty( "poll", "30" );
+ * KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent( "agent1", props );
+ * KnowledgeBase kbase = kagent.getKnowledgeBase();
+ * </pre>
+ * 
+ * Notice the 'k' for Knowledge prefix for the variable names.
+ * 
+ *  * @see org.drools.agent.KnowledgeAgent
+ * 
  */
 public class KnowledgeAgentFactory {
     private static KnowledgeAgentProvider provider;
 
+    /**
+     * Create and return a new KnowlegeAgent using the given name and configuration.
+     * 
+     * @param name
+     * @param config
+     * @return
+     *     The KnowledgeAgent
+     */
     public static KnowledgeAgent newKnowledgeAgent(String name,
                                                    Properties config) {
         return newKnowledgeAgent( name,
@@ -91,18 +120,27 @@ public class KnowledgeAgentFactory {
     }
 
     /**
-     * This allows an optional listener to be passed in.
-     * The default one prints some stuff out to System.err only when really needed.
+     * Create and return a new KnowlegeAgent using the given name and configuration.
+     * A listener is also specified for callback type logging on for info, warning,
+     * exception and debug. The KnowledgeBaseConfiguration will be used by the 
+     * KnowledgeBases that the RuleAgent creates.
+     * 
+     * @param name
+     * @param config
+     * @param listener
+     * @param kbaseConf
+     * @return
+     *     The KnowledgeAgent
      */
     public static KnowledgeAgent newKnowledgeAgent(String name,
                                                    Properties config,
                                                    KnowledgeEventListener listener,
-                                                   KnowledgeBaseConfiguration ruleBaseConf) {
+                                                   KnowledgeBaseConfiguration kbaseConf) {
 
         return getKnowledgeAgentProvider().newKnowledgeAgent( name,
                                                               config,
                                                               listener,
-                                                              ruleBaseConf );
+                                                              kbaseConf );
     }
 
     private static synchronized void setKnowledgeAgentProvider(KnowledgeAgentProvider provider) {
