@@ -28,7 +28,6 @@ public class MVELCompilationUnit
     implements
     Externalizable {
     private String                          name;
-    private static AtomicInteger            nameCounter = new AtomicInteger();
     
     private String                          expression;
 
@@ -234,7 +233,7 @@ public class MVELCompilationUnit
 
         final ParserContext parserContext = new ParserContext( resolvedImports,
                                                                null,
-                                                               name + "_" + this.nameCounter.getAndIncrement() );
+                                                               name );
         parserContext.getParserConfiguration().setClassLoader( classLoader );
 
         for ( String pkgImport : this.pkgImports ) {
