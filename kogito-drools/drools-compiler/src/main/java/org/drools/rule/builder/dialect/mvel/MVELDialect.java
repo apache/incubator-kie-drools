@@ -635,9 +635,13 @@ public class MVELDialect
 
         String name;
         if ( context != null && context.getPkg() != null & context.getPkg().getName() != null ) {
-            name = context.getPkg().getName();
+            if ( context instanceof RuleBuildContext ) {
+                name = context.getPkg().getName() + "." + ((RuleBuildContext)context).getRuleDescr().getClassName();
+            } else {
+                name = context.getPkg().getName() + ".Unknown";
+            }
         } else {
-            name = "";
+            name = "Unknown";
         }
         MVELCompilationUnit compilationUnit = new MVELCompilationUnit( name,
                                                                        expression,
