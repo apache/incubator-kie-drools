@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -18,6 +19,7 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.RuntimeDroolsException;
+import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
@@ -62,9 +64,12 @@ public class AccumulateTest extends TestCase {
         final Package pkg = builder.getPackage();
 
         // add the package to a rulebase
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        // load up the rulebase
+
+        // test rulebase serialization
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
+
         return ruleBase;
     }
 
@@ -836,66 +841,96 @@ public class AccumulateTest extends TestCase {
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( fileName ) );
         final RuleBase ruleBase = loadRuleBase( reader );
 
-        final WorkingMemory wm = ruleBase.newStatefulSession();
-        final List results = new ArrayList();
+        StatefulSession session = ruleBase.newStatefulSession();
+        DataSet data = new DataSet();
+        data.results = new ArrayList<Object>();
 
-        wm.setGlobal( "results",
-                      results );
+        session.setGlobal( "results",
+                           data.results );
 
-        final Cheese[] cheese = new Cheese[]{new Cheese( "stilton",
-                                                         8 ), new Cheese( "stilton",
-                                                                          10 ), new Cheese( "stilton",
-                                                                                            9 ), new Cheese( "brie",
-                                                                                                             11 ), new Cheese( "brie",
-                                                                                                                               4 ), new Cheese( "provolone",
-                                                                                                                                                8 )};
-        final Person bob = new Person( "Bob",
-                                       "stilton" );
+        data.cheese = new Cheese[]{new Cheese( "stilton",
+                                               8,
+                                               0 ), new Cheese( "stilton",
+                                                                10,
+                                                                1 ), new Cheese( "stilton",
+                                                                                 9,
+                                                                                 2 ), new Cheese( "brie",
+                                                                                                  11,
+                                                                                                  3 ), new Cheese( "brie",
+                                                                                                                   4,
+                                                                                                                   4 ), new Cheese( "provolone",
+                                                                                                                                    8,
+                                                                                                                                    5 )};
+        data.bob = new Person( "Bob",
+                               "stilton" );
 
-        final FactHandle[] cheeseHandles = new FactHandle[cheese.length];
-        for ( int i = 0; i < cheese.length; i++ ) {
-            cheeseHandles[i] = wm.insert( cheese[i] );
+        data.cheeseHandles = new FactHandle[data.cheese.length];
+        for ( int i = 0; i < data.cheese.length; i++ ) {
+            data.cheeseHandles[i] = session.insert( data.cheese[i] );
         }
-        final FactHandle bobHandle = wm.insert( bob );
+        data.bobHandle = session.insert( data.bob );
 
         // ---------------- 1st scenario
-        wm.fireAllRules();
+        session.fireAllRules();
         Assert.assertEquals( 1,
-                             results.size() );
+                             data.results.size() );
         Assert.assertEquals( 27,
-                             ((Number) results.get( results.size() - 1 )).intValue() );
+                             ((Number) data.results.get( data.results.size() - 1 )).intValue() );
+
+        session = SerializationHelper.getSerialisedStatefulSession( session,
+                                                                    ruleBase );
+        updateReferences( session,
+                          data );
 
         // ---------------- 2nd scenario
         final int index = 1;
-        cheese[index].setPrice( 3 );
-        wm.update( cheeseHandles[index],
-                   cheese[index] );
-        wm.fireAllRules();
+        data.cheese[index].setPrice( 3 );
+        session.update( data.cheeseHandles[index],
+                        data.cheese[index] );
+        session.fireAllRules();
 
         Assert.assertEquals( 2,
-                             results.size() );
+                             data.results.size() );
         Assert.assertEquals( 20,
-                             ((Number) results.get( results.size() - 1 )).intValue() );
+                             ((Number) data.results.get( data.results.size() - 1 )).intValue() );
 
         // ---------------- 3rd scenario
-        bob.setLikes( "brie" );
-        wm.update( bobHandle,
-                   bob );
-        wm.fireAllRules();
+        data.bob.setLikes( "brie" );
+        session.update( data.bobHandle,
+                        data.bob );
+        session.fireAllRules();
 
         Assert.assertEquals( 3,
-                             results.size() );
+                             data.results.size() );
         Assert.assertEquals( 15,
-                             ((Number) results.get( results.size() - 1 )).intValue() );
+                             ((Number) data.results.get( data.results.size() - 1 )).intValue() );
 
         // ---------------- 4th scenario
-        wm.retract( cheeseHandles[3] );
-        wm.fireAllRules();
+        session.retract( data.cheeseHandles[3] );
+        session.fireAllRules();
 
         // should not have fired as per constraint
         Assert.assertEquals( 3,
-                             results.size() );
+                             data.results.size() );
 
+    }
+
+    private void updateReferences(final StatefulSession session,
+                                  final DataSet data ) {
+        data.results = (List<?>) session.getGlobal( "results" );
+        for ( Iterator< ? > it = session.iterateObjects(); it.hasNext(); ) {
+            Object next = (Object) it.next();
+            if ( next instanceof Cheese ) {
+                Cheese c = (Cheese) next;
+                data.cheese[c.getOldPrice()] = c;
+                data.cheeseHandles[c.getOldPrice()] = session.getFactHandle( c );
+                assertNotNull( data.cheeseHandles[c.getOldPrice()] );
+            } else if( next instanceof Person ) {
+                Person p = (Person) next;
+                data.bob = p;
+                data.bobHandle = session.getFactHandle( data.bob );
+            }
+        }
     }
 
     public void execTestAccumulateCount(String fileName) throws Exception {
@@ -1304,5 +1339,13 @@ public class AccumulateTest extends TestCase {
                       results.size() );
         assertEquals( new Integer( 100 ),
                       results.get( 0 ) );
+    }
+
+    public static class DataSet {
+        public Cheese[]     cheese;
+        public FactHandle[] cheeseHandles;
+        public Person       bob;
+        public FactHandle   bobHandle;
+        public List< ? >    results;
     }
 }

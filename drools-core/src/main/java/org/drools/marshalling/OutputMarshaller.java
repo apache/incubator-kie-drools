@@ -23,12 +23,12 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.LogicalDependency;
+import org.drools.common.NodeMemory;
 import org.drools.common.ObjectStore;
 import org.drools.common.RuleFlowGroupImpl;
 import org.drools.common.WorkingMemoryAction;
 import org.drools.process.core.context.swimlane.SwimlaneContext;
 import org.drools.process.core.context.variable.VariableScope;
-import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.context.swimlane.SwimlaneContextInstance;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
@@ -345,7 +345,7 @@ public class OutputMarshaller {
             stream.writeShort( PersisterEnums.LEFT_TUPLE );
 
             stream.writeInt( leftTuple.getLeftTupleSink().getId() );
-            context.out.println( "LeftTuple int:" + leftTuple.getLeftTupleSink().getId() );
+            context.out.println( "LeftTuple sinkId:" + leftTuple.getLeftTupleSink().getId() );
             writeLeftTuple( leftTuple,
                             context,
                             true );
@@ -377,7 +377,7 @@ public class OutputMarshaller {
         ObjectOutputStream stream = context.stream;
         InternalWorkingMemory wm = context.wm;
         stream.writeInt( rightTuple.getRightTupleSink().getId() );
-        context.out.println( "RightTuple int:" + rightTuple.getRightTupleSink().getId() );
+        context.out.println( "RightTuple sinkId:" + rightTuple.getRightTupleSink().getId() );
     }
 
     public static void writeLeftTuples(MarshallerWriteContext context) throws IOException {
@@ -395,7 +395,7 @@ public class OutputMarshaller {
                 stream.writeInt( leftTuple.getLeftTupleSink().getId() );
                 stream.writeInt( handle.getId() );
 
-                context.out.println( "LeftTuple int:" + leftTuple.getLeftTupleSink().getId() + " int:" + handle.getId() );
+                context.out.println( "LeftTuple sinkId:" + leftTuple.getLeftTupleSink().getId() + " handleId:" + handle.getId() );
                 writeLeftTuple( leftTuple,
                                 context,
                                 true );
@@ -427,6 +427,7 @@ public class OutputMarshaller {
                                     recurse );
                 }
                 stream.writeShort( PersisterEnums.END );
+                context.out.println( "JoinNode   ---   END" );
                 break;
             }
             case NodeTypeEnums.EvalConditionNode : {
@@ -548,6 +549,22 @@ public class OutputMarshaller {
                 }
                 stream.writeShort( PersisterEnums.END );
                 context.out.println( "CollectNode   ---   END" );
+                break;
+            }
+            case NodeTypeEnums.RightInputAdaterNode : {
+                context.out.println( "RightInputAdapterNode" );
+                // RIANs generate new fact handles on-demand to wrap tuples and need special procedures when serializing to persistent storage
+                ObjectHashMap memory = (ObjectHashMap) context.wm.getNodeMemory( (NodeMemory) sink );
+                InternalFactHandle ifh = (InternalFactHandle) memory.get( leftTuple );
+                // first we serialize the generated fact handle ID
+                context.out.println( "FactHandle id:"+ifh.getId() );
+                stream.writeInt( ifh.getId() );
+                stream.writeLong( ifh.getRecency() );
+                
+                writeRightTuples( ifh, context );
+
+                stream.writeShort( PersisterEnums.END );
+                context.out.println( "RightInputAdapterNode   ---   END" );
                 break;
             }
             case NodeTypeEnums.RuleTerminalNode : {
