@@ -1,7 +1,7 @@
 package org.drools.examples.troubleticket;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
@@ -30,10 +30,9 @@ public class TroubleTicketWithDT {
         dtableconfiguration.setInputType( DecisionTableInputType.XLS );
 
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.addResource( new InputStreamReader( getSpreadsheetStream(),
-                                                    "windows-1252" ),
-                             KnowledgeType.DTABLE,
-                             dtableconfiguration );
+        kbuilder.addResource( getSpreadsheetURL(),
+                              KnowledgeType.DTABLE,
+                              dtableconfiguration );
 
         final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
@@ -77,7 +76,7 @@ public class TroubleTicketWithDT {
         t3.setStatus( "Done" );
 
         ksession.update( ft3,
-                        t3 );
+                         t3 );
 
         try {
             System.err.println( "[[ Sleeping 5 seconds ]]" );
@@ -94,8 +93,8 @@ public class TroubleTicketWithDT {
 
     }
 
-    private InputStream getSpreadsheetStream() {
-        return this.getClass().getResourceAsStream( "TroubleTicket.xls" );
+    private URL getSpreadsheetURL() throws MalformedURLException {
+        return getClass().getResource( "TroubleTicket.xls" );
     }
 
 }

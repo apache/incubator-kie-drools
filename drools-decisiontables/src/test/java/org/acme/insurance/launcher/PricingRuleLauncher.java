@@ -39,8 +39,7 @@ public class PricingRuleLauncher {
         DecisionTableConfiguration dtconf = KnowledgeBuilderFactory.newDecisionTableConfiguration();
         dtconf.setInputType( DecisionTableInputType.XLS );
 
-        kbuilder.addResource( new InputStreamReader( getClass().getResourceAsStream( "/data/ExamplePolicyPricing.xls" ),
-                                                     "windows-1252" ),
+        kbuilder.addResource( getClass().getResource( "/data/ExamplePolicyPricing.xls" ),
                               KnowledgeType.DTABLE,
                               dtconf );
 

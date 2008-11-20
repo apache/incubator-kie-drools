@@ -40,8 +40,7 @@ public class SpreadsheetIntegrationTest extends TestCase {
         DecisionTableConfiguration dtconf = KnowledgeBuilderFactory.newDecisionTableConfiguration();
         dtconf.setInputType( DecisionTableInputType.XLS );
 
-        kbuilder.addResource( new InputStreamReader( getClass().getResourceAsStream( "/data/IntegrationExampleTest.xls" ),
-                                                     "windows-1252" ),
+        kbuilder.addResource( getClass().getResource( "/data/IntegrationExampleTest.xls" ),
                               KnowledgeType.DTABLE,
                               dtconf );
 
@@ -77,8 +76,7 @@ public class SpreadsheetIntegrationTest extends TestCase {
         dtconf.setInputType( DecisionTableInputType.XLS );
         dtconf.setWorksheetName( "Tables_2" );
 
-        kbuilder.addResource( new InputStreamReader( getClass().getResourceAsStream( "/data/IntegrationExampleTest.xls" ),
-                                                     "windows-1252" ),
+        kbuilder.addResource( getClass().getResource( "/data/IntegrationExampleTest.xls" ),
                               KnowledgeType.DTABLE,
                               dtconf );
 

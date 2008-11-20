@@ -13,6 +13,13 @@ public class DecisionTableFactory {
         DecisionTableFactory.provider = provider;
     }
     
+    public static String loadFromInputStream(InputStream is, DecisionTableConfiguration configuration) {
+        if ( provider == null ) {
+            loadProvider();
+        }
+        return provider.loadFromInputStream( is, configuration );
+    } 
+
     public static String loadFromReader(Reader reader, DecisionTableConfiguration configuration) {
         if ( provider == null ) {
             loadProvider();

@@ -36,6 +36,7 @@ import org.drools.base.ClassFieldAccessor;
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
 import org.drools.builder.DecisionTableConfiguration;
+import org.drools.builder.DecisionTableInputType;
 import org.drools.builder.KnowledgeType;
 import org.drools.builder.ResourceConfiguration;
 import org.drools.common.InternalRuleBase;
@@ -323,27 +324,27 @@ public class PackageBuilder {
             addPackage( pkg );
         }
     }
-    
+
     public void addPackageFromDslr(final Reader source) {
         final DrlParser parser = new DrlParser();
         DefaultExpander expander = getDslExpander();
-        
+
         try {
-            String str = expander.expand(  source );
+            String str = expander.expand( source );
             if ( expander.hasErrors() ) {
-                this.results.addAll( expander.getErrors() );           
+                this.results.addAll( expander.getErrors() );
             }
-            
+
             final PackageDescr pkg = parser.parse( str );
             this.results.addAll( parser.getErrors() );
             if ( !parser.hasErrors() ) {
                 addPackage( pkg );
             }
-        } catch (Exception e) {
+        } catch ( Exception e ) {
             throw new RuntimeException( e );
         }
     }
-    
+
     public void addPackageFromDslr(final URL url) {
         this.url = url.toExternalForm();
         try {
@@ -352,8 +353,8 @@ public class PackageBuilder {
             throw new RuntimeException( e );
         }
         this.url = null;
-    }    
-    
+    }
+
     public void addDsl(Reader dsl) {
         try {
             DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
@@ -366,7 +367,7 @@ public class PackageBuilder {
             throw new RuntimeException( e );
         }
     }
-    
+
     public void addDsl(URL url) {
         this.url = url.toExternalForm();
         try {
@@ -410,24 +411,43 @@ public class PackageBuilder {
 
         this.results = getResults( this.results );
     }
-    
-    public void addResource(URL url, KnowledgeType type) {
-        addResource( url, type, null );
+
+    public void addResource(URL url,
+                            KnowledgeType type) {
+        addResource( url,
+                     type,
+                     null );
     }
-    
-    public void addResource(URL url, KnowledgeType type, ResourceConfiguration configuration) {
+
+    public void addResource(URL url,
+                            KnowledgeType type,
+                            ResourceConfiguration configuration) {
         try {
-            addResource( new InputStreamReader( url.openStream() ), type, configuration );
+            if ( type == KnowledgeType.DTABLE ) {
+                DecisionTableConfiguration dtableConfiguration = (DecisionTableConfiguration) configuration;
+
+                String string = DecisionTableFactory.loadFromInputStream( url.openStream(),
+                                                                          dtableConfiguration );
+                addPackageFromDrl( new StringReader( string ) );
+            } else {
+                addResource( new InputStreamReader( url.openStream() ),
+                             type,
+                             configuration );
+            }
+        } catch ( DroolsParserException e ) {
+            throw new RuntimeException( e );
         } catch ( IOException e ) {
             throw new RuntimeException( e );
         }
-    }   
-    
+    }
+
     public void addResource(Reader reader,
                             KnowledgeType type) {
-        addResource(reader, type, null);
+        addResource( reader,
+                     type,
+                     null );
     }
-    
+
     public void addResource(Reader reader,
                             KnowledgeType type,
                             ResourceConfiguration configuration) {
@@ -436,8 +456,8 @@ public class PackageBuilder {
                 case DRL : {
                     addPackageFromDrl( reader );
                     break;
-                    
-                } 
+
+                }
                 case DSLR : {
                     addPackageFromDslr( reader );
                     break;
@@ -455,15 +475,21 @@ public class PackageBuilder {
                     break;
                 }
                 case DTABLE : {
-                    String string = DecisionTableFactory.loadFromReader( reader, (DecisionTableConfiguration) configuration );
+                    DecisionTableConfiguration dtableConfiguration = (DecisionTableConfiguration) configuration;
+                    if ( dtableConfiguration.getInputType() == DecisionTableInputType.XLS ) {
+                        throw new IllegalArgumentException( "Use addResource(URL url, KnowledgeType type, ResourceConfiguration configuration) when adding XLS decision tables." );
+                    }
+
+                    String string = DecisionTableFactory.loadFromReader( reader,
+                                                                         dtableConfiguration );
                     addPackageFromDrl( new StringReader( string ) );
                     break;
                 }
             }
-        } catch (Exception e) {
+        } catch ( Exception e ) {
             throw new RuntimeException( e );
-        }    
-    }       
+        }
+    }
 
     /**
      * This adds a package from a Descr/AST This will also trigger a compile, if

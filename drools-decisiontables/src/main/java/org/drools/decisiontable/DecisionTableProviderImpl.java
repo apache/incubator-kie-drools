@@ -13,6 +13,13 @@ public class DecisionTableProviderImpl
     implements
     DecisionTableProvider {
 
+    public String loadFromInputStream(InputStream is,
+                                      DecisionTableConfiguration configuration) {
+
+        return compileStream( is,
+                              configuration );
+    }
+
     public String loadFromReader(Reader reader,
                                  DecisionTableConfiguration configuration) {
         InputStream is;
@@ -23,6 +30,12 @@ public class DecisionTableProviderImpl
             is = new ReaderInputStream( reader );
         }
 
+        return compileStream( is,
+                              configuration );
+    }
+
+    private String compileStream(InputStream is,
+                                 DecisionTableConfiguration configuration) {
         SpreadsheetCompiler compiler = new SpreadsheetCompiler();
         switch ( configuration.getInputType() ) {
             case XLS : {
