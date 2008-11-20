@@ -17,10 +17,11 @@ package org.drools;
  */
 
 /**
- * The factory was unable to initialize a provider.
+ * If a provider is not set on a factory it will attempt to initialise one, typically using reflection.
+ * If an issue occured while doing this a ProviderInitializationException is created.
  * 
  * @see RuntimeException
-
+ *
  */
 public class ProviderInitializationException extends RuntimeException {
     /**
