@@ -134,9 +134,7 @@ public class MVELDialect
 
     private boolean                                        strictMode;
     private int                                            languageLevel;
-    public static final Object                             COMPILER_LOCK                  = new Object();
-    
-    private static AtomicInteger                           nameCounter = new AtomicInteger();
+    public static final Object                             COMPILER_LOCK                  = new Object();    
 
     public MVELDialect(PackageBuilder builder,
                        PackageRegistry pkgRegistry,
@@ -666,13 +664,17 @@ public class MVELDialect
         // @todo proper source file name
         String name;
         if ( context != null && context.getPkg() != null & context.getPkg().getName() != null ) {
-            name = context.getPkg().getName();
+            if ( context instanceof RuleBuildContext ) {
+                name = context.getPkg().getName() + "." + ((RuleBuildContext)context).getRuleDescr().getClassName();
+            } else {
+                name = context.getPkg().getName() + ".Unknown";
+            }
         } else {
-            name = "";
+            name = "Unknown";
         }
         final ParserContext parserContext = new ParserContext( this.imports,
                                                                null,
-                                                               name + "_" + nameCounter.getAndIncrement() );
+                                                               name );
         // getRuleDescr().getClassName() );
 
         for ( Iterator it = this.packageImports.values().iterator(); it.hasNext(); ) {
