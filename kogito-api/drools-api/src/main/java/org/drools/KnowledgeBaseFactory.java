@@ -3,9 +3,15 @@ package org.drools;
 import java.util.Properties;
 
 /**
+ * <p>
  * This factory will create and return a KnowledgeBase instance, an optional KnowledgeBaseConfiguration
  * can be provided. The KnowlegeBaseConfiguration is also itself created from this factory.
+ * </p>
+ * <pre>
+ * KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+ * </pre>
  *
+ * @see org.drools.KnowledgeBase
  */
 public class KnowledgeBaseFactory {
     private static KnowledgeBaseProvider provider;

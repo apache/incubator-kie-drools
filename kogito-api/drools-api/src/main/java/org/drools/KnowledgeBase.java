@@ -22,6 +22,7 @@ import org.drools.runtime.StatelessKnowledgeSession;
  * KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
  * </pre>
  * 
+ * @see org.drools.KnowledgeBaseFactory
  * 
  */
 public interface KnowledgeBase
