@@ -101,6 +101,22 @@ public class RuleParserTest extends TestCase {
 
 	}
 
+    public void testOrWithSpecialBind() throws Exception {
+        String source = "rule \"A and (B or C or D)\" \n" +
+                        "    when \n" +
+                        "        pdo1 : ParametricDataObject( paramID == 101, stringValue == \"1000\" ) and \n" +
+                        "        pdo2 :(ParametricDataObject( paramID == 101, stringValue == \"1001\" ) or \n" +
+                        "               ParametricDataObject( paramID == 101, stringValue == \"1002\" ) or \n" +
+                        "               ParametricDataObject( paramID == 101, stringValue == \"1003\" )) \n" +
+                        "    then \n"+
+                        "        System.out.println( \"Rule: A and (B or C or D) Fired. pdo1: \" + pdo1 +  \" pdo2: \"+ pdo2); \n" +
+                        "end\n";
+        parse("compilation_unit", "compilation_unit", source);
+
+        assertFalse(parser.hasErrors());
+
+    }
+
 	public void testCompatibleRestriction() throws Exception {
 		String source = "package com.sample  rule test  when  Test( ( text == null || text2 matches \"\" ) )  then  end";
 		parse("compilation_unit", "compilation_unit", source);
@@ -3208,16 +3224,22 @@ public class RuleParserTest extends TestCase {
 			}
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+			fail( e.getMessage() );
 		} catch (SecurityException e) {
 			e.printStackTrace();
+            fail( e.getMessage() );
 		} catch (NoSuchMethodException e) {
 			e.printStackTrace();
+            fail( e.getMessage() );
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
+            fail( e.getMessage() );
 		} catch (InvocationTargetException e) {
 			e.printStackTrace();
+            fail( e.getMessage() );
 		} catch (Exception e) {
 			e.printStackTrace();
+            fail( e.getMessage() );
 		}
 		return treeRuleReturn;
 	}

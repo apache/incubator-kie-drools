@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.drools.RuntimeDroolsException;
 import org.drools.lang.DroolsTree;
 
 /**
@@ -981,12 +982,14 @@ public class DescrFactory {
 	public BaseDescr setupPatternBiding(DroolsTree label, BaseDescr fact) {
 		fact.setStartCharacter(getStartOffsetLocation(label));
 		if (fact instanceof OrDescr) {
-			((PatternDescr) ((OrDescr) fact).getDescrs().get(0))
-					.setIdentifier(label.getText());
-			((PatternDescr) ((OrDescr) fact).getDescrs().get(1))
-					.setIdentifier(label.getText());
+		    OrDescr or = (OrDescr) fact;
+		    for( Object descr : or.getDescrs() ) {
+	            setupPatternBiding( label, (BaseDescr) descr );
+		    }
+        } else if( fact instanceof PatternDescr ) {
+            ((PatternDescr) fact).setIdentifier(label.getText());
 		} else {
-			((PatternDescr) fact).setIdentifier(label.getText());
+            throw new RuntimeDroolsException("This is a bug. Please contact the Development Team. Only Patterns or OrDescr may have attached bindings. Found: "+fact.getClass().getName());
 		}
 		return fact;
 	}
