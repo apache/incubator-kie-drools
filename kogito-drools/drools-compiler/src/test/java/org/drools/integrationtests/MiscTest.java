@@ -2662,13 +2662,15 @@ public class MiscTest extends TestCase {
 
         assertEquals( 0,
                       list.size() );
-        workingMemory.insert( new State( "x" ) );
+        Cheese brie = new Cheese( "brie" );
+        workingMemory.insert( brie );
 
         workingMemory.fireAllRules();
 
-        assertEquals( 1,
+        assertEquals( 2,
                       list.size() );
         assertTrue( list.contains( hola ) );
+        assertTrue( list.contains( brie ) );
 
     }
 
