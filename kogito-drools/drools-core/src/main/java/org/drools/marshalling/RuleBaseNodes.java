@@ -62,6 +62,15 @@ public class RuleBaseNodes {
                                   leftTupleSink,
                                   nodes );
             }
+        } else if ( sink instanceof ObjectSource ) { 
+            // it may be a RIAN
+            nodes.put( sink.getId(), 
+                       (ObjectSource) sink );
+            for ( ObjectSink objectSink : ((ObjectSource)sink).getSinkPropagator().getSinks() ) {
+                addObjectSink( ruleBase,
+                               objectSink,
+                               nodes );
+            }
         } else if ( sink instanceof RuleTerminalNode ) {
             nodes.put( sink.getId(),
                        (RuleTerminalNode) sink );

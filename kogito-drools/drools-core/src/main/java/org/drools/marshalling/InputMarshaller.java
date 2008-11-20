@@ -24,6 +24,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalRuleFlowGroup;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.RuleFlowGroupImpl;
 import org.drools.common.TruthMaintenanceSystem;
@@ -72,6 +73,7 @@ import org.drools.spi.FactHandleFactory;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.RuleFlowGroup;
+import org.drools.util.ObjectHashMap;
 import org.drools.util.ObjectHashSet;
 import org.drools.workflow.instance.impl.NodeInstanceImpl;
 import org.drools.workflow.instance.node.CompositeContextNodeInstance;
@@ -324,7 +326,7 @@ public class InputMarshaller {
         }
 
         readLeftTuples( context );
-
+ 
         readPropagationContexts( context );
 
         readActivations( context );
@@ -596,6 +598,22 @@ public class InputMarshaller {
                         }
                     }
                 }
+                break;
+            }
+            case NodeTypeEnums.RightInputAdaterNode : {
+                // RIANs generate new fact handles on-demand to wrap tuples and need special procedures when de-serializing from persistent storage
+                ObjectHashMap memory = (ObjectHashMap) context.wm.getNodeMemory( (NodeMemory) sink );
+                // create fact handle
+                int id = stream.readInt();
+                long recency = stream.readLong();
+                InternalFactHandle handle = new DefaultFactHandle( id,
+                                                                   parentLeftTuple,
+                                                                   recency );
+                memory.put( parentLeftTuple, handle );
+                
+                readRightTuples( handle, context );
+                
+                stream.readShort(); // Persistence.END
                 break;
             }
             case NodeTypeEnums.RuleTerminalNode : {

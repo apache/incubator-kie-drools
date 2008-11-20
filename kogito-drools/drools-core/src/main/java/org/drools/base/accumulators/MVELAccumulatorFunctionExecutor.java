@@ -169,6 +169,9 @@ public class MVELAccumulatorFunctionExecutor
         Externalizable {
         public Serializable               context;
         public Map<Integer, Serializable> reverseSupport;
+        
+        public MVELAccumulatorFunctionContext() {
+        }
 
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
