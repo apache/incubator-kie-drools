@@ -1,0 +1,76 @@
+<body>
+
+<p>
+Drools the Business Logic Integration Platform provides an knowledge centric api, where rules and processes are first class citizens.
+</p>
+
+<p>
+The most common interfaces you will use are:
+<ul>
+<li><tt>org.drools.builder.KnowledgeBuilder</tt></li>
+<li><tt>org.drools.KnowledgeBase</tt></li>
+<li><tt>org.drools.agent.KnowledgeAgent</tt></li>
+<li><tt>org.drools.runtime.StatefulKnowledgeSession</tt></li>
+<li><tt>org.drools.runtime.StatelessKnowledgeSession</tt></li>
+</ul>
+</p>
+
+<p>
+Factory classes, with static methods, provide instances of the above interfaces. A pluggable provider approach is used to allow provider implementations to
+be wired up to the factories at runtime. The Factories you will most commonly used are:
+<ul>
+<li><tt>org.drools.builder.KnowledgeBuilderFactory</tt></li>
+<li><tt>org.drools.KnowledgeBaseFactory</tt></li>
+<li><tt>org.drools.agent.KnowledgeAgentFactory</tt></li>
+</ul>
+</p>
+
+<p>
+A Typical example to load a rule resource.
+<pre>
+KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+kbuilder.addResource( url,
+                      KnowledgeType.DRL );
+if ( kbuilder.hasErrors() ) {
+    System.err.println( builder.getErrors().toString() );
+}                     
+
+KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+kbase.addKnowledgePackages( builder.getKnowledgePackages() );
+
+StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession();
+ksession.insert( new Fibonacci( 10 ) );
+ksession.fireAllRules();
+
+ksession.dispose();
+</pre>
+</p>
+
+<p>
+A Typical example to load a process resource. Notice the KnowledgeType is changed, in accordance with the Resource type.
+<pre>
+KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+kbuilder.addResource( url,
+                      KnowledgeType.DRF );
+if ( kbuilder.hasErrors() ) {
+    System.err.println( builder.getErrors().toString() );
+}                     
+
+KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+kbase.addKnowledgePackages( builder.getKnowledgePackages() );
+
+StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession();
+ksession.startProcess( "Buy Order Process" );
+
+ksession.dispose();
+</pre>
+</p>
+
+<p>
+'kbuilder', 'kbase', 'ksession' are the variable identifiers often used, the k prefix is for 'knowledge'.
+</p>
+
+<p>
+The majority of Drools API is considered stable and should not change, experimental classes and apis will be marked as such.
+</p>
+</body>
