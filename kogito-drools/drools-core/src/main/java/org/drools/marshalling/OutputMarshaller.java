@@ -706,7 +706,7 @@ public class OutputMarshaller {
         }
 
         LeftTuple tupleOrigin = pc.getLeftTupleOrigin();
-        if ( tupleOrigin != null ) {
+        if ( tupleOrigin != null && tuples.containsKey( tupleOrigin )) {
             stream.writeBoolean( true );
             stream.writeInt( tuples.get( tupleOrigin ) );
         } else {
