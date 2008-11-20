@@ -1,9 +1,7 @@
 package org.drools.examples;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
@@ -32,10 +30,10 @@ public class PricingRuleDTExample {
         dtableconfiguration.setInputType( DecisionTableInputType.XLS );
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.addResource( new InputStreamReader( getSpreadsheetStream(),
-                                                    "windows-1252" ),
-                             KnowledgeType.DTABLE,
-                             dtableconfiguration );
+
+        kbuilder.addResource( getSpreadsheetURL(),
+                              KnowledgeType.DTABLE,
+                              dtableconfiguration );
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
@@ -56,8 +54,8 @@ public class PricingRuleDTExample {
 
     }
 
-    private InputStream getSpreadsheetStream() {
-        return this.getClass().getResourceAsStream( "ExamplePolicyPricing.xls" );
+    private URL getSpreadsheetURL() throws MalformedURLException {
+        return getClass().getResource( "ExamplePolicyPricing.xls" );
     }
 
 }
