@@ -63,15 +63,15 @@ public class KnowledgeBuilderFactory {
      * can be determined. 
      * 
      * <pre>
-     * DecisionTableConfiguration dtConf = KnowledgeBuilderFactory.newDecisionTableConfiguration();
-     * dtConf.setInputType( DecisionTableInputType.XLS );
-     *
      * KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-     * kbuilder.addResource( new InputStreamReader( getSpreadsheetStream(),
-     *                                             "windows-1252" ),
+     * DecisionTableConfiguration dtconf = KnowledgeBuilderFactory.newDecisionTableConfiguration();
+     * dtconf.setInputType( DecisionTableInputType.XLS );
+     * dtconf.setWorksheetName( "Tables_2" );
+     * kbuilder.addResource( new URL( "file://IntegrationExampleTest.xls" ),
      *                       KnowledgeType.DTABLE,
-     *                       dtConf );
-     *                      
+     *                       dtconf );
+     * assertFalse( kbuilder.hasErrors() );
+     * KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
      * </pre>
      * 
      * @return

@@ -43,6 +43,7 @@ package org.drools;
  * </ul>
  * </p>
  * 
+ * 
  * <p>
  * The follow properties have not yet been migrated from the Drools 4.0 api:
  * <ul>
