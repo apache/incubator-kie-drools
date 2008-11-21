@@ -62,13 +62,13 @@
   <para>ObjectTypeNodes can propagate to AlphaNodes, LeftInputAdapterNodes
   and BetaNodes. AlphaNodes are used to evaluate literal conditions. Although
   the 1982 paper only covers equality conditions, many RETE implementations
-  support other operations. For example, Account.name == "Mr Trout" is a
+  support other operations. For example, <code>Account.name == "Mr Trout"</code> is a
   literal condition. When a rule has multiple literal conditions for a single
   object type, they are linked together. This means that if an application
   asserts an account object, it must first satisfy the first literal condition
   before it can proceed to the next AlphaNode. In Dr. Forgy's paper, he refers
   to these as IntraElement conditions. The following shows the AlphaNode
-  combinations for Cheese( name == "cheddar, strength == "strong" ):</para>
+  combinations for Cheese( name == "cheddar", strength == "strong" ):</para>
 
   <figure>
     <title>AlphaNodes</title>
