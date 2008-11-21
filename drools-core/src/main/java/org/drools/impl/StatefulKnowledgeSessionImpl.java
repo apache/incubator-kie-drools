@@ -7,7 +7,6 @@ import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Future;
 
 import org.drools.KnowledgeBase;
 import org.drools.WorkingMemory;
@@ -15,7 +14,6 @@ import org.drools.common.InternalAgenda;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.ObjectStore;
-import org.drools.concurrent.FutureAdapter;
 import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.ActivationCreatedEvent;
 import org.drools.event.AfterActivationFiredEvent;
@@ -46,10 +44,8 @@ import org.drools.event.rule.impl.BeforeActivationFiredEventImpl;
 import org.drools.event.rule.impl.ObjectInsertedEventImpl;
 import org.drools.event.rule.impl.ObjectRetractedEventImpl;
 import org.drools.event.rule.impl.ObjectUpdatedEventImpl;
-import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.runtime.GlobalResolver;
-import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.process.WorkItemManager;
@@ -147,6 +143,10 @@ public class StatefulKnowledgeSessionImpl
 
     public int fireAllRules() {
         return this.session.fireAllRules();
+    }
+    
+    public int fireAllRules(int max) {
+        return this.session.fireAllRules( max );
     }
     
     public int fireAllRules(AgendaFilter agendaFilter) {
@@ -557,4 +557,5 @@ public class StatefulKnowledgeSessionImpl
     public Agenda getAgenda() {
         return new AgendaImpl( ( InternalAgenda ) this.session.getAgenda() );
     }
+
 }
