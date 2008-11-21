@@ -1167,6 +1167,33 @@ public class MiscTest extends TestCase {
                       ((List) session.getGlobal( "list" )).get( 0 ) );
     }
 
+    public void testLiteralWithEscapes() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_literal_with_escapes.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        StatefulSession session = ruleBase.newStatefulSession();
+
+        final List list = new ArrayList();
+        session.setGlobal( "list",
+                           list );
+
+        String expected = "s\tti\"lto\nn";
+        final Cheese stilton = new Cheese( expected,
+                                           5 );
+        session.insert( stilton );
+        session = SerializationHelper.getSerialisedStatefulSession( session,
+                                                                    ruleBase );
+
+        session.fireAllRules();
+
+        assertEquals( expected,
+                      ((List) session.getGlobal( "list" )).get( 0 ) );
+    }
+
     public void testLiteralWithBoolean() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "literal_with_boolean.drl" ) ) );
