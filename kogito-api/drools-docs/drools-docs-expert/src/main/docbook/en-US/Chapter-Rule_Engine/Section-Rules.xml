@@ -231,7 +231,7 @@ public void cheddarCheese(Cheese cheese) {
     <para>With SQL if we look at the conclusion's action as simply returning
     the matched fact to the user:</para>
 
-    <para>select * from Person where Person.sex == "male"</para>
+    <programlisting>select * from Person where Person.sex == "male"</programlisting>
 
     <para>For any rows, which represent our facts, that are returned we have
     inferred that those facts are male people. The following diagram shows how
