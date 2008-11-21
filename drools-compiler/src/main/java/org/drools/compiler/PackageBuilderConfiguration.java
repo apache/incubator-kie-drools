@@ -68,12 +68,16 @@ import org.mvel2.MVEL;
  * drools.accumulate.function.min = org.drools.base.accumulators.MinAccumulateFunction
  * drools.accumulate.function.count = org.drools.base.accumulators.CountAccumulateFunction
  * drools.accumulate.function.sum = org.drools.base.accumulators.SumAccumulateFunction
+ * 
+ * drools.parser.processStringEscapes = true|false
  */
 public class PackageBuilderConfiguration implements KnowledgeBuilderConfiguration {
 
     private static final String        ACCUMULATE_FUNCTION_PREFIX  = "drools.accumulate.function.";
 
     private static final String        EVALUATOR_DEFINITION_PREFIX = "drools.evaluator.";
+
+    private static final String        DROOLS_PARSER_PROCESS_STRING_ESCAPES = "drools.parser.processStringEscapes";
 
     private Map                        dialectConfigurations;
 
@@ -94,6 +98,8 @@ public class PackageBuilderConfiguration implements KnowledgeBuilderConfiguratio
     private File                       dumpDirectory;
 
     private boolean					   allowMultipleNamespaces = true;
+    
+    private boolean                    processStringEscapes = true;
 
     public boolean isAllowMultipleNamespaces() {
 		return allowMultipleNamespaces;
@@ -168,6 +174,9 @@ public class PackageBuilderConfiguration implements KnowledgeBuilderConfiguratio
         buildEvaluatorRegistry();
 
         buildDumpDirectory();
+        
+        setProperty( DROOLS_PARSER_PROCESS_STRING_ESCAPES, 
+                     this.chainedProperties.getProperty( DROOLS_PARSER_PROCESS_STRING_ESCAPES, "true" ) );
     }
     
     public void setProperty(String name, String value) {
@@ -180,10 +189,12 @@ public class PackageBuilderConfiguration implements KnowledgeBuilderConfiguratio
             setDefaultDialect( value );    
         } else if ( name.startsWith( "drools.accumulate.function" ) ) {
             addAccumulateFunction( name.substring( name.lastIndexOf( '.' ) ), value );
-        }else if ( name.startsWith( "drools.evaluator." ) ) {
+        } else if ( name.startsWith( "drools.evaluator." ) ) {
             this.evaluatorRegistry.addEvaluatorDefinition( value );
         } else if ( name.equals(  "drools.dump.dir" ) ) {
             buildDumpDirectory( value );
+        } else if ( name.equals(  DROOLS_PARSER_PROCESS_STRING_ESCAPES ) ) {
+            setProcessStringEscapes( Boolean.parseBoolean( value ) );
         }
     }
     
@@ -201,6 +212,8 @@ public class PackageBuilderConfiguration implements KnowledgeBuilderConfiguratio
             return this.evaluatorRegistry.getEvaluatorDefinition( name.substring( name.lastIndexOf( '.' ) ) ).getClass().getName();
         } else if ( name.equals(  "drools.dump.dir" ) ) {
             return Boolean.toString( this.dumpDirectory != null ); 
+        } else if ( name.equals(  DROOLS_PARSER_PROCESS_STRING_ESCAPES ) ) {
+            return String.valueOf( isProcessStringEscapes() );
         }
         return null;
     }
@@ -556,6 +569,16 @@ public class PackageBuilderConfiguration implements KnowledgeBuilderConfiguratio
             throw new RuntimeDroolsException( "Drools dump directory is not accessible: " + dumpDir.toString() );
         }
         this.dumpDirectory = dumpDir;
+    }
+
+
+    public boolean isProcessStringEscapes() {
+        return processStringEscapes;
+    }
+
+
+    public void setProcessStringEscapes(boolean processStringEscapes) {
+        this.processStringEscapes = processStringEscapes;
     }
 
 }

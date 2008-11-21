@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
 
 import org.drools.base.ClassObjectType;
 import org.drools.base.FieldFactory;
@@ -80,6 +81,7 @@ import org.drools.spi.ObjectType;
 import org.drools.spi.PatternExtractor;
 import org.drools.spi.Restriction;
 import org.drools.spi.Constraint.ConstraintType;
+import org.drools.util.StringUtils;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.ExpressionCompiler;
 
@@ -767,7 +769,13 @@ public class PatternBuilder
                                                 final LiteralRestrictionDescr literalRestrictionDescr) {
         FieldValue field = null;
         try {
-            field = FieldFactory.getFieldValue( literalRestrictionDescr.getValue(),
+            Object value = literalRestrictionDescr.getValue();
+            if( literalRestrictionDescr.getType() == LiteralRestrictionDescr.TYPE_STRING &&
+                context.getConfiguration().isProcessStringEscapes() ) {
+                value = StringUtils.unescapeJava( (String) value );
+            }
+            
+            field = FieldFactory.getFieldValue( value,
                                                 extractor.getValueType() );
         } catch ( final Exception e ) {
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),

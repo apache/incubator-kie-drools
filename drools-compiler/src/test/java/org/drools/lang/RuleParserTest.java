@@ -425,6 +425,18 @@ public class RuleParserTest extends TestCase {
 		assertNotNull(pattern);
 	}
 
+    public void testRuleParseLhsWithStringQuotes() throws Exception {
+        final String text = "Person( location==\"atlanta\\\"\")\n";
+        PatternDescr pattern = (PatternDescr) parse("lhs_pattern",
+                "lhs_pattern", text);
+        assertNotNull(pattern);
+        
+        FieldConstraintDescr field = (FieldConstraintDescr) pattern.getDescrs().get( 0 ); 
+        assertEquals( "location", field.getFieldName() );
+        System.out.println(field.getRestriction().getRestrictions().get( 0 ).getText());
+        assertEquals( "atlanta\\\"", field.getRestriction().getRestrictions().get( 0 ).getText() );
+    }
+
 	public void testLiteralBoolAndNegativeNumbersRule() throws Exception {
 		final RuleDescr rule = (RuleDescr) parseResource("rule", "rule",
 				"literal_bool_and_negative.drl");
