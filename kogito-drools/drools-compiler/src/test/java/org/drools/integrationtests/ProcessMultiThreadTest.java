@@ -14,8 +14,8 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.runtime.process.ProcessInstance;
 
 public class ProcessMultiThreadTest extends TestCase {
-	
-	public void testMultiThreadProcessInstanceSignalling() {
+
+    public void testMultiThreadProcessInstanceSignalling() {
         final int THREAD_COUNT = 2;
         try {
             boolean success = true;
