@@ -29,7 +29,7 @@
 
     <mediaobject>
       <imageobject>
-	      <imagedata align="center" fileref="images/Chapter-Rule_Engine/Rete_Nodes.png" format="PNG" />
+	      <imagedata align="center" fileref="images/Chapter-Rule_Engine/Rete_Nodes.svg" format="SVG" contentwidth="392" contentdepth="244"/>
       </imageobject>
     </mediaobject>
   </figure>
