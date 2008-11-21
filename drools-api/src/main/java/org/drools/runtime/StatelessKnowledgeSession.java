@@ -1,17 +1,5 @@
 package org.drools.runtime;
 
-import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.KnowledgeType;
-import org.drools.definition.KnowledgePackage;
 import org.drools.event.KnowledgeRuntimeEventManager;
 import org.drools.runtime.process.StatelessProcessSession;
 import org.drools.runtime.rule.StatelessRuleSession;
@@ -35,7 +23,6 @@ import org.drools.runtime.rule.StatelessRuleSession;
  * }
  * KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
  * kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
- * </pre>
  * 
  * StatelessKnowledgeSession session = kbase.newStatelessKnowledgeSession();
  * session.executeIterable( collection );
@@ -114,9 +101,9 @@ public interface StatelessKnowledgeSession
     void setGlobalResolver(GlobalResolver globalResolver);
 
     /**
-     * Sets a global value on the iternal collection
-     * @param identifer
-     * @param value
+     * Sets a global value on the internal collection
+     * @param identifer the global identifier
+     * @param value the value assigned to the global identifier
      */
     void setGlobal(String identifer,
                    Object value);
