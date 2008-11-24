@@ -50,7 +50,7 @@ public class GuidedDTDRLPersistence {
 			doMetadata(dt.getMetadataCols(), row, rm);
 			doAttribs(dt.getMetadataCols().size(), dt.attributeCols, row, rm);
 			doConditions(dt.getMetadataCols().size() + dt.attributeCols.size(), dt.conditionCols, row, rm);
-			doActions(dt.getMetadataCols().size() +dt.attributeCols.size() + dt.conditionCols.size(), dt.actionCols, row, rm);
+			doActions(dt.getMetadataCols().size() + dt.attributeCols.size() + dt.conditionCols.size(), dt.actionCols, row, rm);
 
 			if(dt.parentName != null){
 				rm.parentName = dt.parentName;
@@ -71,7 +71,7 @@ public class GuidedDTDRLPersistence {
 		List<LabelledAction> actions = new ArrayList<LabelledAction>();
 		for (int i = 0; i < actionCols.size(); i++) {
 			ActionCol c = actionCols.get(i);
-			String cell = row[condAndAttrs + i + 2];
+			String cell = row[condAndAttrs + i + GuidedDecisionTable.INTERNAL_ELEMENTS];
 			if (validCell(cell)) {
 				if (c instanceof ActionInsertFactCol) {
 					ActionInsertFactCol ac = (ActionInsertFactCol)c;
@@ -132,7 +132,7 @@ public class GuidedDTDRLPersistence {
 
 		for (int i = 0; i < conditionCols.size(); i++) {
 			ConditionCol c = (ConditionCol) conditionCols.get(i);
-			String cell = row[i + 2 + numOfAttributesAndMeta];
+			String cell = row[i + GuidedDecisionTable.INTERNAL_ELEMENTS + numOfAttributesAndMeta];
 			if (validCell(cell)) {
 
 				//get or create the pattern it belongs too
@@ -199,7 +199,7 @@ public class GuidedDTDRLPersistence {
 		List<RuleAttribute> attribs = new ArrayList<RuleAttribute>();
 		for (int j = 0; j < attributeCols.size(); j++) {
 			AttributeCol at = attributeCols.get(j);
-			String cell = row[j + 2 + numOfMeta];
+			String cell = row[j + GuidedDecisionTable.INTERNAL_ELEMENTS + numOfMeta];
 			if (validCell(cell)) {
 				attribs.add(new RuleAttribute(at.attr, cell));
 			}
@@ -210,11 +210,13 @@ public class GuidedDTDRLPersistence {
 	}
 	
 	void doMetadata(List<MetadataCol> metadataCols, String[] row, RuleModel rm) {
+
+		// setup temp list
 		List<RuleMetadata> metadataList = new ArrayList<RuleMetadata>();
-		
-		for (int j = 0;j < metadataCols.size(); j++) {
+
+		for (int j = 0; j < metadataCols.size(); j++) {
 			MetadataCol meta = metadataCols.get(j);
-			String cell = row[j + 2];
+			String cell = row[j + GuidedDecisionTable.INTERNAL_ELEMENTS];
 			if (validCell(cell)) {
 				metadataList.add(new RuleMetadata(meta.attr, cell));
 			}
@@ -229,7 +231,7 @@ public class GuidedDTDRLPersistence {
 	}
 
 	boolean validCell(String c) {
-		return c !=null && !c.trim().equals("");
+		return (c != null) && (!c.trim().equals(""));
 	}
 
 	private class LabelledAction {
