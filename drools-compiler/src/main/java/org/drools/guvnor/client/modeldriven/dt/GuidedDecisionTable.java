@@ -210,7 +210,7 @@ public class GuidedDecisionTable implements PortableObject {
 	 *            Name of metadata we are looking for
 	 * @return true if values update, false if not
 	 */
-	public boolean updateMetadataCol(String attributeName, String newValue) {
+	public boolean updateMetadata(String attributeName, String newValue) {
 
 		// see if metaData exists for
 		int metaIndex = getMetadataColIndex(attributeName);
