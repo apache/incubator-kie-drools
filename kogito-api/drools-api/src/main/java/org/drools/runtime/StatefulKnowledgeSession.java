@@ -23,12 +23,12 @@ import org.drools.runtime.rule.StatefulRuleSession;
  * KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
  * kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
  * 
- * StatefulKnowledgeSession session = kbase.newStatelessKnowledgeSession();
+ * StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
  * for( Object fact : facts ) {
- *     session.insert( fact );
+ *     ksession.insert( fact );
  * }
- * session.fireAllRules();
- * session.dispose();
+ * ksession.fireAllRules();
+ * ksession.dispose();
  * </pre>
  * 
  * <p>
@@ -47,13 +47,13 @@ import org.drools.runtime.rule.StatefulRuleSession;
  * 
  * <p>Code snippet for setting a global:</p>
  * <pre>
- * StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
- * session.setGlobal( "hbnSession", hibernateSession ); // sets a global hibernate session, that can be used for DB interactions in the rules.
+ * StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+ * ksession.setGlobal( "hbnSession", hibernateSession ); // sets a global hibernate session, that can be used for DB interactions in the rules.
  * for( Object fact : facts ) {
- *     session.insert( fact );
+ *     ksession.insert( fact );
  * }
- * session.fireAllRules(); // this will now execute and will be able to resolve the "hbnSession" identifier.
- * session.dispose();
+ * ksession.fireAllRules(); // this will now execute and will be able to resolve the "hbnSession" identifier.
+ * ksession.dispose();
  * </pre>
  * 
  * @see org.drools.runtime.GlobalResolver
