@@ -7,8 +7,6 @@ import java.util.List;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.brl.ISingleFieldConstraint;
 import org.drools.guvnor.client.modeldriven.brl.PortableObject;
-import org.drools.guvnor.client.modeldriven.brl.RuleModel;
-import org.drools.guvnor.server.util.BRDRLPersistence;
 
 /**
  * This is a decision table model for a guided editor. It is not template or XLS
