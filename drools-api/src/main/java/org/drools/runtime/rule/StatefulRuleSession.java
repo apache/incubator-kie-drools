@@ -1,16 +1,12 @@
 package org.drools.runtime.rule;
 
 /**
- * A super-interface for all <code>StatefulRuleSession</code>s.
- * Although, users are encouraged to use <code>StatefulSession</code> interface instead of 
- * <code>WorkingMemory</code> interface, specially because of the <code>dispose()</code> method
- * that is only available in the <code>StatefulKnowledgeSession</code> interface.  
+ * An interface for all <code>StatefulRuleSession</code> methods. This interface
+ * adds methods available to the StatefulKnowledgeSession beyond what the WorkingMemory provides. 
  * 
  * @see org.drools.runtime.StatefulKnowledgeSession 
  */
-public interface StatefulRuleSession
-    extends
-    WorkingMemory {
+public interface StatefulRuleSession {
 
     /**
      * Fire all Activations on the Agenda

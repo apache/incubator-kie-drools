@@ -5,9 +5,7 @@ import java.util.Map;
 
 import org.drools.event.process.ProcessEventManager;
 
-public interface ProcessRuntime
-    extends
-    ProcessEventManager {
+public interface ProcessRuntime {
 
     ProcessInstance startProcess(String processId);
 
