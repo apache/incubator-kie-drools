@@ -1425,10 +1425,10 @@ end>>
 rule "test pluggable operators"
 when
     $a : EventA()
-    $b : EventB( this `after[1,10] $a )
+    $b : EventB( this after[1,10] $a )
     $c : EventC( this finishes $b )
     $d : EventD( this not starts $a )
-    $e : EventE( this not `before [1, 10] $b )
+    $e : EventE( this not before [1, 10] $b )
 then
 end>>
 		-> (VT_COMPILATION_UNIT (package (VT_PACKAGE_ID org drools)) (rule "test pluggable operators" when (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT_BINDING $a (VT_FACT (VT_PATTERN_TYPE EventA)))) (VT_PATTERN (VT_FACT_BINDING $b (VT_FACT (VT_PATTERN_TYPE EventB) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT this)) (after [1,10] (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT $a))))))) (VT_PATTERN (VT_FACT_BINDING $c (VT_FACT (VT_PATTERN_TYPE EventC) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT this)) (finishes (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT $b))))))) (VT_PATTERN (VT_FACT_BINDING $d (VT_FACT (VT_PATTERN_TYPE EventD) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT this)) (starts not (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT $a))))))) (VT_PATTERN (VT_FACT_BINDING $e (VT_FACT (VT_PATTERN_TYPE EventE) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT this)) (before not [1, 10] (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT $b)))))))) then
@@ -1893,10 +1893,10 @@ Foo(
 
 			<<
 		    $a : EventA()
-		    $b : EventB( this `after[1,10] $a )
+		    $b : EventB( this after[1,10] $a )
 		    $c : EventC( this finishes $b )
 		    $d : EventD( this not starts $a )
-		    $e : EventE( this not `before [1, 10] $b )
+		    $e : EventE( this not before [1, 10] $b )
 			>>
 				-> (VT_AND_IMPLICIT (VT_PATTERN (VT_FACT_BINDING $a (VT_FACT (VT_PATTERN_TYPE EventA)))) (VT_PATTERN (VT_FACT_BINDING $b (VT_FACT (VT_PATTERN_TYPE EventB) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT this)) (after [1,10] (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT $a))))))) (VT_PATTERN (VT_FACT_BINDING $c (VT_FACT (VT_PATTERN_TYPE EventC) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT this)) (finishes (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT $b))))))) (VT_PATTERN (VT_FACT_BINDING $d (VT_FACT (VT_PATTERN_TYPE EventD) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT this)) (starts not (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT $a))))))) (VT_PATTERN (VT_FACT_BINDING $e (VT_FACT (VT_PATTERN_TYPE EventE) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT this)) (before not [1, 10] (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT $b))))))))
 

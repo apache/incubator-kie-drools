@@ -76,6 +76,19 @@ public class EvaluatorRegistry
         this.addEvaluatorDefinition( new SetEvaluatorsDefinition() );
         this.addEvaluatorDefinition( new MatchesEvaluatorsDefinition() );
         this.addEvaluatorDefinition( new SoundslikeEvaluatorsDefinition() );
+        this.addEvaluatorDefinition( new BeforeEvaluatorDefinition() );
+        this.addEvaluatorDefinition( new AfterEvaluatorDefinition() );
+        this.addEvaluatorDefinition( new MeetsEvaluatorDefinition() );
+        this.addEvaluatorDefinition( new MetByEvaluatorDefinition() );
+        this.addEvaluatorDefinition( new OverlapsEvaluatorDefinition() );
+        this.addEvaluatorDefinition( new OverlappedByEvaluatorDefinition() );
+        this.addEvaluatorDefinition( new IncludesEvaluatorDefinition() );
+        this.addEvaluatorDefinition( new DuringEvaluatorDefinition() );
+        this.addEvaluatorDefinition( new FinishesEvaluatorDefinition() );
+        this.addEvaluatorDefinition( new FinishedByEvaluatorDefinition() );
+        this.addEvaluatorDefinition( new StartsEvaluatorDefinition() );
+        this.addEvaluatorDefinition( new StartedByEvaluatorDefinition() );
+        this.addEvaluatorDefinition( new CoincidesEvaluatorDefinition() );
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {

@@ -7,9 +7,16 @@ import junit.framework.TestCase;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
+import org.drools.base.evaluators.EvaluatorRegistry;
 import org.drools.compiler.DroolsParserException;
 
 public class DRLContextTest extends TestCase {
+
+	protected void setUp() throws Exception {
+		super.setUp();
+		// initializes pluggable operators
+		new EvaluatorRegistry();
+	}
 
 	public void testCheckLHSLocationDetermination_OPERATORS_AND_COMPLEMENT1()
 			throws DroolsParserException, RecognitionException {
@@ -2271,6 +2278,24 @@ public class DRLContextTest extends TestCase {
 	}
 
 	public void testCheckLHSLocationDetermination_FROM_ACCUMULATE_ACTION_INSIDE() {
+		String input = "rule MyRule \n" + "	when \n"
+				+ "		Class ( property > 0 ) from accumulate( \n"
+				+ "			$cheese : Cheese( type == $likes ), \n"
+				+ "			init( int total = 0; ), \n" + "			action( ";
+
+		DRLParser parser = getParser(input);
+		parser.enableEditorInterface();
+		try {
+			parser.compilation_unit();
+		} catch (Exception ex) {
+		}
+
+		assertEquals(Location.LOCATION_LHS_FROM_ACCUMULATE_ACTION_INSIDE,
+				getLastIntegerValue(parser.getEditorInterface().get(0)
+						.getContent()));
+	}
+
+	public void testCheckLHSLocationDetermination_FROM_ACCUMULATE_ACTION_INSIDE3() {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( property > 0 ) from accumulate( \n"
 				+ "			$cheese : Cheese( type == $likes ), \n"

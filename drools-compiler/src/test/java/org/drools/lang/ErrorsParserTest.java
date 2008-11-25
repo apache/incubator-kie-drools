@@ -28,6 +28,7 @@ import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.Lexer;
 import org.antlr.runtime.TokenStream;
 import org.antlr.runtime.tree.Tree;
+import org.drools.base.evaluators.EvaluatorRegistry;
 import org.drools.compiler.DroolsParserException;
 import org.drools.lang.dsl.DefaultExpander;
 
@@ -38,6 +39,9 @@ public class ErrorsParserTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		this.parser = null;
+
+		// initializes pluggable operators
+		new EvaluatorRegistry();
 	}
 
 	protected void tearDown() throws Exception {

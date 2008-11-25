@@ -352,17 +352,7 @@ fact_expression returns [BaseDescr descr]
 	{	$descr = factory.setupRestriction($op, null, $fe.descr);	}
 	|	^(op=LESS_EQUAL fe=fact_expression)
 	{	$descr = factory.setupRestriction($op, null, $fe.descr);	}
-	|	^(op=VK_CONTAINS not=VK_NOT? fe=fact_expression)
-	{	$descr = factory.setupRestriction($op, $not, $fe.descr);	}
-	|	^(op=VK_EXCLUDES not=VK_NOT? fe=fact_expression)
-	{	$descr = factory.setupRestriction($op, $not, $fe.descr);	}
-	|	^(op=VK_MATCHES not=VK_NOT? fe=fact_expression)
-	{	$descr = factory.setupRestriction($op, $not, $fe.descr);	}
-	|	^(op=VK_SOUNDSLIKE not=VK_NOT? fe=fact_expression)
-	{	$descr = factory.setupRestriction($op, $not, $fe.descr);	}
-	|	^(op=VK_MEMBEROF not=VK_NOT? fe=fact_expression)
-	{	$descr = factory.setupRestriction($op, $not, $fe.descr);	}
-	|	^(op=ID not=VK_NOT? param=VT_SQUARE_CHUNK? fe=fact_expression)
+	|	^(op=VK_OPERATOR not=VK_NOT? param=VT_SQUARE_CHUNK? fe=fact_expression)
 	{	$descr = factory.setupRestriction($op, $not, $fe.descr, $param);	}
 
 	|	^(VK_IN not=VK_NOT? (fe=fact_expression {exprList.add($fe.descr);})+)

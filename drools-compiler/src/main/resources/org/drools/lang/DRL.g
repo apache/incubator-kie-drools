@@ -79,11 +79,6 @@ tokens {
 	VK_FUNCTION;
 	VK_GLOBAL;
 	VK_EVAL;
-	VK_CONTAINS;
-	VK_MATCHES;
-	VK_EXCLUDES;
-	VK_SOUNDSLIKE;
-	VK_MEMBEROF;
 	VK_ENTRY_POINT;
 	VK_NOT;
 	VK_IN;
@@ -94,6 +89,7 @@ tokens {
 	VK_ACTION;
 	VK_REVERSE;
 	VK_RESULT;
+	VK_OPERATOR;
 }
 
 @parser::header {
@@ -106,10 +102,15 @@ tokens {
 
 @lexer::header {
 	package org.drools.lang;
+
+	import org.drools.compiler.DroolsParserException;
 }
 
 
 @lexer::members {
+	private List<DroolsParserException> errors = new ArrayList<DroolsParserException>();
+	private DroolsParserExceptionFactory errorMessageFactory = new DroolsParserExceptionFactory(null, null);
+
 	/** The standard method called to automatically emit a token at the
 	 *  outermost lexical rule.  The token object should point into the
 	 *  char buffer start..stop.  If there is a text override in 'text',
@@ -117,12 +118,21 @@ tokens {
 	 *  custom Token objects.
 	 */
 	public Token emit() {
-		Token t = new DroolsToken(input, type, channel, tokenStartCharIndex, getCharIndex()-1);
-		t.setLine(tokenStartLine);
-		t.setText(text);
-		t.setCharPositionInLine(tokenStartCharPositionInLine);
+		Token t = new DroolsToken(input, state.type, state.channel, state.tokenStartCharIndex, getCharIndex()-1);
+		t.setLine(state.tokenStartLine);
+		t.setText(state.text);
+		t.setCharPositionInLine(state.tokenStartCharPositionInLine);
 		emit(t);
 		return t;
+	}
+
+	public void reportError(RecognitionException ex) {
+		errors.add(errorMessageFactory.createDroolsException(ex));
+	}
+
+	/** return the raw DroolsParserException errors */
+	public List<DroolsParserException> getErrors() {
+		return errors;
 	}
 
 	/** Overrided this method to not output mesages */
@@ -213,16 +223,29 @@ tokens {
 		return lastIntergerValue;
 	}
 
-	private boolean validateLT(int LTNumber, String text) {
-		if (null == input)
-			return false;
+	private String retrieveLT(int LTNumber) {
+      		if (null == input)
+			return null;
 		if (null == input.LT(LTNumber))
-			return false;
+			return null;
 		if (null == input.LT(LTNumber).getText())
-			return false;
+			return null;
 	
-		String text2Validate = input.LT(LTNumber).getText();
-		return text2Validate.equalsIgnoreCase(text);
+		return input.LT(LTNumber).getText();
+	}
+
+	private boolean validateLT(int LTNumber, String text) {
+		String text2Validate = retrieveLT( LTNumber );
+		return text2Validate == null ? false : text2Validate.equalsIgnoreCase(text);
+	}
+	
+	private boolean isPluggableEvaluator( int offset, boolean negated ) {
+		String text2Validate = retrieveLT( offset );
+	        return text2Validate == null ? false : DroolsSoftKeywords.isOperator( text2Validate, negated );
+	}
+	
+	private boolean isPluggableEvaluator( boolean negated ) {
+	        return isPluggableEvaluator( 1, negated );
 	}
 	
 	private boolean validateIdentifierKey(String text) {
@@ -290,10 +313,10 @@ tokens {
 	public void reportError(RecognitionException ex) {
 		// if we've already reported an error and have not matched a token
 		// yet successfully, don't report any errors.
-		if (errorRecovery) {
+		if (state.errorRecovery) {
 			return;
 		}
-		errorRecovery = true;
+		state.errorRecovery = true;
 	
 		errors.add(errorMessageFactory.createDroolsException(ex));
 	}
@@ -362,32 +385,6 @@ tokens {
 		return sb.toString();
 	}
 	
-	/**
-	 * This methos is a copy from ANTLR base class (BaseRecognizer). 
-	 * We had to copy it just to remove a System.err.println() 
-	 * 
-	 */
-	public void recoverFromMismatchedToken(IntStream input,
-			RecognitionException e, int ttype, BitSet follow)
-			throws RecognitionException {
-		// if next token is what we are looking for then "delete" this token
-		if (input.LA(2) == ttype) {
-			reportError(e);
-			/*
-			 * System.err.println("recoverFromMismatchedToken deleting
-			 * "+input.LT(1)+ " since "+input.LT(2)+" is what we want");
-			 */
-			beginResync();
-			input.consume(); // simply delete extra token
-			endResync();
-			input.consume(); // move past ttype token as if all were ok
-			return;
-		}
-		if (!recoverFromMismatchedElement(input, e, follow)) {
-			throw e;
-		}
-	}
-	
 	/** Overrided this method to not output mesages */
 	public void emitErrorMessage(String msg) {
 	}
@@ -412,10 +409,10 @@ finally {
 		root_1 = (Object) adaptor.becomeRoot(adaptor.create(
 				VT_COMPILATION_UNIT, "VT_COMPILATION_UNIT"), root_1);
 		if (stream_package_statement.hasNext()) {
-			adaptor.addChild(root_1, stream_package_statement.next());
+			adaptor.addChild(root_1, stream_package_statement.nextTree());
 		}
 		while (stream_statement.hasNext()) {
-			adaptor.addChild(root_1, stream_statement.next());
+			adaptor.addChild(root_1, stream_statement.nextTree());
 		}
 		adaptor.addChild(root_0, root_1);
 		retval.stop = input.LT(-1);
@@ -424,22 +421,22 @@ finally {
 				retval.stop);
 	}
 	if (isEditorInterfaceEnabled && hasErrors()) {
-		DroolsTree rootNode = (DroolsTree) retval.tree;
-		for (int i = 0; i < rootNode.getChildCount(); i++) {
-			DroolsTree childNode = (DroolsTree) rootNode.getChild(i);
-			if (childNode.getStartCharOffset() >= errors.get(0).getOffset()) {
-				rootNode.deleteChild(i);
+		Tree rootNode = (Tree) adaptor.becomeRoot(adaptor.create(
+				VT_COMPILATION_UNIT, "VT_COMPILATION_UNIT"), adaptor.nil());
+		for (int i = 0; i < ((Tree)retval.tree).getChildCount(); i++) {
+			Tree childNode = (Tree) ((Tree)retval.tree).getChild(i);
+			if (!(childNode instanceof CommonErrorNode)) {
+				rootNode.addChild(childNode);
 			}
 		}
+		retval.tree = rootNode; 
 	}
 }
 
 package_statement
-@init  { pushParaphrases(DroolsParaphraseTypes.PACKAGE); }
+@init  { pushParaphrases(DroolsParaphraseTypes.PACKAGE); if ( state.backtracking==0 ) beginSentence(DroolsSentenceType.PACKAGE); }
 @after { paraphrases.pop(); }
-	:
-	{	beginSentence(DroolsSentenceType.PACKAGE);	}
-		package_key
+	:	package_key
 		package_id SEMICOLON?
 	{	emit($SEMICOLON, DroolsEditorType.SYMBOL);	}
 		-> ^(package_key package_id)
@@ -455,9 +452,7 @@ package_id
 statement
 options{
 k = 2;
-}	:	
-	{	beginSentence(DroolsSentenceType.RULE_ATTRIBUTE);	}
-		rule_attribute
+}	:	rule_attribute
 	|{(validateLT(1, "import") && validateLT(2, "function") )}?=> function_import_statement 
 	|	import_statement 
 	|	global 
@@ -469,21 +464,17 @@ k = 2;
 	;
 
 import_statement
-@init  { pushParaphrases(DroolsParaphraseTypes.IMPORT); }
+@init  { pushParaphrases(DroolsParaphraseTypes.IMPORT); if ( state.backtracking==0 ) beginSentence(DroolsSentenceType.IMPORT_STATEMENT);  }
 @after { paraphrases.pop(); }
-	:
-	{	beginSentence(DroolsSentenceType.IMPORT_STATEMENT);	}
-		import_key import_name[DroolsParaphraseTypes.IMPORT] SEMICOLON?
+	:	import_key import_name[DroolsParaphraseTypes.IMPORT] SEMICOLON?
 	{	emit($SEMICOLON, DroolsEditorType.SYMBOL);	}
 		-> ^(import_key import_name)
 	;
 
 function_import_statement
-@init  { pushParaphrases(DroolsParaphraseTypes.FUNCTION_IMPORT); }
+@init  { pushParaphrases(DroolsParaphraseTypes.FUNCTION_IMPORT); if ( state.backtracking==0 ) beginSentence(DroolsSentenceType.FUNCTION_IMPORT_STATEMENT); }
 @after { paraphrases.pop(); }
-	:
-	{	beginSentence(DroolsSentenceType.FUNCTION_IMPORT_STATEMENT);	}
-		imp=import_key function_key import_name[DroolsParaphraseTypes.FUNCTION_IMPORT] SEMICOLON?
+	:	imp=import_key function_key import_name[DroolsParaphraseTypes.FUNCTION_IMPORT] SEMICOLON?
 	{	emit($SEMICOLON, DroolsEditorType.SYMBOL);	}		
 		-> ^(VT_FUNCTION_IMPORT[$imp.start] function_key import_name)
 	;
@@ -496,11 +487,9 @@ import_name [DroolsParaphraseTypes importType]
 	;
 
 global
-@init  { pushParaphrases(DroolsParaphraseTypes.GLOBAL); }
+@init  { pushParaphrases(DroolsParaphraseTypes.GLOBAL);  if ( state.backtracking==0 ) beginSentence(DroolsSentenceType.GLOBAL); }
 @after { paraphrases.pop(); }
-	:
-	{	beginSentence(DroolsSentenceType.GLOBAL);	}
-		global_key data_type global_id SEMICOLON?
+	:	global_key data_type global_id SEMICOLON?
 	{	emit($SEMICOLON, DroolsEditorType.SYMBOL);	}
 		-> ^(global_key data_type global_id)
 	;
@@ -513,11 +502,9 @@ global_id
 	;
 
 function
-@init  { pushParaphrases(DroolsParaphraseTypes.FUNCTION); }
+@init  { pushParaphrases(DroolsParaphraseTypes.FUNCTION); if ( state.backtracking==0 ) beginSentence(DroolsSentenceType.FUNCTION);  }
 @after { paraphrases.pop(); }
-	:
-	{	beginSentence(DroolsSentenceType.FUNCTION);	}
-		function_key data_type? function_id parameters curly_chunk
+	:	function_key data_type? function_id parameters curly_chunk
 		-> ^(function_key data_type? function_id parameters curly_chunk)
 	;
 
@@ -529,11 +516,9 @@ function_id
 	;
 
 query
-@init  { pushParaphrases(DroolsParaphraseTypes.QUERY); }
+@init  { pushParaphrases(DroolsParaphraseTypes.QUERY); if ( state.backtracking==0 ) beginSentence(DroolsSentenceType.QUERY); }
 @after { paraphrases.pop(); }
-	:
-	{	beginSentence(DroolsSentenceType.QUERY);	}
-		query_key query_id 
+	:	query_key query_id 
 	{	emit(Location.LOCATION_RULE_HEADER);	}
 		parameters? 
 	{	emit(Location.LOCATION_LHS_BEGIN_OF_CONDITION);	}
@@ -570,11 +555,9 @@ argument
 	;
 
 type_declaration
-@init  { pushParaphrases(DroolsParaphraseTypes.TYPE_DECLARE); }
+@init  { pushParaphrases(DroolsParaphraseTypes.TYPE_DECLARE); if ( state.backtracking==0 ) beginSentence(DroolsSentenceType.TYPE_DECLARATION); }
 @after { paraphrases.pop(); }
-	:
-	{	beginSentence(DroolsSentenceType.TYPE_DECLARATION);	}
-		declare_key  type_declare_id
+	:	declare_key  type_declare_id
 		decl_metadata*
 		decl_field*
 		END
@@ -649,54 +632,14 @@ slot_id
 	;
 
 rule
-@init  { pushParaphrases(DroolsParaphraseTypes.RULE); }
-@after { paraphrases.pop(); }
+@init  { boolean isFailed = true; pushParaphrases(DroolsParaphraseTypes.RULE); }
+@after { paraphrases.pop(); isFailed = false; }
 	:
 	{	beginSentence(DroolsSentenceType.RULE);	}
 		rule_key rule_id 
 	{	emit(Location.LOCATION_RULE_HEADER);	}
 		(extend_key rule_id)? decl_metadata* rule_attributes? when_part? rhs_chunk
 		-> ^(rule_key rule_id ^(extend_key rule_id)? decl_metadata* rule_attributes? when_part? rhs_chunk)
-	;
-
-when_part
-	: 	WHEN {	emit($WHEN, DroolsEditorType.KEYWORD);	}
-		COLON? {	emit($COLON, DroolsEditorType.SYMBOL);	}
-	{	emit(Location.LOCATION_LHS_BEGIN_OF_CONDITION);	}
-		normal_lhs_block
-	->	WHEN normal_lhs_block
-	;
-
-rule_id
-	: 	id=ID
-	{	emit($id, DroolsEditorType.IDENTIFIER);
-		setParaphrasesValue(DroolsParaphraseTypes.RULE, $id.text);	} -> VT_RULE_ID[$id]
-	| 	id=STRING
-	{	emit($id, DroolsEditorType.IDENTIFIER);
-		setParaphrasesValue(DroolsParaphraseTypes.RULE, $id.text);	} -> VT_RULE_ID[$id]
-	;
-
-rule_attributes
-	:	( attributes_key COLON {	emit($COLON, DroolsEditorType.SYMBOL);	} )? 
-		rule_attribute ( COMMA? {	emit($COMMA, DroolsEditorType.SYMBOL);	} attr=rule_attribute )*
-		-> ^(VT_RULE_ATTRIBUTES attributes_key? rule_attribute+)
-	;
-
-rule_attribute
-@init  { boolean isFailed = true; pushParaphrases(DroolsParaphraseTypes.RULE_ATTRIBUTE); }
-@after { paraphrases.pop(); isFailed = false; emit(Location.LOCATION_RULE_HEADER); }
-	:	salience 
-	|	no_loop
-	|	agenda_group  
-	|	duration  
-	|	activation_group 
-	|	auto_focus 
-	|	date_effective 
-	|	date_expires 
-	|	enabled 
-	|	ruleflow_group 
-	|	lock_on_active
-	|	dialect 
 	;
 finally {
 	if (isEditorInterfaceEnabled && isFailed) {
@@ -741,6 +684,53 @@ finally {
 	}
 }
 
+when_part
+	: 	WHEN {	emit($WHEN, DroolsEditorType.KEYWORD);	}
+		COLON? {	emit($COLON, DroolsEditorType.SYMBOL);	}
+	{	emit(Location.LOCATION_LHS_BEGIN_OF_CONDITION);	}
+		normal_lhs_block
+	->	WHEN normal_lhs_block
+	;
+
+rule_id
+	: 	id=ID
+	{	emit($id, DroolsEditorType.IDENTIFIER);
+		setParaphrasesValue(DroolsParaphraseTypes.RULE, $id.text);	} -> VT_RULE_ID[$id]
+	| 	id=STRING
+	{	emit($id, DroolsEditorType.IDENTIFIER);
+		setParaphrasesValue(DroolsParaphraseTypes.RULE, $id.text);	} -> VT_RULE_ID[$id]
+	;
+
+rule_attributes
+	:	( attributes_key COLON {	emit($COLON, DroolsEditorType.SYMBOL);	} )? 
+		rule_attribute ( COMMA? {	emit($COMMA, DroolsEditorType.SYMBOL);	} attr=rule_attribute )*
+		-> ^(VT_RULE_ATTRIBUTES attributes_key? rule_attribute+)
+	;
+
+rule_attribute
+@init  { boolean isFailed = true; pushParaphrases(DroolsParaphraseTypes.RULE_ATTRIBUTE); }
+@after { paraphrases.pop(); isFailed = false; if (!(retval.tree instanceof CommonErrorNode)) emit(Location.LOCATION_RULE_HEADER); }
+	:	salience 
+	|	no_loop
+	|	agenda_group  
+	|	duration  
+	|	activation_group 
+	|	auto_focus 
+	|	date_effective 
+	|	date_expires 
+	|	enabled 
+	|	ruleflow_group 
+	|	lock_on_active
+	|	dialect 
+	;
+finally {
+	if (isEditorInterfaceEnabled && isFailed) {
+		if (input.LA(2) == EOF && input.LA(1) == ID){
+			emit(input.LT(1), DroolsEditorType.IDENTIFIER);
+			input.consume();
+		}
+	}
+}
 date_effective
 	:	date_effective_key^ {	emit(Location.LOCATION_RULE_HEADER_KEYWORD);	} STRING
 	{	emit($STRING, DroolsEditorType.STRING_CONST );	}
@@ -892,7 +882,10 @@ lhs_eval
 	:	ev=eval_key
 	{	emit(Location.LOCATION_LHS_INSIDE_EVAL);	}
 		pc=paren_chunk
-	{	emit(Location.LOCATION_LHS_BEGIN_OF_CONDITION);	}
+	{	if (((DroolsTree) $pc.tree).getText() != null){
+			emit(Location.LOCATION_LHS_BEGIN_OF_CONDITION);	            		
+		}
+	}
 	{	String body = safeSubstring( $pc.text, 1, $pc.text.length()-1 );
 		checkTrailingSemicolon( body, $ev.start );	}
 		-> ^(eval_key paren_chunk)
@@ -970,12 +963,17 @@ accumulate_init_clause
 	:	INIT {	emit($INIT, DroolsEditorType.KEYWORD);	}
 	{	emit(Location.LOCATION_LHS_FROM_ACCUMULATE_INIT);	}
 		pc1=accumulate_paren_chunk[Location.LOCATION_LHS_FROM_ACCUMULATE_INIT_INSIDE] cm1=COMMA? {	emit($cm1, DroolsEditorType.SYMBOL);	} 
-	{	emit(Location.LOCATION_LHS_FROM_ACCUMULATE_ACTION);	}
+	{	if (pc1 != null && ((DroolsTree) pc1.getTree()).getText() != null) emit(Location.LOCATION_LHS_FROM_ACCUMULATE_ACTION);	}
 		action_key pc2=accumulate_paren_chunk[Location.LOCATION_LHS_FROM_ACCUMULATE_ACTION_INSIDE] cm2=COMMA? {	emit($cm2, DroolsEditorType.SYMBOL);	} 
-	{	emit(Location.LOCATION_LHS_FROM_ACCUMULATE_REVERSE);	}
+	{	if (pc1 != null && ((DroolsTree) pc1.getTree()).getText() != null && pc2 != null && ((DroolsTree) pc2.getTree()).getText() != null ) emit(Location.LOCATION_LHS_FROM_ACCUMULATE_REVERSE);	}
+	(	reverse_key pc3=accumulate_paren_chunk[Location.LOCATION_LHS_FROM_ACCUMULATE_REVERSE_INSIDE] cm3=COMMA? {	emit($cm3, DroolsEditorType.SYMBOL);	} )?
 
-	( reverse_key pc3=accumulate_paren_chunk[Location.LOCATION_LHS_FROM_ACCUMULATE_REVERSE_INSIDE] cm3=COMMA? {	emit($cm3, DroolsEditorType.SYMBOL);	} )?
-	{	emit(Location.LOCATION_LHS_FROM_ACCUMULATE_RESULT);	}
+	{	if ((pc1 != null && ((DroolsTree) pc1.tree).getText() != null) &&
+            			(pc2 != null && ((DroolsTree) pc2.tree).getText() != null) &&
+            			(pc3 != null && ((DroolsTree) pc3.tree).getText() != null)) {
+			emit(Location.LOCATION_LHS_FROM_ACCUMULATE_RESULT);
+		}	
+	}
 		res1=result_key {	emit($res1.start, DroolsEditorType.KEYWORD);	} pc4=accumulate_paren_chunk[Location.LOCATION_LHS_FROM_ACCUMULATE_RESULT_INSIDE]
 	-> ^(VT_ACCUMULATE_INIT_CLAUSE ^(INIT $pc1) ^(action_key $pc2) ^(reverse_key $pc3)? ^(result_key $pc4))
 	;
@@ -1176,11 +1174,29 @@ or_restr_connective
 	:	and_restr_connective ({(validateRestr())}?=> DOUBLE_PIPE^ 
 	{	emit($DOUBLE_PIPE, DroolsEditorType.SYMBOL);	}  and_restr_connective )* 
 	;
+catch [ RecognitionException re ] {
+	if (!lookaheadTest){
+        reportError(re);
+        recover(input,re);
+    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+	} else {
+		throw re;
+	}
+}
 
 and_restr_connective
 	:	constraint_expression ({(validateRestr())}?=> DOUBLE_AMPER^ 
 	{	emit($DOUBLE_AMPER, DroolsEditorType.SYMBOL);	} constraint_expression )*
 	;
+catch [ RecognitionException re ] {
+	if (!lookaheadTest){
+        reportError(re);
+        recover(input,re);
+    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+	} else {
+		throw re;
+	}
+}
 
 constraint_expression
 options{
@@ -1193,8 +1209,9 @@ k=3;
 	;
 catch [ RecognitionException re ] {
 	if (!lookaheadTest){
-		reportError(re);
-		recover(input, re);
+        reportError(re);
+        recover(input,re);
+    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 	} else {
 		throw re;
 	}
@@ -1233,34 +1250,26 @@ finally {
 }
 
 simple_operator
-	:	{	emit(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);	}
-		(EQUAL^ {	emit($EQUAL, DroolsEditorType.SYMBOL);	}
+@init {if ( state.backtracking==0 ) emit(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);}
+	:	
+	(
+		EQUAL^ {	emit($EQUAL, DroolsEditorType.SYMBOL);	}
 	|	GREATER^ {	emit($GREATER, DroolsEditorType.SYMBOL);	}
 	|	GREATER_EQUAL^ {	emit($GREATER_EQUAL, DroolsEditorType.SYMBOL);	}
 	|	LESS^ {	emit($LESS, DroolsEditorType.SYMBOL);	}
 	|	LESS_EQUAL^ {	emit($LESS_EQUAL, DroolsEditorType.SYMBOL);	}
 	|	NOT_EQUAL^ {	emit($NOT_EQUAL, DroolsEditorType.SYMBOL);	}
-	|	not_key 
-		(	contains_key^
-		|	soundslike_key^
-		|	matches_key^
-		|	memberof_key^
-		|	id1=ID^ {	emit($id1, DroolsEditorType.IDENTIFIER);	}
-		|	ga1=TILDE!  {	emit($ga1, DroolsEditorType.SYMBOL);	} id2=ID^  {	emit($id2, DroolsEditorType.IDENTIFIER);	} square_chunk)
-	|	contains_key^
-	|	excludes_key^
-	|	matches_key^
-	|	soundslike_key^
-	|	memberof_key^
-	|	id3=ID^ {	emit($id3, DroolsEditorType.IDENTIFIER);	}
-	|	ga2=TILDE!  {	emit($ga2, DroolsEditorType.SYMBOL);	} id4=ID^  {	emit($id4, DroolsEditorType.IDENTIFIER);	} square_chunk)
+	|	not_key?
+		(	operator_key^ square_chunk?	)
+	)
 	{	emit(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);	}
 	expression_value
 	;
 
 //Simple Syntax Sugar
 compound_operator 
-	:	{	emit(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);	}
+@init { if ( state.backtracking==0 ) emit(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR); }
+	:	
 	( in_key^ | not_key in_key^ ) 
 	{	emit(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);	}
 		LEFT_PAREN! {	emit($LEFT_PAREN, DroolsEditorType.SYMBOL);	}
@@ -1274,6 +1283,18 @@ finally {
 		input.consume();
 		emit(true, Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
 	}	}
+
+operator_key
+	:      {(isPluggableEvaluator(false))}? => id=ID
+	       { emit($id, DroolsEditorType.IDENTIFIER); }
+	       -> VK_OPERATOR[$id]
+	;
+
+neg_operator_key
+	:      {(isPluggableEvaluator(true))}? => id=ID 
+	       { emit($id, DroolsEditorType.IDENTIFIER); } 
+	       -> VK_OPERATOR[$id]
+	;
 
 expression_value
 	:	(accessor_path
@@ -1605,36 +1626,6 @@ eval_key
 		->	VK_EVAL[$id]
 	;
 
-contains_key
-	:	{(validateIdentifierKey(DroolsSoftKeywords.CONTAINS))}?=>  id=ID
-	{	emit($id, DroolsEditorType.KEYWORD);	}
-		->	VK_CONTAINS[$id]
-	;
-
-matches_key
-	:	{(validateIdentifierKey(DroolsSoftKeywords.MATCHES))}?=>  id=ID
-	{	emit($id, DroolsEditorType.KEYWORD);	}
-		->	VK_MATCHES[$id]
-	;
-
-excludes_key
-	:	{(validateIdentifierKey(DroolsSoftKeywords.EXCLUDES))}?=>  id=ID
-	{	emit($id, DroolsEditorType.KEYWORD);	}
-		->	VK_EXCLUDES[$id]
-	;
-
-soundslike_key
-	:	{(validateIdentifierKey(DroolsSoftKeywords.SOUNDSLIKE))}?=>  id=ID
-	{	emit($id, DroolsEditorType.KEYWORD);	}
-		->	VK_SOUNDSLIKE[$id]
-	;
-
-memberof_key
-	:	{(validateIdentifierKey(DroolsSoftKeywords.MEMBEROF))}?=>  id=ID
-	{	emit($id, DroolsEditorType.KEYWORD);	}
-		->	VK_MEMBEROF[$id]
-	;
-
 not_key
 	:	{(validateIdentifierKey(DroolsSoftKeywords.NOT))}?=>  id=ID
 	{	emit($id, DroolsEditorType.KEYWORD);	}
@@ -1786,10 +1777,6 @@ WHEN
 GRAVE_ACCENT
 	:	'`'
 	;
-	
-TILDE
-	:	'~'
-	;	
 
 AT	:	'@'
 	;
@@ -1841,7 +1828,7 @@ ARROW
 ID	
 	:	('a'..'z'|'A'..'Z'|'_'|'$'|'\u00c0'..'\u00ff')('a'..'z'|'A'..'Z'|'_'|'0'..'9'|'\u00c0'..'\u00ff')*
 	|	'%' ('a'..'z'|'A'..'Z'|'_'|'$'|'\u00c0'..'\u00ff')('a'..'z'|'A'..'Z'|'_'|'0'..'9'|'\u00c0'..'\u00ff')+ '%'
-	{	text = $text.substring(1, $text.length() - 1);	}
+	{	state.text = $text.substring(1, $text.length() - 1);	}
 	;
 
 LEFT_PAREN

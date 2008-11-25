@@ -42,7 +42,6 @@ public class DroolsTreeAdaptor extends CommonTreeAdaptor {
 					|| token.getType() == DRLLexer.VK_ATTRIBUTES
 					|| token.getType() == DRLLexer.VK_AUTO_FOCUS
 					|| token.getType() == DRLLexer.COLLECT
-					|| token.getType() == DRLLexer.VK_CONTAINS
 					|| token.getType() == DRLLexer.VK_DATE_EFFECTIVE
 					|| token.getType() == DRLLexer.VK_DATE_EXPIRES
 					|| token.getType() == DRLLexer.VK_DECLARE
@@ -50,7 +49,6 @@ public class DroolsTreeAdaptor extends CommonTreeAdaptor {
 					|| token.getType() == DRLLexer.VK_DURATION
 					|| token.getType() == DRLLexer.VK_ENABLED
 					|| token.getType() == DRLLexer.VK_ENTRY_POINT
-					|| token.getType() == DRLLexer.VK_EXCLUDES
 					|| token.getType() == DRLLexer.VK_EXISTS
 					|| token.getType() == DRLLexer.VK_FORALL
 					|| token.getType() == DRLLexer.FROM
@@ -60,8 +58,6 @@ public class DroolsTreeAdaptor extends CommonTreeAdaptor {
 					|| token.getType() == DRLLexer.VK_IN
 					|| token.getType() == DRLLexer.INIT
 					|| token.getType() == DRLLexer.VK_LOCK_ON_ACTIVE
-					|| token.getType() == DRLLexer.VK_MATCHES
-					|| token.getType() == DRLLexer.VK_MEMBEROF
 					|| token.getType() == DRLLexer.VK_NO_LOOP
 					|| token.getType() == DRLLexer.VK_NOT
 					|| token.getType() == DRLLexer.VK_OR
@@ -72,7 +68,6 @@ public class DroolsTreeAdaptor extends CommonTreeAdaptor {
 					|| token.getType() == DRLLexer.VK_RULE
 					|| token.getType() == DRLLexer.VK_RULEFLOW_GROUP
 					|| token.getType() == DRLLexer.VK_SALIENCE
-					|| token.getType() == DRLLexer.VK_SOUNDSLIKE
 					|| token.getType() == DRLLexer.VK_TEMPLATE) {
 				tree.setEditorElementType(DroolsEditorType.KEYWORD);
 			} else if (token.getType() == DRLLexer.FLOAT
@@ -140,9 +135,13 @@ public class DroolsTreeAdaptor extends CommonTreeAdaptor {
 			result
 					.setStartCharOffset(((DroolsToken) fromToken)
 							.getStartIndex());
-			result
-					.setEndCharOffset(result.getStartCharOffset()
-							+ text.length());
+			if (text == null) {
+				result.setEndCharOffset(((DroolsToken) fromToken)
+						.getStopIndex());
+			} else {
+				result.setEndCharOffset(result.getStartCharOffset()
+						+ text.length());
+			}
 			return result;
 		}
 		return super.create(tokenType, fromToken, text);
@@ -163,18 +162,19 @@ public class DroolsTreeAdaptor extends CommonTreeAdaptor {
 	 */
 	public void addChild(Object t, Object child) {
 		if (t != null && child != null) {
-			DroolsTree tParent = (DroolsTree) t;
-			DroolsTree tChild = (DroolsTree) child;
+			if (t instanceof DroolsTree && child instanceof DroolsTree) {
+				DroolsTree tParent = (DroolsTree) t;
+				DroolsTree tChild = (DroolsTree) child;
 
-			if (0 >= tParent.getStartCharOffset()) {
-				tParent.setStartCharOffset(tChild.getStartCharOffset());
-				tParent.setEndCharOffset(tChild.getEndCharOffset());
+				if (0 >= tParent.getStartCharOffset()) {
+					tParent.setStartCharOffset(tChild.getStartCharOffset());
+					tParent.setEndCharOffset(tChild.getEndCharOffset());
+				}
+				if (0 < tParent.getChildCount()) {
+					tParent.setEndCharOffset(tChild.getEndCharOffset());
+				}
 			}
-			if (0 < tParent.getChildCount()) {
-				tParent.setEndCharOffset(tChild.getEndCharOffset());
-			}
-
-			if (DRLLexer.RIGHT_PAREN != tChild.getType()) {
+			if (DRLLexer.RIGHT_PAREN != ((Tree) child).getType()) {
 				((Tree) t).addChild((Tree) child);
 			}
 		}

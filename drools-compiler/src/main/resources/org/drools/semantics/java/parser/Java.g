@@ -106,11 +106,11 @@ options {k=2; backtrack=true; memoize=true;}
 	public void reportError(RecognitionException ex) {
 	        // if we've already reported an error and have not matched a token
                 // yet successfully, don't report any errors.
-                if ( errorRecovery ) {
+                if ( state.errorRecovery ) {
                         //System.err.print("[SPURIOUS] ");
                         return;
                 }
-                errorRecovery = true;
+                state.errorRecovery = true;
 
 		errors.add( ex ); 
 	}

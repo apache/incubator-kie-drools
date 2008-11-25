@@ -35,7 +35,7 @@ public class DRLIncompleteCodeTest extends TestCase {
 		DrlParser parser = new DrlParser();
 		PackageDescr descr = parser.parse(true, input);
 
-		assertNull(descr);
+		assertNotNull(descr);
 		assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_END,
 				getLastIntegerValue(parser.getEditorSentences().get(0)
 						.getContent()));
@@ -84,7 +84,7 @@ public class DRLIncompleteCodeTest extends TestCase {
 		DrlParser parser = new DrlParser();
 		PackageDescr descr = parser.parse(true, input);
 
-		assertNull(descr);
+		assertNotNull(descr);
 	}
 
 	public void testIncompleteCode6() throws DroolsParserException,
@@ -95,6 +95,8 @@ public class DRLIncompleteCodeTest extends TestCase {
 		DrlParser parser = new DrlParser();
 		PackageDescr descr = parser.parse(true, input);
 
+		// here is null, 'cos parser emits an error on predict dfa on "packe
+		// 1111.111" and stops the parsing
 		assertNull(descr);
 	}
 
@@ -106,7 +108,7 @@ public class DRLIncompleteCodeTest extends TestCase {
 		DrlParser parser = new DrlParser();
 		PackageDescr descr = parser.parse(true, input);
 
-		assertNull(descr);
+		assertNotNull(descr);
 	}
 
 	public void testIncompleteCode8() throws DroolsParserException,
@@ -118,7 +120,8 @@ public class DRLIncompleteCodeTest extends TestCase {
 		PackageDescr descr = parser.parse(true, input);
 
 		assertEquals("a.b.c", descr.getNamespace());
-		assertEquals(0, descr.getRules().size());
+		assertEquals(2, descr.getRules().size());
+		assertEquals(true, parser.hasErrors());
 	}
 
 	public void testIncompleteCode9() throws DroolsParserException,
@@ -168,16 +171,11 @@ public class DRLIncompleteCodeTest extends TestCase {
 		assertEquals("MyRule", ((RuleDescr) descr.getRules().get(0)).getName());
 	}
 
-	public void testIncompleteCode12() throws DroolsParserException, RecognitionException {
-		String input = 
-			"package a.b.c " +
-			"import a.b.c.* " +
-			"rule MyRule" +
-			"  when " +
-			"    m: Message(  ) " +
-			"    " +
-			"  then" +
-			"end ";
+	public void testIncompleteCode12() throws DroolsParserException,
+			RecognitionException {
+		String input = "package a.b.c " + "import a.b.c.* " + "rule MyRule"
+				+ "  when " + "    m: Message(  ) " + "    " + "  then"
+				+ "end ";
 		DrlParser parser = new DrlParser();
 		PackageDescr descr = parser.parse(true, input);
 		assertNotNull(descr);
@@ -186,26 +184,21 @@ public class DRLIncompleteCodeTest extends TestCase {
 		assertEquals("a.b.c.*", ((ImportDescr) descr.getImports().get(0))
 				.getTarget());
 	}
-	
 
-	public void testIncompleteCode13() throws DroolsParserException, RecognitionException {
-		String input = 
-			"package com.sample " +
-			"import com.sample.DroolsTest.Message; " +
-			"rule \"Hello World\"" +
-			"  when " +
-			"  then" +
-			"     \\\" " +
-			"end ";
+	public void testIncompleteCode13() throws DroolsParserException,
+			RecognitionException {
+		String input = "package com.sample "
+				+ "import com.sample.DroolsTest.Message; "
+				+ "rule \"Hello World\"" + "  when " + "  then" + "     \\\" "
+				+ "end ";
 		DrlParser parser = new DrlParser();
 		PackageDescr descr = parser.parse(true, input);
-		assertNull(descr);
+		assertNotNull(descr);
 	}
-	
-	
+
 	@SuppressWarnings("unchecked")
 	private int getLastIntegerValue(LinkedList list) {
-//		System.out.println(list.toString());
+		// System.out.println(list.toString());
 		int lastIntergerValue = -1;
 		for (Object object : list) {
 			if (object instanceof Integer) {

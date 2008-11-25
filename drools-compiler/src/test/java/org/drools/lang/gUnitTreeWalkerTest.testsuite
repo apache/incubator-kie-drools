@@ -1216,10 +1216,10 @@ end>>
 rule "test pluggable operators"
 when
     $a : EventA()
-    $b : EventB( this `after[1,10] $a )
+    $b : EventB( this after[1,10] $a )
     $c : EventC( this finishes $b )
     $d : EventD( this not starts $a )
-    $e : EventE( this not `before [1, 10] $b )
+    $e : EventE( this not before [1, 10] $b )
 then
 end>>
 		OK
@@ -1649,10 +1649,10 @@ Foo(
 
 			<<
 		    $a : EventA()
-		    $b : EventB( this `after[1,10] $a )
+		    $b : EventB( this after[1,10] $a )
 		    $c : EventC( this finishes $b )
 		    $d : EventD( this not starts $a )
-		    $e : EventE( this not `before [1, 10] $b )
+		    $e : EventE( this not before [1, 10] $b )
 			>>
 				OK
 
