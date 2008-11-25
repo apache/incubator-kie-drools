@@ -16,7 +16,6 @@ import org.drools.time.SessionClock;
  */
 public interface WorkingMemory
     extends
-    WorkingMemoryEventManager,
     WorkingMemoryEntryPoint {
 
     /**
