@@ -23,7 +23,9 @@ import java.io.StringReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -31,6 +33,7 @@ import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CharStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
+import org.drools.base.evaluators.EvaluatorRegistry;
 import org.drools.compiler.DrlParser;
 import org.drools.lang.descr.AccessorDescr;
 import org.drools.lang.descr.AccumulateDescr;
@@ -76,6 +79,9 @@ public class RuleParserTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		this.walker = null;
+
+		// initializes pluggable operators
+		new EvaluatorRegistry();
 	}
 
 	protected void tearDown() throws Exception {
@@ -1791,27 +1797,27 @@ public class RuleParserTest extends TestCase {
 		assertEquals("true", at.getValue());
 	}
 
-    public void testEnabledExpression() throws Exception {
-        final RuleDescr rule = (RuleDescr) parseResource("rule", "rule",
-                "rule_enabled_expression.drl");
-        assertEquals("simple_rule", rule.getName());
-        assertEqualsIgnoreWhitespace("bar();", (String) rule.getConsequence());
+	public void testEnabledExpression() throws Exception {
+		final RuleDescr rule = (RuleDescr) parseResource("rule", "rule",
+				"rule_enabled_expression.drl");
+		assertEquals("simple_rule", rule.getName());
+		assertEqualsIgnoreWhitespace("bar();", (String) rule.getConsequence());
 
-        final List attrs = rule.getAttributes();
-        assertEquals(3, attrs.size());
+		final List attrs = rule.getAttributes();
+		assertEquals(3, attrs.size());
 
-        AttributeDescr at = (AttributeDescr) attrs.get(0);
-        assertEquals("enabled", at.getName());
-        assertEquals("( 1 + 1 == 2 )", at.getValue());
+		AttributeDescr at = (AttributeDescr) attrs.get(0);
+		assertEquals("enabled", at.getName());
+		assertEquals("( 1 + 1 == 2 )", at.getValue());
 
-        at = (AttributeDescr) attrs.get(1);
-        assertEquals("salience", at.getName());
-        assertEquals("( 1+2 )", at.getValue());
-        
-        at = (AttributeDescr) attrs.get(2);
-        assertEquals("lock-on-active", at.getName());
-        assertEquals("true", at.getValue());
-    }
+		at = (AttributeDescr) attrs.get(1);
+		assertEquals("salience", at.getName());
+		assertEquals("( 1+2 )", at.getValue());
+
+		at = (AttributeDescr) attrs.get(2);
+		assertEquals("lock-on-active", at.getName());
+		assertEquals("true", at.getValue());
+	}
 
 	public void testAttributes_alternateSyntax() throws Exception {
 		final RuleDescr rule = (RuleDescr) parseResource("rule", "rule",
@@ -2507,6 +2513,16 @@ public class RuleParserTest extends TestCase {
 				.get(0)).getText());
 	}
 
+	public void testSimpleRestrictionConnective() throws Exception {
+
+		final String text = "Person( age == 12 || ( test == 222 ))";
+
+		PatternDescr pattern = (PatternDescr) parse("lhs_pattern",
+				"lhs_pattern", text);
+
+		assertEquals(1, pattern.getDescrs().size());
+	}
+
 	public void testRestrictionConnectives() throws Exception {
 
 		// the expression bellow must generate the following tree:
@@ -2930,6 +2946,7 @@ public class RuleParserTest extends TestCase {
 	}
 
 	public void testPluggableOperators() throws Exception {
+
 		parseResource("compilation_unit", "compilation_unit",
 				"pluggable_operators.drl");
 
@@ -2948,8 +2965,11 @@ public class RuleParserTest extends TestCase {
 		assertEquals("$b", eventB.getIdentifier());
 		assertEquals("EventB", eventB.getObjectType());
 		assertEquals(1, eventB.getConstraint().getDescrs().size());
-		final FieldConstraintDescr fcdB = (FieldConstraintDescr) eventB
-				.getConstraint().getDescrs().get(0);
+		final OrDescr or = (OrDescr) eventB.getConstraint().getDescrs().get(0);
+		assertEquals(2, or.getDescrs().size());
+
+		final FieldConstraintDescr fcdB = (FieldConstraintDescr) or.getDescrs()
+				.get(0);
 		assertEquals(1, fcdB.getRestrictions().size());
 		assertTrue(fcdB.getRestrictions().get(0) instanceof VariableRestrictionDescr);
 		final VariableRestrictionDescr rb = (VariableRestrictionDescr) fcdB
@@ -2958,6 +2978,17 @@ public class RuleParserTest extends TestCase {
 		assertEquals("$a", rb.getText());
 		assertEquals("1,10", rb.getParameterText());
 		assertFalse(rb.isNegated());
+
+		final FieldConstraintDescr fcdB2 = (FieldConstraintDescr) or
+				.getDescrs().get(1);
+		assertEquals(1, fcdB2.getRestrictions().size());
+		assertTrue(fcdB2.getRestrictions().get(0) instanceof VariableRestrictionDescr);
+		final VariableRestrictionDescr rb2 = (VariableRestrictionDescr) fcdB2
+				.getRestrictions().get(0);
+		assertEquals("after", rb2.getEvaluator());
+		assertEquals("$a", rb2.getText());
+		assertEquals("15,20", rb2.getParameterText());
+		assertTrue(rb2.isNegated());
 
 		final PatternDescr eventC = (PatternDescr) rule.getLhs().getDescrs()
 				.get(2);
@@ -2995,17 +3026,38 @@ public class RuleParserTest extends TestCase {
 				.get(4);
 		assertEquals("$e", eventE.getIdentifier());
 		assertEquals("EventE", eventE.getObjectType());
-		assertEquals(1, eventE.getConstraint().getDescrs().size());
-		final FieldConstraintDescr fcdE = (FieldConstraintDescr) eventE
-				.getConstraint().getDescrs().get(0);
+		assertEquals(2, eventE.getConstraint().getDescrs().size());
+
+		final AndDescr and = (AndDescr) eventE.getConstraint();
+
+		FieldConstraintDescr fcdE = (FieldConstraintDescr) and.getDescrs().get(
+				0);
 		assertEquals(1, fcdE.getRestrictions().size());
-		assertTrue(fcdE.getRestrictions().get(0) instanceof VariableRestrictionDescr);
-		final VariableRestrictionDescr re = (VariableRestrictionDescr) fcdE
+		final RestrictionConnectiveDescr orrestr = (RestrictionConnectiveDescr) fcdE
+				.getRestrictions().get(0);
+		assertEquals(RestrictionConnectiveDescr.OR, orrestr.getConnective());
+		assertEquals(2, orrestr.getRestrictions().size());
+		assertTrue(orrestr.getRestrictions().get(0) instanceof VariableRestrictionDescr);
+		VariableRestrictionDescr re = (VariableRestrictionDescr) orrestr
 				.getRestrictions().get(0);
 		assertEquals("before", re.getEvaluator());
 		assertEquals("$b", re.getText());
 		assertEquals("1, 10", re.getParameterText());
 		assertTrue(re.isNegated());
+		re = (VariableRestrictionDescr) orrestr.getRestrictions().get(1);
+		assertEquals("after", re.getEvaluator());
+		assertEquals("$c", re.getText());
+		assertEquals("1, 10", re.getParameterText());
+		assertFalse(re.isNegated());
+
+		fcdE = (FieldConstraintDescr) and.getDescrs().get(1);
+		assertEquals(1, fcdE.getRestrictions().size());
+		assertTrue(fcdE.getRestrictions().get(0) instanceof VariableRestrictionDescr);
+		re = (VariableRestrictionDescr) fcdE.getRestrictions().get(0);
+		assertEquals("after", re.getEvaluator());
+		assertEquals("$d", re.getText());
+		assertEquals("1, 5", re.getParameterText());
+		assertFalse(re.isNegated());
 	}
 
 	public void testTypeDeclaration() throws Exception {
@@ -3024,31 +3076,31 @@ public class RuleParserTest extends TestCase {
 		assertEquals("duration", descr.getMetaAttribute("duration"));
 		assertEquals("timestamp", descr.getMetaAttribute("timestamp"));
 	}
+
 	public void testRuleMetadata() throws Exception {
 		parseResource("compilation_unit", "compilation_unit",
 				"Rule_with_Metadata.drl");
 		final PackageDescr pack = walker.getPackageDescr();
-//		@fooAttribute(barValue)
-//		@fooAtt2(barVal2)
+		// @fooAttribute(barValue)
+		// @fooAtt2(barVal2)
 		RuleDescr rule = pack.getRules().get(0);
 		assertTrue(rule.getMetaAttributes().containsKey("fooMeta1"));
-		assertEquals("barVal1",rule.getMetaAttribute("fooMeta1"));
+		assertEquals("barVal1", rule.getMetaAttribute("fooMeta1"));
 		assertTrue(rule.getMetaAttributes().containsKey("fooMeta2"));
-		assertEquals("barVal2",rule.getMetaAttribute("fooMeta2"));
+		assertEquals("barVal2", rule.getMetaAttribute("fooMeta2"));
 	}
-	
+
 	public void testRuleExtends() throws Exception {
 		parseResource("compilation_unit", "compilation_unit",
 				"Rule_with_Extends.drl");
 		final PackageDescr pack = walker.getPackageDescr();
-//		@fooAttribute(barValue)
-//		@fooAtt2(barVal2)
+		// @fooAttribute(barValue)
+		// @fooAtt2(barVal2)
 		RuleDescr rule = pack.getRules().get(0);
 		assertTrue(rule.getParentName() != null);
-		assertEquals("rule1",rule.getParentName());
+		assertEquals("rule1", rule.getParentName());
 
 	}
-	
 
 	public void testTypeDeclarationWithFields() throws Exception {
 		parseResource("compilation_unit", "compilation_unit",
@@ -3108,25 +3160,25 @@ public class RuleParserTest extends TestCase {
 		assertEquals("StreamA", entry.getEntryId());
 	}
 
-    public void testSlidingWindow() throws Exception {
-        final String text = "StockTick( symbol==\"ACME\") over window:length(10)";
+	public void testSlidingWindow() throws Exception {
+		final String text = "StockTick( symbol==\"ACME\") over window:length(10)";
 
-        PatternDescr pattern = (PatternDescr) parse("pattern_source", "lhs",
-                text);
+		PatternDescr pattern = (PatternDescr) parse("pattern_source", "lhs",
+				text);
 
-        assertEquals(1, pattern.getDescrs().size());
-        FieldConstraintDescr fcd = (FieldConstraintDescr) pattern.getDescrs()
-                .get(0);
-        assertEquals("symbol", fcd.getFieldName());
+		assertEquals(1, pattern.getDescrs().size());
+		FieldConstraintDescr fcd = (FieldConstraintDescr) pattern.getDescrs()
+				.get(0);
+		assertEquals("symbol", fcd.getFieldName());
 
-        List<BehaviorDescr> behaviors = pattern.getBehaviors();
-        assertNotNull( behaviors );
-        assertEquals( 1, behaviors.size() );
-        SlidingWindowDescr descr = (SlidingWindowDescr) behaviors.get( 0 );
-        assertEquals( "length", descr.getText() );
-        assertEquals( "length", descr.getType() );
-        assertEquals( "10", descr.getParameters() );
-    }
+		List<BehaviorDescr> behaviors = pattern.getBehaviors();
+		assertNotNull(behaviors);
+		assertEquals(1, behaviors.size());
+		SlidingWindowDescr descr = (SlidingWindowDescr) behaviors.get(0);
+		assertEquals("length", descr.getText());
+		assertEquals("length", descr.getType());
+		assertEquals("10", descr.getParameters());
+	}
 
 	public void testNesting() throws Exception {
 		parseResource("compilation_unit", "compilation_unit",
@@ -3263,4 +3315,5 @@ public class RuleParserTest extends TestCase {
 
 		assertEquals(cleanExpected, cleanActual);
 	}
+
 }

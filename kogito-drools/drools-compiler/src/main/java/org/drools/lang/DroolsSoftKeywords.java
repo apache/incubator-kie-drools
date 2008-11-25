@@ -1,5 +1,11 @@
 package org.drools.lang;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import org.drools.RuntimeDroolsException;
+import org.drools.base.evaluators.Operator;
+
 /**
  * Simple holder class identifying all the DRL soft keywords. This is used by
  * DRLParser.
@@ -52,4 +58,13 @@ public class DroolsSoftKeywords {
 	public static final String ACTION = "action";
 	public static final String REVERSE = "reverse";
 	public static final String RESULT = "result";
+	
+	public static boolean isOperator( final String operator, final boolean negated ) {
+	    try {
+	        Operator.determineOperator( operator, negated );
+	        return true;
+	    } catch( RuntimeDroolsException rde )  {
+	        return false;
+	    }
+	}
 }

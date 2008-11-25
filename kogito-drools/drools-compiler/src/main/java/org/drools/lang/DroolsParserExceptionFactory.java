@@ -100,7 +100,7 @@ public class DroolsParserExceptionFactory {
 		String message = "";
 		if (e instanceof MismatchedTokenException) {
 			MismatchedTokenException mte = (MismatchedTokenException) e;
-			if (mte.expecting >= 0 && mte.expecting < tokenNames.length) {
+			if (tokenNames != null && mte.expecting >= 0 && mte.expecting < tokenNames.length) {
 				message = String
 						.format(
 								DroolsParserExceptionFactory.MISMATCHED_TOKEN_MESSAGE_COMPLETE,
@@ -192,18 +192,20 @@ public class DroolsParserExceptionFactory {
 	 */
 	private String formatParserLocation() {
 		StringBuilder sb = new StringBuilder();
-		for (Map<DroolsParaphraseTypes, String> map : paraphrases) {
-			for (Entry<DroolsParaphraseTypes, String> activeEntry : map
-					.entrySet()) {
-				if (activeEntry.getValue().length() == 0) {
-					sb.append(String.format(PARSER_LOCATION_MESSAGE_PART,
-							getLocationName(activeEntry.getKey())));
-				} else {
-					sb.append(String.format(PARSER_LOCATION_MESSAGE_COMPLETE,
-							getLocationName(activeEntry.getKey()), activeEntry
-									.getValue()));
+		if (paraphrases != null){
+			for (Map<DroolsParaphraseTypes, String> map : paraphrases) {
+				for (Entry<DroolsParaphraseTypes, String> activeEntry : map
+						.entrySet()) {
+					if (activeEntry.getValue().length() == 0) {
+						sb.append(String.format(PARSER_LOCATION_MESSAGE_PART,
+								getLocationName(activeEntry.getKey())));
+					} else {
+						sb.append(String.format(PARSER_LOCATION_MESSAGE_COMPLETE,
+								getLocationName(activeEntry.getKey()), activeEntry
+										.getValue()));
+					}
 				}
-			}
+			}			
 		}
 		return sb.toString();
 	}
@@ -250,6 +252,9 @@ public class DroolsParserExceptionFactory {
 	 * @return user friendly token definition
 	 */
 	private String getBetterToken(Token token) {
+		if (token == null){
+			return "";
+		}
 		return getBetterToken(token.getType(), token.getText());
 	}
 

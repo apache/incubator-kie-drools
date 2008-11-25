@@ -28,7 +28,7 @@
     </dependency>
     <dependency>
       <groupId>org.antlr</groupId>
-      <artifactId>gunit</artifactId>             
+      <artifactId>antlr</artifactId>             
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -44,7 +44,11 @@
       <artifactId>xstream</artifactId>
       <optional>true</optional>
     </dependency>      
-    
+    <dependency>
+        <groupId>org.mvel</groupId>
+        <artifactId>mvel2</artifactId>
+    </dependency>
+
     <!--
     <dependency>
       <groupId>javax.mail</groupId>

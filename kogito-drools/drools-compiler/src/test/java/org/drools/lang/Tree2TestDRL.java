@@ -1,159 +1,160 @@
-// $ANTLR 3.0.1 /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g 2008-08-26 16:10:09
+// $ANTLR 3.1.1 /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g 2008-11-24 14:43:05
 
 	package org.drools.lang;
 
 
-import org.antlr.runtime.BitSet;
-import org.antlr.runtime.EarlyExitException;
-import org.antlr.runtime.MismatchedSetException;
-import org.antlr.runtime.NoViableAltException;
-import org.antlr.runtime.RecognitionException;
-import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.TreeNodeStream;
-import org.antlr.runtime.tree.TreeParser;
+import org.antlr.runtime.*;
+import org.antlr.runtime.tree.*;import java.util.Stack;
+import java.util.List;
+import java.util.ArrayList;
 
 public class Tree2TestDRL extends TreeParser {
     public static final String[] tokenNames = new String[] {
-        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "VT_COMPILATION_UNIT", "VT_FUNCTION_IMPORT", "VT_FACT", "VT_CONSTRAINTS", "VT_LABEL", "VT_QUERY_ID", "VT_TEMPLATE_ID", "VT_TYPE_DECLARE_ID", "VT_RULE_ID", "VT_ENTRYPOINT_ID", "VT_SLOT_ID", "VT_SLOT", "VT_RULE_ATTRIBUTES", "VT_RHS_CHUNK", "VT_CURLY_CHUNK", "VT_SQUARE_CHUNK", "VT_PAREN_CHUNK", "VT_BEHAVIOR", "VT_AND_IMPLICIT", "VT_AND_PREFIX", "VT_OR_PREFIX", "VT_AND_INFIX", "VT_OR_INFIX", "VT_ACCUMULATE_INIT_CLAUSE", "VT_ACCUMULATE_ID_CLAUSE", "VT_FROM_SOURCE", "VT_EXPRESSION_CHAIN", "VT_PATTERN", "VT_FACT_BINDING", "VT_FACT_OR", "VT_BIND_FIELD", "VT_FIELD", "VT_ACCESSOR_PATH", "VT_ACCESSOR_ELEMENT", "VT_DATA_TYPE", "VT_PATTERN_TYPE", "VT_PACKAGE_ID", "VT_IMPORT_ID", "VT_GLOBAL_ID", "VT_FUNCTION_ID", "VT_PARAM_LIST", "VK_DATE_EFFECTIVE", "VK_DATE_EXPIRES", "VK_LOCK_ON_ACTIVE", "VK_NO_LOOP", "VK_AUTO_FOCUS", "VK_ACTIVATION_GROUP", "VK_AGENDA_GROUP", "VK_RULEFLOW_GROUP", "VK_DURATION", "VK_DIALECT", "VK_SALIENCE", "VK_ENABLED", "VK_ATTRIBUTES", "VK_RULE", "VK_IMPORT", "VK_PACKAGE", "VK_TEMPLATE", "VK_QUERY", "VK_DECLARE", "VK_FUNCTION", "VK_GLOBAL", "VK_EVAL", "VK_CONTAINS", "VK_MATCHES", "VK_EXCLUDES", "VK_SOUNDSLIKE", "VK_MEMBEROF", "VK_ENTRY_POINT", "VK_NOT", "VK_IN", "VK_OR", "VK_AND", "VK_EXISTS", "VK_FORALL", "VK_ACTION", "VK_REVERSE", "VK_RESULT", "SEMICOLON", "ID", "DOT", "DOT_STAR", "END", "STRING", "LEFT_PAREN", "COMMA", "RIGHT_PAREN", "AT", "COLON", "EQUALS", "WHEN", "BOOL", "INT", "DOUBLE_PIPE", "DOUBLE_AMPER", "FROM", "OVER", "ACCUMULATE", "INIT", "COLLECT", "ARROW", "EQUAL", "GREATER", "GREATER_EQUAL", "LESS", "LESS_EQUAL", "NOT_EQUAL", "GRAVE_ACCENT", "FLOAT", "NULL", "LEFT_SQUARE", "RIGHT_SQUARE", "THEN", "LEFT_CURLY", "RIGHT_CURLY", "MISC", "EOL", "WS", "EscapeSequence", "HexDigit", "UnicodeEscape", "OctalEscape", "SH_STYLE_SINGLE_LINE_COMMENT", "C_STYLE_SINGLE_LINE_COMMENT", "MULTI_LINE_COMMENT"
+        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "VT_COMPILATION_UNIT", "VT_FUNCTION_IMPORT", "VT_FACT", "VT_CONSTRAINTS", "VT_LABEL", "VT_QUERY_ID", "VT_TEMPLATE_ID", "VT_TYPE_DECLARE_ID", "VT_RULE_ID", "VT_ENTRYPOINT_ID", "VT_SLOT_ID", "VT_SLOT", "VT_RULE_ATTRIBUTES", "VT_RHS_CHUNK", "VT_CURLY_CHUNK", "VT_SQUARE_CHUNK", "VT_PAREN_CHUNK", "VT_BEHAVIOR", "VT_AND_IMPLICIT", "VT_AND_PREFIX", "VT_OR_PREFIX", "VT_AND_INFIX", "VT_OR_INFIX", "VT_ACCUMULATE_INIT_CLAUSE", "VT_ACCUMULATE_ID_CLAUSE", "VT_FROM_SOURCE", "VT_EXPRESSION_CHAIN", "VT_PATTERN", "VT_FACT_BINDING", "VT_FACT_OR", "VT_BIND_FIELD", "VT_FIELD", "VT_ACCESSOR_PATH", "VT_ACCESSOR_ELEMENT", "VT_DATA_TYPE", "VT_PATTERN_TYPE", "VT_PACKAGE_ID", "VT_IMPORT_ID", "VT_GLOBAL_ID", "VT_FUNCTION_ID", "VT_PARAM_LIST", "VK_DATE_EFFECTIVE", "VK_DATE_EXPIRES", "VK_LOCK_ON_ACTIVE", "VK_NO_LOOP", "VK_AUTO_FOCUS", "VK_ACTIVATION_GROUP", "VK_AGENDA_GROUP", "VK_RULEFLOW_GROUP", "VK_DURATION", "VK_DIALECT", "VK_SALIENCE", "VK_ENABLED", "VK_ATTRIBUTES", "VK_RULE", "VK_EXTEND", "VK_IMPORT", "VK_PACKAGE", "VK_TEMPLATE", "VK_QUERY", "VK_DECLARE", "VK_FUNCTION", "VK_GLOBAL", "VK_EVAL", "VK_ENTRY_POINT", "VK_NOT", "VK_IN", "VK_OR", "VK_AND", "VK_EXISTS", "VK_FORALL", "VK_ACTION", "VK_REVERSE", "VK_RESULT", "VK_OPERATOR", "SEMICOLON", "ID", "DOT", "DOT_STAR", "END", "STRING", "LEFT_PAREN", "COMMA", "RIGHT_PAREN", "AT", "COLON", "EQUALS", "WHEN", "BOOL", "INT", "DOUBLE_PIPE", "DOUBLE_AMPER", "FROM", "OVER", "ACCUMULATE", "INIT", "COLLECT", "ARROW", "EQUAL", "GREATER", "GREATER_EQUAL", "LESS", "LESS_EQUAL", "NOT_EQUAL", "FLOAT", "NULL", "LEFT_SQUARE", "RIGHT_SQUARE", "THEN", "LEFT_CURLY", "RIGHT_CURLY", "MISC", "EOL", "WS", "EscapeSequence", "HexDigit", "UnicodeEscape", "OctalEscape", "GRAVE_ACCENT", "SH_STYLE_SINGLE_LINE_COMMENT", "C_STYLE_SINGLE_LINE_COMMENT", "MULTI_LINE_COMMENT"
     };
-    public static final int COMMA=89;
+    public static final int COMMA=86;
     public static final int VT_PATTERN_TYPE=39;
     public static final int VT_ACCUMULATE_ID_CLAUSE=28;
     public static final int VK_DIALECT=54;
-    public static final int VK_FUNCTION=64;
-    public static final int END=86;
-    public static final int HexDigit=123;
+    public static final int VK_FUNCTION=65;
+    public static final int END=83;
+    public static final int HexDigit=119;
     public static final int VK_ATTRIBUTES=57;
     public static final int VT_EXPRESSION_CHAIN=30;
-    public static final int MISC=119;
+    public static final int MISC=115;
     public static final int VT_AND_PREFIX=23;
-    public static final int VK_QUERY=62;
-    public static final int THEN=116;
+    public static final int VK_QUERY=63;
+    public static final int THEN=112;
     public static final int VK_AUTO_FOCUS=49;
-    public static final int DOT=84;
-    public static final int VK_IMPORT=59;
+    public static final int DOT=81;
+    public static final int VK_IMPORT=60;
     public static final int VT_SLOT=15;
     public static final int VT_PACKAGE_ID=40;
-    public static final int LEFT_SQUARE=114;
-    public static final int SH_STYLE_SINGLE_LINE_COMMENT=126;
+    public static final int LEFT_SQUARE=110;
+    public static final int SH_STYLE_SINGLE_LINE_COMMENT=123;
     public static final int VT_DATA_TYPE=38;
-    public static final int VK_MATCHES=68;
     public static final int VT_FACT=6;
-    public static final int LEFT_CURLY=117;
-    public static final int AT=91;
-    public static final int LEFT_PAREN=88;
-    public static final int DOUBLE_AMPER=98;
+    public static final int LEFT_CURLY=113;
+    public static final int AT=88;
+    public static final int LEFT_PAREN=85;
+    public static final int DOUBLE_AMPER=95;
     public static final int VT_QUERY_ID=9;
     public static final int VT_ACCESSOR_PATH=36;
     public static final int VT_LABEL=8;
-    public static final int WHEN=94;
+    public static final int WHEN=91;
     public static final int VT_ENTRYPOINT_ID=13;
-    public static final int VK_SOUNDSLIKE=70;
     public static final int VK_SALIENCE=55;
     public static final int VT_FIELD=35;
-    public static final int WS=121;
-    public static final int OVER=100;
-    public static final int STRING=87;
-    public static final int VK_AND=76;
+    public static final int WS=117;
+    public static final int OVER=97;
+    public static final int STRING=84;
+    public static final int VK_AND=72;
     public static final int VT_ACCESSOR_ELEMENT=37;
+    public static final int VK_GLOBAL=66;
     public static final int VT_ACCUMULATE_INIT_CLAUSE=27;
-    public static final int VK_GLOBAL=65;
-    public static final int VK_REVERSE=80;
+    public static final int VK_REVERSE=76;
     public static final int VT_BEHAVIOR=21;
-    public static final int GRAVE_ACCENT=111;
+    public static final int GRAVE_ACCENT=122;
     public static final int VK_DURATION=53;
     public static final int VT_SQUARE_CHUNK=19;
-    public static final int VK_FORALL=78;
+    public static final int VK_FORALL=74;
     public static final int VT_PAREN_CHUNK=20;
     public static final int VT_COMPILATION_UNIT=4;
-    public static final int COLLECT=103;
+    public static final int COLLECT=100;
     public static final int VK_ENABLED=56;
-    public static final int EQUALS=93;
-    public static final int VK_RESULT=81;
-    public static final int UnicodeEscape=124;
-    public static final int VK_PACKAGE=60;
+    public static final int VK_RESULT=77;
+    public static final int EQUALS=90;
+    public static final int UnicodeEscape=120;
+    public static final int VK_PACKAGE=61;
     public static final int VT_RULE_ID=12;
-    public static final int EQUAL=105;
+    public static final int EQUAL=102;
     public static final int VK_NO_LOOP=48;
-    public static final int SEMICOLON=82;
-    public static final int VK_TEMPLATE=61;
+    public static final int SEMICOLON=79;
+    public static final int VK_TEMPLATE=62;
     public static final int VT_AND_IMPLICIT=22;
-    public static final int NULL=113;
-    public static final int COLON=92;
-    public static final int MULTI_LINE_COMMENT=128;
+    public static final int NULL=109;
+    public static final int COLON=89;
+    public static final int MULTI_LINE_COMMENT=125;
     public static final int VT_RULE_ATTRIBUTES=16;
-    public static final int RIGHT_SQUARE=115;
+    public static final int RIGHT_SQUARE=111;
     public static final int VK_AGENDA_GROUP=51;
     public static final int VT_FACT_OR=33;
-    public static final int VK_NOT=73;
+    public static final int VK_NOT=69;
     public static final int VK_DATE_EXPIRES=46;
-    public static final int ARROW=104;
-    public static final int FLOAT=112;
-    public static final int INIT=102;
+    public static final int ARROW=101;
+    public static final int FLOAT=108;
+    public static final int INIT=99;
+    public static final int VK_EXTEND=59;
     public static final int VT_SLOT_ID=14;
     public static final int VT_CURLY_CHUNK=18;
     public static final int VT_OR_PREFIX=24;
-    public static final int DOUBLE_PIPE=97;
-    public static final int LESS=108;
+    public static final int DOUBLE_PIPE=94;
+    public static final int LESS=105;
     public static final int VT_TYPE_DECLARE_ID=11;
     public static final int VT_PATTERN=31;
     public static final int VK_DATE_EFFECTIVE=45;
-    public static final int EscapeSequence=122;
-    public static final int VK_EXISTS=77;
-    public static final int INT=96;
+    public static final int EscapeSequence=118;
+    public static final int VK_EXISTS=73;
+    public static final int INT=93;
     public static final int VT_BIND_FIELD=34;
     public static final int VK_RULE=58;
-    public static final int VK_EVAL=66;
-    public static final int GREATER=106;
+    public static final int VK_EVAL=67;
+    public static final int GREATER=103;
     public static final int VT_FACT_BINDING=32;
-    public static final int ID=83;
-    public static final int FROM=99;
-    public static final int NOT_EQUAL=110;
-    public static final int RIGHT_CURLY=118;
-    public static final int VK_ENTRY_POINT=72;
+    public static final int ID=80;
+    public static final int FROM=96;
+    public static final int NOT_EQUAL=107;
+    public static final int RIGHT_CURLY=114;
+    public static final int VK_OPERATOR=78;
+    public static final int VK_ENTRY_POINT=68;
     public static final int VT_PARAM_LIST=44;
     public static final int VT_AND_INFIX=25;
-    public static final int BOOL=95;
+    public static final int BOOL=92;
     public static final int VT_FROM_SOURCE=29;
-    public static final int VK_CONTAINS=67;
     public static final int VK_LOCK_ON_ACTIVE=47;
     public static final int VT_FUNCTION_IMPORT=5;
-    public static final int VK_IN=74;
+    public static final int VK_IN=70;
     public static final int VT_RHS_CHUNK=17;
-    public static final int VK_MEMBEROF=71;
-    public static final int GREATER_EQUAL=107;
+    public static final int GREATER_EQUAL=104;
     public static final int VT_OR_INFIX=26;
-    public static final int DOT_STAR=85;
-    public static final int VK_OR=75;
+    public static final int DOT_STAR=82;
+    public static final int VK_OR=71;
     public static final int VT_GLOBAL_ID=42;
-    public static final int LESS_EQUAL=109;
-    public static final int ACCUMULATE=101;
+    public static final int LESS_EQUAL=106;
+    public static final int ACCUMULATE=98;
     public static final int VK_RULEFLOW_GROUP=52;
     public static final int VT_FUNCTION_ID=43;
     public static final int EOF=-1;
     public static final int VT_CONSTRAINTS=7;
     public static final int VT_IMPORT_ID=41;
-    public static final int EOL=120;
+    public static final int EOL=116;
     public static final int VK_ACTIVATION_GROUP=50;
-    public static final int OctalEscape=125;
-    public static final int VK_ACTION=79;
-    public static final int VK_EXCLUDES=69;
-    public static final int RIGHT_PAREN=90;
+    public static final int OctalEscape=121;
+    public static final int VK_ACTION=75;
+    public static final int RIGHT_PAREN=87;
     public static final int VT_TEMPLATE_ID=10;
-    public static final int VK_DECLARE=63;
-    public static final int C_STYLE_SINGLE_LINE_COMMENT=127;
+    public static final int VK_DECLARE=64;
+    public static final int C_STYLE_SINGLE_LINE_COMMENT=124;
+
+    // delegates
+    // delegators
+
 
         public Tree2TestDRL(TreeNodeStream input) {
-            super(input);
+            this(input, new RecognizerSharedState());
+        }
+        public Tree2TestDRL(TreeNodeStream input, RecognizerSharedState state) {
+            super(input, state);
+             
         }
         
 
-    public String[] getTokenNames() { return tokenNames; }
+    public String[] getTokenNames() { return Tree2TestDRL.tokenNames; }
     public String getGrammarFileName() { return "/Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g"; }
 
 
 
-    // $ANTLR start compilation_unit
+    // $ANTLR start "compilation_unit"
     // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:13:1: compilation_unit : ^( VT_COMPILATION_UNIT ( package_statement )? ( statement )* ) ;
     public final void compilation_unit() throws RecognitionException {
         try {
@@ -177,7 +178,8 @@ public class Tree2TestDRL extends TreeParser {
                         {
                         pushFollow(FOLLOW_package_statement_in_compilation_unit45);
                         package_statement();
-                        _fsp--;
+
+                        state._fsp--;
 
 
                         }
@@ -191,7 +193,7 @@ public class Tree2TestDRL extends TreeParser {
                     int alt2=2;
                     int LA2_0 = input.LA(1);
 
-                    if ( (LA2_0==VT_FUNCTION_IMPORT||(LA2_0>=VK_DATE_EFFECTIVE && LA2_0<=VK_ENABLED)||(LA2_0>=VK_RULE && LA2_0<=VK_IMPORT)||(LA2_0>=VK_TEMPLATE && LA2_0<=VK_GLOBAL)) ) {
+                    if ( (LA2_0==VT_FUNCTION_IMPORT||(LA2_0>=VK_DATE_EFFECTIVE && LA2_0<=VK_ENABLED)||LA2_0==VK_RULE||LA2_0==VK_IMPORT||(LA2_0>=VK_TEMPLATE && LA2_0<=VK_GLOBAL)) ) {
                         alt2=1;
                     }
 
@@ -202,7 +204,8 @@ public class Tree2TestDRL extends TreeParser {
                 	    {
                 	    pushFollow(FOLLOW_statement_in_compilation_unit48);
                 	    statement();
-                	    _fsp--;
+
+                	    state._fsp--;
 
 
                 	    }
@@ -228,10 +231,10 @@ public class Tree2TestDRL extends TreeParser {
         }
         return ;
     }
-    // $ANTLR end compilation_unit
+    // $ANTLR end "compilation_unit"
 
 
-    // $ANTLR start package_statement
+    // $ANTLR start "package_statement"
     // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:17:1: package_statement : ^( VK_PACKAGE package_id ) ;
     public final void package_statement() throws RecognitionException {
         try {
@@ -243,7 +246,8 @@ public class Tree2TestDRL extends TreeParser {
             match(input, Token.DOWN, null); 
             pushFollow(FOLLOW_package_id_in_package_statement65);
             package_id();
-            _fsp--;
+
+            state._fsp--;
 
 
             match(input, Token.UP, null); 
@@ -259,10 +263,10 @@ public class Tree2TestDRL extends TreeParser {
         }
         return ;
     }
-    // $ANTLR end package_statement
+    // $ANTLR end "package_statement"
 
 
-    // $ANTLR start package_id
+    // $ANTLR start "package_id"
     // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:21:1: package_id : ^( VT_PACKAGE_ID ( ID )+ ) ;
     public final void package_id() throws RecognitionException {
         try {
@@ -316,10 +320,10 @@ public class Tree2TestDRL extends TreeParser {
         }
         return ;
     }
-    // $ANTLR end package_id
+    // $ANTLR end "package_id"
 
 
-    // $ANTLR start statement
+    // $ANTLR start "statement"
     // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:25:1: statement : ( rule_attribute | function_import_statement | import_statement | global | function | template | rule | query | type_declaration );
     public final void statement() throws RecognitionException {
         try {
@@ -384,7 +388,7 @@ public class Tree2TestDRL extends TreeParser {
                 break;
             default:
                 NoViableAltException nvae =
-                    new NoViableAltException("25:1: statement : ( rule_attribute | function_import_statement | import_statement | global | function | template | rule | query | type_declaration );", 4, 0, input);
+                    new NoViableAltException("", 4, 0, input);
 
                 throw nvae;
             }
@@ -395,7 +399,8 @@ public class Tree2TestDRL extends TreeParser {
                     {
                     pushFollow(FOLLOW_rule_attribute_in_statement93);
                     rule_attribute();
-                    _fsp--;
+
+                    state._fsp--;
 
 
                     }
@@ -405,7 +410,8 @@ public class Tree2TestDRL extends TreeParser {
                     {
                     pushFollow(FOLLOW_function_import_statement_in_statement98);
                     function_import_statement();
-                    _fsp--;
+
+                    state._fsp--;
 
 
                     }
@@ -415,7 +421,8 @@ public class Tree2TestDRL extends TreeParser {
                     {
                     pushFollow(FOLLOW_import_statement_in_statement104);
                     import_statement();
-                    _fsp--;
+
+                    state._fsp--;
 
 
                     }
@@ -425,7 +432,8 @@ public class Tree2TestDRL extends TreeParser {
                     {
                     pushFollow(FOLLOW_global_in_statement110);
                     global();
-                    _fsp--;
+
+                    state._fsp--;
 
 
                     }
@@ -435,7 +443,8 @@ public class Tree2TestDRL extends TreeParser {
                     {
                     pushFollow(FOLLOW_function_in_statement116);
                     function();
-                    _fsp--;
+
+                    state._fsp--;
 
 
                     }
@@ -445,7 +454,8 @@ public class Tree2TestDRL extends TreeParser {
                     {
                     pushFollow(FOLLOW_template_in_statement121);
                     template();
-                    _fsp--;
+
+                    state._fsp--;
 
 
                     }
@@ -455,7 +465,8 @@ public class Tree2TestDRL extends TreeParser {
                     {
                     pushFollow(FOLLOW_rule_in_statement126);
                     rule();
-                    _fsp--;
+
+                    state._fsp--;
 
 
                     }
@@ -465,7 +476,8 @@ public class Tree2TestDRL extends TreeParser {
                     {
                     pushFollow(FOLLOW_query_in_statement131);
                     query();
-                    _fsp--;
+
+                    state._fsp--;
 
 
                     }
@@ -475,7 +487,8 @@ public class Tree2TestDRL extends TreeParser {
                     {
                     pushFollow(FOLLOW_type_declaration_in_statement136);
                     type_declaration();
-                    _fsp--;
+
+                    state._fsp--;
 
 
                     }
@@ -491,10 +504,10 @@ public class Tree2TestDRL extends TreeParser {
         }
         return ;
     }
-    // $ANTLR end statement
+    // $ANTLR end "statement"
 
 
-    // $ANTLR start import_statement
+    // $ANTLR start "import_statement"
     // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:37:1: import_statement : ^( VK_IMPORT import_name ) ;
     public final void import_statement() throws RecognitionException {
         try {
@@ -506,7 +519,8 @@ public class Tree2TestDRL extends TreeParser {
             match(input, Token.DOWN, null); 
             pushFollow(FOLLOW_import_name_in_import_statement150);
             import_name();
-            _fsp--;
+
+            state._fsp--;
 
 
             match(input, Token.UP, null); 
@@ -522,10 +536,10 @@ public class Tree2TestDRL extends TreeParser {
         }
         return ;
     }
-    // $ANTLR end import_statement
+    // $ANTLR end "import_statement"
 
 
-    // $ANTLR start function_import_statement
+    // $ANTLR start "function_import_statement"
     // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:41:1: function_import_statement : ^( VT_FUNCTION_IMPORT VK_FUNCTION import_name ) ;
     public final void function_import_statement() throws RecognitionException {
         try {
@@ -538,7 +552,8 @@ public class Tree2TestDRL extends TreeParser {
             match(input,VK_FUNCTION,FOLLOW_VK_FUNCTION_in_function_import_statement165); 
             pushFollow(FOLLOW_import_name_in_function_import_statement167);
             import_name();
-            _fsp--;
+
+            state._fsp--;
 
 
             match(input, Token.UP, null); 
@@ -554,10 +569,10 @@ public class Tree2TestDRL extends TreeParser {
         }
         return ;
     }
-    // $ANTLR end function_import_statement
+    // $ANTLR end "function_import_statement"
 
 
-    // $ANTLR start import_name
+    // $ANTLR start "import_name"
     // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:45:1: import_name : ^( VT_IMPORT_ID ( ID )+ ( DOT_STAR )? ) ;
     public final void import_name() throws RecognitionException {
         try {
@@ -629,10 +644,10 @@ public class Tree2TestDRL extends TreeParser {
         }
         return ;
     }
-    // $ANTLR end import_name
+    // $ANTLR end "import_name"
 
 
-    // $ANTLR start global
+    // $ANTLR start "global"
     // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:49:1: global : ^( VK_GLOBAL data_type VT_GLOBAL_ID ) ;
     public final void global() throws RecognitionException {
         try {
@@ -644,7 +659,8 @@ public class Tree2TestDRL extends TreeParser {
             match(input, Token.DOWN, null); 
             pushFollow(FOLLOW_data_type_in_global201);
             data_type();
-            _fsp--;
+
+            state._fsp--;
 
             match(input,VT_GLOBAL_ID,FOLLOW_VT_GLOBAL_ID_in_global203); 
 
@@ -661,10 +677,10 @@ public class Tree2TestDRL extends TreeParser {
         }
         return ;
     }
-    // $ANTLR end global
+    // $ANTLR end "global"
 
 
-    // $ANTLR start function
+    // $ANTLR start "function"
     // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:53:1: function : ^( VK_FUNCTION ( data_type )? VT_FUNCTION_ID parameters curly_chunk ) ;
     public final void function() throws RecognitionException {
         try {
@@ -687,7 +703,8 @@ public class Tree2TestDRL extends TreeParser {
                     {
                     pushFollow(FOLLOW_data_type_in_function218);
                     data_type();
-                    _fsp--;
+
+                    state._fsp--;
 
 
                     }
@@ -698,11 +715,13 @@ public class Tree2TestDRL extends TreeParser {
             match(input,VT_FUNCTION_ID,FOLLOW_VT_FUNCTION_ID_in_function221); 
             pushFollow(FOLLOW_parameters_in_function223);
             parameters();
-            _fsp--;
+
+            state._fsp--;
 
             pushFollow(FOLLOW_curly_chunk_in_function225);
             curly_chunk();
-            _fsp--;
+
+            state._fsp--;
 
 
             match(input, Token.UP, null); 
@@ -718,10 +737,10 @@ public class Tree2TestDRL extends TreeParser {
         }
         return ;
     }
-    // $ANTLR end function
+    // $ANTLR end "function"
 
 
-    // $ANTLR start query
+    // $ANTLR start "query"
     // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:57:1: query : ^( VK_QUERY VT_QUERY_ID ( parameters )? lhs_block END ) ;
     public final void query() throws RecognitionException {
         try {
@@ -745,7 +764,8 @@ public class Tree2TestDRL extends TreeParser {
                     {
                     pushFollow(FOLLOW_parameters_in_query242);
                     parameters();
-                    _fsp--;
+
+                    state._fsp--;
 
 
                     }
@@ -755,7 +775,8 @@ public class Tree2TestDRL extends TreeParser {
 
             pushFollow(FOLLOW_lhs_block_in_query245);
             lhs_block();
-            _fsp--;
+
+            state._fsp--;
 
             match(input,END,FOLLOW_END_in_query247); 
 
@@ -772,10 +793,10 @@ public class Tree2TestDRL extends TreeParser {
         }
         return ;
     }
-    // $ANTLR end query
+    // $ANTLR end "query"
 
 
-    // $ANTLR start parameters
+    // $ANTLR start "parameters"
     // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:61:1: parameters : ^( VT_PARAM_LIST ( param_definition )* ) ;
     public final void parameters() throws RecognitionException {
         try {
@@ -803,7 +824,8 @@ public class Tree2TestDRL extends TreeParser {
                 	    {
                 	    pushFollow(FOLLOW_param_definition_in_parameters262);
                 	    param_definition();
-                	    _fsp--;
+
+                	    state._fsp--;
 
 
                 	    }
@@ -829,10 +851,10 @@ public class Tree2TestDRL extends TreeParser {
         }
         return ;
     }
-    // $ANTLR end parameters
+    // $ANTLR end "parameters"
 
 
-    // $ANTLR start param_definition
+    // $ANTLR start "param_definition"
     // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:65:1: param_definition : ( data_type )? argument ;
     public final void param_definition() throws RecognitionException {
         try {
@@ -852,7 +874,8 @@ public class Tree2TestDRL extends TreeParser {
                     {
                     pushFollow(FOLLOW_data_type_in_param_definition275);
                     data_type();
-                    _fsp--;
+
+                    state._fsp--;
 
 
                     }
@@ -862,7 +885,8 @@ public class Tree2TestDRL extends TreeParser {
 
             pushFollow(FOLLOW_argument_in_param_definition278);
             argument();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -876,10 +900,10 @@ public class Tree2TestDRL extends TreeParser {
         }
         return ;
     }
-    // $ANTLR end param_definition
+    // $ANTLR end "param_definition"
 
 
-    // $ANTLR start argument
+    // $ANTLR start "argument"
     // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:69:1: argument : ID ( dimension_definition )* ;
     public final void argument() throws RecognitionException {
         try {
@@ -904,7 +928,8 @@ public class Tree2TestDRL extends TreeParser {
             	    {
             	    pushFollow(FOLLOW_dimension_definition_in_argument291);
             	    dimension_definition();
-            	    _fsp--;
+
+            	    state._fsp--;
 
 
             	    }
@@ -927,10 +952,10 @@ public class Tree2TestDRL extends TreeParser {
         }
         return ;
     }
-    // $ANTLR end argument
+    // $ANTLR end "argument"
 
 
-    // $ANTLR start type_declaration
+    // $ANTLR start "type_declaration"
     // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:73:1: type_declaration : ^( VK_DECLARE VT_TYPE_DECLARE_ID ( decl_metadata )* ( decl_field )* END ) ;
     public final void type_declaration() throws RecognitionException {
         try {
@@ -958,7 +983,8 @@ public class Tree2TestDRL extends TreeParser {
             	    {
             	    pushFollow(FOLLOW_decl_metadata_in_type_declaration308);
             	    decl_metadata();
-            	    _fsp--;
+
+            	    state._fsp--;
 
 
             	    }
@@ -986,7 +1012,8 @@ public class Tree2TestDRL extends TreeParser {
             	    {
             	    pushFollow(FOLLOW_decl_field_in_type_declaration311);
             	    decl_field();
-            	    _fsp--;
+
+            	    state._fsp--;
 
 
             	    }
@@ -1012,10 +1039,10 @@ public class Tree2TestDRL extends TreeParser {
         }
         return ;
     }
-    // $ANTLR end type_declaration
+    // $ANTLR end "type_declaration"
 
 
-    // $ANTLR start decl_metadata
+    // $ANTLR start "decl_metadata"
     // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:77:1: decl_metadata : ^( AT ID VT_PAREN_CHUNK ) ;
     public final void decl_metadata() throws RecognitionException {
         try {
@@ -1041,10 +1068,10 @@ public class Tree2TestDRL extends TreeParser {
         }
         return ;
     }
-    // $ANTLR end decl_metadata
+    // $ANTLR end "decl_metadata"
 
 
-    // $ANTLR start decl_field
+    // $ANTLR start "decl_field"
     // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:81:1: decl_field : ^( ID ( decl_field_initialization )? data_type ( decl_metadata )* ) ;
     public final void decl_field() throws RecognitionException {
         try {
@@ -1067,7 +1094,8 @@ public class Tree2TestDRL extends TreeParser {
                     {
                     pushFollow(FOLLOW_decl_field_initialization_in_decl_field346);
                     decl_field_initialization();
-                    _fsp--;
+
+                    state._fsp--;
 
 
                     }
@@ -1077,7 +1105,8 @@ public class Tree2TestDRL extends TreeParser {
 
             pushFollow(FOLLOW_data_type_in_decl_field349);
             data_type();
-            _fsp--;
+
+            state._fsp--;
 
             // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:82:46: ( decl_metadata )*
             loop15:
@@ -1096,7 +1125,8 @@ public class Tree2TestDRL extends TreeParser {
             	    {
             	    pushFollow(FOLLOW_decl_metadata_in_decl_field351);
             	    decl_metadata();
-            	    _fsp--;
+
+            	    state._fsp--;
 
 
             	    }
@@ -1121,10 +1151,10 @@ public class Tree2TestDRL extends TreeParser {
         }
         return ;
     }
-    // $ANTLR end decl_field
+    // $ANTLR end "decl_field"
 
 
-    // $ANTLR start decl_field_initialization
+    // $ANTLR start "decl_field_initialization"
     // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:85:1: decl_field_initialization : ^( EQUALS VT_PAREN_CHUNK ) ;
     public final void decl_field_initialization() throws RecognitionException {
         try {
@@ -1149,10 +1179,10 @@ public class Tree2TestDRL extends TreeParser {
         }
         return ;
     }
-    // $ANTLR end decl_field_initialization
+    // $ANTLR end "decl_field_initialization"
 
 
-    // $ANTLR start template
+    // $ANTLR start "template"
     // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:89:1: template : ^( VK_TEMPLATE VT_TEMPLATE_ID ( template_slot )+ END ) ;
     public final void template() throws RecognitionException {
         try {
@@ -1181,7 +1211,8 @@ public class Tree2TestDRL extends TreeParser {
             	    {
             	    pushFollow(FOLLOW_template_slot_in_template384);
             	    template_slot();
-            	    _fsp--;
+
+            	    state._fsp--;
 
 
             	    }
@@ -1211,10 +1242,10 @@ public class Tree2TestDRL extends TreeParser {
         }
         return ;
     }
-    // $ANTLR end template
+    // $ANTLR end "template"
 
 
-    // $ANTLR start template_slot
+    // $ANTLR start "template_slot"
     // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:93:1: template_slot : ^( VT_SLOT data_type VT_SLOT_ID ) ;
     public final void template_slot() throws RecognitionException {
         try {
@@ -1226,7 +1257,8 @@ public class Tree2TestDRL extends TreeParser {
             match(input, Token.DOWN, null); 
             pushFollow(FOLLOW_data_type_in_template_slot402);
             data_type();
-            _fsp--;
+
+            state._fsp--;
 
             match(input,VT_SLOT_ID,FOLLOW_VT_SLOT_ID_in_template_slot404); 
 
@@ -1243,10 +1275,10 @@ public class Tree2TestDRL extends TreeParser {
         }
         return ;
     }
-    // $ANTLR end template_slot
+    // $ANTLR end "template_slot"
 
 
-    // $ANTLR start rule
+    // $ANTLR start "rule"
     // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:97:1: rule : ^( VK_RULE VT_RULE_ID ( rule_attributes )? ( when_part )? VT_RHS_CHUNK ) ;
     public final void rule() throws RecognitionException {
         try {
@@ -1270,7 +1302,8 @@ public class Tree2TestDRL extends TreeParser {
                     {
                     pushFollow(FOLLOW_rule_attributes_in_rule421);
                     rule_attributes();
-                    _fsp--;
+
+                    state._fsp--;
 
 
                     }
@@ -1291,7 +1324,8 @@ public class Tree2TestDRL extends TreeParser {
                     {
                     pushFollow(FOLLOW_when_part_in_rule424);
                     when_part();
-                    _fsp--;
+
+                    state._fsp--;
 
 
                     }
@@ -1314,10 +1348,10 @@ public class Tree2TestDRL extends TreeParser {
         }
         return ;
     }
-    // $ANTLR end rule
+    // $ANTLR end "rule"
 
 
-    // $ANTLR start when_part
+    // $ANTLR start "when_part"
     // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:101:1: when_part : WHEN lhs_block ;
     public final void when_part() throws RecognitionException {
         try {
@@ -1327,7 +1361,8 @@ public class Tree2TestDRL extends TreeParser {
             match(input,WHEN,FOLLOW_WHEN_in_when_part439); 
             pushFollow(FOLLOW_lhs_block_in_when_part441);
             lhs_block();
-            _fsp--;
+
+            state._fsp--;
 
 
             }
@@ -1341,10 +1376,10 @@ public class Tree2TestDRL extends TreeParser {
         }
         return ;
     }
-    // $ANTLR end when_part
+    // $ANTLR end "when_part"
 
 
-    // $ANTLR start rule_attributes
+    // $ANTLR start "rule_attributes"
     // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:105:1: rule_attributes : ^( VT_RULE_ATTRIBUTES ( VK_ATTRIBUTES )? ( rule_attribute )+ ) ;
     public final void rule_attributes() throws RecognitionException {
         try {
@@ -1390,7 +1425,8 @@ public class Tree2TestDRL extends TreeParser {
             	    {
             	    pushFollow(FOLLOW_rule_attribute_in_rule_attributes458);
             	    rule_attribute();
-            	    _fsp--;
+
+            	    state._fsp--;
 
 
             	    }
@@ -1419,10 +1455,10 @@ public class Tree2TestDRL extends TreeParser {
         }
         return ;
     }
-    // $ANTLR end rule_attributes
+    // $ANTLR end "rule_attributes"
 
 
-    // $ANTLR start rule_attribute
+    // $ANTLR start "rule_attribute"
     // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:109:1: rule_attribute : ( ^( VK_SALIENCE ( INT | VT_PAREN_CHUNK ) ) | ^( VK_NO_LOOP ( BOOL )? ) | ^( VK_AGENDA_GROUP STRING ) | ^( VK_DURATION INT ) | ^( VK_ACTIVATION_GROUP STRING ) | ^( VK_AUTO_FOCUS ( BOOL )? ) | ^( VK_DATE_EFFECTIVE STRING ) | ^( VK_DATE_EXPIRES STRING ) | ^( VK_ENABLED BOOL ) | ^( VK_RULEFLOW_GROUP STRING ) | ^( VK_LOCK_ON_ACTIVE ( BOOL )? ) | ^( VK_DIALECT STRING ) );
     public final void rule_attribute() throws RecognitionException {
         try {
@@ -1491,7 +1527,7 @@ public class Tree2TestDRL extends TreeParser {
                 break;
             default:
                 NoViableAltException nvae =
-                    new NoViableAltException("109:1: rule_attribute : ( ^( VK_SALIENCE ( INT | VT_PAREN_CHUNK ) ) | ^( VK_NO_LOOP ( BOOL )? ) | ^( VK_AGENDA_GROUP STRING ) | ^( VK_DURATION INT ) | ^( VK_ACTIVATION_GROUP STRING ) | ^( VK_AUTO_FOCUS ( BOOL )? ) | ^( VK_DATE_EFFECTIVE STRING ) | ^( VK_DATE_EXPIRES STRING ) | ^( VK_ENABLED BOOL ) | ^( VK_RULEFLOW_GROUP STRING ) | ^( VK_LOCK_ON_ACTIVE ( BOOL )? ) | ^( VK_DIALECT STRING ) );", 24, 0, input);
+                    new NoViableAltException("", 24, 0, input);
 
                 throw nvae;
             }
@@ -1505,12 +1541,11 @@ public class Tree2TestDRL extends TreeParser {
                     match(input, Token.DOWN, null); 
                     if ( input.LA(1)==VT_PAREN_CHUNK||input.LA(1)==INT ) {
                         input.consume();
-                        errorRecovery=false;
+                        state.errorRecovery=false;
                     }
                     else {
-                        MismatchedSetException mse =
-                            new MismatchedSetException(null,input);
-                        recoverFromMismatchedSet(input,mse,FOLLOW_set_in_rule_attribute474);    throw mse;
+                        MismatchedSetException mse = new MismatchedSetException(null,input);
+                        throw mse;
                     }
 
 
@@ -1718,10 +1753,10 @@ public class Tree2TestDRL extends TreeParser {
         }
         return ;
     }
-    // $ANTLR end rule_attribute
+    // $ANTLR end "rule_attribute"
 
 
-    // $ANTLR start lhs_block
+    // $ANTLR start "lhs_block"
     // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:124:1: lhs_block : ^( VT_AND_IMPLICIT ( lhs )* ) ;
     public final void lhs_block() throws RecognitionException {
         try {
@@ -1749,7 +1784,8 @@ public class Tree2TestDRL extends TreeParser {
                 	    {
                 	    pushFollow(FOLLOW_lhs_in_lhs_block610);
                 	    lhs();
-                	    _fsp--;
+
+                	    state._fsp--;
 
 
                 	    }
@@ -1775,10 +1811,10 @@ public class Tree2TestDRL extends TreeParser {
         }
         return ;
     }
-    // $ANTLR end lhs_block
+    // $ANTLR end "lhs_block"
 
 
-    // $ANTLR start lhs
+    // $ANTLR start "lhs"
     // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:128:1: lhs : ( ^( VT_OR_PREFIX ( lhs )+ ) | ^( VT_OR_INFIX lhs lhs ) | ^( VT_AND_PREFIX ( lhs )+ ) | ^( VT_AND_INFIX lhs lhs ) | ^( VK_EXISTS lhs ) | ^( VK_NOT lhs ) | ^( VK_EVAL VT_PAREN_CHUNK ) | ^( VK_FORALL ( lhs )+ ) | ^( FROM lhs_pattern from_elements ) | lhs_pattern );
     public final void lhs() throws RecognitionException {
         try {
@@ -1837,7 +1873,7 @@ public class Tree2TestDRL extends TreeParser {
                 break;
             default:
                 NoViableAltException nvae =
-                    new NoViableAltException("128:1: lhs : ( ^( VT_OR_PREFIX ( lhs )+ ) | ^( VT_OR_INFIX lhs lhs ) | ^( VT_AND_PREFIX ( lhs )+ ) | ^( VT_AND_INFIX lhs lhs ) | ^( VK_EXISTS lhs ) | ^( VK_NOT lhs ) | ^( VK_EVAL VT_PAREN_CHUNK ) | ^( VK_FORALL ( lhs )+ ) | ^( FROM lhs_pattern from_elements ) | lhs_pattern );", 29, 0, input);
+                    new NoViableAltException("", 29, 0, input);
 
                 throw nvae;
             }
@@ -1867,7 +1903,8 @@ public class Tree2TestDRL extends TreeParser {
                     	    {
                     	    pushFollow(FOLLOW_lhs_in_lhs625);
                     	    lhs();
-                    	    _fsp--;
+
+                    	    state._fsp--;
 
 
                     	    }
@@ -1895,11 +1932,13 @@ public class Tree2TestDRL extends TreeParser {
                     match(input, Token.DOWN, null); 
                     pushFollow(FOLLOW_lhs_in_lhs635);
                     lhs();
-                    _fsp--;
+
+                    state._fsp--;
 
                     pushFollow(FOLLOW_lhs_in_lhs637);
                     lhs();
-                    _fsp--;
+
+                    state._fsp--;
 
 
                     match(input, Token.UP, null); 
@@ -1930,7 +1969,8 @@ public class Tree2TestDRL extends TreeParser {
                     	    {
                     	    pushFollow(FOLLOW_lhs_in_lhs646);
                     	    lhs();
-                    	    _fsp--;
+
+                    	    state._fsp--;
 
 
                     	    }
@@ -1958,11 +1998,13 @@ public class Tree2TestDRL extends TreeParser {
                     match(input, Token.DOWN, null); 
                     pushFollow(FOLLOW_lhs_in_lhs656);
                     lhs();
-                    _fsp--;
+
+                    state._fsp--;
 
                     pushFollow(FOLLOW_lhs_in_lhs658);
                     lhs();
-                    _fsp--;
+
+                    state._fsp--;
 
 
                     match(input, Token.UP, null); 
@@ -1977,7 +2019,8 @@ public class Tree2TestDRL extends TreeParser {
                     match(input, Token.DOWN, null); 
                     pushFollow(FOLLOW_lhs_in_lhs667);
                     lhs();
-                    _fsp--;
+
+                    state._fsp--;
 
 
                     match(input, Token.UP, null); 
@@ -1992,7 +2035,8 @@ public class Tree2TestDRL extends TreeParser {
                     match(input, Token.DOWN, null); 
                     pushFollow(FOLLOW_lhs_in_lhs676);
                     lhs();
-                    _fsp--;
+
+                    state._fsp--;
 
 
                     match(input, Token.UP, null); 
@@ -2035,7 +2079,8 @@ public class Tree2TestDRL extends TreeParser {
                     	    {
                     	    pushFollow(FOLLOW_lhs_in_lhs694);
                     	    lhs();
-                    	    _fsp--;
+
+                    	    state._fsp--;
 
 
                     	    }
@@ -2063,11 +2108,13 @@ public class Tree2TestDRL extends TreeParser {
                     match(input, Token.DOWN, null); 
                     pushFollow(FOLLOW_lhs_pattern_in_lhs704);
                     lhs_pattern();
-                    _fsp--;
+
+                    state._fsp--;
 
                     pushFollow(FOLLOW_from_elements_in_lhs706);
                     from_elements();
-                    _fsp--;
+
+                    state._fsp--;
 
 
                     match(input, Token.UP, null); 
@@ -2079,7 +2126,8 @@ public class Tree2TestDRL extends TreeParser {
                     {
                     pushFollow(FOLLOW_lhs_pattern_in_lhs712);
                     lhs_pattern();
-                    _fsp--;
+
+                    state._fsp--;
 
 
                     }
@@ -2095,10 +2143,10 @@ public class Tree2TestDRL extends TreeParser {
         }
         return ;
     }
-    // $ANTLR end lhs
+    // $ANTLR end "lhs"
 
 
-    // $ANTLR start from_elements
+    // $ANTLR start "from_elements"
     // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:140:1: from_elements : ( ^( ACCUMULATE lhs ( accumulate_init_clause | accumulate_id_clause ) ) | ^( COLLECT lhs ) | ^( VK_ENTRY_POINT VT_ENTRYPOINT_ID ) | ^( VT_FROM_SOURCE ID ( VT_PAREN_CHUNK )? ( expression_chain )? ) );
     public final void from_elements() throws RecognitionException {
         try {
@@ -2127,7 +2175,7 @@ public class Tree2TestDRL extends TreeParser {
                 break;
             default:
                 NoViableAltException nvae =
-                    new NoViableAltException("140:1: from_elements : ( ^( ACCUMULATE lhs ( accumulate_init_clause | accumulate_id_clause ) ) | ^( COLLECT lhs ) | ^( VK_ENTRY_POINT VT_ENTRYPOINT_ID ) | ^( VT_FROM_SOURCE ID ( VT_PAREN_CHUNK )? ( expression_chain )? ) );", 33, 0, input);
+                    new NoViableAltException("", 33, 0, input);
 
                 throw nvae;
             }
@@ -2141,7 +2189,8 @@ public class Tree2TestDRL extends TreeParser {
                     match(input, Token.DOWN, null); 
                     pushFollow(FOLLOW_lhs_in_from_elements726);
                     lhs();
-                    _fsp--;
+
+                    state._fsp--;
 
                     // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:141:21: ( accumulate_init_clause | accumulate_id_clause )
                     int alt30=2;
@@ -2155,7 +2204,7 @@ public class Tree2TestDRL extends TreeParser {
                     }
                     else {
                         NoViableAltException nvae =
-                            new NoViableAltException("141:21: ( accumulate_init_clause | accumulate_id_clause )", 30, 0, input);
+                            new NoViableAltException("", 30, 0, input);
 
                         throw nvae;
                     }
@@ -2165,7 +2214,8 @@ public class Tree2TestDRL extends TreeParser {
                             {
                             pushFollow(FOLLOW_accumulate_init_clause_in_from_elements729);
                             accumulate_init_clause();
-                            _fsp--;
+
+                            state._fsp--;
 
 
                             }
@@ -2175,7 +2225,8 @@ public class Tree2TestDRL extends TreeParser {
                             {
                             pushFollow(FOLLOW_accumulate_id_clause_in_from_elements731);
                             accumulate_id_clause();
-                            _fsp--;
+
+                            state._fsp--;
 
 
                             }
@@ -2196,7 +2247,8 @@ public class Tree2TestDRL extends TreeParser {
                     match(input, Token.DOWN, null); 
                     pushFollow(FOLLOW_lhs_in_from_elements741);
                     lhs();
-                    _fsp--;
+
+                    state._fsp--;
 
 
                     match(input, Token.UP, null); 
@@ -2253,7 +2305,8 @@ public class Tree2TestDRL extends TreeParser {
                             {
                             pushFollow(FOLLOW_expression_chain_in_from_elements764);
                             expression_chain();
-                            _fsp--;
+
+                            state._fsp--;
 
 
                             }
@@ -2277,10 +2330,10 @@ public class Tree2TestDRL extends TreeParser {
         }
         return ;
     }
-    // $ANTLR end from_elements
+    // $ANTLR end "from_elements"
 
 
-    // $ANTLR start accumulate_init_clause
+    // $ANTLR start "accumulate_init_clause"
     // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:147:1: accumulate_init_clause : ^( VT_ACCUMULATE_INIT_CLAUSE ^( INIT VT_PAREN_CHUNK ) ^( VK_ACTION VT_PAREN_CHUNK ) ( accumulate_init_reverse_clause )? ^( VK_RESULT VT_PAREN_CHUNK ) ) ;
     public final void accumulate_init_clause() throws RecognitionException {
         try {
@@ -2315,7 +2368,8 @@ public class Tree2TestDRL extends TreeParser {
                     {
                     pushFollow(FOLLOW_accumulate_init_reverse_clause_in_accumulate_init_clause804);
                     accumulate_init_reverse_clause();
-                    _fsp--;
+
+                    state._fsp--;
 
 
                     }
@@ -2343,10 +2397,10 @@ public class Tree2TestDRL extends TreeParser {
         }
         return ;
     }
-    // $ANTLR end accumulate_init_clause
+    // $ANTLR end "accumulate_init_clause"
 
 
-    // $ANTLR start accumulate_init_reverse_clause
+    // $ANTLR start "accumulate_init_reverse_clause"
     // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:155:1: accumulate_init_reverse_clause : ^( VK_REVERSE VT_PAREN_CHUNK ) ;
     public final void accumulate_init_reverse_clause() throws RecognitionException {
         try {
@@ -2371,10 +2425,10 @@ public class Tree2TestDRL extends TreeParser {
         }
         return ;
     }
-    // $ANTLR end accumulate_init_reverse_clause
+    // $ANTLR end "accumulate_init_reverse_clause"
 
 
-    // $ANTLR start accumulate_id_clause
+    // $ANTLR start "accumulate_id_clause"
     // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:160:1: accumulate_id_clause : ^( VT_ACCUMULATE_ID_CLAUSE ID VT_PAREN_CHUNK ) ;
     public final void accumulate_id_clause() throws RecognitionException {
         try {
@@ -2400,10 +2454,10 @@ public class Tree2TestDRL extends TreeParser {
         }
         return ;
     }
-    // $ANTLR end accumulate_id_clause
+    // $ANTLR end "accumulate_id_clause"
 
 
-    // $ANTLR start lhs_pattern
+    // $ANTLR start "lhs_pattern"
     // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:164:1: lhs_pattern : ^( VT_PATTERN fact_expression ) ( over_clause )? ;
     public final void lhs_pattern() throws RecognitionException {
         try {
@@ -2415,7 +2469,8 @@ public class Tree2TestDRL extends TreeParser {
             match(input, Token.DOWN, null); 
             pushFollow(FOLLOW_fact_expression_in_lhs_pattern862);
             fact_expression();
-            _fsp--;
+
+            state._fsp--;
 
 
             match(input, Token.UP, null); 
@@ -2432,7 +2487,8 @@ public class Tree2TestDRL extends TreeParser {
                     {
                     pushFollow(FOLLOW_over_clause_in_lhs_pattern865);
                     over_clause();
-                    _fsp--;
+
+                    state._fsp--;
 
 
                     }
@@ -2452,10 +2508,10 @@ public class Tree2TestDRL extends TreeParser {
         }
         return ;
     }
-    // $ANTLR end lhs_pattern
+    // $ANTLR end "lhs_pattern"
 
 
-    // $ANTLR start over_clause
+    // $ANTLR start "over_clause"
     // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:168:1: over_clause : ^( OVER ( over_element )+ ) ;
     public final void over_clause() throws RecognitionException {
         try {
@@ -2483,7 +2539,8 @@ public class Tree2TestDRL extends TreeParser {
             	    {
             	    pushFollow(FOLLOW_over_element_in_over_clause880);
             	    over_element();
-            	    _fsp--;
+
+            	    state._fsp--;
 
 
             	    }
@@ -2512,10 +2569,10 @@ public class Tree2TestDRL extends TreeParser {
         }
         return ;
     }
-    // $ANTLR end over_clause
+    // $ANTLR end "over_clause"
 
 
-    // $ANTLR start over_element
+    // $ANTLR start "over_element"
     // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:172:1: over_element : ^( VT_BEHAVIOR ID ID VT_PAREN_CHUNK ) ;
     public final void over_element() throws RecognitionException {
         try {
@@ -2542,164 +2599,144 @@ public class Tree2TestDRL extends TreeParser {
         }
         return ;
     }
-    // $ANTLR end over_element
+    // $ANTLR end "over_element"
 
 
-    // $ANTLR start fact_expression
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:176:1: fact_expression : ( ^( DOUBLE_PIPE fact_expression fact_expression ) | ^( DOUBLE_AMPER fact_expression fact_expression ) | ^( VT_FACT_BINDING VT_LABEL fact_expression ) | ^( VT_FACT pattern_type ( fact_expression )* ) | ^( VT_FACT_OR fact_expression fact_expression ) | ^( VK_EVAL VT_PAREN_CHUNK ) | ^( VK_IN ( VK_NOT )? ( fact_expression )+ ) | ^( EQUAL fact_expression ) | ^( GREATER fact_expression ) | ^( GREATER_EQUAL fact_expression ) | ^( LESS fact_expression ) | ^( LESS_EQUAL fact_expression ) | ^( NOT_EQUAL fact_expression ) | ^( VK_CONTAINS ( VK_NOT )? fact_expression ) | ^( VK_EXCLUDES ( VK_NOT )? fact_expression ) | ^( VK_MATCHES ( VK_NOT )? fact_expression ) | ^( VK_SOUNDSLIKE ( VK_NOT )? fact_expression ) | ^( VK_MEMBEROF ( VK_NOT )? fact_expression ) | ^( ID ( VK_NOT )? ( VT_SQUARE_CHUNK )? fact_expression ) | ^( VT_BIND_FIELD VT_LABEL fact_expression ) | ^( VT_FIELD fact_expression ( fact_expression )? ) | ^( VT_ACCESSOR_PATH ( accessor_element )+ ) | STRING | INT | FLOAT | BOOL | NULL | VT_PAREN_CHUNK );
+    // $ANTLR start "fact_expression"
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:176:1: fact_expression : ( ^( DOUBLE_PIPE fact_expression fact_expression ) | ^( DOUBLE_AMPER fact_expression fact_expression ) | ^( VT_FACT_BINDING VT_LABEL fact_expression ) | ^( VT_FACT pattern_type ( fact_expression )* ) | ^( VT_FACT_OR fact_expression fact_expression ) | ^( VK_EVAL VT_PAREN_CHUNK ) | ^( VK_IN ( VK_NOT )? ( fact_expression )+ ) | ^( EQUAL fact_expression ) | ^( GREATER fact_expression ) | ^( GREATER_EQUAL fact_expression ) | ^( LESS fact_expression ) | ^( LESS_EQUAL fact_expression ) | ^( NOT_EQUAL fact_expression ) | ^( VK_OPERATOR ( VK_NOT )? ( VT_SQUARE_CHUNK )? fact_expression ) | ^( ID ( VK_NOT )? ( VT_SQUARE_CHUNK )? fact_expression ) | ^( VT_BIND_FIELD VT_LABEL fact_expression ) | ^( VT_FIELD fact_expression ( fact_expression )? ) | ^( VT_ACCESSOR_PATH ( accessor_element )+ ) | STRING | INT | FLOAT | BOOL | NULL | VT_PAREN_CHUNK );
     public final void fact_expression() throws RecognitionException {
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:177:2: ( ^( DOUBLE_PIPE fact_expression fact_expression ) | ^( DOUBLE_AMPER fact_expression fact_expression ) | ^( VT_FACT_BINDING VT_LABEL fact_expression ) | ^( VT_FACT pattern_type ( fact_expression )* ) | ^( VT_FACT_OR fact_expression fact_expression ) | ^( VK_EVAL VT_PAREN_CHUNK ) | ^( VK_IN ( VK_NOT )? ( fact_expression )+ ) | ^( EQUAL fact_expression ) | ^( GREATER fact_expression ) | ^( GREATER_EQUAL fact_expression ) | ^( LESS fact_expression ) | ^( LESS_EQUAL fact_expression ) | ^( NOT_EQUAL fact_expression ) | ^( VK_CONTAINS ( VK_NOT )? fact_expression ) | ^( VK_EXCLUDES ( VK_NOT )? fact_expression ) | ^( VK_MATCHES ( VK_NOT )? fact_expression ) | ^( VK_SOUNDSLIKE ( VK_NOT )? fact_expression ) | ^( VK_MEMBEROF ( VK_NOT )? fact_expression ) | ^( ID ( VK_NOT )? ( VT_SQUARE_CHUNK )? fact_expression ) | ^( VT_BIND_FIELD VT_LABEL fact_expression ) | ^( VT_FIELD fact_expression ( fact_expression )? ) | ^( VT_ACCESSOR_PATH ( accessor_element )+ ) | STRING | INT | FLOAT | BOOL | NULL | VT_PAREN_CHUNK )
-            int alt49=28;
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:177:2: ( ^( DOUBLE_PIPE fact_expression fact_expression ) | ^( DOUBLE_AMPER fact_expression fact_expression ) | ^( VT_FACT_BINDING VT_LABEL fact_expression ) | ^( VT_FACT pattern_type ( fact_expression )* ) | ^( VT_FACT_OR fact_expression fact_expression ) | ^( VK_EVAL VT_PAREN_CHUNK ) | ^( VK_IN ( VK_NOT )? ( fact_expression )+ ) | ^( EQUAL fact_expression ) | ^( GREATER fact_expression ) | ^( GREATER_EQUAL fact_expression ) | ^( LESS fact_expression ) | ^( LESS_EQUAL fact_expression ) | ^( NOT_EQUAL fact_expression ) | ^( VK_OPERATOR ( VK_NOT )? ( VT_SQUARE_CHUNK )? fact_expression ) | ^( ID ( VK_NOT )? ( VT_SQUARE_CHUNK )? fact_expression ) | ^( VT_BIND_FIELD VT_LABEL fact_expression ) | ^( VT_FIELD fact_expression ( fact_expression )? ) | ^( VT_ACCESSOR_PATH ( accessor_element )+ ) | STRING | INT | FLOAT | BOOL | NULL | VT_PAREN_CHUNK )
+            int alt46=24;
             switch ( input.LA(1) ) {
             case DOUBLE_PIPE:
                 {
-                alt49=1;
+                alt46=1;
                 }
                 break;
             case DOUBLE_AMPER:
                 {
-                alt49=2;
+                alt46=2;
                 }
                 break;
             case VT_FACT_BINDING:
                 {
-                alt49=3;
+                alt46=3;
                 }
                 break;
             case VT_FACT:
                 {
-                alt49=4;
+                alt46=4;
                 }
                 break;
             case VT_FACT_OR:
                 {
-                alt49=5;
+                alt46=5;
                 }
                 break;
             case VK_EVAL:
                 {
-                alt49=6;
+                alt46=6;
                 }
                 break;
             case VK_IN:
                 {
-                alt49=7;
+                alt46=7;
                 }
                 break;
             case EQUAL:
                 {
-                alt49=8;
+                alt46=8;
                 }
                 break;
             case GREATER:
                 {
-                alt49=9;
+                alt46=9;
                 }
                 break;
             case GREATER_EQUAL:
                 {
-                alt49=10;
+                alt46=10;
                 }
                 break;
             case LESS:
                 {
-                alt49=11;
+                alt46=11;
                 }
                 break;
             case LESS_EQUAL:
                 {
-                alt49=12;
+                alt46=12;
                 }
                 break;
             case NOT_EQUAL:
                 {
-                alt49=13;
+                alt46=13;
                 }
                 break;
-            case VK_CONTAINS:
+            case VK_OPERATOR:
                 {
-                alt49=14;
-                }
-                break;
-            case VK_EXCLUDES:
-                {
-                alt49=15;
-                }
-                break;
-            case VK_MATCHES:
-                {
-                alt49=16;
-                }
-                break;
-            case VK_SOUNDSLIKE:
-                {
-                alt49=17;
-                }
-                break;
-            case VK_MEMBEROF:
-                {
-                alt49=18;
+                alt46=14;
                 }
                 break;
             case ID:
                 {
-                alt49=19;
+                alt46=15;
                 }
                 break;
             case VT_BIND_FIELD:
                 {
-                alt49=20;
+                alt46=16;
                 }
                 break;
             case VT_FIELD:
                 {
-                alt49=21;
+                alt46=17;
                 }
                 break;
             case VT_ACCESSOR_PATH:
                 {
-                alt49=22;
+                alt46=18;
                 }
                 break;
             case STRING:
                 {
-                alt49=23;
+                alt46=19;
                 }
                 break;
             case INT:
                 {
-                alt49=24;
+                alt46=20;
                 }
                 break;
             case FLOAT:
                 {
-                alt49=25;
+                alt46=21;
                 }
                 break;
             case BOOL:
                 {
-                alt49=26;
+                alt46=22;
                 }
                 break;
             case NULL:
                 {
-                alt49=27;
+                alt46=23;
                 }
                 break;
             case VT_PAREN_CHUNK:
                 {
-                alt49=28;
+                alt46=24;
                 }
                 break;
             default:
                 NoViableAltException nvae =
-                    new NoViableAltException("176:1: fact_expression : ( ^( DOUBLE_PIPE fact_expression fact_expression ) | ^( DOUBLE_AMPER fact_expression fact_expression ) | ^( VT_FACT_BINDING VT_LABEL fact_expression ) | ^( VT_FACT pattern_type ( fact_expression )* ) | ^( VT_FACT_OR fact_expression fact_expression ) | ^( VK_EVAL VT_PAREN_CHUNK ) | ^( VK_IN ( VK_NOT )? ( fact_expression )+ ) | ^( EQUAL fact_expression ) | ^( GREATER fact_expression ) | ^( GREATER_EQUAL fact_expression ) | ^( LESS fact_expression ) | ^( LESS_EQUAL fact_expression ) | ^( NOT_EQUAL fact_expression ) | ^( VK_CONTAINS ( VK_NOT )? fact_expression ) | ^( VK_EXCLUDES ( VK_NOT )? fact_expression ) | ^( VK_MATCHES ( VK_NOT )? fact_expression ) | ^( VK_SOUNDSLIKE ( VK_NOT )? fact_expression ) | ^( VK_MEMBEROF ( VK_NOT )? fact_expression ) | ^( ID ( VK_NOT )? ( VT_SQUARE_CHUNK )? fact_expression ) | ^( VT_BIND_FIELD VT_LABEL fact_expression ) | ^( VT_FIELD fact_expression ( fact_expression )? ) | ^( VT_ACCESSOR_PATH ( accessor_element )+ ) | STRING | INT | FLOAT | BOOL | NULL | VT_PAREN_CHUNK );", 49, 0, input);
+                    new NoViableAltException("", 46, 0, input);
 
                 throw nvae;
             }
 
-            switch (alt49) {
+            switch (alt46) {
                 case 1 :
                     // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:177:4: ^( DOUBLE_PIPE fact_expression fact_expression )
                     {
@@ -2708,11 +2745,13 @@ public class Tree2TestDRL extends TreeParser {
                     match(input, Token.DOWN, null); 
                     pushFollow(FOLLOW_fact_expression_in_fact_expression915);
                     fact_expression();
-                    _fsp--;
+
+                    state._fsp--;
 
                     pushFollow(FOLLOW_fact_expression_in_fact_expression917);
                     fact_expression();
-                    _fsp--;
+
+                    state._fsp--;
 
 
                     match(input, Token.UP, null); 
@@ -2727,11 +2766,13 @@ public class Tree2TestDRL extends TreeParser {
                     match(input, Token.DOWN, null); 
                     pushFollow(FOLLOW_fact_expression_in_fact_expression926);
                     fact_expression();
-                    _fsp--;
+
+                    state._fsp--;
 
                     pushFollow(FOLLOW_fact_expression_in_fact_expression928);
                     fact_expression();
-                    _fsp--;
+
+                    state._fsp--;
 
 
                     match(input, Token.UP, null); 
@@ -2747,7 +2788,8 @@ public class Tree2TestDRL extends TreeParser {
                     match(input,VT_LABEL,FOLLOW_VT_LABEL_in_fact_expression937); 
                     pushFollow(FOLLOW_fact_expression_in_fact_expression939);
                     fact_expression();
-                    _fsp--;
+
+                    state._fsp--;
 
 
                     match(input, Token.UP, null); 
@@ -2762,7 +2804,8 @@ public class Tree2TestDRL extends TreeParser {
                     match(input, Token.DOWN, null); 
                     pushFollow(FOLLOW_pattern_type_in_fact_expression948);
                     pattern_type();
-                    _fsp--;
+
+                    state._fsp--;
 
                     // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:180:27: ( fact_expression )*
                     loop37:
@@ -2770,7 +2813,7 @@ public class Tree2TestDRL extends TreeParser {
                         int alt37=2;
                         int LA37_0 = input.LA(1);
 
-                        if ( (LA37_0==VT_FACT||LA37_0==VT_PAREN_CHUNK||(LA37_0>=VT_FACT_BINDING && LA37_0<=VT_ACCESSOR_PATH)||(LA37_0>=VK_EVAL && LA37_0<=VK_MEMBEROF)||LA37_0==VK_IN||LA37_0==ID||LA37_0==STRING||(LA37_0>=BOOL && LA37_0<=DOUBLE_AMPER)||(LA37_0>=EQUAL && LA37_0<=NOT_EQUAL)||(LA37_0>=FLOAT && LA37_0<=NULL)) ) {
+                        if ( (LA37_0==VT_FACT||LA37_0==VT_PAREN_CHUNK||(LA37_0>=VT_FACT_BINDING && LA37_0<=VT_ACCESSOR_PATH)||LA37_0==VK_EVAL||LA37_0==VK_IN||LA37_0==VK_OPERATOR||LA37_0==ID||LA37_0==STRING||(LA37_0>=BOOL && LA37_0<=DOUBLE_AMPER)||(LA37_0>=EQUAL && LA37_0<=NULL)) ) {
                             alt37=1;
                         }
 
@@ -2781,7 +2824,8 @@ public class Tree2TestDRL extends TreeParser {
                     	    {
                     	    pushFollow(FOLLOW_fact_expression_in_fact_expression950);
                     	    fact_expression();
-                    	    _fsp--;
+
+                    	    state._fsp--;
 
 
                     	    }
@@ -2805,11 +2849,13 @@ public class Tree2TestDRL extends TreeParser {
                     match(input, Token.DOWN, null); 
                     pushFollow(FOLLOW_fact_expression_in_fact_expression960);
                     fact_expression();
-                    _fsp--;
+
+                    state._fsp--;
 
                     pushFollow(FOLLOW_fact_expression_in_fact_expression962);
                     fact_expression();
-                    _fsp--;
+
+                    state._fsp--;
 
 
                     match(input, Token.UP, null); 
@@ -2859,7 +2905,7 @@ public class Tree2TestDRL extends TreeParser {
                         int alt39=2;
                         int LA39_0 = input.LA(1);
 
-                        if ( (LA39_0==VT_FACT||LA39_0==VT_PAREN_CHUNK||(LA39_0>=VT_FACT_BINDING && LA39_0<=VT_ACCESSOR_PATH)||(LA39_0>=VK_EVAL && LA39_0<=VK_MEMBEROF)||LA39_0==VK_IN||LA39_0==ID||LA39_0==STRING||(LA39_0>=BOOL && LA39_0<=DOUBLE_AMPER)||(LA39_0>=EQUAL && LA39_0<=NOT_EQUAL)||(LA39_0>=FLOAT && LA39_0<=NULL)) ) {
+                        if ( (LA39_0==VT_FACT||LA39_0==VT_PAREN_CHUNK||(LA39_0>=VT_FACT_BINDING && LA39_0<=VT_ACCESSOR_PATH)||LA39_0==VK_EVAL||LA39_0==VK_IN||LA39_0==VK_OPERATOR||LA39_0==ID||LA39_0==STRING||(LA39_0>=BOOL && LA39_0<=DOUBLE_AMPER)||(LA39_0>=EQUAL && LA39_0<=NULL)) ) {
                             alt39=1;
                         }
 
@@ -2870,7 +2916,8 @@ public class Tree2TestDRL extends TreeParser {
                     	    {
                     	    pushFollow(FOLLOW_fact_expression_in_fact_expression983);
                     	    fact_expression();
-                    	    _fsp--;
+
+                    	    state._fsp--;
 
 
                     	    }
@@ -2898,7 +2945,8 @@ public class Tree2TestDRL extends TreeParser {
                     match(input, Token.DOWN, null); 
                     pushFollow(FOLLOW_fact_expression_in_fact_expression993);
                     fact_expression();
-                    _fsp--;
+
+                    state._fsp--;
 
 
                     match(input, Token.UP, null); 
@@ -2913,7 +2961,8 @@ public class Tree2TestDRL extends TreeParser {
                     match(input, Token.DOWN, null); 
                     pushFollow(FOLLOW_fact_expression_in_fact_expression1002);
                     fact_expression();
-                    _fsp--;
+
+                    state._fsp--;
 
 
                     match(input, Token.UP, null); 
@@ -2928,7 +2977,8 @@ public class Tree2TestDRL extends TreeParser {
                     match(input, Token.DOWN, null); 
                     pushFollow(FOLLOW_fact_expression_in_fact_expression1011);
                     fact_expression();
-                    _fsp--;
+
+                    state._fsp--;
 
 
                     match(input, Token.UP, null); 
@@ -2943,7 +2993,8 @@ public class Tree2TestDRL extends TreeParser {
                     match(input, Token.DOWN, null); 
                     pushFollow(FOLLOW_fact_expression_in_fact_expression1020);
                     fact_expression();
-                    _fsp--;
+
+                    state._fsp--;
 
 
                     match(input, Token.UP, null); 
@@ -2958,7 +3009,8 @@ public class Tree2TestDRL extends TreeParser {
                     match(input, Token.DOWN, null); 
                     pushFollow(FOLLOW_fact_expression_in_fact_expression1029);
                     fact_expression();
-                    _fsp--;
+
+                    state._fsp--;
 
 
                     match(input, Token.UP, null); 
@@ -2973,7 +3025,8 @@ public class Tree2TestDRL extends TreeParser {
                     match(input, Token.DOWN, null); 
                     pushFollow(FOLLOW_fact_expression_in_fact_expression1038);
                     fact_expression();
-                    _fsp--;
+
+                    state._fsp--;
 
 
                     match(input, Token.UP, null); 
@@ -2981,9 +3034,9 @@ public class Tree2TestDRL extends TreeParser {
                     }
                     break;
                 case 14 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:190:4: ^( VK_CONTAINS ( VK_NOT )? fact_expression )
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:190:4: ^( VK_OPERATOR ( VK_NOT )? ( VT_SQUARE_CHUNK )? fact_expression )
                     {
-                    match(input,VK_CONTAINS,FOLLOW_VK_CONTAINS_in_fact_expression1045); 
+                    match(input,VK_OPERATOR,FOLLOW_VK_OPERATOR_in_fact_expression1045); 
 
                     match(input, Token.DOWN, null); 
                     // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:190:18: ( VK_NOT )?
@@ -3004,9 +3057,28 @@ public class Tree2TestDRL extends TreeParser {
 
                     }
 
-                    pushFollow(FOLLOW_fact_expression_in_fact_expression1050);
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:190:26: ( VT_SQUARE_CHUNK )?
+                    int alt41=2;
+                    int LA41_0 = input.LA(1);
+
+                    if ( (LA41_0==VT_SQUARE_CHUNK) ) {
+                        alt41=1;
+                    }
+                    switch (alt41) {
+                        case 1 :
+                            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:190:26: VT_SQUARE_CHUNK
+                            {
+                            match(input,VT_SQUARE_CHUNK,FOLLOW_VT_SQUARE_CHUNK_in_fact_expression1050); 
+
+                            }
+                            break;
+
+                    }
+
+                    pushFollow(FOLLOW_fact_expression_in_fact_expression1053);
                     fact_expression();
-                    _fsp--;
+
+                    state._fsp--;
 
 
                     match(input, Token.UP, null); 
@@ -3014,45 +3086,12 @@ public class Tree2TestDRL extends TreeParser {
                     }
                     break;
                 case 15 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:191:4: ^( VK_EXCLUDES ( VK_NOT )? fact_expression )
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:191:4: ^( ID ( VK_NOT )? ( VT_SQUARE_CHUNK )? fact_expression )
                     {
-                    match(input,VK_EXCLUDES,FOLLOW_VK_EXCLUDES_in_fact_expression1057); 
+                    match(input,ID,FOLLOW_ID_in_fact_expression1060); 
 
                     match(input, Token.DOWN, null); 
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:191:18: ( VK_NOT )?
-                    int alt41=2;
-                    int LA41_0 = input.LA(1);
-
-                    if ( (LA41_0==VK_NOT) ) {
-                        alt41=1;
-                    }
-                    switch (alt41) {
-                        case 1 :
-                            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:191:18: VK_NOT
-                            {
-                            match(input,VK_NOT,FOLLOW_VK_NOT_in_fact_expression1059); 
-
-                            }
-                            break;
-
-                    }
-
-                    pushFollow(FOLLOW_fact_expression_in_fact_expression1062);
-                    fact_expression();
-                    _fsp--;
-
-
-                    match(input, Token.UP, null); 
-
-                    }
-                    break;
-                case 16 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:192:4: ^( VK_MATCHES ( VK_NOT )? fact_expression )
-                    {
-                    match(input,VK_MATCHES,FOLLOW_VK_MATCHES_in_fact_expression1069); 
-
-                    match(input, Token.DOWN, null); 
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:192:17: ( VK_NOT )?
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:191:9: ( VK_NOT )?
                     int alt42=2;
                     int LA42_0 = input.LA(1);
 
@@ -3061,18 +3100,54 @@ public class Tree2TestDRL extends TreeParser {
                     }
                     switch (alt42) {
                         case 1 :
-                            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:192:17: VK_NOT
+                            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:191:9: VK_NOT
                             {
-                            match(input,VK_NOT,FOLLOW_VK_NOT_in_fact_expression1071); 
+                            match(input,VK_NOT,FOLLOW_VK_NOT_in_fact_expression1062); 
 
                             }
                             break;
 
                     }
 
-                    pushFollow(FOLLOW_fact_expression_in_fact_expression1074);
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:191:17: ( VT_SQUARE_CHUNK )?
+                    int alt43=2;
+                    int LA43_0 = input.LA(1);
+
+                    if ( (LA43_0==VT_SQUARE_CHUNK) ) {
+                        alt43=1;
+                    }
+                    switch (alt43) {
+                        case 1 :
+                            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:191:17: VT_SQUARE_CHUNK
+                            {
+                            match(input,VT_SQUARE_CHUNK,FOLLOW_VT_SQUARE_CHUNK_in_fact_expression1065); 
+
+                            }
+                            break;
+
+                    }
+
+                    pushFollow(FOLLOW_fact_expression_in_fact_expression1068);
                     fact_expression();
-                    _fsp--;
+
+                    state._fsp--;
+
+
+                    match(input, Token.UP, null); 
+
+                    }
+                    break;
+                case 16 :
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:192:4: ^( VT_BIND_FIELD VT_LABEL fact_expression )
+                    {
+                    match(input,VT_BIND_FIELD,FOLLOW_VT_BIND_FIELD_in_fact_expression1075); 
+
+                    match(input, Token.DOWN, null); 
+                    match(input,VT_LABEL,FOLLOW_VT_LABEL_in_fact_expression1077); 
+                    pushFollow(FOLLOW_fact_expression_in_fact_expression1079);
+                    fact_expression();
+
+                    state._fsp--;
 
 
                     match(input, Token.UP, null); 
@@ -3080,32 +3155,37 @@ public class Tree2TestDRL extends TreeParser {
                     }
                     break;
                 case 17 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:193:4: ^( VK_SOUNDSLIKE ( VK_NOT )? fact_expression )
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:193:4: ^( VT_FIELD fact_expression ( fact_expression )? )
                     {
-                    match(input,VK_SOUNDSLIKE,FOLLOW_VK_SOUNDSLIKE_in_fact_expression1081); 
+                    match(input,VT_FIELD,FOLLOW_VT_FIELD_in_fact_expression1086); 
 
                     match(input, Token.DOWN, null); 
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:193:20: ( VK_NOT )?
-                    int alt43=2;
-                    int LA43_0 = input.LA(1);
+                    pushFollow(FOLLOW_fact_expression_in_fact_expression1088);
+                    fact_expression();
 
-                    if ( (LA43_0==VK_NOT) ) {
-                        alt43=1;
+                    state._fsp--;
+
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:193:31: ( fact_expression )?
+                    int alt44=2;
+                    int LA44_0 = input.LA(1);
+
+                    if ( (LA44_0==VT_FACT||LA44_0==VT_PAREN_CHUNK||(LA44_0>=VT_FACT_BINDING && LA44_0<=VT_ACCESSOR_PATH)||LA44_0==VK_EVAL||LA44_0==VK_IN||LA44_0==VK_OPERATOR||LA44_0==ID||LA44_0==STRING||(LA44_0>=BOOL && LA44_0<=DOUBLE_AMPER)||(LA44_0>=EQUAL && LA44_0<=NULL)) ) {
+                        alt44=1;
                     }
-                    switch (alt43) {
+                    switch (alt44) {
                         case 1 :
-                            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:193:20: VK_NOT
+                            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:193:31: fact_expression
                             {
-                            match(input,VK_NOT,FOLLOW_VK_NOT_in_fact_expression1083); 
+                            pushFollow(FOLLOW_fact_expression_in_fact_expression1090);
+                            fact_expression();
+
+                            state._fsp--;
+
 
                             }
                             break;
 
                     }
-
-                    pushFollow(FOLLOW_fact_expression_in_fact_expression1086);
-                    fact_expression();
-                    _fsp--;
 
 
                     match(input, Token.UP, null); 
@@ -3113,178 +3193,43 @@ public class Tree2TestDRL extends TreeParser {
                     }
                     break;
                 case 18 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:194:4: ^( VK_MEMBEROF ( VK_NOT )? fact_expression )
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:194:4: ^( VT_ACCESSOR_PATH ( accessor_element )+ )
                     {
-                    match(input,VK_MEMBEROF,FOLLOW_VK_MEMBEROF_in_fact_expression1093); 
+                    match(input,VT_ACCESSOR_PATH,FOLLOW_VT_ACCESSOR_PATH_in_fact_expression1098); 
 
                     match(input, Token.DOWN, null); 
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:194:18: ( VK_NOT )?
-                    int alt44=2;
-                    int LA44_0 = input.LA(1);
-
-                    if ( (LA44_0==VK_NOT) ) {
-                        alt44=1;
-                    }
-                    switch (alt44) {
-                        case 1 :
-                            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:194:18: VK_NOT
-                            {
-                            match(input,VK_NOT,FOLLOW_VK_NOT_in_fact_expression1095); 
-
-                            }
-                            break;
-
-                    }
-
-                    pushFollow(FOLLOW_fact_expression_in_fact_expression1098);
-                    fact_expression();
-                    _fsp--;
-
-
-                    match(input, Token.UP, null); 
-
-                    }
-                    break;
-                case 19 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:195:4: ^( ID ( VK_NOT )? ( VT_SQUARE_CHUNK )? fact_expression )
-                    {
-                    match(input,ID,FOLLOW_ID_in_fact_expression1105); 
-
-                    match(input, Token.DOWN, null); 
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:195:9: ( VK_NOT )?
-                    int alt45=2;
-                    int LA45_0 = input.LA(1);
-
-                    if ( (LA45_0==VK_NOT) ) {
-                        alt45=1;
-                    }
-                    switch (alt45) {
-                        case 1 :
-                            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:195:9: VK_NOT
-                            {
-                            match(input,VK_NOT,FOLLOW_VK_NOT_in_fact_expression1107); 
-
-                            }
-                            break;
-
-                    }
-
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:195:17: ( VT_SQUARE_CHUNK )?
-                    int alt46=2;
-                    int LA46_0 = input.LA(1);
-
-                    if ( (LA46_0==VT_SQUARE_CHUNK) ) {
-                        alt46=1;
-                    }
-                    switch (alt46) {
-                        case 1 :
-                            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:195:17: VT_SQUARE_CHUNK
-                            {
-                            match(input,VT_SQUARE_CHUNK,FOLLOW_VT_SQUARE_CHUNK_in_fact_expression1110); 
-
-                            }
-                            break;
-
-                    }
-
-                    pushFollow(FOLLOW_fact_expression_in_fact_expression1113);
-                    fact_expression();
-                    _fsp--;
-
-
-                    match(input, Token.UP, null); 
-
-                    }
-                    break;
-                case 20 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:196:4: ^( VT_BIND_FIELD VT_LABEL fact_expression )
-                    {
-                    match(input,VT_BIND_FIELD,FOLLOW_VT_BIND_FIELD_in_fact_expression1120); 
-
-                    match(input, Token.DOWN, null); 
-                    match(input,VT_LABEL,FOLLOW_VT_LABEL_in_fact_expression1122); 
-                    pushFollow(FOLLOW_fact_expression_in_fact_expression1124);
-                    fact_expression();
-                    _fsp--;
-
-
-                    match(input, Token.UP, null); 
-
-                    }
-                    break;
-                case 21 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:197:4: ^( VT_FIELD fact_expression ( fact_expression )? )
-                    {
-                    match(input,VT_FIELD,FOLLOW_VT_FIELD_in_fact_expression1131); 
-
-                    match(input, Token.DOWN, null); 
-                    pushFollow(FOLLOW_fact_expression_in_fact_expression1133);
-                    fact_expression();
-                    _fsp--;
-
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:197:31: ( fact_expression )?
-                    int alt47=2;
-                    int LA47_0 = input.LA(1);
-
-                    if ( (LA47_0==VT_FACT||LA47_0==VT_PAREN_CHUNK||(LA47_0>=VT_FACT_BINDING && LA47_0<=VT_ACCESSOR_PATH)||(LA47_0>=VK_EVAL && LA47_0<=VK_MEMBEROF)||LA47_0==VK_IN||LA47_0==ID||LA47_0==STRING||(LA47_0>=BOOL && LA47_0<=DOUBLE_AMPER)||(LA47_0>=EQUAL && LA47_0<=NOT_EQUAL)||(LA47_0>=FLOAT && LA47_0<=NULL)) ) {
-                        alt47=1;
-                    }
-                    switch (alt47) {
-                        case 1 :
-                            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:197:31: fact_expression
-                            {
-                            pushFollow(FOLLOW_fact_expression_in_fact_expression1135);
-                            fact_expression();
-                            _fsp--;
-
-
-                            }
-                            break;
-
-                    }
-
-
-                    match(input, Token.UP, null); 
-
-                    }
-                    break;
-                case 22 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:198:4: ^( VT_ACCESSOR_PATH ( accessor_element )+ )
-                    {
-                    match(input,VT_ACCESSOR_PATH,FOLLOW_VT_ACCESSOR_PATH_in_fact_expression1143); 
-
-                    match(input, Token.DOWN, null); 
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:198:23: ( accessor_element )+
-                    int cnt48=0;
-                    loop48:
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:194:23: ( accessor_element )+
+                    int cnt45=0;
+                    loop45:
                     do {
-                        int alt48=2;
-                        int LA48_0 = input.LA(1);
+                        int alt45=2;
+                        int LA45_0 = input.LA(1);
 
-                        if ( (LA48_0==VT_ACCESSOR_ELEMENT) ) {
-                            alt48=1;
+                        if ( (LA45_0==VT_ACCESSOR_ELEMENT) ) {
+                            alt45=1;
                         }
 
 
-                        switch (alt48) {
+                        switch (alt45) {
                     	case 1 :
-                    	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:198:23: accessor_element
+                    	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:194:23: accessor_element
                     	    {
-                    	    pushFollow(FOLLOW_accessor_element_in_fact_expression1145);
+                    	    pushFollow(FOLLOW_accessor_element_in_fact_expression1100);
                     	    accessor_element();
-                    	    _fsp--;
+
+                    	    state._fsp--;
 
 
                     	    }
                     	    break;
 
                     	default :
-                    	    if ( cnt48 >= 1 ) break loop48;
+                    	    if ( cnt45 >= 1 ) break loop45;
                                 EarlyExitException eee =
-                                    new EarlyExitException(48, input);
+                                    new EarlyExitException(45, input);
                                 throw eee;
                         }
-                        cnt48++;
+                        cnt45++;
                     } while (true);
 
 
@@ -3292,45 +3237,45 @@ public class Tree2TestDRL extends TreeParser {
 
                     }
                     break;
-                case 23 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:199:4: STRING
+                case 19 :
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:195:4: STRING
                     {
-                    match(input,STRING,FOLLOW_STRING_in_fact_expression1152); 
+                    match(input,STRING,FOLLOW_STRING_in_fact_expression1107); 
+
+                    }
+                    break;
+                case 20 :
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:196:4: INT
+                    {
+                    match(input,INT,FOLLOW_INT_in_fact_expression1112); 
+
+                    }
+                    break;
+                case 21 :
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:197:4: FLOAT
+                    {
+                    match(input,FLOAT,FOLLOW_FLOAT_in_fact_expression1117); 
+
+                    }
+                    break;
+                case 22 :
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:198:4: BOOL
+                    {
+                    match(input,BOOL,FOLLOW_BOOL_in_fact_expression1122); 
+
+                    }
+                    break;
+                case 23 :
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:199:4: NULL
+                    {
+                    match(input,NULL,FOLLOW_NULL_in_fact_expression1127); 
 
                     }
                     break;
                 case 24 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:200:4: INT
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:200:4: VT_PAREN_CHUNK
                     {
-                    match(input,INT,FOLLOW_INT_in_fact_expression1157); 
-
-                    }
-                    break;
-                case 25 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:201:4: FLOAT
-                    {
-                    match(input,FLOAT,FOLLOW_FLOAT_in_fact_expression1162); 
-
-                    }
-                    break;
-                case 26 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:202:4: BOOL
-                    {
-                    match(input,BOOL,FOLLOW_BOOL_in_fact_expression1167); 
-
-                    }
-                    break;
-                case 27 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:203:4: NULL
-                    {
-                    match(input,NULL,FOLLOW_NULL_in_fact_expression1172); 
-
-                    }
-                    break;
-                case 28 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:204:4: VT_PAREN_CHUNK
-                    {
-                    match(input,VT_PAREN_CHUNK,FOLLOW_VT_PAREN_CHUNK_in_fact_expression1177); 
+                    match(input,VT_PAREN_CHUNK,FOLLOW_VT_PAREN_CHUNK_in_fact_expression1132); 
 
                     }
                     break;
@@ -3345,68 +3290,232 @@ public class Tree2TestDRL extends TreeParser {
         }
         return ;
     }
-    // $ANTLR end fact_expression
+    // $ANTLR end "fact_expression"
 
 
-    // $ANTLR start pattern_type
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:207:1: pattern_type : ^( VT_PATTERN_TYPE ( ID )+ ( dimension_definition )* ) ;
+    // $ANTLR start "pattern_type"
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:203:1: pattern_type : ^( VT_PATTERN_TYPE ( ID )+ ( dimension_definition )* ) ;
     public final void pattern_type() throws RecognitionException {
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:208:2: ( ^( VT_PATTERN_TYPE ( ID )+ ( dimension_definition )* ) )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:208:4: ^( VT_PATTERN_TYPE ( ID )+ ( dimension_definition )* )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:204:2: ( ^( VT_PATTERN_TYPE ( ID )+ ( dimension_definition )* ) )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:204:4: ^( VT_PATTERN_TYPE ( ID )+ ( dimension_definition )* )
             {
-            match(input,VT_PATTERN_TYPE,FOLLOW_VT_PATTERN_TYPE_in_pattern_type1189); 
+            match(input,VT_PATTERN_TYPE,FOLLOW_VT_PATTERN_TYPE_in_pattern_type1144); 
 
             match(input, Token.DOWN, null); 
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:208:22: ( ID )+
-            int cnt50=0;
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:204:22: ( ID )+
+            int cnt47=0;
+            loop47:
+            do {
+                int alt47=2;
+                int LA47_0 = input.LA(1);
+
+                if ( (LA47_0==ID) ) {
+                    alt47=1;
+                }
+
+
+                switch (alt47) {
+            	case 1 :
+            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:204:22: ID
+            	    {
+            	    match(input,ID,FOLLOW_ID_in_pattern_type1146); 
+
+            	    }
+            	    break;
+
+            	default :
+            	    if ( cnt47 >= 1 ) break loop47;
+                        EarlyExitException eee =
+                            new EarlyExitException(47, input);
+                        throw eee;
+                }
+                cnt47++;
+            } while (true);
+
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:204:26: ( dimension_definition )*
+            loop48:
+            do {
+                int alt48=2;
+                int LA48_0 = input.LA(1);
+
+                if ( (LA48_0==LEFT_SQUARE) ) {
+                    alt48=1;
+                }
+
+
+                switch (alt48) {
+            	case 1 :
+            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:204:26: dimension_definition
+            	    {
+            	    pushFollow(FOLLOW_dimension_definition_in_pattern_type1149);
+            	    dimension_definition();
+
+            	    state._fsp--;
+
+
+            	    }
+            	    break;
+
+            	default :
+            	    break loop48;
+                }
+            } while (true);
+
+
+            match(input, Token.UP, null); 
+
+            }
+
+        }
+        catch (RecognitionException re) {
+            reportError(re);
+            recover(input,re);
+        }
+        finally {
+        }
+        return ;
+    }
+    // $ANTLR end "pattern_type"
+
+
+    // $ANTLR start "data_type"
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:207:1: data_type : ^( VT_DATA_TYPE ( ID )+ ( dimension_definition )* ) ;
+    public final void data_type() throws RecognitionException {
+        try {
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:208:2: ( ^( VT_DATA_TYPE ( ID )+ ( dimension_definition )* ) )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:208:4: ^( VT_DATA_TYPE ( ID )+ ( dimension_definition )* )
+            {
+            match(input,VT_DATA_TYPE,FOLLOW_VT_DATA_TYPE_in_data_type1163); 
+
+            match(input, Token.DOWN, null); 
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:208:19: ( ID )+
+            int cnt49=0;
+            loop49:
+            do {
+                int alt49=2;
+                int LA49_0 = input.LA(1);
+
+                if ( (LA49_0==ID) ) {
+                    alt49=1;
+                }
+
+
+                switch (alt49) {
+            	case 1 :
+            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:208:19: ID
+            	    {
+            	    match(input,ID,FOLLOW_ID_in_data_type1165); 
+
+            	    }
+            	    break;
+
+            	default :
+            	    if ( cnt49 >= 1 ) break loop49;
+                        EarlyExitException eee =
+                            new EarlyExitException(49, input);
+                        throw eee;
+                }
+                cnt49++;
+            } while (true);
+
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:208:23: ( dimension_definition )*
             loop50:
             do {
                 int alt50=2;
                 int LA50_0 = input.LA(1);
 
-                if ( (LA50_0==ID) ) {
+                if ( (LA50_0==LEFT_SQUARE) ) {
                     alt50=1;
                 }
 
 
                 switch (alt50) {
             	case 1 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:208:22: ID
+            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:208:23: dimension_definition
             	    {
-            	    match(input,ID,FOLLOW_ID_in_pattern_type1191); 
+            	    pushFollow(FOLLOW_dimension_definition_in_data_type1168);
+            	    dimension_definition();
+
+            	    state._fsp--;
+
 
             	    }
             	    break;
 
             	default :
-            	    if ( cnt50 >= 1 ) break loop50;
-                        EarlyExitException eee =
-                            new EarlyExitException(50, input);
-                        throw eee;
+            	    break loop50;
                 }
-                cnt50++;
             } while (true);
 
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:208:26: ( dimension_definition )*
+
+            match(input, Token.UP, null); 
+
+            }
+
+        }
+        catch (RecognitionException re) {
+            reportError(re);
+            recover(input,re);
+        }
+        finally {
+        }
+        return ;
+    }
+    // $ANTLR end "data_type"
+
+
+    // $ANTLR start "dimension_definition"
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:211:1: dimension_definition : LEFT_SQUARE RIGHT_SQUARE ;
+    public final void dimension_definition() throws RecognitionException {
+        try {
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:212:2: ( LEFT_SQUARE RIGHT_SQUARE )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:212:4: LEFT_SQUARE RIGHT_SQUARE
+            {
+            match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_dimension_definition1181); 
+            match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_dimension_definition1183); 
+
+            }
+
+        }
+        catch (RecognitionException re) {
+            reportError(re);
+            recover(input,re);
+        }
+        finally {
+        }
+        return ;
+    }
+    // $ANTLR end "dimension_definition"
+
+
+    // $ANTLR start "accessor_element"
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:215:1: accessor_element : ^( VT_ACCESSOR_ELEMENT ID ( VT_SQUARE_CHUNK )* ) ;
+    public final void accessor_element() throws RecognitionException {
+        try {
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:216:2: ( ^( VT_ACCESSOR_ELEMENT ID ( VT_SQUARE_CHUNK )* ) )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:216:4: ^( VT_ACCESSOR_ELEMENT ID ( VT_SQUARE_CHUNK )* )
+            {
+            match(input,VT_ACCESSOR_ELEMENT,FOLLOW_VT_ACCESSOR_ELEMENT_in_accessor_element1195); 
+
+            match(input, Token.DOWN, null); 
+            match(input,ID,FOLLOW_ID_in_accessor_element1197); 
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:216:29: ( VT_SQUARE_CHUNK )*
             loop51:
             do {
                 int alt51=2;
                 int LA51_0 = input.LA(1);
 
-                if ( (LA51_0==LEFT_SQUARE) ) {
+                if ( (LA51_0==VT_SQUARE_CHUNK) ) {
                     alt51=1;
                 }
 
 
                 switch (alt51) {
             	case 1 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:208:26: dimension_definition
+            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:216:29: VT_SQUARE_CHUNK
             	    {
-            	    pushFollow(FOLLOW_dimension_definition_in_pattern_type1194);
-            	    dimension_definition();
-            	    _fsp--;
-
+            	    match(input,VT_SQUARE_CHUNK,FOLLOW_VT_SQUARE_CHUNK_in_accessor_element1199); 
 
             	    }
             	    break;
@@ -3430,232 +3539,71 @@ public class Tree2TestDRL extends TreeParser {
         }
         return ;
     }
-    // $ANTLR end pattern_type
+    // $ANTLR end "accessor_element"
 
 
-    // $ANTLR start data_type
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:211:1: data_type : ^( VT_DATA_TYPE ( ID )+ ( dimension_definition )* ) ;
-    public final void data_type() throws RecognitionException {
-        try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:212:2: ( ^( VT_DATA_TYPE ( ID )+ ( dimension_definition )* ) )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:212:4: ^( VT_DATA_TYPE ( ID )+ ( dimension_definition )* )
-            {
-            match(input,VT_DATA_TYPE,FOLLOW_VT_DATA_TYPE_in_data_type1208); 
-
-            match(input, Token.DOWN, null); 
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:212:19: ( ID )+
-            int cnt52=0;
-            loop52:
-            do {
-                int alt52=2;
-                int LA52_0 = input.LA(1);
-
-                if ( (LA52_0==ID) ) {
-                    alt52=1;
-                }
-
-
-                switch (alt52) {
-            	case 1 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:212:19: ID
-            	    {
-            	    match(input,ID,FOLLOW_ID_in_data_type1210); 
-
-            	    }
-            	    break;
-
-            	default :
-            	    if ( cnt52 >= 1 ) break loop52;
-                        EarlyExitException eee =
-                            new EarlyExitException(52, input);
-                        throw eee;
-                }
-                cnt52++;
-            } while (true);
-
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:212:23: ( dimension_definition )*
-            loop53:
-            do {
-                int alt53=2;
-                int LA53_0 = input.LA(1);
-
-                if ( (LA53_0==LEFT_SQUARE) ) {
-                    alt53=1;
-                }
-
-
-                switch (alt53) {
-            	case 1 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:212:23: dimension_definition
-            	    {
-            	    pushFollow(FOLLOW_dimension_definition_in_data_type1213);
-            	    dimension_definition();
-            	    _fsp--;
-
-
-            	    }
-            	    break;
-
-            	default :
-            	    break loop53;
-                }
-            } while (true);
-
-
-            match(input, Token.UP, null); 
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-        finally {
-        }
-        return ;
-    }
-    // $ANTLR end data_type
-
-
-    // $ANTLR start dimension_definition
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:215:1: dimension_definition : LEFT_SQUARE RIGHT_SQUARE ;
-    public final void dimension_definition() throws RecognitionException {
-        try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:216:2: ( LEFT_SQUARE RIGHT_SQUARE )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:216:4: LEFT_SQUARE RIGHT_SQUARE
-            {
-            match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_dimension_definition1226); 
-            match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_dimension_definition1228); 
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-        finally {
-        }
-        return ;
-    }
-    // $ANTLR end dimension_definition
-
-
-    // $ANTLR start accessor_element
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:219:1: accessor_element : ^( VT_ACCESSOR_ELEMENT ID ( VT_SQUARE_CHUNK )* ) ;
-    public final void accessor_element() throws RecognitionException {
-        try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:220:2: ( ^( VT_ACCESSOR_ELEMENT ID ( VT_SQUARE_CHUNK )* ) )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:220:4: ^( VT_ACCESSOR_ELEMENT ID ( VT_SQUARE_CHUNK )* )
-            {
-            match(input,VT_ACCESSOR_ELEMENT,FOLLOW_VT_ACCESSOR_ELEMENT_in_accessor_element1240); 
-
-            match(input, Token.DOWN, null); 
-            match(input,ID,FOLLOW_ID_in_accessor_element1242); 
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:220:29: ( VT_SQUARE_CHUNK )*
-            loop54:
-            do {
-                int alt54=2;
-                int LA54_0 = input.LA(1);
-
-                if ( (LA54_0==VT_SQUARE_CHUNK) ) {
-                    alt54=1;
-                }
-
-
-                switch (alt54) {
-            	case 1 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:220:29: VT_SQUARE_CHUNK
-            	    {
-            	    match(input,VT_SQUARE_CHUNK,FOLLOW_VT_SQUARE_CHUNK_in_accessor_element1244); 
-
-            	    }
-            	    break;
-
-            	default :
-            	    break loop54;
-                }
-            } while (true);
-
-
-            match(input, Token.UP, null); 
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-        finally {
-        }
-        return ;
-    }
-    // $ANTLR end accessor_element
-
-
-    // $ANTLR start expression_chain
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:223:1: expression_chain : ^( VT_EXPRESSION_CHAIN ID ( VT_SQUARE_CHUNK )? ( VT_PAREN_CHUNK )? ( expression_chain )? ) ;
+    // $ANTLR start "expression_chain"
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:219:1: expression_chain : ^( VT_EXPRESSION_CHAIN ID ( VT_SQUARE_CHUNK )? ( VT_PAREN_CHUNK )? ( expression_chain )? ) ;
     public final void expression_chain() throws RecognitionException {
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:224:2: ( ^( VT_EXPRESSION_CHAIN ID ( VT_SQUARE_CHUNK )? ( VT_PAREN_CHUNK )? ( expression_chain )? ) )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:224:4: ^( VT_EXPRESSION_CHAIN ID ( VT_SQUARE_CHUNK )? ( VT_PAREN_CHUNK )? ( expression_chain )? )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:220:2: ( ^( VT_EXPRESSION_CHAIN ID ( VT_SQUARE_CHUNK )? ( VT_PAREN_CHUNK )? ( expression_chain )? ) )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:220:4: ^( VT_EXPRESSION_CHAIN ID ( VT_SQUARE_CHUNK )? ( VT_PAREN_CHUNK )? ( expression_chain )? )
             {
-            match(input,VT_EXPRESSION_CHAIN,FOLLOW_VT_EXPRESSION_CHAIN_in_expression_chain1258); 
+            match(input,VT_EXPRESSION_CHAIN,FOLLOW_VT_EXPRESSION_CHAIN_in_expression_chain1213); 
 
             match(input, Token.DOWN, null); 
-            match(input,ID,FOLLOW_ID_in_expression_chain1260); 
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:224:29: ( VT_SQUARE_CHUNK )?
-            int alt55=2;
-            int LA55_0 = input.LA(1);
+            match(input,ID,FOLLOW_ID_in_expression_chain1215); 
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:220:29: ( VT_SQUARE_CHUNK )?
+            int alt52=2;
+            int LA52_0 = input.LA(1);
 
-            if ( (LA55_0==VT_SQUARE_CHUNK) ) {
-                alt55=1;
+            if ( (LA52_0==VT_SQUARE_CHUNK) ) {
+                alt52=1;
             }
-            switch (alt55) {
+            switch (alt52) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:224:29: VT_SQUARE_CHUNK
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:220:29: VT_SQUARE_CHUNK
                     {
-                    match(input,VT_SQUARE_CHUNK,FOLLOW_VT_SQUARE_CHUNK_in_expression_chain1262); 
+                    match(input,VT_SQUARE_CHUNK,FOLLOW_VT_SQUARE_CHUNK_in_expression_chain1217); 
 
                     }
                     break;
 
             }
 
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:224:46: ( VT_PAREN_CHUNK )?
-            int alt56=2;
-            int LA56_0 = input.LA(1);
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:220:46: ( VT_PAREN_CHUNK )?
+            int alt53=2;
+            int LA53_0 = input.LA(1);
 
-            if ( (LA56_0==VT_PAREN_CHUNK) ) {
-                alt56=1;
+            if ( (LA53_0==VT_PAREN_CHUNK) ) {
+                alt53=1;
             }
-            switch (alt56) {
+            switch (alt53) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:224:46: VT_PAREN_CHUNK
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:220:46: VT_PAREN_CHUNK
                     {
-                    match(input,VT_PAREN_CHUNK,FOLLOW_VT_PAREN_CHUNK_in_expression_chain1265); 
+                    match(input,VT_PAREN_CHUNK,FOLLOW_VT_PAREN_CHUNK_in_expression_chain1220); 
 
                     }
                     break;
 
             }
 
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:224:62: ( expression_chain )?
-            int alt57=2;
-            int LA57_0 = input.LA(1);
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:220:62: ( expression_chain )?
+            int alt54=2;
+            int LA54_0 = input.LA(1);
 
-            if ( (LA57_0==VT_EXPRESSION_CHAIN) ) {
-                alt57=1;
+            if ( (LA54_0==VT_EXPRESSION_CHAIN) ) {
+                alt54=1;
             }
-            switch (alt57) {
+            switch (alt54) {
                 case 1 :
-                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:224:62: expression_chain
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:220:62: expression_chain
                     {
-                    pushFollow(FOLLOW_expression_chain_in_expression_chain1268);
+                    pushFollow(FOLLOW_expression_chain_in_expression_chain1223);
                     expression_chain();
-                    _fsp--;
+
+                    state._fsp--;
 
 
                     }
@@ -3677,17 +3625,17 @@ public class Tree2TestDRL extends TreeParser {
         }
         return ;
     }
-    // $ANTLR end expression_chain
+    // $ANTLR end "expression_chain"
 
 
-    // $ANTLR start curly_chunk
-    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:227:1: curly_chunk : VT_CURLY_CHUNK ;
+    // $ANTLR start "curly_chunk"
+    // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:223:1: curly_chunk : VT_CURLY_CHUNK ;
     public final void curly_chunk() throws RecognitionException {
         try {
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:228:2: ( VT_CURLY_CHUNK )
-            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:228:4: VT_CURLY_CHUNK
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:224:2: ( VT_CURLY_CHUNK )
+            // /Users/porcelli/Documents/dev/drools-trunk/drools-compiler/src/main/resources/org/drools/lang/Tree2TestDRL.g:224:4: VT_CURLY_CHUNK
             {
-            match(input,VT_CURLY_CHUNK,FOLLOW_VT_CURLY_CHUNK_in_curly_chunk1282); 
+            match(input,VT_CURLY_CHUNK,FOLLOW_VT_CURLY_CHUNK_in_curly_chunk1237); 
 
             }
 
@@ -3700,18 +3648,20 @@ public class Tree2TestDRL extends TreeParser {
         }
         return ;
     }
-    // $ANTLR end curly_chunk
+    // $ANTLR end "curly_chunk"
+
+    // Delegated rules
 
 
  
 
     public static final BitSet FOLLOW_VT_COMPILATION_UNIT_in_compilation_unit43 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_package_statement_in_compilation_unit45 = new BitSet(new long[]{0xEDFFE00000000028L,0x0000000000000003L});
-    public static final BitSet FOLLOW_statement_in_compilation_unit48 = new BitSet(new long[]{0xEDFFE00000000028L,0x0000000000000003L});
+    public static final BitSet FOLLOW_package_statement_in_compilation_unit45 = new BitSet(new long[]{0xD5FFE00000000028L,0x0000000000000007L});
+    public static final BitSet FOLLOW_statement_in_compilation_unit48 = new BitSet(new long[]{0xD5FFE00000000028L,0x0000000000000007L});
     public static final BitSet FOLLOW_VK_PACKAGE_in_package_statement63 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_package_id_in_package_statement65 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VT_PACKAGE_ID_in_package_id78 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_ID_in_package_id80 = new BitSet(new long[]{0x0000000000000008L,0x0000000000080000L});
+    public static final BitSet FOLLOW_ID_in_package_id80 = new BitSet(new long[]{0x0000000000000008L,0x0000000000010000L});
     public static final BitSet FOLLOW_rule_attribute_in_statement93 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_function_import_statement_in_statement98 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_import_statement_in_statement104 = new BitSet(new long[]{0x0000000000000002L});
@@ -3727,7 +3677,7 @@ public class Tree2TestDRL extends TreeParser {
     public static final BitSet FOLLOW_VK_FUNCTION_in_function_import_statement165 = new BitSet(new long[]{0x0000020000000000L});
     public static final BitSet FOLLOW_import_name_in_function_import_statement167 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VT_IMPORT_ID_in_import_name180 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_ID_in_import_name182 = new BitSet(new long[]{0x0000000000000008L,0x0000000000280000L});
+    public static final BitSet FOLLOW_ID_in_import_name182 = new BitSet(new long[]{0x0000000000000008L,0x0000000000050000L});
     public static final BitSet FOLLOW_DOT_STAR_in_import_name185 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VK_GLOBAL_in_global199 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_data_type_in_global201 = new BitSet(new long[]{0x0000040000000000L});
@@ -3739,42 +3689,42 @@ public class Tree2TestDRL extends TreeParser {
     public static final BitSet FOLLOW_curly_chunk_in_function225 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VK_QUERY_in_query238 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_VT_QUERY_ID_in_query240 = new BitSet(new long[]{0x0000100000400000L});
-    public static final BitSet FOLLOW_parameters_in_query242 = new BitSet(new long[]{0x0000000000400000L});
-    public static final BitSet FOLLOW_lhs_block_in_query245 = new BitSet(new long[]{0x0000000000000000L,0x0000000000400000L});
+    public static final BitSet FOLLOW_parameters_in_query242 = new BitSet(new long[]{0x0000100000400000L});
+    public static final BitSet FOLLOW_lhs_block_in_query245 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
     public static final BitSet FOLLOW_END_in_query247 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VT_PARAM_LIST_in_parameters260 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_param_definition_in_parameters262 = new BitSet(new long[]{0x0000004000000008L,0x0000000000080000L});
-    public static final BitSet FOLLOW_data_type_in_param_definition275 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
+    public static final BitSet FOLLOW_param_definition_in_parameters262 = new BitSet(new long[]{0x0000004000000008L,0x0000000000010000L});
+    public static final BitSet FOLLOW_data_type_in_param_definition275 = new BitSet(new long[]{0x0000004000000008L,0x0000000000010000L});
     public static final BitSet FOLLOW_argument_in_param_definition278 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_argument289 = new BitSet(new long[]{0x0000000000000002L,0x0004000000000000L});
-    public static final BitSet FOLLOW_dimension_definition_in_argument291 = new BitSet(new long[]{0x0000000000000002L,0x0004000000000000L});
+    public static final BitSet FOLLOW_ID_in_argument289 = new BitSet(new long[]{0x0000000000000002L,0x0000400000000000L});
+    public static final BitSet FOLLOW_dimension_definition_in_argument291 = new BitSet(new long[]{0x0000000000000002L,0x0000400000000000L});
     public static final BitSet FOLLOW_VK_DECLARE_in_type_declaration304 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VT_TYPE_DECLARE_ID_in_type_declaration306 = new BitSet(new long[]{0x0000000000000000L,0x0000000008480000L});
-    public static final BitSet FOLLOW_decl_metadata_in_type_declaration308 = new BitSet(new long[]{0x0000000000000000L,0x0000000008480000L});
-    public static final BitSet FOLLOW_decl_field_in_type_declaration311 = new BitSet(new long[]{0x0000000000000000L,0x0000000000480000L});
+    public static final BitSet FOLLOW_VT_TYPE_DECLARE_ID_in_type_declaration306 = new BitSet(new long[]{0x0000000000000000L,0x0000000001090000L});
+    public static final BitSet FOLLOW_decl_metadata_in_type_declaration308 = new BitSet(new long[]{0x0000000000000000L,0x0000000001090000L});
+    public static final BitSet FOLLOW_decl_field_in_type_declaration311 = new BitSet(new long[]{0x0000000000000000L,0x0000000000090000L});
     public static final BitSet FOLLOW_END_in_type_declaration314 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_AT_in_decl_metadata327 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_ID_in_decl_metadata329 = new BitSet(new long[]{0x0000000000100000L});
     public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_decl_metadata331 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_ID_in_decl_field344 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_decl_field_initialization_in_decl_field346 = new BitSet(new long[]{0x0000004000000000L});
-    public static final BitSet FOLLOW_data_type_in_decl_field349 = new BitSet(new long[]{0x0000000000000008L,0x0000000008000000L});
-    public static final BitSet FOLLOW_decl_metadata_in_decl_field351 = new BitSet(new long[]{0x0000000000000008L,0x0000000008000000L});
+    public static final BitSet FOLLOW_data_type_in_decl_field349 = new BitSet(new long[]{0x0000000000000008L,0x0000000001000000L});
+    public static final BitSet FOLLOW_decl_metadata_in_decl_field351 = new BitSet(new long[]{0x0000000000000008L,0x0000000001000000L});
     public static final BitSet FOLLOW_EQUALS_in_decl_field_initialization365 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_decl_field_initialization367 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VK_TEMPLATE_in_template380 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_VT_TEMPLATE_ID_in_template382 = new BitSet(new long[]{0x0000000000008000L});
-    public static final BitSet FOLLOW_template_slot_in_template384 = new BitSet(new long[]{0x0000000000008000L,0x0000000000400000L});
+    public static final BitSet FOLLOW_template_slot_in_template384 = new BitSet(new long[]{0x0000000000008000L,0x0000000000080000L});
     public static final BitSet FOLLOW_END_in_template387 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VT_SLOT_in_template_slot400 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_data_type_in_template_slot402 = new BitSet(new long[]{0x0000000000004000L});
     public static final BitSet FOLLOW_VT_SLOT_ID_in_template_slot404 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VK_RULE_in_rule417 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VT_RULE_ID_in_rule419 = new BitSet(new long[]{0x0000000000030000L,0x0000000040000000L});
-    public static final BitSet FOLLOW_rule_attributes_in_rule421 = new BitSet(new long[]{0x0000000000020000L,0x0000000040000000L});
+    public static final BitSet FOLLOW_VT_RULE_ID_in_rule419 = new BitSet(new long[]{0x0000000000030000L,0x0000000008000000L});
+    public static final BitSet FOLLOW_rule_attributes_in_rule421 = new BitSet(new long[]{0x0000000000020000L,0x0000000008000000L});
     public static final BitSet FOLLOW_when_part_in_rule424 = new BitSet(new long[]{0x0000000000020000L});
     public static final BitSet FOLLOW_VT_RHS_CHUNK_in_rule427 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_WHEN_in_when_part439 = new BitSet(new long[]{0x0000000000400000L});
+    public static final BitSet FOLLOW_WHEN_in_when_part439 = new BitSet(new long[]{0x0000100000400000L});
     public static final BitSet FOLLOW_lhs_block_in_when_part441 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_VT_RULE_ATTRIBUTES_in_rule_attributes453 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_VK_ATTRIBUTES_in_rule_attributes455 = new BitSet(new long[]{0x01FFE00000000000L});
@@ -3804,16 +3754,16 @@ public class Tree2TestDRL extends TreeParser {
     public static final BitSet FOLLOW_VK_DIALECT_in_rule_attribute592 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_STRING_in_rule_attribute594 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VT_AND_IMPLICIT_in_lhs_block608 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_lhs_in_lhs_block610 = new BitSet(new long[]{0x0000000087800008L,0x0000000800006204L});
+    public static final BitSet FOLLOW_lhs_in_lhs_block610 = new BitSet(new long[]{0x0000000087800008L,0x0000000100000628L});
     public static final BitSet FOLLOW_VT_OR_PREFIX_in_lhs623 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_lhs_in_lhs625 = new BitSet(new long[]{0x0000000087800008L,0x0000000800006204L});
+    public static final BitSet FOLLOW_lhs_in_lhs625 = new BitSet(new long[]{0x0000000087800008L,0x0000000100000628L});
     public static final BitSet FOLLOW_VT_OR_INFIX_in_lhs633 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_lhs_in_lhs635 = new BitSet(new long[]{0x0000000087800000L,0x0000000800006204L});
+    public static final BitSet FOLLOW_lhs_in_lhs635 = new BitSet(new long[]{0x0000000087800008L,0x0000000100000628L});
     public static final BitSet FOLLOW_lhs_in_lhs637 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VT_AND_PREFIX_in_lhs644 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_lhs_in_lhs646 = new BitSet(new long[]{0x0000000087800008L,0x0000000800006204L});
+    public static final BitSet FOLLOW_lhs_in_lhs646 = new BitSet(new long[]{0x0000000087800008L,0x0000000100000628L});
     public static final BitSet FOLLOW_VT_AND_INFIX_in_lhs654 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_lhs_in_lhs656 = new BitSet(new long[]{0x0000000087800000L,0x0000000800006204L});
+    public static final BitSet FOLLOW_lhs_in_lhs656 = new BitSet(new long[]{0x0000000087800008L,0x0000000100000628L});
     public static final BitSet FOLLOW_lhs_in_lhs658 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VK_EXISTS_in_lhs665 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_lhs_in_lhs667 = new BitSet(new long[]{0x0000000000000008L});
@@ -3822,9 +3772,9 @@ public class Tree2TestDRL extends TreeParser {
     public static final BitSet FOLLOW_VK_EVAL_in_lhs683 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_lhs685 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VK_FORALL_in_lhs692 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_lhs_in_lhs694 = new BitSet(new long[]{0x0000000087800008L,0x0000000800006204L});
+    public static final BitSet FOLLOW_lhs_in_lhs694 = new BitSet(new long[]{0x0000000087800008L,0x0000000100000628L});
     public static final BitSet FOLLOW_FROM_in_lhs702 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_lhs_pattern_in_lhs704 = new BitSet(new long[]{0x0000000020000000L,0x000000A000000100L});
+    public static final BitSet FOLLOW_lhs_pattern_in_lhs704 = new BitSet(new long[]{0x0000000020000000L,0x0000001400000010L});
     public static final BitSet FOLLOW_from_elements_in_lhs706 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_lhs_pattern_in_lhs712 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_ACCUMULATE_in_from_elements724 = new BitSet(new long[]{0x0000000000000004L});
@@ -3844,7 +3794,7 @@ public class Tree2TestDRL extends TreeParser {
     public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_accumulate_init_clause787 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VK_ACTION_in_accumulate_init_clause795 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_accumulate_init_clause797 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_accumulate_init_reverse_clause_in_accumulate_init_clause804 = new BitSet(new long[]{0x0000000000000000L,0x0000000000020000L});
+    public static final BitSet FOLLOW_accumulate_init_reverse_clause_in_accumulate_init_clause804 = new BitSet(new long[]{0x0000000000000000L,0x0000000000002000L});
     public static final BitSet FOLLOW_VK_RESULT_in_accumulate_init_clause811 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_accumulate_init_clause813 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VK_REVERSE_in_accumulate_init_reverse_clause827 = new BitSet(new long[]{0x0000000000000004L});
@@ -3858,29 +3808,29 @@ public class Tree2TestDRL extends TreeParser {
     public static final BitSet FOLLOW_OVER_in_over_clause878 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_over_element_in_over_clause880 = new BitSet(new long[]{0x0000000000200008L});
     public static final BitSet FOLLOW_VT_BEHAVIOR_in_over_element894 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_ID_in_over_element896 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
+    public static final BitSet FOLLOW_ID_in_over_element896 = new BitSet(new long[]{0x0000000000000000L,0x0000000000010000L});
     public static final BitSet FOLLOW_ID_in_over_element898 = new BitSet(new long[]{0x0000000000100000L});
     public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_over_element900 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_DOUBLE_PIPE_in_fact_expression913 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression915 = new BitSet(new long[]{0x0000001F00100040L,0x00037E07808804FCL});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression915 = new BitSet(new long[]{0x0000001F00100040L,0x00003FC0F0114048L});
     public static final BitSet FOLLOW_fact_expression_in_fact_expression917 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_DOUBLE_AMPER_in_fact_expression924 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression926 = new BitSet(new long[]{0x0000001F00100040L,0x00037E07808804FCL});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression926 = new BitSet(new long[]{0x0000001F00100040L,0x00003FC0F0114048L});
     public static final BitSet FOLLOW_fact_expression_in_fact_expression928 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VT_FACT_BINDING_in_fact_expression935 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VT_LABEL_in_fact_expression937 = new BitSet(new long[]{0x0000001F00100040L,0x00037E07808804FCL});
+    public static final BitSet FOLLOW_VT_LABEL_in_fact_expression937 = new BitSet(new long[]{0x0000001F00100040L,0x00003FC0F0114048L});
     public static final BitSet FOLLOW_fact_expression_in_fact_expression939 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VT_FACT_in_fact_expression946 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_pattern_type_in_fact_expression948 = new BitSet(new long[]{0x0000001F00100048L,0x00037E07808804FCL});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression950 = new BitSet(new long[]{0x0000001F00100048L,0x00037E07808804FCL});
+    public static final BitSet FOLLOW_pattern_type_in_fact_expression948 = new BitSet(new long[]{0x0000001F00100048L,0x00003FC0F0114048L});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression950 = new BitSet(new long[]{0x0000001F00100048L,0x00003FC0F0114048L});
     public static final BitSet FOLLOW_VT_FACT_OR_in_fact_expression958 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression960 = new BitSet(new long[]{0x0000001F00100040L,0x00037E07808804FCL});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression960 = new BitSet(new long[]{0x0000001F00100040L,0x00003FC0F0114048L});
     public static final BitSet FOLLOW_fact_expression_in_fact_expression962 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VK_EVAL_in_fact_expression969 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_fact_expression971 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VK_IN_in_fact_expression978 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VK_NOT_in_fact_expression980 = new BitSet(new long[]{0x0000001F00100040L,0x00037E07808804FCL});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression983 = new BitSet(new long[]{0x0000001F00100048L,0x00037E07808804FCL});
+    public static final BitSet FOLLOW_VK_NOT_in_fact_expression980 = new BitSet(new long[]{0x0000001F00100040L,0x00003FC0F0114048L});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression983 = new BitSet(new long[]{0x0000001F00100048L,0x00003FC0F0114048L});
     public static final BitSet FOLLOW_EQUAL_in_fact_expression991 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_fact_expression_in_fact_expression993 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_GREATER_in_fact_expression1000 = new BitSet(new long[]{0x0000000000000004L});
@@ -3893,55 +3843,44 @@ public class Tree2TestDRL extends TreeParser {
     public static final BitSet FOLLOW_fact_expression_in_fact_expression1029 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_NOT_EQUAL_in_fact_expression1036 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_fact_expression_in_fact_expression1038 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VK_CONTAINS_in_fact_expression1045 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VK_NOT_in_fact_expression1047 = new BitSet(new long[]{0x0000001F00100040L,0x00037E07808804FCL});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression1050 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VK_EXCLUDES_in_fact_expression1057 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VK_NOT_in_fact_expression1059 = new BitSet(new long[]{0x0000001F00100040L,0x00037E07808804FCL});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression1062 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VK_MATCHES_in_fact_expression1069 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VK_NOT_in_fact_expression1071 = new BitSet(new long[]{0x0000001F00100040L,0x00037E07808804FCL});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression1074 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VK_SOUNDSLIKE_in_fact_expression1081 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VK_NOT_in_fact_expression1083 = new BitSet(new long[]{0x0000001F00100040L,0x00037E07808804FCL});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression1086 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VK_MEMBEROF_in_fact_expression1093 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VK_NOT_in_fact_expression1095 = new BitSet(new long[]{0x0000001F00100040L,0x00037E07808804FCL});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression1098 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_ID_in_fact_expression1105 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VK_NOT_in_fact_expression1107 = new BitSet(new long[]{0x0000001F00180040L,0x00037E07808804FCL});
-    public static final BitSet FOLLOW_VT_SQUARE_CHUNK_in_fact_expression1110 = new BitSet(new long[]{0x0000001F00100040L,0x00037E07808804FCL});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression1113 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VT_BIND_FIELD_in_fact_expression1120 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VT_LABEL_in_fact_expression1122 = new BitSet(new long[]{0x0000001F00100040L,0x00037E07808804FCL});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression1124 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VT_FIELD_in_fact_expression1131 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression1133 = new BitSet(new long[]{0x0000001F00100048L,0x00037E07808804FCL});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression1135 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VT_ACCESSOR_PATH_in_fact_expression1143 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_accessor_element_in_fact_expression1145 = new BitSet(new long[]{0x0000002000000008L});
-    public static final BitSet FOLLOW_STRING_in_fact_expression1152 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_INT_in_fact_expression1157 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_FLOAT_in_fact_expression1162 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_BOOL_in_fact_expression1167 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_NULL_in_fact_expression1172 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_fact_expression1177 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_VT_PATTERN_TYPE_in_pattern_type1189 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_ID_in_pattern_type1191 = new BitSet(new long[]{0x0000000000000008L,0x0004000000080000L});
-    public static final BitSet FOLLOW_dimension_definition_in_pattern_type1194 = new BitSet(new long[]{0x0000000000000008L,0x0004000000000000L});
-    public static final BitSet FOLLOW_VT_DATA_TYPE_in_data_type1208 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_ID_in_data_type1210 = new BitSet(new long[]{0x0000000000000008L,0x0004000000080000L});
-    public static final BitSet FOLLOW_dimension_definition_in_data_type1213 = new BitSet(new long[]{0x0000000000000008L,0x0004000000000000L});
-    public static final BitSet FOLLOW_LEFT_SQUARE_in_dimension_definition1226 = new BitSet(new long[]{0x0000000000000000L,0x0008000000000000L});
-    public static final BitSet FOLLOW_RIGHT_SQUARE_in_dimension_definition1228 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_VT_ACCESSOR_ELEMENT_in_accessor_element1240 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_ID_in_accessor_element1242 = new BitSet(new long[]{0x0000000000080008L});
-    public static final BitSet FOLLOW_VT_SQUARE_CHUNK_in_accessor_element1244 = new BitSet(new long[]{0x0000000000080008L});
-    public static final BitSet FOLLOW_VT_EXPRESSION_CHAIN_in_expression_chain1258 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_ID_in_expression_chain1260 = new BitSet(new long[]{0x0000000040180008L});
-    public static final BitSet FOLLOW_VT_SQUARE_CHUNK_in_expression_chain1262 = new BitSet(new long[]{0x0000000040100008L});
-    public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_expression_chain1265 = new BitSet(new long[]{0x0000000040000008L});
-    public static final BitSet FOLLOW_expression_chain_in_expression_chain1268 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VT_CURLY_CHUNK_in_curly_chunk1282 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_VK_OPERATOR_in_fact_expression1045 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_VK_NOT_in_fact_expression1047 = new BitSet(new long[]{0x0000001F00180040L,0x00003FC0F0114048L});
+    public static final BitSet FOLLOW_VT_SQUARE_CHUNK_in_fact_expression1050 = new BitSet(new long[]{0x0000001F00100040L,0x00003FC0F0114048L});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression1053 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_ID_in_fact_expression1060 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_VK_NOT_in_fact_expression1062 = new BitSet(new long[]{0x0000001F00180040L,0x00003FC0F0114048L});
+    public static final BitSet FOLLOW_VT_SQUARE_CHUNK_in_fact_expression1065 = new BitSet(new long[]{0x0000001F00100040L,0x00003FC0F0114048L});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression1068 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VT_BIND_FIELD_in_fact_expression1075 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_VT_LABEL_in_fact_expression1077 = new BitSet(new long[]{0x0000001F00100040L,0x00003FC0F0114048L});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression1079 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VT_FIELD_in_fact_expression1086 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression1088 = new BitSet(new long[]{0x0000001F00100048L,0x00003FC0F0114048L});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression1090 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VT_ACCESSOR_PATH_in_fact_expression1098 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_accessor_element_in_fact_expression1100 = new BitSet(new long[]{0x0000002000000008L});
+    public static final BitSet FOLLOW_STRING_in_fact_expression1107 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_INT_in_fact_expression1112 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_FLOAT_in_fact_expression1117 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_BOOL_in_fact_expression1122 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_NULL_in_fact_expression1127 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_fact_expression1132 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_VT_PATTERN_TYPE_in_pattern_type1144 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_ID_in_pattern_type1146 = new BitSet(new long[]{0x0000000000000008L,0x0000400000010000L});
+    public static final BitSet FOLLOW_dimension_definition_in_pattern_type1149 = new BitSet(new long[]{0x0000000000000008L,0x0000400000000000L});
+    public static final BitSet FOLLOW_VT_DATA_TYPE_in_data_type1163 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_ID_in_data_type1165 = new BitSet(new long[]{0x0000000000000008L,0x0000400000010000L});
+    public static final BitSet FOLLOW_dimension_definition_in_data_type1168 = new BitSet(new long[]{0x0000000000000008L,0x0000400000000000L});
+    public static final BitSet FOLLOW_LEFT_SQUARE_in_dimension_definition1181 = new BitSet(new long[]{0x0000000000000000L,0x0000800000000000L});
+    public static final BitSet FOLLOW_RIGHT_SQUARE_in_dimension_definition1183 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_VT_ACCESSOR_ELEMENT_in_accessor_element1195 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_ID_in_accessor_element1197 = new BitSet(new long[]{0x0000000000080008L});
+    public static final BitSet FOLLOW_VT_SQUARE_CHUNK_in_accessor_element1199 = new BitSet(new long[]{0x0000000000080008L});
+    public static final BitSet FOLLOW_VT_EXPRESSION_CHAIN_in_expression_chain1213 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_ID_in_expression_chain1215 = new BitSet(new long[]{0x0000000040180008L});
+    public static final BitSet FOLLOW_VT_SQUARE_CHUNK_in_expression_chain1217 = new BitSet(new long[]{0x0000000040100008L});
+    public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_expression_chain1220 = new BitSet(new long[]{0x0000000040000008L});
+    public static final BitSet FOLLOW_expression_chain_in_expression_chain1223 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VT_CURLY_CHUNK_in_curly_chunk1237 = new BitSet(new long[]{0x0000000000000002L});
 
 }
