@@ -9,7 +9,7 @@ package org.drools.runtime.rule;
 public interface StatefulRuleSession {
 
     /**
-     * Fire all Activations on the Agenda
+     * Fire all Activations on the Agenda.
      * @return
      *     returns the number of rules fired
      */
@@ -41,7 +41,8 @@ public interface StatefulRuleSession {
     /**
      * Keeps firing activations until a halt is called. If in a given moment,
      * there is no activation to fire, it will wait for an activation to be
-     * added to an active agenda group or rule flow group.
+     * added to an active agenda group or rule flow group. This blocks the thread
+     * until halt is called.
      * 
      * @throws IllegalStateException
      *             if this method is called when running in sequential mode
@@ -51,7 +52,8 @@ public interface StatefulRuleSession {
     /**
      * Keeps firing activations until a halt is called. If in a given moment,
      * there is no activation to fire, it will wait for an activation to be
-     * added to an active agenda group or rule flow group.
+     * added to an active agenda group or rule flow group. This blocks the thread
+     * until halt is called.
      * 
      * @param agendaFilter
      *            filters the activations that may fire
