@@ -8,8 +8,8 @@ import org.drools.time.SessionClock;
 
 /**
  * The <code>WorkingMemory</code> is a super-interface for all <code>StatefulKnowledgeSession</code>s.
- * Although, users are encouraged to use <code>StatefulSession</code> interface instead of 
- * <code>WorkingMemory</code> interface, specially because of the <code>dispose()</code> method
+ * Although, users are encouraged to use <code>StatefulKnowledgeSession</code> or <code>KnowledgeRuntime</code>
+ * interface instead of <code>WorkingMemory</code> interface, specially because of the <code>dispose()</code> method
  * that is only available in the <code>StatefulKnowledgeSession</code> interface.  
  * 
  * @see org.drools.runtime.StatefulKnowledgeSession 
