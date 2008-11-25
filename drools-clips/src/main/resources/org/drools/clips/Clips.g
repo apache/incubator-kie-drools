@@ -66,13 +66,15 @@ grammar Clips;
 	}
 	
 	public void reportError(RecognitionException ex) {
-	        // if we've already reported an error and have not matched a token
-                // yet successfully, don't report any errors.
-                if ( errorRecovery ) {
-                        return;
-                }
-                errorRecovery = true;
-
+		// if we've already reported an error and have not matched a token
+		// yet successfully, don't report any errors.
+		if ( state.errorRecovery ) {
+			//System.err.print("[SPURIOUS] ");
+			return;
+		}
+		state.syntaxErrors++; // don't count spurious
+		state.errorRecovery = true;
+	
 		ex.line = offset(ex.line); //add the offset if there is one
 		errors.add( ex ); 
 	}
