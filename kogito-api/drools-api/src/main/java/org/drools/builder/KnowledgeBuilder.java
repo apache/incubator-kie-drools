@@ -22,22 +22,22 @@ import org.drools.definition.KnowledgePackage;
  * Always check the hasErrors() method after an addition, you should not add more resources
  * or get the KnowledgePackages if there are errors; KnowledgePackages() will return empty
  * if there are errors.
- * <p>
+ * </p>
  * 
  * <p>
  * Simple example showing how to build a KnowledgeBase from an DRL rule resource.
- * <p>
+ * </p>
  * <pre>
  * KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
  * kbuilder.addResource( new URL( "file://myrules.drl" ),
  *                       KnowledgeType.DRL);
  * assertFalse( kbuilder.hasErrors() );
  * KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
- * </p>
+ * </pre>
  * 
  * <p>
  * Simple example showing how to build a KnowledgeBase from an XLS decision table resource.
- * <p>
+ * </p>
  * <pre>
  * KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
  * DecisionTableConfiguration dtconf = KnowledgeBuilderFactory.newDecisionTableConfiguration();
