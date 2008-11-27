@@ -266,7 +266,7 @@ public class StatelessSessionTest extends TestCase {
 
         session.asyncExecute( stilton );
 
-        Thread.sleep( 100 );
+        Thread.sleep( 300 );
 
         assertEquals( "stilton",
                       list.get( 0 ) );
