@@ -40,8 +40,8 @@ import org.drools.time.Interval;
 /**
  * <p>The implementation of the 'after' evaluator definition.</p>
  * 
- * <p>The <b><code>after</code></b> evaluator correlates two events and matches when the distance from the 
- * current event to the event being correlated belongs to the distance range declared 
+ * <p>The <b><code>after</code></b> evaluator correlates two events and matches when the temporal
+ * distance from the current event to the event being correlated belongs to the distance range declared 
  * for the operator.</p> 
  * 
  * <p>Lets look at an example:</p>
@@ -79,6 +79,7 @@ import org.drools.time.Interval;
  * 
  *
  * @author etirelli
+ * @author mgroch
  */
 public class AfterEvaluatorDefinition
     implements
