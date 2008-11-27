@@ -20,7 +20,6 @@ package org.drools.base.evaluators;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,29 +38,61 @@ import org.drools.spi.InternalReadAccessor;
 import org.drools.time.Interval;
 
 /**
- * The implementation of the 'after' evaluator definition
+ * <p>The implementation of the 'after' evaluator definition.</p>
+ * 
+ * <p>The <b><code>after</code></b> evaluator correlates two events and matches when the distance from the 
+ * current event to the event being correlated belongs to the distance range declared 
+ * for the operator.</p> 
+ * 
+ * <p>Lets look at an example:</p>
+ * 
+ * <pre>$eventA : EventA( this after[ 3m30s, 4m ] $eventB )</pre>
+ *
+ * <p>The previous pattern will match if and only if the temporal distance between the 
+ * time when $eventB finished and the time when $eventA started is between ( 3 minutes 
+ * and 30 seconds ) and ( 4 minutes ). In other words:</p>
+ * 
+ * <pre> 3m30s <= $eventA.startTimestamp - $eventB.endTimeStamp <= 4m </pre>
+ * 
+ * <p>The temporal distance interval for the <b><code>after</code></b> operator is optional:</p>
+ * 
+ * <ul><li>If two values are defined (like in the example bellow), the interval starts on the
+ * first value and finishes on the second.</li>
+ * <li>If only one value is defined, it is assumed that it is the finish value and the default
+ * initial value is 1ms.</li>
+ * <li>If no value is defined, it is assumed that the initial value is 1ms and the final value
+ * is the positive infinity.</li></ul>
+ * 
+ * <p><b>NOTE:</b> it is allowed to define negative distances for this operator. The only 
+ * requirement is that the initial distance in the interval must always be lower than the 
+ * final distance. Example:</p>
+ * 
+ * <pre>$eventA : EventA( this after[ -3m30s, -2m ] $eventB )</pre>
  *
  * @author etirelli
  */
 public class AfterEvaluatorDefinition
     implements
     EvaluatorDefinition {
-    
-    public static final Operator   AFTER         = Operator.addOperatorToRegistry( "after",
-                                                                                   false );
-    public static final Operator   NOT_AFTER     = Operator.addOperatorToRegistry( "after",
-                                                                                   true );
 
-    private static final String[]  SUPPORTED_IDS = {AFTER.getOperatorString()};
+    public static final Operator        AFTER         = Operator.addOperatorToRegistry( "after",
+                                                                                        false );
+    public static final Operator        NOT_AFTER     = Operator.addOperatorToRegistry( "after",
+                                                                                        true );
 
-    private Map<String, Evaluator> cache         = Collections.emptyMap();
+    private static final String[]       SUPPORTED_IDS = {AFTER.getOperatorString()};
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        cache  = (Map<String, Evaluator>)in.readObject();
+    private Map<String, Evaluator>      cache         = Collections.emptyMap();
+    private volatile TimeIntervalParser parser        = new TimeIntervalParser();
+
+    @SuppressWarnings("unchecked")
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        cache = (Map<String, Evaluator>) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(cache);
+        out.writeObject( cache );
     }
 
     /**
@@ -100,8 +131,10 @@ public class AfterEvaluatorDefinition
         String key = isNegated + ":" + parameterText;
         Evaluator eval = this.cache.get( key );
         if ( eval == null ) {
+            Long[] params = parser.parse( parameterText );
             eval = new AfterEvaluator( type,
                                        isNegated,
+                                       params,
                                        parameterText );
             this.cache.put( key,
                             eval );
@@ -147,28 +180,32 @@ public class AfterEvaluatorDefinition
 
         private long              initRange;
         private long              finalRange;
+        private String            paramText;
 
         public AfterEvaluator() {
         }
 
         public AfterEvaluator(final ValueType type,
                               final boolean isNegated,
-                              final String parameters) {
+                              final Long[] parameters,
+                              final String paramText ) {
             super( type,
                    isNegated ? NOT_AFTER : AFTER );
-            this.parseParameters( parameters );
+            this.paramText = paramText;
+            this.setParameters( parameters );
         }
 
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            super.readExternal(in);
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
+            super.readExternal( in );
             initRange = in.readLong();
             finalRange = in.readLong();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            super.writeExternal(out);
-            out.writeLong(initRange);
-            out.writeLong(finalRange);
+            super.writeExternal( out );
+            out.writeLong( initRange );
+            out.writeLong( finalRange );
         }
 
         @Override
@@ -180,19 +217,19 @@ public class AfterEvaluatorDefinition
         public boolean isTemporal() {
             return true;
         }
-        
+
         @Override
         public Interval getInterval() {
             long init = this.initRange;
             long end = this.finalRange;
-            if( this.getOperator().isNegated() ) {
-                if( init == Interval.MIN && end != Interval.MAX ) {
-                    init = finalRange+1;
+            if ( this.getOperator().isNegated() ) {
+                if ( init == Interval.MIN && end != Interval.MAX ) {
+                    init = finalRange + 1;
                     end = Interval.MAX;
-                } else if( init != Interval.MIN && end == Interval.MAX ) {
+                } else if ( init != Interval.MIN && end == Interval.MAX ) {
                     init = Interval.MIN;
-                    end = initRange-1;
-                } else if( init == Interval.MIN && end == Interval.MAX ) {
+                    end = initRange - 1;
+                } else if ( init == Interval.MIN && end == Interval.MAX ) {
                     init = 0;
                     end = -1;
                 } else {
@@ -200,9 +237,10 @@ public class AfterEvaluatorDefinition
                     end = Interval.MAX;
                 }
             }
-            return new Interval( init, end );
+            return new Interval( init,
+                                 end );
         }
-        
+
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1,
@@ -217,7 +255,7 @@ public class AfterEvaluatorDefinition
                 return false;
             }
             long dist = ((EventFactHandle) ((ObjectVariableContextEntry) context).right).getStartTimestamp() - ((EventFactHandle) left).getEndTimestamp();
-            return this.getOperator().isNegated() ^ ( dist >= this.initRange && dist <= this.finalRange );
+            return this.getOperator().isNegated() ^ (dist >= this.initRange && dist <= this.finalRange);
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
@@ -229,7 +267,7 @@ public class AfterEvaluatorDefinition
             }
             long dist = ((EventFactHandle) right).getStartTimestamp() - ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getEndTimestamp();
 
-            return this.getOperator().isNegated() ^ ( dist >= this.initRange && dist <= this.finalRange );
+            return this.getOperator().isNegated() ^ (dist >= this.initRange && dist <= this.finalRange);
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
@@ -242,11 +280,11 @@ public class AfterEvaluatorDefinition
                 return false;
             }
             long dist = ((EventFactHandle) object1).getStartTimestamp() - ((EventFactHandle) object2).getEndTimestamp();
-            return this.getOperator().isNegated() ^ ( dist >= this.initRange && dist <= this.finalRange );
+            return this.getOperator().isNegated() ^ (dist >= this.initRange && dist <= this.finalRange);
         }
 
         public String toString() {
-            return this.getOperator().toString()+ "[" + initRange + ", " + finalRange + "]";
+            return this.getOperator().toString() + "[" + paramText + "]";
         }
 
         /* (non-Javadoc)
@@ -274,35 +312,25 @@ public class AfterEvaluatorDefinition
         }
 
         /**
-         * This methods tries to parse the string of parameters to customize
-         * the evaluator.
+         * This methods sets the parameters appropriately.
          *
          * @param parameters
          */
-        private void parseParameters(String parameters) {
-            if ( parameters == null || parameters.trim().length() == 0 ) {
+        private void setParameters( Long[] parameters ) {
+            if ( parameters == null || parameters.length == 0 ) {
                 // open bounded range
                 this.initRange = 1;
                 this.finalRange = Long.MAX_VALUE;
                 return;
-            }
-
-            try {
-                String[] ranges = parameters.split( "," );
-                if ( ranges.length == 1 ) {
-                    // deterministic point in time
-                    this.initRange = Long.parseLong( ranges[0] );
-                    this.finalRange = this.initRange;
-                } else if ( ranges.length == 2 ) {
-                    // regular range
-                    this.initRange = Long.parseLong( ranges[0] );
-                    this.finalRange = Long.parseLong( ranges[1] );
-                } else {
-                    throw new RuntimeDroolsException( "[After Evaluator]: Not possible to parse parameters: '" + parameters + "'" );
-                }
-            } catch ( NumberFormatException e ) {
-                throw new RuntimeDroolsException( "[After Evaluator]: Not possible to parse parameters: '" + parameters + "'",
-                                                  e );
+            } else if( parameters.length == 1 ) {
+                // up to that value
+                this.initRange = 1;
+                this.finalRange = parameters[0].longValue();
+            } else if( parameters.length == 2 ) {
+                this.initRange = parameters[0].longValue();
+                this.finalRange = parameters[1].longValue();
+            } else {
+                throw new RuntimeDroolsException( "[After Evaluator]: Not possible to have more than 2 parameters: '" + paramText + "'" );
             }
         }
 
