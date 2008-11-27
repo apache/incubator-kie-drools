@@ -42,7 +42,7 @@ public interface EvaluatorDefinition extends Externalizable {
     public String[] getEvaluatorIds();
 
     /**
-     * My appologies to english speakers if the word "negatable" does not
+     * My apologies to English speakers if the word "negatable" does not
      * exists. :)
      *
      * This method returns true if this evaluator supports negation. Example:
@@ -59,7 +59,7 @@ public interface EvaluatorDefinition extends Externalizable {
      *
      * @param type the type of the attributes this evaluator will
      *             operate on. This is important because the evaluator
-     *             may do optimizations and type coercion based on the
+     *             may do optimisations and type coercion based on the
      *             types it is evaluating. It is also possible that
      *             this evaluator does not support a given type.
      *
@@ -87,7 +87,7 @@ public interface EvaluatorDefinition extends Externalizable {
      *
      * @param type the type of the attributes this evaluator will
      *             operate on. This is important because the evaluator
-     *             may do optimizations and type coercion based on the
+     *             may do optimisations and type coercion based on the
      *             types it is evaluating. It is also possible that
      *             this evaluator does not support a given type.
      *
@@ -111,7 +111,7 @@ public interface EvaluatorDefinition extends Externalizable {
      *
      * @param type the type of the attributes this evaluator will
      *             operate on. This is important because the evaluator
-     *             may do optimizations and type coercion based on the
+     *             may do optimisations and type coercion based on the
      *             types it is evaluating. It is also possible that
      *             this evaluator does not support a given type.
      *
