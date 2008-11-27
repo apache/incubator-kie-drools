@@ -38,29 +38,71 @@ import org.drools.spi.InternalReadAccessor;
 import org.drools.time.Interval;
 
 /**
- * The implementation of the 'before' evaluator definition
+ * <p>The implementation of the 'before' evaluator definition.</p>
+ * 
+ * <p>The <b><code>before</code></b> evaluator correlates two events and matches when the temporal 
+ * distance from the event being correlated to the current correlated belongs to the distance range declared 
+ * for the operator.</p> 
+ * 
+ * <p>Lets look at an example:</p>
+ * 
+ * <pre>$eventA : EventA( this before[ 3m30s, 4m ] $eventB )</pre>
  *
+ * <p>The previous pattern will match if and only if the temporal distance between the 
+ * time when $eventA finished and the time when $eventB started is between ( 3 minutes 
+ * and 30 seconds ) and ( 4 minutes ). In other words:</p>
+ * 
+ * <pre> 3m30s <= $eventB.startTimestamp - $eventA.endTimeStamp <= 4m </pre>
+ * 
+ * <p>The temporal distance interval for the <b><code>before</code></b> operator is optional:</p>
+ * 
+ * <ul><li>If two values are defined (like in the example bellow), the interval starts on the
+ * first value and finishes on the second.</li>
+ * <li>If only one value is defined, we have two cases. If the value is negative, then the interval
+ * starts on the value and finishes on -1ms. If the value is positive, then the interval starts on 
+ * +1ms and finishes on the value.</li>
+ * <li>If no value is defined, it is assumed that the initial value is 1ms and the final value
+ * is the positive infinity.</li></ul>
+ * 
+ * <p><b>NOTE:</b> it is allowed to define negative distances for this operator. Example:</p>
+ * 
+ * <pre>$eventA : EventA( this before[ -3m30s, -2m ] $eventB )</pre>
+ *
+ * <p><b>NOTE:</b> if the initial value is greater than the finish value, the engine automatically
+ * reverse them, as there is no reason to have the initial value greater than the finish value. Example: 
+ * the following two patterns are considered to have the same semantics:</p>
+ * 
+ * <pre>
+ * $eventA : EventA( this before[ -3m30s, -2m ] $eventB )
+ * $eventA : EventA( this before[ -2m, -3m30s ] $eventB )
+ * </pre>
+ * 
+ *
+ * @author etirelli
  * @author mgroch
  */
 public class BeforeEvaluatorDefinition
     implements
     EvaluatorDefinition {
 
-    public static final Operator  BEFORE       = Operator.addOperatorToRegistry( "before",
-                                                                                  false );
-    public static final Operator  NOT_BEFORE   = Operator.addOperatorToRegistry( "before",
-                                                                                  true );
+    public static final Operator         BEFORE        = Operator.addOperatorToRegistry( "before",
+                                                                                         false );
+    public static final Operator         NOT_BEFORE    = Operator.addOperatorToRegistry( "before",
+                                                                                         true );
 
-    private static final String[] SUPPORTED_IDS = { BEFORE.getOperatorString() };
+    private static final String[]        SUPPORTED_IDS = {BEFORE.getOperatorString()};
 
-    private Map<String, BeforeEvaluator> cache        = Collections.emptyMap();
+    private Map<String, BeforeEvaluator> cache         = Collections.emptyMap();
+    private volatile TimeIntervalParser  parser        = new TimeIntervalParser();
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        cache  = (Map<String, BeforeEvaluator>)in.readObject();
+    @SuppressWarnings("unchecked")
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        cache = (Map<String, BeforeEvaluator>) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(cache);
+        out.writeObject( cache );
     }
 
     /**
@@ -99,9 +141,11 @@ public class BeforeEvaluatorDefinition
         String key = isNegated + ":" + parameterText;
         BeforeEvaluator eval = this.cache.get( key );
         if ( eval == null ) {
+            Long[] params = parser.parse( parameterText );
             eval = new BeforeEvaluator( type,
-                                       isNegated,
-                                       parameterText );
+                                        isNegated,
+                                        params,
+                                        parameterText );
             this.cache.put( key,
                             eval );
         }
@@ -142,32 +186,36 @@ public class BeforeEvaluatorDefinition
      * Implements the 'before' evaluator itself
      */
     public static class BeforeEvaluator extends BaseEvaluator {
-		private static final long serialVersionUID = -4778826341073034320L;
+        private static final long serialVersionUID = -4778826341073034320L;
 
-		private long                  initRange;
-        private long                  finalRange;
+        private long              initRange;
+        private long              finalRange;
+        private String            paramText;
 
         public BeforeEvaluator() {
         }
 
         public BeforeEvaluator(final ValueType type,
-                              final boolean isNegated,
-                              final String parameters) {
+                               final boolean isNegated,
+                               final Long[] parameters,
+                               final String paramText) {
             super( type,
                    isNegated ? NOT_BEFORE : BEFORE );
-            this.parseParameters( parameters );
+            this.paramText = paramText;
+            this.setParameters( parameters );
         }
 
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            super.readExternal(in);
-            initRange    = in.readLong();
-            finalRange   = in.readLong();
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
+            super.readExternal( in );
+            initRange = in.readLong();
+            finalRange = in.readLong();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            super.writeExternal(out);
-            out.writeLong(initRange);
-            out.writeLong(finalRange);
+            super.writeExternal( out );
+            out.writeLong( initRange );
+            out.writeLong( finalRange );
         }
 
         @Override
@@ -179,19 +227,19 @@ public class BeforeEvaluatorDefinition
         public boolean isTemporal() {
             return true;
         }
-        
+
         @Override
         public Interval getInterval() {
-            long init = ( this.finalRange == Interval.MAX ) ? Interval.MIN : -this.finalRange;
-            long end = ( this.initRange == Interval.MIN ) ? Interval.MAX : -this.initRange;
-            if( this.getOperator().isNegated() ) {
-                if( init == Interval.MIN && end != Interval.MAX ) {
-                    init = finalRange+1;
+            long init = (this.finalRange == Interval.MAX) ? Interval.MIN : -this.finalRange;
+            long end = (this.initRange == Interval.MIN) ? Interval.MAX : -this.initRange;
+            if ( this.getOperator().isNegated() ) {
+                if ( init == Interval.MIN && end != Interval.MAX ) {
+                    init = finalRange + 1;
                     end = Interval.MAX;
-                } else if( init != Interval.MIN && end == Interval.MAX ) {
+                } else if ( init != Interval.MIN && end == Interval.MAX ) {
                     init = Interval.MIN;
-                    end = initRange-1;
-                } else if( init == Interval.MIN && end == Interval.MAX ) {
+                    end = initRange - 1;
+                } else if ( init == Interval.MIN && end == Interval.MAX ) {
                     init = 0;
                     end = -1;
                 } else {
@@ -199,9 +247,10 @@ public class BeforeEvaluatorDefinition
                     end = Interval.MAX;
                 }
             }
-            return new Interval( init, end );
+            return new Interval( init,
+                                 end );
         }
-        
+
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1,
@@ -215,8 +264,7 @@ public class BeforeEvaluatorDefinition
             if ( context.rightNull ) {
                 return false;
             }
-            long dist = ((EventFactHandle) left ).getStartTimestamp() -
-            			((EventFactHandle)((ObjectVariableContextEntry) context).right).getEndTimestamp();
+            long dist = ((EventFactHandle) left).getStartTimestamp() - ((EventFactHandle) ((ObjectVariableContextEntry) context).right).getEndTimestamp();
             return this.getOperator().isNegated() ^ (dist >= this.initRange && dist <= this.finalRange);
         }
 
@@ -227,10 +275,9 @@ public class BeforeEvaluatorDefinition
                                                 right ) ) {
                 return false;
             }
-            long dist = ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getStartTimestamp() -
-            			((EventFactHandle) right ).getEndTimestamp();
+            long dist = ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getStartTimestamp() - ((EventFactHandle) right).getEndTimestamp();
 
-            return this.getOperator().isNegated() ^ (  dist >= this.initRange && dist <= this.finalRange );
+            return this.getOperator().isNegated() ^ (dist >= this.initRange && dist <= this.finalRange);
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
@@ -242,12 +289,12 @@ public class BeforeEvaluatorDefinition
                                          object1 ) ) {
                 return false;
             }
-            long dist = ((EventFactHandle) object2 ).getStartTimestamp() - ((EventFactHandle) object1 ).getEndTimestamp();
-            return this.getOperator().isNegated() ^ (  dist >= this.initRange && dist <= this.finalRange ) ;
+            long dist = ((EventFactHandle) object2).getStartTimestamp() - ((EventFactHandle) object1).getEndTimestamp();
+            return this.getOperator().isNegated() ^ (dist >= this.initRange && dist <= this.finalRange);
         }
 
         public String toString() {
-            return this.getOperator().toString() + "[" + initRange + ", " + finalRange + "]";
+            return this.getOperator().toString() + "[" + paramText + "]";
         }
 
         /* (non-Javadoc)
@@ -275,35 +322,36 @@ public class BeforeEvaluatorDefinition
         }
 
         /**
-         * This methods tries to parse the string of parameters to customize
-         * the evaluator.
+         * This methods sets the parameters appropriately.
          *
          * @param parameters
          */
-        private void parseParameters(String parameters) {
-            if ( parameters == null || parameters.trim().length() == 0 ) {
+        private void setParameters(Long[] parameters) {
+            if ( parameters == null || parameters.length == 0 ) {
                 // open bounded range
                 this.initRange = 1;
                 this.finalRange = Long.MAX_VALUE;
                 return;
-            }
-
-            try {
-                String[] ranges = parameters.split( "," );
-                if ( ranges.length == 1 ) {
-                    // deterministic point in time
-                    this.initRange = Long.parseLong( ranges[0] );
-                    this.finalRange = this.initRange;
-                } else if ( ranges.length == 2 ) {
-                    // regular range
-                    this.initRange = Long.parseLong( ranges[0] );
-                    this.finalRange = Long.parseLong( ranges[1] );
+            } else if ( parameters.length == 1 ) {
+                if ( parameters[0].longValue() >= 0 ) {
+                    // up to that value
+                    this.initRange = 1;
+                    this.finalRange = parameters[0].longValue();
                 } else {
-                    throw new RuntimeDroolsException( "[Before Evaluator]: Not possible to parse parameters: '" + parameters + "'" );
+                    // from that value up to now
+                    this.initRange = parameters[0].longValue();
+                    this.finalRange = -1;
                 }
-            } catch ( NumberFormatException e ) {
-                throw new RuntimeDroolsException( "[Before Evaluator]: Not possible to parse parameters: '" + parameters + "'",
-                                                  e );
+            } else if ( parameters.length == 2 ) {
+                if ( parameters[0].longValue() <= parameters[1].longValue() ) {
+                    this.initRange = parameters[0].longValue();
+                    this.finalRange = parameters[1].longValue();
+                } else {
+                    this.initRange = parameters[1].longValue();
+                    this.finalRange = parameters[0].longValue();
+                }
+            } else {
+                throw new RuntimeDroolsException( "[Before Evaluator]: Not possible to have more than 2 parameters: '" + paramText + "'" );
             }
         }
 
