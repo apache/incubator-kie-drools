@@ -1,0 +1,117 @@
+Drools Documentation Authoring Guideline and Cheat Sheet
+========================================================
+
+Guideline
+=========
+* please markup all package names, class names, method names, etc. with 
+  <code></code>.
+  
+  example:
+    <para>The <code>JavaDialectConfiguration</code> allows the compiler
+     and language levels to be supported. You can override by setting the
+    <code>drools.dialect.java.compiler</code> property in a 
+    <code>packagebuilder.conf</code> file that the 
+    <code>ChainedProperties</code> instance will find, or you can do it 
+    at runtime as shown below.</para>
+    
+* please link svg image files instead of png bitmaps in the text whenever
+  possible.
+  
+* Please avoid using .bmp bitmaps, since it will bloat size of the end 
+  doc. Use any image processing program such as GIMP to convert your bmp 
+  images to png images first. Better yet, use any vector graphic program
+  such as InkScape to scan your bmp image and make a true svg image out
+  of it. But this approach may take time and effort, recommanded for 
+  processing diagrams but not screenshots.
+  
+
+Cheat Sheet
+===========
+
+Text boxes implemented in the jboss docbook styles:
+---------------------------------------------------
+* <caution><para></para></caution>
+* <important><para></para></important>
+* <note><para></para></note>
+* <tip><para></para></tip>
+* <warning><para></para></warning>
+
+Markup program list or console output:
+--------------------------------------
+
+* as Example:
+
+    <example>
+      <title>Configuring the <code>JavaDialectConfiguration</code> 
+      to use JANINO via a setter</title>
+
+      <programlisting><![CDATA[PackageBuilderConfiguration cfg = new PackageBuilderConfiguration( );
+JavaDialectConfiguration javaConf = (JavaDialectConfiguration) cfg.getDialectConfiguration( "java" );
+javaConf.setCompiler( JavaDialectConfiguration.JANINO );]]></programlisting>
+    </example>
+
+* Simple (not as Example):
+
+  <programlisting ><![CDATA[ your code here...  ]]></programlisting>
+  
+
+Link image files:
+-----------------
+
+* suitable for diagrams:
+
+  <figure>
+    <title>High-level View of a Rule Engine</title>
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center" 
+        fileref="images/Chapter-Rule_Engine/rule-engine-inkscape.svg" 
+        format="SVG" contentwidth="540px" contentdepth="300px" />
+      </imageobject>
+    </mediaobject>
+  </figure>
+   
+* suitable for screenshots:
+
+
+Lists
+-----
+
+* unnumbered list (bullets):
+
+    <itemizedlist>
+      <listitem> <para>Linear</para> </listitem>
+      ...
+    </itemizedlist>
+
+* numbered list:
+    <orderedlist>
+      <listitem> <para> Initialize the .... </para> </listitem>
+      ...
+    </orderedlist>
+  
+
+Indexed terms:
+-------------
+
+  <para>Drools implements and extends the 
+  <indexterm><primary>Rete</primary></indexterm> Rete algorithm, 
+  <indexterm><primary>Leaps</primary></indexterm> ...</para>
+
+
+Citations:
+---------
+TODO
+
+
+Footnotes:
+----------
+TODO
+
+
+Callouts:
+---------
+TODO
+
+  
+   
