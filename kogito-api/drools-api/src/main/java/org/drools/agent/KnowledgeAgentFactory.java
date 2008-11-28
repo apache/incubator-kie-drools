@@ -66,12 +66,6 @@ import org.drools.ProviderInitializationException;
  *  This is needed so that the runtime can startup and load packages even if the BRMS
  *  is not available (or the network).
  *  </li>
- *  
- *  <li>
- *  <code>name</code>
- *  the Name is used in any logging, so each agent can be differentiated (you may have one agent per KnowledeBase
- *  that you need in your application).
- *  </li>
  * </p>
  *  
  * <p>
