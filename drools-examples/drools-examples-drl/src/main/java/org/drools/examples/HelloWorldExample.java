@@ -1,7 +1,5 @@
 package org.drools.examples;
 
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -13,6 +11,7 @@ import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.KnowledgeType;
 import org.drools.definition.KnowledgePackage;
+import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 
 /**
@@ -21,14 +20,12 @@ import org.drools.runtime.StatefulKnowledgeSession;
 public class HelloWorldExample {
 
     public static final void main(final String[] args) throws Exception {
-        //read in the source
-        final Reader source = new InputStreamReader( HelloWorldExample.class.getResourceAsStream( "HelloWorld.drl" ) );
-
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
         //this will parse and compile in one step
-        kbuilder.addResource( source,
-                             KnowledgeType.DRL );
+        kbuilder.add( ResourceFactory.newClassPathResource( "HelloWorld.drl",
+                                                                    HelloWorldExample.class ),
+                              KnowledgeType.DRL );
 
         // Check the builder for errors
         if ( kbuilder.hasErrors() ) {
@@ -45,7 +42,7 @@ public class HelloWorldExample {
 
         final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         ksession.setGlobal( "list",
-                           new ArrayList() );
+                            new ArrayList() );
 
         //        session.addEventListener( new DebugAgendaEventListener() );
         //        session.addEventListener( new DebugWorkingMemoryEventListener() );

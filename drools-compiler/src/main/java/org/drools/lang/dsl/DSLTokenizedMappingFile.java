@@ -1,9 +1,11 @@
 package org.drools.lang.dsl;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
 import java.util.LinkedList;
 
+import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.ANTLRReaderStream;
 import org.antlr.runtime.CharStream;
 import org.antlr.runtime.CommonTokenStream;
@@ -30,7 +32,7 @@ public class DSLTokenizedMappingFile extends DSLMappingFile {
         	
 		}
 		return this.errors.isEmpty();
-    }
+    }	
 	
 	private DSLMapping buildFileMapping(Reader dsl) throws IOException, RecognitionException{
 		ANTLRReaderStream reader = new ANTLRReaderStream(dsl);

@@ -15,6 +15,7 @@ import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.KnowledgeType;
+import org.drools.io.ResourceFactory;
 
 public class DroolsUtil {
     private static DroolsUtil INSTANCE;
@@ -32,9 +33,6 @@ public class DroolsUtil {
     }
 
     public KnowledgeBase readRuleBase(String drlFileName) throws Exception {
-        //read in the source
-        Reader source = new InputStreamReader( DroolsSudokuGridModel.class.getResourceAsStream( drlFileName ) );
-
         //optionally read in the DSL (if you are using it).
         //Reader dsl = new InputStreamReader( DroolsTest.class.getResourceAsStream( "/mylang.dsl" ) );
 
@@ -44,7 +42,7 @@ public class DroolsUtil {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
         //this will parse and compile in one step
-        kbuilder.addResource( source,
+        kbuilder.add( ResourceFactory.newClassPathResource( drlFileName,DroolsSudokuGridModel.class),
                              KnowledgeType.DRL );
 
         //Use the following instead of above if you are using a DSL:

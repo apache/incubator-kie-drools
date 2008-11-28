@@ -5,7 +5,6 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -34,23 +33,18 @@ import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.KnowledgeType;
+import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
-
 
 public class PetStore {
 
     public static void main(String[] args) {
         try {
-            //            RuleSetLoader ruleSetLoader = new RuleSetLoader();
-            //            ruleSetLoader.addFromUrl( PetStore.class.getResource( args[0] ) );
-            //
-            //            RuleBaseLoader ruleBaseLoader = new RuleBaseLoader();
-            //            ruleBaseLoader.addFromRuleSetLoader( ruleSetLoader );
-            //            RuleBase ruleBase = ruleBaseLoader.buildRuleBase();
-
             KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-            
-            kbuilder.addResource( new InputStreamReader( PetStore.class.getResourceAsStream( "PetStore.drl" ) ) ,KnowledgeType.DRL);
+
+            kbuilder.add( ResourceFactory.newClassPathResource( "PetStore.drl",
+                                                                        PetStore.class ),
+                                  KnowledgeType.DRL );
             KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
             kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
@@ -374,10 +368,10 @@ public class PetStore {
      */
     public static class CheckoutCallback {
         KnowledgeBase kbase;
-        JTextArea output;
+        JTextArea     output;
 
         public CheckoutCallback(KnowledgeBase kbase) {
-            this.kbase= kbase;
+            this.kbase = kbase;
         }
 
         public void setOutput(JTextArea output) {
@@ -403,23 +397,22 @@ public class PetStore {
             }
 
             //add the JFrame to the ApplicationData to allow for user interaction
-            
+
             StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
             ksession.setGlobal( "frame",
-                                     frame );
+                                frame );
             ksession.setGlobal( "textArea",
-                                     this.output );
+                                this.output );
 
             ksession.insert( new Product( "Gold Fish",
-                                               5 ) );
+                                          5 ) );
             ksession.insert( new Product( "Fish Tank",
-                                               25 ) );
+                                          25 ) );
             ksession.insert( new Product( "Fish Food",
-                                               2 ) );
-            
+                                          2 ) );
+
             ksession.insert( new Product( "Fish Food Sample",
-                                               0 ) );            
-           
+                                          0 ) );
 
             ksession.insert( order );
             ksession.fireAllRules();
@@ -523,8 +516,7 @@ public class PetStore {
             } else if ( !product.equals( other.product ) ) return false;
             return true;
         }
-        
-        
+
     }
 
     public static class Product {
@@ -571,8 +563,7 @@ public class PetStore {
             if ( Double.doubleToLongBits( price ) != Double.doubleToLongBits( other.price ) ) return false;
             return true;
         }
-        
-        
+
     }
 
 }

@@ -12,23 +12,19 @@ import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.KnowledgeType;
 import org.drools.compiler.PackageBuilder;
+import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 
 public class RuleFlowDelegate implements ConwayRuleDelegate {
     private StatefulKnowledgeSession session;
     
     public RuleFlowDelegate() {
-        final Reader drl = new InputStreamReader( CellGridImpl.class.getResourceAsStream( "/org/drools/examples/conway/conway-ruleflow.drl" ) );
-        final Reader generationRf = new InputStreamReader( CellGridImpl.class.getResourceAsStream( "/org/drools/examples/conway/generation.rf" ) );
-        final Reader killAllRf = new InputStreamReader( CellGridImpl.class.getResourceAsStream( "/org/drools/examples/conway/killAll.rf" ) );
-        final Reader registerNeighborRf = new InputStreamReader( CellGridImpl.class.getResourceAsStream( "/org/drools/examples/conway/registerNeighbor.rf" ) );
-
         try {
             KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-            kbuilder.addResource( drl, KnowledgeType.DRL );
-            kbuilder.addResource(  generationRf, KnowledgeType.DRF );
-            kbuilder.addResource( killAllRf, KnowledgeType.DRF );
-            kbuilder.addResource( registerNeighborRf, KnowledgeType.DRF );
+            kbuilder.add( ResourceFactory.newClassPathResource( "conway-ruleflow.drl",getClass()), KnowledgeType.DRL );
+            kbuilder.add( ResourceFactory.newClassPathResource( "generation.rf",getClass()), KnowledgeType.DRF );
+            kbuilder.add( ResourceFactory.newClassPathResource( "killAll.rf",getClass()), KnowledgeType.DRF );
+            kbuilder.add( ResourceFactory.newClassPathResource( "registerNeighbor.rf",getClass()), KnowledgeType.DRF );
             
             KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
             kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );

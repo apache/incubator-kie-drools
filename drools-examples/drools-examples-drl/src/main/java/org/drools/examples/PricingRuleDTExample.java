@@ -2,6 +2,7 @@ package org.drools.examples;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
@@ -12,6 +13,8 @@ import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.KnowledgeType;
 import org.drools.examples.decisiontable.Driver;
 import org.drools.examples.decisiontable.Policy;
+import org.drools.io.ResourceFactory;
+import org.drools.io.impl.ClassPathResource;
 import org.drools.runtime.StatelessKnowledgeSession;
 
 /**
@@ -31,9 +34,14 @@ public class PricingRuleDTExample {
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
-        kbuilder.addResource( getSpreadsheetURL(),
+        kbuilder.add( ResourceFactory.newClassPathResource( "ExamplePolicyPricing.xls", getClass() ),
                               KnowledgeType.DTABLE,
                               dtableconfiguration );
+        
+        if ( kbuilder.hasErrors() ) {
+            System.err.print( kbuilder.getErrors() );
+            return -1;
+        }
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
@@ -45,17 +53,13 @@ public class PricingRuleDTExample {
         Driver driver = new Driver();
         Policy policy = new Policy();
 
-        ksession.executeObject( new Object[]{driver, policy} );
+        ksession.executeIterable( Arrays.asList( new Object[]{driver, policy} ) );
 
         System.out.println( "BASE PRICE IS: " + policy.getBasePrice() );
         System.out.println( "DISCOUNT IS: " + policy.getDiscountPercent() );
 
         return policy.getBasePrice();
 
-    }
-
-    private URL getSpreadsheetURL() throws MalformedURLException {
-        return getClass().getResource( "ExamplePolicyPricing.xls" );
     }
 
 }

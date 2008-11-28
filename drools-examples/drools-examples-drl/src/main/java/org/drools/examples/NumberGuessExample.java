@@ -1,6 +1,5 @@
 package org.drools.examples;
 
-import java.io.InputStreamReader;
 import java.util.Random;
 
 import org.drools.KnowledgeBase;
@@ -9,16 +8,19 @@ import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.KnowledgeType;
+import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 
 public class NumberGuessExample {
 
     public static final void main(String[] args) throws Exception {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.addResource( new InputStreamReader( ShoppingExample.class.getResourceAsStream( "NumberGuess.drl" ) ),
-                             KnowledgeType.DRL );
-        kbuilder.addResource( new InputStreamReader( ShoppingExample.class.getResourceAsStream( "NumberGuess.rf" ) ),
-                             KnowledgeType.DRF );
+        kbuilder.add( ResourceFactory.newClassPathResource( "NumberGuess.drl",
+                                                                    ShoppingExample.class ),
+                              KnowledgeType.DRL );
+        kbuilder.add( ResourceFactory.newClassPathResource( "NumberGuess.rf",
+                                                                    ShoppingExample.class ),
+                              KnowledgeType.DRF );
 
         final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
@@ -29,7 +31,7 @@ public class NumberGuessExample {
         logger.setFileName( "log/numberguess" );
 
         ksession.insert( new GameRules( 100,
-                                       5 ) );
+                                        5 ) );
         ksession.insert( new RandomNumber() );
         ksession.insert( new Game() );
 

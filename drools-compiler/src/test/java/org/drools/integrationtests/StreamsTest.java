@@ -35,6 +35,7 @@ import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.KnowledgeType;
 import org.drools.common.InternalFactHandle;
 import org.drools.compiler.DroolsParserException;
+import org.drools.io.ResourceFactory;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
@@ -60,33 +61,33 @@ public class StreamsTest extends TestCase {
         super.tearDown();
     }
 
-    
-    private KnowledgeBase loadKnowledgeBase(final Reader reader) throws IOException,
-        DroolsParserException,
-    Exception {
+    private KnowledgeBase loadKnowledgeBase(final String fileName) throws IOException,
+                                                                  DroolsParserException,
+                                                                  Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.addResource( reader, KnowledgeType.DRL );
-        
+        kbuilder.add( ResourceFactory.newClassPathResource( fileName,
+                                                                    getClass() ),
+                              KnowledgeType.DRL );
+
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-                        
+
         return SerializationHelper.serializeObject( kbase );
     }
 
     public void testEventAssertion() throws Exception {
         // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_EntryPoint.drl" ) );
-        KnowledgeBase kbase = loadKnowledgeBase( reader );
+        KnowledgeBase kbase = loadKnowledgeBase( "test_EntryPoint.drl" );
         //final RuleBase ruleBase = loadRuleBase( reader );
 
         KnowledgeSessionConfiguration conf = new SessionConfiguration();
-        ((SessionConfiguration)conf).setClockType( ClockType.PSEUDO_CLOCK );
+        ((SessionConfiguration) conf).setClockType( ClockType.PSEUDO_CLOCK );
         StatefulKnowledgeSession session = kbase.newStatefulSession( conf );
 
         final List results = new ArrayList();
 
         session.setGlobal( "results",
-                      results );
+                           results );
 
         StockTick tick1 = new StockTick( 1,
                                          "DROO",

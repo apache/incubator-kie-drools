@@ -12,43 +12,46 @@ import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.KnowledgeType;
 import org.drools.compiler.PackageBuilder;
+import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 
-public class AgendaGroupDelegate implements ConwayRuleDelegate {
+public class AgendaGroupDelegate
+    implements
+    ConwayRuleDelegate {
     private StatefulKnowledgeSession session;
-    
-    public AgendaGroupDelegate() {
-        final Reader drl = new InputStreamReader( AgendaGroupDelegate.class.getResourceAsStream( "/org/drools/examples/conway/conway-agendagroup.drl" ) );
 
+    public AgendaGroupDelegate() {
         try {
             KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-            kbuilder.addResource( drl, KnowledgeType.DRL );
-            
+            kbuilder.add( ResourceFactory.newClassPathResource( "conway-agendagroup.drl",
+                                                                        getClass() ),
+                                  KnowledgeType.DRL );
+
             KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
             kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-            
+
             this.session = kbase.newStatefulKnowledgeSession();
         } catch ( Exception e ) {
             throw new RuntimeException( e );
         }
     }
-    
+
     /* (non-Javadoc)
      * @see org.drools.examples.conway.ConwayRuleDelegate#getSession()
      */
     public StatefulKnowledgeSession getSession() {
         return this.session;
     }
-    
+
     /* (non-Javadoc)
      * @see org.drools.examples.conway.ConwayRuleDelegate#init()
      */
     public void init() {
         this.session.getAgenda().getAgendaGroup( "register neighbor" ).setFocus();
-        this.session.fireAllRules();     
+        this.session.fireAllRules();
         this.session.getAgenda().getAgendaGroup( "calculate" ).clear();
     }
-    
+
     /* (non-Javadoc)
      * @see org.drools.examples.conway.CellGrid#nextGeneration()
      */
@@ -62,7 +65,7 @@ public class AgendaGroupDelegate implements ConwayRuleDelegate {
         this.session.getAgenda().getAgendaGroup( "reset calculate" ).setFocus();
         this.session.getAgenda().getAgendaGroup( "rest" ).setFocus();
         this.session.getAgenda().getAgendaGroup( "evaluate" ).setFocus();
-        this.session.getAgenda().getAgendaGroup( "calculate" ).setFocus();        
+        this.session.getAgenda().getAgendaGroup( "calculate" ).setFocus();
         return session.fireAllRules() != 0;
         //return session.getAgenda().getAgendaGroup( "calculate" ).size() != 0;
     }
@@ -79,5 +82,5 @@ public class AgendaGroupDelegate implements ConwayRuleDelegate {
         this.session.getAgenda().getAgendaGroup( "calculate" ).setFocus();
         this.session.fireAllRules();
     }
-    
+
 }

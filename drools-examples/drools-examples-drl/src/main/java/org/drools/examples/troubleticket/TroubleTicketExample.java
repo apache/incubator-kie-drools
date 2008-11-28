@@ -1,13 +1,12 @@
 package org.drools.examples.troubleticket;
 
-import java.io.InputStreamReader;
-
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.audit.ThreadedWorkingMemoryFileLogger;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.KnowledgeType;
+import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 
@@ -19,8 +18,9 @@ public class TroubleTicketExample {
     public static void main(final String[] args) throws Exception {
 
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.addResource( new InputStreamReader( TroubleTicketExample.class.getResourceAsStream( "TroubleTicket.drl" ) ),
-                             KnowledgeType.DRL );
+        kbuilder.add( ResourceFactory.newClassPathResource( "TroubleTicket.drl",
+                                                                    TroubleTicketExample.class ),
+                              KnowledgeType.DRL );
 
         final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
@@ -64,7 +64,7 @@ public class TroubleTicketExample {
         t3.setStatus( "Done" );
 
         ksession.update( ft3,
-                        t3 );
+                         t3 );
 
         try {
             System.err.println( "[[ Sleeping 5 seconds ]]" );

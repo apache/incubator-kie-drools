@@ -25,6 +25,8 @@ import org.drools.template.parser.TemplateDataListener;
  * 
  * Note that even though they  use the same spreadsheet, this example is just
  * concerned with the data cells and does not use any of the Decision Table data.
+ * 
+ * This example is also using unstable/experimental apis - as it is not using drools-api.
  * @author Steve
  *
  */

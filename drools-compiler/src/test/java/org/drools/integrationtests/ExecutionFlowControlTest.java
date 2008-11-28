@@ -39,6 +39,7 @@ import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.ActivationCreatedEvent;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.DefaultAgendaEventListener;
+import org.drools.io.ResourceFactory;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.rule.Package;
@@ -515,7 +516,7 @@ public class ExecutionFlowControlTest extends TestCase {
 
     public void testAgendaGroups() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.addResource( new InputStreamReader( getClass().getResourceAsStream( "test_AgendaGroups.drl" ) ), KnowledgeType.DRL );
+        kbuilder.add( ResourceFactory.newClassPathResource( "test_AgendaGroups.drl", getClass() ), KnowledgeType.DRL );
 
         assertFalse( kbuilder.hasErrors() );
         

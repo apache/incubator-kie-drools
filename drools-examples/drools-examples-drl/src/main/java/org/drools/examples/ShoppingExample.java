@@ -7,6 +7,7 @@ import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.KnowledgeType;
+import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 
@@ -14,7 +15,7 @@ public class ShoppingExample {
 
     public static final void main(String[] args) throws Exception {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.addResource( new InputStreamReader( ShoppingExample.class.getResourceAsStream( "Shopping.drl" ) ),
+        kbuilder.add( ResourceFactory.newClassPathResource( "Shopping.drl", ShoppingExample.class ),
                               KnowledgeType.DRL );
 
         final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();

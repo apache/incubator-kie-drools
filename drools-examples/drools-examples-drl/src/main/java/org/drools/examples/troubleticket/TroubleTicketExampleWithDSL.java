@@ -9,6 +9,7 @@ import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.KnowledgeType;
+import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 
@@ -21,10 +22,12 @@ public class TroubleTicketExampleWithDSL {
 
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
-        kbuilder.addResource( getDSL(),
-                             KnowledgeType.DSL );
-        kbuilder.addResource( getSource(),
-                             KnowledgeType.DSLR );
+        kbuilder.add( ResourceFactory.newClassPathResource( "ticketing.dsl",
+                                                                    TroubleTicketExampleWithDSL.class ),
+                              KnowledgeType.DSL );
+        kbuilder.add( ResourceFactory.newClassPathResource( "TroubleTicketWithDSL.dslr",
+                                                                    TroubleTicketExampleWithDSL.class ),
+                              KnowledgeType.DSLR );
 
         final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
@@ -67,7 +70,7 @@ public class TroubleTicketExampleWithDSL {
         t3.setStatus( "Done" );
 
         ksession.update( ft3,
-                        t3 );
+                         t3 );
 
         try {
             System.err.println( "[[ Sleeping 5 seconds ]]" );
@@ -84,14 +87,4 @@ public class TroubleTicketExampleWithDSL {
 
         logger.writeToDisk();
     }
-
-    private static Reader getDSL() {
-        return new InputStreamReader( TroubleTicketExampleWithDSL.class.getResourceAsStream( "ticketing.dsl" ) );
-
-    }
-
-    private static InputStreamReader getSource() {
-        return new InputStreamReader( TroubleTicketExampleWithDSL.class.getResourceAsStream( "TroubleTicketWithDSL.dslr" ) );
-    }
-
 }

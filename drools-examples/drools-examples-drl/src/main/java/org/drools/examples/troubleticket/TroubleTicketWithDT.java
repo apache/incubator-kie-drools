@@ -11,6 +11,7 @@ import org.drools.builder.DecisionTableInputType;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.KnowledgeType;
+import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 
@@ -30,7 +31,7 @@ public class TroubleTicketWithDT {
         dtableconfiguration.setInputType( DecisionTableInputType.XLS );
 
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.addResource( getSpreadsheetURL(),
+        kbuilder.add(  ResourceFactory.newClassPathResource( "TroubleTicket.xls", TroubleTicketWithDT.class ),
                               KnowledgeType.DTABLE,
                               dtableconfiguration );
 
@@ -91,10 +92,6 @@ public class TroubleTicketWithDT {
 
         logger.writeToDisk();
 
-    }
-
-    private URL getSpreadsheetURL() throws MalformedURLException {
-        return getClass().getResource( "TroubleTicket.xls" );
     }
 
 }

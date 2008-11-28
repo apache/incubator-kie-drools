@@ -7,25 +7,25 @@ import org.drools.ProviderInitializationException;
 import org.drools.builder.DecisionTableConfiguration;
 
 public class DecisionTableFactory {
-    private static volatile DecisionTableProvider provider;
+    private static DecisionTableProvider provider;
     
-    public static void setDecisionTableProvider(DecisionTableProvider provider) {
+
+    
+    public static String loadFromInputStream(InputStream is, DecisionTableConfiguration configuration) {
+
+        return getDecisionTableProvider().loadFromInputStream( is, configuration );
+    } 
+    
+    public static synchronized void setDecisionTableProvider(DecisionTableProvider provider) {
         DecisionTableFactory.provider = provider;
     }
     
-    public static String loadFromInputStream(InputStream is, DecisionTableConfiguration configuration) {
+    public static synchronized DecisionTableProvider getDecisionTableProvider() {
         if ( provider == null ) {
             loadProvider();
         }
-        return provider.loadFromInputStream( is, configuration );
-    } 
-
-    public static String loadFromReader(Reader reader, DecisionTableConfiguration configuration) {
-        if ( provider == null ) {
-            loadProvider();
-        }
-        return provider.loadFromReader( reader, configuration );
-    } 
+        return provider;
+    }
     
     private static void loadProvider() {
         try {
