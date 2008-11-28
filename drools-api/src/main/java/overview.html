@@ -20,6 +20,7 @@ Factory classes, with static methods, provide instances of the above interfaces.
 be wired up to the factories at runtime. The Factories you will most commonly used are:
 <ul>
 <li><tt>org.drools.builder.KnowledgeBuilderFactory</tt></li>
+<li><tt>org.drools.io.ResourceFactory</tt></li>
 <li><tt>org.drools.KnowledgeBaseFactory</tt></li>
 <li><tt>org.drools.agent.KnowledgeAgentFactory</tt></li>
 </ul>
@@ -29,7 +30,7 @@ be wired up to the factories at runtime. The Factories you will most commonly us
 A Typical example to load a rule resource.
 <pre>
 KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-kbuilder.addResource( url,
+kbuilder.addResource( ResourceFactory.newUrlResource( url ),
                       KnowledgeType.DRL );
 if ( kbuilder.hasErrors() ) {
     System.err.println( builder.getErrors().toString() );
@@ -50,7 +51,7 @@ ksession.dispose();
 A Typical example to load a process resource. Notice the KnowledgeType is changed, in accordance with the Resource type.
 <pre>
 KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-kbuilder.addResource( url,
+kbuilder.addResource( ResourceFactory.newUrlResource( url ),
                       KnowledgeType.DRF );
 if ( kbuilder.hasErrors() ) {
     System.err.println( builder.getErrors().toString() );

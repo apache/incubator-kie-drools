@@ -17,5 +17,8 @@ public enum KnowledgeType {
     DRF,
 
     /** Decision Table */
-    DTABLE;
+    DTABLE,
+    
+    /** Composition */
+    COMPOSITION;
 }

@@ -16,7 +16,7 @@ import org.drools.runtime.rule.StatelessRuleSession;
  * </p>
  * <pre>
  * KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
- * kbuilder.addResource( new InputStreamReader( getClass().getResourceAsStream( fileName ) ), KnowledgeType.DRL );
+ * kbuilder.add( ResourceFactory.newFileSystemResource( fileName ), KnowledgeType.DRL );
  * assertFalse( kbuilder.hasErrors() );     
  * if (kbuilder.hasErrors() ) {
  *     System.out.println( kbuilder.getErrors() );

@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.Collection;
 
 import org.drools.definition.KnowledgePackage;
+import org.drools.io.Resource;
 
 /**
  * <p>
@@ -14,8 +15,9 @@ import org.drools.definition.KnowledgePackage;
  * </p>
  * 
  * <p>
- * Binaries, such as xls decision tables must use the URL based methods, so that an InputStream
- * can be obtained. Reader is only suitable for text based resources.
+ * The ResourceFactory provides capabilities to load Resources from a number of sources; such as
+ * Reader, ClassPath, URL, File, ByteArray. Binaries, such as xls decision tables,
+ * should not use a Reader based Resource handler, which is only suitable for text based resources.
  * </p>
  * 
  * <p>
@@ -29,7 +31,7 @@ import org.drools.definition.KnowledgePackage;
  * </p>
  * <pre>
  * KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
- * kbuilder.addResource( new URL( "file://myrules.drl" ),
+ * kbuilder.add( ResourceFactory.newUrlResource( "file://myrules.drl" ),
  *                       KnowledgeType.DRL);
  * assertFalse( kbuilder.hasErrors() );
  * KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
@@ -43,9 +45,9 @@ import org.drools.definition.KnowledgePackage;
  * DecisionTableConfiguration dtconf = KnowledgeBuilderFactory.newDecisionTableConfiguration();
  * dtconf.setInputType( DecisionTableInputType.XLS );
  * dtconf.setWorksheetName( "Tables_2" );
- * kbuilder.addResource( new URL( "file://IntegrationExampleTest.xls" ),
- *                       KnowledgeType.DTABLE,
- *                       dtconf );
+ * kbuilder.add( ResourceFactory.newUrlResource( "file://IntegrationExampleTest.xls" ),
+ *               KnowledgeType.DTABLE,
+                 dtconf );
  * assertFalse( kbuilder.hasErrors() );
  * KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
  * </pre>
@@ -55,8 +57,8 @@ import org.drools.definition.KnowledgePackage;
  * <p>
  * <pre>
  * KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
- * kbuilder.addResource( new URL( "file://myflow.rf" ),
- *                       KnowledgeType.DRF);
+ * kbuilder.add( ResourceFactory.newUrlResource( "file://myflow.rf" ),
+ *               KnowledgeType.DRF);
  * assertFalse( kbuilder.hasErrors() );
  * KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
  * </pre>
@@ -81,33 +83,16 @@ public interface KnowledgeBuilder
      * @param url
      * @param type
      */
-    void addResource(URL url,
-                     KnowledgeType type);
+    void add(Resource resource,
+             KnowledgeType type);
+
     /**
     * A a resource of the KnowledgeType from a given URL, using the provided ResourceConfiguration.
     * Currently only only decision tables use this, via the DecisionTableResourceConfiguration class.
     */
-    void addResource(URL url,
-                     KnowledgeType type,
-                     ResourceConfiguration configuration);
-
-    /**
-     * A a resource of the KnowledgeType from a given Reader.
-     * 
-     * @param url
-     * @param type
-     */    
-    void addResource(Reader reader,
-                     KnowledgeType type);
-
-    /**
-     * A a resource of the KnowledgeType from a given URL, using the provided ResourceConfiguration.
-     * Currently only only decision tables use this, via the DecisionTableResourceConfiguration class.
-     * IF you use a Reader, make sure a text based decision table is used, such as CSV and not binary like XLS.
-     */    
-    void addResource(Reader reader,
-                     KnowledgeType type,
-                     ResourceConfiguration configuration);
+    void add(Resource resource,
+             KnowledgeType type,
+             ResourceConfiguration configuration);
 
     /**
      * Returns the built packages.

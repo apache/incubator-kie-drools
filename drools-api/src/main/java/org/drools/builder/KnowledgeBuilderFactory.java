@@ -67,7 +67,7 @@ public class KnowledgeBuilderFactory {
      * DecisionTableConfiguration dtconf = KnowledgeBuilderFactory.newDecisionTableConfiguration();
      * dtconf.setInputType( DecisionTableInputType.XLS );
      * dtconf.setWorksheetName( "Tables_2" );
-     * kbuilder.addResource( new URL( "file://IntegrationExampleTest.xls" ),
+     * kbuilder.add( new URL( "file://IntegrationExampleTest.xls" ),
      *                       KnowledgeType.DTABLE,
      *                       dtconf );
      * assertFalse( kbuilder.hasErrors() );
