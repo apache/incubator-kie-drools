@@ -36,6 +36,11 @@ Text boxes implemented in the jboss docbook styles:
 * <tip><para></para></tip>
 * <warning><para></para></warning>
 
+Linking syntax in DocBook 5.0+:
+-------------------------------
+http://www.sagehill.net/docbookxsl/Db5Tools.html#Db5UnivLinking
+
+
 Markup program list or console output:
 --------------------------------------
 
