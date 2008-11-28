@@ -67,8 +67,8 @@
       </mediaobject>
     </figure>
 
-    <para>Four classes are used for authoring: DrlParser, XmlParser,
-    ProcessBuilder and PackageBuilder. The two parser classes produce "descr"
+    <para>Four classes are used for authoring: <code>DrlParser</code>, <code>XmlParser</code>,
+    <code>ProcessBuilder</code> and <code>PackageBuilder</code>. The two parser classes produce "descr"
     (description) AST models from a provided Reader instance. ProcessBuilder
     reads in an xstream serialization representation of the Rule Flow.
     PackageBuilder provides convienience APIs so that you can mostly forget
@@ -77,7 +77,7 @@
     instance of Reader as an argument. The example below shows how to build a
     package that includes both XML and DRL rule files and a ruleflow file,
     which are in the classpath. Note that all added package sources must be of
-    the same package namespace for the current PackageBuilder instance!</para>
+    the same package namespace for the current <code>PackageBuilder</code> instance!</para>
 
     <example>
       <title>Building a Package from Multiple Sources</title>
@@ -109,9 +109,7 @@ PackageBuilderErrors errors = builder.getErrors();</programlisting>
 
     <figure>
       <title>PackageBuilderConfiguration</title>
-
       <mediaobject>
-
         <imageobject>
 		<imagedata align="center" fileref="images/Chapter-Rule_Engine/PackageBuilderConfiguration.png"
                      format="PNG" />
@@ -121,13 +119,13 @@ PackageBuilderErrors errors = builder.getErrors();</programlisting>
 
     <para>It has default values that can be overridden programmatically via
     setters or on first use via property settings. At the heart of the
-    settings is the ChainedProperties class which searches a number of
+    settings is the <code>ChainedProperties</code> class which searches a number of
     locations looking for <code>drools.packagebuilder.conf</code> files; as it finds them
     it adds the properties to the master propperties list; this provides a
     level precedence. In order of precedence those locations are: System
     Properties, user defined file in System Properties, user home directory,
-    working directory, various META-INF locations. Further to this the
-    <code>droosl-compiler</code> jar has the default settings in its META-INF
+    working directory, various <code>META-INF</code> locations. Further to this the
+    <code>droosl-compiler</code> jar has the default settings in its <code>META-INF</code>
     directory.</para>
 
     <para>Currently the <code>PackageBuilderConfiguration</code> handles the registry of
@@ -167,14 +165,14 @@ javaConf.setCompiler( JavaDialectConfiguration.JANINO );            </programlis
     </example>
 
     <para>if you do not have Eclipse JDT Core in your classpath you must
-    override the compiler setting before you instantiate this PackageBuilder,
-    you can either do that with a packagebuilder properties file the
-    ChainedProperties class will find, or you can do it programmatically as
+    override the compiler setting before you instantiate this <code>PackageBuilder</code>,
+    you can either do that with a <code>packagebuilder</code> properties file the
+    <code>ChainedProperties</code> class will find, or you can do it programmatically as
     shown below; note this time I use properties to inject the value for
     startup.</para>
 
     <example>
-      <title>Configuring the JavaDialectConfiguration to use JANINO</title>
+      <title>Configuring the <code>JavaDialectConfiguration</code> to use JANINO</title>
 
       <programlisting>Properties properties = new Properties();
 properties.setProperty( "drools.dialect.java.compiler",
@@ -189,13 +187,13 @@ assertEquals( JavaDialectConfiguration.JANINO,
     be specified, different JDK source levels ("1.4" and "1.5") and a parent
     class loader. The default compiler is Eclipse JDT Core at source level
     "1.4" with the parent class loader set to
-    "Thread.currentThread().getContextClassLoader()".</para>
+    <code>Thread.currentThread().getContextClassLoader()</code>.</para>
 
     <para>The following show how to specify the JANINO compiler
     programmatically:</para>
 
     <example>
-      <title>Configuring the PackageBuilder to use JANINO via a
+      <title>Configuring the <code>PackageBuilder</code> to use JANINO via a
       property</title>
 
       <programlisting>PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
@@ -203,13 +201,13 @@ conf.setCompiler( PackageBuilderConfiguration.JANINO );
 PackageBuilder builder = new PackageBuilder( conf );</programlisting>
     </example>
 
-    <para>The MVELDialectConfiguration is much simpler and only allows strict
+    <para>The <code>MVELDialectConfiguration</code> is much simpler and only allows strict
     mode to be turned on and off, by default strict is true; this means all
     method calls must be type safe either by inference or by explicit
     typing.</para>
 
     <figure>
-      <title>MvelDialectConfiguration</title>
+      <title><code>MvelDialectConfiguration</code></title>
 
       <mediaobject>
         <imageobject>
@@ -224,7 +222,7 @@ PackageBuilder builder = new PackageBuilder( conf );</programlisting>
     <title>RuleBase</title>
 
     <figure>
-      <title>RuleBaseFactory</title>
+      <title><code>RuleBaseFactory</code></title>
 
       <mediaobject>
         <imageobject>
@@ -233,9 +231,9 @@ PackageBuilder builder = new PackageBuilder( conf );</programlisting>
       </mediaobject>
     </figure>
 
-    <para>A RuleBase is instantiated using the RuleBaseFactory, by default
-    this returns a ReteOO RuleBase. Packages are added, in turn, using the
-    addPackage method. You may specify packages of any namespace and multiple
+    <para>A <code>RuleBase</code> is instantiated using the <code>RuleBaseFactory</code>, by default
+    this returns a ReteOO <code>RuleBase</code>. Packages are added, in turn, using the
+    <code>addPackage</code> method. You may specify packages of any namespace and multiple
     packages of the same namespace may be added.</para>
 
     <example>
@@ -255,23 +253,23 @@ ruleBase.addPackage( pkg  );        </programlisting>
       </mediaobject>
     </figure>
 
-    <para>A RuleBase contains one or more more packages of rules, ready to be
-    used, i.e., they have been validated/compiled etc. A Rule Base is
+    <para>A <code>RuleBase</code> contains one or more more packages of rules, ready to be
+    used, i.e., they have been validated/compiled etc. A <code>RuleBase</code> is
     serializable so it can be deployed to JNDI or other such services.
     Typically, a rulebase would be generated and cached on first use; to save
-    on the continually re-generation of the Rule Base; which is
+    on the continually re-generation of the <code>RuleBase</code>; which is
     expensive.</para>
 
-    <para>A Rule Base instance is thread safe, in the sense that you can have
+    <para>A <code>RuleBase</code> instance is thread safe, in the sense that you can have
     the one instance shared across threads in your application, which may be a
     web application, for instance. The most common operation on a rulebase is
     to create a new rule session; either stateful or stateless.</para>
 
-    <para>The Rule Base also holds references to any stateful session that it
+    <para>The <code>RuleBase</code> also holds references to any stateful session that it
     has spawned, so that if rules are changing (or being added/removed etc.
     for long running sessions), they can be updated with the latest rules
     (without necessarily having to restart the session). You can specify not
-    to maintain a reference, but only do so if you know the Rule Base will not
+    to maintain a reference, but only do so if you know the <code>RuleBase</code> will not
     be updated. References are not stored for stateless sessions.</para>
 
     <programlisting>ruleBase.newStatefulSession();  // maintains a reference.
@@ -279,7 +277,7 @@ ruleBase.newStatefulSession( false ); // do not maintain a reference    </progra
 
     <para>Packages can be added and removed at any time - all changes will be
     propagated to the existing stateful sessions; don't forget to call
-    fireAllRules() for resulting Activations to fire.</para>
+    <code>fireAllRules()</code> for resulting Activations to fire.</para>
 
     <programlisting>ruleBase.addPackage( pkg );  // Add a package instance
 ruleBase.removePackage( "org.com.sample" );  // remove a package, and all its parts, by it's namespace
@@ -289,9 +287,9 @@ ruleBase.removeRule( "org.com.sample", "my rule" ); // remove a specific rule fr
     method to add an individual rule - to achieve this just add a new package
     with a single rule in it.</para>
 
-    <para>RuleBaseConfigurator can be used to specify additional behavior of
-    the RuleBase. RuleBaseConfiguration is set to immutable after it has been
-    added to a Rule Base. Nearly all the engine optimizations can be turned on
+    <para><code>RuleBaseConfigurator</code> can be used to specify additional behavior of
+    the <code>RuleBase</code>. <code>RuleBaseConfiguration</code> is set to immutable after it has been
+    added to a <code>RuleBase</code>. Nearly all the engine optimizations can be turned on
     and off from here, and also the execution behavior can be set. Users will
     generally be concerned with insertion behavior (identity or equality) and
     cross product behavior(remove or keep identity equals cross
@@ -348,16 +346,16 @@ RuleBase ruleBase = RuleBaseFactory.newRuleBase( conf );</programlisting>
     <section>
       <title>Insertion</title>
 
-      <para>"Insert" is the act of telling the WorkingMemory about the facts.
-      WorkingMemory.insert(yourObject) for example. When you insert a fact, it
-      is examined for matches against the rules etc. This means ALL of the
+      <para>"Insert" is the act of telling the <code>WorkingMemory</code> about the facts.
+      <code>WorkingMemory.insert(yourObject)</code> for example. When you insert a fact, it
+      is examined for matches against the rules etc. This means <emphasis>ALL</emphasis> of the
       work is done during insertion; however, no rules are executed until you
-      call "fireAllRules()". You don't call "fireAllRules()" until after you
+      call <code>fireAllRules()</code>. You don't call <code>fireAllRules()</code> until after you
       have finished inserting your facts. This is a common misunderstanding by
-      people who think the work happens when you call "fireAllRules()". Expert
-      systems typically use the term "assert" or "assertion" to refer to facts
-      made available to the system, however due to the assert become a keyword
-      in most languages we have moved to use the "Insert" keyword; so expect
+      people who think the work happens when you call <code>fireAllRules()</code>. Expert
+      systems typically use the term <code>assert</code> or <code>assertion</code> to refer to facts
+      made available to the system, however due to the <code>assert</code> become a keyword
+      in most languages we have moved to use the <code>Insert</code> keyword; so expect
       to hear the two used interchangeably.</para>
 
       <!-- FIXME - I think we might want to add this sentence to the previous paragraph.
@@ -365,9 +363,9 @@ RuleBase ruleBase = RuleBaseFactory.newRuleBase( conf );</programlisting>
         thus causing new work to be needed. 
       -->
 
-      <para>When an Object is inserted it returns a FactHandle. This FactHandle
+      <para>When an Object is inserted it returns a <code>FactHandle</code>. This <code>FactHandle</code>
       is the token used to represent your insert Object inside the
-      WorkingMemory, it will be used when interacting with the Working Memory
+      <code>WorkingMemory</code>, it will be used when interacting with the <code>WorkingMemory</code>
       when you wish to retract or modify an object.</para>
 
       <programlisting>Cheese stilton = new Cheese("stilton");
@@ -377,15 +375,15 @@ FactHandle stiltonHandle = session.insert( stilton );      </programlisting>
       in two assertions modes equality and identity - identity is
       default.</para>
 
-      <para>Identity means the Working Memory uses an IdentityHashMap to store
+      <para>Identity means the Working Memory uses an <code>IdentityHashMap</code> to store
       all asserted Objects. New instance assertions always result in the
-      return of a new FactHandle, if an instance is asserted twice then it
+      return of a new <code>FactHandle</code>, if an instance is asserted twice then it
       returns the previous fact handle – i.e. it ignores the second insertion
       for the same fact.</para>
 
-      <para>Equality means the Working Memory uses a HashMap to store all
+      <para>Equality means the Working Memory uses a <code>HashMap</code> to store all
       asserted Objects. New instance assertions will only return a new
-      FactHandle if a not equal classes have been asserted.</para>
+      <code>FactHandle</code> if a not equal classes have been asserted.</para>
     </section>
 
     <section>
