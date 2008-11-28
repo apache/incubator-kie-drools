@@ -38,29 +38,78 @@ import org.drools.spi.InternalReadAccessor;
 import org.drools.time.Interval;
 
 /**
- * The implementation of the 'coincides' evaluator definition
+ * <p>The implementation of the 'coincides' evaluator definition.</p>
+ * 
+ * <p>The <b><code>coincides</code></b> evaluator correlates two events and matches when both
+ * happen at the same time. Optionally, the evaluator accept thresholds for the distance between
+ * events start and finish timestamps.</p> 
+ * 
+ * <p>Lets look at an example:</p>
+ * 
+ * <pre>$eventA : EventA( this coincides $eventB )</pre>
  *
+ * <p>The previous pattern will match if and only if the start timestamps of both $eventA
+ * and $eventB are the same AND the end timestamp of both $eventA and $eventB also are
+ * the same.</p>
+ * 
+ * <p>Optionally, this operator accepts one or two parameters. These parameters are the thresholds
+ * for the distance between matching timestamps. If only one paratemer is given, it is used for 
+ * both start and end timestamps. If two parameters are given, then the first is used as a threshold
+ * for the start timestamp and the second one is used as a parameter for the end timestamp.</p>
+ * 
+ * ---------------------- NEED TO FINISH WRITING THE JAVADOC -----------------------------
+ * 
+ * <pre> 3m30s <= $eventA.startTimestamp - $eventB.endTimeStamp <= 4m </pre>
+ * 
+ * <p>The temporal distance interval for the <b><code>after</code></b> operator is optional:</p>
+ * 
+ * <ul><li>If two values are defined (like in the example bellow), the interval starts on the
+ * first value and finishes on the second.</li>
+ * <li>If only one value is defined, we have two cases. If the value is negative, then the interval
+ * starts on the value and finishes on -1ms. If the value is positive, then the interval starts on 
+ * +1ms and finishes on the value.</li>
+ * <li>If no value is defined, it is assumed that the initial value is 1ms and the final value
+ * is the positive infinity.</li></ul>
+ * 
+ * <p><b>NOTE:</b> it is allowed to define negative distances for this operator. Example:</p>
+ * 
+ * <pre>$eventA : EventA( this after[ -3m30s, -2m ] $eventB )</pre>
+ *
+ * <p><b>NOTE:</b> if the initial value is greater than the finish value, the engine automatically
+ * reverse them, as there is no reason to have the initial value greater than the finish value. Example: 
+ * the following two patterns are considered to have the same semantics:</p>
+ * 
+ * <pre>
+ * $eventA : EventA( this after[ -3m30s, -2m ] $eventB )
+ * $eventA : EventA( this after[ -2m, -3m30s ] $eventB )
+ * </pre>
+ * 
+ *
+ * @author etirelli
  * @author mgroch
  */
 public class CoincidesEvaluatorDefinition
     implements
     EvaluatorDefinition {
 
-    public static final Operator  COINCIDES       = Operator.addOperatorToRegistry( "coincides",
-                                                                                  false );
-    public static final Operator  COINCIDES_NOT   = Operator.addOperatorToRegistry( "coincides",
-                                                                                  true );
+    public static final Operator            COINCIDES     = Operator.addOperatorToRegistry( "coincides",
+                                                                                            false );
+    public static final Operator            COINCIDES_NOT = Operator.addOperatorToRegistry( "coincides",
+                                                                                            true );
 
-    private static final String[] SUPPORTED_IDS = { COINCIDES.getOperatorString() };
+    private static final String[]           SUPPORTED_IDS = {COINCIDES.getOperatorString()};
 
-    private Map<String, CoincidesEvaluator> cache        = Collections.emptyMap();
+    private Map<String, CoincidesEvaluator> cache         = Collections.emptyMap();
+    private volatile TimeIntervalParser     parser        = new TimeIntervalParser();
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        cache  = (Map<String, CoincidesEvaluator>)in.readObject();
+    @SuppressWarnings("unchecked")
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        cache = (Map<String, CoincidesEvaluator>) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(cache);
+        out.writeObject( cache );
     }
 
     /**
@@ -99,9 +148,11 @@ public class CoincidesEvaluatorDefinition
         String key = isNegated + ":" + parameterText;
         CoincidesEvaluator eval = this.cache.get( key );
         if ( eval == null ) {
+            Long[] params = parser.parse( parameterText );
             eval = new CoincidesEvaluator( type,
-                                       isNegated,
-                                       parameterText );
+                                           isNegated,
+                                           params,
+                                           parameterText );
             this.cache.put( key,
                             eval );
         }
@@ -142,32 +193,36 @@ public class CoincidesEvaluatorDefinition
      * Implements the 'coincides' evaluator itself
      */
     public static class CoincidesEvaluator extends BaseEvaluator {
-		private static final long serialVersionUID = 6031520837249122183L;
+        private static final long serialVersionUID = 6031520837249122183L;
 
-		private long                  startDev;
-        private long                  endDev;
+        private long              startDev;
+        private long              endDev;
+        private String            paramText;
 
         public CoincidesEvaluator() {
         }
 
         public CoincidesEvaluator(final ValueType type,
-                              final boolean isNegated,
-                              final String parameters) {
+                                  final boolean isNegated,
+                                  final Long[] parameters,
+                                  final String paramText) {
             super( type,
                    isNegated ? COINCIDES_NOT : COINCIDES );
-            this.parseParameters( parameters );
+            this.paramText = paramText;
+            this.setParameters( parameters );
         }
 
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            super.readExternal(in);
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
+            super.readExternal( in );
             startDev = in.readLong();
             endDev = in.readLong();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            super.writeExternal(out);
-            out.writeLong(startDev);
-            out.writeLong(endDev);
+            super.writeExternal( out );
+            out.writeLong( startDev );
+            out.writeLong( endDev );
         }
 
         @Override
@@ -179,15 +234,17 @@ public class CoincidesEvaluatorDefinition
         public boolean isTemporal() {
             return true;
         }
-        
+
         @Override
         public Interval getInterval() {
-            if( this.getOperator().isNegated() ) {
-                return new Interval( Interval.MIN, Interval.MAX );
+            if ( this.getOperator().isNegated() ) {
+                return new Interval( Interval.MIN,
+                                     Interval.MAX );
             }
-            return new Interval( 0, 0 );
+            return new Interval( 0,
+                                 0 );
         }
-        
+
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1,
@@ -201,11 +258,9 @@ public class CoincidesEvaluatorDefinition
             if ( context.rightNull ) {
                 return false;
             }
-            long distStart = Math.abs(((EventFactHandle)((ObjectVariableContextEntry) context).right).getStartTimestamp() -
-                        	 ((EventFactHandle) left ).getStartTimestamp());
-            long distEnd = Math.abs(((EventFactHandle)((ObjectVariableContextEntry) context).right).getEndTimestamp() -
-       	 				   ((EventFactHandle) left ).getEndTimestamp());
-            return this.getOperator().isNegated() ^ ( distStart <= this.startDev && distEnd <= this.endDev);
+            long distStart = Math.abs( ((EventFactHandle) ((ObjectVariableContextEntry) context).right).getStartTimestamp() - ((EventFactHandle) left).getStartTimestamp() );
+            long distEnd = Math.abs( ((EventFactHandle) ((ObjectVariableContextEntry) context).right).getEndTimestamp() - ((EventFactHandle) left).getEndTimestamp() );
+            return this.getOperator().isNegated() ^ (distStart <= this.startDev && distEnd <= this.endDev);
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
@@ -215,11 +270,9 @@ public class CoincidesEvaluatorDefinition
                                                 right ) ) {
                 return false;
             }
-            long distStart = Math.abs(((EventFactHandle) right ).getStartTimestamp() -
-                        	 ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getStartTimestamp());
-            long distEnd = Math.abs(((EventFactHandle) right ).getEndTimestamp() -
-               	 		   ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getEndTimestamp());
-            return this.getOperator().isNegated() ^ ( distStart <= this.startDev && distEnd <= this.endDev );
+            long distStart = Math.abs( ((EventFactHandle) right).getStartTimestamp() - ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getStartTimestamp() );
+            long distEnd = Math.abs( ((EventFactHandle) right).getEndTimestamp() - ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getEndTimestamp() );
+            return this.getOperator().isNegated() ^ (distStart <= this.startDev && distEnd <= this.endDev);
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
@@ -231,9 +284,9 @@ public class CoincidesEvaluatorDefinition
                                          object1 ) ) {
                 return false;
             }
-            long distStart = Math.abs(((EventFactHandle) object1 ).getStartTimestamp() - ((EventFactHandle) object2 ).getStartTimestamp());
-            long distEnd = Math.abs(((EventFactHandle) object1 ).getEndTimestamp() - ((EventFactHandle) object2 ).getEndTimestamp());
-            return this.getOperator().isNegated() ^ ( distStart <= this.startDev && distEnd <= this.endDev );
+            long distStart = Math.abs( ((EventFactHandle) object1).getStartTimestamp() - ((EventFactHandle) object2).getStartTimestamp() );
+            long distEnd = Math.abs( ((EventFactHandle) object1).getEndTimestamp() - ((EventFactHandle) object2).getEndTimestamp() );
+            return this.getOperator().isNegated() ^ (distStart <= this.startDev && distEnd <= this.endDev);
         }
 
         public String toString() {
@@ -265,35 +318,26 @@ public class CoincidesEvaluatorDefinition
         }
 
         /**
-         * This methods tries to parse the string of parameters to customize
-         * the evaluator.
+         * This methods sets the parameters appropriately.
          *
          * @param parameters
          */
-        private void parseParameters(String parameters) {
-            if ( parameters == null || parameters.trim().length() == 0 ) {
-                // exact matching
+        private void setParameters(Long[] parameters) {
+            if ( parameters == null || parameters.length == 0 ) {
+                // open bounded range
                 this.startDev = 0;
                 this.endDev = 0;
                 return;
-            }
-
-            try {
-                String[] ranges = parameters.split( "," );
-                if ( ranges.length == 1 ) {
-                    // same max. deviation at start and end of interval
-                    this.startDev = Long.parseLong( ranges[0] );
-                    this.endDev = this.startDev;
-                } else if ( ranges.length == 2 ) {
-                    // different max. deviation at start and end of interval
-                    this.startDev = Long.parseLong( ranges[0] );
-                    this.endDev = Long.parseLong( ranges[1] );
-                } else {
-                    throw new RuntimeDroolsException( "[Coincides Evaluator]: Not possible to parse parameters: '" + parameters + "'" );
-                }
-            } catch ( NumberFormatException e ) {
-                throw new RuntimeDroolsException( "[Coincides Evaluator]: Not possible to parse parameters: '" + parameters + "'",
-                                                  e );
+            } else if ( parameters.length == 1 ) {
+                // same deviation for both
+                this.startDev = parameters[0].longValue();
+                this.endDev = parameters[0].longValue();
+            } else if ( parameters.length == 2 ) {
+                // different deviation 
+                this.startDev = parameters[0].longValue();
+                this.endDev = parameters[1].longValue();
+            } else {
+                throw new RuntimeDroolsException( "[Coincides Evaluator]: Not possible to have more than 2 parameters: '" + paramText + "'" );
             }
         }
 
