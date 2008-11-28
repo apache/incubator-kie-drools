@@ -131,12 +131,11 @@ then
 
     <figure>
       <title>High-level View of a Rule Engine</title>
-
       <mediaobject>
         <imageobject>
 		<imagedata align="center" fileref="images/Chapter-Rule_Engine/rule-engine-inkscape.svg" format="SVG" contentwidth="540px" contentdepth="300px" />
         </imageobject>
-      </mediaobject>
+        </mediaobject>
     </figure>
 
     <para>A Production Rule System's Inference Engine is stateful and able to
