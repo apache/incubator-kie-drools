@@ -73,7 +73,7 @@
     reads in an xstream serialization representation of the Rule Flow.
     PackageBuilder provides convienience APIs so that you can mostly forget
     about those classes. The three convenience methods are
-    "addPackageFromDrl", "addPackageFromXml" and addRuleFlow - all take an
+    <code>addPackageFromDrl</code>, <code>addPackageFromXml</code> and <code>addRuleFlow</code> - all take an
     instance of Reader as an argument. The example below shows how to build a
     package that includes both XML and DRL rule files and a ruleflow file,
     which are in the classpath. Note that all added package sources must be of
@@ -122,26 +122,26 @@ PackageBuilderErrors errors = builder.getErrors();</programlisting>
     <para>It has default values that can be overridden programmatically via
     setters or on first use via property settings. At the heart of the
     settings is the ChainedProperties class which searches a number of
-    locations looking for drools.packagebuilder.conf files; as it finds them
+    locations looking for <code>drools.packagebuilder.conf</code> files; as it finds them
     it adds the properties to the master propperties list; this provides a
     level precedence. In order of precedence those locations are: System
     Properties, user defined file in System Properties, user home directory,
     working directory, various META-INF locations. Further to this the
-    droosl-compiler jar has the default settings in its META-INF
+    <code>droosl-compiler</code> jar has the default settings in its META-INF
     directory.</para>
 
-    <para>Currently the PackageBuilderConfiguration handles the registry of
+    <para>Currently the <code>PackageBuilderConfiguration</code> handles the registry of
     Accumulate functions, registry of Dialects and the main
     ClassLoader.</para>
 
     <para>Drools has a pluggable Dialect system, which allows other languages
     to compile and execution expressions and blocks, the two currently
     supported dialects are Java and MVEL. Each has its own
-    DialectConfiguration Implementation; the javadocs provide details for each
+    <code>DialectConfiguration</code> Implementation; the javadocs provide details for each
     setter/getter and the property names used to configure them.</para>
 
     <figure>
-      <title>JavaDialectConfiguration</title>
+      <title><code>JavaDialectConfiguration</code></title>
 
       <mediaobject>
         <imageobject>
@@ -151,14 +151,14 @@ PackageBuilderErrors errors = builder.getErrors();</programlisting>
       </mediaobject>
     </figure>
 
-    <para>The JavaDialectConfiguration allows the compiler and language levels
+    <para>The <code>JavaDialectConfiguration</code> allows the compiler and language levels
     to be supported. You can override by setting the
-    "drools.dialect.java.compiler" property in a packagebuilder.conf file that
-    the ChainedProperties instance will find, or you can do it at runtime as
+    <code>drools.dialect.java.compiler</code> property in a <code>packagebuilder.conf</code> file that
+    the <code>ChainedProperties</code> instance will find, or you can do it at runtime as
     shown below.</para>
 
     <example>
-      <title>Configuring the JavaDialectConfiguration to use JANINO via a
+      <title>Configuring the <code>JavaDialectConfiguration</code> to use JANINO via a
       setter</title>
 
       <programlisting>PackageBuilderConfiguration cfg = new PackageBuilderConfiguration( );
