@@ -30,6 +30,7 @@ import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.KnowledgeType;
 import org.drools.definition.KnowledgePackage;
+import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.WorkingMemory;
 
@@ -40,14 +41,12 @@ public abstract class WaltzBenchmark {
 
     public static void main(final String[] args) throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.addResource( new InputStreamReader( WaltzBenchmark.class.getResourceAsStream( "waltz.drl" ) ),
-                             KnowledgeType.DRL );
+        kbuilder.add( ResourceFactory.newClassPathResource( "waltz.drl",
+                                                                    WaltzBenchmark.class ),
+                              KnowledgeType.DRL );
         Collection<KnowledgePackage> pkgs = kbuilder.getKnowledgePackages();
-        //add the package to a rulebase
-        KnowledgeBaseConfiguration kbaseConfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        //conf.setAlphaMemory( true );
-        //            conf.setShadowProxy( false );
-        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kbaseConfiguration );
+        //add the package to a kbase
+        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( pkgs );
 
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();

@@ -22,6 +22,7 @@ import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.KnowledgeType;
 import org.drools.compiler.PackageBuilder;
 import org.drools.definition.KnowledgePackage;
+import org.drools.io.ResourceFactory;
 import org.drools.lang.Expander;
 import org.drools.lang.dsl.DefaultExpanderResolver;
 import org.drools.rule.Package;
@@ -53,12 +54,10 @@ public class DslTest extends TestCase {
     public void testWithExpanderDSL() throws Exception {
         //final PackageBuilder builder = new PackageBuilder();
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        
-        final Reader source = new InputStreamReader( getClass().getResourceAsStream( "rule_with_expander_dsl.dslr" ) );
-        final Reader dsl = new InputStreamReader( getClass().getResourceAsStream( "test_expander.dsl" ) );
-        kbuilder.addResource( dsl,
+
+        kbuilder.add( ResourceFactory.newClassPathResource( "test_expander.dsl", getClass() ),
                               KnowledgeType.DSL );        
-        kbuilder.addResource( source,
+        kbuilder.add( ResourceFactory.newClassPathResource( "rule_with_expander_dsl.dslr", getClass() ) ,
                               KnowledgeType.DSLR );
 
         assertFalse( kbuilder.hasErrors() );
@@ -97,14 +96,12 @@ public class DslTest extends TestCase {
     }
 
     public void testWithExpanderMore() throws Exception {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();        
         
-        final Reader source = new InputStreamReader( getClass().getResourceAsStream( "rule_with_expander_dsl_more.dslr" ) );
-        final Reader dsl = new InputStreamReader( getClass().getResourceAsStream( "test_expander.dsl" ) );
-        kbuilder.addResource( dsl,
+        kbuilder.add( ResourceFactory.newClassPathResource( "test_expander.dsl", getClass() ),
                               KnowledgeType.DSL );        
-        kbuilder.addResource( source,
-                              KnowledgeType.DSLR );
+        kbuilder.add( ResourceFactory.newClassPathResource( "rule_with_expander_dsl_more.dslr", getClass() ) ,
+                              KnowledgeType.DSLR );        
 
         assertFalse( kbuilder.hasErrors() );
 
@@ -155,17 +152,15 @@ public class DslTest extends TestCase {
                       messages.size() );
     }
 
-    public void FIXME_estEmptyDSL() throws Exception {
+    public void FIXME_testEmptyDSL() throws Exception {
         // FIXME eterelli / mic_hat not sure what to do with this?
         final String DSL = "# This is an empty dsl file.";  // gives antlr <EOF> error
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        final Reader drlReader = new InputStreamReader( getClass().getResourceAsStream( "literal_rule.drl" ) );
-        final Reader dslReader = new StringReader( DSL );
 
-        kbuilder.addResource( dslReader,
+        kbuilder.add( ResourceFactory.newClassPathResource( "test_expander.dsl", getClass() ),
                               KnowledgeType.DSL );        
-        kbuilder.addResource( drlReader,
-                              KnowledgeType.DSLR );
+        kbuilder.add( ResourceFactory.newReaderResource( new StringReader( DSL)  ) ,
+                              KnowledgeType.DSLR );  
 
         assertFalse( kbuilder.hasErrors() ); // trying to expand Cheese() pattern
 
@@ -191,13 +186,11 @@ public class DslTest extends TestCase {
     }
 
     public void testDSLWithIndividualConstraintMappings() throws Exception {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        final Reader source = new InputStreamReader( getClass().getResourceAsStream( "test_dslWithIndividualConstraints.dslr" ) );
-        final Reader dsl = new InputStreamReader( getClass().getResourceAsStream( "test_dslWithIndividualConstraints.dsl" ) );
-        kbuilder.addResource( dsl,
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();        
+        kbuilder.add( ResourceFactory.newClassPathResource( "test_dslWithIndividualConstraints.dsl", getClass() ),
                               KnowledgeType.DSL );        
-        kbuilder.addResource( source,
-                              KnowledgeType.DSLR );
+        kbuilder.add( ResourceFactory.newClassPathResource( "test_dslWithIndividualConstraints.dslr", getClass() ) ,
+                              KnowledgeType.DSLR );         
 
         assertFalse( kbuilder.hasErrors() );
 

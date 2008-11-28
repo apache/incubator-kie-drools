@@ -14,6 +14,9 @@ import org.drools.builder.ResourceConfiguration;
 import org.drools.compiler.PackageBuilder;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definitions.impl.KnowledgePackageImp;
+import org.drools.io.Resource;
+import org.drools.io.impl.ReaderResource;
+import org.drools.io.impl.UrlResource;
 import org.drools.rule.Package;
 
 public class KnowledgeBuilderImpl implements KnowledgeBuilder {
@@ -23,27 +26,16 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 		this.pkgBuilder = pkgBuilder;
 	}
 	
-	public void addResource(URL url, KnowledgeType type) {
-        pkgBuilder.addResource( url, type )  ;
+	public void add(Resource resource, KnowledgeType type) {
+        pkgBuilder.addKnowledgeResource( resource, type, null )  ;
 	}	
 
-    public void addResource(URL url,
+    public void add(Resource resource,
                             KnowledgeType type,
                             ResourceConfiguration configuration) {
-        pkgBuilder.addResource( url, type, configuration );
+        pkgBuilder.addKnowledgeResource( resource, type, configuration );
     }	
 	
-    public void addResource(Reader reader,
-                            KnowledgeType type) {
-        pkgBuilder.addResource( reader, type )  ;
-    }	
-
-    public void addResource(Reader reader,
-                            KnowledgeType type,
-                            ResourceConfiguration configuration) {
-        pkgBuilder.addResource( reader, type, configuration );
-    }    
-    
 	public Collection<KnowledgePackage> getKnowledgePackages() {
 	    if ( pkgBuilder.hasErrors() ) {
 	        return new ArrayList<KnowledgePackage>( 0 );

@@ -30,6 +30,7 @@ import org.drools.builder.DecisionTableInputType;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.KnowledgeType;
+import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 
 public class SpreadsheetIntegrationTest extends TestCase {
@@ -40,7 +41,7 @@ public class SpreadsheetIntegrationTest extends TestCase {
         DecisionTableConfiguration dtconf = KnowledgeBuilderFactory.newDecisionTableConfiguration();
         dtconf.setInputType( DecisionTableInputType.XLS );
 
-        kbuilder.addResource( getClass().getResource( "/data/IntegrationExampleTest.xls" ),
+        kbuilder.add( ResourceFactory.newClassPathResource( "/data/IntegrationExampleTest.xls", getClass() ),
                               KnowledgeType.DTABLE,
                               dtconf );
 
@@ -76,7 +77,7 @@ public class SpreadsheetIntegrationTest extends TestCase {
         dtconf.setInputType( DecisionTableInputType.XLS );
         dtconf.setWorksheetName( "Tables_2" );
 
-        kbuilder.addResource( getClass().getResource( "/data/IntegrationExampleTest.xls" ),
+        kbuilder.add( ResourceFactory.newClassPathResource( "/data/IntegrationExampleTest.xls", getClass() ),
                               KnowledgeType.DTABLE,
                               dtconf );
 

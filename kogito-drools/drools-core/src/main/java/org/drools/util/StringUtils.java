@@ -22,10 +22,13 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Ripped form commons StringUtil:
+ * Ripped form commons StringUtil, unless specified:
  * 
  * <p>Operations on {@link java.lang.String} that are
  * <code>null</code> safe.</p>
@@ -196,8 +199,18 @@ public class StringUtils {
      * @param str  the String to check, may be null
      * @return <code>true</code> if the String is empty or null
      */
-    public static boolean isEmpty(final String str) {
-        return str == null || str.length() == 0 || str.trim().length() == 0;
+    public static boolean isEmpty(final CharSequence str) {
+        if ( str == null || str.length() == 0 ) {
+            return true;
+        }
+        
+        for ( int i = 0, length = str.length(); i < length; i++ ){
+            if ( str.charAt( i ) != ' ' )  {
+                return false;
+            }
+        }
+        
+        return true;
     }
 
     // Padding
@@ -896,5 +909,273 @@ public class StringUtils {
         }
     }
     
+    /**
+     * Apply the given relative path to the given path,
+     * assuming standard Java folder separation (i.e. "/" separators);
+     * @param path the path to start from (usually a full file path)
+     * @param relativePath the relative path to apply
+     * (relative to the full file path above)
+     * @return the full file path that results from applying the relative path
+     */
+    public static String applyRelativePath(String path, String relativePath) {
+        int separatorIndex = path.lastIndexOf(FOLDER_SEPARATOR);
+        if (separatorIndex != -1) {
+            String newPath = path.substring(0, separatorIndex);
+            if (!relativePath.startsWith(FOLDER_SEPARATOR)) {
+                newPath += FOLDER_SEPARATOR;
+            }
+            return newPath + relativePath;
+        }
+        else {
+            return relativePath;
+        }
+    }
+
     
+    private static final String FOLDER_SEPARATOR = "/";
+
+    private static final String WINDOWS_FOLDER_SEPARATOR = "\\";
+
+    private static final String TOP_PATH = "..";
+
+    private static final String CURRENT_PATH = ".";
+
+    private static final char EXTENSION_SEPARATOR = '.';
+
+    
+    /**
+     * Normalize the path by suppressing sequences like "path/.." and
+     * inner simple dots.
+     * <p>The result is convenient for path comparison. For other uses,
+     * notice that Windows separators ("\") are replaced by simple slashes.
+     * @param path the original path
+     * @return the normalized path
+     * 
+     * Borrowed from Spring, under the ASL2.0 license.
+     */
+    public static String cleanPath(String path) {
+        if (path == null) {
+            return null;
+        }
+        String pathToUse = replace(path, WINDOWS_FOLDER_SEPARATOR, FOLDER_SEPARATOR);
+
+        // Strip prefix from path to analyze, to not treat it as part of the
+        // first path element. This is necessary to correctly parse paths like
+        // "file:core/../core/io/Resource.class", where the ".." should just
+        // strip the first "core" directory while keeping the "file:" prefix.
+        int prefixIndex = pathToUse.indexOf(":");
+        String prefix = "";
+        if (prefixIndex != -1) {
+            prefix = pathToUse.substring(0, prefixIndex + 1);
+            pathToUse = pathToUse.substring(prefixIndex + 1);
+        }
+        if (pathToUse.startsWith(FOLDER_SEPARATOR)) {
+            prefix = prefix + FOLDER_SEPARATOR;
+            pathToUse = pathToUse.substring(1);
+        }
+
+        String[] pathArray = delimitedListToStringArray(pathToUse, FOLDER_SEPARATOR);
+        List pathElements = new LinkedList();
+        int tops = 0;
+
+        for (int i = pathArray.length - 1; i >= 0; i--) {
+            String element = pathArray[i];
+            if (CURRENT_PATH.equals(element)) {
+                // Points to current directory - drop it.
+            }
+            else if (TOP_PATH.equals(element)) {
+                // Registering top path found.
+                tops++;
+            }
+            else {
+                if (tops > 0) {
+                    // Merging path element with element corresponding to top path.
+                    tops--;
+                }
+                else {
+                    // Normal path element found.
+                    pathElements.add(0, element);
+                }
+            }
+        }
+
+        // Remaining top paths need to be retained.
+        for (int i = 0; i < tops; i++) {
+            pathElements.add(0, TOP_PATH);
+        }
+
+        return prefix + collectionToDelimitedString(pathElements, FOLDER_SEPARATOR);
+    }
+
+    /**
+     * Convenience method to return a Collection as a delimited (e.g. CSV)
+     * String. E.g. useful for <code>toString()</code> implementations.
+     * @param coll the Collection to display
+     * @param delim the delimiter to use (probably a ",")
+     * @param prefix the String to start each element with
+     * @param suffix the String to end each element with
+     * @return the delimited String
+     * 
+     * Borrowed from Spring, under the ASL2.0 license.
+     */
+    public static String collectionToDelimitedString(Collection coll, String delim, String prefix, String suffix) {
+        if (coll == null || coll.isEmpty()) {
+            return "";
+        }
+        StringBuffer sb = new StringBuffer();
+        Iterator it = coll.iterator();
+        while (it.hasNext()) {
+            sb.append(prefix).append(it.next()).append(suffix);
+            if (it.hasNext()) {
+                sb.append(delim);
+            }
+        }
+        return sb.toString();
+    }
+    
+    /**
+     * Convenience method to return a Collection as a delimited (e.g. CSV)
+     * String. E.g. useful for <code>toString()</code> implementations.
+     * @param coll the Collection to display
+     * @param delim the delimiter to use (probably a ",")
+     * @return the delimited String
+     * 
+     * Borrowed from Spring, under the ASL2.0 license.
+     */
+    public static String collectionToDelimitedString(Collection coll, String delim) {
+        return collectionToDelimitedString(coll, delim, "", "");
+    }
+    
+    
+    /**
+     * Replace all occurences of a substring within a string with
+     * another string.
+     * @param inString String to examine
+     * @param oldPattern String to replace
+     * @param newPattern String to insert
+     * @return a String with the replacements
+     * 
+     * Borrowed from Spring, under the ASL2.0 license.
+     */
+    public static String replace(String inString, String oldPattern, String newPattern) {
+        if (isEmpty(inString) || isEmpty(oldPattern) || newPattern == null) {
+            return inString;
+        }
+        StringBuffer sbuf = new StringBuffer();
+        // output StringBuffer we'll build up
+        int pos = 0; // our position in the old string
+        int index = inString.indexOf(oldPattern);
+        // the index of an occurrence we've found, or -1
+        int patLen = oldPattern.length();
+        while (index >= 0) {
+            sbuf.append(inString.substring(pos, index));
+            sbuf.append(newPattern);
+            pos = index + patLen;
+            index = inString.indexOf(oldPattern, pos);
+        }
+        sbuf.append(inString.substring(pos));
+        // remember to append any characters to the right of a match
+        return sbuf.toString();
+    }
+    
+    
+    
+    /**
+     * Take a String which is a delimited list and convert it to a String array.
+     * <p>A single delimiter can consists of more than one character: It will still
+     * be considered as single delimiter string, rather than as bunch of potential
+     * delimiter characters - in contrast to <code>tokenizeToStringArray</code>.
+     * @param str the input String
+     * @param delimiter the delimiter between elements (this is a single delimiter,
+     * rather than a bunch individual delimiter characters)
+     * @return an array of the tokens in the list
+     * @see #tokenizeToStringArray
+     * 
+     * Borrowed from Spring, under the ASL2.0 license.
+     */
+    public static String[] delimitedListToStringArray(String str, String delimiter) {
+        return delimitedListToStringArray(str, delimiter, null);
+    }
+
+    /**
+     * Take a String which is a delimited list and convert it to a String array.
+     * <p>A single delimiter can consists of more than one character: It will still
+     * be considered as single delimiter string, rather than as bunch of potential
+     * delimiter characters - in contrast to <code>tokenizeToStringArray</code>.
+     * @param str the input String
+     * @param delimiter the delimiter between elements (this is a single delimiter,
+     * rather than a bunch individual delimiter characters)
+     * @param charsToDelete a set of characters to delete. Useful for deleting unwanted
+     * line breaks: e.g. "\r\n\f" will delete all new lines and line feeds in a String.
+     * @return an array of the tokens in the list
+     * @see #tokenizeToStringArray
+     * 
+     * Borrowed from Spring, under the ASL2.0 license.
+     */
+    public static String[] delimitedListToStringArray(String str, String delimiter, String charsToDelete) {
+        if (str == null) {
+            return new String[0];
+        }
+        if (delimiter == null) {
+            return new String[] {str};
+        }
+        List result = new ArrayList();
+        if ("".equals(delimiter)) {
+            for (int i = 0; i < str.length(); i++) {
+                result.add(deleteAny(str.substring(i, i + 1), charsToDelete));
+            }
+        }
+        else {
+            int pos = 0;
+            int delPos = 0;
+            while ((delPos = str.indexOf(delimiter, pos)) != -1) {
+                result.add(deleteAny(str.substring(pos, delPos), charsToDelete));
+                pos = delPos + delimiter.length();
+            }
+            if (str.length() > 0 && pos <= str.length()) {
+                // Add rest of String, but not in case of empty input.
+                result.add(deleteAny(str.substring(pos), charsToDelete));
+            }
+        }
+        return toStringArray(result);
+    }
+    
+    /**
+     * Copy the given Collection into a String array.
+     * The Collection must contain String elements only.
+     * @param collection the Collection to copy
+     * @return the String array (<code>null</code> if the passed-in
+     * Collection was <code>null</code>)
+     * 
+     * Borrowed from Spring, under the ASL2.0 license.
+     */
+    public static String[] toStringArray(Collection collection) {
+        if (collection == null) {
+            return null;
+        }
+        return (String[]) collection.toArray(new String[collection.size()]);
+    }    
+    
+    /**
+     * Delete any character in a given String.
+     * @param inString the original String
+     * @param charsToDelete a set of characters to delete.
+     * E.g. "az\n" will delete 'a's, 'z's and new lines.
+     * @return the resulting String
+     * 
+     * Borrowed from Spring, under the ASL2.0 license.
+     */
+    public static String deleteAny(String inString, String charsToDelete) {
+        if (isEmpty(inString) || isEmpty(charsToDelete)) {
+            return inString;
+        }
+        StringBuffer out = new StringBuffer();
+        for (int i = 0; i < inString.length(); i++) {
+            char c = inString.charAt(i);
+            if (charsToDelete.indexOf(c) == -1) {
+                out.append(c);
+            }
+        }
+        return out.toString();
+    } 
 }

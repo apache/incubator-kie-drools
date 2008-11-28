@@ -14,6 +14,7 @@ import org.drools.builder.KnowledgeType;
 import org.drools.examples.cdss.data.Diagnose;
 import org.drools.examples.cdss.data.Patient;
 import org.drools.examples.cdss.service.RecommendationService;
+import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 
 /**
@@ -79,20 +80,20 @@ public class CDSSExample {
 
     private static KnowledgeBase readRule() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        Reader reader = new InputStreamReader( CDSSExample.class.getResourceAsStream( "/org/drools/examples/cdss/GenericRules.drl" ) );
-        kbuilder.addResource( reader,
+
+        kbuilder.add( ResourceFactory.newClassPathResource( "/org/drools/examples/cdss/GenericRules.drl", CDSSExample.class ),
                              KnowledgeType.DRL );
-        reader = new InputStreamReader( CDSSExample.class.getResourceAsStream( "/org/drools/examples/cdss/ClinicalPathwayX.drl" ) );
-        kbuilder.addResource( reader,
+
+        kbuilder.add( ResourceFactory.newClassPathResource( "/org/drools/examples/cdss/GenericRules.drl", CDSSExample.class ),
                              KnowledgeType.DRL );
-        reader = new InputStreamReader( CDSSExample.class.getResourceAsStream( "/org/drools/examples/cdss/ClinicalPathwayX.rf" ) );
-        kbuilder.addResource( reader,
+
+        kbuilder.add( ResourceFactory.newClassPathResource( "/org/drools/examples/cdss/ClinicalPathwayX.rf", CDSSExample.class ),
                              KnowledgeType.DRF );
-        reader = new InputStreamReader( CDSSExample.class.getResourceAsStream( "/org/drools/examples/cdss/TreatmentX.rf" ) );
-        kbuilder.addResource( reader,
+
+        kbuilder.add( ResourceFactory.newClassPathResource( "/org/drools/examples/cdss/TreatmentX.rf", CDSSExample.class ),
                              KnowledgeType.DRF );
-        reader = new InputStreamReader( CDSSExample.class.getResourceAsStream( "/org/drools/examples/cdss/TreatmentY.rf" ) );
-        kbuilder.addResource( reader,
+
+        kbuilder.add( ResourceFactory.newClassPathResource( "/org/drools/examples/cdss/TreatmentY.rf", CDSSExample.class ) ,
                              KnowledgeType.DRF );
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();

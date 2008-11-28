@@ -28,6 +28,7 @@ import org.drools.builder.KnowledgeType;
 import org.drools.compiler.PackageBuilder;
 import org.drools.definition.KnowledgePackage;
 import org.drools.impl.ParametersImpl;
+import org.drools.io.ResourceFactory;
 import org.drools.rule.Package;
 import org.drools.runtime.Parameters;
 import org.drools.runtime.StatelessKnowledgeSession;
@@ -394,7 +395,7 @@ public class StatelessSessionTest extends TestCase {
     
     private StatelessKnowledgeSession getSession2(String fileName) throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.addResource( new InputStreamReader( getClass().getResourceAsStream( fileName ) ), KnowledgeType.DRL );
+        kbuilder.add(  ResourceFactory.newClassPathResource( fileName, getClass() ), KnowledgeType.DRL );
         
         if (kbuilder.hasErrors() ) {
             System.out.println( kbuilder.getErrors() );

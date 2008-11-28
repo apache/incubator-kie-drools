@@ -7,8 +7,6 @@ import org.drools.builder.DecisionTableConfiguration;
 
 public interface DecisionTableProvider {
 
-    String loadFromReader(Reader reader, DecisionTableConfiguration configuration);
-
     String loadFromInputStream(InputStream is,
                                DecisionTableConfiguration configuration);
 

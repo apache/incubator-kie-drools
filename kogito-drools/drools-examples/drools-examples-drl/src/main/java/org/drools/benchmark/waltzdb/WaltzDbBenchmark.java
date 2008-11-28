@@ -15,21 +15,28 @@ import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.KnowledgeType;
 import org.drools.definition.KnowledgePackage;
+import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 
+/**
+ * This example is incomplete, it run's, but is no way near correct.
+ *
+ */
 public class WaltzDbBenchmark {
     public static void main(final String[] args) throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.addResource( new InputStreamReader( WaltzDbBenchmark.class.getResourceAsStream( "waltzdb.drl" ) ),
-                             KnowledgeType.DRL );
+        kbuilder.add( ResourceFactory.newClassPathResource( "waltzdb.drl",
+                                                                    WaltzDbBenchmark.class ),
+                              KnowledgeType.DRL );
         Collection<KnowledgePackage> pkgs = kbuilder.getKnowledgePackages();
 
         KnowledgeBaseConfiguration kbaseConfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kbaseConfiguration.setProperty( "drools.removeIdentities", "true" );
+        kbaseConfiguration.setProperty( "drools.removeIdentities",
+                                        "true" );
 
         final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kbaseConfiguration );
-//                final RuleBase ruleBase = RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
-//                                                               conf );
+        //                final RuleBase ruleBase = RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
+        //                                                               conf );
 
         kbase.addKnowledgePackages( pkgs );
 

@@ -36,7 +36,6 @@ import org.drools.base.ClassFieldAccessor;
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
 import org.drools.builder.DecisionTableConfiguration;
-import org.drools.builder.DecisionTableInputType;
 import org.drools.builder.KnowledgeType;
 import org.drools.builder.ResourceConfiguration;
 import org.drools.common.InternalRuleBase;
@@ -49,6 +48,9 @@ import org.drools.facttemplates.FactTemplate;
 import org.drools.facttemplates.FactTemplateImpl;
 import org.drools.facttemplates.FieldTemplate;
 import org.drools.facttemplates.FieldTemplateImpl;
+import org.drools.io.Resource;
+import org.drools.io.impl.ClassPathResource;
+import org.drools.io.impl.UrlResource;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.FactTemplateDescr;
@@ -74,6 +76,7 @@ import org.drools.rule.TypeDeclaration;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleBuilder;
 import org.drools.spi.InternalReadAccessor;
+import org.drools.xml.XmlCompositionReader;
 import org.drools.xml.XmlPackageReader;
 import org.xml.sax.SAXException;
 
@@ -268,10 +271,17 @@ public class PackageBuilder {
         }
     }
 
-    public void addPackageFromDrl(final URL url) throws DroolsParserException,
-                                                IOException {
-        this.url = url.toExternalForm();
-        addPackageFromDrl( new InputStreamReader( url.openStream() ) );
+    public void addPackageFromDrl(Resource resource) throws DroolsParserException,
+                                                    IOException {
+        if ( resource.hasURL() ) {
+            this.url = resource.getURL().toExternalForm();
+        }
+        final DrlParser parser = new DrlParser();
+        final PackageDescr pkg = parser.parse( resource.getInputStream() );
+        this.results.addAll( parser.getErrors() );
+        if ( !parser.hasErrors() ) {
+            addPackage( pkg );
+        }
         this.url = null;
     }
 
@@ -296,10 +306,22 @@ public class PackageBuilder {
         addPackage( xmlReader.getPackageDescr() );
     }
 
-    public void addPackageFromXml(final URL url) throws DroolsParserException,
-                                                IOException {
-        this.url = url.toExternalForm();
-        addPackageFromXml( new InputStreamReader( url.openStream() ) );
+    public void addPackageFromXml(final Resource resource) throws DroolsParserException,
+                                                          IOException {
+        if ( resource.hasURL() ) {
+            this.url = resource.getURL().toExternalForm();
+        }
+
+        final XmlPackageReader xmlReader = new XmlPackageReader( this.configuration.getSemanticModules() );
+
+        try {
+            xmlReader.read( resource.getReader() );
+        } catch ( final SAXException e ) {
+            throw new DroolsParserException( e.toString(),
+                                             e.getCause() );
+        }
+
+        addPackage( xmlReader.getPackageDescr() );
         this.url = null;
     }
 
@@ -325,12 +347,17 @@ public class PackageBuilder {
         }
     }
 
-    public void addPackageFromDslr(final Reader source) {
+    public void addPackageFromDslr(final Resource resource) throws DroolsParserException,
+                                                           IOException {
+        if ( resource.hasURL() ) {
+            this.url = resource.getURL().toExternalForm();
+        }
+
         final DrlParser parser = new DrlParser();
         DefaultExpander expander = getDslExpander();
 
         try {
-            String str = expander.expand( source );
+            String str = expander.expand( resource.getReader() );
             if ( expander.hasErrors() ) {
                 this.results.addAll( expander.getErrors() );
             }
@@ -340,15 +367,6 @@ public class PackageBuilder {
             if ( !parser.hasErrors() ) {
                 addPackage( pkg );
             }
-        } catch ( Exception e ) {
-            throw new RuntimeException( e );
-        }
-    }
-
-    public void addPackageFromDslr(final URL url) {
-        this.url = url.toExternalForm();
-        try {
-            addPackageFromDslr( new InputStreamReader( url.openStream() ) );
         } catch ( IOException e ) {
             throw new RuntimeException( e );
         }
@@ -368,6 +386,21 @@ public class PackageBuilder {
         }
     }
 
+    public void addDsl(Resource resource) throws IOException {
+        if ( resource.hasURL() ) {
+            this.url = resource.getURL().toExternalForm();
+        }
+
+        DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
+        file.parseAndLoad( resource.getReader() );
+        if ( this.dslFiles == null ) {
+            this.dslFiles = new ArrayList<DSLTokenizedMappingFile>();
+        }
+        this.dslFiles.add( file );
+
+        this.url = null;
+    }
+
     public void addDsl(URL url) {
         this.url = url.toExternalForm();
         try {
@@ -385,13 +418,25 @@ public class PackageBuilder {
         addProcessFromXml( processSource );
     }
 
-    public void addProcessFromXml(URL processSource) {
-        this.url = processSource.toExternalForm();
-        try {
-            addProcessFromXml( new InputStreamReader( processSource.openStream() ) );
-        } catch ( IOException e ) {
-            throw new RuntimeException( e );
+    public void addProcessFromXml(Resource resource) throws IOException {
+        if ( resource.hasURL() ) {
+            this.url = resource.getURL().toExternalForm();
         }
+
+        ProcessBuilder processBuilder = new ProcessBuilder( this );
+        try {
+            processBuilder.addProcessFromFile( resource.getReader(),
+                                               url );
+            this.results.addAll( processBuilder.getErrors() );
+        } catch ( Exception e ) {
+            if ( e instanceof RuntimeException ) {
+                throw (RuntimeException) e;
+            }
+            this.results.add( new RuleFlowLoadError( "Unable to load the rule flow.",
+                                                     e ) );
+        }
+
+        this.results = getResults( this.results );
         this.url = null;
     }
 
@@ -412,85 +457,62 @@ public class PackageBuilder {
         this.results = getResults( this.results );
     }
 
-    public void addResource(URL url,
-                            KnowledgeType type) {
-        addResource( url,
-                     type,
-                     null );
-    }
-
-    public void addResource(URL url,
-                            KnowledgeType type,
-                            ResourceConfiguration configuration) {
-        try {
-            if ( type == KnowledgeType.DTABLE ) {
-                DecisionTableConfiguration dtableConfiguration = (DecisionTableConfiguration) configuration;
-
-                String string = DecisionTableFactory.loadFromInputStream( url.openStream(),
-                                                                          dtableConfiguration );
-                addPackageFromDrl( new StringReader( string ) );
-            } else {
-                addResource( new InputStreamReader( url.openStream() ),
-                             type,
-                             configuration );
-            }
-        } catch ( DroolsParserException e ) {
-            throw new RuntimeException( e );
-        } catch ( IOException e ) {
-            throw new RuntimeException( e );
-        }
-    }
-
-    public void addResource(Reader reader,
-                            KnowledgeType type) {
-        addResource( reader,
-                     type,
-                     null );
-    }
-
-    public void addResource(Reader reader,
-                            KnowledgeType type,
-                            ResourceConfiguration configuration) {
+    public void addKnowledgeResource(Resource resource,
+                                     KnowledgeType type,
+                                     ResourceConfiguration configuration) {
         try {
             switch ( type ) {
                 case DRL : {
-                    addPackageFromDrl( reader );
+                    addPackageFromDrl( resource );
                     break;
 
                 }
                 case DSLR : {
-                    addPackageFromDslr( reader );
+                    addPackageFromDslr( resource );
                     break;
                 }
                 case DSL : {
-                    addDsl( reader );
+                    addDsl( resource );
                     break;
                 }
                 case XDRL : {
-                    addPackageFromXml( reader );
+                    addPackageFromXml( resource );
                     break;
                 }
                 case DRF : {
-                    addProcessFromXml( reader );
+                    addProcessFromXml( resource );
                     break;
                 }
                 case DTABLE : {
                     DecisionTableConfiguration dtableConfiguration = (DecisionTableConfiguration) configuration;
-                    if ( dtableConfiguration.getInputType() == DecisionTableInputType.XLS ) {
-                        throw new IllegalArgumentException( "Use addResource(URL url, KnowledgeType type, ResourceConfiguration configuration) when adding XLS decision tables." );
-                    }
 
-                    String string = DecisionTableFactory.loadFromReader( reader,
-                                                                         dtableConfiguration );
+                    String string = DecisionTableFactory.loadFromInputStream( resource.getInputStream(),
+                                                                              dtableConfiguration );
                     addPackageFromDrl( new StringReader( string ) );
                     break;
                 }
+                case COMPOSITION : {
+                    XmlCompositionReader reader = new XmlCompositionReader( this.configuration.getSemanticModules() );
+                    KnowledgeComposition composition = reader.read( resource.getReader() );
+                    for ( KnowledgeResource kresource : composition.getResources() ) {
+                        Resource ioresource = null;
+                        String src = kresource.getSource();
+                        if ( src.trim().startsWith( "classpath:" ) ) {
+                            ioresource = new ClassPathResource( src.substring( src.indexOf( ':' ) + 1 ), this.configuration.getClassLoader() );
+                        } else {
+                            ioresource = new UrlResource( src );
+                        }
+                        addKnowledgeResource( ioresource, kresource.getType(), kresource.getConfiguration() );
+                    }
+                }
             }
+        } catch ( RuntimeException e ) {
+            throw e;
         } catch ( Exception e ) {
             throw new RuntimeException( e );
         }
     }
-
+    
     /**
      * This adds a package from a Descr/AST This will also trigger a compile, if
      * there are any generated classes to compile of course.

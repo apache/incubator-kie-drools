@@ -8,6 +8,7 @@ import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.KnowledgeType;
+import org.drools.io.ResourceFactory;
 import org.drools.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.drools.process.instance.impl.demo.UIWorkItemHandler;
 import org.drools.runtime.StatefulKnowledgeSession;
@@ -40,9 +41,8 @@ public class WorkItemExample {
     }
 
     private static KnowledgeBase readRule() throws Exception {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        Reader source = new InputStreamReader( WorkItemExample.class.getResourceAsStream( "/org/drools/examples/ruleflow/workitems.rf" ) );
-        kbuilder.addResource( source,
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();        
+        kbuilder.add( ResourceFactory.newClassPathResource( "workitems.rf", WorkItemExample.class ),
                               KnowledgeType.DRF );
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();

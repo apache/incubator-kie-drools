@@ -19,21 +19,7 @@ public class DecisionTableProviderImpl
         return compileStream( is,
                               configuration );
     }
-
-    public String loadFromReader(Reader reader,
-                                 DecisionTableConfiguration configuration) {
-        InputStream is;
-        if ( reader instanceof InputStreamReader ) {
-            is = new ReaderInputStream( reader,
-                                        ((InputStreamReader) reader).getEncoding() );
-        } else {
-            is = new ReaderInputStream( reader );
-        }
-
-        return compileStream( is,
-                              configuration );
-    }
-
+    
     private String compileStream(InputStream is,
                                  DecisionTableConfiguration configuration) {
         SpreadsheetCompiler compiler = new SpreadsheetCompiler();

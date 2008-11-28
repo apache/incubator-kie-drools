@@ -1,13 +1,12 @@
 package org.drools.examples;
 
-import java.io.InputStreamReader;
-
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.KnowledgeType;
+import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 
 public class FibonacciExample {
@@ -15,8 +14,9 @@ public class FibonacciExample {
     public static void main(final String[] args) throws Exception {
 
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.addResource( new InputStreamReader( FibonacciExample.class.getResourceAsStream( "Fibonacci.drl" ) ),
-                             KnowledgeType.DRL );
+        kbuilder.add( ResourceFactory.newClassPathResource( "Fibonacci.drl",
+                                                                    FibonacciExample.class ),
+                              KnowledgeType.DRL );
 
         final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );

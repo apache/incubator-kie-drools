@@ -2,8 +2,8 @@
   <name>drools-compiler</name>
   <comment>A rule production system</comment>
   <projects>
-    <project>drools-core</project>
     <project>drools-api</project>
+    <project>drools-core</project>
   </projects>
   <buildSpec>
     <buildCommand>

@@ -1,6 +1,5 @@
 package org.drools.tutorials.banking;
 
-import java.io.InputStreamReader;
 import java.util.Collection;
 
 import org.drools.KnowledgeBase;
@@ -9,8 +8,8 @@ import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.KnowledgeType;
 import org.drools.definition.KnowledgePackage;
+import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
-
 
 public class RuleRunner {
 
@@ -25,8 +24,10 @@ public class RuleRunner {
 
         for ( int i = 0; i < rules.length; i++ ) {
             String ruleFile = rules[i];
-            System.out.println( "Loading file: " + ruleFile );            
-            kbuilder.addResource( new InputStreamReader( RuleRunner.class.getResourceAsStream( ruleFile ) ), KnowledgeType.DRL );
+            System.out.println( "Loading file: " + ruleFile );
+            kbuilder.add( ResourceFactory.newClassPathResource( ruleFile,
+                                                                        RuleRunner.class ),
+                                  KnowledgeType.DRL );
         }
 
         Collection<KnowledgePackage> pkgs = kbuilder.getKnowledgePackages();
