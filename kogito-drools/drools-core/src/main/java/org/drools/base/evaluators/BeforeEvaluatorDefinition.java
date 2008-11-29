@@ -210,12 +210,14 @@ public class BeforeEvaluatorDefinition
             super.readExternal( in );
             initRange = in.readLong();
             finalRange = in.readLong();
+            paramText = (String) in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
             super.writeExternal( out );
             out.writeLong( initRange );
             out.writeLong( finalRange );
+            out.writeObject( paramText );
         }
 
         @Override

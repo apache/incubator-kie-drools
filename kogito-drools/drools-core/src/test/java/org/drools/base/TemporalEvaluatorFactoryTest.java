@@ -24,6 +24,10 @@ import java.lang.reflect.Method;
 import junit.framework.TestCase;
 
 import org.drools.RuntimeDroolsException;
+import org.drools.base.evaluators.AfterEvaluatorDefinition;
+import org.drools.base.evaluators.BeforeEvaluatorDefinition;
+import org.drools.base.evaluators.CoincidesEvaluatorDefinition;
+import org.drools.base.evaluators.DuringEvaluatorDefinition;
 import org.drools.base.evaluators.EvaluatorDefinition;
 import org.drools.base.evaluators.EvaluatorRegistry;
 import org.drools.common.EventFactHandle;
@@ -49,7 +53,7 @@ public class TemporalEvaluatorFactoryTest extends TestCase {
     private EvaluatorRegistry registry = new EvaluatorRegistry();
 
     public void testAfter() {
-        registry.addEvaluatorDefinition( "org.drools.base.evaluators.AfterEvaluatorDefinition" );
+        registry.addEvaluatorDefinition( AfterEvaluatorDefinition.class.getName() );
 
         EventFactHandle foo = new EventFactHandle( 1,
                                                    "foo",
@@ -134,7 +138,7 @@ public class TemporalEvaluatorFactoryTest extends TestCase {
     }
 
     public void testBefore() {
-        registry.addEvaluatorDefinition( "org.drools.base.evaluators.BeforeEvaluatorDefinition" );
+        registry.addEvaluatorDefinition( BeforeEvaluatorDefinition.class.getName() );
 
         EventFactHandle foo = new EventFactHandle( 1,
                                                    "foo",
@@ -219,7 +223,7 @@ public class TemporalEvaluatorFactoryTest extends TestCase {
     }
 
     public void testCoincides() {
-        registry.addEvaluatorDefinition( "org.drools.base.evaluators.CoincidesEvaluatorDefinition" );
+        registry.addEvaluatorDefinition( CoincidesEvaluatorDefinition.class.getName() );
 
         EventFactHandle foo = new EventFactHandle( 1,
                                                    "foo",
@@ -280,6 +284,136 @@ public class TemporalEvaluatorFactoryTest extends TestCase {
                           ValueType.OBJECT_TYPE );
     }
 
+    public void testDuring() {
+        registry.addEvaluatorDefinition( DuringEvaluatorDefinition.class.getName() );
+
+        EventFactHandle foo = new EventFactHandle( 1,
+                                                   "foo",
+                                                   1,
+                                                   2,
+                                                   10 );
+        EventFactHandle bar = new EventFactHandle( 2,
+                                                   "bar",
+                                                   1,
+                                                   4,
+                                                   7 );
+        EventFactHandle drool = new EventFactHandle( 1,
+                                                     "drool",
+                                                     1,
+                                                     1,
+                                                     5 );
+        EventFactHandle mole = new EventFactHandle( 1,
+                                                    "mole",
+                                                    1,
+                                                    7,
+                                                    6 );
+
+        final Object[][] data = {
+                 {foo, "during", bar, Boolean.FALSE}, 
+                 {foo, "during", drool, Boolean.FALSE}, 
+                 {foo, "during", mole, Boolean.FALSE}, 
+                 {bar, "during", foo, Boolean.TRUE}, 
+                 {bar, "during", drool, Boolean.FALSE}, 
+                 {bar, "during", mole, Boolean.FALSE}, 
+                 {foo, "not during", bar, Boolean.TRUE}, 
+                 {foo, "not during", drool, Boolean.TRUE}, 
+                 {foo, "not during", mole, Boolean.TRUE}, 
+                 {bar, "not during", foo, Boolean.FALSE}, 
+                 {bar, "not during", drool, Boolean.TRUE}, 
+                 {bar, "not during", mole, Boolean.TRUE}, 
+
+                 {bar, "during[2]", foo, Boolean.TRUE}, 
+                 {bar, "during[3]", foo, Boolean.TRUE}, 
+                 {bar, "during[1]", foo, Boolean.FALSE},
+                 {bar, "not during[2]", foo, Boolean.FALSE}, 
+                 {bar, "not during[3]", foo, Boolean.FALSE}, 
+                 {bar, "not during[1]", foo, Boolean.TRUE},
+                 
+                 {bar, "during[1, 2]", foo, Boolean.TRUE}, 
+                 {bar, "during[2, 3]", foo, Boolean.FALSE}, 
+                 {bar, "during[3, 3]", foo, Boolean.FALSE},
+                 {bar, "not during[1, 2]", foo, Boolean.FALSE}, 
+                 {bar, "not during[2, 3]", foo, Boolean.TRUE}, 
+                 {bar, "not during[3, 3]", foo, Boolean.TRUE},
+                 
+                 {bar, "during[2, 2, 1, 1]", foo, Boolean.TRUE}, 
+                 {bar, "during[1, 5, 1, 3]", foo, Boolean.TRUE}, 
+                 {bar, "during[0, 1, 0, 3]", foo, Boolean.FALSE},
+                 {bar, "not during[2, 2, 1, 1]", foo, Boolean.FALSE}, 
+                 {bar, "not during[1, 5, 1, 3]", foo, Boolean.FALSE}, 
+                 {bar, "not during[0, 1, 0, 3]", foo, Boolean.TRUE}
+                 
+                };
+
+        runEvaluatorTest( data,
+                          ValueType.OBJECT_TYPE );
+    }
+
+    public void testIncludes() {
+        registry.addEvaluatorDefinition( DuringEvaluatorDefinition.class.getName() );
+
+        EventFactHandle foo = new EventFactHandle( 1,
+                                                   "foo",
+                                                   1,
+                                                   2,
+                                                   10 );
+        EventFactHandle bar = new EventFactHandle( 2,
+                                                   "bar",
+                                                   1,
+                                                   4,
+                                                   7 );
+        EventFactHandle drool = new EventFactHandle( 1,
+                                                     "drool",
+                                                     1,
+                                                     1,
+                                                     5 );
+        EventFactHandle mole = new EventFactHandle( 1,
+                                                    "mole",
+                                                    1,
+                                                    7,
+                                                    6 );
+
+        final Object[][] data = {
+                 {bar, "includes", foo, Boolean.FALSE}, 
+                 {drool, "includes", foo, Boolean.FALSE}, 
+                 {mole, "includes", foo, Boolean.FALSE}, 
+                 {foo, "includes", bar, Boolean.TRUE}, 
+                 {drool, "includes", bar, Boolean.FALSE}, 
+                 {mole, "includes", bar, Boolean.FALSE}, 
+                 {bar, "not includes", foo, Boolean.TRUE}, 
+                 {drool, "not includes", foo, Boolean.TRUE}, 
+                 {mole, "not includes", foo, Boolean.TRUE}, 
+                 {foo, "not includes", bar, Boolean.FALSE}, 
+                 {drool, "not includes", bar, Boolean.TRUE}, 
+                 {mole, "not includes", bar, Boolean.TRUE}, 
+
+                 {foo, "includes[2]", bar, Boolean.TRUE}, 
+                 {foo, "includes[3]", bar, Boolean.TRUE}, 
+                 {foo, "includes[1]", bar, Boolean.FALSE},
+                 {foo, "not includes[2]", bar, Boolean.FALSE}, 
+                 {foo, "not includes[3]", bar, Boolean.FALSE}, 
+                 {foo, "not includes[1]", bar, Boolean.TRUE},
+                 
+                 {foo, "includes[1, 2]", bar, Boolean.TRUE}, 
+                 {foo, "includes[2, 3]", bar, Boolean.FALSE}, 
+                 {foo, "includes[3, 3]", bar, Boolean.FALSE},
+                 {foo, "not includes[1, 2]", bar, Boolean.FALSE}, 
+                 {foo, "not includes[2, 3]", bar, Boolean.TRUE}, 
+                 {foo, "not includes[3, 3]", bar, Boolean.TRUE},
+                 
+                 {foo, "includes[2, 2, 1, 1]", bar, Boolean.TRUE}, 
+                 {foo, "includes[1, 5, 1, 3]", bar, Boolean.TRUE}, 
+                 {foo, "includes[0, 1, 0, 3]", bar, Boolean.FALSE},
+                 {foo, "not includes[2, 2, 1, 1]", bar, Boolean.FALSE}, 
+                 {foo, "not includes[1, 5, 1, 3]", bar, Boolean.FALSE}, 
+                 {foo, "not includes[0, 1, 0, 3]", bar, Boolean.TRUE}
+                 
+                };
+
+        runEvaluatorTest( data,
+                          ValueType.OBJECT_TYPE );
+    }
+
     private void runEvaluatorTest(final Object[][] data,
                                   final ValueType valueType) {
         final InternalReadAccessor extractor = new MockExtractor();
@@ -297,7 +431,6 @@ public class TemporalEvaluatorFactoryTest extends TestCase {
             }
             EvaluatorDefinition evalDef = registry.getEvaluatorDefinition( evaluatorStr );
             assertNotNull( evalDef );
-            @SuppressWarnings("unused")
             final Evaluator evaluator = evalDef.getEvaluator( valueType,
                                                               evaluatorStr,
                                                               isNegated,
@@ -398,10 +531,10 @@ public class TemporalEvaluatorFactoryTest extends TestCase {
         final FieldValue value = FieldFactory.getFieldValue( row[2] );
         RuntimeDroolsException exc = null;
         try {
-            final boolean result = evaluator.evaluate( null,
-                                                       extractor,
-                                                       row[0],
-                                                       value );
+            evaluator.evaluate( null,
+                                extractor,
+                                row[0],
+                                value );
         } catch ( RuntimeDroolsException e ) {
             exc = e;
         }
@@ -536,7 +669,7 @@ public class TemporalEvaluatorFactoryTest extends TestCase {
             return object != null ? ((Number) object).doubleValue() : 0.0;
         }
 
-        public Class getExtractToClass() {
+        public Class<?> getExtractToClass() {
             return null;
         }
 
