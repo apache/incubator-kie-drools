@@ -42,7 +42,7 @@ import org.drools.time.Interval;
  * 
  * <p>The <b><code>coincides</code></b> evaluator correlates two events and matches when both
  * happen at the same time. Optionally, the evaluator accept thresholds for the distance between
- * events start and finish timestamps.</p> 
+ * events' start and finish timestamps.</p> 
  * 
  * <p>Lets look at an example:</p>
  * 
@@ -55,36 +55,21 @@ import org.drools.time.Interval;
  * <p>Optionally, this operator accepts one or two parameters. These parameters are the thresholds
  * for the distance between matching timestamps. If only one paratemer is given, it is used for 
  * both start and end timestamps. If two parameters are given, then the first is used as a threshold
- * for the start timestamp and the second one is used as a parameter for the end timestamp.</p>
+ * for the start timestamp and the second one is used as a threshold for the end timestamp. In other
+ * words:</p>
  * 
- * ---------------------- NEED TO FINISH WRITING THE JAVADOC -----------------------------
+ * <pre> $eventA : EventA( this coincides[15s, 10s] $eventB ) </pre> 
  * 
- * <pre> 3m30s <= $eventA.startTimestamp - $eventB.endTimeStamp <= 4m </pre>
- * 
- * <p>The temporal distance interval for the <b><code>after</code></b> operator is optional:</p>
- * 
- * <ul><li>If two values are defined (like in the example bellow), the interval starts on the
- * first value and finishes on the second.</li>
- * <li>If only one value is defined, we have two cases. If the value is negative, then the interval
- * starts on the value and finishes on -1ms. If the value is positive, then the interval starts on 
- * +1ms and finishes on the value.</li>
- * <li>If no value is defined, it is assumed that the initial value is 1ms and the final value
- * is the positive infinity.</li></ul>
- * 
- * <p><b>NOTE:</b> it is allowed to define negative distances for this operator. Example:</p>
- * 
- * <pre>$eventA : EventA( this after[ -3m30s, -2m ] $eventB )</pre>
- *
- * <p><b>NOTE:</b> if the initial value is greater than the finish value, the engine automatically
- * reverse them, as there is no reason to have the initial value greater than the finish value. Example: 
- * the following two patterns are considered to have the same semantics:</p>
+ * Above pattern will match if and only if:
  * 
  * <pre>
- * $eventA : EventA( this after[ -3m30s, -2m ] $eventB )
- * $eventA : EventA( this after[ -2m, -3m30s ] $eventB )
+ * abs( $eventA.startTimestamp - $eventB.startTimestamp ) <= 15s &&
+ * abs( $eventA.endTimestamp - $eventB.endTimestamp ) <= 10s 
  * </pre>
  * 
- *
+ * <p><b>NOTE:</b> it makes no sense to use negative interval values for the parameters and the 
+ * engine will raise an error if that happens.</p>
+ * 
  * @author etirelli
  * @author mgroch
  */
@@ -217,12 +202,14 @@ public class CoincidesEvaluatorDefinition
             super.readExternal( in );
             startDev = in.readLong();
             endDev = in.readLong();
+            paramText = (String) in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
             super.writeExternal( out );
             out.writeLong( startDev );
             out.writeLong( endDev );
+            out.writeObject( paramText );
         }
 
         @Override
@@ -328,16 +315,23 @@ public class CoincidesEvaluatorDefinition
                 this.startDev = 0;
                 this.endDev = 0;
                 return;
-            } else if ( parameters.length == 1 ) {
-                // same deviation for both
-                this.startDev = parameters[0].longValue();
-                this.endDev = parameters[0].longValue();
-            } else if ( parameters.length == 2 ) {
-                // different deviation 
-                this.startDev = parameters[0].longValue();
-                this.endDev = parameters[1].longValue();
             } else {
-                throw new RuntimeDroolsException( "[Coincides Evaluator]: Not possible to have more than 2 parameters: '" + paramText + "'" );
+                for( Long param : parameters ) {
+                    if( param.longValue() < 0 ) {
+                        throw new RuntimeDroolsException( "[Coincides Evaluator]: negative values not allowed for temporal distance thresholds: '" + paramText + "'" );
+                    }
+                }
+                if ( parameters.length == 1 ) {
+                    // same deviation for both
+                    this.startDev = parameters[0].longValue();
+                    this.endDev = parameters[0].longValue();
+                } else if ( parameters.length == 2 ) {
+                    // different deviation 
+                    this.startDev = parameters[0].longValue();
+                    this.endDev = parameters[1].longValue();
+                } else {
+                    throw new RuntimeDroolsException( "[Coincides Evaluator]: Not possible to have more than 2 parameters: '" + paramText + "'" );
+                }
             }
         }
 

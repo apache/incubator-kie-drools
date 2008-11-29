@@ -38,8 +38,61 @@ import org.drools.spi.InternalReadAccessor;
 import org.drools.time.Interval;
 
 /**
- * The implementation of the 'finishes' evaluator definition
+ * <p>The implementation of the <code>during</code> evaluator definition.</p>
+ * 
+ * <p>The <b><code>during</code></b> evaluator correlates two events and matches when the current event 
+ * happens during the occurrence of the event being correlated.</p> 
+ * 
+ * <p>Lets look at an example:</p>
+ * 
+ * <pre>$eventA : EventA( this during $eventB )</pre>
  *
+ * <p>The previous pattern will match if and only if the $eventA starts after $eventB starts and finishes
+ * before $eventB finishes. In other words:</p>
+ * 
+ * <pre> $eventB.startTimestamp < $eventA.startTimestamp <= $eventA.endTimestamp < $eventB.endTimestamp </pre>
+ * 
+ * <p>The <b><code>during</code></b> operator accepts 1, 2 or 4 optional parameters as follow:</p>
+ * 
+ * <ul><li>If one value is defined, this will be the maximum distance between the start timestamp of both
+ * event and the maximum distance between the end timestamp of both events in order to operator match. Example:</li></lu>
+ * 
+ * <pre>$eventA : EventA( this during[ 5s ] $eventB )</pre>
+ * 
+ * Will match if and only if:
+ * 
+ * <pre> 
+ * 0 < $eventA.startTimestamp - $eventB.startTimestamp <= 5s &&
+ * 0 < $eventB.endTimestamp - $eventA.endTimestamp <= 5s
+ * </pre>
+ * 
+ * <ul><li>If two values are defined, the first value will be the minimum distance between the timestamps
+ * of both events, while the second value will be the maximum distance between the timestamps of both events. 
+ * Example:</li></lu>
+ * 
+ * <pre>$eventA : EventA( this during[ 5s, 10s ] $eventB )</pre>
+ * 
+ * Will match if and only if:
+ * 
+ * <pre> 
+ * 5s <= $eventA.startTimestamp - $eventB.startTimestamp <= 10s &&
+ * 5s <= $eventB.endTimestamp - $eventA.endTimestamp <= 10s
+ * </pre>
+ * 
+ * <ul><li>If four values are defined, the first two values will be the minimum and maximum distances between the 
+ * start timestamp of both events, while the last two values will be the minimum and maximum distances between the 
+ * end timestamp of both events. Example:</li></lu>
+ * 
+ * <pre>$eventA : EventA( this during[ 2s, 6s, 4s, 10s ] $eventB )</pre>
+ * 
+ * Will match if and only if:
+ * 
+ * <pre> 
+ * 2s <= $eventA.startTimestamp - $eventB.startTimestamp <= 6s &&
+ * 4s <= $eventB.endTimestamp - $eventA.endTimestamp <= 10s
+ * </pre>
+ * 
+ * @author etirelli
  * @author mgroch
  */
 public class FinishesEvaluatorDefinition
@@ -55,6 +108,7 @@ public class FinishesEvaluatorDefinition
 
     private Map<String, FinishesEvaluator> cache        = Collections.emptyMap();
 
+    @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         cache  = (Map<String, FinishesEvaluator>)in.readObject();
     }

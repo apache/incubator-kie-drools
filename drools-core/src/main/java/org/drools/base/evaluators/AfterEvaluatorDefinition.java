@@ -198,7 +198,7 @@ public class AfterEvaluatorDefinition
         public AfterEvaluator(final ValueType type,
                               final boolean isNegated,
                               final Long[] parameters,
-                              final String paramText ) {
+                              final String paramText) {
             super( type,
                    isNegated ? NOT_AFTER : AFTER );
             this.paramText = paramText;
@@ -210,12 +210,14 @@ public class AfterEvaluatorDefinition
             super.readExternal( in );
             initRange = in.readLong();
             finalRange = in.readLong();
+            paramText = (String) in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
             super.writeExternal( out );
             out.writeLong( initRange );
             out.writeLong( finalRange );
+            out.writeObject( paramText );
         }
 
         @Override
@@ -326,14 +328,13 @@ public class AfterEvaluatorDefinition
          *
          * @param parameters
          */
-        private void setParameters( Long[] parameters ) {
+        private void setParameters(Long[] parameters) {
             if ( parameters == null || parameters.length == 0 ) {
                 // open bounded range
                 this.initRange = 1;
                 this.finalRange = Long.MAX_VALUE;
-                return;
-            } else if( parameters.length == 1 ) {
-                if( parameters[0].longValue() >= 0 ) {
+            } else if ( parameters.length == 1 ) {
+                if ( parameters[0].longValue() >= 0 ) {
                     // up to that value
                     this.initRange = 1;
                     this.finalRange = parameters[0].longValue();
@@ -342,8 +343,8 @@ public class AfterEvaluatorDefinition
                     this.initRange = parameters[0].longValue();
                     this.finalRange = -1;
                 }
-            } else if( parameters.length == 2 ) {
-                if( parameters[0].longValue() <= parameters[1].longValue() ) {
+            } else if ( parameters.length == 2 ) {
+                if ( parameters[0].longValue() <= parameters[1].longValue() ) {
                     this.initRange = parameters[0].longValue();
                     this.finalRange = parameters[1].longValue();
                 } else {
