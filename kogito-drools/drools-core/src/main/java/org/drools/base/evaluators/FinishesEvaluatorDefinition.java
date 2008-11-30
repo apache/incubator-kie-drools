@@ -40,8 +40,8 @@ import org.drools.time.Interval;
 /**
  * <p>The implementation of the <code>finishes</code> evaluator definition.</p>
  * 
- * <p>The <b><code>finishes</code></b> evaluator correlates two events and matches when the current event 
- * start timestamp happens after the correlated event start timestamp, but both end timestamps occur at
+ * <p>The <b><code>finishes</code></b> evaluator correlates two events and matches when the current event's 
+ * start timestamp happens after the correlated event's start timestamp, but both end timestamps occur at
  * the same time.</p> 
  * 
  * <p>Lets look at an example:</p>

@@ -518,6 +518,110 @@ public class TemporalEvaluatorFactoryTest extends TestCase {
                           ValueType.OBJECT_TYPE );
     }
 
+    public void testStarts() {
+        registry.addEvaluatorDefinition( DuringEvaluatorDefinition.class.getName() );
+
+        EventFactHandle foo = new EventFactHandle( 1,
+                                                   "foo",
+                                                   1,
+                                                   2,
+                                                   10 );
+        EventFactHandle bar = new EventFactHandle( 2,
+                                                   "bar",
+                                                   1,
+                                                   2,
+                                                   7 );
+        EventFactHandle drool = new EventFactHandle( 1,
+                                                     "drool",
+                                                     1,
+                                                     2,
+                                                     10 );
+        EventFactHandle mole = new EventFactHandle( 1,
+                                                    "mole",
+                                                    1,
+                                                    1,
+                                                    4 );
+
+        final Object[][] data = {
+                 {bar,   "starts", foo, Boolean.TRUE}, 
+                 {drool, "starts", foo, Boolean.FALSE}, 
+                 {mole,  "starts", foo, Boolean.FALSE}, 
+                 {foo,   "starts", bar, Boolean.FALSE},
+                 
+                 {bar,   "not starts", foo, Boolean.FALSE}, 
+                 {drool, "not starts", foo, Boolean.TRUE}, 
+                 {mole,  "not starts", foo, Boolean.TRUE}, 
+                 {foo,   "not starts", bar, Boolean.TRUE},
+                 
+                 {bar,   "starts[1]", foo, Boolean.TRUE}, 
+                 {drool, "starts[1]", foo, Boolean.FALSE}, 
+                 {mole,  "starts[1]", foo, Boolean.TRUE}, 
+                 {foo,   "starts[1]", bar, Boolean.FALSE},
+                 
+                 {bar,   "not starts[1]", foo, Boolean.FALSE}, 
+                 {drool, "not starts[1]", foo, Boolean.TRUE}, 
+                 {mole,  "not starts[1]", foo, Boolean.FALSE}, 
+                 {foo,   "not starts[1]", bar, Boolean.TRUE},
+                 
+                 {mole,  "starts[3]", foo, Boolean.TRUE}, 
+                };
+
+        runEvaluatorTest( data,
+                          ValueType.OBJECT_TYPE );
+    }
+
+    public void testStartedBy() {
+        registry.addEvaluatorDefinition( DuringEvaluatorDefinition.class.getName() );
+
+        EventFactHandle foo = new EventFactHandle( 1,
+                                                   "foo",
+                                                   1,
+                                                   2,
+                                                   10 );
+        EventFactHandle bar = new EventFactHandle( 2,
+                                                   "bar",
+                                                   1,
+                                                   2,
+                                                   7 );
+        EventFactHandle drool = new EventFactHandle( 1,
+                                                     "drool",
+                                                     1,
+                                                     2,
+                                                     10 );
+        EventFactHandle mole = new EventFactHandle( 1,
+                                                    "mole",
+                                                    1,
+                                                    1,
+                                                    6 );
+
+        final Object[][] data = {
+                 {foo, "startedby", bar, Boolean.TRUE}, 
+                 {foo, "startedby", drool, Boolean.FALSE}, 
+                 {foo, "startedby", mole, Boolean.FALSE}, 
+                 {bar, "startedby", foo, Boolean.FALSE},
+                 
+                 {foo, "not startedby", bar, Boolean.FALSE}, 
+                 {foo, "not startedby", drool, Boolean.TRUE}, 
+                 {foo, "not startedby", mole, Boolean.TRUE}, 
+                 {bar, "not startedby", foo, Boolean.TRUE},
+                 
+                 {foo, "startedby[1]", bar, Boolean.TRUE}, 
+                 {foo, "startedby[1]", drool, Boolean.FALSE}, 
+                 {foo, "startedby[1]", mole, Boolean.TRUE}, 
+                 {bar, "startedby[1]", foo, Boolean.FALSE},
+                 
+                 {foo, "not startedby[1]", bar, Boolean.FALSE}, 
+                 {foo, "not startedby[1]", drool, Boolean.TRUE}, 
+                 {foo, "not startedby[1]", mole, Boolean.FALSE}, 
+                 {bar, "not startedby[1]", foo, Boolean.TRUE},
+                 
+                 {foo, "startedby[3]", mole, Boolean.TRUE}, 
+                };
+
+        runEvaluatorTest( data,
+                          ValueType.OBJECT_TYPE );
+    }
+
     private void runEvaluatorTest(final Object[][] data,
                                   final ValueType valueType) {
         final InternalReadAccessor extractor = new MockExtractor();
