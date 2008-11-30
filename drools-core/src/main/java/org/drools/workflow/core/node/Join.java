@@ -46,10 +46,16 @@ public class Join extends NodeImpl {
      * before allowing 
      */
     public static final int TYPE_DISCRIMINATOR = 3;
+    /**
+     * The outgoing connection of a join of this type is triggered
+     * when n of its incoming connections have been triggered.
+     */
+    public static final int TYPE_N_OF_M = 4;
     
     private static final long serialVersionUID = 400L;
 
-    private int               type;
+    private int type;
+    private String n;
 
     public Join() {
         this.type = TYPE_UNDEFINED;
@@ -61,6 +67,14 @@ public class Join extends NodeImpl {
 
     public int getType() {
         return this.type;
+    }
+    
+    public void setN(String n) {
+    	this.n = n;
+    }
+    
+    public String getN() {
+    	return n;
     }
 
     public Connection getTo() {

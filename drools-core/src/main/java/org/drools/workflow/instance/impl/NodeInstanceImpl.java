@@ -121,7 +121,11 @@ public abstract class NodeInstanceImpl implements org.drools.workflow.instance.N
             ((org.drools.workflow.instance.NodeInstanceContainer) getNodeInstanceContainer()).removeNodeInstance(this);
         }
         for (Connection connection: getNode().getOutgoingConnections(type)) {
-            triggerConnection(connection);
+        	// stop if this process instance has been aborted / completed
+        	if (getProcessInstance().getState() != ProcessInstance.STATE_ACTIVE) {
+        		return;
+        	}
+    		triggerConnection(connection);
         }
     }
     

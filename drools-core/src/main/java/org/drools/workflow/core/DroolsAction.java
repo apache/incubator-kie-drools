@@ -38,10 +38,11 @@ public class DroolsAction implements Externalizable, Wireable {
 		this.name = name;
 	}
 
-    public void readExternal(ObjectInput in) throws IOException,
+    @SuppressWarnings("unchecked")
+	public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         this.name = (String) in.readObject();
-        this.metaData = (Map<String, Object>)in.readObject();
+        this.metaData = (Map<String, Object>) in.readObject();
         Object action = in.readObject();
         setMetaData( "Action", action );
     }

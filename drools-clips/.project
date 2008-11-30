@@ -1,11 +1,7 @@
 <projectDescription>
   <name>drools-clips</name>
   <comment>A rule production system</comment>
-  <projects>
-    <project>drools-compiler</project>
-    <project>drools-core</project>
-    <project>drools-api</project>
-  </projects>
+  <projects/>
   <buildSpec>
     <buildCommand>
       <name>org.eclipse.jdt.core.javabuilder</name>
