@@ -193,6 +193,17 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                     errors.add(new ProcessValidationErrorImpl(process,
                         "Join node '" + node.getName() + "' [" + node.getId() + "] has no outgoing connection."));
                 }
+                if (join.getType() == Join.TYPE_N_OF_M) {
+                	String n = join.getN();
+                	if (!n.startsWith("#{") || !n.endsWith("}")) {
+                		try {
+                			new Integer(n);
+                		} catch (NumberFormatException e) {
+                            errors.add(new ProcessValidationErrorImpl(process,
+                                "Join node '" + node.getName() + "' [" + node.getId() + "] has illegal n value: " + n));
+                		}
+                	}
+                }
             } else if (node instanceof MilestoneNode) {
                 final MilestoneNode milestone = (MilestoneNode) node;
                 if (milestone.getFrom() == null) {

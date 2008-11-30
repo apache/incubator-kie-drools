@@ -1,165 +1,137 @@
+/*
+ * Copyright 2008 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.drools.ruleflow.core;
 
-import org.drools.definition.process.Node;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.drools.process.core.context.exception.ActionExceptionHandler;
+import org.drools.process.core.context.exception.ExceptionHandler;
+import org.drools.process.core.context.swimlane.Swimlane;
+import org.drools.process.core.context.variable.Variable;
+import org.drools.process.core.datatype.DataType;
 import org.drools.process.core.validation.ProcessValidationError;
 import org.drools.ruleflow.core.validation.RuleFlowProcessValidator;
-import org.drools.workflow.core.NodeContainer;
-import org.drools.workflow.core.impl.ConnectionImpl;
 import org.drools.workflow.core.impl.DroolsConsequenceAction;
-import org.drools.workflow.core.node.ActionNode;
-import org.drools.workflow.core.node.EndNode;
-import org.drools.workflow.core.node.StartNode;
 
-public class RuleFlowProcessFactory {
-	
-	private RuleFlowProcess process;
-	
-	private RuleFlowProcessFactory(String id) {
-		process = new RuleFlowProcess();
-		process.setId(id);
-	}
-	
-	public static RuleFlowProcessFactory createProcess(String id) {
-		return new RuleFlowProcessFactory(id);
-	}
-	
-	public RuleFlowProcessFactory name(String name) {
-		process.setName(name);
-		return this;
-	}
-	
-	public RuleFlowProcessFactory packageName(String packageName) {
-		process.setPackageName(packageName);
-		return this;
-	}
-	
-	public StartNodeFactory startNode(long id) {
-		return new StartNodeFactory(process, id);
-	}
-	
-	public EndNodeFactory endNode(long id) {
-		return new EndNodeFactory(process, id);
-	}
-	
-	public ActionNodeFactory actionNode(long id) {
-		return new ActionNodeFactory(process, id);
-	}
-	
-	public RuleFlowProcessFactory connection(long fromId, long toId) {
-		Node from = process.getNode(fromId);
-		Node to = process.getNode(toId);
-		new ConnectionImpl(
-			from, org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE,
-			to, org.drools.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
-		return this;
-	}
-	
-	public RuleFlowProcessFactory validate() {
-		ProcessValidationError[] errors = RuleFlowProcessValidator.getInstance().validateProcess(process);
-		for (ProcessValidationError error: errors) {
-			System.err.println(error);
-		}
-		if (errors.length > 0) {
-			throw new RuntimeException("Process could not be validated !");
-		}
-		return this;
-	}
-	
-	public RuleFlowProcess done() {
-		return process;
-	}
-	
-	public abstract class NodeFactory {
-		
-		private org.drools.workflow.core.Node node;
-		private NodeContainer nodeContainer;
-		
-		private NodeFactory(NodeContainer nodeContainer, long id) {
-			this.nodeContainer = nodeContainer;
-			this.node = createNode();
-			this.node.setId(id);
-		}
-		
-		protected abstract org.drools.workflow.core.Node createNode();
-		
-		public RuleFlowProcessFactory done() {
-			nodeContainer.addNode(node);
-			return RuleFlowProcessFactory.this;
-		}
-		
-		protected org.drools.workflow.core.Node getNode() {
-			return node;
-		}
-		
-	}
-	
-	public class StartNodeFactory extends NodeFactory {
-		
-		private StartNodeFactory(NodeContainer nodeContainer, long id) {
-			super(nodeContainer, id);
-		}
-		
-		protected org.drools.workflow.core.Node createNode() {
-			return new StartNode();
-		}
-		
-		public StartNodeFactory name(String name) {
-			getNode().setName(name);
-			return this;
-		}
-		
-	}
+public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory {
 
-	public class EndNodeFactory extends NodeFactory {
-		
-		private EndNodeFactory(NodeContainer nodeContainer, long id) {
-			super(nodeContainer, id);
-		}
-		
-		protected org.drools.workflow.core.Node createNode() {
-			return new EndNode();
-		}
-		
-		protected EndNode getEndNode() {
-			return (EndNode) getNode();
-		}
-		
-		public EndNodeFactory name(String name) {
-			getNode().setName(name);
-			return this;
-		}
-		
-		public EndNodeFactory setTerminate(boolean terminate) {
-			getEndNode().setTerminate(terminate);
-			return this;
-		}
-		
-	}
+    public static RuleFlowProcessFactory createProcess(String id) {
+        return new RuleFlowProcessFactory(id);
+    }
 
-	public class ActionNodeFactory extends NodeFactory {
-		
-		private ActionNodeFactory(NodeContainer nodeContainer, long id) {
-			super(nodeContainer, id);
-		}
-		
-		protected org.drools.workflow.core.Node createNode() {
-			return new ActionNode();
-		}
-		
-		protected ActionNode getActionNode() {
-			return (ActionNode) getNode();
-		}
-		
-		public ActionNodeFactory name(String name) {
-			getNode().setName(name);
-			return this;
-		}
-		
-		public ActionNodeFactory action(String dialect, String action) {
-			getActionNode().setAction(new DroolsConsequenceAction(dialect, action));
-			return this;
-		}
-		
-	}
+    protected RuleFlowProcessFactory(String id) {
+        RuleFlowProcess process = new RuleFlowProcess();
+        process.setId(id);
+        setNodeContainer(process);
+    }
+    
+    protected RuleFlowProcess getRuleFlowProcess() {
+    	return (RuleFlowProcess) getNodeContainer();
+    }
 
+    public RuleFlowProcessFactory name(String name) {
+    	getRuleFlowProcess().setName(name);
+        return this;
+    }
+
+    public RuleFlowProcessFactory version(String version) {
+    	getRuleFlowProcess().setVersion(version);
+        return this;
+    }
+
+    public RuleFlowProcessFactory packageName(String packageName) {
+    	getRuleFlowProcess().setPackageName(packageName);
+        return this;
+    }
+
+    public RuleFlowProcessFactory imports(String... imports) {
+    	getRuleFlowProcess().setImports(Arrays.asList(imports));
+        return this;
+    }
+    
+    public RuleFlowProcessFactory functionImports(String... functionImports) {
+    	getRuleFlowProcess().setFunctionImports(Arrays.asList(functionImports));
+        return this;
+    }
+    
+    public RuleFlowProcessFactory globals(Map<String, String> globals) {
+    	getRuleFlowProcess().setGlobals(globals);
+        return this;
+    }
+    
+    public RuleFlowProcessFactory global(String name, String type) {
+    	Map<String, String> globals = getRuleFlowProcess().getGlobals();
+    	if (globals == null) {
+    		globals = new HashMap<String, String>();
+    		getRuleFlowProcess().setGlobals(globals);
+    	}
+    	globals.put(name, type);
+    	return this;
+    }
+
+    public RuleFlowProcessFactory variable(String name, DataType type) {
+    	return variable(name, type, null);
+    }
+    
+    public RuleFlowProcessFactory variable(String name, DataType type, Object value) {
+    	Variable variable = new Variable();
+    	variable.setName(name);
+    	variable.setType(type);
+    	variable.setValue(value);
+    	getRuleFlowProcess().getVariableScope().getVariables().add(variable);
+        return this;
+    }
+    
+    public RuleFlowProcessFactory swimlane(String name) {
+    	Swimlane swimlane = new Swimlane();
+    	swimlane.setName(name);
+    	getRuleFlowProcess().getSwimlaneContext().addSwimlane(swimlane);
+    	return this;
+    }
+    
+    public RuleFlowProcessFactory exceptionHandler(String exception, ExceptionHandler exceptionHandler) {
+    	getRuleFlowProcess().getExceptionScope().setExceptionHandler(exception, exceptionHandler);
+    	return this;
+    }
+    
+    public RuleFlowProcessFactory exceptionHandler(String exception, String dialect, String action) {
+    	ActionExceptionHandler exceptionHandler = new ActionExceptionHandler();
+    	exceptionHandler.setAction(new DroolsConsequenceAction(dialect, action));
+    	return exceptionHandler(exception, exceptionHandler);
+    }
+    
+    public RuleFlowProcessFactory validate() {
+        ProcessValidationError[] errors = RuleFlowProcessValidator.getInstance().validateProcess(getRuleFlowProcess());
+        for (ProcessValidationError error : errors) {
+            System.err.println(error);
+        }
+        if (errors.length > 0) {
+            throw new RuntimeException("Process could not be validated !");
+        }
+        return this;
+    }
+    
+    public RuleFlowNodeContainerFactory done() {
+    	throw new IllegalArgumentException("Already on the top-level.");
+    }
+
+    public RuleFlowProcess getProcess() {
+        return getRuleFlowProcess();
+    }
 }
+

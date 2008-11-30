@@ -81,6 +81,7 @@ public class MVELConsequence implements Consequence, MVELCompileable,
 
 		if (MVELDebugHandler.isDebugMode()) {
 			if (MVELDebugHandler.verbose) {
+				System.out.println("Executing expression " + compexpr.getSourceName());
 				System.out.println(DebugTools.decompile(compexpr));
 			}
 			MVEL.executeDebugger(compexpr, null, factory);

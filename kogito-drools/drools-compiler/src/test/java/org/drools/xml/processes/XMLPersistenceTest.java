@@ -286,7 +286,8 @@ public class XMLPersistenceTest extends TestCase {
         join.setMetaData("y", 2);
         join.setMetaData("width", 3);
         join.setMetaData("height", 4);
-        join.setType(Join.TYPE_XOR);
+        join.setType(Join.TYPE_N_OF_M);
+        join.setN("#{var1}");
         process.addNode(join);
         new ConnectionImpl(actionNode, Node.CONNECTION_DEFAULT_TYPE, join, Node.CONNECTION_DEFAULT_TYPE);
         new ConnectionImpl(ruleSetNode, Node.CONNECTION_DEFAULT_TYPE, join, Node.CONNECTION_DEFAULT_TYPE);

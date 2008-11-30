@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.definition.process.Connection;
+import org.drools.process.core.context.variable.VariableScope;
+import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.runtime.process.NodeInstance;
 import org.drools.workflow.core.node.Join;
 import org.drools.workflow.instance.impl.NodeInstanceImpl;
@@ -70,6 +72,46 @@ public class JoinInstance extends NodeInstanceImpl {
                     resetAllTriggers();
                 }
                 if (triggerCompleted) {
+                    triggerCompleted();
+                }
+                break;
+            case Join.TYPE_N_OF_M :
+                count = (Integer) this.triggers.get( from.getNodeId() );
+                if ( count == null ) {
+                    this.triggers.put( from.getNodeId(),
+                                       1 );
+                } else {
+                    this.triggers.put( from.getNodeId(),
+                                       count.intValue() + 1 );
+                }
+                int counter = 0;
+                for (final Connection connection: getJoin().getDefaultIncomingConnections()) {
+                    if ( this.triggers.get( connection.getFrom().getId() ) != null ) {
+                        counter++;
+                    }
+                }
+                String n = join.getN();
+                Integer number = null;
+                if (n.startsWith("#{") && n.endsWith("}")) {
+                	n = n.substring(2, n.length() - 1);
+                	VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
+                		resolveContextInstance(VariableScope.VARIABLE_SCOPE, n);
+                	if (variableScopeInstance == null) {
+                		throw new IllegalArgumentException(
+            				"Could not find variable " + n + " when executing join.");
+                	}
+                	Object value = variableScopeInstance.getVariable(n);
+                	if (value instanceof Number) {
+                		number = ((Number) value).intValue();
+                	} else {
+                		throw new IllegalArgumentException(
+            				"Variable " + n + " did not return a number when executing join: " + value);
+                	}
+                } else {
+	            	number = new Integer(n);
+                }
+                if (counter >= number) {
+                    resetAllTriggers();
                     triggerCompleted();
                 }
                 break;

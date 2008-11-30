@@ -21,6 +21,10 @@ public class JoinNodeHandler extends AbstractNodeHandler {
         if (type != null && type.length() != 0 ) {
             joinNode.setType(new Integer(type));
         }
+        String n = element.getAttribute("n");
+        if (n != null && n.length() != 0 ) {
+            joinNode.setN(n);
+        }
     }
 
     public Class generateNodeFor() {
@@ -33,6 +37,12 @@ public class JoinNodeHandler extends AbstractNodeHandler {
         int type = joinNode.getType();
         if (type != 0) {
             xmlDump.append("type=\"" + type + "\" ");
+        }
+        if (type == Join.TYPE_N_OF_M) {
+        	String n = joinNode.getN();
+	        if (n != null && n.length() != 0) {
+	            xmlDump.append("n=\"" + n + "\" ");
+	        }
         }
         endNode(xmlDump);
 	}
