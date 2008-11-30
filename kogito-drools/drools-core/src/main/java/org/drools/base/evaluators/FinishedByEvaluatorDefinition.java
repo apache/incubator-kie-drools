@@ -38,29 +38,64 @@ import org.drools.spi.InternalReadAccessor;
 import org.drools.time.Interval;
 
 /**
- * The implementation of the 'finishedby' evaluator definition
+ * <p>The implementation of the <code>finishedby</code> evaluator definition.</p>
+ * 
+ * <p>The <b><code>finishedby</code></b> evaluator correlates two events and matches when the current event 
+ * start timestamp happens before the correlated event start timestamp, but both end timestamps occur at
+ * the same time. This is the symmetrical opposite of <code>finishes</code> evaluator.</p> 
+ * 
+ * <p>Lets look at an example:</p>
+ * 
+ * <pre>$eventA : EventA( this finishedby $eventB )</pre>
  *
+ * <p>The previous pattern will match if and only if the $eventA starts before $eventB starts and finishes
+ * at the same time $eventB finishes. In other words:</p>
+ * 
+ * <pre> 
+ * $eventA.startTimestamp < $eventB.startTimestamp &&
+ * $eventA.endTimestamp == $eventB.endTimestamp 
+ * </pre>
+ * 
+ * <p>The <b><code>finishedby</code></b> evaluator accepts one optional parameter. If it is defined, it determines
+ * the maximum distance between the end timestamp of both events in order for the operator to match. Example:</p>
+ * 
+ * <pre>$eventA : EventA( this finishedby[ 5s ] $eventB )</pre>
+ * 
+ * Will match if and only if:
+ * 
+ * <pre> 
+ * $eventA.startTimestamp < $eventB.startTimestamp &&
+ * abs( $eventA.endTimestamp - $eventB.endTimestamp ) <= 5s
+ * </pre>
+ * 
+ * <p><b>NOTE:</b> it makes no sense to use a negative interval value for the parameter and the 
+ * engine will raise an exception if that happens.</p>
+ * 
+ * @author etirelli
  * @author mgroch
  */
 public class FinishedByEvaluatorDefinition
     implements
     EvaluatorDefinition {
 
-    public static final Operator  FINISHED_BY       = Operator.addOperatorToRegistry( "finishedby",
-                                                                                  false );
-    public static final Operator  NOT_FINISHED_BY   = Operator.addOperatorToRegistry( "finishedby",
-                                                                                  true );
+    public static final Operator             FINISHED_BY     = Operator.addOperatorToRegistry( "finishedby",
+                                                                                               false );
+    public static final Operator             NOT_FINISHED_BY = Operator.addOperatorToRegistry( "finishedby",
+                                                                                               true );
 
-    private static final String[] SUPPORTED_IDS = { FINISHED_BY.getOperatorString() };
+    private static final String[]            SUPPORTED_IDS   = {FINISHED_BY.getOperatorString()};
 
-    private Map<String, FinishedByEvaluator> cache        = Collections.emptyMap();
+    private Map<String, FinishedByEvaluator> cache           = Collections.emptyMap();
+    private volatile TimeIntervalParser      parser          = new TimeIntervalParser();
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        cache  = (Map<String, FinishedByEvaluator>)in.readObject();
+    @SuppressWarnings("unchecked")
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        cache = (Map<String, FinishedByEvaluator>) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(cache);
+        out.writeObject( cache );
     }
 
     /**
@@ -99,9 +134,11 @@ public class FinishedByEvaluatorDefinition
         String key = isNegated + ":" + parameterText;
         FinishedByEvaluator eval = this.cache.get( key );
         if ( eval == null ) {
+            Long[] params = parser.parse( parameterText );
             eval = new FinishedByEvaluator( type,
-                                       isNegated,
-                                       parameterText );
+                                            isNegated,
+                                            params,
+                                            parameterText );
             this.cache.put( key,
                             eval );
         }
@@ -142,34 +179,35 @@ public class FinishedByEvaluatorDefinition
      * Implements the 'finishedby' evaluator itself
      */
     public static class FinishedByEvaluator extends BaseEvaluator {
-		private static final long serialVersionUID = -5156972073099070733L;
+        private static final long serialVersionUID = -5156972073099070733L;
 
-		private long                  startMinDev, startMaxDev;
-        private long                  endDev;
+        private long              endDev;
+        private String            paramText;
 
         public FinishedByEvaluator() {
         }
 
         public FinishedByEvaluator(final ValueType type,
-                              final boolean isNegated,
-                              final String parameters) {
+                                   final boolean isNegated,
+                                   final Long[] parameters,
+                                   final String paramText) {
             super( type,
                    isNegated ? NOT_FINISHED_BY : FINISHED_BY );
-            this.parseParameters( parameters );
+            this.paramText = paramText;
+            this.setParameters( parameters );
         }
 
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            super.readExternal(in);
-            startMinDev = in.readLong();
-            startMaxDev = in.readLong();
-            endDev   = in.readLong();
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
+            super.readExternal( in );
+            endDev = in.readLong();
+            paramText = (String) in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            super.writeExternal(out);
-            out.writeLong(startMinDev);
-            out.writeLong(startMaxDev);
-            out.writeLong(endDev);
+            super.writeExternal( out );
+            out.writeLong( endDev );
+            out.writeObject( paramText );
         }
 
         @Override
@@ -181,15 +219,17 @@ public class FinishedByEvaluatorDefinition
         public boolean isTemporal() {
             return true;
         }
-        
+
         @Override
         public Interval getInterval() {
-            if( this.getOperator().isNegated() ) {
-                return new Interval( Interval.MIN, Interval.MAX );
+            if ( this.getOperator().isNegated() ) {
+                return new Interval( Interval.MIN,
+                                     Interval.MAX );
             }
-            return new Interval( Interval.MIN, 0 );
+            return new Interval( Interval.MIN,
+                                 0 );
         }
-        
+
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1,
@@ -198,48 +238,45 @@ public class FinishedByEvaluatorDefinition
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
-                final VariableContextEntry context,
-                final Object left) {
+                                           final VariableContextEntry context,
+                                           final Object left) {
 
-        	if ( context.rightNull ) {
-        		return false;
-				}
-			long distStart = ((EventFactHandle) left ).getStartTimestamp() - ((EventFactHandle)((ObjectVariableContextEntry) context).right).getStartTimestamp();
-			long distEnd = Math.abs(((EventFactHandle) left ).getEndTimestamp() - ((EventFactHandle)((ObjectVariableContextEntry) context).right).getEndTimestamp());
-			return this.getOperator().isNegated() ^ ( distStart >= this.startMinDev && distStart <= this.startMaxDev
-					&& distEnd <= this.endDev );
-		}
+            if ( context.rightNull ) {
+                return false;
+            }
+            long distStart = ((EventFactHandle) left).getStartTimestamp() - ((EventFactHandle) ((ObjectVariableContextEntry) context).right).getStartTimestamp();
+            long distEnd = Math.abs( ((EventFactHandle) left).getEndTimestamp() - ((EventFactHandle) ((ObjectVariableContextEntry) context).right).getEndTimestamp() );
+            return this.getOperator().isNegated() ^ (distStart > 0 && distEnd <= this.endDev);
+        }
 
-		public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
-			               final VariableContextEntry context,
-			               final Object right) {
-			if ( context.extractor.isNullValue( workingMemory,
-			                     right ) ) {
-			return false;
-			}
-			long distStart = ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getStartTimestamp() - ((EventFactHandle) right ).getStartTimestamp();
-			long distEnd = Math.abs(((EventFactHandle) ((ObjectVariableContextEntry) context).left).getEndTimestamp() - ((EventFactHandle) right ).getEndTimestamp());
-			return this.getOperator().isNegated() ^ ( distStart >= this.startMinDev && distStart <= this.startMaxDev
-					&& distEnd <= this.endDev );
-		}
+        public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
+                                          final VariableContextEntry context,
+                                          final Object right) {
+            if ( context.extractor.isNullValue( workingMemory,
+                                                right ) ) {
+                return false;
+            }
+            long distStart = ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getStartTimestamp() - ((EventFactHandle) right).getStartTimestamp();
+            long distEnd = Math.abs( ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getEndTimestamp() - ((EventFactHandle) right).getEndTimestamp() );
+            return this.getOperator().isNegated() ^ (distStart > 0 && distEnd <= this.endDev);
+        }
 
-		public boolean evaluate(InternalWorkingMemory workingMemory,
-			     final InternalReadAccessor extractor1,
-			     final Object object1,
-			     final InternalReadAccessor extractor2,
-			     final Object object2) {
-			if ( extractor1.isNullValue( workingMemory,
-			              object1 ) ) {
-			return false;
-			}
-			long distStart = ((EventFactHandle) object2 ).getStartTimestamp() - ((EventFactHandle) object1 ).getStartTimestamp();
-			long distEnd = Math.abs(((EventFactHandle) object2 ).getEndTimestamp() - ((EventFactHandle) object1 ).getEndTimestamp());
-			return this.getOperator().isNegated() ^ ( distStart >= this.startMinDev && distStart <= this.startMaxDev
-					&& distEnd <= this.endDev );
-		}
+        public boolean evaluate(InternalWorkingMemory workingMemory,
+                                final InternalReadAccessor extractor1,
+                                final Object object1,
+                                final InternalReadAccessor extractor2,
+                                final Object object2) {
+            if ( extractor1.isNullValue( workingMemory,
+                                         object1 ) ) {
+                return false;
+            }
+            long distStart = ((EventFactHandle) object2).getStartTimestamp() - ((EventFactHandle) object1).getStartTimestamp();
+            long distEnd = Math.abs( ((EventFactHandle) object2).getEndTimestamp() - ((EventFactHandle) object1).getEndTimestamp() );
+            return this.getOperator().isNegated() ^ (distStart > 0 && distEnd <= this.endDev);
+        }
 
         public String toString() {
-            return "finishedby[" + startMinDev + ", " + startMaxDev + ", " + endDev + "]";
+            return "finishedby[" + ((paramText != null) ? paramText : "") + "]";
         }
 
         /* (non-Javadoc)
@@ -250,8 +287,6 @@ public class FinishedByEvaluatorDefinition
             final int PRIME = 31;
             int result = super.hashCode();
             result = PRIME * result + (int) (endDev ^ (endDev >>> 32));
-            result = PRIME * result + (int) (startMaxDev ^ (startMaxDev >>> 32));
-            result = PRIME * result + (int) (startMinDev ^ (startMinDev >>> 32));
             return result;
         }
 
@@ -264,50 +299,26 @@ public class FinishedByEvaluatorDefinition
             if ( !super.equals( obj ) ) return false;
             if ( getClass() != obj.getClass() ) return false;
             final FinishedByEvaluator other = (FinishedByEvaluator) obj;
-            return endDev == other.endDev && startMaxDev == other.startMaxDev && startMinDev == other.startMinDev;
+            return endDev == other.endDev;
         }
 
         /**
-         * This methods tries to parse the string of parameters to customize
-         * the evaluator.
+         * This methods sets the parameters appropriately.
          *
          * @param parameters
          */
-        private void parseParameters(String parameters) {
-        	if ( parameters == null || parameters.trim().length() == 0 ) {
-                // exact matching at the end of the intervals, open bounded range for the starts
-                this.startMinDev = 1;
-                this.startMaxDev = Long.MAX_VALUE;
+        private void setParameters(Long[] parameters) {
+            if ( parameters == null || parameters.length == 0 ) {
                 this.endDev = 0;
-                return;
-            }
-
-            try {
-                String[] ranges = parameters.split( "," );
-                if ( ranges.length == 1 ) {
-                    // exact matching at the end of the intervals
-                	// deterministic point in time for deviations of the starts of the intervals
-                	this.startMinDev = Long.parseLong( ranges[0] );
-                    this.startMaxDev = this.startMinDev;
-                    this.endDev = 0;
-                } else if ( ranges.length == 2 ) {
-                    // exact matching at the end of the intervals
-                	// range for deviations of the starts of the intervals
-                    this.startMinDev = Long.parseLong( ranges[0] );
-                    this.startMaxDev = Long.parseLong( ranges[1] );
-                    this.endDev = 0;
-                } else if ( ranges.length == 3 ) {
-                	// max. deviation at the ends of the intervals
-                	// range for deviations of the starts of the intervals
-                    this.startMinDev = Long.parseLong( ranges[0] );
-                    this.startMaxDev = Long.parseLong( ranges[1] );
-                    this.endDev = Long.parseLong( ranges[2] );
+            } else if ( parameters.length == 1 ) {
+                if( parameters[0].longValue() >= 0 ) {
+                    // defined deviation for end timestamp
+                    this.endDev = parameters[0].longValue();
                 } else {
-                    throw new RuntimeDroolsException( "[FinishedBy Evaluator]: Not possible to parse parameters: '" + parameters + "'" );
+                    throw new RuntimeDroolsException("[FinishedBy Evaluator]: Not possible to use negative parameter: '" + paramText + "'");
                 }
-            } catch ( NumberFormatException e ) {
-                throw new RuntimeDroolsException( "[FinishedBy Evaluator]: Not possible to parse parameters: '" + parameters + "'",
-                                                  e );
+            } else {
+                throw new RuntimeDroolsException( "[FinishedBy Evaluator]: Not possible to use " + parameters.length + " parameters: '" + paramText + "'" );
             }
         }
 
