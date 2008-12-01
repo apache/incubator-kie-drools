@@ -2,7 +2,7 @@ package org.drools.audit;
 
 import org.drools.WorkingMemoryEventManager;
 import org.drools.audit.event.LogEvent;
-import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.event.KnowledgeRuntimeEventManager;
 
 public class ThreadedWorkingMemoryFileLogger extends WorkingMemoryFileLogger {
     
@@ -14,7 +14,7 @@ public class ThreadedWorkingMemoryFileLogger extends WorkingMemoryFileLogger {
         setSplit(false);
     }
     
-    public ThreadedWorkingMemoryFileLogger(StatefulKnowledgeSession session) {
+    public ThreadedWorkingMemoryFileLogger(KnowledgeRuntimeEventManager session) {
         super( session );
         setSplit( false );
     }
