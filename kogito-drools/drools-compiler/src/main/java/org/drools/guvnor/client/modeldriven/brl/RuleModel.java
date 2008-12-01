@@ -67,7 +67,7 @@ public class RuleModel
     /**
      *
      * @param idx Remove this index from the LHS.
-     * @param Returns false if it was NOT allowed to remove this item (ie
+     * returns false if it was NOT allowed to remove this item (ie
      * it is used on the RHS).
      */
     public boolean removeLhsItem(final int idx) {
@@ -241,7 +241,7 @@ public class RuleModel
     
 	/**
 	 * Update metaData element if it exists or add it otherwise 
-	 * @param metadata
+	 * @param target
 	 * @return 
 	 * 		true on update of existing element
 	 * 		false on added of element
