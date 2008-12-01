@@ -16,7 +16,9 @@ public class Account
     implements
     Serializable {
 
-    protected String    first       = null;
+	private static final long serialVersionUID = 1L;
+
+	protected String    first       = null;
     protected String    middle      = null;
     protected String    last        = null;
     /**
@@ -41,7 +43,7 @@ public class Account
     protected String    number      = null;
     protected String    ext         = null;
 
-    protected ArrayList listeners   = new ArrayList();
+    protected ArrayList<PropertyChangeListener> listeners   = new ArrayList<PropertyChangeListener>();
 
     /**
      * 

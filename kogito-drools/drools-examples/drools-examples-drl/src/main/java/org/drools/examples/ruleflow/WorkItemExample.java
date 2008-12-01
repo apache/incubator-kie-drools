@@ -1,17 +1,15 @@
 package org.drools.examples.ruleflow;
 
-import java.io.InputStreamReader;
-import java.io.Reader;
-
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.KnowledgeType;
 import org.drools.io.ResourceFactory;
-import org.drools.process.instance.impl.demo.SystemOutWorkItemHandler;
-import org.drools.process.instance.impl.demo.UIWorkItemHandler;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.process.WorkItem;
+import org.drools.runtime.process.WorkItemHandler;
+import org.drools.runtime.process.WorkItemManager;
 
 public class WorkItemExample {
 
@@ -20,18 +18,19 @@ public class WorkItemExample {
             KnowledgeBase knowledgeBase = readRule();
             StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession();
 
-            // logging all work items to sysout
-            SystemOutWorkItemHandler handler = new SystemOutWorkItemHandler();
-            ksession.getWorkItemManager().registerWorkItemHandler( "Email",
-                                                                   handler );
-            ksession.getWorkItemManager().registerWorkItemHandler( "Log",
-                                                                   handler );
-
-            // using a dialog to show all work items
-            UIWorkItemHandler handler2 = new UIWorkItemHandler();
-            //workingMemory.getWorkItemManager().registerWorkItemHandler("Email", handler2);
-            //workingMemory.getWorkItemManager().registerWorkItemHandler("Log", handler2);
-            //handler2.setVisible(true);
+            // logging all work items to System.out
+            WorkItemHandler handler = new WorkItemHandler() {
+				public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+					System.out.println("Executing work item " + workItem);
+			        manager.completeWorkItem(workItem.getId(), null);
+				}
+            	
+				public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
+					// Do nothing
+				}
+            };
+            ksession.getWorkItemManager().registerWorkItemHandler( "Email", handler );
+            ksession.getWorkItemManager().registerWorkItemHandler( "Log", handler );
 
             ksession.startProcess( "com.sample.ruleflow" );
             ksession.fireAllRules();

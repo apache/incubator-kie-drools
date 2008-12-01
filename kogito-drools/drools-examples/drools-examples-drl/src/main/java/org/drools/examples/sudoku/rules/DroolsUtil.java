@@ -6,9 +6,6 @@
  */
 package org.drools.examples.sudoku.rules;
 
-import java.io.InputStreamReader;
-import java.io.Reader;
-
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;

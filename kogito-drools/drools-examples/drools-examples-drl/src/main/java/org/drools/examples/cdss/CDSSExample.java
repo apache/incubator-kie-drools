@@ -1,20 +1,19 @@
 package org.drools.examples.cdss;
 
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.Iterator;
 import java.util.List;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
-import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.KnowledgeType;
 import org.drools.examples.cdss.data.Diagnose;
 import org.drools.examples.cdss.data.Patient;
+import org.drools.examples.cdss.data.Recommendation;
 import org.drools.examples.cdss.service.RecommendationService;
 import org.drools.io.ResourceFactory;
+import org.drools.logger.KnowledgeRuntimeLogger;
+import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 
 /**
@@ -29,7 +28,7 @@ public class CDSSExample {
             KnowledgeBase kbase = readRule();
 
             StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-            WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( ksession );
+            KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "log/cdss");
 
             // set globals
             RecommendationService recommendationService = new RecommendationService();
@@ -48,9 +47,9 @@ public class CDSSExample {
             ksession.fireAllRules();
 
             // Print out recommendations
-            List recommendations = recommendationService.getRecommendations();
-            for ( Iterator iterator = recommendations.iterator(); iterator.hasNext(); ) {
-                System.out.println( iterator.next() );
+            List<Recommendation> recommendations = recommendationService.getRecommendations();
+            for ( Recommendation recommendation: recommendations ) {
+                System.out.println( recommendation );
             }
             recommendations.clear();
 
@@ -61,8 +60,8 @@ public class CDSSExample {
 
             // Print out recommendations
             recommendations = recommendationService.getRecommendations();
-            for ( Iterator iterator = recommendations.iterator(); iterator.hasNext(); ) {
-                System.out.println( iterator.next() );
+            for ( Recommendation recommendation: recommendations ) {
+                System.out.println( recommendation );
             }
             recommendations.clear();
 
@@ -71,7 +70,7 @@ public class CDSSExample {
             ksession.insert( diagnose );
             ksession.fireAllRules();
 
-            logger.writeToDisk();
+            logger.close();
 
         } catch ( Throwable t ) {
             t.printStackTrace();

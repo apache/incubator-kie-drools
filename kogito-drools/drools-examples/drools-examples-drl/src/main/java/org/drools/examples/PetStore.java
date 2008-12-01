@@ -27,7 +27,6 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumnModel;
 
-import org.drools.FactException;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
@@ -50,7 +49,7 @@ public class PetStore {
 
             //RuleB
 
-            Vector stock = new Vector();
+            Vector<Product> stock = new Vector<Product>();
             stock.add( new Product( "Gold Fish",
                                     5 ) );
             stock.add( new Product( "Fish Tank",
@@ -75,7 +74,10 @@ public class PetStore {
      * cart ui.
      */
     public static class PetStoreUI extends JPanel {
-        private JTextArea        output;
+
+		private static final long serialVersionUID = 1L;
+
+		private JTextArea        output;
 
         private TableModel       tableModel;
 
@@ -88,7 +90,7 @@ public class PetStore {
          * @param listData
          * @param callback
          */
-        public PetStoreUI(Vector items,
+        public PetStoreUI(Vector<Product> items,
                           CheckoutCallback callback) {
             super( new BorderLayout() );
             this.callback = callback;
@@ -242,14 +244,8 @@ public class PetStore {
         private class CheckoutButtonHandler extends MouseAdapter {
             public void mouseReleased(MouseEvent e) {
                 JButton button = (JButton) e.getComponent();
-                try {
-                    //                    output.append( callback.checkout( (JFrame) button.getTopLevelAncestor(),
-                    //                                                      tableModel.getItems() ) );
-                    callback.checkout( (JFrame) button.getTopLevelAncestor(),
-                                       tableModel.getItems() );
-                } catch ( org.drools.FactException fe ) {
-                    fe.printStackTrace();
-                }
+                callback.checkout( (JFrame) button.getTopLevelAncestor(),
+                                   tableModel.getItems() );
             }
         }
 
@@ -259,7 +255,6 @@ public class PetStore {
          */
         private class ResetButtonHandler extends MouseAdapter {
             public void mouseReleased(MouseEvent e) {
-                JButton button = (JButton) e.getComponent();
                 output.setText( null );
                 tableModel.clear();
                 System.out.println( "------ Reset ------" );
@@ -270,7 +265,10 @@ public class PetStore {
          * Used to render the name column in the table
          */
         private class NameRenderer extends DefaultTableCellRenderer {
-            public NameRenderer() {
+
+			private static final long serialVersionUID = 1L;
+
+			public NameRenderer() {
                 super();
             }
 
@@ -284,7 +282,10 @@ public class PetStore {
          * Used to render the price column in the table
          */
         private class PriceRenderer extends DefaultTableCellRenderer {
-            public PriceRenderer() {
+
+			private static final long serialVersionUID = 1L;
+
+			public PriceRenderer() {
                 super();
             }
 
@@ -302,13 +303,16 @@ public class PetStore {
      * name and price.
      */
     private static class TableModel extends AbstractTableModel {
-        private String[]  columnNames = {"Name", "Price"};
 
-        private ArrayList items;
+    	private static final long serialVersionUID = 1L;
+
+		private String[]  columnNames = {"Name", "Price"};
+
+        private ArrayList<Product> items;
 
         public TableModel() {
             super();
-            items = new ArrayList();
+            items = new ArrayList<Product>();
         }
 
         public int getColumnCount() {
@@ -328,7 +332,7 @@ public class PetStore {
             return items.get( row );
         }
 
-        public Class getColumnClass(int c) {
+        public Class<?> getColumnClass(int c) {
             return Product.class;
         }
 
@@ -344,7 +348,7 @@ public class PetStore {
                                   row );
         }
 
-        public List getItems() {
+        public List<Product> getItems() {
             return items;
         }
 
@@ -386,8 +390,7 @@ public class PetStore {
          * @param items
          * @return cart.toString();
          */
-        public String checkout(JFrame frame,
-                               List items) throws FactException {
+        public String checkout(JFrame frame, List<Product> items) {
             Order order = new Order();
 
             //Iterate through list and add to cart
@@ -423,7 +426,7 @@ public class PetStore {
     }
 
     public static class Order {
-        private List          items;
+        private List<Purchase>          items;
 
         private double        grossTotal      = -1;
         private double        discountedTotal = -1;
@@ -431,14 +434,14 @@ public class PetStore {
         private static String newline         = System.getProperty( "line.separator" );
 
         public Order() {
-            this.items = new ArrayList();
+            this.items = new ArrayList<Purchase>();
         }
 
         public void addItem(Purchase item) {
             this.items.add( item );
         }
 
-        public List getItems() {
+        public List<Purchase> getItems() {
             return this.items;
         }
 
@@ -463,7 +466,7 @@ public class PetStore {
 
             buf.append( "ShoppingCart:" + newline );
 
-            Iterator itemIter = getItems().iterator();
+            Iterator<Purchase> itemIter = getItems().iterator();
 
             while ( itemIter.hasNext() ) {
                 buf.append( "\t" + itemIter.next() + newline );

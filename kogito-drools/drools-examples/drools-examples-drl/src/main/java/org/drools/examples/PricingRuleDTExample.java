@@ -1,7 +1,5 @@
 package org.drools.examples;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Arrays;
 
 import org.drools.KnowledgeBase;
@@ -14,7 +12,6 @@ import org.drools.builder.KnowledgeType;
 import org.drools.examples.decisiontable.Driver;
 import org.drools.examples.decisiontable.Policy;
 import org.drools.io.ResourceFactory;
-import org.drools.io.impl.ClassPathResource;
 import org.drools.runtime.StatelessKnowledgeSession;
 
 /**

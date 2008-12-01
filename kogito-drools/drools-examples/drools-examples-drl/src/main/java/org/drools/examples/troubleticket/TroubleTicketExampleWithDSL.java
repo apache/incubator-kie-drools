@@ -1,15 +1,13 @@
 package org.drools.examples.troubleticket;
 
-import java.io.InputStreamReader;
-import java.io.Reader;
-
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
-import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.KnowledgeType;
 import org.drools.io.ResourceFactory;
+import org.drools.logger.KnowledgeRuntimeLogger;
+import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 
@@ -34,9 +32,8 @@ public class TroubleTicketExampleWithDSL {
 
         final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( ksession );
-        logger.setFileName( "log/state" );
-
+        KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "log/trouble_ticket");
+        
         final Customer a = new Customer( "A",
                                          "Drools",
                                          "Gold" );
@@ -55,15 +52,15 @@ public class TroubleTicketExampleWithDSL {
         final Ticket t3 = new Ticket( c );
         final Ticket t4 = new Ticket( d );
 
-        final FactHandle fa = ksession.insert( a );
-        final FactHandle fb = ksession.insert( b );
-        final FactHandle fc = ksession.insert( c );
-        final FactHandle fd = ksession.insert( d );
+        ksession.insert( a );
+        ksession.insert( b );
+        ksession.insert( c );
+        ksession.insert( d );
 
-        final FactHandle ft1 = ksession.insert( t1 );
-        final FactHandle ft2 = ksession.insert( t2 );
+        ksession.insert( t1 );
+        ksession.insert( t2 );
         final FactHandle ft3 = ksession.insert( t3 );
-        final FactHandle ft4 = ksession.insert( t4 );
+        ksession.insert( t4 );
 
         ksession.fireAllRules();
 
@@ -85,6 +82,6 @@ public class TroubleTicketExampleWithDSL {
 
         ksession.dispose();
 
-        logger.writeToDisk();
+        logger.close();
     }
 }

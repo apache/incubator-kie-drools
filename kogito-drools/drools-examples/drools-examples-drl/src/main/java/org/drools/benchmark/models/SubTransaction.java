@@ -10,8 +10,10 @@ import java.util.ArrayList;
  */
 public class SubTransaction extends Security {
 
-    protected String[]  transactionSet = null;
-    protected ArrayList listeners      = new ArrayList();
+    private static final long serialVersionUID = 1L;
+	
+	protected String[]  transactionSet = null;
+    protected ArrayList<PropertyChangeListener> listeners      = new ArrayList<PropertyChangeListener>();
 
     public SubTransaction() {
         super();

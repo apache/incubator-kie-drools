@@ -13,7 +13,9 @@ public class Security
     implements
     Serializable {
 
-    protected String    countryCode = null;
+	private static final long serialVersionUID = 1L;
+	
+	protected String    countryCode = null;
     protected double    currentPrice;
     protected int       cusip;
     protected String    exchange    = null;
@@ -24,7 +26,7 @@ public class Security
     protected int       sectorID;
     protected int       subIndustryID;
 
-    protected ArrayList listeners   = new ArrayList();
+    protected ArrayList<PropertyChangeListener> listeners   = new ArrayList<PropertyChangeListener>();
 
     public Security() {
         super();

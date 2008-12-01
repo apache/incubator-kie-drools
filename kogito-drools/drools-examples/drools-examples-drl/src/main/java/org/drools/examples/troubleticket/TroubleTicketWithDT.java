@@ -1,17 +1,15 @@
 package org.drools.examples.troubleticket;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
-import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.builder.DecisionTableConfiguration;
 import org.drools.builder.DecisionTableInputType;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.KnowledgeType;
 import org.drools.io.ResourceFactory;
+import org.drools.logger.KnowledgeRuntimeLogger;
+import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 
@@ -41,8 +39,7 @@ public class TroubleTicketWithDT {
         // typical decision tables are used statelessly
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( ksession );
-        logger.setFileName( "log/trouble_ticket" );
+        KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "log/trouble_ticket");
 
         final Customer a = new Customer( "A",
                                          "Drools",
@@ -90,7 +87,7 @@ public class TroubleTicketWithDT {
 
         ksession.dispose();
 
-        logger.writeToDisk();
+        logger.close();
 
     }
 

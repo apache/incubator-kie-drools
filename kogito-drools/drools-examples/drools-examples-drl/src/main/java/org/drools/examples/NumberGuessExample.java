@@ -4,11 +4,12 @@ import java.util.Random;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
-import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.KnowledgeType;
 import org.drools.io.ResourceFactory;
+import org.drools.logger.KnowledgeRuntimeLogger;
+import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 
 public class NumberGuessExample {
@@ -27,8 +28,7 @@ public class NumberGuessExample {
 
         final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( ksession );
-        logger.setFileName( "log/numberguess" );
+        KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "log/numberguess");
 
         ksession.insert( new GameRules( 100,
                                         5 ) );
@@ -38,7 +38,7 @@ public class NumberGuessExample {
         ksession.startProcess( "Number Guess" );
         ksession.fireAllRules();
 
-        logger.writeToDisk();
+        logger.close();
 
         ksession.dispose();
     }

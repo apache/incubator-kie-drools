@@ -7,8 +7,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,25 +20,27 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
-import org.drools.RuleBase;
-import org.drools.RuleBaseConfiguration;
-import org.drools.RuleBaseFactory;
-import org.drools.StatefulSession;
-import org.drools.audit.WorkingMemoryFileLogger;
-import org.drools.compiler.PackageBuilder;
-import org.drools.process.instance.WorkItemHandler;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.KnowledgeType;
+import org.drools.io.ResourceFactory;
+import org.drools.logger.KnowledgeRuntimeLogger;
+import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.process.instance.impl.demo.UIWorkItemHandler;
-import org.drools.rule.Package;
+import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.WorkItem;
+import org.drools.runtime.process.WorkItemHandler;
 import org.drools.runtime.process.WorkItemManager;
 
 public class OrderExample extends JFrame {
 	
 	private static final long serialVersionUID = 4L;
 	
-	private RuleBase ruleBase;
-	private StatefulSession session;
-	private WorkingMemoryFileLogger logger;
+	private KnowledgeBase kbase;
+	private StatefulKnowledgeSession ksession;
+	private KnowledgeRuntimeLogger logger;
 	private int orderCounter;
 	
 	private JComboBox itemComboBox;
@@ -160,9 +160,9 @@ public class OrderExample extends JFrame {
 	
 	private void createWorkingMemory() {
 		try {
-			ruleBase = createKnowledgeBase();
-			session = ruleBase.newStatefulSession();
-			logger = new WorkingMemoryFileLogger(session); 
+			kbase = createKnowledgeBase();
+			ksession = kbase.newStatefulKnowledgeSession();
+			logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "log/order"); 
 			
 			CustomerService customerService = new DefaultCustomerService();
 			Customer c = new Customer("A-12345");
@@ -172,7 +172,7 @@ public class OrderExample extends JFrame {
 			c.setFirstName("John");
 			c.setLastName("Doe");
 			customerService.addCustomer(c);
-			session.setGlobal("customerService", customerService);
+			ksession.setGlobal("customerService", customerService);
 			
 			ItemCatalog itemCatalog = new DefaultItemCatalog();
 			Item i = new Item("I-9876");
@@ -182,11 +182,11 @@ public class OrderExample extends JFrame {
 			i = new Item("I-5432");
 			i.setName("Laptop");
 			itemCatalog.addItem(i);
-			session.setGlobal("itemCatalog", itemCatalog);
+			ksession.setGlobal("itemCatalog", itemCatalog);
 			
-			session.getWorkItemManager().registerWorkItemHandler("Shipping", new ShippingWorkItemHandler(session));
+			ksession.getWorkItemManager().registerWorkItemHandler("Shipping", new ShippingWorkItemHandler(ksession));
 			
-			session.getWorkItemManager().registerWorkItemHandler("Email", new WorkItemHandler() {
+			ksession.getWorkItemManager().registerWorkItemHandler("Email", new WorkItemHandler() {
 				public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
 					System.out.println("***********************************************************");
 					System.out.println("Sending email:");
@@ -203,7 +203,7 @@ public class OrderExample extends JFrame {
 			});
 			
 			UIWorkItemHandler handler = new UIWorkItemHandler();
-			session.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+			ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
 			handler.setVisible(true);
 			
 		} catch (Throwable t) {
@@ -213,28 +213,22 @@ public class OrderExample extends JFrame {
 	
 	private void addDebugRules() {
 		try {
-			PackageBuilder builder = new PackageBuilder();
-			Reader source = new InputStreamReader(
-				OrderExample.class.getResourceAsStream("logging.drl"));
-			builder.addPackageFromDrl(source);
-			for (Package p: builder.getPackages()) {
-				if (!p.isValid()) {
-					System.err.println("Invalid package " + p.getName() + ": " + p.getErrorSummary());
-				}
-				ruleBase.addPackage(p);
-			}
+			KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+	        kbuilder.add(ResourceFactory.newClassPathResource(
+	    		"logging.drl", OrderExample.class), KnowledgeType.DRL );
+			kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}
 	}
 	
 	private void removeDebugRules() {
-		ruleBase.removePackage("org.drools.examples.process.order.logging");
+		kbase.removeKnowledgePackage("org.drools.examples.process.order.logging");
 	}
 	
 	public void dispose() {
 		super.dispose();
-		logger.writeToDisk();
+		logger.close();
 	}
 	
 	private void createOrder() {
@@ -243,44 +237,32 @@ public class OrderExample extends JFrame {
 		order.setCustomerId(customerIdTextField.getText());
 		ItemInfo itemInfo = (ItemInfo) itemComboBox.getSelectedItem();
 		order.addOrderItem(itemInfo.getItemId(), new Integer(amountTextField.getText()), itemInfo.getPrice());
-		session.insert(order);
+		ksession.insert(order);
 		
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("order", order);
 		parameters.put("email", emailTextField.getText());
-		session.startProcess("org.drools.examples.process.ruleset.RuleSetExample", parameters);
-		session.fireAllRules();
+		ksession.startProcess("org.drools.examples.process.ruleset.RuleSetExample", parameters);
+		ksession.fireAllRules();
 	}
 
-	private static RuleBase createKnowledgeBase() throws Exception {
-		PackageBuilder builder = new PackageBuilder();
-		Reader source = new InputStreamReader(
-			OrderExample.class.getResourceAsStream("RuleSetExample.rf"));
-		builder.addProcessFromXml(source);
-		source = new InputStreamReader(
-			OrderExample.class.getResourceAsStream("workflow_rules.drl"));
-		builder.addPackageFromDrl(source);
-		source = new InputStreamReader(
-			OrderExample.class.getResourceAsStream("validation.drl"));
-		builder.addPackageFromDrl(source);
-		source = new InputStreamReader(
-			OrderExample.class.getResourceAsStream("assignment.dslr"));
-		Reader dsl = new InputStreamReader(
-			OrderExample.class.getResourceAsStream("assignment.dsl"));
-		builder.addPackageFromDrl(source, dsl);
-		source = new InputStreamReader(
-			OrderExample.class.getResourceAsStream("discount.drl"));
-		builder.addPackageFromDrl(source);
-		RuleBaseConfiguration configuration = new RuleBaseConfiguration();
-		configuration.setAdvancedProcessRuleIntegration(true);
-		RuleBase ruleBase = RuleBaseFactory.newRuleBase(configuration);
-		for (Package p: builder.getPackages()) {
-			if (!p.isValid()) {
-				System.err.println("Invalid package " + p.getName() + ": " + p.getErrorSummary());
-			}
-			ruleBase.addPackage(p);
-		}
-		return ruleBase;
+	private static KnowledgeBase createKnowledgeBase() throws Exception {
+		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newClassPathResource(
+    		"RuleSetExample.rf", OrderExample.class), KnowledgeType.DRF );
+        kbuilder.add(ResourceFactory.newClassPathResource(
+    		"workflow_rules.drl", OrderExample.class), KnowledgeType.DRL );
+        kbuilder.add(ResourceFactory.newClassPathResource(
+    		"validation.drl", OrderExample.class), KnowledgeType.DRL );
+        kbuilder.add(ResourceFactory.newClassPathResource(
+    		"assignment.dsl", OrderExample.class), KnowledgeType.DSL );
+        kbuilder.add(ResourceFactory.newClassPathResource(
+    		"assignment.dslr", OrderExample.class), KnowledgeType.DSLR );
+        kbuilder.add(ResourceFactory.newClassPathResource(
+    		"discount.drl", OrderExample.class), KnowledgeType.DRL );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+		return kbase;
 	}
 	
 	private class ItemInfo {
