@@ -20,6 +20,8 @@ import java.io.Serializable;
 
 public class Context implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+
 	public static final int START_UP = 0;
 
 	public static final int ASSIGN_SEATS = 1;

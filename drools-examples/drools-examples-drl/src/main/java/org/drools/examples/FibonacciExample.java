@@ -2,11 +2,12 @@ package org.drools.examples;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
-import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.KnowledgeType;
 import org.drools.io.ResourceFactory;
+import org.drools.logger.KnowledgeRuntimeLogger;
+import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 
 public class FibonacciExample {
@@ -23,14 +24,13 @@ public class FibonacciExample {
 
         final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( ksession );
-        logger.setFileName( "log/fibonacci" );
+        KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "log/fibonacci");
 
         ksession.insert( new Fibonacci( 10 ) );
 
         ksession.fireAllRules();
 
-        logger.writeToDisk();
+		logger.close();
 
         ksession.dispose(); // Stateful rule session must always be disposed when finished
 

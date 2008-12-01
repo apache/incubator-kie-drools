@@ -2,11 +2,12 @@ package org.drools.examples.troubleticket;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
-import org.drools.audit.ThreadedWorkingMemoryFileLogger;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.KnowledgeType;
 import org.drools.io.ResourceFactory;
+import org.drools.logger.KnowledgeRuntimeLogger;
+import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 
@@ -27,9 +28,7 @@ public class TroubleTicketExample {
 
         final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        ThreadedWorkingMemoryFileLogger logger = new ThreadedWorkingMemoryFileLogger( ksession );
-        logger.setFileName( "log/trouble_ticket" );
-        logger.start( 1000 );
+        KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "log/trouble_ticket");
 
         final Customer a = new Customer( "A",
                                          "Drools",
@@ -77,8 +76,7 @@ public class TroubleTicketExample {
 
         ksession.dispose();
 
-        logger.stop();
-        logger.writeToDisk();
+        logger.close();
     }
 
 }

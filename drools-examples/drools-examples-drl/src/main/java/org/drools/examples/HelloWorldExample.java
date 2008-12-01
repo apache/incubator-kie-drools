@@ -6,12 +6,13 @@ import java.util.List;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
-import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.KnowledgeType;
 import org.drools.definition.KnowledgePackage;
 import org.drools.io.ResourceFactory;
+import org.drools.logger.KnowledgeRuntimeLogger;
+import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 
 /**
@@ -42,13 +43,12 @@ public class HelloWorldExample {
 
         final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         ksession.setGlobal( "list",
-                            new ArrayList() );
+                            new ArrayList<Object>() );
 
         //        session.addEventListener( new DebugAgendaEventListener() );
         //        session.addEventListener( new DebugWorkingMemoryEventListener() );
 
-        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( ksession );
-        logger.setFileName( "log/helloworld" );
+        KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "log/helloworld");
 
         final Message message = new Message();
         message.setMessage( "Hello World" );
@@ -57,7 +57,7 @@ public class HelloWorldExample {
 
         ksession.fireAllRules();
 
-        logger.writeToDisk();
+        logger.close();
 
         ksession.dispose();
     }
@@ -95,7 +95,7 @@ public class HelloWorldExample {
         }
 
         public boolean isSomething(String msg,
-                                   List list) {
+                                   List<Object> list) {
             list.add( this );
             return this.message.equals( msg );
         }

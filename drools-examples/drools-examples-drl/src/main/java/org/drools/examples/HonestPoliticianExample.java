@@ -2,12 +2,13 @@ package org.drools.examples;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
-import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.KnowledgeType;
 import org.drools.io.ResourceFactory;
+import org.drools.logger.KnowledgeRuntimeLogger;
+import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 
 public class HonestPoliticianExample {
@@ -31,8 +32,7 @@ public class HonestPoliticianExample {
 
         final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( ksession );
-        logger.setFileName( "log/honest-politician" );
+        KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "log/honest-politician");
 
         final Politician blair = new Politician( "blair",
                                                  true );
@@ -50,7 +50,7 @@ public class HonestPoliticianExample {
 
         ksession.fireAllRules();
 
-        logger.writeToDisk();
+        logger.close();
 
         ksession.dispose();
     }

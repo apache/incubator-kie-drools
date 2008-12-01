@@ -3,8 +3,9 @@ package org.drools.benchmark.waltzdb;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,19 +43,14 @@ public class WaltzDbBenchmark {
 
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        java.util.List lines = WaltzDbBenchmark.loadLines( "waltzdb16.dat" ); //12,8,4
-        java.util.List labels = WaltzDbBenchmark.loadLabels( "waltzdb16.dat" ); //12,8,4
+        List<Line> lines = WaltzDbBenchmark.loadLines( "waltzdb16.dat" ); //12,8,4
+        List<Label> labels = WaltzDbBenchmark.loadLabels( "waltzdb16.dat" ); //12,8,4
         long now = System.currentTimeMillis();
-        Iterator iter = lines.iterator();
-        while ( iter.hasNext() ) {
-            Line line = (Line) iter.next();
+        for ( Line line: lines ) {
             ksession.insert( line );
             System.out.println( line.getP1() + " " + line.getP2() );
         }
-
-        iter = labels.iterator();
-        while ( iter.hasNext() ) {
-            Label label = (Label) iter.next();
+        for ( Label label: labels ) {
             ksession.insert( label );
             System.out.println( label.getId() + " " + label.getType() );
         }
@@ -67,11 +63,11 @@ public class WaltzDbBenchmark {
 
     }
 
-    private static java.util.List loadLines(String filename) throws IOException {
+    private static List<Line> loadLines(String filename) throws IOException {
         BufferedReader reader = new BufferedReader( new InputStreamReader( WaltzDbBenchmark.class.getResourceAsStream( filename ) ) );
         Pattern pat = Pattern.compile( ".*make line \\^p1 ([0-9]*) \\^p2 ([0-9]*).*" );
         String line = reader.readLine();
-        java.util.List result = new java.util.ArrayList();
+        List<Line> result = new ArrayList<Line>();
         while ( line != null ) {
             Matcher m = pat.matcher( line );
             if ( m.matches() ) {
@@ -85,11 +81,11 @@ public class WaltzDbBenchmark {
         return result;
     }
 
-    private static java.util.List loadLabels(String filename) throws IOException {
+    private static List<Label> loadLabels(String filename) throws IOException {
         BufferedReader reader = new BufferedReader( new InputStreamReader( WaltzDbBenchmark.class.getResourceAsStream( filename ) ) );
         Pattern pat = Pattern.compile( ".*make label \\^type ([0-9a-z]*) \\^name ([0-9a-zA-Z]*) \\^id ([0-9]*) \\^n1 ([B+-]*) \\^n2 ([B+-]*)( \\^n3 ([B+-]*))?.*" );
         String line = reader.readLine();
-        java.util.List result = new java.util.ArrayList();
+        List<Label> result = new ArrayList<Label>();
         while ( line != null ) {
             Matcher m = pat.matcher( line );
             if ( m.matches() ) {

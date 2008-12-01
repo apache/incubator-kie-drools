@@ -1,7 +1,5 @@
 package org.drools.examples;
 
-import java.io.InputStreamReader;
-
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;

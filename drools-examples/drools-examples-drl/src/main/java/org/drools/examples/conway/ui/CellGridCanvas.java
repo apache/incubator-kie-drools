@@ -19,14 +19,16 @@ import org.drools.examples.conway.CellState;
  * @author <a href="mailto:brown_j@ociweb.com">Jeff Brown</a>
  */
 public class CellGridCanvas extends Canvas {
-    private Image              offScreenImage;
+    
+	private static final long serialVersionUID = 1L;
+    private static final Color BACKGROUND_COLOR = Color.gray;
+    private static final Color GRID_COLOR       = CellGridCanvas.BACKGROUND_COLOR.brighter();
+	
+	private Image              offScreenImage;
     private Image              backgroundImage;
     private final int          cellSize;
     private final CellGrid     cellGrid;
     private final Image        liveCellImage    = new ImageIcon( CellGridCanvas.class.getResource( "/org/drools/examples/conway/liveCellImage.gif" ) ).getImage();
-
-    private static final Color BACKGROUND_COLOR = Color.gray;
-    private static final Color GRID_COLOR       = CellGridCanvas.BACKGROUND_COLOR.brighter();
 
     /**
      * Constructs a CellGridCanvas.

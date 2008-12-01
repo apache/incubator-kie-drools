@@ -10,14 +10,16 @@ import java.util.ArrayList;
  */
 public class Transaction extends Security {
 
-    protected String    accountId     = null;
+    private static final long serialVersionUID = 1L;
+	
+	protected String    accountId     = null;
     protected double    buyPrice;
     protected String    purchaseDate  = null;
     protected double    shares;
     protected double    total;
     protected String    transactionId = null;
 
-    protected ArrayList listeners     = new ArrayList();
+    protected ArrayList<PropertyChangeListener> listeners     = new ArrayList<PropertyChangeListener>();
 
     public Transaction() {
         super();

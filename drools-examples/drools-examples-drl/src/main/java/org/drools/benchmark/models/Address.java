@@ -14,7 +14,9 @@ public class Address
     implements
     Serializable {
 
-    protected String    title      = null;
+	private static final long serialVersionUID = 1L;
+
+	protected String    title      = null;
     protected String    accountId  = null;
     protected String    street     = null;
     protected String    street2    = null;
@@ -25,7 +27,7 @@ public class Address
     protected String    houseType  = null;
     protected String    country    = null;
 
-    protected ArrayList listeners  = new ArrayList();
+    protected ArrayList<PropertyChangeListener> listeners  = new ArrayList<PropertyChangeListener>();
 
     /**
      * 

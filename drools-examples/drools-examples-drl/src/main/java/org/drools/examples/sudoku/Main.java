@@ -48,7 +48,6 @@ public class Main
    private FlowLayout flowLayout = new FlowLayout(FlowLayout.RIGHT);
    private JPanel buttonPanel = new JPanel(flowLayout);
    private JButton solveButton = new JButton("Solve");
-   private JButton fireOneRuleButton = new JButton("Step");
    private JFileChooser fileChooser;
    
    public static void main(String[] args)

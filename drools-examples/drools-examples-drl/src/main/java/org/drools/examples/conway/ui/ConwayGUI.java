@@ -34,7 +34,10 @@ import foxtrot.Worker;
  * @author <a href="mailto:brown_j@ociweb.com">Jeff Brown</a>
  */
 public class ConwayGUI extends JPanel {
-    private final JButton   nextGenerationButton;
+
+	private static final long serialVersionUID = 1L;
+
+	private final JButton   nextGenerationButton;
     private final JButton   startStopButton;
     private final JButton   clearButton;
     private final JComboBox patternSelector = new JComboBox();
@@ -148,7 +151,7 @@ public class ConwayGUI extends JPanel {
         while ( tokenizer.hasMoreTokens() ) {
             className = tokenizer.nextToken().trim();
             try {
-                final Class clazz = Class.forName( className );
+                final Class<?> clazz = Class.forName( className );
                 if ( ConwayPattern.class.isAssignableFrom( clazz ) ) {
                     this.patternSelector.addItem( clazz.newInstance() );
                 } else {

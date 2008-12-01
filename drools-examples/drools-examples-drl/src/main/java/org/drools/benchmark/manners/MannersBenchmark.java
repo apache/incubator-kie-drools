@@ -24,17 +24,18 @@ import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 
 public class MannersBenchmark {
+	
     /** Number of guests at the dinner (default: 16). */
-    private int numGuests  = 16;
+    private static int numGuests  = 16;
 
     /** Number of seats at the table (default: 16). */
-    private int numSeats   = 16;
+    private static int numSeats   = 16;
 
     /** Minimum number of hobbies each guest should have (default: 2). */
-    private int minHobbies = 2;
+    private static int minHobbies = 2;
 
     /** Maximun number of hobbies each guest should have (default: 3). */
-    private int maxHobbies = 3;
+    private static int maxHobbies = 3;
 
     public static void main(final String[] args) throws Exception {
         KnowledgeBuilderConfiguration kbuilderConfig = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
@@ -60,8 +61,8 @@ public class MannersBenchmark {
         }
 
         InputStream is = MannersBenchmark.class.getResourceAsStream( filename );
-        List list = getInputObjects( is );
-        for ( Iterator it = list.iterator(); it.hasNext(); ) {
+        List<Object> list = getInputObjects( is );
+        for ( Iterator<Object> it = list.iterator(); it.hasNext(); ) {
             Object object = it.next();
             ksession.insert( object );
         }
@@ -78,8 +79,8 @@ public class MannersBenchmark {
      * Convert the facts from the <code>InputStream</code> to a list of
      * objects.
      */
-    protected static List getInputObjects(InputStream inputStream) throws IOException {
-        List list = new ArrayList();
+    protected static List<Object> getInputObjects(InputStream inputStream) throws IOException {
+        List<Object> list = new ArrayList<Object>();
 
         BufferedReader br = new BufferedReader( new InputStreamReader( inputStream ) );
 
@@ -132,7 +133,7 @@ public class MannersBenchmark {
         return list;
     }
 
-    private InputStream generateData() {
+    public static InputStream generateData() {
         final String LINE_SEPARATOR = System.getProperty( "line.separator" );
 
         StringWriter writer = new StringWriter();
@@ -144,7 +145,7 @@ public class MannersBenchmark {
         int femaleCount = 0;
 
         // init hobbies
-        List hobbyList = new ArrayList();
+        List<String> hobbyList = new ArrayList<String>();
         for ( int i = 1; i <= maxHobbies; i++ ) {
             hobbyList.add( "h" + i );
         }
@@ -165,7 +166,7 @@ public class MannersBenchmark {
                 femaleCount++;
             }
 
-            List guestHobbies = new ArrayList( hobbyList );
+            List<String> guestHobbies = new ArrayList<String>( hobbyList );
 
             int numHobbies = minHobbies + rnd.nextInt( maxHobbies - minHobbies + 1 );
             for ( int j = 0; j < numHobbies; j++ ) {
