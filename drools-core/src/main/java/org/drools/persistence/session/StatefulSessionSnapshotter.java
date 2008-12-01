@@ -9,21 +9,35 @@ import org.drools.StatefulSession;
 import org.drools.common.InternalRuleBase;
 import org.drools.marshalling.DefaultMarshaller;
 import org.drools.marshalling.Marshaller;
+import org.drools.marshalling.PlaceholderResolverStrategyFactory;
 import org.drools.persistence.ByteArraySnapshotter;
 
 public class StatefulSessionSnapshotter implements ByteArraySnapshotter<StatefulSession> {
 	
 	private RuleBase ruleBase;
 	private StatefulSession session;
-	private Marshaller marshaller = new DefaultMarshaller();
+	private Marshaller marshaller;
+
+	private StatefulSessionSnapshotter(StatefulSession session, RuleBase ruleBase, PlaceholderResolverStrategyFactory factory) {
+		this.session = session;
+		this.ruleBase = ruleBase;
+		this.marshaller = new DefaultMarshaller(null, factory);
+	}
 
 	public StatefulSessionSnapshotter(RuleBase ruleBase) {
-		this.ruleBase = ruleBase;
+		this(null, ruleBase, null);
+	}
+
+	public StatefulSessionSnapshotter(RuleBase ruleBase, PlaceholderResolverStrategyFactory factory) {
+		this(null, ruleBase, factory);
 	}
 
 	public StatefulSessionSnapshotter(StatefulSession session) {
-		this.session = session;
-		this.ruleBase = session.getRuleBase();
+		this(session, session.getRuleBase(), null);
+	}
+
+	public StatefulSessionSnapshotter(StatefulSession session, PlaceholderResolverStrategyFactory factory) {
+		this(session, session.getRuleBase(), factory);
 	}
 
 	public byte[] getSnapshot() {
