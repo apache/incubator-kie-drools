@@ -38,8 +38,48 @@ import org.drools.spi.InternalReadAccessor;
 import org.drools.time.Interval;
 
 /**
- * The implementation of the 'overlappedby' evaluator definition
+ * <p>The implementation of the <code>overlappedby</code> evaluator definition.</p>
+ * 
+ * <p>The <b><code>overlappedby</code></b> evaluator correlates two events and matches when the correlated event 
+ * starts before the current event starts and finishes after the current event starts, but before
+ * the current event finishes. In other words, both events have an overlapping period.</p> 
+ * 
+ * <p>Lets look at an example:</p>
+ * 
+ * <pre>$eventA : EventA( this overlappedby $eventB )</pre>
  *
+ * <p>The previous pattern will match if and only if:</p>
+ * 
+ * <pre> $eventB.startTimestamp < $eventA.startTimestamp < $eventB.endTimestamp < $eventA.endTimestamp </pre>
+ * 
+ * <p>The <b><code>overlappedby</code></b> operator accepts 1 or 2 optional parameters as follow:</p>
+ * 
+ * <ul><li>If one parameter is defined, this will be the maximum distance between the start timestamp of the
+ * current event and the end timestamp of the correlated event. Example:</li></lu>
+ * 
+ * <pre>$eventA : EventA( this overlappedby[ 5s ] $eventB )</pre>
+ * 
+ * Will match if and only if:
+ * 
+ * <pre> 
+ * $eventB.startTimestamp < $eventA.startTimestamp < $eventB.endTimestamp < $eventA.endTimestamp &&
+ * 0 <= $eventB.endTimestamp - $eventA.startTimestamp <= 5s 
+ * </pre>
+ * 
+ * <ul><li>If two values are defined, the first value will be the minimum distance and the second value will be 
+ * the maximum distance between the start timestamp of the current event and the end timestamp of the correlated 
+ * event. Example:</li></lu>
+ * 
+ * <pre>$eventA : EventA( this overlappedby[ 5s, 10s ] $eventB )</pre>
+ * 
+ * Will match if and only if:
+ * 
+ * <pre> 
+ * $eventB.startTimestamp < $eventA.startTimestamp < $eventB.endTimestamp < $eventA.endTimestamp &&
+ * 5s <= $eventB.endTimestamp - $eventA.startTimestamp <= 10s 
+ * </pre>
+ * 
+ * @author etirelli
  * @author mgroch
  */
 public class OverlappedByEvaluatorDefinition
@@ -54,7 +94,9 @@ public class OverlappedByEvaluatorDefinition
     private static final String[] SUPPORTED_IDS = { OVERLAPPED_BY.getOperatorString() };
 
     private Map<String, OverlappedByEvaluator> cache        = Collections.emptyMap();
+    private volatile TimeIntervalParser    parser        = new TimeIntervalParser();
 
+    @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         cache  = (Map<String, OverlappedByEvaluator>)in.readObject();
     }
@@ -99,8 +141,10 @@ public class OverlappedByEvaluatorDefinition
         String key = isNegated + ":" + parameterText;
         OverlappedByEvaluator eval = this.cache.get( key );
         if ( eval == null ) {
+            Long[] params = parser.parse( parameterText );
             eval = new OverlappedByEvaluator( type,
                                        isNegated,
+                                       params,
                                        parameterText );
             this.cache.put( key,
                             eval );
@@ -144,34 +188,34 @@ public class OverlappedByEvaluatorDefinition
     public static class OverlappedByEvaluator extends BaseEvaluator {
 		private static final long serialVersionUID = -2768899194494247889L;
 
-		private long                  startMinDev, startMaxDev;
-        private long                  endMinDev, endMaxDev;
+		private long                  minDev, maxDev;
+        private String                paramText;
 
         public OverlappedByEvaluator() {
         }
 
         public OverlappedByEvaluator(final ValueType type,
                               final boolean isNegated,
-                              final String parameters) {
+                              final Long[] parameters,
+                              final String paramText) {
             super( type,
                    isNegated ? NOT_OVERLAPPED_BY : OVERLAPPED_BY );
-            this.parseParameters( parameters );
+            this.paramText = paramText;
+            this.setParameters( parameters );
         }
 
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
             super.readExternal(in);
-            startMinDev = in.readLong();
-            startMaxDev = in.readLong();
-            endMinDev   = in.readLong();
-            endMaxDev   = in.readLong();
+            minDev = in.readLong();
+            maxDev = in.readLong();
+            paramText = (String) in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
             super.writeExternal(out);
-            out.writeLong(startMinDev);
-            out.writeLong(startMaxDev);
-            out.writeLong(endMinDev);
-            out.writeLong(endMaxDev);
+            out.writeLong(minDev);
+            out.writeLong(maxDev);
+            out.writeObject( paramText );
         }
 
         @Override
@@ -207,10 +251,11 @@ public class OverlappedByEvaluatorDefinition
             }
             long rightStartTS = ((EventFactHandle)((ObjectVariableContextEntry) context).right).getStartTimestamp();
 			long leftEndTS = ((EventFactHandle) left ).getEndTimestamp();
-            long distStart = rightStartTS - ((EventFactHandle) left ).getStartTimestamp();
-            long distEnd = ((EventFactHandle)((ObjectVariableContextEntry) context).right).getEndTimestamp() - leftEndTS;
-            return this.getOperator().isNegated() ^ ( distStart >= this.startMinDev && distStart <= this.startMaxDev
-            		&& distEnd >= this.endMinDev && distEnd <= this.endMaxDev && rightStartTS < leftEndTS );
+            long dist = leftEndTS - rightStartTS;
+            return this.getOperator().isNegated() ^ ( 
+                    ((EventFactHandle) left ).getStartTimestamp() < rightStartTS &&
+                    leftEndTS < ((EventFactHandle)((ObjectVariableContextEntry) context).right).getEndTimestamp() &&
+                    dist >= this.minDev && dist <= maxDev );
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
@@ -222,10 +267,11 @@ public class OverlappedByEvaluatorDefinition
             }
             long leftEndTS = ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getEndTimestamp();
 			long rightStartTS = ((EventFactHandle) right ).getStartTimestamp();
-            long distStart = rightStartTS - ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getStartTimestamp();
-            long distEnd = ((EventFactHandle) right ).getEndTimestamp() - leftEndTS;
-            return this.getOperator().isNegated() ^ ( distStart >= this.startMinDev && distStart <= this.startMaxDev
-            		&& distEnd >= this.endMinDev && distEnd <= this.endMaxDev && rightStartTS < leftEndTS );
+            long dist = leftEndTS - rightStartTS;
+            return this.getOperator().isNegated() ^ ( 
+                    ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getStartTimestamp() < rightStartTS &&
+                    leftEndTS < ((EventFactHandle) right).getEndTimestamp() &&
+                    dist >= this.minDev && dist <= maxDev );
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
@@ -237,16 +283,16 @@ public class OverlappedByEvaluatorDefinition
                                          object1 ) ) {
                 return false;
             }
-            long o1startTS = ((EventFactHandle) object1 ).getStartTimestamp();
-            long o2endTS = ((EventFactHandle) object2 ).getEndTimestamp();
-            long distStart = o1startTS - ((EventFactHandle) object2 ).getStartTimestamp();
-            long distEnd = ((EventFactHandle) object1 ).getEndTimestamp() - o2endTS;
-            return this.getOperator().isNegated() ^ ( distStart >= this.startMinDev && distStart <= this.startMaxDev
-            		&& distEnd >= this.endMinDev && distEnd <= this.endMaxDev && o1startTS < o2endTS );
+            long startTS = ((EventFactHandle) object1).getStartTimestamp();
+            long endTS = ((EventFactHandle) object2).getEndTimestamp();
+            long dist = endTS - startTS;
+            return this.getOperator().isNegated() ^ ( ((EventFactHandle) object2).getStartTimestamp() < startTS &&
+                    endTS < ((EventFactHandle) object1).getEndTimestamp() &&
+                    dist >= this.minDev && dist <= this.maxDev );
         }
 
         public String toString() {
-            return "overlappedby[" + startMinDev + ", " + startMaxDev + ", " + endMinDev + ", " + endMaxDev + "]";
+            return "overlappedby[" + ( ( paramText != null ) ? paramText : "" ) + "]";
         }
 
         /* (non-Javadoc)
@@ -256,10 +302,8 @@ public class OverlappedByEvaluatorDefinition
         public int hashCode() {
             final int PRIME = 31;
             int result = super.hashCode();
-            result = PRIME * result + (int) (endMaxDev ^ (endMaxDev >>> 32));
-            result = PRIME * result + (int) (endMinDev ^ (endMinDev >>> 32));
-            result = PRIME * result + (int) (startMaxDev ^ (startMaxDev >>> 32));
-            result = PRIME * result + (int) (startMinDev ^ (startMinDev >>> 32));
+            result = PRIME * result + (int) (maxDev ^ (maxDev >>> 32));
+            result = PRIME * result + (int) (minDev ^ (minDev >>> 32));
             return result;
         }
 
@@ -272,52 +316,29 @@ public class OverlappedByEvaluatorDefinition
             if ( !super.equals( obj ) ) return false;
             if ( getClass() != obj.getClass() ) return false;
             final OverlappedByEvaluator other = (OverlappedByEvaluator) obj;
-            return endMaxDev == other.endMaxDev && endMinDev == other.endMinDev
-            	&& startMaxDev == other.startMaxDev && startMinDev == other.startMinDev;
+            return maxDev == other.maxDev && minDev == other.minDev;
         }
 
         /**
-         * This methods tries to parse the string of parameters to customize
-         * the evaluator.
+         * This methods sets the parameters appropriately.
          *
          * @param parameters
          */
-        private void parseParameters(String parameters) {
-            if ( parameters == null || parameters.trim().length() == 0 ) {
-            	// open bounded ranges
-                this.startMinDev = 1;
-                this.startMaxDev = Long.MAX_VALUE;
-                this.endMinDev = 1;
-                this.endMaxDev = Long.MAX_VALUE;
-                return;
-            }
-
-            try {
-                String[] ranges = parameters.split( "," );
-                if ( ranges.length == 1 ) {
-                    // deterministic point in time for deviation of the starts of the intervals
-                	this.startMinDev = Long.parseLong( ranges[0] );
-                    this.startMaxDev = this.startMinDev;
-                    this.endMinDev = this.startMinDev;
-                    this.endMaxDev = this.startMinDev;
-                } else if ( ranges.length == 2 ) {
-                    // deterministic points in time for deviations of the starts and the ends of the intervals
-                    this.startMinDev = Long.parseLong( ranges[0] );
-                    this.startMaxDev = this.startMinDev;
-                    this.endMinDev = Long.parseLong( ranges[1] );
-                    this.endMaxDev = this.endMinDev;
-                } else if ( ranges.length == 4 ) {
-                    // ranges for deviations of the starts and the ends of the intervals
-                	this.startMinDev = Long.parseLong( ranges[0] );
-                    this.startMaxDev = Long.parseLong( ranges[1] );
-                    this.endMinDev = Long.parseLong( ranges[2] );
-                    this.endMaxDev = Long.parseLong( ranges[3] );
-                } else {
-                    throw new RuntimeDroolsException( "[Overlappedby Evaluator]: Not possible to parse parameters: '" + parameters + "'" );
-                }
-            } catch ( NumberFormatException e ) {
-                throw new RuntimeDroolsException( "[Overlappedby Evaluator]: Not possible to parse parameters: '" + parameters + "'",
-                                                  e );
+        private void setParameters(Long[] parameters) {
+            if ( parameters == null || parameters.length == 0 ) {
+                // open bounded range
+                this.minDev = 1;
+                this.maxDev = Long.MAX_VALUE;
+            } else if ( parameters.length == 1 ) {
+                // open bounded ranges
+                this.minDev = 1;
+                this.maxDev = parameters[0].longValue();
+            } else if ( parameters.length == 2 ) {
+                // open bounded ranges
+                this.minDev = parameters[0].longValue();
+                this.maxDev = parameters[1].longValue();
+            } else {
+                throw new RuntimeDroolsException( "[Overlaps Evaluator]: Not possible to use " + parameters.length + " parameters: '" + paramText + "'" );
             }
         }
 

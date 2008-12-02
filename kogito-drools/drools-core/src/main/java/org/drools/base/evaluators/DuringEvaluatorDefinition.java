@@ -304,7 +304,7 @@ public class DuringEvaluatorDefinition
         }
 
         public String toString() {
-            return "during[" + paramText + "]";
+            return "during[" + ( ( paramText != null ) ? paramText : "" ) + "]";
         }
 
         /* (non-Javadoc)
