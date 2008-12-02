@@ -77,6 +77,12 @@ public class TimeIntervalParser
                         r = -r;
                     }
                     result[index] = new Long( r );
+                } else if( "*".equals( trimmed ) || "+*".equals( trimmed ) ) {
+                    // positive infinity
+                    result[index] = Long.MAX_VALUE;
+                } else if( "-*".equals( trimmed ) ) {
+                    // negative infinity
+                    result[index] = Long.MIN_VALUE;
                 } else {
                     throw new RuntimeDroolsException( "Error parsing interval value: " + param );
                 }
