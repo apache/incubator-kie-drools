@@ -38,29 +38,62 @@ import org.drools.spi.InternalReadAccessor;
 import org.drools.time.Interval;
 
 /**
- * The implementation of the 'metby' evaluator definition
+ * <p>The implementation of the <code>metby</code> evaluator definition.</p>
+ * 
+ * <p>The <b><code>metby</code></b> evaluator correlates two events and matches when the current event's 
+ * start timestamp happens at the same time as the correlated event's end timestamp.</p> 
+ * 
+ * <p>Lets look at an example:</p>
+ * 
+ * <pre>$eventA : EventA( this metby $eventB )</pre>
  *
+ * <p>The previous pattern will match if and only if the $eventA starts at the same time $eventB finishes. 
+ * In other words:</p>
+ * 
+ * <pre> 
+ * abs( $eventA.startTimestamp - $eventB.endTimestamp ) == 0
+ * </pre>
+ * 
+ * <p>The <b><code>metby</code></b> evaluator accepts one optional parameter. If it is defined, it determines
+ * the maximum distance between the end timestamp of the correlated event and the start timestamp of the current
+ * event in order for the operator to match. Example:</p>
+ * 
+ * <pre>$eventA : EventA( this metby[ 5s ] $eventB )</pre>
+ * 
+ * Will match if and only if:
+ * 
+ * <pre> 
+ * abs( $eventA.startTimestamp - $eventB.endTimestamp) <= 5s 
+ * </pre>
+ * 
+ * <p><b>NOTE:</b> it makes no sense to use a negative interval value for the parameter and the 
+ * engine will raise an exception if that happens.</p>
+ * 
+ * @author etirelli
  * @author mgroch
  */
 public class MetByEvaluatorDefinition
     implements
     EvaluatorDefinition {
 
-    public static final Operator  MET_BY       = Operator.addOperatorToRegistry( "metby",
-                                                                                  false );
-    public static final Operator  NOT_MET_BY   = Operator.addOperatorToRegistry( "metby",
-                                                                                  true );
+    public static final Operator        MET_BY        = Operator.addOperatorToRegistry( "metby",
+                                                                                        false );
+    public static final Operator        NOT_MET_BY    = Operator.addOperatorToRegistry( "metby",
+                                                                                        true );
 
-    private static final String[] SUPPORTED_IDS = { MET_BY.getOperatorString() };
+    private static final String[]       SUPPORTED_IDS = {MET_BY.getOperatorString()};
 
-    private Map<String, MetByEvaluator> cache        = Collections.emptyMap();
+    private Map<String, MetByEvaluator> cache         = Collections.emptyMap();
+    private volatile TimeIntervalParser parser        = new TimeIntervalParser();
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        cache  = (Map<String, MetByEvaluator>)in.readObject();
+    @SuppressWarnings("unchecked")
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        cache = (Map<String, MetByEvaluator>) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(cache);
+        out.writeObject( cache );
     }
 
     /**
@@ -99,8 +132,10 @@ public class MetByEvaluatorDefinition
         String key = isNegated + ":" + parameterText;
         MetByEvaluator eval = this.cache.get( key );
         if ( eval == null ) {
+            Long[] params = parser.parse( parameterText );
             eval = new MetByEvaluator( type,
                                        isNegated,
+                                       params,
                                        parameterText );
             this.cache.put( key,
                             eval );
@@ -142,29 +177,35 @@ public class MetByEvaluatorDefinition
      * Implements the 'metby' evaluator itself
      */
     public static class MetByEvaluator extends BaseEvaluator {
-		private static final long serialVersionUID = 7907908401657594347L;
+        private static final long serialVersionUID = 7907908401657594347L;
 
-		private long                  finalRange;
+        private long              finalRange;
+        private String            paramText;
 
         public MetByEvaluator() {
         }
 
         public MetByEvaluator(final ValueType type,
                               final boolean isNegated,
-                              final String parameters) {
+                              final Long[] parameters,
+                              final String paramText) {
             super( type,
                    isNegated ? NOT_MET_BY : MET_BY );
-            this.parseParameters( parameters );
+            this.paramText = paramText;
+            this.setParameters( parameters );
         }
 
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            super.readExternal(in);
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
+            super.readExternal( in );
             finalRange = in.readLong();
+            paramText = (String) in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            super.writeExternal(out);
-            out.writeLong(finalRange);
+            super.writeExternal( out );
+            out.writeLong( finalRange );
+            out.writeObject( paramText );
         }
 
         @Override
@@ -176,15 +217,17 @@ public class MetByEvaluatorDefinition
         public boolean isTemporal() {
             return true;
         }
-        
+
         @Override
         public Interval getInterval() {
-            if( this.getOperator().isNegated() ) {
-                return new Interval( Interval.MIN, Interval.MAX );
+            if ( this.getOperator().isNegated() ) {
+                return new Interval( Interval.MIN,
+                                     Interval.MAX );
             }
-            return new Interval( Interval.MIN, 0 );
+            return new Interval( Interval.MIN,
+                                 0 );
         }
-        
+
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
                                 final Object object1,
@@ -198,9 +241,9 @@ public class MetByEvaluatorDefinition
             if ( context.rightNull ) {
                 return false;
             }
-            long rightStartTS = ((EventFactHandle)((ObjectVariableContextEntry) context).right).getStartTimestamp();
-            long dist = Math.abs(rightStartTS - ((EventFactHandle) left ).getEndTimestamp());
-            return this.getOperator().isNegated() ^ ( ((EventFactHandle) left ).getStartTimestamp() < rightStartTS && dist <= this.finalRange );
+            long rightStartTS = ((EventFactHandle) ((ObjectVariableContextEntry) context).right).getStartTimestamp();
+            long dist = Math.abs( rightStartTS - ((EventFactHandle) left).getEndTimestamp() );
+            return this.getOperator().isNegated() ^ ( dist <= this.finalRange );
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
@@ -210,11 +253,10 @@ public class MetByEvaluatorDefinition
                                                 right ) ) {
                 return false;
             }
-            long rightStartTS = ((EventFactHandle) right ).getStartTimestamp();
-            long dist = Math.abs(rightStartTS - ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getEndTimestamp());
+            long rightStartTS = ((EventFactHandle) right).getStartTimestamp();
+            long dist = Math.abs( rightStartTS - ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getEndTimestamp() );
 
-            return this.getOperator().isNegated() ^ ( ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getStartTimestamp() <= rightStartTS &&
-            	    dist <= this.finalRange );
+            return this.getOperator().isNegated() ^ ( dist <= this.finalRange );
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
@@ -226,13 +268,13 @@ public class MetByEvaluatorDefinition
                                          object1 ) ) {
                 return false;
             }
-            long obj1StartTS = ((EventFactHandle) object1 ).getStartTimestamp();
-            long dist = Math.abs(obj1StartTS - ((EventFactHandle) object2 ).getEndTimestamp());
-            return this.getOperator().isNegated() ^ ( ((EventFactHandle) object2 ).getStartTimestamp() <= obj1StartTS && dist <= this.finalRange );
+            long obj1StartTS = ((EventFactHandle) object1).getStartTimestamp();
+            long dist = Math.abs( obj1StartTS - ((EventFactHandle) object2).getEndTimestamp() );
+            return this.getOperator().isNegated() ^ ( dist <= this.finalRange );
         }
 
         public String toString() {
-            return "metby[" + finalRange + "]";
+            return "metby[" + ((paramText != null) ? paramText : "") + "]";
         }
 
         /* (non-Javadoc)
@@ -259,29 +301,22 @@ public class MetByEvaluatorDefinition
         }
 
         /**
-         * This methods tries to parse the string of parameters to customize
-         * the evaluator.
+         * This methods sets the parameters appropriately.
          *
          * @param parameters
          */
-        private void parseParameters(String parameters) {
-            if ( parameters == null || parameters.trim().length() == 0 ) {
-                // exact metby
+        private void setParameters(Long[] parameters) {
+            if ( parameters == null || parameters.length == 0 ) {
                 this.finalRange = 0;
-                return;
-            }
-
-            try {
-                String[] ranges = parameters.split( "," );
-                if ( ranges.length == 1 ) {
-                    // limit of tolerance for overlap or gap, respectively
-                    this.finalRange = Long.parseLong( ranges[0] );
+            } else if ( parameters.length == 1 ) {
+                if ( parameters[0].longValue() >= 0 ) {
+                    // defined max distance
+                    this.finalRange = parameters[0].longValue();
                 } else {
-                    throw new RuntimeDroolsException( "[Metby Evaluator]: Not possible to parse parameters: '" + parameters + "'" );
+                    throw new RuntimeDroolsException( "[MetBy Evaluator]: Not possible to use negative parameter: '" + paramText + "'" );
                 }
-            } catch ( NumberFormatException e ) {
-                throw new RuntimeDroolsException( "[Metby Evaluator]: Not possible to parse parameters: '" + parameters + "'",
-                                                  e );
+            } else {
+                throw new RuntimeDroolsException( "[MetBy Evaluator]: Not possible to use " + parameters.length + " parameters: '" + paramText + "'" );
             }
         }
 

@@ -622,6 +622,226 @@ public class TemporalEvaluatorFactoryTest extends TestCase {
                           ValueType.OBJECT_TYPE );
     }
 
+    public void testMeets() {
+        registry.addEvaluatorDefinition( DuringEvaluatorDefinition.class.getName() );
+
+        EventFactHandle foo = new EventFactHandle( 1,
+                                                   "foo",
+                                                   1,
+                                                   2,
+                                                   8 );
+        EventFactHandle bar = new EventFactHandle( 2,
+                                                   "bar",
+                                                   1,
+                                                   10,
+                                                   7 );
+        EventFactHandle drool = new EventFactHandle( 1,
+                                                     "drool",
+                                                     1,
+                                                     8,
+                                                     5 );
+        EventFactHandle mole = new EventFactHandle( 1,
+                                                    "mole",
+                                                    1,
+                                                    11,
+                                                    4 );
+
+        final Object[][] data = {
+             {foo,   "meets", bar, Boolean.TRUE}, 
+             {foo,   "meets", drool, Boolean.FALSE}, 
+             {foo,   "meets", mole, Boolean.FALSE}, 
+             
+             {foo,   "not meets", bar, Boolean.FALSE}, 
+             {foo,   "not meets", drool, Boolean.TRUE}, 
+             {foo,   "not meets", mole, Boolean.TRUE}, 
+             
+             {foo,   "meets[1]", bar, Boolean.TRUE}, 
+             {foo,   "meets[1]", drool, Boolean.FALSE}, 
+             {foo,   "meets[1]", mole, Boolean.TRUE}, 
+             {foo,   "meets[2]", drool, Boolean.TRUE}, 
+             
+             {foo,   "not meets[1]", bar, Boolean.FALSE}, 
+             {foo,   "not meets[1]", drool, Boolean.TRUE}, 
+             {foo,   "not meets[1]", mole, Boolean.FALSE}, 
+             {foo,   "not meets[2]", drool, Boolean.FALSE} 
+            };
+
+        runEvaluatorTest( data,
+                          ValueType.OBJECT_TYPE );
+    }
+
+    public void testMetBy() {
+        registry.addEvaluatorDefinition( DuringEvaluatorDefinition.class.getName() );
+
+        EventFactHandle foo = new EventFactHandle( 1,
+                                                   "foo",
+                                                   1,
+                                                   10,
+                                                   8 );
+        EventFactHandle bar = new EventFactHandle( 2,
+                                                   "bar",
+                                                   1,
+                                                   2,
+                                                   8 );
+        EventFactHandle drool = new EventFactHandle( 1,
+                                                     "drool",
+                                                     1,
+                                                     5,
+                                                     3 );
+        EventFactHandle mole = new EventFactHandle( 1,
+                                                    "mole",
+                                                    1,
+                                                    4,
+                                                    7 );
+
+        final Object[][] data = {
+             {foo,   "metby", bar, Boolean.TRUE}, 
+             {foo,   "metby", drool, Boolean.FALSE}, 
+             {foo,   "metby", mole, Boolean.FALSE}, 
+             
+             {foo,   "not metby", bar, Boolean.FALSE}, 
+             {foo,   "not metby", drool, Boolean.TRUE}, 
+             {foo,   "not metby", mole, Boolean.TRUE}, 
+             
+             {foo,   "metby[1]", bar, Boolean.TRUE}, 
+             {foo,   "metby[1]", drool, Boolean.FALSE}, 
+             {foo,   "metby[1]", mole, Boolean.TRUE}, 
+             {foo,   "metby[2]", drool, Boolean.TRUE}, 
+             
+             {foo,   "not metby[1]", bar, Boolean.FALSE}, 
+             {foo,   "not metby[1]", drool, Boolean.TRUE}, 
+             {foo,   "not metby[1]", mole, Boolean.FALSE}, 
+             {foo,   "not metby[2]", drool, Boolean.FALSE} 
+            };
+
+        runEvaluatorTest( data,
+                          ValueType.OBJECT_TYPE );
+    }
+
+    public void testOverlaps() {
+        registry.addEvaluatorDefinition( DuringEvaluatorDefinition.class.getName() );
+
+        EventFactHandle foo = new EventFactHandle( 1,
+                                                   "foo",
+                                                   1,
+                                                   2,
+                                                   8 );
+        EventFactHandle bar = new EventFactHandle( 2,
+                                                   "bar",
+                                                   1,
+                                                   7,
+                                                   7 );
+        EventFactHandle drool = new EventFactHandle( 1,
+                                                     "drool",
+                                                     1,
+                                                     11,
+                                                     5 );
+        EventFactHandle mole = new EventFactHandle( 1,
+                                                    "mole",
+                                                    1,
+                                                    5,
+                                                    5 );
+
+        final Object[][] data = {
+             {foo,   "overlaps", bar, Boolean.TRUE}, 
+             {foo,   "overlaps", drool, Boolean.FALSE}, 
+             {foo,   "overlaps", mole, Boolean.FALSE}, 
+             
+             {foo,   "not overlaps", bar, Boolean.FALSE}, 
+             {foo,   "not overlaps", drool, Boolean.TRUE}, 
+             {foo,   "not overlaps", mole, Boolean.TRUE}, 
+             
+             {foo,   "overlaps[3]", bar, Boolean.TRUE}, 
+             {foo,   "overlaps[3]", drool, Boolean.FALSE}, 
+             {foo,   "overlaps[3]", mole, Boolean.FALSE}, 
+             {foo,   "overlaps[2]", bar, Boolean.FALSE}, 
+             {foo,   "overlaps[6]", mole, Boolean.FALSE}, 
+             
+             {foo,   "not overlaps[3]", bar, Boolean.FALSE}, 
+             {foo,   "not overlaps[3]", drool, Boolean.TRUE}, 
+             {foo,   "not overlaps[3]", mole, Boolean.TRUE}, 
+             {foo,   "not overlaps[2]", bar, Boolean.TRUE}, 
+             {foo,   "not overlaps[6]", mole, Boolean.TRUE},
+             
+             {foo,   "overlaps[1,3]", bar, Boolean.TRUE}, 
+             {foo,   "overlaps[1,3]", drool, Boolean.FALSE}, 
+             {foo,   "overlaps[1,3]", mole, Boolean.FALSE}, 
+             {foo,   "overlaps[4,6]", bar, Boolean.FALSE}, 
+             {foo,   "overlaps[1,8]", mole, Boolean.FALSE}, 
+             
+             {foo,   "not overlaps[1,3]", bar, Boolean.FALSE}, 
+             {foo,   "not overlaps[1,3]", drool, Boolean.TRUE}, 
+             {foo,   "not overlaps[1,3]", mole, Boolean.TRUE}, 
+             {foo,   "not overlaps[4,6]", bar, Boolean.TRUE}, 
+             {foo,   "not overlaps[1,8]", mole, Boolean.TRUE} 
+            };
+
+        runEvaluatorTest( data,
+                          ValueType.OBJECT_TYPE );
+    }
+
+    public void testOverlapedBy() {
+        registry.addEvaluatorDefinition( DuringEvaluatorDefinition.class.getName() );
+
+        EventFactHandle foo = new EventFactHandle( 1,
+                                                   "foo",
+                                                   1,
+                                                   7,
+                                                   8 );
+        EventFactHandle bar = new EventFactHandle( 2,
+                                                   "bar",
+                                                   1,
+                                                   2,
+                                                   8 );
+        EventFactHandle drool = new EventFactHandle( 1,
+                                                     "drool",
+                                                     1,
+                                                     11,
+                                                     5 );
+        EventFactHandle mole = new EventFactHandle( 1,
+                                                    "mole",
+                                                    1,
+                                                    7,
+                                                    3 );
+
+        final Object[][] data = {
+             {foo,   "overlappedby", bar, Boolean.TRUE}, 
+             {foo,   "overlappedby", drool, Boolean.FALSE}, 
+             {foo,   "overlappedby", mole, Boolean.FALSE}, 
+             
+             {foo,   "not overlappedby", bar, Boolean.FALSE}, 
+             {foo,   "not overlappedby", drool, Boolean.TRUE}, 
+             {foo,   "not overlappedby", mole, Boolean.TRUE}, 
+             
+             {foo,   "overlappedby[3]", bar, Boolean.TRUE}, 
+             {foo,   "overlappedby[3]", drool, Boolean.FALSE}, 
+             {foo,   "overlappedby[3]", mole, Boolean.FALSE}, 
+             {foo,   "overlappedby[2]", bar, Boolean.FALSE}, 
+             {foo,   "overlappedby[6]", mole, Boolean.FALSE}, 
+             
+             {foo,   "not overlappedby[3]", bar, Boolean.FALSE}, 
+             {foo,   "not overlappedby[3]", drool, Boolean.TRUE}, 
+             {foo,   "not overlappedby[3]", mole, Boolean.TRUE}, 
+             {foo,   "not overlappedby[2]", bar, Boolean.TRUE}, 
+             {foo,   "not overlappedby[6]", mole, Boolean.TRUE},
+             
+             {foo,   "overlappedby[1,3]", bar, Boolean.TRUE}, 
+             {foo,   "overlappedby[1,3]", drool, Boolean.FALSE}, 
+             {foo,   "overlappedby[1,3]", mole, Boolean.FALSE}, 
+             {foo,   "overlappedby[4,6]", bar, Boolean.FALSE}, 
+             {foo,   "overlappedby[1,8]", mole, Boolean.FALSE}, 
+             
+             {foo,   "not overlappedby[1,3]", bar, Boolean.FALSE}, 
+             {foo,   "not overlappedby[1,3]", drool, Boolean.TRUE}, 
+             {foo,   "not overlappedby[1,3]", mole, Boolean.TRUE}, 
+             {foo,   "not overlappedby[4,6]", bar, Boolean.TRUE}, 
+             {foo,   "not overlappedby[1,8]", mole, Boolean.TRUE} 
+            };
+
+        runEvaluatorTest( data,
+                          ValueType.OBJECT_TYPE );
+    }
+
     private void runEvaluatorTest(final Object[][] data,
                                   final ValueType valueType) {
         final InternalReadAccessor extractor = new MockExtractor();

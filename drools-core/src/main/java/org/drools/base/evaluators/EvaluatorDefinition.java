@@ -43,7 +43,7 @@ public interface EvaluatorDefinition extends Externalizable {
 
     /**
      * My apologies to English speakers if the word "negatable" does not
-     * exists. :)
+     * exist. :)
      *
      * This method returns true if this evaluator supports negation. Example:
      *

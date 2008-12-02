@@ -47,7 +47,6 @@ import org.drools.process.instance.impl.ContextInstanceFactory;
 import org.drools.process.instance.impl.ContextInstanceFactoryRegistry;
 import org.drools.runtime.process.WorkItemHandler;
 import org.drools.spi.ConflictResolver;
-import org.drools.spi.ConsequenceExceptionHandler;
 import org.drools.util.ChainedProperties;
 import org.drools.util.ConfFileUtils;
 import org.drools.util.StringUtils;
@@ -1302,9 +1301,8 @@ public class RuleBaseConfiguration
      */
     public static enum EventProcessingMode {
 
-        CLOUD(
-                "cloud"), STREAM(
-                "stream");
+        CLOUD("cloud"), 
+        STREAM("stream");
 
         private String string;
 
