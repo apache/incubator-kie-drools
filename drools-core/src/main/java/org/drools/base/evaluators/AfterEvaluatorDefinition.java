@@ -58,9 +58,8 @@ import org.drools.time.Interval;
  * 
  * <ul><li>If two values are defined (like in the example bellow), the interval starts on the
  * first value and finishes on the second.</li>
- * <li>If only one value is defined, we have two cases. If the value is negative, then the interval
- * starts on the value and finishes on -1ms. If the value is positive, then the interval starts on 
- * +1ms and finishes on the value.</li>
+ * <li>If only one value is defined, the interval starts on the value and finishes on the positive 
+ * infinity.</li>
  * <li>If no value is defined, it is assumed that the initial value is 1ms and the final value
  * is the positive infinity.</li></ul>
  * 
@@ -334,15 +333,8 @@ public class AfterEvaluatorDefinition
                 this.initRange = 1;
                 this.finalRange = Long.MAX_VALUE;
             } else if ( parameters.length == 1 ) {
-                if ( parameters[0].longValue() >= 0 ) {
-                    // up to that value
-                    this.initRange = 1;
-                    this.finalRange = parameters[0].longValue();
-                } else {
-                    // from that value up to now
-                    this.initRange = parameters[0].longValue();
-                    this.finalRange = -1;
-                }
+                this.initRange = parameters[0].longValue();
+                this.finalRange = Long.MAX_VALUE;
             } else if ( parameters.length == 2 ) {
                 if ( parameters[0].longValue() <= parameters[1].longValue() ) {
                     this.initRange = parameters[0].longValue();
