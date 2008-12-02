@@ -14,7 +14,6 @@ import java.util.Map;
 import org.drools.KnowledgeBase;
 import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
-import org.drools.StatefulSession;
 import org.drools.common.InternalRuleBase;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definitions.impl.KnowledgePackageImp;
@@ -147,6 +146,10 @@ public class KnowledgeBaseImpl
                            String ruleName) {
         this.ruleBase.removeRule( packageName,
                                   ruleName );
+    }
+
+    public void removeProcess(String processId) {
+        this.ruleBase.removeProcess( processId );
     }
 
     public static class KnowledgeBaseEventListenerWrapper
