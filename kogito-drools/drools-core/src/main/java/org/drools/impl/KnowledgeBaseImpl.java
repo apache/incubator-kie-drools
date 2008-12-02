@@ -80,6 +80,10 @@ public class KnowledgeBaseImpl
         ruleBase = new ReteooRuleBase();
         ruleBase.readExternal( in );
     }
+    
+    public RuleBase getRuleBase() {
+    	return ruleBase;
+    }
 
     public void addEventListener(KnowledgeBaseEventListener listener) {
         KnowledgeBaseEventListenerWrapper wrapper = new KnowledgeBaseEventListenerWrapper( this,
