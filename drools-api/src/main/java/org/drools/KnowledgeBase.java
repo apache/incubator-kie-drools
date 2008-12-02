@@ -57,6 +57,12 @@ public interface KnowledgeBase
                     String ruleName);
 
     /**
+     * Remove a process from the specified package.
+     * @param processId
+     */
+    void removeProcess(String processId);
+
+    /**
      * Create a new StatefulKnolwedgeSession using the given session configuration.
      * Don't forget to dispose() session when you are done.
      * 
