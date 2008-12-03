@@ -65,7 +65,7 @@ end
 rule "overlaps operator"
 when
     $a : StockTick( company == "ACME" )
-    $b : StockTick( company == "DROO", this overlaps[1] $a )
+    $b : StockTick( company == "DROO", this overlaps[2] $a )
 then
     results_overlaps.add( $b );
 end
@@ -73,7 +73,7 @@ end
 rule "overlapped-by operator"
 when
     $a : StockTick( company == "DROO" )
-    $b : StockTick( company == "ACME", this overlappedby[1] $a )
+    $b : StockTick( company == "ACME", this overlappedby[2] $a )
 then
     results_overlapped_by.add( $b );
 end
@@ -97,7 +97,7 @@ end
 rule "starts operator"
 when
     $a : StockTick( company == "ACME" )
-    $b : StockTick( company == "ACME", this starts[2] $a )
+    $b : StockTick( company == "ACME", this starts $a )
 then
     results_starts.add( $b );
 end
@@ -105,7 +105,7 @@ end
 rule "started-by operator"
 when
     $a : StockTick( company == "ACME" )
-    $b : StockTick( company == "ACME", this startedby[2] $a )
+    $b : StockTick( company == "ACME", this startedby $a )
 then
     results_started_by.add( $b );
 end
@@ -113,7 +113,7 @@ end
 rule "finishes operator"
 when
     $a : StockTick( company == "ACME" )
-    $b : StockTick( company == "ACME", this finishes[2] $a )
+    $b : StockTick( company == "ACME", this finishes $a )
 then
     results_finishes.add( $b );
 end
@@ -121,7 +121,7 @@ end
 rule "finished-by operator"
 when
     $a : StockTick( company == "ACME" )
-    $b : StockTick( company == "ACME", this finishedby[2] $a )
+    $b : StockTick( company == "ACME", this finishedby $a )
 then
     results_finished_by.add( $b );
 end
