@@ -451,7 +451,7 @@ public class CepEspTest extends TestCase {
 
         assertEquals( 1,
                       results_overlapped_by.size() );
-        assertEquals( tick7,
+        assertEquals( tick8,
                       results_overlapped_by.get( 0 ) );
 
         assertEquals( 1,
