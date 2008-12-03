@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.base.TypeResolver;
+import org.drools.io.Resource;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.ProcessDescr;
@@ -95,8 +96,9 @@ public interface Dialect {
 
     void addProcess(final ProcessBuildContext context);
 
-    void addFunction(final FunctionDescr functionDescr,
-                     TypeResolver typeResolver);
+    void addFunction(FunctionDescr functionDescr,
+                     TypeResolver typeResolver,
+                     Resource resource);
 
     public void addImport(String importEntry);
 

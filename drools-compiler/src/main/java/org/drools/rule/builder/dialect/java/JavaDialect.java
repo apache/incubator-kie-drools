@@ -32,6 +32,7 @@ import org.drools.compiler.PackageBuilder.RuleErrorHandler;
 import org.drools.compiler.PackageBuilder.RuleInvokerErrorHandler;
 import org.drools.compiler.PackageBuilder.SrcErrorHandler;
 import org.drools.definition.process.Process;
+import org.drools.io.Resource;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BaseDescr;
@@ -578,7 +579,8 @@ public class JavaDialect
     }
 
     public void addFunction(final FunctionDescr functionDescr,
-                            final TypeResolver typeResolver) {
+                            final TypeResolver typeResolver,
+                            final Resource resource) {
 
         JavaDialectRuntimeData data = (JavaDialectRuntimeData) this.pkg.getDialectRuntimeRegistry().getDialectData( this.ID );
         //System.out.println( functionDescr + " : " + typeResolver );
@@ -589,6 +591,7 @@ public class JavaDialect
 
         Function function = new Function( functionDescr.getName(),
                                           this.ID );
+        function.setResource( resource );
         this.pkg.addFunction( function );
 
         final String functionSrc = getFunctionBuilder().build( this.pkg,

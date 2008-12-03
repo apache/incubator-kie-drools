@@ -3,6 +3,8 @@ package org.drools.process.core;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.io.Resource;
+
 public interface Process extends org.drools.definition.process.Process, ContextContainer {
 
     /**
@@ -30,9 +32,9 @@ public interface Process extends org.drools.definition.process.Process, ContextC
      */
     void setType(String type);
 
-    void setURL(String url);
+    void setResource(Resource resource);
     
-    String getURL();
+    Resource getResource();
     
     /**
      * Sets the package name of this RuleFlow process

@@ -1,5 +1,6 @@
 package org.drools.lang.descr;
 
+import org.drools.io.Resource;
 import org.drools.rule.Dialectable;
 import org.drools.rule.Namespaceable;
 
@@ -12,7 +13,7 @@ public class ProcessDescr extends BaseDescr
     private String dialect;
     private String name;
     private String className;
-    private String url;
+    private Resource resource;
 
     public ProcessDescr() {
 
@@ -23,12 +24,12 @@ public class ProcessDescr extends BaseDescr
         this.name = name;
     }    
     
-    public String getUrl() {
-        return url;
+    public Resource getResource() {
+        return resource;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setResource(Resource resource) {
+        this.resource = resource;
     }
 
     public String getName() {

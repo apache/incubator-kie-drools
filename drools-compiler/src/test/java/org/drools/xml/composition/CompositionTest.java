@@ -1,7 +1,11 @@
 package org.drools.xml.composition;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringReader;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -10,6 +14,11 @@ import junit.framework.TestCase;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
+import org.drools.agent.KnowledgeAgent;
+import org.drools.agent.KnowledgeAgentConfiguration;
+import org.drools.agent.KnowledgeAgentFactory;
+import org.drools.agent.impl.KnowledgeAgentConfigurationImpl;
+import org.drools.agent.impl.KnowledgeAgentImpl;
 import org.drools.builder.DecisionTableConfiguration;
 import org.drools.builder.DecisionTableInputType;
 import org.drools.builder.KnowledgeBuilder;
@@ -18,8 +27,9 @@ import org.drools.builder.KnowledgeType;
 import org.drools.compiler.KnowledgeComposition;
 import org.drools.compiler.KnowledgeResource;
 import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.io.ResourceChangeScannerConfiguration;
 import org.drools.io.ResourceFactory;
-import org.drools.io.impl.ClassPathResource;
+import org.drools.io.impl.ResourceChangeNotifierImpl;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.xml.XmlCompositionReader;
 import org.xml.sax.SAXException;
@@ -77,7 +87,101 @@ public class CompositionTest extends TestCase {
         ksession.dispose();
         
         assertEquals( 2, list.size() );
-        assertTrue ( list.containsAll( Arrays.asList(  new String[] { "rule1", "rule2" } ) ) );
-        
+        assertTrue ( list.containsAll( Arrays.asList(  new String[] { "rule1", "rule2" } ) ) );        
     }
+    
+    public void testIntegregation2() throws IOException, InterruptedException {
+        String rule1 = "";
+        rule1 += "package org.drools.test\n";
+        rule1 += "global java.util.List list\n";
+        rule1 += "rule rule1\n";
+        rule1 += "when\n";
+        rule1 += "then\n";
+        rule1 += "list.add( drools.getRule().getName() );\n";
+        rule1 += "end\n";
+        File f1 = File.createTempFile( "rule1", ".drl" );
+        f1.deleteOnExit();
+        Writer output = new BufferedWriter(new FileWriter(f1));
+        output.write( rule1 );
+        output.close();
+        
+        String rule2 = "";
+        rule2 += "package org.drools.test\n";
+        rule2 += "global java.util.List list\n";
+        rule2 += "rule rule2\n";
+        rule2 += "when\n";
+        rule2 += "then\n";
+        rule2 += "list.add( drools.getRule().getName() );\n";
+        rule2 += "end\n";  
+        File f2 = File.createTempFile( "rule2", ".drl" );
+        f2.deleteOnExit();
+        output = new BufferedWriter(new FileWriter(f2));
+        output.write( rule2 ); 
+        output.close();
+        
+        String xml = "";
+        xml += "<composition xmlns='http://drools.org/drools-4.0/composition'";
+        xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
+        xml += "    xs:schemaLocation='http://drools.org/drools-4.0/composition drools-composition-4.0.xsd' >";
+        xml += "    <resource source='" + f1.toURI().toURL() +  "' type='DRL' />";
+        xml += "    <resource source='" + f2.toURI().toURL() +  "' type='DRL' />";
+        xml += "</composition>";
+        File fxml = File.createTempFile( "composition", ".xml" );
+        fxml.deleteOnExit();
+        output = new BufferedWriter(new FileWriter(fxml));
+        output.write( xml ); 
+        output.close();        
+        
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newUrlResource( fxml.toURI().toURL() ), KnowledgeType.COMPOSITION );
+        assertFalse( kbuilder.hasErrors() );
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        
+        ResourceChangeScannerConfiguration sconf = ResourceFactory.getResourceChangeScannerService().newResourceChangeScannerConfiguration();
+        sconf.setProperty( "drools.resource.scanner.interval", "2" );
+        ResourceFactory.getResourceChangeScannerService().configure( sconf );
+        
+        KnowledgeAgentConfiguration aconf = new KnowledgeAgentConfigurationImpl();
+        aconf.setProperty( "drools.agent.scanResources", "true" );
+        aconf.setProperty( "drools.agent.newInstance", "true" );
+        KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent("test agent", kbase, aconf);                
+        
+        StatefulKnowledgeSession ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+        ksession.fireAllRules();
+        ksession.dispose();
+        
+        assertEquals( 2, list.size() );
+        assertTrue( list.contains( "rule1" ));
+        assertTrue( list.contains( "rule2" ));
+        
+        list.clear();
+        rule1 = "";
+        rule1 += "package org.drools.test\n";
+        rule1 += "global java.util.List list\n";
+        rule1 += "rule rule3\n";
+        rule1 += "when\n";
+        rule1 += "then\n";
+        rule1 += "list.add( drools.getRule().getName() );\n";
+        rule1 += "end\n";
+        output = new BufferedWriter(new FileWriter(f1));
+        output.write( rule1 );
+        output.close();        
+        Thread.sleep( 3000 );
+        
+        ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
+        list = new ArrayList();
+        ksession.setGlobal( "list", list );
+        ksession.fireAllRules();
+        ksession.dispose();
+        
+        assertEquals( 2, list.size() );
+        assertTrue( list.contains( "rule3" ));
+        assertTrue( list.contains( "rule2" ));       
+    }    
+    
+    
 }

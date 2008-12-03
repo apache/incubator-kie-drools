@@ -40,6 +40,7 @@ import org.drools.definition.process.Node;
 import org.drools.definition.process.NodeContainer;
 import org.drools.definition.process.Process;
 import org.drools.definition.process.WorkflowProcess;
+import org.drools.io.Resource;
 import org.drools.lang.descr.ActionDescr;
 import org.drools.lang.descr.ProcessDescr;
 import org.drools.process.builder.ProcessNodeBuilder;
@@ -89,8 +90,8 @@ public class ProcessBuilder {
         return errors;
     }
 
-    public void buildProcess(final Process process, String url) {
-        ((org.drools.process.core.Process) process).setURL( url );
+    public void buildProcess(final Process process, Resource resource) {
+        ((org.drools.process.core.Process) process).setResource( resource );
         boolean hasErrors = false;
         ProcessValidator validator = processValidators.get(((Process)process).getType());
         if (validator == null) {
@@ -124,7 +125,7 @@ public class ProcessBuilder {
             
 	            ProcessDescr processDescr = new ProcessDescr();
 	            processDescr.setName(process.getPackageName());
-	            processDescr.setUrl( url );
+	            processDescr.setResource( resource );
 	            PackageRegistry pkgRegistry = this.packageBuilder.getPackageRegistry( this.packageBuilder.getPackage().getName() );
 	            DialectCompiletimeRegistry dialectRegistry = pkgRegistry.getDialectCompiletimeRegistry();           
 	            Dialect dialect = dialectRegistry.getDialect( "java" );
@@ -205,7 +206,7 @@ public class ProcessBuilder {
         }
     }
 
-    public void addProcessFromFile(final Reader reader, final String url) throws Exception {
+    public void addProcessFromFile(final Reader reader, final Resource resource) throws Exception {
         PackageBuilderConfiguration configuration = packageBuilder.getPackageBuilderConfiguration();
         XmlProcessReader xmlReader = new XmlProcessReader( configuration.getSemanticModules() );
         
@@ -221,7 +222,7 @@ public class ProcessBuilder {
                 portedReader = reader;
             }
             Process process = xmlReader.read(portedReader);
-            buildProcess( process, url );
+            buildProcess( process, resource );
         } finally {
             Thread.currentThread().setContextClassLoader( oldLoader );
         }

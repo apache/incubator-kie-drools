@@ -46,6 +46,7 @@ import org.drools.commons.jci.compilers.JaninoJavaCompiler;
 import org.drools.commons.jci.compilers.JavaCompiler;
 import org.drools.facttemplates.Fact;
 import org.drools.integrationtests.SerializationHelper;
+import org.drools.io.Resource;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.ConditionalElementDescr;
@@ -1496,11 +1497,11 @@ public class PackageBuilderTest extends DroolsTestCase {
                                 Object value) {
         }
 
-        public String getURL() {
+        public Resource getResource() {
             return null;
         }
 
-        public void setURL(String url) {
+        public void setResource(Resource resource) {
         }
 
 		public String[] getGlobalNames() {

@@ -9,6 +9,7 @@ import java.util.Set;
 import junit.framework.TestCase;
 
 import org.drools.base.TypeResolver;
+import org.drools.io.Resource;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BaseDescr;
@@ -440,6 +441,13 @@ public class PackageBuilderConfigurationTest extends TestCase {
         public EnabledBuilder getEnabledBuilder() {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        public void addFunction(FunctionDescr functionDescr,
+                                TypeResolver typeResolver,
+                                Resource resource) {
+            // TODO Auto-generated method stub
+            
         }
     }
 

@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.io.Resource;
 import org.drools.rule.Dialectable;
 import org.drools.rule.Namespaceable;
 
@@ -51,7 +52,7 @@ public class RuleDescr extends BaseDescr
 
     private String               className;
     
-    private String               url;
+    private Resource             resource;
 
     public RuleDescr() {
     }
@@ -84,7 +85,7 @@ public class RuleDescr extends BaseDescr
         attributes = (List<AttributeDescr>) in.readObject();
         salience = (String) in.readObject();
         className = (String) in.readObject();
-        url = ( String ) in.readObject();
+        resource = ( Resource ) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -102,7 +103,7 @@ public class RuleDescr extends BaseDescr
         out.writeObject( attributes );
         out.writeObject( salience );
         out.writeObject( className );
-        out.writeObject( url );
+        out.writeObject( resource );
     }
 
     public void setNamespace(String namespace) {
@@ -113,12 +114,12 @@ public class RuleDescr extends BaseDescr
         return this.namespace;
     }        
 
-    public String getUrl() {
-        return url;
+    public Resource getResource() {
+        return resource;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setResource(Resource resource) {
+        this.resource = resource;
     }
 
     public String getName() {

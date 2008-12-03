@@ -230,7 +230,6 @@ public class RuleAgent {
                                               config.getProperty( key ) );
 
             } else {
-
                 PackageProvider prov = getProvider( key,
                                                     config );
                 if ( prov != null ) {

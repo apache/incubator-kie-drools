@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.drools.io.Resource;
 import org.drools.rule.Dialectable;
 import org.drools.rule.Namespaceable;
 
@@ -43,7 +44,7 @@ public class FunctionDescr extends BaseDescr
 
     private String            className;
     
-    private String            url;    
+    private Resource          resource;    
 
     public FunctionDescr(final String name,
                          final String returnType) {
@@ -59,12 +60,12 @@ public class FunctionDescr extends BaseDescr
         return this.namespace;
     }        
 
-    public String getUrl() {
-        return url;
+    public Resource getResource() {
+        return resource;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setResource(Resource resource) {
+        this.resource = resource;
     }
 
     public String getName() {
