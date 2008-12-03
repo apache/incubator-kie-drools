@@ -50,6 +50,7 @@ import org.drools.facttemplates.FieldTemplate;
 import org.drools.facttemplates.FieldTemplateImpl;
 import org.drools.io.Resource;
 import org.drools.io.impl.ClassPathResource;
+import org.drools.io.impl.ReaderResource;
 import org.drools.io.impl.UrlResource;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BaseDescr;
@@ -123,7 +124,7 @@ public class PackageBuilder {
 
     private Map<String, Class>            globals;
 
-    private String                        url;
+    private Resource                      resource;
 
     private List<DSLTokenizedMappingFile> dslFiles;
 
@@ -263,26 +264,26 @@ public class PackageBuilder {
      */
     public void addPackageFromDrl(final Reader reader) throws DroolsParserException,
                                                       IOException {
+        this.resource = new ReaderResource( reader );
         final DrlParser parser = new DrlParser();
         final PackageDescr pkg = parser.parse( reader );
         this.results.addAll( parser.getErrors() );
         if ( !parser.hasErrors() ) {
             addPackage( pkg );
         }
+        this.resource = null;
     }
 
     public void addPackageFromDrl(Resource resource) throws DroolsParserException,
                                                     IOException {
-        if ( resource.hasURL() ) {
-            this.url = resource.getURL().toExternalForm();
-        }
+        this.resource = resource;
         final DrlParser parser = new DrlParser();
         final PackageDescr pkg = parser.parse( resource.getInputStream() );
         this.results.addAll( parser.getErrors() );
         if ( !parser.hasErrors() ) {
             addPackage( pkg );
         }
-        this.url = null;
+        this.resource = null;
     }
 
     /**
@@ -294,6 +295,7 @@ public class PackageBuilder {
      */
     public void addPackageFromXml(final Reader reader) throws DroolsParserException,
                                                       IOException {
+        this.resource = new ReaderResource( reader );
         final XmlPackageReader xmlReader = new XmlPackageReader( this.configuration.getSemanticModules() );
 
         try {
@@ -304,13 +306,12 @@ public class PackageBuilder {
         }
 
         addPackage( xmlReader.getPackageDescr() );
+        this.resource = null;
     }
 
     public void addPackageFromXml(final Resource resource) throws DroolsParserException,
                                                           IOException {
-        if ( resource.hasURL() ) {
-            this.url = resource.getURL().toExternalForm();
-        }
+        this.resource = resource;
 
         final XmlPackageReader xmlReader = new XmlPackageReader( this.configuration.getSemanticModules() );
 
@@ -322,7 +323,7 @@ public class PackageBuilder {
         }
 
         addPackage( xmlReader.getPackageDescr() );
-        this.url = null;
+        this.resource = null;
     }
 
     /**
@@ -338,6 +339,8 @@ public class PackageBuilder {
     public void addPackageFromDrl(final Reader source,
                                   final Reader dsl) throws DroolsParserException,
                                                    IOException {
+        this.resource = new ReaderResource( source );
+        
         final DrlParser parser = new DrlParser();
         final PackageDescr pkg = parser.parse( source,
                                                dsl );
@@ -345,13 +348,12 @@ public class PackageBuilder {
         if ( !parser.hasErrors() ) {
             addPackage( pkg );
         }
+        this.resource = null;
     }
 
     public void addPackageFromDslr(final Resource resource) throws DroolsParserException,
                                                            IOException {
-        if ( resource.hasURL() ) {
-            this.url = resource.getURL().toExternalForm();
-        }
+        this.resource = resource;
 
         final DrlParser parser = new DrlParser();
         DefaultExpander expander = getDslExpander();
@@ -370,26 +372,11 @@ public class PackageBuilder {
         } catch ( IOException e ) {
             throw new RuntimeException( e );
         }
-        this.url = null;
-    }
-
-    public void addDsl(Reader dsl) {
-        try {
-            DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
-            file.parseAndLoad( dsl );
-            if ( this.dslFiles == null ) {
-                this.dslFiles = new ArrayList<DSLTokenizedMappingFile>();
-            }
-            this.dslFiles.add( file );
-        } catch ( Exception e ) {
-            throw new RuntimeException( e );
-        }
+        this.resource = null;
     }
 
     public void addDsl(Resource resource) throws IOException {
-        if ( resource.hasURL() ) {
-            this.url = resource.getURL().toExternalForm();
-        }
+        this.resource = resource;
 
         DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
         file.parseAndLoad( resource.getReader() );
@@ -398,17 +385,7 @@ public class PackageBuilder {
         }
         this.dslFiles.add( file );
 
-        this.url = null;
-    }
-
-    public void addDsl(URL url) {
-        this.url = url.toExternalForm();
-        try {
-            addDsl( new InputStreamReader( url.openStream() ) );
-        } catch ( IOException e ) {
-            throw new RuntimeException( e );
-        }
-        this.url = null;
+        this.resource = null;
     }
 
     /**
@@ -419,14 +396,12 @@ public class PackageBuilder {
     }
 
     public void addProcessFromXml(Resource resource) throws IOException {
-        if ( resource.hasURL() ) {
-            this.url = resource.getURL().toExternalForm();
-        }
+        this.resource = resource;
 
         ProcessBuilder processBuilder = new ProcessBuilder( this );
         try {
             processBuilder.addProcessFromFile( resource.getReader(),
-                                               url );
+                                               resource );
             this.results.addAll( processBuilder.getErrors() );
         } catch ( Exception e ) {
             if ( e instanceof RuntimeException ) {
@@ -437,14 +412,16 @@ public class PackageBuilder {
         }
 
         this.results = getResults( this.results );
-        this.url = null;
+        this.resource = null;
     }
 
     public void addProcessFromXml(Reader processSource) {
+        this.resource = new ReaderResource( processSource );
+        
         ProcessBuilder processBuilder = new ProcessBuilder( this );
         try {
             processBuilder.addProcessFromFile( processSource,
-                                               url );
+                                               resource );
             this.results.addAll( processBuilder.getErrors() );
         } catch ( Exception e ) {
             if ( e instanceof RuntimeException ) {
@@ -455,6 +432,7 @@ public class PackageBuilder {
         }
 
         this.results = getResults( this.results );
+        this.resource = null;
     }
 
     public void addKnowledgeResource(Resource resource,
@@ -789,6 +767,7 @@ public class PackageBuilder {
             }
 
             TypeDeclaration type = new TypeDeclaration( typeDescr.getTypeName() );
+            type.setResource( this.resource );
 
             // is it a regular fact or an event?
             String role = typeDescr.getMetaAttribute( TypeDeclaration.Role.ID );
@@ -939,11 +918,12 @@ public class PackageBuilder {
     }
 
     private void addFunction(final FunctionDescr functionDescr) {
-        functionDescr.setUrl( this.url );
+        functionDescr.setResource( this.resource );
         PackageRegistry pkgRegistry = this.pkgRegistryMap.get( functionDescr.getNamespace() );
         Dialect dialect = pkgRegistry.getDialectCompiletimeRegistry().getDialect( functionDescr.getDialect() );
         dialect.addFunction( functionDescr,
-                             pkgRegistry.getTypeResolver() );
+                             pkgRegistry.getTypeResolver(),
+                             this.resource );
     }
 
     private void preCompileAddFunction(final FunctionDescr functionDescr) {
@@ -987,7 +967,7 @@ public class PackageBuilder {
 
     private void addRule(final RuleDescr ruleDescr) {
         // this.dialect.init( ruleDescr );
-        ruleDescr.setUrl( url );
+        ruleDescr.setResource( resource );
 
         if ( ruleDescr instanceof QueryDescr ) {
             // ruleDescr.getLhs().insertDescr( 0, baseDescr );
@@ -1005,7 +985,7 @@ public class PackageBuilder {
 
         this.results.addAll( context.getErrors() );
 
-        context.getRule().setUrl( url );
+        context.getRule().setResource( resource );
 
         context.getDialect().addRule( context );
 

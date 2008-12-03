@@ -5,9 +5,13 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-public class Function implements Dialectable, Externalizable {
+import org.drools.definition.KnowledgeDefinition;
+import org.drools.io.Resource;
+
+public class Function implements  KnowledgeDefinition, Dialectable, Externalizable {
     private String name;
     private String dialect;
+    private Resource resource;
 
     public Function() {
 
@@ -26,14 +30,24 @@ public class Function implements Dialectable, Externalizable {
     public String getDialect() {
         return this.dialect;
     }
+    
+    public Resource getResource() {
+        return this.resource;
+    }
+
+    public void setResource(Resource resource) {
+        this.resource = resource;
+    }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         name    = (String)in.readObject();
         dialect = (String)in.readObject();
+        resource = ( Resource ) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject(name);
         out.writeObject(dialect);
+        out.writeObject(resource);
     }
 }

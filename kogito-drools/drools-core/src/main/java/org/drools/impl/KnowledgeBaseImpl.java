@@ -58,7 +58,7 @@ public class KnowledgeBaseImpl
     implements
     KnowledgeBase,
     Externalizable {
-    private RuleBase                                                          ruleBase;
+    public RuleBase                                                          ruleBase;
 
     public Map<KnowledgeBaseEventListener, KnowledgeBaseEventListenerWrapper> mappedKnowledgeBaseListeners;
 

@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
+import java.util.Date;
 
 import org.drools.io.Resource;
 import org.drools.util.StringUtils;
@@ -17,6 +18,7 @@ import org.drools.util.StringUtils;
  */
 public class FileSystemResource implements Resource {
     private File file;
+    private long lastRead = -1;
     
     /**
      * Create a new FileSystemResource from a File handle.
@@ -58,12 +60,17 @@ public class FileSystemResource implements Resource {
      * @see java.io.FileInputStream
      */
     public InputStream getInputStream() throws IOException {
+        this.lastRead = getLastModified();
         return new FileInputStream(this.file);
     }
     
     public Reader getReader() throws IOException {
         return new InputStreamReader( getInputStream() );
     }    
+    
+    public File getFile() {
+        return this.file;
+    }       
 
     /**
      * This implementation returns a URL for the underlying file.
@@ -75,7 +82,17 @@ public class FileSystemResource implements Resource {
     
     public boolean hasURL() {
         return true;
-    }    
+    }   
+    
+    public long getLastModified() {
+        long date = this.file.lastModified();
+        return date;
+    }     
+    
+    public long getLastRead() {
+        return this.lastRead;
+    }
+    
     
     public String toString() {
         return "[FileResource file='" + this.file.toString() + "']";

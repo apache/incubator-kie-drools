@@ -6,7 +6,7 @@ package org.drools.agent;
  * 
  * @author Michael Neale
  */
-public interface AgentEventListener extends KnowledgeEventListener {
+public interface AgentEventListener extends KnowledgeAgentEventListener {
 
     /**
      * This sets the name for logging.

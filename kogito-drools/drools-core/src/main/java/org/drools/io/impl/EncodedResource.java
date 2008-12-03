@@ -76,7 +76,15 @@ public class EncodedResource implements Resource {
     
     public InputStream getInputStream() throws IOException {
         return this.resource.getInputStream();
+    }
+    
+    public long getLastModified() {
+        return this.resource.getLastModified();
     }    
+    
+    public long getLastRead() {
+        return this.resource.getLastRead();
+    }      
     
     public String toString() {
         return "[EncodedResource resource=" + this.resource + " encoding='" + this.encoding + "']";

@@ -31,9 +31,9 @@ public class KnowledgePackageImp implements KnowledgePackage {
     }
     
     public Collection<Process> getProcesses() {
-    	Collection<org.drools.process.core.Process> processes = ( Collection<org.drools.process.core.Process> ) pkg.getRuleFlows().values();
+    	Collection<org.drools.definition.process.Process> processes = ( Collection<org.drools.definition.process.Process> ) pkg.getRuleFlows().values();
     	List<Process> list = new ArrayList<Process>( processes.size() );
-    	for( org.drools.process.core.Process process : processes ) {
+    	for( org.drools.definition.process.Process process : processes ) {
     		list.add( process );
     	}
     	return list;

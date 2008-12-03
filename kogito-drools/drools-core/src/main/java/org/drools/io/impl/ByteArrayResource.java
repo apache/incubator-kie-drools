@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Date;
 
 import org.drools.io.Resource;
 
@@ -39,6 +40,14 @@ public class ByteArrayResource
     public URL getURL() throws IOException {
         throw new FileNotFoundException( "byte[] cannot be resolved to URL" );
     }
+    
+    public long getLastModified() {
+        throw new IllegalStateException( "reader does have a modified date" );
+    }    
+    
+    public long getLastRead() {
+        throw new IllegalStateException( "reader does have a modified date" );
+    }      
 
     public boolean equals(Object object) {
         return (object == this || (object instanceof ByteArrayResource && Arrays.equals( ((ByteArrayResource) object).bytes,

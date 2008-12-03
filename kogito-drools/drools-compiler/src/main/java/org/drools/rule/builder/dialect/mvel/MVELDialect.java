@@ -26,6 +26,7 @@ import org.drools.compiler.Dialect;
 import org.drools.compiler.ImportError;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageRegistry;
+import org.drools.io.Resource;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BaseDescr;
@@ -332,7 +333,8 @@ public class MVELDialect
     }
 
     public void addFunction(FunctionDescr functionDescr,
-                            TypeResolver typeResolver) {
+                            TypeResolver typeResolver,
+                            Resource resource) {
         Serializable s1 = compile( (String) functionDescr.getContent(),
                                    null,
                                    null,

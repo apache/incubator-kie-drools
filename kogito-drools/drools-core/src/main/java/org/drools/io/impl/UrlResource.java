@@ -7,6 +7,7 @@ import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Date;
 
 import org.drools.io.Resource;
 import org.drools.util.StringUtils;
@@ -17,6 +18,7 @@ import org.drools.util.StringUtils;
  */
 public class UrlResource implements Resource {
     private URL url;
+    private long lastRead = -1;
 
     public UrlResource(URL url) {
         this.url = getCleanedUrl( url,
@@ -41,6 +43,7 @@ public class UrlResource implements Resource {
      * @see java.net.URLConnection#getInputStream()
      */
     public InputStream getInputStream() throws IOException {
+        this.lastRead = getLastModified(); 
         URLConnection con = this.url.openConnection();
         con.setUseCaches(false);
         return con.getInputStream();
@@ -75,7 +78,22 @@ public class UrlResource implements Resource {
     
     public boolean hasURL() {
         return true;
-    }        
+    }    
+
+    public long getLastModified() {
+        try {
+            URLConnection conn = getURL().openConnection();
+            long date = conn.getLastModified();   
+            return date;
+        } catch ( IOException e ) {
+            throw new RuntimeException( "Unable to get LastMofified for ClasspathResource",
+                                        e );
+        }
+    }
+    
+    public long getLastRead() {
+        return this.lastRead;
+    }
 
     /**
      * This implementation compares the underlying URL references.

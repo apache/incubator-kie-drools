@@ -77,14 +77,14 @@ public class Package
 
     private Map                            factTemplates;
 
-    private Map                            ruleFlows;
+    private Map<String, Process>           ruleFlows;
 
     // private JavaDialectData packageCompilationData;
     private DialectRuntimeRegistry         dialectRuntimeRegistry;
 
     private Map<String, TypeDeclaration>   typeDeclarations;
-    
-    private ClassFieldAccessorStore       classFieldAccessorStore;
+
+    private ClassFieldAccessorStore        classFieldAccessorStore;
 
     /**
      * This is to indicate the the package has no errors during the
@@ -125,10 +125,10 @@ public class Package
         this.ruleFlows = Collections.EMPTY_MAP;
         this.globals = Collections.EMPTY_MAP;
         this.factTemplates = Collections.EMPTY_MAP;
-        this.functions = Collections.EMPTY_MAP;     
-        this.dialectRuntimeRegistry = new DialectRuntimeRegistry( );
+        this.functions = Collections.EMPTY_MAP;
+        this.dialectRuntimeRegistry = new DialectRuntimeRegistry();
         this.classFieldAccessorStore = new ClassFieldAccessorStore();
-    }   
+    }
 
     /**
      * Handles the write serialization of the Package. Patterns in Rules may
@@ -205,7 +205,7 @@ public class Package
         this.globals = (Map<String, String>) in.readObject();
         this.valid = in.readBoolean();
         this.rules = (Map) in.readObject();
-        this.classFieldAccessorStore = ( ClassFieldAccessorStore ) in.readObject();
+        this.classFieldAccessorStore = (ClassFieldAccessorStore) in.readObject();
         if ( !isDroolsStream ) {
             in.close();
         }
@@ -292,7 +292,7 @@ public class Package
         addGlobal( identifier,
                    clazz.getName() );
     }
-    
+
     public void addGlobal(final String identifier,
                           final String className) {
         if ( this.globals == Collections.EMPTY_MAP ) {
@@ -300,7 +300,7 @@ public class Package
         }
         this.globals.put( identifier,
                           className );
-    }    
+    }
 
     public void removeGlobal(final String identifier) {
         this.globals.remove( identifier );
@@ -365,7 +365,7 @@ public class Package
      * Get the rule flows for this package. The key is the ruleflow id. It will
      * be Collections.EMPTY_MAP if none have been added.
      */
-    public Map getRuleFlows() {
+    public Map<String, Process> getRuleFlows() {
         return this.ruleFlows;
     }
 
@@ -559,5 +559,5 @@ public class Package
     public void setClassFieldAccessorCache(ClassFieldAccessorCache classFieldAccessorCache) {
         this.classFieldAccessorStore.setClassFieldAccessorCache( classFieldAccessorCache );
     }
-        
+
 }

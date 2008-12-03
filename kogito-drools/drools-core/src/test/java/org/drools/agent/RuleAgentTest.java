@@ -271,64 +271,64 @@ public class RuleAgentTest extends TestCase {
 
     }
     
-    // FIXME - for some reason failing on hudson
-    public void FIXME_testPollingFilesRuleBaseReplace2() throws Exception {
-        File dir = RuleBaseAssemblerTest.getTempDirectory();
-
-        Package p1 = new Package( "p1" );
-        File p1f = new File( dir,
-                             "p43_.pkg" );
-        RuleBaseAssemblerTest.writePackage( p1,
-                                            p1f );
-
-        Package p2 = new Package( "p2" );
-        File p2f = new File( dir,
-                             "p44_.pkg" );
-        RuleBaseAssemblerTest.writePackage( p2,
-                                            p2f );
-
-        String path = dir.getPath() + "/" + "p43_.pkg " + dir.getPath() + "/p44_.pkg";
-
-        Properties props = new Properties();
-        props.setProperty( "file",
-                           path );
-
-        props.setProperty( "newInstance",
-                           "true" );
-        
-        props.setProperty( "poll", "1" );
-        
-        KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent( "agent1", props );
-        
-        KnowledgeBase kbase = kagent.getKnowledgeBase();
-        
-        assertEquals( 2,
-                      kbase.getKnowledgePackages().size() );        
-
-        KnowledgeBase kbase_ = kagent.getKnowledgeBase();
-        assertSame( kbase,
-                    kbase_ );
-
-        //only change one
-        RuleBaseAssemblerTest.writePackage( p1,
-                                            p1f );
-        int i = 0;
-        while ( i < 20 && kagent.getKnowledgeBase() == kbase ) {
-            // this will sleep for a max of 10 seconds, it'll check every 500ms to see if a new kbase exists
-            // if it exists, it will break the loop.
-            Thread.sleep( 500 );
-            i++;
-        }
-        
-        kbase_ = kagent.getKnowledgeBase();
-        assertNotSame( kbase,
-                    kbase_ );
-
-        //check we will have 2
-        assertEquals( 2,
-                      kbase.getKnowledgePackages().size() );
-
-    }    
+//    // FIXME - for some reason failing on hudson
+//    public void FIXME_testPollingFilesRuleBaseReplace2() throws Exception {
+//        File dir = RuleBaseAssemblerTest.getTempDirectory();
+//
+//        Package p1 = new Package( "p1" );
+//        File p1f = new File( dir,
+//                             "p43_.pkg" );
+//        RuleBaseAssemblerTest.writePackage( p1,
+//                                            p1f );
+//
+//        Package p2 = new Package( "p2" );
+//        File p2f = new File( dir,
+//                             "p44_.pkg" );
+//        RuleBaseAssemblerTest.writePackage( p2,
+//                                            p2f );
+//
+//        String path = dir.getPath() + "/" + "p43_.pkg " + dir.getPath() + "/p44_.pkg";
+//
+//        Properties props = new Properties();
+//        props.setProperty( "file",
+//                           path );
+//
+//        props.setProperty( "newInstance",
+//                           "true" );
+//        
+//        props.setProperty( "poll", "1" );
+//        
+//        KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent( "agent1", props );
+//        
+//        KnowledgeBase kbase = kagent.getKnowledgeBase();
+//        
+//        assertEquals( 2,
+//                      kbase.getKnowledgePackages().size() );        
+//
+//        KnowledgeBase kbase_ = kagent.getKnowledgeBase();
+//        assertSame( kbase,
+//                    kbase_ );
+//
+//        //only change one
+//        RuleBaseAssemblerTest.writePackage( p1,
+//                                            p1f );
+//        int i = 0;
+//        while ( i < 20 && kagent.getKnowledgeBase() == kbase ) {
+//            // this will sleep for a max of 10 seconds, it'll check every 500ms to see if a new kbase exists
+//            // if it exists, it will break the loop.
+//            Thread.sleep( 500 );
+//            i++;
+//        }
+//        
+//        kbase_ = kagent.getKnowledgeBase();
+//        assertNotSame( kbase,
+//                    kbase_ );
+//
+//        //check we will have 2
+//        assertEquals( 2,
+//                      kbase.getKnowledgePackages().size() );
+//
+//    }    
 
     public void testPollingFilesRuleBaseRemoveNewInstanceFalse() throws Exception {
         File dir = RuleBaseAssemblerTest.getTempDirectory();

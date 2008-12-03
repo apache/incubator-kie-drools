@@ -26,6 +26,7 @@ import java.io.Serializable;
 
 import org.drools.factmodel.ClassDefinition;
 import org.drools.facttemplates.FactTemplate;
+import org.drools.io.Resource;
 import org.drools.spi.AcceptsReadAccessor;
 import org.drools.spi.InternalReadAccessor;
 
@@ -84,6 +85,7 @@ public class TypeDeclaration
     private transient Class< ? > typeClass;
     private FactTemplate         typeTemplate;
     private ClassDefinition      typeClassDef;
+    private Resource             resource;
     
     public TypeDeclaration() {
     }
@@ -110,6 +112,7 @@ public class TypeDeclaration
         this.typeClassDef = (ClassDefinition) in.readObject();
         this.durationExtractor = (InternalReadAccessor) in.readObject();
         this.timestampExtractor = (InternalReadAccessor) in.readObject();
+        this.resource = ( Resource ) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -123,6 +126,7 @@ public class TypeDeclaration
         out.writeObject( typeClassDef );
         out.writeObject( durationExtractor );
         out.writeObject( timestampExtractor );
+        out.writeObject( this.resource );
     }
 
     /**
@@ -298,4 +302,14 @@ public class TypeDeclaration
             setTimestampExtractor( readAccessor );
         }
     }
+
+    public Resource getResource() {
+        return resource;
+    }
+
+    public void setResource(Resource resource) {
+        this.resource = resource;
+    }
+    
+    
 }

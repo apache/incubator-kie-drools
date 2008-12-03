@@ -6,12 +6,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
+import java.net.URLConnection;
 
 import org.drools.io.Resource;
 
 /**
  * Borrowed gratuitously from Spring under ASL2.0.
  *
+ *+
  */
 
 public class ClassPathResource
@@ -20,6 +22,7 @@ public class ClassPathResource
     private String      path;
     private ClassLoader classLoader;
     private Class       clazz;
+    private long        lastRead;
 
     public ClassPathResource(String path) {
         this( path,
@@ -76,6 +79,7 @@ public class ClassPathResource
         if ( is == null ) {
             throw new FileNotFoundException( "'" + this.path + "' cannot be opened because it does not exist" );
         }
+        this.lastRead = getLastModified(); 
         return is;
     }
 
@@ -109,6 +113,21 @@ public class ClassPathResource
     public boolean hasURL() {
         return true;
     }
+    
+    public long getLastModified() {
+        try {
+            URLConnection conn = getURL().openConnection();
+            long date = conn.getLastModified();
+            return date;
+        } catch ( IOException e ) {
+            throw new RuntimeException( "Unable to get LastMofified for ClasspathResource",
+                                        e );
+        }
+    }   
+    
+    public long getLastRead() {
+        return this.lastRead;
+    }
 
     public Reader getReader() throws IOException {
         return new InputStreamReader( getInputStream() );
@@ -130,7 +149,7 @@ public class ClassPathResource
     public int hashCode() {
         return this.path.hashCode();
     }
-    
+
     public String toString() {
         return "[ClassPathResource path='" + this.path + "']";
     }

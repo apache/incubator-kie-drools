@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
+import java.util.Date;
 
 import org.drools.io.Resource;
 
@@ -30,7 +31,7 @@ public class ReaderResource implements Resource {
     }
     
     public URL getURL() throws IOException {
-        throw new FileNotFoundException( "byte[] cannot be resolved to URL");
+        throw new FileNotFoundException( "reader cannot be resolved to URL");
     }
 
     public InputStream getInputStream() throws IOException {
@@ -40,6 +41,14 @@ public class ReaderResource implements Resource {
             return new ReaderInputStream( this.reader);
         }
     } 
+    
+    public long getLastModified() {
+        throw new IllegalStateException( "reader does have a modified date" );
+    }    
+    
+    public long getLastRead() {
+        throw new IllegalStateException( "reader does have a modified date" );
+    }        
     
     public Reader getReader() {
         return this.reader;

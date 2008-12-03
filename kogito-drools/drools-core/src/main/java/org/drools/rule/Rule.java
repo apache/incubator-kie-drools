@@ -28,6 +28,7 @@ import java.util.Map;
 import org.drools.WorkingMemory;
 import org.drools.base.EnabledBoolean;
 import org.drools.base.SalienceInteger;
+import org.drools.io.Resource;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.CompiledInvoker;
 import org.drools.spi.Consequence;
@@ -121,7 +122,7 @@ public class Rule
 
     private Enabled           enabled;
     
-    private String            url;
+    private Resource          resource;
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject(pkg);
@@ -154,6 +155,7 @@ public class Rule
         out.writeObject(dateEffective);
         out.writeObject(dateExpires);
         out.writeObject(enabled);
+        out.writeObject( resource );
     }
     
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
@@ -183,6 +185,7 @@ public class Rule
         dateEffective = (Calendar) in.readObject();
         dateExpires = (Calendar) in.readObject();
         enabled = (Enabled) in.readObject();
+        resource = ( Resource ) in.readObject();
     }
 
     // ------------------------------------------------------------
@@ -235,12 +238,12 @@ public class Rule
     
     
 
-    public String getUrl() {
-        return url;
+    public Resource getResource() {
+        return resource;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setResource(Resource resource) {
+        this.resource = resource;
     }
 
     public String getDialect() {
