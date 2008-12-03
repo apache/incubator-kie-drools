@@ -4,11 +4,22 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.Reader;
 import java.net.URL;
+import java.util.Properties;
 
 import org.drools.ProviderInitializationException;
+import org.drools.event.io.ResourceChangeNotifier;
 
 public class ResourceFactory {
     private static ResourceProvider resourceProvider;
+       
+    
+    public  static ResourceChangeNotifier getResourceChangeNotifierService() { 
+        return getResourceProvider().getResourceChangeNotifierService();
+    }       
+
+    public static ResourceChangeScanner getResourceChangeScannerService() {
+        return getResourceProvider().getResourceChangeScannerService();
+    }
     
     public static Resource newUrlResource(URL url) {
         return getResourceProvider().newUrlResource( url );

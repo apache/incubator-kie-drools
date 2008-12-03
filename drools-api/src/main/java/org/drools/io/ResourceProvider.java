@@ -3,10 +3,15 @@ package org.drools.io;
 import java.io.File;
 import java.io.InputStream;
 import java.io.Reader;
-import java.net.URI;
 import java.net.URL;
 
+import org.drools.event.io.ResourceChangeNotifier;
+
 public interface ResourceProvider {
+    ResourceChangeNotifier getResourceChangeNotifierService();       
+
+    ResourceChangeScanner getResourceChangeScannerService();
+           
     Resource newUrlResource(URL url);
     
     Resource newUrlResource(String path);    
