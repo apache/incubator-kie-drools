@@ -1,6 +1,8 @@
 package org.drools.definition.rule;
 
-public interface Rule {
+import org.drools.definition.KnowledgeDefinition;
+
+public interface Rule extends KnowledgeDefinition {
 
     String getName();
 

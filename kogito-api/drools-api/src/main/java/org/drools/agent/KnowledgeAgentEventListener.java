@@ -1,10 +1,10 @@
 package org.drools.agent;
 
 /**
- * This interface is used to provide callback style logging for the agents
- * async events.
+ * This interface is used to provide callback style logging for the agents events.
+ * 
  */
-public interface KnowledgeEventListener {
+public interface KnowledgeAgentEventListener {
     /**
      * For general info messages
      */

@@ -10,4 +10,6 @@ public interface Resource {
     public Reader getReader() throws IOException;
     URL getURL() throws IOException;
     boolean hasURL();
+    long getLastModified();
+    public long getLastRead();
 }
