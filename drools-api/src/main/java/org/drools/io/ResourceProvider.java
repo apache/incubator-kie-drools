@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.net.URL;
 
-import org.drools.event.io.ResourceChangeNotifier;
 
 public interface ResourceProvider {
     ResourceChangeNotifier getResourceChangeNotifierService();       

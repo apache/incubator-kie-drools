@@ -1,21 +1,24 @@
-package org.drools.event.io;
+package org.drools.io;
 
 import java.util.Collection;
 
-import org.drools.definition.KnowledgeDefinition;
-import org.drools.io.Resource;
-import org.drools.io.ResourceChangeMonitor;
+import org.drools.KnowledgeBaseChangeSet;
+import org.drools.event.io.ResourceChangeListener;
 
-public interface ResourceChangeManager {
+public interface ResourceChangeNotifier {
     void subscribeResourceChangeListener(ResourceChangeListener listener,
                                          Resource resource);
 
     void unsubscribeResourceChangeListener(ResourceChangeListener listener,
                                            Resource resource);
+    
+    void subscribeChildResource(Resource directory, Resource child);    
 
     void addResourceChangeMonitor(ResourceChangeMonitor monitor);
 
     void removeResourceChangeMonitor(ResourceChangeMonitor monitor);
 
     Collection<ResourceChangeMonitor> getResourceChangeMonitor();
+    
+    public void publishKnowledgeBaseChangeSet(KnowledgeBaseChangeSet changeSet);
 }
