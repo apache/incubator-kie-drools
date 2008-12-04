@@ -9,6 +9,14 @@ import org.drools.ProviderInitializationException;
 
 public class KnowledgeAgentFactory {
     private static KnowledgeAgentProvider provider;
+    
+    public static KnowledgeAgentConfiguration newKnowledgeAgentConfiguration() {
+        return getKnowledgeAgentProvider().newKnowledgeAgentConfiguration();
+    }
+    
+    public static KnowledgeAgentConfiguration newKnowledgeAgentConfiguration(Properties properties) {
+        return getKnowledgeAgentProvider().newKnowledgeAgentConfiguration( properties );
+    }    
 
     public static KnowledgeAgent newKnowledgeAgent(String name,
                                                    KnowledgeBase kbase) {

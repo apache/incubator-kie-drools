@@ -7,7 +7,6 @@ import java.net.URL;
 import java.util.Properties;
 
 import org.drools.ProviderInitializationException;
-import org.drools.event.io.ResourceChangeNotifier;
 
 public class ResourceFactory {
     private static ResourceProvider resourceProvider;
