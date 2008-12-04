@@ -6,10 +6,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
+import java.util.Collection;
 
+import org.drools.io.InternalResource;
 import org.drools.io.Resource;
 
-public class InputStreamResource implements Resource {
+public class InputStreamResource  extends BaseResource implements InternalResource {
     private InputStream stream;
     
     public InputStreamResource(InputStream stream) {
@@ -42,5 +44,13 @@ public class InputStreamResource implements Resource {
     public long getLastRead() {
         throw new IllegalStateException( "InputStream does have a modified date" );
     }      
+    
+    public boolean isDirectory() {
+        return false;
+    }
+
+    public Collection<Resource> listResources() {
+        throw new RuntimeException( "This Resource cannot be listed, or is not a directory" );
+    }  
 
 }

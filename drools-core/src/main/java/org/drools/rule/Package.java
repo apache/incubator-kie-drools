@@ -35,6 +35,7 @@ import org.drools.common.DroolsObjectInputStream;
 import org.drools.common.DroolsObjectOutputStream;
 import org.drools.definition.process.Process;
 import org.drools.facttemplates.FactTemplate;
+import org.drools.io.Resource;
 
 /**
  * Collection of related <code>Rule</code>s.
@@ -97,6 +98,8 @@ public class Package
      * valid
      */
     private String                         errorSummary;
+    
+    private Set<Resource> resourceDirectories = Collections.emptySet();  
 
     // ------------------------------------------------------------
     // Constructors
@@ -165,6 +168,7 @@ public class Package
         out.writeBoolean( this.valid );
         out.writeObject( this.rules );
         out.writeObject( this.classFieldAccessorStore );
+        out.writeObject( this.resourceDirectories );
         // writing the whole stream as a byte array
         if ( !isDroolsStream ) {
             bytes.flush();
@@ -206,6 +210,7 @@ public class Package
         this.valid = in.readBoolean();
         this.rules = (Map) in.readObject();
         this.classFieldAccessorStore = (ClassFieldAccessorStore) in.readObject();
+        this.resourceDirectories = (Set<Resource>) in.readObject();
         if ( !isDroolsStream ) {
             in.close();
         }
@@ -489,6 +494,14 @@ public class Package
     public String getErrorSummary() {
         return this.errorSummary;
     }
+    
+    public Set<Resource> getResourceDirectories() {
+        return resourceDirectories;
+    }
+
+    public void setResourceDirectories(Set<Resource> resourceDirectories) {
+        this.resourceDirectories = resourceDirectories;
+    }    
 
     public boolean equals(final Object object) {
         if ( this == object ) {

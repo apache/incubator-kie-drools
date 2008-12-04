@@ -1,4 +1,4 @@
-package org.drools.compiler;
+package org.drools.io.impl;
 
 import org.drools.builder.KnowledgeType;
 import org.drools.builder.ResourceConfiguration;

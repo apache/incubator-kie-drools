@@ -1,16 +1,25 @@
 package org.drools.io.impl;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import org.drools.event.io.ResourceChangeNotifier;
+import org.drools.KnowledgeBaseChangeSet;
+import org.drools.io.InternalResource;
 import org.drools.io.Resource;
+import org.drools.io.ResourceChangeNotifier;
 import org.drools.io.ResourceChangeScanner;
 import org.drools.io.ResourceChangeScannerConfiguration;
+import org.drools.util.StringUtils;
 
 public class ResourceChangeScannerImpl
     implements
@@ -18,6 +27,7 @@ public class ResourceChangeScannerImpl
     Runnable {
 
     private Map<Resource, Set<ResourceChangeNotifier>> resources;
+    private Set<Resource>               directories;
 
     private volatile boolean                           scan;
 
@@ -25,6 +35,7 @@ public class ResourceChangeScannerImpl
 
     public ResourceChangeScannerImpl() {
         this.resources = new HashMap<Resource, Set<ResourceChangeNotifier>>();
+        this.directories = new HashSet<Resource>();
         setInterval( 60 );
         this.scan = true;
     }
@@ -32,7 +43,7 @@ public class ResourceChangeScannerImpl
     public void configure(ResourceChangeScannerConfiguration configuration) {
         this.interval = ((ResourceChangeScannerConfigurationImpl) configuration).getInterval();
         System.out.println( this.interval );
-        synchronized ( this.resources ) {            
+        synchronized ( this.resources ) {
             this.resources.notify(); // notify wait, so that it will wait again
         }
     }
@@ -49,6 +60,9 @@ public class ResourceChangeScannerImpl
                                   Resource resource) {
         System.out.println( "scanner : " + resource );
         synchronized ( this.resources ) {
+            if ( resource.isDirectory() ) {
+                this.directories.add( resource );
+            }
             Set<ResourceChangeNotifier> notifiers = this.resources.get( resource );
             if ( notifiers == null ) {
                 notifiers = new HashSet<ResourceChangeNotifier>();
@@ -69,23 +83,105 @@ public class ResourceChangeScannerImpl
             notifiers.remove( notifier );
             if ( notifiers.isEmpty() ) {
                 this.resources.remove( resource );
+                this.directories.remove( resource ); // don't bother with isDirectory check, as doing a remove is harmless if it doesn't exist
             }
         }
     }
 
     public void scan() {
         System.out.println( "attempt scan : " + this.resources.size() );
-        for ( Entry<Resource, Set<ResourceChangeNotifier>> entry : this.resources.entrySet() ) {
-            Resource resource = entry.getKey();
-            for ( ResourceChangeNotifier notifier : entry.getValue() ) {
-                System.out.println( "scan " + resource + ": " + resource.getLastModified() + " : " + resource.getLastRead() );
-                if ( resource.getLastRead() < resource.getLastModified() ) {
-                    notifier.resourceModified( resource );
+
+        if ( this.resources.size() > 0 ) {
+            System.out.println( "x" );
+        }
+        Map<ResourceChangeNotifier, KnowledgeBaseChangeSet> notifications = new HashMap<ResourceChangeNotifier, KnowledgeBaseChangeSet>();
+        
+    
+        List<Resource> removed = new ArrayList<Resource>();        
+
+        // detect modified and added
+        for ( Resource resource : this.directories ) {
+            for ( Resource child : resource.listResources() ) {
+                if ( !this.resources.containsKey( child ) ) {
+                    System.out.println( "found new file : " + child );
+                    // child is new
+                    ((InternalResource)child).setKnowledgeType( ((InternalResource)resource).getKnowledgeType() );
+                    Set<ResourceChangeNotifier> notifiers = this.resources.get( resource ); // get notifiers for this directory
+                    for ( ResourceChangeNotifier notifier : notifiers ) {
+                        KnowledgeBaseChangeSetImpl changeSet = (KnowledgeBaseChangeSetImpl) notifications.get( notifier );
+                        if ( changeSet == null ) {
+                            // lazy initialise changeSet
+                            changeSet = new KnowledgeBaseChangeSetImpl();
+                            notifications.put( notifier,
+                                               changeSet );
+                        }
+                        if ( changeSet.getResourcesAdded().isEmpty() ) {
+                            changeSet.setResourcesAdded( new ArrayList<Resource>() );
+                        }
+                        changeSet.getResourcesAdded().add( child );
+                        notifier.subscribeChildResource( resource, child );
+                    }                
                 }
             }
         }
-    }
 
+        for ( Entry<Resource, Set<ResourceChangeNotifier>> entry : this.resources.entrySet() ) {
+            Resource resource = entry.getKey();
+            Set<ResourceChangeNotifier> notifiers = entry.getValue();            
+            
+            if ( !resource.isDirectory() ) {
+                // detect if Resource has been modified
+                System.out.println( "scan " + resource + ": " + resource.getLastModified() + " : " + resource.getLastRead() );
+                long lastModified = resource.getLastModified();
+                if ( lastModified == 0 ) {
+                    removed.add( resource );
+                    // resource is no longer present
+                    // iterate notifiers for this resource and add to each removed
+                    for ( ResourceChangeNotifier notifier : notifiers ) {
+                        KnowledgeBaseChangeSetImpl changeSet = (KnowledgeBaseChangeSetImpl) notifications.get( notifier );
+                        if ( changeSet == null ) {
+                            // lazy initialise changeSet
+                            changeSet = new KnowledgeBaseChangeSetImpl();
+                            notifications.put( notifier,
+                                               changeSet );
+                        }
+                        if ( changeSet.getResourcesRemoved().isEmpty() ) {
+                            changeSet.setResourcesRemoved( new ArrayList<Resource>() );
+                        }
+                        changeSet.getResourcesRemoved().add( resource );
+                    }
+                } else if ( resource.getLastRead() <  lastModified ) {
+                    // it's modified
+                    // iterate notifiers for this resource and add to each modified
+                    for ( ResourceChangeNotifier notifier : notifiers ) {
+                        KnowledgeBaseChangeSetImpl changeSet = (KnowledgeBaseChangeSetImpl) notifications.get( notifier );
+                        if ( changeSet == null ) {
+                            // lazy initialise changeSet
+                            changeSet = new KnowledgeBaseChangeSetImpl();
+                            notifications.put( notifier,
+                                               changeSet );
+                        }
+                        if ( changeSet.getResourcesModified().isEmpty() ) {
+                            changeSet.setResourcesModified( new ArrayList<Resource>() );
+                        }
+                        changeSet.getResourcesModified().add( resource );
+                    }
+                }
+            }                
+        }
+        
+        // now iterate and removed the removed resources, we do this so as not to mutate the foreach loop while iterating
+        for ( Resource resource : removed ) {
+            this.resources.remove( resource );
+        }
+
+        for ( Entry<ResourceChangeNotifier, KnowledgeBaseChangeSet> entry : notifications.entrySet() ) {
+            ResourceChangeNotifier notifier = entry.getKey();
+            KnowledgeBaseChangeSet changeSet = entry.getValue();
+            notifier.publishKnowledgeBaseChangeSet( changeSet );
+        }
+    }
+    
     public void start() {
         this.scan = true;
     }

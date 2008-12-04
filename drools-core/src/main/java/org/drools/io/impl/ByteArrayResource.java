@@ -1,20 +1,27 @@
 package org.drools.io.impl;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
+import org.drools.builder.KnowledgeType;
+import org.drools.io.InternalResource;
 import org.drools.io.Resource;
+import org.drools.util.StringUtils;
 
-public class ByteArrayResource
+public class ByteArrayResource extends BaseResource
     implements
-    Resource {
+    InternalResource {
 
     private byte[] bytes;
 
@@ -48,6 +55,14 @@ public class ByteArrayResource
     public long getLastRead() {
         throw new IllegalStateException( "reader does have a modified date" );
     }      
+    
+    public boolean isDirectory() {
+        return false;
+    }
+
+    public Collection<Resource> listResources() {
+        throw new RuntimeException( "This Resource cannot be listed, or is not a directory" );
+    }      
 
     public boolean equals(Object object) {
         return (object == this || (object instanceof ByteArrayResource && Arrays.equals( ((ByteArrayResource) object).bytes,
@@ -57,5 +72,12 @@ public class ByteArrayResource
     public int hashCode() {
         return (byte[].class.hashCode() * 29 * this.bytes.length);
     }
+    
+    public String toString() {
+        return "[ByteArrayResource resource=" + this.bytes + "]";
+    }
+
+
+
 
 }

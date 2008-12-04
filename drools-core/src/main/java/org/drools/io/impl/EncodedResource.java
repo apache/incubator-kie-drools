@@ -5,10 +5,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
+import java.util.Collection;
 
+import org.drools.io.InternalResource;
 import org.drools.io.Resource;
 
-public class EncodedResource implements Resource {
+public class EncodedResource  extends BaseResource implements InternalResource {
     private final Resource resource;
 
     private final String encoding;
@@ -86,8 +88,16 @@ public class EncodedResource implements Resource {
         return this.resource.getLastRead();
     }      
     
+    public boolean isDirectory() {
+        return this.resource.isDirectory();
+    }
+
+    public Collection<Resource> listResources() {
+        return this.resource.listResources();
+    }         
+    
     public String toString() {
         return "[EncodedResource resource=" + this.resource + " encoding='" + this.encoding + "']";
-    }    
+    }  
 
 }

@@ -6,11 +6,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
+import java.util.Collection;
 import java.util.Date;
 
+import org.drools.io.InternalResource;
 import org.drools.io.Resource;
 
-public class ReaderResource implements Resource {
+public class ReaderResource  extends BaseResource implements InternalResource {
     private Reader reader;
     private String encoding;
     
@@ -58,8 +60,19 @@ public class ReaderResource implements Resource {
         return this.encoding;
     }
     
+    public boolean isDirectory() {
+        return false;
+    }
+
+    public Collection<Resource> listResources() {
+        throw new RuntimeException( "This Resource cannot be listed, or is not a directory" );
+    }         
+    
     public boolean hasURL() {
         return false;
     }        
     
+    public String toString() {
+        return "[ReaderResource resource=" + this.reader + " encoding='" + this.encoding + "']";
+    }
 }

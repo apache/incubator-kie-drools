@@ -4,10 +4,10 @@ import java.net.URLClassLoader;
 import java.util.HashSet;
 
 import org.drools.builder.KnowledgeType;
-import org.drools.compiler.KnowledgeComposition;
-import org.drools.compiler.KnowledgeResource;
 import org.drools.io.Resource;
 import org.drools.io.impl.ClassPathResource;
+import org.drools.io.impl.KnowledgeComposition;
+import org.drools.io.impl.KnowledgeResource;
 import org.drools.io.impl.UrlResource;
 import org.drools.util.StringUtils;
 import org.drools.xml.BaseAbstractHandler;

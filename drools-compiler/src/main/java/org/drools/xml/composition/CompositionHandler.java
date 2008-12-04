@@ -2,7 +2,7 @@ package org.drools.xml.composition;
 
 import java.util.HashSet;
 
-import org.drools.compiler.KnowledgeComposition;
+import org.drools.io.impl.KnowledgeComposition;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;

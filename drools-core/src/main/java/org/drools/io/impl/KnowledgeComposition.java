@@ -1,4 +1,4 @@
-package org.drools.compiler;
+package org.drools.io.impl;
 
 import java.util.ArrayList;
 import java.util.List;

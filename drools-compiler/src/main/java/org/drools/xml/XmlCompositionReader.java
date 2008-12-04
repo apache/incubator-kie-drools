@@ -6,7 +6,7 @@ import java.io.Reader;
 
 import javax.xml.parsers.SAXParser;
 
-import org.drools.compiler.KnowledgeComposition;
+import org.drools.io.impl.KnowledgeComposition;
 import org.drools.lang.descr.PackageDescr;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;

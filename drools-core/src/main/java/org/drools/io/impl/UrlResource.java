@@ -1,5 +1,6 @@
 package org.drools.io.impl;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -7,8 +8,12 @@ import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
+import org.drools.io.InternalResource;
 import org.drools.io.Resource;
 import org.drools.util.StringUtils;
 
@@ -16,9 +21,12 @@ import org.drools.util.StringUtils;
  * Borrowed gratuitously from Spring under ASL2.0.
  *
  */
-public class UrlResource implements Resource {
+public class UrlResource  extends BaseResource implements InternalResource {
     private URL url;
     private long lastRead = -1;
+
+    private boolean FromDirectory;
+    
 
     public UrlResource(URL url) {
         this.url = getCleanedUrl( url,
@@ -94,11 +102,52 @@ public class UrlResource implements Resource {
     public long getLastRead() {
         return this.lastRead;
     }
+    
+    public boolean isDirectory() {
+        try {
+            URL url = getURL();
 
+            if ( "file".equals( url.getProtocol() ) ) {
+            
+                File file = new File( StringUtils.toURI( url.toString() ).getSchemeSpecificPart() );
+                
+                return file.isDirectory();
+            }
+        } catch ( Exception e ) {
+            // swallow as returned false
+        }
+        
+        return false;
+    }
+
+    public Collection<Resource> listResources() {
+        try {
+            URL url = getURL();
+
+            if ( "file".equals( url.getProtocol() ) ) {                            
+                File dir = new File( StringUtils.toURI( url.toString() ).getSchemeSpecificPart() );
+                
+                List<Resource> resources = new ArrayList<Resource>();
+                
+                for ( File file : dir.listFiles() ) {
+                    resources.add( new FileSystemResource( file ) );
+                }
+                
+                return resources;
+            }
+        } catch ( Exception e ) {
+            // swallow as we'll throw an exception anyway            
+        }
+        throw new RuntimeException( "This Resource cannot be listed, or is not a directory" );
+    }    
+    
     /**
      * This implementation compares the underlying URL references.
      */
     public boolean equals(Object obj) {
+        if ( obj == null ) {
+            return false;
+        }
         return (obj == this || (obj instanceof UrlResource && this.url.equals( ((UrlResource) obj).url )));
     }
 
@@ -110,7 +159,7 @@ public class UrlResource implements Resource {
     }
     
     public String toString() {
-        return "[UrlResource path='" + this.url.toExternalForm() + "']";
+        return "[UrlResource path='" + this.url.toString() + "']";
     }
 
 }
