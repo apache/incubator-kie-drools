@@ -5,8 +5,8 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.net.URL;
 
-import org.drools.event.io.ResourceChangeNotifier;
 import org.drools.io.Resource;
+import org.drools.io.ResourceChangeNotifier;
 import org.drools.io.ResourceChangeScanner;
 import org.drools.io.ResourceProvider;
 

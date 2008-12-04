@@ -7,8 +7,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
+import org.drools.io.InternalResource;
 import org.drools.io.Resource;
 import org.drools.util.StringUtils;
 
@@ -16,9 +20,10 @@ import org.drools.util.StringUtils;
  * Borrowed gratuitously from Spring under ASL2.0.
  *
  */
-public class FileSystemResource implements Resource {
+public class FileSystemResource  extends BaseResource implements InternalResource {
     private File file;
     private long lastRead = -1;
+    private boolean FromDirectory;
     
     /**
      * Create a new FileSystemResource from a File handle.
@@ -71,7 +76,22 @@ public class FileSystemResource implements Resource {
     public File getFile() {
         return this.file;
     }       
-
+    
+    public boolean isDirectory() {
+        return this.file.isDirectory();
+    }
+    
+    public Collection<Resource> listResources() {
+        File[] files = this.file.listFiles();        
+        List<Resource> resources = new ArrayList<Resource>();
+        
+        for ( File file : files ) {
+            resources.add( new FileSystemResource( file ) );
+        }
+        
+        return resources;
+    }
+    
     /**
      * This implementation returns a URL for the underlying file.
      * @see java.io.File#toURI()
@@ -93,8 +113,19 @@ public class FileSystemResource implements Resource {
         return this.lastRead;
     }
     
-    
     public String toString() {
         return "[FileResource file='" + this.file.toString() + "']";
+    }
+    
+    public boolean equals(Object object) {
+        if ( object == null ) {
+            return false;
+        }
+        
+        return ( object == this || ( object instanceof FileSystemResource && file.equals( ((FileSystemResource)object).file )  ) );
+    }
+    
+    public int hashCode() {
+        return this.file.hashCode();
     }
 }

@@ -1,5 +1,6 @@
 package org.drools.io.impl;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -7,13 +8,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.drools.KnowledgeBaseChangeSet;
 import org.drools.event.io.ResourceChangeListener;
-import org.drools.event.io.ResourceChangeNotifier;
-import org.drools.event.io.ResourceModifiedEvent;
 import org.drools.io.Resource;
 import org.drools.io.ResourceChangeMonitor;
+import org.drools.io.ResourceChangeNotifier;
 
 public class ResourceChangeNotifierImpl
     implements
@@ -72,26 +74,87 @@ public class ResourceChangeNotifierImpl
             }            
         }
     }
-
-    public void resourceAdded(Resource resource) {
-
+    
+    public void subscribeChildResource(Resource directory, Resource child) {
+        for ( ResourceChangeListener listener : this.subscriptions.get( directory ) ) {
+            subscribeResourceChangeListener( listener, child );
+        }
     }
 
-    public void resourceModified(Resource resource) {
-        ResourceModifiedEvent event = new ResourceModifiedEventImpl( resource,
-                                                                     resource.getLastModified() );
-        Set<ResourceChangeListener> listeners = this.subscriptions.get( resource );
+    public void publishKnowledgeBaseChangeSet(KnowledgeBaseChangeSet changeSet) {
+        // this provides the complete published change set for this notifier.
+        // however different listeners might be listening to different resources, so provide
+        // listener change specified change sets.
         
-        if ( listeners != null ) {
-            for ( ResourceChangeListener listener : listeners ) {
-                listener.resourceModified( event );
+        Map<ResourceChangeListener, KnowledgeBaseChangeSetImpl> localChangeSets = new HashMap<ResourceChangeListener, KnowledgeBaseChangeSetImpl>();
+        
+        for ( Resource resource : changeSet.getResourcesAdded() ) {    
+            Set<ResourceChangeListener> listeners = this.subscriptions.get( resource );
+            for ( ResourceChangeListener listener : listeners ) {                
+                KnowledgeBaseChangeSetImpl localChangeSet = localChangeSets.get( listener );
+                
+                if ( localChangeSet == null ) {
+                    // lazy initialise changeSet
+                    localChangeSet = new KnowledgeBaseChangeSetImpl();
+                    localChangeSets.put( listener, localChangeSet );
+               }
+               if ( localChangeSet.getResourcesAdded().isEmpty() ) {
+                   localChangeSet.setResourcesAdded( new ArrayList<Resource>() );
+               }
+               localChangeSet.getResourcesAdded().add( resource );   
+               
             }
         }
         
-    }
-
-    public void resourceRemoved(Resource resource) {
-
+        for ( Resource resource : changeSet.getResourcesRemoved() ) {
+            Set<ResourceChangeListener> listeners = this.subscriptions.remove( resource );
+            for ( ResourceChangeListener listener : listeners ) {
+                KnowledgeBaseChangeSetImpl localChangeSet = localChangeSets.get( listener );
+                if ( localChangeSet == null ) {
+                    // lazy initialise changeSet
+                    localChangeSet = new KnowledgeBaseChangeSetImpl();
+                    localChangeSets.put( listener, localChangeSet );
+               }
+               if ( localChangeSet.getResourcesRemoved().isEmpty() ) {
+                   localChangeSet.setResourcesRemoved( new ArrayList<Resource>() );
+               }
+               localChangeSet.getResourcesRemoved().add( resource );                
+            }            
+        }   
+        
+        
+        for ( Resource resource : changeSet.getResourcesModified() ) {
+            Set<ResourceChangeListener> listeners = this.subscriptions.get( resource );
+            for ( ResourceChangeListener listener : listeners ) {
+                KnowledgeBaseChangeSetImpl localChangeSet = localChangeSets.get( listener );
+                if ( localChangeSet == null ) {
+                    // lazy initialise changeSet
+                    localChangeSet = new KnowledgeBaseChangeSetImpl();
+                    localChangeSets.put( listener, localChangeSet );
+               }
+               if ( localChangeSet.getResourcesModified().isEmpty() ) {
+                   localChangeSet.setResourcesModified( new ArrayList<Resource>() );
+               }
+               localChangeSet.getResourcesModified().add( resource );                
+            }     
+        }           
+        
+        for ( Entry<ResourceChangeListener, KnowledgeBaseChangeSetImpl> entry : localChangeSets.entrySet() ) {
+            ResourceChangeListener listener = entry.getKey();
+            KnowledgeBaseChangeSetImpl localChangeSet = entry.getValue();
+            listener.resourceChanged( localChangeSet );
+        }
+        
+        
+//        ResourceModifiedEvent event = new ResourceModifiedEventImpl( resource,
+//                                                                     resource.getLastModified() );
+//        Set<ResourceChangeListener> listeners = this.subscriptions.get( resource );
+//        
+//        if ( listeners != null ) {
+//            for ( ResourceChangeListener listener : listeners ) {
+//                listener.resourceModified( event );
+//            }
+//        }
     }
 
 

@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseChangeSet;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.RuleBase;
 import org.drools.agent.KnowledgeAgent;
@@ -14,11 +15,12 @@ import org.drools.agent.KnowledgeAgentEventListener;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.KnowledgeType;
+import org.drools.definition.KnowledgeDefinition;
 import org.drools.definition.process.Process;
 import org.drools.event.io.ResourceChangeListener;
-import org.drools.event.io.ResourceModifiedEvent;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.io.Resource;
+import org.drools.io.InternalResource;
 import org.drools.io.ResourceFactory;
 import org.drools.io.impl.ResourceChangeNotifierImpl;
 import org.drools.rule.Function;
@@ -30,8 +32,9 @@ public class KnowledgeAgentImpl
     implements
     KnowledgeAgent,
     ResourceChangeListener {
-    private String name;
+    private String                         name;
     private Map<Resource, ResourceMapping> resources;
+    private Set<Resource>                  resourceDirectories;
     private KnowledgeBase                  kbase;
     private ResourceChangeNotifierImpl     notifier;
     private boolean                        newInstance;
@@ -44,8 +47,9 @@ public class KnowledgeAgentImpl
         this.kbase = kbase;
         this.resources = new HashMap<Resource, ResourceMapping>();
         this.listener = listener;
+        this.newInstance = true; // we hard code this for now as incremental kbase changes don't work.
         if ( configuration != null ) {
-            this.newInstance = ((KnowledgeAgentConfigurationImpl) configuration).isNewInstance();
+            //this.newInstance = ((KnowledgeAgentConfigurationImpl) configuration).isNewInstance();
             this.notifier = (ResourceChangeNotifierImpl) ResourceFactory.getResourceChangeNotifierService();
             if ( ((KnowledgeAgentConfigurationImpl) configuration).isScanResources() ) {
                 this.notifier.addResourceChangeMonitor( ResourceFactory.getResourceChangeScannerService() );
@@ -60,6 +64,12 @@ public class KnowledgeAgentImpl
         synchronized ( this.resources ) {
 
             for ( Package pkg : rbase.getPackages() ) {
+                
+                for ( Resource resource : pkg.getResourceDirectories() ) {
+                    this.notifier.subscribeResourceChangeListener( this,
+                                                                   resource );
+                }
+                
                 for ( Rule rule : pkg.getRules() ) {
                     Resource resource = rule.getResource();
                     if ( resource == null || !resource.hasURL() ) {
@@ -73,7 +83,7 @@ public class KnowledgeAgentImpl
                         this.resources.put( resource,
                                             mapping );
                     }
-                    mapping.getObjects().add( rule );
+                    mapping.getKnowledgeDefinitions().add( rule );
                     System.out.println( "agent : " + resource );
                 }
 
@@ -90,7 +100,7 @@ public class KnowledgeAgentImpl
                         this.resources.put( resource,
                                             mapping );
                     }
-                    mapping.getObjects().add( process );
+                    mapping.getKnowledgeDefinitions().add( process );
                     System.out.println( "agent : " + resource );
                 }
 
@@ -107,7 +117,7 @@ public class KnowledgeAgentImpl
                         this.resources.put( resource,
                                             mapping );
                     }
-                    mapping.getObjects().add( typeDeclaration );
+                    mapping.getKnowledgeDefinitions().add( typeDeclaration );
                     System.out.println( "agent : " + resource );
                 }
 
@@ -124,7 +134,7 @@ public class KnowledgeAgentImpl
                         this.resources.put( resource,
                                             mapping );
                     }
-                    mapping.getObjects().add( function );
+                    mapping.getKnowledgeDefinitions().add( function );
                     System.out.println( "agent : " + resource );
                 }
             }
@@ -137,46 +147,101 @@ public class KnowledgeAgentImpl
         }
     }
 
-    public void resourceModified(ResourceModifiedEvent event) {
-        ResourceMapping mapping = this.resources.get( event.getResource() );
-        System.out.println( "modified : " + event.getResource() );
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+    //    public void resourceModified(ResourceModifiedEvent event) {
+    //        ResourceMapping mapping = this.resources.get( event.getResource() );
+    //        System.out.println( "modified : " + event.getResource() );
+    //        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+    //        synchronized ( this.resources ) {
+    //            for ( Resource resource : this.resources.keySet() ) {
+    //                System.out.println( "building : " + resource );
+    //                kbuilder.add( resource,
+    //                              KnowledgeType.DRL );
+    //            }
+    //
+    //            this.kbase = KnowledgeBaseFactory.newKnowledgeBase();
+    //            this.kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+    //        }
+    //    }
+
+    public void resourceChanged(KnowledgeBaseChangeSet changeSet) {
+        // for now we assume newIntance only, so just blow away the mappings and knowledgedefinition sets.
         synchronized ( this.resources ) {
-            for ( Resource resource : this.resources.keySet() ) {
+            // first remove the unneeded resources        
+            for ( Resource resource : changeSet.getResourcesRemoved() ) {
+                this.resources.remove( resource );
+            }
+
+            // now add the new ones
+            for ( Resource resource : changeSet.getResourcesAdded() ) {
+                this.resources.put( resource,
+                                    null );
+            }
+
+            // modified we already know is in the map, so no need to process those
+
+            // now make a copy of the resource keys, as we are about to reset it, but need the keys to rebuild the kbase
+            Resource[] resourcesClone = this.resources.keySet().toArray( new Resource[this.resources.size()] );
+
+            // reset the resources map, so it can now be rebuilt
+            this.resources.clear();
+
+            // rebuild the kbase
+            KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+
+            for ( Resource resource : resourcesClone ) {
                 System.out.println( "building : " + resource );
                 kbuilder.add( resource,
-                              KnowledgeType.DRL );
+                              ((InternalResource)resource).getKnowledgeType() );
             }
 
             this.kbase = KnowledgeBaseFactory.newKnowledgeBase();
             this.kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         }
-    }
 
-    public void resourceAdded(ResourceModifiedEvent event) {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void resourceRemoved(ResourceModifiedEvent event) {
-        // TODO Auto-generated method stub
-
+        // code commented out to try and do incremental kbase changes
+        // @TODO get this working for incremental changes
+        //        synchronized ( this.resources ) {
+        //            // first deal with removals
+        //            for ( Resource resource : changeSet.getResourcesRemoved() ) {
+        //                ResourceMapping mapping = this.resources.remove(resource );
+        //                if ( !this.newInstance  ) {
+        //                    // we are keeping the current instance, so we need remove the individual knowledge definitions           
+        //                    for ( KnowledgeDefinition kd : mapping.getKnowledgeDefinitions() ) {
+        //                        if ( kd instanceof Rule ) {
+        //                            Rule rule = ( Rule ) kd;
+        //                            this.kbase.removeRule( rule.getPackageName(), rule.getName() );
+        //                        } else if ( kd instanceof Process ) {
+        //                            Process process = ( Process ) kd;
+        //                            this.kbase.removeProcess( process.getId() );
+        //                        }
+        //                        // @TODO functions and type declarations
+        //                    }
+        //                }
+        //            }
+        //            
+        //            // now deal with additions
+        //            for ( Resource resource : changeSet.getResourcesAdded() ) {
+        //                
+        //            }
+        //            
+        //            // final deal with modifies
+        //        }
     }
 
     public static class ResourceMapping {
-        private Resource resource;
-        private Set      objects;
+        private Resource                 resource;
+        private Set<KnowledgeDefinition> knowledgeDefinitions;
 
         public ResourceMapping(Resource resource) {
-            this.objects = new HashSet<Object>();
+            this.knowledgeDefinitions = new HashSet<KnowledgeDefinition>();
         }
 
         public Resource getResource() {
             return resource;
         }
 
-        public Set getObjects() {
-            return objects;
+        public Set<KnowledgeDefinition> getKnowledgeDefinitions() {
+            return knowledgeDefinitions;
         }
 
     }

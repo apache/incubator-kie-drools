@@ -24,6 +24,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
 
+import org.drools.definition.KnowledgeDefinition;
 import org.drools.factmodel.ClassDefinition;
 import org.drools.facttemplates.FactTemplate;
 import org.drools.io.Resource;
@@ -38,6 +39,7 @@ import org.drools.spi.InternalReadAccessor;
  */
 public class TypeDeclaration
     implements
+    KnowledgeDefinition,
     Externalizable {
 
     public static final String ATTR_CLASS     = "class";

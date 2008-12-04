@@ -48,8 +48,11 @@ import org.drools.facttemplates.FactTemplate;
 import org.drools.facttemplates.FactTemplateImpl;
 import org.drools.facttemplates.FieldTemplate;
 import org.drools.facttemplates.FieldTemplateImpl;
+import org.drools.io.InternalResource;
 import org.drools.io.Resource;
 import org.drools.io.impl.ClassPathResource;
+import org.drools.io.impl.KnowledgeComposition;
+import org.drools.io.impl.KnowledgeResource;
 import org.drools.io.impl.ReaderResource;
 import org.drools.io.impl.UrlResource;
 import org.drools.lang.descr.AttributeDescr;
@@ -441,27 +444,33 @@ public class PackageBuilder {
         try {
             switch ( type ) {
                 case DRL : {
+                    ((InternalResource)resource).setKnowledgeType( type );
                     addPackageFromDrl( resource );
                     break;
 
                 }
                 case DSLR : {
+                    ((InternalResource)resource).setKnowledgeType( type );
                     addPackageFromDslr( resource );
                     break;
                 }
                 case DSL : {
+                    ((InternalResource)resource).setKnowledgeType( type );
                     addDsl( resource );
                     break;
                 }
                 case XDRL : {
+                    ((InternalResource)resource).setKnowledgeType( type );
                     addPackageFromXml( resource );
                     break;
                 }
                 case DRF : {
+                    ((InternalResource)resource).setKnowledgeType( type );
                     addProcessFromXml( resource );
                     break;
                 }
                 case DTABLE : {
+                    ((InternalResource)resource).setKnowledgeType( type );
                     DecisionTableConfiguration dtableConfiguration = (DecisionTableConfiguration) configuration;
 
                     String string = DecisionTableFactory.loadFromInputStream( resource.getInputStream(),
@@ -470,6 +479,7 @@ public class PackageBuilder {
                     break;
                 }
                 case COMPOSITION : {
+                    ((InternalResource)resource).setKnowledgeType( type );
                     XmlCompositionReader reader = new XmlCompositionReader( this.configuration.getSemanticModules() );
                     KnowledgeComposition composition = reader.read( resource.getReader() );
                     for ( KnowledgeResource kresource : composition.getResources() ) {
@@ -480,7 +490,17 @@ public class PackageBuilder {
                         } else {
                             ioresource = new UrlResource( src );
                         }
-                        addKnowledgeResource( ioresource, kresource.getType(), kresource.getConfiguration() );
+                        ((InternalResource)ioresource).setKnowledgeType( kresource.getType() );
+                        if ( ioresource.isDirectory() ) {
+                            this.resourceDirectories.add( ioresource );
+                            for ( Resource childResource : ioresource.listResources() ) {
+                                ((InternalResource)childResource).setKnowledgeType( kresource.getType() );
+                                ((InternalResource)childResource).setFromDirectory( true );
+                                addKnowledgeResource( childResource, kresource.getType(), kresource.getConfiguration() );        
+                            }
+                        } else {
+                            addKnowledgeResource( ioresource, kresource.getType(), kresource.getConfiguration() );
+                        }
                     }
                 }
             }
@@ -490,6 +510,8 @@ public class PackageBuilder {
             throw new RuntimeException( e );
         }
     }
+    
+    private Set<Resource> resourceDirectories = new HashSet<Resource>();
     
     /**
      * This adds a package from a Descr/AST This will also trigger a compile, if
@@ -1016,6 +1038,7 @@ public class PackageBuilder {
         if ( hasErrors() && pkg != null ) {
             pkg.setError( getErrors().toString() );
         }
+        pkg.setResourceDirectories( this.resourceDirectories );
         return pkg;
     }
 
@@ -1033,6 +1056,7 @@ public class PackageBuilder {
                 pkg.setError( errors );
             }
             pkgs[i++] = pkg;
+            pkg.setResourceDirectories( this.resourceDirectories );
         }
 
         return pkgs;

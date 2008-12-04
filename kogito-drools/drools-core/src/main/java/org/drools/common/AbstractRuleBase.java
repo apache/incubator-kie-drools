@@ -524,6 +524,7 @@ abstract public class AbstractRuleBase
         // Merge imports
         final Map<String, ImportDeclaration> imports = pkg.getImports();
         imports.putAll( newPkg.getImports() );
+        pkg.setResourceDirectories( newPkg.getResourceDirectories() );
 
         String lastType = null;
         try {

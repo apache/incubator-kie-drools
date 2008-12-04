@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -1078,7 +1080,11 @@ public class StringUtils {
         return sbuf.toString();
     }
     
-    
+    public static URI toURI(String location) throws URISyntaxException {
+        return new URI( StringUtils.replace( location,
+                                             " ",
+                                             "%20" ) );
+    }    
     
     /**
      * Take a String which is a delimited list and convert it to a String array.

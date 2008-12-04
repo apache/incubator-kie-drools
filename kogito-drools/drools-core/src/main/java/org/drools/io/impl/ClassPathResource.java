@@ -1,14 +1,22 @@
 package org.drools.io.impl;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
+import org.drools.io.InternalResource;
 import org.drools.io.Resource;
+import org.drools.util.StringUtils;
 
 /**
  * Borrowed gratuitously from Spring under ASL2.0.
@@ -16,9 +24,9 @@ import org.drools.io.Resource;
  *+
  */
 
-public class ClassPathResource
+public class ClassPathResource extends BaseResource 
     implements
-    Resource {
+    InternalResource {
     private String      path;
     private ClassLoader classLoader;
     private Class       clazz;
@@ -79,7 +87,7 @@ public class ClassPathResource
         if ( is == null ) {
             throw new FileNotFoundException( "'" + this.path + "' cannot be opened because it does not exist" );
         }
-        this.lastRead = getLastModified(); 
+        this.lastRead = getLastModified();
         return is;
     }
 
@@ -113,7 +121,7 @@ public class ClassPathResource
     public boolean hasURL() {
         return true;
     }
-    
+
     public long getLastModified() {
         try {
             URLConnection conn = getURL().openConnection();
@@ -123,8 +131,8 @@ public class ClassPathResource
             throw new RuntimeException( "Unable to get LastMofified for ClasspathResource",
                                         e );
         }
-    }   
-    
+    }
+
     public long getLastRead() {
         return this.lastRead;
     }
@@ -132,6 +140,44 @@ public class ClassPathResource
     public Reader getReader() throws IOException {
         return new InputStreamReader( getInputStream() );
     }
+    
+    public boolean isDirectory() {
+        try {
+            URL url = getURL();
+
+            if ( !"file".equals( url.getProtocol() ) ) {
+                return false;
+            }
+
+            File file = new File( StringUtils.toURI( url.toString() ).getSchemeSpecificPart() );
+            
+            return file.isDirectory();
+        } catch ( Exception e ) {
+            return false;
+        }
+    }
+
+    public Collection<Resource> listResources() {
+        try {
+            URL url = getURL();
+
+            if ( "file".equals( url.getProtocol() ) ) {                            
+                File dir = new File( StringUtils.toURI( url.toString() ).getSchemeSpecificPart() );
+                
+                List<Resource> resources = new ArrayList<Resource>();
+                
+                for ( File file : dir.listFiles() ) {
+                    resources.add( new FileSystemResource( file ) );
+                }
+                
+                return resources;
+            }
+        } catch ( Exception e ) {
+            // swollow as we'll throw an exception anyway            
+        }
+        
+        throw new RuntimeException( "This Resource cannot be listed, or is not a directory" );
+    }    
 
     public boolean equals(Object object) {
         if ( object == null || !(object instanceof ClassPathResource) ) {
@@ -153,4 +199,6 @@ public class ClassPathResource
     public String toString() {
         return "[ClassPathResource path='" + this.path + "']";
     }
+
+
 }

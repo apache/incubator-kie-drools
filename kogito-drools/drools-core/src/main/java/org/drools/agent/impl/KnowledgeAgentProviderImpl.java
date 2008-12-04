@@ -9,6 +9,14 @@ import org.drools.agent.KnowledgeAgentProvider;
 import org.drools.agent.KnowledgeAgentEventListener;
 
 public class KnowledgeAgentProviderImpl implements KnowledgeAgentProvider {
+    
+    public KnowledgeAgentConfiguration newKnowledgeAgentConfiguration() {
+        return new KnowledgeAgentConfigurationImpl();
+    }
+    
+    public KnowledgeAgentConfiguration newKnowledgeAgentConfiguration(Properties properties) {
+        return new KnowledgeAgentConfigurationImpl(properties);
+    }    
 
     public KnowledgeAgent newKnowledgeAgent(String name,
                                             KnowledgeBase kbase) {
