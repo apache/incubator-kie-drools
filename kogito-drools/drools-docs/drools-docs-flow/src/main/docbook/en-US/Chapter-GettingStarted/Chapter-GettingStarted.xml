@@ -8,30 +8,38 @@
                     xmlns:db="http://docbook.org/ns/docbook" xml:base="./">
   <title>Getting Started</title>
   <para>This section describes how to get started with Drools Flow.  It
-  will guide you to create and exectue your first Drools Flow process.</para>
+  will guide you to create and execute your first Drools Flow process.</para>
 
   <section>
     <title>Installation</title>
-    <para>The best way to get started is to use the Drools Eclipse IDE.  This
-    is a plugin for the Eclipse developement environment that allows users to
+    <para>The best way to get started is to use the Drools Eclipse Plugin.  This
+    is a plugin for the Eclipse development environment that allows users to
     create, execute and debug Drools processes and rules.</para>
 
     <para>To get started, you need an Eclipse 3.4.x, as well as the Eclipse
     Graphical Editing Framework (GEF) plugin installed.  Eclipse can be downloaded
-    from <ulink url="http://www.eclipse.org/downloads/">
-    http://www.eclipse.org/downloads/</ulink> (choose either the Eclipse IDE for Java
-    Developers or the Eclipse Classic).  Eclipse GEF can also be downloaded from
-    <ulink url="http://www.eclipse.org/gef/downloads/">
-    http://www.eclipse.org/gef/downloads/</ulink> (choose the corresponding version) or
-    by using an update site.</para>
+    from:</para>
+    <para><ulink url="http://www.eclipse.org/downloads/">http://www.eclipse.org/downloads/</ulink></para>
+    <para>If you do not know which version you need, simply choose the "Eclipse IDE
+    for Java Developers".  This one already includes the GEF plugin as well.</para>
 
-    <para>Download the Drools Eclipse IDE plugin from <ulink
-    url="http://www.jboss.org/auth/drools/downloads.html">
-    http://www.jboss.org/auth/drools/downloads.html</ulink> (the latest snapshot build
-    can also be downloaded from <ulink url="https://hudson.jboss.org/hudson/job/drools/lastSuccessfulBuild/artifact/trunk/target/">https://hudson.jboss.org/hudson/job/drools/lastSuccessfulBuild/artifact/trunk/target/</ulink>), unzip it in your eclipse
-    folder and (re)start Eclipse.  To check that installation was successful, open
-    the Drools perspective: Click the 'Open Perspective' button in the top right corner
-    of your eclipse window, select 'Other...' and pick the Drools perspective.</para>
+    <para>Next you need to install the Drools Eclipse plugin. There are two ways to do
+    this, (1) manually downloading and installing the plugin or (2) using the Drools
+    Eclipse update site.</para>
+
+    <para><emphasis role="strong">Manual download:</emphasis> Download the Drools Eclipse IDE plugin from:</para>
+    <para><ulink url="http://www.jboss.org/auth/drools/downloads.html">http://www.jboss.org/auth/drools/downloads.html</ulink></para>
+    <para>Unzip the downloaded file in your main eclipse folder (so that the feature
+    and plugin jars end up in the features and plugin directory of eclipse) and
+    (re)start Eclipse.</para>
+
+    <para><emphasis role="strong">Using the update site:</emphasis> Open up Eclipse, and in the "Help" menu,
+    select "Software Updates ...", and in the "Available Software" tab, click the
+    "Add Site ..." button. TODO </para>
+
+    <para>To check that the installation was successful, try opening the Drools perspective:
+    Click the 'Open Perspective' button in the top right corner of your Eclipse window,
+    select 'Other...' and pick the Drools perspective.</para>
   </section>
 
   <section>
@@ -39,14 +47,16 @@
 
     <para>If you haven't done so already, you should switch to the Drools perspective within
     Eclipse first, as this will open all the relevant views for you.  You can do this by
-    clicking on the Open Perspective button (top right of your screen) and selecting Other ...
-    -> Drools.</para>
+    clicking on the Open Perspective button (top right of your screen), select "Other ..."
+    and pick the Drools perspective.</para>
 
-    <para>A new project wizard can be used to setup an executable project to start using
-    processes immediately. This will setup a basic structure, classpath, sample
-    process and execution code to get you started.  To create a new Drools Project, select
-    File -> New -> Project ... and in the Drools folder, select Drools Project.  This should
-    open the following dialog:</para>
+    <para>A new Drools project wizard can be used to set up an executable project that contains
+    the necessary files to get started easily with defining and executing processes. This wizard
+    will setup a basic project structure, the classpath, a sample process and execution code to
+    get you started.  To create a new Drools Project, select "File" -> "New" -> "Project ..." and in
+    the Drools folder, select Drools Project.  As an alternative, you could also simply left-click
+    on the Drools action button (with the Drools head) in the Eclipse toolbar and select
+    "New Drools Project".  This should open the following dialog:</para>
 
     <mediaobject>
       <imageobject>
@@ -57,13 +67,54 @@
 
     <para>Give your project a name and click Next.  In the following dialog you can select
     which elements are added to your project by default.  Since we are creating a new process,
-    deselect the first two checkboxes and select the last two.  This will generate a sample
-    process and a class to execute this process in your project.</para>
+    deselect the first two check boxes and select the last two.  This will generate a sample
+    process and a Java class to execute this process.</para>
 
     <mediaobject>
       <imageobject>
         <imagedata align="center" format="BMP" role="" 
                    fileref="images/Chapter-GettingStarted/project-wizard2.bmp"/>
+      </imageobject>
+    </mediaobject>
+
+    <para>If you have not yet set up a Drools runtime, you should do this now.  A Drools runtime
+    is a collection of jars on your file system that represent one specific release of the Drools
+    project jars.  To create a runtime, you must either point the IDE to the release of your choice,
+    or you can simply create a new runtime on your file system from the jars included in the Drools
+    Eclipse plugin.  Since we simply want to use the Drools version included in this plugin, we will
+    do the latter.  Note that you will only have to do this once, next time you create a Drools project,
+    it will automatically use the default Drools runtime, unless you specify otherwise.</para>
+
+    <para>So if you have not yet set up a Drools runtime, click the Next button.  The following dialog
+    as shown below tells you that you have not yet defined a default Drools runtime and that you should
+    configure the workspace settings first.  Do this by clicking on the "Configure Workspace Settings ..."
+    link.</para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center" format="BMP" role="" 
+                   fileref="images/Chapter-GettingStarted/project-wizard3.bmp"/>
+      </imageobject>
+    </mediaobject>
+
+    <para>The dialog that pops up shows the workspace settings for Drools runtimes.  The first time you
+    do this, the list of installed Drools runtimes is probably empty, as shown below.  To create a new
+    runtime on your file system, click the "Add..." button.  This shows a dialog where you should give
+    the new runtime a name (e.g. "Drools5 runtime"), and a path to your drools runtime on your file
+    system.   In this tutorial, we will simply create a new Drools5 runtime from the jars embedded in the
+    Drools Eclipse plugin.  Click the "Create a new Drools 5 runtime ..." button and select the folder
+    where you want this runtime to be created and click the "OK" button.  You will see the path you
+    selected show up in the previous dialog.  So we're all done here as well, so click the "OK" button
+    here as well.  You will see the newly created runtime show up in your list of Drools runtimes.  Select
+    this runtime as the new default runtime by clicking on the check box in front of your runtime name
+    and click "OK".  After successfully setting up your runtime, you can now finish the project creation
+    wizard by clicking on the "Finish" button.
+    </para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center" format="BMP" role="" 
+                   fileref="images/Chapter-GettingStarted/project-runtimes.bmp"/>
       </imageobject>
     </mediaobject>
 
@@ -99,7 +150,7 @@
     <para>This process is a simple sequence of three nodes.  The start node defines the start of the
     process.  It is connected to an action node (called 'Hello' that simply prints out 'Hello World'
     to the standard output.  You can see this by clicking on the Hello node and checking the action
-    property in the properties view below.  This node is then connected to an end node, signalling
+    property in the properties view below.  This node is then connected to an end node, signaling
     the end of the process.</para>
 
     <para>While it is probably easier to edit processes using the graphical editor, user can also
@@ -150,74 +201,98 @@ Hello World
     requires a few steps:</para>
     <orderedlist>
       <listitem>
-        <para>You should first create a knowledge base.  A knowledge base contains all the process
-        definitions and rules that are relevant in your application.  This knowledge base can be
-        created only once and can be reused.</para>
+        <para>You should first create a knowledge base.  A knowledge base contains all the knowledge
+        (i.e. processes, rules, etc.) that are relevant in your application.  This knowledge base can be
+        created only once and can be reused.  In this case, the knowledge base only consists of our
+        sample process.</para>
       </listitem>
       <listitem>
-        <para>Next, you should create a session to interact with the engine.</para>
+        <para>Next, you should create a session to interact with the engine.  Note that we also add
+        a logger to the session to log execution events and make it easier to visualize what is going
+        on.</para>
       </listitem>
       <listitem>
-        <para>Finally, you can start a new process instance of our process by invoking the
-        startProcess("ruleflowId") method of the session.  This will start the execution of your
-        process.  Since our process does not contain any wait states, the process will execute
-        until it is completed in this case, passing through the start, action and end node.</para>
+        <para>Finally, you can start a new instance of the process by invoking the
+        startProcess("processId") method on the session.  This will start the execution of your
+        process instance.  The process instance will execute the start node, action node and end
+        node in this order, after which the process instance will be completed.</para>
       </listitem>
     </orderedlist>
 
 <programlisting>
 package com.sample;
 
-import java.io.InputStreamReader;
-import java.io.Reader;
-
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.StatefulSession;
-import org.drools.compiler.PackageBuilder;
-import org.drools.rule.Package;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderError;
+import org.drools.builder.KnowledgeBuilderErrors;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.KnowledgeType;
+import org.drools.io.ResourceFactory;
+import org.drools.logger.KnowledgeRuntimeLogger;
+import org.drools.logger.KnowledgeRuntimeLoggerFactory;
+import org.drools.runtime.StatefulKnowledgeSession;
 
 /**
- * This is a sample file to launch a ruleflow.
+ * This is a sample file to launch a process.
  */
 public class RuleFlowTest {
 
   public static final void main(String[] args) {
     try {
-      //load the process
-      RuleBase ruleBase = createKnowledgeBase();
-      // create a new session
-      StatefulSession session = ruleBase.newStatefulSession();
+      // load up the knowledge base
+      KnowledgeBase kbase = readKnowledgeBase();
+      StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+      KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "test");
       // start a new process instance
-      session.startProcess("com.sample.ruleflow");
+      ksession.startProcess("com.sample.ruleflow");
+      logger.close();
     } catch (Throwable t) {
       t.printStackTrace();
     }
   }
 
-  /**
-   * Creates the knowledge base by loading the process definition.
-   */
-  private static RuleBase createKnowledgeBase() throws Exception {
-    // create a builder
-    PackageBuilder builder = new PackageBuilder();
-    // load the process
-    Reader source = new InputStreamReader(
-      RuleFlowTest.class.getResourceAsStream("/ruleflow.rf"));
-    builder.addProcessFromXml(source);
-    // create the knowledge base 
-    Package pkg = builder.getPackage();
-    RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-    ruleBase.addPackage(pkg);
-    return ruleBase;
+  private static KnowledgeBase readKnowledgeBase() throws Exception {
+    KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+    kbuilder.add(ResourceFactory.newClassPathResource("ruleflow.rf"), KnowledgeType.DRF);
+    KnowledgeBuilderErrors errors = kbuilder.getErrors();
+    if (errors.size() > 0) {
+      for (KnowledgeBuilderError error: errors) {
+        System.err.println(error);
+      }
+      throw new IllegalArgumentException("Could not parse knowledge.");
+    }
+    KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+    kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+    return kbase;
   }
 
 }
 </programlisting>
 
-    <para>Congratulations, you have successfully executed your first process!  You can now
-    start experimenting and designing your own process by modifying our example.  Note that
-    you can validate your process by clicking on the green check box action in the upper toolbar.
+    <para>Congratulations, you have successfully executed your first process!  Because we added a
+    logger to the session, you can easily check what happened internally by looking at the audit
+    log.  Select the "Audit View" tab on the bottom right, next to the Console tab.  Click on the
+    "Open Log" button (the first one one the right of the view) and navigate to the newly created
+    "test.log" file in your project folder (if you are not sure where this project folder is
+    located, right-click on the project folder and you will find the location in the "Resource"
+    section).  An image like the one below should be shown.  It is a tree view of the events that
+    occurred at runtime.  Events that were executed as the direct result of another event are shown
+    as the child of that event.  This log shows that after starting the process, the start node,
+    the action node and the end node were triggered in that order, after which the process instance
+    was completed.</para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center" format="BMP" role="" 
+                   fileref="images/Chapter-GettingStarted/audit.bmp"/>
+      </imageobject>
+    </mediaobject>
+
+    <para>You can now start experimenting and designing your own process by modifying our example.
+    Note that you can validate your process by clicking on the "Check the ruleflow model" button 
+    (the green check box action in the upper toolbar that shows up if you are editing a process).
     Processes will also be validated upon save and errors will be shown in the error view. Or
     you can continue reading our documentation to learn about our more advanced features.</para>
 
