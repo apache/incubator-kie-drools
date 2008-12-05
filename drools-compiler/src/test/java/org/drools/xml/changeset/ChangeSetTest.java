@@ -219,6 +219,7 @@ public class ChangeSetTest extends TestCase {
                       list.size() );
         assertTrue( list.contains( "rule3" ) );
         assertTrue( list.contains( "rule2" ) );
+        kagent.monitorResourceChangeEvents( false );
     }
 
     public void testModifyDirectory() throws IOException,
@@ -346,6 +347,8 @@ public class ChangeSetTest extends TestCase {
                       list.size() );
         assertTrue( list.contains( "rule2" ) );
         assertTrue( list.contains( "rule3" ) );
+        
+        kagent.monitorResourceChangeEvents( false );
     }
 
 }

@@ -20,17 +20,17 @@ import org.drools.io.ResourceChangeNotifier;
 
 public class ResourceChangeNotifierImpl
     implements
-    ResourceChangeNotifier,
-    Runnable {
+    ResourceChangeNotifier {
     private Map<Resource, Set<ResourceChangeListener>> subscriptions;
     private List<ResourceChangeMonitor>                monitors;
-    private volatile boolean notify;
+
     
     private LinkedBlockingQueue<ChangeSet> queue;
 
     public ResourceChangeNotifierImpl() {
         this.subscriptions = new HashMap<Resource, Set<ResourceChangeListener>>();
         this.monitors = new CopyOnWriteArrayList<ResourceChangeMonitor>();
+        this.queue = new LinkedBlockingQueue<ChangeSet>();
     }
 
     public void addResourceChangeMonitor(ResourceChangeMonitor monitor) {
@@ -101,7 +101,7 @@ public class ResourceChangeNotifierImpl
         
     }
     
-    private void processChangeSet(ChangeSet changeSet) {
+    public void processChangeSet(ChangeSet changeSet) {
         // this provides the complete published change set for this notifier.
         // however different listeners might be listening to different resources, so provide
         // listener change specified change sets.
@@ -180,22 +180,54 @@ public class ResourceChangeNotifierImpl
     }
     
     public void start() {
-        this.notify = true;
+        if ( this.processChangeSet == null ) {
+            this.processChangeSet = new ProcessChangeSet( this.queue, this );
+        }
+        
+        if ( ! this.processChangeSet.isRunning() ) {
+            this.processChangeSet.setNotify( true );
+            thread = new Thread( this.processChangeSet );
+            thread.start();
+        }
     }
 
     public void stop() {
-        this.notify = false;
+//        this.processChangeSet.stop();
+//        this.queue.
     }    
-
-    public void run() {
-        while ( this.notify ) {           
-            try {
-                processChangeSet( this.queue.take() );
-            } catch ( InterruptedException e ) {
-                // @TODO print proper error message
-                e.printStackTrace();
+    
+    private Thread thread;
+    private ProcessChangeSet processChangeSet;
+    
+    public static class ProcessChangeSet implements Runnable {
+        private volatile boolean notify;
+        private LinkedBlockingQueue<ChangeSet> queue;
+        private ResourceChangeNotifierImpl notifier;
+        
+        ProcessChangeSet(LinkedBlockingQueue<ChangeSet> queue, ResourceChangeNotifierImpl notifier) {
+            this.queue = queue;
+            this.notifier = notifier;            
+        }
+        
+        public void setNotify( boolean notify ) {
+            this.notify = notify;
+        }
+        
+        public boolean isRunning() {
+            return this.notify;
+        }
+        
+        public void run() {
+            while ( this.notify ) {           
+                try {
+                    System.out.println( "notifier queueing" );
+                    this.notifier.processChangeSet( this.queue.take() );
+                } catch ( InterruptedException e ) {
+                    // @TODO print proper error message
+                    e.printStackTrace();
+                }
+                Thread.yield();
             }
-            Thread.yield();
         }
     }
 
