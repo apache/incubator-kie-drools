@@ -142,11 +142,145 @@
       <para>While it is recommended to define processes using the graphical editor or the underlying XML (to
       shield yourself from internal APIs), it is also possible to define a process using the Process API directly.
       The most important process elements are defined in the org.drools.workflow.core and the
-      org.drools.workflow.core.node packages.Note that creating a process using this API can be rather complex
-      and error-prone, and should only be used if the above mentioned methods are not sufficient (for example
-      when automatically generating processes from input that is not XML-based). You can however use the process
-      validator (org.drools.ruleflow.core.validation.RuleFlowProcessValidator) to validate processes that were
-      manually created using the API.</para>
+      org.drools.workflow.core.node packages.  A "fluent API" is provided that allows you to easily construct
+      processes in a readable manner using factories.  At the end, you can validate the process that you were
+      constructing manually. Some examples about how to build processes using this fluent API are added below.</para>
+
+
+      <section>
+        <title>Example 1</title>
+
+      <para>This is a simple example of a basic process with a ruleset node only:
+        <programlisting>
+          RuleFlowProcessFactory factory =
+	      RuleFlowProcessFactory.createProcess("org.drools.HelloWorldRuleSet");
+          factory
+              // Header
+              .name("HelloWorldRuleSet")
+              .version("1.0")
+              .packageName("org.drools")
+              // Nodes
+              .startNode(1).name("Start").done()
+              .ruleSetNode(2)
+                  .name("RuleSet")
+                  .ruleFlowGroup("someGroup").done()
+              .endNode(3).name("End").done()
+              // Connections
+              .connection(1, 2)
+              .connection(2, 3);
+          RuleFlowProcess process = factory.validate().getProcess();
+        </programlisting>
+      </para>
+        
+      <para>You can see that we start by calling the static createProcess() method
+      from the RuleFlowProcessFactory class.  This method creates a new process
+      with the given id and returns the RuleFlowProcessFactory that can be used to
+      create the process.  A typical process consists of three parts: a header part
+      that contains global elements like the name of the process, imports, variables,
+      etc.  The nodes section contains all the different nodes that are part of the
+      process and finally the connections section links these nodes to each other
+      to create a flow chart.</para>
+
+      <para>So in this example, the header contains the name and the version of the
+      process and the package name. After that you can start adding nodes to the
+      current process. If you have auto-completion you can see that you different
+      methods to create each of the supported node types at your disposal.</para>
+
+      <para>When you start adding nodes to the process, in this example by calling
+      the startNode(), ruleSetNode() and endNode() methods, you can see that these
+      methods return a specific NodeFactory, that allows you to set the properties
+      of that node.  Once you have finished configuring that specific node, the
+      done() method returns you to the current RuleFlowProcessFactory so you can add
+      more nodes if necessary.</para>
+
+      <para>When you finised adding nodes you must connect them by creating connections
+      between them.  This can be done by calling the connection method, which will link
+      the earlier created nodes.</para>
+
+      <para>Finally, you can validate the generated process by calling the validate()
+      method and retrieve the create RuleFlowProcess object.</para>
+
+      </section>
+
+      <section>
+        <title>Example 2</title>
+
+      <para>This example is using Split and Join nodes:
+        <programlisting>
+          RuleFlowProcessFactory factory =
+              RuleFlowProcessFactory.createProcess("org.drools.HelloWorldJoinSplit");
+          factory
+              // Header
+              .name("HelloWorldJoinSplit")
+              .version("1.0")
+              .packageName("org.drools")
+              // Nodes
+              .startNode(1).name("Start").done()
+              .splitNode(2).name("Split").type(Split.TYPE_AND).done()
+              .actionNode(3).name("Action 1").action("mvel", "System.out.println(\"Inside Action 1\")").done()
+              .actionNode(4).name("Action 2").action("mvel", "System.out.println(\"Inside Action 2\")").done()
+              .joinNode(5).type(Join.TYPE_AND).done()
+              .endNode(6).name("End").done()
+              // Connections
+              .connection(1, 2)
+              .connection(2, 3)
+              .connection(2, 4)
+              .connection(3, 5)
+              .connection(4, 5)
+              .connection(5, 6);
+          RuleFlowProcess process = factory.validate().getProcess();
+        </programlisting>
+      </para>
+
+      <para>This shows a simple split / join example.  As you can see, split nodes can have multiple outgoing
+      connections and joins multipe incomming connections.  To understand the behaviour of the different types
+      of split and join nodes, take a look at the documentation for each of these nodes.</para>
+
+      </section>
+
+      <section>
+        <title>Example 3</title>
+
+      <para>Now we show a more complex example with a ForEach node, where we have nested nodes:
+        <programlisting>
+          RuleFlowProcessFactory factory =
+              RuleFlowProcessFactory.createProcess("org.drools.HelloWorldForeach");
+          factory
+              // Header
+              .name("HelloWorldForeach")
+              .version("1.0")
+              .packageName("org.drools")
+              // Nodes
+              .startNode(1).name("Start").done()
+              .forEachNode(2)
+                  // Properties
+                  .linkIncomingConnections(3)
+                  .linkOutgoingConnections(4)
+                  .collectionExpression("persons")
+                  .variable("child", new ObjectDataType("org.drools.Person"))
+                  // Nodes
+                  .actionNode(3)
+                      .action("mvel", "System.out.println(\"inside action1\")").done()
+                  .actionNode(4)
+                      .action("mvel", "System.out.println(\"inside action2\")").done()
+                  // Connections
+                  .connection(3, 4)
+                  .done()
+              .endNode(5).name("End").done()
+              // Connections
+              .connection(1, 2)
+              .connection(2, 5);
+          RuleFlowProcess process = factory.validate().getProcess();
+        </programlisting>
+      </para>
+
+      <para>Here you can see how we can include a ForEach node with nested action nodes.
+      Note the linkIncommingConnections() and linkOutgoingConnections() methods that are
+      called to link the foreach node with the internal action node. These methods are
+      used to specify what the first and last nodes are inside the ForEach composite node.
+      </para>
+
+      </section> 
 
     </section>
 
