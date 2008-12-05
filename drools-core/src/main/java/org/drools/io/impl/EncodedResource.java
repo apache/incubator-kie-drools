@@ -11,7 +11,7 @@ import org.drools.io.InternalResource;
 import org.drools.io.Resource;
 
 public class EncodedResource  extends BaseResource implements InternalResource {
-    private final Resource resource;
+    private final InternalResource resource;
 
     private final String encoding;
 
@@ -35,7 +35,7 @@ public class EncodedResource  extends BaseResource implements InternalResource {
         if ( resource == null ) {
             throw new IllegalArgumentException( "resource cannot be null" );
         }
-        this.resource = resource;
+        this.resource = (InternalResource) resource;
         this.encoding = encoding;
     }
 

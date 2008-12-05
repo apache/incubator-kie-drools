@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.Map.Entry;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.drools.KnowledgeBaseChangeSet;
+import org.drools.ChangeSet;
 import org.drools.event.io.ResourceChangeListener;
 import org.drools.io.Resource;
 import org.drools.io.ResourceChangeMonitor;
@@ -81,21 +81,21 @@ public class ResourceChangeNotifierImpl
         }
     }
 
-    public void publishKnowledgeBaseChangeSet(KnowledgeBaseChangeSet changeSet) {
+    public void publishKnowledgeBaseChangeSet(ChangeSet changeSet) {
         // this provides the complete published change set for this notifier.
         // however different listeners might be listening to different resources, so provide
         // listener change specified change sets.
         
-        Map<ResourceChangeListener, KnowledgeBaseChangeSetImpl> localChangeSets = new HashMap<ResourceChangeListener, KnowledgeBaseChangeSetImpl>();
+        Map<ResourceChangeListener, ChangeSetImpl> localChangeSets = new HashMap<ResourceChangeListener, ChangeSetImpl>();
         
         for ( Resource resource : changeSet.getResourcesAdded() ) {    
             Set<ResourceChangeListener> listeners = this.subscriptions.get( resource );
             for ( ResourceChangeListener listener : listeners ) {                
-                KnowledgeBaseChangeSetImpl localChangeSet = localChangeSets.get( listener );
+                ChangeSetImpl localChangeSet = localChangeSets.get( listener );
                 
                 if ( localChangeSet == null ) {
                     // lazy initialise changeSet
-                    localChangeSet = new KnowledgeBaseChangeSetImpl();
+                    localChangeSet = new ChangeSetImpl();
                     localChangeSets.put( listener, localChangeSet );
                }
                if ( localChangeSet.getResourcesAdded().isEmpty() ) {
@@ -109,10 +109,10 @@ public class ResourceChangeNotifierImpl
         for ( Resource resource : changeSet.getResourcesRemoved() ) {
             Set<ResourceChangeListener> listeners = this.subscriptions.remove( resource );
             for ( ResourceChangeListener listener : listeners ) {
-                KnowledgeBaseChangeSetImpl localChangeSet = localChangeSets.get( listener );
+                ChangeSetImpl localChangeSet = localChangeSets.get( listener );
                 if ( localChangeSet == null ) {
                     // lazy initialise changeSet
-                    localChangeSet = new KnowledgeBaseChangeSetImpl();
+                    localChangeSet = new ChangeSetImpl();
                     localChangeSets.put( listener, localChangeSet );
                }
                if ( localChangeSet.getResourcesRemoved().isEmpty() ) {
@@ -126,10 +126,10 @@ public class ResourceChangeNotifierImpl
         for ( Resource resource : changeSet.getResourcesModified() ) {
             Set<ResourceChangeListener> listeners = this.subscriptions.get( resource );
             for ( ResourceChangeListener listener : listeners ) {
-                KnowledgeBaseChangeSetImpl localChangeSet = localChangeSets.get( listener );
+                ChangeSetImpl localChangeSet = localChangeSets.get( listener );
                 if ( localChangeSet == null ) {
                     // lazy initialise changeSet
-                    localChangeSet = new KnowledgeBaseChangeSetImpl();
+                    localChangeSet = new ChangeSetImpl();
                     localChangeSets.put( listener, localChangeSet );
                }
                if ( localChangeSet.getResourcesModified().isEmpty() ) {
@@ -139,9 +139,9 @@ public class ResourceChangeNotifierImpl
             }     
         }           
         
-        for ( Entry<ResourceChangeListener, KnowledgeBaseChangeSetImpl> entry : localChangeSets.entrySet() ) {
+        for ( Entry<ResourceChangeListener, ChangeSetImpl> entry : localChangeSets.entrySet() ) {
             ResourceChangeListener listener = entry.getKey();
-            KnowledgeBaseChangeSetImpl localChangeSet = entry.getValue();
+            ChangeSetImpl localChangeSet = entry.getValue();
             listener.resourceChanged( localChangeSet );
         }
         

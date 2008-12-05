@@ -1,4 +1,4 @@
-package org.drools.xml.composition;
+package org.drools.xml.changeset;
 
 import java.util.HashSet;
 
@@ -6,7 +6,8 @@ import org.drools.builder.DecisionTableConfiguration;
 import org.drools.builder.DecisionTableInputType;
 import org.drools.builder.ResourceConfiguration;
 import org.drools.builder.impl.DecisionTableConfigurationImpl;
-import org.drools.io.impl.KnowledgeComposition;
+import org.drools.io.InternalResource;
+import org.drools.io.Resource;
 import org.drools.io.impl.KnowledgeResource;
 import org.drools.util.StringUtils;
 import org.drools.xml.BaseAbstractHandler;
@@ -23,7 +24,7 @@ public class DecisionTableConfigurationHandler extends BaseAbstractHandler
     public DecisionTableConfigurationHandler() {
         if ( (this.validParents == null) && (this.validPeers == null) ) {
             this.validParents = new HashSet( 1 );
-            this.validParents.add( KnowledgeResource.class );
+            this.validParents.add( Resource.class );
 
             this.validPeers = new HashSet( 1 );
             this.validPeers.add( null );
@@ -60,9 +61,9 @@ public class DecisionTableConfigurationHandler extends BaseAbstractHandler
                       String localName,
                       ExtensibleXmlParser parser) throws SAXException {
         final Element element = parser.endElementBuilder();
-        final KnowledgeResource part = (KnowledgeResource) parser.getParent();
+        final InternalResource resource = (InternalResource) parser.getParent();
         ResourceConfiguration dtConf = (ResourceConfiguration) parser.getCurrent();
-        part.setConfiguration( dtConf );
+        resource.setConfiguration( dtConf );
         
         return dtConf;
     }

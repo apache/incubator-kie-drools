@@ -39,7 +39,7 @@ import org.drools.util.ClassUtils;
 import org.drools.util.ConfFileUtils;
 import org.drools.util.StringUtils;
 import org.drools.workflow.core.Node;
-import org.drools.xml.CompositionSemanticModule;
+import org.drools.xml.ChangeSetSemanticModule;
 import org.drools.xml.DefaultSemanticModule;
 import org.drools.xml.Handler;
 import org.drools.xml.ProcessSemanticModule;
@@ -322,7 +322,7 @@ public class PackageBuilderConfiguration implements KnowledgeBuilderConfiguratio
 
         this.semanticModules.addSemanticModule( new ProcessSemanticModule() );
         this.semanticModules.addSemanticModule( new RulesSemanticModule() );
-        this.semanticModules.addSemanticModule( new CompositionSemanticModule() );
+        this.semanticModules.addSemanticModule( new ChangeSetSemanticModule() );
 
         // split on each space
         String locations[] = this.chainedProperties.getProperty( "semanticModules",

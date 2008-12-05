@@ -1,4 +1,4 @@
-package org.drools.xml.composition;
+package org.drools.xml.changeset;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -13,6 +13,7 @@ import java.util.UUID;
 
 import junit.framework.TestCase;
 
+import org.drools.ChangeSet;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.agent.KnowledgeAgent;
@@ -30,49 +31,51 @@ import org.drools.io.Resource;
 import org.drools.io.ResourceChangeScannerConfiguration;
 import org.drools.io.ResourceFactory;
 import org.drools.io.impl.FileSystemResource;
-import org.drools.io.impl.KnowledgeComposition;
 import org.drools.io.impl.KnowledgeResource;
 import org.drools.io.impl.ResourceChangeNotifierImpl;
 import org.drools.io.impl.UrlResource;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.xml.XmlCompositionReader;
+import org.drools.xml.XmlChangeSetReader;
 import org.xml.sax.SAXException;
 
-public class CompositionTest extends TestCase {
+public class ChangeSetTest extends TestCase {
     public void testXmlParser() throws SAXException,
                                IOException {
 
         PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
-        XmlCompositionReader xmlReader = new XmlCompositionReader( conf.getSemanticModules() );
+        XmlChangeSetReader xmlReader = new XmlChangeSetReader( conf.getSemanticModules() );
 
         String str = "";
-        str += "<composition ";
-        str += "xmlns='http://drools.org/drools-4.0/composition' ";
+        str += "<change-set ";
+        str += "xmlns='http://drools.org/drools-5.0/change-set' ";
         str += "xmlns:xs='http://www.w3.org/2001/XMLSchema-instance' ";
-        str += "xs:schemaLocation='http://drools.org/drools-4.0/composition drools-composition-4.0.xsd' >";
-        str += "    <resource source='http://www.domain.com/test.drl' type='DRL' />";
-        str += "    <resource source='http://www.domain.com/test.xls' type='DTABLE' >";
-        str += "        <decisiontable-conf worksheet-name='sheet10' input-type='XLS' />";
-        str += "    </resource>";
-        str += "</composition>";
+        str += "xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-4.0.xsd' >";
+        str += "    <add> ";
+        str += "        <resource source='http://www.domain.com/test.drl' type='DRL' />";
+        str += "        <resource source='http://www.domain.com/test.xls' type='DTABLE' >";
+        str += "            <decisiontable-conf worksheet-name='sheet10' input-type='XLS' />";
+        str += "        </resource>";
+        str += "    </add> ";        
+        str += "</change-set>";
 
         StringReader reader = new StringReader( str );
-        KnowledgeComposition composition = xmlReader.read( reader );
+        ChangeSet changeSet = xmlReader.read( reader );
 
         assertEquals( 2,
-                      composition.getResources().size() );
-        KnowledgeResource resource = composition.getResources().get( 0 );
+                      changeSet.getResourcesAdded().size() );
+        UrlResource resource = ( UrlResource ) ((List)changeSet.getResourcesAdded()).get( 0 );
         assertNull( resource.getConfiguration() );
         assertEquals( "http://www.domain.com/test.drl",
-                      resource.getSource() );
+                      resource.getURL().toString() );
         assertEquals( KnowledgeType.DRL,
-                      resource.getType() );
+                      resource.getKnowledgeType() );
 
-        resource = composition.getResources().get( 1 );
+        resource =  ( UrlResource ) ((List)changeSet.getResourcesAdded()).get( 1 );
+        
         assertEquals( "http://www.domain.com/test.xls",
-                      resource.getSource() );
+                      resource.getURL().toString() );        
         assertEquals( KnowledgeType.DTABLE,
-                      resource.getType() );
+                      resource.getKnowledgeType() );
         DecisionTableConfiguration dtConf = (DecisionTableConfiguration) resource.getConfiguration();
         assertEquals( DecisionTableInputType.XLS,
                       dtConf.getInputType() );
@@ -80,9 +83,9 @@ public class CompositionTest extends TestCase {
 
     public void testIntegregation() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( "composition1Test.xml",
+        kbuilder.add( ResourceFactory.newClassPathResource( "changeset1Test.xml",
                                                             getClass() ),
-                      KnowledgeType.COMPOSITION );
+                      KnowledgeType.ChangeSet );
         assertFalse( kbuilder.hasErrors() );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
@@ -131,13 +134,15 @@ public class CompositionTest extends TestCase {
         output.close();
 
         String xml = "";
-        xml += "<composition xmlns='http://drools.org/drools-4.0/composition'";
+        xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'";
         xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
-        xml += "    xs:schemaLocation='http://drools.org/drools-4.0/composition drools-composition-4.0.xsd' >";
-        xml += "    <resource source='" + f1.toURI().toURL() + "' type='DRL' />";
-        xml += "    <resource source='" + f2.toURI().toURL() + "' type='DRL' />";
-        xml += "</composition>";
-        File fxml = File.createTempFile( "composition",
+        xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-4.0.xsd' >";
+        xml += "    <add> ";
+        xml += "        <resource source='" + f1.toURI().toURL() + "' type='DRL' />";
+        xml += "        <resource source='" + f2.toURI().toURL() + "' type='DRL' />";
+        xml += "    </add> ";
+        xml += "</change-set>";
+        File fxml = File.createTempFile( "changeset",
                                          ".xml" );
         fxml.deleteOnExit();
         output = new BufferedWriter( new FileWriter( fxml ) );
@@ -146,7 +151,7 @@ public class CompositionTest extends TestCase {
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newUrlResource( fxml.toURI().toURL() ),
-                      KnowledgeType.COMPOSITION );
+                      KnowledgeType.ChangeSet );
         assertFalse( kbuilder.hasErrors() );
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
@@ -249,12 +254,14 @@ public class CompositionTest extends TestCase {
         output.close();
 
         String xml = "";
-        xml += "<composition xmlns='http://drools.org/drools-4.0/composition'";
+        xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'";
         xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
-        xml += "    xs:schemaLocation='http://drools.org/drools-4.0/composition drools-composition-4.0.xsd' >";
-        xml += "    <resource source='" + f1.getParentFile().toURI().toURL() + "' type='DRL' />";
-        xml += "</composition>";
-        File fxml = File.createTempFile( "composition",
+        xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' >";
+        xml += "    <add> ";        
+        xml += "        <resource source='" + f1.getParentFile().toURI().toURL() + "' type='DRL' />";
+        xml += "    </add> ";        
+        xml += "</change-set>";
+        File fxml = File.createTempFile( "changeset",
                                          ".xml" );
         fxml.deleteOnExit();
         output = new BufferedWriter( new FileWriter( fxml ) );
@@ -263,7 +270,7 @@ public class CompositionTest extends TestCase {
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newUrlResource( fxml.toURI().toURL() ),
-                      KnowledgeType.COMPOSITION );
+                      KnowledgeType.ChangeSet );
         assertFalse( kbuilder.hasErrors() );
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();

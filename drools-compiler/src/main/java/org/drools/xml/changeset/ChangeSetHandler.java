@@ -1,8 +1,8 @@
-package org.drools.xml.composition;
+package org.drools.xml.changeset;
 
 import java.util.HashSet;
 
-import org.drools.io.impl.KnowledgeComposition;
+import org.drools.io.impl.ChangeSetImpl;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
@@ -10,11 +10,11 @@ import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-public class CompositionHandler extends BaseAbstractHandler
+public class ChangeSetHandler extends BaseAbstractHandler
     implements
     Handler {
     
-    public CompositionHandler() {
+    public ChangeSetHandler() {
         if ( (this.validParents == null) && (this.validPeers == null) ) {
             this.validParents = new HashSet(1);
             this.validParents.add(null );
@@ -32,11 +32,11 @@ public class CompositionHandler extends BaseAbstractHandler
                         ExtensibleXmlParser parser) throws SAXException {
         parser.startElementBuilder( localName,
                                     attrs );
-        KnowledgeComposition composition = new KnowledgeComposition();
+        ChangeSetImpl changeSet = new ChangeSetImpl();
         
-        parser.setData( composition );
+        parser.setData( changeSet );
         
-        return composition;
+        return changeSet;
     }
     
     public Object end(String uri,
@@ -44,12 +44,12 @@ public class CompositionHandler extends BaseAbstractHandler
                       ExtensibleXmlParser parser) throws SAXException {
         final Element element = parser.endElementBuilder();
 
-        final KnowledgeComposition composition = (KnowledgeComposition) parser.getCurrent();        
-        return composition;
+        final ChangeSetImpl changeSet = (ChangeSetImpl) parser.getCurrent();        
+        return changeSet;
     }  
     
     public Class< ? > generateNodeFor() {
-        return KnowledgeComposition.class;
+        return ChangeSetImpl.class;
     }    
 
 }

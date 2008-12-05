@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:drools="http://drools.org/drools-4.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://drools.org/drools-4.0">
+<xs:schema xmlns:drools="http://drools.org/drools-5.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://drools.org/drools-5.0">
   <xs:element name="package">
     <xs:complexType>
       <xs:choice maxOccurs="unbounded" minOccurs="0">

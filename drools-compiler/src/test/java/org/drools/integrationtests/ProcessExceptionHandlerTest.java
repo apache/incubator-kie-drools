@@ -22,9 +22,9 @@ public class ProcessExceptionHandlerTest extends TestCase {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-            "<process xmlns=\"http://drools.org/drools-4.0/process\"\n" +
+            "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
-            "         xs:schemaLocation=\"http://drools.org/drools-4.0/process drools-processes-4.0.xsd\"\n" +
+            "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-4.0.xsd\"\n" +
             "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.exception\" package-name=\"org.drools\" version=\"1\" >\n" +
             "\n" +
             "  <header>\n" +
@@ -61,9 +61,9 @@ public class ProcessExceptionHandlerTest extends TestCase {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-            "<process xmlns=\"http://drools.org/drools-4.0/process\"\n" +
+            "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
-            "         xs:schemaLocation=\"http://drools.org/drools-4.0/process drools-processes-4.0.xsd\"\n" +
+            "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-4.0.xsd\"\n" +
             "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.exception\" package-name=\"org.drools\" version=\"1\" >\n" +
             "\n" +
             "  <header>\n" +
@@ -114,9 +114,9 @@ public class ProcessExceptionHandlerTest extends TestCase {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-            "<process xmlns=\"http://drools.org/drools-4.0/process\"\n" +
+            "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
-            "         xs:schemaLocation=\"http://drools.org/drools-4.0/process drools-processes-4.0.xsd\"\n" +
+            "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-4.0.xsd\"\n" +
             "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.exception\" package-name=\"org.drools\" version=\"1\" >\n" +
             "\n" +
             "  <header>\n" +
@@ -154,9 +154,9 @@ public class ProcessExceptionHandlerTest extends TestCase {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-            "<process xmlns=\"http://drools.org/drools-4.0/process\"\n" +
+            "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
-            "         xs:schemaLocation=\"http://drools.org/drools-4.0/process drools-processes-4.0.xsd\"\n" +
+            "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-4.0.xsd\"\n" +
             "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.exception\" package-name=\"org.drools\" version=\"1\" >\n" +
             "\n" +
             "  <header>\n" +
@@ -231,9 +231,9 @@ public class ProcessExceptionHandlerTest extends TestCase {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-            "<process xmlns=\"http://drools.org/drools-4.0/process\"\n" +
+            "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
-            "         xs:schemaLocation=\"http://drools.org/drools-4.0/process drools-processes-4.0.xsd\"\n" +
+            "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-4.0.xsd\"\n" +
             "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.exception\" package-name=\"org.drools\" version=\"1\" >\n" +
             "\n" +
             "  <header>\n" +

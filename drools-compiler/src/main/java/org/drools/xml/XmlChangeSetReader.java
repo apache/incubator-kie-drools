@@ -6,26 +6,30 @@ import java.io.Reader;
 
 import javax.xml.parsers.SAXParser;
 
-import org.drools.io.impl.KnowledgeComposition;
+import org.drools.ChangeSet;
 import org.drools.lang.descr.PackageDescr;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 
-public class XmlCompositionReader {
+public class XmlChangeSetReader {
     private ExtensibleXmlParser parser;
 
-    public XmlCompositionReader(final SemanticModules modules) {
+    public XmlChangeSetReader(final SemanticModules modules) {
         this( modules, null );
     }
 
-    public XmlCompositionReader(final SemanticModules modules, final SAXParser parser) {
+    public XmlChangeSetReader(final SemanticModules modules, final SAXParser parser) {
         if ( parser == null ) {
             this.parser = new ExtensibleXmlParser();
         } else {
             this.parser = new ExtensibleXmlParser( parser );
         }      
         this.parser.setSemanticModules( modules );
+    }
+    
+    public void setClassLoader(ClassLoader classLoader) {
+        this.parser.setClassLoader( classLoader );
     }
     
     public ExtensibleXmlParser getParser() {
@@ -40,9 +44,9 @@ public class XmlCompositionReader {
      *
      * @return The rule-set.
      */
-    public KnowledgeComposition read(final Reader reader) throws SAXException,
+    public ChangeSet read(final Reader reader) throws SAXException,
                                                  IOException {
-        return (KnowledgeComposition) this.parser.read( reader );
+        return (ChangeSet) this.parser.read( reader );
     }
 
     /**
@@ -53,9 +57,9 @@ public class XmlCompositionReader {
      *
      * @return The rule-set.
      */
-    public KnowledgeComposition read(final InputStream inputStream) throws SAXException,
+    public ChangeSet read(final InputStream inputStream) throws SAXException,
                                                            IOException {
-        return (KnowledgeComposition) this.parser.read( inputStream );
+        return (ChangeSet) this.parser.read( inputStream );
     }
 
     /**
@@ -66,8 +70,8 @@ public class XmlCompositionReader {
      *
      * @return The rule-set.
      */
-    public KnowledgeComposition read(final InputSource in) throws SAXException,
+    public ChangeSet read(final InputSource in) throws SAXException,
                                                   IOException {
-        return (KnowledgeComposition) this.parser.read( in );
+        return (ChangeSet) this.parser.read( in );
     }
 }

@@ -17,21 +17,28 @@ package org.drools.compiler;
  */
 
 import java.beans.IntrospectionException;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
+import org.drools.ChangeSet;
+import org.drools.PackageIntegrationException;
 import org.drools.RuleBase;
+import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassFieldAccessor;
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
@@ -51,7 +58,6 @@ import org.drools.facttemplates.FieldTemplateImpl;
 import org.drools.io.InternalResource;
 import org.drools.io.Resource;
 import org.drools.io.impl.ClassPathResource;
-import org.drools.io.impl.KnowledgeComposition;
 import org.drools.io.impl.KnowledgeResource;
 import org.drools.io.impl.ReaderResource;
 import org.drools.io.impl.UrlResource;
@@ -73,6 +79,8 @@ import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.lang.dsl.DefaultExpander;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.rule.CompositeClassLoader;
+import org.drools.rule.Function;
+import org.drools.rule.ImportDeclaration;
 import org.drools.rule.JavaDialectRuntimeData;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
@@ -80,7 +88,8 @@ import org.drools.rule.TypeDeclaration;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleBuilder;
 import org.drools.spi.InternalReadAccessor;
-import org.drools.xml.XmlCompositionReader;
+import org.drools.util.DroolsStreamUtils;
+import org.drools.xml.XmlChangeSetReader;
 import org.drools.xml.XmlPackageReader;
 import org.xml.sax.SAXException;
 
@@ -424,7 +433,7 @@ public class PackageBuilder {
         ProcessBuilder processBuilder = new ProcessBuilder( this );
         try {
             processBuilder.addProcessFromFile( processSource,
-                                               resource );
+                                               this.resource );
             this.results.addAll( processBuilder.getErrors() );
         } catch ( Exception e ) {
             if ( e instanceof RuntimeException ) {
@@ -478,28 +487,35 @@ public class PackageBuilder {
                     addPackageFromDrl( new StringReader( string ) );
                     break;
                 }
-                case COMPOSITION : {
+                case PKG : {    
+                    InputStream is = resource.getInputStream();
+                    Package pkg =  (Package) DroolsStreamUtils.streamIn( is );
+                    is.close();
+                    addPackage( pkg );
+                    break;
+                }
+                case ChangeSet : {
                     ((InternalResource)resource).setKnowledgeType( type );
-                    XmlCompositionReader reader = new XmlCompositionReader( this.configuration.getSemanticModules() );
-                    KnowledgeComposition composition = reader.read( resource.getReader() );
-                    for ( KnowledgeResource kresource : composition.getResources() ) {
-                        Resource ioresource = null;
-                        String src = kresource.getSource();
-                        if ( src.trim().startsWith( "classpath:" ) ) {
-                            ioresource = new ClassPathResource( src.substring( src.indexOf( ':' ) + 1 ), this.configuration.getClassLoader() );
-                        } else {
-                            ioresource = new UrlResource( src );
-                        }
-                        ((InternalResource)ioresource).setKnowledgeType( kresource.getType() );
-                        if ( ioresource.isDirectory() ) {
-                            this.resourceDirectories.add( ioresource );
-                            for ( Resource childResource : ioresource.listResources() ) {
-                                ((InternalResource)childResource).setKnowledgeType( kresource.getType() );
-                                ((InternalResource)childResource).setFromDirectory( true );
-                                addKnowledgeResource( childResource, kresource.getType(), kresource.getConfiguration() );        
+                    XmlChangeSetReader reader = new XmlChangeSetReader( this.configuration.getSemanticModules() );
+                    if ( resource instanceof ClassPathResource ) {
+                        reader.setClassLoader( ((ClassPathResource )resource).getClassLoader() );
+                    } else {
+                        reader.setClassLoader( this.configuration.getClassLoader() );
+                    }
+                    ChangeSet chageSet = reader.read( resource.getReader() );
+                    if ( chageSet == null ) {
+                        // @TODO should log an error
+                    }
+                    for ( Resource nestedResource : chageSet.getResourcesAdded() ) {
+                        InternalResource iNestedResourceResource = (InternalResource) nestedResource; 
+                        if ( iNestedResourceResource.isDirectory() ) {
+                            this.resourceDirectories.add( iNestedResourceResource );
+                            for ( Resource childResource : iNestedResourceResource.listResources() ) {
+                                ((InternalResource)childResource).setKnowledgeType( iNestedResourceResource.getKnowledgeType() );
+                                addKnowledgeResource( childResource, iNestedResourceResource.getKnowledgeType(), iNestedResourceResource.getConfiguration() );        
                             }
                         } else {
-                            addKnowledgeResource( ioresource, kresource.getType(), kresource.getConfiguration() );
+                            addKnowledgeResource( iNestedResourceResource, iNestedResourceResource.getKnowledgeType(), iNestedResourceResource.getConfiguration() );
                         }
                     }
                 }
@@ -660,6 +676,127 @@ public class PackageBuilder {
         }
         return results;
     }
+    
+    public synchronized void addPackage(final Package newPkg) {
+            Package pkg = this.pkgRegistryMap.get( newPkg.getName() ).getPackage();
+
+
+            //            // create new base package if it doesn't exist, as we always merge the newPkg into the existing one, 
+            //            // to isolate the base package from further possible changes to newPkg.
+            //            if ( pkg == null ) {
+            //                // create a new package, use the same parent classloader as the incoming new package
+            //                pkg = new Package( newPkg.getName(),
+            //                                   new MapBackedClassLoader( newPkg.getPackageScopeClassLoader().getParent() ) );
+            //                //newPkg.getPackageScopeClassLoader() );
+            //                pkgs.put( pkg.getName(),
+            //                          pkg );
+            //                // add the dialect registry composite classloader (which uses the above classloader as it's parent)
+            //                this.packageClassLoader.addClassLoader( pkg.getDialectRuntimeRegistry().getClassLoader() );
+            //            }
+
+            if ( pkg == null ) {
+                pkg = newPackage( new PackageDescr( newPkg.getName() ) ).getPackage();
+            }       
+            
+            // first merge anything related to classloader re-wiring
+            pkg.getDialectRuntimeRegistry().merge( newPkg.getDialectRuntimeRegistry(), this.rootClassLoader );
+            if ( newPkg.getFunctions() != null ) {
+                for ( Map.Entry<String, Function> entry : newPkg.getFunctions().entrySet() ) {
+                    pkg.addFunction( entry.getValue() );
+                }
+            }            
+            pkg.getClassFieldAccessorStore().merge( newPkg.getClassFieldAccessorStore() );
+            pkg.getDialectRuntimeRegistry().onBeforeExecute();
+            
+            // we have to do this before the merging, as it does some classloader resolving
+            TypeDeclaration lastType = null;
+            try {
+                // Add the type declarations to the RuleBase
+                if ( newPkg.getTypeDeclarations() != null ) {
+                    // add type declarations
+                    for ( TypeDeclaration type : newPkg.getTypeDeclarations().values() ) {
+                        lastType = type;
+                        type.setTypeClass( this.rootClassLoader.loadClass( pkg.getName() + "." + type.getTypeName() ) );
+                    }
+                }
+            } catch ( ClassNotFoundException e ) {
+                throw new RuntimeDroolsException( "unable to resolve Type Declaration class '" + lastType.getTypeName()+"'" );            
+            }            
+
+            // now merge the new package into the existing one
+            mergePackage( pkg,
+                          newPkg );
+
+    }
+
+    /**
+     * Merge a new package with an existing package.
+     * Most of the work is done by the concrete implementations,
+     * but this class does some work (including combining imports, compilation data, globals,
+     * and the actual Rule objects into the package).
+     */
+    private void mergePackage(final Package pkg,
+                              final Package newPkg) {
+        // Merge imports
+        final Map<String, ImportDeclaration> imports = pkg.getImports();
+        imports.putAll( newPkg.getImports() );
+        pkg.setResourceDirectories( newPkg.getResourceDirectories() );
+
+        String lastType = null;
+        try {
+            // merge globals
+            if ( newPkg.getGlobals() != null && newPkg.getGlobals() != Collections.EMPTY_MAP ) {
+                Map<String, String> globals = pkg.getGlobals();
+                // Add globals
+                for ( final Map.Entry<String, String> entry : newPkg.getGlobals().entrySet() ) {
+                    final String identifier = entry.getKey();
+                    final String type = entry.getValue();
+                    lastType = type;
+                    if ( globals.containsKey( identifier ) && !globals.get( identifier ).equals( type ) ) {
+                        throw new PackageIntegrationException( pkg );
+                    } else {
+                        pkg.addGlobal( identifier,
+                                       this.rootClassLoader.loadClass( type ) );
+                        // this isn't a package merge, it's adding to the rulebase, but I've put it here for convienience
+                        this.globals.put( identifier,
+                                          this.rootClassLoader.loadClass( type ) );
+                    }
+                }
+            }
+        } catch ( ClassNotFoundException e ) {
+            throw new RuntimeDroolsException( "Unable to resolve class '" + lastType + "'" );
+        }
+
+        // merge the type declarations
+        if ( newPkg.getTypeDeclarations() != null ) {
+            // add type declarations
+            for ( TypeDeclaration type : newPkg.getTypeDeclarations().values() ) {
+                // @TODO should we allow overrides? only if the class is not in use.
+                if ( !pkg.getTypeDeclarations().containsKey( type.getTypeName() ) ) {
+                    // add to package list of type declarations
+                    pkg.addTypeDeclaration( type );
+                }
+            }
+        }
+
+        final Rule[] newRules = newPkg.getRules();
+        for ( int i = 0; i < newRules.length; i++ ) {
+            final Rule newRule = newRules[i];
+
+            pkg.addRule( newRule );
+        }
+
+        //Merge The Rule Flows
+        if ( newPkg.getRuleFlows() != null ) {
+            final Map flows = newPkg.getRuleFlows();
+            for ( final Iterator iter = flows.values().iterator(); iter.hasNext(); ) {
+                final Process flow = (Process) iter.next();
+                pkg.addProcess( flow );
+            }
+        }     
+
+    }
+    
 
     //
     //    private void validatePackageName(final PackageDescr packageDescr) {
@@ -789,7 +926,9 @@ public class PackageBuilder {
             }
 
             TypeDeclaration type = new TypeDeclaration( typeDescr.getTypeName() );
-            type.setResource( this.resource );
+            if ( ((InternalResource)resource).hasURL() ) {
+                type.setResource( this.resource );
+            }
 
             // is it a regular fact or an event?
             String role = typeDescr.getMetaAttribute( TypeDeclaration.Role.ID );
