@@ -5,7 +5,7 @@ import java.util.Collection;
 import org.drools.definition.KnowledgeDefinition;
 import org.drools.io.Resource;
 
-public interface KnowledgeBaseChangeSet {
+public interface ChangeSet {
     public Collection<Resource> getResourcesRemoved();
 
 
@@ -14,6 +14,6 @@ public interface KnowledgeBaseChangeSet {
     public Collection<Resource> getResourcesModified();
 
 
-    public Collection<KnowledgeDefinition> getKnowledgeDefinitionsRemoved();
+    //public Collection<KnowledgeDefinition> getKnowledgeDefinitionsRemoved();
 
 }

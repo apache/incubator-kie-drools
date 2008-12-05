@@ -10,17 +10,5 @@ public interface Resource {
     InputStream getInputStream() throws IOException;
     
     public Reader getReader() throws IOException;
-    
-    URL getURL() throws IOException;
-    
-    boolean hasURL();
-    
-    boolean isDirectory();
-    
-    Collection<Resource> listResources();    
-    
-    long getLastModified();
-    
-    public long getLastRead();
-    
+      
 }

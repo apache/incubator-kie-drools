@@ -19,6 +19,9 @@ public enum KnowledgeType {
     /** Decision Table */
     DTABLE,
     
-    /** Composition */
-    COMPOSITION;
+    /** Binary Package */
+    PKG,
+    
+    /** ChangeSet */
+    ChangeSet;
 }
