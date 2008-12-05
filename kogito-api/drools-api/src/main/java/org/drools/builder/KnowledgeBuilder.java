@@ -84,14 +84,14 @@ public interface KnowledgeBuilder
      * @param type
      */
     void add(Resource resource,
-             KnowledgeType type);
+             ResourceType type);
 
     /**
     * A a resource of the KnowledgeType from a given URL, using the provided ResourceConfiguration.
     * Currently only only decision tables use this, via the DecisionTableResourceConfiguration class.
     */
     void add(Resource resource,
-             KnowledgeType type,
+             ResourceType type,
              ResourceConfiguration configuration);
 
     /**
