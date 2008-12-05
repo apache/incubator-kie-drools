@@ -55,13 +55,21 @@ public class KnowledgeAgentImpl
         if ( configuration != null ) {
             //this.newInstance = ((KnowledgeAgentConfigurationImpl) configuration).isNewInstance();
             this.notifier = (ResourceChangeNotifierImpl) ResourceFactory.getResourceChangeNotifierService();
-            if ( ((KnowledgeAgentConfigurationImpl) configuration).isScanResources() ) {
-                this.notifier.addResourceChangeMonitor( ResourceFactory.getResourceChangeScannerService() );
-            }
             if ( ((KnowledgeAgentConfigurationImpl) configuration).isMonitorChangeSetEvents() ) {
                 this.monitor = true;
             }
+            if ( ((KnowledgeAgentConfigurationImpl) configuration).isScanResources() ) {
+                this.notifier.addResourceChangeMonitor( ResourceFactory.getResourceChangeScannerService() );
+                this.monitor = true; // if scanning, monitor must be true;
+            }
         }
+        
+        if ( this.monitor ) {
+            this.queue = new LinkedBlockingQueue<ChangeSet>();
+            thread = new Thread( this );
+            thread.start();
+        }
+        
         buildResourceMapping( kbase );
     }
 
@@ -172,6 +180,7 @@ public class KnowledgeAgentImpl
 
     public void resourcesChanged(ChangeSet changeSet) {
         try {
+            System.out.println( "agent resource changed" );
             this.queue.put( changeSet );
         } catch ( InterruptedException e ) {
             // @TODO add proper error message
