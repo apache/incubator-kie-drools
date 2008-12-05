@@ -2,14 +2,14 @@ package org.drools.io.impl;
 
 import java.io.Externalizable;
 
-import org.drools.builder.KnowledgeType;
+import org.drools.builder.ResourceType;
 import org.drools.builder.ResourceConfiguration;
 import org.drools.io.InternalResource;
 
 public abstract class BaseResource
     implements
     InternalResource {
-    private KnowledgeType         KnowledgeType;
+    private ResourceType         resourceType;
     private ResourceConfiguration configuration;
 
     public ResourceConfiguration getConfiguration() {
@@ -20,12 +20,12 @@ public abstract class BaseResource
         this.configuration = configuration;
     }
 
-    public void setKnowledgeType(KnowledgeType knowledgeType) {
-        this.KnowledgeType = knowledgeType;
+    public void setResourceType(ResourceType resourceType) {
+        this.resourceType = resourceType;
     }
 
-    public KnowledgeType getKnowledgeType() {
-        return this.KnowledgeType;
+    public ResourceType getResourceType() {
+        return this.resourceType;
     }
 
 }

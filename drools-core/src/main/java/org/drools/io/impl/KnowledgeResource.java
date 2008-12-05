@@ -1,22 +1,22 @@
 package org.drools.io.impl;
 
-import org.drools.builder.KnowledgeType;
+import org.drools.builder.ResourceType;
 import org.drools.builder.ResourceConfiguration;
 import org.drools.io.Resource;
 
 public class KnowledgeResource {
     private String                source;
-    private KnowledgeType         type;
+    private ResourceType         type;
     private ResourceConfiguration configuration;
 
     public KnowledgeResource(String src,
-                             KnowledgeType type) {
+                             ResourceType type) {
         this.source = src;
         this.type = type;
     }
 
     public KnowledgeResource(String src,
-                             KnowledgeType type,
+                             ResourceType type,
                              ResourceConfiguration configuration) {
         this.source = src;
         this.type = type;
@@ -31,11 +31,11 @@ public class KnowledgeResource {
         this.source = src;
     }
 
-    public KnowledgeType getType() {
+    public ResourceType getType() {
         return type;
     }
 
-    public void setType(KnowledgeType type) {
+    public void setType(ResourceType type) {
         this.type = type;
     }
 

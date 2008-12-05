@@ -12,7 +12,7 @@ import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.KnowledgeType;
+import org.drools.builder.ResourceType;
 import org.drools.definition.KnowledgePackage;
 import org.drools.io.ResourceFactory;
 import org.drools.process.core.context.variable.VariableScope;
@@ -80,7 +80,7 @@ public class ProcessWorkItemTest extends TestCase {
             "  </connections>\n" +
             "\n" +
             "</process>");
-        kbuilder.add( ResourceFactory.newReaderResource( source ), KnowledgeType.DRF );
+        kbuilder.add( ResourceFactory.newReaderResource( source ), ResourceType.DRF );
         
         Collection<KnowledgePackage> kpkgs = kbuilder.getKnowledgePackages();
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();

@@ -25,7 +25,7 @@ import org.drools.builder.DecisionTableConfiguration;
 import org.drools.builder.DecisionTableInputType;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.KnowledgeType;
+import org.drools.builder.ResourceType;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.io.Resource;
 import org.drools.io.ResourceChangeScannerConfiguration;
@@ -39,6 +39,17 @@ import org.drools.xml.XmlChangeSetReader;
 import org.xml.sax.SAXException;
 
 public class ChangeSetTest extends TestCase {
+    protected void setUp() throws Exception {
+        ResourceFactory.getResourceChangeNotifierService().start();
+        ResourceFactory.getResourceChangeScannerService().start();
+    }
+    
+
+    protected void tearDown() throws Exception {
+        ResourceFactory.getResourceChangeNotifierService().stop();
+        ResourceFactory.getResourceChangeScannerService().stop();
+    }
+    
     public void testXmlParser() throws SAXException,
                                IOException {
 
@@ -67,15 +78,15 @@ public class ChangeSetTest extends TestCase {
         assertNull( resource.getConfiguration() );
         assertEquals( "http://www.domain.com/test.drl",
                       resource.getURL().toString() );
-        assertEquals( KnowledgeType.DRL,
-                      resource.getKnowledgeType() );
+        assertEquals( ResourceType.DRL,
+                      resource.getResourceType() );
 
         resource =  ( UrlResource ) ((List)changeSet.getResourcesAdded()).get( 1 );
         
         assertEquals( "http://www.domain.com/test.xls",
                       resource.getURL().toString() );        
-        assertEquals( KnowledgeType.DTABLE,
-                      resource.getKnowledgeType() );
+        assertEquals( ResourceType.DTABLE,
+                      resource.getResourceType() );
         DecisionTableConfiguration dtConf = (DecisionTableConfiguration) resource.getConfiguration();
         assertEquals( DecisionTableInputType.XLS,
                       dtConf.getInputType() );
@@ -85,7 +96,7 @@ public class ChangeSetTest extends TestCase {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "changeset1Test.xml",
                                                             getClass() ),
-                      KnowledgeType.ChangeSet );
+                      ResourceType.ChangeSet );
         assertFalse( kbuilder.hasErrors() );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
@@ -151,7 +162,7 @@ public class ChangeSetTest extends TestCase {
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newUrlResource( fxml.toURI().toURL() ),
-                      KnowledgeType.ChangeSet );
+                      ResourceType.ChangeSet );
         assertFalse( kbuilder.hasErrors() );
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
@@ -270,7 +281,7 @@ public class ChangeSetTest extends TestCase {
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newUrlResource( fxml.toURI().toURL() ),
-                      KnowledgeType.ChangeSet );
+                      ResourceType.ChangeSet );
         assertFalse( kbuilder.hasErrors() );
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();

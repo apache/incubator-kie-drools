@@ -32,7 +32,7 @@ import org.drools.SessionConfiguration;
 import org.drools.StockTick;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.KnowledgeType;
+import org.drools.builder.ResourceType;
 import org.drools.common.InternalFactHandle;
 import org.drools.compiler.DroolsParserException;
 import org.drools.io.ResourceFactory;
@@ -67,7 +67,7 @@ public class StreamsTest extends TestCase {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( fileName,
                                                                     getClass() ),
-                              KnowledgeType.DRL );
+                              ResourceType.DRL );
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );

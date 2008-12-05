@@ -24,7 +24,7 @@ import org.drools.base.MapGlobalResolver;
 import org.drools.base.ReferenceOriginalGlobalExporter;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.KnowledgeType;
+import org.drools.builder.ResourceType;
 import org.drools.compiler.PackageBuilder;
 import org.drools.definition.KnowledgePackage;
 import org.drools.impl.ParametersImpl;
@@ -395,7 +395,7 @@ public class StatelessSessionTest extends TestCase {
     
     private StatelessKnowledgeSession getSession2(String fileName) throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(  ResourceFactory.newClassPathResource( fileName, getClass() ), KnowledgeType.DRL );
+        kbuilder.add(  ResourceFactory.newClassPathResource( fileName, getClass() ), ResourceType.DRL );
         
         if (kbuilder.hasErrors() ) {
             System.out.println( kbuilder.getErrors() );

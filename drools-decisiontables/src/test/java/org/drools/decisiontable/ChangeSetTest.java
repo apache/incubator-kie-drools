@@ -14,7 +14,7 @@ import org.drools.builder.DecisionTableConfiguration;
 import org.drools.builder.DecisionTableInputType;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.KnowledgeType;
+import org.drools.builder.ResourceType;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.io.ResourceFactory;
 import org.drools.io.impl.ClassPathResource;
@@ -25,9 +25,20 @@ import org.xml.sax.SAXException;
 
 public class ChangeSetTest extends TestCase {
     
+    protected void setUp() throws Exception {
+        ResourceFactory.getResourceChangeNotifierService().start();
+        ResourceFactory.getResourceChangeScannerService().start();
+    }
+    
+
+    protected void tearDown() throws Exception {
+        ResourceFactory.getResourceChangeNotifierService().stop();
+        ResourceFactory.getResourceChangeScannerService().stop();
+    }
+    
     public void testIntegregation() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( "changeset1Test.xml", getClass()), KnowledgeType.ChangeSet );
+        kbuilder.add( ResourceFactory.newClassPathResource( "changeset1Test.xml", getClass()), ResourceType.ChangeSet );
         assertFalse( kbuilder.hasErrors() );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );

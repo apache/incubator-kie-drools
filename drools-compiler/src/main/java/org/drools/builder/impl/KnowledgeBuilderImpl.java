@@ -9,7 +9,7 @@ import java.util.List;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.KnowledgeBuilderErrors;
-import org.drools.builder.KnowledgeType;
+import org.drools.builder.ResourceType;
 import org.drools.builder.ResourceConfiguration;
 import org.drools.compiler.PackageBuilder;
 import org.drools.definition.KnowledgePackage;
@@ -26,12 +26,12 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 		this.pkgBuilder = pkgBuilder;
 	}
 	
-	public void add(Resource resource, KnowledgeType type) {
+	public void add(Resource resource, ResourceType type) {
         pkgBuilder.addKnowledgeResource( resource, type, null )  ;
 	}	
 
     public void add(Resource resource,
-                            KnowledgeType type,
+                            ResourceType type,
                             ResourceConfiguration configuration) {
         pkgBuilder.addKnowledgeResource( resource, type, configuration );
     }	

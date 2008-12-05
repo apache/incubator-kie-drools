@@ -9,6 +9,7 @@ import org.drools.util.StringUtils;
 /**
  * drools.agent.scanResources = <true|false>
  * drools.agent.newInstance = <true|false>
+ * drools.agent.monitorChangeSetEvents = <true|false>
  *
  */
 public class KnowledgeAgentConfigurationImpl
@@ -16,6 +17,7 @@ public class KnowledgeAgentConfigurationImpl
     KnowledgeAgentConfiguration {
 
     private boolean scanResources;
+    private boolean monitorChangeSetEvents;
     private boolean newInstance;
 
     public KnowledgeAgentConfigurationImpl() {
@@ -37,8 +39,14 @@ public class KnowledgeAgentConfigurationImpl
         }
 
         if ( name.equals( "drools.agent.scanResources" ) ) {
-            setScanResources(  StringUtils.isEmpty( value ) ? true : Boolean.parseBoolean( value ) );
-        } else if ( name.equals( "drools.agent.newInstance" ) ) {
+            setMonitorChangeSetEvents( StringUtils.isEmpty( value ) ? true : Boolean.parseBoolean( value ) );
+        }  else if ( name.equals( "drools.agent.monitorChangeSetEvents" ) ) {
+            boolean bool = StringUtils.isEmpty( value ) ? true : Boolean.parseBoolean( value );
+            setScanResources(  bool );
+            if ( bool ) {
+                setMonitorChangeSetEvents( true );
+            }            
+        }else if ( name.equals( "drools.agent.newInstance" ) ) {
             setNewInstance( StringUtils.isEmpty( value ) ? true : Boolean.parseBoolean( value ) );
         }
     }
@@ -64,6 +72,16 @@ public class KnowledgeAgentConfigurationImpl
 
     public void setScanResources(boolean scanResources) {
         this.scanResources = scanResources;
+    }
+    
+    
+
+    public boolean isMonitorChangeSetEvents() {
+        return monitorChangeSetEvents;
+    }
+
+    public void setMonitorChangeSetEvents(boolean monitorChangeSetEvents) {
+        this.monitorChangeSetEvents = monitorChangeSetEvents;
     }
 
     public boolean isNewInstance() {

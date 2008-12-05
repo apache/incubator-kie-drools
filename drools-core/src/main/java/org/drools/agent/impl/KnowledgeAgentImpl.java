@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import org.drools.KnowledgeBase;
 import org.drools.ChangeSet;
@@ -14,7 +15,7 @@ import org.drools.agent.KnowledgeAgentConfiguration;
 import org.drools.agent.KnowledgeAgentEventListener;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.KnowledgeType;
+import org.drools.builder.ResourceType;
 import org.drools.definition.KnowledgeDefinition;
 import org.drools.definition.process.Process;
 import org.drools.event.io.ResourceChangeListener;
@@ -31,7 +32,7 @@ import org.drools.rule.TypeDeclaration;
 public class KnowledgeAgentImpl
     implements
     KnowledgeAgent,
-    ResourceChangeListener {
+    ResourceChangeListener, Runnable {
     private String                         name;
     private Map<Resource, ResourceMapping> resources;
     private Set<Resource>                  resourceDirectories;
@@ -39,6 +40,9 @@ public class KnowledgeAgentImpl
     private ResourceChangeNotifierImpl     notifier;
     private boolean                        newInstance;
     private KnowledgeAgentEventListener    listener;
+    private LinkedBlockingQueue<ChangeSet> queue;
+    private Thread                         thread;
+    private volatile boolean               monitor;
 
     public KnowledgeAgentImpl(String name,
                               KnowledgeBase kbase,
@@ -53,6 +57,9 @@ public class KnowledgeAgentImpl
             this.notifier = (ResourceChangeNotifierImpl) ResourceFactory.getResourceChangeNotifierService();
             if ( ((KnowledgeAgentConfigurationImpl) configuration).isScanResources() ) {
                 this.notifier.addResourceChangeMonitor( ResourceFactory.getResourceChangeScannerService() );
+            }
+            if ( ((KnowledgeAgentConfigurationImpl) configuration).isMonitorChangeSetEvents() ) {
+                this.monitor = true;
             }
         }
         buildResourceMapping( kbase );
@@ -163,7 +170,34 @@ public class KnowledgeAgentImpl
     //        }
     //    }
 
-    public void resourceChanged(ChangeSet changeSet) {
+    public void resourcesChanged(ChangeSet changeSet) {
+        try {
+            this.queue.put( changeSet );
+        } catch ( InterruptedException e ) {
+            // @TODO add proper error message
+            e.printStackTrace();
+        }
+    }
+
+    public static class ResourceMapping {
+        private Resource                 resource;
+        private Set<KnowledgeDefinition> knowledgeDefinitions;
+
+        public ResourceMapping(Resource resource) {
+            this.knowledgeDefinitions = new HashSet<KnowledgeDefinition>();
+        }
+
+        public Resource getResource() {
+            return resource;
+        }
+
+        public Set<KnowledgeDefinition> getKnowledgeDefinitions() {
+            return knowledgeDefinitions;
+        }
+
+    }
+    
+    private void processChangeSet(ChangeSet changeSet) {
         // for now we assume newIntance only, so just blow away the mappings and knowledgedefinition sets.
         synchronized ( this.resources ) {
             // first remove the unneeded resources        
@@ -191,7 +225,7 @@ public class KnowledgeAgentImpl
             for ( Resource resource : resourcesClone ) {
                 System.out.println( "building : " + resource );
                 kbuilder.add( resource,
-                              ((InternalResource)resource).getKnowledgeType() );
+                              ((InternalResource)resource).getResourceType() );
             }
 
             this.kbase = KnowledgeBaseFactory.newKnowledgeBase();
@@ -225,28 +259,38 @@ public class KnowledgeAgentImpl
         //            }
         //            
         //            // final deal with modifies
-        //        }
-    }
-
-    public static class ResourceMapping {
-        private Resource                 resource;
-        private Set<KnowledgeDefinition> knowledgeDefinitions;
-
-        public ResourceMapping(Resource resource) {
-            this.knowledgeDefinitions = new HashSet<KnowledgeDefinition>();
-        }
-
-        public Resource getResource() {
-            return resource;
-        }
-
-        public Set<KnowledgeDefinition> getKnowledgeDefinitions() {
-            return knowledgeDefinitions;
-        }
-
+        //        }        
     }
 
     public String getName() {
         return this.name;
+    }
+    
+    public void monitorResourceChangeEvents(boolean monitor) {
+        if ( !this.monitor && monitor ) {
+            // If the thread is not running and we are trying to start it, we must create a new Thread
+            this.monitor = monitor;
+            this.thread = new Thread( this );
+            this.thread.start();
+        }
+        this.monitor = monitor;
+    }
+    
+    public void run() { 
+        while ( this.monitor ) {           
+            try {                
+                processChangeSet( this.queue.take() );
+            } catch ( InterruptedException e ) {
+                // @TODO print proper error message
+                e.printStackTrace();
+            }
+            Thread.yield();
+        }
+    }
+    
+    @Override
+    protected void finalize() throws Throwable {
+        // users should turn off monitoring, but just in case when this class is GC'd we turn off the thread
+        this.monitor = false;
     }
 }
