@@ -16,7 +16,7 @@ import org.drools.builder.DecisionTableConfiguration;
 import org.drools.builder.DecisionTableInputType;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.KnowledgeType;
+import org.drools.builder.ResourceType;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.decisiontable.InputType;
@@ -41,7 +41,7 @@ public class PricingRuleLauncher {
         dtconf.setInputType( DecisionTableInputType.XLS );
 
         kbuilder.add( ResourceFactory.newClassPathResource( "/data/ExamplePolicyPricing.xls", getClass() ),
-                              KnowledgeType.DTABLE,
+                              ResourceType.DTABLE,
                               dtconf );
 
         if ( kbuilder.hasErrors() ) {

@@ -4,13 +4,13 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
 
-import org.drools.builder.KnowledgeType;
+import org.drools.builder.ResourceType;
 import org.drools.builder.ResourceConfiguration;
 
 public interface InternalResource extends Resource {
-    void setKnowledgeType(KnowledgeType knowledgeType);
+    void setResourceType(ResourceType resourceType);
     
-    KnowledgeType getKnowledgeType();
+    ResourceType getResourceType();
     
     ResourceConfiguration getConfiguration();
 

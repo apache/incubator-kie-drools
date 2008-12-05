@@ -21,7 +21,7 @@ import org.drools.Sensor;
 import org.drools.WorkingMemory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.KnowledgeType;
+import org.drools.builder.ResourceType;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.TruthMaintenanceSystem;
 import org.drools.compiler.PackageBuilder;
@@ -61,7 +61,7 @@ public class TruthMaintenanceTest extends TestCase {
     
     public void testLogicalInsertionsDynamicRule() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( "test_LogicalInsertionsDynamicRule.drl", getClass() ), KnowledgeType.DRL );
+        kbuilder.add( ResourceFactory.newClassPathResource( "test_LogicalInsertionsDynamicRule.drl", getClass() ), ResourceType.DRL );
         
         Collection<KnowledgePackage> kpkgs = kbuilder.getKnowledgePackages();
         KnowledgeBase kbase = getKnowledgeBase();
@@ -91,7 +91,7 @@ public class TruthMaintenanceTest extends TestCase {
 
         // this rule will make a logical assertion for c1 too
         kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(  ResourceFactory.newClassPathResource( "test_LogicalInsertionsDynamicRule2.drl", getClass() ), KnowledgeType.DRL );
+        kbuilder.add(  ResourceFactory.newClassPathResource( "test_LogicalInsertionsDynamicRule2.drl", getClass() ), ResourceType.DRL );
         Collection<KnowledgePackage> kpkgs2 = kbuilder.getKnowledgePackages();
         kbase.addKnowledgePackages( kpkgs2 );
         kbase    = SerializationHelper.serializeObject( kbase );
@@ -174,7 +174,7 @@ public class TruthMaintenanceTest extends TestCase {
 
     public void testLogicalInsertions() throws Exception {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( "test_LogicalInsertions.drl", getClass() ), KnowledgeType.DRL );
+        kbuilder.add( ResourceFactory.newClassPathResource( "test_LogicalInsertions.drl", getClass() ), ResourceType.DRL );
         Collection<KnowledgePackage> kpkgs = kbuilder.getKnowledgePackages();
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
@@ -215,7 +215,7 @@ public class TruthMaintenanceTest extends TestCase {
 
     public void testLogicalInsertionsBacking() throws Exception {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( "test_LogicalInsertionsBacking.drl", getClass() ), KnowledgeType.DRL );
+        kbuilder.add( ResourceFactory.newClassPathResource( "test_LogicalInsertionsBacking.drl", getClass() ), ResourceType.DRL );
         Collection<KnowledgePackage> kpkgs = kbuilder.getKnowledgePackages();
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
@@ -269,7 +269,7 @@ public class TruthMaintenanceTest extends TestCase {
 
     public void testLogicalInsertionsSelfreferencing() throws Exception {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( "test_LogicalInsertionsSelfreferencing.drl", getClass() ), KnowledgeType.DRL );
+        kbuilder.add( ResourceFactory.newClassPathResource( "test_LogicalInsertionsSelfreferencing.drl", getClass() ), ResourceType.DRL );
         Collection<KnowledgePackage> kpkgs = kbuilder.getKnowledgePackages();
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
@@ -311,7 +311,7 @@ public class TruthMaintenanceTest extends TestCase {
 
     public void testLogicalInsertionsLoop() throws Exception {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( "test_LogicalInsertionsLoop.drl", getClass() ), KnowledgeType.DRL );
+        kbuilder.add( ResourceFactory.newClassPathResource( "test_LogicalInsertionsLoop.drl", getClass() ), ResourceType.DRL );
         Collection<KnowledgePackage> kpkgs = kbuilder.getKnowledgePackages();
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
@@ -791,7 +791,7 @@ public class TruthMaintenanceTest extends TestCase {
         // TODO JBRULES-1804
         
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( "test_LogicalInsertionsModifySameRuleGivesDifferentLogicalInsertion.drl", getClass() ), KnowledgeType.DRL );
+        kbuilder.add( ResourceFactory.newClassPathResource( "test_LogicalInsertionsModifySameRuleGivesDifferentLogicalInsertion.drl", getClass() ), ResourceType.DRL );
         Collection<KnowledgePackage> pkgs = kbuilder.getKnowledgePackages();
 
         KnowledgeBase kbase = getKnowledgeBase();

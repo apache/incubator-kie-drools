@@ -19,7 +19,7 @@ import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.KnowledgeType;
+import org.drools.builder.ResourceType;
 import org.drools.compiler.PackageBuilder;
 import org.drools.definition.KnowledgePackage;
 import org.drools.io.ResourceFactory;
@@ -56,9 +56,9 @@ public class DslTest extends TestCase {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
         kbuilder.add( ResourceFactory.newClassPathResource( "test_expander.dsl", getClass() ),
-                              KnowledgeType.DSL );        
+                              ResourceType.DSL );        
         kbuilder.add( ResourceFactory.newClassPathResource( "rule_with_expander_dsl.dslr", getClass() ) ,
-                              KnowledgeType.DSLR );
+                              ResourceType.DSLR );
 
         assertFalse( kbuilder.hasErrors() );
 
@@ -99,9 +99,9 @@ public class DslTest extends TestCase {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();        
         
         kbuilder.add( ResourceFactory.newClassPathResource( "test_expander.dsl", getClass() ),
-                              KnowledgeType.DSL );        
+                              ResourceType.DSL );        
         kbuilder.add( ResourceFactory.newClassPathResource( "rule_with_expander_dsl_more.dslr", getClass() ) ,
-                              KnowledgeType.DSLR );        
+                              ResourceType.DSLR );        
 
         assertFalse( kbuilder.hasErrors() );
 
@@ -158,9 +158,9 @@ public class DslTest extends TestCase {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
         kbuilder.add( ResourceFactory.newClassPathResource( "test_expander.dsl", getClass() ),
-                              KnowledgeType.DSL );        
+                              ResourceType.DSL );        
         kbuilder.add( ResourceFactory.newReaderResource( new StringReader( DSL)  ) ,
-                              KnowledgeType.DSLR );  
+                              ResourceType.DSLR );  
 
         assertFalse( kbuilder.hasErrors() ); // trying to expand Cheese() pattern
 
@@ -188,9 +188,9 @@ public class DslTest extends TestCase {
     public void testDSLWithIndividualConstraintMappings() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();        
         kbuilder.add( ResourceFactory.newClassPathResource( "test_dslWithIndividualConstraints.dsl", getClass() ),
-                              KnowledgeType.DSL );        
+                              ResourceType.DSL );        
         kbuilder.add( ResourceFactory.newClassPathResource( "test_dslWithIndividualConstraints.dslr", getClass() ) ,
-                              KnowledgeType.DSLR );         
+                              ResourceType.DSLR );         
 
         assertFalse( kbuilder.hasErrors() );
 

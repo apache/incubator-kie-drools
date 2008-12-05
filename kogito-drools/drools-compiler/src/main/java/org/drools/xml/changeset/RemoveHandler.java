@@ -6,7 +6,7 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import org.drools.ChangeSet;
-import org.drools.builder.KnowledgeType;
+import org.drools.builder.ResourceType;
 import org.drools.io.Resource;
 import org.drools.io.impl.ChangeSetImpl;
 import org.drools.io.impl.ClassPathResource;

@@ -3,7 +3,7 @@ package org.drools.xml.changeset;
 import java.util.Collection;
 import java.util.HashSet;
 
-import org.drools.builder.KnowledgeType;
+import org.drools.builder.ResourceType;
 import org.drools.io.InternalResource;
 import org.drools.io.Resource;
 import org.drools.io.impl.ClassPathResource;
@@ -62,7 +62,7 @@ public class ResourceHandler extends BaseAbstractHandler
             resource = new UrlResource( src );
         }
         
-        resource.setKnowledgeType( KnowledgeType.valueOf( type ) );
+        resource.setResourceType( ResourceType.valueOf( type ) );
         
         return resource;
     }

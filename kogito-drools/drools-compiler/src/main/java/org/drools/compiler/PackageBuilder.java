@@ -43,7 +43,7 @@ import org.drools.base.ClassFieldAccessor;
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
 import org.drools.builder.DecisionTableConfiguration;
-import org.drools.builder.KnowledgeType;
+import org.drools.builder.ResourceType;
 import org.drools.builder.ResourceConfiguration;
 import org.drools.common.InternalRuleBase;
 import org.drools.commons.jci.problems.CompilationProblem;
@@ -448,38 +448,38 @@ public class PackageBuilder {
     }
 
     public void addKnowledgeResource(Resource resource,
-                                     KnowledgeType type,
+                                     ResourceType type,
                                      ResourceConfiguration configuration) {
         try {
             switch ( type ) {
                 case DRL : {
-                    ((InternalResource)resource).setKnowledgeType( type );
+                    ((InternalResource)resource).setResourceType( type );
                     addPackageFromDrl( resource );
                     break;
 
                 }
                 case DSLR : {
-                    ((InternalResource)resource).setKnowledgeType( type );
+                    ((InternalResource)resource).setResourceType( type );
                     addPackageFromDslr( resource );
                     break;
                 }
                 case DSL : {
-                    ((InternalResource)resource).setKnowledgeType( type );
+                    ((InternalResource)resource).setResourceType( type );
                     addDsl( resource );
                     break;
                 }
                 case XDRL : {
-                    ((InternalResource)resource).setKnowledgeType( type );
+                    ((InternalResource)resource).setResourceType( type );
                     addPackageFromXml( resource );
                     break;
                 }
                 case DRF : {
-                    ((InternalResource)resource).setKnowledgeType( type );
+                    ((InternalResource)resource).setResourceType( type );
                     addProcessFromXml( resource );
                     break;
                 }
                 case DTABLE : {
-                    ((InternalResource)resource).setKnowledgeType( type );
+                    ((InternalResource)resource).setResourceType( type );
                     DecisionTableConfiguration dtableConfiguration = (DecisionTableConfiguration) configuration;
 
                     String string = DecisionTableFactory.loadFromInputStream( resource.getInputStream(),
@@ -495,7 +495,7 @@ public class PackageBuilder {
                     break;
                 }
                 case ChangeSet : {
-                    ((InternalResource)resource).setKnowledgeType( type );
+                    ((InternalResource)resource).setResourceType( type );
                     XmlChangeSetReader reader = new XmlChangeSetReader( this.configuration.getSemanticModules() );
                     if ( resource instanceof ClassPathResource ) {
                         reader.setClassLoader( ((ClassPathResource )resource).getClassLoader() );
@@ -511,11 +511,11 @@ public class PackageBuilder {
                         if ( iNestedResourceResource.isDirectory() ) {
                             this.resourceDirectories.add( iNestedResourceResource );
                             for ( Resource childResource : iNestedResourceResource.listResources() ) {
-                                ((InternalResource)childResource).setKnowledgeType( iNestedResourceResource.getKnowledgeType() );
-                                addKnowledgeResource( childResource, iNestedResourceResource.getKnowledgeType(), iNestedResourceResource.getConfiguration() );        
+                                ((InternalResource)childResource).setResourceType( iNestedResourceResource.getResourceType() );
+                                addKnowledgeResource( childResource, iNestedResourceResource.getResourceType(), iNestedResourceResource.getConfiguration() );        
                             }
                         } else {
-                            addKnowledgeResource( iNestedResourceResource, iNestedResourceResource.getKnowledgeType(), iNestedResourceResource.getConfiguration() );
+                            addKnowledgeResource( iNestedResourceResource, iNestedResourceResource.getResourceType(), iNestedResourceResource.getConfiguration() );
                         }
                     }
                 }

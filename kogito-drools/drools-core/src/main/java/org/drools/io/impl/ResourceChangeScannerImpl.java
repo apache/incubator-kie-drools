@@ -105,7 +105,7 @@ public class ResourceChangeScannerImpl
                 if ( !this.resources.containsKey( child ) ) {
                     System.out.println( "found new file : " + child );
                     // child is new
-                    ((InternalResource)child).setKnowledgeType( ((InternalResource)resource).getKnowledgeType() );
+                    ((InternalResource)child).setResourceType( ((InternalResource)resource).getResourceType() );
                     Set<ResourceChangeNotifier> notifiers = this.resources.get( resource ); // get notifiers for this directory
                     for ( ResourceChangeNotifier notifier : notifiers ) {
                         ChangeSetImpl changeSet = (ChangeSetImpl) notifications.get( notifier );

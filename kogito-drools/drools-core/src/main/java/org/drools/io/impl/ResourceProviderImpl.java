@@ -17,12 +17,15 @@ public class ResourceProviderImpl
     private ResourceChangeNotifier notifier;
     private ResourceChangeScanner  scanner;
     private Object                 lock = new Object();
-    private Thread                 thread;
+    private Thread                 scannerThread;
+    private Thread                 notifierThread;
 
     public ResourceChangeNotifier getResourceChangeNotifierService() {
         synchronized ( this.lock ) {
             if ( this.notifier == null ) {
                 this.notifier = new ResourceChangeNotifierImpl();
+                this.notifierThread = new Thread( (ResourceChangeScannerImpl) this.notifier );
+                //this.scannerThread.start();                
             }
             return this.notifier;
         }
@@ -32,8 +35,8 @@ public class ResourceProviderImpl
         synchronized ( this.lock ) {
             if ( scanner == null ) {
                 this.scanner = new ResourceChangeScannerImpl( );
-                this.thread = new Thread( (ResourceChangeScannerImpl) this.scanner );
-                this.thread.start();
+                this.scannerThread = new Thread( (ResourceChangeScannerImpl) this.scanner );
+                //this.scannerThread.start();
             }
             return this.scanner;
         }

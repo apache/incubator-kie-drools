@@ -27,7 +27,7 @@ import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.KnowledgeType;
+import org.drools.builder.ResourceType;
 import org.drools.common.DefaultAgenda;
 import org.drools.common.InternalWorkingMemoryActions;
 import org.drools.common.RuleFlowGroupImpl;
@@ -516,7 +516,7 @@ public class ExecutionFlowControlTest extends TestCase {
 
     public void testAgendaGroups() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( "test_AgendaGroups.drl", getClass() ), KnowledgeType.DRL );
+        kbuilder.add( ResourceFactory.newClassPathResource( "test_AgendaGroups.drl", getClass() ), ResourceType.DRL );
 
         assertFalse( kbuilder.hasErrors() );
         
