@@ -1,10 +1,13 @@
 package org.drools.io.impl;
 
+import java.io.Externalizable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.io.Reader;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -26,11 +29,15 @@ import org.drools.util.StringUtils;
 
 public class ClassPathResource extends BaseResource 
     implements
-    InternalResource {
+    InternalResource, Externalizable  {
     private String      path;
     private ClassLoader classLoader;
     private Class       clazz;
     private long        lastRead;
+    
+    public ClassPathResource() {
+        
+    }
 
     public ClassPathResource(String path) {
         this( path,
@@ -62,6 +69,15 @@ public class ClassPathResource extends BaseResource
         this.clazz = clazz;
         this.classLoader = classLoader;
     }
+    
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject( this.path );
+    }
+
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        this.path = (String) in.readObject();
+    }    
 
     /**
      * This implementation opens an InputStream for the given class path resource.
@@ -179,6 +195,10 @@ public class ClassPathResource extends BaseResource
         throw new RuntimeException( "This Resource cannot be listed, or is not a directory" );
     }    
 
+    public ClassLoader getClassLoader() {
+        return this.classLoader;
+    }
+    
     public boolean equals(Object object) {
         if ( object == null || !(object instanceof ClassPathResource) ) {
             return false;

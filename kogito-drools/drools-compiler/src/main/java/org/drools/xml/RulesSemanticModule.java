@@ -29,7 +29,7 @@ public class RulesSemanticModule extends DefaultSemanticModule
     implements
     SemanticModule {
     public RulesSemanticModule() {
-        super( "http://drools.org/drools-4.0" );
+        super( "http://drools.org/drools-5.0" );
 
         addHandler( "package",
                     new PackageHandler() );

@@ -32,6 +32,7 @@ import org.drools.compiler.PackageBuilder.RuleErrorHandler;
 import org.drools.compiler.PackageBuilder.RuleInvokerErrorHandler;
 import org.drools.compiler.PackageBuilder.SrcErrorHandler;
 import org.drools.definition.process.Process;
+import org.drools.io.InternalResource;
 import org.drools.io.Resource;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
@@ -591,7 +592,9 @@ public class JavaDialect
 
         Function function = new Function( functionDescr.getName(),
                                           this.ID );
-        function.setResource( resource );
+        if ( ((InternalResource)resource).hasURL() ) {
+            function.setResource( resource );
+        }
         this.pkg.addFunction( function );
 
         final String functionSrc = getFunctionBuilder().build( this.pkg,

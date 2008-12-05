@@ -1,10 +1,13 @@
 package org.drools.io.impl;
 
+import java.io.Externalizable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.io.Reader;
 import java.net.URL;
 import java.util.ArrayList;
@@ -20,10 +23,13 @@ import org.drools.util.StringUtils;
  * Borrowed gratuitously from Spring under ASL2.0.
  *
  */
-public class FileSystemResource  extends BaseResource implements InternalResource {
+public class FileSystemResource  extends BaseResource implements InternalResource, Externalizable {
     private File file;
     private long lastRead = -1;
-    private boolean FromDirectory;
+
+    public FileSystemResource() {
+        
+    }
     
     /**
      * Create a new FileSystemResource from a File handle.
@@ -41,6 +47,15 @@ public class FileSystemResource  extends BaseResource implements InternalResourc
             throw new IllegalArgumentException( "File must not be null" );
         }
         this.file = new File( StringUtils.cleanPath(file.getPath()) );
+    }
+    
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject( this.file );
+    }
+
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        this.file = (File) in.readObject();
     }
 
     /**

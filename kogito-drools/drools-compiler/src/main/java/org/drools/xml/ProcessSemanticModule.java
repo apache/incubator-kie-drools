@@ -37,7 +37,7 @@ import org.drools.xml.processes.WorkItemNodeHandler;
 
 public class ProcessSemanticModule extends DefaultSemanticModule implements SemanticModule {    
     public ProcessSemanticModule() {
-        super ( "http://drools.org/drools-4.0/process" );
+        super ( "http://drools.org/drools-5.0/process" );
 
         addHandler( "process",
                            new ProcessHandler() );

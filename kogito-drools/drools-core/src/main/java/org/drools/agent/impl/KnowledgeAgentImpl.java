@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseChangeSet;
+import org.drools.ChangeSet;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.RuleBase;
 import org.drools.agent.KnowledgeAgent;
@@ -72,7 +72,7 @@ public class KnowledgeAgentImpl
                 
                 for ( Rule rule : pkg.getRules() ) {
                     Resource resource = rule.getResource();
-                    if ( resource == null || !resource.hasURL() ) {
+                    if ( resource == null || !((InternalResource)resource).hasURL() ) {
                         continue;
                     }
                     ResourceMapping mapping = this.resources.get( resource );
@@ -89,7 +89,7 @@ public class KnowledgeAgentImpl
 
                 for ( Process process : pkg.getRuleFlows().values() ) {
                     Resource resource = ((org.drools.process.core.Process) process).getResource();
-                    if ( resource == null || !resource.hasURL() ) {
+                    if ( resource == null || !((InternalResource)resource).hasURL() ) {
                         continue;
                     }
                     ResourceMapping mapping = this.resources.get( resource );
@@ -106,7 +106,7 @@ public class KnowledgeAgentImpl
 
                 for ( TypeDeclaration typeDeclaration : pkg.getTypeDeclarations().values() ) {
                     Resource resource = typeDeclaration.getResource();
-                    if ( resource == null || !resource.hasURL() ) {
+                    if ( resource == null || !((InternalResource)resource).hasURL() ) {
                         continue;
                     }
                     ResourceMapping mapping = this.resources.get( resource );
@@ -123,7 +123,7 @@ public class KnowledgeAgentImpl
 
                 for ( Function function : pkg.getFunctions().values() ) {
                     Resource resource = function.getResource();
-                    if ( resource == null || !resource.hasURL() ) {
+                    if ( resource == null || !((InternalResource)resource).hasURL() ) {
                         continue;
                     }
                     ResourceMapping mapping = this.resources.get( resource );
@@ -163,7 +163,7 @@ public class KnowledgeAgentImpl
     //        }
     //    }
 
-    public void resourceChanged(KnowledgeBaseChangeSet changeSet) {
+    public void resourceChanged(ChangeSet changeSet) {
         // for now we assume newIntance only, so just blow away the mappings and knowledgedefinition sets.
         synchronized ( this.resources ) {
             // first remove the unneeded resources        

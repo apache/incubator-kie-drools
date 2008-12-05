@@ -1,12 +1,15 @@
-package org.drools.xml.composition;
+package org.drools.xml.changeset;
 
 import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 
+import org.drools.ChangeSet;
 import org.drools.builder.KnowledgeType;
 import org.drools.io.Resource;
+import org.drools.io.impl.ChangeSetImpl;
 import org.drools.io.impl.ClassPathResource;
-import org.drools.io.impl.KnowledgeComposition;
 import org.drools.io.impl.KnowledgeResource;
 import org.drools.io.impl.UrlResource;
 import org.drools.util.StringUtils;
@@ -17,18 +20,18 @@ import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-public class ResourceHandler extends BaseAbstractHandler
+public class AddHandler extends BaseAbstractHandler
     implements
     Handler {
     
-    public ResourceHandler() {
+    public AddHandler() {
         if ( (this.validParents == null) && (this.validPeers == null) ) {
             this.validParents = new HashSet(1);
-            this.validParents.add( KnowledgeComposition.class );
+            this.validParents.add( ChangeSet.class );
 
             this.validPeers = new HashSet(2);
             this.validPeers.add( null );
-            this.validPeers.add( KnowledgeResource.class );
+            this.validPeers.add( Collection.class );
 
             this.allowNesting = true;
         }        
@@ -41,23 +44,9 @@ public class ResourceHandler extends BaseAbstractHandler
         parser.startElementBuilder( localName,
                                     attrs );      
         
-        final KnowledgeComposition composition = (KnowledgeComposition) parser.getParent();   
+        final ChangeSet changeSet = (ChangeSet) parser.getParent();          
         
-        String src = attrs.getValue( "source" );
-        String type = attrs.getValue( "type" );
-        
-        emptyAttributeCheck( localName,
-                             "source",
-                             src,
-                             parser );
-        
-        emptyAttributeCheck( localName,
-                             "type",
-                             type,
-                             parser );        
-        KnowledgeResource part = new KnowledgeResource( src, KnowledgeType.valueOf( type ) );        
-        
-        return part;
+        return new ArrayList();
     }
 
     public Object end(String uri,
@@ -65,15 +54,15 @@ public class ResourceHandler extends BaseAbstractHandler
                       ExtensibleXmlParser parser) throws SAXException {
         final Element element = parser.endElementBuilder();
         
-        final KnowledgeComposition composition = (KnowledgeComposition) parser.getParent();
-        final KnowledgeResource part = ( KnowledgeResource ) parser.getCurrent();
-        composition.getResources().add( part );
-        return part;
+        final ChangeSetImpl changeSet = (ChangeSetImpl) parser.getParent();
+        final Collection add = ( Collection ) parser.getCurrent();
+        changeSet.setResourcesAdded( add );
+        return add;
     }
 
     
     public Class< ? > generateNodeFor() {
-        return KnowledgeResource.class;
+        return Collection.class;
     }
 
 }

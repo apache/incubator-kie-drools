@@ -7,7 +7,7 @@ public class XmlRuleFlowProcessDumper extends XmlWorkflowProcessDumper {
     private XmlRuleFlowProcessDumper() {
         super(
             "RuleFlow", 
-            "http://drools.org/drools-4.0/process",
+            "http://drools.org/drools-5.0/process",
             "drools-processes-4.0.xsd", 
             new ProcessSemanticModule()
         );

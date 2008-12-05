@@ -100,9 +100,9 @@ public class SubProcessTest extends TestCase {
 		PackageBuilder builder = new PackageBuilder();
 		Reader source = new StringReader(
 			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-			"<process xmlns=\"http://drools.org/drools-4.0/process\"\n" +
+			"<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
 			"         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
-			"         xs:schemaLocation=\"http://drools.org/drools-4.0/process drools-processes-4.0.xsd\"\n" +
+			"         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-4.0.xsd\"\n" +
 			"         type=\"RuleFlow\" name=\"ruleflow\" id=\"com.sample.ruleflow\" package-name=\"com.sample\" >\n" +
 			"\n" +
 			"  <header>\n" +
@@ -132,9 +132,9 @@ public class SubProcessTest extends TestCase {
 		builder.addRuleFlow(source);
 		source = new StringReader(
 			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-			"<process xmlns=\"http://drools.org/drools-4.0/process\"\n" +
+			"<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
 			"         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
-			"         xs:schemaLocation=\"http://drools.org/drools-4.0/process drools-processes-4.0.xsd\"\n" +
+			"         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-4.0.xsd\"\n" +
 			"         type=\"RuleFlow\" name=\"flow\" id=\"com.sample.subflow\" package-name=\"com.sample\" >\n" +
 			"\n" +
 			"  <header>\n" +

@@ -110,6 +110,8 @@ public class ExtensibleXmlParser extends DefaultHandler {
     
     private Document            document;
     private DocumentFragment    docFragment;
+    
+    private ClassLoader         classLoader;
 
     // ----------------------------------------------------------------------
     // Constructors
@@ -262,6 +264,14 @@ public class ExtensibleXmlParser extends DefaultHandler {
 
     public Object getData() {
         return this.data;
+    }       
+
+    public ClassLoader getClassLoader() {
+        return classLoader;
+    }
+
+    public void setClassLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
     }
 
     /**

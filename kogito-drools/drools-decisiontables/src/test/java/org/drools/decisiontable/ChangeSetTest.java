@@ -18,17 +18,16 @@ import org.drools.builder.KnowledgeType;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.io.ResourceFactory;
 import org.drools.io.impl.ClassPathResource;
-import org.drools.io.impl.KnowledgeComposition;
 import org.drools.io.impl.KnowledgeResource;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.xml.XmlCompositionReader;
+import org.drools.xml.XmlChangeSetReader;
 import org.xml.sax.SAXException;
 
-public class CompositionTest extends TestCase {
+public class ChangeSetTest extends TestCase {
     
     public void testIntegregation() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( "composition1Test.xml", getClass()), KnowledgeType.COMPOSITION );
+        kbuilder.add( ResourceFactory.newClassPathResource( "changeset1Test.xml", getClass()), KnowledgeType.ChangeSet );
         assertFalse( kbuilder.hasErrors() );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );

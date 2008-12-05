@@ -3,17 +3,17 @@ package org.drools.io.impl;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.drools.KnowledgeBaseChangeSet;
+import org.drools.ChangeSet;
 import org.drools.definition.KnowledgeDefinition;
 import org.drools.io.Resource;
 
-public class KnowledgeBaseChangeSetImpl implements KnowledgeBaseChangeSet {
+public class ChangeSetImpl implements ChangeSet {
     private Collection<Resource> resourcesRemoved = Collections.<Resource>emptyList();
     private Collection<Resource> resourcesAdded = Collections.<Resource>emptyList();
     private Collection<Resource> resourcesModified = Collections.<Resource>emptyList();    
     private Collection<KnowledgeDefinition> knowledgeDefinitionsRemoved = Collections.<KnowledgeDefinition>emptyList();
     
-    public KnowledgeBaseChangeSetImpl() {
+    public ChangeSetImpl() {
         
     }
     
