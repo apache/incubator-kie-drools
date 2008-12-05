@@ -1,6 +1,6 @@
 package org.drools.builder;
 
-public enum KnowledgeType {
+public enum ResourceType {
     /** Drools Rule Language */
     DRL,
 

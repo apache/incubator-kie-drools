@@ -20,5 +20,9 @@ public interface ResourceChangeNotifier {
 
     Collection<ResourceChangeMonitor> getResourceChangeMonitor();
     
-    public void publishKnowledgeBaseChangeSet(ChangeSet changeSet);
+    void publishKnowledgeBaseChangeSet(ChangeSet changeSet);
+    
+    void start();
+
+    void stop();    
 }

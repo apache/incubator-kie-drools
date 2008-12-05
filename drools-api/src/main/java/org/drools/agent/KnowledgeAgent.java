@@ -42,4 +42,6 @@ public interface KnowledgeAgent {
      *     The KnowledgeBase
      */
     KnowledgeBase getKnowledgeBase();
+    
+    void monitorResourceChangeEvents(boolean monitor);
 }
