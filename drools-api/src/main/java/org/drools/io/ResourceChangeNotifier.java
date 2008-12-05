@@ -2,7 +2,7 @@ package org.drools.io;
 
 import java.util.Collection;
 
-import org.drools.KnowledgeBaseChangeSet;
+import org.drools.ChangeSet;
 import org.drools.event.io.ResourceChangeListener;
 
 public interface ResourceChangeNotifier {
@@ -20,5 +20,5 @@ public interface ResourceChangeNotifier {
 
     Collection<ResourceChangeMonitor> getResourceChangeMonitor();
     
-    public void publishKnowledgeBaseChangeSet(KnowledgeBaseChangeSet changeSet);
+    public void publishKnowledgeBaseChangeSet(ChangeSet changeSet);
 }

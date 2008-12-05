@@ -2,6 +2,8 @@ package org.drools.builder;
 
 import java.util.Properties;
 
+import org.drools.KnowledgeBase;
+
 /**
  * KnowledgeBuilderProvider is used by the KnowledgeBuilderFacotry to "provide" it's concrete implementation.
  * 
@@ -55,4 +57,9 @@ public interface KnowledgeBuilderProvider {
      *     The KnowledgeBuilder
      */
     KnowledgeBuilder newKnowledgeBuilder(KnowledgeBuilderConfiguration conf);
+
+    public KnowledgeBuilder newKnowledgeBuilder(KnowledgeBase kbase);
+
+    public KnowledgeBuilder newKnowledgeBuilder(KnowledgeBase kbase,
+                                                KnowledgeBuilderConfiguration conf);
 }

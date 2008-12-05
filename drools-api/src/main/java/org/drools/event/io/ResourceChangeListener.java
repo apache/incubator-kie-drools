@@ -3,8 +3,8 @@
  */
 package org.drools.event.io;
 
-import org.drools.KnowledgeBaseChangeSet;
+import org.drools.ChangeSet;
 
 public interface ResourceChangeListener {
-    void resourceChanged(KnowledgeBaseChangeSet changeSet);
+    void resourceChanged(ChangeSet changeSet);
 }
