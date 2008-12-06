@@ -7,7 +7,6 @@ import java.io.Reader;
 import javax.xml.parsers.SAXParser;
 
 import org.drools.ChangeSet;
-import org.drools.lang.descr.PackageDescr;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 

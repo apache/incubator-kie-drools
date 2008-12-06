@@ -638,6 +638,8 @@ public class PackageBuilder {
             }
         }
     }
+    
+    
 
     /**
      * This checks to see if it should all be in the one namespace.
@@ -740,7 +742,6 @@ public class PackageBuilder {
         // Merge imports
         final Map<String, ImportDeclaration> imports = pkg.getImports();
         imports.putAll( newPkg.getImports() );
-        pkg.setResourceDirectories( newPkg.getResourceDirectories() );
 
         String lastType = null;
         try {
@@ -1177,7 +1178,6 @@ public class PackageBuilder {
         if ( hasErrors() && pkg != null ) {
             pkg.setError( getErrors().toString() );
         }
-        pkg.setResourceDirectories( this.resourceDirectories );
         return pkg;
     }
 
@@ -1195,7 +1195,6 @@ public class PackageBuilder {
                 pkg.setError( errors );
             }
             pkgs[i++] = pkg;
-            pkg.setResourceDirectories( this.resourceDirectories );
         }
 
         return pkgs;

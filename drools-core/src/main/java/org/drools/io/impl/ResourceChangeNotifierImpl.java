@@ -72,6 +72,8 @@ public class ResourceChangeNotifierImpl
             if ( listeners == null ) {
                 return;
             }
+            
+            listeners.remove( listeners );
     
             if ( listeners.isEmpty() ) {
                 this.subscriptions.remove( resource );
