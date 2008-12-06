@@ -160,13 +160,7 @@ public class ChangeSetTest extends TestCase {
         output.write( xml );
         output.close();
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newUrlResource( fxml.toURI().toURL() ),
-                      ResourceType.ChangeSet );
-        assertFalse( kbuilder.hasErrors() );
-
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         ResourceChangeScannerConfiguration sconf = ResourceFactory.getResourceChangeScannerService().newResourceChangeScannerConfiguration();
         sconf.setProperty( "drools.resource.scanner.interval",
@@ -174,13 +168,17 @@ public class ChangeSetTest extends TestCase {
         ResourceFactory.getResourceChangeScannerService().configure( sconf );
 
         KnowledgeAgentConfiguration aconf = KnowledgeAgentFactory.newKnowledgeAgentConfiguration();
-        aconf.setProperty( "drools.agent.scanResources",
+        aconf.setProperty( "drools.agent.scanDirectories",
                            "true" );
+        aconf.setProperty( "drools.agent.scanResources",
+                            "true" );        
         aconf.setProperty( "drools.agent.newInstance",
                            "true" );
         KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent( "test agent",
                                                                          kbase,
                                                                          aconf );
+        
+        kagent.applyChangeSet( ResourceFactory.newUrlResource( fxml.toURI().toURL() ) );
 
         StatefulKnowledgeSession ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
         List list = new ArrayList();
@@ -217,6 +215,7 @@ public class ChangeSetTest extends TestCase {
 
         assertEquals( 2,
                       list.size() );
+
         assertTrue( list.contains( "rule3" ) );
         assertTrue( list.contains( "rule2" ) );
         kagent.monitorResourceChangeEvents( false );
@@ -280,13 +279,13 @@ public class ChangeSetTest extends TestCase {
         output.write( xml );
         output.close();
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newUrlResource( fxml.toURI().toURL() ),
-                      ResourceType.ChangeSet );
-        assertFalse( kbuilder.hasErrors() );
+//        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+//        kbuilder.add( ResourceFactory.newUrlResource( fxml.toURI().toURL() ),
+//                      ResourceType.ChangeSet );
+//        assertFalse( kbuilder.hasErrors() );
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        //kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         ResourceChangeScannerConfiguration sconf = ResourceFactory.getResourceChangeScannerService().newResourceChangeScannerConfiguration();
         sconf.setProperty( "drools.resource.scanner.interval",
@@ -294,14 +293,17 @@ public class ChangeSetTest extends TestCase {
         ResourceFactory.getResourceChangeScannerService().configure( sconf );
 
         KnowledgeAgentConfiguration aconf = KnowledgeAgentFactory.newKnowledgeAgentConfiguration();
-        aconf.setProperty( "drools.agent.scanResources",
+        aconf.setProperty( "drools.agent.scanDirectories",
                            "true" );
         aconf.setProperty( "drools.agent.newInstance",
                            "true" );
+        
         KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent( "test agent",
                                                                          kbase,
                                                                          aconf );
+        kagent.applyChangeSet( ResourceFactory.newUrlResource( fxml.toURI().toURL() ) );
 
+        Thread.sleep( 3000 ); // give it 2 seconds to detect and build the changes
         StatefulKnowledgeSession ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
         List list = new ArrayList();
         ksession.setGlobal( "list",

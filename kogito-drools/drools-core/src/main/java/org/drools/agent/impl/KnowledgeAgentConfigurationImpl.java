@@ -17,6 +17,7 @@ public class KnowledgeAgentConfigurationImpl
     KnowledgeAgentConfiguration {
 
     private boolean scanResources;
+    private boolean scanDirectories;
     private boolean monitorChangeSetEvents;
     private boolean newInstance;
 
@@ -40,7 +41,14 @@ public class KnowledgeAgentConfigurationImpl
 
         if ( name.equals( "drools.agent.monitorChangeSetEvents" ) ) {
             setMonitorChangeSetEvents( StringUtils.isEmpty( value ) ? true : Boolean.parseBoolean( value ) );
-        }  else if ( name.equals( "drools.agent.scanResources" ) ) {
+        }  else if ( name.equals( "drools.agent.scanDirectories" ) ) {
+            boolean bool = StringUtils.isEmpty( value ) ? true : Boolean.parseBoolean( value );
+            setScanDirectories(  bool );
+            if ( bool ) {
+                setScanResources( true );
+                setMonitorChangeSetEvents( true );
+            }            
+        } else if ( name.equals( "drools.agent.scanResources" ) ) {
             boolean bool = StringUtils.isEmpty( value ) ? true : Boolean.parseBoolean( value );
             setScanResources(  bool );
             if ( bool ) {
@@ -57,11 +65,13 @@ public class KnowledgeAgentConfigurationImpl
             return null;
         }
 
-        if ( name.equals( "drools.agent.scanResources " ) ) {
+        if ( name.equals( "drools.agent.scanResources" ) ) {
             return Boolean.toString( this.scanResources );
-        } else if ( name.equals( "drools.agent.monitorChangeSetEvents " ) ) {
+        } else if ( name.equals( "drools.agent.scanDirectories" ) ) {
+            return Boolean.toString( this.scanDirectories );
+        } else if ( name.equals( "drools.agent.monitorChangeSetEvents" ) ) {
             return Boolean.toString( this.monitorChangeSetEvents );
-        } else if ( name.equals( "drools.agent.newInstance " ) ) {
+        } else if ( name.equals( "drools.agent.newInstance" ) ) {
             return Boolean.toString( this.newInstance );
         }
         
@@ -76,7 +86,13 @@ public class KnowledgeAgentConfigurationImpl
         this.scanResources = scanResources;
     }
     
-    
+    public boolean isScanDirectories() {
+        return scanDirectories;
+    }
+
+    public void setScanDirectories(boolean scanDirectories) {
+        this.scanDirectories = scanDirectories;
+    }
 
     public boolean isMonitorChangeSetEvents() {
         return monitorChangeSetEvents;

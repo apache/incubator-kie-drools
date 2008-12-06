@@ -84,10 +84,6 @@ public class ResourceChangeScannerImpl
         System.out.println( "attempt scan : " + this.resources.size() );
 
         synchronized ( this.resources ) {
-
-            if ( this.resources.size() > 0 ) {
-                System.out.println( "x" );
-            }
             Map<ResourceChangeNotifier, ChangeSet> notifications = new HashMap<ResourceChangeNotifier, ChangeSet>();
 
             List<Resource> removed = new ArrayList<Resource>();

@@ -97,9 +97,7 @@ public class Package
      * This will keep a summary error message as to why this package is not
      * valid
      */
-    private String                         errorSummary;
-    
-    private Set<Resource> resourceDirectories = Collections.emptySet();  
+    private String                         errorSummary;    
 
     // ------------------------------------------------------------
     // Constructors
@@ -168,7 +166,6 @@ public class Package
         out.writeBoolean( this.valid );
         out.writeObject( this.rules );
         out.writeObject( this.classFieldAccessorStore );
-        out.writeObject( this.resourceDirectories );
         // writing the whole stream as a byte array
         if ( !isDroolsStream ) {
             bytes.flush();
@@ -210,7 +207,6 @@ public class Package
         this.valid = in.readBoolean();
         this.rules = (Map) in.readObject();
         this.classFieldAccessorStore = (ClassFieldAccessorStore) in.readObject();
-        this.resourceDirectories = (Set<Resource>) in.readObject();
         if ( !isDroolsStream ) {
             in.close();
         }
@@ -495,13 +491,6 @@ public class Package
         return this.errorSummary;
     }
     
-    public Set<Resource> getResourceDirectories() {
-        return resourceDirectories;
-    }
-
-    public void setResourceDirectories(Set<Resource> resourceDirectories) {
-        this.resourceDirectories = resourceDirectories;
-    }    
 
     public boolean equals(final Object object) {
         if ( this == object ) {
