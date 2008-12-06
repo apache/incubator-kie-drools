@@ -1147,7 +1147,9 @@ public class PackageBuilder {
 
         this.results.addAll( context.getErrors() );
 
-        context.getRule().setResource( resource );
+        if ( (( InternalResource ) resource).hasURL() )  {
+            context.getRule().setResource( resource );
+        }
 
         context.getDialect().addRule( context );
 
