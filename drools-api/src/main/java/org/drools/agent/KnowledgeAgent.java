@@ -1,6 +1,7 @@
 package org.drools.agent;
 
 import org.drools.KnowledgeBase;
+import org.drools.io.Resource;
 
 /**
  * <p>
@@ -44,4 +45,6 @@ public interface KnowledgeAgent {
     KnowledgeBase getKnowledgeBase();
     
     void monitorResourceChangeEvents(boolean monitor);
+    
+    void applyChangeSet(Resource resource);
 }
