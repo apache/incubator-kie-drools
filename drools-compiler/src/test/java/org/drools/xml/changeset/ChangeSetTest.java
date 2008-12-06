@@ -9,6 +9,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import junit.framework.TestCase;
@@ -351,6 +352,10 @@ public class ChangeSetTest extends TestCase {
         assertTrue( list.contains( "rule3" ) );
         
         kagent.monitorResourceChangeEvents( false );
+    }
+    
+    public static class FileManager {
+        private Set<File> files;
     }
 
 }
