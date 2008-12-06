@@ -50,29 +50,31 @@ public class MannersBenchmark {
         final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( pkgs );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-
-        String filename;
-        if ( args.length != 0 ) {
-            String arg = args[0];
-            filename = arg;
-        } else {
-            filename = "manners128.dat";
+        for ( int i = 0; i < 10; i++ ) {
+            StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+    
+            String filename;
+            if ( args.length != 0 ) {
+                String arg = args[0];
+                filename = arg;
+            } else {
+                filename = "manners128.dat";
+            }
+    
+            InputStream is = MannersBenchmark.class.getResourceAsStream( filename );
+            List list = getInputObjects( is );
+            for ( Iterator it = list.iterator(); it.hasNext(); ) {
+                Object object = it.next();
+                ksession.insert( object );
+            }
+    
+            ksession.insert( new Count( 1 ) );
+    
+            long start = System.currentTimeMillis();
+            ksession.fireAllRules();
+            System.err.println( System.currentTimeMillis() - start );
+            ksession.dispose();
         }
-
-        InputStream is = MannersBenchmark.class.getResourceAsStream( filename );
-        List<Object> list = getInputObjects( is );
-        for ( Iterator<Object> it = list.iterator(); it.hasNext(); ) {
-            Object object = it.next();
-            ksession.insert( object );
-        }
-
-        ksession.insert( new Count( 1 ) );
-
-        long start = System.currentTimeMillis();
-        ksession.fireAllRules();
-        System.err.println( System.currentTimeMillis() - start );
-        ksession.dispose();
     }
 
     /**
