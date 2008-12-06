@@ -592,7 +592,7 @@ public class JavaDialect
 
         Function function = new Function( functionDescr.getName(),
                                           this.ID );
-        if ( ((InternalResource)resource).hasURL() ) {
+        if ( resource != null && ((InternalResource)resource).hasURL() ) {
             function.setResource( resource );
         }
         this.pkg.addFunction( function );

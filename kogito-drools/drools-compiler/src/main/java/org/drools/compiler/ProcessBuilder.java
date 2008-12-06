@@ -92,7 +92,7 @@ public class ProcessBuilder {
     }
 
     public void buildProcess(final Process process, Resource resource) {
-        if ( ((InternalResource)resource).hasURL() ) {
+        if ( resource != null && ((InternalResource)resource).hasURL() ) {
             ((org.drools.process.core.Process) process).setResource( resource );
         }
         boolean hasErrors = false;
