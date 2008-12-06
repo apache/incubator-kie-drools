@@ -2,9 +2,9 @@
   <name>drools-dataloaders-smooks</name>
   <comment>A rule production system</comment>
   <projects>
+    <project>drools-api</project>
     <project>drools-compiler</project>
     <project>drools-core</project>
-    <project>drools-api</project>
   </projects>
   <buildSpec>
     <buildCommand>
