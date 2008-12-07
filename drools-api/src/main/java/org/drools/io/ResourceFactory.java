@@ -4,18 +4,46 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.Reader;
 import java.net.URL;
-import java.util.Properties;
 
 import org.drools.ProviderInitializationException;
 
+/**
+ * <p>
+ * Convenience Factory to provide Resource implementations for the desired IO resource.
+ * </p>
+ * 
+ * <pre>
+ * KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+ * kbuilder.add( ResourceFactory.newUrlResource( "htp://www.domain.org/myflow.drf" ),
+ *                ResourceType.DRF );
+ * </pre
+ * 
+ * <pre>
+ * KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+ * kbuilder.add( ResourceFactory.newClassPathResource( "htp://www.domain.org/myrules.drl", getClass() ),
+ *               ResourceType.DRL );
+ * </pre
+ * 
+ *
+ */
 public class ResourceFactory {
     private static ResourceProvider resourceProvider;
        
     
+    /**
+     * A Service that can be started, to provide notifications of changed Resources.
+     * 
+     * @return
+     */
     public  static ResourceChangeNotifier getResourceChangeNotifierService() { 
         return getResourceProvider().getResourceChangeNotifierService();
     }       
 
+    /**
+     * As service, that scans the disk for changes, this acts as a Monitor for the Notifer service.
+     * 
+     * @return
+     */
     public static ResourceChangeScanner getResourceChangeScannerService() {
         return getResourceProvider().getResourceChangeScannerService();
     }
