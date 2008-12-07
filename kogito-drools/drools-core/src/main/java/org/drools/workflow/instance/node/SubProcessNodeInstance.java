@@ -88,7 +88,9 @@ public class SubProcessNodeInstance extends EventBasedNodeInstance implements Ev
             ProcessInstance processInstance = (ProcessInstance)
                 ((ProcessInstance) getProcessInstance()).getWorkingMemory()
                     .getProcessInstance(processInstanceId);
-            processInstance.setState(ProcessInstance.STATE_ABORTED);
+            if (processInstance != null) {
+            	processInstance.setState(ProcessInstance.STATE_ABORTED);
+            }
         }
     }
     
