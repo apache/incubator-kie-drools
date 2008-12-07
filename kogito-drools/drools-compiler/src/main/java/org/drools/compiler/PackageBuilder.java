@@ -511,6 +511,9 @@ public class PackageBuilder {
                         if ( iNestedResourceResource.isDirectory() ) {
                             this.resourceDirectories.add( iNestedResourceResource );
                             for ( Resource childResource : iNestedResourceResource.listResources() ) {
+                                if ( ((InternalResource)childResource).isDirectory() ) {
+                                    continue;  // ignore sub directories
+                                }
                                 ((InternalResource)childResource).setResourceType( iNestedResourceResource.getResourceType() );
                                 addKnowledgeResource( childResource, iNestedResourceResource.getResourceType(), iNestedResourceResource.getConfiguration() );        
                             }

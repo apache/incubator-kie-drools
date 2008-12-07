@@ -114,39 +114,63 @@ public class KnowledgeAgentImpl
 
     public void processChangeSet(ChangeSet changeSet,
                                  ChangeSetState changeSetState) {
-        for ( Resource child : changeSet.getResourcesAdded() ) {
-            if ( ((InternalResource) child).getResourceType() == ResourceType.PKG ) {                               
-                changeSetState.pkgs.add( child );
-            } 
-            
-            ResourceMapping mapping = this.resources.get( child );
-            if ( mapping == null ) {
+        for ( Resource resource : changeSet.getResourcesAdded() ) {           
+            if ( ((InternalResource)resource).isDirectory() ) {
+                this.resourceDirectories.add( resource );
                 this.notifier.subscribeResourceChangeListener( this,
-                                                               child );
-                mapping = new ResourceMapping( child );
-                this.resources.put( child,
-                                    mapping );
-            } 
+                                                               resource );
+                // if it's a dir, subscribe it's children first
+                for ( Resource child : ((InternalResource)resource).listResources() ) {
+                    if ( ((InternalResource)child).isDirectory() ) {
+                        continue;  // ignore sub directories
+                    }
+                    ((InternalResource)child).setResourceType( ((InternalResource)resource).getResourceType() );
+                    ResourceMapping mapping = this.resources.get( child );
+                    if ( mapping == null ) {
+                        this.notifier.subscribeResourceChangeListener( this,
+                                                                       child );
+                        mapping = new ResourceMapping( child );
+                        this.resources.put( child,
+                                            mapping );
+                    }                     
+                }
+            } else {   
+                if ( ((InternalResource) resource).getResourceType() == ResourceType.PKG ) {                               
+                    changeSetState.pkgs.add( resource );
+                } else if ( ((InternalResource) resource).getResourceType() == ResourceType.ChangeSet ) {
+                    // @TODO
+                    continue;
+                }
+                
+                ResourceMapping mapping = this.resources.get( resource );
+                if ( mapping == null ) {
+                    this.notifier.subscribeResourceChangeListener( this,
+                                                                   resource );
+                    mapping = new ResourceMapping( resource );
+                    this.resources.put( resource,
+                                        mapping );
+                }       
+            }
         }
 
-        for ( Resource child : changeSet.getResourcesRemoved() ) {
-            if ( ((InternalResource) child).getResourceType() == ResourceType.ChangeSet ) {
-                processChangeSet( child,
+        for ( Resource resource : changeSet.getResourcesRemoved() ) {
+            if ( ((InternalResource) resource).getResourceType() == ResourceType.ChangeSet ) {
+                processChangeSet( resource,
                                   changeSetState );
-            } else if ( changeSetState.scanDirectories && ((InternalResource) child).isDirectory() ) {
-                this.resourceDirectories.remove( child );
+            } else if ( changeSetState.scanDirectories && ((InternalResource) resource).isDirectory() ) {
+                this.resourceDirectories.remove( resource );
                 this.notifier.unsubscribeResourceChangeListener( this,
-                                                                 child );
+                                                                 resource );
             } else {
-                this.resources.remove( child );
+                this.resources.remove( resource );
                 this.notifier.unsubscribeResourceChangeListener( this,
-                                                                 child );
+                                                                 resource );
             }
         }
 
         // are we going to need kbuilder to build these resources?
         for ( Resource resource : this.resources.keySet() ) {
-            if ( ((InternalResource) resource).getResourceType() != ResourceType.ChangeSet && ((InternalResource) resource).getResourceType() != ResourceType.PKG || changeSetState.scanDirectories && !((InternalResource) resource).isDirectory() ) {
+            if ( ((InternalResource) resource).getResourceType() != ResourceType.ChangeSet && ((InternalResource) resource).getResourceType() != ResourceType.PKG  ) {
                 changeSetState.needsKnowledgeBuilder = true;
                 break;
             }
@@ -346,6 +370,8 @@ public class KnowledgeAgentImpl
                                       ((InternalResource) resource).getResourceType() );
                     }
                 }
+                
+                System.err.println( kbuilder.getErrors() );
 
                 this.kbase = KnowledgeBaseFactory.newKnowledgeBase();
                 this.kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
