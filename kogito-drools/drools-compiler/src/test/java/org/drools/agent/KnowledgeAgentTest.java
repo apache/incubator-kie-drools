@@ -115,6 +115,10 @@ public class KnowledgeAgentTest extends TestCase {
         assertTrue( list.contains( "rule2" ) );
 
         list.clear();
+        
+        // have to sleep here as linux lastModified does not do milliseconds http://saloon.javaranch.com/cgi-bin/ubb/ultimatebb.cgi?ubb=get_topic&f=1&t=019789
+        Thread.sleep( 2000 );
+        
         rule1 = "";
         rule1 += "package org.drools.test\n";
         rule1 += "global java.util.List list\n";
