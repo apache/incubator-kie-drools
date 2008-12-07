@@ -30,7 +30,7 @@ be wired up to the factories at runtime. The Factories you will most commonly us
 A Typical example to load a rule resource.
 <pre>
 KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-kbuilder.addResource( ResourceFactory.newUrlResource( url ),
+kbuilder.add( ResourceFactory.newUrlResource( url ),
                       ResourceType.DRL );
 if ( kbuilder.hasErrors() ) {
     System.err.println( builder.getErrors().toString() );
@@ -51,7 +51,7 @@ ksession.dispose();
 A Typical example to load a process resource. Notice the ResourceType is changed, in accordance with the Resource type.
 <pre>
 KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-kbuilder.addResource( ResourceFactory.newUrlResource( url ),
+kbuilder.add( ResourceFactory.newUrlResource( url ),
                       ResourceType.DRF );
 if ( kbuilder.hasErrors() ) {
     System.err.println( builder.getErrors().toString() );
