@@ -11,7 +11,7 @@ import org.drools.io.Resource;
  * <p>
  * The KnowledgeBuilder is responsible for taking source files, such as a .drl file or an xls file,
  * and turning them into a KnowledgePackage of rule and process definitions which a KnowledgeBase
- * can consume. It uses the KnowledgeType enum to tell it the type of the resource it is being asked to build.
+ * can consume. It uses the ResourceType enum to tell it the type of the resource it is being asked to build.
  * </p>
  * 
  * <p>
@@ -32,7 +32,7 @@ import org.drools.io.Resource;
  * <pre>
  * KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
  * kbuilder.add( ResourceFactory.newUrlResource( "file://myrules.drl" ),
- *                       KnowledgeType.DRL);
+ *                       ResourceType.DRL);
  * assertFalse( kbuilder.hasErrors() );
  * KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
  * </pre>
@@ -46,7 +46,7 @@ import org.drools.io.Resource;
  * dtconf.setInputType( DecisionTableInputType.XLS );
  * dtconf.setWorksheetName( "Tables_2" );
  * kbuilder.add( ResourceFactory.newUrlResource( "file://IntegrationExampleTest.xls" ),
- *               KnowledgeType.DTABLE,
+ *               ResourceType.DTABLE,
                  dtconf );
  * assertFalse( kbuilder.hasErrors() );
  * KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
@@ -58,7 +58,7 @@ import org.drools.io.Resource;
  * <pre>
  * KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
  * kbuilder.add( ResourceFactory.newUrlResource( "file://myflow.rf" ),
- *               KnowledgeType.DRF);
+ *               ResourceType.DRF);
  * assertFalse( kbuilder.hasErrors() );
  * KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
  * </pre>
@@ -78,7 +78,7 @@ public interface KnowledgeBuilder
     ProcessBuilder {
 
     /**
-     * A a resource of the KnowledgeType from a given URL.
+     * A a resource of the ResourceType from a given URL.
      * 
      * @param url
      * @param type
@@ -87,7 +87,7 @@ public interface KnowledgeBuilder
              ResourceType type);
 
     /**
-    * A a resource of the KnowledgeType from a given URL, using the provided ResourceConfiguration.
+    * A a resource of the ResourceType from a given URL, using the provided ResourceConfiguration.
     * Currently only only decision tables use this, via the DecisionTableResourceConfiguration class.
     */
     void add(Resource resource,

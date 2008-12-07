@@ -31,7 +31,7 @@ A Typical example to load a rule resource.
 <pre>
 KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 kbuilder.addResource( ResourceFactory.newUrlResource( url ),
-                      KnowledgeType.DRL );
+                      ResourceType.DRL );
 if ( kbuilder.hasErrors() ) {
     System.err.println( builder.getErrors().toString() );
 }                     
@@ -48,11 +48,11 @@ ksession.dispose();
 </p>
 
 <p>
-A Typical example to load a process resource. Notice the KnowledgeType is changed, in accordance with the Resource type.
+A Typical example to load a process resource. Notice the ResourceType is changed, in accordance with the Resource type.
 <pre>
 KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 kbuilder.addResource( ResourceFactory.newUrlResource( url ),
-                      KnowledgeType.DRF );
+                      ResourceType.DRF );
 if ( kbuilder.hasErrors() ) {
     System.err.println( builder.getErrors().toString() );
 }                     

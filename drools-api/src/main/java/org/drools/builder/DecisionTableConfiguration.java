@@ -14,7 +14,7 @@ package org.drools.builder;
  * dtconf.setInputType( DecisionTableInputType.XLS );
  * dtconf.setWorksheetName( "Tables_2" );
  * kbuilder.add( ResourceFactory.newUrlResource( "file://IntegrationExampleTest.xls" ),
- *               KnowledgeType.DTABLE,
+ *               ResourceType.DTABLE,
  *               dtconf );
  * assertFalse( kbuilder.hasErrors() );
  * KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
