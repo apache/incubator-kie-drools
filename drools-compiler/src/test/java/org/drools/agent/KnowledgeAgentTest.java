@@ -6,18 +6,15 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
 import org.drools.io.ResourceChangeScannerConfiguration;
 import org.drools.io.ResourceFactory;
+import org.drools.io.impl.ResourceChangeScannerImpl;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.util.FileManager;
 
@@ -27,15 +24,17 @@ public class KnowledgeAgentTest extends TestCase {
     protected void setUp() throws Exception {        
         fileManager = new FileManager();
         fileManager.setUp();
+        ((ResourceChangeScannerImpl)ResourceFactory.getResourceChangeScannerService()).reset();
         ResourceFactory.getResourceChangeNotifierService().start();
         ResourceFactory.getResourceChangeScannerService().start();
     }
     
 
     protected void tearDown() throws Exception {
-        //fileManager.tearDown();
+        fileManager.tearDown();
         ResourceFactory.getResourceChangeNotifierService().stop();
         ResourceFactory.getResourceChangeScannerService().stop();
+        ((ResourceChangeScannerImpl)ResourceFactory.getResourceChangeScannerService()).reset();
     }
     
     public void testModifyFile() throws IOException,
