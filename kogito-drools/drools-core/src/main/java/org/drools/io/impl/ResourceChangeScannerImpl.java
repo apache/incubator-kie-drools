@@ -199,6 +199,11 @@ public class ResourceChangeScannerImpl
             this.resources.notify(); // notify wait, so that it will wait again
         }
     }
+    
+    public void reset() {
+        this.resources.clear();
+        this.directories.clear();
+    }
 
     private Thread           thread;
     private ProcessChangeSet scannerScheduler;
