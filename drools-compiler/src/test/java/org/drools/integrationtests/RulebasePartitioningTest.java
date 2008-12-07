@@ -46,6 +46,10 @@ public class RulebasePartitioningTest extends TestCase {
                                             config );
     }
     
+    public void dummyTest() {
+        // I've added this until edson stops sucking.
+    }
+    
     /**
      * Edson Sucks so I'm making this a @FIXME
      */
