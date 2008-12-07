@@ -117,6 +117,7 @@ public class UrlResource extends BaseResource
             // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4504473
             if ( "file".equals( url.getProtocol() ) ) {
                 File file = getFile();
+                System.out.println( "is file :" + file.lastModified() );
                 return file.lastModified();
             } else {
                 URLConnection conn = getURL().openConnection();
