@@ -72,7 +72,7 @@ public class KnowledgeBuilderTest extends TestCase {
 		
 		String str = "";
 		str += "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-		str += "<process xmlns=\"http://drools.org/drools-5.0/process\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\" xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-4.0.xsd\" ";
+		str += "<process xmlns=\"http://drools.org/drools-5.0/process\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\" xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\" ";
 		str += "         type=\"RuleFlow\" name=\"flow1\" id=\"0\" package-name=\"org.test1\" >";
 		str += "  <header/>\n";
 		str += "  <nodes><start id=\"1\" name=\"Start\" /><end id=\"2\" name=\"End\" /></nodes>\n";
@@ -82,7 +82,7 @@ public class KnowledgeBuilderTest extends TestCase {
 	    
 		str = "";
 		str += "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-		str += "<process xmlns=\"http://drools.org/drools-5.0/process\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\" xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-4.0.xsd\" ";
+		str += "<process xmlns=\"http://drools.org/drools-5.0/process\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\" xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\" ";
 		str += "         type=\"RuleFlow\" name=\"flow2\" id=\"0\" package-name=\"org.test2\" >";
 		str += "  <header/>\n";
 		str += "  <nodes><start id=\"1\" name=\"Start\" /><end id=\"2\" name=\"End\" /></nodes>\n";
