@@ -27,9 +27,9 @@ public class UrlResource extends BaseResource
     implements
     InternalResource,
     Externalizable {
-    private URL     url;
-    private long    lastRead = -1;
-    
+    private URL  url;
+    private long lastRead = -1;
+
     public UrlResource() {
 
     }
@@ -103,11 +103,26 @@ public class UrlResource extends BaseResource
         return true;
     }
 
+    public File getFile() throws IOException {
+        try {
+            return new File( StringUtils.toURI( url.toString() ).getSchemeSpecificPart() );
+        } catch ( Exception e ) {
+            throw new RuntimeException( "Unable to get File for url " + this.url, e);
+        }
+    }
+
     public long getLastModified() {
         try {
-            URLConnection conn = getURL().openConnection();
-            long date = conn.getLastModified();
-            return date;
+            // use File, as http rounds milliseconds on some machines, this fine level of granularity is only really an issue for testing
+            // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4504473
+            if ( "file".equals( url.getProtocol() ) ) {
+                File file = getFile();
+                return file.lastModified();
+            } else {
+                URLConnection conn = getURL().openConnection();
+                long date = conn.getLastModified();
+                return date;
+            }
         } catch ( IOException e ) {
             throw new RuntimeException( "Unable to get LastMofified for ClasspathResource",
                                         e );
@@ -140,7 +155,7 @@ public class UrlResource extends BaseResource
             URL url = getURL();
 
             if ( "file".equals( url.getProtocol() ) ) {
-                File dir = new File( StringUtils.toURI( url.toString() ).getSchemeSpecificPart() );
+                File dir = getFile();
 
                 List<Resource> resources = new ArrayList<Resource>();
 
