@@ -6,7 +6,7 @@ import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.KnowledgeType;
+import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactory;
 import org.drools.logger.KnowledgeRuntimeLogger;
 import org.drools.logger.KnowledgeRuntimeLoggerFactory;
@@ -18,10 +18,10 @@ public class NumberGuessExample {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "NumberGuess.drl",
                                                                     ShoppingExample.class ),
-                              KnowledgeType.DRL );
+                              ResourceType.DRL );
         kbuilder.add( ResourceFactory.newClassPathResource( "NumberGuess.rf",
                                                                     ShoppingExample.class ),
-                              KnowledgeType.DRF );
+                              ResourceType.DRF );
 
         final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );

@@ -31,7 +31,7 @@ import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.KnowledgeType;
+import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 
@@ -43,7 +43,7 @@ public class PetStore {
 
             kbuilder.add( ResourceFactory.newClassPathResource( "PetStore.drl",
                                                                         PetStore.class ),
-                                  KnowledgeType.DRL );
+                                  ResourceType.DRL );
             KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
             kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 

@@ -6,7 +6,7 @@ import org.drools.builder.DecisionTableConfiguration;
 import org.drools.builder.DecisionTableInputType;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.KnowledgeType;
+import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactory;
 import org.drools.logger.KnowledgeRuntimeLogger;
 import org.drools.logger.KnowledgeRuntimeLoggerFactory;
@@ -30,7 +30,7 @@ public class TroubleTicketWithDT {
 
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add(  ResourceFactory.newClassPathResource( "TroubleTicket.xls", TroubleTicketWithDT.class ),
-                              KnowledgeType.DTABLE,
+                              ResourceType.DTABLE,
                               dtableconfiguration );
 
         final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();

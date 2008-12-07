@@ -8,7 +8,7 @@ import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.KnowledgeType;
+import org.drools.builder.ResourceType;
 import org.drools.definition.KnowledgePackage;
 import org.drools.io.ResourceFactory;
 import org.drools.logger.KnowledgeRuntimeLogger;
@@ -26,7 +26,7 @@ public class HelloWorldExample {
         //this will parse and compile in one step
         kbuilder.add( ResourceFactory.newClassPathResource( "HelloWorld.drl",
                                                                     HelloWorldExample.class ),
-                              KnowledgeType.DRL );
+                              ResourceType.DRL );
 
         // Check the builder for errors
         if ( kbuilder.hasErrors() ) {
