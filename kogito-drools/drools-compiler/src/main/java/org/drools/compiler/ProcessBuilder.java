@@ -79,7 +79,7 @@ public class ProcessBuilder {
     private Map<String, ProcessValidator> processValidators              = new HashMap<String, ProcessValidator>();
     private static final String           XSL_FROM_4_TO_5                = "/org/drools/xml/processes/RuleFlowFrom4To5.xsl";
     private static final String           PROCESS_ELEMENT_WITH_NAMESPACE = "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" + "    xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-                                                                           + "    xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-4.0.xsd\"\n";
+                                                                           + "    xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n";
 
     public ProcessBuilder(PackageBuilder packageBuilder) {
         this.packageBuilder = packageBuilder;
