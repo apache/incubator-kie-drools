@@ -77,7 +77,7 @@ public class KnowledgeBuilderFactory {
      * dtconf.setInputType( DecisionTableInputType.XLS );
      * dtconf.setWorksheetName( "Tables_2" );
      * kbuilder.add( new URL( "file://IntegrationExampleTest.xls" ),
-     *                       KnowledgeType.DTABLE,
+     *                       ResourceType.DTABLE,
      *                       dtconf );
      * assertFalse( kbuilder.hasErrors() );
      * KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
