@@ -20,18 +20,24 @@ import org.drools.io.ResourceFactory;
 import org.drools.io.impl.ClassPathResource;
 import org.drools.io.impl.KnowledgeResource;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.util.FileManager;
 import org.drools.xml.XmlChangeSetReader;
 import org.xml.sax.SAXException;
 
 public class ChangeSetTest extends TestCase {
     
-    protected void setUp() throws Exception {
+    FileManager fileManager;
+    
+    protected void setUp() throws Exception {        
+        fileManager = new FileManager();
+        fileManager.setUp();
         ResourceFactory.getResourceChangeNotifierService().start();
         ResourceFactory.getResourceChangeScannerService().start();
     }
     
 
     protected void tearDown() throws Exception {
+        fileManager.tearDown();
         ResourceFactory.getResourceChangeNotifierService().stop();
         ResourceFactory.getResourceChangeScannerService().stop();
     }

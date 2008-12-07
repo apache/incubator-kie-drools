@@ -91,6 +91,9 @@ public class ResourceChangeScannerImpl
             // detect modified and added
             for ( Resource resource : this.directories ) {
                 for ( Resource child : ((InternalResource) resource).listResources() ) {
+                    if ( ((InternalResource) child).isDirectory() ) {
+                        continue; // ignore sub directories
+                    }
                     if ( !this.resources.containsKey( child ) ) {
                         System.out.println( "found new file : " + child );
                         // child is new
