@@ -43,7 +43,7 @@ public class ResourceChangeNotifierImpl
         this.monitors.remove( monitor );
     }
 
-    public Collection<ResourceChangeMonitor> getResourceChangeMonitor() {
+    public Collection<ResourceChangeMonitor> getResourceChangeMonitors() {
         return Collections.unmodifiableCollection( this.monitors );
     }
 
