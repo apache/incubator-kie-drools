@@ -52,7 +52,7 @@ A Typical example to load a process resource. Notice the ResourceType is changed
 <pre>
 KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 kbuilder.add( ResourceFactory.newUrlResource( url ),
-                      ResourceType.DRF );
+              ResourceType.DRF );
 if ( kbuilder.hasErrors() ) {
     System.err.println( builder.getErrors().toString() );
 }                     
@@ -70,6 +70,29 @@ ksession.dispose();
 <p>
 'kbuilder', 'kbase', 'ksession' are the variable identifiers often used, the k prefix is for 'knowledge'.
 </p>
+
+<p>
+It is also possible to configure a KnowledgeBase using configuration, via a xml change set, instead of programmatically. Here is a simple change set:
+</p>
+<pre>
+&lt;change-set xmlns='http://drools.org/drools-5.0/change-set'
+           xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'
+           xs:schemaLocation='http://drools.org/drools-5.0/change-set change-set-5.0.xsd' &gt;
+    &lt;add&gt;
+	    &lt;resource source='classpath:org/domain/someRules.drl' type='DRL' /&gt;
+	    &lt;resource source='classpath:org/domain/aFlow.drf' type='DRF' /&gt;
+    &lt;/add&gt;      
+&lt;/change-set&gt;
+</pre>
+
+<p>
+And it is added just like any other ResourceType
+</p>
+<pre>
+KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+kbuilder.add( ResourceFactory.newUrlResource( url ),
+              ResourceType.ChangeSet );
+</pre>
 
 <p>
 The majority of Drools API is considered stable and should not change, experimental classes and apis will be marked as such.
