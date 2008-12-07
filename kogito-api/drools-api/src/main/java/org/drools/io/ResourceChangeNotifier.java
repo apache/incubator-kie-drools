@@ -5,6 +5,21 @@ import java.util.Collection;
 import org.drools.ChangeSet;
 import org.drools.event.io.ResourceChangeListener;
 
+/**
+ * <p>
+ * ResourceChangeListeners can subscribe to the notifier to receive ChangeSet info when results they are subscribed to change. The ResourceChangeNotifier
+ * itself is not monitoring resources for changes, instead it delegates to added ResourceChangeMonitor implementations. When a ResourceChangeListener
+ * subscribes to a Resource that subscription is delegated to the added monitors.
+ * </p>
+ * 
+ * <p>
+ * This interface, as well as ChangeSet, ResourceChangeMonitor, esourceChangeListener and ResourceChangeScanner are still considered subject to change.
+ * Use the XML format change-set, as
+ * part of the ResourceType api when adding to KnowledgeBuilder, which is considered stable. KnowledgeBuilder currently ignored Added/Modified xml elements,
+ * the KnowledgeAgent will use them, when rebuilding the KnowledgeBase.
+ * </p>
+ * 
+ */
 public interface ResourceChangeNotifier {
     void subscribeResourceChangeListener(ResourceChangeListener listener,
                                          Resource resource);
@@ -12,17 +27,51 @@ public interface ResourceChangeNotifier {
     void unsubscribeResourceChangeListener(ResourceChangeListener listener,
                                            Resource resource);
     
+    /**
+     * When a ResourceChangeMonitor is asked to monitor a directory, it needs a way to tell the ResourceChangeNotifier of any newly added Resources.
+     * 
+     * @param directory
+     *     The parent directory the discovered child is in.
+     * @param child
+     *     The discovered child resource
+     */
     void subscribeChildResource(Resource directory, Resource child);    
 
+    /** 
+     * Add a ResourceChangeMonitor, which will receive all Resource subscriptions.
+     * 
+     * @param monitor
+     */
     void addResourceChangeMonitor(ResourceChangeMonitor monitor);
 
+    /**
+     * Remove a ResourceChangeMonitor.
+     * 
+     * @param monitor
+     */
     void removeResourceChangeMonitor(ResourceChangeMonitor monitor);
 
-    Collection<ResourceChangeMonitor> getResourceChangeMonitor();
+    /**
+     * Return a collection of the added ResourceChangeMonitors
+     * @return
+     */
+    Collection<ResourceChangeMonitor> getResourceChangeMonitors();
     
+    /**
+     * Called by the added ResourceChangeMonitors to inform this ResourceChangeNotifier of resource changes.
+     * The ResourceChangeMontior must have a reference to the ResourceChangeNotifiers they are added to,
+     * 
+     * @param changeSet
+     */
     void publishKnowledgeBaseChangeSet(ChangeSet changeSet);
     
+    /**
+     * Start the service, this will create a new Thread.
+     */
     void start();
 
+    /**
+     * Stop the service.
+     */
     void stop();    
 }
