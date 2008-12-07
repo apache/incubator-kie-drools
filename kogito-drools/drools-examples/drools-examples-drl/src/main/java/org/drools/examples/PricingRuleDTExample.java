@@ -8,7 +8,7 @@ import org.drools.builder.DecisionTableConfiguration;
 import org.drools.builder.DecisionTableInputType;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.KnowledgeType;
+import org.drools.builder.ResourceType;
 import org.drools.examples.decisiontable.Driver;
 import org.drools.examples.decisiontable.Policy;
 import org.drools.io.ResourceFactory;
@@ -32,7 +32,7 @@ public class PricingRuleDTExample {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
         kbuilder.add( ResourceFactory.newClassPathResource( "ExamplePolicyPricing.xls", getClass() ),
-                              KnowledgeType.DTABLE,
+                              ResourceType.DTABLE,
                               dtableconfiguration );
         
         if ( kbuilder.hasErrors() ) {

@@ -11,7 +11,7 @@ import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.KnowledgeType;
+import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactory;
 
 public class DroolsUtil {
@@ -40,7 +40,7 @@ public class DroolsUtil {
 
         //this will parse and compile in one step
         kbuilder.add( ResourceFactory.newClassPathResource( drlFileName,DroolsSudokuGridModel.class),
-                             KnowledgeType.DRL );
+                             ResourceType.DRL );
 
         //Use the following instead of above if you are using a DSL:
         //builder.addPackageFromDrl( source, dsl );

@@ -6,7 +6,7 @@ import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.KnowledgeType;
+import org.drools.builder.ResourceType;
 import org.drools.examples.cdss.data.Diagnose;
 import org.drools.examples.cdss.data.Patient;
 import org.drools.examples.cdss.data.Recommendation;
@@ -81,19 +81,19 @@ public class CDSSExample {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
         kbuilder.add( ResourceFactory.newClassPathResource( "/org/drools/examples/cdss/GenericRules.drl", CDSSExample.class ),
-                             KnowledgeType.DRL );
+                             ResourceType.DRL );
 
         kbuilder.add( ResourceFactory.newClassPathResource( "/org/drools/examples/cdss/GenericRules.drl", CDSSExample.class ),
-                             KnowledgeType.DRL );
+                             ResourceType.DRL );
 
         kbuilder.add( ResourceFactory.newClassPathResource( "/org/drools/examples/cdss/ClinicalPathwayX.rf", CDSSExample.class ),
-                             KnowledgeType.DRF );
+                             ResourceType.DRF );
 
         kbuilder.add( ResourceFactory.newClassPathResource( "/org/drools/examples/cdss/TreatmentX.rf", CDSSExample.class ),
-                             KnowledgeType.DRF );
+                             ResourceType.DRF );
 
         kbuilder.add( ResourceFactory.newClassPathResource( "/org/drools/examples/cdss/TreatmentY.rf", CDSSExample.class ) ,
-                             KnowledgeType.DRF );
+                             ResourceType.DRF );
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );

@@ -4,7 +4,7 @@ import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.KnowledgeType;
+import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 
@@ -14,10 +14,10 @@ public class RuleFlowDelegate implements ConwayRuleDelegate {
     public RuleFlowDelegate() {
         try {
             KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-            kbuilder.add( ResourceFactory.newClassPathResource( "conway-ruleflow.drl",getClass()), KnowledgeType.DRL );
-            kbuilder.add( ResourceFactory.newClassPathResource( "generation.rf",getClass()), KnowledgeType.DRF );
-            kbuilder.add( ResourceFactory.newClassPathResource( "killAll.rf",getClass()), KnowledgeType.DRF );
-            kbuilder.add( ResourceFactory.newClassPathResource( "registerNeighbor.rf",getClass()), KnowledgeType.DRF );
+            kbuilder.add( ResourceFactory.newClassPathResource( "conway-ruleflow.drl",getClass()), ResourceType.DRL );
+            kbuilder.add( ResourceFactory.newClassPathResource( "generation.rf",getClass()), ResourceType.DRF );
+            kbuilder.add( ResourceFactory.newClassPathResource( "killAll.rf",getClass()), ResourceType.DRF );
+            kbuilder.add( ResourceFactory.newClassPathResource( "registerNeighbor.rf",getClass()), ResourceType.DRF );
             
             KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
             kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );

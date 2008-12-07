@@ -4,7 +4,7 @@ import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.KnowledgeType;
+import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactory;
 import org.drools.logger.KnowledgeRuntimeLogger;
 import org.drools.logger.KnowledgeRuntimeLoggerFactory;
@@ -22,10 +22,10 @@ public class TroubleTicketExampleWithDSL {
 
         kbuilder.add( ResourceFactory.newClassPathResource( "ticketing.dsl",
                                                                     TroubleTicketExampleWithDSL.class ),
-                              KnowledgeType.DSL );
+                              ResourceType.DSL );
         kbuilder.add( ResourceFactory.newClassPathResource( "TroubleTicketWithDSL.dslr",
                                                                     TroubleTicketExampleWithDSL.class ),
-                              KnowledgeType.DSLR );
+                              ResourceType.DSLR );
 
         final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );

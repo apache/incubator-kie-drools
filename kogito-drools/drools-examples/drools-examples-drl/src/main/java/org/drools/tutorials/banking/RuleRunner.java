@@ -6,7 +6,7 @@ import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.KnowledgeType;
+import org.drools.builder.ResourceType;
 import org.drools.definition.KnowledgePackage;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
@@ -27,7 +27,7 @@ public class RuleRunner {
             System.out.println( "Loading file: " + ruleFile );
             kbuilder.add( ResourceFactory.newClassPathResource( ruleFile,
                                                                         RuleRunner.class ),
-                                  KnowledgeType.DRL );
+                                  ResourceType.DRL );
         }
 
         Collection<KnowledgePackage> pkgs = kbuilder.getKnowledgePackages();

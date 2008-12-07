@@ -24,7 +24,7 @@ import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.KnowledgeType;
+import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactory;
 import org.drools.logger.KnowledgeRuntimeLogger;
 import org.drools.logger.KnowledgeRuntimeLoggerFactory;
@@ -215,7 +215,7 @@ public class OrderExample extends JFrame {
 		try {
 			KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 	        kbuilder.add(ResourceFactory.newClassPathResource(
-	    		"logging.drl", OrderExample.class), KnowledgeType.DRL );
+	    		"logging.drl", OrderExample.class), ResourceType.DRL );
 			kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
 		} catch (Throwable t) {
 			t.printStackTrace();
@@ -249,17 +249,17 @@ public class OrderExample extends JFrame {
 	private static KnowledgeBase createKnowledgeBase() throws Exception {
 		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add(ResourceFactory.newClassPathResource(
-    		"RuleSetExample.rf", OrderExample.class), KnowledgeType.DRF );
+    		"RuleSetExample.rf", OrderExample.class), ResourceType.DRF );
         kbuilder.add(ResourceFactory.newClassPathResource(
-    		"workflow_rules.drl", OrderExample.class), KnowledgeType.DRL );
+    		"workflow_rules.drl", OrderExample.class), ResourceType.DRL );
         kbuilder.add(ResourceFactory.newClassPathResource(
-    		"validation.drl", OrderExample.class), KnowledgeType.DRL );
+    		"validation.drl", OrderExample.class), ResourceType.DRL );
         kbuilder.add(ResourceFactory.newClassPathResource(
-    		"assignment.dsl", OrderExample.class), KnowledgeType.DSL );
+    		"assignment.dsl", OrderExample.class), ResourceType.DSL );
         kbuilder.add(ResourceFactory.newClassPathResource(
-    		"assignment.dslr", OrderExample.class), KnowledgeType.DSLR );
+    		"assignment.dslr", OrderExample.class), ResourceType.DSLR );
         kbuilder.add(ResourceFactory.newClassPathResource(
-    		"discount.drl", OrderExample.class), KnowledgeType.DRL );
+    		"discount.drl", OrderExample.class), ResourceType.DRL );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 		return kbase;
