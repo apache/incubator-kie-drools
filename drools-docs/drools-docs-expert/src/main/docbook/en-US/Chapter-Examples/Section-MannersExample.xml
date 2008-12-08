@@ -310,15 +310,21 @@
         guest : Guest()
         count : Count()
     then
-        String guestName = guest.getName();        
+        String guestName = guest.getName();
+        
+        Seating seating =  new Seating( count.getValue(), 1, true, 1, guestName, 1, guestName);
+        insert( seating );
+        
+        Path path = new Path( count.getValue(), 1, guestName );
+        insert( path );
+        
+        modify( count ) { setValue ( count.getValue() + 1 )  }
 
-        insert( new Seating( count.getValue(), 1, true, 1, guestName, 1, guestName) );        
-        insert( new Path( count.getValue(), 1, guestName ) );        
+		System.out.println( "assign first seat :  " + seating + " : " + path );
 
-        count.setValue(  count.getValue() + 1 );        
-        update( count );
-        context.setState( Context.ASSIGN_SEATS );       
-        update( context );
+        modify( context ) {
+            setState( Context.ASSIGN_SEATS )
+        } 
 end</programlisting>
       </section>
 
@@ -336,7 +342,9 @@ end</programlisting>
        $s      : Seating( pathDone == true )
        $g1     : Guest( name == $s.rightGuestName )
        $g2     : Guest( sex != $g1.sex, hobby == $g1.hobby )
+
        count   : Count()
+
        not ( Path( id == $s.id, guestName == $g2.name) )
        not ( Chosen( id == $s.id, guestName == $g2.name, hobby == $g1.hobby) )
    then
@@ -344,14 +352,19 @@ end</programlisting>
        int seatId = $s.getId();
        int countValue = count.getValue();
        
-       insert( new Seating( countValue, seatId, false, rightSeat, $s.getRightGuestName(), rightSeat + 1, $g2.getName() ) );                                
-       insert( new Path( countValue, rightSeat + 1, $g2.getName() ) );       
-       insert( new Chosen( seatId, $g2.getName(), $g1.getHobby() ) );
+       Seating seating = new Seating( countValue, seatId, false, rightSeat, $s.getRightGuestName(), rightSeat + 1, $g2.getName() );
+       insert( seating );     
+                            
+       Path path = new Path( countValue, rightSeat + 1, $g2.getName()  );
+       insert( path );
+       
+       Chosen chosen = new Chosen( seatId, $g2.getName(), $g1.getHobby() );
+       insert( chosen  );
 
-       count.setValue(  countValue + 1 );
-       update( count );       
-       context.setState( Context.MAKE_PATH );
-       update( context );
+	   System.err.println( "find seating : " + seating + " : " + path + " : " + chosen);
+
+       modify( count ) {setValue(  countValue + 1 )}        
+       modify( context ) {setState( Context.MAKE_PATH )} 
 end</programlisting>
 
         <para>However, as can be seen from the printed results shown earlier,
@@ -413,11 +426,9 @@ end</programlisting>
         context : Context( state == Context.MAKE_PATH ) 
         seating : Seating( pathDone == false ) 
     then
-        seating.setPathDone( true ); 
-        update( seating );
+        modify( seating ) {setPathDone( true )} 
         
-        context.setState( Context.CHECK_DONE ); 
-        update( context );
+		modify( context ) {setState( Context.CHECK_DONE)}
 end</programlisting>
 
         <figure>
@@ -451,8 +462,7 @@ end</programlisting>
         LastSeat( lastSeat: seat )
         Seating( rightSeat == lastSeat ) 
     then
-        context.setState(Context.PRINT_RESULTS ); 
-        update( context );
+        modify( context ) {setState(Context.PRINT_RESULTS )}
 end
 </programlisting>
 
@@ -460,8 +470,7 @@ end
     when
         context : Context( state == Context.CHECK_DONE ) 
     then
-        context.setState( Context.ASSIGN_SEATS ); 
-        update( context );
+        modify( context ) {setState( Context.ASSIGN_SEATS )}
 end
 </programlisting>
       </section>
