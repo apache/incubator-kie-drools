@@ -16,9 +16,11 @@ package org.drools.common;
  * limitations under the License.
  */
 
+import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RightTuple;
 import org.drools.FactHandle;
+import org.drools.WorkingMemoryEntryPoint;
 
 public interface InternalFactHandle
     extends
@@ -57,4 +59,9 @@ public interface InternalFactHandle
     public void setLeftTuple(LeftTuple leftTuple);
     
     public LeftTuple getLeftTuple();
+    
+    public WorkingMemoryEntryPoint getEntryPoint();
+    
+    public void setEntryPoint( WorkingMemoryEntryPoint ep );
+    
 }

@@ -16,9 +16,10 @@ package org.drools.common;
  * limitations under the License.
  */
 
+import org.drools.FactHandle;
+import org.drools.WorkingMemoryEntryPoint;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RightTuple;
-import org.drools.FactHandle;
 
 /**
  * Implementation of <code>FactHandle</code>.
@@ -35,15 +36,16 @@ public class DefaultFactHandle
     /**
      *
      */
-    private static final long serialVersionUID = 400L;
+    private static final long       serialVersionUID = 400L;
     /** Handle id. */
-    private int               id;
-    private long              recency;
-    private Object            object;
-    private EqualityKey       key;
-    private int               objectHashCode;
-    private RightTuple        rightTuple;
-    private LeftTuple         leftTuple;    
+    private int                     id;
+    private long                    recency;
+    private Object                  object;
+    private EqualityKey             key;
+    private int                     objectHashCode;
+    private RightTuple              rightTuple;
+    private LeftTuple               leftTuple;
+    private WorkingMemoryEntryPoint entryPoint;
 
     // ----------------------------------------------------------------------
     // Constructors
@@ -133,6 +135,7 @@ public class DefaultFactHandle
     public void invalidate() {
         this.id = -1;
         this.object = null;
+        this.entryPoint = null;
     }
 
     public Object getObject() {
@@ -164,7 +167,7 @@ public class DefaultFactHandle
     public boolean isEvent() {
         return false;
     }
-    
+
     public RightTuple getRightTuple() {
         return rightTuple;
     }
@@ -172,12 +175,20 @@ public class DefaultFactHandle
     public void setRightTuple(RightTuple rightTuple) {
         this.rightTuple = rightTuple;
     }
-    
+
     public void setLeftTuple(LeftTuple leftTuple) {
         this.leftTuple = leftTuple;
     }
-    
-    public LeftTuple getLeftTuple(){
+
+    public LeftTuple getLeftTuple() {
         return this.leftTuple;
-    }    
+    }
+
+    public WorkingMemoryEntryPoint getEntryPoint() {
+        return entryPoint;
+    }
+
+    public void setEntryPoint(WorkingMemoryEntryPoint sourceNode) {
+        this.entryPoint = sourceNode;
+    }
 }

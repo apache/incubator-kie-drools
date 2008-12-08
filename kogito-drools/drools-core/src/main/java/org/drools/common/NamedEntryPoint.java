@@ -105,6 +105,7 @@ public class NamedEntryPoint
         InternalFactHandle handle = this.handleFactory.newFactHandle( object,
                                                                       typeConf,
                                                                       wm );
+        handle.setEntryPoint( this );
         this.objectStore.addHandle( handle,
                                     object );
 
@@ -289,7 +290,7 @@ public class NamedEntryPoint
                                                                         this.wm );
 
             this.objectStore.removeHandle( handle );
-
+            
             this.handleFactory.destroyFactHandle( handle );
 
             this.wm.executeQueuedActions();

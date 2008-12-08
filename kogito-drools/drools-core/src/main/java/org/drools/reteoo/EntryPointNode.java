@@ -139,7 +139,7 @@ public class EntryPointNode extends ObjectSource
             // know it is safe to update the information the engine can see.
             ((ShadowProxy) handle.getObject()).updateProxy();
         }
-
+        
         ObjectTypeNode[] cachedNodes = objectTypeConf.getObjectTypeNodes();
 
         for ( int i = 0, length = cachedNodes.length; i < length; i++ ) {

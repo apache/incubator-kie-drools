@@ -16,10 +16,10 @@ package org.drools.spi;
  * limitations under the License.
  */
 
+import org.drools.FactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ObjectTypeConf;
-import org.drools.FactHandle;
 
 /**
  * Factory Interface to return new <code>FactHandle</code>s
@@ -54,7 +54,7 @@ public interface FactHandleFactory {
     
     public FactHandleFactory newInstance(int id, long counter);    
 
-    public Class getFactHandleType();
+    public Class<?> getFactHandleType();
 
     public int getId();
 
