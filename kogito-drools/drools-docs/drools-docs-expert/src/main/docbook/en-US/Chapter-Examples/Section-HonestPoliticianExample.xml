@@ -30,12 +30,12 @@ Politician bush  = new Politician("bush", true);
 Politician chirac  = new Politician("chirac", true);
 Politician schroder   = new Politician("schroder", true);
         
-session.insert( blair );
-session.insert( bush );
-session.insert( chirac );
-session.insert( schroder );
+ksession.insert( blair );
+ksession.insert( bush );
+ksession.insert( chirac );
+ksession.insert( schroder );
 
-session.fireAllRules();</programlisting>
+ksession.fireAllRules();</programlisting>
       </example>The console out shows that while there is atleast one honest
     polician democracy lives, however as each politician is in turn corrupted
     by an evil corporation, when all politicians are dishonest democracy is
@@ -91,7 +91,7 @@ end</programlisting>
     iterates over those rules firing each one in turn, corrupting each
     politician so that they are no longer honest. When all four politicians
     have been corrupted we have no politicians with the property "honest ==
-    true" thus the rule "We hvae an honest Politician" is no longer true and
+    true" thus the rule "We have an honest Politician" is no longer true and
     the object it logical inserts "new Hope()" is automatically
     retracted.</para>
 

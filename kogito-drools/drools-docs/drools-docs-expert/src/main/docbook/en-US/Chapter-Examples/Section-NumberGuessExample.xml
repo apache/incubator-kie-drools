@@ -24,44 +24,50 @@
         <title>Creating the Number Guess RuleBase - extract 1 from
         NumberGuessExample.java main() method</title>
 
-        <programlisting>final PackageBuilder builder = new PackageBuilder();
+        <programlisting>final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newClassPathResource( "NumberGuess.drl",
+                                                                    ShoppingExample.class ),
+                              ResourceType.DRL );
+        kbuilder.add( ResourceFactory.newClassPathResource( "NumberGuess.rf",
+                                                                    ShoppingExample.class ),
+                              ResourceType.DRF );
 
-builder.addPackageFromDrl( new InputStreamReader( 
-         ShoppingExample.class.getResourceAsStream( "NumberGuess.drl" ) ) );
-builder.addRuleFlow( new InputStreamReader( 
-         ShoppingExample.class.getResourceAsStream( "NumberGuess.rfm" ) ) );
-
-final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-ruleBase.addPackage( builder.getPackage() );
+        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
 </programlisting>
       </example>
 
       <para>The creation of the package, and the loading of the rules (using
-      the addPackageFromDrl() method ) is the same as the previous examples.
-      There is a additional line to add the RuleFlow (NumberGuess.rfm) as you
-      have the option of specifying different ruleflows for the same RuleBase.
-      Otherwise the RuleBase is created in the same manner as before.</para>
+      the add() method ) is the same as the previous examples.
+      There is a additional line to add the RuleFlow (NumberGuess.rf) as you
+      have the option of specifying different ruleflows for the same KnowledgeBase.
+      Otherwise the KnowledgeBase is created in the same manner as before.</para>
 
       <example>
         <title>Starting the RuleFlow - extract 2 from NumberGuessExample.java
         main() method</title>
 
-        <programlisting>final StatefulSession session = ruleBase.newStatefulSession();
+        <programlisting>final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-session.insert( new GameRules( 100,  5 ) );
-session.insert( new RandomNumber() );
-session.insert( new Game() );
+        KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "log/numberguess");
 
-session.startProcess( "Number Guess" );
-session.fireAllRules();
+        ksession.insert( new GameRules( 100,
+                                        5 ) );
+        ksession.insert( new RandomNumber() );
+        ksession.insert( new Game() );
 
-session.dispose();
+        ksession.startProcess( "Number Guess" );
+        ksession.fireAllRules();
+
+        logger.close();
+
+        ksession.dispose();
 
 </programlisting>
       </example>
 
-      <para>Once we have a RuleBase we can use it to obtain a stateful
+      <para>Once we have a KnowledgeBase we can use it to obtain a stateful
       session. Into our session we insert our facts (standard Java Objects).
       For simplicity in this sample, these classes are all contained within
       our NumberGuessExample.java file. The GameRules class provides the

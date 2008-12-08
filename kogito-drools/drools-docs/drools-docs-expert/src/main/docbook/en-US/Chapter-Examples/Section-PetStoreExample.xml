@@ -56,22 +56,28 @@
 			<example>
 				<title>Creating the PetStore RuleBase - extract from PetStore.java main() method</title>
 
-				<programlisting>PackageBuilder builder = new PackageBuilder();
-builder.addPackageFromDrl( new InputStreamReader( 
-PetStore.class.getResourceAsStream( "PetStore.drl" ) ) );
-RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-ruleBase.addPackage( builder.getPackage() );
+				<programlisting>KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
-//RuleB
-Vector stock = new Vector();
-stock.add( new Product( "Gold Fish",5 ) );
-stock.add( new Product( "Fish Tank", 25 ) );
-stock.add( new Product( "Fish Food", 2 ) );
+            kbuilder.add( ResourceFactory.newClassPathResource( "PetStore.drl",
+                                                                        PetStore.class ),
+                                  ResourceType.DRL );
+            KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+            kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-//The callback is responsible for populating working memory and
-// fireing all rules
-PetStoreUI ui = new PetStoreUI( stock, new CheckoutCallback( ruleBase ) );
-ui.createAndShowGUI();
+            //RuleB
+            Vector<Product> stock = new Vector<Product>();
+            stock.add( new Product( "Gold Fish",
+                                    5 ) );
+            stock.add( new Product( "Fish Tank",
+                                    25 ) );
+            stock.add( new Product( "Fish Food",
+                                    2 ) );
+
+            //The callback is responsible for populating working memory and
+            // fireing all rules
+            PetStoreUI ui = new PetStoreUI( stock,
+                                            new CheckoutCallback( kbase ) );
+            ui.createAndShowGUI();
 </programlisting>
 			</example>
 
@@ -82,30 +88,39 @@ ui.createAndShowGUI();
 			<example>
 				<title>Firing the Rules - extract from the CheckOutCallBack.checkout() method</title>
 
-				<programlisting>public String checkout(JFrame frame, List items) throws FactException {           
-    Order order = new Order();
+				<programlisting> public String checkout(JFrame frame, List<Product> items) {
+            Order order = new Order();
 
-    //Iterate through list and add to cart
-    for ( int i = 0; i &lt; items.size(); i++ ) {
-        order.addItem( new Purchase( order, (Product) items.get( i ) ) );
-    }
+            //Iterate through list and add to cart
+            for ( int i = 0; i < items.size(); i++ ) {
+                order.addItem( new Purchase( order,
+                                             (Product) items.get( i ) ) );
+            }
 
-    //add the JFrame to the ApplicationData to allow for user interaction
-    WorkingMemory workingMemory = ruleBase.newStatefulSession();
-    workingMemory.setGlobal( "frame", frame );
-    workingMemory.setGlobal( "textArea",  this.output );
+            //add the JFrame to the ApplicationData to allow for user interaction
 
-    workingMemory.insert( new Product( "Gold Fish", 5 ) );
-    workingMemory.insert( new Product( "Fish Tank", 25 ) );
-    workingMemory.insert( new Product( "Fish Food",  2 ) );
-    workingMemory.insert( new Product( "Fish Food Sample", 0 ) );            
-           
-    workingMemory.insert( order );
-    workingMemory.fireAllRules();
+            StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+            ksession.setGlobal( "frame",
+                                frame );
+            ksession.setGlobal( "textArea",
+                                this.output );
 
-    //returns the state of the cart
-    return order.toString();
-}
+            ksession.insert( new Product( "Gold Fish",
+                                          5 ) );
+            ksession.insert( new Product( "Fish Tank",
+                                          25 ) );
+            ksession.insert( new Product( "Fish Food",
+                                          2 ) );
+
+            ksession.insert( new Product( "Fish Food Sample",
+                                          0 ) );
+
+            ksession.insert( order );
+            ksession.fireAllRules();
+
+            //returns the state of the cart
+            return order.toString();
+        }
 </programlisting>
 			</example>
 
@@ -115,7 +130,7 @@ ui.createAndShowGUI();
 
 			<para>It is important to note that <emphasis role="bold">all state in this example is stored in the Swing components, and that the rules are effectively stateless. </emphasis>Each time the 'Checkout' button is pressed, this code copies the contents of the Swing <emphasis>TableModel</emphasis> into the Session / Working Memory.</para>
 
-			<para>Within this code, there are nine calls to the working memory. The first of these creates a new workingMemory (statefulSession) from the Rulebase - remember that we passed in this Rulebase when we created the CheckoutCallBack class in the <emphasis role="italic">main()</emphasis> method. The next two calls pass in two objects that we will hold as Global variables in the rules - the Swing text area and Swing frame that we will use for writing messages later.</para>
+			<para>Within this code, there are nine calls to the working memory. The first of these creates a new workingMemory (StatefulKnowledgeSession) from the Knowledgebase - remember that we passed in this Knowledgebase when we created the CheckoutCallBack class in the <emphasis role="italic">main()</emphasis> method. The next two calls pass in two objects that we will hold as Global variables in the rules - the Swing text area and Swing frame that we will use for writing messages later.</para>
 
 			<para>More inserts put information on products into the working memory, as well as the order list. The final call is the standard <emphasis role="italic">fireAllRules()</emphasis>. Next, we look at what this method causes to happen within the Rules file.</para>
 			
@@ -136,11 +151,10 @@ import javax.swing.JFrame
 global JFrame frame 
 global javax.swing.JTextArea textArea
  
-dialect "mvel"
 </programlisting>
 			</example>
     
-			<para>The first part of the <emphasis role="italic">PetStore.drl</emphasis> file contains the standard package and import statement to make various Java classes available to the rules. We've seen the dialect been defaulted to "mvel" before in other examples. What is new are the two globals <emphasis>frame and textArea. </emphasis>These hold references to the Swing JFrame and Textarea components that were previous passed by the Java code calling the <emphasis>setGlobal() </emphasis>method. Unlike normal variables in Rules , which expire as soon as the rule has fired, Global variables retain their value for the lifetime of the (Stateful in this case) Session.</para>
+			<para>The first part of the <emphasis role="italic">PetStore.drl</emphasis> file contains the standard package and import statement to make various Java classes available to the rules. What is new are the two globals <emphasis>frame and textArea. </emphasis>These hold references to the Swing JFrame and Textarea components that were previous passed by the Java code calling the <emphasis>setGlobal() </emphasis>method. Unlike normal variables in Rules , which expire as soon as the rule has fired, Global variables retain their value for the lifetime of the (Stateful in this case) Session.</para>
 
 			<para>The next extract (below) is from the <emphasis role="bold">end</emphasis> of the PetStore.drl file. It contains two functions that are referenced by the rules that we will look at shortly.</para>
 			
@@ -215,18 +229,19 @@ function boolean requireTank(JFrame frame, WorkingMemory workingMemory, Order or
 				<title>Putting each (individual) item into working memory - extract (3) from PetStore.drl</title>
 
 				<programlisting>// insert each item in the shopping cart into the Working Memory 
+// insert each item in the shopping cart into the Working Memory 
 rule "Explode Cart"
     agenda-group "init"
-    auto-focus true    
+	auto-focus true    
     salience 10
-    dialect "java"
-when
-    $order : Order( grossTotal == -1 )
-    $item : Purchase() from $order.items
-then
-   insert( $item );
-   drools.setFocus( "show items" );
-   drools.setFocus( "evaluate" );
+	dialect "java"
+	when
+	    $order : Order( grossTotal == -1 )
+		$item : Purchase() from $order.items
+	then
+		insert( $item );
+		drools.getKnowledgeRuntime().getAgenda().getAgendaGroup( "show items" ).setFocus();		
+		drools.getKnowledgeRuntime().getAgenda().getAgendaGroup( "evaluate" ).setFocus();		
 end
 
 </programlisting>
