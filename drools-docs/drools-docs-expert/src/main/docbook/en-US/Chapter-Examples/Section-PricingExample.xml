@@ -26,13 +26,19 @@
 BASE PRICE IS: 120
 DISCOUNT IS: 20     </programlisting>
 
-			<para>The code to the execute the example is very similar to the other examples. The rules are loaded, the facts inserted and a stateless session is used. What is different is how the rules are obtained:</para>
+			<para>The code to the execute the example is very similar to the other examples. The rules are loaded, the facts inserted and a stateless session is used. What is different is how the rules are added:</para>
 
-			<programlisting>SpreadsheetCompiler compiler = new SpreadsheetCompiler();
-String drl = compiler.compile(getSpreadsheetStream(), InputType.XLS);
+			<programlisting>DecisionTableConfiguration dtableconfiguration = KnowledgeBuilderFactory.newDecisionTableConfiguration();
+        dtableconfiguration.setInputType( DecisionTableInputType.XLS );
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+
+        kbuilder.add( ResourceFactory.newClassPathResource( "ExamplePolicyPricing.xls", getClass() ),
+                              ResourceType.DTABLE,
+                              dtableconfiguration );
 </programlisting>
 
-			<para>Note the use of the SpreadsheetCompiler class. It is what takes the XLS (as a binary InputStream to the XLS file), and outputs ordinary DRL (which is then dealt with in the usual way). You can (if you like) also print out the DRL. If you use the BRMS, all this is of course taken care of for you.</para>
+			<para>Note the use of the DecisionTableConfiguration class. It is what takes the DecisionTableInputType.XLS as input type. If you use the BRMS, all this is of course taken care of for you.</para>
 
 			<para>There are 2 facts used in this example, Driver, and Policy. Both are used with their default values. The Driver is 30 years old, has had no prior claims and currently has a risk profile of LOW. The Policy being applied for is COMPREHENSIVE, and the policy has not yet been approved.</para>
 		</section>
