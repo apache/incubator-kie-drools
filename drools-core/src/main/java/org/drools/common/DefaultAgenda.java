@@ -932,12 +932,13 @@ public class DefaultAgenda
         for( LeftTuple tuple = (LeftTuple) activation.getTuple(); tuple != null; tuple = tuple.getParent() ) {
             if( tuple.getLastHandle().isEvent() ) {
                 EventFactHandle handle = (EventFactHandle) tuple.getLastHandle();
+                // handles "expire" only in stream mode.
                 if( handle.isExpired() ) {
                     // decrease the activation count for the event
                     handle.decreaseActivationsCount();
                     if( handle.getActivationsCount() == 0 ) {
                         // and if no more activations, retract the handle
-                        workingMemory.retract( handle );
+                        handle.getEntryPoint().retract( handle );
                     }
                 }
             }

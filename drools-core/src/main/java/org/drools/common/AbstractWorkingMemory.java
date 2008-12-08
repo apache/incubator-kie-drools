@@ -807,6 +807,7 @@ public abstract class AbstractWorkingMemory
             handle = this.handleFactory.newFactHandle( object,
                                                        typeConf,
                                                        this );
+            handle.setEntryPoint( this );
             this.objectStore.addHandle( handle,
                                         object );
             insert( handle,
@@ -865,6 +866,7 @@ public abstract class AbstractWorkingMemory
                     handle = this.handleFactory.newFactHandle( object,
                                                                typeConf,
                                                                this );
+                    handle.setEntryPoint( this );
                     this.objectStore.addHandle( handle,
                                                 object );
 
