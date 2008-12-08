@@ -103,10 +103,10 @@ public class LargeRuleBaseSerializationTest extends TestCase {
             sb.append(LargeRuleBase.getTemplate1("testRule"+i, i));
         }
         System.out.println("Parsing "+RULE_COUNT+" rules");
+        PackageBuilder pkgBuilder = new PackageBuilder();
         DrlParser ps = new DrlParser();
         PackageDescr pkgDescr = ps.parse(new StringReader(sb.toString()));
 
-        PackageBuilder pkgBuilder = new PackageBuilder();
         pkgBuilder.addPackage(pkgDescr);
 
         Package pkg = pkgBuilder.getPackage();
