@@ -74,8 +74,8 @@ recurse for 2
 		<example>
 			<title>Fibonacci Example Execution</title>
 
-			<programlisting>session.insert( new Fibonacci( 50 ) );
-session.fireAllRules();</programlisting>
+			<programlisting>ksession.insert( new Fibonacci( 50 ) );
+ksession.fireAllRules();</programlisting>
 		</example>
 
 		<para>The recurse rule is very simple, it matches each asserted Fibonacci object with a value of -1, it then creates and asserts a new Fibonacci object with a sequence of one less than the currently matched object. Each time a Fibonacci object is added, as long as one with a "sequence == 1" does not exist, the rule re-matches again and fires; causing the recursion. The 'not' conditional element is used to stop the rule matching once we have all 50 Fibonacci objects in memory. The rule also has a salience value, this is because we need to have all 50 Fibonacci objects asserted before we execute the Bootstrap rule.</para>

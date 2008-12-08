@@ -16,7 +16,7 @@
 
 		<para>This tutorial will demonstrate the process of developing a complete personal banking application that will handle credits, debits, currencies and that will use a set of design patterns that have been created for the process. In order to make the examples documented here clear and modular, I will try and steer away from re-visiting existing code to add new functionality, and will instead extend and inject where appropriate.</para>
 
-		<para>The RuleRunner class is a simple harness to execute one or more drls against a set of data. It compiles the Packages and creates the RuleBase for each execution, this allows us to easy execute each scenario and see the outputs. In reality this is not a good solution for a production system where the RuleBase should be built just once and cached, but for the purposes of this tutorial it shall suffice.</para>
+		<para>The RuleRunner class is a simple harness to execute one or more drls against a set of data. It compiles the Packages and creates the KnowledgeBase for each execution, this allows us to easy execute each scenario and see the outputs. In reality this is not a good solution for a production system where the KnowledgeBase should be built just once and cached, but for the purposes of this tutorial it shall suffice.</para>
 
 		<example>
 			<title>Banking Tutorial : RuleRunner</title>
@@ -29,26 +29,28 @@
     public void runRules(String[] rules,
                          Object[] facts) throws Exception {
 
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        PackageBuilder builder = new PackageBuilder();
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
-        for ( int i = 0; i &lt; rules.length; i++ ) {
+        for ( int i = 0; i < rules.length; i++ ) {
             String ruleFile = rules[i];
-            System.out.println( "Loading file: " + ruleFile );            
-            builder.addPackageFromDrl(new InputStreamReader( RuleRunner.class.getResourceAsStream( ruleFile ) ) );
+            System.out.println( "Loading file: " + ruleFile );
+            kbuilder.add( ResourceFactory.newClassPathResource( ruleFile,
+                                                                        RuleRunner.class ),
+                                  ResourceType.DRL );
         }
 
-        Package pkg = builder.getPackage();
-        ruleBase.addPackage( pkg );
-        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        Collection<KnowledgePackage> pkgs = kbuilder.getKnowledgePackages();
+        kbase.addKnowledgePackages( pkgs );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        for ( int i = 0; i &lt; facts.length; i++ ) {
+        for ( int i = 0; i < facts.length; i++ ) {
             Object fact = facts[i];
             System.out.println( "Inserting fact: " + fact );
-            workingMemory.insert( fact );
+            ksession.insert( fact );
         }
 
-        workingMemory.fireAllRules();
+        ksession.fireAllRules();
     }
 }</programlisting>
 		</example>
