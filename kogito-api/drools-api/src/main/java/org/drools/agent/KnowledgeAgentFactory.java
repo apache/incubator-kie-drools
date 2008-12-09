@@ -4,6 +4,7 @@ import java.util.Properties;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseConfiguration;
+import org.drools.SystemEventListener;
 import org.drools.ProviderInitializationException;
 
 
@@ -27,14 +28,6 @@ public class KnowledgeAgentFactory {
                                                    KnowledgeBase kbase,
                                                    KnowledgeAgentConfiguration configuration) {
         return getKnowledgeAgentProvider().newKnowledgeAgent( name, kbase, configuration );
-    }
-
-    public static KnowledgeAgent newKnowledgeAgent(String name,
-                                                   KnowledgeBase kbase,
-                                                   KnowledgeAgentConfiguration configuration,
-                                                   KnowledgeAgentEventListener listener) {
-
-        return getKnowledgeAgentProvider().newKnowledgeAgent( name, kbase, configuration, listener );
     }
 
     private static synchronized void setKnowledgeAgentProvider(KnowledgeAgentProvider provider) {

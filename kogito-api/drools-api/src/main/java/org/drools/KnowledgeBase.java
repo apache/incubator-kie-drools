@@ -15,11 +15,22 @@ import org.drools.runtime.StatelessKnowledgeSession;
  * does not contain data, instead sessions are created from the KnowledgeBase in which
  * data can be inserted and process instances started. Creating the KnowlegeBase can be 
  * heavy, where as session creation is very light, so it is recommended that KnowleBase's
- * be cached where possible to allow for repeated session creation. The KnowledgeBase
- * is created from the KnowledgeBaseFactory:
+ * be cached where possible to allow for repeated session creation. The KnowledgeAgent
+ * can be used for this purpose. The KnowledgeBase is created from the KnowledgeBaseFactory,
+ * and a KnowledgeBaseConfiguration can be used.
  * </p>
  * <pre>
  * KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+ * </pre>
+ * 
+ * <p>
+ * Create sequential KnowledgeBase using the given ClassLoader.
+ * </p>
+ * <pre>
+ * Properties properties = new Properties();
+ * properties.setProperty( "org.drools.sequential", "true");
+ * KnowledgeBaseConfiguration kbConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration(properties, myClassLoader);
+ * KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kbConf);
  * </pre>
  * 
  * @see org.drools.KnowledgeBaseFactory

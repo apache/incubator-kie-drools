@@ -15,9 +15,4 @@ public interface KnowledgeAgentProvider {
     KnowledgeAgent newKnowledgeAgent(String name,
                                      KnowledgeBase kbase,
                                      KnowledgeAgentConfiguration configuration);
-
-    KnowledgeAgent newKnowledgeAgent(String name,
-                                     KnowledgeBase kbase,
-                                     KnowledgeAgentConfiguration configuration,
-                                     KnowledgeAgentEventListener listener);
 }

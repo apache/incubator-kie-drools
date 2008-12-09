@@ -1,5 +1,7 @@
 package org.drools.io;
 
+import org.drools.SystemEventListener;
+
 /**
  * <p>
  * Subscribes and unsubscribes the given notifier to the requested resource. The Monitor will inform the notifier when when results it susbcribes to are changed
@@ -29,4 +31,6 @@ public interface ResourceChangeMonitor {
      * @param resource
      */
     void unsubscribeNotifier(ResourceChangeNotifier notifier, Resource resource);
+    
+    public void setSystemEventListener(SystemEventListener listener);
 }

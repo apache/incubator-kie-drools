@@ -2,6 +2,7 @@ package org.drools.agent;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
+import org.drools.SystemEventListener;
 import org.drools.io.Resource;
 import org.drools.io.ResourceChangeScannerConfiguration;
 import org.drools.io.ResourceFactory;
@@ -20,25 +21,31 @@ import org.drools.io.ResourceFactory;
  * KnowledgeBase, instead of upating the existing one, due to the "newInstance" set to "true":
  * <p/>
  * <pre>
- * KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
- *
+ * // Set the interval on the ResourceChangeScannerService if you are to use it and default of 60s is not desirable.
  * ResourceChangeScannerConfiguration sconf = ResourceFactory.getResourceChangeScannerService().newResourceChangeScannerConfiguration();
  * sconf.setProperty( "drools.resource.scanner.interval",
  *                    "30" ); // set the disk scanning interval to 30s, default is 60s
  * ResourceFactory.getResourceChangeScannerService().configure( sconf );
+ * 
+ * KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
  *
  * KnowledgeAgentConfiguration aconf = KnowledgeAgentFactory.newKnowledgeAgentConfiguration();
-        aconf.setProperty( "drools.agent.scanDirectories",
-                           "true" ); // we want to scan directories, not just files, turning this on turns on file scanning
-        aconf.setProperty( "drools.agent.newInstance",
-                           "true" ); // resource changes results in a new instance of the KnowledgeBase being built, 
-                                     // this cannot currently be set to false for incremental building
-        
-        KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent( "test agent", // the name of the agent
-                                                                         kbase, // the rulebase to use, the Agent will also monitor any exist knowledge definitions
-                                                                         aconf );
-        kagent.applyChangeSet( ResourceFactory.newUrlResource( url ) ); // resource to the change-set xml for the resources to add
+ *       aconf.setProperty( "drools.agent.scanDirectories",
+ *                          "true" ); // we want to scan directories, not just files, turning this on turns on file scanning
+ *       aconf.setProperty( "drools.agent.newInstance",
+ *                          "true" ); // resource changes results in a new instance of the KnowledgeBase being built, 
+ *                                    // this cannot currently be set to false for incremental building
+ *       
+ *       KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent( "test agent", // the name of the agent
+ *                                                                        kbase, // the rulebase to use, the Agent will also monitor any exist knowledge definitions
+ *                                                                        aconf );
+ *       kagent.applyChangeSet( ResourceFactory.newUrlResource( url ) ); // resource to the change-set xml for the resources to add
  * </pre>
+ * 
+ * KnowledgeAgents can take a empty KnowledgeBase or a populated one. If a populated KnowledgeBase is provided, the KnowledgeAgent
+ * will iterate KnowledgeBase and subscribe to the Resource that it finds. While it is possible for the KnowledgeBuilder to build
+ * all resources found in a directory, that information is lost by the KnowledgeBuilder so those directories will not be continously scanned.
+ * Only directories specified as part of the applyChangeSet(Resource) method are monitored.
  * 
  * @see org.drools.agent.KnowledgeAgentFactory
  * 
@@ -61,4 +68,6 @@ public interface KnowledgeAgent {
     void monitorResourceChangeEvents(boolean monitor);
     
     void applyChangeSet(Resource resource);
+    
+    void setSystemEventListener(SystemEventListener listener);    
 }
