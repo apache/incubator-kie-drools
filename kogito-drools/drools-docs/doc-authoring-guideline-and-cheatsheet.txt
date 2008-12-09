@@ -40,6 +40,8 @@ Linking syntax in DocBook 5.0+:
 -------------------------------
 http://www.sagehill.net/docbookxsl/Db5Tools.html#Db5UnivLinking
 
+Note: The jboss docbook xsl does not support docbook 5.0 syntax yet,
+so please use the docbook 4.5 linking syntax for the links. 
 
 Markup program list or console output:
 --------------------------------------
@@ -77,6 +79,8 @@ Link image files:
   </figure>
    
 * suitable for screenshots:
+
+  TODO
 
 
 Lists
