@@ -10,6 +10,8 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import org.drools.ChangeSet;
+import org.drools.SystemEventListener;
+import org.drools.SystemEventListenerFactory;
 import org.drools.io.InternalResource;
 import org.drools.io.Resource;
 import org.drools.io.ResourceChangeNotifier;
@@ -22,19 +24,26 @@ public class ResourceChangeScannerImpl
 
     private Map<Resource, Set<ResourceChangeNotifier>> resources;
     private Set<Resource>                              directories;
+    private SystemEventListener                        listener;
 
     public ResourceChangeScannerImpl() {
+        this.listener = SystemEventListenerFactory.getSystemEventListener();
         this.resources = new HashMap<Resource, Set<ResourceChangeNotifier>>();
         this.directories = new HashSet<Resource>();
         this.scannerScheduler = new ProcessChangeSet( this.resources,
-                                                      this );
+                                                      this,
+                                                      this.listener );
         setInterval( 60 );
+        this.listener.info( "ResourceChangeScanner created with default interval=60" );
     }
+    
+    public void setSystemEventListener(SystemEventListener listener) {
+        this.listener = listener;
+    }    
 
     public void configure(ResourceChangeScannerConfiguration configuration) {
         this.scannerScheduler.setInterval( ((ResourceChangeScannerConfigurationImpl) configuration).getInterval() );
-        System.out.println( getInterval() );
-        
+        this.listener.info( "ResourceChangeScanner reconfigured with interval=" + getInterval() );
         synchronized ( this.resources ) {
             this.resources.notify(); // notify wait, so that it will wait again
         }
@@ -50,7 +59,6 @@ public class ResourceChangeScannerImpl
 
     public void subscribeNotifier(ResourceChangeNotifier notifier,
                                   Resource resource) {
-        System.out.println( "scanner : " + resource );
         synchronized ( this.resources ) {
             if ( ((InternalResource) resource).isDirectory() ) {
                 this.directories.add( resource );
@@ -61,6 +69,7 @@ public class ResourceChangeScannerImpl
                 this.resources.put( resource,
                                     notifiers );
             }
+            this.listener.debug( "ResourceChangeScanner subcribing notifier=" + notifier + " to resource=" + resource );
             notifiers.add( notifier );
         }
     }
@@ -72,8 +81,10 @@ public class ResourceChangeScannerImpl
             if ( notifiers == null ) {
                 return;
             }
+            this.listener.debug( "ResourceChangeScanner unsubcribing notifier=" + notifier + " to resource=" + resource );
             notifiers.remove( notifier );
             if ( notifiers.isEmpty() ) {
+                this.listener.debug( "ResourceChangeScanner resource=" + resource + " now has no subscribers" );
                 this.resources.remove( resource );
                 this.directories.remove( resource ); // don't bother with isDirectory check, as doing a remove is harmless if it doesn't exist
             }
@@ -81,7 +92,7 @@ public class ResourceChangeScannerImpl
     }
 
     public void scan() {
-        System.out.println( "attempt scan : " + this.resources.size() );
+        this.listener.debug( "ResourceChangeScanner attempt to scan " + this.resources.size() + " resources" );
 
         synchronized ( this.resources ) {
             Map<ResourceChangeNotifier, ChangeSet> notifications = new HashMap<ResourceChangeNotifier, ChangeSet>();
@@ -90,12 +101,14 @@ public class ResourceChangeScannerImpl
 
             // detect modified and added
             for ( Resource resource : this.directories ) {
+                this.listener.debug( "ResourceChangeScanner scanning directory=" + resource );
                 for ( Resource child : ((InternalResource) resource).listResources() ) {
                     if ( ((InternalResource) child).isDirectory() ) {
                         continue; // ignore sub directories
                     }
                     if ( !this.resources.containsKey( child ) ) {
-                        System.out.println( "found new file : " + child );
+
+                        this.listener.debug( "ResourceChangeScanner new resource=" + child );
                         // child is new
                         ((InternalResource) child).setResourceType( ((InternalResource) resource).getResourceType() );
                         Set<ResourceChangeNotifier> notifiers = this.resources.get( resource ); // get notifiers for this directory
@@ -123,10 +136,10 @@ public class ResourceChangeScannerImpl
                 Set<ResourceChangeNotifier> notifiers = entry.getValue();
 
                 if ( !((InternalResource) resource).isDirectory() ) {
-                    // detect if Resource has been modified
-                    System.out.println( "scan " + resource + ": " + ((InternalResource) resource).getLastModified() + " : " + ((InternalResource) resource).getLastRead() );
+                    // detect if Resource has been removed
                     long lastModified = ((InternalResource) resource).getLastModified();
                     if ( lastModified == 0 ) {
+                        this.listener.debug( "ResourceChangeScanner removed resource=" + resource );
                         removed.add( resource );
                         // resource is no longer present
                         // iterate notifiers for this resource and add to each removed
@@ -144,6 +157,7 @@ public class ResourceChangeScannerImpl
                             changeSet.getResourcesRemoved().add( resource );
                         }
                     } else if ( ((InternalResource) resource).getLastRead() < lastModified ) {
+                        this.listener.debug( "ResourceChangeScanner modified resource=" + resource );
                         // it's modified
                         // iterate notifiers for this resource and add to each modified
                         for ( ResourceChangeNotifier notifier : notifiers ) {
@@ -171,13 +185,12 @@ public class ResourceChangeScannerImpl
             for ( Entry<ResourceChangeNotifier, ChangeSet> entry : notifications.entrySet() ) {
                 ResourceChangeNotifier notifier = entry.getKey();
                 ChangeSet changeSet = entry.getValue();
-                notifier.publishKnowledgeBaseChangeSet( changeSet );
+                notifier.publishChangeSet( changeSet );
             }
         }
     }
 
     public void setInterval(int interval) {
-
         this.scannerScheduler.setInterval( interval * 1000 );
     }
 
@@ -199,7 +212,7 @@ public class ResourceChangeScannerImpl
             this.resources.notify(); // notify wait, so that it will wait again
         }
     }
-    
+
     public void reset() {
         this.resources.clear();
         this.directories.clear();
@@ -215,11 +228,14 @@ public class ResourceChangeScannerImpl
         private ResourceChangeScannerImpl                  scanner;
         private long                                       interval;
         private Map<Resource, Set<ResourceChangeNotifier>> resources;
+        private SystemEventListener                        listener;
 
         ProcessChangeSet(Map<Resource, Set<ResourceChangeNotifier>> resources,
-                         ResourceChangeScannerImpl scanner) {
+                         ResourceChangeScannerImpl scanner,
+                         SystemEventListener listener) {
             this.resources = resources;
             this.scanner = scanner;
+            this.listener = listener;
         }
 
         public void setInterval(long interval) {
@@ -240,16 +256,20 @@ public class ResourceChangeScannerImpl
 
         public void run() {
             synchronized ( this.resources ) {
+                if ( this.scan ) {
+                    this.listener.info( "ResourceChangeNotification scanner has started" );
+                }
                 while ( this.scan ) {
                     this.scanner.scan();
                     try {
-                        System.out.println( "scanner waiting" );
+                        this.listener.debug( "ResourceChangeNotification scanner thread is waiting for " + ( this.interval / 1000 ) );
                         this.resources.wait( this.interval );
                     } catch ( InterruptedException e ) {
-                        System.out.println( "wait interrupted, new interval is " + this.interval + "s" );
-                        // swallow, this will happen when we are waiting and the interval changes
+                        this.listener.exception( new RuntimeException( "ResourceChangeNotification ChangeSet scanning thread was interrupted",
+                                                                       e ) );
                     }
                 }
+                this.listener.info( "ResourceChangeNotification scanner has stopped" );
             }
         }
     }

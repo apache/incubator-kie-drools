@@ -5,10 +5,13 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.net.URL;
 
+import org.drools.SystemEventListener;
+import org.drools.agent.impl.PrintStreamSystemEventListener;
 import org.drools.io.Resource;
 import org.drools.io.ResourceChangeNotifier;
 import org.drools.io.ResourceChangeScanner;
 import org.drools.io.ResourceProvider;
+import org.drools.util.DelegatingSystemEventListener;
 
 public class ResourceProviderImpl
     implements
@@ -16,12 +19,12 @@ public class ResourceProviderImpl
 
     private ResourceChangeNotifier notifier;
     private ResourceChangeScanner  scanner;
-    private Object                 lock = new Object();
+    private Object                 lock     = new Object();    
 
     public ResourceChangeNotifier getResourceChangeNotifierService() {
         synchronized ( this.lock ) {
             if ( this.notifier == null ) {
-                this.notifier = new ResourceChangeNotifierImpl();               
+                this.notifier = new ResourceChangeNotifierImpl( );
             }
             return this.notifier;
         }
@@ -30,7 +33,7 @@ public class ResourceProviderImpl
     public ResourceChangeScanner getResourceChangeScannerService() {
         synchronized ( this.lock ) {
             if ( scanner == null ) {
-                this.scanner = new ResourceChangeScannerImpl();
+                this.scanner = new ResourceChangeScannerImpl( );
             }
             return this.scanner;
         }

@@ -70,7 +70,7 @@ public class KnowledgeAgentTest extends TestCase {
         String xml = "";
         xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'";
         xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
-        xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-4.0.xsd' >";
+        xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' >";
         xml += "    <add> ";
         xml += "        <resource source='" + f1.toURI().toURL() + "' type='DRL' />";
         xml += "        <resource source='" + f2.toURI().toURL() + "' type='DRL' />";
