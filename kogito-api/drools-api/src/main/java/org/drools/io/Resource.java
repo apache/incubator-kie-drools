@@ -11,7 +11,7 @@ import java.io.Reader;
  */
 public interface Resource {
     /**
-     * Open an InputStream to the resource, the user most close this when finished.
+     * Open an InputStream to the resource, the user must close this when finished.
      * 
      * @return
      * @throws IOException
