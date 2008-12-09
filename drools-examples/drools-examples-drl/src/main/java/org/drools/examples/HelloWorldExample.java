@@ -10,6 +10,8 @@ import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.definition.KnowledgePackage;
+import org.drools.event.rule.DebugAgendaEventListener;
+import org.drools.event.rule.DebugWorkingMemoryEventListener;
 import org.drools.io.ResourceFactory;
 import org.drools.logger.KnowledgeRuntimeLogger;
 import org.drools.logger.KnowledgeRuntimeLoggerFactory;
@@ -46,13 +48,13 @@ public class HelloWorldExample {
 				.newStatefulKnowledgeSession();
 		ksession.setGlobal("list", new ArrayList<Object>());
 
-		// ksession.addEventListener( new DebugAgendaEventListener() );
-		// ksession.addEventListener( new DebugWorkingMemoryEventListener() );
+		ksession.addEventListener(new DebugAgendaEventListener());
+		ksession.addEventListener(new DebugWorkingMemoryEventListener());
 
 		// setup the audit logging
 		KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory
 				.newFileLogger(ksession, "log/helloworld");
-		
+
 		final Message message = new Message();
 		message.setMessage("Hello World");
 		message.setStatus(Message.HELLO);
