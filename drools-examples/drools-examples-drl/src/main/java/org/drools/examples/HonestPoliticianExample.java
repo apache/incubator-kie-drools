@@ -32,16 +32,12 @@ public class HonestPoliticianExample {
 
         final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "log/honest-politician");
+        KnowledgeRuntimeLogger klogger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "log/honest-politician");
 
-        final Politician blair = new Politician( "blair",
-                                                 true );
-        final Politician bush = new Politician( "bush",
-                                                true );
-        final Politician chirac = new Politician( "chirac",
-                                                  true );
-        final Politician schroder = new Politician( "schroder",
-                                                    true );
+        final Politician blair = new Politician( "blair", true );
+        final Politician bush = new Politician( "bush", true );
+        final Politician chirac = new Politician( "chirac", true );
+        final Politician schroder = new Politician( "schroder", true );
 
         ksession.insert( blair );
         ksession.insert( bush );
@@ -50,7 +46,7 @@ public class HonestPoliticianExample {
 
         ksession.fireAllRules();
 
-        logger.close();
+        klogger.close();
 
         ksession.dispose();
     }

@@ -48,7 +48,6 @@ public class PetStore {
             kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
             //RuleB
-
             Vector<Product> stock = new Vector<Product>();
             stock.add( new Product( "Gold Fish",
                                     5 ) );

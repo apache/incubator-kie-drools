@@ -11,8 +11,7 @@ rule "Hello World"
 	then
 	System.out.println( message ); 
 	modify ( m ) { message = "Goodbyte cruel world",
-	               status = Message.GOODBYE };
-	System.out.println( message ); 	               
+	               status = Message.GOODBYE };	               
 end
 
 rule "Good Bye"
