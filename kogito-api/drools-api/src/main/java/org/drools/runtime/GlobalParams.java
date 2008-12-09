@@ -4,8 +4,6 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * 
- * @author mproctor
  *
  */
 public interface GlobalParams {

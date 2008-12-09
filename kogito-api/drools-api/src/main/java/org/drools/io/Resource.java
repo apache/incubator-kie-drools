@@ -6,7 +6,7 @@ import java.io.Reader;
 
 /**
  * <p>
- * Generic interface to provide a Reader or Input stream for the underlying IO resource.
+ * Generic interface to provide a Reader or InputStream for the underlying IO resource.
  * </p>
  */
 public interface Resource {
