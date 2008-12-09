@@ -56,7 +56,7 @@
 			<example>
 				<title>Creating the PetStore RuleBase - extract from PetStore.java main() method</title>
 
-				<programlisting>KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+				<programlisting><![CDATA[KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
             kbuilder.add( ResourceFactory.newClassPathResource( "PetStore.drl",
                                                                         PetStore.class ),
@@ -78,7 +78,7 @@
             PetStoreUI ui = new PetStoreUI( stock,
                                             new CheckoutCallback( kbase ) );
             ui.createAndShowGUI();
-</programlisting>
+]]></programlisting>
 			</example>
 
 			<para>This code above loads the rules (drl) file from the classpath. Unlike other examples where the facts are asserted and fired straight away, this example defers this step to later. The way it does this is via the second last line where the PetStoreUI is created using a constructor the passes in the Vector called stock containing products, and an instance of the CheckoutCallback class containing the RuleBase that we have just loaded.</para>
@@ -88,7 +88,7 @@
 			<example>
 				<title>Firing the Rules - extract from the CheckOutCallBack.checkout() method</title>
 
-				<programlisting> public String checkout(JFrame frame, List<Product> items) {
+				<programlisting><![CDATA[public String checkout(JFrame frame, List<Product> items) {
             Order order = new Order();
 
             //Iterate through list and add to cart
@@ -121,7 +121,7 @@
             //returns the state of the cart
             return order.toString();
         }
-</programlisting>
+]]></programlisting>
 			</example>
 
 			<para>Two items get passed into this method; A handle to the JFrame Swing Component surrounding the output text frame (bottom of the GUI if / when you run the component). The second item is a list of order items; this comes from the TableModel the stores the information from the 'Table' area at the top right section of the GUI.</para>
@@ -161,7 +161,7 @@ global javax.swing.JTextArea textArea
 			<example>
 				<title>Java Functions in the Rules - extract (2) from PetStore.drl</title>
 
-				<programlisting>function void doCheckout(JFrame frame, WorkingMemory workingMemory) {
+				<programlisting><![CDATA[function void doCheckout(JFrame frame, WorkingMemory workingMemory) {
     Object[] options = {"Yes",
                         "No"};
                             
@@ -205,7 +205,7 @@ function boolean requireTank(JFrame frame, WorkingMemory workingMemory, Order or
     }      
     return true;
 }
-</programlisting>
+]]></programlisting>
 			</example>
   
 
@@ -228,7 +228,7 @@ function boolean requireTank(JFrame frame, WorkingMemory workingMemory, Order or
 			<example>
 				<title>Putting each (individual) item into working memory - extract (3) from PetStore.drl</title>
 
-				<programlisting>// insert each item in the shopping cart into the Working Memory 
+				<programlisting><![CDATA[// insert each item in the shopping cart into the Working Memory 
 // insert each item in the shopping cart into the Working Memory 
 rule "Explode Cart"
     agenda-group "init"
@@ -244,7 +244,7 @@ rule "Explode Cart"
 		drools.getKnowledgeRuntime().getAgenda().getAgendaGroup( "evaluate" ).setFocus();		
 end
 
-</programlisting>
+]]></programlisting>
 			</example>
 
 			<para>This rule matches against all orders that do not yet have an Order.grossTotal calculated . It loops for each purchase item in that order. Some of the <emphasis role="italic">Explode Cart</emphasis> Rule should be familiar ; the rule name, the salience (suggesting of the order that the rules should be fired in) and the dialect set to <emphasis role="italic">java</emphasis>. There are three new items:</para>
@@ -268,7 +268,7 @@ end
 			<example>
 				<title>Show Items in the GUI extract (4) from PetStore.drl</title>
 
-				<programlisting>rule "Show Items"
+				<programlisting><![CDATA[rule "Show Items"
     agenda-group "show items"
     dialect "mvel"
 when
@@ -277,7 +277,7 @@ when
 then
    textArea.append( $p.product + "\n");
 end
-</programlisting>
+]]></programlisting>
 			</example>
 
 			<para>The <emphasis role="italic">show items</emphasis> agenda-group has only one rule, also called <emphasis role="italic">Show Items</emphasis> (note the difference in case). For each purchase on the order currently in the working memory (session) it logs details to the text area (at the bottom of the GUI). The <emphasis role="italic">textArea</emphasis> variable used to do this is one of the Global Variables we looked at earlier.</para>
@@ -287,7 +287,7 @@ end
 			<example>
 				<title>Evaluate Agenda Group extract (5) from PetStore.drl</title>
 
-				<programlisting>// Free Fish Food sample when we buy a Gold Fish if we haven't already  bought 
+				<programlisting><![CDATA[// Free Fish Food sample when we buy a Gold Fish if we haven't already  bought 
 // Fish Food and dont already have a Fish Food Sample
 rule "Free Fish Food Sample"
     agenda-group "evaluate"
@@ -317,7 +317,7 @@ when
 then
     requireTank(frame, drools.getWorkingMemory(), $order, $fishTank, $total); 
 end
-</programlisting>
+]]></programlisting>
 			</example>
       
 
@@ -373,7 +373,7 @@ end</programlisting>
 			<example>
 				<title>Checkout Rules- extract (7) from PetStore.drl</title>
 
-				<programlisting>rule "Gross Total"
+				<programlisting><![CDATA[rule "Gross Total"
     agenda-group "checkout"
     dialect "mvel"
 when
@@ -405,7 +405,7 @@ then
    $order.discountedTotal = $order.grossTotal * 0.90;
    textArea.append( "discountedTotal total=" + $order.discountedTotal + "\n" );
 end
-</programlisting>
+]]></programlisting>
 			</example>
 
 			<para>There are three rules in the <emphasis role="italic">checkout</emphasis> agenda-group</para>

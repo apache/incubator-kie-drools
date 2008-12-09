@@ -21,7 +21,7 @@
 		<example>
 			<title>Banking Tutorial : RuleRunner</title>
 
-			<programlisting>public class RuleRunner {
+			<programlisting><![CDATA[public class RuleRunner {
 
     public RuleRunner() {
     }
@@ -52,7 +52,7 @@
 
         ksession.fireAllRules();
     }
-}</programlisting>
+}]]></programlisting>
 		</example>
 
 		<para>This is our first Example1.java class it loads and executes a single drl file "Example.drl" but inserts no data.</para>
