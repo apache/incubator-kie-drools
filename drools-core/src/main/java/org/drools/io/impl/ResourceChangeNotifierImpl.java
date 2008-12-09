@@ -13,6 +13,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.drools.ChangeSet;
+import org.drools.SystemEventListener;
+import org.drools.SystemEventListenerFactory;
 import org.drools.event.io.ResourceChangeListener;
 import org.drools.io.Resource;
 import org.drools.io.ResourceChangeMonitor;
@@ -23,23 +25,31 @@ public class ResourceChangeNotifierImpl
     ResourceChangeNotifier {
     private Map<Resource, Set<ResourceChangeListener>> subscriptions;
     private List<ResourceChangeMonitor>                monitors;
+    private SystemEventListener                        listener;
 
-    
-    private LinkedBlockingQueue<ChangeSet> queue;
+    private LinkedBlockingQueue<ChangeSet>             queue;
 
     public ResourceChangeNotifierImpl() {
+        this.listener = SystemEventListenerFactory.getSystemEventListener();
         this.subscriptions = new HashMap<Resource, Set<ResourceChangeListener>>();
         this.monitors = new CopyOnWriteArrayList<ResourceChangeMonitor>();
         this.queue = new LinkedBlockingQueue<ChangeSet>();
+        this.listener.info( "ResourceChangeNotification created" );
+    }
+    
+    public void setSystemEventListener(SystemEventListener listener) {
+        this.listener = listener;
     }
 
     public void addResourceChangeMonitor(ResourceChangeMonitor monitor) {
         if ( !this.monitors.contains( monitor ) ) {
+            this.listener.debug( "ResourceChangeNotification monitor added monitor=" + monitor );
             this.monitors.add( monitor );
         }
     }
 
     public void removeResourceChangeMonitor(ResourceChangeMonitor monitor) {
+        this.listener.debug( "ResourceChangeNotification monitor removed monitor=" + monitor );
         this.monitors.remove( monitor );
     }
 
@@ -49,8 +59,8 @@ public class ResourceChangeNotifierImpl
 
     public void subscribeResourceChangeListener(ResourceChangeListener listener,
                                                 Resource resource) {
-        System.out.println( "notifier : " + resource );
-        synchronized ( this.subscriptions ) {            
+        this.listener.debug( "ResourceChangeNotification subscribing listener=" + listener + " to resource=" + resource );
+        synchronized ( this.subscriptions ) {
             Set<ResourceChangeListener> listeners = this.subscriptions.get( resource );
             if ( listeners == null ) {
                 listeners = new HashSet<ResourceChangeListener>();
@@ -67,14 +77,15 @@ public class ResourceChangeNotifierImpl
 
     public void unsubscribeResourceChangeListener(ResourceChangeListener listener,
                                                   Resource resource) {
+        this.listener.debug( "ResourceChangeNotification unsubscribing listener=" + listener + " to resource=" + resource );
         synchronized ( this.subscriptions ) {
             Set<ResourceChangeListener> listeners = this.subscriptions.get( resource );
             if ( listeners == null ) {
                 return;
             }
-            
+
             listeners.remove( listeners );
-    
+
             if ( listeners.isEmpty() ) {
                 this.subscriptions.remove( resource );
                 for ( ResourceChangeMonitor monitor : this.monitors ) {
@@ -87,30 +98,32 @@ public class ResourceChangeNotifierImpl
 
     public void subscribeChildResource(Resource directory,
                                        Resource child) {
+        this.listener.debug( "ResourceChangeNotification subscribing directory=" + directory + " content resource=" + child );
         for ( ResourceChangeListener listener : this.subscriptions.get( directory ) ) {
             subscribeResourceChangeListener( listener,
                                              child );
         }
     }
 
-    public void publishKnowledgeBaseChangeSet(ChangeSet changeSet) {
+    public void publishChangeSet(ChangeSet changeSet) {
         try {
+            this.listener.debug( "ResourceChangeNotification received ChangeSet notification" );
             this.queue.put( changeSet );
         } catch ( InterruptedException e ) {
-            // @TODO print proper error message
-            e.printStackTrace();
+            this.listener.exception( new RuntimeException( "ResourceChangeNotification Exception while adding to notification queue",
+                                                           e ) );
         }
-        
+
     }
-    
+
     public void processChangeSet(ChangeSet changeSet) {
         // this provides the complete published change set for this notifier.
         // however different listeners might be listening to different resources, so provide
         // listener change specified change sets.
 
-
         Map<ResourceChangeListener, ChangeSetImpl> localChangeSets = new HashMap<ResourceChangeListener, ChangeSetImpl>();
 
+        this.listener.debug( "ResourceChangeNotification processing ChangeSet" );
         for ( Resource resource : changeSet.getResourcesAdded() ) {
             Set<ResourceChangeListener> listeners = this.subscriptions.get( resource );
             for ( ResourceChangeListener listener : listeners ) {
@@ -126,6 +139,7 @@ public class ResourceChangeNotifierImpl
                     localChangeSet.setResourcesAdded( new ArrayList<Resource>() );
                 }
                 localChangeSet.getResourcesAdded().add( resource );
+                this.listener.debug( "ResourceChangeNotification ChangeSet added resource=" + resource + " for listener=" + listener );
 
             }
         }
@@ -144,6 +158,7 @@ public class ResourceChangeNotifierImpl
                     localChangeSet.setResourcesRemoved( new ArrayList<Resource>() );
                 }
                 localChangeSet.getResourcesRemoved().add( resource );
+                this.listener.debug( "ResourceChangeNotification ChangeSet removed resource=" + resource + " for listener=" + listener );
             }
         }
 
@@ -161,6 +176,7 @@ public class ResourceChangeNotifierImpl
                     localChangeSet.setResourcesModified( new ArrayList<Resource>() );
                 }
                 localChangeSet.getResourcesModified().add( resource );
+                this.listener.debug( "ResourceChangeNotification ChangeSet modified resource=" + resource + " for listener=" + listener );
             }
         }
 
@@ -180,13 +196,15 @@ public class ResourceChangeNotifierImpl
         //            }
         //        }        
     }
-    
+
     public void start() {
         if ( this.processChangeSet == null ) {
-            this.processChangeSet = new ProcessChangeSet( this.queue, this );
+            this.processChangeSet = new ProcessChangeSet( this.queue,
+                                                          this,
+                                                          this.listener );
         }
-        
-        if ( ! this.processChangeSet.isRunning() ) {
+
+        if ( !this.processChangeSet.isRunning() ) {
             this.processChangeSet.setNotify( true );
             thread = new Thread( this.processChangeSet );
             thread.start();
@@ -194,42 +212,51 @@ public class ResourceChangeNotifierImpl
     }
 
     public void stop() {
-//        this.processChangeSet.stop();
-//        this.queue.
-    }    
-    
-    private Thread thread;
+
+    }
+
+    private Thread           thread;
     private ProcessChangeSet processChangeSet;
-    
-    public static class ProcessChangeSet implements Runnable {
-        private volatile boolean notify;
+
+    public static class ProcessChangeSet
+        implements
+        Runnable {
+        private volatile boolean               notify;
         private LinkedBlockingQueue<ChangeSet> queue;
-        private ResourceChangeNotifierImpl notifier;
-        
-        ProcessChangeSet(LinkedBlockingQueue<ChangeSet> queue, ResourceChangeNotifierImpl notifier) {
+        private ResourceChangeNotifierImpl     notifier;
+        private SystemEventListener            listener;
+
+        ProcessChangeSet(LinkedBlockingQueue<ChangeSet> queue,
+                         ResourceChangeNotifierImpl notifier,
+                         SystemEventListener listener) {
             this.queue = queue;
-            this.notifier = notifier;            
+            this.notifier = notifier;
+            this.listener = listener;
         }
-        
-        public void setNotify( boolean notify ) {
+
+        public void setNotify(boolean notify) {
             this.notify = notify;
         }
-        
+
         public boolean isRunning() {
             return this.notify;
         }
-        
+
         public void run() {
-            while ( this.notify ) {           
+            if ( this.notify ) {
+                this.listener.info( "ResourceChangeNotification has started listening for ChangeSet publications" );
+            }
+            while ( this.notify ) {
                 try {
-                    System.out.println( "notifier queueing" );
+                    this.listener.debug( "ResourceChangeNotification notifier thread is waiting for queue update" );
                     this.notifier.processChangeSet( this.queue.take() );
                 } catch ( InterruptedException e ) {
-                    // @TODO print proper error message
-                    e.printStackTrace();
+                    this.listener.exception( new RuntimeException( "ResourceChangeNotification ChangeSet publication thread was interrupted",
+                                                                   e ) );
                 }
                 Thread.yield();
             }
+            this.listener.info( "ResourceChangeNotification has stopped listening for ChangeSet publications" );
         }
     }
 

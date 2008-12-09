@@ -561,6 +561,18 @@ public class RuleAgent {
 
             }
 
+            public void debug(String message,
+                              Object object) {
+            }
+
+            public void info(String message,
+                             Object object) {
+            }
+
+            public void warning(String message,
+                                Object object) { 
+            }
+
         };
     }
 

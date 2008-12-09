@@ -34,4 +34,22 @@ public class MockListener
 
     }
 
+    public void debug(String message,
+                      Object object) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public void info(String message,
+                     Object object) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public void warning(String message,
+                        Object object) {
+        // TODO Auto-generated method stub
+        
+    }
+
 }

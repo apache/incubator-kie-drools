@@ -566,6 +566,24 @@ public class RuleAgentTest extends TestCase {
             public void setAgentName(String n) {
                 name[0] = n;
             }
+
+            public void debug(String message,
+                              Object object) {
+                // TODO Auto-generated method stub
+                
+            }
+
+            public void info(String message,
+                             Object object) {
+                // TODO Auto-generated method stub
+                
+            }
+
+            public void warning(String message,
+                                Object object) {
+                // TODO Auto-generated method stub
+                
+            }
         };
 
         File dir = RuleBaseAssemblerTest.getTempDirectory();
@@ -755,6 +773,24 @@ public class RuleAgentTest extends TestCase {
         public void warning(String message) {
             this.warningCalled = false;
 
+        }
+
+        public void debug(String message,
+                          Object object) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        public void info(String message,
+                         Object object) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        public void warning(String message,
+                            Object object) {
+            // TODO Auto-generated method stub
+            
         }
 
     }
