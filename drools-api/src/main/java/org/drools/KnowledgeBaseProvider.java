@@ -6,7 +6,7 @@ import java.util.Properties;
  * KnowledgeBaseProvider is used by the KnowledgeBaseFacotry to "provide" it's concrete implementation.
  * 
  * This class is not considered stable and may change, the user is protected from this change by using 
- * the Factory api, which is consiered stable.
+ * the KnowledgeBaseFactory api, which is considered stable.
  *
  */
 public interface KnowledgeBaseProvider {

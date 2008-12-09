@@ -3,6 +3,7 @@ package org.drools.io;
 import java.util.Collection;
 
 import org.drools.ChangeSet;
+import org.drools.SystemEventListener;
 import org.drools.event.io.ResourceChangeListener;
 
 /**
@@ -63,7 +64,9 @@ public interface ResourceChangeNotifier {
      * 
      * @param changeSet
      */
-    void publishKnowledgeBaseChangeSet(ChangeSet changeSet);
+    void publishChangeSet(ChangeSet changeSet);
+    
+    public void setSystemEventListener(SystemEventListener listener);
     
     /**
      * Start the service, this will create a new Thread.

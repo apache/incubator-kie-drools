@@ -10,6 +10,16 @@ import java.util.Properties;
  * <pre>
  * KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
  * </pre>
+ * 
+ * <p>
+ * Create sequential KnowledgeBase using the given ClassLoader.
+ * </p>
+ * <pre>
+ * Properties properties = new Properties();
+ * properties.setProperty( "org.drools.sequential", "true");
+ * KnowledgeBaseConfiguration kbConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration(properties, myClassLoader);
+ * KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kbConf);
+ * </pre>
  *
  * @see org.drools.KnowledgeBase
  */

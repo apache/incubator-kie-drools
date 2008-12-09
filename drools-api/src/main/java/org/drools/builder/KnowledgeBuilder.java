@@ -12,6 +12,7 @@ import org.drools.io.Resource;
  * The KnowledgeBuilder is responsible for taking source files, such as a .drl file or an xls file,
  * and turning them into a KnowledgePackage of rule and process definitions which a KnowledgeBase
  * can consume. It uses the ResourceType enum to tell it the type of the resource it is being asked to build.
+ * 
  * </p>
  * 
  * <p>
