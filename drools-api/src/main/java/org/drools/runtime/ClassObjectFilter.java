@@ -2,7 +2,6 @@ package org.drools.runtime;
 
 /**
  * Filters Objects by Class, only accepting Classes of the specified type
- * @author mproctor
  *
  */
 public class ClassObjectFilter

@@ -18,7 +18,8 @@ import org.drools.io.ResourceFactory;
  * <p>
  * The Follow example constructs an agent that will build a new KnowledgeBase from the files specified in the path String.
  * It will poll those files every 30 seconds to see if they are updated. If new files are found it will construct a new 
- * KnowledgeBase, instead of upating the existing one, due to the "newInstance" set to "true":
+ * KnowledgeBase, instead of updating the existing one, due to the "newInstance" set to "true" (however currently only the value of
+ * "true" is supported and is hard coded into the engine):
  * <p/>
  * <pre>
  * // Set the interval on the ResourceChangeScannerService if you are to use it and default of 60s is not desirable.
@@ -44,10 +45,11 @@ import org.drools.io.ResourceFactory;
  * 
  * KnowledgeAgents can take a empty KnowledgeBase or a populated one. If a populated KnowledgeBase is provided, the KnowledgeAgent
  * will iterate KnowledgeBase and subscribe to the Resource that it finds. While it is possible for the KnowledgeBuilder to build
- * all resources found in a directory, that information is lost by the KnowledgeBuilder so those directories will not be continously scanned.
+ * all resources found in a directory, that information is lost by the KnowledgeBuilder so those directories will not be continuously scanned.
  * Only directories specified as part of the applyChangeSet(Resource) method are monitored.
  * 
  * @see org.drools.agent.KnowledgeAgentFactory
+ * @see org.drools.agent.KnowledgeAgentConfiguration
  * 
  */
 public interface KnowledgeAgent {
