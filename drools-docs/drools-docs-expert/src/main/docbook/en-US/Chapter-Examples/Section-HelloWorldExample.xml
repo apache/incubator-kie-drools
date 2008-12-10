@@ -77,8 +77,8 @@ final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();</
     <title>HelloWorld example: Event logging and Auditing</title>
 
     <programlisting>// setup the debug listeners
-session.addEventListener( new DebugAgendaEventListener() );
-session.addEventListener( new DebugWorkingMemoryEventListener() );
+ksession.addEventListener( new DebugAgendaEventListener() );
+ksession.addEventListener( new DebugWorkingMemoryEventListener() );
         
 // setup the audit logging
 KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "log/helloworld");</programlisting>
