@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter version="5.0" xmlns="http://docbook.org/ns/docbook"
+	xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
+	xmlns:svg="http://www.w3.org/2000/svg" xmlns:m="http://www.w3.org/1998/Math/MathML"
+	xmlns:html="http://www.w3.org/1999/xhtml" xmlns:db="http://docbook.org/ns/docbook">
+	<title>Drools Fusion Features</title>
+
+    <xi:include href="Section-Events.xml" />
+
+	<xi:include href="Section-SessionClock.xml" />
+
+	<xi:include href="Section-StreamsSupport.xml" />
+
+	<xi:include href="Section-TemporalReasoning.xml" />
+
+	<xi:include href="Section-EventProcessingModes.xml" />
+
+	<xi:include href="Section-SlidingWindows.xml" />
+
+	<xi:include href="Section-RulebasePartitioning.xml" />
+
+	<xi:include href="Section-MemoryManagement.xml" />
+
+	<xi:include href="Section-Examples.xml" /> 
+</chapter>
