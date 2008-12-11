@@ -214,10 +214,10 @@ public class BRLPersitenceTest extends TestCase {
         assertEquals(3, m2.rhs.length);
     }
 
-    private String loadResource(final String name) throws Exception {
+    public static String loadResource(final String name) throws Exception {
 
         //        System.err.println( getClass().getResource( name ) );
-        final InputStream in = getClass().getResourceAsStream( name );
+        final InputStream in = BRLPersitenceTest.class.getResourceAsStream( name );
 
 
         final Reader reader = new InputStreamReader( in );

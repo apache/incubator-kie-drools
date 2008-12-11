@@ -196,7 +196,7 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 		assertEquals("bar2", rm.metadataList[1].value);
 
 	}
-	
+
 	public void testLHS() {
 		GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
 		String[] row = new String[] {"1", "desc", "a", "mike", "33 + 1", "age > 6", "stilton"};
@@ -288,6 +288,7 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 		ActionSetFieldCol asf2 = new ActionSetFieldCol();
 		asf2.boundName = "a";
 		asf2.factField = "field2";
+		asf2.update = true;
 		asf2.type = SuggestionCompletionEngine.TYPE_NUMERIC;
 		cols.add(asf2);
 
@@ -359,6 +360,7 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 		asf.boundName = "x";
 		asf.factField = "age";
 		asf.type = "String";
+
 		dt.actionCols.add(asf);
 
 		String[][] data = new String[][] {
@@ -367,6 +369,45 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 		dt.data = data;
 
 		String drl = GuidedDTDRLPersistence.getInstance().marshal(dt);
+
+		//System.err.println(drl);
+
+		assertTrue(drl.indexOf("Context( )") > -1);
+		assertTrue(drl.indexOf("x.setAge") > drl.indexOf("Context( )"));
+		assertFalse(drl.indexOf("update( x );") > -1);
+
+		dt.data = new String[][] {
+				new String[] {"1", "desc", "", "old"}
+			};
+		drl = GuidedDTDRLPersistence.getInstance().marshal(dt);
+		assertEquals(-1, drl.indexOf("Context( )"));
+
+
+	}
+
+	public void testUpdateModify() {
+		GuidedDecisionTable dt = new GuidedDecisionTable();
+		ConditionCol c = new ConditionCol();
+		c.boundName = "x";
+		c.factType = "Context";
+		c.constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
+		dt.conditionCols.add(c);
+		ActionSetFieldCol asf = new ActionSetFieldCol();
+		asf.boundName = "x";
+		asf.factField = "age";
+		asf.type = "String";
+		asf.update = true;
+
+		dt.actionCols.add(asf);
+
+		String[][] data = new String[][] {
+			new String[] {"1", "desc", "y", "old"}
+		};
+		dt.data = data;
+
+		String drl = GuidedDTDRLPersistence.getInstance().marshal(dt);
+
+		System.err.println(drl);
 
 		assertTrue(drl.indexOf("Context( )") > -1);
 		assertTrue(drl.indexOf("x.setAge") > drl.indexOf("Context( )"));
@@ -378,6 +419,7 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 		drl = GuidedDTDRLPersistence.getInstance().marshal(dt);
 		assertEquals(-1, drl.indexOf("Context( )"));
 
+		assertTrue(drl.indexOf("update( x );") > -1);
 
 	}
 
