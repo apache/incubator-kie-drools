@@ -5,16 +5,13 @@
 	xmlns:svg="http://www.w3.org/2000/svg"
 	xmlns:m="http://www.w3.org/1998/Math/MathML"
 	xmlns:html="http://www.w3.org/1999/xhtml"
-	xmlns:db="http://docbook.org/ns/docbook" xml:base="../../">
-	<title>Memory Management</title>	
+	xmlns:db="http://docbook.org/ns/docbook">
+	<title>Sliding Windows</title>	
 	
-	<section>
-		<title>Explicit expiration policy</title> 	
-	</section>
-	<section>
-		<title>Inferred expiration policy</title> 						
-	</section>
-	<section>
-		<title>How expiration policy is implemented</title> 						
-	</section>		
+	<xi:include href="Section-SlidingWindows_SlidingTimeWindows.xml" />
+	
+	<xi:include href="Section-SlidingWindows_SlidingLengthWindows.xml" />
+	
+	
+	
 </section>
