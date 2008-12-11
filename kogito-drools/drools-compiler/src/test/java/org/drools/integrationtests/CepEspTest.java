@@ -19,8 +19,10 @@ import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
 import org.drools.StockTick;
 import org.drools.RuleBaseConfiguration.EventProcessingMode;
+import org.drools.base.evaluators.TimeIntervalParser;
 import org.drools.common.EventFactHandle;
 import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalRuleBase;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
@@ -276,6 +278,18 @@ public class CepEspTest extends TestCase {
         assertEquals( 2,
                       results.size() );
 
+    }
+
+    public void testEventExpiration() throws Exception {
+        // read in the source
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_EventExpiration.drl" ) );
+        final RuleBase ruleBase = loadRuleBase( reader );
+        
+        final InternalRuleBase internal = (InternalRuleBase) ruleBase;
+        final TimeIntervalParser parser = new TimeIntervalParser();
+        
+        assertEquals( parser.parse( "1h30m" )[0].longValue(), 
+                      internal.getTypeDeclaration( StockTick.class ).getExpirationOffset() );
     }
 
     public void testTimeRelationalOperators() throws Exception {

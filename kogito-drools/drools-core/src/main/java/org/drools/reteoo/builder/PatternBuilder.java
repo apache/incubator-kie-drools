@@ -37,6 +37,7 @@ import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Pattern;
 import org.drools.rule.PatternSource;
 import org.drools.rule.RuleConditionElement;
+import org.drools.rule.TypeDeclaration;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.Constraint;
 import org.drools.spi.ObjectType;
@@ -224,7 +225,16 @@ public class PatternBuilder
                                                  objectType,
                                                  context );
         if( objectType.isEvent() && EventProcessingMode.STREAM.equals( context.getRuleBase().getConfiguration().getEventProcessingMode() ) ) {
-            otn.setExpirationOffset( context.getTemporalDistance().getExpirationOffset( pattern ) );
+            long expirationOffset = 0;
+            for( TypeDeclaration type : context.getRuleBase().getTypeDeclarations() ) {
+                if( type.getObjectType().isAssignableFrom( objectType ) ) {
+                    expirationOffset = Math.max( type.getExpirationOffset(), expirationOffset );
+                }
+                
+            }
+            if( expirationOffset == 0) {
+                otn.setExpirationOffset( context.getTemporalDistance().getExpirationOffset( pattern ) );
+            }
         }
 
         context.setObjectSource( (ObjectSource) utils.attachNode( context,

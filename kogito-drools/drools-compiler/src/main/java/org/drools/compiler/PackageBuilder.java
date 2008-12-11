@@ -42,6 +42,7 @@ import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassFieldAccessor;
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
+import org.drools.base.evaluators.TimeIntervalParser;
 import org.drools.builder.DecisionTableConfiguration;
 import org.drools.builder.ResourceType;
 import org.drools.builder.ResourceConfiguration;
@@ -139,6 +140,8 @@ public class PackageBuilder {
     private Resource                      resource;
 
     private List<DSLTokenizedMappingFile> dslFiles;
+    
+    private TimeIntervalParser            timeParser;
 
     /**
      * Use this when package is starting from scratch.
@@ -1004,7 +1007,13 @@ public class PackageBuilder {
                                                                   duration,
                                                                   type.new DurationAccessorSetter() );
             }
-
+            String expiration = typeDescr.getMetaAttribute( TypeDeclaration.ATTR_EXPIRE );
+            if ( expiration != null ) {
+                if( timeParser == null ) {
+                    timeParser = new TimeIntervalParser();
+                }
+                type.setExpirationOffset( timeParser.parse( expiration )[0].longValue() );
+            }
             pkgRegistry.getPackage().addTypeDeclaration( type );
         }
     }

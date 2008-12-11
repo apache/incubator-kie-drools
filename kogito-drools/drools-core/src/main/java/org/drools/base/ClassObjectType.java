@@ -42,7 +42,7 @@ public class ClassObjectType
     private static final long serialVersionUID = 400L;
 
     /** Java object class. */
-    protected Class           cls;
+    protected Class<?>        cls;
 
     protected String          clsName;
 
@@ -63,7 +63,7 @@ public class ClassObjectType
      * @param objectTypeClass
      *            Java object class.
      */
-    public ClassObjectType(final Class objectTypeClass) {
+    public ClassObjectType(final Class<?> objectTypeClass) {
         this( objectTypeClass,
               false );
     }
@@ -74,7 +74,7 @@ public class ClassObjectType
      * @param objectTypeClass the class represented by this class object type
      * @param isEvent true if it is an event class, false otherwise
      */
-    public ClassObjectType(final Class objectTypeClass,
+    public ClassObjectType(final Class<?> objectTypeClass,
                            final boolean isEvent) {
         this.cls = objectTypeClass;
         this.isEvent = isEvent;
@@ -118,7 +118,7 @@ public class ClassObjectType
      *
      * @return The Java object class.
      */
-    public Class getClassType() {
+    public Class<?> getClassType() {
         return this.cls;
     }
 
@@ -126,7 +126,7 @@ public class ClassObjectType
         return this.clsName;
     }
 
-    public void setClassType(Class cls) {
+    public void setClassType(Class<?> cls) {
         this.cls = cls;
         this.valueType = ValueType.determineValueType( cls );
     }

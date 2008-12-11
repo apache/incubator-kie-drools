@@ -17,6 +17,7 @@ package org.drools.common;
  */
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -125,6 +126,13 @@ public interface InternalRuleBase
     public TypeDeclaration getTypeDeclaration(Class<?> clazz);
 
     /**
+     * Returns a collection with all TypeDeclarations in this rulebase
+     * 
+     * @return
+     */
+    public Collection<TypeDeclaration> getTypeDeclarations();
+
+    /**
      * Creates and allocates a new partition ID for this rulebase
      * 
      * @return
@@ -136,4 +144,5 @@ public interface InternalRuleBase
      * @return
      */
     List<RuleBasePartitionId> getPartitionIds();
+
 }

@@ -26,6 +26,7 @@ import org.drools.base.ClassObjectType;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.BaseNode;
 import org.drools.common.DroolsObjectInputStream;
+import org.drools.common.EventFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
@@ -190,7 +191,8 @@ public class ObjectTypeNode extends ObjectSource
                                                                                       this );
             TimerService clock = workingMemory.getTimerService();
 
-            long nextTimestamp = clock.getCurrentTime() + this.expirationOffset;
+            long nextTimestamp = Math.max( clock.getCurrentTime() + this.expirationOffset,
+                                           ((EventFactHandle)factHandle).getStartTimestamp() + this.expirationOffset );
             JobContext jobctx = new ExpireJobContext( expire,
                                                       workingMemory );
             JobHandle handle = clock.scheduleJob( job,
