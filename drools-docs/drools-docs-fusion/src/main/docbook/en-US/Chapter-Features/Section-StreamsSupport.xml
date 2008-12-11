@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0" xmlns="http://docbook.org/ns/docbook"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xmlns:svg="http://www.w3.org/2000/svg"
+	xmlns:m="http://www.w3.org/1998/Math/MathML"
+	xmlns:html="http://www.w3.org/1999/xhtml"
+	xmlns:db="http://docbook.org/ns/docbook" xml:base="../../">
+	<title>Streams Support</title>	
+	
+	<section>
+		<title>Streams of Events</title> 	
+	</section>
+	<section>
+		<title>Declaring and Using Streams</title> 						
+	</section>	
+</section>
