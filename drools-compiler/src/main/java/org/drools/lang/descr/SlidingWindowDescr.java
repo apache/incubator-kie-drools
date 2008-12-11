@@ -18,13 +18,18 @@
 
 package org.drools.lang.descr;
 
+import org.drools.base.evaluators.TimeIntervalParser;
+
 /**
  * A descriptor for sliding windows
  * 
  * @author etirelli
  */
 public class SlidingWindowDescr extends BehaviorDescr {
+    private static final TimeIntervalParser parser = new TimeIntervalParser();
+    
     private String parameters;
+    
 
     public SlidingWindowDescr() {
         super();
@@ -54,8 +59,7 @@ public class SlidingWindowDescr extends BehaviorDescr {
 
     
     public long getLength() {
-        // TODO: need to improve the framework to support units, like seconds, minutes, hours, etc
-        return Long.parseLong( this.parameters );
+        return parser.parse( this.parameters )[0].longValue();
     }
 
 

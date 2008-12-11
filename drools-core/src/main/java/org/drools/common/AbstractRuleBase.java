@@ -24,6 +24,7 @@ import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -598,6 +599,10 @@ abstract public class AbstractRuleBase
         return this.classTypeDeclaration.get( clazz );
     }
 
+    public Collection<TypeDeclaration> getTypeDeclarations() {
+        return this.classTypeDeclaration.values();
+    }
+    
     public synchronized void addRule(final Package pkg,
                                      final Rule rule) throws InvalidPatternException {
         this.eventSupport.fireBeforeRuleAdded( pkg,

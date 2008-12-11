@@ -24,12 +24,15 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
 
+import org.drools.base.ClassObjectType;
 import org.drools.definition.KnowledgeDefinition;
 import org.drools.factmodel.ClassDefinition;
 import org.drools.facttemplates.FactTemplate;
+import org.drools.facttemplates.FactTemplateObjectType;
 import org.drools.io.Resource;
 import org.drools.spi.AcceptsReadAccessor;
 import org.drools.spi.InternalReadAccessor;
+import org.drools.spi.ObjectType;
 
 /**
  * The type declaration class stores all type's metadata
@@ -46,6 +49,7 @@ public class TypeDeclaration
     public static final String ATTR_TEMPLATE  = "template";
     public static final String ATTR_DURATION  = "duration";
     public static final String ATTR_TIMESTAMP = "timestamp";
+    public static final String ATTR_EXPIRE    = "expires";
 
     public static enum Role {
         FACT, EVENT;
@@ -88,7 +92,10 @@ public class TypeDeclaration
     private FactTemplate         typeTemplate;
     private ClassDefinition      typeClassDef;
     private Resource             resource;
-    
+
+    private transient ObjectType objectType;
+    private long                 expirationOffset;
+
     public TypeDeclaration() {
     }
 
@@ -114,7 +121,8 @@ public class TypeDeclaration
         this.typeClassDef = (ClassDefinition) in.readObject();
         this.durationExtractor = (InternalReadAccessor) in.readObject();
         this.timestampExtractor = (InternalReadAccessor) in.readObject();
-        this.resource = ( Resource ) in.readObject();
+        this.resource = (Resource) in.readObject();
+        this.expirationOffset = in.readLong();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -129,6 +137,7 @@ public class TypeDeclaration
         out.writeObject( durationExtractor );
         out.writeObject( timestampExtractor );
         out.writeObject( this.resource );
+        out.writeLong( expirationOffset );
     }
 
     /**
@@ -291,15 +300,23 @@ public class TypeDeclaration
         this.timestampExtractor = timestampExtractor;
     }
 
-    public class DurationAccessorSetter implements AcceptsReadAccessor, Serializable {
+    public class DurationAccessorSetter
+        implements
+        AcceptsReadAccessor,
+        Serializable {
         private static final long serialVersionUID = 1429300982505284833L;
+
         public void setReadAccessor(InternalReadAccessor readAccessor) {
             setDurationExtractor( readAccessor );
         }
     }
-    
-    public class TimestampAccessorSetter implements AcceptsReadAccessor, Serializable {
+
+    public class TimestampAccessorSetter
+        implements
+        AcceptsReadAccessor,
+        Serializable {
         private static final long serialVersionUID = 8656678871125722903L;
+
         public void setReadAccessor(InternalReadAccessor readAccessor) {
             setTimestampExtractor( readAccessor );
         }
@@ -312,6 +329,24 @@ public class TypeDeclaration
     public void setResource(Resource resource) {
         this.resource = resource;
     }
-    
-    
+
+    public ObjectType getObjectType() {
+        if ( this.objectType == null ) {
+            if ( this.getFormat() == Format.POJO ) {
+                this.objectType = new ClassObjectType( this.getTypeClass() );
+            } else {
+                this.objectType = new FactTemplateObjectType( this.getTypeTemplate() );
+            }
+        }
+        return this.objectType;
+    }
+
+    public long getExpirationOffset() {
+        return this.expirationOffset;
+    }
+
+    public void setExpirationOffset(final long expirationOffset) {
+        this.expirationOffset = expirationOffset;
+    }
+
 }
