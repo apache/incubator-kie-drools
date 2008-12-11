@@ -24,4 +24,10 @@ public class ActionSetFieldCol extends ActionCol {
 	 * An optional comma separated list of values.
 	 */
 	public String valueList;
+
+
+	/**
+	 * This will be true if it is meant to be a modify to the engine, when in inferencing mode.
+	 */
+	public boolean update = false;
 }

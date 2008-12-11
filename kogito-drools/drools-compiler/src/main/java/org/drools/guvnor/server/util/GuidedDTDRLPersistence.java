@@ -7,6 +7,7 @@ import org.drools.guvnor.client.modeldriven.brl.ActionFieldValue;
 import org.drools.guvnor.client.modeldriven.brl.ActionInsertFact;
 import org.drools.guvnor.client.modeldriven.brl.ActionRetractFact;
 import org.drools.guvnor.client.modeldriven.brl.ActionSetField;
+import org.drools.guvnor.client.modeldriven.brl.ActionUpdateField;
 import org.drools.guvnor.client.modeldriven.brl.FactPattern;
 import org.drools.guvnor.client.modeldriven.brl.IAction;
 import org.drools.guvnor.client.modeldriven.brl.IPattern;
@@ -46,7 +47,7 @@ public class GuidedDTDRLPersistence {
 
 			RuleModel rm = new RuleModel();
 			rm.name = getName(dt.tableName, num);
-				
+
 			doMetadata(dt.getMetadataCols(), row, rm);
 			doAttribs(dt.getMetadataCols().size(), dt.attributeCols, row, rm);
 			doConditions(dt.getMetadataCols().size() + dt.attributeCols.size(), dt.conditionCols, row, rm);
@@ -55,7 +56,7 @@ public class GuidedDTDRLPersistence {
 			if(dt.parentName != null){
 				rm.parentName = dt.parentName;
 			}
-			
+
 			sb.append("#from row number: " + (i + 1) + "\n");
 			String rule = BRDRLPersistence.getInstance().marshal(rm);
 			sb.append(rule);
@@ -101,8 +102,18 @@ public class GuidedDTDRLPersistence {
 					if (a == null) {
 						a = new LabelledAction();
 						a.boundName = sf.boundName;
-						a.action = new ActionSetField(sf.boundName);
+						if (!sf.update) {
+							a.action = new ActionSetField(sf.boundName);
+						} else {
+							a.action = new ActionUpdateField(sf.boundName);
+						}
 						actions.add(a);
+					} else if (sf.update && !(a.action instanceof ActionUpdateField)) {
+						//lets swap it out for an update as the user has asked for it.
+						ActionSetField old = (ActionSetField) a.action;
+						ActionUpdateField update = new ActionUpdateField(sf.boundName);
+						update.fieldValues = old.fieldValues;
+						a.action = update;
 					}
 					ActionSetField asf = (ActionSetField) a.action;
 					ActionFieldValue val = new ActionFieldValue(sf.factField, cell, sf.type);
@@ -208,7 +219,7 @@ public class GuidedDTDRLPersistence {
 			rm.attributes = attribs.toArray(new RuleAttribute[attribs.size()]);
 		}
 	}
-	
+
 	void doMetadata(List<MetadataCol> metadataCols, String[] row, RuleModel rm) {
 
 		// setup temp list
