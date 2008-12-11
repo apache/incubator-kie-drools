@@ -5,20 +5,15 @@
 	xmlns:svg="http://www.w3.org/2000/svg"
 	xmlns:m="http://www.w3.org/1998/Math/MathML"
 	xmlns:html="http://www.w3.org/1999/xhtml"
-	xmlns:db="http://docbook.org/ns/docbook" xml:base="../../">
-	<title>Event Processing Modes</title>	
-	
+	xmlns:db="http://docbook.org/ns/docbook">
+	<title>Available Clock Implementations</title>
+
+
 	<section>
-		<title>Cloud Mode</title> 	
+		<title>Real Time Clock</title>
 	</section>
 	<section>
-		<title>Stream Mode</title> 	
-		
-			<section>
-				<title>Role of Session Clock in Stream mode</title>
-			</section>
-			<section>
-				<title>Negative Patterns in Stream Mode</title>
-			</section>
-	</section>	
+		<title>Pseudo Clock</title>
+	</section>
+
 </section>
