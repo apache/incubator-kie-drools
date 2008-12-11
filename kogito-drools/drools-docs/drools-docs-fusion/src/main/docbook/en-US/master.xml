@@ -43,7 +43,11 @@
     <para />
   </preface>
 -->      
-<xi:include href="Chapter-Fusion/Chapter-Fusion.xml" />  
+<title>Drools Fusion</title>
 
-  <index/>
+	<xi:include href="Chapter-Introduction/Chapter-Introduction.xml" />
+
+	<xi:include href="Chapter-Features/Chapter-Features.xml" />
+
+   <index/>
 </book>
