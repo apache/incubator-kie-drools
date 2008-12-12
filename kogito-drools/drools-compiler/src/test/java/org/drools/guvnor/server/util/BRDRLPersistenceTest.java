@@ -3,23 +3,9 @@ package org.drools.guvnor.server.util;
 import junit.framework.TestCase;
 
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.guvnor.client.modeldriven.brl.ActionFieldValue;
-import org.drools.guvnor.client.modeldriven.brl.ActionInsertFact;
-import org.drools.guvnor.client.modeldriven.brl.ActionInsertLogicalFact;
-import org.drools.guvnor.client.modeldriven.brl.ActionRetractFact;
-import org.drools.guvnor.client.modeldriven.brl.ActionUpdateField;
-import org.drools.guvnor.client.modeldriven.brl.CompositeFactPattern;
-import org.drools.guvnor.client.modeldriven.brl.CompositeFieldConstraint;
-import org.drools.guvnor.client.modeldriven.brl.ConnectiveConstraint;
-import org.drools.guvnor.client.modeldriven.brl.DSLSentence;
-import org.drools.guvnor.client.modeldriven.brl.FactPattern;
-import org.drools.guvnor.client.modeldriven.brl.FreeFormLine;
-import org.drools.guvnor.client.modeldriven.brl.IAction;
-import org.drools.guvnor.client.modeldriven.brl.IPattern;
-import org.drools.guvnor.client.modeldriven.brl.ISingleFieldConstraint;
-import org.drools.guvnor.client.modeldriven.brl.RuleAttribute;
-import org.drools.guvnor.client.modeldriven.brl.RuleModel;
-import org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint;
+import org.drools.guvnor.client.modeldriven.brl.*;
+
+import java.util.Collection;
 
 public class BRDRLPersistenceTest extends TestCase {
 
@@ -625,6 +611,26 @@ public class BRDRLPersistenceTest extends TestCase {
 		assertTrue(s.indexOf("auto-focus true") > -1);
 		assertTrue(s.indexOf("duration 42") > -1);
 
+	}
+
+
+   public void testAddGlobal() {
+		String expected = "rule \"my rule\"\n\tno-loop true\n\tdialect \"mvel\"\n\twhen\n\t\tPerson( )\n"
+				+ "\t\tAccident( )\n\tthen\n\t\tinsert( new Report() );\n\t\tresults.add(f);\nend\n";
+		final RuleModel m = new RuleModel();
+		m.addLhsItem(new FactPattern("Person"));
+		m.addLhsItem(new FactPattern("Accident"));
+		m.addAttribute(new RuleAttribute("no-loop", "true"));
+
+		m.addRhsItem(new ActionInsertFact("Report"));
+        ActionGlobalCollectionAdd add = new ActionGlobalCollectionAdd();
+        add.globalName = "results";
+        add.factName = "f";
+        m.addRhsItem(add);
+		m.name = "my rule";
+
+		final String drl = p.marshal(m);
+		assertEquals(expected, drl);
 	}
 
 }

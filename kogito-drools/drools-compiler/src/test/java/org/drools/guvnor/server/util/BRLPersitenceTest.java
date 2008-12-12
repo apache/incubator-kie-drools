@@ -7,22 +7,7 @@ import java.io.Reader;
 import junit.framework.TestCase;
 
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.guvnor.client.modeldriven.brl.ActionFieldValue;
-import org.drools.guvnor.client.modeldriven.brl.ActionInsertFact;
-import org.drools.guvnor.client.modeldriven.brl.ActionRetractFact;
-import org.drools.guvnor.client.modeldriven.brl.ActionUpdateField;
-import org.drools.guvnor.client.modeldriven.brl.CompositeFactPattern;
-import org.drools.guvnor.client.modeldriven.brl.CompositeFieldConstraint;
-import org.drools.guvnor.client.modeldriven.brl.ConnectiveConstraint;
-import org.drools.guvnor.client.modeldriven.brl.DSLSentence;
-import org.drools.guvnor.client.modeldriven.brl.FactPattern;
-import org.drools.guvnor.client.modeldriven.brl.FreeFormLine;
-import org.drools.guvnor.client.modeldriven.brl.IAction;
-import org.drools.guvnor.client.modeldriven.brl.IPattern;
-import org.drools.guvnor.client.modeldriven.brl.ISingleFieldConstraint;
-import org.drools.guvnor.client.modeldriven.brl.RuleAttribute;
-import org.drools.guvnor.client.modeldriven.brl.RuleModel;
-import org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint;
+import org.drools.guvnor.client.modeldriven.brl.*;
 
 public class BRLPersitenceTest extends TestCase {
 
@@ -45,13 +30,22 @@ public class BRLPersitenceTest extends TestCase {
                                            "true" ) );
 
         m.addRhsItem( new ActionInsertFact( "Report" ) );
+        ActionGlobalCollectionAdd ag = new ActionGlobalCollectionAdd();
+        ag.factName = "x";
+        ag.globalName = "g";
+        m.addRhsItem( ag);
         m.name = "my rule";
         final String xml = p.marshal( m );
-        //System.out.println(xml);
+        System.out.println(xml);
         assertTrue( xml.indexOf( "Person" ) > -1 );
         assertTrue( xml.indexOf( "Accident" ) > -1 );
         assertTrue( xml.indexOf( "no-loop" ) > -1 );
         assertTrue( xml.indexOf( "org.drools" ) == -1 );
+        assertTrue( xml.indexOf( "addToGlobal" ) > -1 );
+
+
+        RuleModel rm_ = BRXMLPersistence.getInstance().unmarshal(xml);
+        assertEquals(2, rm_.rhs.length);
 
     }
 

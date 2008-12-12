@@ -16,10 +16,7 @@
 
 package org.drools.guvnor.server.util;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.brl.DSLSentence;
@@ -43,6 +40,8 @@ public class SuggestionCompletionEngineBuilder {
     private List                       conditionDSLSentences = new ArrayList();
     private List                       keywordDSLItems = new ArrayList();
     private List                       anyScopeDSLItems = new ArrayList();
+    private List<String>                globalCollections = new ArrayList();
+
 
     public SuggestionCompletionEngineBuilder() {
     }
@@ -61,6 +60,7 @@ public class SuggestionCompletionEngineBuilder {
         this.conditionDSLSentences = new ArrayList();
         this.keywordDSLItems = new ArrayList();
         this.anyScopeDSLItems = new ArrayList();
+        this.globalCollections = new ArrayList<String>();
     }
 
     /**
@@ -127,6 +127,10 @@ public class SuggestionCompletionEngineBuilder {
                               type );
     }
 
+    public void addGlobalCollection(String global) {
+        this.globalCollections.add(global);
+    }
+
     /**
      * Add a DSL sentence for an action.
      */
@@ -161,6 +165,7 @@ public class SuggestionCompletionEngineBuilder {
         this.instance.conditionDSLSentences = makeArray(this.conditionDSLSentences);
         this.instance.keywordDSLItems = makeArray(this.keywordDSLItems);
         this.instance.anyScopeDSLItems = makeArray(this.anyScopeDSLItems);
+        this.instance.globalCollections = this.globalCollections.toArray(new String[globalCollections.size()]);
         return this.instance;
     }
 
