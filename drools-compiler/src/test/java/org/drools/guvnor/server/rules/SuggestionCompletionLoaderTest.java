@@ -74,6 +74,26 @@ public class SuggestionCompletionLoaderTest extends TestCase {
         String[] flds = (String[]) eng.fieldsForType.get("Person");
         assertNotNull(flds);
 
+        assertEquals(0, eng.globalCollections.length);
+
+    }
+
+
+     public void testGlobalCollections() throws Exception {
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+        SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n global java.util.List ls", new ArrayList(), new ArrayList() );
+        assertNotNull(eng);
+        assertFalse(loader.hasErrors());
+
+        assertEquals(1, eng.getGlobalVariables().length);
+        assertEquals("ls", eng.getGlobalVariables()[0]);
+        assertEquals("List", eng.globalTypes.get("ls"));
+
+        assertNotNull(eng.globalCollections);
+        assertEquals(1, eng.globalCollections.length);
+         assertEquals("ls", eng.globalCollections[0]);
+
+
     }
 
     public void testSortOrderOfFields() throws Exception {

@@ -1,21 +1,6 @@
 package org.drools.guvnor.server.util;
 
-import org.drools.guvnor.client.modeldriven.brl.ActionFieldValue;
-import org.drools.guvnor.client.modeldriven.brl.ActionInsertFact;
-import org.drools.guvnor.client.modeldriven.brl.ActionInsertLogicalFact;
-import org.drools.guvnor.client.modeldriven.brl.ActionRetractFact;
-import org.drools.guvnor.client.modeldriven.brl.ActionSetField;
-import org.drools.guvnor.client.modeldriven.brl.ActionUpdateField;
-import org.drools.guvnor.client.modeldriven.brl.CompositeFactPattern;
-import org.drools.guvnor.client.modeldriven.brl.CompositeFieldConstraint;
-import org.drools.guvnor.client.modeldriven.brl.ConnectiveConstraint;
-import org.drools.guvnor.client.modeldriven.brl.DSLSentence;
-import org.drools.guvnor.client.modeldriven.brl.FactPattern;
-import org.drools.guvnor.client.modeldriven.brl.FreeFormLine;
-import org.drools.guvnor.client.modeldriven.brl.RuleAttribute;
-import org.drools.guvnor.client.modeldriven.brl.RuleMetadata;
-import org.drools.guvnor.client.modeldriven.brl.RuleModel;
-import org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint;
+import org.drools.guvnor.client.modeldriven.brl.*;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
@@ -69,6 +54,8 @@ public class BRXMLPersistence implements BRLPersistence {
         this.xt.alias( "assertLogical",
                   ActionInsertLogicalFact.class );
         this.xt.alias("freeForm", FreeFormLine.class);
+
+        this.xt.alias("addToGlobal", ActionGlobalCollectionAdd.class);
 
     }
 

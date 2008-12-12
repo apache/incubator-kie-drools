@@ -1,27 +1,7 @@
 package org.drools.guvnor.server.util;
 
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.guvnor.client.modeldriven.brl.ActionFieldFunction;
-import org.drools.guvnor.client.modeldriven.brl.ActionFieldValue;
-import org.drools.guvnor.client.modeldriven.brl.ActionInsertFact;
-import org.drools.guvnor.client.modeldriven.brl.ActionInsertLogicalFact;
-import org.drools.guvnor.client.modeldriven.brl.ActionRetractFact;
-import org.drools.guvnor.client.modeldriven.brl.ActionSetField;
-import org.drools.guvnor.client.modeldriven.brl.ActionUpdateField;
-import org.drools.guvnor.client.modeldriven.brl.CompositeFactPattern;
-import org.drools.guvnor.client.modeldriven.brl.CompositeFieldConstraint;
-import org.drools.guvnor.client.modeldriven.brl.ConnectiveConstraint;
-import org.drools.guvnor.client.modeldriven.brl.DSLSentence;
-import org.drools.guvnor.client.modeldriven.brl.FactPattern;
-import org.drools.guvnor.client.modeldriven.brl.FieldConstraint;
-import org.drools.guvnor.client.modeldriven.brl.FreeFormLine;
-import org.drools.guvnor.client.modeldriven.brl.IAction;
-import org.drools.guvnor.client.modeldriven.brl.IPattern;
-import org.drools.guvnor.client.modeldriven.brl.ISingleFieldConstraint;
-import org.drools.guvnor.client.modeldriven.brl.RuleAttribute;
-import org.drools.guvnor.client.modeldriven.brl.RuleMetadata;
-import org.drools.guvnor.client.modeldriven.brl.RuleModel;
-import org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint;
+import org.drools.guvnor.client.modeldriven.brl.*;
 import org.drools.util.ReflectiveVisitor;
 
 /**
@@ -334,10 +314,6 @@ public class BRDRLPersistence
             }
         }
 
-        /**
-         * @param constr
-         * @param constrDescr
-         */
         private void addFieldRestriction(final StringBuffer buf,
                                          final int type,
                                          final String operator,
@@ -441,6 +417,14 @@ public class BRDRLPersistence
             buf.append( "update( " );
             buf.append( action.variable );
             buf.append( " );\n" );
+        }
+
+        public void visitActionGlobalCollectionAdd(final ActionGlobalCollectionAdd add) {
+            buf.append( "\t\t" );
+            if( isDSLEnhanced ) {
+                buf.append( ">" );
+            }
+            buf.append(add.globalName + ".add(" + add.factName + ");\n");
         }
 
         public void visitActionRetractFact(final ActionRetractFact action) {

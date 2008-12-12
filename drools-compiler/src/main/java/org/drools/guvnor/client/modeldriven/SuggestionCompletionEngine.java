@@ -84,6 +84,12 @@ public class SuggestionCompletionEngine
      */
     public Map<String, String[]> 					  dataEnumLists			 = new HashMap(); //TODO this is a PROBLEM as its not always String[]
 
+
+    /**
+     * This will show the names of globals that are a collection type.
+     */
+    public String[] globalCollections;
+
     /** Operators (from the grammar):
      *      op=(    '=='
      |   '>'
@@ -111,6 +117,7 @@ public class SuggestionCompletionEngine
      * This is used to calculate what fields an enum list may depend on. Optional.
      */
 	private transient Map dataEnumLookupFields;
+
 
 
     //    /**
