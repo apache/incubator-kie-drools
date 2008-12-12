@@ -24,7 +24,7 @@
     tips and examples and even upload files if you desire !).</para>
 
     <figure>
-      <title>Main feature areas of BRMS</title>
+      <title>Main feature areas of Guvnor</title>
 
       <mediaobject>
         <imageobject>
@@ -34,7 +34,7 @@
       </mediaobject>
     </figure>
 
-    <para>The above picture shows the main feature areas of the BRMS.</para>
+    <para>The above picture shows the main feature areas of Guvnor.</para>
 
     <itemizedlist>
       <listitem>
@@ -78,6 +78,10 @@
     </section>
 
     <section>
+      <title>BRMS or Guvnor?</title>
+      <para>In previous versions of Drools "BRMS" was often used to refer to the web interface to the drools management features. Nowadays we use BRMS to refer to the "whole package" - the runtime, the web tools and so on - but in some cases you can read "BRMS" as meaning the Guvnor web console and associated tools.</para>
+    </section>
+    <section>
       <title>Initial configuration</title>
 
       <para>Some initial setup is required the first time. The first time the
@@ -87,7 +91,7 @@
       <itemizedlist>
         <listitem>
           <para>Once deployed, go to "http://&lt;your
-          server&gt;/drools-jbrms/" (This will show the initial info screen -
+          server&gt;/drools-guvnor/" (This will show the initial info screen -
           or login screen depending on the configuration).</para>
         </listitem>
 
@@ -214,7 +218,7 @@
           This freezes the package at that point in time, so any concurrent
           changes to not effect the package. It also makes the package
           available on a URL of the form: "http://&lt;your
-          server&gt;/drools-jbrms/org.drools.brms.JBRMS/packages/&lt;packageName&gt;/&lt;snapshotName&gt;"
+          server&gt;/drools-guvnor/org.drools.guvnor.Guvnor/packages/&lt;packageName&gt;/&lt;snapshotName&gt;"
           (where you can use that URL and downloads will be covered in the
           section on deployment).</para>
         </listitem>
@@ -1140,7 +1144,7 @@ public class SampleDataSource2 {
       <para>URLs are central to how built packages are provided. The BRMS
       provides packages via URLs (for download and use by the Rule Agent).
       These URLs take the form of:
-      http://&lt;server&gt;/drools-jbrms/org.drools.brms.JBRMS/package/&lt;packageName&gt;/&lt;packageVersion&gt;</para>
+      http://&lt;server&gt;/drools-guvnor/org.drools.guvnor.Guvnor/package/&lt;packageName&gt;/&lt;packageVersion&gt;</para>
 
       <para>&lt;packageName&gt; is the name you gave the package.
       &lt;packageVersion&gt; is either the name of a snapshot, or "LATEST" (if
@@ -1312,9 +1316,9 @@ In this case you can use fine grained authorization (see the Admin Guide on how 
     <title>The business user perspective</title>
 
     <para>You can see from this manual, that some expertise and practice is
-    required to use the BRMS. In fact any software system in some sense
+    required to use Guvnor. In fact any software system in some sense
     requires that people be "technical" even if it has a nice looking GUI.
-    Having said that, in the right hands the BRMS can be setup to provide a
+    Having said that, in the right hands Guvnor can be setup to provide a
     suitable environment for non technical users.</para>
 
     <para>The most appropriate rule formats for this use are using the Guided
@@ -1326,7 +1330,7 @@ In this case you can use fine grained authorization (see the Admin Guide on how 
     technical users. Only assets which have a category assigned will appear in
     the "categories" view.</para>
 
-    <para>The initial setup of the BRMS will need to be done by a
+    <para>The initial setup of Guvnor will need to be done by a
     developer/technical person who will set the foundations for all the rules.
     They may also create "templates" which are rules which may be copied (they
     would typically live in a "dummy" package, and have a category of
@@ -1348,17 +1352,17 @@ In this case you can use fine grained authorization (see the Admin Guide on how 
 
       <para>The rule agent is a component which is embedded in the core
       runtime of the rules engine. To use this, you don't need any extra
-      components. In fact, if you are using the BRMS, your application should
+      components. In fact, if you are using Guvnor, your application should
       only need to include the drools-core dependencies in its classpath
       (drools and mvel jars only), and no other rules specific
       dependencies.</para>
 
       <para>Note that there is also a drools-ant ant task, so you can build
       rules as part of an ant script (for example in cases where the rules are
-      edited in the IDE) without using the BRMS at all - the drools-ant task
-      will generate .pkg files the same as the BRMS.</para>
+      edited in the IDE) without using Guvnor at all - the drools-ant task
+      will generate .pkg files the same as Guvnor.</para>
 
-      <para>Once you have "built" your rules in a package in the BRMS (or from
+      <para>Once you have "built" your rules in a package in Guvnor (or from
       the ant task), you are ready to use the agent in your target
       application.</para>
 
@@ -1427,7 +1431,7 @@ name=MyConfig</programlisting>
           <para>file</para>
 
           <para>This is a space-separated list of files - each file is a
-          binary package as exported by the BRMS. You can have one or many.
+          binary package as exported by Guvnor. You can have one or many.
           The name of the file is not important. Each package must be in its
           own file.</para>
 
@@ -1459,7 +1463,7 @@ name=MyConfig</programlisting>
         <listitem>
           <para>url</para>
 
-          <para>This is a space separated list of URLs to the BRMS which is
+          <para>This is a space separated list of URLs to Guvnor which is
           exposing the packages (see below for more details).</para>
         </listitem>
 
@@ -1467,7 +1471,7 @@ name=MyConfig</programlisting>
           <para>localCacheDir</para>
 
           <para>This is used in conjunction with the url above, so that if the
-          BRMS is down (the url is not accessible) then if the runtime has to
+          Guvnor is down (the url is not accessible) then if the runtime has to
           start up, it can start up with the last known "good" versions of the
           packages.</para>
         </listitem>
@@ -1488,7 +1492,7 @@ name=MyConfig</programlisting>
         </listitem>
       </itemizedlist>
 
-      <para>Following shows the deployment screen of the BRMS, which provides
+      <para>Following shows the deployment screen of Guvnor, which provides
       URLs and downloads of packages.</para>
 
       <figure>
@@ -1511,7 +1515,7 @@ name=MyConfig</programlisting>
       <para>You can also download a .pkg file from here, which you can drop in
       a directory and use the "file" or "dir" feature of the RuleAgent if
       needed (in some cases people will not want to have the runtime
-      automatically contact the BRMS for updates - but that is generally the
+      automatically contact Guvnor for updates - but that is generally the
       easiest way for many people).</para>
     </section>
 
@@ -1748,13 +1752,13 @@ name=MyConfig</programlisting>
 
       <para>For those who do not wish to use the automatic deployment of the
       RuleAgent, "rolling your own" is quite simple. The binary packages
-      emitted by the BRMS are serialized Package objects. You can deserialize
+      emitted by Guvnor are serialized Package objects. You can deserialize
       them and add them into any rulebase - essentially that is all you need
       to do.</para>
 
-      <para>From the BRMS, binary packages are provided either from the latest
+      <para>From Guvnor, binary packages are provided either from the latest
       version of a package (once you have successfully validated and built a
-      package) or from the deployment snapshots. The URLs that the BRMS web
+      package) or from the deployment snapshots. The URLs that the Guvnor web
       application exposes provide the binary package via http. You can also
       issue a "HEAD" command to get the last time a package was
       updated.</para>
