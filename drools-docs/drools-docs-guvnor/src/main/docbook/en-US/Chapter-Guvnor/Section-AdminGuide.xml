@@ -59,7 +59,7 @@
 
       <itemizedlist>
         <listitem>
-          <para>JBoss Application Server 4.0.5</para>
+          <para>JBoss Application Server 4.2.x</para>
 
           <para>This is recommended as a general application server solution,
           if you need to run other applications alongside the BRMS.</para>
