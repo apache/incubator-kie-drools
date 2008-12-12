@@ -266,7 +266,7 @@ public class SuggestionCompletionLoader {
 
                     this.builder.addGlobalType( global.getIdentifier(),
                                                 shortTypeName );
-                    if (Collection.class.isAssignableFrom(clazz)) {
+                    if (clazz != null && Collection.class.isAssignableFrom(clazz)) {
                         this.builder.addGlobalCollection(global.getIdentifier());
                     }
                 }
