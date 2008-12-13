@@ -1,171 +1,190 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<artifactId>drools</artifactId>
-		<groupId>org.drools</groupId>
-		<version>5.0.0.SNAPSHOT</version>
-	</parent>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>drools</artifactId>
+    <groupId>org.drools</groupId>
+    <version>5.0.0.SNAPSHOT</version>
+  </parent>
 
-	<artifactId>drools-docs</artifactId>
-	<packaging>pom</packaging>
-	<name>Drools :: Documentation</name>
+  <artifactId>drools-docs</artifactId>
+  <packaging>pom</packaging>
+  <name>Drools :: Documentation</name>
 
-	<modules>
-	 <module>docbook-style-drools</module>
-		<module>docbook-xsl-drools</module>
-		<module>drools-docs-introduction</module>
-		<module>drools-docs-expert</module>
-		<module>drools-docs-flow</module>		
-	  <module>drools-docs-fusion</module>
-		<module>drools-docs-guvnor</module>
-		<module>drools-docs-solver</module>
-	</modules>
+  <modules>
+    <module>docbook-style-drools</module>
+    <module>docbook-xsl-drools</module>
+    <module>drools-docs-introduction</module>
+    <module>drools-docs-expert</module>
+    <module>drools-docs-flow</module>
+    <module>drools-docs-fusion</module>
+    <module>drools-docs-guvnor</module>
+    <module>drools-docs-solver</module>
+  </modules>
 
-	<dependencyManagement>
-		<dependencies>
-		<dependency>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
         <groupId>org.drools</groupId>
         <artifactId>docbook-style-drools</artifactId>
         <version>1.1.0</version>
       </dependency>
-			<dependency>
-				<groupId>org.drools</groupId>
-				<artifactId>docbook-xsl-drools</artifactId>
-				<version>1.1.0</version>
-			</dependency>
-			<dependency>
-				<groupId>org.drools</groupId>
-				<artifactId>drools-docs-introduction</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.drools</groupId>
-				<artifactId>drools-docs-introduction</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.drools</groupId>
-				<artifactId>drools-docs-flow</artifactId>
-				<version>${project.version}</version>
-			</dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>docbook-xsl-drools</artifactId>
+        <version>1.1.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-docs-introduction</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-docs-introduction</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-docs-flow</artifactId>
+        <version>${project.version}</version>
+      </dependency>
 
-			<dependency>
-				<groupId>org.drools</groupId>
-				<artifactId>drools-docs-fusion</artifactId>
-				<version>${project.version}</version>
-			</dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-docs-fusion</artifactId>
+        <version>${project.version}</version>
+      </dependency>
 
-			<dependency>
-				<groupId>org.drools</groupId>
-				<artifactId>drools-docs-guvnor</artifactId>
-				<version>${project.version}</version>
-			</dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-docs-guvnor</artifactId>
+        <version>${project.version}</version>
+      </dependency>
 
-			<dependency>
-				<groupId>org.drools</groupId>
-				<artifactId>drools-docs-solver</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
-	
-	<contributors>
-		<contributor>
-			<name>Ellen N. Zhao</name>
-			<email>enzhao@gmail.com</email>
-			<url>ningning.org</url>
-			<organization>HaCon Ingenieurgesellschaft mbH</organization>
-			<organizationUrl>hacon.de</organizationUrl>
-			<timezone>+1</timezone>
-			<roles>
-			</roles>
-		</contributor>
-	</contributors>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-docs-solver</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.jboss.maven.plugins</groupId>
-				<artifactId>maven-jdocbook-plugin</artifactId>
-				<version>2.1.2</version>
-				<extensions>true</extensions>
-				<dependencies>
-				<dependency>
+  <contributors>
+    <contributor>
+      <name>Ellen N. Zhao</name>
+      <email>enzhao@gmail.com</email>
+      <url>http://ningning.org</url>
+      <organization>HaCon Ingenieurgesellschaft mbH</organization>
+      <organizationUrl>http://hacon.de</organizationUrl>
+      <timezone>+1</timezone>
+      <roles>
+      </roles>
+    </contributor>
+  </contributors>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.jboss.maven.plugins</groupId>
+        <artifactId>maven-jdocbook-plugin</artifactId>
+        <version>2.1.2</version>
+        <extensions>true</extensions>
+        <!-- executions>
+          <execution -->
+            <!--
+              here we are attaching the translate goal so that the
+              translations are processed before compilation so that the
+              transated XML is also transformed during generation
+            -->
+            <!-- phase>process-resources</phase>
+            <goals>
+              <goal>translate</goal>
+            </goals>
+          </execution>
+        </executions -->
+
+        <dependencies>
+          <dependency>
             <groupId>org.drools</groupId>
             <artifactId>docbook-style-drools</artifactId>
             <version>1.1.0</version>
             <type>jdocbook-style</type>
           </dependency>
-				
-					<dependency>
-						<groupId>org.drools</groupId>
-						<artifactId>docbook-xsl-drools</artifactId>
-						<version>1.1.0</version>
-					</dependency>
-				</dependencies>
 
-				<configuration>
-					<sourceDocumentName>master.xml</sourceDocumentName>
-					<masterTranslation>en-US</masterTranslation>
-					<translations>
-						<!--
-							<translation>es-ES</translation> <translation>fr-FR</translation>
-							<translation>ja-JP</translation> <translation>ko-KR</translation>
-							<translation>pt-BR</translation> <translation>zh-CN</translation>
-						-->
-					</translations>
-					<imageResource>
-						<directory>${basedir}/src/main/docbook</directory>
-						<includes>
-						<include>images/</include>
-						</includes>
-						<!-- <excludes>
-							<exclude>*.xml</exclude>
-							<exclude>**/*.xml</exclude>
-							<exclude>*.html</exclude>
-							<exclude>**/*.html</exclude>
-						</excludes> -->
-					</imageResource>
-					<formats>
-						<format>
-							<formatName>pdf</formatName>
-							<stylesheetResource>classpath:/org/jboss/pdf.xsl</stylesheetResource>
-							<!-- <stylesheetResource>classpath:/fo/docbook.xsl</stylesheetResource> -->
-							<finalName>${artifactId}.pdf</finalName>
-							<!-- <profilingTypeName>two_pass</profilingTypeName> -->
-						</format>
-						<format>
-							<formatName>html_single</formatName>
-							<stylesheetResource>classpath:/org/jboss/xhtml-single.xsl</stylesheetResource>
-							<finalName>index.html</finalName>
-							<!-- <profilingTypeName>two_pass</profilingTypeName> -->
-						</format>
+          <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>docbook-xsl-drools</artifactId>
+            <version>1.1.0</version>
+          </dependency>
+        </dependencies>
 
-						<format>
-							<formatName>html</formatName>
-							<stylesheetResource>classpath:/org/jboss/xhtml.xsl</stylesheetResource>
-							<finalName>index.html</finalName>
-							<!-- <profilingTypeName>two_pass</profilingTypeName> -->
-						</format>
+        <configuration>
+          <sourceDocumentName>master.xml</sourceDocumentName>
+          <masterTranslation>en-US</masterTranslation>
+          <translations>
+            <!-- translation>zh-CN</translation>
+            <translation>de-DE</translation -->
+            <!--
+              <translation>es-ES</translation>
+              <translation>fr-FR</translation>
+              <translation>ja-JP</translation>
+              <translation>ko-KR</translation>
+              <translation>pt-BR</translation>
+            -->
+          </translations>
+          <imageResource>
+            <directory>${basedir}/src/main/docbook</directory>
+            <includes>
+              <include>images/</include>
+            </includes>
+            <!--
+              <excludes> <exclude>*.xml</exclude>
+              <exclude>**/*.xml</exclude> <exclude>*.html</exclude>
+              <exclude>**/*.html</exclude> </excludes>
+            -->
+          </imageResource>
+          <formats>
+            <format>
+              <formatName>pdf</formatName>
+              <stylesheetResource>classpath:/org/jboss/pdf.xsl</stylesheetResource>
+              <!--
+                <stylesheetResource>classpath:/fo/docbook.xsl</stylesheetResource>
+              -->
+              <finalName>${artifactId}.pdf</finalName>
+              <!-- profilingTypeName>two_pass</profilingTypeName -->
+            </format>
+            <format>
+              <formatName>html_single</formatName>
+              <stylesheetResource>classpath:/org/jboss/xhtml-single.xsl</stylesheetResource>
+              <finalName>index.html</finalName>
+              <!-- <profilingTypeName>two_pass</profilingTypeName> -->
+            </format>
 
-						<format>
-							<formatName>eclipse</formatName>
-							<stylesheetResource>classpath:/eclipse/eclipse.xsl</stylesheetResource>
-							<finalName>${artifactId}.html</finalName>
-							<!-- <profilingTypeName>two_pass</profilingTypeName> -->
-						</format>
-					</formats>
-					<options>
-						<xmlTransformerType>saxon</xmlTransformerType>
-						<xincludeSupported>true</xincludeSupported>
-						<!-- <localeSeparator>-</localeSeparator> -->
-						<useRelativeImageUris>false</useRelativeImageUris>
-					</options>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+            <format>
+              <formatName>html</formatName>
+              <stylesheetResource>classpath:/org/jboss/xhtml.xsl</stylesheetResource>
+              <finalName>index.html</finalName>
+              <!-- <profilingTypeName>two_pass</profilingTypeName> -->
+            </format>
+
+            <format>
+              <formatName>eclipse</formatName>
+              <stylesheetResource>classpath:/eclipse/eclipse.xsl</stylesheetResource>
+              <finalName>${artifactId}.html</finalName>
+              <!-- <profilingTypeName>two_pass</profilingTypeName> -->
+            </format>
+          </formats>
+          <options>
+            <xmlTransformerType>saxon</xmlTransformerType>
+            <xincludeSupported>true</xincludeSupported>
+            <!-- <localeSeparator>-</localeSeparator> -->
+            <useRelativeImageUris>false</useRelativeImageUris>
+          </options>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>
