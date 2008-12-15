@@ -1,11 +1,14 @@
 package org.drools.spi;
 
+import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.process.core.context.variable.VariableScope;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
+import org.drools.reteoo.ReteooStatefulSession;
+import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.process.NodeInstance;
 
-public class ProcessContext {
+public class ProcessContext implements org.drools.runtime.process.ProcessContext {
     
 	private ProcessInstance processInstance;
     private NodeInstance nodeInstance;
@@ -65,5 +68,10 @@ public class ProcessContext {
     	}
     	variableScope.setVariable(variableName, value);
     }
+
+	public KnowledgeRuntime getKnowledgeRuntime() {
+		return new StatefulKnowledgeSessionImpl(
+			(ReteooStatefulSession) getProcessInstance().getWorkingMemory() );
+	}
     
 }

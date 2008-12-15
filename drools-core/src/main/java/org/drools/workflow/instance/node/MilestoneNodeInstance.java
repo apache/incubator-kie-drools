@@ -16,8 +16,13 @@ package org.drools.workflow.instance.node;
  * limitations under the License.
  */
 
+import java.util.Iterator;
+import java.util.Map;
+
 import org.drools.WorkingMemory;
 import org.drools.common.InternalAgenda;
+import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.ActivationCreatedEvent;
 import org.drools.event.AfterActivationFiredEvent;
@@ -26,7 +31,9 @@ import org.drools.event.AgendaGroupPoppedEvent;
 import org.drools.event.AgendaGroupPushedEvent;
 import org.drools.event.BeforeActivationFiredEvent;
 import org.drools.process.instance.ProcessInstance;
+import org.drools.rule.Declaration;
 import org.drools.runtime.process.NodeInstance;
+import org.drools.spi.Activation;
 import org.drools.workflow.core.node.MilestoneNode;
 
 /**
@@ -49,14 +56,32 @@ public class MilestoneNodeInstance extends EventBasedNodeInstance implements Age
                 "A MilestoneNode only accepts default incoming connections!");
         }
         String rule = "RuleFlow-Milestone-" + getProcessInstance().getProcessId()
-        + "-" + getNode().getId();
-
-        if( ((InternalAgenda) ((ProcessInstance) getProcessInstance())
-        		.getAgenda()).isRuleActiveInRuleFlowGroup( "DROOLS_SYSTEM", rule ) ) {
-            triggerCompleted();
+        	+ "-" + getNode().getId();
+        Activation activation = ((InternalAgenda) getProcessInstance().getAgenda())
+			.isRuleActiveInRuleFlowGroup("DROOLS_SYSTEM", rule);
+        if (activation != null) {
+        	if (checkProcessInstance(activation)) {
+        		triggerCompleted();
+        	}
         } else {
             addActivationListener();
         }
+    }
+    
+    private boolean checkProcessInstance(Activation activation) {
+    	final Map<?, ?> declarations = activation.getSubRule().getOuterDeclarations();
+        for ( Iterator<?> it = declarations.values().iterator(); it.hasNext(); ) {
+            Declaration declaration = (Declaration) it.next();
+            if ("processInstance".equals(declaration.getIdentifier())) {
+            	Object value = declaration.getValue(
+        			(InternalWorkingMemory) getProcessInstance().getWorkingMemory(),
+        			((InternalFactHandle) activation.getTuple().get(declaration)).getObject());
+            	if (value instanceof ProcessInstance) {
+            		return ((ProcessInstance) value).getId() == getProcessInstance().getId();
+            	}
+        	}
+        }
+        return true;
     }
     
     public void addEventListeners() {
@@ -87,7 +112,7 @@ public class MilestoneNodeInstance extends EventBasedNodeInstance implements Age
             // trigger node instances of that milestone node
             String ruleName = event.getActivation().getRule().getName();
             String milestoneName = "RuleFlow-Milestone-" + getProcessInstance().getProcessId() + "-" + getNodeId();
-            if (milestoneName.equals(ruleName)) {
+            if (milestoneName.equals(ruleName) && checkProcessInstance(event.getActivation())) {
             	synchronized(getProcessInstance()) {
 	                removeEventListeners();
 	                triggerCompleted();

@@ -17,6 +17,7 @@ public class DroolsMVELKnowledgeHelper
     
     private DroolsMVELFactory factory;
     public static final String DROOLS = "drools";
+    public static final String CONTEXT = "kcontext";
 
     public DroolsMVELKnowledgeHelper() {
     }

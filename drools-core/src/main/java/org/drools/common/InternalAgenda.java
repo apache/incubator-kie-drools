@@ -56,7 +56,8 @@ public interface InternalAgenda
      * 
      * @return 
      */
-	public boolean isRuleActiveInRuleFlowGroup(String ruleflowGroupName, String ruleName);
+	public Activation isRuleActiveInRuleFlowGroup(String ruleflowGroupName,
+		                                          String ruleName);
 
 	/**
 	 * Adds a RuleFlowGroupListerner to the named RuleFlowGroup

@@ -75,6 +75,7 @@ public class MVELActionBuilder
 
             Set<String> variables = new HashSet<String>();
             variables.add("context");
+            variables.add("kcontext");
             Dialect.AnalysisResult analysis = dialect.analyzeBlock( context,
                                                                     actionDescr,
                                                                     dialect.getInterceptors(),
@@ -84,6 +85,7 @@ public class MVELActionBuilder
             
             Map<String, Class> variableClasses = new HashMap<String, Class>();
             variableClasses.put("context", ProcessContext.class);
+            variableClasses.put("kcontext", org.drools.runtime.process.ProcessContext.class);
             MVELCompilationUnit unit = dialect.getMVELCompilationUnit( text,
                                                                        analysis,
                                                                        null,
