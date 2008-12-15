@@ -83,6 +83,24 @@ public class MatchesEvaluatorsDefinition implements EvaluatorDefinition {
                                   final String operatorId,
                                   final boolean isNegated,
                                   final String parameterText) {
+        return this.getEvaluator( type,
+                                  operatorId,
+                                  isNegated,
+                                  parameterText,
+                                  Target.FACT,
+                                  Target.FACT );
+        
+    }
+    
+    /**
+     * @inheritDoc
+     */
+    public Evaluator getEvaluator(final ValueType type,
+                                  final String operatorId,
+                                  final boolean isNegated,
+                                  final String parameterText,
+                                  final Target left,
+                                  final Target right ) {
         return this.evaluators.getEvaluator( type, Operator.determineOperator( operatorId, isNegated ) );
     }
 
@@ -94,8 +112,8 @@ public class MatchesEvaluatorsDefinition implements EvaluatorDefinition {
         return true;
     }
 
-    public boolean operatesOnFactHandles() {
-        return false;
+    public Target getTarget() {
+        return Target.FACT;
     }
 
     public boolean supportsType(ValueType type) {

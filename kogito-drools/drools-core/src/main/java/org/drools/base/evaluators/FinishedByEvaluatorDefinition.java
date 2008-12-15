@@ -128,6 +128,24 @@ public class FinishedByEvaluatorDefinition
                                   final String operatorId,
                                   final boolean isNegated,
                                   final String parameterText) {
+        return this.getEvaluator( type,
+                                  operatorId,
+                                  isNegated,
+                                  parameterText,
+                                  Target.HANDLE,
+                                  Target.HANDLE );
+        
+    }
+    
+    /**
+     * @inheritDoc
+     */
+    public Evaluator getEvaluator(final ValueType type,
+                                  final String operatorId,
+                                  final boolean isNegated,
+                                  final String parameterText,
+                                  final Target left,
+                                  final Target right ) {
         if ( this.cache == Collections.EMPTY_MAP ) {
             this.cache = new HashMap<String, FinishedByEvaluator>();
         }
@@ -162,8 +180,8 @@ public class FinishedByEvaluatorDefinition
     /**
      * @inheritDoc
      */
-    public boolean operatesOnFactHandles() {
-        return true;
+    public Target getTarget() {
+        return Target.HANDLE;
     }
 
     /**
@@ -211,7 +229,7 @@ public class FinishedByEvaluatorDefinition
         }
 
         @Override
-        public Object prepareObject(InternalFactHandle handle) {
+        public Object prepareLeftObject(InternalFactHandle handle) {
             return handle;
         }
 

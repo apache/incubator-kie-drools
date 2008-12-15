@@ -27,6 +27,7 @@ import org.drools.base.ClassObjectType;
 import org.drools.base.FieldFactory;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.EvaluatorDefinition;
+import org.drools.base.evaluators.EvaluatorDefinition.Target;
 import org.drools.base.field.ObjectFieldImpl;
 import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.Dialect;
@@ -748,12 +749,19 @@ public class PatternBuilder
             }
         }
 
+        Target right = ( Date.class.isAssignableFrom( extractor.getExtractToClass() ) ||
+                 Number.class.isAssignableFrom( extractor.getExtractToClass() ) ) ? Target.FACT : Target.HANDLE;
+        Target left = ( declaration.isPatternDeclaration() && ! 
+                ( Date.class.isAssignableFrom( declaration.getExtractor().getExtractToClass() ) ||
+                Number.class.isAssignableFrom( declaration.getExtractor().getExtractToClass() ) ) )? Target.HANDLE : Target.FACT;
         final Evaluator evaluator = getEvaluator( context,
                                                   variableRestrictionDescr,
                                                   extractor.getValueType(),
                                                   variableRestrictionDescr.getEvaluator(),
                                                   variableRestrictionDescr.isNegated(),
-                                                  variableRestrictionDescr.getParameterText() );
+                                                  variableRestrictionDescr.getParameterText(),
+                                                  left,
+                                                  right );
         if ( evaluator == null ) {
             return null;
         }
@@ -788,12 +796,17 @@ public class PatternBuilder
             return null;
         }
 
+        Target right = ( Date.class.isAssignableFrom( extractor.getExtractToClass() ) ||
+                         Number.class.isAssignableFrom( extractor.getExtractToClass() ) ) ? Target.FACT : Target.HANDLE;
+        Target left = Target.FACT;
         final Evaluator evaluator = getEvaluator( context,
                                                   literalRestrictionDescr,
                                                   extractor.getValueType(),
                                                   literalRestrictionDescr.getEvaluator(),
                                                   literalRestrictionDescr.isNegated(),
-                                                  literalRestrictionDescr.getParameterText() );
+                                                  literalRestrictionDescr.getParameterText(),
+                                                  left,
+                                                  right );
         if ( evaluator == null ) {
             return null;
         }
@@ -837,12 +850,19 @@ public class PatternBuilder
             }
 
             if ( implicit != null ) {
+                Target right = ( Date.class.isAssignableFrom( extractor.getExtractToClass() ) ||
+                        Number.class.isAssignableFrom( extractor.getExtractToClass() ) ) ? Target.FACT : Target.HANDLE;
+               Target left = ( implicit.isPatternDeclaration() && ! 
+                       ( Date.class.isAssignableFrom( implicit.getExtractor().getExtractToClass() ) ||
+                       Number.class.isAssignableFrom( implicit.getExtractor().getExtractToClass() ) ) )? Target.HANDLE : Target.FACT;
                 final Evaluator evaluator = getEvaluator( context,
                                                           qiRestrictionDescr,
                                                           extractor.getValueType(),
                                                           qiRestrictionDescr.getEvaluator(),
                                                           qiRestrictionDescr.isNegated(),
-                                                          qiRestrictionDescr.getParameterText() );
+                                                          qiRestrictionDescr.getParameterText(),
+                                                          left,
+                                                          right );
                 if ( evaluator == null ) {
                     return null;
                 }
@@ -879,12 +899,17 @@ public class PatternBuilder
             return null;
         }
 
+        Target right = ( Date.class.isAssignableFrom( extractor.getExtractToClass() ) ||
+                Number.class.isAssignableFrom( extractor.getExtractToClass() ) ) ? Target.FACT : Target.HANDLE;
+        Target left = Target.FACT;
         final Evaluator evaluator = getEvaluator( context,
                                                   qiRestrictionDescr,
                                                   extractor.getValueType(),
                                                   qiRestrictionDescr.getEvaluator(),
                                                   qiRestrictionDescr.isNegated(),
-                                                  qiRestrictionDescr.getParameterText() );
+                                                  qiRestrictionDescr.getParameterText(),
+                                                  left, 
+                                                  right );
         if ( evaluator == null ) {
             return null;
         }
@@ -921,12 +946,17 @@ public class PatternBuilder
                                 analysis.getNotBoundedIdentifiers(),
                                 factDeclarations );
 
+        Target right = ( Date.class.isAssignableFrom( extractor.getExtractToClass() ) ||
+                Number.class.isAssignableFrom( extractor.getExtractToClass() ) ) ? Target.FACT : Target.HANDLE;
+        Target left = Target.FACT;
         final Evaluator evaluator = getEvaluator( context,
                                                   returnValueRestrictionDescr,
                                                   extractor.getValueType(),
                                                   returnValueRestrictionDescr.getEvaluator(),
                                                   returnValueRestrictionDescr.isNegated(),
-                                                  returnValueRestrictionDescr.getParameterText() );
+                                                  returnValueRestrictionDescr.getParameterText(),
+                                                  left,
+                                                  right );
         if ( evaluator == null ) {
             return null;
         }
@@ -1005,7 +1035,9 @@ public class PatternBuilder
                                    final ValueType valueType,
                                    final String evaluatorString,
                                    final boolean isNegated,
-                                   final String parameterText) {
+                                   final String parameterText,
+                                   final Target left,
+                                   final Target right ) {
 
         final EvaluatorDefinition def = context.getConfiguration().getEvaluatorRegistry().getEvaluatorDefinition( evaluatorString );
         if ( def == null ) {
@@ -1018,7 +1050,9 @@ public class PatternBuilder
         final Evaluator evaluator = def.getEvaluator( valueType,
                                                       evaluatorString,
                                                       isNegated,
-                                                      parameterText );
+                                                      parameterText,
+                                                      left,
+                                                      right );
 
         if ( evaluator == null ) {
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),

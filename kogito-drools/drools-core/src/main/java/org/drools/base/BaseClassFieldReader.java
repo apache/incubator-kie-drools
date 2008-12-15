@@ -46,8 +46,8 @@ abstract public class BaseClassFieldReader
      * @param valueType
      */
     protected BaseClassFieldReader(final int index,
-                                      final Class fieldType,
-                                      final ValueType valueType) {
+                                   final Class< ? > fieldType,
+                                   final ValueType valueType) {
         this.index = index;
         this.fieldType = fieldType;
         this.valueType = valueType;
@@ -59,37 +59,37 @@ abstract public class BaseClassFieldReader
      * @param clazz
      * @param fieldName
      */
-    public BaseClassFieldReader(final Class clazz,
-                                   final String fieldName) {
+    public BaseClassFieldReader(final Class< ? > clazz,
+                                final String fieldName) {
         try {
             final ClassFieldInspector inspector = new ClassFieldInspector( clazz );
             this.index = ((Integer) inspector.getFieldNames().get( fieldName )).intValue();
-            this.fieldType = (Class) inspector.getFieldTypes().get( fieldName );
+            this.fieldType = (Class< ? >) inspector.getFieldTypes().get( fieldName );
             this.valueType = ValueType.determineValueType( this.fieldType );
         } catch ( final Exception e ) {
             throw new RuntimeDroolsException( e );
         }
     }
 
-//    public void readExternal(ObjectInput in) throws IOException,
-//                                            ClassNotFoundException {
-//        index = in.readInt();
-//        fieldType = (Class) in.readObject();
-//        valueType = (ValueType) in.readObject();
-//        if ( valueType != null ) valueType = ValueType.determineValueType( valueType.getClassType() );
-//    }
-//
-//    public void writeExternal(ObjectOutput out) throws IOException {
-//        out.writeInt( index );
-//        out.writeObject( fieldType );
-//        out.writeObject( valueType );
-//    }
+    //    public void readExternal(ObjectInput in) throws IOException,
+    //                                            ClassNotFoundException {
+    //        index = in.readInt();
+    //        fieldType = (Class) in.readObject();
+    //        valueType = (ValueType) in.readObject();
+    //        if ( valueType != null ) valueType = ValueType.determineValueType( valueType.getClassType() );
+    //    }
+    //
+    //    public void writeExternal(ObjectOutput out) throws IOException {
+    //        out.writeInt( index );
+    //        out.writeObject( fieldType );
+    //        out.writeObject( valueType );
+    //    }
 
     public int getIndex() {
         return this.index;
     }
 
-    public Class getExtractToClass() {
+    public Class< ? > getExtractToClass() {
         return this.fieldType;
     }
 

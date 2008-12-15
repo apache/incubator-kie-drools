@@ -1,0 +1,14 @@
+package org.drools;
+
+import org.drools.StockTick;
+
+global java.util.List results;
+
+rule "after operator on date"
+when
+    $a : StockTick( company == "DROO" )
+    $b : StockTick( company == "ACME", dateTimestamp after[1s,10s] $a.dateTimestamp )
+then
+    results.add( $b );
+end
+

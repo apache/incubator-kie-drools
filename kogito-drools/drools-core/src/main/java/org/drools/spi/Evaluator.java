@@ -58,17 +58,44 @@ public interface Evaluator
     public ValueType getCoercedValueType();
 
     /**
-     * There are evaluators that operate on fact attributes and
+     * There are evaluators that operate on fact attributes,
      * there are evaluators that operate on fact handle attributes
-     * (metadata). 
+     * (metadata), and there are evaluators that can operate in
+     * either one. 
      * 
-     * This method allows the evaluator to prepare the object
-     * to be evaluated. That includes, unwrapping the object if needed.
+     * This method allows the evaluator to prepare the left object
+     * for evaluation. That includes, unwrapping the object from the
+     * handle, if necessary.
+     * 
+     * It is important to note that the concept of left and right
+     * is based on the Rete notion of left and right, where right
+     * corresponds to the current pattern, while left is a binding 
+     * to a previous pattern.
      *  
      * @param handle
      * @return
      */
-    public Object prepareObject( InternalFactHandle handle );
+    public Object prepareLeftObject( InternalFactHandle handle );
+    
+    /**
+     * There are evaluators that operate on fact attributes,
+     * there are evaluators that operate on fact handle attributes
+     * (metadata), and there are evaluators that can operate in
+     * either one. 
+     * 
+     * This method allows the evaluator to prepare the right object
+     * for evaluation. That includes, unwrapping the object from the
+     * handle, if necessary.
+     * 
+     * It is important to note that the concept of left and right
+     * is based on the Rete notion of left and right, where right
+     * corresponds to the current pattern, while left is a binding 
+     * to a previous pattern.
+     *  
+     * @param handle
+     * @return
+     */
+    public Object prepareRightObject( InternalFactHandle handle );
     
     /**
      * Evaluates the expression using the provided parameters.

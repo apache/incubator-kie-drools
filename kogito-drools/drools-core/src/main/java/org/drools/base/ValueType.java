@@ -9,6 +9,7 @@ import java.math.BigInteger;
 import java.util.Date;
 
 import org.drools.RuntimeDroolsException;
+import org.drools.common.EventFactHandle;
 import org.drools.facttemplates.FactTemplate;
 
 public class ValueType
@@ -92,9 +93,12 @@ public class ValueType
     public static final ValueType  BIG_INTEGER_TYPE  = new ValueType( "BigInteger",
                                                                       BigInteger.class,
                                                                       SimpleValueType.OBJECT );
+    public static final ValueType  EVENT_TYPE        = new ValueType( "Event",
+                                                                      EventFactHandle.class,
+                                                                      SimpleValueType.OBJECT );
 
     private String           name;
-    private Class            classType;
+    private Class<?>         classType;
     private int              simpleType;
 
     public ValueType() {
@@ -102,7 +106,7 @@ public class ValueType
     }
 
     private ValueType(final String name,
-                      final Class classType,
+                      final Class<?> classType,
                       final int simpleType) {
         this.name = name;
         this.classType = classType;
@@ -111,7 +115,7 @@ public class ValueType
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         name        = (String)in.readObject();
-        classType   = (Class)in.readObject();
+        classType   = (Class<?>)in.readObject();
         simpleType  = in.readInt();
     }
 
@@ -129,7 +133,7 @@ public class ValueType
         return this.name;
     }
 
-    public Class getClassType() {
+    public Class<?> getClassType() {
         return this.classType;
     }
 
@@ -137,7 +141,7 @@ public class ValueType
         return this.simpleType;
     }
 
-    public static ValueType determineValueType(final Class clazz) {
+    public static ValueType determineValueType(final Class<?> clazz) {
         if ( clazz == null ) {
             return ValueType.NULL_TYPE;
         }
@@ -187,6 +191,8 @@ public class ValueType
             return ValueType.BIG_INTEGER_TYPE;
         } else if ( clazz == String.class ) {
             return ValueType.STRING_TYPE;
+        } else if ( clazz == EventFactHandle.class ) {
+            return ValueType.EVENT_TYPE;
         } else if ( clazz instanceof Object ) {
             return ValueType.OBJECT_TYPE;
         }
@@ -233,6 +239,10 @@ public class ValueType
 
     public boolean isChar() {
         return this.simpleType == SimpleValueType.CHAR;
+    }
+    
+    public boolean isEvent() { 
+        return this.classType == EventFactHandle.class;
     }
 
 }
