@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.base.ModifyInterceptor;
 import org.drools.base.TypeResolver;
@@ -69,6 +68,7 @@ import org.drools.rule.builder.RuleConditionBuilder;
 import org.drools.rule.builder.SalienceBuilder;
 import org.drools.rule.builder.dialect.java.JavaDialect;
 import org.drools.rule.builder.dialect.java.JavaFunctionBuilder;
+import org.drools.runtime.rule.RuleContext;
 import org.drools.spi.DeclarationScopeResolver;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.util.StringUtils;
@@ -734,6 +734,10 @@ public class MVELDialect
 
             parserContext.addInput( "drools",
                                     KnowledgeHelper.class );
+            if ( parserContext.getInputs().get( "kcontext" ) == null ) {
+            	parserContext.addInput( "kcontext",
+            							RuleContext.class );
+            }
         }
 
         return parserContext;

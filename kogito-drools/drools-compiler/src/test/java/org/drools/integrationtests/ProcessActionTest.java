@@ -128,6 +128,8 @@ public class ProcessActionTest extends TestCase {
 			"list.add(variable);\n" +
 			"String nodeName = context.getNodeInstance().getNodeName();\n" +
 			"list.add(nodeName);\n" +
+			"nodeName = kcontext.getNodeInstance().getNodeName();\n" +
+			"list.add(nodeName);\n" +
 			"insert( new Message() );\n" +
 			"</action>\n" +
 			"    </actionNode>\n" + 
@@ -156,9 +158,10 @@ public class ProcessActionTest extends TestCase {
         workingMemory.setGlobal("list", list);
         ProcessInstance processInstance = ( ProcessInstance )
             workingMemory.startProcess("org.drools.actions");
-        assertEquals(2, list.size());
+        assertEquals(3, list.size());
         assertEquals("SomeText", list.get(0));
         assertEquals("MyActionNode", list.get(1));
+        assertEquals("MyActionNode", list.get(2));
         Iterator<?> iterator = workingMemory.iterateObjects(new ObjectFilter() {
 			public boolean accept(Object object) {
 				return object instanceof Message;
@@ -197,13 +200,11 @@ public class ProcessActionTest extends TestCase {
 			"    <actionNode id=\"2\" name=\"MyActionNode\" >\n" +
 			"      <action type=\"expression\" dialect=\"mvel\" >System.out.println(\"Triggered\");\n" +
 			"System.out.println(drools.getWorkingMemory());\n" +
-			// TODO: Cannot put "String myVariable = ..." here because this generates a runtime exception
-			// stating that myVariable could not be resolved
-			"myVariable = (String) context.getVariable(\"variable\");\n" +
+			"String myVariable = (String) context.getVariable(\"variable\");\n" +
 			"list.add(myVariable);\n" +
-			// TODO: Cannot put "String nodeName = ..." here because this generates a runtime exception
-			// stating that nodeName could not be resolved
-			"nodeName = context.getNodeInstance().getNodeName();\n" +
+			"String nodeName = context.getNodeInstance().getNodeName();\n" +
+			"list.add(nodeName);\n" +
+			"nodeName = kcontext.getNodeInstance().getNodeName();\n" +
 			"list.add(nodeName);\n" +
 			"insert( new Message() );\n" +
 			"</action>\n" +
@@ -233,9 +234,10 @@ public class ProcessActionTest extends TestCase {
         workingMemory.setGlobal("list", list);
         ProcessInstance processInstance = ( ProcessInstance )
             workingMemory.startProcess("org.drools.actions");
-        assertEquals(2, list.size());
+        assertEquals(3, list.size());
         assertEquals("SomeText", list.get(0));
         assertEquals("MyActionNode", list.get(1));
+        assertEquals("MyActionNode", list.get(2));
         Iterator<?> iterator = workingMemory.iterateObjects(new ObjectFilter() {
 			public boolean accept(Object object) {
 				return object instanceof Message;

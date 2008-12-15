@@ -258,6 +258,11 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
         else if (this.variableResolvers != null && this.variableResolvers.containsKey(name)) {
             return true;
         }
+        else if (DroolsMVELKnowledgeHelper.CONTEXT.equals(name)) {
+            addResolver(DroolsMVELKnowledgeHelper.CONTEXT,
+                    new DroolsMVELKnowledgeHelper(this));
+            return true;
+        }
         else if (this.previousDeclarations != null && this.previousDeclarations.containsKey(name)) {
             addResolver(name,
                     new DroolsMVELPreviousDeclarationVariable((Declaration) this.previousDeclarations.get(name),

@@ -75,6 +75,7 @@ public class MVELAction
         DroolsMVELFactory factory = (DroolsMVELFactory) this.prototype.clone();
         
         factory.addResolver("context", new SimpleValueResolver(context));
+        factory.addResolver("kcontext", new SimpleValueResolver(context));
         if (variableNames != null) {
         	for (String variableName: variableNames) {
         		factory.addResolver(

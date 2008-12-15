@@ -13,11 +13,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.base.ModifyInterceptor;
 import org.drools.rule.Declaration;
+import org.drools.runtime.rule.RuleContext;
 import org.drools.spi.KnowledgeHelper;
 import org.mvel2.DataConversion;
 import org.mvel2.ParserContext;
@@ -244,7 +244,14 @@ public class MVELCompilationUnit
         parserContext.setStrictTypeEnforcement( strictMode );
 
         resolvedInputs = new HashMap<String, Class>( inputIdentifiers.length );
-        String lastIdentifier = null;
+
+        parserContext.addInput( "drools",
+                                KnowledgeHelper.class );
+
+		resolvedInputs.put( "drools",
+		                    KnowledgeHelper.class );
+		
+		String lastIdentifier = null;
         String lastType = null;
         try {
             for ( int i = 0, length = inputIdentifiers.length; i < length; i++ ) {
@@ -262,12 +269,16 @@ public class MVELCompilationUnit
             throw new RuntimeDroolsException( "Unable to resolve class '" + lastType + "' for identifier '" + lastIdentifier );
         }
 
-        parserContext.addInput( "drools",
-                                KnowledgeHelper.class );
+        if ( parserContext.getInputs().get( "kcontext" ) == null)  {
 
-        resolvedInputs.put( "drools",
-                            KnowledgeHelper.class );
+        	parserContext.addInput( "kcontext",
+	                                RuleContext.class );
+	
+	        resolvedInputs.put( "kcontext",
+	                            RuleContext.class );
 
+        }
+        
         return compile( expression,
                         classLoader,
                         parserContext,

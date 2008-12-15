@@ -53,6 +53,8 @@ import org.drools.FromTestClass;
 import org.drools.Guess;
 import org.drools.IndexedNumber;
 import org.drools.InsertedObject;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
 import org.drools.Message;
 import org.drools.MockPersistentSet;
 import org.drools.ObjectWithSet;
@@ -82,6 +84,11 @@ import org.drools.WorkingMemory;
 import org.drools.Cheesery.Maturity;
 import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.audit.WorkingMemoryInMemoryLogger;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderError;
+import org.drools.builder.KnowledgeBuilderErrors;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.ResourceType;
 import org.drools.common.AbstractWorkingMemory;
 import org.drools.common.DefaultAgenda;
 import org.drools.common.InternalFactHandle;
@@ -107,16 +114,16 @@ import org.drools.event.ObjectUpdatedEvent;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.facttemplates.Fact;
 import org.drools.facttemplates.FactTemplate;
+import org.drools.io.ResourceFactory;
 import org.drools.lang.DrlDumper;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
-import org.drools.reteoo.ReteooRuleBase;
 import org.drools.rule.FactType;
 import org.drools.rule.InvalidRulePackage;
 import org.drools.rule.Package;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
-import org.drools.spi.Activation;
+import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.spi.ConsequenceExceptionHandler;
 import org.drools.spi.GlobalResolver;
 import org.drools.xml.XmlDumper;
@@ -5739,6 +5746,47 @@ public class MiscTest extends TestCase {
                       ((List) session.getGlobal( "results" )).size() );
 
     }
+    
+    public void testKnowledgeContextJava() {
+    	KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+		kbuilder.add(ResourceFactory.newClassPathResource("test_KnowledgeContextJava.drl", getClass()), ResourceType.DRL);
+		KnowledgeBuilderErrors errors = kbuilder.getErrors();
+		if (errors.size() > 0) {
+			for (KnowledgeBuilderError error: errors) {
+				System.err.println(error);
+			}
+			throw new IllegalArgumentException("Could not parse knowledge.");
+		}
+		KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+		kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+		List<String> list = new ArrayList<String>();
+		ksession.setGlobal("list", list);
+		ksession.insert(new Message());
+		ksession.fireAllRules();
+		assertEquals(1, list.size());
+		assertEquals("Hello World", list.get(0));
+    }
 
+    public void testKnowledgeContextMVEL() {
+    	KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+		kbuilder.add(ResourceFactory.newClassPathResource("test_KnowledgeContextMVEL.drl", getClass()), ResourceType.DRL);
+		KnowledgeBuilderErrors errors = kbuilder.getErrors();
+		if (errors.size() > 0) {
+			for (KnowledgeBuilderError error: errors) {
+				System.err.println(error);
+			}
+			throw new IllegalArgumentException("Could not parse knowledge.");
+		}
+		KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+		kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+		List<String> list = new ArrayList<String>();
+		ksession.setGlobal("list", list);
+		ksession.insert(new Message());
+		ksession.fireAllRules();
+		assertEquals(1, list.size());
+		assertEquals("Hello World", list.get(0));
+    }
 
 }

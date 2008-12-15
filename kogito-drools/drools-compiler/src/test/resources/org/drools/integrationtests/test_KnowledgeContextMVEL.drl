@@ -1,0 +1,15 @@
+package HelloWorld
+ 
+import org.drools.Message
+import java.util.List
+
+dialect "mvel"
+
+global List list;
+
+rule "Hello World"
+	when
+		Message()
+	then
+	    list.add(kcontext.getRule().getName()); 
+end
