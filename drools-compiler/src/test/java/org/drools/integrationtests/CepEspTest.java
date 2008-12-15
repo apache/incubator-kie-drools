@@ -55,6 +55,7 @@ public class CepEspTest extends TestCase {
                                   final RuleBaseConfiguration conf) throws IOException,
                                                                    DroolsParserException,
                                                                    Exception {
+        final PackageBuilder builder = new PackageBuilder();
         final DrlParser parser = new DrlParser();
         final PackageDescr packageDescr = parser.parse( reader );
         if ( parser.hasErrors() ) {
@@ -62,7 +63,6 @@ public class CepEspTest extends TestCase {
             Assert.fail( "Error messages in parser, need to sort this our (or else collect error messages)" );
         }
         // pre build the package
-        final PackageBuilder builder = new PackageBuilder();
         builder.addPackage( packageDescr );
         final Package pkg = builder.getPackage();
 
@@ -498,6 +498,51 @@ public class CepEspTest extends TestCase {
         assertEquals( tick7,
                       results_finished_by.get( 0 ) );
 
+    }
+
+    public void testTemporalOperatorsOnArbitraryDates() throws Exception {
+        // read in the source
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_TemporalOperatorsDates.drl" ) );
+        final RuleBaseConfiguration rbconf = new RuleBaseConfiguration();
+        final RuleBase ruleBase = loadRuleBase( reader,
+                                                rbconf );
+
+        SessionConfiguration conf = new SessionConfiguration();
+        conf.setClockType( ClockType.PSEUDO_CLOCK );
+        StatefulSession wm = ruleBase.newStatefulSession( conf );
+
+        final List<?> results = new ArrayList<Object>();
+
+        wm.setGlobal( "results",
+                      results );
+
+        StockTick tick1 = new StockTick( 1,
+                                         "DROO",
+                                         50,
+                                         100000, // arbitrary timestamp
+                                         3 );
+        StockTick tick2 = new StockTick( 2,
+                                         "ACME",
+                                         10,
+                                         104000, // 4 seconds after DROO
+                                         3 );
+
+        InternalFactHandle handle1 = (InternalFactHandle) wm.insert( tick1 );
+        InternalFactHandle handle2 = (InternalFactHandle) wm.insert( tick2 );
+
+        assertNotNull( handle1 );
+        assertNotNull( handle2 );
+
+        assertFalse( handle1.isEvent() );
+        assertFalse( handle2.isEvent() );
+
+        //        wm  = SerializationHelper.serializeObject(wm);
+        wm.fireAllRules();
+
+        assertEquals( 1,
+                      results.size() );
+        assertEquals( tick2,
+                      results.get( 0 ) );
     }
 
     // @FIXME: we need to decide on the semantics of expiration

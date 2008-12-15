@@ -26,7 +26,7 @@ import org.drools.spi.Evaluator;
  * An evaluator definition interface that allows for pluggable
  * evaluator implementation.
  *
- * This interface is the registry entry point for all available
+ * This interface is the register entry point for all available
  * evaluators and describes all evaluator capabilities
  *
  * @author etirelli
@@ -71,15 +71,52 @@ public interface EvaluatorDefinition extends Externalizable {
      * @param parameterText some evaluators support parameters and these
      *                      parameters are defined as a String that is
      *                      parsed by the evaluator itself.
+     *                      
+     * @param leftTarget the target of the evaluator on the Left side,
+     *                   i.e., on Rete terms, the previous binding or
+     *                   the actual value on the right side of the operator.
+     *                   
+     * @param rightTarget the target of the evaluator on the Right side,
+     *                    i.e., on Rete terms, the current pattern field. 
      *
      * @return an Evaluator instance capable of evaluating expressions
      *         between values of the given type, or null in case the type
      *         is not supported.
      */
-    public Evaluator getEvaluator(ValueType type,
-                                  String operatorId,
-                                  boolean isNegated,
-                                  String parameterText);
+    public Evaluator getEvaluator(final ValueType type,
+                                  final String operatorId,
+                                  final boolean isNegated,
+                                  final String parameterText,
+                                  final Target leftTarget,
+                                  final Target rightTarget );
+
+    /**
+     * Returns the evaluator instance for the given type and the
+     * defined parameterText
+     *
+     * @param type the type of the attributes this evaluator will
+     *             operate on. This is important because the evaluator
+     *             may do optimisations and type coercion based on the
+     *             types it is evaluating. It is also possible that
+     *             this evaluator does not support a given type.
+     *
+     * @param operatorId the string identifier of the evaluator
+     *
+     * @param isNegated true if the evaluator instance to be returned is
+     *                  the negated version of the evaluator.
+     *
+     * @param parameterText some evaluators support parameters and these
+     *                      parameters are defined as a String that is
+     *                      parsed by the evaluator itself.
+     *                      
+     * @return an Evaluator instance capable of evaluating expressions
+     *         between values of the given type, or null in case the type
+     *         is not supported.
+     */
+    public Evaluator getEvaluator(final ValueType type,
+                                  final String operatorId,
+                                  final boolean isNegated,
+                                  final String parameterText );
 
     /**
      * Returns the evaluator instance for the given type and the
@@ -134,12 +171,21 @@ public interface EvaluatorDefinition extends Externalizable {
     public boolean supportsType(ValueType type);
 
     /**
-     * There are evaluators that operate on *fact handle* attributes and
-     * evaluators that operate on *fact* attributes.
+     * There are evaluators that operate on *fact* attributes,
+     * evaluators that operate on *fact handle* attributes, and
+     * evaluators that operate on both. This method returns
+     * the target of the current evaluator.
      *
      * @return true if this evaluator operates on fact handle attributes
      *         and false if it operates on fact attributes
      */
-    public boolean operatesOnFactHandles();
+    public Target getTarget();
+    
+    /**
+     * An enum for the target of the evaluator
+     */
+    public static enum Target {
+        FACT, HANDLE, BOTH;
+    }
 
 }

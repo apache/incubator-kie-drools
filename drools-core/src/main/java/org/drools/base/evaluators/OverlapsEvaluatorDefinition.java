@@ -136,6 +136,24 @@ public class OverlapsEvaluatorDefinition
                                   final String operatorId,
                                   final boolean isNegated,
                                   final String parameterText) {
+        return this.getEvaluator( type,
+                                  operatorId,
+                                  isNegated,
+                                  parameterText,
+                                  Target.HANDLE,
+                                  Target.HANDLE );
+        
+    }
+    
+    /**
+     * @inheritDoc
+     */
+    public Evaluator getEvaluator(final ValueType type,
+                                  final String operatorId,
+                                  final boolean isNegated,
+                                  final String parameterText,
+                                  final Target left,
+                                  final Target right ) {
         if ( this.cache == Collections.EMPTY_MAP ) {
             this.cache = new HashMap<String, OverlapsEvaluator>();
         }
@@ -170,8 +188,8 @@ public class OverlapsEvaluatorDefinition
     /**
      * @inheritDoc
      */
-    public boolean operatesOnFactHandles() {
-        return true;
+    public Target getTarget() {
+        return Target.HANDLE;
     }
 
     /**
@@ -221,7 +239,7 @@ public class OverlapsEvaluatorDefinition
         }
 
         @Override
-        public Object prepareObject(InternalFactHandle handle) {
+        public Object prepareLeftObject(InternalFactHandle handle) {
             return handle;
         }
 

@@ -149,6 +149,24 @@ public class DuringEvaluatorDefinition
                                   final String operatorId,
                                   final boolean isNegated,
                                   final String parameterText) {
+        return this.getEvaluator( type,
+                                  operatorId,
+                                  isNegated,
+                                  parameterText,
+                                  Target.HANDLE,
+                                  Target.HANDLE );
+        
+    }
+    
+    /**
+     * @inheritDoc
+     */
+    public Evaluator getEvaluator(final ValueType type,
+                                  final String operatorId,
+                                  final boolean isNegated,
+                                  final String parameterText,
+                                  final Target left,
+                                  final Target right ) {
         if ( this.cache == Collections.EMPTY_MAP ) {
             this.cache = new HashMap<String, DuringEvaluator>();
         }
@@ -183,8 +201,8 @@ public class DuringEvaluatorDefinition
     /**
      * @inheritDoc
      */
-    public boolean operatesOnFactHandles() {
-        return true;
+    public Target getTarget() {
+        return Target.HANDLE;
     }
 
     /**
@@ -239,7 +257,7 @@ public class DuringEvaluatorDefinition
         }
 
         @Override
-        public Object prepareObject(InternalFactHandle handle) {
+        public Object prepareLeftObject(InternalFactHandle handle) {
             return handle;
         }
 

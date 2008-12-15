@@ -28,8 +28,8 @@ public class SelfReferenceClassFieldReader extends BaseObjectClassFieldReader {
 
     private static final long serialVersionUID = 400L;
 
-    public SelfReferenceClassFieldReader(final Class clazz,
-                                            final String fieldName) {
+    public SelfReferenceClassFieldReader(final Class<?> clazz,
+                                         final String fieldName) {
         super( -1, // index
                clazz, // fieldType
                ValueType.determineValueType( clazz ) ); // value type

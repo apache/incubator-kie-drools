@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class StockTick implements Serializable {
+    private static final long serialVersionUID = -1702366432018395425L;
+    
     private long seq;
     private String company;
     private double price;

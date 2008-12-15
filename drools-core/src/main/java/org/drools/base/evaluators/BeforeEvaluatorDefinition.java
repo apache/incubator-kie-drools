@@ -27,6 +27,7 @@ import java.util.Map;
 import org.drools.RuntimeDroolsException;
 import org.drools.base.BaseEvaluator;
 import org.drools.base.ValueType;
+import org.drools.base.evaluators.EvaluatorDefinition.Target;
 import org.drools.common.EventFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
@@ -133,7 +134,25 @@ public class BeforeEvaluatorDefinition
     public Evaluator getEvaluator(final ValueType type,
                                   final String operatorId,
                                   final boolean isNegated,
-                                  final String parameterText) {
+                                  final String parameterText ) {
+        return this.getEvaluator( type,
+                                  operatorId,
+                                  isNegated,
+                                  parameterText,
+                                  Target.HANDLE,
+                                  Target.HANDLE );
+        
+    }
+    
+    /**
+     * @inheritDoc
+     */
+    public Evaluator getEvaluator(final ValueType type,
+                                  final String operatorId,
+                                  final boolean isNegated,
+                                  final String parameterText,
+                                  final Target left,
+                                  final Target right ) {
         if ( this.cache == Collections.EMPTY_MAP ) {
             this.cache = new HashMap<String, BeforeEvaluator>();
         }
@@ -168,8 +187,8 @@ public class BeforeEvaluatorDefinition
     /**
      * @inheritDoc
      */
-    public boolean operatesOnFactHandles() {
-        return true;
+    public Target getTarget() {
+        return Target.BOTH;
     }
 
     /**
@@ -220,7 +239,7 @@ public class BeforeEvaluatorDefinition
         }
 
         @Override
-        public Object prepareObject(InternalFactHandle handle) {
+        public Object prepareLeftObject(InternalFactHandle handle) {
             return handle;
         }
 

@@ -73,8 +73,24 @@ public abstract class BaseEvaluator
         return this.type;
     }
 
-    public Object prepareObject(InternalFactHandle handle) {
+    /**
+     * Most evaluators operate on the fact attributes,
+     * so, by default, the implementation unwraps it,
+     * but subclasses can override this behaviour.
+     */
+    public Object prepareLeftObject(InternalFactHandle handle) {
         return handle.getObject();
+    }
+    
+    /**
+     * Most evaluators operate o symmetrical types of object
+     * on both sides, i.e., either they operate on facts on 
+     * both sides, or fact handles on both sides. But eventually,
+     * some operators (like 'after') may differ in behaviour and 
+     * so, they are allowed to override this method.
+     */
+    public Object prepareRightObject(InternalFactHandle handle) {
+        return prepareLeftObject( handle );
     }
     
     public boolean isTemporal() {
