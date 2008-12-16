@@ -29,15 +29,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.drools.WorkingMemory;
 import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.base.SequentialKnowledgeHelper;
 import org.drools.common.RuleFlowGroupImpl.DeactivateCallback;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.LeftTuple;
-import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.reteoo.ReteooWorkingMemory;
-import org.drools.RuleBaseConfiguration;
-import org.drools.WorkingMemory;
 import org.drools.spi.Activation;
 import org.drools.spi.ActivationGroup;
 import org.drools.spi.AgendaFilter;
@@ -976,18 +974,18 @@ public class DefaultAgenda
     /**
      * @inheritDoc
      */
-    public boolean isRuleActiveInRuleFlowGroup(String ruleflowGroupName,
-                                               String ruleName) {
+    public Activation isRuleActiveInRuleFlowGroup(String ruleflowGroupName,
+                                                  String ruleName) {
 
         RuleFlowGroup systemRuleFlowGroup = this.getRuleFlowGroup( ruleflowGroupName );
 
         for ( Iterator<RuleFlowGroupNode> activations = systemRuleFlowGroup.iterator(); activations.hasNext(); ) {
             Activation activation = activations.next().getActivation();
             if ( ruleName.equals( activation.getRule().getName() ) ) {
-                return true;
+                return activation;
             }
         }
-        return false;
+        return null;
     }
 
     public void addRuleFlowGroupListener(String ruleFlowGroup,
