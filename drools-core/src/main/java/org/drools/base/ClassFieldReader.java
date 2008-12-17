@@ -196,6 +196,10 @@ public class ClassFieldReader
     public boolean isGlobal() {
         return false;
     }
+    
+    public boolean isSelfReference() {
+        return "this".equals( this.fieldName );
+    }
 
     /**
      * @param object

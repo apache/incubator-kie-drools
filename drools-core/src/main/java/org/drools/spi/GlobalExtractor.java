@@ -197,6 +197,11 @@ public class GlobalExtractor
     public boolean isGlobal() {
         return true;
     }
+
+    public boolean isSelfReference() {
+        return false;
+    }
+
     public boolean getBooleanValue(Object object) {
         throw new RuntimeDroolsException("Can't extract a value from a global without a working memory reference");
     }

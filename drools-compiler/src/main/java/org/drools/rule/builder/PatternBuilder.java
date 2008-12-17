@@ -749,8 +749,7 @@ public class PatternBuilder
             }
         }
 
-        Target right = ( Date.class.isAssignableFrom( extractor.getExtractToClass() ) ||
-                 Number.class.isAssignableFrom( extractor.getExtractToClass() ) ) ? Target.FACT : Target.HANDLE;
+        Target right = getRightTarget( extractor );
         Target left = ( declaration.isPatternDeclaration() && ! 
                 ( Date.class.isAssignableFrom( declaration.getExtractor().getExtractToClass() ) ||
                 Number.class.isAssignableFrom( declaration.getExtractor().getExtractToClass() ) ) )? Target.HANDLE : Target.FACT;
@@ -796,8 +795,7 @@ public class PatternBuilder
             return null;
         }
 
-        Target right = ( Date.class.isAssignableFrom( extractor.getExtractToClass() ) ||
-                         Number.class.isAssignableFrom( extractor.getExtractToClass() ) ) ? Target.FACT : Target.HANDLE;
+        Target right = getRightTarget( extractor );
         Target left = Target.FACT;
         final Evaluator evaluator = getEvaluator( context,
                                                   literalRestrictionDescr,
@@ -850,8 +848,7 @@ public class PatternBuilder
             }
 
             if ( implicit != null ) {
-                Target right = ( Date.class.isAssignableFrom( extractor.getExtractToClass() ) ||
-                        Number.class.isAssignableFrom( extractor.getExtractToClass() ) ) ? Target.FACT : Target.HANDLE;
+                Target right = getRightTarget( extractor );
                Target left = ( implicit.isPatternDeclaration() && ! 
                        ( Date.class.isAssignableFrom( implicit.getExtractor().getExtractToClass() ) ||
                        Number.class.isAssignableFrom( implicit.getExtractor().getExtractToClass() ) ) )? Target.HANDLE : Target.FACT;
@@ -899,8 +896,7 @@ public class PatternBuilder
             return null;
         }
 
-        Target right = ( Date.class.isAssignableFrom( extractor.getExtractToClass() ) ||
-                Number.class.isAssignableFrom( extractor.getExtractToClass() ) ) ? Target.FACT : Target.HANDLE;
+        Target right = getRightTarget( extractor );
         Target left = Target.FACT;
         final Evaluator evaluator = getEvaluator( context,
                                                   qiRestrictionDescr,
@@ -917,6 +913,12 @@ public class PatternBuilder
         return new LiteralRestriction( field,
                                        evaluator,
                                        extractor );
+    }
+
+    private Target getRightTarget(final InternalReadAccessor extractor) {
+        Target right = ( extractor.isSelfReference() && ! ( Date.class.isAssignableFrom( extractor.getExtractToClass() ) ||
+                Number.class.isAssignableFrom( extractor.getExtractToClass() ) ) ) ? Target.HANDLE : Target.FACT;
+        return right;
     }
 
     private ReturnValueRestriction buildRestriction(final RuleBuildContext context,
@@ -946,8 +948,7 @@ public class PatternBuilder
                                 analysis.getNotBoundedIdentifiers(),
                                 factDeclarations );
 
-        Target right = ( Date.class.isAssignableFrom( extractor.getExtractToClass() ) ||
-                Number.class.isAssignableFrom( extractor.getExtractToClass() ) ) ? Target.FACT : Target.HANDLE;
+        Target right = getRightTarget( extractor );
         Target left = Target.FACT;
         final Evaluator evaluator = getEvaluator( context,
                                                   returnValueRestrictionDescr,

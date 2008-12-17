@@ -105,6 +105,10 @@ abstract public class BaseClassFieldReader
         return false;
     }
 
+    public boolean isSelfReference() {
+        return false;
+    }
+
     public int hashCode() {
         final int PRIME = 31;
         int result = 1;

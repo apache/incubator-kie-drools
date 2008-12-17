@@ -533,16 +533,22 @@ public class CepEspTest extends TestCase {
         assertNotNull( handle1 );
         assertNotNull( handle2 );
 
-        assertFalse( handle1.isEvent() );
-        assertFalse( handle2.isEvent() );
+        assertTrue( handle1.isEvent() );
+        assertTrue( handle2.isEvent() );
 
         //        wm  = SerializationHelper.serializeObject(wm);
         wm.fireAllRules();
 
-        assertEquals( 1,
+        assertEquals( 4,
                       results.size() );
-        assertEquals( tick2,
+        assertEquals( tick1,
                       results.get( 0 ) );
+        assertEquals( tick2,
+                      results.get( 1 ) );
+        assertEquals( tick1,
+                      results.get( 2 ) );
+        assertEquals( tick2,
+                      results.get( 3 ) );
     }
 
     // @FIXME: we need to decide on the semantics of expiration

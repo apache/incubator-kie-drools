@@ -543,6 +543,10 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
             return false;
         }
 
+        public boolean isSelfReference() {
+            return false;
+        }
+
     }
 
     static class MockBetaNode extends BetaNode {

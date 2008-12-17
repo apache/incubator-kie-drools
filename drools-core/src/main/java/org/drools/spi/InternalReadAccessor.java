@@ -45,5 +45,7 @@ public interface InternalReadAccessor
     public int getHashCode(InternalWorkingMemory workingMemory, Object object);
     
     public boolean isGlobal();
+    
+    public boolean isSelfReference();
 
 }

@@ -568,6 +568,10 @@ public class EvaluatorFactoryTest extends TestCase {
         public void writeExternal(ObjectOutput out) throws IOException {
         }
 
+        public boolean isSelfReference() {
+            return false;
+        }
+
         public boolean getBooleanValue(InternalWorkingMemory workingMemory,
                                        final Object object) {
             return object != null ? ((Boolean) object).booleanValue() : false;
