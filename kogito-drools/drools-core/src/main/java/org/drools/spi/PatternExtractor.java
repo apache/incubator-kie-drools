@@ -200,6 +200,10 @@ public class PatternExtractor
         return false;
     }
 
+    public boolean isSelfReference() {
+        return false;
+    }
+
     public boolean getBooleanValue(Object object) {
         return getBooleanValue( null,
                                 object );

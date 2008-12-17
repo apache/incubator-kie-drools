@@ -169,7 +169,7 @@ public class VariableRestriction
             return new DoubleVariableContextEntry( fieldExtractor,
                                                    this.declaration,
                                                    this.evaluator );
-        } else if ( coerced.isIntegerNumber() ) {
+        } else if ( coerced.isIntegerNumber() || coerced.isEvent() ) {
             return new LongVariableContextEntry( fieldExtractor,
                                                  this.declaration,
                                                  this.evaluator );
@@ -328,9 +328,9 @@ public class VariableRestriction
             this.object = evaluator.prepareLeftObject( handle );
             this.workingMemory = workingMemory;
             this.rightNull = this.extractor.isNullValue( workingMemory,
-                                                         evaluator.prepareLeftObject( handle ) );
+                                                         evaluator.prepareRightObject( handle ) );
             this.right = this.extractor.getValue( workingMemory,
-                                                  evaluator.prepareLeftObject( handle ) );
+                                                  evaluator.prepareRightObject( handle ) );
         }
 
         public void resetTuple() {
@@ -394,11 +394,11 @@ public class VariableRestriction
             this.object = evaluator.prepareLeftObject( handle );
             this.workingMemory = workingMemory;
             this.rightNull = this.extractor.isNullValue( workingMemory,
-                                                         evaluator.prepareLeftObject( handle ) );
+                                                         evaluator.prepareRightObject( handle ) );
 
             if ( !rightNull ) { // avoid a NullPointerException
                 this.right = this.extractor.getLongValue( workingMemory,
-                                                          evaluator.prepareLeftObject( handle ) );
+                                                          evaluator.prepareRightObject( handle ) );
             } else {
                 this.right = 0;
             }
@@ -455,11 +455,11 @@ public class VariableRestriction
             this.object = evaluator.prepareLeftObject( handle );
             this.workingMemory = workingMemory;
             this.rightNull = this.extractor.isNullValue( workingMemory,
-                                                         evaluator.prepareLeftObject( handle ) );
+                                                         evaluator.prepareRightObject( handle ) );
 
             if ( !rightNull ) { // avoid a NullPointerException
                 this.right = this.extractor.getCharValue( workingMemory,
-                                                          evaluator.prepareLeftObject( handle ) );
+                                                          evaluator.prepareRightObject( handle ) );
             } else {
                 this.right = 0;
             }
@@ -516,11 +516,11 @@ public class VariableRestriction
             this.object = evaluator.prepareLeftObject( handle );
             this.workingMemory = workingMemory;
             this.rightNull = this.extractor.isNullValue( workingMemory,
-                                                         evaluator.prepareLeftObject( handle ) );
+                                                         evaluator.prepareRightObject( handle ) );
 
             if ( !rightNull ) { // avoid a NullPointerException
                 this.right = this.extractor.getDoubleValue( workingMemory,
-                                                            evaluator.prepareLeftObject( handle ) );
+                                                            evaluator.prepareRightObject( handle ) );
             } else {
                 this.right = 0;
             }
@@ -576,11 +576,11 @@ public class VariableRestriction
             this.object = evaluator.prepareLeftObject( handle );
             this.workingMemory = workingMemory;
             this.rightNull = this.extractor.isNullValue( workingMemory,
-                                                         evaluator.prepareLeftObject( handle ) );
+                                                         evaluator.prepareRightObject( handle ) );
 
             if ( !rightNull ) { // avoid a NullPointerException
                 this.right = this.extractor.getBooleanValue( workingMemory,
-                                                             evaluator.prepareLeftObject( handle ) );
+                                                             evaluator.prepareRightObject( handle ) );
             } else {
                 this.right = false;
             }

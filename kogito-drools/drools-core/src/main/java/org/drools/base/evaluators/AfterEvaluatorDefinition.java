@@ -31,6 +31,7 @@ import org.drools.base.ValueType;
 import org.drools.common.EventFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.rule.VariableRestriction.LongVariableContextEntry;
 import org.drools.rule.VariableRestriction.ObjectVariableContextEntry;
 import org.drools.rule.VariableRestriction.VariableContextEntry;
 import org.drools.spi.Evaluator;
@@ -160,7 +161,7 @@ public class AfterEvaluatorDefinition
         if ( this.cache == Collections.EMPTY_MAP ) {
             this.cache = new HashMap<String, Evaluator>();
         }
-        String key = isNegated + ":" + parameterText;
+        String key = left+":"+right+":"+isNegated + ":" + parameterText;
         Evaluator eval = this.cache.get( key );
         if ( eval == null ) {
             Long[] params = parser.parse( parameterText );
@@ -305,8 +306,20 @@ public class AfterEvaluatorDefinition
             if ( context.rightNull ) {
                 return false;
             }
-            long rightTS = this.unwrapRight ? ((Date) ((ObjectVariableContextEntry) context).right).getTime() : ((EventFactHandle) ((ObjectVariableContextEntry) context).right).getStartTimestamp();
-
+            long rightTS;
+            if( this.unwrapRight ) {
+                if( context instanceof ObjectVariableContextEntry ) {
+                    if( ((ObjectVariableContextEntry) context).right instanceof Date ) {
+                        rightTS = ((Date)((ObjectVariableContextEntry) context).right).getTime();
+                    } else {
+                        rightTS = ((Number)((ObjectVariableContextEntry) context).right).longValue();
+                    }
+                } else {
+                    rightTS = ((LongVariableContextEntry) context).right;
+                }
+            } else {
+                rightTS = ((EventFactHandle) ((ObjectVariableContextEntry) context).right).getStartTimestamp();
+            }
             long leftTS = this.unwrapLeft ? context.declaration.getExtractor().getLongValue( workingMemory,
                                                                                              left ) : ((EventFactHandle) left).getEndTimestamp();
 
@@ -324,8 +337,20 @@ public class AfterEvaluatorDefinition
             long rightTS = this.unwrapRight ? context.extractor.getLongValue( workingMemory,
                                                                               right ) : ((EventFactHandle) right).getStartTimestamp();
 
-            long leftTS = this.unwrapLeft ? ((Date) ((ObjectVariableContextEntry) context).left).getTime() : ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getEndTimestamp();
-
+            long leftTS;
+            if( this.unwrapLeft ) {
+                if( context instanceof ObjectVariableContextEntry ) {
+                    if( ((ObjectVariableContextEntry) context).left instanceof Date ) {
+                        leftTS = ((Date)((ObjectVariableContextEntry) context).left).getTime();
+                    } else {
+                        leftTS = ((Number)((ObjectVariableContextEntry) context).left).longValue();
+                    }
+                } else {
+                    leftTS = ((LongVariableContextEntry) context).left;
+                }
+            } else {
+                leftTS = ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getStartTimestamp();
+            }
             long dist = rightTS - leftTS;
 
             return this.getOperator().isNegated() ^ (dist >= this.initRange && dist <= this.finalRange);

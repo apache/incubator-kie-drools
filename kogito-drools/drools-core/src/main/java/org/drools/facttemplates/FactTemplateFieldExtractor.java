@@ -122,6 +122,10 @@ public class FactTemplateFieldExtractor
         return false;
     }
 
+    public boolean isSelfReference() {
+        return false;
+    }
+
     public boolean isNullValue(InternalWorkingMemory workingMemory,
                                Object object) {
         return ((Fact) object).getFieldValue( this.fieldIndex ) == null;

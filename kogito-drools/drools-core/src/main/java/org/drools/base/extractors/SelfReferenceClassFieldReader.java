@@ -43,4 +43,9 @@ public class SelfReferenceClassFieldReader extends BaseObjectClassFieldReader {
     public boolean isNullValue(InternalWorkingMemory workingMemory, final Object object) {
         return getValue( workingMemory, object ) == null;
     }
+    
+    @Override
+    public boolean isSelfReference() {
+        return true;
+    }
 }
