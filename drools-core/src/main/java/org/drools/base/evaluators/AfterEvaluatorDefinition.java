@@ -349,7 +349,7 @@ public class AfterEvaluatorDefinition
                     leftTS = ((LongVariableContextEntry) context).left;
                 }
             } else {
-                leftTS = ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getStartTimestamp();
+                leftTS = ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getEndTimestamp();
             }
             long dist = rightTS - leftTS;
 
