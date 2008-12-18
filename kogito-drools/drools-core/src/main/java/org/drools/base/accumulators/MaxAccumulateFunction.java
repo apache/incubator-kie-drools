@@ -32,7 +32,7 @@ import java.io.Serializable;
 public class MaxAccumulateFunction implements AccumulateFunction {
 
     protected static class MaxData implements Externalizable {
-        public double max = Double.MIN_VALUE;
+        public double max = -Double.MAX_VALUE;
         
         public MaxData() {}
 
@@ -64,7 +64,7 @@ public class MaxAccumulateFunction implements AccumulateFunction {
      */
     public void init(Serializable context) throws Exception {
         MaxData data = (MaxData) context;
-        data.max = Double.MIN_VALUE;
+        data.max = -Double.MAX_VALUE;
     }
 
     /* (non-Javadoc)
