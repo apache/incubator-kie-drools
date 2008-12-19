@@ -9,6 +9,7 @@ import java.lang.reflect.Method;
 import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassObjectType;
 import org.drools.base.ValueType;
+import org.drools.common.EventFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.facttemplates.Fact;
 import org.drools.util.ClassUtils;
@@ -147,6 +148,9 @@ public class PatternExtractor
                              final Object object) {
         if ( this.objectType.getValueType().isNumber() ) {
             return ((Number) object).longValue();
+        } else if( object instanceof EventFactHandle ) {
+            // special case for handling event timestamps
+            return ((EventFactHandle)object).getStartTimestamp();
         }
         throw new RuntimeDroolsException( "Conversion to long not supported for type: " + object.getClass() );
     }
