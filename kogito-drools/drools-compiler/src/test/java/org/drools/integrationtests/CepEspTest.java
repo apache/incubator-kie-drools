@@ -602,6 +602,57 @@ public class CepEspTest extends TestCase {
                       results.get( 3 ) );
     }
 
+    public void testCoincidesOnArbitraryDates() throws Exception {
+        // read in the source
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_CoincidesOperatorDates.drl" ) );
+        final RuleBaseConfiguration rbconf = new RuleBaseConfiguration();
+        final RuleBase ruleBase = loadRuleBase( reader,
+                                                rbconf );
+
+        SessionConfiguration conf = new SessionConfiguration();
+        conf.setClockType( ClockType.PSEUDO_CLOCK );
+        StatefulSession wm = ruleBase.newStatefulSession( conf );
+
+        final List<?> results = new ArrayList<Object>();
+
+        wm.setGlobal( "results",
+                      results );
+
+        StockTick tick1 = new StockTick( 1,
+                                         "DROO",
+                                         50,
+                                         100000, // arbitrary timestamp
+                                         3 );
+        StockTick tick2 = new StockTick( 2,
+                                         "ACME",
+                                         10,
+                                         100050, // 50 milliseconds after DROO
+                                         3 );
+
+        InternalFactHandle handle1 = (InternalFactHandle) wm.insert( tick1 );
+        InternalFactHandle handle2 = (InternalFactHandle) wm.insert( tick2 );
+
+        assertNotNull( handle1 );
+        assertNotNull( handle2 );
+
+        assertTrue( handle1.isEvent() );
+        assertTrue( handle2.isEvent() );
+
+        //        wm  = SerializationHelper.serializeObject(wm);
+        wm.fireAllRules();
+
+        assertEquals( 4,
+                      results.size() );
+        assertEquals( tick1,
+                      results.get( 0 ) );
+        assertEquals( tick2,
+                      results.get( 1 ) );
+        assertEquals( tick1,
+                      results.get( 2 ) );
+        assertEquals( tick2,
+                      results.get( 3 ) );
+    }
+
     // @FIXME: we need to decide on the semantics of expiration
     public void FIXME_testSimpleTimeWindow() throws Exception {
         // read in the source

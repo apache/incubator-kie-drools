@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,6 +31,7 @@ import org.drools.base.ValueType;
 import org.drools.common.EventFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.rule.VariableRestriction.LongVariableContextEntry;
 import org.drools.rule.VariableRestriction.ObjectVariableContextEntry;
 import org.drools.rule.VariableRestriction.VariableContextEntry;
 import org.drools.spi.Evaluator;
@@ -126,16 +128,16 @@ public class CoincidesEvaluatorDefinition
     public Evaluator getEvaluator(final ValueType type,
                                   final String operatorId,
                                   final boolean isNegated,
-                                  final String parameterText ) {
+                                  final String parameterText) {
         return this.getEvaluator( type,
                                   operatorId,
                                   isNegated,
                                   parameterText,
                                   Target.HANDLE,
                                   Target.HANDLE );
-        
+
     }
-    
+
     /**
      * @inheritDoc
      */
@@ -144,18 +146,20 @@ public class CoincidesEvaluatorDefinition
                                   final boolean isNegated,
                                   final String parameterText,
                                   final Target left,
-                                  final Target right ) {
+                                  final Target right) {
         if ( this.cache == Collections.EMPTY_MAP ) {
             this.cache = new HashMap<String, CoincidesEvaluator>();
         }
-        String key = isNegated + ":" + parameterText;
+        String key = left + ":" + right + ":" + isNegated + ":" + parameterText;
         CoincidesEvaluator eval = this.cache.get( key );
         if ( eval == null ) {
             Long[] params = parser.parse( parameterText );
             eval = new CoincidesEvaluator( type,
                                            isNegated,
                                            params,
-                                           parameterText );
+                                           parameterText,
+                                           left == Target.FACT,
+                                           right == Target.FACT );
             this.cache.put( key,
                             eval );
         }
@@ -201,6 +205,8 @@ public class CoincidesEvaluatorDefinition
         private long              startDev;
         private long              endDev;
         private String            paramText;
+        private boolean           unwrapLeft;
+        private boolean           unwrapRight;
 
         public CoincidesEvaluator() {
         }
@@ -208,10 +214,14 @@ public class CoincidesEvaluatorDefinition
         public CoincidesEvaluator(final ValueType type,
                                   final boolean isNegated,
                                   final Long[] parameters,
-                                  final String paramText) {
+                                  final String paramText,
+                                  final boolean unwrapLeft,
+                                  final boolean unwrapRight) {
             super( type,
                    isNegated ? COINCIDES_NOT : COINCIDES );
             this.paramText = paramText;
+            this.unwrapLeft = unwrapLeft;
+            this.unwrapRight = unwrapRight;
             this.setParameters( parameters );
         }
 
@@ -220,6 +230,8 @@ public class CoincidesEvaluatorDefinition
             super.readExternal( in );
             startDev = in.readLong();
             endDev = in.readLong();
+            unwrapLeft = in.readBoolean();
+            unwrapRight = in.readBoolean();
             paramText = (String) in.readObject();
         }
 
@@ -227,12 +239,19 @@ public class CoincidesEvaluatorDefinition
             super.writeExternal( out );
             out.writeLong( startDev );
             out.writeLong( endDev );
+            out.writeBoolean( unwrapLeft );
+            out.writeBoolean( unwrapRight );
             out.writeObject( paramText );
         }
 
         @Override
         public Object prepareLeftObject(InternalFactHandle handle) {
-            return handle;
+            return unwrapLeft ? handle.getObject() : handle;
+        }
+
+        @Override
+        public Object prepareRightObject(InternalFactHandle handle) {
+            return unwrapRight ? handle.getObject() : handle;
         }
 
         @Override
@@ -263,8 +282,29 @@ public class CoincidesEvaluatorDefinition
             if ( context.rightNull ) {
                 return false;
             }
-            long distStart = Math.abs( ((EventFactHandle) ((ObjectVariableContextEntry) context).right).getStartTimestamp() - ((EventFactHandle) left).getStartTimestamp() );
-            long distEnd = Math.abs( ((EventFactHandle) ((ObjectVariableContextEntry) context).right).getEndTimestamp() - ((EventFactHandle) left).getEndTimestamp() );
+            long rightStartTS, rightEndTS;
+            long leftStartTS, leftEndTS;
+            if ( this.unwrapRight ) {
+                if ( context instanceof ObjectVariableContextEntry ) {
+                    if ( ((ObjectVariableContextEntry) context).right instanceof Date ) {
+                        rightStartTS = ((Date) ((ObjectVariableContextEntry) context).right).getTime();
+                    } else {
+                        rightStartTS = ((Number) ((ObjectVariableContextEntry) context).right).longValue();
+                    }
+                } else {
+                    rightStartTS = ((LongVariableContextEntry) context).right;
+                }
+                rightEndTS = rightStartTS;
+            } else {
+                rightStartTS = ((EventFactHandle) ((ObjectVariableContextEntry) context).right).getStartTimestamp();
+                rightEndTS = ((EventFactHandle) ((ObjectVariableContextEntry) context).right).getEndTimestamp();
+            }
+            leftStartTS = this.unwrapLeft ? context.declaration.getExtractor().getLongValue( workingMemory,
+                                                                                             left ) : ((EventFactHandle) left).getStartTimestamp();
+            leftEndTS = this.unwrapLeft ? rightStartTS : ((EventFactHandle) left).getEndTimestamp();
+
+            long distStart = Math.abs( rightStartTS - leftStartTS );
+            long distEnd = Math.abs( rightEndTS - leftEndTS );
             return this.getOperator().isNegated() ^ (distStart <= this.startDev && distEnd <= this.endDev);
         }
 
@@ -275,8 +315,32 @@ public class CoincidesEvaluatorDefinition
                                                 right ) ) {
                 return false;
             }
-            long distStart = Math.abs( ((EventFactHandle) right).getStartTimestamp() - ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getStartTimestamp() );
-            long distEnd = Math.abs( ((EventFactHandle) right).getEndTimestamp() - ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getEndTimestamp() );
+
+            long rightStartTS, rightEndTS;
+            long leftStartTS, leftEndTS;
+
+            rightStartTS = this.unwrapRight ? context.extractor.getLongValue( workingMemory,
+                                                                              right ) : ((EventFactHandle) right).getStartTimestamp();
+            rightEndTS = this.unwrapRight ? rightStartTS : ((EventFactHandle) right).getEndTimestamp();
+
+            if ( this.unwrapLeft ) {
+                if ( context instanceof ObjectVariableContextEntry ) {
+                    if ( ((ObjectVariableContextEntry) context).left instanceof Date ) {
+                        leftStartTS = ((Date) ((ObjectVariableContextEntry) context).left).getTime();
+                    } else {
+                        leftStartTS = ((Number) ((ObjectVariableContextEntry) context).left).longValue();
+                    }
+                } else {
+                    leftStartTS = ((LongVariableContextEntry) context).left;
+                }
+                leftEndTS = leftStartTS;
+            } else {
+                leftStartTS = ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getStartTimestamp();
+                leftEndTS = ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getEndTimestamp();
+            }
+
+            long distStart = Math.abs( rightStartTS - leftStartTS );
+            long distEnd = Math.abs( rightEndTS - leftEndTS );
             return this.getOperator().isNegated() ^ (distStart <= this.startDev && distEnd <= this.endDev);
         }
 
@@ -289,8 +353,19 @@ public class CoincidesEvaluatorDefinition
                                          object1 ) ) {
                 return false;
             }
-            long distStart = Math.abs( ((EventFactHandle) object1).getStartTimestamp() - ((EventFactHandle) object2).getStartTimestamp() );
-            long distEnd = Math.abs( ((EventFactHandle) object1).getEndTimestamp() - ((EventFactHandle) object2).getEndTimestamp() );
+            long rightStartTS, rightEndTS;
+            long leftStartTS, leftEndTS;
+
+            rightStartTS = this.unwrapRight ? extractor1.getLongValue( workingMemory,
+                                                                       object1 ) : ((EventFactHandle) object1).getStartTimestamp();
+            rightEndTS = this.unwrapRight ? rightStartTS : ((EventFactHandle) object1).getEndTimestamp();
+
+            leftStartTS = this.unwrapLeft ? extractor2.getLongValue( workingMemory,
+                                                                     object2 ) : ((EventFactHandle) object2).getStartTimestamp();
+            leftEndTS = this.unwrapLeft ? leftStartTS : ((EventFactHandle) object2).getEndTimestamp();
+
+            long distStart = Math.abs( rightStartTS - leftStartTS );
+            long distEnd = Math.abs( rightEndTS - leftEndTS );
             return this.getOperator().isNegated() ^ (distStart <= this.startDev && distEnd <= this.endDev);
         }
 
@@ -334,8 +409,8 @@ public class CoincidesEvaluatorDefinition
                 this.endDev = 0;
                 return;
             } else {
-                for( Long param : parameters ) {
-                    if( param.longValue() < 0 ) {
+                for ( Long param : parameters ) {
+                    if ( param.longValue() < 0 ) {
                         throw new RuntimeDroolsException( "[Coincides Evaluator]: negative values not allowed for temporal distance thresholds: '" + paramText + "'" );
                     }
                 }

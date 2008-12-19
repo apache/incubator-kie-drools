@@ -28,8 +28,6 @@ import java.util.Map;
 import org.drools.RuntimeDroolsException;
 import org.drools.base.BaseEvaluator;
 import org.drools.base.ValueType;
-import org.drools.base.evaluators.AfterEvaluatorDefinition.AfterEvaluator;
-import org.drools.base.evaluators.EvaluatorDefinition.Target;
 import org.drools.common.EventFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
@@ -159,7 +157,7 @@ public class BeforeEvaluatorDefinition
         if ( this.cache == Collections.EMPTY_MAP ) {
             this.cache = new HashMap<String, BeforeEvaluator>();
         }
-        String key = isNegated + ":" + parameterText;
+        String key = left+":"+right+":"+isNegated + ":" + parameterText;
         BeforeEvaluator eval = this.cache.get( key );
         if ( eval == null ) {
             Long[] params = parser.parse( parameterText );
