@@ -1,0 +1,48 @@
+package org.drools;
+
+import org.drools.StockTick;
+
+global java.util.List results;
+
+declare StockTick
+    @role( event )
+    @timestamp( time )
+end
+
+rule "after operator on date"
+    salience 10
+when
+    $a : StockTick( company == "DROO" )
+    $b : StockTick( company == "ACME", dateTimestamp after[1s,11s] $a.dateTimestamp )
+then
+    results.add( $a );
+end
+
+rule "after operator on long"
+    salience 5
+when
+    $a : StockTick( company == "DROO" )
+    $b : StockTick( company == "ACME", time after[1s,12s] $a.time )
+then
+    results.add( $b );
+end
+
+
+rule "after operator on mixed event and date"
+    salience 3
+when
+    $a : StockTick( company == "DROO" )
+    $b : StockTick( company == "ACME", this after[1s,13s] $a.time )
+then
+    results.add( $a );
+end
+
+rule "after operator on mixed date and event"
+    salience 0
+when
+    $a : StockTick( company == "DROO" )
+    $b : StockTick( company == "ACME", time after[1s,14s] $a )
+then
+    results.add( $b );
+end
+
