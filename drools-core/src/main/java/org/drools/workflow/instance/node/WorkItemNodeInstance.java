@@ -34,6 +34,9 @@ import org.drools.process.instance.impl.WorkItemImpl;
 import org.drools.runtime.process.EventListener;
 import org.drools.runtime.process.NodeInstance;
 import org.drools.workflow.core.node.WorkItemNode;
+import org.drools.workflow.instance.impl.NodeInstanceResolverFactory;
+import org.drools.workflow.instance.impl.WorkItemResolverFactory;
+import org.mvel2.MVEL;
 
 /**
  * Runtime counterpart of a work item node.
@@ -107,14 +110,22 @@ public class WorkItemNodeInstance extends EventBasedNodeInstance implements Even
         ((WorkItem) workItem).setParameters(new HashMap<String, Object>(work.getParameters()));
         for (Iterator<Map.Entry<String, String>> iterator = workItemNode.getInMappings().entrySet().iterator(); iterator.hasNext(); ) {
             Map.Entry<String, String> mapping = iterator.next();
+            Object parameterValue = null;
             VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
                 resolveContextInstance(VariableScope.VARIABLE_SCOPE, mapping.getValue());
             if (variableScopeInstance != null) {
-            	((WorkItem) workItem).setParameter(mapping.getKey(), variableScopeInstance.getVariable(mapping.getValue()));
+            	parameterValue = variableScopeInstance.getVariable(mapping.getValue());
             } else {
-                System.err.println("Could not find variable scope for variable " + mapping.getValue());
-                System.err.println("when trying to execute Work Item " + work.getName());
-                System.err.println("Continuing without setting parameter.");
+            	try {
+            		parameterValue = MVEL.eval(mapping.getValue(), new NodeInstanceResolverFactory(this));
+            	} catch (Throwable t) {
+	                System.err.println("Could not find variable scope for variable " + mapping.getValue());
+	                System.err.println("when trying to execute Work Item " + work.getName());
+	                System.err.println("Continuing without setting parameter.");
+            	}
+            }
+            if (parameterValue != null) {
+            	((WorkItem) workItem).setParameter(mapping.getKey(), parameterValue);
             }
         }
         for (Map.Entry<String, Object> entry: workItem.getParameters().entrySet()) {
@@ -132,9 +143,15 @@ public class WorkItemNodeInstance extends EventBasedNodeInstance implements Even
 		                	String variableValueString = variableValue == null ? "" : variableValue.toString(); 
 			                replacements.put(paramName, variableValueString);
 		                } else {
-		                    System.err.println("Could not find variable scope for variable " + paramName);
-		                    System.err.println("when trying to replace variable in string for Work Item " + work.getName());
-		                    System.err.println("Continuing without setting parameter.");
+		                	try {
+		                		Object variableValue = MVEL.eval(paramName, new NodeInstanceResolverFactory(this));
+			                	String variableValueString = variableValue == null ? "" : variableValue.toString();
+			                	replacements.put(paramName, variableValueString);
+		                	} catch (Throwable t) {
+			                    System.err.println("Could not find variable scope for variable " + paramName);
+			                    System.err.println("when trying to replace variable in string for Work Item " + work.getName());
+			                    System.err.println("Continuing without setting parameter.");
+		                	}
 		                }
                 	}
                 }
@@ -153,7 +170,15 @@ public class WorkItemNodeInstance extends EventBasedNodeInstance implements Even
             VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
                 resolveContextInstance(VariableScope.VARIABLE_SCOPE, mapping.getValue());
             if (variableScopeInstance != null) {
-                variableScopeInstance.setVariable(mapping.getValue(), workItem.getResult(mapping.getKey()));
+            	Object value = workItem.getResult(mapping.getKey());
+            	if (value == null) {
+            		try {
+                		value = MVEL.eval(mapping.getKey(), new WorkItemResolverFactory(workItem));
+                	} catch (Throwable t) {
+                		// do nothing
+                	}
+            	}
+                variableScopeInstance.setVariable(mapping.getValue(), value);
             } else {
                 System.err.println("Could not find variable scope for variable " + mapping.getValue());
                 System.err.println("when trying to complete Work Item " + workItem.getName());
@@ -219,5 +244,5 @@ public class WorkItemNodeInstance extends EventBasedNodeInstance implements Even
             triggerCompleted(workItem);
         }
     }
-
+    
 }

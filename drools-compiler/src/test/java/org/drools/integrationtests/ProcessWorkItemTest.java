@@ -10,6 +10,7 @@ import junit.framework.TestCase;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
+import org.drools.Person;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
@@ -40,8 +41,14 @@ public class ProcessWorkItemTest extends TestCase {
     		"        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
     		"        <value>John Doe</value>\n" +
     		"      </variable>\n" +
+     		"      <variable name=\"Person\" >\n" +
+    		"        <type name=\"org.drools.process.core.datatype.impl.type.ObjectDataType\" className=\"org.drools.Person\" />\n" +
+    		"      </variable>\n" +
     		"      <variable name=\"MyObject\" >\n" +
     		"        <type name=\"org.drools.process.core.datatype.impl.type.ObjectDataType\" className=\"java.lang.Object\" />\n" +
+    		"      </variable>\n" +
+    		"      <variable name=\"Number\" >\n" +
+    		"        <type name=\"org.drools.process.core.datatype.impl.type.IntegerDataType\" />\n" +
     		"      </variable>\n" +
     		"    </variables>\n" +
             "  </header>\n" +
@@ -53,6 +60,10 @@ public class ProcessWorkItemTest extends TestCase {
             "        <parameter name=\"ActorId\" >\n" +
             "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
             "          <value>#{UserName}</value>\n" +
+            "        </parameter>\n" +
+            "        <parameter name=\"Content\" >\n" +
+            "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <value>#{Person.name}</value>\n" +
             "        </parameter>\n" +
             "        <parameter name=\"TaskName\" >\n" +
             "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
@@ -69,7 +80,9 @@ public class ProcessWorkItemTest extends TestCase {
             "        </parameter>\n" +
             "      </work>\n" +
             "      <mapping type=\"in\" from=\"MyObject\" to=\"Attachment\" />" +
+            "      <mapping type=\"in\" from=\"Person.name\" to=\"Comment\" />" +
             "      <mapping type=\"out\" from=\"Result\" to=\"MyObject\" />" +
+            "      <mapping type=\"out\" from=\"Result.length()\" to=\"Number\" />" +
             "    </workItem>\n" +
             "    <end id=\"3\" name=\"End\" />\n" +
             "  </nodes>\n" +
@@ -100,12 +113,17 @@ public class ProcessWorkItemTest extends TestCase {
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("UserName", "Jane Doe");
         parameters.put("MyObject", "SomeString");
+        Person person = new Person();
+        person.setName("Jane Doe");
+        parameters.put("Person", person);
         processInstance = ksession.startProcess("org.drools.actions", parameters);
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         workItem = handler.getWorkItem();
         assertNotNull(workItem);
         assertEquals("Jane Doe", workItem.getParameter("ActorId"));
         assertEquals("SomeString", workItem.getParameter("Attachment"));
+        assertEquals("Jane Doe", workItem.getParameter("Content"));
+        assertEquals("Jane Doe", workItem.getParameter("Comment"));
         Map<String, Object> results = new HashMap<String, Object>();
         results.put("Result", "SomeOtherString");
         ksession.getWorkItemManager().completeWorkItem(workItem.getId(), results);
@@ -114,6 +132,7 @@ public class ProcessWorkItemTest extends TestCase {
         	((org.drools.process.instance.ProcessInstance) processInstance)
         		.getContextInstance(VariableScope.VARIABLE_SCOPE);
         assertEquals("SomeOtherString", variableScope.getVariable("MyObject"));
+        assertEquals(15, variableScope.getVariable("Number"));
     }
     
     private static class TestWorkItemHandler implements WorkItemHandler {
