@@ -13,6 +13,138 @@
   might be interesting for developers.</para>
 
   <section>
+    <title>Drools Runtimes</title>
+ 
+    <para>A Drools runtime is a collection of jars on your file system that represent
+    one specific release of the Drools project jars. To create a runtime, you must 
+    point the IDE to the release of your choice.  If you want to create a new runtime
+    based on the latest Drools project jars included in the plugin itself, you can also
+    easily do that.  You are required to specify a default Drools runtime for your
+    Eclipse workspace, but each individual project can override the default and select
+    the appropriate runtime for that project specifically.</para>
+
+    <section>
+      <title>Defining a Drools runtime</title>
+
+      <para>You are required to define one or more Drools runtimes using the Eclipse preferences
+      view.  To open up your preferences, in the menu Window select the Preferences
+      menu item.  A new preferences dialog should show all your preferences.  On the
+      left side of this dialog, under the Drools category, select "Installed Drools
+      runtimes".  The panel on the right should then show the currently defined Drools
+      runtimes.  If you have not yet defined any runtimes, it should like something like
+      the figure below.</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/Chapter-Eclipse/drools-runtimes.png" format="PNG" role="" />
+        </imageobject>
+      </mediaobject>
+
+      <para>To define a new Drools runtime, click on the add button.  A dialog as shown
+      below should pop up, requiring the name for your runtime and the location on your
+      file system where it can be found.</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/Chapter-Eclipse/drools-runtimes-add.png" format="PNG" role="" />
+        </imageobject>
+      </mediaobject>
+
+      <para>In general, you have two options:</para>
+      <orderedlist>
+        <listitem><para>If you simply want to use the default jars as included in the Drools
+        Eclipse plugin, you can create a new Drools runtime automatically by clicking the
+        "Create a new Drools 5 runtime ..." button.  A file browser will show up, asking
+        you to select the folder on your file system where you want this runtime to be
+        created.  The plugin will then automatically copy all required dependencies to
+        the specified folder.  After selecting this folder, the dialog should look like
+        the figure shown below.</para></listitem>
+
+        <listitem><para>If you want to use one specific release of the Drools project, you should
+        create a folder on your file system that contains all the necessary Drools libraries
+        and dependencies.  Instead of creating a new Drools runtime as explained above, give
+        your runtime a name and select the location of this folder containing all the required
+        jars.</para></listitem>
+      </orderedlist>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/Chapter-Eclipse/drools-runtimes-add2.png" format="PNG" role="" />
+        </imageobject>
+      </mediaobject>
+
+      <para>After clicking the OK button, the runtime should show up in your table of installed
+      Drools runtimes, as shown below.  Click on checkbox in front of the newly created runtime 
+      to make it the default Drools runtime.  The default Drools runtime will be used as the
+      runtime of all your Drools project that have not selected a project-specific runtime.
+      </para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/Chapter-Eclipse/drools-runtimes2.png" format="PNG" role="" />
+        </imageobject>
+      </mediaobject>
+
+      <para>You can add as many Drools runtimes as you need.  For example, the screenshot below
+      shows a configuration where three runtimes have been defined: a Drools 4.0.7 runtime, a
+      Drools 5.0.0 runtime and a Drools 5.0.0.SNAPSHOT runtime.  The Drools 5.0.0 runtime is
+      selected as the default one.</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/Chapter-Eclipse/drools-runtimes3.png" format="PNG" role="" />
+        </imageobject>
+      </mediaobject>
+
+      <para>Note that you will need to restart Eclipse if you changed the default runtime and
+      you want to make sure that all the projects that are using the default runtime update
+      their classpath accordingly.</para>
+
+    </section>
+
+    <section>
+      <title>Selecting a runtime for your Drools project</title>
+
+      <para>Whenever you create a Drools project (using the New Drools Project wizard or by
+      converting an existing Java project to a Drools project using the "Convert to Drools
+      Project" action that is shown when you are in the Drools perspective and you right-click
+      an existing Java project), the plugin will automatically add all the required jars to
+      the classpath of your project.</para>
+
+      <para>When creating a new Drools project, the plugin will automatically use the default
+      Drools runtime for that project, unless you specify a project-specific one.  You can do
+      this in the final step of the New Drools Project wizard, as shown below, by deselecting
+      the "Use default Drools runtime" checkbox and selecting the appropriate runtime in the
+      drop-down box.  If you click the "Configure workspace settings ..." link, the workspace
+      preferences showing the currently installed Drools runtimes will be opened, so you can
+      add new runtimes there.</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/Chapter-Eclipse/drools-runtimes-newproject.png" format="PNG" role="" />
+        </imageobject>
+      </mediaobject>
+
+      <para>You can change the runtime of a Drools project at any time by opening the project
+      properties (right-click the project and select Properties) and selecting the Drools
+      category, as shown below.  Check the "Enable project specific settings" checkbox and select
+      the appropriate runtime from the drop-down box.  If you click the "Configure workspace
+      settings ..." link, the workspace preferences showing the currently installed Drools
+      runtimes will be opened, so you can add new runtimes there.  If you deselect the "Enable
+      project specific settings" checkbox, it will use the default runtime as defined in your
+      global preferences.</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/Chapter-Eclipse/drools-runtimes-project.png" format="PNG" role="" />
+        </imageobject>
+      </mediaobject>
+
+    </section>
+
+  </section>
+
+  <section>
     <title>Process skins</title>
 
     <para>We have introduced the concept of a (process) skin, which controls how the
