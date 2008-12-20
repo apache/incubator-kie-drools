@@ -102,9 +102,9 @@
 
 <programlisting>
 &lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;process xmlns="http://drools.org/drools-4.0/process"
+&lt;process xmlns="http://drools.org/drools-5.0/process"
          xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-         xs:schemaLocation="http://drools.org/drools-4.0/process drools-processes-4.0.xsd"
+         xs:schemaLocation="http://drools.org/drools-5.0/process drools-processes-5.0.xsd"
          type="RuleFlow" name="ruleflow" id="com.sample.ruleflow" package-name="com.sample" &gt;
 
   &lt;header&gt;
@@ -152,23 +152,23 @@
 
       <para>This is a simple example of a basic process with a ruleset node only:
         <programlisting>
-          RuleFlowProcessFactory factory =
-	      RuleFlowProcessFactory.createProcess("org.drools.HelloWorldRuleSet");
-          factory
-              // Header
-              .name("HelloWorldRuleSet")
-              .version("1.0")
-              .packageName("org.drools")
-              // Nodes
-              .startNode(1).name("Start").done()
-              .ruleSetNode(2)
-                  .name("RuleSet")
-                  .ruleFlowGroup("someGroup").done()
-              .endNode(3).name("End").done()
-              // Connections
-              .connection(1, 2)
-              .connection(2, 3);
-          RuleFlowProcess process = factory.validate().getProcess();
+      RuleFlowProcessFactory factory =
+          RuleFlowProcessFactory.createProcess("org.drools.HelloWorldRuleSet");
+      factory
+          // Header
+          .name("HelloWorldRuleSet")
+          .version("1.0")
+          .packageName("org.drools")
+          // Nodes
+          .startNode(1).name("Start").done()
+          .ruleSetNode(2)
+              .name("RuleSet")
+              .ruleFlowGroup("someGroup").done()
+          .endNode(3).name("End").done()
+          // Connections
+          .connection(1, 2)
+          .connection(2, 3);
+      RuleFlowProcess process = factory.validate().getProcess();
         </programlisting>
       </para>
         
@@ -207,28 +207,28 @@
 
       <para>This example is using Split and Join nodes:
         <programlisting>
-          RuleFlowProcessFactory factory =
-              RuleFlowProcessFactory.createProcess("org.drools.HelloWorldJoinSplit");
-          factory
-              // Header
-              .name("HelloWorldJoinSplit")
-              .version("1.0")
-              .packageName("org.drools")
-              // Nodes
-              .startNode(1).name("Start").done()
-              .splitNode(2).name("Split").type(Split.TYPE_AND).done()
-              .actionNode(3).name("Action 1").action("mvel", "System.out.println(\"Inside Action 1\")").done()
-              .actionNode(4).name("Action 2").action("mvel", "System.out.println(\"Inside Action 2\")").done()
-              .joinNode(5).type(Join.TYPE_AND).done()
-              .endNode(6).name("End").done()
-              // Connections
-              .connection(1, 2)
-              .connection(2, 3)
-              .connection(2, 4)
-              .connection(3, 5)
-              .connection(4, 5)
-              .connection(5, 6);
-          RuleFlowProcess process = factory.validate().getProcess();
+      RuleFlowProcessFactory factory =
+          RuleFlowProcessFactory.createProcess("org.drools.HelloWorldJoinSplit");
+      factory
+          // Header
+          .name("HelloWorldJoinSplit")
+          .version("1.0")
+          .packageName("org.drools")
+          // Nodes
+          .startNode(1).name("Start").done()
+          .splitNode(2).name("Split").type(Split.TYPE_AND).done()
+          .actionNode(3).name("Action 1").action("mvel", "System.out.println(\"Inside Action 1\")").done()
+          .actionNode(4).name("Action 2").action("mvel", "System.out.println(\"Inside Action 2\")").done()
+          .joinNode(5).type(Join.TYPE_AND).done()
+          .endNode(6).name("End").done()
+          // Connections
+          .connection(1, 2)
+          .connection(2, 3)
+          .connection(2, 4)
+          .connection(3, 5)
+          .connection(4, 5)
+          .connection(5, 6);
+      RuleFlowProcess process = factory.validate().getProcess();
         </programlisting>
       </para>
 
@@ -243,34 +243,34 @@
 
       <para>Now we show a more complex example with a ForEach node, where we have nested nodes:
         <programlisting>
-          RuleFlowProcessFactory factory =
-              RuleFlowProcessFactory.createProcess("org.drools.HelloWorldForeach");
-          factory
-              // Header
-              .name("HelloWorldForeach")
-              .version("1.0")
-              .packageName("org.drools")
+      RuleFlowProcessFactory factory =
+          RuleFlowProcessFactory.createProcess("org.drools.HelloWorldForeach");
+      factory
+          // Header
+          .name("HelloWorldForeach")
+          .version("1.0")
+          .packageName("org.drools")
+          // Nodes
+          .startNode(1).name("Start").done()
+          .forEachNode(2)
+              // Properties
+              .linkIncomingConnections(3)
+              .linkOutgoingConnections(4)
+              .collectionExpression("persons")
+              .variable("child", new ObjectDataType("org.drools.Person"))
               // Nodes
-              .startNode(1).name("Start").done()
-              .forEachNode(2)
-                  // Properties
-                  .linkIncomingConnections(3)
-                  .linkOutgoingConnections(4)
-                  .collectionExpression("persons")
-                  .variable("child", new ObjectDataType("org.drools.Person"))
-                  // Nodes
-                  .actionNode(3)
-                      .action("mvel", "System.out.println(\"inside action1\")").done()
-                  .actionNode(4)
-                      .action("mvel", "System.out.println(\"inside action2\")").done()
-                  // Connections
-                  .connection(3, 4)
-                  .done()
-              .endNode(5).name("End").done()
+              .actionNode(3)
+                  .action("mvel", "System.out.println(\"inside action1\")").done()
+              .actionNode(4)
+                  .action("mvel", "System.out.println(\"inside action2\")").done()
               // Connections
-              .connection(1, 2)
-              .connection(2, 5);
-          RuleFlowProcess process = factory.validate().getProcess();
+              .connection(3, 4)
+              .done()
+          .endNode(5).name("End").done()
+          // Connections
+          .connection(1, 2)
+          .connection(2, 5);
+      RuleFlowProcess process = factory.validate().getProcess();
         </programlisting>
       </para>
 
@@ -290,51 +290,63 @@
     <title>Using a process in your application</title>
 
     <para>There are two things you need to do to be able to execute processes from
-    within your application: (1) you need to create a rulebase that contain
+    within your application: (1) you need to create a knowledge base that contain
     the definition of the process; and (2) you need to start the process by creating
     a session to communicate with the process engine and start the process.</para>
 
     <orderedlist>
 
-       <listitem><para><emphasis>Creating a rulebase</emphasis>: Once you
-       have a valid process, you can add a process to a package (just like adding a rule):
+      <listitem><para><emphasis>Creating a knowledge base</emphasis>: Once you
+      have a valid process, you can add the process to the knowledge base (note
+      that this is almost identical to adding rules to the knowledge base, except
+      for the type of knowledge added):</para>
       <programlisting>
-PackageBuilder builder = new PackageBuilder();
-Reader processReader = ... (process reader, select your *.rf file here)
-builder.addProcessFromXml(processReader);</programlisting>
-      Alternatively, you can upload the .rf file to Guvnor (as a
-      process asset) and it will automatically be included in packages that are
-      deployed from it.</para>
-      <para>Next you need to create a rulebase that contains all the necessary rules
-      and processes, like this:
+KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+kbuilder.add(ResourceFactory.newClassPathResource("MyProcess.rf"), ResourceType.DRF);</programlisting>
+      <para>After adding all your knowledge to the builder (you can add more than one
+      process or even rules), you should probably check whether the process (and/or rules)
+      have been parsed correctly and write out any errors like this:</para>
       <programlisting>
-RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-ruleBase.addPackage(builder.getPackage());</programlisting>
-      </para></listitem>
+KnowledgeBuilderErrors errors = kbuilder.getErrors();
+if (errors.size() > 0) {
+    for (KnowledgeBuilderError error: errors) {
+        System.err.println(error);
+    }
+    throw new IllegalArgumentException("Could not parse knowledge.");
+}</programlisting>
+      <para>Next you need to create the knowledge base that contains all the necessary
+      processes (and rules) like this:</para>
+      <programlisting>
+KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());</programlisting>
+      </listitem>
 
       <listitem><para><emphasis>Starting a process</emphasis>: Processes are only executed
       if you explicitly state that they should be executed.  This is because you could
-      potentially define a lot of processes in your rulebase and the engine has no way
+      potentially define a lot of processes in your knowledge base and the engine has no way
       to know when you would like to start each of these.  To activate a particular process,
       you will need to start the process by calling the startProcess method on your session.
       For example:
-      <programlisting>StatefulSession session = ruleBase.newStatefulSession();
-session.startProcess("com.sample.MyProcess");</programlisting>
+      <programlisting>
+StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+ksession.startProcess("com.sample.MyProcess");</programlisting>
       The parameter of the startProcess method represents the id of the process that needs to
       be started (the process id needs to be specified as a property of the process, which are
       shown in the properties view when you click the background canvas of your process). 
       If your process also requires the execution of rules during the execution of the process,
-      you also need to call the session.fireAllRules() method. Thats it !</para>
-      <para>You can also specify additional parameters that are used to pass on additional data
+      you also need to call the ksession.fireAllRules() method to make sure the rules are
+      executed as well. That's it!</para>
+      <para>You can also specify additional parameters that are used to pass on input data
       to the process, using the startProcess(String processId, Map parameters)
-      method, that takes an additional set of parameters as name-value pairs.
+      method, that takes an additional set of parameters as name-value pairs.  These parameters
+      are then copied to the newly created process instance as top-level variables of the process.
+      </para>
+      <para>You can also start a process from within a rule consequence, using
+      <programlisting>kcontext.getKnowledgeRuntime().startProcess("com.sample.MyProcess");</programlisting>
       </para></listitem>
 
     </orderedlist>
     
-    <para>You can also start a process from within a rule consequence using
-    <programlisting>drools.getWorkingMemory().startProcess("...");</programlisting>
-    </para>
   </section>
 
   <section>
@@ -452,6 +464,10 @@ session.startProcess("com.sample.MyProcess");</programlisting>
              <para>Discriminator means that it continues if one of its incoming branches has been completed.
              </para>
            </listitem>
+           <listitem>
+             <para>n-of-m means that it continues if n of its m incoming branches have been completed.  The n variable could either be hardcoded to a fixed value, or could also refer to a process variable that will contain the number of incoming branches to wait for.
+             </para>
+           </listitem>
           </itemizedlist>
         It contains the following properties:
         </para>
@@ -459,6 +475,7 @@ session.startProcess("com.sample.MyProcess");</programlisting>
           <listitem><para><emphasis>Id</emphasis>: The id of the node (which is unique within one node container).</para></listitem>
           <listitem><para><emphasis>Name</emphasis>: The display name of the node.</para></listitem>
           <listitem><para><emphasis>Type</emphasis>: The type of the join node, t.e. AND, XOR or Discriminator (see above).</para></listitem>
+          <listitem><para><emphasis>n</emphasis>: The number of incoming connections to wait for (in case of a n-of-m join).</para></listitem>
         </itemizedlist>
       </listitem>
 

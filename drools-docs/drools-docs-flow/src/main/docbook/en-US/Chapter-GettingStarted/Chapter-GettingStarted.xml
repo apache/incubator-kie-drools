@@ -12,30 +12,30 @@
 
   <section>
     <title>Installation</title>
+
     <para>The best way to get started is to use the Drools Eclipse Plugin.  This
     is a plugin for the Eclipse development environment that allows users to
-    create, execute and debug Drools processes and rules.</para>
-
-    <para>To get started, you need an Eclipse 3.4.x, as well as the Eclipse
-    Graphical Editing Framework (GEF) plugin installed.  Eclipse can be downloaded
-    from:</para>
+    create, execute and debug Drools processes and rules. To get started with the
+    plugin, you first need an Eclipse 3.4.x (as well as the Eclipse
+    Graphical Editing Framework (GEF) plugin installed).  Eclipse can be downloaded
+    from the following link (if you do not know which version of eclipse you need,
+    simply choose the "Eclipse IDE for Java Developers", and this one already includes
+    the GEF plugin as well):</para>
     <para><ulink url="http://www.eclipse.org/downloads/">http://www.eclipse.org/downloads/</ulink></para>
-    <para>If you do not know which version you need, simply choose the "Eclipse IDE
-    for Java Developers".  This one already includes the GEF plugin as well.</para>
 
     <para>Next you need to install the Drools Eclipse plugin. There are two ways to do
     this, (1) manually downloading and installing the plugin or (2) using the Drools
     Eclipse update site.</para>
 
-    <para><emphasis role="strong">Manual download:</emphasis> Download the Drools Eclipse IDE plugin from:</para>
+    <para><emphasis role="strong">Manual download:</emphasis> Download the Drools Eclipse
+    IDE plugin from the link below. Unzip the downloaded file in your main eclipse folder
+    (so that the feature and plugin jars end up in the features and plugin directory of
+    eclipse) and (re)start Eclipse.</para>
     <para><ulink url="http://www.jboss.org/auth/drools/downloads.html">http://www.jboss.org/auth/drools/downloads.html</ulink></para>
-    <para>Unzip the downloaded file in your main eclipse folder (so that the feature
-    and plugin jars end up in the features and plugin directory of eclipse) and
-    (re)start Eclipse.</para>
 
-    <para><emphasis role="strong">Using the update site:</emphasis> Open up Eclipse, and in the "Help" menu,
-    select "Software Updates ...", and in the "Available Software" tab, click the
-    "Add Site ..." button. TODO </para>
+    <para><emphasis role="strong">Using the update site:</emphasis> Open up Eclipse,
+    and in the "Help" menu, select "Software Updates ...", and in the "Available Software"
+    tab, click the "Add Site ..." button. TODO: all link + explanation for update site.</para>
 
     <para>To check that the installation was successful, try opening the Drools perspective:
     Click the 'Open Perspective' button in the top right corner of your Eclipse window,
@@ -45,18 +45,13 @@
   <section>
     <title>Creating your first process</title>
 
-    <para>If you haven't done so already, you should switch to the Drools perspective within
-    Eclipse first, as this will open all the relevant views for you.  You can do this by
-    clicking on the Open Perspective button (top right of your screen), select "Other ..."
-    and pick the Drools perspective.</para>
-
     <para>A new Drools project wizard can be used to set up an executable project that contains
     the necessary files to get started easily with defining and executing processes. This wizard
     will setup a basic project structure, the classpath, a sample process and execution code to
-    get you started.  To create a new Drools Project, select "File" -> "New" -> "Project ..." and in
-    the Drools folder, select Drools Project.  As an alternative, you could also simply left-click
-    on the Drools action button (with the Drools head) in the Eclipse toolbar and select
-    "New Drools Project".  This should open the following dialog:</para>
+    get you started.  To create a new Drools Project, simply left-click on the Drools action button
+    (with the Drools head) in the Eclipse toolbar and select "New Drools Project".  Alternatively,
+    you could also select "File" -> "New" -> "Project ..." and in the Drools folder, select Drools
+    Project.  This should open the following dialog:</para>
 
     <mediaobject>
       <imageobject>
@@ -162,9 +157,9 @@
 
 <programlisting>
 &lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;process xmlns="http://drools.org/drools-4.0/process"
+&lt;process xmlns="http://drools.org/drools-5.0/process"
          xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-         xs:schemaLocation="http://drools.org/drools-4.0/process drools-processes-4.0.xsd"
+         xs:schemaLocation="http://drools.org/drools-5.0/process drools-processes-5.0.xsd"
          type="RuleFlow" name="ruleflow" id="com.sample.ruleflow" package-name="com.sample" &gt;
 
   &lt;header&gt;
