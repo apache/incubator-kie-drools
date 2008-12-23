@@ -325,6 +325,12 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
             this.node.retractObject( factHandle,
                                      context,
                                      workingMemory );
+            
+            // if no activations for this expired event
+            if( ((EventFactHandle)factHandle).getActivationsCount() == 0 ) {
+                // remove it from the object store and clean up resources
+                ((EventFactHandle)factHandle).getEntryPoint().retract( factHandle );
+            }
         }
     }
 }

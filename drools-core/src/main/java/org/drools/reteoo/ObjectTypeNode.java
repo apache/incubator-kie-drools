@@ -195,7 +195,7 @@ public class ObjectTypeNode extends ObjectSource
                                            ((EventFactHandle)factHandle).getStartTimestamp() + this.expirationOffset );
             JobContext jobctx = new ExpireJobContext( expire,
                                                       workingMemory );
-            JobHandle handle = clock.scheduleJob( new ExpireJob(),
+            JobHandle handle = clock.scheduleJob( job,
                                                   jobctx,
                                                   new PointInTimeTrigger( nextTimestamp ) );
             jobctx.setJobHandle( handle );
