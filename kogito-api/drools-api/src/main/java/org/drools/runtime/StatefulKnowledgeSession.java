@@ -64,26 +64,6 @@ public interface StatefulKnowledgeSession
     StatefulProcessSession,
     KnowledgeRuntime {
 
-    /**
-     * Sets a global value on the internal collection
-     * @param identifer the global identifier
-     * @param value the value assigned to the global identifier
-     */
-    void setGlobal(String identifier,
-                   Object object);
-
-    /**
-     * Delegate used to resolve any global names not found in the global map.
-     * @param globalResolver
-     */
-    void setGlobalResolver(GlobalResolver globalResolver);
-
-    /**
-     * Returns the KnowledgeBase reference from which this stateful session was created.
-     * 
-     * @return
-     */
-    KnowledgeBase getKnowledgeBase();
 
     /**
      * Releases all the current session resources, setting up the session for garbage collection.
