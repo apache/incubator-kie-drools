@@ -405,7 +405,7 @@ abstract public class AbstractRuleBase
 
         this.wms = null;
     }
-
+    
     /**
      * Add a <code>Package</code> to the network. Iterates through the
      * <code>Package</code> adding Each individual <code>Rule</code> to the
@@ -414,105 +414,98 @@ abstract public class AbstractRuleBase
      *
      * @param newPkg
      *            The package to add.
-     */
-    public synchronized void addPackage(final Package newPkg) {
-        newPkg.checkValidity();
+     */    
+    public synchronized void addPackages(final Collection<Package> newPkgs) {
         synchronized ( this.pkgs ) {
-            Package pkg = this.pkgs.get( newPkg.getName() );
-
             // only acquire the lock if it hasn't been done explicitely
             boolean doUnlock = false;
             if ( !this.lock.isHeldByCurrentThread() && (this.wms == null || this.wms.length == 0) ) {
                 lock();
                 doUnlock = true;
             }
-            this.additionsSinceLock++;
-
-            this.eventSupport.fireBeforePackageAdded( newPkg );
-
-            //            // create new base package if it doesn't exist, as we always merge the newPkg into the existing one, 
-            //            // to isolate the base package from further possible changes to newPkg.
-            //            if ( pkg == null ) {
-            //                // create a new package, use the same parent classloader as the incoming new package
-            //                pkg = new Package( newPkg.getName(),
-            //                                   new MapBackedClassLoader( newPkg.getPackageScopeClassLoader().getParent() ) );
-            //                //newPkg.getPackageScopeClassLoader() );
-            //                pkgs.put( pkg.getName(),
-            //                          pkg );
-            //                // add the dialect registry composite classloader (which uses the above classloader as it's parent)
-            //                this.packageClassLoader.addClassLoader( pkg.getDialectRuntimeRegistry().getClassLoader() );
-            //            }
-
-            if ( pkg == null ) {
-                pkg = new Package( newPkg.getName() );
+            
+            // we need to merge all byte[] first, so that the root classloader can resolve classes
+            for ( Package newPkg : newPkgs ) {
+                newPkg.checkValidity();                           
+                this.additionsSinceLock++;
+                this.eventSupport.fireBeforePackageAdded( newPkg );
                 
-                // @TODO we really should have a single root cache
-                pkg.setClassFieldAccessorCache( this.classFieldAccessorCache );
-                pkgs.put( pkg.getName(),
-                          pkg );
-            }       
+                Package pkg = this.pkgs.get( newPkg.getName() );                
+                if ( pkg == null ) {
+                    pkg = new Package( newPkg.getName() );
+                    
+                    // @TODO we really should have a single root cache
+                    pkg.setClassFieldAccessorCache( this.classFieldAccessorCache );
+                    pkgs.put( pkg.getName(),
+                              pkg );
+                }       
+                
+                // first merge anything related to classloader re-wiring
+                pkg.getDialectRuntimeRegistry().merge( newPkg.getDialectRuntimeRegistry(), this.rootClassLoader );                
+            }
             
-            // first merge anything related to classloader re-wiring
-            pkg.getDialectRuntimeRegistry().merge( newPkg.getDialectRuntimeRegistry(), this.rootClassLoader );
-            if ( newPkg.getFunctions() != null ) {
-                for ( Map.Entry<String, Function> entry : newPkg.getFunctions().entrySet() ) {
-                    pkg.addFunction( entry.getValue() );
-                }
-            }            
-            pkg.getClassFieldAccessorStore().merge( newPkg.getClassFieldAccessorStore() );
-            pkg.getDialectRuntimeRegistry().onBeforeExecute();
-            
-            // we have to do this before the merging, as it does some classloader resolving
-            TypeDeclaration lastType = null;
-            try {
-                // Add the type declarations to the RuleBase
-                if ( newPkg.getTypeDeclarations() != null ) {
-                    // add type declarations
-                    for ( TypeDeclaration type : newPkg.getTypeDeclarations().values() ) {
-                        lastType = type;
-                        type.setTypeClass( this.rootClassLoader.loadClass( pkg.getName() + "." + type.getTypeName() ) );
-                        // @TODO should we allow overrides? only if the class is not in use.
-                        if ( !this.classTypeDeclaration.containsKey( type.getTypeClass() ) ) {
-                            // add to rulebase list of type declarations                        
-                            this.classTypeDeclaration.put( type.getTypeClass(),
-                                                           type );
+            for ( Package newPkg : newPkgs ) {
+                Package pkg = this.pkgs.get( newPkg.getName() );  
+                
+                if ( newPkg.getFunctions() != null ) {
+                    for ( Map.Entry<String, Function> entry : newPkg.getFunctions().entrySet() ) {
+                        pkg.addFunction( entry.getValue() );
+                    }
+                }            
+                pkg.getClassFieldAccessorStore().merge( newPkg.getClassFieldAccessorStore() );
+                pkg.getDialectRuntimeRegistry().onBeforeExecute();
+                
+                // we have to do this before the merging, as it does some classloader resolving
+                TypeDeclaration lastType = null;
+                try {
+                    // Add the type declarations to the RuleBase
+                    if ( newPkg.getTypeDeclarations() != null ) {
+                        // add type declarations
+                        for ( TypeDeclaration type : newPkg.getTypeDeclarations().values() ) {
+                            lastType = type;
+                            type.setTypeClass( this.rootClassLoader.loadClass( pkg.getName() + "." + type.getTypeName() ) );
+                            // @TODO should we allow overrides? only if the class is not in use.
+                            if ( !this.classTypeDeclaration.containsKey( type.getTypeClass() ) ) {
+                                // add to rulebase list of type declarations                        
+                                this.classTypeDeclaration.put( type.getTypeClass(),
+                                                               type );
+                            }
                         }
                     }
+                } catch ( ClassNotFoundException e ) {
+                    throw new RuntimeDroolsException( "unable to resolve Type Declaration class '" + lastType.getTypeName()+"'" );            
+                }            
+
+                // now merge the new package into the existing one
+                mergePackage( pkg,
+                              newPkg );
+
+                // add the rules to the RuleBase
+                final Rule[] rules = newPkg.getRules();
+                for ( int i = 0; i < rules.length; ++i ) {
+                    addRule( newPkg,
+                             rules[i] );
                 }
-            } catch ( ClassNotFoundException e ) {
-                throw new RuntimeDroolsException( "unable to resolve Type Declaration class '" + lastType.getTypeName()+"'" );            
-            }            
 
-            // now merge the new package into the existing one
-            mergePackage( pkg,
-                          newPkg );
-
-            // add the rules to the RuleBase
-            final Rule[] rules = newPkg.getRules();
-            for ( int i = 0; i < rules.length; ++i ) {
-                addRule( newPkg,
-                         rules[i] );
-            }
-
-            // add the flows to the RuleBase
-            if ( newPkg.getRuleFlows() != null ) {
-                final Map flows = newPkg.getRuleFlows();
-                for ( final Object object : newPkg.getRuleFlows().entrySet() ) {
-                    final Entry flow = (Entry) object;
-                    this.processes.put( flow.getKey(),
-                                        flow.getValue() );
+                // add the flows to the RuleBase
+                if ( newPkg.getRuleFlows() != null ) {
+                    final Map flows = newPkg.getRuleFlows();
+                    for ( final Object object : newPkg.getRuleFlows().entrySet() ) {
+                        final Entry flow = (Entry) object;
+                        this.processes.put( flow.getKey(),
+                                            flow.getValue() );
+                    }
                 }
+
+                this.eventSupport.fireAfterPackageAdded( newPkg );
             }
-
-            this.eventSupport.fireAfterPackageAdded( newPkg );
-
             // only unlock if it had been acquired implicitely
             if ( doUnlock ) {
                 unlock();
             }
         }
-
-    }
+        
+    }    
 
     /**
      * Merge a new package with an existing package.

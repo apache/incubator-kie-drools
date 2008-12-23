@@ -84,6 +84,7 @@ import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.rule.TimeMachine;
 import org.drools.ruleflow.core.RuleFlowProcess;
+import org.drools.runtime.ExitPoint;
 import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.process.EventListener;
 import org.drools.runtime.process.WorkItemHandler;
@@ -205,6 +206,8 @@ public abstract class AbstractWorkingMemory
     private Map<InternalFactHandle, PropagationContext>      modifyContexts;
     
     private KnowledgeRuntime                                 kruntime;
+    
+    private Map<String, ExitPoint>                           exitPoints;
 
     // ------------------------------------------------------------
     // Constructors
@@ -301,7 +304,8 @@ public abstract class AbstractWorkingMemory
         this.entryPoint = EntryPoint.DEFAULT;
         this.firing = new AtomicBoolean( false );
         this.modifyContexts = new HashMap<InternalFactHandle, PropagationContext>();
-
+        this.exitPoints = new ConcurrentHashMap<String, ExitPoint>();
+        //setGlobal( "exitPoints", Collections.unmodifiableMap( this.exitPoints ) );
 		initProcessEventListeners();
         initPartitionManagers();
         initTransient();
@@ -1806,5 +1810,17 @@ public abstract class AbstractWorkingMemory
     public KnowledgeRuntime getKnowledgeRuntime() {
         return this.kruntime;
     }       
+    
+	public void registerExitPoint(String name, ExitPoint exitPoint) {
+		this.exitPoints.put(name, exitPoint);
+	}
+
+	public void unregisterExitPoint(String name) {
+		this.exitPoints.remove( name );
+	}    
+	
+	public Map<String, ExitPoint> getExitPoints() {
+		return this.exitPoints;
+	}
 
 }

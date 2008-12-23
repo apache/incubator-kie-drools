@@ -20,7 +20,7 @@ import org.drools.io.impl.UrlResource;
 import org.drools.rule.Package;
 
 public class KnowledgeBuilderImpl implements KnowledgeBuilder {
-	private PackageBuilder pkgBuilder;
+	public PackageBuilder pkgBuilder;
 
 	public KnowledgeBuilderImpl(PackageBuilder pkgBuilder) {
 		this.pkgBuilder = pkgBuilder;
@@ -58,5 +58,9 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
     public KnowledgeBuilderErrors getErrors() {
         return this.pkgBuilder.getErrors();
+    }
+    
+    public PackageBuilder getPackageBuilder() {
+        return this.pkgBuilder;
     }
 }

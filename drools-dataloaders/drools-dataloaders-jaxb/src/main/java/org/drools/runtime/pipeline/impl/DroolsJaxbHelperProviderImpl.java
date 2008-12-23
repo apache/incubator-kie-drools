@@ -1,4 +1,4 @@
-package org.drools.dataloaders.jaxb;
+package org.drools.runtime.pipeline.impl;
 
 /*
  * Copyright 2005 JBoss Inc
@@ -34,10 +34,16 @@ import java.util.Map.Entry;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
+import org.drools.KnowledgeBase;
 import org.drools.RuleBase;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.help.DroolsJaxbHelperProvider;
+import org.drools.builder.impl.KnowledgeBuilderImpl;
 import org.drools.common.InternalRuleBase;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageRegistry;
+import org.drools.impl.KnowledgeBaseImpl;
+import org.drools.io.Resource;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.builder.dialect.java.JavaDialect;
 import org.xml.sax.InputSource;
@@ -53,20 +59,25 @@ import com.sun.tools.xjc.Options;
 import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.outline.Outline;
 
-public class DroolsJaxbHelper {
-    public static String[] addModel(Reader reader,
-                                    PackageBuilder pkgBuilder,
-                                    Options xjcOpts,
-                                    String systemId) throws IOException {
-        InputSource source = new InputSource( new CachingRewindableReader( reader ) );
+public class DroolsJaxbHelperProviderImpl
+    implements
+    DroolsJaxbHelperProvider {
+    public String[] addXsdModel(Resource resource,
+                             KnowledgeBuilder kbuilder,
+                             Options xjcOpts,
+                             String systemId) throws IOException {
+        PackageBuilder pkgBuilder = ((KnowledgeBuilderImpl) kbuilder).pkgBuilder;
+
+        InputSource source = new InputSource( new CachingRewindableReader( resource.getReader() ) );
         source.setSystemId( systemId.trim().startsWith( "." ) ? systemId : "." + systemId );
 
         xjcOpts.addGrammar( source );
-        
+
         try {
-            xjcOpts.parseArguments( new String[] { "-npa" } );
+            xjcOpts.parseArguments( new String[]{"-npa"} );
         } catch ( BadCommandLineException e ) {
-            throw new IllegalArgumentException("Unable to parse arguments", e);
+            throw new IllegalArgumentException( "Unable to parse arguments",
+                                                e );
         }
 
         ErrorReceiver errorReceiver = new JaxbErrorReceiver4Drools();
@@ -94,7 +105,7 @@ public class DroolsJaxbHelper {
             if ( !name.endsWith( "package-info.java" ) ) {
                 classNames.add( pkgName );
             }
-            
+
             dotPos = pkgName.lastIndexOf( '.' );
             if ( dotPos != -1 ) {
                 pkgName = pkgName.substring( 0,
@@ -119,17 +130,17 @@ public class DroolsJaxbHelper {
         return (String[]) classNames.toArray( new String[classNames.size()] );
     }
 
-    public static JAXBContext newInstance(String[] classNames,
-                                          RuleBase rb) throws JAXBException {
-        return newInstance( classNames,
+    public JAXBContext newJAXBContext(String[] classNames,
+                                          KnowledgeBase kbase) throws JAXBException {
+        return newJAXBContext( classNames,
                             Collections.<String, Object> emptyMap(),
-                            rb );
+                            kbase );
     }
 
-    public static JAXBContext newInstance(String[] classNames,
-                                          Map<String, ? > properties,
-                                          RuleBase rb) throws JAXBException {
-        ClassLoader classLoader = ((InternalRuleBase) rb).getRootClassLoader();
+    public JAXBContext newJAXBContext(String[] classNames,
+                                      Map<String, ? > properties,
+                                      KnowledgeBase kbase) throws JAXBException {
+        ClassLoader classLoader = ((InternalRuleBase) ((KnowledgeBaseImpl) kbase).getRuleBase()).getRootClassLoader();
 
         Class[] classes = new Class[classNames.length];
         int i = 0;
@@ -140,7 +151,7 @@ public class DroolsJaxbHelper {
         } catch ( ClassNotFoundException e ) {
             throw new JAXBException( "Unable to resolve class '" + classNames[i] + "'",
                                      e );
-        }        
+        }
 
         return JAXBContext.newInstance( classes,
                                         properties );

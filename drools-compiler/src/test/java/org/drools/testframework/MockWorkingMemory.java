@@ -43,6 +43,7 @@ import org.drools.reteoo.LIANodePropagation;
 import org.drools.reteoo.PartitionTaskManager;
 import org.drools.rule.Rule;
 import org.drools.rule.TimeMachine;
+import org.drools.runtime.ExitPoint;
 import org.drools.runtime.KnowledgeRuntime;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
@@ -501,5 +502,10 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         // TODO Auto-generated method stub
         
     }
+
+	public Map<String, ExitPoint> getExitPoints() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

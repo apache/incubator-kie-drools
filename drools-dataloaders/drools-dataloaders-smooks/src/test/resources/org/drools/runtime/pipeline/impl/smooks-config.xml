@@ -8,7 +8,7 @@
     <resource-config selector="root">
         <resource>org.milyn.javabean.BeanPopulator</resource>
         <param name="beanId">root</param>
-        <param name="beanClass">org.drools.dataloaders.smooks.Root</param>
+        <param name="beanClass">org.drools.runtime.pipeline.impl.Root</param>
         <param name="bindings">
             <binding property="children" selector="${children}" />
         </param>

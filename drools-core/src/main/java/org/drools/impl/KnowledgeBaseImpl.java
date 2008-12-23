@@ -108,9 +108,11 @@ public class KnowledgeBaseImpl
     }
 
     public void addKnowledgePackages(Collection<KnowledgePackage> knowledgePackages) {
+        List<Package> list = new ArrayList<Package>();
         for ( KnowledgePackage knowledgePackage : knowledgePackages ) {
-            ruleBase.addPackage( ((KnowledgePackageImp) knowledgePackage).pkg );
+            list.add( ((KnowledgePackageImp) knowledgePackage).pkg  );
         }
+        ((ReteooRuleBase)ruleBase).addPackages( list);
     }
 
     public Collection<KnowledgePackage> getKnowledgePackages() {
