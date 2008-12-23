@@ -57,12 +57,10 @@ public class MilestoneNodeInstance extends EventBasedNodeInstance implements Age
         }
         String rule = "RuleFlow-Milestone-" + getProcessInstance().getProcessId()
         	+ "-" + getNode().getId();
-        Activation activation = ((InternalAgenda) getProcessInstance().getAgenda())
-			.isRuleActiveInRuleFlowGroup("DROOLS_SYSTEM", rule);
-        if (activation != null) {
-        	if (checkProcessInstance(activation)) {
-        		triggerCompleted();
-        	}
+        boolean isActive = ((InternalAgenda) getProcessInstance().getAgenda())
+			.isRuleActiveInRuleFlowGroup("DROOLS_SYSTEM", rule, getProcessInstance().getId());
+        if (isActive) {
+        	triggerCompleted();
         } else {
             addActivationListener();
         }

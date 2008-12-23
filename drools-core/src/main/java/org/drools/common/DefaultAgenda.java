@@ -34,8 +34,10 @@ import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.base.SequentialKnowledgeHelper;
 import org.drools.common.RuleFlowGroupImpl.DeactivateCallback;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
+import org.drools.process.instance.ProcessInstance;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.rule.Declaration;
 import org.drools.spi.Activation;
 import org.drools.spi.ActivationGroup;
 import org.drools.spi.AgendaFilter;
@@ -974,20 +976,39 @@ public class DefaultAgenda
     /**
      * @inheritDoc
      */
-    public Activation isRuleActiveInRuleFlowGroup(String ruleflowGroupName,
-                                                  String ruleName) {
+    public boolean isRuleActiveInRuleFlowGroup(String ruleflowGroupName,
+                                                  String ruleName,
+                                                  long processInstanceId) {
 
         RuleFlowGroup systemRuleFlowGroup = this.getRuleFlowGroup( ruleflowGroupName );
 
         for ( Iterator<RuleFlowGroupNode> activations = systemRuleFlowGroup.iterator(); activations.hasNext(); ) {
             Activation activation = activations.next().getActivation();
             if ( ruleName.equals( activation.getRule().getName() ) ) {
-                return activation;
+            	if (checkProcessInstance(activation, processInstanceId)) {
+            		return true;
+            	}
             }
         }
-        return null;
+        return false;
     }
 
+    private boolean checkProcessInstance(Activation activation, long processInstanceId) {
+    	final Map<?, ?> declarations = activation.getSubRule().getOuterDeclarations();
+        for ( Iterator<?> it = declarations.values().iterator(); it.hasNext(); ) {
+            Declaration declaration = (Declaration) it.next();
+            if ("processInstance".equals(declaration.getIdentifier())) {
+            	Object value = declaration.getValue(
+        			workingMemory,
+        			((InternalFactHandle) activation.getTuple().get(declaration)).getObject());
+            	if (value instanceof ProcessInstance) {
+            		return ((ProcessInstance) value).getId() == processInstanceId;
+            	}
+        	}
+        }
+        return true;
+    }
+    
     public void addRuleFlowGroupListener(String ruleFlowGroup,
                                          RuleFlowGroupListener listener) {
         InternalRuleFlowGroup rfg = (InternalRuleFlowGroup) this.getRuleFlowGroup( ruleFlowGroup );

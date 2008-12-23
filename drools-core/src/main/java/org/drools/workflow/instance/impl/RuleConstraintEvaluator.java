@@ -17,17 +17,11 @@ package org.drools.workflow.instance.impl;
  */
 
 import java.io.Serializable;
-import java.util.Iterator;
-import java.util.Map;
 
 import org.drools.common.InternalAgenda;
-import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalWorkingMemory;
 import org.drools.definition.process.Connection;
 import org.drools.process.instance.ProcessInstance;
-import org.drools.rule.Declaration;
 import org.drools.runtime.process.WorkflowProcessInstance;
-import org.drools.spi.Activation;
 import org.drools.workflow.core.Constraint;
 import org.drools.workflow.instance.node.SplitInstance;
 
@@ -98,26 +92,10 @@ public class RuleConstraintEvaluator implements Constraint,
         InternalAgenda agenda = (InternalAgenda) ((ProcessInstance) processInstance).getAgenda();
         String rule = "RuleFlow-Split-" + processInstance.getProcessId() + "-" + instance.getNode().getId() + "-" + connection.getTo().getId();
 
-        Activation activation = agenda.isRuleActiveInRuleFlowGroup( "DROOLS_SYSTEM", rule );
-        return activation != null && checkProcessInstance(activation, instance.getProcessInstance());
+        boolean isActive = agenda.isRuleActiveInRuleFlowGroup( "DROOLS_SYSTEM", rule, processInstance.getId() );
+        return isActive;
     }
 
-    private boolean checkProcessInstance(Activation activation, ProcessInstance processInstance) {
-    	final Map<?, ?> declarations = activation.getSubRule().getOuterDeclarations();
-        for ( Iterator<?> it = declarations.values().iterator(); it.hasNext(); ) {
-            Declaration declaration = (Declaration) it.next();
-            if ("processInstance".equals(declaration.getIdentifier())) {
-            	Object value = declaration.getValue(
-        			(InternalWorkingMemory) processInstance.getWorkingMemory(),
-        			((InternalFactHandle) activation.getTuple().get(declaration)).getObject());
-            	if (value instanceof ProcessInstance) {
-            		return ((ProcessInstance) value).getId() == processInstance.getId();
-            	}
-        	}
-        }
-        return true;
-    }
-    
 	public Object getMetaData(String name) {
 		return null;
 	}
