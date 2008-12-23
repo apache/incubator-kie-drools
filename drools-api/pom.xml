@@ -13,6 +13,19 @@
   <name>Drools :: API</name>
 
   <dependencies>  
+        <dependency>
+          <groupId>com.sun.xml.bind</groupId>
+          <artifactId>jaxb-xjc</artifactId>
+          <version>2.0.3</version>
+          <scope>optional</scope>
+        </dependency>   
+        
+        <dependency>
+          <groupId>org.milyn</groupId>
+          <artifactId>milyn-smooks-javabean</artifactId>
+          <version>1.1</version>
+          <scope>optional</scope>          
+        </dependency>          
   </dependencies>
   
   <build>

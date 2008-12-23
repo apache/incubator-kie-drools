@@ -3,8 +3,6 @@ package org.drools.runtime.process;
 import java.util.Collection;
 import java.util.Map;
 
-import org.drools.event.process.ProcessEventManager;
-
 public interface ProcessRuntime {
 
     ProcessInstance startProcess(String processId);
