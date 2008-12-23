@@ -1,5 +1,6 @@
 package org.drools.common;
 
+import java.util.Map;
 import java.util.concurrent.locks.Lock;
 
 import org.drools.FactException;
@@ -15,6 +16,7 @@ import org.drools.reteoo.LIANodePropagation;
 import org.drools.reteoo.PartitionTaskManager;
 import org.drools.rule.Rule;
 import org.drools.rule.TimeMachine;
+import org.drools.runtime.ExitPoint;
 import org.drools.runtime.KnowledgeRuntime;
 import org.drools.spi.Activation;
 import org.drools.spi.FactHandleFactory;
@@ -113,4 +115,6 @@ public interface InternalWorkingMemory
     public void setKnowledgeRuntime(KnowledgeRuntime kruntime);
     
     public KnowledgeRuntime getKnowledgeRuntime();
+    
+    public Map<String, ExitPoint> getExitPoints();
 }

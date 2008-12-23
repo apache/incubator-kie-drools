@@ -140,7 +140,7 @@ public class PackageBuilder {
     private Resource                      resource;
 
     private List<DSLTokenizedMappingFile> dslFiles;
-    
+
     private TimeIntervalParser            timeParser;
 
     /**
@@ -355,7 +355,7 @@ public class PackageBuilder {
                                   final Reader dsl) throws DroolsParserException,
                                                    IOException {
         this.resource = new ReaderResource( source );
-        
+
         final DrlParser parser = new DrlParser();
         final PackageDescr pkg = parser.parse( source,
                                                dsl );
@@ -432,7 +432,7 @@ public class PackageBuilder {
 
     public void addProcessFromXml(Reader processSource) {
         this.resource = new ReaderResource( processSource );
-        
+
         ProcessBuilder processBuilder = new ProcessBuilder( this );
         try {
             processBuilder.addProcessFromFile( processSource,
@@ -456,33 +456,33 @@ public class PackageBuilder {
         try {
             switch ( type ) {
                 case DRL : {
-                    ((InternalResource)resource).setResourceType( type );
+                    ((InternalResource) resource).setResourceType( type );
                     addPackageFromDrl( resource );
                     break;
 
                 }
                 case DSLR : {
-                    ((InternalResource)resource).setResourceType( type );
+                    ((InternalResource) resource).setResourceType( type );
                     addPackageFromDslr( resource );
                     break;
                 }
                 case DSL : {
-                    ((InternalResource)resource).setResourceType( type );
+                    ((InternalResource) resource).setResourceType( type );
                     addDsl( resource );
                     break;
                 }
                 case XDRL : {
-                    ((InternalResource)resource).setResourceType( type );
+                    ((InternalResource) resource).setResourceType( type );
                     addPackageFromXml( resource );
                     break;
                 }
                 case DRF : {
-                    ((InternalResource)resource).setResourceType( type );
+                    ((InternalResource) resource).setResourceType( type );
                     addProcessFromXml( resource );
                     break;
                 }
                 case DTABLE : {
-                    ((InternalResource)resource).setResourceType( type );
+                    ((InternalResource) resource).setResourceType( type );
                     DecisionTableConfiguration dtableConfiguration = (DecisionTableConfiguration) configuration;
 
                     String string = DecisionTableFactory.loadFromInputStream( resource.getInputStream(),
@@ -490,18 +490,18 @@ public class PackageBuilder {
                     addPackageFromDrl( new StringReader( string ) );
                     break;
                 }
-                case PKG : {    
+                case PKG : {
                     InputStream is = resource.getInputStream();
-                    Package pkg =  (Package) DroolsStreamUtils.streamIn( is );
+                    Package pkg = (Package) DroolsStreamUtils.streamIn( is );
                     is.close();
                     addPackage( pkg );
                     break;
                 }
                 case ChangeSet : {
-                    ((InternalResource)resource).setResourceType( type );
+                    ((InternalResource) resource).setResourceType( type );
                     XmlChangeSetReader reader = new XmlChangeSetReader( this.configuration.getSemanticModules() );
                     if ( resource instanceof ClassPathResource ) {
-                        reader.setClassLoader( ((ClassPathResource )resource).getClassLoader() );
+                        reader.setClassLoader( ((ClassPathResource) resource).getClassLoader() );
                     } else {
                         reader.setClassLoader( this.configuration.getClassLoader() );
                     }
@@ -510,18 +510,22 @@ public class PackageBuilder {
                         // @TODO should log an error
                     }
                     for ( Resource nestedResource : chageSet.getResourcesAdded() ) {
-                        InternalResource iNestedResourceResource = (InternalResource) nestedResource; 
+                        InternalResource iNestedResourceResource = (InternalResource) nestedResource;
                         if ( iNestedResourceResource.isDirectory() ) {
                             this.resourceDirectories.add( iNestedResourceResource );
                             for ( Resource childResource : iNestedResourceResource.listResources() ) {
-                                if ( ((InternalResource)childResource).isDirectory() ) {
-                                    continue;  // ignore sub directories
+                                if ( ((InternalResource) childResource).isDirectory() ) {
+                                    continue; // ignore sub directories
                                 }
-                                ((InternalResource)childResource).setResourceType( iNestedResourceResource.getResourceType() );
-                                addKnowledgeResource( childResource, iNestedResourceResource.getResourceType(), iNestedResourceResource.getConfiguration() );        
+                                ((InternalResource) childResource).setResourceType( iNestedResourceResource.getResourceType() );
+                                addKnowledgeResource( childResource,
+                                                      iNestedResourceResource.getResourceType(),
+                                                      iNestedResourceResource.getConfiguration() );
                             }
                         } else {
-                            addKnowledgeResource( iNestedResourceResource, iNestedResourceResource.getResourceType(), iNestedResourceResource.getConfiguration() );
+                            addKnowledgeResource( iNestedResourceResource,
+                                                  iNestedResourceResource.getResourceType(),
+                                                  iNestedResourceResource.getConfiguration() );
                         }
                     }
                 }
@@ -532,9 +536,9 @@ public class PackageBuilder {
             throw new RuntimeException( e );
         }
     }
-    
+
     private Set<Resource> resourceDirectories = new HashSet<Resource>();
-    
+
     /**
      * This adds a package from a Descr/AST This will also trigger a compile, if
      * there are any generated classes to compile of course.
@@ -644,8 +648,6 @@ public class PackageBuilder {
             }
         }
     }
-    
-    
 
     /**
      * This checks to see if it should all be in the one namespace.
@@ -684,56 +686,60 @@ public class PackageBuilder {
         }
         return results;
     }
-    
+
     public synchronized void addPackage(final Package newPkg) {
-            Package pkg = this.pkgRegistryMap.get( newPkg.getName() ).getPackage();
+        PackageRegistry pkgRegistry = this.pkgRegistryMap.get( newPkg.getName() );
+        Package pkg = null;
+        if ( pkgRegistry != null ) {
+            pkg = pkgRegistry.getPackage();
+        }
 
+        //            // create new base package if it doesn't exist, as we always merge the newPkg into the existing one, 
+        //            // to isolate the base package from further possible changes to newPkg.
+        //            if ( pkg == null ) {
+        //                // create a new package, use the same parent classloader as the incoming new package
+        //                pkg = new Package( newPkg.getName(),
+        //                                   new MapBackedClassLoader( newPkg.getPackageScopeClassLoader().getParent() ) );
+        //                //newPkg.getPackageScopeClassLoader() );
+        //                pkgs.put( pkg.getName(),
+        //                          pkg );
+        //                // add the dialect registry composite classloader (which uses the above classloader as it's parent)
+        //                this.packageClassLoader.addClassLoader( pkg.getDialectRuntimeRegistry().getClassLoader() );
+        //            }
 
-            //            // create new base package if it doesn't exist, as we always merge the newPkg into the existing one, 
-            //            // to isolate the base package from further possible changes to newPkg.
-            //            if ( pkg == null ) {
-            //                // create a new package, use the same parent classloader as the incoming new package
-            //                pkg = new Package( newPkg.getName(),
-            //                                   new MapBackedClassLoader( newPkg.getPackageScopeClassLoader().getParent() ) );
-            //                //newPkg.getPackageScopeClassLoader() );
-            //                pkgs.put( pkg.getName(),
-            //                          pkg );
-            //                // add the dialect registry composite classloader (which uses the above classloader as it's parent)
-            //                this.packageClassLoader.addClassLoader( pkg.getDialectRuntimeRegistry().getClassLoader() );
-            //            }
+        if ( pkg == null ) {
+            pkg = newPackage( new PackageDescr( newPkg.getName() ) ).getPackage();
+        }
 
-            if ( pkg == null ) {
-                pkg = newPackage( new PackageDescr( newPkg.getName() ) ).getPackage();
-            }       
-            
-            // first merge anything related to classloader re-wiring
-            pkg.getDialectRuntimeRegistry().merge( newPkg.getDialectRuntimeRegistry(), this.rootClassLoader );
-            if ( newPkg.getFunctions() != null ) {
-                for ( Map.Entry<String, Function> entry : newPkg.getFunctions().entrySet() ) {
-                    pkg.addFunction( entry.getValue() );
+        // first merge anything related to classloader re-wiring
+        pkg.getDialectRuntimeRegistry().merge( newPkg.getDialectRuntimeRegistry(),
+                                               this.rootClassLoader );
+        if ( newPkg.getFunctions() != null ) {
+            for ( Map.Entry<String, Function> entry : newPkg.getFunctions().entrySet() ) {
+                pkg.addFunction( entry.getValue() );
+            }
+        }
+        pkg.getClassFieldAccessorStore().merge( newPkg.getClassFieldAccessorStore() );
+        pkg.getDialectRuntimeRegistry().onBeforeExecute();
+
+        // we have to do this before the merging, as it does some classloader resolving
+        TypeDeclaration lastType = null;
+        try {
+            // Add the type declarations to the RuleBase
+            if ( newPkg.getTypeDeclarations() != null ) {
+                // add type declarations
+                for ( TypeDeclaration type : newPkg.getTypeDeclarations().values() ) {
+                    lastType = type;
+                    type.setTypeClass( this.rootClassLoader.loadClass( pkg.getName() + "." + type.getTypeName() ) );
                 }
-            }            
-            pkg.getClassFieldAccessorStore().merge( newPkg.getClassFieldAccessorStore() );
-            pkg.getDialectRuntimeRegistry().onBeforeExecute();
-            
-            // we have to do this before the merging, as it does some classloader resolving
-            TypeDeclaration lastType = null;
-            try {
-                // Add the type declarations to the RuleBase
-                if ( newPkg.getTypeDeclarations() != null ) {
-                    // add type declarations
-                    for ( TypeDeclaration type : newPkg.getTypeDeclarations().values() ) {
-                        lastType = type;
-                        type.setTypeClass( this.rootClassLoader.loadClass( pkg.getName() + "." + type.getTypeName() ) );
-                    }
-                }
-            } catch ( ClassNotFoundException e ) {
-                throw new RuntimeDroolsException( "unable to resolve Type Declaration class '" + lastType.getTypeName()+"'" );            
-            }            
+            }
+        } catch ( ClassNotFoundException e ) {
+            throw new RuntimeDroolsException( "unable to resolve Type Declaration class '" + lastType.getTypeName() + "'" );
+        }
 
-            // now merge the new package into the existing one
-            mergePackage( pkg,
-                          newPkg );
+        // now merge the new package into the existing one
+        mergePackage( pkg,
+                      newPkg );
 
     }
 
@@ -800,10 +806,9 @@ public class PackageBuilder {
                 final Process flow = (Process) iter.next();
                 pkg.addProcess( flow );
             }
-        }     
+        }
 
     }
-    
 
     //
     //    private void validatePackageName(final PackageDescr packageDescr) {
@@ -933,7 +938,7 @@ public class PackageBuilder {
             }
 
             TypeDeclaration type = new TypeDeclaration( typeDescr.getTypeName() );
-            if ( resource != null && ((InternalResource)resource).hasURL() ) {
+            if ( resource != null && ((InternalResource) resource).hasURL() ) {
                 type.setResource( this.resource );
             }
 
@@ -1009,7 +1014,7 @@ public class PackageBuilder {
             }
             String expiration = typeDescr.getMetaAttribute( TypeDeclaration.ATTR_EXPIRE );
             if ( expiration != null ) {
-                if( timeParser == null ) {
+                if ( timeParser == null ) {
                     timeParser = new TimeIntervalParser();
                 }
                 type.setExpirationOffset( timeParser.parse( expiration )[0].longValue() );
@@ -1159,7 +1164,7 @@ public class PackageBuilder {
 
         this.results.addAll( context.getErrors() );
 
-        if ( resource != null && (( InternalResource ) resource).hasURL() )  {
+        if ( resource != null && ((InternalResource) resource).hasURL() ) {
             context.getRule().setResource( resource );
         }
 

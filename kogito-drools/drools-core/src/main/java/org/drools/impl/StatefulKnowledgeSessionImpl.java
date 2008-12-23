@@ -45,6 +45,7 @@ import org.drools.event.rule.impl.ObjectInsertedEventImpl;
 import org.drools.event.rule.impl.ObjectRetractedEventImpl;
 import org.drools.event.rule.impl.ObjectUpdatedEventImpl;
 import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.runtime.ExitPoint;
 import org.drools.runtime.GlobalResolver;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
@@ -557,5 +558,13 @@ public class StatefulKnowledgeSessionImpl
     public Agenda getAgenda() {
         return new AgendaImpl( ( InternalAgenda ) this.session.getAgenda() );
     }
+
+	public void registerExitPoint(String name, ExitPoint exitPoint) {
+		this.session.registerExitPoint(name, exitPoint);
+	}
+
+	public void unregisterExitPoint(String name) {
+		this.session.unregisterExitPoint(name);
+	}
 
 }

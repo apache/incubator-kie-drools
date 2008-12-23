@@ -1,4 +1,4 @@
-package org.drools.dataloaders.smooks;
+package org.drools.runtime.pipeline.impl;
 
 import java.util.List;
 

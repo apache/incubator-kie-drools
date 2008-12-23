@@ -21,7 +21,12 @@ import java.io.InputStream;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 
 import org.drools.FactException;
 import org.drools.RuleBaseConfiguration;
@@ -376,13 +381,17 @@ public class ReteooRuleBase extends AbstractRuleBase {
     }
     
     public void addPackages(Package[] pkgs ) {
-        for (Package pkg : pkgs) {
-            addPackage( pkg );
-        }
+        addPackages( Arrays.asList( pkgs ) );
     }
+    
+    public void addPackages(Collection<Package> pkgs ) {
+        super.addPackages( pkgs );
+    }    
 
     public synchronized void addPackage(final Package newPkg) {
-        super.addPackage( newPkg );
+        List<Package> list = new ArrayList<Package>();
+        list.add( newPkg );
+        super.addPackages( list );
         if ( this.config.isSequential() ) {
             this.reteooBuilder.setOrdered( false );
         }
