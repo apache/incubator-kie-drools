@@ -316,7 +316,6 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
         }
 
         public void execute(InternalWorkingMemory workingMemory) {
-
             final PropagationContext context = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
                                                                            PropagationContext.EXPIRATION,
                                                                            null,
