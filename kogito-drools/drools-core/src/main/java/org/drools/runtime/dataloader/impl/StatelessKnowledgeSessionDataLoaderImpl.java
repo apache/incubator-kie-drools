@@ -1,10 +1,10 @@
 package org.drools.runtime.dataloader.impl;
 
-import org.drools.definition.pipeline.Receiver;
 import org.drools.runtime.Parameters;
 import org.drools.runtime.StatelessKnowledgeSession;
 import org.drools.runtime.StatelessKnowledgeSessionResults;
 import org.drools.runtime.dataloader.StatelessKnowledgeSessionDataLoader;
+import org.drools.runtime.pipeline.Receiver;
 
 public class StatelessKnowledgeSessionDataLoaderImpl implements StatelessKnowledgeSessionDataLoader {
     private StatelessKnowledgeSession ksession;

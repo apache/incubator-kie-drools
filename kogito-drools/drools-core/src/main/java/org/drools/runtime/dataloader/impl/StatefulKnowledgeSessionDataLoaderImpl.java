@@ -3,10 +3,10 @@ package org.drools.runtime.dataloader.impl;
 import java.util.Collection;
 import java.util.Map;
 
-import org.drools.definition.pipeline.Emitter;
-import org.drools.definition.pipeline.Receiver;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.dataloader.StatefulKnowledgeSessionDataLoader;
+import org.drools.runtime.pipeline.Emitter;
+import org.drools.runtime.pipeline.Receiver;
 
 public class StatefulKnowledgeSessionDataLoaderImpl
     implements

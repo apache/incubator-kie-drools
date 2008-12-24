@@ -3,7 +3,7 @@
  */
 package org.drools.runtime.dataloader.impl;
 
-import org.drools.definition.pipeline.Adapter;
+import org.drools.runtime.pipeline.Adapter;
 import org.drools.runtime.pipeline.PipelineContext;
 import org.drools.runtime.pipeline.impl.BaseStage;
 import org.drools.runtime.rule.FactHandle;
