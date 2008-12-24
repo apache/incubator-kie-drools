@@ -1,7 +1,7 @@
 package org.drools.runtime.pipeline.impl;
 
-import org.drools.definition.pipeline.Stage;
-import org.drools.definition.pipeline.StageExceptionHandler;
+import org.drools.runtime.pipeline.Stage;
+import org.drools.runtime.pipeline.StageExceptionHandler;
 
 public class BaseStage implements Stage {
     private StageExceptionHandler exceptionHandler;

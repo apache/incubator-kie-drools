@@ -5,9 +5,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.drools.definition.pipeline.Emitter;
-import org.drools.definition.pipeline.Receiver;
+import org.drools.runtime.pipeline.Emitter;
 import org.drools.runtime.pipeline.PipelineContext;
+import org.drools.runtime.pipeline.Receiver;
 
 public class BaseEmitter extends BaseStage
     implements

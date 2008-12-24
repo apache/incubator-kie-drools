@@ -1,11 +1,11 @@
 package org.drools.runtime.dataloader.impl;
 
-import org.drools.definition.pipeline.Receiver;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.StatelessKnowledgeSession;
 import org.drools.runtime.dataloader.DataLoaderProvider;
 import org.drools.runtime.dataloader.StatefulKnowledgeSessionDataLoader;
 import org.drools.runtime.dataloader.StatelessKnowledgeSessionDataLoader;
+import org.drools.runtime.pipeline.Receiver;
 
 public class DataLoaderProviderImpl
     implements

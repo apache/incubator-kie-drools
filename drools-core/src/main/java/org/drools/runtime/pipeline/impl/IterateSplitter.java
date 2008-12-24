@@ -1,7 +1,7 @@
 package org.drools.runtime.pipeline.impl;
 
-import org.drools.definition.pipeline.Splitter;
 import org.drools.runtime.pipeline.PipelineContext;
+import org.drools.runtime.pipeline.Splitter;
 
 public class IterateSplitter extends BaseEmitter
     implements

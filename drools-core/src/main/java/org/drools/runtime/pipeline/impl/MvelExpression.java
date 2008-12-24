@@ -2,9 +2,9 @@ package org.drools.runtime.pipeline.impl;
 
 import java.io.Serializable;
 
-import org.drools.definition.pipeline.Expression;
-import org.drools.definition.pipeline.Receiver;
+import org.drools.runtime.pipeline.Expression;
 import org.drools.runtime.pipeline.PipelineContext;
+import org.drools.runtime.pipeline.Receiver;
 import org.mvel2.MVEL;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.ExpressionCompiler;
