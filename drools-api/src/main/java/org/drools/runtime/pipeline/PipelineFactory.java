@@ -1,9 +1,11 @@
-package org.drools.definition.pipeline;
+package org.drools.runtime.pipeline;
 
 import javax.xml.bind.Unmarshaller;
 
 import org.drools.ProviderInitializationException;
 import org.milyn.Smooks;
+
+import com.thoughtworks.xstream.XStream;
 
 public class PipelineFactory {
 
@@ -12,6 +14,8 @@ public class PipelineFactory {
     private static JaxbPipelineProvider   jaxbPipelineProvider;
 
     private static SmooksPipelineProvider smooksPipelineProvider;
+    
+    private static XStreamPipelineProvider xstreamPipelineProvider;
 
     public static Transformer newSmooksTransformer(Smooks smooks,
                                                    String rootId) {
@@ -21,6 +25,10 @@ public class PipelineFactory {
 
     public static Transformer newJaxbTransformer(Unmarshaller unmarshaller) {
         return getJaxbPipelineProvider().newJaxbTransformer( unmarshaller );
+    }
+    
+    public static Transformer newXStreamTransformer(XStream xstream) {
+    	 return getXStreamPipelineProvider().newXStreamTransformer( xstream );
     }
 
     public static Expression newMvelExpression(String expression) {
@@ -91,13 +99,34 @@ public class PipelineFactory {
         }
         return smooksPipelineProvider;
     }
-
+    
     private static void loadSmooksPipelineProvider() {
         try {
             Class<SmooksPipelineProvider> cls = (Class<SmooksPipelineProvider>) Class.forName( "org.drools.runtime.pipeline.impl.SmooksTransformer$SmooksPipelineProviderImpl" );
             setSmooksPipelineProvider( cls.newInstance() );
         } catch ( Exception e2 ) {
             throw new ProviderInitializationException( "Provider org.drools.runtime.pipeline.impl.SmooksTransformer$SmooksPipelineProviderImpl could not be set.",
+                                                       e2 );
+        }
+    }      
+    
+    private static synchronized void setXStreamPipelineProvider(XStreamPipelineProvider provider) {
+        PipelineFactory.xstreamPipelineProvider = provider;
+    }
+
+    private static synchronized XStreamPipelineProvider getXStreamPipelineProvider() {
+        if ( xstreamPipelineProvider == null ) {
+            loadXStreamPipelineProvider();
+        }
+        return xstreamPipelineProvider;
+    }
+
+    private static void loadXStreamPipelineProvider() {
+        try {
+            Class<XStreamPipelineProvider> cls = (Class<XStreamPipelineProvider>) Class.forName( "org.drools.runtime.pipeline.impl.XStreamTransformer$XStreamPipelineProviderImpl" );
+            setXStreamPipelineProvider( cls.newInstance() );
+        } catch ( Exception e2 ) {
+            throw new ProviderInitializationException( "Provider org.drools.runtime.pipeline.impl.XStreamTransformer$XStreamPipelineProviderImpl could not be set.",
                                                        e2 );
         }
     }      
