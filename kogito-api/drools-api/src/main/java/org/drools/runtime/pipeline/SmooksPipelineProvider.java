@@ -1,4 +1,4 @@
-package org.drools.definition.pipeline;
+package org.drools.runtime.pipeline;
 
 import org.milyn.Smooks;
 

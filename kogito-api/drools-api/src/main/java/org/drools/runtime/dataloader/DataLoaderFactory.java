@@ -1,9 +1,9 @@
 package org.drools.runtime.dataloader;
 
 import org.drools.ProviderInitializationException;
-import org.drools.definition.pipeline.Receiver;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.StatelessKnowledgeSession;
+import org.drools.runtime.pipeline.Receiver;
 
 public class DataLoaderFactory {
     private static volatile DataLoaderProvider provider;
