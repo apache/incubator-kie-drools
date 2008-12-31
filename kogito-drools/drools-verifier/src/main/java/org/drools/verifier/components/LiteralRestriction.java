@@ -8,7 +8,7 @@ import java.util.zip.DataFormatException;
 import org.drools.verifier.report.components.Cause;
 
 /**
- *
+ * 
  * @author Toni Rikkola
  */
 public class LiteralRestriction extends Restriction implements Cause {
@@ -31,7 +31,7 @@ public class LiteralRestriction extends Restriction implements Cause {
 
 	/**
 	 * Compares two LiteralRestrictions by value.
-	 *
+	 * 
 	 * @param restriction
 	 *            Restriction that this object is compared to.
 	 * @return a negative integer, zero, or a positive integer as this object is
@@ -68,6 +68,8 @@ public class LiteralRestriction extends Restriction implements Cause {
 			}
 		} else if (valueType == Field.FieldType.STRING) {
 			return stringValue.compareTo(restriction.getValueAsString());
+		} else if (valueType == Field.FieldType.UNKNOWN) {
+			return 0;
 		}
 
 		throw new DataFormatException("Value types did not match. Value type "
@@ -109,6 +111,15 @@ public class LiteralRestriction extends Restriction implements Cause {
 
 	public void setValue(String value) {
 
+		if (value == null) {
+			stringValue = null;
+			valueType = Field.FieldType.UNKNOWN;
+			return;
+		}
+
+		stringValue = value;
+		valueType = Field.FieldType.STRING;
+
 		if ("true".equals(value) || "false".equals(value)) {
 			booleanValue = value.equals("true");
 			valueType = Field.FieldType.BOOLEAN;
@@ -147,11 +158,9 @@ public class LiteralRestriction extends Restriction implements Cause {
 			// Not a date.
 		}
 
-		stringValue = value;
-		valueType = Field.FieldType.STRING;
 	}
 
-	public boolean isBooleanValue() {
+	public boolean getBooleanValue() {
 		return booleanValue;
 	}
 

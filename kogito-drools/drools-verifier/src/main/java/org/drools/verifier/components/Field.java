@@ -18,6 +18,7 @@ public class Field extends VerifierComponent implements Cause {
 		public static final FieldType VARIABLE = new FieldType("Variable");
 		public static final FieldType OBJECT = new FieldType("Object");
 		public static final FieldType ENUM = new FieldType("Enum");
+		public static final FieldType UNKNOWN = new FieldType("Unknown");
 
 		private final String string;
 
