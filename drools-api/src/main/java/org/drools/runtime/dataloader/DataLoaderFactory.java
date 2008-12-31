@@ -12,6 +12,12 @@ public class DataLoaderFactory {
                                                                                            Receiver pipeline) {
         return getDataLoaderProvider().newStatefulKnowledgeSessionDataLoader( ksession, pipeline );
     }
+    
+    public static StatefulKnowledgeSessionDataLoader newStatefulKnowledgeSessionDataLoader(StatefulKnowledgeSession ksession,
+                                                                                           String entryPointName,
+                                                                                           Receiver pipeline) {
+        return getDataLoaderProvider().newStatefulKnowledgeSessionDataLoader( ksession, entryPointName, pipeline );
+    }    
 
     public static StatelessKnowledgeSessionDataLoader newStatelessKnowledgeSessionDataLoader(StatelessKnowledgeSession ksession,
                                                                                              Receiver pipeline) {
