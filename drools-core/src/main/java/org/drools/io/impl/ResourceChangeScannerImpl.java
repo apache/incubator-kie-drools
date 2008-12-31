@@ -208,9 +208,7 @@ public class ResourceChangeScannerImpl
 
     public void stop() {
         this.scannerScheduler.setScan( false );
-        synchronized ( this.resources ) {
-            this.resources.notify(); // notify wait, so that it will wait again
-        }
+        this.thread.interrupt();
     }
 
     public void reset() {
@@ -255,15 +253,18 @@ public class ResourceChangeScannerImpl
         }
 
         public void run() {
-            synchronized ( this.resources ) {
+            synchronized ( this ) {
                 if ( this.scan ) {
                     this.listener.info( "ResourceChangeNotification scanner has started" );
                 }
                 while ( this.scan ) {
-                    this.scanner.scan();
+                    synchronized ( this.resources ) {      
+                        // lock the resources, as we don't want this modified while processing
+                        this.scanner.scan();
+                    }
                     try {
                         this.listener.debug( "ResourceChangeNotification scanner thread is waiting for " + ( this.interval / 1000 ) );
-                        this.resources.wait( this.interval );
+                        wait( this.interval );
                     } catch ( InterruptedException e ) {
                         this.listener.exception( new RuntimeException( "ResourceChangeNotification ChangeSet scanning thread was interrupted",
                                                                        e ) );

@@ -206,13 +206,14 @@ public class ResourceChangeNotifierImpl
 
         if ( !this.processChangeSet.isRunning() ) {
             this.processChangeSet.setNotify( true );
-            thread = new Thread( this.processChangeSet );
-            thread.start();
+            this.thread = new Thread( this.processChangeSet );
+            this.thread.start();
         }
     }
 
     public void stop() {
-
+        this.processChangeSet.setNotify( false );
+        this.thread.notify();
     }
 
     private Thread           thread;
