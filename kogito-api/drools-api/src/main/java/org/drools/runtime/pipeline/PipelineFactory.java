@@ -39,8 +39,8 @@ public class PipelineFactory {
         return getCorePipelineProvider().newIterateSplitter();
     }
 
-    public static Adapter newStatefulKnowledgeSessionReceiverAdapter() {
-        return getCorePipelineProvider().newStatefulKnowledgeSessionReceiverAdapter();
+    public static Adapter newEntryPointReceiverAdapter() {
+        return getCorePipelineProvider().newEntryPointReceiverAdapter();
     }
 
     public static Adapter newStatelessKnowledgeSessionReceiverAdapter() {

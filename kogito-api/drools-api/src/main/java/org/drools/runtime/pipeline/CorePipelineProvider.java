@@ -5,7 +5,7 @@ public interface CorePipelineProvider {
 
     public Splitter newIterateSplitter();
 
-    public Adapter newStatefulKnowledgeSessionReceiverAdapter();
+    public Adapter newEntryPointReceiverAdapter();
 
     public Adapter newStatelessKnowledgeSessionReceiverAdapter();
 }

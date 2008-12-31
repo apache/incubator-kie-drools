@@ -8,6 +8,10 @@ public interface DataLoaderProvider {
     StatefulKnowledgeSessionDataLoader newStatefulKnowledgeSessionDataLoader(StatefulKnowledgeSession ksession,
                                                                              Receiver pipeline);
 
+    StatefulKnowledgeSessionDataLoader newStatefulKnowledgeSessionDataLoader(StatefulKnowledgeSession ksession,
+                                                                             String entryPointName,
+                                                                             Receiver pipeline);
+    
     StatelessKnowledgeSessionDataLoader newStatelessKnowledgeSessionDataLoader(StatelessKnowledgeSession ksession,
                                                                                Receiver pipeline);
 }

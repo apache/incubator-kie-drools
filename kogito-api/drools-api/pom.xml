@@ -32,7 +32,20 @@
           <artifactId>milyn-smooks-javabean</artifactId>
           <version>1.1</version>
           <scope>provided</scope>          
-        </dependency>          
+        </dependency>       
+
+        <dependency>
+          <groupId>net.sf.jxls</groupId>
+          <artifactId>jxls-reader</artifactId>  
+          <scope>provided</scope> 
+        </dependency> 
+        
+	    <dependency>
+	      <groupId>com.thoughtworks.xstream</groupId>
+	      <artifactId>xstream</artifactId>
+	      <scope>provided</scope>
+	    </dependency>          
+        
   </dependencies>
   
   <build>
