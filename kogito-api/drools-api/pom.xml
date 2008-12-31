@@ -37,6 +37,7 @@
         <dependency>
           <groupId>net.sf.jxls</groupId>
           <artifactId>jxls-reader</artifactId>  
+          <version>0.9.6</version>
           <scope>provided</scope> 
         </dependency> 
         
