@@ -8,6 +8,7 @@ import java.lang.reflect.Method;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.drools.FactException;
+import org.drools.RuleBase;
 import org.drools.RuntimeDroolsException;
 import org.drools.WorkingMemoryEntryPoint;
 import org.drools.RuleBaseConfiguration.AssertBehaviour;
@@ -475,6 +476,10 @@ public class NamedEntryPoint
 
     public ObjectTypeConfigurationRegistry getObjectTypeConfigurationRegistry() {
         return this.typeConfReg;
+    }
+
+    public RuleBase getRuleBase() {
+        return this.ruleBase;
     }
 
 }

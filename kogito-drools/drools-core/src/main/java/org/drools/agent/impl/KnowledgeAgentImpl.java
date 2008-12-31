@@ -434,6 +434,7 @@ public class KnowledgeAgentImpl
         } else {
             // this will stop the thread
             this.changeSetNotificationDetector.monitor = false;
+            this.thread.interrupt();
         }
     }
 

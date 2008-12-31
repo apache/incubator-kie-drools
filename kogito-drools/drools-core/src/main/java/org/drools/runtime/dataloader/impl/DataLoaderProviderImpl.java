@@ -10,12 +10,18 @@ import org.drools.runtime.pipeline.Receiver;
 public class DataLoaderProviderImpl
     implements
     DataLoaderProvider {
-    
+      
     public StatefulKnowledgeSessionDataLoader newStatefulKnowledgeSessionDataLoader(StatefulKnowledgeSession ksession,
                                                                                     Receiver pipeline) {
         return new StatefulKnowledgeSessionDataLoaderImpl(ksession, pipeline);
-    }
+    }    
 
+    public StatefulKnowledgeSessionDataLoader newStatefulKnowledgeSessionDataLoader(StatefulKnowledgeSession ksession,
+                                                                                    String entryPointName,
+                                                                                    Receiver pipeline) {
+        return new StatefulKnowledgeSessionDataLoaderImpl(ksession, entryPointName, pipeline);
+    }
+    
     public StatelessKnowledgeSessionDataLoader newStatelessKnowledgeSessionDataLoader(StatelessKnowledgeSession ksession,
                                                                                       Receiver pipeline) {
         return newStatelessKnowledgeSessionDataLoader(ksession, pipeline);
