@@ -213,7 +213,7 @@ public class ResourceChangeNotifierImpl
 
     public void stop() {
         this.processChangeSet.setNotify( false );
-        this.thread.notify();
+        this.thread.interrupt();
     }
 
     private Thread           thread;
