@@ -9,11 +9,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.KnowledgeBase;
+import org.drools.RuleBase;
 import org.drools.WorkingMemory;
 import org.drools.common.InternalAgenda;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.InternalWorkingMemoryEntryPoint;
 import org.drools.common.ObjectStore;
+import org.drools.common.ObjectTypeConfigurationRegistry;
 import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.ActivationCreatedEvent;
 import org.drools.event.AfterActivationFiredEvent;
@@ -60,7 +63,8 @@ import org.drools.time.SessionClock;
 
 public class StatefulKnowledgeSessionImpl
     implements
-    StatefulKnowledgeSession {
+    StatefulKnowledgeSession,
+    InternalWorkingMemoryEntryPoint {
     public ReteooWorkingMemory                                              session;
     public KnowledgeBaseImpl                                                  kbase;
 
@@ -566,5 +570,13 @@ public class StatefulKnowledgeSessionImpl
 	public void unregisterExitPoint(String name) {
 		this.session.unregisterExitPoint(name);
 	}
+
+    public ObjectTypeConfigurationRegistry getObjectTypeConfigurationRegistry() {
+        return this.session.getObjectTypeConfigurationRegistry();
+    }
+
+    public RuleBase getRuleBase() {
+        return this.kbase.ruleBase;
+    }
 
 }
