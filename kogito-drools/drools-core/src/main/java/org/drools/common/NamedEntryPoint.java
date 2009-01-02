@@ -25,7 +25,8 @@ import org.drools.spi.PropagationContext;
 
 public class NamedEntryPoint
     implements
-    InternalWorkingMemoryEntryPoint {
+    InternalWorkingMemoryEntryPoint,
+    WorkingMemoryEntryPoint {
     /** The arguments used when adding/removing a property change listener. */
     protected final Object[]                addRemovePropertyChangeListenerArgs = new Object[]{this};
 

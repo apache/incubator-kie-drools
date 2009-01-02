@@ -17,7 +17,7 @@ package org.drools.common;
  */
 
 import org.drools.FactHandle;
-import org.drools.WorkingMemoryEntryPoint;
+import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RightTuple;
 
