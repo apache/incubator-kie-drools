@@ -2,5 +2,5 @@ package org.drools.runtime.pipeline;
 
 
 public interface Receiver {
-	void signal(Object object, PipelineContext context);
+	void receive(Object object, PipelineContext context);
 }
