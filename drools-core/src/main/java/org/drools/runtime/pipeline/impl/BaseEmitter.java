@@ -33,7 +33,7 @@ public class BaseEmitter extends BaseStage
     protected void emit(Object object,
                         PipelineContext context) {
         for ( Receiver receiver : this.receivers ) {
-            receiver.signal( object,
+            receiver.receive( object,
                              context );
         }
     }

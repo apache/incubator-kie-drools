@@ -7,7 +7,7 @@ public class IterateSplitter extends BaseEmitter
     implements
     Splitter {
 
-    public void signal(Object object,
+    public void receive(Object object,
                        PipelineContext context) {
         if ( object instanceof Iterable ) {
             for ( Object result : ((Iterable) object) ) {
