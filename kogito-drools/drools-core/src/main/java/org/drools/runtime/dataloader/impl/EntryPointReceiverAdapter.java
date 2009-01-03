@@ -11,7 +11,7 @@ import org.drools.runtime.rule.FactHandle;
 public class EntryPointReceiverAdapter extends BaseStage
     implements
     Adapter {
-    public void signal(Object object,
+    public void receive(Object object,
                        PipelineContext context) {
         EntryPointPipelineContext pContext = (EntryPointPipelineContext) context;
 

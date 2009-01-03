@@ -10,7 +10,7 @@ import org.drools.runtime.pipeline.impl.BaseStage;
 public class StatelessKnowledgeSessionReceiverAdapter extends BaseStage
     implements
     Adapter {
-    public void signal(Object object,
+    public void receive(Object object,
                        PipelineContext context) {
         StatelessKnowledgeSessionPipelineContext pContext = (StatelessKnowledgeSessionPipelineContext) context;
         pContext.addResult( object );

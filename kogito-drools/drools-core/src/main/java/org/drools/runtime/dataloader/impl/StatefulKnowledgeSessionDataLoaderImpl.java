@@ -37,7 +37,7 @@ public class StatefulKnowledgeSessionDataLoaderImpl
      */
     public Map insert(Object object) {
         EntryPointPipelineContext context = new EntryPointPipelineContext( this.entryPoint );
-        this.pipeline.signal( object,
+        this.pipeline.receive( object,
                               context );
 
         return context.getHandles();

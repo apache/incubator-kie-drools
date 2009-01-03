@@ -23,7 +23,7 @@ public class MvelExpression extends BaseEmitter
         this.expr = compiler.compile( parserContext );
     }
 
-    public void signal(Object object,
+    public void receive(Object object,
                        PipelineContext context) {
         Object result = null;
         try {

@@ -30,7 +30,7 @@ public class StatelessKnowledgeSessionDataLoaderImpl implements StatelessKnowled
      */
     public void executeObject(Object object) {
         StatelessKnowledgeSessionPipelineContext context = new StatelessKnowledgeSessionPipelineContext( this.ksession );
-        this.pipeline.signal( object,
+        this.pipeline.receive( object,
                               context );
         this.ksession.executeObject( context.getResult().get( 0 ) );
     }
@@ -40,7 +40,7 @@ public class StatelessKnowledgeSessionDataLoaderImpl implements StatelessKnowled
      */
     public void executeIterable(Object object) {
         StatelessKnowledgeSessionPipelineContext context = new StatelessKnowledgeSessionPipelineContext( this.ksession );
-        this.pipeline.signal( object,
+        this.pipeline.receive( object,
                               context );
         this.ksession.executeIterable( (Iterable) context.getResult() );
     }
@@ -51,7 +51,7 @@ public class StatelessKnowledgeSessionDataLoaderImpl implements StatelessKnowled
     public StatelessKnowledgeSessionResults executeObjectWithParameters(Object object,
                                                                  Parameters parameters) {
         StatelessKnowledgeSessionPipelineContext context = new StatelessKnowledgeSessionPipelineContext( this.ksession );
-        this.pipeline.signal( object,
+        this.pipeline.receive( object,
                               context );
         return this.ksession.executeObjectWithParameters( context.getResult().get( 0 ),
                                                           parameters );
@@ -63,7 +63,7 @@ public class StatelessKnowledgeSessionDataLoaderImpl implements StatelessKnowled
     public StatelessKnowledgeSessionResults executeIterableWithParameters(Object object,
                                                                    Parameters parameters) {
         StatelessKnowledgeSessionPipelineContext context = new StatelessKnowledgeSessionPipelineContext( this.ksession );
-        this.pipeline.signal( object,
+        this.pipeline.receive( object,
                               context );
         return this.ksession.executeIterableWithParameters( (Iterable) context.getResult(),
                                                             parameters );
