@@ -2,6 +2,6 @@ package org.drools.runtime.pipeline;
 
 import com.thoughtworks.xstream.XStream;
 
-public interface XStreamPipelineProvider {
+public interface XStreamTransformerProvider {
     Transformer newXStreamTransformer(XStream xstream);
 }

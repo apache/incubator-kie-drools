@@ -2,7 +2,7 @@ package org.drools.runtime.pipeline;
 
 import org.milyn.Smooks;
 
-public interface SmooksPipelineProvider {
+public interface SmooksTransformerProvider {
     Transformer newSmooksTransformer(Smooks smooks,
                                      String rootId);
 }

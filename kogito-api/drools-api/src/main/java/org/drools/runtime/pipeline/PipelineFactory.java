@@ -1,6 +1,10 @@
 package org.drools.runtime.pipeline;
 
+import java.util.List;
+
 import javax.xml.bind.Unmarshaller;
+
+import net.sf.jxls.reader.XLSReader;
 
 import org.drools.ProviderInitializationException;
 import org.milyn.Smooks;
@@ -11,12 +15,14 @@ public class PipelineFactory {
 
     private static CorePipelineProvider   corePipelineProvider;
 
-    private static JaxbPipelineProvider   jaxbPipelineProvider;
+    private static JaxbTransformerProvider   jaxbPipelineProvider;
 
-    private static SmooksPipelineProvider smooksPipelineProvider;
+    private static SmooksTransformerProvider smooksPipelineProvider;
     
-    private static XStreamPipelineProvider xstreamPipelineProvider;
+    private static XStreamTransformerProvider xstreamPipelineProvider;
 
+    private static JxlsTransformerProvider jxlsPipelineProvider;
+    
     public static Transformer newSmooksTransformer(Smooks smooks,
                                                    String rootId) {
         return getSmooksPipelineProvider().newSmooksTransformer( smooks,
@@ -28,7 +34,11 @@ public class PipelineFactory {
     }
     
     public static Transformer newXStreamTransformer(XStream xstream) {
-    	 return getXStreamPipelineProvider().newXStreamTransformer( xstream );
+    	 return getXStreamTransformerProvider().newXStreamTransformer( xstream );
+    }
+    
+    public static Transformer newJxlsTransformer(XLSReader xlsReader, String text) {
+        return getJxlsTransformerProvider().newJxlsTransformer( xlsReader, text );
     }
 
     public static Expression newMvelExpression(String expression) {
@@ -38,6 +48,14 @@ public class PipelineFactory {
     public static Splitter newIterateSplitter() {
         return getCorePipelineProvider().newIterateSplitter();
     }
+    
+    public static ListAdapter newListAdapter(List list, boolean syncAccessor) {
+        return getCorePipelineProvider().newListAdapter(list, syncAccessor);
+    }
+    
+    public static Callable newCallable() {
+        return getCorePipelineProvider().newCallable();
+    }    
 
     public static Adapter newEntryPointReceiverAdapter() {
         return getCorePipelineProvider().newEntryPointReceiverAdapter();
@@ -68,67 +86,88 @@ public class PipelineFactory {
         }
     }   
     
-    private static synchronized void setJaxbPipelineProvider(JaxbPipelineProvider provider) {
+    private static synchronized void setJaxbTransformerProvider(JaxbTransformerProvider provider) {
         PipelineFactory.jaxbPipelineProvider = provider;
     }
 
-    private static synchronized JaxbPipelineProvider getJaxbPipelineProvider() {
+    private static synchronized JaxbTransformerProvider getJaxbPipelineProvider() {
         if ( jaxbPipelineProvider == null ) {
-            loadJaxbPipelineProvider();
+            loadJaxbTransformerProvider();
         }
         return jaxbPipelineProvider;
     }
 
-    private static void loadJaxbPipelineProvider() {
+    private static void loadJaxbTransformerProvider() {
         try {
-            Class<JaxbPipelineProvider> cls = (Class<JaxbPipelineProvider>) Class.forName( "org.drools.runtime.pipeline.impl.JaxbTransformer$JaxbPipelineProviderImpl" );
-            setJaxbPipelineProvider( cls.newInstance() );
+            Class<JaxbTransformerProvider> cls = (Class<JaxbTransformerProvider>) Class.forName( "org.drools.runtime.pipeline.impl.JaxbTransformer$JaxbTransformerProviderImpl" );
+            setJaxbTransformerProvider( cls.newInstance() );
         } catch ( Exception e2 ) {
-            throw new ProviderInitializationException( "Provider org.drools.runtime.pipeline.impl.JaxbTransformer$JaxbPipelineProviderImpl could not be set.",
+            throw new ProviderInitializationException( "Provider org.drools.runtime.pipeline.impl.JaxbTransformer$JaxbTransformerProviderImpl could not be set.",
                                                        e2 );
         }
     } 
     
-    private static synchronized void setSmooksPipelineProvider(SmooksPipelineProvider provider) {
+    private static synchronized void setSmooksTransformerProvider(SmooksTransformerProvider provider) {
         PipelineFactory.smooksPipelineProvider = provider;
     }
 
-    private static synchronized SmooksPipelineProvider getSmooksPipelineProvider() {
+    private static synchronized SmooksTransformerProvider getSmooksPipelineProvider() {
         if ( smooksPipelineProvider == null ) {
-            loadSmooksPipelineProvider();
+            loadSmooksTransformerProvider();
         }
         return smooksPipelineProvider;
     }
     
-    private static void loadSmooksPipelineProvider() {
+    private static void loadSmooksTransformerProvider() {
         try {
-            Class<SmooksPipelineProvider> cls = (Class<SmooksPipelineProvider>) Class.forName( "org.drools.runtime.pipeline.impl.SmooksTransformer$SmooksPipelineProviderImpl" );
-            setSmooksPipelineProvider( cls.newInstance() );
+            Class<SmooksTransformerProvider> cls = (Class<SmooksTransformerProvider>) Class.forName( "org.drools.runtime.pipeline.impl.SmooksTransformer$SmooksTransformerProviderImpl" );
+            setSmooksTransformerProvider( cls.newInstance() );
         } catch ( Exception e2 ) {
-            throw new ProviderInitializationException( "Provider org.drools.runtime.pipeline.impl.SmooksTransformer$SmooksPipelineProviderImpl could not be set.",
+            throw new ProviderInitializationException( "Provider org.drools.runtime.pipeline.impl.SmooksTransformer$SmooksTransformerProviderImpl could not be set.",
                                                        e2 );
         }
     }      
     
-    private static synchronized void setXStreamPipelineProvider(XStreamPipelineProvider provider) {
+    private static synchronized void setXStreamTransformerProvider(XStreamTransformerProvider provider) {
         PipelineFactory.xstreamPipelineProvider = provider;
     }
 
-    private static synchronized XStreamPipelineProvider getXStreamPipelineProvider() {
+    private static synchronized XStreamTransformerProvider getXStreamTransformerProvider() {
         if ( xstreamPipelineProvider == null ) {
-            loadXStreamPipelineProvider();
+            loadXStreamTransformerProvider();
         }
         return xstreamPipelineProvider;
     }
 
-    private static void loadXStreamPipelineProvider() {
+    private static void loadXStreamTransformerProvider() {
         try {
-            Class<XStreamPipelineProvider> cls = (Class<XStreamPipelineProvider>) Class.forName( "org.drools.runtime.pipeline.impl.XStreamTransformer$XStreamPipelineProviderImpl" );
-            setXStreamPipelineProvider( cls.newInstance() );
+            Class<XStreamTransformerProvider> cls = (Class<XStreamTransformerProvider>) Class.forName( "org.drools.runtime.pipeline.impl.XStreamTransformer$XStreamTransformerProviderImpl" );
+            setXStreamTransformerProvider( cls.newInstance() );
         } catch ( Exception e2 ) {
-            throw new ProviderInitializationException( "Provider org.drools.runtime.pipeline.impl.XStreamTransformer$XStreamPipelineProviderImpl could not be set.",
+            throw new ProviderInitializationException( "Provider org.drools.runtime.pipeline.impl.XStreamTransformer$XStreamTransformerProviderImpl could not be set.",
                                                        e2 );
         }
-    }      
+    }   
+    
+    private static synchronized void setJxlsTransformerProvider(JxlsTransformerProvider provider) {
+        PipelineFactory.jxlsPipelineProvider = provider;
+    }
+
+    private static synchronized JxlsTransformerProvider getJxlsTransformerProvider() {
+        if ( jxlsPipelineProvider == null ) {
+            loadJxlsTransformerProvider();
+        }
+        return jxlsPipelineProvider;
+    }
+
+    private static void loadJxlsTransformerProvider() {
+        try {
+            Class<JxlsTransformerProvider> cls = (Class<JxlsTransformerProvider>) Class.forName( "org.drools.runtime.pipeline.impl.JxlsTransformer$JxlsTransformerProviderImpl" );
+            setJxlsTransformerProvider( cls.newInstance() );
+        } catch ( Exception e2 ) {
+            throw new ProviderInitializationException( "Provider org.drools.runtime.pipeline.impl.JxlsTransformer$JxlsTransformerProviderImpl could not be set.",
+                                                       e2 );
+        }
+    }    
 
 }
