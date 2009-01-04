@@ -16,8 +16,8 @@ public class MvelAction extends BaseEmitter
     private Serializable expr;
 
     public MvelAction(String text) {
-//        final ParserContext parserContext = new ParserContext();
-//        parserContext.setStrictTypeEnforcement( false );
+        final ParserContext parserContext = new ParserContext();
+        parserContext.setStrictTypeEnforcement( false );
 
         ExpressionCompiler compiler = new ExpressionCompiler( text );
         this.expr = compiler.compile( );
