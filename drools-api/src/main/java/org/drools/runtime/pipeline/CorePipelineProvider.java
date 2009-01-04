@@ -4,6 +4,8 @@ import java.util.List;
 
 public interface CorePipelineProvider {
     public Expression newMvelExpression(String expression);
+    
+    public Action newMvelAction(String action);
 
     public Splitter newIterateSplitter();
 

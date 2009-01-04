@@ -44,6 +44,10 @@ public class PipelineFactory {
     public static Expression newMvelExpression(String expression) {
         return getCorePipelineProvider().newMvelExpression( expression );
     }
+    
+    public static Action newMvelAction(String action) {
+        return getCorePipelineProvider().newMvelAction( action );
+    }    
 
     public static Splitter newIterateSplitter() {
         return getCorePipelineProvider().newIterateSplitter();
