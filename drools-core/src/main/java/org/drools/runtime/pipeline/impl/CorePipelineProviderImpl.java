@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.drools.runtime.dataloader.impl.EntryPointReceiverAdapter;
 import org.drools.runtime.dataloader.impl.StatelessKnowledgeSessionReceiverAdapter;
+import org.drools.runtime.pipeline.Action;
 import org.drools.runtime.pipeline.Adapter;
 import org.drools.runtime.pipeline.Callable;
 import org.drools.runtime.pipeline.CorePipelineProvider;
@@ -17,6 +18,10 @@ public class CorePipelineProviderImpl
     public Expression newMvelExpression(String expression) {
         return new MvelExpression( expression );
     }
+    
+    public Action newMvelAction(String action) {
+        return new MvelAction( action );
+    }    
 
     public Splitter newIterateSplitter() {
         return new IterateSplitter();
