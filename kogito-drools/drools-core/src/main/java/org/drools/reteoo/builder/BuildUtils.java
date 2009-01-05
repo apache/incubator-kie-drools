@@ -330,13 +330,16 @@ public class BuildUtils {
                 if ( constr.isTemporal() ) {
                     // if a constraint already exists, calculate the intersection
                     Declaration target = constr.getRequiredDeclarations()[0];
-                    Interval interval = temporal.get( target );
-                    if ( interval == null ) {
-                        interval = constr.getInterval();
-                        temporal.put( target,
-                                      interval );
-                    } else {
-                        interval.intersect( constr.getInterval() );
+                    // only calculate relationships to other event patterns
+                    if( target.isPatternDeclaration() && target.getPattern().getObjectType().isEvent() ) {
+                        Interval interval = temporal.get( target );
+                        if ( interval == null ) {
+                            interval = constr.getInterval();
+                            temporal.put( target,
+                                          interval );
+                        } else {
+                            interval.intersect( constr.getInterval() );
+                        }
                     }
                 }
             } else if ( obj instanceof AbstractCompositeConstraint ) {
