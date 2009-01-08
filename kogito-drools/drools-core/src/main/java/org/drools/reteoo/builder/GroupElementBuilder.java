@@ -213,6 +213,7 @@ public class GroupElementBuilder
             // NOT must save some context info to restore it later
             final int currentPatternIndex = context.getCurrentPatternOffset();
             final LeftTupleSource tupleSource = context.getTupleSource();
+            final long delay = context.getDelay();
 
             // get child
             final RuleConditionElement child = (RuleConditionElement) not.getChildren().get( 0 );
@@ -265,6 +266,7 @@ public class GroupElementBuilder
 
             // restore pattern index
             context.setCurrentPatternOffset( currentPatternIndex );
+            context.setDelay( Math.max( context.getDelay(), delay ) );
         }
 
         public boolean requiresLeftActivation(final BuildUtils utils,

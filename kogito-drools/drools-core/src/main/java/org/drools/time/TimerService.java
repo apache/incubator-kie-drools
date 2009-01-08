@@ -51,4 +51,9 @@ public interface TimerService {
 	 */
 	public boolean removeJob(JobHandle jobHandle);
 	
+	/**
+	 * Shuts the service down
+	 */
+    public void shutdown();
+	
 }

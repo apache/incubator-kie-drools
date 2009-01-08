@@ -92,6 +92,9 @@ public class BuildContext {
 
     /** the calculate temporal distance matrix */
     private TemporalDependencyMatrix  temporal;
+    
+    /** rules with temporal constraints may require delaying before firing, when they contain negative patterns */
+    private long                      delay;
 
     public BuildContext(final InternalRuleBase rulebase,
                         final ReteooBuilder.IdGenerator idGenerator) {
@@ -414,6 +417,14 @@ public class BuildContext {
 
     public TemporalDependencyMatrix getTemporalDistance() {
         return this.temporal;
+    }
+
+    public long getDelay() {
+        return this.delay;
+    }
+    
+    public void setDelay( final long delay ) {
+        this.delay = delay;
     }
 
 }

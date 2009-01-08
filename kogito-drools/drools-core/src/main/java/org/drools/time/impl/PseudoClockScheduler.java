@@ -148,6 +148,13 @@ public class PseudoClockScheduler
         this.session = session;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public void shutdown() {
+        // nothing to do
+    }
+
     private void runCallBacks() {
         ScheduledJob item = queue.peek();
         while ( item != null && item.getTrigger().getNextFireTime().getTime() <= this.timer ) {

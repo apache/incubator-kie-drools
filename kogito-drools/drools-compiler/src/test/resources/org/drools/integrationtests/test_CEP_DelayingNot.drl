@@ -1,0 +1,16 @@
+package org.drools;
+
+global java.util.List results;
+
+declare StockTick
+    @role( event )
+end
+
+rule "Delaying Not"
+when
+    $s1: StockTick( $symbol : company, $price : price )
+    not( StockTick( company == $symbol, price > $price, this after[ 1s, 10s ] $s1 ) )
+then
+    results.add( $s1 );
+end
+

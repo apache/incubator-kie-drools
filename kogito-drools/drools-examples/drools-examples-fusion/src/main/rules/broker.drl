@@ -5,16 +5,17 @@ import org.drools.examples.broker.model.StockTick;
 
 dialect "mvel"
 
-declare StockTick
+/*declare StockTick
     @role( event )
-end
-
+end*/
+ 
 rule "Update price"
 when
     $st : StockTick( $sb : symbol, $pr : price ) from entry-point "StockTick stream"
     $cp : Company( symbol == $sb )
 then
     $cp.currentPrice = $pr;
+    $st.delta = $cp.delta;
 end
 
  
