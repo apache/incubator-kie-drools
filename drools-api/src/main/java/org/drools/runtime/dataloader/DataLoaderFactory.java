@@ -8,12 +8,12 @@ import org.drools.runtime.pipeline.Receiver;
 public class DataLoaderFactory {
     private static volatile DataLoaderProvider provider;
 
-    public static StatefulKnowledgeSessionDataLoader newStatefulKnowledgeSessionDataLoader(StatefulKnowledgeSession ksession,
+    public static WorkingMemoryDataLoader newStatefulRuleSessionDataLoader(StatefulKnowledgeSession ksession,
                                                                                            Receiver pipeline) {
-        return getDataLoaderProvider().newStatefulKnowledgeSessionDataLoader( ksession, pipeline );
+        return getDataLoaderProvider().newStatefulRuleSessionDataLoader( ksession, pipeline );
     }
     
-    public static StatefulKnowledgeSessionDataLoader newStatefulKnowledgeSessionDataLoader(StatefulKnowledgeSession ksession,
+    public static WorkingMemoryDataLoader newStatefulRuleSessionDataLoader(StatefulKnowledgeSession ksession,
                                                                                            String entryPointName,
                                                                                            Receiver pipeline) {
         return getDataLoaderProvider().newStatefulKnowledgeSessionDataLoader( ksession, entryPointName, pipeline );
