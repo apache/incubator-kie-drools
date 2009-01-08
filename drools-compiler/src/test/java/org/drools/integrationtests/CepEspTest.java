@@ -26,6 +26,7 @@ import org.drools.common.InternalRuleBase;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
+import org.drools.integrationtests.eventgenerator.PseudoSessionClock;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
 import org.drools.time.SessionPseudoClock;
@@ -869,6 +870,60 @@ public class CepEspTest extends TestCase {
                       results.size() );
         assertEquals( 70,
                       ((Number) results.get( 3 )).intValue() );
+
+    }
+
+    public void FIXME_testDelayingNot() throws Exception {
+        // read in the source
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_DelayingNot.drl" ) );
+        final RuleBaseConfiguration rbconf = new RuleBaseConfiguration();
+        rbconf.setEventProcessingMode( EventProcessingMode.STREAM );
+        final RuleBase ruleBase = loadRuleBase( reader,
+                                                rbconf );
+
+        SessionConfiguration conf = new SessionConfiguration();
+        conf.setClockType( ClockType.PSEUDO_CLOCK );
+        StatefulSession wm = ruleBase.newStatefulSession( conf );
+
+        final List results = new ArrayList();
+
+        wm.setGlobal( "results",
+                      results );
+        
+        SessionPseudoClock clock = (SessionPseudoClock) wm.getSessionClock();
+        
+        clock.advanceTime( 10, TimeUnit.SECONDS );
+
+        EventFactHandle st1 = (EventFactHandle) wm.insert( new StockTick( 1, "DROO", 100, clock.getCurrentTime() ) );
+
+        wm.fireAllRules();
+
+        // should not fire, because it must wait 10 seconds
+        assertEquals( 0,
+                      results.size() );
+        
+        clock.advanceTime( 5, TimeUnit.SECONDS );
+
+        EventFactHandle st2 = (EventFactHandle) wm.insert( new StockTick( 1, "DROO", 80, clock.getCurrentTime() ) );
+
+        wm.fireAllRules();
+
+        // should still not fire, because it must wait 5 more seconds, and st2 has lower price (80)
+        assertEquals( 0,
+                      results.size() );
+        // assert new data
+        wm.fireAllRules();
+
+        clock.advanceTime( 6, TimeUnit.SECONDS );
+        
+        wm.fireAllRules();
+
+        // should fire, because waited for 10 seconds and no other event arrived with a price increase
+        assertEquals( 1,
+                      results.size() );
+        
+        assertEquals( st1.getObject(),
+                      results.get( 0 ) );
 
     }
 

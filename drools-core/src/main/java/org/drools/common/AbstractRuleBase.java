@@ -286,7 +286,7 @@ abstract public class AbstractRuleBase
         this.classTypeDeclaration = new HashMap<Class< ? >, TypeDeclaration>();
         for ( Package pkg : this.pkgs.values() ) {
             for ( TypeDeclaration type : pkg.getTypeDeclarations().values() ) {
-                type.setTypeClass( this.rootClassLoader.loadClass( pkg.getName() + "." + type.getTypeName() ) );
+                type.setTypeClass( this.rootClassLoader.loadClass( type.getTypeClassName() ) );
                 this.classTypeDeclaration.put( type.getTypeClass(),
                                                type );
             }
@@ -463,7 +463,7 @@ abstract public class AbstractRuleBase
                         // add type declarations
                         for ( TypeDeclaration type : newPkg.getTypeDeclarations().values() ) {
                             lastType = type;
-                            type.setTypeClass( this.rootClassLoader.loadClass( pkg.getName() + "." + type.getTypeName() ) );
+                            type.setTypeClass( this.rootClassLoader.loadClass( type.getTypeClassName() ) );
                             // @TODO should we allow overrides? only if the class is not in use.
                             if ( !this.classTypeDeclaration.containsKey( type.getTypeClass() ) ) {
                                 // add to rulebase list of type declarations                        

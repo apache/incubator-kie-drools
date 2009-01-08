@@ -89,6 +89,7 @@ public class TypeDeclaration
     private InternalReadAccessor durationExtractor;
     private InternalReadAccessor timestampExtractor;
     private transient Class< ? > typeClass;
+    private String               typeClassName;
     private FactTemplate         typeTemplate;
     private ClassDefinition      typeClassDef;
     private Resource             resource;
@@ -105,7 +106,6 @@ public class TypeDeclaration
         this.format = Format.POJO;
         this.durationAttribute = null;
         this.timestampAttribute = null;
-        //this.typeClass = null;
         this.typeTemplate = null;
     }
 
@@ -116,7 +116,7 @@ public class TypeDeclaration
         this.format = (Format) in.readObject();
         this.durationAttribute = (String) in.readObject();
         this.timestampAttribute = (String) in.readObject();
-        //this.typeClass = (Class< ? >) in.readObject();
+        this.typeClassName = (String) in.readObject();
         this.typeTemplate = (FactTemplate) in.readObject();
         this.typeClassDef = (ClassDefinition) in.readObject();
         this.durationExtractor = (InternalReadAccessor) in.readObject();
@@ -131,7 +131,7 @@ public class TypeDeclaration
         out.writeObject( format );
         out.writeObject( durationAttribute );
         out.writeObject( timestampAttribute );
-        //out.writeObject( typeClass );
+        out.writeObject( typeClassName );
         out.writeObject( typeTemplate );
         out.writeObject( typeClassDef );
         out.writeObject( durationExtractor );
@@ -217,6 +217,9 @@ public class TypeDeclaration
         this.typeClass = typeClass;
         if ( this.typeClassDef != null ) {
             this.typeClassDef.setDefinedClass( this.typeClass );
+        }
+        if( this.typeClass != null ) {
+            this.typeClassName = this.typeClass.getName();
         }
     }
 
@@ -347,6 +350,14 @@ public class TypeDeclaration
 
     public void setExpirationOffset(final long expirationOffset) {
         this.expirationOffset = expirationOffset;
+    }
+
+    public String getTypeClassName() {
+        return typeClassName;
+    }
+
+    public void setTypeClassName(String typeClassName) {
+        this.typeClassName = typeClassName;
     }
 
 }
