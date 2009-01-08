@@ -1341,6 +1341,13 @@ In this case you can use fine grained authorization (see the Admin Guide on how 
   </section>
 
   <section>
+    <title>Advanced config options in a rule package</title>
+    <para>As drools supports various configuration options for a package (such as adding functions for "accumulate" etc), this can be done by adding a X.package or X.conf file to the package - files which contain name/value pairs in the "properties" style. These will then be automatically added to the package configuration. See the main drools documentation for all the things you can do.
+    </para>
+    
+  </section>
+
+  <section>
     <title>Deployment: Integrating rules with your applications</title>
 
     <para>Its all very interesting to manage rules, but how to you use or
