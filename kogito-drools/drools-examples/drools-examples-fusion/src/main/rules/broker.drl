@@ -1,0 +1,20 @@
+package org.drools.examples.broker;
+
+import org.drools.examples.broker.model.Company;
+import org.drools.examples.broker.model.StockTick;
+
+dialect "mvel"
+
+declare StockTick
+    @role( event )
+end
+
+rule "Update price"
+when
+    $st : StockTick( $sb : symbol, $pr : price ) from entry-point "StockTick stream"
+    $cp : Company( symbol == $sb )
+then
+    $cp.currentPrice = $pr;
+end
+
+ 
