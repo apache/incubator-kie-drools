@@ -125,6 +125,10 @@ public class PatternBuilder
         // last thing to do is increment the offset, since if the pattern has a source,
         // offset must be overriden
         context.incrementCurrentPatternOffset();
+        
+//        if( pattern.getObjectType().isEvent() ) {
+//            long delay = context.getTemporalDistance().getExpirationOffset( pattern );
+//        }
     }
 
     private void createConstraints(BuildContext context,

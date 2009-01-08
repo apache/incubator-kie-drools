@@ -56,6 +56,10 @@ public class JDKTimerService
     public long getCurrentTime() {
         return System.currentTimeMillis();
     }
+    
+    public void shutdown() {
+        this.scheduler.shutdown();
+    }
 
     public JobHandle scheduleJob(Job job,
                                  JobContext ctx,

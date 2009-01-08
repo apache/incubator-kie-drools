@@ -74,5 +74,9 @@ public class Company {
     public double getPreviousPrice() {
         return previousPrice;
     }
+    
+    public double getDelta() {
+        return ( previousPrice == 0 ) ? 0.0 : (( currentPrice / previousPrice ) - 1.0);
+    }
 
 }

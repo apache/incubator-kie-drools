@@ -43,7 +43,7 @@ public class EventGenerator {
         // 20 minutes
         long timespam = 20 * 60 * 1000;
         // interval between events: [200ms,2s]
-        long[] interval = new long[]{ 200, 2000 };
+        long[] interval = new long[]{ 1000, 3000 };
         // price changes: +- 10%
         double[] priceChanges = new double[] { -0.1, 0.1 };
         // starting price range

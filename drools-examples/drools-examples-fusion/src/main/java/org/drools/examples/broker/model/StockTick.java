@@ -26,6 +26,8 @@ public class StockTick {
     private final String symbol;
     private final double price;
     private final long timestamp;
+    private double delta;
+    private String str;
     
     public StockTick(String symbol,
                      double price,
@@ -34,6 +36,7 @@ public class StockTick {
         this.symbol = symbol;
         this.price = price;
         this.timestamp = timestamp;
+        this.str = createString();
     }
 
     public String getSymbol() {
@@ -49,6 +52,19 @@ public class StockTick {
     }
     
     public String toString() {
-        return symbol+"( "+price+" )";
+        return str;
+    }
+
+    private String createString() {
+        return symbol+" $"+price+((delta<0)?" ":" +")+(((double)Math.round( delta*10000 ))/100)+"%";
+    }
+
+    public double getDelta() {
+        return delta;
+    }
+
+    public void setDelta(double delta) {
+        this.delta = delta;
+        this.str = createString();
     }
 }

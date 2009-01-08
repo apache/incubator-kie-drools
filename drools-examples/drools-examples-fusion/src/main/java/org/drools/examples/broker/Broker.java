@@ -68,6 +68,7 @@ public class Broker implements EventReceiver {
         this.tickStream.insert( tick );
         this.session.fireAllRules();
         window.updateCompany( company.getSymbol() );
+        window.updateTick( tick );
     }
     
     private StatefulKnowledgeSession createSession() {
