@@ -8,10 +8,8 @@ import java.util.Map;
 
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemoryEntryPoint;
-import org.drools.impl.KnowledgeBaseImpl;
-import org.drools.impl.StatefulKnowledgeSessionImpl;
-import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.pipeline.PipelineContext;
+import org.drools.runtime.pipeline.ResultHandler;
 import org.drools.runtime.pipeline.impl.BasePipelineContext;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
@@ -19,13 +17,16 @@ import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 public class EntryPointPipelineContext extends BasePipelineContext
     implements
     PipelineContext {
-    private Map                      handles;    
-    private WorkingMemoryEntryPoint  entryPoint;
+    private Map                     handles;
+    private WorkingMemoryEntryPoint entryPoint;
+    private ResultHandler           resultHandler;
 
-    public EntryPointPipelineContext(WorkingMemoryEntryPoint  entryPoint) {
-        super( ((InternalRuleBase)((InternalWorkingMemoryEntryPoint)entryPoint).getRuleBase()).getRootClassLoader() );
+    public EntryPointPipelineContext(WorkingMemoryEntryPoint entryPoint,
+                                     ResultHandler resultHandler) {
+        super( ((InternalRuleBase) ((InternalWorkingMemoryEntryPoint) entryPoint).getRuleBase()).getRootClassLoader() );
         this.handles = new HashMap<FactHandle, Object>();
         this.entryPoint = entryPoint;
+        this.resultHandler = resultHandler;
     }
 
     public Map getHandles() {
@@ -35,4 +36,9 @@ public class EntryPointPipelineContext extends BasePipelineContext
     public WorkingMemoryEntryPoint getEntryPoint() {
         return entryPoint;
     }
+
+    public ResultHandler getResultHandler() {
+        return resultHandler;
+    }
+
 }

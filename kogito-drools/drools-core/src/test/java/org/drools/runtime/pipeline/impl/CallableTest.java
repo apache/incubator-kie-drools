@@ -11,8 +11,8 @@ public class CallableTest extends TestCase {
         MockClass mock = new MockClass();
         Callable callable = PipelineFactory.newCallable();
         Action action = PipelineFactory.newMvelAction( "this.set = true" );
-        callable.addReceiver( action );
-        action.addReceiver( callable );
+        callable.setReceiver( action );
+        action.setReceiver( callable );
         assertFalse( mock.isSet() );
         callable.call( mock,
                        new BasePipelineContext( Thread.currentThread().getContextClassLoader() ) );

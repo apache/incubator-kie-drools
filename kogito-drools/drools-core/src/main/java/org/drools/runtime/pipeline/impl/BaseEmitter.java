@@ -12,29 +12,24 @@ import org.drools.runtime.pipeline.Receiver;
 public class BaseEmitter extends BaseStage
     implements
     Emitter {
-    protected List<Receiver> receivers;
+    protected Receiver receiver;
 
     public BaseEmitter() {
-        this.receivers = new CopyOnWriteArrayList<Receiver>();
     }
 
-    public void addReceiver(Receiver receiver) {
-        this.receivers.add( receiver );
+    public void setReceiver(Receiver receiver) {
+        this.receiver = receiver;
     }
 
-    public void removeReceiver(Receiver receiver) {
-        this.receivers.remove( receiver );
-    }
-
-    public Collection<Receiver> getReceivers() {
-        return Collections.unmodifiableCollection( this.receivers );
+    public Receiver getReceiver() {
+        return this.receiver;
     }
 
     protected void emit(Object object,
                         PipelineContext context) {
-        for ( Receiver receiver : this.receivers ) {
+        if ( this.receiver != null ) {
             receiver.receive( object,
-                             context );
+                              context );
         }
     }
 
