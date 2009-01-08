@@ -5,10 +5,10 @@ import org.drools.runtime.StatelessKnowledgeSession;
 import org.drools.runtime.pipeline.Receiver;
 
 public interface DataLoaderProvider {
-    StatefulKnowledgeSessionDataLoader newStatefulKnowledgeSessionDataLoader(StatefulKnowledgeSession ksession,
+    WorkingMemoryDataLoader newStatefulRuleSessionDataLoader(StatefulKnowledgeSession ksession,
                                                                              Receiver pipeline);
 
-    StatefulKnowledgeSessionDataLoader newStatefulKnowledgeSessionDataLoader(StatefulKnowledgeSession ksession,
+    WorkingMemoryDataLoader newStatefulKnowledgeSessionDataLoader(StatefulKnowledgeSession ksession,
                                                                              String entryPointName,
                                                                              Receiver pipeline);
     
