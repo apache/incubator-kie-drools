@@ -19,7 +19,7 @@ public class ListAdapterTest extends TestCase {
         Action action = PipelineFactory.newMvelAction( "this.set = true" );   
         
         ListAdapter listAdapter = PipelineFactory.newListAdapter( list, true );        
-        action.addReceiver( listAdapter );
+        action.setReceiver( listAdapter );
         
         assertFalse( mock.isSet() );
         action.receive( mock, new BasePipelineContext( Thread.currentThread().getContextClassLoader() ) );

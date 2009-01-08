@@ -4,13 +4,24 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.runtime.pipeline.PipelineContext;
+import org.drools.runtime.pipeline.ResultHandler;
 
-public class BasePipelineContext implements PipelineContext {
-    private ClassLoader               classLoader;
-    private Map<String, Object>       properties;
+public class BasePipelineContext
+    implements
+    PipelineContext {
+    private ClassLoader         classLoader;
+    private Map<String, Object> properties;
+    private Object              result;
+    private ResultHandler       resultHandler;
 
-    public BasePipelineContext(ClassLoader               classLoader) {
+    public BasePipelineContext(ClassLoader classLoader) {
+        this(classLoader, null);
+    }
+
+    public BasePipelineContext(ClassLoader classLoader,
+                               ResultHandler resultHandler) {
         this.classLoader = classLoader;
+        this.resultHandler = resultHandler;
         this.properties = new HashMap<String, Object>();
     }
 
@@ -20,6 +31,18 @@ public class BasePipelineContext implements PipelineContext {
 
     public Map<String, Object> getProperties() {
         return properties;
+    }
+
+    public ResultHandler getResultHandler() {
+        return this.resultHandler;
+    }
+
+    public Object getResult() {
+        return result;
+    }
+
+    public void setResult(Object result) {
+        this.result = result;
     }
         
 }

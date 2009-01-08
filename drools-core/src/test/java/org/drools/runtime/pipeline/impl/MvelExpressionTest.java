@@ -20,10 +20,10 @@ public class MvelExpressionTest extends TestCase {
                
         Callable callable = PipelineFactory.newCallable();
         Action action = PipelineFactory.newMvelAction( "this.setValues( [0, 1, 2, 3, 4] ) " );
-        callable.addReceiver( action );
+        callable.setReceiver( action );
         Expression expr = PipelineFactory.newMvelExpression( "this.values" );
-        action.addReceiver( expr );
-        expr.addReceiver( callable );          
+        action.setReceiver( expr );
+        expr.setReceiver( callable );          
         
         assertNull( mock.getValues() );
         List<Integer> list = ( List<Integer> ) callable.call( mock, new BasePipelineContext( Thread.currentThread().getContextClassLoader() ) );

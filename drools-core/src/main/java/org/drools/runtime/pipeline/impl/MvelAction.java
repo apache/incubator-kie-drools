@@ -1,6 +1,8 @@
 package org.drools.runtime.pipeline.impl;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.drools.runtime.pipeline.Action;
 import org.drools.runtime.pipeline.PipelineContext;
@@ -26,8 +28,11 @@ public class MvelAction extends BaseEmitter
     public void receive(Object object,
                         PipelineContext context) {
         try {
+            Map<String, Object> vars = new HashMap<String, Object>(1);
+            vars.put( "context", context );
             MVEL.executeExpression( this.expr,
-                                    object );
+                                    object,
+                                    vars );
         } catch ( Exception e ) {
             handleException( this,
                              object,

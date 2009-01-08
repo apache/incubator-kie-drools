@@ -21,13 +21,13 @@ public class IterateSplitterTest extends TestCase {
         
         Action action = PipelineFactory.newMvelAction( "this.setValues( [0, 1, 2, 3, 4] ) " );  
         Expression expr = PipelineFactory.newMvelExpression( "this.values" );
-        action.addReceiver( expr );
+        action.setReceiver( expr );
                 
         Splitter splitter = PipelineFactory.newIterateSplitter();
-        expr.addReceiver( splitter );
+        expr.setReceiver( splitter );
         
         ListAdapter listAdapter = PipelineFactory.newListAdapter( list, true );        
-        splitter.addReceiver( listAdapter );
+        splitter.setReceiver( listAdapter );
         
         assertNull( mock.getValues() );
         action.receive( mock, new BasePipelineContext( Thread.currentThread().getContextClassLoader() ) );
