@@ -1,21 +1,85 @@
 package org.drools.examples.broker;
 
+# importing classes
 import org.drools.examples.broker.model.Company;
 import org.drools.examples.broker.model.StockTick;
 
+# a common pattern is to expose services to rules through
+# a helper service class
+global org.drools.examples.broker.BrokerServices services
+
+# default dialect for the semantic code will be MVEL
 dialect "mvel"
 
-/*declare StockTick
+# tells the engine that a StockTick instance will assume the
+# role (semantics) of events and that the default retention 
+# policy will be 2 minutes 
+declare StockTick
     @role( event )
-end*/
+    @expires( 1m )
+end 
+
+# One can even declare helper facts to make rules easier and
+# simpler to write and maintain
+declare Statistics
+    symbol : String @key()
+    average : double
+end
  
-rule "Update price"
+rule "Setup statistics"
+   agenda-group "setup"
+when
+   $c : Company( $s : symbol )
+   not( Statistics( symbol == $s ) )
+then
+   Statistics s = new Statistics();
+   s.symbol = $s;
+   insert( s );
+end
+
+# a simple rule to show that it is possible to join
+# events from an entry-point (stream) with facts 
+# present in the working memory
+rule "Update stock price"
+    agenda-group "evaluation"
+    auto-focus true
 when
     $st : StockTick( $sb : symbol, $pr : price ) from entry-point "StockTick stream"
     $cp : Company( symbol == $sb )
 then
+    // This shows an update on working memory facts with data from joined events
     $cp.currentPrice = $pr;
+    
+    // Although events are considered immutable, a common pattern is to use a class
+    // to represent an event and enrich that event instance with data derived from other facts/events.
+    // Bellow we "enrich" the event instance with the percentual change in the price, 
+    // based on the previous price
     $st.delta = $cp.delta;
 end
 
- 
+rule "average over last minute"
+    agenda-group "evaluation"
+    auto-focus true
+    lock-on-active
+when
+    $stat : Statistics( $symbol : symbol )
+    Number( $av : doubleValue ) from accumulate(
+         StockTick( symbol == $symbol, $p : price ) over window:time( 1m )
+                                                    from entry-point "StockTick stream",
+         average( $p ) )
+then
+    System.out.println($symbol +": $"+$av );
+    modify( $stat ) {
+         average = $av
+    } 
+end
+
+rule "sudden drop"
+when
+    $st : StockTick( $sb : symbol, $ts : timestamp, $pr : price ) from entry-point "StockTick stream"
+    not( StockTick( symbol == $sb, timestamp > $ts ) from entry-point "StockTick stream" )
+    Statistics( symbol == $sb, $av : average > ( $pr * 1.02 ) )
+then
+    services.log( "Drop +5%: "+$sb+" avg: $"+$av+" price: $"+$pr );
+end
+
