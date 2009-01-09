@@ -16,18 +16,11 @@
  */
 package org.drools.examples.broker;
 
-import java.io.IOException;
-
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.StatefulSession;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
-import org.drools.compiler.DroolsParserException;
-import org.drools.compiler.PackageBuilder;
 import org.drools.examples.broker.events.Event;
 import org.drools.examples.broker.events.EventReceiver;
 import org.drools.examples.broker.model.Company;
@@ -35,7 +28,6 @@ import org.drools.examples.broker.model.CompanyRegistry;
 import org.drools.examples.broker.model.StockTick;
 import org.drools.examples.broker.ui.BrokerWindow;
 import org.drools.io.ResourceFactory;
-import org.drools.rule.EntryPoint;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 
@@ -44,7 +36,7 @@ import org.drools.runtime.rule.WorkingMemoryEntryPoint;
  *  
  * @author etirelli
  */
-public class Broker implements EventReceiver {
+public class Broker implements EventReceiver, BrokerServices {
     private static final String RULES_FILE = "/broker.drl";
     
     private BrokerWindow window;
@@ -74,6 +66,7 @@ public class Broker implements EventReceiver {
     private StatefulKnowledgeSession createSession() {
         KnowledgeBase kbase = loadRuleBase();
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        session.setGlobal( "services", this );
         for( Company company : this.companies.getCompanies() ) {
             session.insert( company );
         }
@@ -91,6 +84,10 @@ public class Broker implements EventReceiver {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( builder.getKnowledgePackages() );
         return kbase;
+    }
+
+    public void log(String message) {
+        window.log( message );
     }
     
     
