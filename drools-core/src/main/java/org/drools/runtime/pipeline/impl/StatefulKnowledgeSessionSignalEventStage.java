@@ -1,25 +1,27 @@
 package org.drools.runtime.pipeline.impl;
 
-import java.util.Map;
-
 import org.drools.runtime.pipeline.PipelineContext;
 import org.drools.runtime.pipeline.Receiver;
 import org.drools.runtime.pipeline.StatefulKnowledgeSessionPipelineContext;
 
-public class StatefulKnowledgeSessionStartProcessStage extends BaseEmitter
+public class StatefulKnowledgeSessionSignalEventStage extends BaseEmitter
     implements
     Receiver {
-    private String id;
+    private long   id;
+    private String eventType;
 
-    public StatefulKnowledgeSessionStartProcessStage(String id) {
+    public StatefulKnowledgeSessionSignalEventStage(String eventType,
+                                                    long id) {
+        this.eventType = eventType;
         this.id = id;
     }
 
     public void receive(Object object,
                         PipelineContext context) {
         StatefulKnowledgeSessionPipelineContext kContext = (StatefulKnowledgeSessionPipelineContext) context;
-        kContext.getStatefulKnowledgeSession().startProcess( id,
-                                                             (Map<String, Object>) object );
+        kContext.getStatefulKnowledgeSession().getProcessInstance( this.id ).signalEvent( this.eventType,
+                                                                                          object );
+
         emit( object,
               kContext );
     }

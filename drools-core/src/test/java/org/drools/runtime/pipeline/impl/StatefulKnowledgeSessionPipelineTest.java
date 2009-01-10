@@ -18,7 +18,7 @@ public class StatefulKnowledgeSessionPipelineTest extends TestCase {
         MvelAction mvelAction = new MvelAction( "context.resultHandler.handleResult( context.handles )");
         stage1.setReceiver( mvelAction );
         
-        StatefulKnowledgeSessionInsertPipelineImpl pipeline = new StatefulKnowledgeSessionInsertPipelineImpl(ksession);
+        StatefulKnowledgeSessionPipelineImpl pipeline = new StatefulKnowledgeSessionPipelineImpl(ksession);
         pipeline.setReceiver( stage1 );
         
         assertEquals( 0, ksession.getObjects().size() );

@@ -1,25 +1,29 @@
 package org.drools.runtime.pipeline.impl;
 
 import java.util.Map;
+import java.util.Map.Entry;
 
+import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.pipeline.PipelineContext;
 import org.drools.runtime.pipeline.Receiver;
 import org.drools.runtime.pipeline.StatefulKnowledgeSessionPipelineContext;
 
-public class StatefulKnowledgeSessionStartProcessStage extends BaseEmitter
+public class StatefulKnowledgeSessionSetGlobalStage extends BaseEmitter
     implements
     Receiver {
-    private String id;
 
-    public StatefulKnowledgeSessionStartProcessStage(String id) {
-        this.id = id;
+    public StatefulKnowledgeSessionSetGlobalStage() {
     }
 
     public void receive(Object object,
                         PipelineContext context) {
         StatefulKnowledgeSessionPipelineContext kContext = (StatefulKnowledgeSessionPipelineContext) context;
-        kContext.getStatefulKnowledgeSession().startProcess( id,
-                                                             (Map<String, Object>) object );
+        StatefulKnowledgeSession ksession = kContext.getStatefulKnowledgeSession();
+        Map<String, Object> vars = ( Map<String, Object> ) object;        
+        for ( Entry<String, Object> entry : vars.entrySet()) {
+            ksession.setGlobal( entry.getKey(), entry.getValue() );
+        }
+        
         emit( object,
               kContext );
     }

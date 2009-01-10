@@ -1,5 +1,9 @@
 package org.drools.runtime.pipeline.impl;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.pipeline.ResultHandler;
 import org.drools.runtime.pipeline.StatefulKnowledgeSessionPipelineContext;
@@ -8,13 +12,14 @@ import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 public class StatefulKnowledgeSessionPipelineContextImpl extends BasePipelineContext
     implements
     StatefulKnowledgeSessionPipelineContext {
+    private Map                     handles;
     private StatefulKnowledgeSession ksession;
     private WorkingMemoryEntryPoint  entryPoint;
 
     public StatefulKnowledgeSessionPipelineContextImpl(StatefulKnowledgeSession ksession,
-                                                       ClassLoader classLoader,
                                                        WorkingMemoryEntryPoint entryPoint,
-                                                       ResultHandler resultHandler) {
+                                                       ResultHandler resultHandler,
+                                                       ClassLoader classLoader) {
         super( classLoader,
                resultHandler );
         this.ksession = ksession;
@@ -28,5 +33,12 @@ public class StatefulKnowledgeSessionPipelineContextImpl extends BasePipelineCon
     public WorkingMemoryEntryPoint getEntryPoint() {
         return entryPoint;
     }
+    
+    public Map getHandles() {
+        if ( handles == null ) {
+            this.handles = new HashMap();
+        }
+        return handles;
+    }    
 
 }
