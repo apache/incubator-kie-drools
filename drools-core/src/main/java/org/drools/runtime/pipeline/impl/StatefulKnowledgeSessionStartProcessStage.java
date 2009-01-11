@@ -18,8 +18,10 @@ public class StatefulKnowledgeSessionStartProcessStage extends BaseEmitter
     public void receive(Object object,
                         PipelineContext context) {
         StatefulKnowledgeSessionPipelineContext kContext = (StatefulKnowledgeSessionPipelineContext) context;
-        kContext.getStatefulKnowledgeSession().startProcess( id,
-                                                             (Map<String, Object>) object );
+        long instanceId = kContext.getStatefulKnowledgeSession().startProcess( id,
+                                                             (Map<String, Object>) object ).getId();
+        kContext.setResult( instanceId );
+        
         emit( object,
               kContext );
     }

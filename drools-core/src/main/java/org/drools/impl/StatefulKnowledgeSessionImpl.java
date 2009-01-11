@@ -238,6 +238,10 @@ public class StatefulKnowledgeSessionImpl
                                 object );
     }
     
+    public Object getGlobal(String identifier) {
+        return this.session.getGlobal( identifier );
+    }
+    
     public void setGlobalResolver(GlobalResolver globalResolver) {
         this.session.setGlobalResolver( (org.drools.spi.GlobalResolver) globalResolver );
     }    

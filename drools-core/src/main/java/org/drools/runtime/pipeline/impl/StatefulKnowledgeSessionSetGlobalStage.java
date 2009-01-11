@@ -11,21 +11,36 @@ import org.drools.runtime.pipeline.StatefulKnowledgeSessionPipelineContext;
 public class StatefulKnowledgeSessionSetGlobalStage extends BaseEmitter
     implements
     Receiver {
-
+    private String key;
+    
     public StatefulKnowledgeSessionSetGlobalStage() {
+        
+    }
+    
+    public StatefulKnowledgeSessionSetGlobalStage(String key) {
+        this.key = key;
     }
 
     public void receive(Object object,
                         PipelineContext context) {
         StatefulKnowledgeSessionPipelineContext kContext = (StatefulKnowledgeSessionPipelineContext) context;
         StatefulKnowledgeSession ksession = kContext.getStatefulKnowledgeSession();
-        Map<String, Object> vars = ( Map<String, Object> ) object;        
-        for ( Entry<String, Object> entry : vars.entrySet()) {
-            ksession.setGlobal( entry.getKey(), entry.getValue() );
+        if ( key == null ) {
+            if ( !(object instanceof Map) ) {
+                throw new IllegalArgumentException( "SetGlobalStage must either declare a key or be an instanceof a Map");
+            } else {
+                Map<String, Object> vars = ( Map<String, Object> ) object;        
+                for ( Entry<String, Object> entry : vars.entrySet()) {
+                    ksession.setGlobal( entry.getKey(), entry.getValue() );
+                }
+            }
+        } else {
+            ksession.setGlobal( this.key, object );
         }
+
         
         emit( object,
-              kContext );
+              kContext );        
     }
 
 }
