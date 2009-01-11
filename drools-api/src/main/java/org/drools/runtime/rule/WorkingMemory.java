@@ -48,6 +48,14 @@ public interface WorkingMemory
      * @see KnowledgeBaseConfiguration
      */
     FactHandle getFactHandle(Object object);
+    
+    /**
+     * Returns the object associated with the given FactHandle.
+     * 
+     * @param factHandle
+     * @return
+     */
+    Object getObject(FactHandle factHandle);
 
     /**
      * Returns all facts from the current session.
