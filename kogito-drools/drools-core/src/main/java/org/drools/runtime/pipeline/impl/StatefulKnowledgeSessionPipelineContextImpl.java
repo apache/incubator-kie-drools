@@ -12,7 +12,6 @@ import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 public class StatefulKnowledgeSessionPipelineContextImpl extends BasePipelineContext
     implements
     StatefulKnowledgeSessionPipelineContext {
-    private Map                     handles;
     private StatefulKnowledgeSession ksession;
     private WorkingMemoryEntryPoint  entryPoint;
 
@@ -33,12 +32,6 @@ public class StatefulKnowledgeSessionPipelineContextImpl extends BasePipelineCon
     public WorkingMemoryEntryPoint getEntryPoint() {
         return entryPoint;
     }
-    
-    public Map getHandles() {
-        if ( handles == null ) {
-            this.handles = new HashMap();
-        }
-        return handles;
-    }    
+        
 
 }

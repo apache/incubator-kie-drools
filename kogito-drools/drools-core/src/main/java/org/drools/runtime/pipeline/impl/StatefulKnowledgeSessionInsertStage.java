@@ -1,5 +1,8 @@
 package org.drools.runtime.pipeline.impl;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.drools.common.InternalFactHandle;
 import org.drools.runtime.pipeline.PipelineContext;
 import org.drools.runtime.pipeline.Receiver;
@@ -13,9 +16,14 @@ public class StatefulKnowledgeSessionInsertStage extends BaseEmitter
                         PipelineContext context) {
         StatefulKnowledgeSessionPipelineContextImpl kContext = (StatefulKnowledgeSessionPipelineContextImpl) context;
         FactHandle handle = kContext.getEntryPoint().insert( object );
-
-        kContext.getHandles().put( handle,
-                                   ((InternalFactHandle) handle).getObject() );
+        Map<FactHandle, Object> handles = (Map<FactHandle, Object>)kContext.getResult();
+        if ( handles == null ) {
+            handles = new HashMap<FactHandle, Object>();
+            kContext.setResult( handles );
+        }
+        
+        handles.put( handle,
+                     ((InternalFactHandle) handle).getObject() );
 
         emit( object,
               kContext );

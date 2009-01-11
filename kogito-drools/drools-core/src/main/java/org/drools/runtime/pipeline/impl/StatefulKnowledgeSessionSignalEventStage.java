@@ -10,6 +10,11 @@ public class StatefulKnowledgeSessionSignalEventStage extends BaseEmitter
     private long   id;
     private String eventType;
 
+    public StatefulKnowledgeSessionSignalEventStage(String eventType) {
+        this.eventType = eventType;
+        this.id = -1;
+    }
+
     public StatefulKnowledgeSessionSignalEventStage(String eventType,
                                                     long id) {
         this.eventType = eventType;
@@ -19,8 +24,14 @@ public class StatefulKnowledgeSessionSignalEventStage extends BaseEmitter
     public void receive(Object object,
                         PipelineContext context) {
         StatefulKnowledgeSessionPipelineContext kContext = (StatefulKnowledgeSessionPipelineContext) context;
-        kContext.getStatefulKnowledgeSession().getProcessInstance( this.id ).signalEvent( this.eventType,
-                                                                                          object );
+
+        if ( this.id != -1 ) {
+            kContext.getStatefulKnowledgeSession().getProcessInstance( this.id ).signalEvent( this.eventType,
+                                                                                              object );
+        } else {
+            kContext.getStatefulKnowledgeSession().signalEvent( this.eventType,
+                                                                object );
+        }
 
         emit( object,
               kContext );

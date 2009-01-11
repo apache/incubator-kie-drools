@@ -12,14 +12,13 @@ public class StatefulKnowledgeSessionPipelineImpl extends BaseEmitter
     private StatefulKnowledgeSession ksession;
     private WorkingMemoryEntryPoint  entryPoint;
 
-    
     public StatefulKnowledgeSessionPipelineImpl(StatefulKnowledgeSession ksession) {
         this.ksession = ksession;
         this.entryPoint = ksession;
     }
-    
+
     public StatefulKnowledgeSessionPipelineImpl(StatefulKnowledgeSession ksession,
-                                                      String entryPointName) {
+                                                String entryPointName) {
         this.ksession = ksession;
         this.entryPoint = ksession.getWorkingMemoryEntryPoint( entryPointName );
     }
