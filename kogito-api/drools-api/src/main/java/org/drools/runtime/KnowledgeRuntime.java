@@ -18,6 +18,8 @@ public interface KnowledgeRuntime
      */
     void setGlobal(String identifier,
                    Object object);
+    
+    Object getGlobal(String identifier);
 
     /**
      * Delegate used to resolve any global names not found in the global map.
