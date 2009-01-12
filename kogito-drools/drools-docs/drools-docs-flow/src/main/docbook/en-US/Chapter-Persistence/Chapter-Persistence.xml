@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter version="5.0" xmlns="http://docbook.org/ns/docbook"
+                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                    xmlns:xi="http://www.w3.org/2001/XInclude"
+                    xmlns:svg="http://www.w3.org/2000/svg"
+                    xmlns:m="http://www.w3.org/1998/Math/MathML"
+                    xmlns:html="http://www.w3.org/1999/xhtml"
+                    xmlns:db="http://docbook.org/ns/docbook" xml:base="./">
+
+  <title>Persistence</title>
+
+  <para>Drools Flow allows the persistent storage of the different kinds of
+  information, i.e. the process runtime state, the process definitions and the
+  history information.</para>
+
+  <section>
+    <title>Runtime state</title>
+
+    <para>Whenever a process is started, a process instance is created, which
+    represents the execution of the process in that specific context.  For example,
+    when executing a process that specifies how to process a sales order, one process
+    instance is created for each sales request.  The process instance represents
+    the current execution state in that specific context, and contains all the
+    information related to that process instance.  Note that it only contains
+    the minimal runtime state that is needed to continue the execution of that
+    process instance at some later time (and for example does not include information
+    about the history of that process instance if that information is no longer
+    needed in the process instance at some later stage, see the history log).</para>
+
+    <para>The runtime state of an executing process can be persisted, for example
+    in a database.  This allows for example to restore the state of execution of all
+    running processes in case of unexpected failure, or to temporarily remove running
+    instances from memory when they are no longer needed and restore them at some later
+    time.  Drools Flow allows you to plug in different persistence strategies.  By default
+    (if you do not configure the process engine otherwise), process instances are not
+    persisted.</para>
+
+    <section>
+      <title>Binary persistence</title>
+
+    <para>But Drools Flow provides a binary persistence mechanism that allows you
+    to persist the state of a process instance as a binary blob.  This way, the
+    state of all running process instances can always be stored in a persistent location.
+    Note that these binary blobs usually are relatively small, as they only contain the
+    minimal execution state of the process instance.  For a simple process instance, this
+    usually contains one or a few node instances (i.e. a node that is currently executing)
+    and possibly some variables.</para>
+
+    </section>
+
+    <section>
+      <title>Safe points</title>
+
+    <para>The state of a process instance is stored a so-called "safe points" during the
+    execution of the process engine.  Whenever a process instance is started (or continued
+    after receiving an internal trigger it was waiting for), the engine executed the process
+    instance until no more actions can be performed.  At that point, the engine has reached
+    the next safe state and the state of the process instance (and all other process instances
+    that might have been affected) is stored persistently.</para>
+
+    </section>
+
+  </section>
+
+  <section>
+    <title>Process definitions</title>
+
+    <para>Process definitions are usually stored in an XML format.  These files can easily be
+    stored on a file system during development.  However, whenever you want to make your knowledge
+    accessible to one or more engines in production, we recommend using a knowledge repository
+    that (logically) centralizes your knowledge (in one or more knowledge repositories).</para>
+
+    <para>Guvnor is a sub-project that provides exactly that: it consists of a repository
+    for storing different kinds of knowledge (not only process definitions but also rules, object
+    models, etc.), allows easy retrieval of this knowledge (for example using WebDAV or by using
+    a rule agent that automatically downloads the information from Guvnor when creating a knowledge
+    base), and provides a web application that allows business users to view and possibly update
+    the information in the knowledge repository.  Check out the Drools Guvnor documentation for
+    more information on how to do this.</para>
+  </section>
+
+  <section>
+    <title>History log</title>
+
+    <para>In many cases it is useful (if not necessary) to store information about the execution
+    on process instances, so that this information can be used afterwards for example to verify
+    what actions have been executed for a particular process instance, or to monitor and/or analyze
+    the efficiency of a particular process, etc.  Storing history information in the runtime
+    database is usually not a good idea (as this would result in ever-growing runtime data,
+    and monitoring and analysis queries might influence the performance of your runtime engine).
+    That is why history information about the execution of process instances is stored separately.</para>
+
+    <para>This history log of execution information is created based on the events generated by the
+    process engine during execution.  The Drools runtime engine provides a generic mechanism to listen
+    to different kinds of events.  The necessary information can easily be extracted from these events
+    and persisted, for example in a database.  Filters can be used to only store the information you
+    find relevant.</para>
+
+    <section>
+      <title>Persisting process events in a database</title>
+
+      <para>The drools-bam module contains an event listener that stores process-related information
+      in a database (using hibernate).  The database contains two tables, one for process instance
+      information and one for node instance information (see figure below):
+      <orderedlist>
+        <listitem><emphasis>ProcessInstanceLog:</emphasis> This lists the process instance id, the
+        process (definition) id, the start date and (if applicable) the end date of all process
+        instances.</listitem>
+        <listitem><emphasis>NodeInstanceLog:</emphasis> This table contains more detailed information
+        about which nodes were actually executed inside each process instance.  Whenever a node instance
+        is entered (from one of its incomming connections) or is exited (through one of its outgoing
+        connections), that information is stored in this table.  It therefore stores the process instance
+        id and the process id (of the process instance it is being executed in), and the node instance id
+        and corresponding node id (in the process definition) of the node instance in question.  Finally,
+        the type of event (0 = enter, 1 = exit) and the date of the event is stored as well.
+        </listitem>
+      </orderedlist>
+      </para>
+
+      <mediaobject>
+        <imageobject>
+	  <imagedata align="center" fileref="images/Chapter-Persistence/audit_db.png" format="PNG" role="" />
+        </imageobject>      </mediaobject>
+
+      <para>To log process history information in a database like this, you need to register the logger
+      on your session (or working memory) like this:</para>
+      <programlisting>
+      StatefulKnowledgeSession session = ...
+      new WorkingMemoryDbLogger(session);</programlisting>
+      <para>Note that this logger is just a logger like any other audit logger.  This means you can add one
+      or more filters using the addFilter method to make sure that only relevant information is stored in the
+      database.  If you use more than one filter, only information that is accepted by all your filters will
+      be persisted in the database.</para>
+
+      <para>To specify the database where the information should be stored, modify the hibernate.cfg.xml file.
+      By default, it uses an in memory database (H2).  Check out the hibernate documentation if you do not
+      know how to do this.</para>
+
+      <para>All this information can easily be queried and can be used in a lot of different use cases, ranging
+      from creating a history log for one specific process instance to analyzing the performance of all instances
+      of a specific process.  The org.drools.process.auditProcessInstanceDbLog class shows some examples on how
+      to retrieve all process instances, one specific process instance (by id), all process instances for one
+      specific process, all node instances of a specific process instance, etc.  You can of course easily create
+      your own hibernate queries or access the information in the database directly.</para>
+    </section>
+
+  </section>
+
+</chapter>

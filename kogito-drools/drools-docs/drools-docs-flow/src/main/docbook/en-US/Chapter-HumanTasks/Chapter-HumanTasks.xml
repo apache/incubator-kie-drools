@@ -9,25 +9,236 @@
 
   <title>Human Tasks</title>
 
-  <para></para>
+  <para>An important aspect of work flow is human task management.  While some of the
+  work performed in a process can be executed automatically, some tasks need to be executed
+  by human actors.  Drools Flow supports the use of human tasks inside processes using a
+  special human task node.  This node allows process designers to define the type of task,
+  the actor(s), the data associated with the task, etc.  We also have implemented a task service
+  that can be used to manage these human tasks.  Users are however open to integrate any
+  other solution if they want to, as this is fully pluggable.</para>
+
+  <para>To start using human tasks inside your processes, you first need to (1) include human
+  task nodes inside your process, (2) integrate a task management component of your choice (e.g.
+  the WS-HT implementation provided by us) and (3) have end users interact with the human task
+  management component using some kind of user interface.  These elements will be discussed in
+  more detail in the next sections.</para>
 
   <section>
     <title>Human tasks inside processes</title>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center" fileref="images/Chapter-HumanTasks/human_task_process.png" format="PNG" role="" />
+      </imageobject>
+    </mediaobject>
+
+    <para>Drools Flow supports the use of human tasks inside processes using a special human task
+    node (as shown in the figure above).  A human task node represents an atomic task that needs to be
+    executed by a human actor.  Although Drools Flow has a special human task node for including human
+    tasks inside a process, human tasks are simply considered as any other kind of external service that
+    needs to be invoked and  are therefore simply implemented as a special kind of work item.  The only
+    thing that is special about the human task node is that we have added support for swimlanes, making it
+    easier to assign tasks to users (see below). A human task node contains the following properties:
+    <itemizedlist>
+      <listitem><emphasis>Id</emphasis>: The id of the node (which is unique within one node container).</listitem>
+      <listitem><emphasis>Name</emphasis>: The display name of the node.</listitem>
+      <listitem><emphasis>TaskName</emphasis>: The name of the human task.</listitem>
+      <listitem><emphasis>Priority</emphasis>: An integer indicating the priority of the human task.</listitem>
+      <listitem><emphasis>Comment</emphasis>: A comment associated with the human task.</listitem>
+      <listitem><emphasis>ActorId</emphasis>: The actor id that is responsible for executing the human task.  A list of actor id's can be specified using a comma (',') as separator.</listitem>
+      <listitem><emphasis>Skippable</emphasis>: Specifies whether the human task can be skipped (i.e. the actor decides not to execute the human task).</listitem>
+      <listitem><emphasis>Content</emphasis>: The data associated with this task.</listitem>
+      <listitem><emphasis>Swimlane</emphasis>: The swimlane this human task node is part of.  Swimlanes make it easy to assign multiple human tasks to the same actor.  See below for more detail on how to use swimlanes.</listitem>
+      <listitem><emphasis>Wait for completion</emphasis>: If this property is true, the human task node will only continue if the human task has been terminated (i.e. completed or any other terminal state); otherwise it will continue immediately after creating the human task.</listitem>
+      <listitem><emphasis>On entry/exit actions</emphasis>: Actions that are executed upon entry / exit of this node.</listitem>
+      <listitem><emphasis>Parameter mapping</emphasis>: Allows copying the value of process variables to parameters of the human task.  Upon creation of the human tasks, the values will be copied.</listitem>
+      <listitem><emphasis>Result mapping</emphasis>: Allows copying the value of result parameters of the human task to a process variable.  Upon completion of the human task, the values will be copied.  Note that can only use result mappings when "Wait for completion" is set to true.  A human task has a result variable "Result" that contains the data returned by the human actor.  The variable "ActorId" contains the id of the actor that actually executed the task.</listitem>
+      <listitem><emphasis>Timers</emphasis>: Timers that are linked to this node (see the 'timers' section for more details).</listitem>
+    </itemizedlist>
+    </para>
+
+    <para>You can edit these variables in the properties view (see below) when selecting the human task
+    node, or the most important properties can also be edited by double-clicking the human task node, after
+    which a custom human task node editor is opened, as shown below as well.</para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center" fileref="images/Chapter-HumanTasks/human_task_properties.png" format="PNG" role="" />
+      </imageobject>
+    </mediaobject>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center" fileref="images/Chapter-HumanTasks/human_task_editor.png" format="PNG" role="" />
+      </imageobject>
+    </mediaobject>
+
+    <para>Note that you could either specify the values of the different parameters (actorId, priority, content, etc.)
+    directly (in which case they will be the same for each execution of this process), or make them context-specific,
+    based on the data inside the process instance.  For example, parameters of type String can use #{expression} to
+    embed a value in the String.  The value will be retrieved when creating the work item and the #{...} will be
+    replaced by the toString() value of the variable.  The expression could simply be the name of a variable (in which
+    case it will be resolved to the value of the variable), but more advanced MVEL expressions are possible as well,
+    like #{person.name.firstname}.  For example, when sending an email, the body of the email could contain something
+    like "Dear #{customer.name}, ...".  For other types of variables, it is possible to map the value of a variable
+    to a parameter using the parameter mapping.</para>
+
+    <section>
+      <title>Swimlanes</title>
+
+      <para>Human task nodes can be used in combination with swimlanes to assign multiple human tasks
+      to the similar actors.  Tasks in the same swimlane will be assigned to the same actor.  Whenever
+      the first task in a swimlane is created, and that task has an actorId specified, that actorId will
+      be assigned to the swimlane as well.  All other tasks that will be created in that swimlane will use
+      that actorId as well, even if an actorId has been specified for the task as well.</para>
+
+      <para>Whenever a human task that is part of a swimlane is completed, the actorId of that swimlane is
+      set to the actorId that executed that human task.  This allows for example to assign a human task to
+      a group of users, and to assign future tasks of that swimlame to the user that claimed the first task.
+      This will also automatically change the assignment of tasks if at some point one of the tasks is
+      reassigned to another user.</para>
+
+      <para>To add a human task to a swimlane, simply specify the name of the swimlane as the value of the
+      "Swimlane" parameter of the human task node.  A process must also define all the swimlanes that it contains.
+      To do so, open the process properties by clicking on the background of the process and click on the
+      "Swimlanes" property.  You can add new swimlanes there.</para>
+    </section>
 
   </section>
 
   <section>
     <title>Human task management component</title>
 
+    <para>As far as the Drools Flow engine is concerned, human tasks are similar to any other external
+    service that needs to be invoked and are implemented as an extension of normal work items.  As a result,
+    the process itself only contains an abstract description of the human tasks that need to be executed, and
+    a work item handler is responsible for binding this abstract tasks to a specific implementation.  Using
+    our pluggable work item handler approach (see the chapter on domain-specific processes for more details),
+    users can plug in any back-end implementation.</para>
+
+    <para>We do however provide an implementation of such a human task management component  based on the
+    WS-HumanTask specification.  If you do not have the requirement to integrate a specific human task
+    component yourself, you can use this service.  It manages the task life cycle of the tasks (creation,
+    claiming, completion, etc.) and stores the state of the task persistently.  It also supports features
+    like internationalization, calendar integration, different types of assignments, delegation, deadlines,
+    etc.</para>
+
+    <para>Because we did not want to implement a custom solution when a standard is available, we chose to
+    implement our service based on the WS-HumanTask (WS-HT) specification.  This specification defines in detail
+    the model of the tasks, the life cycle, and a lot of other features as the ones mentioned above. It is pretty
+    comprehensive and can be found
+    <ulink url="http://download.boulder.ibm.com/ibmdl/pub/software/dw/specs/ws-bpel4people/WS-HumanTask_v1.pdf">
+    here</ulink>.</para>
+
+    <section>
+      <title>Task life cycle</title>
+    
+      <para>Looking from the perspective of the process, whenever a human task node is triggered during the
+      execution of a process instance, a human task is created.  The process will only continue from that point
+      when that human task has been completed or aborted (unless of course you specify that the process does not
+      need to wait for the human task to complete, by setting the "Wait for completion" property to true).  However,
+      the human task usually has a separate life cycle itself. We will now shortly introduce this life cycle, as shown
+      in the figure below. For more details, check out the WS-HumanTask specification.</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/Chapter-HumanTasks/WSHT-lifecycle.png" format="PNG" role="" />
+        </imageobject>
+      </mediaobject>
+
+      <para>Whenever a task is created, it starts in the "Created" stage.  It usually automatically transfers to the
+      "Ready" state, at which point the task will show up on the task list of all the actors that are allowed to execute
+      the task.  There, it is waiting for one of these actors to claim the task, indicating that he or she will be
+      executing the task.  Once a user has claimed a task, the status is changed to "Reserved".  Note that a task that
+      only has one potential actor will automatically be assigned to that actor upon creation of that task.  After claiming
+      the task, that user can then at some point decide to start executing the task, in which case the task status is
+      changed to "InProgress".  Finally, once the task has been performed, the user must complete the task (and can specify
+      the result data related to the task), in which case the status is changed to "Completed".  If the task could not be
+      completed, the user can also indicate this using a fault response (possibly with fault data associated), in which
+      case the status is changed to "Failed".</para>
+
+      <para>The life cycle explained above is the normal life cycle.  The service also allows a lot of other life cycle
+      methods, like:
+      <itemizedlist>
+        <listitem>Delegating or forwarding a task, in which case it is assigned to another actor</listitem>
+        <listitem>Revoking a task, so it is no longer claimed by one specific actor but reappears on the task list of
+        all potential actors</listitem>
+        <listitem>Temporarly suspending and resuming a task</listitem>
+        <listitem>Stopping a task in progress</listitem>
+        <listitem>Skipping a task (if the task has been marked as skippable), in which case the task will not be executed</listitem>
+      </itemizedlist>
+      </para>
+
+    </section>
+
+    <section>
+      <title>Linking the task component to the Drools Flow engine</title>
+
+      <para>The task management component needs to be integrated with the Drools Flow engine just like any other external
+      service, by registering a work item handler that is responsible for translating the abstract work item (in this case
+      a human task) to a specific invocation.  We have implemented such a work item handler
+      (org.drools.process.workitem.wsht.WSHumanTaskHandler in the drools-process-task module) so you can easily link this
+      work item handler like this:</para>
+      <programlisting>
+  StatefulKnowledgeSession session = ...;
+  session.getWorkItemManager().registerWorkItemHandler("Human Task", new WSHumanTaskHandler());</programlisting>
+      <para>By default, this handler will connect to the human task management component on the local machine on port 9123,
+      but you can easily change that by invoking the setConnection(ipAddress, port) method on the WSHumanTaskHandler.</para>
+    </section>
+
+    <section>
+      <title>Starting the task management component</title>
+
+    </section>
+
+    <section>
+      <title>Interacting with the task management component</title>
+
+    </section>
+
   </section>
 
   <section>
     <title>Human task management interface</title>
 
+    <para></para>
+
     <section>
       <title>Eclipse integration</title>
+
+      <para></para>
     </section>
 
   </section>
+
+<!--
+For now he has taken a more practical approach to this to deliver something that we can use for Drools, rather than just aiming for WSHT compliance. Although we do hope to eventually make this fully WS-HT compliant, hopefully someone from the community can help us from that side.
+
+The class model, which is made persistable through EJB3, is close to complete and able to represent the whole of WSHT - except for the presentation elements, which I have left off for now, these can be easily added later but we don't have much use for them yet.
+
+For now we have chosen to do ignore the WS aspect and focus on a apache mina based client/server architecture this allows us to create a simpler and lower latency implementation for integration with our runtime and tooling, easily supports p2p and is more easily embeddable as mina is just a small JAR. The last one is important as the WSHT server needs to message events to running clients, who are typically in a wait state.
+
+The spec does not specify anything about iCalendar notifications, so kris has added this anyway. So now when someone claims a task they get two iCalendar emails one for the first start date and one for the last start date. iCalendar VEvents was chosen over the more symantically correct VTodo as there doesn't seem to be much support for the later - neither gmail or zimbra can detect a VTodo sent via an email. Maybe over time we can make this configurable and users can specify whether they want events or todos.
+
+Typically a Task has a start by date and an end by date, WSHT allows for multiple start deadlines and multiple end deadlines. Each deadline can have zero or more escalations that result in a re-assignment or a notification. WSHT doesn't specificy what form the notification takes place, this is one of their extension points. We have hooked up the notification system to integrate with our existing "work items" framework, initially with the email work item. Work items are pre made units of re-usable code, typically with GUI configuration in the flow editor, for executing actions. Later we could include a JMS or WS notification, leveraging any pre-made work items we have made.
+
+A Task can be in one of the following states:
+Created, Ready, Reserved, In Progress, Completed
+
+And supports the following main actions:
+Create, Claim, Start, Stop, Release, Suspend, Skip, Resume, Delegate, Forward, Complete, Fail.
+
+WSHT supports the following role types, which it refers to as People Assignments:
+Task Initiator, Task Owner, Potential Owners, Business Administrators, Excluded Owners, Recipients, Task Stakeholders.
+
+To get an understanding of how the WSHT life cycle works with the various allowed operations the spec pdf provides this state transition diagram which hopefully makes it all clear.
+
+WSHT Lifecycle from spec PDF
+
+The Drools Task code currently lives here, while the WSHT client/server implementation is close to complete the tooling integration will be minimal for 5.0 due to time constriants. We hope to quickly crank that up to make the tooling in eclipse and the Guvnor BRMS feature full. This is a great project for anyone wanting to get involved as it's relatively self contained and thus straight forward and no complex algorithms :) Things to do include full WSHT compliance, improved tooling including various extensions like inbox style views that support task labelling and also "read" status.
+
+
+For now here is a simple screenshot showing some of the minimal Task tooling integration into Eclipse.</para>
+-->
 
 </chapter>
