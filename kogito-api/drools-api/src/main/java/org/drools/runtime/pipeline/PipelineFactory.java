@@ -7,22 +7,96 @@ import javax.xml.bind.Unmarshaller;
 import net.sf.jxls.reader.XLSReader;
 
 import org.drools.ProviderInitializationException;
+import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.StatelessKnowledgeSession;
 import org.milyn.Smooks;
 
 import com.thoughtworks.xstream.XStream;
 
 public class PipelineFactory {
 
-    private static CorePipelineProvider   corePipelineProvider;
+    private static CorePipelineProvider       corePipelineProvider;
 
-    private static JaxbTransformerProvider   jaxbPipelineProvider;
+    private static JaxbTransformerProvider    jaxbPipelineProvider;
 
-    private static SmooksTransformerProvider smooksPipelineProvider;
-    
+    private static SmooksTransformerProvider  smooksPipelineProvider;
+
     private static XStreamTransformerProvider xstreamPipelineProvider;
 
-    private static JxlsTransformerProvider jxlsPipelineProvider;
+    private static JxlsTransformerProvider    jxlsPipelineProvider;
+
+    public static Pipeline newStatefulKnowledgeSessionPipeline(StatefulKnowledgeSession ksession) {
+        return getCorePipelineProvider().newStatefulKnowledgeSessionPipeline( ksession );
+    }
+
+    public static Pipeline newStatefulKnowledgeSessionPipeline(StatefulKnowledgeSession ksession,
+                                                               String entryPointName) {
+        return getCorePipelineProvider().newStatefulKnowledgeSessionPipeline( ksession,
+                                                                              entryPointName );
+    }
+
+    public static Pipeline newStatelessKnowledgeSessionPipeline(StatelessKnowledgeSession ksession) {
+        return getCorePipelineProvider().newStatelessKnowledgeSessionPipelineImpl( ksession );
+    }
+
+    public static KnowledgeRuntimeCommand newStatefulKnowledgeSessionInsert() {
+        return getCorePipelineProvider().newStatefulKnowledgeSessionInsert();
+    }
+
+    public static KnowledgeRuntimeCommand newStatelessKnowledgeSessionExecute() {
+        return getCorePipelineProvider().newStatelessKnowledgeSessionExecute();
+    }
+
+    public static KnowledgeRuntimeCommand newStatefulKnowledgeSessionGetGlobal() {
+        return getCorePipelineProvider().newStatefulKnowledgeSessionGetGlobal();
+    }
+
+    public static KnowledgeRuntimeCommand newStatefulKnowledgeSessionSetGlobal() {
+        return getCorePipelineProvider().newStatefulKnowledgeSessionSetGlobal();
+    }
+
+    KnowledgeRuntimeCommand newStatefulKnowledgeSessionSetGlobal(String identifier) {
+        return getCorePipelineProvider().newStatefulKnowledgeSessionSetGlobal( identifier );
+    }
+
+    public static KnowledgeRuntimeCommand newStatefulKnowledgeSessionSignalEvent(String eventType) {
+        return getCorePipelineProvider().newStatefulKnowledgeSessionSignalEvent( eventType );
+    }
+
+    public static KnowledgeRuntimeCommand newStatefulKnowledgeSessionSignalEvent(String eventType,
+                                                                                 long id) {
+        return getCorePipelineProvider().newStatefulKnowledgeSessionSignalEvent( eventType,
+                                                                                 id );
+    }
+
+    public static KnowledgeRuntimeCommand newStatefulKnowledgeSessionStartProcess(String eventType) {
+        return getCorePipelineProvider().newStatefulKnowledgeSessionStartProcess( eventType );
+    }
     
+    public static Action newAssignObjectAsResult() {
+        return getCorePipelineProvider().newAssignObjectAsResult();
+    }
+    
+    public static Action newExecuteResultHandler() {
+        return getCorePipelineProvider().newExecuteResultHandler();
+    }
+    
+    public static Action newMvelAction(String action) {
+        return getCorePipelineProvider().newMvelAction( action );
+    }    
+
+    public static Expression newMvelExpression(String expression) {
+        return getCorePipelineProvider().newMvelExpression( expression );
+    }
+
+    public static Splitter newIterateSplitter() {
+        return getCorePipelineProvider().newIterateSplitter();
+    }    
+    
+    public static Join newListCollectJoin() {
+        return getCorePipelineProvider().newListCollectJoin();
+    }
+
     public static Transformer newSmooksTransformer(Smooks smooks,
                                                    String rootId) {
         return getSmooksPipelineProvider().newSmooksTransformer( smooks,
@@ -32,43 +106,17 @@ public class PipelineFactory {
     public static Transformer newJaxbTransformer(Unmarshaller unmarshaller) {
         return getJaxbPipelineProvider().newJaxbTransformer( unmarshaller );
     }
-    
+
     public static Transformer newXStreamTransformer(XStream xstream) {
-    	 return getXStreamTransformerProvider().newXStreamTransformer( xstream );
-    }
-    
-    public static Transformer newJxlsTransformer(XLSReader xlsReader, String text) {
-        return getJxlsTransformerProvider().newJxlsTransformer( xlsReader, text );
+        return getXStreamTransformerProvider().newXStreamTransformer( xstream );
     }
 
-    public static Expression newMvelExpression(String expression) {
-        return getCorePipelineProvider().newMvelExpression( expression );
-    }
-    
-    public static Action newMvelAction(String action) {
-        return getCorePipelineProvider().newMvelAction( action );
-    }    
-
-    public static Splitter newIterateSplitter() {
-        return getCorePipelineProvider().newIterateSplitter();
-    }
-    
-    public static ListAdapter newListAdapter(List list, boolean syncAccessor) {
-        return getCorePipelineProvider().newListAdapter(list, syncAccessor);
-    }
-    
-    public static Callable newCallable() {
-        return getCorePipelineProvider().newCallable();
-    }    
-
-    public static Adapter newEntryPointReceiverAdapter() {
-        return getCorePipelineProvider().newEntryPointReceiverAdapter();
+    public static Transformer newJxlsTransformer(XLSReader xlsReader,
+                                                 String text) {
+        return getJxlsTransformerProvider().newJxlsTransformer( xlsReader,
+                                                                text );
     }
 
-    public static Adapter newStatelessKnowledgeSessionReceiverAdapter() {
-        return getCorePipelineProvider().newStatelessKnowledgeSessionReceiverAdapter();
-    }
-    
     private static synchronized void setCorePipelineProvider(CorePipelineProvider provider) {
         PipelineFactory.corePipelineProvider = provider;
     }
@@ -88,8 +136,8 @@ public class PipelineFactory {
             throw new ProviderInitializationException( "org.drools.runtime.pipeline.impl.CorePipelineProviderImpl could not be set.",
                                                        e2 );
         }
-    }   
-    
+    }
+
     private static synchronized void setJaxbTransformerProvider(JaxbTransformerProvider provider) {
         PipelineFactory.jaxbPipelineProvider = provider;
     }
@@ -109,8 +157,8 @@ public class PipelineFactory {
             throw new ProviderInitializationException( "Provider org.drools.runtime.pipeline.impl.JaxbTransformer$JaxbTransformerProviderImpl could not be set.",
                                                        e2 );
         }
-    } 
-    
+    }
+
     private static synchronized void setSmooksTransformerProvider(SmooksTransformerProvider provider) {
         PipelineFactory.smooksPipelineProvider = provider;
     }
@@ -121,7 +169,7 @@ public class PipelineFactory {
         }
         return smooksPipelineProvider;
     }
-    
+
     private static void loadSmooksTransformerProvider() {
         try {
             Class<SmooksTransformerProvider> cls = (Class<SmooksTransformerProvider>) Class.forName( "org.drools.runtime.pipeline.impl.SmooksTransformer$SmooksTransformerProviderImpl" );
@@ -130,8 +178,8 @@ public class PipelineFactory {
             throw new ProviderInitializationException( "Provider org.drools.runtime.pipeline.impl.SmooksTransformer$SmooksTransformerProviderImpl could not be set.",
                                                        e2 );
         }
-    }      
-    
+    }
+
     private static synchronized void setXStreamTransformerProvider(XStreamTransformerProvider provider) {
         PipelineFactory.xstreamPipelineProvider = provider;
     }
@@ -151,8 +199,8 @@ public class PipelineFactory {
             throw new ProviderInitializationException( "Provider org.drools.runtime.pipeline.impl.XStreamTransformer$XStreamTransformerProviderImpl could not be set.",
                                                        e2 );
         }
-    }   
-    
+    }
+
     private static synchronized void setJxlsTransformerProvider(JxlsTransformerProvider provider) {
         PipelineFactory.jxlsPipelineProvider = provider;
     }
@@ -172,6 +220,6 @@ public class PipelineFactory {
             throw new ProviderInitializationException( "Provider org.drools.runtime.pipeline.impl.JxlsTransformer$JxlsTransformerProviderImpl could not be set.",
                                                        e2 );
         }
-    }    
+    }
 
 }

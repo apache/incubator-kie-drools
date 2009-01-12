@@ -45,7 +45,14 @@
 	      <groupId>com.thoughtworks.xstream</groupId>
 	      <artifactId>xstream</artifactId>
 	      <scope>provided</scope>
-	    </dependency>          
+	    </dependency>     
+	    
+        <dependency>
+		  <groupId>jms</groupId>
+		  <artifactId>jms</artifactId>
+		  <version>1.1</version>
+          <scope>provided</scope>
+        </dependency>  	         
         
   </dependencies>
   

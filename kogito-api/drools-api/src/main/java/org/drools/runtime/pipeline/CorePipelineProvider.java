@@ -1,19 +1,43 @@
 package org.drools.runtime.pipeline;
 
-import java.util.List;
+import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.StatelessKnowledgeSession;
 
 public interface CorePipelineProvider {
-    public Expression newMvelExpression(String expression);
-    
-    public Action newMvelAction(String action);
 
-    public Splitter newIterateSplitter();
+    Pipeline newStatefulKnowledgeSessionPipeline(StatefulKnowledgeSession ksession);
 
-    public Adapter newEntryPointReceiverAdapter();
+    Pipeline newStatefulKnowledgeSessionPipeline(StatefulKnowledgeSession ksession,
+                                                String entryPointName);
 
-    public Adapter newStatelessKnowledgeSessionReceiverAdapter();
+    Pipeline newStatelessKnowledgeSessionPipelineImpl(StatelessKnowledgeSession ksession);
+
+    KnowledgeRuntimeCommand newStatefulKnowledgeSessionInsert();
+
+    KnowledgeRuntimeCommand newStatelessKnowledgeSessionExecute();
+
+    KnowledgeRuntimeCommand newStatefulKnowledgeSessionGetGlobal();
+
+    KnowledgeRuntimeCommand newStatefulKnowledgeSessionSetGlobal();
+
+    KnowledgeRuntimeCommand newStatefulKnowledgeSessionSetGlobal(String identifier);
+
+    KnowledgeRuntimeCommand newStatefulKnowledgeSessionSignalEvent(String eventType);
+
+    KnowledgeRuntimeCommand newStatefulKnowledgeSessionSignalEvent(String eventType,
+                                                        long id);
+
+    KnowledgeRuntimeCommand newStatefulKnowledgeSessionStartProcess(String eventType);
     
-    public ListAdapter newListAdapter(List<Object> list, boolean syncAccessors); 
+    Action newAssignObjectAsResult();
     
-    public Callable newCallable();
+    Action newExecuteResultHandler();
+
+    Action newMvelAction(String action);
+    
+    Expression newMvelExpression(String expression);
+
+    Splitter newIterateSplitter();
+    
+    Join newListCollectJoin();
 }
