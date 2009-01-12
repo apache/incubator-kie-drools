@@ -5,6 +5,9 @@ import java.util.Map;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.pipeline.Action;
+import org.drools.runtime.pipeline.Pipeline;
+import org.drools.runtime.pipeline.PipelineFactory;
 import org.drools.runtime.pipeline.ResultHandler;
 
 import junit.framework.TestCase;
@@ -14,12 +17,14 @@ public class StatefulKnowledgeSessionPipelineTest extends TestCase {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         
-        StatefulKnowledgeSessionInsertStage stage1 = new StatefulKnowledgeSessionInsertStage();
-        MvelAction mvelAction = new MvelAction( "context.resultHandler.handleResult( context.handles )");
-        stage1.setReceiver( mvelAction );
+        Action executeResultHandler = PipelineFactory.newExecuteResultHandler();
         
-        StatefulKnowledgeSessionPipelineImpl pipeline = new StatefulKnowledgeSessionPipelineImpl(ksession);
-        pipeline.setReceiver( stage1 );
+        StatefulKnowledgeSessionInsertStage insertStage = new StatefulKnowledgeSessionInsertStage();
+        insertStage.setReceiver( executeResultHandler );
+        
+        
+        Pipeline pipeline = PipelineFactory.newStatefulKnowledgeSessionPipeline(ksession);
+        pipeline.setReceiver( insertStage );
         
         assertEquals( 0, ksession.getObjects().size() );
         
